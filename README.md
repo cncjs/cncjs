@@ -5,6 +5,15 @@ CNC.js is a web-based CNC milling controller for the [Arduino](https://www.ardui
 
 ![cnc.js](https://raw.githubusercontent.com/cheton/cnc.js/master/media/preview.gif) 
 
+## Installation
+```bash
+$ npm install -g cnc
+```
+Run `cnc` to start the server, and visit `http://yourhostname:8000/` to view the web console:
+```bash
+$ cnc
+```
+
 ## License
 
 Copyright (c) 2015 Cheton Wu
