@@ -1,5 +1,5 @@
 {
-  "name": "cnc.js",
+  "name": "cncjs",
   "version": "0.1.0",
   "description": "CNC.js is a web-based CNC milling controller for the Arduino running GRBL",
   "homepage": "https://github.com/cheton/cnc.js",
