@@ -1,0 +1,95 @@
+[data-component="Widgets/AxesWidget"] {
+    .display-panel {
+        padding: 0 10px 10px 10px;
+        border-bottom: 1px solid #ddd;
+
+        table .table-header {
+            text-align: center;
+            border-bottom-width: 1px;
+            padding: 4px 2px;
+        }
+
+        .axis-label {
+            text-align: center;
+            font-size: 24px;
+            padding: 0 10px;
+            width: 1%;
+        }
+        .axis-position {
+            padding: 0 5px 10px 5px;
+            text-align: right;
+            white-space: nowrap;
+            position: relative;
+
+            .integer-part,
+            .decimal-point,
+            .fractional-part {
+                font-size: 24px;
+            }
+            .integer-part {
+                width: 90px;
+                text-align: right;
+            }
+            .dimension-unit {
+                font-size: 12px;
+                position: absolute;
+                right: 5px;
+                bottom: 0;
+            }
+        }
+        .axis-control {
+            width: 1%;
+            padding: 0 4px;
+            text-align: center;
+
+            .icon {
+                font-size: 12px;
+            }
+        }
+    }
+
+    .toggle-expand-collapse {
+        height: 16px;
+        text-align: center;
+        background-color: #eee;
+
+        &:hover {
+            cursor: pointer;
+        }
+    }
+
+    .control-panel {
+        border-top: 1px solid #ddd;
+        background-color: #eee;
+        padding: 10px;
+
+        .table-centered {
+            margin: 0 auto;
+        }
+        .jog-x,
+        .jog-y,
+        .jog-z {
+            font-size: 24px;
+        }
+        .jog-x {
+            padding: 0 5px;
+        }
+        .jog-y {
+            padding: 5px;
+            .jog-y-plus {
+                margin-bottom: 10px;
+            }
+        }
+        .jog-z {
+            padding: 5px;
+            .jog-z-plus {
+                margin-bottom: 10px;
+            }
+        }
+
+        .form-group:last-child {
+            margin-bottom: 0;
+        }
+    }
+
+}

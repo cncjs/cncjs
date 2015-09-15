@@ -1,0 +1,52 @@
+[data-component="Workspace"] {
+    > .workspace-container {
+        position: absolute;
+        top: 51px;
+        bottom: 0;
+        right: 0;
+        left: 0;
+    }
+
+    .workspace-table {
+        display: table;
+        width: 100%;
+        height: 100%;
+    }
+    .workspace-table-row {
+        display: table-row;
+    }
+
+    .primary-container,
+    .primary-toggler-pane,
+    .secondary-container,
+    .secondary-toggler-pane,
+    .main-container {
+        display: table-cell;
+        position: relative;
+    }
+    .primary-container,
+    .secondary-container {
+        vertical-align: top;
+        background-color: #f0f0f0;
+        width: 1%;
+        padding: 10px;
+    }
+    .main-container {
+        vertical-align: top;
+        min-width: 200px;
+    }
+
+    .primary-toggler-pane,
+    .secondary-toggler-pane {
+        width: 1px;
+        vertical-align: middle;
+        background-color: #f0f0f0;
+        cursor: pointer;
+        border-left: 1px solid #ddd;
+        border-right: 1px solid #ddd;
+
+        &:hover {
+            background-color: #e0e0e0;
+        }
+    }
+}

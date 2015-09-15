@@ -1,0 +1,148 @@
+$header-title-height = 32px
+$header-title-icon-size = 18px
+$header-toolbar-icon-size = 28px
+
+[data-component="Widget"] {
+    .widget {
+        
+        &.widget-borderless {
+            border: none;
+        }
+
+        background-color: #FFF;
+        border-color: #d0d0d0;
+        border-radius: 3px;
+        border-width: 1px;
+        border-style: solid;
+        margin-bottom: 20px;
+
+        &.widget-no-header {
+            .widget-content {
+                .widget-title {
+                    margin-top: 0;
+                    font-size: 14px;
+                    color: #333;
+                }
+            }
+        }
+        &.widget-no-content {
+            .widget-header {
+                border-bottom: none;
+            }
+        }
+
+        .widget-header {
+            padding: 0 10px;
+            border-bottom: 1px solid #fff;
+            line-height: $header-title-height;
+
+            &.widget-header-default {
+                background-color: #fff;
+            }
+            &.widget-header-inverse {
+                background-color: #222;
+            }
+
+            .widget-header-title {
+                margin-top: 0;
+                font-size: 14px;
+                font-weight: bold;
+                color: #6a6a6a;
+                display: inline-block;
+                vertical-align: middle;
+                margin-bottom: 0;
+
+                i {
+                    font-size: $header-title-icon-size;
+                    line-height: 1;
+                    vertical-align: middle;
+                    margin-right: 5px;
+                }
+            }
+
+            .btn-group > a,
+            .btn-group .dropdown-toggle .icon {
+                color: #838383;
+            }
+            .btn-group > a:hover,
+            .btn-group > a:focus,
+            .btn-group .dropdown-toggle .icon:hover,
+            .btn-group .dropdown-toggle .icon:focus {
+                color: #505050
+            }
+            .btn i {
+                position: relative;
+                top: 0;
+                margin-right: 2px;
+                font-size: 16px;
+                line-height: 1;
+            }
+
+            .widget-header-toolbar {
+                float: right;
+                width: auto;
+                margin-left: 10px;
+
+                &.btn-group {
+                }
+
+                .badge {
+                    margin-top: 10px;
+                }
+
+                .label {
+                    position: relative;
+                    top: 11px;
+                    padding: 5px;
+                    font-size: 85%;
+
+                    i {
+                        font-size: 14px;
+                    }
+                }
+                .btn-link {
+                    padding: 0 0 0 10px;
+
+                    &:first-child {
+                        padding-left: 0
+                    }
+                    i {
+                        font-size: $header-toolbar-icon-size;
+                        line-height: 1;
+                    }
+                }
+            }
+
+            @media screen and (max-width: 480px) {
+                .widget-header-toolbar {
+                    display: block;
+                    position: inherit;
+
+                    &.btn-group > .btn {
+                    }
+
+                    .badge {
+                        margin-top: 0;
+                    }
+
+                    .label {
+                        top: 0;
+                    }
+                }
+            }
+
+        }
+
+        .widget-content {
+        }
+
+        .widget-footer {
+            &.widget-footer-default {
+                background-color: #fff;
+            }
+            &.widget-footer-inverse {
+                background-color: #222;
+            }
+        }
+    }
+}

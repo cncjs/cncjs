@@ -1,0 +1,12 @@
+{
+  "name": "stacktrace-js",
+  "version": "0.6.4",
+  "main": "./stacktrace.js",
+  "dependencies": {},
+  "ignore": [
+    "**/.*",
+    "test",
+    "node_modules",
+    "components"
+  ]
+}

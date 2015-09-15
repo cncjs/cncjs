@@ -1,0 +1,51 @@
+#!/usr/bin/env node
+
+var _ = require('lodash');
+var path = require('path');
+var webappengine = require('webappengine');
+var program = require('commander');
+var pkg = require('../package.json');
+var settings = require('../app/config/settings');
+var server = require('../server');
+require('colors');
+
+program
+    .version(pkg.version)
+    .usage('[options]')
+    .option('-p, --port <port>', 'set listen port (default: 8000)')
+    .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)')
+    .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)')
+    .option('-c, --config <filename>', 'set configuration file')
+    .parse(process.argv);
+
+// Overrides defaults
+_.set(settings, 'port', program.port || settings.port);
+_.set(settings, 'host', program.host || settings.host);
+_.set(settings, 'backlog', program.backlog || settings.backlog);
+
+// Set configuration settings
+if (program.config) {
+    var config = require(path.resolve(program.config));
+    if ( ! _.isObject(config)) {
+        console.log('Check your configuration file to ensure it contain valid settings.'.bold.red);
+        console.log(config);
+        process.exit(1);
+    }
+
+    settings['cnc'] = _.extend({}, settings['cnc'], config);
+}
+
+var options = {
+    port: settings.port,
+    routes: [
+        {
+            type: 'server',
+            route: '/',
+            // An absolute path is recommended to use
+            server: path.resolve(__dirname, '../app/app')
+        }
+    ]
+};
+
+webappengine(options)
+    .on('ready', server);
