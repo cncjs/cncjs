@@ -1,5 +1,5 @@
 {
-  "name": "cnc.js",
+  "name": "cncjs",
   "version": "0.1.0",
   "dependencies": {
     "Sortable": "~1.2.1",
