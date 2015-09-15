@@ -1,2 +1,2 @@
-# piduino-grbl
-PiDuino-GRBL
+# cnc.js
+CNC.js
