@@ -1,4 +1,4 @@
-module.export = {
+module.exports = {
     ports: [
         {
             comName: '/dev/ttyFAKE',
