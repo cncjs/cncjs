@@ -30,7 +30,7 @@ If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-
   ```
 2. Edit the Grbl-sim Makefile to select the correct `PLATFORM =` line.
 3. Run `make new` to compile the Grbl sim, and it will create an executable file named `grbl_sim.exe`.
-  ![grbl-sim](https://raw.githubusercontent.com/cheton/cnc.js/dev/media/grbl-sim.png)
+  ![grbl-sim](https://raw.githubusercontent.com/cheton/cnc.js/master/media/grbl-sim.png)
 
 ## License
 
