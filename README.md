@@ -48,7 +48,7 @@ If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-
   ```
 6. Open `/dev/ttyFAKE` from the Connection widget to interact with the Grbl simulator as if connected to an Arduino with Grbl.
 
-  ![ttyFAKE](https://github.com/cheton/cnc.js/blob/master/media/ttyFAKE.png)
+  ![ttyFAKE](https://raw.githubusercontent.com/cheton/cnc.js/master/media/ttyFAKE.png)
 
 ## License
 
