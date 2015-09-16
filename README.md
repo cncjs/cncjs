@@ -10,9 +10,27 @@ CNC.js is a web-based CNC milling controller for the [Arduino](https://www.ardui
 ```bash
 $ npm install -g cncjs
 ```
+
+## Usage
 Run `cnc` to start the server, and visit `http://yourhostname:8000/` to view the web console:
 ```bash
 $ cnc
+```
+
+Run `cnc` with -h for detailed usage:
+```bash
+$ cnc -h
+
+  Usage: cnc [options]
+  
+  Options:
+
+    -h, --help               output usage information
+    -V, --version            output the version number
+    -p, --port               set listen port (default: 8000)
+    -l, --host               set listen address or hostname (default: 0.0.0.0)
+    -b, --backlog            set listen backlog (default: 511)
+    -c, --config <filename>  set configuration file
 ```
 
 ## Prerequisite
