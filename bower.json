@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "dependencies": {
     "Sortable": "~1.2.1",
     "async": "~1.4.2",
