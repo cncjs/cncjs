@@ -18,7 +18,7 @@ $ cnc
 ```
 
 Run `cnc` with -h for detailed usage:
-```bash
+```
 $ cnc -h
 
   Usage: cnc [options]
