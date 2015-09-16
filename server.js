@@ -121,6 +121,8 @@ module.exports = function(server) {
                     return;
                 }
 
+                ports = ports.concat(_.get(settings, 'cnc.ports') || []);
+
                 var portsInUse = _(serialports)
                     .filter(function(sp) {
                         return sp.serialPort && sp.serialPort.isOpen();
