@@ -11,6 +11,17 @@ You will need an Arduino UNO/Nano board based on the ATmega328P. Download the la
 
 If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-sim) to compile Grbl into an executable for your computer.
 
+1. Clone this repository into the directory containing the Grbl source code (i.e. `<repo>/grbl/`), like so:
+
+  ```bash
+  $ git clone git@github.com:grbl/grbl.git
+  $ cd grbl/grbl
+  $ git clone git@github.com:grbl/grbl-sim.git
+  $ cd grbl-sim
+  ```
+2. Edit the Grbl-sim Makefile to select the correct `PLATFORM =` line.
+3. Run `make new` to compile the Grbl sim, and it will create an executable file named `grbl_sim.exe`.
+
 ## Installation
 ```bash
 $ npm install -g cncjs
