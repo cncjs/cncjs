@@ -93,7 +93,7 @@ ja     | 日本語
 zh-cn  | 中文 (简体)
 zh-tw  | 中文 (繁體)
 
-We greatly appreciate your contributions for translation. Update resource files in `web/i18n/{lang}/resource.json` and submit your pull request (PR) to make translation better.
+We greatly appreciate your contributions for translation. Update resource strings in `web/i18n/{lang}/resource.json` and submit your pull request (PR) to make translation better.
 
 ## License
 
