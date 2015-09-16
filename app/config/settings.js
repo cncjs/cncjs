@@ -134,7 +134,8 @@ var settings = { // Default settings
         'zh-cn',
         'zh-tw'
     ],
-    cnc: {
+    cnc: { // override this settings using `cnc -c /path/to/your/config.js`
+        ports: []
     },
     siofu: { // SocketIOFileUploader
         dir: './tmp/siofu'
