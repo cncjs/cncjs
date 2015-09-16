@@ -6,7 +6,7 @@ CNC.js is a web-based CNC milling controller for the [Arduino](https://www.ardui
 
 ![cnc.js](https://raw.githubusercontent.com/cheton/cnc.js/master/media/preview.gif) 
 
-## Prequisite
+## Prerequisite
 You will need an Arduino UNO/Nano board based on the ATmega328P. Download the latest Grbl firmware from the [Grbl  repository](https://github.com/grbl/grbl), and [flash Grbl to an Arduino](https://github.com/grbl/grbl/wiki/Flashing-Grbl-to-an-Arduino).
 
 If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-sim) to compile Grbl into an executable for your computer.
