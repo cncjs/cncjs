@@ -40,10 +40,12 @@ If you don't have a CAM software, try using [jscut](http://jscut.org/) to create
 
 Check out a live demo at http://jscut.org/jscut.html.
 
-## Prerequisite
+## User Guide
+
+### Prerequisite
 You will need an Arduino UNO/Nano board based on the ATmega328P. Download the latest Grbl firmware from the [Grbl  repository](https://github.com/grbl/grbl), and [flash Grbl to an Arduino](https://github.com/grbl/grbl/wiki/Flashing-Grbl-to-an-Arduino).
 
-### Running without using Arduino board
+#### Running without using Arduino board
 If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-sim) to compile Grbl into an executable for your computer.
 
 1. Clone this repository into the directory containing the Grbl source code (i.e. `<repo>/grbl/`), like so:
@@ -75,9 +77,7 @@ If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-
 
   ![ttyFAKE](https://raw.githubusercontent.com/cheton/cnc.js/master/media/ttyFAKE.png)
 
-## User Guide
-
-### Change the display language
+### Display Language
 You can change the display language from the <b>Settings</b> menu, it will set the `lang` query string parameter: `?lang={locale}`
 
 Here is a list of currently supported locales:
@@ -94,6 +94,9 @@ zh-cn  | 中文 (简体)
 zh-tw  | 中文 (繁體)
 
 We greatly appreciate your contributions for translation. Update resource strings in `web/i18n/{lang}/resource.json` and submit your pull request (PR) to make translation better.
+
+### Widgets
+TBD
 
 ## License
 
