@@ -36,7 +36,9 @@ $ cnc -h
 ## Examples
 There are several *.gcode files in the [examples](https://github.com/cheton/cnc.js/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
 
-If you don't have CAM software, try using [JSCut](http://jscut.org/) to create G-Code from *.svg on the web.
+If you don't have CAM software, try using [jscut](http://jscut.org/) to create G-Code from *.svg on the web. It's a simple CAM package that runs in the browser.
+
+Check out a live demo at http://jscut.org/jscut.html.
 
 ## Prerequisite
 You will need an Arduino UNO/Nano board based on the ATmega328P. Download the latest Grbl firmware from the [Grbl  repository](https://github.com/grbl/grbl), and [flash Grbl to an Arduino](https://github.com/grbl/grbl/wiki/Flashing-Grbl-to-an-Arduino).
