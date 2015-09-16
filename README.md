@@ -46,7 +46,7 @@ Check out a live demo at http://jscut.org/jscut.html.
 You will need an Arduino UNO/Nano board based on the ATmega328P. Download the latest Grbl firmware from the [Grbl  repository](https://github.com/grbl/grbl), and [flash Grbl to an Arduino](https://github.com/grbl/grbl/wiki/Flashing-Grbl-to-an-Arduino).
 
 #### Running without using Arduino board
-If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-sim) to compile Grbl into an executable for your computer.
+If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-sim) and follow the instructions below to compile Grbl into an executable for your computer:
 
 1. Clone this repository into the directory containing the Grbl source code (i.e. `<repo>/grbl/`), like so:
 
