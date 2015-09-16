@@ -34,7 +34,7 @@ $ cnc -h
 ```
 
 ## Examples
-There are several *.gcode files in the `examples` directory. You can use the GCode widget to load a GCode file and make a trial run.
+There are several *.gcode files in the [examples](https://github.com/cheton/cnc.js/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
 
 If you don't have CAM software, try using [JSCut](http://jscut.org/) to create G-Code from *.svg on the web.
 
