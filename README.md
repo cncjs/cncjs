@@ -98,6 +98,13 @@ We greatly appreciate your contributions for translation. Update resource string
 ### Widgets
 TBD
 
+## TODOs
+- [ ] Remember last working state upon browser refresh
+- [ ] Soft reset GRBL / Unlock GRBL
+- [ ] Drag and drop *.gcode files
+- [ ] Convert between Metric and Imperial unit
+- [ ] Webcam support
+
 ## License
 
 Copyright (c) 2015 Cheton Wu
