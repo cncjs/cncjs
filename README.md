@@ -34,7 +34,7 @@ $ cnc -h
 ```
 
 ## Examples
-There are several *.gcode files under the `examples` directory. You can use the GCode widget to load a GCode file and make a trial run.
+There are several *.gcode files in the `examples` directory. You can use the GCode widget to load a GCode file and make a trial run.
 
 ## Prerequisite
 You will need an Arduino UNO/Nano board based on the ATmega328P. Download the latest Grbl firmware from the [Grbl  repository](https://github.com/grbl/grbl), and [flash Grbl to an Arduino](https://github.com/grbl/grbl/wiki/Flashing-Grbl-to-an-Arduino).
