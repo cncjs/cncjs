@@ -6,12 +6,11 @@ module.exports = function(options) {
         runSequence('clean',
             'bower',
             ['eslint', 'jscs', 'jshint'],
-            ['styles', 'templates'],
+            ['styles'],
             'browserify',
             'i18next',
             callback
         );
     });
     gulp.task('styles', ['stylus', 'csslint']);
-    gulp.task('templates', ['handlebars']);
 };
