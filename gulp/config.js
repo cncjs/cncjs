@@ -14,7 +14,6 @@ var pkg = require('../package.json');
 
 var bundleDependencies = {
     'vendor': [
-        //'handlebars',
         //'i18next',
         'lodash',
         'react',
@@ -31,7 +30,6 @@ module.exports = {
         scripts: [
         ],
         templates: [
-            'web/{components,templates}/**/handlebars-templates.js'
         ],
         vendor: [
             'web/vendor/**'
@@ -192,12 +190,12 @@ module.exports = {
             sort: true,
             lngs: ['en'],
             defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
-            resGetPath: 'web/i18n/${lng}/${ns}.json',
-            resSetPath: 'web/i18n/${lng}/${ns}.json', // or 'web/i18n/${lng}/${ns}.saveAll.json'
+            resGetPath: 'web/i18n/{{lng}}/{{ns}}.json',
+            resSetPath: 'web/i18n/{{lng}}/{{ns}}.json', // or 'web/i18n/${lng}/${ns}.saveAll.json'
             nsseparator: ':', // namespace separator
             keyseparator: '.', // key separator
-            interpolationPrefix: '${',
-            interpolationSuffix: '}',
+            interpolationPrefix: '{{',
+            interpolationSuffix: '}}',
             ns: {
                 namespaces: [
                     'locale', // locale: language, timezone, ...
