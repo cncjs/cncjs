@@ -21,6 +21,7 @@
   "engines": {
     "node": ">=0.10.x"
   },
+  "preferGlobal": true,
   "scripts": {
     "test": "npm run gulp",
     "gulp": "gulp"
