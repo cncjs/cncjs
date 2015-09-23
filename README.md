@@ -99,6 +99,7 @@ We greatly appreciate your contributions for translation. Update resource string
 TBD
 
 ## TODOs
+- [ ] Spindle on/off
 - [ ] Remember last working state upon browser refresh
 - [ ] Soft reset GRBL / Unlock GRBL
 - [ ] Drag and drop *.gcode files
