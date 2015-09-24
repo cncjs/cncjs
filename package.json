@@ -65,7 +65,7 @@
     "react-bootstrap": "^0.25.2",
     "react-datagrid": "^1.2.13",
     "react-infinite": "^0.4.1",
-    "react-select": "^0.6.6",
+    "react-select": "^0.6.10",
     "redux": "^1.0.1",
     "request": "^2.53.0",
     "serialport": "^1.7.4",
