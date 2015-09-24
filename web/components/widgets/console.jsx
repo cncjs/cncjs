@@ -3,7 +3,8 @@ import log from '../../lib/log';
 import i18n from 'i18next';
 import React from 'react';
 import Infinite from 'react-infinite';
-import Widget from '../widget';
+import classNames from 'classnames';
+import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import socket from '../../socket';
 import store from '../../store';
 import './console.css';
@@ -103,16 +104,25 @@ class ConsoleWindow extends React.Component {
 
 export default class ConsoleWidget extends React.Component {
     state = {
+        isCollapsed: false,
         port: '',
         messages: []
     };
 
     componentDidMount() {
-        var that = this;
-
-        socket.on('serialport:readline', (line) => {
-            that.sendMessage(line);
-        });
+        this.addSocketEvents();
+    }
+    componentWillUnmount() {
+        this.removeSocketEvents();
+    }
+    addSocketEvents() {
+        socket.on('serialport:readline', ::this.socketOnSerialPortReadLine);
+    }
+    removeSocketEvents() {
+        socket.off('serialport:readline', ::this.socketOnSerialPortReadLine);
+    }
+    socketOnSerialPortReadLine(line) {
+        this.sendMessage(line);
     }
     sendMessage(message) {
         this.setState({
@@ -124,28 +134,39 @@ export default class ConsoleWidget extends React.Component {
             messages: []
         });
     }
+    handleClick(target, val) {
+        if (target === 'toggle') {
+            this.setState({
+                isCollapsed: !!val
+            });
+        }
+    }
     render() {
-        var options = {
-            width: 300,
-            header: {
-                title: (
-                    <div><i className="glyphicon glyphicon-console"></i>{i18n._('Console')}</div>
-                ),
-                toolbar: {
-                    buttons: [
-                        'toggle'
-                    ]
-                }
-            },
-            content: (
-                <div data-component="Widgets/ConsoleWidget">
-                    <ConsoleInput onSend={::this.sendMessage} onClear={::this.clearMessages} />
-                    <ConsoleWindow messages={this.state.messages} />
-                </div>
-            )
-        };
+        let width = 300;
+        let title = (
+            <div><i className="glyphicon glyphicon-console"></i>{i18n._('Console')}</div>
+        );
+        let toolbarButtons = [
+            'toggle'
+        ];
+        let widgetContentClass = classNames(
+            { 'hidden': this.state.isCollapsed }
+        );
+
         return (
-            <Widget options={options} />
+            <Widget width={width}>
+                <WidgetHeader
+                    title={title}
+                    toolbarButtons={toolbarButtons}
+                    handleClick={::this.handleClick}
+                />
+                <WidgetContent className={widgetContentClass}>
+                    <div data-component="Widgets/ConsoleWidget">
+                        <ConsoleInput onSend={::this.sendMessage} onClear={::this.clearMessages} />
+                        <ConsoleWindow messages={this.state.messages} />
+                    </div>
+                </WidgetContent>
+            </Widget>
         );
     }
 }

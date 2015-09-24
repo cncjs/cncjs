@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import i18n from 'i18next';
 import React from 'react';
-import classNames from 'classnames';
 import Select from 'react-select';
+import classNames from 'classnames';
 import PressAndHoldButton from '../common/PressAndHoldButton';
-import Widget from '../widget';
+import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import store from '../../store';
 import socket from '../../socket';
 import log from '../../lib/log';
@@ -42,13 +42,22 @@ class AxesDisplayPanel extends React.Component {
     };
 
     componentDidMount() {
-        var that = this;
-        socket.on('grbl:current-status', function(data) {
-            that.setState({
-                activeState: data.activeState,
-                machinePos: data.machinePos,
-                workingPos: data.workingPos
-            });
+        this.addSocketEvents();
+    }
+    componentWillUnmount() {
+        this.removeSocketEvents();
+    }
+    addSocketEvents() {
+        socket.on('grbl:current-status', ::this.socketOnGRBLCurrentStatus);
+    }
+    removeSocketEvents() {
+        socket.off('grbl:current-status', ::this.socketOnGRBLCurrentStatus);
+    }
+    socketOnGRBLCurrentStatus(data) {
+        this.setState({
+            activeState: data.activeState,
+            machinePos: data.machinePos,
+            workingPos: data.workingPos
         });
     }
     convertPositionUnit(pos) {
@@ -428,27 +437,42 @@ class Axes extends React.Component {
 }
 
 export default class AxesWidget extends React.Component {
+    state = {
+        isCollapsed: false
+    };
+
+    handleClick(target, val) {
+        if (target === 'toggle') {
+            this.setState({
+                isCollapsed: !!val
+            });
+        }
+    }
     render() {
-        var options = {
-            width: 300,
-            header: {
-                title: (
-                    <div><i className="glyphicon glyphicon-stats"></i>{i18n._('Axes')}</div>
-                ),
-                toolbar: {
-                    buttons: [
-                        'toggle'
-                    ]
-                }
-            },
-            content: (
-                <div data-component="Widgets/AxesWidget">
-                    <Axes />
-                </div>
-            )
-        };
+        let width = 300;
+        let title = (
+            <div><i className="glyphicon glyphicon-stats"></i>{i18n._('Axes')}</div>
+        );
+        let toolbarButtons = [
+            'toggle'
+        ];
+        let widgetContentClass = classNames(
+            { 'hidden': this.state.isCollapsed }
+        );
+
         return (
-            <Widget options={options} />
+            <Widget width={width}>
+                <WidgetHeader
+                    title={title}
+                    toolbarButtons={toolbarButtons}
+                    handleClick={::this.handleClick}
+                />
+                <WidgetContent className={widgetContentClass}>
+                    <div data-component="Widgets/AxesWidget">
+                        <Axes />
+                    </div>
+                </WidgetContent>
+            </Widget>
         );
     }
 }

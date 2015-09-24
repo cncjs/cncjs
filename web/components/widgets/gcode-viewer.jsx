@@ -4,7 +4,7 @@ import React from 'react';
 import THREE from 'three';
 import TrackballControls from '../../lib/three/TrackballControls';
 import { GCodeRenderer } from '../../lib/gcode';
-import Widget from '../widget';
+import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import store from '../../store';
 import socket from '../../socket';
@@ -12,7 +12,24 @@ import socket from '../../socket';
 export default class GCodeViewer extends React.Component {
     state = {
         width: window.innerWidth,
-        height: window.innerHeight
+        height: window.innerHeight,
+        dimension: {
+            min: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            max: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            delta: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        }
     };
 
     componentWillMount() {
@@ -71,17 +88,17 @@ export default class GCodeViewer extends React.Component {
         this._unsubscribeFromReduxStore();
     }
     addSocketEvents() {
-        socket.on('gcode:queue-status', ::this.onSocketGCodeQueueStatus);
+        socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     removeSocketEvents() {
-        socket.off('gcode:queue-status', ::this.onSocketGCodeQueueStatus);
+        socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
-    onSocketGCodeQueueStatus(data) {
+    socketOnGCodeQueueStatus(data) {
         if (! this.gcodeRenderer) {
             return;
         }
 
-        log.trace('onSocketGCodeQueueStatus:', data);
+        log.trace('socketOnGCodeQueueStatus:', data);
 
         let frameIndex = data.executed;
         this.gcodeRenderer.setFrameIndex(frameIndex);
@@ -184,37 +201,46 @@ export default class GCodeViewer extends React.Component {
             width: el.clientWidth,
             height: el.clientHeight
         }, function(dimension) {
-            //log.debug(dimension);
-        });
+            this.setState({
+                dimension: dimension // FIXME
+            });
+            
+            log.debug(dimension);
+        }.bind(this));
         this.scene.add(this.object);
     }
     render() {
         let style = {
             backgroundColor: '#fff',
             position: 'absolute',
-            top: 0,
+            top: '20px',
             right: 0,
             bottom: 0,
             left: 0
         };
+        let dimension = this.state.dimension;
 
         return (
-            <div ref="gcodeViewer" style={style} />
+            <div>
+                <div>
+                    Dimension: X={dimension.delta.x}, Y={dimension.delta.y}, Z={dimension.delta.z}
+                </div>
+                <div ref="gcodeViewer" style={style} />
+            </div>
         );
     }
 }
 
 export default class GCodeViewerWidget extends React.Component {
     render() {
-        var options = {
-            content: (
-                <div data-component="Widgets/GCodeViewerWidget">
-                    <GCodeViewer />
-                </div>
-            )
-        };
         return (
-            <Widget options={options} />
+            <Widget borderless={true}>
+                <WidgetContent>
+                    <div data-component="Widgets/GCodeViewerWidget">
+                        <GCodeViewer />
+                    </div>
+                </WidgetContent>
+            </Widget>
         );
     }
 }

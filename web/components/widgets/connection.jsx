@@ -2,7 +2,8 @@ import _ from 'lodash';
 import i18n from 'i18next';
 import React from 'react';
 import Select from 'react-select';
-import Widget from '../widget';
+import classNames from 'classnames';
+import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import socket from '../../socket';
 import store from '../../store';
@@ -48,76 +49,85 @@ class Connection extends React.Component {
     };
 
     componentDidMount() {
-        var that = this;
+        this.addSocketEvents();
+    }
+    componentWillUnmount() {
+        this.removeSocketEvents();
+    }
+    addSocketEvents() {
+        socket.on('serialport:list', ::this.socketOnSerialPortList);
+        socket.on('serialport:open', ::this.socketOnSerialPortOpen);
+        socket.on('serialport:close', ::this.socketOnSerialPortClose);
+        socket.on('serialport:error', ::this.socketOnSerialPortError);
+    }
+    removeSocketEvents() {
+        socket.off('serialport:list', ::this.socketOnSerialPortList);
+        socket.off('serialport:open', ::this.socketOnSerialPortOpen);
+        socket.off('serialport:close', ::this.socketOnSerialPortClose);
+        socket.off('serialport:error', ::this.socketOnSerialPortError);
+    }
+    socketOnSerialPortList(ports) {
+        log.debug('serialport:list', ports);
 
-        this.handleRefresh();
+        this.stopLoading();
 
-        socket.on('serialport:list', (ports) => {
-            log.debug('serialport:list', ports);
+        this.clearAlert();
 
-            that.stopLoading();
+        this.setState({
+            ports: ports
+        });
+    }
+    socketOnSerialPortOpen(options) {
+        let { port, baudrate, inuse } = options;
+        let ports = _.map(this.state.ports, function(o) {
+            if (o.port !== port) {
+                return o;
+            }
 
-            that.clearAlert();
-
-            that.setState({
-                ports: ports
-            });
+            return _.extend(o, { inuse: inuse });
         });
 
-        socket.on('serialport:open', (options) => {
-            let { port, baudrate, inuse } = options;
-            let ports = _.map(this.state.ports, function(o) {
-                if (o.port !== port) {
-                    return o;
-                }
+        this.clearAlert();
 
-                return _.extend(o, { inuse: inuse });
-            });
+        store.dispatch({ type: PORT_OPEN, port: port });
 
-            that.clearAlert();
-
-            store.dispatch({ type: PORT_OPEN, port: port });
-
-            this.setState({
-                connecting: false,
-                connected: true,
-                port: port,
-                baudrate: baudrate,
-                ports: ports
-            });
-
-            log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
+        this.setState({
+            connecting: false,
+            connected: true,
+            port: port,
+            baudrate: baudrate,
+            ports: ports
         });
 
-        socket.on('serialport:close', (options) => {
-            let { port, inuse } = options;
+        log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
+    }
+    socketOnSerialPortClose(options) {
+        let { port, inuse } = options;
 
-            that.clearAlert();
+        this.clearAlert();
 
-            store.dispatch({ type: PORT_CLOSE });
+        store.dispatch({ type: PORT_CLOSE });
 
-            this.setState({
-                connecting: false,
-                connected: false
-            });
-
-            log.debug('Disconnected from \'' + port + '\'.');
+        this.setState({
+            connecting: false,
+            connected: false
         });
 
-        socket.on('serialport:error', (options) => {
-            let { port } = options;
+        log.debug('Disconnected from \'' + port + '\'.');
+    }
+    socketOnSerialPortError(options) {
+        let { port } = options;
 
-            that.showAlert('Error opening serial port: ' + port);
+        this.showAlert('Error opening serial port: ' + port);
 
-            store.dispatch({ type: PORT_CLOSE });
+        store.dispatch({ type: PORT_CLOSE });
 
-            this.setState({
-                connecting: false,
-                connected: false
-            });
-
-            log.error('Error opening serial port:', port);
+        this.setState({
+            connecting: false,
+            connected: false
         });
+
+        log.error('Error opening serial port:', port);
     }
     showAlert(msg) {
         this.setState({ alertMessage: msg });
@@ -152,7 +162,7 @@ class Connection extends React.Component {
     }
     handleRefresh() {
         socket.emit('list');
-        this.startLoading();
+        //this.startLoading();
     }
     openPort() {
         let port = this.state.port;
@@ -347,27 +357,42 @@ class Connection extends React.Component {
 }
 
 export default class ConnectionWidget extends React.Component {
+    state = {
+        isCollapsed: false
+    };
+
+    handleClick(target, val) {
+        if (target === 'toggle') {
+            this.setState({
+                isCollapsed: !!val
+            });
+        }
+    }
     render() {
-        var options = {
-            width: 300,
-            header: {
-                title: (
-                    <div><i className="glyphicon glyphicon-log-in"></i>{i18n._('Connection')}</div>
-                ),
-                toolbar: {
-                    buttons: [
-                        'toggle'
-                    ]
-                }
-            },
-            content: (
-                <div data-component="Widgets/ConnectionWidget">
-                    <Connection />
-                </div>
-            )
-        };
+        let width = 300;
+        let title = (
+            <div><i className="glyphicon glyphicon-log-in"></i>{i18n._('Connection')}</div>
+        );
+        let toolbarButtons = [
+            'toggle'
+        ];
+        let widgetContentClass = classNames(
+            { 'hidden': this.state.isCollapsed }
+        );
+
         return (
-            <Widget options={options} />
+            <Widget width={width}>
+                <WidgetHeader
+                    title={title}
+                    toolbarButtons={toolbarButtons}
+                    handleClick={::this.handleClick}
+                />
+                <WidgetContent className={widgetContentClass}>
+                    <div data-component="Widgets/ConnectionWidget">
+                        <Connection />
+                    </div>
+                </WidgetContent>
+            </Widget>
         );
     }
 }
