@@ -7,6 +7,8 @@ CNC.js is a web-based CNC milling controller for the [Arduino](https://www.ardui
 ![cnc.js](https://raw.githubusercontent.com/cheton/cnc.js/master/media/preview.gif) 
 
 ## Demo
+JSDC 2015: http://cheton.github.io/jsdc2015/#/81
+
 [![IMAGE ALT TEXT](http://img.youtube.com/vi/fJyq4fyiGSc/0.jpg)](https://www.youtube.com/watch?v=fJyq4fyiGSc&hd=2 "CNC.js")
 
 ## Installation
