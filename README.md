@@ -86,6 +86,11 @@ If you don't have an Arduino, check out [grbl-sim](https://github.com/grbl/grbl-
 
   ![ttyFAKE](https://raw.githubusercontent.com/cheton/cnc.js/master/media/ttyFAKE.png)
 
+### Wireless Communication
+There is a simple and cheap solution without using a USB cable. Read this article if you want to connect to Arduino using WiFi.
+
+https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd
+
 ### Display Language
 You can change the display language from the <b>Settings</b> menu, it will set the `lang` query string parameter: `?lang={locale}`
 
