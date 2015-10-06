@@ -627,18 +627,18 @@ export default class GCodeWidget extends React.Component {
         );
 
         return (
-            <Widget width={width}>
-                <WidgetHeader
-                    title={title}
-                    toolbarButtons={toolbarButtons}
-                    handleClick={::this.handleClick}
-                />
-                <WidgetContent className={widgetContentClass}>
-                    <div data-component="Widgets/GCodeWidget">
+            <div data-component="Widgets/GCodeWidget">
+                <Widget width={width}>
+                    <WidgetHeader
+                        title={title}
+                        toolbarButtons={toolbarButtons}
+                        handleClick={::this.handleClick}
+                    />
+                    <WidgetContent className={widgetContentClass}>
                         <GCode width={width} />
-                    </div>
-                </WidgetContent>
-            </Widget>
+                    </WidgetContent>
+                </Widget>
+            </div>
         );
     }
 }

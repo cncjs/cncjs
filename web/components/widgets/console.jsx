@@ -154,19 +154,19 @@ export default class ConsoleWidget extends React.Component {
         );
 
         return (
-            <Widget width={width}>
-                <WidgetHeader
-                    title={title}
-                    toolbarButtons={toolbarButtons}
-                    handleClick={::this.handleClick}
-                />
-                <WidgetContent className={widgetContentClass}>
-                    <div data-component="Widgets/ConsoleWidget">
+            <div data-component="Widgets/ConsoleWidget">
+                <Widget width={width}>
+                    <WidgetHeader
+                        title={title}
+                        toolbarButtons={toolbarButtons}
+                        handleClick={::this.handleClick}
+                    />
+                    <WidgetContent className={widgetContentClass}>
                         <ConsoleInput onSend={::this.sendMessage} onClear={::this.clearMessages} />
                         <ConsoleWindow messages={this.state.messages} />
-                    </div>
-                </WidgetContent>
-            </Widget>
+                    </WidgetContent>
+                </Widget>
+            </div>
         );
     }
 }

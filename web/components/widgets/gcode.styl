@@ -1,35 +1,37 @@
 [data-component="Widgets/GCodeWidget"] {
-    padding: 10px;
+    .widget-content {
+        padding: 10px;
 
-    .btn-toolbar {
-        margin-bottom: 5px;
-    }
-
-    .gcode-table {
-        .public_fixedDataTable_topShadow {
-            background: none;
+        .btn-toolbar {
+            margin-bottom: 5px;
         }
-        .public_fixedDataTable_bottomShadow {
-            background: none;
-        }
-        .public_fixedDataTable_header {
-            border: none;
-        }
-    }
 
-    .gcode-table + .gcode-stats {
-        border-top: none;
-    }
-
-    .gcode-stats {
-        border: 1px solid #ddd;
-        padding: 5px;
-
-        .row:nth-child(even) {
-            margin-bottom: 10px;
+        .gcode-table {
+            .public_fixedDataTable_topShadow {
+                background: none;
+            }
+            .public_fixedDataTable_bottomShadow {
+                background: none;
+            }
+            .public_fixedDataTable_header {
+                border: none;
+            }
         }
-        .row:last-child {
-            margin-bottom: 0;
+
+        .gcode-table + .gcode-stats {
+            border-top: none;
+        }
+
+        .gcode-stats {
+            border: 1px solid #ddd;
+            padding: 5px;
+
+            .row:nth-child(even) {
+                margin-bottom: 10px;
+            }
+            .row:last-child {
+                margin-bottom: 0;
+            }
         }
     }
 }

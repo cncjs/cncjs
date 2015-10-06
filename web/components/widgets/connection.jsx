@@ -381,18 +381,18 @@ export default class ConnectionWidget extends React.Component {
         );
 
         return (
-            <Widget width={width}>
-                <WidgetHeader
-                    title={title}
-                    toolbarButtons={toolbarButtons}
-                    handleClick={::this.handleClick}
-                />
-                <WidgetContent className={widgetContentClass}>
-                    <div data-component="Widgets/ConnectionWidget">
+            <div data-component="Widgets/ConnectionWidget">
+                <Widget width={width}>
+                    <WidgetHeader
+                        title={title}
+                        toolbarButtons={toolbarButtons}
+                        handleClick={::this.handleClick}
+                    />
+                    <WidgetContent className={widgetContentClass}>
                         <Connection />
-                    </div>
-                </WidgetContent>
-            </Widget>
+                    </WidgetContent>
+                </Widget>
+            </div>
         );
     }
 }
