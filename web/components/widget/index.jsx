@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import i18n from 'i18next';
 import React from 'react';
+import joinClasses from 'react/lib/joinClasses';
 import classNames from 'classnames';
 import './widget.css';
 
@@ -10,7 +11,7 @@ class WidgetHeaderToolbar extends React.Component {
     };
 
     handleClick(btn) {
-        if (btn === 'btn-toggle') {
+        if (btn === 'toggle') {
             this.props.handleClick(btn, ! this.state.isCollapsed);
             this.setState({isCollapsed: ! this.state.isCollapsed});
             return;
@@ -24,11 +25,11 @@ class WidgetHeaderToolbar extends React.Component {
         };
         return (
             <a href="javascript:void(0)"
-               key='btn-drag'
+               key='drag'
                title=""
                className="btn btn-link btn-drag"
                style={style}
-               onClick={() => this.handleClick('btn-drag')}>
+               onClick={() => this.handleClick('drag')}>
             <i className="icon ion-ios-drag"></i>
             </a>
         );
@@ -36,10 +37,10 @@ class WidgetHeaderToolbar extends React.Component {
     renderRefreshButton() {
         return (
             <a href="javascript:void(0)"
-               key='btn-refresh'
+               key='refresh'
                title=""
                className="btn btn-link btn-refresh"
-               onClick={() => this.handleClick('btn-refresh')}>
+               onClick={() => this.handleClick('refresh')}>
             <i className="icon ion-ios-refresh-empty"></i>
             </a>
         );
@@ -47,37 +48,33 @@ class WidgetHeaderToolbar extends React.Component {
     renderRemoveButton() {
         return (
             <a href="javascript:void(0)"
-               key='btn-remove'
+               key='remove'
                title={i18n._('Remove')}
                className="btn btn-link btn-remove"
-               onClick={() => this.handleClick('btn-remove')}>
+               onClick={() => this.handleClick('remove')}>
                 <i className="icon ion-ios-close-empty"></i>
             </a>
         );
     }
     renderToggleButton() {
-        let iconClasses = classNames(
+        let iconClassNames = classNames(
             'icon',
             { 'ion-ios-arrow-up': ! this.state.isCollapsed },
             { 'ion-ios-arrow-down': this.state.isCollapsed }
         );
         return (
             <a href="javascript:void(0)"
-               key='btn-toggle'
+               key='toggle'
                title={i18n._('Expand/Collapse')}
                className="btn btn-link btn-toggle"
-               onClick={() => this.handleClick('btn-toggle')}>
-                <i className={iconClasses}></i>
+               onClick={() => this.handleClick('toggle')}>
+                <i className={iconClassNames}></i>
             </a>
         );
     }
     render() {
         let that = this;
-        let { options } = this.props;
-        options = options || {};
-
-        let toolbarButtons = _.get(options, 'header.toolbar.buttons');
-        toolbarButtons = _.map(toolbarButtons, (button) => {
+        let buttons = _.map(this.props.buttons, (button) => {
             if (_.isObject(button)) {
                 return button;
             }
@@ -93,64 +90,63 @@ class WidgetHeaderToolbar extends React.Component {
         })
         .concat(this.renderDragButton());
 
-        return <div className="widget-header-toolbar btn-group">{toolbarButtons}</div>;
+        return (
+            <div className="widget-header-toolbar btn-group">{buttons}</div>
+        );
     }
 }
 
-class WidgetHeader extends React.Component {
+export class WidgetHeader extends React.Component {
     render() {
-        let { options } = this.props;
-        options = options || {};
-        _.defaultsDeep(options, {
-            header: {
-                style: 'default',
-                title: '',
-                toolbar: {
-                    buttons: []
-                }
-            }
+        let options = _.defaultsDeep({}, this.props, {
+            type: 'default',
+            title: '',
+            toolbarButtons: []
         });
-        let divClasses = classNames(
+        let divClassNames = classNames(
             'widget-header',
             'clearfix',
-            { 'widget-header-default': options.header.style === 'default' },
-            { 'widget-header-inverse': options.header.style === 'inverse' }
+            { 'widget-header-default': options.type === 'default' },
+            { 'widget-header-inverse': options.type === 'inverse' }
         );
         return (
-            <div className={divClasses}>
-                <h3 className="widget-header-title">{options.header.title}</h3>
-                <WidgetHeaderToolbar options={options} handleClick={this.props.handleClick}/>
+            <div className={divClassNames}>
+                <h3 className="widget-header-title">{options.title}</h3>
+                <WidgetHeaderToolbar buttons={options.toolbarButtons} handleClick={this.props.handleClick}/>
             </div>
         );
     }
 }
 
-class WidgetContent extends React.Component {
+export class WidgetContent extends React.Component {
     render() {
-        let { options } = this.props;
-        options = options || {};
+        let contentClass = classNames(
+            'widget-content'
+        );
+
         return (
-            <div className="widget-content">{options.content}</div>
+            <div className={joinClasses(contentClass, this.props.className)}>
+                {this.props.children}
+            </div>
         );
     }
 }
 
 class WidgetFooter extends React.Component {
     render() {
-        let { options } = this.props;
-        options = options || {};
-        _.defaultsDeep(options, {
-            footer: {
-                style: 'default'
-            }
+        let options = _.defaultsDeep({}, this.props, {
+            type: 'default'
         });
-        let divClasses = classNames(
+        let footerClass = classNames(
             'widget-footer',
-            { 'widget-footer-default': options.footer.style === 'default' },
-            { 'widget-footer-inverse': options.footer.style === 'inverse' }
+            { 'widget-footer-default': options.type === 'default' },
+            { 'widget-footer-inverse': options.type === 'inverse' }
         );
+
         return (
-            <div className={divClasses}></div>
+            <div className={footerClass}>
+                {this.props.children}
+            </div>
         );
     }
 }
@@ -162,41 +158,24 @@ export default class Widget extends React.Component {
     static propTypes = {
         options: React.PropTypes.object
     };
-    state = {
-        isCollapsed: false
-    };
 
-    handleClick(target, val) {
-        if (target === 'btn-toggle') {
-            this.setState({
-                isCollapsed: !!val
-            });
-        } else if (target === 'btn-remove') {
-            this.unmount();
-        }
-    }
-    unmount() {
-        let container = React.findDOMNode(this.refs.widgetContainer);
-        React.unmountComponentAtNode(container);
-        container.remove();
-    }
     render() {
-        let { options } = this.props;
+        let options = this.props;
+        let widgetClass = classNames(
+            'widget',
+            { 'widget-borderless': !!options.borderless }
+        );
         let widgetStyle = {
             width: options.width ? options.width : null
         };
+        let classes = classNames(
+            'widget',
+            { 'widget-borderless': !!options.borderless }
+        );
         return (
-            <div className={options.containerClass} ref="widgetContainer" data-component="Widget" style={widgetStyle}>
-                <div className="widget">
-                    { options.header && 
-                        <WidgetHeader options={options} handleClick={::this.handleClick}/>
-                    }
-                    { options.content && ! this.state.isCollapsed &&
-                        <WidgetContent options={options}/>
-                    }
-                    { options.footer && 
-                        <WidgetFooter options={options}/>
-                    }
+            <div data-component="Widget">
+                <div className={widgetClass} style={widgetStyle}>
+                    {this.props.children}
                 </div>
             </div>
         );

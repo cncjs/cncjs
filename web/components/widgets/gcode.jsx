@@ -4,7 +4,7 @@ import moment from 'moment';
 import React from 'react';
 import classNames from 'classnames';
 import { Table, Column } from 'fixed-data-table';
-import Widget from '../widget';
+import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import socket from '../../socket';
 import siofu from '../../siofu';
@@ -331,12 +331,12 @@ export default class GCode extends React.Component {
         this.unsubscribe();
     }
     addSocketEvents() {
-        socket.on('gcode:queue-status', ::this.onSocketGCodeQueueStatus);
+        socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     removeSocketEvents() {
-        socket.off('gcode:queue-status', ::this.onSocketGCodeQueueStatus);
+        socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
-    onSocketGCodeQueueStatus(data) {
+    socketOnGCodeQueueStatus(data) {
         let list = {};
         let from = this.state.queueStatus.executed;
         let to = data.executed;
@@ -359,19 +359,19 @@ export default class GCode extends React.Component {
         });
     }
     addSocketIOFileUploadEvents() {
-        siofu.addEventListener('start', ::this.onSocketIOFileUploadStart);
-        siofu.addEventListener('progress', ::this.onSocketIOFileUploadProgress);
-        siofu.addEventListener('complete', ::this.onSocketIOFileUploadComplete);
-        siofu.addEventListener('error', ::this.onSocketIOFileUploadError);
+        siofu.addEventListener('start', ::this.siofuStart);
+        siofu.addEventListener('progress', ::this.siofuProgress);
+        siofu.addEventListener('complete', ::this.siofuComplete);
+        siofu.addEventListener('error', ::this.siofuError);
     }
     removeSocketIOFileUploadEvents() {
-        siofu.removeEventListener('start', ::this.onSocketIOFileUploadStart);
-        siofu.removeEventListener('progress', ::this.onSocketIOFileUploadProgress);
-        siofu.removeEventListener('complete', ::this.onSocketIOFileUploadComplete);
-        siofu.removeEventListener('error', ::this.onSocketIOFileUploadError);
+        siofu.removeEventListener('start', ::this.siofuOnStart);
+        siofu.removeEventListener('progress', ::this.siofuOnProgress);
+        siofu.removeEventListener('complete', ::this.siofuOnComplete);
+        siofu.removeEventListener('error', ::this.siofuOnError);
     }
     // https://github.com/vote539/socketio-file-upload#start
-    onSocketIOFileUploadStart(event) {
+    siofuStart(event) {
         log.debug('Upload start:', event);
 
         this.setState({ statusText: i18n._('Uploading file...') });
@@ -382,7 +382,7 @@ export default class GCode extends React.Component {
     // ready to be transmitted via Socket.IO.
     // This event can be used to make an upload progress bar.
     // https://github.com/vote539/socketio-file-upload#progress
-    onSocketIOFileUploadProgress(event) {
+    siofuProgress(event) {
         let percent = event.bytesLoaded / event.file.size * 100;
 
         log.trace('File is', percent.toFixed(2), 'percent loaded');
@@ -391,7 +391,7 @@ export default class GCode extends React.Component {
     }
     // The server has received our file.
     // https://github.com/vote539/socketio-file-upload#complete
-    onSocketIOFileUploadComplete(event) {
+    siofuComplete(event) {
         log.debug('Upload complete:', event);
 
         this.setState({
@@ -439,7 +439,7 @@ export default class GCode extends React.Component {
     }
     // The server encountered an error.
     // https://github.com/vote539/socketio-file-upload#complete
-    onSocketIOFileUploadError(event) {
+    siofuError(event) {
         log.error('Upload file failed:', event);
 
         this.setState({
@@ -603,29 +603,42 @@ export default class GCode extends React.Component {
 }
 
 export default class GCodeWidget extends React.Component {
+    state = {
+        isCollapsed: false
+    };
+
+    handleClick(target, val) {
+        if (target === 'toggle') {
+            this.setState({
+                isCollapsed: !!val
+            });
+        }
+    }
     render() {
         let width = 300;
-        let options = {
-            width: width,
-            header: {
-                style: 'invese',
-                title: (
-                    <div><i className="glyphicon glyphicon-tasks"></i>{i18n._('GCode')}</div>
-                ),
-                toolbar: {
-                    buttons: [
-                        'toggle'
-                    ]
-                }
-            },
-            content: (
-                <div data-component="Widgets/GCodeWidget">
-                    <GCode width={width} />
-                </div>
-            )
-        };
+        let title = (
+            <div><i className="glyphicon glyphicon-tasks"></i>{i18n._('GCode')}</div>
+        );
+        let toolbarButtons = [
+            'toggle'
+        ];
+        let widgetContentClass = classNames(
+            { 'hidden': this.state.isCollapsed }
+        );
+
         return (
-            <Widget options={options} />
+            <Widget width={width}>
+                <WidgetHeader
+                    title={title}
+                    toolbarButtons={toolbarButtons}
+                    handleClick={::this.handleClick}
+                />
+                <WidgetContent className={widgetContentClass}>
+                    <div data-component="Widgets/GCodeWidget">
+                        <GCode width={width} />
+                    </div>
+                </WidgetContent>
+            </Widget>
         );
     }
 }
