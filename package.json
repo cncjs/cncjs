@@ -62,7 +62,7 @@
     "pkginfo": "0.3.x",
     "pubsub-js": "^1.5.2",
     "react": "^0.13.3",
-    "react-bootstrap": "^0.25.2",
+    "react-bootstrap": "^0.26.1",
     "react-datagrid": "^1.2.13",
     "react-infinite": "^0.4.1",
     "react-select": "^0.6.10",
