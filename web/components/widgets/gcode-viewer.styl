@@ -1,2 +1,44 @@
 [data-component="Widgets/GCodeViewerWidget"] {
+
+    .widget-content {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+
+        .stats {
+            position: absolute;
+            top: 10px;
+            right: 0;
+            left: 0;
+            bottom: auto;
+            margin: auto;
+            text-align: center;
+            z-index: 1;
+            background: transparent;
+
+            &.stick-to-bottom {
+                top: auto;
+                bottom: 10px;
+            }
+        }
+
+        .dimension {
+            display: inline-block;
+            padding: 0 10px;
+            background-color: #f0f0f0;
+            border: 1px solid #ddd;
+            text-shadow: 1px 1px 2px rgba(34, 34, 34, .5);
+        }
+
+        .preview {
+            position: absolute;
+            top: 0;
+            right: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 0;
+        }
+    }
 }

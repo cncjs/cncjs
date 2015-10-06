@@ -168,10 +168,6 @@ export default class Widget extends React.Component {
         let widgetStyle = {
             width: options.width ? options.width : null
         };
-        let classes = classNames(
-            'widget',
-            { 'widget-borderless': !!options.borderless }
-        );
         return (
             <div data-component="Widget">
                 <div className={widgetClass} style={widgetStyle}>

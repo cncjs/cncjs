@@ -8,6 +8,7 @@ import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import store from '../../store';
 import socket from '../../socket';
+import './gcode-viewer.css';
 
 export default class GCodeViewer extends React.Component {
     state = {
@@ -36,6 +37,7 @@ export default class GCodeViewer extends React.Component {
         this.scene = null;
         this.renderer = null;
         this.camera = null;
+        this.trackballControls = null;
         this.object = null;
         this.gcodeRenderer = null;
     }
@@ -60,6 +62,7 @@ export default class GCodeViewer extends React.Component {
         this.scene = null;
         this.renderer = null;
         this.camera = null;
+        this.trackballControls = null;
         this.gcodeRenderer = null;
     }
     subscribeToEvents() {
@@ -169,20 +172,20 @@ export default class GCodeViewer extends React.Component {
         camera.position.z = 300;
 
         // To zoom in/out using TrackballControls
-        let trackballControls = new TrackballControls(camera, renderer.domElement);
+        let trackballControls = this.trackballControls = new TrackballControls(camera, renderer.domElement);
+        trackballControls.rotateSpeed = 1.0;
+        trackballControls.zoomSpeed = 1.2;
+        trackballControls.panSpeed = 0.8;
         trackballControls.noPan = false;
         trackballControls.noZoom = false;
-        trackballControls.zoomSpeed = 1.2;
-        trackballControls.panSpeed = 1.0;
-        trackballControls.rotateSpeed = 2.0;
+        trackballControls.staticMoving = true;
+        trackballControls.dynamicDampingFactor = 0.3;
 
         // Rendering the scene
         // This will create a loop that causes the renderer to draw the scene 60 times per second.
         let render = () => {
             requestAnimationFrame(render);
-
             trackballControls.update();
-
             renderer.render(scene, camera);
         };
         render();
@@ -193,6 +196,9 @@ export default class GCodeViewer extends React.Component {
         if (this.object) {
             this.scene.remove(this.object);
         }
+
+        // Reset TrackballControls
+        this.trackballControls.reset();
 
         let el = React.findDOMNode(this.refs.gcodeViewer);
         this.gcodeRenderer = new GCodeRenderer();
@@ -207,25 +213,28 @@ export default class GCodeViewer extends React.Component {
             
             log.debug(dimension);
         }.bind(this));
+
         this.scene.add(this.object);
     }
+    handleClick() {
+console.log('reset');
+        this.trackballControls.reset();
+    }
     render() {
-        let style = {
-            backgroundColor: '#fff',
-            position: 'absolute',
-            top: '20px',
-            right: 0,
-            bottom: 0,
-            left: 0
-        };
         let dimension = this.state.dimension;
+        let dX = dimension.delta.x.toFixed(3);
+        let dY = dimension.delta.y.toFixed(3);
+        let dZ = dimension.delta.z.toFixed(3);
 
         return (
             <div>
-                <div>
-                    Dimension: X={dimension.delta.x}, Y={dimension.delta.y}, Z={dimension.delta.z}
+                <div className="stats stick-to-bottom" onClick={::this.handleClick}>
+                    <div className="dimension">
+                        <h4>Dimension</h4>
+                        <p>dX={dX}, dY={dY}, dZ={dZ} (mm)</p>
+                    </div>
                 </div>
-                <div ref="gcodeViewer" style={style} />
+                <div ref="gcodeViewer" className="preview" />
             </div>
         );
     }
@@ -234,13 +243,13 @@ export default class GCodeViewer extends React.Component {
 export default class GCodeViewerWidget extends React.Component {
     render() {
         return (
-            <Widget borderless={true}>
-                <WidgetContent>
-                    <div data-component="Widgets/GCodeViewerWidget">
+            <div data-component="Widgets/GCodeViewerWidget">
+                <Widget borderless={true}>
+                    <WidgetContent>
                         <GCodeViewer />
-                    </div>
-                </WidgetContent>
-            </Widget>
+                    </WidgetContent>
+                </Widget>
+            </div>
         );
     }
 }
