@@ -1,4 +1,5 @@
 import React from 'react';
+import joinClasses from 'react/lib/joinClasses';
 
 export default class PressAndHoldButton extends React.Component {
     componentWillMount() {
@@ -36,7 +37,7 @@ export default class PressAndHoldButton extends React.Component {
     render() {
         let { type, className, onClick } = this.props;
         type = type || 'button';
-        className = className || 'btn';
+        className = joinClasses('btn', className);
 
         return (
             <button
