@@ -310,7 +310,7 @@ GCodeRenderer.prototype.render = function(options, callback) {
                 y: box.max.y,
                 z: box.max.z
             },
-            total: {
+            delta: {
                 x: dX,
                 y: dY,
                 z: dZ
