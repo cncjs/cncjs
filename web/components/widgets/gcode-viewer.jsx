@@ -2,6 +2,7 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import THREE from 'three';
+import PressAndHoldButton from '../common/PressAndHoldButton';
 import TrackballControls from '../../lib/three/TrackballControls';
 import { GCodeRenderer } from '../../lib/gcode';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
@@ -216,8 +217,23 @@ export default class GCodeViewer extends React.Component {
 
         this.scene.add(this.object);
     }
-    handleClick() {
-console.log('reset');
+    handleMoveLeft() {
+        let { x, y, z } = this.trackballControls.target;
+        this.trackballControls.target.set(x + 2, y, z);
+    }
+    handleMoveRight() {
+        let { x, y, z } = this.trackballControls.target;
+        this.trackballControls.target.set(x - 2, y, z);
+    }
+    handleMoveTop() {
+        let { x, y, z } = this.trackballControls.target;
+        this.trackballControls.target.set(x, y - 2, z);
+    }
+    handleMoveBottom() {
+        let { x, y, z } = this.trackballControls.target;
+        this.trackballControls.target.set(x, y + 2, z);
+    }
+    handleReset() {
         this.trackballControls.reset();
     }
     render() {
@@ -228,7 +244,12 @@ console.log('reset');
 
         return (
             <div>
-                <div className="stats stick-to-bottom" onClick={::this.handleClick}>
+                <div className="stats">
+                    <PressAndHoldButton onClick={::this.handleReset}>Reset</PressAndHoldButton>
+                    <PressAndHoldButton onClick={::this.handleMoveLeft}>left</PressAndHoldButton>
+                    <PressAndHoldButton onClick={::this.handleMoveRight}>right</PressAndHoldButton>
+                    <PressAndHoldButton onClick={::this.handleMoveTop}>top</PressAndHoldButton>
+                    <PressAndHoldButton onClick={::this.handleMoveBottom}>bottom</PressAndHoldButton>
                     <div className="dimension">
                         <h4>Dimension</h4>
                         <p>dX={dX}, dY={dY}, dZ={dZ} (mm)</p>
