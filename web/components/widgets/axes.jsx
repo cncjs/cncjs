@@ -292,10 +292,10 @@ class AxesControlPanel extends React.Component {
                     <div className="input-group input-group-sm">
                         <input type="number" className="form-control" min={FEEDRATE_MIN} max={FEEDRATE_MAX} step={FEEDRATE_STEP} value={feedrate} onChange={::this.handleChangeForFeedrate} />
                         <div className="input-group-btn">
-                            <PressAndHoldButton type="button" className="btn btn-default" onClick={::this.increaseFeedrate}>
+                            <PressAndHoldButton className="btn btn-default" onClick={::this.increaseFeedrate}>
                                 <span className="glyphicon glyphicon-plus"></span>
                             </PressAndHoldButton>
-                            <PressAndHoldButton type="button" className="btn btn-default" onClick={::this.decreaseFeedrate}>
+                            <PressAndHoldButton className="btn btn-default" onClick={::this.decreaseFeedrate}>
                                 <span className="glyphicon glyphicon-minus"></span>
                             </PressAndHoldButton>
                             <button type="button" className="btn btn-default" onClick={::this.resetFeedrate}>{i18n._('Reset')}</button>
@@ -309,10 +309,10 @@ class AxesControlPanel extends React.Component {
                     <div className="input-group input-group-sm">
                         <input type="number" className="form-control" min={DISTANCE_MIN} max={DISTANCE_MAX} step={DISTANCE_STEP} value={distance} onChange={::this.handleChangeForDistance} />
                         <div className="input-group-btn">
-                            <PressAndHoldButton type="button" className="btn btn-default" onClick={::this.increaseDistance}>
+                            <PressAndHoldButton className="btn btn-default" onClick={::this.increaseDistance}>
                                 <span className="glyphicon glyphicon-plus"></span>
                             </PressAndHoldButton>
-                            <PressAndHoldButton type="button" className="btn btn-default" onClick={::this.decreaseDistance}>
+                            <PressAndHoldButton className="btn btn-default" onClick={::this.decreaseDistance}>
                                 <span className="glyphicon glyphicon-minus"></span>
                             </PressAndHoldButton>
                             <button type="button" className="btn btn-default" onClick={::this.resetDistance}>{i18n._('Reset')}</button>
