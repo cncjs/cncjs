@@ -112,6 +112,8 @@ export default class GCodeViewer extends React.Component {
         this.scene = null;
         this.camera = null;
         this.trackballControls = null;
+        this.directionalLight = null;
+        this.axes = null;
         this.object = null;
         this.gcodeRenderer = null;
     }
@@ -132,6 +134,14 @@ export default class GCodeViewer extends React.Component {
         if (this.object) {
             this.scene.remove(this.object);
             this.object = null;
+        }
+        if (this.axes) {
+            this.scene.remove(this.axes);
+            this.axes = null;
+        }
+        if (this.directionalLight) {
+            this.scene.remove(this.directionalLight);
+            this.directionalLight = null;
         }
         this.scene = null;
         this.renderer = null;
@@ -236,11 +246,11 @@ export default class GCodeViewer extends React.Component {
         renderer.clear();
 
         // Creating a Directional Light
-        let directionalLight = this.createDirectionalLight();
+        let directionalLight = this.directionalLight = this.createDirectionalLight();
         scene.add(directionalLight);
 
         // Add axes
-        let axes = this.buildAxes(1000);
+        let axes = this.axes = this.buildAxes(1000);
         scene.add(axes);
 
         // By default, when we call scene.add(), the thing we add will be added to the coordinates (0,0,0).
