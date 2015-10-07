@@ -94,7 +94,7 @@ class GCodeTable extends React.Component {
                                 { 'glyphicon-remove': cellData === GCODE_STATUS.ERROR }
                             )
                         };
-                        var styles = {
+                        let styles = {
                             icon: {
                                 color: (() => {
                                     let cdata = {};
