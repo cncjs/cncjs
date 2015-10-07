@@ -1,7 +1,6 @@
 import React from 'react';
-import joinClasses from 'react/lib/joinClasses';
 
-export default class PressAndHoldButton extends React.Component {
+export default class PressAndHold extends React.Component {
     componentWillMount() {
         this.timeout = null;
         this.interval = null;
@@ -35,21 +34,15 @@ export default class PressAndHoldButton extends React.Component {
         }
     }
     render() {
-        let { type, className, onClick } = this.props;
-        type = type || 'button';
-        className = joinClasses('btn', className);
-
         return (
-            <button
-                type={type}
-                className={className}
-                onClick={onClick}
+            <div
+                {...this.props}
                 onMouseDown={::this.handleHoldDown}
                 onMouseUp={::this.handleRelease}
                 onMouseLeave={::this.handleRelease}
             >
                 {this.props.children}
-            </button>
+            </div>
         );
     }
 }
