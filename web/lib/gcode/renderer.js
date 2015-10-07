@@ -252,6 +252,11 @@ GCodeRenderer.prototype.render = function(options, callback) {
 
     this._update();
 
+    if (_.size(this.feed.frames) === 0) {
+        box.min.x = box.min.y = box.min.z = 0;
+        box.max.x = box.max.y = box.max.z = 0;
+    }
+
     let dX = box.max.x - box.min.x;
     let dY = box.max.y - box.min.y;
     let dZ = box.max.z - box.min.z;
@@ -331,21 +336,28 @@ GCodeRenderer.prototype._update = function() {
         baseObject.remove(baseObject.children[0]);
     }
 
-    _.each(layers, function(layer) {
-        _.each(layer.type, function(type) {
-            log.trace('layer ' + layer.layer + ': type=' + type.type + ' segmentCount=' + type.segmentCount);
-            baseObject.add(new THREE.Line(type.geometry, type.material, THREE.LineStrip));
+    { // Preview
+        _.each(layers, function(layer) {
+            _.each(layer.type, function(type) {
+                let { geometry, material } = type;
+
+                log.trace('layer ' + layer.layer + ': type=' + type.type + ' segmentCount=' + type.segmentCount);
+                baseObject.add(new THREE.Line(geometry, material, THREE.LineStrip));
+            });
         });
-    });
+    }
 
-    let geometry = new THREE.Geometry();
-    let frame = this.feed.frames[this.feed.frameIndex] || {};
+    { // Running Frames
+        let geometry = new THREE.Geometry();
+        let material = feed.material;
+        let frame = this.feed.frames[this.feed.frameIndex] || {};
 
-    geometry.vertices = this.feed.geometry.vertices.slice(0, frame.vertexIndex);
-    geometry.colors = this.feed.geometry.colors.slice(0, frame.vertexIndex);
-    baseObject.add(new THREE.Line(geometry, feed.material, THREE.LinePiece));
+        geometry.vertices = this.feed.geometry.vertices.slice(0, frame.vertexIndex);
+        geometry.colors = this.feed.geometry.colors.slice(0, frame.vertexIndex);
+        baseObject.add(new THREE.Line(geometry, material));
 
-    log.trace(frame);
+        log.trace(frame);
+    }
 };
 
 GCodeRenderer.prototype.setFrameIndex = function(frameIndex) {
