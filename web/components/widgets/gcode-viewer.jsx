@@ -108,8 +108,8 @@ export default class GCodeViewer extends React.Component {
     };
 
     componentWillMount() {
-        this.scene = null;
         this.renderer = null;
+        this.scene = null;
         this.camera = null;
         this.trackballControls = null;
         this.object = null;
@@ -121,7 +121,7 @@ export default class GCodeViewer extends React.Component {
         this.addResizeEventListener();
 
         let el = React.findDOMNode(this.refs.gcodeViewer);
-        this.scene = this.createScene(el);
+        this.createScene(el);
     }
     componentWillUnmount() {
         this.removeResizeEventListener();
@@ -225,7 +225,7 @@ export default class GCodeViewer extends React.Component {
 
         // To actually be able to display anything with Three.js, we need three things:
         // A scene, a camera, and a renderer so we can render the scene with the camera.
-        let scene = new THREE.Scene();
+        let scene = this.scene = new THREE.Scene();
         let camera = this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
         let renderer = this.renderer = new THREE.WebGLRenderer({
             autoClearColor: true
@@ -236,9 +236,12 @@ export default class GCodeViewer extends React.Component {
         renderer.clear();
 
         // Creating a Directional Light
-        let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(0, 1, 0);
+        let directionalLight = this.createDirectionalLight();
         scene.add(directionalLight);
+
+        // Add axes
+        let axes = this.buildAxes(1000);
+        scene.add(axes);
 
         // By default, when we call scene.add(), the thing we add will be added to the coordinates (0,0,0).
         // This would cause both the camera and the cube to be inside each other.
@@ -266,6 +269,53 @@ export default class GCodeViewer extends React.Component {
 
         return scene;
     }
+    createDirectionalLight() {
+        let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+        directionalLight.position.set(0, 1, 0);
+        
+        return directionalLight;
+    }
+    //
+    // http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/
+    //
+    buildAxes(length) {
+        let axes = new THREE.Object3D();
+
+        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false)); // +X
+        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( -length, 0, 0 ), 0xFF0000, true)); // -X
+        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false)); // +Y
+        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, -length, 0 ), 0x00FF00, true)); // -Y
+        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false)); // +Z
+        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true)); // -Z
+
+        return axes;
+    }
+    buildAxis(src, dst, colorHex, dashed) {
+        let geometry = new THREE.Geometry();
+        let material;
+
+        if (dashed) {
+            material = new THREE.LineDashedMaterial({
+                linewidth: 3,
+                color: colorHex,
+                dashSize: 3,
+                gapSize: 3
+            });
+        } else {
+            material = new THREE.LineBasicMaterial({
+                linewidth: 3,
+                color: colorHex
+            });
+        }
+
+        geometry.vertices.push(src.clone());
+        geometry.vertices.push(dst.clone());
+        geometry.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
+
+        let axis = new THREE.Line(geometry, material);
+
+        return axis;
+    }
     renderObject(gcode) {
         if (this.object) {
             this.scene.remove(this.object);
@@ -281,11 +331,27 @@ export default class GCodeViewer extends React.Component {
             width: el.clientWidth,
             height: el.clientHeight
         }, function(dimension) {
-            this.setState({
-                dimension: dimension // FIXME
+            let newDimension = React.addons.update(this.state.dimension, {
+                min: {
+                    x: { $set: dimension.min.x },
+                    y: { $set: dimension.min.y },
+                    z: { $set: dimension.min.z }
+                },
+                max: {
+                    x: { $set: dimension.max.x },
+                    y: { $set: dimension.max.y },
+                    z: { $set: dimension.max.z }
+                },
+                delta: {
+                    x: { $set: dimension.delta.x },
+                    y: { $set: dimension.delta.y },
+                    z: { $set: dimension.delta.z }
+                }
             });
-            
-            log.debug(dimension);
+
+            this.setState({ dimension: newDimension });
+
+            log.debug(newDimension);
         }.bind(this));
 
         this.scene.add(this.object);
