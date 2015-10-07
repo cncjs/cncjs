@@ -20,17 +20,19 @@ class WidgetHeaderToolbar extends React.Component {
         this.props.handleClick(btn);
     }
     renderDragButton() {
-        var style = {
+        let style = {
             cursor: 'move'
         };
+
         return (
             <a href="javascript:void(0)"
                key='drag'
                title=""
                className="btn btn-link btn-drag"
                style={style}
-               onClick={() => this.handleClick('drag')}>
-            <i className="icon ion-ios-drag"></i>
+               onClick={() => this.handleClick('drag')}
+            >
+                <i className="icon ion-ios-drag"></i>
             </a>
         );
     }
@@ -40,8 +42,9 @@ class WidgetHeaderToolbar extends React.Component {
                key='refresh'
                title=""
                className="btn btn-link btn-refresh"
-               onClick={() => this.handleClick('refresh')}>
-            <i className="icon ion-ios-refresh-empty"></i>
+               onClick={() => this.handleClick('refresh')}
+            >
+                <i className="icon ion-ios-refresh-empty"></i>
             </a>
         );
     }
@@ -51,7 +54,8 @@ class WidgetHeaderToolbar extends React.Component {
                key='remove'
                title={i18n._('Remove')}
                className="btn btn-link btn-remove"
-               onClick={() => this.handleClick('remove')}>
+               onClick={() => this.handleClick('remove')}
+            >
                 <i className="icon ion-ios-close-empty"></i>
             </a>
         );
@@ -62,12 +66,14 @@ class WidgetHeaderToolbar extends React.Component {
             { 'ion-ios-arrow-up': ! this.state.isCollapsed },
             { 'ion-ios-arrow-down': this.state.isCollapsed }
         );
+
         return (
             <a href="javascript:void(0)"
                key='toggle'
                title={i18n._('Expand/Collapse')}
                className="btn btn-link btn-toggle"
-               onClick={() => this.handleClick('toggle')}>
+               onClick={() => this.handleClick('toggle')}
+            >
                 <i className={iconClassNames}></i>
             </a>
         );
@@ -109,6 +115,7 @@ export class WidgetHeader extends React.Component {
             { 'widget-header-default': options.type === 'default' },
             { 'widget-header-inverse': options.type === 'inverse' }
         );
+
         return (
             <div className={divClassNames}>
                 <h3 className="widget-header-title">{options.title}</h3>
@@ -168,6 +175,7 @@ export default class Widget extends React.Component {
         let widgetStyle = {
             width: options.width ? options.width : null
         };
+
         return (
             <div data-component="Widget">
                 <div className={widgetClass} style={widgetStyle}>
