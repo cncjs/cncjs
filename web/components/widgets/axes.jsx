@@ -3,7 +3,7 @@ import i18n from 'i18next';
 import React from 'react';
 import Select from 'react-select';
 import classNames from 'classnames';
-import PressAndHoldButton from '../common/PressAndHoldButton';
+import PressAndHold from '../common/PressAndHold';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import store from '../../store';
 import socket from '../../socket';
@@ -292,12 +292,12 @@ class AxesControlPanel extends React.Component {
                     <div className="input-group input-group-sm">
                         <input type="number" className="form-control" min={FEEDRATE_MIN} max={FEEDRATE_MAX} step={FEEDRATE_STEP} value={feedrate} onChange={::this.handleChangeForFeedrate} />
                         <div className="input-group-btn">
-                            <PressAndHoldButton className="btn btn-default" onClick={::this.increaseFeedrate}>
+                            <PressAndHold className="btn btn-default" onClick={::this.increaseFeedrate}>
                                 <span className="glyphicon glyphicon-plus"></span>
-                            </PressAndHoldButton>
-                            <PressAndHoldButton className="btn btn-default" onClick={::this.decreaseFeedrate}>
+                            </PressAndHold>
+                            <PressAndHold className="btn btn-default" onClick={::this.decreaseFeedrate}>
                                 <span className="glyphicon glyphicon-minus"></span>
-                            </PressAndHoldButton>
+                            </PressAndHold>
                             <button type="button" className="btn btn-default" onClick={::this.resetFeedrate}>{i18n._('Reset')}</button>
                         </div>
                     </div>
@@ -309,12 +309,12 @@ class AxesControlPanel extends React.Component {
                     <div className="input-group input-group-sm">
                         <input type="number" className="form-control" min={DISTANCE_MIN} max={DISTANCE_MAX} step={DISTANCE_STEP} value={distance} onChange={::this.handleChangeForDistance} />
                         <div className="input-group-btn">
-                            <PressAndHoldButton className="btn btn-default" onClick={::this.increaseDistance}>
+                            <PressAndHold className="btn btn-default" onClick={::this.increaseDistance}>
                                 <span className="glyphicon glyphicon-plus"></span>
-                            </PressAndHoldButton>
-                            <PressAndHoldButton className="btn btn-default" onClick={::this.decreaseDistance}>
+                            </PressAndHold>
+                            <PressAndHold className="btn btn-default" onClick={::this.decreaseDistance}>
                                 <span className="glyphicon glyphicon-minus"></span>
-                            </PressAndHoldButton>
+                            </PressAndHold>
                             <button type="button" className="btn btn-default" onClick={::this.resetDistance}>{i18n._('Reset')}</button>
                         </div>
                     </div>
