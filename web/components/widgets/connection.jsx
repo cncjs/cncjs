@@ -48,6 +48,9 @@ class Connection extends React.Component {
         alertMessage: ''
     };
 
+    componentWillMount() {
+        this.handleRefresh();
+    }
     componentDidMount() {
         this.addSocketEvents();
     }
@@ -162,7 +165,7 @@ class Connection extends React.Component {
     }
     handleRefresh() {
         socket.emit('list');
-        //this.startLoading();
+        this.startLoading();
     }
     openPort() {
         let port = this.state.port;
