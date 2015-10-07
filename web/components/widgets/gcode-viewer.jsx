@@ -2,7 +2,7 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import THREE from 'three';
-import PressAndHoldButton from '../common/PressAndHoldButton';
+import PressAndHold from '../common/PressAndHold';
 import TrackballControls from '../../lib/three/TrackballControls';
 import { GCodeRenderer } from '../../lib/gcode';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
@@ -10,6 +10,79 @@ import log from '../../lib/log';
 import store from '../../store';
 import socket from '../../socket';
 import './gcode-viewer.css';
+
+class Joystick extends React.Component {
+    static propTypes = {
+        up: React.PropTypes.func,
+        down: React.PropTypes.func,
+        left: React.PropTypes.func,
+        right: React.PropTypes.func,
+        center: React.PropTypes.func
+    };
+
+    render() {
+        let { up, down, left, right, center } = this.props;
+
+        return (
+            <div className="joystick">
+                <table>
+                    <tbody>
+                        <tr>
+                            <td></td>
+                            <td className="noselect">
+                                <PressAndHold
+                                    className="joystick-button"
+                                    onClick={up}
+                                >
+                                    <i className="glyphicon glyphicon-chevron-up"></i>
+                                </PressAndHold>
+                            </td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td className="noselect">
+                                <PressAndHold
+                                    className="joystick-button"
+                                    onClick={left}
+                                >
+                                    <i className="glyphicon glyphicon-chevron-left"></i>
+                                </PressAndHold>
+                            </td>
+                            <td className="noselect">
+                                <PressAndHold
+                                    className="joystick-button"
+                                    onClick={center}
+                                >
+                                    <i className="glyphicon glyphicon-unchecked"></i>
+                                </PressAndHold>
+                            </td>
+                            <td className="noselect">
+                                <PressAndHold
+                                    className="joystick-button"
+                                    onClick={right}
+                                >
+                                    <i className="glyphicon glyphicon-chevron-right"></i>
+                                </PressAndHold>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td className="noselect">
+                                <PressAndHold
+                                    className="joystick-button"
+                                    onClick={down}
+                                >
+                                    <i className="glyphicon glyphicon-chevron-down"></i>
+                                </PressAndHold>
+                            </td>
+                            <td></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        );
+    }
+}
 
 export default class GCodeViewer extends React.Component {
     state = {
@@ -217,42 +290,43 @@ export default class GCodeViewer extends React.Component {
 
         this.scene.add(this.object);
     }
-    handleMoveLeft() {
-        let { x, y, z } = this.trackballControls.target;
-        this.trackballControls.target.set(x + 2, y, z);
-    }
-    handleMoveRight() {
-        let { x, y, z } = this.trackballControls.target;
-        this.trackballControls.target.set(x - 2, y, z);
-    }
-    handleMoveTop() {
+    joystickUp() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x, y - 2, z);
     }
-    handleMoveBottom() {
+    joystickDown() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x, y + 2, z);
     }
-    handleReset() {
+    joystickLeft() {
+        let { x, y, z } = this.trackballControls.target;
+        this.trackballControls.target.set(x + 2, y, z);
+    }
+    joystickRight() {
+        let { x, y, z } = this.trackballControls.target;
+        this.trackballControls.target.set(x - 2, y, z);
+    }
+    resetCamera() {
         this.trackballControls.reset();
     }
     render() {
         let dimension = this.state.dimension;
-        let dX = dimension.delta.x.toFixed(3);
-        let dY = dimension.delta.y.toFixed(3);
-        let dZ = dimension.delta.z.toFixed(3);
+        let dX = Number(_.get(dimension, 'delta.x') || 0).toFixed(3);
+        let dY = Number(_.get(dimension, 'delta.y') || 0).toFixed(3);
+        let dZ = Number(_.get(dimension, 'delta.z') || 0).toFixed(3);
 
         return (
             <div>
+                <Joystick
+                    up={::this.joystickUp}
+                    down={::this.joystickDown}
+                    left={::this.joystickLeft}
+                    right={::this.joystickRight}
+                    center={::this.resetCamera}
+                />
                 <div className="stats">
-                    <PressAndHoldButton onClick={::this.handleReset}>Reset</PressAndHoldButton>
-                    <PressAndHoldButton onClick={::this.handleMoveLeft}>left</PressAndHoldButton>
-                    <PressAndHoldButton onClick={::this.handleMoveRight}>right</PressAndHoldButton>
-                    <PressAndHoldButton onClick={::this.handleMoveTop}>top</PressAndHoldButton>
-                    <PressAndHoldButton onClick={::this.handleMoveBottom}>bottom</PressAndHoldButton>
                     <div className="dimension">
-                        <h4>Dimension</h4>
-                        <p>dX={dX}, dY={dY}, dZ={dZ} (mm)</p>
+                        dX={dX}, dY={dY}, dZ={dZ} (mm)
                     </div>
                 </div>
                 <div ref="gcodeViewer" className="preview" />

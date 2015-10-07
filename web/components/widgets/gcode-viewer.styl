@@ -7,6 +7,29 @@
         left: 0;
         right: 0;
 
+        .joystick {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            z-index: 102;
+
+            .joystick-button {
+                cursor: pointer;
+                font-size: 14px;
+                padding: 2px 4px;
+                color: #777;
+
+                &:hover,
+                &:focus {
+                    color: #333;
+                }
+                &:active {
+                    color: #333;
+                    text-shadow: 0 1px #ccc;
+                }
+            }
+        }
+
         .stats {
             position: absolute;
             top: 10px;
@@ -15,7 +38,7 @@
             bottom: auto;
             margin: auto;
             text-align: center;
-            z-index: 1;
+            z-index: 101;
             background: transparent;
 
             &.stick-to-bottom {
@@ -26,7 +49,7 @@
 
         .dimension {
             display: inline-block;
-            padding: 0 10px;
+            padding: 4px 8px;
             background-color: #f0f0f0;
             border: 1px solid #ddd;
             text-align: left;
