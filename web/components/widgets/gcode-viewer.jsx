@@ -129,20 +129,9 @@ export default class GCodeViewer extends React.Component {
         this.removeResizeEventListener();
         this.removeSocketEvents();
         this.unsubscribeFromEvents();
+        this.clearScene();
     }
     componentDidUnmount() {
-        if (this.object) {
-            this.scene.remove(this.object);
-            this.object = null;
-        }
-        if (this.axes) {
-            this.scene.remove(this.axes);
-            this.axes = null;
-        }
-        if (this.directionalLight) {
-            this.scene.remove(this.directionalLight);
-            this.directionalLight = null;
-        }
         this.scene = null;
         this.renderer = null;
         this.camera = null;
@@ -278,6 +267,13 @@ export default class GCodeViewer extends React.Component {
         render();
 
         return scene;
+    }
+    clearScene() {
+        // to iterrate over all children (except the first) in a scene 
+        let objsToRemove = _.rest(scene.children);
+        _.each(objsToRemove, function(obj) {
+            scene.remove(obj);
+        });
     }
     createDirectionalLight() {
         let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
