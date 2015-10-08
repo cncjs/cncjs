@@ -269,9 +269,11 @@ export default class GCodeViewer extends React.Component {
         return scene;
     }
     clearScene() {
+        let scene = this.scene;
+
         // to iterrate over all children (except the first) in a scene 
         let objsToRemove = _.rest(scene.children);
-        _.each(objsToRemove, function(obj) {
+        _.each(objsToRemove, (obj) => {
             scene.remove(obj);
         });
     }
