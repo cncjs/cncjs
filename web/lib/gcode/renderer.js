@@ -142,7 +142,7 @@ GCodeRenderer.prototype.render = function(options, callback) {
     }
 
     let parser = new GCodeParser({
-        G1: function(args, index) {
+        G1: (args, index) => {
             // Example: G1 Z1.0 F3000
             //          G1 X99.9948 Y80.0611 Z15.0 F1500.0 E981.64869
             //          G1 E104.25841 F1800.0
@@ -177,7 +177,7 @@ GCodeRenderer.prototype.render = function(options, callback) {
             lastLine = newLine;
         },
 
-        G21: function(args) {
+        G21: () => {
             // G21: Set Units to Millimeters
             // Example: G21
             // Units from now on are in millimeters. (This is the RepRap default.)
@@ -185,7 +185,7 @@ GCodeRenderer.prototype.render = function(options, callback) {
             // No-op: So long as G20 is not supported.
         },
 
-        G90: function(args) {
+        G90: () => {
             // G90: Set to Absolute Positioning
             // Example: G90
             // All coordinates from now on are absolute relative to the
@@ -194,7 +194,7 @@ GCodeRenderer.prototype.render = function(options, callback) {
             relative = false;
         },
 
-        G91: function(args) {
+        G91: () => {
             // G91: Set to Relative Positioning
             // Example: G91
             // All coordinates from now on are relative to the last position.
@@ -203,7 +203,7 @@ GCodeRenderer.prototype.render = function(options, callback) {
             relative = true;
         },
 
-        G92: function(args) { // E0
+        G92: () => { // E0
             // G92: Set Position
             // Example: G92 E0
             // Allows programming of absolute zero point, by reseting the
@@ -220,14 +220,14 @@ GCodeRenderer.prototype.render = function(options, callback) {
             lastLine = newLine;
         },
 
-        M82: function(args) {
+        M82: () => {
             // M82: Set E codes absolute (default)
             // Descriped in Sprintrun source code.
 
             // No-op, so long as M83 is not supported.
         },
 
-        M84: function(args) {
+        M84: () => {
             // M84: Stop idle hold
             // Example: M84
             // Stop the idle hold on all axis and extruder. In some cases the
@@ -239,11 +239,11 @@ GCodeRenderer.prototype.render = function(options, callback) {
             // No-op
         },
 
-        'default': function(args, info) {
+        'default': (args, info) => {
         }
     });
 
-    parser.parse(gcode, function(line, index) {
+    parser.parse(gcode, (line, index) => {
         that.feed.frames.push({
             code: line,
             vertexIndex: that.feed.geometry.vertices.length // remember current vertex index
@@ -337,8 +337,8 @@ GCodeRenderer.prototype._update = function() {
     }
 
     { // Preview
-        _.each(layers, function(layer) {
-            _.each(layer.type, function(type) {
+        _.each(layers, (layer) => {
+            _.each(layer.type, (type) => {
                 let { geometry, material } = type;
 
                 log.trace('layer ' + layer.layer + ': type=' + type.type + ' segmentCount=' + type.segmentCount);
