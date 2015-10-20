@@ -8,6 +8,7 @@
     "28c85b396e92edecc0e3f2fef015745cc79e4d2e": "Distance (mm):",
     "302409b4ca42acce39b9283cd36cd4a2d8a9a179": "Baud rate:",
     "372908ddb849311c5e9399988c21504f9928e436": "File upload to the server failed.",
+    "4158bedc2fcd0e2534ef60b639bf488d03f84058": "Move Down",
     "41c1074ddb72ef2d03a6706ccec180ec410aee4a": "Start Time",
     "448bc9ce0c89163b470e524464591f5ac9d66a1a": "Port:",
     "44c57abd888a66b36d4b7c902134063e4a097223": "Reset",
@@ -43,12 +44,16 @@
     "b69dd576cd01af5e18752bcc59bc0ed5f278cbe1": "Working Position",
     "bbfa773e5a63a5ea58c9b6207e608ca0120e592a": "Close",
     "c043160a89ba0acd714977735d49455f662b1c79": "Clear all",
+    "c6370aded9036c0e1dcbd7b4c28276aa8f0757de": "Move Up",
     "c7f73bb54d928922c3838bb789ee9fb8a5b1eb37": "Settings",
     "cf9b77061f7b3126b49d50a6fa68f7ca8c26b7a3": "Open",
     "d49fb0205245f5e25d23a383af82bf87c40aa580": "GCode",
     "d62b77a563484ee1eec2a54b9c9d5a9832d96483": "Machine Position",
     "d75f36f88797a19683a1b68037a0b63ba522f4c3": "Axes",
     "e963907dac5cd5c017869b4c96c18021c9bd058b": "Remove",
+    "efd7f2861659d644b1325edf60e2fb3b29964655": "Move Right",
     "f148e4214108b8d6345b30416cf981a2627d6fe2": "Zero Out X Axis (G92 X0)",
-    "f3ce019b6cf0e8379665169d8fa1704dd0bff066": "Zero Out (G92)"
+    "f28eba1986a7d37e0de739db5fa59dd1ba03ae34": "Move Left",
+    "f3ce019b6cf0e8379665169d8fa1704dd0bff066": "Zero Out (G92)",
+    "f63bc0d9498ed0a031e86cb3240982980dddd5e3": "Reset Position"
 }

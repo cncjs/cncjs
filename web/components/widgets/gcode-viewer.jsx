@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import THREE from 'three';
@@ -35,6 +36,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={up}
+                                    title={i18n._('Move Up')}
                                 >
                                     <i className="glyphicon glyphicon-chevron-up"></i>
                                 </PressAndHold>
@@ -46,6 +48,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={left}
+                                    title={i18n._('Move Left')}
                                 >
                                     <i className="glyphicon glyphicon-chevron-left"></i>
                                 </PressAndHold>
@@ -54,6 +57,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={center}
+                                    title={i18n._('Reset Position')}
                                 >
                                     <i className="glyphicon glyphicon-unchecked"></i>
                                 </PressAndHold>
@@ -62,6 +66,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={right}
+                                    title={i18n._('Move Right')}
                                 >
                                     <i className="glyphicon glyphicon-chevron-right"></i>
                                 </PressAndHold>
@@ -73,6 +78,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={down}
+                                    title={i18n._('Move Down')}
                                 >
                                     <i className="glyphicon glyphicon-chevron-down"></i>
                                 </PressAndHold>
