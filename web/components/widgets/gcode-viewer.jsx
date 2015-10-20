@@ -11,6 +11,8 @@ import store from '../../store';
 import socket from '../../socket';
 import './gcode-viewer.css';
 
+const AXIS_LENGTH = 99999;
+
 class Joystick extends React.Component {
     static propTypes = {
         up: React.PropTypes.func,
@@ -239,7 +241,7 @@ export default class GCodeViewer extends React.Component {
         scene.add(directionalLight);
 
         // Add axes
-        let axes = this.axes = this.buildAxes(1000);
+        let axes = this.axes = this.buildAxes(AXIS_LENGTH);
         scene.add(axes);
 
         // By default, when we call scene.add(), the thing we add will be added to the coordinates (0,0,0).
