@@ -34,6 +34,12 @@ class ConsoleInput extends React.Component {
     unsubscribeFromEvents() {
         this.unsubscribe();
     }
+    handleKeyDown(e) {
+        let ENTER = 13;
+        if (e.keyCode === ENTER) {
+            this.handleSend();
+        }
+    }
     handleSend() {
         let el = React.findDOMNode(this.refs.command);
         this.props.onSend(el.value);
@@ -55,9 +61,23 @@ class ConsoleInput extends React.Component {
                 <div className="form-inline">
                     <div className="form-group">
                         <div className="input-group input-group-sm">
-                            <input type="text" className="form-control" ref="command" placeholder={i18n._('Type serial port command')} disabled={! canInput} />
+                            <input
+                                type="text"
+                                className="form-control"
+                                onKeyDown={::this.handleKeyDown}
+                                ref="command"
+                                placeholder={i18n._('Type serial port command')}
+                                disabled={! canInput}
+                            />
                             <div className="input-group-btn">
-                                <button type="button" className="btn btn-default" onClick={::this.handleSend} disabled={! canSend}>{i18n._('Send')}</button>
+                                <button
+                                    type="button"
+                                    className="btn btn-default"
+                                    onClick={::this.handleSend}
+                                    disabled={! canSend}
+                                >
+                                    {i18n._('Send')}
+                                </button>
                                 <DropdownButton bsSize="sm" title="" id="console-command-dropdown" pullRight>
                                     <MenuItem onSelect={::this.handleClear} disabled={! canClearAll}>{i18n._('Clear all')}</MenuItem>
                                 </DropdownButton>
