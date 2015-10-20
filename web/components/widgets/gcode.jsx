@@ -187,7 +187,8 @@ class GCodeTable extends React.Component {
                     overflowX={controlledScrolling ? "hidden" : "auto"}
                     overflowY={controlledScrolling ? "hidden" : "auto"}
                     isColumnResizing={isColumnResizing}
-                    onColumnResizeEndCallback={::this.onColumnResizeEndCallback}>
+                    onColumnResizeEndCallback={::this.onColumnResizeEndCallback}
+                >
                     {this.renderTableColumns()}
                 </Table>
             </div>
