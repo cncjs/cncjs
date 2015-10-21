@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import React from 'react';
 import settings from '../../config/settings';
 import { Link } from 'react-router';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Navbar, NavBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 export default class Header extends React.Component {
     render() {
