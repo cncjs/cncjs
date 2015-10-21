@@ -7,12 +7,14 @@ import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 export default class Header extends React.Component {
     render() {
         let homepage = 'https://github.com/cheton/cnc.js';
-        let brand = <a href={homepage} target="_blank">{settings.name}</a>;
         let lng = i18n.lng();
 
         return (
             <div data-component="Header">
-                <Navbar brand={brand} fixedTop fluid inverse>
+                <Navbar fixedTop fluid inverse>
+                    <NavBrand>
+                        <a href={homepage} target="_blank">{settings.name}</a>
+                    </NavBrand>
                     <Nav>
                         <NavItem href="#/workspace">{i18n._('Workspace')}</NavItem>
                         <NavDropdown title={i18n._('Settings')} id="nav-dropdown">
