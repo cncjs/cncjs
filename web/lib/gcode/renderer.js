@@ -203,7 +203,7 @@ GCodeRenderer.prototype.render = function(options, callback) {
             relative = true;
         },
 
-        G92: () => { // E0
+        G92: (args) => { // E0
             // G92: Set Position
             // Example: G92 E0
             // Allows programming of absolute zero point, by reseting the
