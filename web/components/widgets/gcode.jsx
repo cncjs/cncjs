@@ -27,52 +27,6 @@ const GCODE_STATUS = {
     COMPLETED: 2
 };
 
-class Alert extends React.Component {
-    render() {
-        return (
-            <div>
-                {this.props.msg &&
-                <div className="alert alert-danger fade in" style={{padding: '4px'}}>
-                    <a
-                        href="javascript:void(0)"
-                        className="close"
-                        data-dismiss="alert"
-                        aria-label="close"
-                        style={{fontSize: '16px'}}
-                        onClick={this.props.dismiss}
-                    >×</a>
-                    {this.props.msg}
-                </div>
-                }
-            </div>
-        );
-    }
-}
-
-class Progress extends React.Component {
-    render() {
-        let now = this.props.now || 0;
-        let min = this.props.min || 0;
-        let max = this.props.max || 0;
-        return (
-            <div>
-                <div className="progress">
-                    <div
-                        className="progress-bar"
-                        role="progressbar"
-                        aria-valuenow={now}
-                        aria-valuemin={min}
-                        aria-valuemax={max}
-                        style={{width: now + '%'}}
-                    >
-                        <span>{now}%</span>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
-
 class GCodeTable extends React.Component {
     state = {
         table: {
