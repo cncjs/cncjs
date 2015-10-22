@@ -2,14 +2,17 @@ import _ from 'lodash';
 import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import moment from 'moment';
 import THREE from 'three';
 import PressAndHold from '../common/PressAndHold';
 import TrackballControls from '../../lib/three/TrackballControls';
 import { GCodeRenderer } from '../../lib/gcode';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
+import siofu from '../../siofu';
 import store from '../../store';
 import socket from '../../socket';
+import { GCODE_LOAD, GCODE_UNLOAD } from '../../actions';
 import './gcode-viewer.css';
 
 const AXIS_LENGTH = 99999;
@@ -87,6 +90,184 @@ class Joystick extends React.Component {
                         </tr>
                     </tbody>
                 </table>
+            </div>
+        );
+    }
+}
+
+class Toolbar extends React.Component {
+    state = {
+        port: '',
+        isLoaded: false,
+        startTime: 0, // unix timestamp
+        currentStatus: 'idle' // idle|run
+    };
+
+    componentDidMount() {
+        this.subscribeToEvents();
+        this.addSocketIOFileUploadEvents();
+    }
+    componentWillUnmount() {
+        this.removeSocketIOFileUploadEvents();
+        this.unsubscribeFromEvents();
+    }
+    subscribeToEvents() {
+        let that = this;
+
+        this.unsubscribe = store.subscribe(() => {
+            let port = _.get(store.getState(), 'port');
+            that.setState({ port: port });
+        });
+    }
+    unsubscribeFromEvents() {
+        this.unsubscribe();
+    }
+    addSocketIOFileUploadEvents() {
+        siofu.addEventListener('start', ::this.siofuStart);
+        siofu.addEventListener('progress', ::this.siofuProgress);
+        siofu.addEventListener('complete', ::this.siofuComplete);
+        siofu.addEventListener('error', ::this.siofuError);
+    }
+    removeSocketIOFileUploadEvents() {
+        siofu.removeEventListener('start', ::this.siofuOnStart);
+        siofu.removeEventListener('progress', ::this.siofuOnProgress);
+        siofu.removeEventListener('complete', ::this.siofuOnComplete);
+        siofu.removeEventListener('error', ::this.siofuOnError);
+    }
+    // https://github.com/vote539/socketio-file-upload#start
+    siofuStart(event) {
+        log.debug('Upload start:', event);
+
+        event.file.meta.port = this.state.port;
+    }
+    // Part of the file has been loaded from the file system and
+    // ready to be transmitted via Socket.IO.
+    // This event can be used to make an upload progress bar.
+    // https://github.com/vote539/socketio-file-upload#progress
+    siofuProgress(event) {
+        let percent = event.bytesLoaded / event.file.size * 100;
+
+        log.trace('File is', percent.toFixed(2), 'percent loaded');
+    }
+    // The server has received our file.
+    // https://github.com/vote539/socketio-file-upload#complete
+    siofuComplete(event) {
+        log.debug('Upload complete:', event);
+
+        if (! event.success) {
+            log.error('File upload to the server failed.');
+            return;
+        }
+
+        // event.detail
+        // @param connected
+        // @param queueStatus.executed
+        // @param queueStatus.total
+
+        if (! event.detail.connected) {
+            log.error('Upload failed. The port is not open.');
+            return;
+        }
+
+        this.setState({ isLoaded: true });
+    }
+    // The server encountered an error.
+    // https://github.com/vote539/socketio-file-upload#complete
+    siofuError(event) {
+        log.error('Upload file failed:', event);
+    }
+    handleUpload() {
+        let el = React.findDOMNode(this.refs.file);
+        if (el) {
+            el.value = ''; // Clear file input value
+            el.click(); // trigger file input click
+        }
+    }
+    handleFile(e) {
+        let that = this;
+        let file = e.target.files[0];
+        let reader = new FileReader();
+
+        reader.onloadend = (e) => {
+            if (e.target.readyState !== FileReader.DONE) {
+                return;
+            }
+
+            log.debug('FileReader:', _.pick(file, [
+                'lastModified',
+                'lastModifiedDate',
+                'meta',
+                'name',
+                'size',
+                'type'
+            ]));
+
+            store.dispatch({ type: GCODE_LOAD, data: e.target.result });
+
+            let files = [file];
+            siofu.submitFiles(files);
+        };
+
+        reader.readAsText(file);
+    }
+    handleRun() {
+        socket.emit('gcode:run', this.state.port);
+
+        let startTime = this.state.startTime || moment().unix(); // use current startTime or current time
+        this.setState({
+            startTime: startTime,
+            currentStatus: 'run'
+        });
+    }
+    handlePause() {
+        socket.emit('gcode:pause', this.state.port);
+        this.setState({ currentStatus: 'idle' });
+    }
+    handleStop() {
+        socket.emit('gcode:stop', this.state.port);
+        this.setState({
+            startTime: 0, // reset startTime
+            currentStatus: 'idle'
+        });
+    }
+    handleClose() {
+        socket.emit('gcode:close', this.state.port);
+        store.dispatch({ type: GCODE_UNLOAD });
+
+        this.setState({
+            currentStatus: 'idle',
+            isLoaded: false
+        });
+    }
+    render() {
+        let isLoaded = this.state.isLoaded;
+        let notLoaded = ! isLoaded;
+        let canUpload = this.state.port && notLoaded;
+        let canRun = isLoaded && (this.state.currentStatus === 'idle');
+        let canPause = isLoaded && (this.state.currentStatus === 'run');
+        let canStop = isLoaded;
+        let canClose = isLoaded && (this.state.currentStatus === 'idle');
+
+        return (
+            <div className="btn-toolbar" role="toolbar">
+                <div className="btn-group btn-group-sm" role="group">
+                    <button type="button" className="btn btn-default" title={i18n._('Upload G-Code')} onClick={::this.handleUpload} disabled={! canUpload}>
+                        <i className="glyphicon glyphicon-cloud-upload"></i>
+                        <input type="file" className="hidden" ref="file" onChange={::this.handleFile} />
+                    </button>
+                    <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={! canRun}>
+                        <i className="glyphicon glyphicon-play"></i>
+                    </button>
+                    <button type="button" className="btn btn-default" title={i18n._('Pause')} onClick={::this.handlePause} disabled={! canPause}>
+                        <i className="glyphicon glyphicon-pause"></i>
+                    </button>
+                    <button type="button" className="btn btn-default" title={i18n._('Stop')} onClick={::this.handleStop} disabled={! canStop}>
+                        <i className="glyphicon glyphicon-stop"></i>
+                    </button>
+                    <button type="button" className="btn btn-default" title={i18n._('Close')} onClick={::this.handleClose} disabled={! canClose}>
+                        <i className="glyphicon glyphicon-trash"></i>
+                    </button>
+                </div>
             </div>
         );
     }
@@ -399,6 +580,7 @@ export default class GCodeViewer extends React.Component {
 
         return (
             <div>
+                <Toolbar />
                 <Joystick
                     up={::this.joystickUp}
                     down={::this.joystickDown}
