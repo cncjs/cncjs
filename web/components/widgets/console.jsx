@@ -42,7 +42,7 @@ class ConsoleInput extends React.Component {
     }
     handleSend() {
         let el = React.findDOMNode(this.refs.command);
-        this.props.onSend(el.value);
+        this.props.onSend('> ' + el.value);
 
         socket.emit('serialport:writeline', this.state.port, el.value);
 
