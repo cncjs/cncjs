@@ -221,7 +221,7 @@ class Toolbar extends React.Component {
     }
     handlePause() {
         socket.emit('gcode:pause', this.state.port);
-        this.setState({ currentStatus: 'idle' });
+        this.setState({ currentStatus: 'pause' });
     }
     handleStop() {
         socket.emit('gcode:stop', this.state.port);
@@ -243,10 +243,10 @@ class Toolbar extends React.Component {
         let isLoaded = this.state.isLoaded;
         let notLoaded = ! isLoaded;
         let canUpload = this.state.port && notLoaded;
-        let canRun = isLoaded && (this.state.currentStatus === 'idle');
-        let canPause = isLoaded && (this.state.currentStatus === 'run');
-        let canStop = isLoaded;
-        let canClose = isLoaded && (this.state.currentStatus === 'idle');
+        let canRun = isLoaded && _.includes(['idle', 'pause'], this.state.currentStatus);
+        let canPause = isLoaded && _.includes(['run'], this.state.currentStatus);
+        let canStop = isLoaded && _.includes(['run', 'pause'], this.state.currentStatus);
+        let canClose = isLoaded && _.includes(['idle'], this.state.currentStatus);
 
         return (
             <div className="btn-toolbar" role="toolbar">
