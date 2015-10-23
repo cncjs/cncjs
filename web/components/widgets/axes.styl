@@ -1,7 +1,14 @@
 [data-component="Widgets/AxesWidget"] {
     .widget-content {
+        .glyphicon-reset {
+            transform: scale(-1, 1);
+        }
+        .glyphicon-reset:before {
+            content: "\e030";
+        }
+
         .display-panel {
-            padding: 0 10px 10px 10px;
+            padding: 10px (10 + 15)px;
             border-bottom: 1px solid #ddd;
 
             table .table-header {
@@ -64,6 +71,20 @@
             background-color: #eee;
             padding: 10px;
 
+            .row {
+                margin-right: -10px;
+                margin-left: -10px;
+                margin-bottom: 10px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                > [class*="col-"] {
+                    padding: 0 10px;
+                }
+            }
+
             .table-centered {
                 margin: 0 auto;
             }
@@ -76,20 +97,16 @@
                 padding: 0 5px;
             }
             .jog-y {
-                padding: 5px;
+                padding: 0;
                 .jog-y-plus {
-                    margin-bottom: 10px;
+                    margin-bottom: 5px;
                 }
             }
             .jog-z {
-                padding: 5px;
+                padding: 0;
                 .jog-z-plus {
-                    margin-bottom: 10px;
+                    margin-bottom: 5px;
                 }
-            }
-
-            .form-group:last-child {
-                margin-bottom: 0;
             }
         }
     }
