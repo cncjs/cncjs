@@ -372,7 +372,7 @@ export default class GCodeWidget extends React.Component {
         }
     }
     render() {
-        let width = 300;
+        let width = 360;
         let title = (
             <div><i className="glyphicon glyphicon-tasks"></i>{i18n._('GCode')}</div>
         );
