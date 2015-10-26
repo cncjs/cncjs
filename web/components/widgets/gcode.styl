@@ -20,7 +20,27 @@
 
         .gcode-stats {
             border: 1px solid #ddd;
-            padding: 5px;
+            padding: 5px 15px;
+
+            table[data-table="dimension"] {
+                width: 100%;
+
+                thead > tr > th.axis,
+                tbody > tr > td.axis {
+                    width: 1%;
+                }
+                tbody > tr > td {
+                    text-align: right;
+                    &.axis {
+                        text-align: center;
+                    }
+                }
+            }
+
+            .row > [class^="col-"] {
+                padding-right: 10px;
+                padding-left: 10px;
+            }
 
             .row:nth-child(even) {
                 margin-bottom: 10px;

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import i18n from 'i18next';
 import moment from 'moment';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import classNames from 'classnames';
 import { Table, Column } from 'fixed-data-table';
@@ -175,10 +176,67 @@ class GCodeTable extends React.Component {
 
 class GCodeStats extends React.Component {
     state = {
-        duration: 0
+        duration: 0,
+        dimension: {
+            min: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            max: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            delta: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        }
     };
 
     componentDidMount() {
+        this.subscribeToEvents();
+        this.setTimer();
+    }
+    componentWillUnmount() {
+        this.clearTimer();
+        this.unsubscribeFromEvents();
+    }
+    subscribeToEvents() {
+        let that = this;
+
+        this.pubsubTokens = [];
+        this.pubsubTokens.push(pubsub.subscribe('gcode.dimension', (msg, dimension) => {
+            dimension = _.defaultsDeep(dimension, {
+                min: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                max: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                delta: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                }
+            });
+            that.setState({ dimension: dimension });
+        }));
+    }
+    unsubscribeFromEvents() {
+        // Unsubscribe from PubSub
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    setTimer() {
         this.timer = setInterval(() => {
             if (this.props.startTime <= 0) {
                 return;
@@ -190,17 +248,20 @@ class GCodeStats extends React.Component {
             this.setState({ duration: duration });
         }, 1000);
     }
-    componentWillUnmount() {
+    clearTimer() {
         if (this.timer) {
             clearInterval(this.timer);
             this.timer = null;
         }
     }
     render() {
+        let dimension = this.state.dimension;
         let total = this.props.total || 0;
         let executed = this.props.executed || 0;
         let startTime = '–';
         let duration = '–';
+        let unit = 'mm';
+        let digits = (unit === 'mm') ? 3 : 4; // mm=3, inch=4
 
         if (this.props.startTime > 0) {
             startTime = moment.unix(this.props.startTime).format('YYYY-MM-DD HH:mm:ss');
@@ -217,6 +278,45 @@ class GCodeStats extends React.Component {
 
         return (
             <div className="container-fluid gcode-stats">
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div>{i18n._('Dimension:')}</div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <table className="table-bordered" data-table="dimension">
+                            <thead>
+                                <tr>
+                                    <th className="axis">Axis</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Delta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td className="axis">X</td>
+                                    <td>{dimension.min.x.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.max.x.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.delta.x.toFixed(digits)} {unit}</td>
+                                </tr>
+                                <tr>
+                                    <td className="axis">Y</td>
+                                    <td>{dimension.min.y.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.max.y.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.delta.y.toFixed(digits)} {unit}</td>
+                                </tr>
+                                <tr>
+                                    <td className="axis">Z</td>
+                                    <td>{dimension.min.z.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.max.z.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.delta.z.toFixed(digits)} {unit}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-xs-6">{i18n._('Executed')}</div>
                     <div className="col-xs-6">{i18n._('Total')}</div>
@@ -252,8 +352,6 @@ export default class GCode extends React.Component {
         }
     };
 
-    uploadData = null;
-
     componentDidMount() {
         this.subscribeToEvents();
         this.addSocketEvents();
@@ -273,7 +371,7 @@ export default class GCode extends React.Component {
         }));
 
         this._subscribedEvents.push(store.subscribe(() => {
-            let data = _.get(store.getState(), 'gcode.data');
+            let data = _.get(store.getState(), 'gcode.data') || '';
             let lines = data.split('\n');
             let commands = _(lines)
                 .map(function(line) {

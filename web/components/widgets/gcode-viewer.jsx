@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import i18n from 'i18next';
+import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import moment from 'moment';
 import THREE from 'three';
 import PressAndHold from '../common/PressAndHold';
 import TrackballControls from '../../lib/three/TrackballControls';
@@ -276,24 +276,7 @@ class Toolbar extends React.Component {
 export default class GCodeViewer extends React.Component {
     state = {
         width: window.innerWidth,
-        height: window.innerHeight,
-        dimension: {
-            min: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            max: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            delta: {
-                x: 0,
-                y: 0,
-                z: 0
-            }
-        }
+        height: window.innerHeight
     };
 
     componentWillMount() {
@@ -326,12 +309,13 @@ export default class GCodeViewer extends React.Component {
         this.camera = null;
         this.trackballControls = null;
         this.gcodeRenderer = null;
+        this.gcode = null;
     }
     subscribeToEvents() {
         let that = this;
 
         this._unsubscribeFromReduxStore = store.subscribe(() => {
-            let gcode = _.get(store.getState(), 'gcode.data');
+            let gcode = _.get(store.getState(), 'gcode.data') || '';
             that.renderObject(gcode);
         });
 
@@ -528,27 +512,7 @@ export default class GCodeViewer extends React.Component {
             width: el.clientWidth,
             height: el.clientHeight
         }, function(dimension) {
-            let newDimension = React.addons.update(this.state.dimension, {
-                min: {
-                    x: { $set: dimension.min.x },
-                    y: { $set: dimension.min.y },
-                    z: { $set: dimension.min.z }
-                },
-                max: {
-                    x: { $set: dimension.max.x },
-                    y: { $set: dimension.max.y },
-                    z: { $set: dimension.max.z }
-                },
-                delta: {
-                    x: { $set: dimension.delta.x },
-                    y: { $set: dimension.delta.y },
-                    z: { $set: dimension.delta.z }
-                }
-            });
-
-            this.setState({ dimension: newDimension });
-
-            log.debug(newDimension);
+            pubsub.publish('gcode.dimension', dimension);
         }.bind(this));
 
         this.scene.add(this.object);
@@ -573,11 +537,6 @@ export default class GCodeViewer extends React.Component {
         this.trackballControls.reset();
     }
     render() {
-        let dimension = this.state.dimension;
-        let dX = Number(_.get(dimension, 'delta.x') || 0).toFixed(3);
-        let dY = Number(_.get(dimension, 'delta.y') || 0).toFixed(3);
-        let dZ = Number(_.get(dimension, 'delta.z') || 0).toFixed(3);
-
         return (
             <div>
                 <Toolbar />
@@ -588,11 +547,6 @@ export default class GCodeViewer extends React.Component {
                     right={::this.joystickRight}
                     center={::this.resetCamera}
                 />
-                <div className="stats">
-                    <div className="dimension">
-                        dX={dX}, dY={dY}, dZ={dZ} (mm)
-                    </div>
-                </div>
                 <div ref="gcodeViewer" className="preview" />
             </div>
         );
