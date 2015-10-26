@@ -78,11 +78,20 @@ class DisplayPanel extends React.Component {
     handleZeroOutX() {
         this.writeline('G92 X0');
     }
+    handleUnZeroOutX() {
+        this.writeline('G92.1 X0');
+    }
     handleZeroOutY() {
         this.writeline('G92 Y0');
     }
+    handleUnZeroOutY() {
+        this.writeline('G92.1 Y0');
+    }
     handleZeroOutZ() {
         this.writeline('G92 Z0');
+    }
+    handleUnZeroOutZ() {
+        this.writeline('G92.1 Z0');
     }
     socketOnGRBLCurrentStatus(data) {
         this.setState({
@@ -115,10 +124,10 @@ class DisplayPanel extends React.Component {
                     <table className="table-bordered">
                         <thead>
                             <tr>
-                                <th className="table-header">{i18n._('Axis')}</th>
-                                <th className="table-header">{i18n._('Machine Position')}</th>
-                                <th className="table-header">{i18n._('Working Position')}</th>
-                                <th className="table-header"><i className="glyphicon glyphicon-list"></i></th>
+                                <th>{i18n._('Axis')}</th>
+                                <th>{i18n._('Machine Position')}</th>
+                                <th>{i18n._('Working Position')}</th>
+                                <th style={{textAlign: 'center'}}><i className="glyphicon glyphicon-list"></i></th>
                             </tr>
                         </thead>
                         <tbody>
@@ -142,6 +151,7 @@ class DisplayPanel extends React.Component {
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-x-dropdown" pullRight>
                                         <MenuItem onSelect={::this.handleGoToZeroX}>{i18n._('Go To Zero On X Axis (G0 X0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleZeroOutX}>{i18n._('Zero Out X Axis (G92 X0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleUnZeroOutX}>{i18n._('Un-Zero Out X Axis (G92.1 X0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -165,6 +175,7 @@ class DisplayPanel extends React.Component {
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-y-dropdown" pullRight>
                                         <MenuItem onSelect={::this.handleGoToZeroY}>{i18n._('Go To Zero On Y Axis (G0 Y0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleZeroOutY}>{i18n._('Zero Out Y Axis (G92 Y0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleUnZeroOutY}>{i18n._('Un-Zero Out Y Axis (G92.1 Y0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -188,6 +199,7 @@ class DisplayPanel extends React.Component {
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-z-dropdown" pullRight>
                                         <MenuItem onSelect={::this.handleGoToZeroZ}>{i18n._('Go To Zero On Z Axis (G0 Z0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleZeroOutZ}>{i18n._('Zero Out Z Axis (G92 Z0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleUnZeroOutZ}>{i18n._('Un-Zero Out Z Axis (G92.1 Z0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -504,10 +516,10 @@ class JogControlPanel extends React.Component {
                 </div>
                 <div className="row">
                     <div className="col-sm-6">
-                        <JogFeedrateControl onChange={::this.changeFeedrate} />
+                        <JogDistanceControl onChange={::this.changeDistance} />
                     </div>
                     <div className="col-sm-6">
-                        <JogDistanceControl onChange={::this.changeDistance} />
+                        <JogFeedrateControl onChange={::this.changeFeedrate} />
                     </div>
                 </div>
             </div>

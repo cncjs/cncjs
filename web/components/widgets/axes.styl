@@ -11,12 +11,6 @@
             padding: 10px (10 + 15)px;
             border-bottom: 1px solid #ddd;
 
-            table .table-header {
-                text-align: center;
-                border-bottom-width: 1px;
-                padding: 4px 2px;
-            }
-
             .axis-label {
                 text-align: center;
                 font-size: 24px;
@@ -85,9 +79,10 @@
                 }
             }
 
-            .table-centered {
+            table.table-centered {
                 margin: 0 auto;
             }
+
             .jog-x,
             .jog-y,
             .jog-z {
@@ -95,6 +90,9 @@
             }
             .jog-x {
                 padding: 0 5px;
+                .jog-x-minus {
+                    margin-left: -5px;
+                }
             }
             .jog-y {
                 padding: 0;
