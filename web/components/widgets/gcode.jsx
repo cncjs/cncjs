@@ -235,15 +235,23 @@ class GCodeStats extends React.Component {
 
         { // gcode:run
             let token = pubsub.subscribe('gcode:run', (msg) => {
-                let startTime = that.state.startTime || moment().unix(); // use current startTime or current time
-                that.setState({ startTime: startTime });
+                let now = moment().unix();
+                let startTime = that.state.startTime || now; // use startTime or current time
+                let duration = (startTime !== now) ? that.state.duration : 0;
+                that.setState({
+                    startTime: startTime,
+                    duration: duration
+                });
             });
             this.pubsubTokens.push(token);
         }
         
         { // gcode:stop
             let token = pubsub.subscribe('gcode:stop', (msg) => {
-                that.setState({ startTime: 0 });
+                that.setState({
+                    startTime: 0,
+                    duration: 0
+                });
             });
             this.pubsubTokens.push(token);
         }
