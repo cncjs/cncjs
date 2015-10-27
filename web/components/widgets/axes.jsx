@@ -51,10 +51,10 @@ class DisplayPanel extends React.Component {
         this.removeSocketEvents();
     }
     addSocketEvents() {
-        socket.on('grbl:current-status', ::this.socketOnGRBLCurrentStatus);
+        socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
     }
     removeSocketEvents() {
-        socket.off('grbl:current-status', ::this.socketOnGRBLCurrentStatus);
+        socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
     }
     writeline() {
         let port = this.props.port;
@@ -93,7 +93,7 @@ class DisplayPanel extends React.Component {
     handleUnZeroOutZ() {
         this.writeline('G92.1 Z0');
     }
-    socketOnGRBLCurrentStatus(data) {
+    socketOnGrblCurrentStatus(data) {
         this.setState({
             activeState: data.activeState,
             machinePos: data.machinePos,

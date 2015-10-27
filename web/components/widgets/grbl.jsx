@@ -8,7 +8,7 @@ import log from '../../lib/log';
 import socket from '../../socket';
 import './grbl.css';
 
-class GRBL extends React.Component {
+class Grbl extends React.Component {
     state = {
         port: ''
     }
@@ -54,7 +54,7 @@ class GRBL extends React.Component {
     handleCycleStart() {
         this.write('~');
     }
-    handleResetGRBL() {
+    handleResetGrbl() {
         this.write('\x18');
     }
     render() {
@@ -74,8 +74,8 @@ class GRBL extends React.Component {
                         </button>
                     </div>
                     <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGRBL} disabled={! canClick}>
-                            {i18n._('Reset GRBL')}
+                        <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGrbl} disabled={! canClick}>
+                            {i18n._('Soft Reset Grbl')}
                         </button>
                     </div>
                 </div>
@@ -84,7 +84,7 @@ class GRBL extends React.Component {
     }
 }
 
-export default class GRBLWidget extends React.Component {
+export default class GrblWidget extends React.Component {
     state = {
         isCollapsed: false
     };
@@ -99,7 +99,7 @@ export default class GRBLWidget extends React.Component {
     render() {
         let width = 360;
         let title = (
-            <div><i className="glyphicon glyphicon-wrench"></i>{i18n._('GRBL')}</div>
+            <div><i className="glyphicon glyphicon-wrench"></i>{i18n._('Grbl')}</div>
         );
         let toolbarButtons = [
             'toggle'
@@ -109,7 +109,7 @@ export default class GRBLWidget extends React.Component {
         );
 
         return (
-            <div data-component="Widgets/GRBLWidget">
+            <div data-component="Widgets/GrblWidget">
                 <Widget width={width}>
                     <WidgetHeader
                         title={title}
@@ -117,7 +117,7 @@ export default class GRBLWidget extends React.Component {
                         handleClick={::this.handleClick}
                     />
                     <WidgetContent className={widgetContentClass}>
-                        <GRBL />
+                        <Grbl />
                     </WidgetContent>
                 </Widget>
             </div>

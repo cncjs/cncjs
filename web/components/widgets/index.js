@@ -3,7 +3,7 @@ import ConnectionWidget from './connection';
 import ConsoleWidget from './console';
 import GCodeWidget from './gcode';
 import GCodeViewerWidget from './gcode-viewer';
-import GRBLWidget from './grbl';
+import GrblWidget from './grbl';
 
 export {
     AxesWidget,
@@ -11,5 +11,5 @@ export {
     ConsoleWidget,
     GCodeWidget,
     GCodeViewerWidget,
-    GRBLWidget
+    GrblWidget
 };

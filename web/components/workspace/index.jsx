@@ -11,7 +11,7 @@ import {
     ConsoleWidget,
     GCodeWidget,
     GCodeViewerWidget,
-    GRBLWidget
+    GrblWidget
 } from '../widgets';
 import log from '../../lib/log';
 import './workspace.css';
@@ -161,7 +161,7 @@ export default class Workspace extends React.Component {
                         <div className="workspace-table-row">
                             <div className={classes.primaryContainer} ref="primaryContainer">
                                 <ConnectionWidget />
-                                <GRBLWidget />
+                                <GrblWidget />
                                 <ConsoleWidget />
                             </div>
                             <div className="primary-toggler-pane" onClick={::this.togglePrimaryContainer}>
