@@ -248,7 +248,7 @@ class Toolbar extends React.Component {
     render() {
         let isLoaded = this.state.isLoaded;
         let notLoaded = ! isLoaded;
-        let canUpload = this.state.port && notLoaded;
+        let canUpload = !!this.state.port && notLoaded;
         let canRun = isLoaded && _.includes(['idle', 'pause'], this.state.currentStatus);
         let canPause = isLoaded && _.includes(['run'], this.state.currentStatus);
         let canStop = isLoaded && _.includes(['run', 'pause'], this.state.currentStatus);

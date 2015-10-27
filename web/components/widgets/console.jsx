@@ -59,10 +59,20 @@ class ConsoleInput extends React.Component {
     handleClear() {
         this.props.onClear();
     }
+    handleGrblHelp() {
+        this.props.onSend('> $');
+        socket.emit('serialport:writeline', this.state.port, '$');
+    }
+    handleGrblSettings() {
+        this.props.onSend('> $$');
+        socket.emit('serialport:writeline', this.state.port, '$$');
+    }
     render() {
         let canInput = !! this.state.port;
         let canSend = canInput;
         let canClearAll = canInput;
+        let canViewGrblHelp = canInput;
+        let canViewGrblSettings = canInput;
 
         return (
             <div className="console-input">
@@ -88,6 +98,8 @@ class ConsoleInput extends React.Component {
                                 </button>
                                 <DropdownButton bsSize="sm" title="" id="console-command-dropdown" pullRight>
                                     <MenuItem onSelect={::this.handleClear} disabled={! canClearAll}>{i18n._('Clear all')}</MenuItem>
+                                    <MenuItem onSelect={::this.handleGrblHelp} disabled={! canViewGrblHelp}>{i18n._('Grbl Help ($)')}</MenuItem>
+                                    <MenuItem onSelect={::this.handleGrblSettings} disabled={! canViewGrblSettings}>{i18n._('Grbl Settings ($$)')}</MenuItem>
                                 </DropdownButton>
                             </div>
                         </div>
