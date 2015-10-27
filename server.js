@@ -272,7 +272,7 @@ module.exports = function(server) {
                             _.each(sp.sockets, function(o) {
                                 if (o.command === '?') {
                                     o.command = '';
-                                    o.socket.emit('serialport:readline', '> ' + msg);
+                                    o.socket.emit('serialport:readline', msg);
                                 }
                             });
 
@@ -291,7 +291,7 @@ module.exports = function(server) {
                         }
 
                         if (msg.length > 0) {
-                            sp.emit('serialport:readline', '> ' + msg);
+                            sp.emit('serialport:readline', msg);
                         }
                     });
 

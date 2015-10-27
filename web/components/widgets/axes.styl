@@ -1,14 +1,15 @@
 [data-component="Widgets/AxesWidget"] {
     .widget-content {
-        .display-panel {
-            padding: 0 10px 10px 10px;
-            border-bottom: 1px solid #ddd;
+        .glyphicon-reset {
+            transform: scale(-1, 1);
+        }
+        .glyphicon-reset:before {
+            content: "\e030";
+        }
 
-            table .table-header {
-                text-align: center;
-                border-bottom-width: 1px;
-                padding: 4px 2px;
-            }
+        .display-panel {
+            padding: 10px (10 + 15)px;
+            border-bottom: 1px solid #ddd;
 
             .axis-label {
                 text-align: center;
@@ -64,9 +65,24 @@
             background-color: #eee;
             padding: 10px;
 
-            .table-centered {
+            .row {
+                margin-right: -10px;
+                margin-left: -10px;
+                margin-bottom: 10px;
+
+                &:last-child {
+                    margin-bottom: 0;
+                }
+
+                > [class*="col-"] {
+                    padding: 0 10px;
+                }
+            }
+
+            table.table-centered {
                 margin: 0 auto;
             }
+
             .jog-x,
             .jog-y,
             .jog-z {
@@ -74,22 +90,21 @@
             }
             .jog-x {
                 padding: 0 5px;
+                .jog-x-minus {
+                    margin-left: -5px;
+                }
             }
             .jog-y {
-                padding: 5px;
+                padding: 0;
                 .jog-y-plus {
-                    margin-bottom: 10px;
+                    margin-bottom: 5px;
                 }
             }
             .jog-z {
-                padding: 5px;
+                padding: 0;
                 .jog-z-plus {
-                    margin-bottom: 10px;
+                    margin-bottom: 5px;
                 }
-            }
-
-            .form-group:last-child {
-                margin-bottom: 0;
             }
         }
     }

@@ -1,4 +1,6 @@
 import _ from 'lodash';
+import i18n from 'i18next';
+import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import THREE from 'three';
@@ -7,9 +9,11 @@ import TrackballControls from '../../lib/three/TrackballControls';
 import { GCodeRenderer } from '../../lib/gcode';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
-import store from '../../store';
+import siofu from '../../siofu';
 import socket from '../../socket';
 import './gcode-viewer.css';
+
+const AXIS_LENGTH = 99999;
 
 class Joystick extends React.Component {
     static propTypes = {
@@ -33,6 +37,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={up}
+                                    title={i18n._('Move Up')}
                                 >
                                     <i className="glyphicon glyphicon-chevron-up"></i>
                                 </PressAndHold>
@@ -44,6 +49,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={left}
+                                    title={i18n._('Move Left')}
                                 >
                                     <i className="glyphicon glyphicon-chevron-left"></i>
                                 </PressAndHold>
@@ -52,6 +58,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={center}
+                                    title={i18n._('Reset Position')}
                                 >
                                     <i className="glyphicon glyphicon-unchecked"></i>
                                 </PressAndHold>
@@ -60,6 +67,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={right}
+                                    title={i18n._('Move Right')}
                                 >
                                     <i className="glyphicon glyphicon-chevron-right"></i>
                                 </PressAndHold>
@@ -71,6 +79,7 @@ class Joystick extends React.Component {
                                 <PressAndHold
                                     className="joystick-button"
                                     onClick={down}
+                                    title={i18n._('Move Down')}
                                 >
                                     <i className="glyphicon glyphicon-chevron-down"></i>
                                 </PressAndHold>
@@ -84,27 +93,196 @@ class Joystick extends React.Component {
     }
 }
 
+class Toolbar extends React.Component {
+    state = {
+        port: '',
+        isLoaded: false,
+        startTime: 0, // unix timestamp
+        currentStatus: 'idle' // idle|run
+    };
+
+    componentDidMount() {
+        this.subscribe();
+        this.addSocketIOFileUploadEvents();
+    }
+    componentWillUnmount() {
+        this.removeSocketIOFileUploadEvents();
+        this.unsubscribe();
+    }
+    subscribe() {
+        let that = this;
+
+        this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                that.setState({ port: port });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    addSocketIOFileUploadEvents() {
+        siofu.addEventListener('start', ::this.siofuStart);
+        siofu.addEventListener('progress', ::this.siofuProgress);
+        siofu.addEventListener('complete', ::this.siofuComplete);
+        siofu.addEventListener('error', ::this.siofuError);
+    }
+    removeSocketIOFileUploadEvents() {
+        siofu.removeEventListener('start', ::this.siofuOnStart);
+        siofu.removeEventListener('progress', ::this.siofuOnProgress);
+        siofu.removeEventListener('complete', ::this.siofuOnComplete);
+        siofu.removeEventListener('error', ::this.siofuOnError);
+    }
+    // https://github.com/vote539/socketio-file-upload#start
+    siofuStart(event) {
+        log.debug('Upload start:', event);
+
+        event.file.meta.port = this.state.port;
+    }
+    // Part of the file has been loaded from the file system and
+    // ready to be transmitted via Socket.IO.
+    // This event can be used to make an upload progress bar.
+    // https://github.com/vote539/socketio-file-upload#progress
+    siofuProgress(event) {
+        let percent = event.bytesLoaded / event.file.size * 100;
+
+        log.trace('File is', percent.toFixed(2), 'percent loaded');
+    }
+    // The server has received our file.
+    // https://github.com/vote539/socketio-file-upload#complete
+    siofuComplete(event) {
+        log.debug('Upload complete:', event);
+
+        if (! event.success) {
+            log.error('File upload to the server failed.');
+            return;
+        }
+
+        // event.detail
+        // @param connected
+        // @param queueStatus.executed
+        // @param queueStatus.total
+
+        if (! event.detail.connected) {
+            log.error('Upload failed. The port is not open.');
+            return;
+        }
+
+        this.setState({ isLoaded: true });
+    }
+    // The server encountered an error.
+    // https://github.com/vote539/socketio-file-upload#complete
+    siofuError(event) {
+        log.error('Upload file failed:', event);
+    }
+    handleUpload() {
+        let el = React.findDOMNode(this.refs.file);
+        if (el) {
+            el.value = ''; // Clear file input value
+            el.click(); // trigger file input click
+        }
+    }
+    handleFile(e) {
+        let that = this;
+        let file = e.target.files[0];
+        let reader = new FileReader();
+
+        reader.onloadend = (e) => {
+            if (e.target.readyState !== FileReader.DONE) {
+                return;
+            }
+
+            log.debug('FileReader:', _.pick(file, [
+                'lastModified',
+                'lastModifiedDate',
+                'meta',
+                'name',
+                'size',
+                'type'
+            ]));
+
+            let gcode = e.target.result;
+            pubsub.publish('gcode:data', gcode);
+
+            let files = [file];
+            siofu.submitFiles(files);
+        };
+
+        reader.readAsText(file);
+    }
+    handleRun() {
+        socket.emit('gcode:run', this.state.port);
+        pubsub.publish('gcode:run');
+        this.setState({
+            currentStatus: 'run'
+        });
+    }
+    handlePause() {
+        socket.emit('gcode:pause', this.state.port);
+        this.setState({ currentStatus: 'pause' });
+    }
+    handleStop() {
+        socket.emit('gcode:stop', this.state.port);
+        pubsub.publish('gcode:stop');
+        this.setState({
+            currentStatus: 'idle'
+        });
+    }
+    handleClose() {
+        socket.emit('gcode:close', this.state.port);
+
+        pubsub.publish('gcode:data', '');
+
+        this.setState({
+            currentStatus: 'idle',
+            isLoaded: false
+        });
+    }
+    render() {
+        let isLoaded = this.state.isLoaded;
+        let notLoaded = ! isLoaded;
+        let canUpload = this.state.port && notLoaded;
+        let canRun = isLoaded && _.includes(['idle', 'pause'], this.state.currentStatus);
+        let canPause = isLoaded && _.includes(['run'], this.state.currentStatus);
+        let canStop = isLoaded && _.includes(['run', 'pause'], this.state.currentStatus);
+        let canClose = isLoaded && _.includes(['idle'], this.state.currentStatus);
+
+        return (
+            <div className="btn-toolbar" role="toolbar">
+                <div className="btn-group btn-group-sm" role="group">
+                    <button type="button" className="btn btn-default" title={i18n._('Upload G-Code')} onClick={::this.handleUpload} disabled={! canUpload}>
+                        <i className="glyphicon glyphicon-cloud-upload"></i>
+                        <input type="file" className="hidden" ref="file" onChange={::this.handleFile} />
+                    </button>
+                    <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={! canRun}>
+                        <i className="glyphicon glyphicon-play"></i>
+                    </button>
+                    <button type="button" className="btn btn-default" title={i18n._('Pause')} onClick={::this.handlePause} disabled={! canPause}>
+                        <i className="glyphicon glyphicon-pause"></i>
+                    </button>
+                    <button type="button" className="btn btn-default" title={i18n._('Stop')} onClick={::this.handleStop} disabled={! canStop}>
+                        <i className="glyphicon glyphicon-stop"></i>
+                    </button>
+                    <button type="button" className="btn btn-default" title={i18n._('Close')} onClick={::this.handleClose} disabled={! canClose}>
+                        <i className="glyphicon glyphicon-trash"></i>
+                    </button>
+                </div>
+            </div>
+        );
+    }
+}
+
 export default class GCodeViewer extends React.Component {
     state = {
         width: window.innerWidth,
-        height: window.innerHeight,
-        dimension: {
-            min: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            max: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            delta: {
-                x: 0,
-                y: 0,
-                z: 0
-            }
-        }
+        height: window.innerHeight
     };
 
     componentWillMount() {
@@ -118,7 +296,7 @@ export default class GCodeViewer extends React.Component {
         this.gcodeRenderer = null;
     }
     componentDidMount() {
-        this.subscribeToEvents();
+        this.subscribe();
         this.addSocketEvents();
         this.addResizeEventListener();
 
@@ -128,7 +306,7 @@ export default class GCodeViewer extends React.Component {
     componentWillUnmount() {
         this.removeResizeEventListener();
         this.removeSocketEvents();
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
         this.clearScene();
     }
     componentDidUnmount() {
@@ -138,30 +316,31 @@ export default class GCodeViewer extends React.Component {
         this.trackballControls = null;
         this.gcodeRenderer = null;
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
-        this._unsubscribeFromReduxStore = store.subscribe(() => {
-            let gcode = _.get(store.getState(), 'gcode.data');
-            that.renderObject(gcode);
-        });
+        this.pubsubTokens = [];
 
-        this._unsubscribeFromPubSub = (() => {
-            let token = pubsub.subscribe('resize', () => {
+        { // gcode:data
+            let token = pubsub.subscribe('gcode:data', (msg, gcode) => {
+                gcode = gcode || '';
+                that.renderObject(gcode);
+            });
+            this.pubsubTokens.push(token);
+        }
+
+        { // resize
+            let token = pubsub.subscribe('resize', (msg) => {
                 that.resizeRenderer();
             });
-
-            return () => {
-                pubsub.unsubscribe(token);
-            };
-        })();
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        // Unsubscribe from PubSub
-        this._unsubscribeFromPubSub();
-
-        // Unsubscribe from Redux store
-        this._unsubscribeFromReduxStore();
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     addSocketEvents() {
         socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
@@ -239,7 +418,7 @@ export default class GCodeViewer extends React.Component {
         scene.add(directionalLight);
 
         // Add axes
-        let axes = this.axes = this.buildAxes(1000);
+        let axes = this.axes = this.buildAxes(AXIS_LENGTH);
         scene.add(axes);
 
         // By default, when we call scene.add(), the thing we add will be added to the coordinates (0,0,0).
@@ -289,12 +468,12 @@ export default class GCodeViewer extends React.Component {
     buildAxes(length) {
         let axes = new THREE.Object3D();
 
-        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( length, 0, 0 ), 0xFF0000, false)); // +X
-        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( -length, 0, 0 ), 0xFF0000, true)); // -X
-        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, length, 0 ), 0x00FF00, false)); // +Y
-        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, -length, 0 ), 0x00FF00, true)); // -Y
-        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, length ), 0x0000FF, false)); // +Z
-        axes.add(this.buildAxis(new THREE.Vector3( 0, 0, 0 ), new THREE.Vector3( 0, 0, -length ), 0x0000FF, true)); // -Z
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), 0xFF0000, false)); // +X
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-length, 0, 0), 0xFF0000, true)); // -X
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, length, 0), 0x00FF00, false)); // +Y
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -length, 0), 0x00FF00, true)); // -Y
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, length), 0x0000FF, false)); // +Z
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -length), 0x0000FF, true)); // -Z
 
         return axes;
     }
@@ -339,27 +518,7 @@ export default class GCodeViewer extends React.Component {
             width: el.clientWidth,
             height: el.clientHeight
         }, function(dimension) {
-            let newDimension = React.addons.update(this.state.dimension, {
-                min: {
-                    x: { $set: dimension.min.x },
-                    y: { $set: dimension.min.y },
-                    z: { $set: dimension.min.z }
-                },
-                max: {
-                    x: { $set: dimension.max.x },
-                    y: { $set: dimension.max.y },
-                    z: { $set: dimension.max.z }
-                },
-                delta: {
-                    x: { $set: dimension.delta.x },
-                    y: { $set: dimension.delta.y },
-                    z: { $set: dimension.delta.z }
-                }
-            });
-
-            this.setState({ dimension: newDimension });
-
-            log.debug(newDimension);
+            pubsub.publish('gcode:dimension', dimension);
         }.bind(this));
 
         this.scene.add(this.object);
@@ -384,13 +543,9 @@ export default class GCodeViewer extends React.Component {
         this.trackballControls.reset();
     }
     render() {
-        let dimension = this.state.dimension;
-        let dX = Number(_.get(dimension, 'delta.x') || 0).toFixed(3);
-        let dY = Number(_.get(dimension, 'delta.y') || 0).toFixed(3);
-        let dZ = Number(_.get(dimension, 'delta.z') || 0).toFixed(3);
-
         return (
             <div>
+                <Toolbar />
                 <Joystick
                     up={::this.joystickUp}
                     down={::this.joystickDown}
@@ -398,11 +553,6 @@ export default class GCodeViewer extends React.Component {
                     right={::this.joystickRight}
                     center={::this.resetCamera}
                 />
-                <div className="stats">
-                    <div className="dimension">
-                        dX={dX}, dY={dY}, dZ={dZ} (mm)
-                    </div>
-                </div>
                 <div ref="gcodeViewer" className="preview" />
             </div>
         );

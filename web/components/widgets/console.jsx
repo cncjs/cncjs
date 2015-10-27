@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import log from '../../lib/log';
 import i18n from 'i18next';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import Infinite from 'react-infinite';
 import classNames from 'classnames';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import socket from '../../socket';
-import store from '../../store';
 import './console.css';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 
@@ -18,25 +18,39 @@ class ConsoleInput extends React.Component {
     };
 
     componentDidMount() {
-        this.subscribeToEvents();
+        this.subscribe();
     }
     componentWillUnmount() {
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
-        this.unsubscribe = store.subscribe(() => {
-            let port = _.get(store.getState(), 'port');
-            that.setState({ port: port });
-        });
+        this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                that.setState({ port: port });
+            });
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        this.unsubscribe();
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    handleKeyDown(e) {
+        let ENTER = 13;
+        if (e.keyCode === ENTER) {
+            this.handleSend();
+        }
     }
     handleSend() {
         let el = React.findDOMNode(this.refs.command);
-        this.props.onSend(el.value);
+        this.props.onSend('> ' + el.value);
 
         socket.emit('serialport:writeline', this.state.port, el.value);
 
@@ -55,9 +69,23 @@ class ConsoleInput extends React.Component {
                 <div className="form-inline">
                     <div className="form-group">
                         <div className="input-group input-group-sm">
-                            <input type="text" className="form-control" ref="command" placeholder={i18n._('Type serial port command')} disabled={! canInput} />
+                            <input
+                                type="text"
+                                className="form-control"
+                                onKeyDown={::this.handleKeyDown}
+                                ref="command"
+                                placeholder={i18n._('Type serial port command')}
+                                disabled={! canInput}
+                            />
                             <div className="input-group-btn">
-                                <button type="button" className="btn btn-default" onClick={::this.handleSend} disabled={! canSend}>{i18n._('Send')}</button>
+                                <button
+                                    type="button"
+                                    className="btn btn-default"
+                                    onClick={::this.handleSend}
+                                    disabled={! canSend}
+                                >
+                                    {i18n._('Send')}
+                                </button>
                                 <DropdownButton bsSize="sm" title="" id="console-command-dropdown" pullRight>
                                     <MenuItem onSelect={::this.handleClear} disabled={! canClearAll}>{i18n._('Clear all')}</MenuItem>
                                 </DropdownButton>
@@ -142,7 +170,7 @@ export default class ConsoleWidget extends React.Component {
         }
     }
     render() {
-        let width = 300;
+        let width = 360;
         let title = (
             <div><i className="glyphicon glyphicon-console"></i>{i18n._('Console')}</div>
         );

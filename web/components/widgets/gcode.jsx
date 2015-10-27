@@ -1,15 +1,13 @@
 import _ from 'lodash';
 import i18n from 'i18next';
 import moment from 'moment';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import classNames from 'classnames';
 import { Table, Column } from 'fixed-data-table';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import socket from '../../socket';
-import siofu from '../../siofu';
-import store from '../../store';
-import { GCODE_LOAD, GCODE_UNLOAD } from '../../actions';
 import './gcode.css';
 
 let isColumnResizing = false;
@@ -28,52 +26,6 @@ const GCODE_STATUS = {
     IN_PROGRESS: 1,
     COMPLETED: 2
 };
-
-class Alert extends React.Component {
-    render() {
-        return (
-            <div>
-                {this.props.msg &&
-                <div className="alert alert-danger fade in" style={{padding: '4px'}}>
-                    <a
-                        href="javascript:void(0)"
-                        className="close"
-                        data-dismiss="alert"
-                        aria-label="close"
-                        style={{fontSize: '16px'}}
-                        onClick={this.props.dismiss}
-                    >×</a>
-                    {this.props.msg}
-                </div>
-                }
-            </div>
-        );
-    }
-}
-
-class Progress extends React.Component {
-    render() {
-        let now = this.props.now || 0;
-        let min = this.props.min || 0;
-        let max = this.props.max || 0;
-        return (
-            <div>
-                <div className="progress">
-                    <div
-                        className="progress-bar"
-                        role="progressbar"
-                        aria-valuenow={now}
-                        aria-valuemin={min}
-                        aria-valuemax={max}
-                        style={{width: now + '%'}}
-                    >
-                        <span>{now}%</span>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-}
 
 class GCodeTable extends React.Component {
     state = {
@@ -112,7 +64,7 @@ class GCodeTable extends React.Component {
                     }
                 },
                 {
-                    dataKey: 'gcode',
+                    dataKey: 'cmd',
                     isResizable: true,
                     flexGrow: 1,
                     width: 100,
@@ -187,7 +139,8 @@ class GCodeTable extends React.Component {
                     overflowX={controlledScrolling ? "hidden" : "auto"}
                     overflowY={controlledScrolling ? "hidden" : "auto"}
                     isColumnResizing={isColumnResizing}
-                    onColumnResizeEndCallback={::this.onColumnResizeEndCallback}>
+                    onColumnResizeEndCallback={::this.onColumnResizeEndCallback}
+                >
                     {this.renderTableColumns()}
                 </Table>
             </div>
@@ -222,35 +175,123 @@ class GCodeTable extends React.Component {
 
 class GCodeStats extends React.Component {
     state = {
-        duration: 0
+        startTime: 0,
+        duration: 0,
+        dimension: {
+            min: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            max: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            delta: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        }
     };
 
     componentDidMount() {
+        this.subscribe();
+        this.setTimer();
+    }
+    componentWillUnmount() {
+        this.clearTimer();
+        this.unsubscribe();
+    }
+    subscribe() {
+        let that = this;
+
+        this.pubsubTokens = [];
+
+        { // gcode:dimension
+            let token = pubsub.subscribe('gcode:dimension', (msg, dimension) => {
+                dimension = _.defaultsDeep(dimension, {
+                    min: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    },
+                    max: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    },
+                    delta: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    }
+                });
+                that.setState({ dimension: dimension });
+            });
+            this.pubsubTokens.push(token);
+        }
+
+        { // gcode:run
+            let token = pubsub.subscribe('gcode:run', (msg) => {
+                let now = moment().unix();
+                let startTime = that.state.startTime || now; // use startTime or current time
+                let duration = (startTime !== now) ? that.state.duration : 0;
+                that.setState({
+                    startTime: startTime,
+                    duration: duration
+                });
+            });
+            this.pubsubTokens.push(token);
+        }
+        
+        { // gcode:stop
+            let token = pubsub.subscribe('gcode:stop', (msg) => {
+                that.setState({
+                    startTime: 0,
+                    duration: 0
+                });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    setTimer() {
         this.timer = setInterval(() => {
-            if (this.props.startTime <= 0) {
+            if (this.state.startTime <= 0) {
+                this.setState({ duration: 0 });
                 return;
             }
 
-            let from = moment.unix(this.props.startTime);
+            let from = moment.unix(this.state.startTime);
             let to = moment();
             let duration = to.diff(from, 'seconds');
             this.setState({ duration: duration });
         }, 1000);
     }
-    componentWillUnmount() {
+    clearTimer() {
         if (this.timer) {
             clearInterval(this.timer);
             this.timer = null;
         }
     }
     render() {
+        let dimension = this.state.dimension;
         let total = this.props.total || 0;
         let executed = this.props.executed || 0;
         let startTime = '–';
         let duration = '–';
+        let unit = 'mm';
+        let digits = (unit === 'mm') ? 3 : 4; // mm=3, inch=4
 
-        if (this.props.startTime > 0) {
-            startTime = moment.unix(this.props.startTime).format('YYYY-MM-DD HH:mm:ss');
+        if (this.state.startTime > 0) {
+            startTime = moment.unix(this.state.startTime).format('YYYY-MM-DD HH:mm:ss');
         }
 
         if (this.state.duration > 0) {
@@ -264,6 +305,45 @@ class GCodeStats extends React.Component {
 
         return (
             <div className="container-fluid gcode-stats">
+                <div className="row">
+                    <div className="col-xs-12">
+                        <div>{i18n._('Dimension:')}</div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-xs-12">
+                        <table className="table-bordered" data-table="dimension">
+                            <thead>
+                                <tr>
+                                    <th className="axis">Axis</th>
+                                    <th>Min</th>
+                                    <th>Max</th>
+                                    <th>Delta</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td className="axis">X</td>
+                                    <td>{dimension.min.x.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.max.x.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.delta.x.toFixed(digits)} {unit}</td>
+                                </tr>
+                                <tr>
+                                    <td className="axis">Y</td>
+                                    <td>{dimension.min.y.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.max.y.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.delta.y.toFixed(digits)} {unit}</td>
+                                </tr>
+                                <tr>
+                                    <td className="axis">Z</td>
+                                    <td>{dimension.min.z.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.max.z.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.delta.z.toFixed(digits)} {unit}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 <div className="row">
                     <div className="col-xs-6">{i18n._('Executed')}</div>
                     <div className="col-xs-6">{i18n._('Total')}</div>
@@ -288,15 +368,8 @@ class GCodeStats extends React.Component {
 export default class GCode extends React.Component {
     state = {
         port: '',
-        data: [], // a list of gcode commands
+        commands: [], // a list of gcode commands
         alertMessage: '',
-        startTime: 0, // unix timestamp
-        currentStatus: 'idle', // idle|run
-        statusText: '',
-
-        // File Upload
-        fileUploading: false,
-        percentUploaded: 0, // 0-100
 
         // Queue Status
         queueStatus: {
@@ -305,30 +378,53 @@ export default class GCode extends React.Component {
         }
     };
 
-    uploadData = null;
-
     componentDidMount() {
-        let that = this;
-
-        this.subscribeToEvents();
+        this.subscribe();
         this.addSocketEvents();
-        this.addSocketIOFileUploadEvents();
     }
     componentWillUnmount() {
-        this.removeSocketIOFileUploadEvents();
         this.removeSocketEvents();
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
-        this.unsubscribe = store.subscribe(() => {
-            let port = _.get(store.getState(), 'port');
-            that.setState({ port: port });
-        });
+        this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                that.setState({ port: port });
+            });
+            this.pubsubTokens.push(token);
+        }
+
+        { // gcode:data
+            let token = pubsub.subscribe('gcode:data', (msg, gcode) => {
+                gcode = gcode || '';
+                let lines = gcode.split('\n');
+                let commands = _(lines)
+                    .map(function(line) {
+                        return stripComments(line);
+                    })
+                    .compact()
+                    .map(function(line) {
+                        return {
+                            status: GCODE_STATUS.NOT_STARTED,
+                            cmd: line
+                        };
+                    })
+                    .value();
+                that.setState({ commands: commands });
+            });
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        this.unsubscribe();
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     addSocketEvents() {
         socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
@@ -341,6 +437,16 @@ export default class GCode extends React.Component {
         let from = this.state.queueStatus.executed;
         let to = data.executed;
 
+        // Reset obsolete queue items
+        for (let i = to; i < from; ++i) {
+            list[i] = {
+                status: {
+                    $set: GCODE_STATUS.NOT_STARTED
+                }
+            };
+        }
+
+        // Update completed queue items
         for (let i = from; i < to; ++i) {
             list[i] = {
                 status: {
@@ -349,204 +455,23 @@ export default class GCode extends React.Component {
             };
         }
 
-        let changedData = React.addons.update(this.state.data, list);
+        let updatedCommands = React.addons.update(this.state.commands, list);
         this.setState({
-            data: changedData,
+            commands: updatedCommands,
             queueStatus: {
                 executed: Number(data.executed),
                 total: Number(data.total)
             }
         });
     }
-    addSocketIOFileUploadEvents() {
-        siofu.addEventListener('start', ::this.siofuStart);
-        siofu.addEventListener('progress', ::this.siofuProgress);
-        siofu.addEventListener('complete', ::this.siofuComplete);
-        siofu.addEventListener('error', ::this.siofuError);
-    }
-    removeSocketIOFileUploadEvents() {
-        siofu.removeEventListener('start', ::this.siofuOnStart);
-        siofu.removeEventListener('progress', ::this.siofuOnProgress);
-        siofu.removeEventListener('complete', ::this.siofuOnComplete);
-        siofu.removeEventListener('error', ::this.siofuOnError);
-    }
-    // https://github.com/vote539/socketio-file-upload#start
-    siofuStart(event) {
-        log.debug('Upload start:', event);
 
-        this.setState({ statusText: i18n._('Uploading file...') });
-
-        event.file.meta.port = this.state.port;
-    }
-    // Part of the file has been loaded from the file system and
-    // ready to be transmitted via Socket.IO.
-    // This event can be used to make an upload progress bar.
-    // https://github.com/vote539/socketio-file-upload#progress
-    siofuProgress(event) {
-        let percent = event.bytesLoaded / event.file.size * 100;
-
-        log.trace('File is', percent.toFixed(2), 'percent loaded');
-
-        this.setState({ percentUploaded: Math.floor(percent) });
-    }
-    // The server has received our file.
-    // https://github.com/vote539/socketio-file-upload#complete
-    siofuComplete(event) {
-        log.debug('Upload complete:', event);
-
-        this.setState({
-            fileUploading: false,
-            statusText: ''
-        });
-
-        if (! event.success) {
-            this.showAlert(i18n._('File upload to the server failed.'));
-            return;
-        }
-
-        // event.detail
-        // @param connected
-        // @param queueStatus.executed
-        // @param queueStatus.total
-
-        if (! event.detail.connected) {
-            this.showAlert(i18n._('Upload failed. The port \'{{port}}\' is not open.', { port: this.state.port }));
-            return;
-        }
-
-        let lines = this.uploadData.split('\n');
-        let data = _(lines)
-            .map(function(line) {
-                return stripComments(line);
-            })
-            .compact()
-            .map(function(line) {
-                return {
-                    status: GCODE_STATUS.NOT_STARTED,
-                    gcode: line
-                };
-            })
-            .value();
-
-        this.setState({
-            queueStatus: {
-                executed: Number(event.detail.queueStatus.executed),
-                total: Number(event.detail.queueStatus.total)
-            }
-        });
-
-        this.setState({ data: data });
-    }
-    // The server encountered an error.
-    // https://github.com/vote539/socketio-file-upload#complete
-    siofuError(event) {
-        log.error('Upload file failed:', event);
-
-        this.setState({
-            fileUploading: false,
-            statusText: i18n._('The file could not be uploaded.')
-        });
-    }
-    showAlert(msg) {
-        this.setState({ alertMessage: msg });
-    }
-    clearAlert() {
-        this.setState({ alertMessage: '' });
-    }
-    handleUpload() {
-        let el = React.findDOMNode(this.refs.file);
-        if (el) {
-            el.value = ''; // Clear file input value
-            el.click(); // trigger file input click
-        }
-    }
-    handleFile(e) {
-        let that = this;
-        let file = e.target.files[0];
-        let reader = new FileReader();
-
-        reader.onloadend = (e) => {
-            if (e.target.readyState !== FileReader.DONE) {
-                return;
-            }
-
-            log.debug('FileReader:', _.pick(file, [
-                'lastModified',
-                'lastModifiedDate',
-                'meta',
-                'name',
-                'size',
-                'type'
-            ]));
-
-            store.dispatch({ type: GCODE_LOAD, data: e.target.result });
-
-            let files = [file];
-            siofu.submitFiles(files);
-
-            // Save uploaded files
-            that.uploadData = e.target.result;
-        };
-
-        // Clear alert message
-        this.clearAlert();
-
-        // Clear uploaded files
-        this.uploadData = null;
-
-        // Set uploading state
-        this.setState({
-            fileUploading: true,
-            percentUploaded: 0,
-            statusText: i18n._('Starting upload...')
-        });
-
-        reader.readAsText(file);
-    }
-    handleRun() {
-        socket.emit('gcode:run', this.state.port);
-
-        let startTime = this.state.startTime || moment().unix(); // use current startTime or current time
-        this.setState({
-            startTime: startTime,
-            currentStatus: 'run'
-        });
-    }
-    handlePause() {
-        socket.emit('gcode:pause', this.state.port);
-        this.setState({ currentStatus: 'idle' });
-    }
-    handleStop() {
-        socket.emit('gcode:stop', this.state.port);
-        this.setState({
-            startTime: 0, // reset startTime
-            currentStatus: 'idle',
-            data: _.map(this.state.data, (item) => {
-                // Reset status to NOT_STARTED
-                return _.extend({}, item, { status: GCODE_STATUS.NOT_STARTED });
-            })
-        });
-    }
-    handleClose() {
-        socket.emit('gcode:close', this.state.port);
-        store.dispatch({ type: GCODE_UNLOAD });
-        this.setState({
-            currentStatus: 'idle',
-            data: []
-        });
-    }
     render() {
         let tableWidth = this.props.width - 2 /* border */ - 20 /* padding */;
         let tableHeight = 180;
         let rowHeight = 30;
         let visibleRows = Math.floor(tableHeight / rowHeight);
-        let isLoaded = (_.size(this.state.data) > 0);
+        let isLoaded = (_.size(this.state.commands) > 0);
         let notLoaded = ! isLoaded;
-        let canUpload = notLoaded;
-        let canRun = isLoaded && (this.state.currentStatus === 'idle');
-        let canPause = isLoaded && (this.state.currentStatus === 'run');
-        let canStop = isLoaded;
-        let canClose = isLoaded && (this.state.currentStatus === 'idle');
         let scrollToRow = Math.min(
             this.state.queueStatus.executed + (Math.floor(visibleRows / 2) - 1),
             this.state.queueStatus.total
@@ -554,49 +479,20 @@ export default class GCode extends React.Component {
 
         return (
             <div>
-                <Alert msg={this.state.alertMessage} dismiss={::this.clearAlert} />
-                <div className="btn-toolbar" role="toolbar">
-                    <div className="btn-group btn-group-sm" role="group">
-                        <button type="button" className="btn btn-default" title={i18n._('Upload G-Code')} onClick={::this.handleUpload} disabled={! canUpload}>
-                            <i className="glyphicon glyphicon-cloud-upload"></i>
-                            <input type="file" className="hidden" ref="file" onChange={::this.handleFile} />
-                        </button>
-                        <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={! canRun}>
-                            <i className="glyphicon glyphicon-play"></i>
-                        </button>
-                        <button type="button" className="btn btn-default" title={i18n._('Pause')} onClick={::this.handlePause} disabled={! canPause}>
-                            <i className="glyphicon glyphicon-pause"></i>
-                        </button>
-                        <button type="button" className="btn btn-default" title={i18n._('Stop')} onClick={::this.handleStop} disabled={! canStop}>
-                            <i className="glyphicon glyphicon-stop"></i>
-                        </button>
-                        <button type="button" className="btn btn-default" title={i18n._('Close')} onClick={::this.handleClose} disabled={! canClose}>
-                            <i className="glyphicon glyphicon-trash"></i>
-                        </button>
-                    </div>
-                </div>
-
-                <p>{this.state.statusText}</p>
-
-                {this.state.fileUploading &&
-                <Progress min="0" max="100" now={this.state.percentUploaded} />
-                }
+                <GCodeStats
+                    executed={this.state.queueStatus.executed}
+                    total={this.state.queueStatus.total}
+                />
 
                 {isLoaded &&
                 <GCodeTable
                     width={tableWidth}
                     height={tableHeight}
                     rowHeight={rowHeight}
-                    data={this.state.data}
+                    data={this.state.commands}
                     scrollToRow={scrollToRow}
                 />
                 }
-
-                <GCodeStats
-                    executed={this.state.queueStatus.executed}
-                    total={this.state.queueStatus.total}
-                    startTime={this.state.startTime}
-                />
             </div>
         );
     }
@@ -615,7 +511,7 @@ export default class GCodeWidget extends React.Component {
         }
     }
     render() {
-        let width = 300;
+        let width = 360;
         let title = (
             <div><i className="glyphicon glyphicon-tasks"></i>{i18n._('GCode')}</div>
         );
