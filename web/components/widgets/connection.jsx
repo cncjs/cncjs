@@ -1,13 +1,12 @@
 import _ from 'lodash';
 import i18n from 'i18next';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import Select from 'react-select';
 import classNames from 'classnames';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import socket from '../../socket';
-import store from '../../store';
-import { PORT_OPEN, PORT_CLOSE } from '../../actions';
 import './connection.css';
 
 class Alert extends React.Component {
@@ -92,7 +91,7 @@ class Connection extends React.Component {
 
         this.clearAlert();
 
-        store.dispatch({ type: PORT_OPEN, port: port });
+        pubsub.publish('port', port);
 
         this.setState({
             connecting: false,
@@ -109,7 +108,8 @@ class Connection extends React.Component {
 
         this.clearAlert();
 
-        store.dispatch({ type: PORT_CLOSE });
+        // Close port
+        pubsub.publish('port', '');
 
         this.setState({
             connecting: false,
@@ -123,7 +123,8 @@ class Connection extends React.Component {
 
         this.showAlert('Error opening serial port: ' + port);
 
-        store.dispatch({ type: PORT_CLOSE });
+        // Close port
+        pubsub.publish('port', '');
 
         this.setState({
             connecting: false,
@@ -182,8 +183,8 @@ class Connection extends React.Component {
     closePort() {
         let port = this.state.port;
 
-        // Force close port
-        store.dispatch({ type: PORT_CLOSE });
+        // Close port
+        pubsub.publish('port', '');
 
         this.setState({
             connecting: false,

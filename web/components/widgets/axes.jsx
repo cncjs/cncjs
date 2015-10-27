@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import i18n from 'i18next';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import Select from 'react-select';
 import classNames from 'classnames';
 import PressAndHold from '../common/PressAndHold';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
-import store from '../../store';
 import socket from '../../socket';
 import log from '../../lib/log';
 import './axes.css';
@@ -535,21 +535,29 @@ class Axes extends React.Component {
     };
 
     componentDidMount() {
-        this.subscribeToEvents();
+        this.subscribe();
     }
     componentWillUnmount() {
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
-        this.unsubscribe = store.subscribe(() => {
-            let port = _.get(store.getState(), 'port');
-            that.setState({ port: port });
-        });
+        this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                that.setState({ port: port });
+            });
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        this.unsubscribe();
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     toggleDisplayUnit() {
         let unit;

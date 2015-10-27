@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import log from '../../lib/log';
 import i18n from 'i18next';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import Infinite from 'react-infinite';
 import classNames from 'classnames';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import socket from '../../socket';
-import store from '../../store';
 import './console.css';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 
@@ -18,21 +18,29 @@ class ConsoleInput extends React.Component {
     };
 
     componentDidMount() {
-        this.subscribeToEvents();
+        this.subscribe();
     }
     componentWillUnmount() {
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
-        this.unsubscribe = store.subscribe(() => {
-            let port = _.get(store.getState(), 'port');
-            that.setState({ port: port });
-        });
+        this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                that.setState({ port: port });
+            });
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        this.unsubscribe();
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     handleKeyDown(e) {
         let ENTER = 13;

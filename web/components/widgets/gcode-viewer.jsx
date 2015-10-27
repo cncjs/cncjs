@@ -10,9 +10,7 @@ import { GCodeRenderer } from '../../lib/gcode';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import siofu from '../../siofu';
-import store from '../../store';
 import socket from '../../socket';
-import { GCODE_LOAD, GCODE_UNLOAD } from '../../actions';
 import './gcode-viewer.css';
 
 const AXIS_LENGTH = 99999;
@@ -104,23 +102,31 @@ class Toolbar extends React.Component {
     };
 
     componentDidMount() {
-        this.subscribeToEvents();
+        this.subscribe();
         this.addSocketIOFileUploadEvents();
     }
     componentWillUnmount() {
         this.removeSocketIOFileUploadEvents();
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
-        this.unsubscribe = store.subscribe(() => {
-            let port = _.get(store.getState(), 'port');
-            that.setState({ port: port });
-        });
+        this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                that.setState({ port: port });
+            });
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        this.unsubscribe();
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     addSocketIOFileUploadEvents() {
         siofu.addEventListener('start', ::this.siofuStart);
@@ -202,7 +208,8 @@ class Toolbar extends React.Component {
                 'type'
             ]));
 
-            store.dispatch({ type: GCODE_LOAD, data: e.target.result });
+            let gcode = e.target.result;
+            pubsub.publish('gcode:data', gcode);
 
             let files = [file];
             siofu.submitFiles(files);
@@ -232,7 +239,8 @@ class Toolbar extends React.Component {
     }
     handleClose() {
         socket.emit('gcode:close', this.state.port);
-        store.dispatch({ type: GCODE_UNLOAD });
+
+        pubsub.publish('gcode:data', '');
 
         this.setState({
             currentStatus: 'idle',
@@ -290,7 +298,7 @@ export default class GCodeViewer extends React.Component {
         this.gcodeRenderer = null;
     }
     componentDidMount() {
-        this.subscribeToEvents();
+        this.subscribe();
         this.addSocketEvents();
         this.addResizeEventListener();
 
@@ -300,7 +308,7 @@ export default class GCodeViewer extends React.Component {
     componentWillUnmount() {
         this.removeResizeEventListener();
         this.removeSocketEvents();
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
         this.clearScene();
     }
     componentDidUnmount() {
@@ -309,32 +317,32 @@ export default class GCodeViewer extends React.Component {
         this.camera = null;
         this.trackballControls = null;
         this.gcodeRenderer = null;
-        this.gcode = null;
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
-        this._unsubscribeFromReduxStore = store.subscribe(() => {
-            let gcode = _.get(store.getState(), 'gcode.data') || '';
-            that.renderObject(gcode);
-        });
+        this.pubsubTokens = [];
 
-        this._unsubscribeFromPubSub = (() => {
-            let token = pubsub.subscribe('resize', () => {
+        { // gcode:data
+            let token = pubsub.subscribe('gcode:data', (msg, gcode) => {
+                gcode = gcode || '';
+                that.renderObject(gcode);
+            });
+            this.pubsubTokens.push(token);
+        }
+
+        { // resize
+            let token = pubsub.subscribe('resize', (msg) => {
                 that.resizeRenderer();
             });
-
-            return () => {
-                pubsub.unsubscribe(token);
-            };
-        })();
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        // Unsubscribe from PubSub
-        this._unsubscribeFromPubSub();
-
-        // Unsubscribe from Redux store
-        this._unsubscribeFromReduxStore();
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     addSocketEvents() {
         socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
@@ -512,7 +520,7 @@ export default class GCodeViewer extends React.Component {
             width: el.clientWidth,
             height: el.clientHeight
         }, function(dimension) {
-            pubsub.publish('gcode.dimension', dimension);
+            pubsub.publish('gcode:dimension', dimension);
         }.bind(this));
 
         this.scene.add(this.object);

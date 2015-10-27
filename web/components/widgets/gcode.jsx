@@ -8,7 +8,6 @@ import { Table, Column } from 'fixed-data-table';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import socket from '../../socket';
-import store from '../../store';
 import './gcode.css';
 
 let isColumnResizing = false;
@@ -197,40 +196,43 @@ class GCodeStats extends React.Component {
     };
 
     componentDidMount() {
-        this.subscribeToEvents();
+        this.subscribe();
         this.setTimer();
     }
     componentWillUnmount() {
         this.clearTimer();
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
         this.pubsubTokens = [];
-        this.pubsubTokens.push(pubsub.subscribe('gcode.dimension', (msg, dimension) => {
-            dimension = _.defaultsDeep(dimension, {
-                min: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                max: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                delta: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                }
+
+        { // gcode.dimension
+            let token = pubsub.subscribe('gcode:dimension', (msg, dimension) => {
+                dimension = _.defaultsDeep(dimension, {
+                    min: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    },
+                    max: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    },
+                    delta: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    }
+                });
+                that.setState({ dimension: dimension });
             });
-            that.setState({ dimension: dimension });
-        }));
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        // Unsubscribe from PubSub
+    unsubscribe() {
         _.each(this.pubsubTokens, (token) => {
             pubsub.unsubscribe(token);
         });
@@ -353,46 +355,52 @@ export default class GCode extends React.Component {
     };
 
     componentDidMount() {
-        this.subscribeToEvents();
+        this.subscribe();
         this.addSocketEvents();
     }
     componentWillUnmount() {
         this.removeSocketEvents();
-        this.unsubscribeFromEvents();
+        this.unsubscribe();
     }
-    subscribeToEvents() {
+    subscribe() {
         let that = this;
 
-        this._subscribedEvents = [];
+        this.pubsubTokens = [];
 
-        this._subscribedEvents.push(store.subscribe(() => {
-            let port = _.get(store.getState(), 'port');
-            that.setState({ port: port });
-        }));
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                that.setState({ port: port });
+            });
+            this.pubsubTokens.push(token);
+        }
 
-        this._subscribedEvents.push(store.subscribe(() => {
-            let data = _.get(store.getState(), 'gcode.data') || '';
-            let lines = data.split('\n');
-            let commands = _(lines)
-                .map(function(line) {
-                    return stripComments(line);
-                })
-                .compact()
-                .map(function(line) {
-                    return {
-                        status: GCODE_STATUS.NOT_STARTED,
-                        cmd: line
-                    };
-                })
-                .value();
-
-            that.setState({ commands: commands });
-        }));
+        { // gcode:data
+            let token = pubsub.subscribe('gcode:data', (msg, gcode) => {
+                gcode = gcode || '';
+                let lines = gcode.split('\n');
+                let commands = _(lines)
+                    .map(function(line) {
+                        return stripComments(line);
+                    })
+                    .compact()
+                    .map(function(line) {
+                        return {
+                            status: GCODE_STATUS.NOT_STARTED,
+                            cmd: line
+                        };
+                    })
+                    .value();
+                that.setState({ commands: commands });
+            });
+            this.pubsubTokens.push(token);
+        }
     }
-    unsubscribeFromEvents() {
-        _.each(this._subscribedEvents, (unsubscribe) => {
-            unsubscribe();
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
         });
+        this.pubsubTokens = [];
     }
     addSocketEvents() {
         socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
@@ -437,6 +445,12 @@ export default class GCode extends React.Component {
 
         return (
             <div>
+                <GCodeStats
+                    executed={this.state.queueStatus.executed}
+                    total={this.state.queueStatus.total}
+                    startTime={this.state.startTime}
+                />
+
                 {isLoaded &&
                 <GCodeTable
                     width={tableWidth}
@@ -446,12 +460,6 @@ export default class GCode extends React.Component {
                     scrollToRow={scrollToRow}
                 />
                 }
-
-                <GCodeStats
-                    executed={this.state.queueStatus.executed}
-                    total={this.state.queueStatus.total}
-                    startTime={this.state.startTime}
-                />
             </div>
         );
     }
