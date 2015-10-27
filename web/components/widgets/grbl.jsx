@@ -58,17 +58,25 @@ class GRBL extends React.Component {
         this.write('\x18');
     }
     render() {
+        let canClick = !!this.state.port;
+
         return (
             <div>
                 <div className="btn-group btn-group-justified" role="group" aria-label="...">
                     <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-sm btn-danger" onClick={::this.handleFeedHold}>{i18n._('Feed Hold')}</button>
+                        <button type="button" className="btn btn-sm btn-danger" onClick={::this.handleFeedHold} disabled={! canClick}>
+                            {i18n._('Feed Hold')}
+                        </button>
                     </div>
                     <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-sm btn-primary" onClick={::this.handleCycleStart}>{i18n._('Cycle Start')}</button>
+                        <button type="button" className="btn btn-sm btn-primary" onClick={::this.handleCycleStart} disabled={! canClick}>
+                            {i18n._('Cycle Start')}
+                        </button>
                     </div>
                     <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGRBL}>{i18n._('Reset GRBL')}</button>
+                        <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGRBL} disabled={! canClick}>
+                            {i18n._('Reset GRBL')}
+                        </button>
                     </div>
                 </div>
             </div>
