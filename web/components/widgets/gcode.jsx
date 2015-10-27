@@ -413,6 +413,16 @@ export default class GCode extends React.Component {
         let from = this.state.queueStatus.executed;
         let to = data.executed;
 
+        // Reset obsolete queue items
+        for (let i = to; i < from; ++i) {
+            list[i] = {
+                status: {
+                    $set: GCODE_STATUS.NOT_STARTED
+                }
+            };
+        }
+
+        // Update completed queue items
         for (let i = from; i < to; ++i) {
             list[i] = {
                 status: {
