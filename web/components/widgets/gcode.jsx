@@ -175,6 +175,7 @@ class GCodeTable extends React.Component {
 
 class GCodeStats extends React.Component {
     state = {
+        startTime: 0,
         duration: 0,
         dimension: {
             min: {
@@ -208,7 +209,7 @@ class GCodeStats extends React.Component {
 
         this.pubsubTokens = [];
 
-        { // gcode.dimension
+        { // gcode:dimension
             let token = pubsub.subscribe('gcode:dimension', (msg, dimension) => {
                 dimension = _.defaultsDeep(dimension, {
                     min: {
@@ -231,6 +232,21 @@ class GCodeStats extends React.Component {
             });
             this.pubsubTokens.push(token);
         }
+
+        { // gcode:run
+            let token = pubsub.subscribe('gcode:run', (msg) => {
+                let startTime = that.state.startTime || moment().unix(); // use current startTime or current time
+                that.setState({ startTime: startTime });
+            });
+            this.pubsubTokens.push(token);
+        }
+        
+        { // gcode:stop
+            let token = pubsub.subscribe('gcode:stop', (msg) => {
+                that.setState({ startTime: 0 });
+            });
+            this.pubsubTokens.push(token);
+        }
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {
@@ -240,11 +256,12 @@ class GCodeStats extends React.Component {
     }
     setTimer() {
         this.timer = setInterval(() => {
-            if (this.props.startTime <= 0) {
+            if (this.state.startTime <= 0) {
+                this.setState({ duration: 0 });
                 return;
             }
 
-            let from = moment.unix(this.props.startTime);
+            let from = moment.unix(this.state.startTime);
             let to = moment();
             let duration = to.diff(from, 'seconds');
             this.setState({ duration: duration });
@@ -265,8 +282,8 @@ class GCodeStats extends React.Component {
         let unit = 'mm';
         let digits = (unit === 'mm') ? 3 : 4; // mm=3, inch=4
 
-        if (this.props.startTime > 0) {
-            startTime = moment.unix(this.props.startTime).format('YYYY-MM-DD HH:mm:ss');
+        if (this.state.startTime > 0) {
+            startTime = moment.unix(this.state.startTime).format('YYYY-MM-DD HH:mm:ss');
         }
 
         if (this.state.duration > 0) {
@@ -345,7 +362,6 @@ export default class GCode extends React.Component {
         port: '',
         commands: [], // a list of gcode commands
         alertMessage: '',
-        startTime: 0, // unix timestamp
 
         // Queue Status
         queueStatus: {
@@ -458,7 +474,6 @@ export default class GCode extends React.Component {
                 <GCodeStats
                     executed={this.state.queueStatus.executed}
                     total={this.state.queueStatus.total}
-                    startTime={this.state.startTime}
                 />
 
                 {isLoaded &&

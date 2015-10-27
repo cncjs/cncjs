@@ -219,10 +219,8 @@ class Toolbar extends React.Component {
     }
     handleRun() {
         socket.emit('gcode:run', this.state.port);
-
-        let startTime = this.state.startTime || moment().unix(); // use current startTime or current time
+        pubsub.publish('gcode:run');
         this.setState({
-            startTime: startTime,
             currentStatus: 'run'
         });
     }
@@ -232,8 +230,8 @@ class Toolbar extends React.Component {
     }
     handleStop() {
         socket.emit('gcode:stop', this.state.port);
+        pubsub.publish('gcode:stop');
         this.setState({
-            startTime: 0, // reset startTime
             currentStatus: 'idle'
         });
     }
