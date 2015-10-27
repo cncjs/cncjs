@@ -57,6 +57,9 @@ class Grbl extends React.Component {
     handleResetGrbl() {
         this.write('\x18');
     }
+    handleUnlockGrbl() {
+        this.write('$X');
+    }
     render() {
         let canClick = !!this.state.port;
 
@@ -73,9 +76,16 @@ class Grbl extends React.Component {
                             {i18n._('Cycle Start')}
                         </button>
                     </div>
+                </div>
+                <div className="btn-group btn-group-justified" role="group" aria-label="...">
                     <div className="btn-group" role="group">
                         <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGrbl} disabled={! canClick}>
                             {i18n._('Soft Reset Grbl')}
+                        </button>
+                    </div>
+                    <div className="btn-group" role="group">
+                        <button type="button" className="btn btn-sm btn-default" onClick={::this.handleUnlockGrbl} disabled={! canClick}>
+                            {i18n._('Unlock Grbl')}
                         </button>
                     </div>
                 </div>
