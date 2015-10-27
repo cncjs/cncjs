@@ -634,7 +634,7 @@ export default class AxesWidget extends React.Component {
     render() {
         let width = 360;
         let title = (
-            <div><i className="glyphicon glyphicon-stats"></i>{i18n._('Axes')}</div>
+            <div><i className="glyphicon glyphicon-move"></i>{i18n._('Axes')}</div>
         );
         let toolbarButtons = [
             'toggle'
