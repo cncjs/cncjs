@@ -60,33 +60,79 @@ class Grbl extends React.Component {
     handleUnlockGrbl() {
         this.write('$X');
     }
+    // To start the spindle turning clockwise at the currently programmed speed, program: M3.
+    handleSpindleOnCW(speed) {
+        if (_.isNumber(speed)) {
+            this.writeline('M3 S' + speed);
+        } else {
+            this.writeline('M3');
+        }
+    }
+    // To start the spindle turning counterclockwise at the currently programmed speed, program: M4.
+    handleSpindleOnCCW(speed) {
+        if (_.isNumber(speed)) {
+            this.writeline('M4 S' + speed);
+        } else {
+            this.writeline('M4');
+        }
+    }
+    // To stop the spindle from turning, program: M5.
+    handleSpindleOff() {
+        this.writeline('M5');
+    }
     render() {
         let canClick = !!this.state.port;
 
         return (
             <div>
-                <div className="btn-group btn-group-justified" role="group" aria-label="...">
-                    <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-sm btn-danger" onClick={::this.handleFeedHold} disabled={! canClick}>
-                            {i18n._('Feed Hold')}
-                        </button>
-                    </div>
-                    <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-sm btn-primary" onClick={::this.handleCycleStart} disabled={! canClick}>
-                            {i18n._('Cycle Start')}
-                        </button>
+                <div className="form-group">
+                    <label>{i18n._('Cycle control:')}</label>
+                    <div className="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div className="btn-group" role="group">
+                            <button type="button" className="btn btn-sm btn-danger" onClick={::this.handleFeedHold} disabled={! canClick}>
+                                {i18n._('Feed Hold')}
+                            </button>
+                        </div>
+                        <div className="btn-group" role="group">
+                            <button type="button" className="btn btn-sm btn-primary" onClick={::this.handleCycleStart} disabled={! canClick}>
+                                {i18n._('Cycle Start')}
+                            </button>
+                        </div>
                     </div>
                 </div>
-                <div className="btn-group btn-group-justified" role="group" aria-label="...">
-                    <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGrbl} disabled={! canClick}>
-                            {i18n._('Soft Reset Grbl')}
-                        </button>
+                <div className="form-group">
+                    <label>{i18n._('Reset control:')}</label>
+                    <div className="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div className="btn-group" role="group">
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGrbl} disabled={! canClick}>
+                                {i18n._('Soft Reset Grbl')}
+                            </button>
+                        </div>
+                        <div className="btn-group" role="group">
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleUnlockGrbl} disabled={! canClick}>
+                                {i18n._('Unlock Grbl')}
+                            </button>
+                        </div>
                     </div>
-                    <div className="btn-group" role="group">
-                        <button type="button" className="btn btn-sm btn-default" onClick={::this.handleUnlockGrbl} disabled={! canClick}>
-                            {i18n._('Unlock Grbl')}
-                        </button>
+                </div>
+                <div className="form-group">
+                    <label>{i18n._('Spindle control:')}</label>
+                    <div className="btn-group btn-group-justified" role="group" aria-label="...">
+                        <div className="btn-group" role="group">
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOnCW} disabled={! canClick}>
+                                {i18n._('On (CW)')}
+                            </button>
+                        </div>
+                        <div className="btn-group" role="group">
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOnCCW} disabled={! canClick}>
+                                {i18n._('On (CCW)')}
+                            </button>
+                        </div>
+                        <div className="btn-group" role="group">
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOff} disabled={! canClick}>
+                                {i18n._('Off')}
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
