@@ -48,6 +48,9 @@ class Grbl extends React.Component {
 
         socket.emit.apply(socket, ['serialport:write', port].concat(args));
     }
+    writeline(msg) {
+        this.write(msg + '\n');
+    }
     handleFeedHold() {
         this.write('!');
     }
