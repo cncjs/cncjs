@@ -178,8 +178,8 @@ export default class Workspace extends React.Component {
                                 </div>
                             </div>
                             <div className={classes.secondaryContainer} ref="secondaryContainer">
-                                <GCodeWidget />
                                 <AxesWidget />
+                                <GCodeWidget />
                             </div>
                         </div>
                     </div>
