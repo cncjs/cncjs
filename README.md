@@ -58,7 +58,7 @@ https://github.com/cheton/cnc.js/wiki
 ## TODOs
 - [ ] Spindle on/off
 - [ ] Remember last working state upon browser refresh
-- [ ] Soft reset GRBL / Unlock GRBL
+- [x] Soft reset GRBL / Unlock GRBL
 - [ ] Drag and drop *.gcode files
 - [ ] Display circular arcs with G02 and G03 in the 3D GCode viewer<br>
       http://www.cnccookbook.com/CCCNCGCodeArcsG02G03.htm
