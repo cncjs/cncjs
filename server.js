@@ -18,8 +18,21 @@ var stripComments = (function() {
     };
 }());
 
-var isCurrentStatusMessage = function(msg) {
+//
+// > ?
+// <Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>
+//
+var matchGrblCurrentStatus = function(msg) {
     return msg.match(/<(\w+),\w+:([^,]+),([^,]+),([^,]+),\w+:([^,]+),([^,]+),([^,]+)>/);
+};
+
+//
+// Example
+// > $G
+// [G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]
+//
+var matchGrblGCodeModes = function(msg) {
+    return msg.match(/\[(?:\w+[0-9]+\.?[0-9]*\s*)+\]/);
 };
 
 var serialports = {};
@@ -149,6 +162,8 @@ module.exports = function(server) {
             var port = _.get(data, 'port');
             var baudrate = Number(_.get(data, 'baudrate')) || 9600; // defaults to 9600
             var sp = serialports[port] = serialports[port] || {
+                timer: {},
+                skipReplyWithOkError: false, // Skip next reply with an 'ok' or an 'error'
                 port: port,
                 lastTotal: 0,
                 lastExecuted: 0,
@@ -168,13 +183,11 @@ module.exports = function(server) {
                 })(port)
             };
 
-            if ( ! sp.serialPortTimer) {
-                sp.serialPortTimer = setInterval(function() {
+            if ( ! sp.timer['grbl:current-status']) {
+                sp.timer['grbl:current-status'] = setInterval(function() {
                     if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
                         return;
                     }
-
-                    // write '?' to the serial port periodically
                     sp.serialPort.write('?');
                 }, 250);
             }
@@ -188,11 +201,14 @@ module.exports = function(server) {
 
                     msg = ('' + msg).trim();
                     sp.serialPort.write(msg + '\n');
+
+                    // View gcode parser state
+                    sp.serialPort.write('$G' + '\n');
                 });
             }
 
-            if ( ! sp.queueTimer) {
-                sp.queueTimer = setInterval(function() {
+            if ( ! sp.timer['queue']) {
+                sp.timer['queue'] = setInterval(function() {
                     if ( ! sp.queue) {
                         return;
                     }
@@ -221,11 +237,15 @@ module.exports = function(server) {
             }
 
             if (sp.serialPort && sp.serialPort.isOpen()) {
+                // Emit 'serialport:open' event to the connected socket
                 socket.emit('serialport:open', {
                     port: port,
                     baudrate: baudrate,
                     inuse: true
                 });
+
+                // View gcode parser state
+                sp.serialPort.write('$G' + '\n');
             }
 
             if ( ! sp.serialPort) {
@@ -238,8 +258,7 @@ module.exports = function(server) {
                     sp.serialPort = serialPort;
 
                     serialPort.on('open', function() {
-
-                        // Emit 'serialport:open' event to the first connected socket
+                        // Emit 'serialport:open' event to the connected socket
                         socket.emit('serialport:open', {
                             port: port,
                             baudrate: baudrate,
@@ -247,12 +266,15 @@ module.exports = function(server) {
                         });
 
                         log.debug('Connected to \'%s\' at %d.', port, baudrate);
+
+                        // View gcode parser state
+                        sp.serialPort.write('$G' + '\n');
                     });
 
                     serialPort.on('data', function(msg) {
                         msg = ('' + msg).trim();
 
-                        if (isCurrentStatusMessage(msg)) {
+                        if (matchGrblCurrentStatus(msg)) {
                             var r = msg.match(/<(\w+),\w+:([^,]+),([^,]+),([^,]+),\w+:([^,]+),([^,]+),([^,]+)>/);
                             // https://github.com/grbl/grbl/wiki/Configuring-Grbl-v0.9#---current-status
                             sp.emit('grbl:current-status', {
@@ -279,13 +301,48 @@ module.exports = function(server) {
                             return;
                         }
 
+                        if (matchGrblGCodeModes(msg)) {
+                            var r = msg.match(/\[([^\]]*)\]/);
+                            var list = r[1].split(' ');
+                            var modes = _(list)
+                                .compact()
+                                .map(function(cmd) {
+                                    return _.trim(cmd);
+                                })
+                                .value();
+
+                            sp.emit('grbl:gcode-modes', modes);
+
+                            _.each(sp.sockets, function(o) {
+                                if (o.command.indexOf('$G') === 0) {
+                                    o.command = '';
+                                    o.socket.emit('serialport:readline', msg);
+                                }
+                            });
+
+                            sp.skipReplyWithOkError = true;
+
+                            return;
+                        }
+
                         if (msg.indexOf('ok') === 0) {
+                            if (sp.skipReplyWithOkError) {
+                                sp.skipReplyWithOkError = false;
+                                return;
+                            }
+
                             sp.queue.next();
                             return;
                         }
                         
                         if (msg.indexOf('error') === 0) {
                             log.error(msg);
+
+                            if (sp.skipReplyWithOkError) {
+                                sp.skipReplyWithOkError = false;
+                                return;
+                            }
+
                             sp.queue.next();
                             return;
                         }

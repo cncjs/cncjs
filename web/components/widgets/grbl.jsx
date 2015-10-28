@@ -8,6 +8,48 @@ import log from '../../lib/log';
 import socket from '../../socket';
 import './grbl.css';
 
+//
+// https://github.com/grbl/grbl/wiki/Configuring-Grbl-v0.9
+//
+const MODAL_GROUPS = [
+    { // Motion Mode (Defaults to G0)
+        group: 'motion',
+        modes: ['G0', 'G1', 'G2', 'G3', 'G38.2', 'G38.3', 'G38.4', 'G38.5', 'G80']
+    },
+    { // Coordinate System Select (Defaults to G54)
+        group: 'coordinate',
+        modes: ['G54', 'G55', 'G56', 'G57', 'G58', 'G59']
+    },
+    { // Plane Select (Defaults to G17)
+        group: 'plane',
+        modes: ['G17', 'G18', 'G19']
+    },
+    { // Units Mode (Defaults to G21)
+        group: 'units',
+        modes: ['G20', 'G21']
+    },
+    { // Distance Mode (Defaults to G90)
+        group: 'distance',
+        modes: ['G90', 'G91']
+    },
+    { // Feed Rate Mode (Defaults to G94)
+        group: 'feedrate',
+        modes: ['G93', 'G94']
+    },
+    { // Program Mode (Defaults to M0)
+        group: 'program',
+        modes: ['M0', 'M1', 'M2', 'M30']
+    },
+    { // Spindle State (Defaults to M5)
+        group: 'spindle',
+        modes: ['M3', 'M4', 'M5']
+    },
+    { // Coolant State (Defaults to M9)
+        group: 'coolant',
+        modes: ['M7', 'M8', 'M9']
+    }
+];
+
 class Grbl extends React.Component {
     state = {
         port: ''
@@ -15,9 +57,11 @@ class Grbl extends React.Component {
 
     componentDidMount() {
         this.subscribe();
+        this.addSocketEvents();
     }
     componentWillUnmount() {
         this.unsubscribe();
+        this.removeSocketEvents();
     }
     subscribe() {
         let that = this;
@@ -37,6 +81,45 @@ class Grbl extends React.Component {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
+    }
+    addSocketEvents() {
+        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+    }
+    removeSocketEvents() {
+        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+    }
+    socketOnGrblGCodeModes(data) {
+        let modes = data || [];
+        let state = {};
+
+        _.each(modes, (mode) => {
+            // Gx, Mx
+            if (mode.indexOf('G') === 0 || mode.indexOf('M') === 0) {
+                let r = _.find(MODAL_GROUPS, (group) => {
+                    return _.includes(group.modes, mode);
+                });
+                if (r) {
+                    _.set(state, 'modal.' + r.group, mode);
+                }
+            }
+
+            // T: tool number
+            if (mode.indexOf('T') === 0) {
+                _.set(state, 'tool', mode.substring(1));
+            }
+
+            // F: feed rate
+            if (mode.indexOf('F') === 0) {
+                _.set(state, 'feedrate', mode.substring(1));
+            }
+
+            // S: spindle speed
+            if (mode.indexOf('S') === 0) {
+                _.set(state, 'spindle', mode.substring(1));
+            }
+        });
+
+        //log.debug(state);
     }
     write() {
         let port = this.state.port;
