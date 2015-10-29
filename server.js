@@ -5,7 +5,7 @@ var fs = require('fs');
 var fse = require('fs-extra');
 var path = require('path');
 var readline = require('readline');
-var queue = require('./motion-queue');
+var queue = require('./command-queue');
 var serialport = require('serialport');
 var SerialPort = serialport.SerialPort;
 var SocketIOFileUpload = require('socketio-file-upload');
@@ -18,8 +18,21 @@ var stripComments = (function() {
     };
 }());
 
-var isCurrentStatusMessage = function(msg) {
+//
+// > ?
+// <Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>
+//
+var matchGrblCurrentStatus = function(msg) {
     return msg.match(/<(\w+),\w+:([^,]+),([^,]+),([^,]+),\w+:([^,]+),([^,]+),([^,]+)>/);
+};
+
+//
+// Example
+// > $G
+// [G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]
+//
+var matchGrblGCodeModes = function(msg) {
+    return msg.match(/\[(?:\w+[0-9]+\.?[0-9]*\s*)+\]/);
 };
 
 var serialports = {};
@@ -56,7 +69,7 @@ module.exports = function(server) {
                 'pathName'
             ]));
 
-            if (! event.file.success) {
+            if (!(event.file.success)) {
                 log.warn('The uploaded file \'%s\' was not created successfully.', event.file.pathName);
             }
 
@@ -84,7 +97,7 @@ module.exports = function(server) {
             var total = 0;
             if (sp && sp.queue) {
                 executed = sp.queue.size();
-                sp.queue.add(lines);
+                sp.queue.push(lines);
                 total = sp.queue.size();
             } 
 
@@ -149,71 +162,87 @@ module.exports = function(server) {
             var port = _.get(data, 'port');
             var baudrate = Number(_.get(data, 'baudrate')) || 9600; // defaults to 9600
             var sp = serialports[port] = serialports[port] || {
+                isPending: {
+                    '?': false, // current status
+                    '$G': false, // view gcode parser state
+                    '$G:rsp': false // Grbl response: 'ok' or 'error'
+                },
+                timer: {},
                 port: port,
-                lastTotal: 0,
-                lastExecuted: 0,
+                q_total: 0,
+                q_executed: 0,
                 sockets: {
                     // socket.id: { socket: socket, command: command }
                 },
-                emit: (function(port) {
+                emit: (function() {
                     return function(evt, msg) {
                         _.each(sp.sockets, function(o, id) {
-                            if (_.isUndefined(o) || (! _.isObject(o.socket))) {
+                            if (_.isUndefined(o) || !(_.isObject(o.socket))) {
                                 log.error('Cannot call method \'emit\' of undefined socket:', { id: id });
                                 return;
                             }
                             o.socket.emit(evt, msg);
                         });
                     };
-                })(port)
+                })()
             };
 
-            if ( ! sp.serialPortTimer) {
-                sp.serialPortTimer = setInterval(function() {
-                    if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
+            if (!(sp.timer['grbl:current-status'])) {
+                sp.timer['grbl:current-status'] = setInterval(function() {
+                    if (!(sp.serialPort && sp.serialPort.isOpen())) {
                         return;
                     }
 
-                    // write '?' to the serial port periodically
-                    sp.serialPort.write('?');
+                    if (!(sp.isPending['?'])) {
+                        sp.isPending['?'] = true;
+                        sp.serialPort.write('?');
+                    }
+
+                    if (!(sp.isPending['$G']) && !(sp.isPending['$G:rsp'])) {
+                        sp.isPending['$G'] = true;
+                        sp.serialPort.write('$G' + '\n');
+                    }
                 }, 250);
             }
 
-            if ( ! sp.queue) {
+            if (!(sp.queue)) {
                 sp.queue = queue();
                 sp.queue.on('data', function(msg) {
-                    var qStatus = sp.queue.status();
+                    var executed = sp.queue.executed();
+                    var total = sp.queue.size();
 
-                    console.log('[' + qStatus.executed + '/' + qStatus.total + '] ' + msg);
+                    console.log('[' + executed + '/' + total + '] ' + msg);
 
                     msg = ('' + msg).trim();
                     sp.serialPort.write(msg + '\n');
                 });
             }
 
-            if ( ! sp.queueTimer) {
-                sp.queueTimer = setInterval(function() {
-                    if ( ! sp.queue) {
+            if (!(sp.timer['queue'])) {
+                sp.timer['queue'] = setInterval(function() {
+                    if (!(sp.queue)) {
                         return;
                     }
 
-                    var qStatus = sp.queue.status();
-                    if (sp.lastTotal === qStatus.total && sp.lastExecuted === qStatus.executed) {
+                    var q_executed = sp.queue.executed();
+                    var q_total = sp.queue.size();
+
+                    if (sp.q_total === q_total && sp.q_executed === q_executed) {
                         return;
                     }
 
-                    sp.lastTotal = qStatus.total;
-                    sp.lastExecuted = qStatus.executed;
+                    sp.q_total = q_total;
+                    sp.q_executed = q_executed;
 
                     sp.emit('gcode:queue-status', {
-                        executed: sp.lastExecuted,
-                        total: sp.lastTotal
+                        executed: sp.q_executed,
+                        total: sp.q_total
                     });
 
                 }, 250);
             }
 
-            if ( ! sp.sockets[socket.id]) {
+            if (!(sp.sockets[socket.id])) {
                 sp.sockets[socket.id] = {
                     socket: socket,
                     command: ''
@@ -221,6 +250,7 @@ module.exports = function(server) {
             }
 
             if (sp.serialPort && sp.serialPort.isOpen()) {
+                // Emit 'serialport:open' event to the connected socket
                 socket.emit('serialport:open', {
                     port: port,
                     baudrate: baudrate,
@@ -228,7 +258,7 @@ module.exports = function(server) {
                 });
             }
 
-            if ( ! sp.serialPort) {
+            if (!(sp.serialPort)) {
                 try {
                     var serialPort = new SerialPort(port, {
                         baudrate: baudrate,
@@ -238,8 +268,7 @@ module.exports = function(server) {
                     sp.serialPort = serialPort;
 
                     serialPort.on('open', function() {
-
-                        // Emit 'serialport:open' event to the first connected socket
+                        // Emit 'serialport:open' event to the connected socket
                         socket.emit('serialport:open', {
                             port: port,
                             baudrate: baudrate,
@@ -250,9 +279,11 @@ module.exports = function(server) {
                     });
 
                     serialPort.on('data', function(msg) {
+                        console.log(msg);
+
                         msg = ('' + msg).trim();
 
-                        if (isCurrentStatusMessage(msg)) {
+                        if (matchGrblCurrentStatus(msg)) {
                             var r = msg.match(/<(\w+),\w+:([^,]+),([^,]+),([^,]+),\w+:([^,]+),([^,]+),([^,]+)>/);
                             // https://github.com/grbl/grbl/wiki/Configuring-Grbl-v0.9#---current-status
                             sp.emit('grbl:current-status', {
@@ -276,18 +307,51 @@ module.exports = function(server) {
                                 }
                             });
 
+                            sp.isPending['?'] = false;
+
                             return;
                         }
 
-                        if (msg.indexOf('ok') === 0) {
-                            sp.queue.next();
+                        if (matchGrblGCodeModes(msg)) {
+                            var r = msg.match(/\[([^\]]*)\]/);
+                            var list = r[1].split(' ');
+                            var modes = _(list)
+                                .compact()
+                                .map(function(cmd) {
+                                    return _.trim(cmd);
+                                })
+                                .value();
+
+                            sp.emit('grbl:gcode-modes', modes);
+
+                            _.each(sp.sockets, function(o) {
+                                if (o.command.indexOf('$G') === 0) {
+                                    o.socket.emit('serialport:readline', msg);
+                                }
+                            });
+
+                            sp.isPending['$G'] = false;
+                            sp.isPending['$G:rsp'] = true; // Wait for Grbl response
+
                             return;
                         }
-                        
-                        if (msg.indexOf('error') === 0) {
-                            log.error(msg);
-                            sp.queue.next();
-                            return;
+
+                        if ((msg.indexOf('ok') === 0) || (msg.indexOf('error') === 0)) {
+                            if (sp.isPending['$G:rsp']) {
+                                _.each(sp.sockets, function(o) {
+                                    if (o.command.indexOf('$G') === 0) {
+                                        o.command = ''; // Clear the command buffer
+                                        o.socket.emit('serialport:readline', msg);
+                                    }
+                                });
+                                sp.isPending['$G:rsp'] = false;
+                                return;
+                            }
+
+                            if (sp.queue.isRunning()) {
+                                sp.queue.next();
+                                return;
+                            }
                         }
 
                         if (msg.length > 0) {
@@ -338,7 +402,7 @@ module.exports = function(server) {
         socket.on('close', function(data) {
             var port = _.get(data, 'port');
             var sp = serialports[port] || {};
-            if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
+            if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }
@@ -370,7 +434,7 @@ module.exports = function(server) {
 
         socket.on('serialport:write', function(port, msg) {
             var sp = serialports[port] || {};
-            if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
+            if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }
@@ -383,7 +447,7 @@ module.exports = function(server) {
 
         socket.on('serialport:writeline', function(port, msg) {
             var sp = serialports[port] || {};
-            if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
+            if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }
@@ -401,17 +465,17 @@ module.exports = function(server) {
 
         socket.on('gcode:run', function(port) {
             var sp = serialports[port] || {};
-            if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
+            if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }
 
-            sp.queue.run();
+            sp.queue.play();
         });
 
         socket.on('gcode:pause', function(port) {
             var sp = serialports[port] || {};
-            if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
+            if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }
@@ -421,7 +485,7 @@ module.exports = function(server) {
 
         socket.on('gcode:stop', function(port) {
             var sp = serialports[port] || {};
-            if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
+            if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }
@@ -431,7 +495,7 @@ module.exports = function(server) {
 
         socket.on('gcode:close', function(port) {
             var sp = serialports[port] || {};
-            if ( ! (sp.serialPort && sp.serialPort.isOpen())) {
+            if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }

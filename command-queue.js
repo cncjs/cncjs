@@ -1,9 +1,10 @@
-var MotionQueue = function(options) {
+var CommandQueue = function(options) {
 
     var Wrapper = function() {
         this._queue = [];
         this._executed = 0;
-        this._stopped = false;
+        this._loop = false;
+        this._stopped = true;
         this._callbacks = [];
     };
 
@@ -14,8 +15,10 @@ var MotionQueue = function(options) {
         return this;
     };
 
-    Wrapper.prototype.run = function() {
+    Wrapper.prototype.play = function(options) {
+        options = options || {};
         this._stopped = false;
+        this._loop = !!options.loop;
         this.next();
         return this;
     };
@@ -27,7 +30,14 @@ var MotionQueue = function(options) {
 
     Wrapper.prototype.stop = function() {
         this._stopped = true;
+        this._loop = false;
         this._executed = 0;
+        return this;
+    };
+
+    Wrapper.prototype.replay = function(options) {
+        this.stop();
+        this.play(options);
         return this;
     };
 
@@ -37,13 +47,23 @@ var MotionQueue = function(options) {
         return this;
     };
 
-    Wrapper.prototype.add = function(data) {
+    Wrapper.prototype.push = function(data) {
         this._queue = this._queue.concat(data);
         return this;
     };
 
     Wrapper.prototype.next = function() {
-        if ( ! this._stopped && (this._executed < this._queue.length)) {
+        if (this._stopped) {
+            return this;
+        }
+
+        if (this._loop && this._queue.length > 0 && this._executed >= this._queue.length) {
+            this._executed = 0;
+            this.next();
+            return this;
+        }
+
+        if (this._executed < this._queue.length) {
             var data = this._queue[this._executed];
             this._executed++;
 
@@ -51,14 +71,12 @@ var MotionQueue = function(options) {
                 callback(data);
             });
         }
+
         return this;
     };
 
-    Wrapper.prototype.status = function() {
-        return {
-            total: this._queue.length,
-            executed: this._executed
-        };
+    Wrapper.prototype.isRunning = function() {
+        return ! this._stopped;
     };
 
     Wrapper.prototype.executed = function() {
@@ -72,4 +90,4 @@ var MotionQueue = function(options) {
     return new Wrapper();
 };
 
-module.exports = MotionQueue;
+module.exports = CommandQueue;

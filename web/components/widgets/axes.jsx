@@ -2,6 +2,7 @@ import _ from 'lodash';
 import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 import Select from 'react-select';
 import classNames from 'classnames';
 import PressAndHold from '../common/PressAndHold';
@@ -9,7 +10,6 @@ import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import socket from '../../socket';
 import log from '../../lib/log';
 import './axes.css';
-import { ButtonGroup, DropdownButton, MenuItem, Glyphicon } from 'react-bootstrap';
 
 const IMPERIAL_UNIT = 'inch';
 const METRIC_UNIT = 'mm';
@@ -26,36 +26,41 @@ const DISTANCE_MAX = 1000;
 const DISTANCE_STEP = 0.1;
 const DISTANCE_DEFAULT = 1.00;
 
-class DisplayPanel extends React.Component {
-    state = {
-        activeState: 'Idle', // Idle, Run, Hold, Door, Home, Alarm, Check
-        machinePos: { // Machine position
-            x: '0.000',
-            y: '0.000',
-            z: '0.000'
-        },
-        workingPos: { // Working position
-            x: '0.000',
-            y: '0.000',
-            z: '0.000'
-        }
-    };
+// Grbl Active State
+const ACTIVE_STATE_IDLE = 'Idle';
+const ACTIVE_STATE_RUN = 'Run';
+const ACTIVE_STATE_HOLD = 'Hold';
+const ACTIVE_STATE_DOOR = 'Door';
+const ACTIVE_STATE_HOME = 'Home';
+const ACTIVE_STATE_ALARM = 'Alarm';
+const ACTIVE_STATE_CHECK = 'Check';
+
+class ToolbarButton extends React.Component {
     static propTypes = {
-        port: React.PropTypes.string
+        onClick: React.PropTypes.func
+    };
+
+    onClick(btn) {
+        this.props.onClick(btn);
+    }
+    render() {
+        return (
+            <div className="toolbar-button btn-group">
+                <button type="button" className="btn btn-xs btn-default" onClick={() => this.onClick('toggle-display-unit')}>{i18n._('in / mm')}</button>
+            </div>
+        );
+    }
+}
+
+class DisplayPanel extends React.Component {
+    static propTypes = {
+        port: React.PropTypes.string,
+        unit: React.PropTypes.string,
+        activeState: React.PropTypes.string,
+        machinePos: React.PropTypes.object,
+        workingPos: React.PropTypes.object
     }
 
-    componentDidMount() {
-        this.addSocketEvents();
-    }
-    componentWillUnmount() {
-        this.removeSocketEvents();
-    }
-    addSocketEvents() {
-        socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
-    }
-    removeSocketEvents() {
-        socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
-    }
     writeline() {
         let port = this.props.port;
         if ( ! port) {
@@ -63,7 +68,6 @@ class DisplayPanel extends React.Component {
         }
 
         let args = Array.prototype.slice.call(arguments);
-
         socket.emit.apply(socket, ['serialport:writeline', port].concat(args));
     }
     handleGoToZeroX() {
@@ -93,13 +97,6 @@ class DisplayPanel extends React.Component {
     handleUnZeroOutZ() {
         this.writeline('G92.1 Z0');
     }
-    socketOnGrblCurrentStatus(data) {
-        this.setState({
-            activeState: data.activeState,
-            machinePos: data.machinePos,
-            workingPos: data.workingPos
-        });
-    }
     convertPositionUnit(pos) {
         pos = Number(pos);
         if (this.props.unit === METRIC_UNIT) {
@@ -110,24 +107,28 @@ class DisplayPanel extends React.Component {
         return '' + pos;
     }
     render() {
-        let { unit } = this.props;
-        let machinePos = _.mapValues(this.state.machinePos, (pos, axis) => {
+        let { unit, activeState } = this.props;
+        let machinePos = _.mapValues(this.props.machinePos, (pos, axis) => {
             return this.convertPositionUnit(pos);
         }.bind(this));
-        let workingPos = _.mapValues(this.state.workingPos, (pos, axis) => {
+        let workingPos = _.mapValues(this.props.workingPos, (pos, axis) => {
             return this.convertPositionUnit(pos);
         }.bind(this));
+        let canClick = (activeState && activeState !== ACTIVE_STATE_RUN);
 
         return (
             <div className="container-fluid display-panel">
                 <div className="row">
+                    <div className="active-state">
+                        {i18n._('Active state:')}&nbsp;{activeState}
+                    </div>
                     <table className="table-bordered">
                         <thead>
                             <tr>
                                 <th>{i18n._('Axis')}</th>
                                 <th>{i18n._('Machine Position')}</th>
                                 <th>{i18n._('Working Position')}</th>
-                                <th style={{textAlign: 'center'}}><i className="glyphicon glyphicon-list"></i></th>
+                                <th>{i18n._('Action')}</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -149,9 +150,9 @@ class DisplayPanel extends React.Component {
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-x-dropdown" pullRight>
-                                        <MenuItem onSelect={::this.handleGoToZeroX}>{i18n._('Go To Zero On X Axis (G0 X0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleZeroOutX}>{i18n._('Zero Out X Axis (G92 X0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleUnZeroOutX}>{i18n._('Un-Zero Out X Axis (G92.1 X0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleGoToZeroX} disabled={!canClick}>{i18n._('Go To Zero On X Axis (G0 X0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleZeroOutX} disabled={!canClick}>{i18n._('Zero Out X Axis (G92 X0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleUnZeroOutX} disabled={!canClick}>{i18n._('Un-Zero Out X Axis (G92.1 X0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -173,9 +174,9 @@ class DisplayPanel extends React.Component {
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-y-dropdown" pullRight>
-                                        <MenuItem onSelect={::this.handleGoToZeroY}>{i18n._('Go To Zero On Y Axis (G0 Y0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleZeroOutY}>{i18n._('Zero Out Y Axis (G92 Y0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleUnZeroOutY}>{i18n._('Un-Zero Out Y Axis (G92.1 Y0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleGoToZeroY} disabled={!canClick}>{i18n._('Go To Zero On Y Axis (G0 Y0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleZeroOutY} disabled={!canClick}>{i18n._('Zero Out Y Axis (G92 Y0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleUnZeroOutY} disabled={!canClick}>{i18n._('Un-Zero Out Y Axis (G92.1 Y0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -197,9 +198,9 @@ class DisplayPanel extends React.Component {
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-z-dropdown" pullRight>
-                                        <MenuItem onSelect={::this.handleGoToZeroZ}>{i18n._('Go To Zero On Z Axis (G0 Z0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleZeroOutZ}>{i18n._('Zero Out Z Axis (G92 Z0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleUnZeroOutZ}>{i18n._('Un-Zero Out Z Axis (G92.1 Z0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleGoToZeroZ} disabled={!canClick}>{i18n._('Go To Zero On Z Axis (G0 Z0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleZeroOutZ} disabled={!canClick}>{i18n._('Zero Out Z Axis (G92 Z0)')}</MenuItem>
+                                        <MenuItem onSelect={::this.handleUnZeroOutZ} disabled={!canClick}>{i18n._('Un-Zero Out Z Axis (G92.1 Z0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -493,9 +494,6 @@ class JogControlPanel extends React.Component {
         }
         this.props.changeDisplayUnit(unit);
     }
-    // TBD
-    handleHomingSequence() {
-    }
     render() {
         let { port } = this.props;
         let { feedrate, distance } = this.state;
@@ -507,11 +505,11 @@ class JogControlPanel extends React.Component {
                         <JogJoystickControl port={port} feedrate={feedrate} distance={distance} />
                     </div>
                     <div className="col-sm-6">
-                        <ButtonGroup bsSize="xs" vertical>
+                        <div className="btn-group-vertical">
                             <button type="button" className="btn btn-xs btn-default" onClick={::this.handleGoToZero}>{i18n._('Go To Zero (G0)')}</button>
                             <button type="button" className="btn btn-xs btn-default" onClick={::this.handleZeroOut}>{i18n._('Zero Out (G92)')}</button>
                             <button type="button" className="btn btn-xs btn-default" onClick={::this.handleUnZeroOut}>{i18n._('Un-Zero Out (G92.1)')}</button>
-                        </ButtonGroup>
+                        </div>
                     </div>
                 </div>
                 <div className="row">
@@ -531,14 +529,27 @@ class Axes extends React.Component {
     state = {
         port: '',
         unit: METRIC_UNIT,
+        activeState: '',
+        machinePos: { // Machine position
+            x: '0.000',
+            y: '0.000',
+            z: '0.000'
+        },
+        workingPos: { // Working position
+            x: '0.000',
+            y: '0.000',
+            z: '0.000'
+        },
         isCollapsed: false
     };
 
     componentDidMount() {
         this.subscribe();
+        this.addSocketEvents();
     }
     componentWillUnmount() {
         this.unsubscribe();
+        this.removeSocketEvents();
     }
     subscribe() {
         let that = this;
@@ -559,6 +570,19 @@ class Axes extends React.Component {
         });
         this.pubsubTokens = [];
     }
+    addSocketEvents() {
+        socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
+    }
+    removeSocketEvents() {
+        socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
+    }
+    socketOnGrblCurrentStatus(data) {
+        this.setState({
+            activeState: data.activeState,
+            machinePos: data.machinePos,
+            workingPos: data.workingPos
+        });
+    }
     toggleDisplayUnit() {
         let unit;
 
@@ -578,40 +602,45 @@ class Axes extends React.Component {
             isCollapsed: ! this.state.isCollapsed
         });
     }
+    handleToolbarButtonClick(btn) {
+        if (btn === 'toggle-display-unit') {
+            this.toggleDisplayUnit();
+        }
+    }
     render() {
-        let { port, unit, isCollapsed } = this.state;
+        let { port, unit, activeState, machinePos, workingPos, isCollapsed } = this.state;
+        let canToggle = (activeState && activeState !== ACTIVE_STATE_RUN);
         let classes = {
             icon: classNames(
                 'glyphicon',
-                { 'glyphicon-chevron-up': ! isCollapsed },
+                { 'glyphicon-chevron-up': !isCollapsed },
                 { 'glyphicon-chevron-down': isCollapsed }
             )
         };
-        let style = {
-            padding: 0
-        };
 
         return (
-            <div style={style}>
-                <div className="clearfix" style={{padding: '0 10px'}}>
-                    <div className="pull-right">
-                        <ButtonGroup bsSize="xs">
-                            <button type="button" className="btn btn-xs btn-default" onClick={::this.toggleDisplayUnit}>{i18n._('in / mm')}</button>
-                        </ButtonGroup>
-                    </div>
-                </div>
+            <div>
+                <ToolbarButton onClick={::this.handleToolbarButtonClick} />
 
-                <DisplayPanel port={port} unit={unit} />
+                <DisplayPanel
+                    port={port}
+                    unit={unit}
+                    activeState={activeState}
+                    machinePos={machinePos}
+                    workingPos={workingPos}
+                />
 
-                <div className="container-fluid">
+                {canToggle &&
+                <div className="container-fluid control-panel-toggler">
                     <div className="row">
                         <div className="toggle-expand-collapse noselect" onClick={::this.toggleExpandCollapse}>
                             <i className={classes.icon}></i>
                         </div>
                     </div>
                 </div>
+                }
 
-                {! isCollapsed &&
+                {canToggle && !isCollapsed &&
                 <JogControlPanel port={port} unit={unit} />
                 }
             </div>

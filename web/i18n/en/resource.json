@@ -38,6 +38,7 @@
     "90d48549bcd13abbfaf99474aeff3124549a3273": "Choose a port",
     "924b3be3f1cbf2e5a6b01d11639642861fc0b1d6": "Zero Out Z Axis (G92 Z0)",
     "9483ce940d5654e196373c9df6e4bba88c20368f": "Upload G-Code",
+    "97c89a4d6630adeb18fa12ba9976a31413fe293e": "Action",
     "9b2ffec76ca7ba182b75443dfbcc3549a8db5056": "Type serial port command",
     "9bc2575c3930437e80555f78757b783c842e8e66": "Send",
     "9e253470c876ee6d5c720eb777aeb82d4c26e28f": "Stop",
@@ -65,5 +66,6 @@
     "f148e4214108b8d6345b30416cf981a2627d6fe2": "Zero Out X Axis (G92 X0)",
     "f28eba1986a7d37e0de739db5fa59dd1ba03ae34": "Move Left",
     "f3ce019b6cf0e8379665169d8fa1704dd0bff066": "Zero Out (G92)",
-    "f63bc0d9498ed0a031e86cb3240982980dddd5e3": "Reset Position"
+    "f63bc0d9498ed0a031e86cb3240982980dddd5e3": "Reset Position",
+    "fb26441023fae29cf464e3a0ae4b03a5a2005953": "Active state:"
 }
