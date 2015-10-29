@@ -5,7 +5,7 @@ var fs = require('fs');
 var fse = require('fs-extra');
 var path = require('path');
 var readline = require('readline');
-var queue = require('./motion-queue');
+var queue = require('./command-queue');
 var serialport = require('serialport');
 var SerialPort = serialport.SerialPort;
 var SocketIOFileUpload = require('socketio-file-upload');
@@ -97,7 +97,7 @@ module.exports = function(server) {
             var total = 0;
             if (sp && sp.queue) {
                 executed = sp.queue.size();
-                sp.queue.add(lines);
+                sp.queue.push(lines);
                 total = sp.queue.size();
             } 
 
@@ -164,9 +164,10 @@ module.exports = function(server) {
             var sp = serialports[port] = serialports[port] || {
                 timer: {},
                 skipReplyWithOkError: false, // Skip next reply with an 'ok' or an 'error'
+                viewGCodeParserState: false,
                 port: port,
-                lastTotal: 0,
-                lastExecuted: 0,
+                q_total: 0,
+                q_executed: 0,
                 sockets: {
                     // socket.id: { socket: socket, command: command }
                 },
@@ -189,21 +190,24 @@ module.exports = function(server) {
                         return;
                     }
                     sp.serialPort.write('?');
+
+                    if ( ! sp.viewGCodeParserState) {
+                        sp.viewGCodeParserState = true;
+                        sp.serialPort.write('$G' + '\n');
+                    }
                 }, 250);
             }
 
             if ( ! sp.queue) {
                 sp.queue = queue();
                 sp.queue.on('data', function(msg) {
-                    var qStatus = sp.queue.status();
+                    var executed = sp.queue.executed();
+                    var total = sp.queue.size();
 
-                    console.log('[' + qStatus.executed + '/' + qStatus.total + '] ' + msg);
+                    console.log('[' + executed + '/' + total + '] ' + msg);
 
                     msg = ('' + msg).trim();
                     sp.serialPort.write(msg + '\n');
-
-                    // View gcode parser state
-                    sp.serialPort.write('$G' + '\n');
                 });
             }
 
@@ -213,17 +217,19 @@ module.exports = function(server) {
                         return;
                     }
 
-                    var qStatus = sp.queue.status();
-                    if (sp.lastTotal === qStatus.total && sp.lastExecuted === qStatus.executed) {
+                    var q_executed = sp.queue.executed();
+                    var q_total = sp.queue.size();
+
+                    if (sp.q_total === q_total && sp.q_executed === q_executed) {
                         return;
                     }
 
-                    sp.lastTotal = qStatus.total;
-                    sp.lastExecuted = qStatus.executed;
+                    sp.q_total = q_total;
+                    sp.q_executed = q_executed;
 
                     sp.emit('gcode:queue-status', {
-                        executed: sp.lastExecuted,
-                        total: sp.lastTotal
+                        executed: sp.q_executed,
+                        total: sp.q_total
                     });
 
                 }, 250);
@@ -243,9 +249,6 @@ module.exports = function(server) {
                     baudrate: baudrate,
                     inuse: true
                 });
-
-                // View gcode parser state
-                sp.serialPort.write('$G' + '\n');
             }
 
             if ( ! sp.serialPort) {
@@ -266,12 +269,11 @@ module.exports = function(server) {
                         });
 
                         log.debug('Connected to \'%s\' at %d.', port, baudrate);
-
-                        // View gcode parser state
-                        sp.serialPort.write('$G' + '\n');
                     });
 
                     serialPort.on('data', function(msg) {
+                        console.log(msg);
+
                         msg = ('' + msg).trim();
 
                         if (matchGrblCurrentStatus(msg)) {
@@ -321,30 +323,20 @@ module.exports = function(server) {
                             });
 
                             sp.skipReplyWithOkError = true;
+                            sp.viewGCodeParserState = false;
 
                             return;
                         }
 
-                        if (msg.indexOf('ok') === 0) {
+                        if ((msg.indexOf('ok') === 0) || (msg.indexOf('error') === 0)) {
                             if (sp.skipReplyWithOkError) {
                                 sp.skipReplyWithOkError = false;
                                 return;
                             }
-
-                            sp.queue.next();
-                            return;
-                        }
-                        
-                        if (msg.indexOf('error') === 0) {
-                            log.error(msg);
-
-                            if (sp.skipReplyWithOkError) {
-                                sp.skipReplyWithOkError = false;
+                            if (sp.queue.isRunning()) {
+                                sp.queue.next();
                                 return;
                             }
-
-                            sp.queue.next();
-                            return;
                         }
 
                         if (msg.length > 0) {
@@ -463,7 +455,7 @@ module.exports = function(server) {
                 return;
             }
 
-            sp.queue.run();
+            sp.queue.play();
         });
 
         socket.on('gcode:pause', function(port) {
