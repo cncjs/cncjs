@@ -114,7 +114,7 @@ class DisplayPanel extends React.Component {
         let workingPos = _.mapValues(this.props.workingPos, (pos, axis) => {
             return this.convertPositionUnit(pos);
         }.bind(this));
-        let canClick = (activeState !== ACTIVE_STATE_RUN);
+        let canClick = (activeState && activeState !== ACTIVE_STATE_RUN);
 
         return (
             <div className="container-fluid display-panel">
@@ -149,7 +149,7 @@ class DisplayPanel extends React.Component {
                                     <span className="dimension-unit">{unit}</span>
                                 </td>
                                 <td className="axis-control">
-                                    <DropdownButton bsSize="xs" bsStyle="default" title="X" id="axis-x-dropdown" pullRight>
+                                    <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-x-dropdown" pullRight>
                                         <MenuItem onSelect={::this.handleGoToZeroX} disabled={!canClick}>{i18n._('Go To Zero On X Axis (G0 X0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleZeroOutX} disabled={!canClick}>{i18n._('Zero Out X Axis (G92 X0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleUnZeroOutX} disabled={!canClick}>{i18n._('Un-Zero Out X Axis (G92.1 X0)')}</MenuItem>
@@ -173,7 +173,7 @@ class DisplayPanel extends React.Component {
                                     <span className="dimension-unit">{unit}</span>
                                 </td>
                                 <td className="axis-control">
-                                    <DropdownButton bsSize="xs" bsStyle="default" title="Y" id="axis-y-dropdown" pullRight>
+                                    <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-y-dropdown" pullRight>
                                         <MenuItem onSelect={::this.handleGoToZeroY} disabled={!canClick}>{i18n._('Go To Zero On Y Axis (G0 Y0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleZeroOutY} disabled={!canClick}>{i18n._('Zero Out Y Axis (G92 Y0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleUnZeroOutY} disabled={!canClick}>{i18n._('Un-Zero Out Y Axis (G92.1 Y0)')}</MenuItem>
@@ -197,7 +197,7 @@ class DisplayPanel extends React.Component {
                                     <span className="dimension-unit">{unit}</span>
                                 </td>
                                 <td className="axis-control">
-                                    <DropdownButton bsSize="xs" bsStyle="default" title="Z" id="axis-z-dropdown" pullRight>
+                                    <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-z-dropdown" pullRight>
                                         <MenuItem onSelect={::this.handleGoToZeroZ} disabled={!canClick}>{i18n._('Go To Zero On Z Axis (G0 Z0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleZeroOutZ} disabled={!canClick}>{i18n._('Zero Out Z Axis (G92 Z0)')}</MenuItem>
                                         <MenuItem onSelect={::this.handleUnZeroOutZ} disabled={!canClick}>{i18n._('Un-Zero Out Z Axis (G92.1 Z0)')}</MenuItem>
@@ -609,7 +609,7 @@ class Axes extends React.Component {
     }
     render() {
         let { port, unit, activeState, machinePos, workingPos, isCollapsed } = this.state;
-        let canToggle = (activeState !== ACTIVE_STATE_RUN);
+        let canToggle = (activeState && activeState !== ACTIVE_STATE_RUN);
         let classes = {
             icon: classNames(
                 'glyphicon',
