@@ -1,5 +1,8 @@
 [data-component="Widgets/AxesWidget"] {
     .widget-content {
+        position: relative;
+        padding: 5px 10px 0 10px;
+
         .glyphicon-reset {
             transform: scale(-1, 1);
         }
@@ -7,9 +10,18 @@
             content: "\e030";
         }
 
+        .toolbar-button {
+            position: absolute;
+            top: 0;
+            right: 10px;
+        }
+
         .display-panel {
-            padding: 10px (10 + 15)px;
-            border-bottom: 1px solid #ddd;
+            margin-bottom: 10px;
+
+            .active-state {
+                margin-bottom: 5px;
+            }
 
             .axis-label {
                 text-align: center;
@@ -60,9 +72,14 @@
             }
         }
 
+        .control-panel-toggler,
         .control-panel {
+            margin-left: -10px;
+            margin-right: -10px;
             border-top: 1px solid #ddd;
             background-color: #eee;
+        }
+        .control-panel {
             padding: 10px;
 
             .row {
