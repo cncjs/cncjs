@@ -398,7 +398,7 @@ class JogFeedrateControl extends React.Component {
         let feedrate = this.normalizeToRange(this.state.feedrate, FEEDRATE_MIN, FEEDRATE_MAX);
 
         return (
-            <div className="form-group">
+            <div>
                 <label className="control-label">
                     {i18n._('Feed rate (mm/min):')}
                 </label>
@@ -474,7 +474,7 @@ class JogDistanceControl extends React.Component {
         let distance = this.normalizeToRange(this.state.distance, DISTANCE_MIN, DISTANCE_MAX);
 
         return (
-            <div className="form-group">
+            <div>
                 <label className="control-label">
                     {i18n._('Distance (mm):')}
                 </label>
