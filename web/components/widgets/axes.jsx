@@ -215,6 +215,7 @@ class DisplayPanel extends React.Component {
 class JogJoystickControl extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
+        activeState: React.PropTypes.string,
         feedrate: React.PropTypes.number,
         distance: React.PropTypes.number
     };
@@ -279,27 +280,72 @@ class JogJoystickControl extends React.Component {
     }
 
     render() {
+        let { activeState } = this.props;
+        let canClick = (activeState && activeState !== ACTIVE_STATE_RUN);
+
         return (
             <div>
                 <table className="table-centered">
                     <tbody>
                         <tr>
                             <td className="jog-x">
-                                <button type="button" className="btn btn-sm btn-default jog-x-minus" onClick={::this.jogBackwardX}>X-</button>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-x-minus"
+                                    onClick={::this.jogBackwardX}
+                                    disabled={!canClick}
+                                >
+                                    X-
+                                </button>
                             </td>
                             <td className="jog-y">
                                 <div className="btn-group-vertical">
-                                    <button type="button" className="btn btn-sm btn-default jog-y-plus" onClick={::this.jogForwardY}>Y+<i className="icon ion-arrow-up"></i></button>
-                                    <button type="button" className="btn btn-sm btn-default jog-y-minus" onClick={::this.jogBackwardY}>Y-<i className="icon ion-arrow-down"></i></button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-default jog-y-plus"
+                                        onClick={::this.jogForwardY}
+                                        disabled={!canClick}
+                                    >
+                                        Y+
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-default jog-y-minus"
+                                        onClick={::this.jogBackwardY}
+                                        disabled={!canClick}
+                                    >
+                                        Y-
+                                    </button>
                                 </div>
                             </td>
                             <td className="jog-x">
-                                <button type="button" className="btn btn-sm btn-default jog-x-plus" onClick={::this.jogForwardX}>X+</button>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-x-plus"
+                                    onClick={::this.jogForwardX}
+                                    disabled={!canClick}
+                                >
+                                    X+
+                                </button>
                             </td>
                             <td className="jog-z">
                                 <div className="btn-group-vertical">
-                                    <button type="button" className="btn btn-sm btn-default jog-z-plus" onClick={::this.jogForwardZ}>Z+</button>
-                                    <button type="button" className="btn btn-sm btn-default jog-z-minus" onClick={::this.jogBackwardZ}>Z-</button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-default jog-z-plus"
+                                        onClick={::this.jogForwardZ}
+                                        disabled={!canClick}
+                                    >
+                                        Z+
+                                    </button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-default jog-z-minus"
+                                        onClick={::this.jogBackwardZ}
+                                        disabled={!canClick}
+                                    >
+                                        Z-
+                                    </button>
                                 </div>
                             </td>
                         </tr>
@@ -451,6 +497,7 @@ class JogControlPanel extends React.Component {
         feedrate: FEEDRATE_DEFAULT
     };
     static propTypes = {
+        activeState: React.PropTypes.string,
         port: React.PropTypes.string
     };
 
@@ -495,20 +542,47 @@ class JogControlPanel extends React.Component {
         this.props.changeDisplayUnit(unit);
     }
     render() {
-        let { port } = this.props;
+        let { port, activeState } = this.props;
         let { feedrate, distance } = this.state;
+        let canClick = (activeState && activeState !== ACTIVE_STATE_RUN);
 
         return (
             <div className="container-fluid control-panel">
                 <div className="row">
                     <div className="col-sm-6">
-                        <JogJoystickControl port={port} feedrate={feedrate} distance={distance} />
+                        <JogJoystickControl
+                            port={port}
+                            activeState={activeState}
+                            feedrate={feedrate}
+                            distance={distance}
+                        />
                     </div>
                     <div className="col-sm-6">
                         <div className="btn-group-vertical">
-                            <button type="button" className="btn btn-xs btn-default" onClick={::this.handleGoToZero}>{i18n._('Go To Zero (G0)')}</button>
-                            <button type="button" className="btn btn-xs btn-default" onClick={::this.handleZeroOut}>{i18n._('Zero Out (G92)')}</button>
-                            <button type="button" className="btn btn-xs btn-default" onClick={::this.handleUnZeroOut}>{i18n._('Un-Zero Out (G92.1)')}</button>
+                            <button
+                                type="button"
+                                className="btn btn-xs btn-default"
+                                onClick={::this.handleGoToZero}
+                                disabled={!canClick}
+                            >
+                                {i18n._('Go To Zero (G0)')}
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-xs btn-default"
+                                onClick={::this.handleZeroOut}
+                                disabled={!canClick}
+                            >
+                                {i18n._('Zero Out (G92)')}
+                            </button>
+                            <button
+                                type="button"
+                                className="btn btn-xs btn-default"
+                                onClick={::this.handleUnZeroOut}
+                                disabled={!canClick}
+                            >
+                                {i18n._('Un-Zero Out (G92.1)')}
+                            </button>
                         </div>
                     </div>
                 </div>
@@ -529,7 +603,7 @@ class Axes extends React.Component {
     state = {
         port: '',
         unit: METRIC_UNIT,
-        activeState: '',
+        activeState: ACTIVE_STATE_IDLE,
         machinePos: { // Machine position
             x: '0.000',
             y: '0.000',
@@ -609,7 +683,6 @@ class Axes extends React.Component {
     }
     render() {
         let { port, unit, activeState, machinePos, workingPos, isCollapsed } = this.state;
-        let canToggle = (activeState && activeState !== ACTIVE_STATE_RUN);
         let classes = {
             icon: classNames(
                 'glyphicon',
@@ -630,7 +703,6 @@ class Axes extends React.Component {
                     workingPos={workingPos}
                 />
 
-                {canToggle &&
                 <div className="container-fluid control-panel-toggler">
                     <div className="row">
                         <div className="toggle-expand-collapse noselect" onClick={::this.toggleExpandCollapse}>
@@ -638,10 +710,13 @@ class Axes extends React.Component {
                         </div>
                     </div>
                 </div>
-                }
 
-                {canToggle && !isCollapsed &&
-                <JogControlPanel port={port} unit={unit} />
+                {!isCollapsed &&
+                <JogControlPanel
+                    port={port}
+                    unit={unit}
+                    activeState={activeState}
+                />
                 }
             </div>
         );

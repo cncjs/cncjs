@@ -349,7 +349,7 @@ export default class GCodeViewer extends React.Component {
         socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     socketOnGCodeQueueStatus(data) {
-        if (! this.gcodeRenderer) {
+        if (!(this.gcodeRenderer)) {
             return;
         }
 
