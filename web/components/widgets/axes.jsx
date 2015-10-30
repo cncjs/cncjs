@@ -365,7 +365,13 @@ class JogFeedrateControl extends React.Component {
     };
 
     normalizeToRange(n, min, max) {
-        return Math.min(Math.max(Number(n), min), max);
+        if (n < min) {
+            return min;
+        }
+        if (n > max) {
+            return max;
+        }
+        return n;
     }
     handleChange(event) {
         let feedrate = event.target.value;
@@ -415,7 +421,7 @@ class JogFeedrateControl extends React.Component {
                             <span className="glyphicon glyphicon-minus"></span>
                         </PressAndHold>
                         <button type="button" className="btn btn-default" onClick={::this.resetFeedrate} title={i18n._('Reset')}>
-                            <span className="glyphicon glyphicon-reset"></span>
+                            <span className="glyphicon glyphicon-repeat horizontal-mirror"></span>
                         </button>
                     </div>
                 </div>
@@ -433,7 +439,16 @@ class JogDistanceControl extends React.Component {
     };
 
     normalizeToRange(n, min, max) {
-        return Math.min(Math.max(Number(n), min), max);
+        if (n < min) {
+            return min;
+        }
+        if (n > max) {
+            return max;
+        }
+        return n;
+    }
+    handleChange(event) {
+        let feedrate = event.target.value;
     }
     handleChange(event) {
         let distance = event.target.value;
@@ -482,7 +497,7 @@ class JogDistanceControl extends React.Component {
                             <span className="glyphicon glyphicon-minus"></span>
                         </PressAndHold>
                         <button type="button" className="btn btn-default" onClick={::this.resetDistance} title={i18n._('Reset')}>
-                            <span className="glyphicon glyphicon-reset"></span>
+                            <span className="glyphicon glyphicon-repeat horizontal-mirror"></span>
                         </button>
                     </div>
                 </div>
@@ -757,7 +772,7 @@ export default class AxesWidget extends React.Component {
     render() {
         let width = 360;
         let title = (
-            <div><i className="glyphicon glyphicon-move"></i>{i18n._('Axes')}</div>
+            <div><i className="glyphicon glyphicon-transfer"></i>{i18n._('Axes')}</div>
         );
         let toolbarButtons = [
             'toggle'
