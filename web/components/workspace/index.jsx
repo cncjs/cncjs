@@ -11,7 +11,8 @@ import {
     ConsoleWidget,
     GCodeWidget,
     GCodeViewerWidget,
-    GrblWidget
+    GrblWidget,
+    SpindleWidget
 } from '../widgets';
 import log from '../../lib/log';
 import './workspace.css';
@@ -21,12 +22,14 @@ export default class Workspace extends React.Component {
         showPrimaryContainer: true,
         showSecondaryContainer: true,
         primaryContainer: [
-            <ConnectionWidget />,
-            <ConsoleWidget />
+            <ConnectionWidget key="connection" />,
+            <GrblWidget key="grbl" />,
+            <ConsoleWidget key="console" />
         ],
         secondaryContainer: [
-            <GCodeWidget />,
-            <AxesWidget />
+            <SpindleWidget key="spindle" />,
+            <AxesWidget key="axes" />,
+            <GCodeWidget key="gcode" />
         ]
     };
 
@@ -160,9 +163,7 @@ export default class Workspace extends React.Component {
                     <div className="workspace-table">
                         <div className="workspace-table-row">
                             <div className={classes.primaryContainer} ref="primaryContainer">
-                                <ConnectionWidget />
-                                <GrblWidget />
-                                <ConsoleWidget />
+                                {this.state.primaryContainer}
                             </div>
                             <div className="primary-toggler-pane" onClick={::this.togglePrimaryContainer}>
                                 <div>
@@ -178,8 +179,7 @@ export default class Workspace extends React.Component {
                                 </div>
                             </div>
                             <div className={classes.secondaryContainer} ref="secondaryContainer">
-                                <AxesWidget />
-                                <GCodeWidget />
+                                {this.state.secondaryContainer}
                             </div>
                         </div>
                     </div>

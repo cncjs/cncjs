@@ -4,6 +4,7 @@ import ConsoleWidget from './console';
 import GCodeWidget from './gcode';
 import GCodeViewerWidget from './gcode-viewer';
 import GrblWidget from './grbl';
+import SpindleWidget from './spindle';
 
 export {
     AxesWidget,
@@ -11,5 +12,6 @@ export {
     ConsoleWidget,
     GCodeWidget,
     GCodeViewerWidget,
-    GrblWidget
+    GrblWidget,
+    SpindleWidget
 };

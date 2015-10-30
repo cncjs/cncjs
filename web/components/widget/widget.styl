@@ -1,6 +1,6 @@
 $header-title-height = 32px
-$header-title-icon-size = 18px
-$header-toolbar-icon-size = 28px
+$header-title-icon-size = 14px
+$header-toolbar-icon-size = 12px
 
 [data-component="Widget"] {
     .widget {
@@ -52,9 +52,9 @@ $header-toolbar-icon-size = 28px
                 vertical-align: middle;
                 margin-bottom: 0;
 
-                i {
+                .glyphicon {
                     font-size: $header-title-icon-size;
-                    line-height: 1;
+                    top: 0;
                     vertical-align: middle;
                     margin-right: 5px;
                 }
@@ -70,18 +70,16 @@ $header-toolbar-icon-size = 28px
             .btn-group .dropdown-toggle .icon:focus {
                 color: #505050
             }
-            .btn i {
+            .btn .glyphicon {
                 position: relative;
-                top: 0;
-                margin-right: 2px;
-                font-size: 16px;
+                font-size: 12px;
                 line-height: 1;
             }
 
             .widget-header-toolbar {
                 float: right;
                 width: auto;
-                margin-left: 10px;
+                margin: 6px 0 0 10px;
 
                 &.btn-group {
                 }
@@ -96,19 +94,19 @@ $header-toolbar-icon-size = 28px
                     padding: 5px;
                     font-size: 85%;
 
-                    i {
+                    .glyphicon {
                         font-size: 14px;
                     }
                 }
                 .btn-link {
-                    padding: 0 0 0 10px;
+                    padding: 0;
+                    margin-left: 8px;
 
                     &:first-child {
                         padding-left: 0
                     }
-                    i {
+                    .glyphicon {
                         font-size: $header-toolbar-icon-size;
-                        line-height: 1;
                     }
                 }
             }

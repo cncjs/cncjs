@@ -61,41 +61,41 @@ class DisplayPanel extends React.Component {
         workingPos: React.PropTypes.object
     }
 
-    writeline() {
+    writeln() {
         let port = this.props.port;
         if (!port) {
             return;
         }
 
         let args = Array.prototype.slice.call(arguments);
-        socket.emit.apply(socket, ['serialport:writeline', port].concat(args));
+        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
     }
     handleGoToZeroX() {
-        this.writeline('G0 X0');
+        this.writeln('G0 X0');
     }
     handleGoToZeroY() {
-        this.writeline('G0 Y0');
+        this.writeln('G0 Y0');
     }
     handleGoToZeroZ() {
-        this.writeline('G0 Z0');
+        this.writeln('G0 Z0');
     }
     handleZeroOutX() {
-        this.writeline('G92 X0');
+        this.writeln('G92 X0');
     }
     handleUnZeroOutX() {
-        this.writeline('G92.1 X0');
+        this.writeln('G92.1 X0');
     }
     handleZeroOutY() {
-        this.writeline('G92 Y0');
+        this.writeln('G92 Y0');
     }
     handleUnZeroOutY() {
-        this.writeline('G92.1 Y0');
+        this.writeln('G92.1 Y0');
     }
     handleZeroOutZ() {
-        this.writeline('G92 Z0');
+        this.writeln('G92 Z0');
     }
     handleUnZeroOutZ() {
-        this.writeline('G92.1 Z0');
+        this.writeln('G92.1 Z0');
     }
     convertPositionUnit(pos) {
         pos = Number(pos);
@@ -107,14 +107,14 @@ class DisplayPanel extends React.Component {
         return '' + pos;
     }
     render() {
-        let { unit, activeState } = this.props;
+        let { port, unit, activeState } = this.props;
         let machinePos = _.mapValues(this.props.machinePos, (pos, axis) => {
             return this.convertPositionUnit(pos);
         }.bind(this));
         let workingPos = _.mapValues(this.props.workingPos, (pos, axis) => {
             return this.convertPositionUnit(pos);
         }.bind(this));
-        let canClick = (activeState && activeState !== ACTIVE_STATE_RUN);
+        let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
 
         return (
             <div className="container-fluid display-panel">
@@ -220,7 +220,7 @@ class JogJoystickControl extends React.Component {
         distance: React.PropTypes.number
     };
 
-    writeline() {
+    writeln() {
         let port = this.props.port;
         if (!port) {
             return;
@@ -228,7 +228,7 @@ class JogJoystickControl extends React.Component {
 
         let args = Array.prototype.slice.call(arguments);
 
-        socket.emit.apply(socket, ['serialport:writeline', port].concat(args));
+        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
     }
     jogForwardX() {
         let msg = [
@@ -236,7 +236,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' X' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeline(msg);
+        this.writeln(msg);
     }
     jogBackwardX() {
         let msg = [
@@ -244,7 +244,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' X-' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeline(msg);
+        this.writeln(msg);
     }
     jogForwardY() {
         let msg = [
@@ -252,7 +252,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' Y' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeline(msg);
+        this.writeln(msg);
     }
     jogBackwardY() {
         let msg = [
@@ -260,7 +260,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' Y-' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeline(msg);
+        this.writeln(msg);
     }
     jogForwardZ() {
         let msg = [
@@ -268,7 +268,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' Z' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeline(msg);
+        this.writeln(msg);
     }
     jogBackwardZ() {
         let msg = [
@@ -276,12 +276,12 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' Z-' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeline(msg);
+        this.writeln(msg);
     }
 
     render() {
-        let { activeState } = this.props;
-        let canClick = (activeState && activeState !== ACTIVE_STATE_RUN);
+        let { port, activeState } = this.props;
+        let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
 
         return (
             <div>
@@ -365,7 +365,13 @@ class JogFeedrateControl extends React.Component {
     };
 
     normalizeToRange(n, min, max) {
-        return Math.min(Math.max(Number(n), min), max);
+        if (n < min) {
+            return min;
+        }
+        if (n > max) {
+            return max;
+        }
+        return n;
     }
     handleChange(event) {
         let feedrate = event.target.value;
@@ -392,7 +398,7 @@ class JogFeedrateControl extends React.Component {
         let feedrate = this.normalizeToRange(this.state.feedrate, FEEDRATE_MIN, FEEDRATE_MAX);
 
         return (
-            <div className="form-group">
+            <div>
                 <label className="control-label">
                     {i18n._('Feed rate (mm/min):')}
                 </label>
@@ -415,7 +421,7 @@ class JogFeedrateControl extends React.Component {
                             <span className="glyphicon glyphicon-minus"></span>
                         </PressAndHold>
                         <button type="button" className="btn btn-default" onClick={::this.resetFeedrate} title={i18n._('Reset')}>
-                            <span className="glyphicon glyphicon-reset"></span>
+                            <span className="glyphicon glyphicon-repeat horizontal-mirror"></span>
                         </button>
                     </div>
                 </div>
@@ -433,7 +439,16 @@ class JogDistanceControl extends React.Component {
     };
 
     normalizeToRange(n, min, max) {
-        return Math.min(Math.max(Number(n), min), max);
+        if (n < min) {
+            return min;
+        }
+        if (n > max) {
+            return max;
+        }
+        return n;
+    }
+    handleChange(event) {
+        let feedrate = event.target.value;
     }
     handleChange(event) {
         let distance = event.target.value;
@@ -459,7 +474,7 @@ class JogDistanceControl extends React.Component {
         let distance = this.normalizeToRange(this.state.distance, DISTANCE_MIN, DISTANCE_MAX);
 
         return (
-            <div className="form-group">
+            <div>
                 <label className="control-label">
                     {i18n._('Distance (mm):')}
                 </label>
@@ -482,7 +497,7 @@ class JogDistanceControl extends React.Component {
                             <span className="glyphicon glyphicon-minus"></span>
                         </PressAndHold>
                         <button type="button" className="btn btn-default" onClick={::this.resetDistance} title={i18n._('Reset')}>
-                            <span className="glyphicon glyphicon-reset"></span>
+                            <span className="glyphicon glyphicon-repeat horizontal-mirror"></span>
                         </button>
                     </div>
                 </div>
@@ -507,7 +522,7 @@ class JogControlPanel extends React.Component {
     changeDistance(distance) {
         this.setState({ distance: distance });
     }
-    writeline() {
+    writeln() {
         let port = this.props.port;
         if (!port) {
             return;
@@ -515,16 +530,16 @@ class JogControlPanel extends React.Component {
 
         let args = Array.prototype.slice.call(arguments);
 
-        socket.emit.apply(socket, ['serialport:writeline', port].concat(args));
+        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
     }
     handleGoToZero() {
-        this.writeline('G0 X0 Y0 Z0');
+        this.writeln('G0 X0 Y0 Z0');
     }
     handleZeroOut() {
-        this.writeline('G92 X0 Y0 Z0');
+        this.writeln('G92 X0 Y0 Z0');
     }
     handleUnZeroOut() {
-        this.writeline('G92.1 X0 Y0 Z0');
+        this.writeln('G92.1 X0 Y0 Z0');
     }
     // experimental feature
     handleToggleUnit() {
@@ -533,18 +548,18 @@ class JogControlPanel extends React.Component {
         if (this.props.unit === METRIC_UNIT) {
             unit = IMPERIAL_UNIT;
             
-            //this.writeline('G20'); // G20 specifies Imperial (inch) unit
+            //this.writeln('G20'); // G20 specifies Imperial (inch) unit
         } else {
             unit = METRIC_UNIT;
 
-            //this.writeline('G21'); // G21 specifies Metric (mm) unit
+            //this.writeln('G21'); // G21 specifies Metric (mm) unit
         }
         this.props.changeDisplayUnit(unit);
     }
     render() {
-        let { port, activeState } = this.props;
+        let { port, unit, activeState } = this.props;
         let { feedrate, distance } = this.state;
-        let canClick = (activeState && activeState !== ACTIVE_STATE_RUN);
+        let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
 
         return (
             <div className="container-fluid control-panel">
@@ -682,11 +697,11 @@ class Axes extends React.Component {
         if (this.state.unit === METRIC_UNIT) {
             unit = IMPERIAL_UNIT;
             
-            //this.writeline('G20'); // G20 specifies Imperial (inch) unit
+            //this.writeln('G20'); // G20 specifies Imperial (inch) unit
         } else {
             unit = METRIC_UNIT;
 
-            //this.writeline('G21'); // G21 specifies Metric (mm) unit
+            //this.writeln('G21'); // G21 specifies Metric (mm) unit
         }
         this.setState({ unit: unit });
     }
@@ -757,7 +772,7 @@ export default class AxesWidget extends React.Component {
     render() {
         let width = 360;
         let title = (
-            <div><i className="glyphicon glyphicon-move"></i>{i18n._('Axes')}</div>
+            <div><i className="glyphicon glyphicon-transfer"></i>{i18n._('Axes')}</div>
         );
         let toolbarButtons = [
             'toggle'

@@ -2,6 +2,7 @@ import _ from 'lodash';
 import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 import classNames from 'classnames';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
@@ -130,46 +131,14 @@ class Grbl extends React.Component {
         let args = Array.prototype.slice.call(arguments);
         socket.emit.apply(socket, ['serialport:write', port].concat(args));
     }
-    writeline() {
-        let port = this.props.port;
+    writeln() {
+        let port = this.state.port;
         if (!port) {
             return;
         }
 
         let args = Array.prototype.slice.call(arguments);
-        socket.emit.apply(socket, ['serialport:writeline', port].concat(args));
-    }
-    handleFeedHold() {
-        this.write('!');
-    }
-    handleCycleStart() {
-        this.write('~');
-    }
-    handleResetGrbl() {
-        this.write('\x18');
-    }
-    handleUnlockGrbl() {
-        this.write('$X');
-    }
-    // To start the spindle turning clockwise at the currently programmed speed, program: M3.
-    handleSpindleOnCW(speed) {
-        if (_.isNumber(speed)) {
-            this.writeline('M3 S' + speed);
-        } else {
-            this.writeline('M3');
-        }
-    }
-    // To start the spindle turning counterclockwise at the currently programmed speed, program: M4.
-    handleSpindleOnCCW(speed) {
-        if (_.isNumber(speed)) {
-            this.writeline('M4 S' + speed);
-        } else {
-            this.writeline('M4');
-        }
-    }
-    // To stop the spindle from turning, program: M5.
-    handleSpindleOff() {
-        this.writeline('M5');
+        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
     }
     render() {
         let canClick = !!this.state.port;
@@ -177,53 +146,23 @@ class Grbl extends React.Component {
         return (
             <div>
                 <div className="form-group">
-                    <label>{i18n._('Cycle control:')}</label>
                     <div className="btn-group btn-group-justified" role="group" aria-label="...">
-                        <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-danger" onClick={::this.handleFeedHold} disabled={!canClick}>
-                                {i18n._('Feed Hold')}
-                            </button>
-                        </div>
-                        <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-primary" onClick={::this.handleCycleStart} disabled={!canClick}>
-                                {i18n._('Cycle Start')}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label>{i18n._('Reset control:')}</label>
-                    <div className="btn-group btn-group-justified" role="group" aria-label="...">
-                        <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGrbl} disabled={!canClick}>
-                                {i18n._('Soft Reset Grbl')}
-                            </button>
-                        </div>
-                        <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleUnlockGrbl} disabled={!canClick}>
-                                {i18n._('Unlock Grbl')}
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label>{i18n._('Spindle control:')}</label>
-                    <div className="btn-group btn-group-justified" role="group" aria-label="...">
-                        <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOnCW} disabled={!canClick}>
-                                {i18n._('On (CW)')}
-                            </button>
-                        </div>
-                        <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOnCCW} disabled={!canClick}>
-                                {i18n._('On (CCW)')}
-                            </button>
-                        </div>
-                        <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOff} disabled={!canClick}>
-                                {i18n._('Off')}
-                            </button>
-                        </div>
+                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('Real-Time Commands')} id="realtime-commands">
+                            <MenuItem onSelect={() => this.write('~')} disabled={!canClick}>{i18n._('Cycle Start (~)')}</MenuItem>
+                            <MenuItem onSelect={() => this.write('!')} disabled={!canClick}>{i18n._('Feed Hold (!)')}</MenuItem>
+                            <MenuItem onSelect={() => this.write('?')} disabled={!canClick}>{i18n._('Current Status (?)')}</MenuItem>
+                            <MenuItem onSelect={() => this.write('\x18')} disabled={!canClick}>{i18n._('Reset Grbl (Ctrl-X)')}</MenuItem>
+                        </DropdownButton>
+                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('System Commands')} id="system-commands">
+                            <MenuItem onSelect={() => this.writeln('$#')} disabled={!canClick}>{i18n._('View G-code Parameters ($#)')}</MenuItem>
+                            <MenuItem onSelect={() => this.writeln('$G')} disabled={!canClick}>{i18n._('View G-code Parser State ($G)')}</MenuItem>
+                            <MenuItem onSelect={() => this.writeln('$I')} disabled={!canClick}>{i18n._('View Build Info ($I)')}</MenuItem>
+                            <MenuItem onSelect={() => this.writeln('$N')} disabled={!canClick}>{i18n._('View Startup Blocks ($N)')}</MenuItem>
+                            <MenuItem divider />
+                            <MenuItem onSelect={() => this.writeln('$C')} disabled={!canClick}>{i18n._('Check G-code Mode ($C)')}</MenuItem>
+                            <MenuItem onSelect={() => this.writeln('$X')} disabled={!canClick}>{i18n._('Kill Alarm Lock ($X)')}</MenuItem>
+                            <MenuItem onSelect={() => this.writeln('$H')} disabled={!canClick}>{i18n._('Run Homing Cycle ($H)')}</MenuItem>
+                        </DropdownButton>
                     </div>
                 </div>
             </div>

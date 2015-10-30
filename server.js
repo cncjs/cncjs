@@ -445,14 +445,14 @@ module.exports = function(server) {
             sp.sockets[socket.id].command = msg;
         });
 
-        socket.on('serialport:writeline', function(port, msg) {
+        socket.on('serialport:writeln', function(port, msg) {
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }
 
-            log.debug('serialport:writeline:', { id: socket.id, port: port, msg: msg });
+            log.debug('serialport:writeln:', { id: socket.id, port: port, msg: msg });
 
             msg = ('' + msg).trim();
             if (msg !== '?') { // no newline for the current status command

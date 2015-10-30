@@ -28,6 +28,12 @@ table tbody > tr > td {
     border-bottom-width: 1px;
 }
 
+// Set the line-height to 20px due to the change of default font-size from 14px to 12px
+.checkbox label,
+.radio label {
+    line-height: 20px;
+}
+
 // Vertical Spacing for Bootstrap Columns
 // https://coderwall.com/p/0jezca/vertical-spacing-for-bootstrap-columns
 row {
@@ -55,3 +61,42 @@ row {
         }
     }
 }
+
+// http://stackoverflow.com/questions/22920589/bootstrap-3-input-xs-smaller-than-sm
+.input-group-xs .form-control,
+.input-group-xs .input-group-addon,
+.input-group-xs .input-group-btn .btn {
+    height: 22px;
+    padding: 1px 5px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+// Bootstrap No-Gutter Grid
+.row.no-gutter{
+    margin-right: 0;
+    margin-left: 0;
+            
+    [class*="col-"] {
+        padding-right: 0;
+        padding-left: 0;
+    }
+}
+
+
+//
+// react-select
+//
+
+.Select-control {
+    border-radius: 3px;
+    height: 30px;
+    padding: 0 52px 0 10px;
+}
+.Select-placeholder,
+.Select-value {
+    padding: 0 52px 0 10px;
+    height: 30px;
+    line-height: 30px;
+}
+

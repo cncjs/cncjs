@@ -29,7 +29,7 @@ class ConsoleInput extends React.Component {
         let el = React.findDOMNode(this.refs.command);
         this.props.onSend('> ' + el.value);
 
-        socket.emit('serialport:writeline', this.props.port, el.value);
+        socket.emit('serialport:writeln', this.props.port, el.value);
 
         el.value = '';
     }
@@ -38,11 +38,11 @@ class ConsoleInput extends React.Component {
     }
     handleGrblHelp() {
         this.props.onSend('> $');
-        socket.emit('serialport:writeline', this.props.port, '$');
+        socket.emit('serialport:writeln', this.props.port, '$');
     }
     handleGrblSettings() {
         this.props.onSend('> $$');
-        socket.emit('serialport:writeline', this.props.port, '$$');
+        socket.emit('serialport:writeln', this.props.port, '$$');
     }
     render() {
         let { port } = this.props;
