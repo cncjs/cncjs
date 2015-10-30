@@ -162,7 +162,7 @@ class Connection extends React.Component {
     isPortInUse(port) {
         port = port || this.state.port;
         let o = _.findWhere(this.state.ports, { port: port }) || {};
-        return !! o.inuse;
+        return !!(o.inuse);
     }
     handleRefresh() {
         socket.emit('list');
@@ -236,7 +236,7 @@ class Connection extends React.Component {
         );
     }
     renderPortValue(option) {
-        let notLoading = ! this.state.loading;
+        let notLoading = !(this.state.loading);
         let canChangePort = notLoading;
         let style = {
             color: canChangePort ? '#333' : '#ccc',
@@ -253,8 +253,8 @@ class Connection extends React.Component {
         );
     }
     renderBaudrateValue(option) {
-        let notLoading = ! this.state.loading;
-        let notInUse = ! this.isPortInUse(this.state.port);
+        let notLoading = !(this.state.loading);
+        let notInUse = !(this.isPortInUse(this.state.port));
         let canChangeBaudrate = notLoading && notInUse;
         let style = {
             color: canChangeBaudrate ? '#333' : '#ccc',
@@ -266,13 +266,13 @@ class Connection extends React.Component {
         );
     }
     render() {
-        let notLoading = ! this.state.loading;
-        let notConnecting = ! this.state.connecting;
-        let notConnected = ! this.state.connected;
+        let notLoading = !(this.state.loading);
+        let notConnecting = !(this.state.connecting);
+        let notConnected = !(this.state.connected);
         let isConnected = this.state.connected;
         let canRefresh = notLoading && notConnected;
         let canChangePort = notLoading && notConnected;
-        let canChangeBaudrate = notLoading && notConnected && (! this.isPortInUse(this.state.port));
+        let canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(this.state.port)));
         let canOpenPort = this.state.port && this.state.baudrate && notConnecting && notConnected;
         let canClosePort = isConnected;
 
@@ -293,7 +293,7 @@ class Connection extends React.Component {
                                     inuse: port.inuse
                                 };
                             })}
-                            disabled={! canChangePort}
+                            disabled={!canChangePort}
                             backspaceRemoves={false}
                             clearable={false}
                             searchable={false}
@@ -304,7 +304,7 @@ class Connection extends React.Component {
                             onChange={::this.changePort}
                         />
                         <div className="input-group-btn">
-                            <button type="button" className="btn btn-default" name="btn-refresh" title={i18n._('Refresh')} onClick={::this.handleRefresh} disabled={! canRefresh}>
+                            <button type="button" className="btn btn-default" name="btn-refresh" title={i18n._('Refresh')} onClick={::this.handleRefresh} disabled={!canRefresh}>
                             {notLoading
                                 ? <i className="glyphicon glyphicon-refresh"></i>
                                 : <i className="glyphicon glyphicon-refresh rotating"></i>
@@ -324,7 +324,7 @@ class Connection extends React.Component {
                                 label: Number(baudrate).toString()
                             };
                         })}
-                        disabled={! canChangeBaudrate}
+                        disabled={!canChangeBaudrate}
                         backspaceRemoves={false}
                         clearable={false}
                         searchable={false}
@@ -338,7 +338,7 @@ class Connection extends React.Component {
                         <button
                             type="button"
                             className="btn btn-default"
-                            disabled={! canOpenPort}
+                            disabled={!canOpenPort}
                             onClick={::this.openPort}
                         >
                             <i className="icon ion-power"></i>&nbsp;{i18n._('Open')}
@@ -348,7 +348,7 @@ class Connection extends React.Component {
                         <button
                             type="button"
                             className="btn btn-danger"
-                            disabled={! canClosePort}
+                            disabled={!canClosePort}
                             onClick={::this.closePort}
                         >
                             <i className="icon ion-close"></i>&nbsp;{i18n._('Close')}

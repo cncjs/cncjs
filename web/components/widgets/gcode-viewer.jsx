@@ -160,7 +160,7 @@ class Toolbar extends React.Component {
     siofuComplete(event) {
         log.debug('Upload complete:', event);
 
-        if (! event.success) {
+        if (!(event.success)) {
             log.error('File upload to the server failed.');
             return;
         }
@@ -170,7 +170,7 @@ class Toolbar extends React.Component {
         // @param queueStatus.executed
         // @param queueStatus.total
 
-        if (! event.detail.connected) {
+        if (!(event.detail.connected)) {
             log.error('Upload failed. The port is not open.');
             return;
         }
@@ -247,7 +247,7 @@ class Toolbar extends React.Component {
     }
     render() {
         let isLoaded = this.state.isLoaded;
-        let notLoaded = ! isLoaded;
+        let notLoaded = !isLoaded;
         let canUpload = !!this.state.port && notLoaded;
         let canRun = isLoaded && _.includes(['idle', 'pause'], this.state.currentStatus);
         let canPause = isLoaded && _.includes(['run'], this.state.currentStatus);
@@ -257,20 +257,20 @@ class Toolbar extends React.Component {
         return (
             <div className="btn-toolbar" role="toolbar">
                 <div className="btn-group btn-group-sm" role="group">
-                    <button type="button" className="btn btn-default" title={i18n._('Upload G-Code')} onClick={::this.handleUpload} disabled={! canUpload}>
+                    <button type="button" className="btn btn-default" title={i18n._('Upload G-Code')} onClick={::this.handleUpload} disabled={!canUpload}>
                         <i className="glyphicon glyphicon-cloud-upload"></i>
                         <input type="file" className="hidden" ref="file" onChange={::this.handleFile} />
                     </button>
-                    <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={! canRun}>
+                    <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={!canRun}>
                         <i className="glyphicon glyphicon-play"></i>
                     </button>
-                    <button type="button" className="btn btn-default" title={i18n._('Pause')} onClick={::this.handlePause} disabled={! canPause}>
+                    <button type="button" className="btn btn-default" title={i18n._('Pause')} onClick={::this.handlePause} disabled={!canPause}>
                         <i className="glyphicon glyphicon-pause"></i>
                     </button>
-                    <button type="button" className="btn btn-default" title={i18n._('Stop')} onClick={::this.handleStop} disabled={! canStop}>
+                    <button type="button" className="btn btn-default" title={i18n._('Stop')} onClick={::this.handleStop} disabled={!canStop}>
                         <i className="glyphicon glyphicon-stop"></i>
                     </button>
-                    <button type="button" className="btn btn-default" title={i18n._('Close')} onClick={::this.handleClose} disabled={! canClose}>
+                    <button type="button" className="btn btn-default" title={i18n._('Close')} onClick={::this.handleClose} disabled={!canClose}>
                         <i className="glyphicon glyphicon-trash"></i>
                     </button>
                 </div>
@@ -360,7 +360,7 @@ export default class GCodeViewer extends React.Component {
     }
     addResizeEventListener() {
         // handle resize event
-        if (! this.onResize) {
+        if (!(this.onResize)) {
             this.onResize = () => {
                 this.resizeRenderer();
             };
@@ -374,7 +374,7 @@ export default class GCodeViewer extends React.Component {
         window.removeEventListener('resize', this.onResizeThrottled);
     }
     resizeRenderer() {
-        if (! (this.camera && this.renderer)) {
+        if (!(this.camera && this.renderer)) {
             return;
         }
 

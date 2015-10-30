@@ -84,7 +84,7 @@ class GCodeTable extends React.Component {
         return this.props.data[index];
     }
     onContentHeightChange(contentHeight) {
-        if ( ! this.props.onContentDimensionsChange) {
+        if (!(this.props.onContentDimensionsChange)) {
             return;
         }
         this.props.onContentDimensionsChange(
@@ -471,7 +471,7 @@ export default class GCode extends React.Component {
         let rowHeight = 30;
         let visibleRows = Math.floor(tableHeight / rowHeight);
         let isLoaded = (_.size(this.state.commands) > 0);
-        let notLoaded = ! isLoaded;
+        let notLoaded = !isLoaded;
         let scrollToRow = Math.min(
             this.state.queueStatus.executed + (Math.floor(visibleRows / 2) - 1),
             this.state.queueStatus.total
