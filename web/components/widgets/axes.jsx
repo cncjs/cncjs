@@ -63,7 +63,7 @@ class DisplayPanel extends React.Component {
 
     writeline() {
         let port = this.props.port;
-        if ( ! port) {
+        if (!port) {
             return;
         }
 
@@ -222,7 +222,7 @@ class JogJoystickControl extends React.Component {
 
     writeline() {
         let port = this.props.port;
-        if ( ! port) {
+        if (!port) {
             return;
         }
 
@@ -509,7 +509,7 @@ class JogControlPanel extends React.Component {
     }
     writeline() {
         let port = this.props.port;
-        if ( ! port) {
+        if (!port) {
             return;
         }
 
@@ -673,7 +673,7 @@ class Axes extends React.Component {
     }
     toggleExpandCollapse() {
         this.setState({
-            isCollapsed: ! this.state.isCollapsed
+            isCollapsed: !(this.state.isCollapsed)
         });
     }
     handleToolbarButtonClick(btn) {

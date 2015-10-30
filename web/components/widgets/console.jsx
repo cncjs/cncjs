@@ -68,7 +68,7 @@ class ConsoleInput extends React.Component {
         socket.emit('serialport:writeline', this.state.port, '$$');
     }
     render() {
-        let canInput = !! this.state.port;
+        let canInput = !!(this.state.port);
         let canSend = canInput;
         let canClearAll = canInput;
         let canViewGrblHelp = canInput;
@@ -83,21 +83,21 @@ class ConsoleInput extends React.Component {
                         onKeyDown={::this.handleKeyDown}
                         ref="command"
                         placeholder={i18n._('Type serial port command')}
-                        disabled={! canInput}
+                        disabled={!canInput}
                     />
                     <div className="input-group-btn">
                         <button
                             type="button"
                             className="btn btn-default"
                             onClick={::this.handleSend}
-                            disabled={! canSend}
+                            disabled={!canSend}
                         >
                             {i18n._('Send')}
                         </button>
                         <DropdownButton bsSize="sm" title="" id="console-command-dropdown" pullRight>
-                            <MenuItem onSelect={::this.handleClear} disabled={! canClearAll}>{i18n._('Clear all')}</MenuItem>
-                            <MenuItem onSelect={::this.handleGrblHelp} disabled={! canViewGrblHelp}>{i18n._('Grbl Help ($)')}</MenuItem>
-                            <MenuItem onSelect={::this.handleGrblSettings} disabled={! canViewGrblSettings}>{i18n._('Grbl Settings ($$)')}</MenuItem>
+                            <MenuItem onSelect={::this.handleClear} disabled={!canClearAll}>{i18n._('Clear all')}</MenuItem>
+                            <MenuItem onSelect={::this.handleGrblHelp} disabled={!canViewGrblHelp}>{i18n._('Grbl Help ($)')}</MenuItem>
+                            <MenuItem onSelect={::this.handleGrblSettings} disabled={!canViewGrblSettings}>{i18n._('Grbl Settings ($$)')}</MenuItem>
                         </DropdownButton>
                     </div>
                 </div>

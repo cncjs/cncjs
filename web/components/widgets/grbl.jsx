@@ -123,7 +123,7 @@ class Grbl extends React.Component {
     }
     write() {
         let port = this.state.port;
-        if ( ! port) {
+        if (!port) {
             return;
         }
 
@@ -132,7 +132,7 @@ class Grbl extends React.Component {
     }
     writeline() {
         let port = this.props.port;
-        if ( ! port) {
+        if (!port) {
             return;
         }
 
@@ -180,12 +180,12 @@ class Grbl extends React.Component {
                     <label>{i18n._('Cycle control:')}</label>
                     <div className="btn-group btn-group-justified" role="group" aria-label="...">
                         <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-danger" onClick={::this.handleFeedHold} disabled={! canClick}>
+                            <button type="button" className="btn btn-sm btn-danger" onClick={::this.handleFeedHold} disabled={!canClick}>
                                 {i18n._('Feed Hold')}
                             </button>
                         </div>
                         <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-primary" onClick={::this.handleCycleStart} disabled={! canClick}>
+                            <button type="button" className="btn btn-sm btn-primary" onClick={::this.handleCycleStart} disabled={!canClick}>
                                 {i18n._('Cycle Start')}
                             </button>
                         </div>
@@ -195,12 +195,12 @@ class Grbl extends React.Component {
                     <label>{i18n._('Reset control:')}</label>
                     <div className="btn-group btn-group-justified" role="group" aria-label="...">
                         <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGrbl} disabled={! canClick}>
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleResetGrbl} disabled={!canClick}>
                                 {i18n._('Soft Reset Grbl')}
                             </button>
                         </div>
                         <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleUnlockGrbl} disabled={! canClick}>
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleUnlockGrbl} disabled={!canClick}>
                                 {i18n._('Unlock Grbl')}
                             </button>
                         </div>
@@ -210,17 +210,17 @@ class Grbl extends React.Component {
                     <label>{i18n._('Spindle control:')}</label>
                     <div className="btn-group btn-group-justified" role="group" aria-label="...">
                         <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOnCW} disabled={! canClick}>
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOnCW} disabled={!canClick}>
                                 {i18n._('On (CW)')}
                             </button>
                         </div>
                         <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOnCCW} disabled={! canClick}>
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOnCCW} disabled={!canClick}>
                                 {i18n._('On (CCW)')}
                             </button>
                         </div>
                         <div className="btn-group" role="group">
-                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOff} disabled={! canClick}>
+                            <button type="button" className="btn btn-sm btn-default" onClick={::this.handleSpindleOff} disabled={!canClick}>
                                 {i18n._('Off')}
                             </button>
                         </div>
