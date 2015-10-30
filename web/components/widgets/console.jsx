@@ -76,33 +76,29 @@ class ConsoleInput extends React.Component {
 
         return (
             <div className="console-input">
-                <div className="form-inline">
-                    <div className="form-group">
-                        <div className="input-group input-group-sm">
-                            <input
-                                type="text"
-                                className="form-control"
-                                onKeyDown={::this.handleKeyDown}
-                                ref="command"
-                                placeholder={i18n._('Type serial port command')}
-                                disabled={! canInput}
-                            />
-                            <div className="input-group-btn">
-                                <button
-                                    type="button"
-                                    className="btn btn-default"
-                                    onClick={::this.handleSend}
-                                    disabled={! canSend}
-                                >
-                                    {i18n._('Send')}
-                                </button>
-                                <DropdownButton bsSize="sm" title="" id="console-command-dropdown" pullRight>
-                                    <MenuItem onSelect={::this.handleClear} disabled={! canClearAll}>{i18n._('Clear all')}</MenuItem>
-                                    <MenuItem onSelect={::this.handleGrblHelp} disabled={! canViewGrblHelp}>{i18n._('Grbl Help ($)')}</MenuItem>
-                                    <MenuItem onSelect={::this.handleGrblSettings} disabled={! canViewGrblSettings}>{i18n._('Grbl Settings ($$)')}</MenuItem>
-                                </DropdownButton>
-                            </div>
-                        </div>
+                <div className="input-group input-group-sm">
+                    <input
+                        type="text"
+                        className="form-control"
+                        onKeyDown={::this.handleKeyDown}
+                        ref="command"
+                        placeholder={i18n._('Type serial port command')}
+                        disabled={! canInput}
+                    />
+                    <div className="input-group-btn">
+                        <button
+                            type="button"
+                            className="btn btn-default"
+                            onClick={::this.handleSend}
+                            disabled={! canSend}
+                        >
+                            {i18n._('Send')}
+                        </button>
+                        <DropdownButton bsSize="sm" title="" id="console-command-dropdown" pullRight>
+                            <MenuItem onSelect={::this.handleClear} disabled={! canClearAll}>{i18n._('Clear all')}</MenuItem>
+                            <MenuItem onSelect={::this.handleGrblHelp} disabled={! canViewGrblHelp}>{i18n._('Grbl Help ($)')}</MenuItem>
+                            <MenuItem onSelect={::this.handleGrblSettings} disabled={! canViewGrblSettings}>{i18n._('Grbl Settings ($$)')}</MenuItem>
+                        </DropdownButton>
                     </div>
                 </div>
             </div>
