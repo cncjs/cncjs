@@ -513,7 +513,7 @@ export default class GCodeWidget extends React.Component {
     render() {
         let width = 360;
         let title = (
-            <div><i className="glyphicon glyphicon-tasks"></i>{i18n._('GCode')}</div>
+            <div><i className="glyphicon glyphicon-dashboard"></i>{i18n._('G-code')}</div>
         );
         let toolbarButtons = [
             'toggle'
