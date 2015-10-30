@@ -634,6 +634,10 @@ class Axes extends React.Component {
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
                 that.setState({ port: port });
+
+                if (!port) {
+                    that.resetCurrentStatus();
+                }
             });
             this.pubsubTokens.push(token);
         }
@@ -655,6 +659,21 @@ class Axes extends React.Component {
             activeState: data.activeState,
             machinePos: data.machinePos,
             workingPos: data.workingPos
+        });
+    }
+    resetCurrentStatus() {
+        this.setState({
+            activeState: ACTIVE_STATE_IDLE,
+            machinePos: { // Machine position
+                x: '0.000',
+                y: '0.000',
+                z: '0.000'
+            },
+            workingPos: { // Working position
+                x: '0.000',
+                y: '0.000',
+                z: '0.000'
+            }
         });
     }
     toggleDisplayUnit() {
