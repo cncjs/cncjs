@@ -32,7 +32,7 @@ class WidgetHeaderToolbar extends React.Component {
                style={style}
                onClick={() => this.handleClick('drag')}
             >
-                <i className="icon ion-ios-drag"></i>
+                <i className="glyphicon glyphicon-menu-hamburger"></i>
             </a>
         );
     }
@@ -44,7 +44,7 @@ class WidgetHeaderToolbar extends React.Component {
                className="btn btn-link btn-refresh"
                onClick={() => this.handleClick('refresh')}
             >
-                <i className="icon ion-ios-refresh-empty"></i>
+                <i className="glyphicon glyphicon-refresh"></i>
             </a>
         );
     }
@@ -56,15 +56,15 @@ class WidgetHeaderToolbar extends React.Component {
                className="btn btn-link btn-remove"
                onClick={() => this.handleClick('remove')}
             >
-                <i className="icon ion-ios-close-empty"></i>
+                <i className="glyphicon glyphicon-remove"></i>
             </a>
         );
     }
     renderToggleButton() {
         let iconClassNames = classNames(
-            'icon',
-            { 'ion-ios-arrow-up': ! this.state.isCollapsed },
-            { 'ion-ios-arrow-down': this.state.isCollapsed }
+            'glyphicon',
+            { 'glyphicon-chevron-up': ! this.state.isCollapsed },
+            { 'glyphicon-chevron-down': this.state.isCollapsed }
         );
 
         return (
