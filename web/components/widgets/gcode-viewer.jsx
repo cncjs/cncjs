@@ -118,6 +118,11 @@ class Toolbar extends React.Component {
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
                 that.setState({ port: port });
+
+                if (!port) {
+                    that.reset();
+                }
+
             });
             this.pubsubTokens.push(token);
         }
@@ -226,7 +231,9 @@ class Toolbar extends React.Component {
     }
     handlePause() {
         socket.emit('gcode:pause', this.state.port);
-        this.setState({ currentStatus: 'pause' });
+        this.setState({
+            currentStatus: 'pause'
+        });
     }
     handleStop() {
         socket.emit('gcode:stop', this.state.port);
@@ -240,6 +247,14 @@ class Toolbar extends React.Component {
 
         pubsub.publish('gcode:data', '');
 
+        this.setState({
+            currentStatus: 'idle',
+            isLoaded: false
+        });
+    }
+    reset() {
+        pubsub.publish('gcode:stop');
+        pubsub.publish('gcode:data', '');
         this.setState({
             currentStatus: 'idle',
             isLoaded: false

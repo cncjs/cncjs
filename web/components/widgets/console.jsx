@@ -13,35 +13,12 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 const MESSAGE_LIMIT = 5000;
 
 class ConsoleInput extends React.Component {
-    state = {
-        port: ''
+    static propTypes = {
+        port: React.PropTypes.string,
+        onSend: React.PropTypes.func,
+        onClear: React.PropTypes.func
     };
 
-    componentDidMount() {
-        this.subscribe();
-    }
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-    subscribe() {
-        let that = this;
-
-        this.pubsubTokens = [];
-
-        { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-                that.setState({ port: port });
-            });
-            this.pubsubTokens.push(token);
-        }
-    }
-    unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
     handleKeyDown(e) {
         let ENTER = 13;
         if (e.keyCode === ENTER) {
@@ -52,7 +29,7 @@ class ConsoleInput extends React.Component {
         let el = React.findDOMNode(this.refs.command);
         this.props.onSend('> ' + el.value);
 
-        socket.emit('serialport:writeline', this.state.port, el.value);
+        socket.emit('serialport:writeline', this.props.port, el.value);
 
         el.value = '';
     }
@@ -61,14 +38,15 @@ class ConsoleInput extends React.Component {
     }
     handleGrblHelp() {
         this.props.onSend('> $');
-        socket.emit('serialport:writeline', this.state.port, '$');
+        socket.emit('serialport:writeline', this.props.port, '$');
     }
     handleGrblSettings() {
         this.props.onSend('> $$');
-        socket.emit('serialport:writeline', this.state.port, '$$');
+        socket.emit('serialport:writeline', this.props.port, '$$');
     }
     render() {
-        let canInput = !!(this.state.port);
+        let { port } = this.props;
+        let canInput = !!port;
         let canSend = canInput;
         let canClearAll = canInput;
         let canViewGrblHelp = canInput;
@@ -107,6 +85,10 @@ class ConsoleInput extends React.Component {
 }
 
 class ConsoleWindow extends React.Component {
+    static propTypes = {
+        messages: React.PropTypes.array
+    };
+
     // Scroll Position with React
     // http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
     componentWillUpdate() {
@@ -120,36 +102,62 @@ class ConsoleWindow extends React.Component {
             node.scrollTop = node.scrollHeight;
         }
     }
-    buildElements() {
-        return _.map(this.props.messages, function(msg, index) {
+    buildElements(messages) {
+        return _.map(messages, function(msg, index) {
             return (
                 <div key={index} className="infinite-list-item">{msg}</div>
             );
         });
     }
     render() {
+        let { messages } = this.props;
+
         return (
             <div className="console-window code">
                 <Infinite containerHeight={260} elementHeight={20} ref="infinite">
-                {this.buildElements()}
+                {this.buildElements(messages)}
                 </Infinite>
             </div>
         );
     }
 }
 
-export default class ConsoleWidget extends React.Component {
+export default class Console extends React.Component {
     state = {
-        isCollapsed: false,
         port: '',
         messages: []
     };
 
     componentDidMount() {
+        this.subscribe();
         this.addSocketEvents();
     }
     componentWillUnmount() {
+        this.unsubscribe();
         this.removeSocketEvents();
+    }
+    subscribe() {
+        let that = this;
+
+        this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                that.setState({ port: port });
+
+                if (!port) {
+                    that.clearMessages();
+                }
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     addSocketEvents() {
         socket.on('serialport:readline', ::this.socketOnSerialPortReadLine);
@@ -170,6 +178,27 @@ export default class ConsoleWidget extends React.Component {
             messages: []
         });
     }
+    render() {
+        return (
+            <div>
+                <ConsoleInput
+                    port={this.state.port}
+                    onSend={::this.sendMessage}
+                    onClear={::this.clearMessages}
+                />
+                <ConsoleWindow
+                    messages={this.state.messages}
+                />
+            </div>
+        );
+    }
+}
+
+export default class ConsoleWidget extends React.Component {
+    state = {
+        isCollapsed: false
+    };
+
     handleClick(target, val) {
         if (target === 'toggle') {
             this.setState({
@@ -198,8 +227,7 @@ export default class ConsoleWidget extends React.Component {
                         handleClick={::this.handleClick}
                     />
                     <WidgetContent className={widgetContentClass}>
-                        <ConsoleInput onSend={::this.sendMessage} onClear={::this.clearMessages} />
-                        <ConsoleWindow messages={this.state.messages} />
+                        <Console />
                     </WidgetContent>
                 </Widget>
             </div>
