@@ -41,7 +41,7 @@ class Spindle extends React.Component {
         this.pubsubTokens = [];
     }
     writeln() {
-        let port = this.props.port;
+        let port = this.state.port;
         if (!port) {
             return;
         }
