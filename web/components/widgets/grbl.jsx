@@ -6,7 +6,8 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import classNames from 'classnames';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
-import socket from '../../socket';
+import socket from '../../lib/socket';
+import serialport from '../../lib/serialport';
 import './grbl.css';
 
 //
@@ -122,24 +123,6 @@ class Grbl extends React.Component {
 
         //log.debug(state);
     }
-    write() {
-        let port = this.state.port;
-        if (!port) {
-            return;
-        }
-
-        let args = Array.prototype.slice.call(arguments);
-        socket.emit.apply(socket, ['serialport:write', port].concat(args));
-    }
-    writeln() {
-        let port = this.state.port;
-        if (!port) {
-            return;
-        }
-
-        let args = Array.prototype.slice.call(arguments);
-        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
-    }
     render() {
         let canClick = !!this.state.port;
 
@@ -147,21 +130,23 @@ class Grbl extends React.Component {
             <div>
                 <div className="form-group">
                     <div className="btn-group btn-group-justified" role="group" aria-label="...">
-                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('Real-Time Commands')} id="realtime-commands">
-                            <MenuItem onSelect={() => this.write('~')} disabled={!canClick}>{i18n._('Cycle Start (~)')}</MenuItem>
-                            <MenuItem onSelect={() => this.write('!')} disabled={!canClick}>{i18n._('Feed Hold (!)')}</MenuItem>
-                            <MenuItem onSelect={() => this.write('?')} disabled={!canClick}>{i18n._('Current Status (?)')}</MenuItem>
-                            <MenuItem onSelect={() => this.write('\x18')} disabled={!canClick}>{i18n._('Reset Grbl (Ctrl-X)')}</MenuItem>
+                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('Real-Time Commands')} id="realtime-commands" dropup>
+                            <MenuItem onSelect={() => serialport.write('~')} disabled={!canClick}>{i18n._('Cycle Start (~)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.write('!')} disabled={!canClick}>{i18n._('Feed Hold (!)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.write('?')} disabled={!canClick}>{i18n._('Current Status (?)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.write('\x18')} disabled={!canClick}>{i18n._('Reset Grbl (Ctrl-X)')}</MenuItem>
                         </DropdownButton>
-                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('System Commands')} id="system-commands">
-                            <MenuItem onSelect={() => this.writeln('$#')} disabled={!canClick}>{i18n._('View G-code Parameters ($#)')}</MenuItem>
-                            <MenuItem onSelect={() => this.writeln('$G')} disabled={!canClick}>{i18n._('View G-code Parser State ($G)')}</MenuItem>
-                            <MenuItem onSelect={() => this.writeln('$I')} disabled={!canClick}>{i18n._('View Build Info ($I)')}</MenuItem>
-                            <MenuItem onSelect={() => this.writeln('$N')} disabled={!canClick}>{i18n._('View Startup Blocks ($N)')}</MenuItem>
+                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('System Commands')} id="system-commands" dropup>
+                            <MenuItem onSelect={() => serialport.writeln('$')} disabled={!canClick}>{i18n._('Grbl Help ($)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.writeln('$$')} disabled={!canClick}>{i18n._('Grbl Settings ($$)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.writeln('$#')} disabled={!canClick}>{i18n._('View G-code Parameters ($#)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.writeln('$G')} disabled={!canClick}>{i18n._('View G-code Parser State ($G)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.writeln('$I')} disabled={!canClick}>{i18n._('View Build Info ($I)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.writeln('$N')} disabled={!canClick}>{i18n._('View Startup Blocks ($N)')}</MenuItem>
                             <MenuItem divider />
-                            <MenuItem onSelect={() => this.writeln('$C')} disabled={!canClick}>{i18n._('Check G-code Mode ($C)')}</MenuItem>
-                            <MenuItem onSelect={() => this.writeln('$X')} disabled={!canClick}>{i18n._('Kill Alarm Lock ($X)')}</MenuItem>
-                            <MenuItem onSelect={() => this.writeln('$H')} disabled={!canClick}>{i18n._('Run Homing Cycle ($H)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.writeln('$C')} disabled={!canClick}>{i18n._('Check G-code Mode ($C)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.writeln('$X')} disabled={!canClick}>{i18n._('Kill Alarm Lock ($X)')}</MenuItem>
+                            <MenuItem onSelect={() => serialport.writeln('$H')} disabled={!canClick}>{i18n._('Run Homing Cycle ($H)')}</MenuItem>
                         </DropdownButton>
                     </div>
                 </div>

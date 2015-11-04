@@ -7,7 +7,8 @@ import Select from 'react-select';
 import classNames from 'classnames';
 import PressAndHold from '../common/PressAndHold';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
-import socket from '../../socket';
+import socket from '../../lib/socket';
+import serialport from '../../lib/serialport';
 import log from '../../lib/log';
 import './axes.css';
 
@@ -61,41 +62,32 @@ class DisplayPanel extends React.Component {
         workingPos: React.PropTypes.object
     }
 
-    writeln() {
-        let port = this.props.port;
-        if (!port) {
-            return;
-        }
-
-        let args = Array.prototype.slice.call(arguments);
-        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
-    }
     handleGoToZeroX() {
-        this.writeln('G0 X0');
+        serialport.writeln('G0 X0');
     }
     handleGoToZeroY() {
-        this.writeln('G0 Y0');
+        serialport.writeln('G0 Y0');
     }
     handleGoToZeroZ() {
-        this.writeln('G0 Z0');
+        serialport.writeln('G0 Z0');
     }
     handleZeroOutX() {
-        this.writeln('G92 X0');
+        serialport.writeln('G92 X0');
     }
     handleUnZeroOutX() {
-        this.writeln('G92.1 X0');
+        serialport.writeln('G92.1 X0');
     }
     handleZeroOutY() {
-        this.writeln('G92 Y0');
+        serialport.writeln('G92 Y0');
     }
     handleUnZeroOutY() {
-        this.writeln('G92.1 Y0');
+        serialport.writeln('G92.1 Y0');
     }
     handleZeroOutZ() {
-        this.writeln('G92 Z0');
+        serialport.writeln('G92 Z0');
     }
     handleUnZeroOutZ() {
-        this.writeln('G92.1 Z0');
+        serialport.writeln('G92.1 Z0');
     }
     convertPositionUnit(pos) {
         pos = Number(pos);
@@ -220,23 +212,13 @@ class JogJoystickControl extends React.Component {
         distance: React.PropTypes.number
     };
 
-    writeln() {
-        let port = this.props.port;
-        if (!port) {
-            return;
-        }
-
-        let args = Array.prototype.slice.call(arguments);
-
-        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
-    }
     jogForwardX() {
         let msg = [
             'G91',
             'G1 F' + this.props.feedrate + ' X' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeln(msg);
+        serialport.writeln(msg);
     }
     jogBackwardX() {
         let msg = [
@@ -244,7 +226,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' X-' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeln(msg);
+        serialport.writeln(msg);
     }
     jogForwardY() {
         let msg = [
@@ -252,7 +234,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' Y' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeln(msg);
+        serialport.writeln(msg);
     }
     jogBackwardY() {
         let msg = [
@@ -260,7 +242,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' Y-' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeln(msg);
+        serialport.writeln(msg);
     }
     jogForwardZ() {
         let msg = [
@@ -268,7 +250,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' Z' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeln(msg);
+        serialport.writeln(msg);
     }
     jogBackwardZ() {
         let msg = [
@@ -276,7 +258,7 @@ class JogJoystickControl extends React.Component {
             'G1 F' + this.props.feedrate + ' Z-' + this.props.distance,
             'G90'
         ].join('\n');
-        this.writeln(msg);
+        serialport.writeln(msg);
     }
 
     render() {
@@ -522,24 +504,14 @@ class JogControlPanel extends React.Component {
     changeDistance(distance) {
         this.setState({ distance: distance });
     }
-    writeln() {
-        let port = this.props.port;
-        if (!port) {
-            return;
-        }
-
-        let args = Array.prototype.slice.call(arguments);
-
-        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
-    }
     handleGoToZero() {
-        this.writeln('G0 X0 Y0 Z0');
+        serialport.writeln('G0 X0 Y0 Z0');
     }
     handleZeroOut() {
-        this.writeln('G92 X0 Y0 Z0');
+        serialport.writeln('G92 X0 Y0 Z0');
     }
     handleUnZeroOut() {
-        this.writeln('G92.1 X0 Y0 Z0');
+        serialport.writeln('G92.1 X0 Y0 Z0');
     }
     // experimental feature
     handleToggleUnit() {
@@ -548,11 +520,11 @@ class JogControlPanel extends React.Component {
         if (this.props.unit === METRIC_UNIT) {
             unit = IMPERIAL_UNIT;
             
-            //this.writeln('G20'); // G20 specifies Imperial (inch) unit
+            //serialport.writeln('G20'); // G20 specifies Imperial (inch) unit
         } else {
             unit = METRIC_UNIT;
 
-            //this.writeln('G21'); // G21 specifies Metric (mm) unit
+            //serialport.writeln('G21'); // G21 specifies Metric (mm) unit
         }
         this.props.changeDisplayUnit(unit);
     }
@@ -697,11 +669,11 @@ class Axes extends React.Component {
         if (this.state.unit === METRIC_UNIT) {
             unit = IMPERIAL_UNIT;
             
-            //this.writeln('G20'); // G20 specifies Imperial (inch) unit
+            //serialport.writeln('G20'); // G20 specifies Imperial (inch) unit
         } else {
             unit = METRIC_UNIT;
 
-            //this.writeln('G21'); // G21 specifies Metric (mm) unit
+            //serialport.writeln('G21'); // G21 specifies Metric (mm) unit
         }
         this.setState({ unit: unit });
     }

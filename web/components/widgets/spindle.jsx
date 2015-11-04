@@ -5,7 +5,7 @@ import React from 'react';
 import classNames from 'classnames';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
-import socket from '../../socket';
+import serialport from '../../lib/serialport';
 import './spindle.css';
 
 class Spindle extends React.Component {
@@ -40,15 +40,6 @@ class Spindle extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    writeln() {
-        let port = this.state.port;
-        if (!port) {
-            return;
-        }
-
-        let args = Array.prototype.slice.call(arguments);
-        socket.emit.apply(socket, ['serialport:writeln', port].concat(args));
-    }
     handleCCWChange() {
         this.setState({
             isCCWChecked: !(this.state.isCCWChecked)
@@ -68,9 +59,9 @@ class Spindle extends React.Component {
                             className="btn btn-default"
                             onClick={() => {
                                 if (spindleSpeed > 0) {
-                                    this.writeln(cmd + ' S' + spindleSpeed);
+                                    serialport.writeln(cmd + ' S' + spindleSpeed);
                                 } else {
-                                    this.writeln(cmd);
+                                    serialport.writeln(cmd);
                                 }
                             }}
                             title={i18n._('Start the spindle turning CW/CCW (M3/M4)')}
@@ -81,7 +72,7 @@ class Spindle extends React.Component {
                         <button
                             type="button"
                             className="btn btn-default"
-                            onClick={() => this.writeln('M5')}
+                            onClick={() => serialport.writeln('M5')}
                             title={i18n._('Stop the spindle from turning (M5)')}
                             disabled={!canClick}
                         >
