@@ -6,16 +6,21 @@ import React from 'react';
 import Infinite from 'react-infinite';
 import classNames from 'classnames';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
-import socket from '../../socket';
+import serialport from '../../lib/serialport';
 import './console.css';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 
 const MESSAGE_LIMIT = 5000;
+const GRBL_REALTIME_COMMANDS = [
+    '~', // Cycle Start
+    '!', // Feed Hold
+    '?', // Current Status
+    '\x18' // Reset Grbl (Ctrl-X)
+];
 
 class ConsoleInput extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
-        onSend: React.PropTypes.func,
         onClear: React.PropTypes.func
     };
 
@@ -27,22 +32,21 @@ class ConsoleInput extends React.Component {
     }
     handleSend() {
         let el = React.findDOMNode(this.refs.command);
-        this.props.onSend('> ' + el.value);
 
-        socket.emit('serialport:writeln', this.props.port, el.value);
+        if (el.value === '') {
+            return;
+        }
+
+        if (_.includes(GRBL_REALTIME_COMMANDS, el.value)) {
+            serialport.write(el.value);
+        } else {
+            serialport.writeln(el.value);
+        }
 
         el.value = '';
     }
     handleClear() {
         this.props.onClear();
-    }
-    handleGrblHelp() {
-        this.props.onSend('> $');
-        socket.emit('serialport:writeln', this.props.port, '$');
-    }
-    handleGrblSettings() {
-        this.props.onSend('> $$');
-        socket.emit('serialport:writeln', this.props.port, '$$');
     }
     render() {
         let { port } = this.props;
@@ -74,8 +78,6 @@ class ConsoleInput extends React.Component {
                         </button>
                         <DropdownButton bsSize="sm" title="" id="console-command-dropdown" pullRight>
                             <MenuItem onSelect={::this.handleClear} disabled={!canClearAll}>{i18n._('Clear all')}</MenuItem>
-                            <MenuItem onSelect={::this.handleGrblHelp} disabled={!canViewGrblHelp}>{i18n._('Grbl Help ($)')}</MenuItem>
-                            <MenuItem onSelect={::this.handleGrblSettings} disabled={!canViewGrblSettings}>{i18n._('Grbl Settings ($$)')}</MenuItem>
                         </DropdownButton>
                     </div>
                 </div>
@@ -130,11 +132,11 @@ export default class Console extends React.Component {
 
     componentDidMount() {
         this.subscribe();
-        this.addSocketEvents();
+        this.addSerialPortEvents();
     }
     componentWillUnmount() {
         this.unsubscribe();
-        this.removeSocketEvents();
+        this.removeSerialPortEvents();
     }
     subscribe() {
         let that = this;
@@ -159,14 +161,19 @@ export default class Console extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEvents() {
-        socket.on('serialport:readline', ::this.socketOnSerialPortReadLine);
+    addSerialPortEvents() {
+        serialport.on('write', ::this.onSerialPortWrite);
+        serialport.on('data', ::this.onSerialPortRead);
     }
     removeSocketEvents() {
-        socket.off('serialport:readline', ::this.socketOnSerialPortReadLine);
+        serialport.off('write', ::this.onSerialPortWrite);
+        serialport.off('data', ::this.onSerialPortRead);
     }
-    socketOnSerialPortReadLine(line) {
-        this.sendMessage(line);
+    onSerialPortRead(data) {
+        this.sendMessage(data);
+    }
+    onSerialPortWrite(data) {
+        this.sendMessage('> ' + data);
     }
     sendMessage(message) {
         this.setState({
@@ -183,7 +190,6 @@ export default class Console extends React.Component {
             <div>
                 <ConsoleInput
                     port={this.state.port}
-                    onSend={::this.sendMessage}
                     onClear={::this.clearMessages}
                 />
                 <ConsoleWindow

@@ -9,8 +9,8 @@ import TrackballControls from '../../lib/three/TrackballControls';
 import { GCodeRenderer } from '../../lib/gcode';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
-import siofu from '../../siofu';
-import socket from '../../socket';
+import siofu from '../../lib/siofu';
+import socket from '../../lib/socket';
 import './gcode-viewer.css';
 
 const AXIS_LENGTH = 99999;

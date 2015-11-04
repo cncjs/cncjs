@@ -7,7 +7,7 @@ import classNames from 'classnames';
 import { Table, Column } from 'fixed-data-table';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
-import socket from '../../socket';
+import socket from '../../lib/socket';
 import './gcode.css';
 
 let isColumnResizing = false;

@@ -6,7 +6,7 @@ import Select from 'react-select';
 import classNames from 'classnames';
 import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
-import socket from '../../socket';
+import socket from '../../lib/socket';
 import './connection.css';
 
 class Alert extends React.Component {
