@@ -1,4 +1,4 @@
-import log from './lib/log';
+import log from './log';
 
 let socket = root.io.connect('');
 
