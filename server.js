@@ -306,7 +306,7 @@ module.exports = function(server) {
                             _.each(sp.sockets, function(o) {
                                 if (o.command === '?') {
                                     o.command = '';
-                                    o.socket.emit('serialport:readline', msg);
+                                    o.socket.emit('serialport:data', msg);
                                 }
                             });
 
@@ -329,7 +329,7 @@ module.exports = function(server) {
 
                             _.each(sp.sockets, function(o) {
                                 if (o.command.indexOf('$G') === 0) {
-                                    o.socket.emit('serialport:readline', msg);
+                                    o.socket.emit('serialport:data', msg);
                                 }
                             });
 
@@ -344,7 +344,7 @@ module.exports = function(server) {
                                 _.each(sp.sockets, function(o) {
                                     if (o.command.indexOf('$G') === 0) {
                                         o.command = ''; // Clear the command buffer
-                                        o.socket.emit('serialport:readline', msg);
+                                        o.socket.emit('serialport:data', msg);
                                     }
                                 });
                                 sp.isPending['$G:rsp'] = false;
@@ -358,7 +358,7 @@ module.exports = function(server) {
                         }
 
                         if (msg.length > 0) {
-                            sp.emit('serialport:readline', msg);
+                            sp.emit('serialport:data', msg);
                         }
                     });
 
@@ -443,24 +443,6 @@ module.exports = function(server) {
             }
 
             log.debug('serialport:write:', { id: socket.id, port: port, msg: msg });
-
-            sp.serialPort.write(msg);
-            sp.sockets[socket.id].command = msg;
-        });
-
-        socket.on('serialport:writeln', function(port, msg) {
-            var sp = serialports[port] || {};
-            if (!(sp.serialPort && sp.serialPort.isOpen())) {
-                log.warn('The serial port is not open.', { port: port });
-                return;
-            }
-
-            log.debug('serialport:writeln:', { id: socket.id, port: port, msg: msg });
-
-            msg = ('' + msg).trim();
-            if (msg !== '?') { // no newline for the current status command
-                msg += '\n';
-            }
 
             sp.serialPort.write(msg);
             sp.sockets[socket.id].command = msg;
