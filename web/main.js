@@ -6,8 +6,6 @@ import log from './lib/log';
 import app from './app';
 import settings from './config/settings';
 import sha1 from 'sha1';
-import socket from './socket';
-
 import './styles/vendor.css';
 import './styles/app.css';
 
