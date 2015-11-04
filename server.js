@@ -438,7 +438,7 @@ module.exports = function(server) {
         socket.on('serialport:write', function(port, msg) {
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
-                log.warn('The serial port is not open.', { port: port });
+                log.warn('The serial port is not open.', { port: port, msg: msg });
                 return;
             }
 
