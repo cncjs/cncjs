@@ -10,7 +10,7 @@ import serialport from '../../lib/serialport';
 import './console.css';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 
-const MESSAGE_LIMIT = 5000;
+const SCROLL_BUFFER_SIZE = 5000; // lines
 const GRBL_REALTIME_COMMANDS = [
     '~', // Cycle Start
     '!', // Feed Hold
@@ -88,7 +88,7 @@ class ConsoleInput extends React.Component {
 
 class ConsoleWindow extends React.Component {
     static propTypes = {
-        messages: React.PropTypes.array
+        buffers: React.PropTypes.array
     };
 
     // Scroll Position with React
@@ -104,20 +104,25 @@ class ConsoleWindow extends React.Component {
             node.scrollTop = node.scrollHeight;
         }
     }
-    buildElements(messages) {
-        return _.map(messages, function(msg, index) {
+    buildElements(buffers) {
+        return _.map(buffers, (msg, index) => {
             return (
                 <div key={index} className="infinite-list-item">{msg}</div>
             );
         });
     }
     render() {
-        let { messages } = this.props;
+        let { buffers } = this.props;
+        let elements = this.buildElements(buffers);
 
         return (
             <div className="console-window code">
-                <Infinite containerHeight={260} elementHeight={20} ref="infinite">
-                {this.buildElements(messages)}
+                <Infinite
+                    containerHeight={260}
+                    elementHeight={20}
+                    ref="infinite"
+                >
+                    {elements}
                 </Infinite>
             </div>
         );
@@ -127,8 +132,10 @@ class ConsoleWindow extends React.Component {
 export default class Console extends React.Component {
     state = {
         port: '',
-        messages: []
+        buffers: []
     };
+
+    buffers = [];
 
     componentDidMount() {
         this.subscribe();
@@ -149,7 +156,7 @@ export default class Console extends React.Component {
                 that.setState({ port: port });
 
                 if (!port) {
-                    that.clearMessages();
+                    that.clear();
                 }
             });
             this.pubsubTokens.push(token);
@@ -170,30 +177,37 @@ export default class Console extends React.Component {
         serialport.off('data', ::this.onSerialPortRead);
     }
     onSerialPortRead(data) {
-        this.sendMessage(data);
+        this.append(data);
     }
     onSerialPortWrite(data) {
-        this.sendMessage('> ' + data);
+        let lines = data.split('\n');
+        let values = _(lines)
+            .compact()
+            .map((line) => ('> ' + line))
+            .value();
+
+        this.append(values);
     }
-    sendMessage(message) {
-        this.setState({
-            messages: this.state.messages.concat(message).slice(0, MESSAGE_LIMIT)
-        });
+    append(buffer) {
+        this.buffers = _(this.buffers)
+            .concat(buffer)
+            .slice(0, SCROLL_BUFFER_SIZE)
+            .value();
+        this.setState({ buffers: this.buffers });
     }
-    clearMessages() {
-        this.setState({
-            messages: []
-        });
+    clear() {
+        this.buffers = [];
+        this.setState({ buffers: this.buffers });
     }
     render() {
         return (
             <div>
                 <ConsoleInput
                     port={this.state.port}
-                    onClear={::this.clearMessages}
+                    onClear={::this.clear}
                 />
                 <ConsoleWindow
-                    messages={this.state.messages}
+                    buffers={this.state.buffers}
                 />
             </div>
         );
