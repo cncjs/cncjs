@@ -213,54 +213,41 @@ class JogJoystickControl extends React.Component {
     };
 
     jogForwardX() {
-        let msg = [
-            'G91',
-            'G1 F' + this.props.feedrate + ' X' + this.props.distance,
-            'G90'
-        ].join('\n');
-        serialport.writeln(msg);
+        let { feedrate, distance } = this.props;
+        serialport.writeln('G91');
+        serialport.writeln('G1 F' + feedrate + ' X' + distance);
+        serialport.writeln('G90');
     }
     jogBackwardX() {
-        let msg = [
-            'G91',
-            'G1 F' + this.props.feedrate + ' X-' + this.props.distance,
-            'G90'
-        ].join('\n');
-        serialport.writeln(msg);
+        let { feedrate, distance } = this.props;
+        serialport.writeln('G91');
+        serialport.writeln('G1 F' + feedrate + ' X-' + distance);
+        serialport.writeln('G90');
     }
     jogForwardY() {
-        let msg = [
-            'G91',
-            'G1 F' + this.props.feedrate + ' Y' + this.props.distance,
-            'G90'
-        ].join('\n');
-        serialport.writeln(msg);
+        let { feedrate, distance } = this.props;
+        serialport.writeln('G91');
+        serialport.writeln('G1 F' + feedrate + ' Y' + distance);
+        serialport.writeln('G90');
     }
     jogBackwardY() {
-        let msg = [
-            'G91',
-            'G1 F' + this.props.feedrate + ' Y-' + this.props.distance,
-            'G90'
-        ].join('\n');
-        serialport.writeln(msg);
+        let { feedrate, distance } = this.props;
+        serialport.writeln('G91');
+        serialport.writeln('G1 F' + feedrate + ' Y-' + distance);
+        serialport.writeln('G90');
     }
     jogForwardZ() {
-        let msg = [
-            'G91',
-            'G1 F' + this.props.feedrate + ' Z' + this.props.distance,
-            'G90'
-        ].join('\n');
-        serialport.writeln(msg);
+        let { feedrate, distance } = this.props;
+        serialport.writeln('G91');
+        serialport.writeln('G1 F' + feedrate + ' Z' + distance);
+        serialport.writeln('G90');
     }
     jogBackwardZ() {
-        let msg = [
-            'G91',
-            'G1 F' + this.props.feedrate + ' Z-' + this.props.distance,
-            'G90'
-        ].join('\n');
-        serialport.writeln(msg);
+        let { feedrate, distance } = this.props;
+        serialport.writeln('G91');
+        serialport.writeln('G1 F' + feedrate + ' Z-' + distance);
+        serialport.writeln('G90');
     }
-
     render() {
         let { port, activeState } = this.props;
         let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
@@ -430,9 +417,6 @@ class JogDistanceControl extends React.Component {
         return n;
     }
     handleChange(event) {
-        let feedrate = event.target.value;
-    }
-    handleChange(event) {
         let distance = event.target.value;
         this.setState({ distance: distance });
         this.props.onChange(distance);
@@ -499,9 +483,11 @@ class JogControlPanel extends React.Component {
     };
 
     changeFeedrate(feedrate) {
+        feedrate = Number(feedrate).toFixed(3) * 1;
         this.setState({ feedrate: feedrate });
     }
     changeDistance(distance) {
+        distance = Number(distance).toFixed(3) * 1;
         this.setState({ distance: distance });
     }
     handleGoToZero() {
