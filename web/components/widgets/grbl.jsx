@@ -142,13 +142,13 @@ class Grbl extends React.Component {
             <div>
                 <div className="form-group">
                     <div className="btn-group btn-group-justified" role="group" aria-label="...">
-                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('Real-Time Commands')} id="realtime-commands" dropup>
+                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('Real-Time Commands')} id="realtime-commands">
                             <MenuItem onSelect={() => serialport.write('~')} disabled={!canClick}>{i18n._('Cycle Start (~)')}</MenuItem>
                             <MenuItem onSelect={() => serialport.write('!')} disabled={!canClick}>{i18n._('Feed Hold (!)')}</MenuItem>
                             <MenuItem onSelect={() => serialport.write('?')} disabled={!canClick}>{i18n._('Current Status (?)')}</MenuItem>
                             <MenuItem onSelect={() => serialport.write('\x18')} disabled={!canClick}>{i18n._('Reset Grbl (Ctrl-X)')}</MenuItem>
                         </DropdownButton>
-                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('System Commands')} id="system-commands" dropup>
+                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('System Commands')} id="system-commands">
                             <MenuItem onSelect={() => serialport.writeln('$')} disabled={!canClick}>{i18n._('Grbl Help ($)')}</MenuItem>
                             <MenuItem onSelect={() => serialport.writeln('$$')} disabled={!canClick}>{i18n._('Grbl Settings ($$)')}</MenuItem>
                             <MenuItem onSelect={() => serialport.writeln('$#')} disabled={!canClick}>{i18n._('View G-code Parameters ($#)')}</MenuItem>
