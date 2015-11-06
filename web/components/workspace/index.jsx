@@ -23,11 +23,11 @@ export default class Workspace extends React.Component {
         showSecondaryContainer: true,
         primaryContainer: [
             <ConnectionWidget key="connection" />,
-            <ConsoleWidget key="console" />,
             <GrblWidget key="grbl" />,
-            <SpindleWidget key="spindle" />
+            <ConsoleWidget key="console" />
         ],
         secondaryContainer: [
+            <SpindleWidget key="spindle" />,
             <AxesWidget key="axes" />,
             <GCodeWidget key="gcode" />
         ]
