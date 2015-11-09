@@ -162,102 +162,100 @@ class Grbl extends React.Component {
                         </DropdownButton>
                     </div>
                 </div>
-                <div className="container-fluid">
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Feed rate:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'feedrate')}
-                        </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Feed rate:')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Spindle:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'spindle')}
-                        </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'feedrate')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Tool:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'tool')}
-                        </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Spindle speed:')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Coolant:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.coolant')}
-                        </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'spindle')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Coordinate:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.coordinate')}
-                        </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Tool number:')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Distance:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.distance')}
-                        </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'tool')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Feed rate:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.feedrate')}
-                        </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Motion mode:')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Motion:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.motion')}
-                        </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.motion')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Plane:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.plane')}
-                        </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Coordinate system select:')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Program:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.program')}
-                        </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.coordinate')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Spindle:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.spindle')}
-                        </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Plane select:')}
                     </div>
-                    <div className="row">
-                        <div className="col col-xs-4">
-                            {i18n._('Units:')}
-                        </div>
-                        <div className="col col-xs-8">
-                            {_.get(modes, 'modal.units')}
-                        </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.plane')}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Distance mode:')}
+                    </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.distance')}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Feed rate mode:')}
+                    </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.feedrate')}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Units mode:')}
+                    </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.units')}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Program mode:')}
+                    </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.program')}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Spindle state:')}
+                    </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.spindle')}
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col col-xs-6">
+                        {i18n._('Coolant state:')}
+                    </div>
+                    <div className="col col-xs-6">
+                        {_.get(modes, 'modal.coolant')}
                     </div>
                 </div>
             </div>
