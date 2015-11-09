@@ -79,6 +79,11 @@ class Grbl extends React.Component {
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
                 that.setState({ port: port });
+
+                if (!port) {
+                    let modes = {};
+                    that.setState({ modes: modes });
+                }
             });
             this.pubsubTokens.push(token);
         }
@@ -135,8 +140,6 @@ class Grbl extends React.Component {
     render() {
         let { port, modes } = this.state;
         let canClick = !!port;
-
-        console.log(modes);
 
         return (
             <div>
