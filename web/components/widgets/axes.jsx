@@ -207,6 +207,7 @@ class DisplayPanel extends React.Component {
 class JogJoystickControl extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
+        unit: React.PropTypes.string,
         activeState: React.PropTypes.string,
         feedrate: React.PropTypes.number,
         distance: React.PropTypes.number
@@ -423,12 +424,12 @@ class JogDistanceControl extends React.Component {
     }
     increaseDistance() {
         let distance = Math.min(Number(this.state.distance) + DISTANCE_STEP, DISTANCE_MAX);
-        this.setState({ distance: distance.toFixed(2) });
+        this.setState({ distance: distance });
         this.props.onChange(distance);
     }
     decreaseDistance() {
         let distance = Math.max(Number(this.state.distance) - DISTANCE_STEP, DISTANCE_MIN);
-        this.setState({ distance: distance.toFixed(2) });
+        this.setState({ distance: distance });
         this.props.onChange(distance);
     }
     resetDistance() {
@@ -478,16 +479,15 @@ class JogControlPanel extends React.Component {
         feedrate: FEEDRATE_DEFAULT
     };
     static propTypes = {
-        activeState: React.PropTypes.string,
-        port: React.PropTypes.string
+        port: React.PropTypes.string,
+        unit: React.PropTypes.string,
+        activeState: React.PropTypes.string
     };
 
     changeFeedrate(feedrate) {
-        feedrate = Number(feedrate).toFixed(3) * 1;
         this.setState({ feedrate: feedrate });
     }
     changeDistance(distance) {
-        distance = Number(distance).toFixed(3) * 1;
         this.setState({ distance: distance });
     }
     handleGoToZero() {
@@ -525,6 +525,7 @@ class JogControlPanel extends React.Component {
                     <div className="col-sm-6">
                         <JogJoystickControl
                             port={port}
+                            unit={unit}
                             activeState={activeState}
                             feedrate={feedrate}
                             distance={distance}
