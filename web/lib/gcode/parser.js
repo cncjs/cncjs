@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import log from '../log';
 
 let stripComments = (() => {
     let re1 = /^\s+|\s+$/g; // Strip leading and trailing spaces
@@ -30,32 +31,84 @@ GCodeParser.prototype.parse = function(gcode, callback) {
         .value();
 
     let index = 0;
+    let prevCode = '';
 
     _.each(lines, (line) => {
-        let tokens = line.split(' ');
-        if (! tokens) {
+        let tokens = _(line)
+            .split(' ')
+            .compact()
+            .value();
+
+        if (_.size(tokens) === 0) {
             return;
         }
 
-        let cmd = tokens[0];
-        let args = {
-            'cmd': cmd
+        let code = _.trim(tokens[0]).toUpperCase();
+
+        // N: Line number
+        // Example: N123
+        // If present, the line number should be the first field in a line.
+        if (code[0] === 'N') {
+            tokens = tokens.splice(1);
+            code = _.trim(tokens[0]).toUpperCase();
+        }
+
+        // *: Checksum
+        // Example: *71
+        // If present, the checksum should be the last field in a line, but before a comment.
+        if (code[0] === '*') {
+            return;
+        }
+
+        // Check the first character for
+        //   G: G-gcodes
+        //   M: M-codes
+        //   T: Select Tool
+        if (_.includes(['G', 'M', 'T'], code[0])) {
+            tokens = tokens.splice(1);
+        } else {
+            code = prevCode;
+        }
+
+        { // Formatting G-code
+            let decimal = parseFloat(code.substr(1));
+            if (_.isNaN(decimal)) {
+                log.error('Bad number format:', code);
+                return;
+            }
+
+            let letter = code[0];
+            let integer = Math.trunc(decimal);
+            let mantissa = Math.round(100 * (decimal - integer));
+
+            if (mantissa > 0) {
+                code = letter + integer + '.' + mantissa; // e.g. G92.1
+            } else {
+                code = letter + integer; // e.g. G92
+            }
+        }
+
+        let opts = {
+            code: code,
+            params: {}
         };
-        tokens.splice(1).forEach((token) => {
+
+        tokens.forEach((token) => {
             let key = token[0].toLowerCase();
             let value = parseFloat(token.substring(1));
-            args[key] = value;
+            opts.params[key] = value;
         });
 
-        let handler = this.handlers[tokens[0]] || this.handlers['default'];
+        let handler = _.get(this.handlers, code);
         if (_.isFunction(handler)) {
-            handler(args, index);
+            handler(opts);
         }
 
         if (_.isFunction(callback)) {
             callback(line, index);
         }
 
+        prevCode = code;
         ++index;
     });
 };
