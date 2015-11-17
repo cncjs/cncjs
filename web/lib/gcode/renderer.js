@@ -2,31 +2,46 @@ import _ from 'lodash';
 import THREE from 'three';
 import GCodeParser from './parser';
 import log from '../log';
+import colorNames from '../color-names';
 
 function GCodeRenderer() {
     this.layers = [];
     this.baseObject = new THREE.Object3D();
-    this.feedColors = {
-        canteloupe: new THREE.Color(0xffcc66),
-        sky: new THREE.Color(0x66ccff),
-        honeydew: new THREE.Color(0x22bb22),
-        carnation: new THREE.Color(0xff70cf),
-        lavender: new THREE.Color(0xcc66ff),
-        banana: new THREE.Color(0xfffe66),
-        salmon: new THREE.Color(0xff6666),
-        spindrift: new THREE.Color(0x66ffcc),
-        flora: new THREE.Color(0x66ff66)
-    };
     this.feed = {
         geometry: new THREE.Geometry(),
-        material: new THREE.LineBasicMaterial({
-            opacity: 0.8,
-            transparent: true,
-            linewidth: 2,
-            vertexColors: THREE.VertexColors
-        }),
         frameIndex: 0,
         frames: [] // e.g. [{ code: 'G1 X1', vertexIndex: 2 }]
+    };
+    this.state = {
+        x: 0,
+        y: 0,
+        z: 0,
+        e: 0,
+        f: 0,
+        // set to true for cnc, no extruder
+        extruding: true,
+        // positioning
+        relative: false
+    };
+    this.setState = (newState) => {
+        this.state = _.assign({}, this.state, newState);
+    };
+    this.resetState = () => {
+        this.setState({
+            x: 0,
+            y: 0,
+            z: 0,
+            e: 0,
+            f: 0,
+            extruding: true,
+            relative: false
+        });
+    };
+    this.delta = (v1, v2) => {
+        return this.state.relative ? v2 : v2 - v1;
+    };
+    this.absolute = (v1, v2) => {
+        return this.state.relative ? v1 + v2 : v2;
     };
 }
 
@@ -44,17 +59,6 @@ GCodeRenderer.prototype.render = function(options, callback) {
     // GCode descriptions come from:
     //    http://reprap.org/wiki/G-code
     //    http://en.wikipedia.org/wiki/G-code
-    //    SprintRun source code
-
-    let lastLine = {
-        x: 0,
-        y: 0,
-        z: 0,
-        e: 0,
-        f: 0,
-        // set to true for cnc, no extruder
-        extruding: true
-    };
 
     let layer = undefined;
     let box = {
@@ -85,7 +89,7 @@ GCodeRenderer.prototype.render = function(options, callback) {
         }
         let speed = Math.round(line.e / 1000);
         let grouptype = (line.extruding ? 10000 : 0) + speed;
-        let color = new THREE.Color(line.extruding ? 0x33aadd : 0x228B22);
+        let color = new THREE.Color(line.extruding ? colorNames.darkcyan : colorNames.darkgreen);
 
         if (layer.type[grouptype] === undefined) {
             layer.type[grouptype] = {
@@ -95,10 +99,8 @@ GCodeRenderer.prototype.render = function(options, callback) {
                 color: color,
                 segmentCount: 0,
                 material: new THREE.LineBasicMaterial({
-                    opacity: line.extruding ? 0.8 : 0.8,
-                    transparent: true,
                     linewidth: 2,
-                    vertexColors: THREE.FaceColors
+                    color: line.extruding ? colorNames.darkcyan : colorNames.darkgreen
                 }),
                 geometry: new THREE.Geometry()
             };
@@ -107,21 +109,16 @@ GCodeRenderer.prototype.render = function(options, callback) {
         return layer.type[grouptype];
     }
 
-    function addSegment(p1, p2) {
+    function addLineSegment(p1, p2) {
         let group = getLineGroup(p2);
         let geometry = group.geometry;
 
         group.segmentCount++;
         geometry.vertices.push(new THREE.Vector3(p1.x, p1.y, p1.z));
         geometry.vertices.push(new THREE.Vector3(p2.x, p2.y, p2.z));
-        geometry.colors.push(group.color);
-        geometry.colors.push(group.color);
 
-        let feedColor = new THREE.Color(that.feedColors['lavender']);
         that.feed.geometry.vertices.push(new THREE.Vector3(p1.x, p1.y, p1.z));
         that.feed.geometry.vertices.push(new THREE.Vector3(p2.x, p2.y, p2.z));
-        that.feed.geometry.colors.push(feedColor);
-        that.feed.geometry.colors.push(feedColor);
 
         box.min.x = Math.min(box.min.x, p2.x);
         box.min.y = Math.min(box.min.y, p2.y);
@@ -131,115 +128,176 @@ GCodeRenderer.prototype.render = function(options, callback) {
         box.max.z = Math.max(box.max.z, p2.z);
     }
 
-    let relative = false;
+    // Parameters
+    //   p1 The start point
+    //   p2 The end point
+    //   p0 The fixed point
+    function addArcCurveSegment(p1, p2, p0, isClockwise) {
+        let group = getLineGroup(p2);
+        let geometry = group.geometry;
 
-    function delta(v1, v2) {
-        return relative ? v2 : v2 - v1;
-    }
+        let radius = Math.sqrt(
+            Math.pow((p1.x - p0.x), 2) + Math.pow((p1.y - p0.y), 2)
+        );
+        let arcCurve = new THREE.ArcCurve(
+            p0.x, // aX
+            p0.y, // aY
+            radius, // aRadius
+            Math.atan2(p1.y - p0.y, p1.x - p0.x), // aStartAngle
+            Math.atan2(p2.y - p0.y, p2.x - p0.x), // aEndAngle
+            !!isClockwise // isClockwise
+        );
+        let vertices = arcCurve.getPoints(100);
 
-    function absolute(v1, v2) {
-        return relative ? v1 + v2 : v2;
+        group.segmentCount++;
+
+        geometry.vertices = geometry.vertices.concat(vertices);
+        that.feed.geometry.vertices = that.feed.geometry.vertices.concat(vertices);
+
+        box.min.x = Math.min(box.min.x, p2.x);
+        box.min.y = Math.min(box.min.y, p2.y);
+        box.min.z = Math.min(box.min.z, p2.z);
+        box.max.x = Math.max(box.max.x, p2.x);
+        box.max.y = Math.max(box.max.y, p2.y);
+        box.max.z = Math.max(box.max.z, p2.z);
     }
 
     let parser = new GCodeParser({
-        G1: (args, index) => {
-            // Example: G1 Z1.0 F3000
-            //          G1 X99.9948 Y80.0611 Z15.0 F1500.0 E981.64869
-            //          G1 E104.25841 F1800.0
-            // Go in a straight line from the current (X, Y) point
-            // to the point (90.6, 13.8), extruding material as the move
-            // happens from the current extruded length to a length of
-            // 22.4 mm.
-
-            let newLine = {
-                x: args.x !== undefined ? absolute(lastLine.x, args.x) : lastLine.x,
-                y: args.y !== undefined ? absolute(lastLine.y, args.y) : lastLine.y,
-                z: args.z !== undefined ? absolute(lastLine.z, args.z) : lastLine.z,
-                e: args.e !== undefined ? absolute(lastLine.e, args.e) : lastLine.e,
-                f: args.f !== undefined ? absolute(lastLine.f, args.f) : lastLine.f
+        // G1: Linear Move
+        //
+        // Usage
+        //   G1 Xnnn Ynnn Znnn Ennn Fnnn Snnn
+        // Parameters
+        //   Xnnn The position to move to on the X axis
+        //   Ynnn The position to move to on the Y axis
+        //   Znnn The position to move to on the Z axis
+        //   Ennn The amount to extrude between the starting point and ending point
+        //   Fnnn The feedrate per minute of the move between the starting point and ending point (if supplied)
+        //   Snnn Flag to check if an endstop was hit (S1 to check, S0 to ignore, S2 see note, default is S0)
+        // Examples
+        //   G1 X12 (move to 12mm on the X axis)
+        //   G1 F1500 (Set the feedrate to 1500mm/minute)
+        //   G1 X90.6 Y13.8 E22.4 (Move to 90.6mm on the X axis and 13.8mm on the Y axis while extruding 22.4mm of material)
+        //
+        'G1': (opts) => {
+            let { params } = opts;
+            let newState = {
+                x: params.x !== undefined ? this.absolute(this.state.x, params.x) : this.state.x,
+                y: params.y !== undefined ? this.absolute(this.state.y, params.y) : this.state.y,
+                z: params.z !== undefined ? this.absolute(this.state.z, params.z) : this.state.z,
+                e: params.e !== undefined ? this.absolute(this.state.e, params.e) : this.state.e,
+                f: params.f !== undefined ? this.absolute(this.state.f, params.f) : this.state.f
             };
 
-            //if (lastLine.x == 0 && lastLine.y == 0 && lastLine.z == 0) {
-            // this is the first iteration
-            // don't draw 
-            //	lastLine = newLine;
-            //}
-
-            /* layer change detection is or made by watching Z, it's made by
-               watching when we extrude at a new Z position */
-            if (delta(lastLine.e, newLine.e) > 0) {
-                newLine.extruding = delta(lastLine.e, newLine.e) > 0;
-                if (layer == undefined || newLine.z != layer.z) {
-                    newLayer(newLine);
+            // layer change detection is or made by watching Z, it's made by
+            // watching when we extrude at a new Z position
+            if (this.delta(this.state.e, newState.e) > 0) {
+                newState.extruding = this.delta(this.state.e, newState.e) > 0;
+                if (_.isUndefined(layer) || newState.z !== layer.z) {
+                    newLayer(newState);
                 }
             }
-            addSegment(lastLine, newLine);
-            lastLine = newLine;
+
+            addLineSegment(this.state, newState);
+
+            this.setState(newState);
         },
 
-        G21: () => {
-            // G21: Set Units to Millimeters
-            // Example: G21
-            // Units from now on are in millimeters. (This is the RepRap default.)
+        // G2 & G3: Controlled Arc Move
+        //
+        // Usage
+        //   G2 Xnnn Ynnn Innn Jnnn Ennn Fnnn (Clockwise Arc)
+        //   G3 Xnnn Ynnn Innn Jnnn Ennn Fnnn (Counter-Clockwise Arc)
+        // Parameters
+        //   Xnnn The position to move to on the X axis
+        //   Ynnn The position to move to on the Y axis
+        //   Innn The point in X space from the current X position to maintain a constant distance from
+        //   Jnnn The point in Y space from the current Y position to maintain a constant distance from
+        //   Ennn The amount to extrude between the starting point and ending point
+        //   Fnnn The feedrate per minute of the move between the starting point and ending point (if supplied)
+        // Examples
+        //   G2 X90.6 Y13.8 I5 J10 E22.4 (Move in a Clockwise arc from the current point to point (X=90.6,Y=13.8),
+        //   with a center point at (X=current_X+5, Y=current_Y+10), extruding 22.4mm of material between starting and stopping)
+        //   G3 X90.6 Y13.8 I5 J10 E22.4 (Move in a Counter-Clockwise arc from the current point to point (X=90.6,Y=13.8),
+        //   with a center point at (X=current_X+5, Y=current_Y+10), extruding 22.4mm of material between starting and stopping)
+        // Referring
+        //   http://linuxcnc.org/docs/2.5/html/gcode/gcode.html#sec:G2-G3-Arc
+        //   https://github.com/grbl/grbl/issues/236
+        'G2': (opts) => {
+            let { params } = opts;
+            let newState = {
+                x: params.x !== undefined ? this.absolute(this.state.x, params.x) : this.state.x,
+                y: params.y !== undefined ? this.absolute(this.state.y, params.y) : this.state.y,
+                z: params.z !== undefined ? this.absolute(this.state.z, params.z) : this.state.z,
+                f: params.f !== undefined ? this.absolute(this.state.f, params.f) : this.state.f
+            };
 
-            // No-op: So long as G20 is not supported.
+            let p0 = { // The fixed point
+                x: this.state.x + Number(params.i || 0),
+                y: this.state.y + Number(params.j || 0),
+                z: this.state.z + Number(params.k || 0)
+            };
+            let isClockwise = true;
+
+            addArcCurveSegment(this.state, newState, p0, isClockwise);
+
+            this.setState(newState);
         },
+        'G3': (opts) => {
+            let { params } = opts;
+            let newState = {
+                x: params.x !== undefined ? this.absolute(this.state.x, params.x) : this.state.x,
+                y: params.y !== undefined ? this.absolute(this.state.y, params.y) : this.state.y,
+                z: params.z !== undefined ? this.absolute(this.state.z, params.z) : this.state.z,
+                f: params.f !== undefined ? this.absolute(this.state.f, params.f) : this.state.f
+            };
 
-        G90: () => {
-            // G90: Set to Absolute Positioning
-            // Example: G90
-            // All coordinates from now on are absolute relative to the
-            // origin of the machine. (This is the RepRap default.)
+            let p0 = { // The fixed point
+                x: this.state.x + Number(params.i || 0),
+                y: this.state.y + Number(params.j || 0),
+                z: this.state.z + Number(params.k || 0)
+            };
+            let isClockwise = false;
 
-            relative = false;
+            addArcCurveSegment(this.state, newState, p0, isClockwise);
+
+            this.setState(newState);
         },
-
-        G91: () => {
-            // G91: Set to Relative Positioning
-            // Example: G91
-            // All coordinates from now on are relative to the last position.
-
-            // TODO!
-            relative = true;
+        // G90: Set to Absolute Positioning
+        // Example
+        //   G90
+        // All coordinates from now on are absolute relative to the origin of the machine.
+        'G90': (opts) => {
+            this.setState({ relative: false });
         },
-
-        G92: (args) => { // E0
-            // G92: Set Position
-            // Example: G92 E0
-            // Allows programming of absolute zero point, by reseting the
-            // current position to the values specified. This would set the
-            // machine's X coordinate to 10, and the extrude coordinate to 90.
-            // No physical motion will occur.
-
-            // TODO: Only support E0
-            let newLine = lastLine;
-            newLine.x = args.x !== undefined ? args.x : newLine.x;
-            newLine.y = args.y !== undefined ? args.y : newLine.y;
-            newLine.z = args.z !== undefined ? args.z : newLine.z;
-            newLine.e = args.e !== undefined ? args.e : newLine.e;
-            lastLine = newLine;
+        // G91: Set to Relative Positioning
+        // Example
+        //   G91
+        // All coordinates from now on are relative to the last position.
+        'G91': (opts) => {
+            this.setState({ relative: true });
         },
-
-        M82: () => {
-            // M82: Set E codes absolute (default)
-            // Descriped in Sprintrun source code.
-
-            // No-op, so long as M83 is not supported.
-        },
-
-        M84: () => {
-            // M84: Stop idle hold
-            // Example: M84
-            // Stop the idle hold on all axis and extruder. In some cases the
-            // idle hold causes annoying noises, which can be stopped by
-            // disabling the hold. Be aware that by disabling idle hold during
-            // printing, you will get quality issues. This is recommended only
-            // in between or after printjobs.
-
-            // No-op
-        },
-
-        'default': (args, info) => {
+        // G92: Set Position
+        // Parameters
+        //   This command can be used without any additional parameters.
+        //   Xnnn new X axis position
+        //   Ynnn new Y axis position
+        //   Znnn new Z axis position
+        //   Ennn new extruder position
+        // Example
+        //   G92 X10 E90
+        // Allows programming of absolute zero point, by reseting the current position to the params specified.
+        // This would set the machine's X coordinate to 10, and the extrude coordinate to 90. No physical motion will occur.
+        // A G92 without coordinates will reset all axes to zero.
+        'G92': (opts) => {
+            let { params } = opts;
+            let newState = {
+                x: (params.x !== undefined) ? params.x : this.state.x,
+                y: (params.y !== undefined) ? params.y : this.state.y,
+                z: (params.z !== undefined) ? params.z : this.state.z,
+                e: (params.e !== undefined) ? params.e : this.state.e
+            };
+            this.setState(newState);
         }
     });
 
@@ -340,7 +398,6 @@ GCodeRenderer.prototype._update = function() {
         _.each(layers, (layer) => {
             _.each(layer.type, (type) => {
                 let { geometry, material } = type;
-
                 log.trace('layer ' + layer.layer + ': type=' + type.type + ' segmentCount=' + type.segmentCount);
                 baseObject.add(new THREE.Line(geometry, material, THREE.LineStrip));
             });
@@ -349,11 +406,12 @@ GCodeRenderer.prototype._update = function() {
 
     { // Running Frames
         let geometry = new THREE.Geometry();
-        let material = feed.material;
+        let material = new THREE.LineBasicMaterial({
+            color: colorNames.brown,
+            linewidth: 2
+        });
         let frame = this.feed.frames[this.feed.frameIndex] || {};
-
         geometry.vertices = this.feed.geometry.vertices.slice(0, frame.vertexIndex);
-        geometry.colors = this.feed.geometry.colors.slice(0, frame.vertexIndex);
         baseObject.add(new THREE.Line(geometry, material));
 
         log.trace(frame);
