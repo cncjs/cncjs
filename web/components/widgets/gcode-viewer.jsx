@@ -11,6 +11,7 @@ import Widget, { WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import siofu from '../../lib/siofu';
 import socket from '../../lib/socket';
+import colorNames from '../../lib/color-names';
 import './gcode-viewer.css';
 
 const AXIS_LENGTH = 99999;
@@ -483,12 +484,12 @@ export default class GCodeViewer extends React.Component {
     buildAxes(length) {
         let axes = new THREE.Object3D();
 
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), 0xFF0000, false)); // +X
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-length, 0, 0), 0xFF0000, true)); // -X
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, length, 0), 0x00FF00, false)); // +Y
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -length, 0), 0x00FF00, true)); // -Y
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, length), 0x0000FF, false)); // +Z
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -length), 0x0000FF, true)); // -Z
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), colorNames.red, false)); // +X
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-length, 0, 0), colorNames.red, true)); // -X
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, length, 0), colorNames.green, false)); // +Y
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -length, 0), colorNames.green, true)); // -Y
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, length), colorNames.blue, false)); // +Z
+        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -length), colorNames.blue, true)); // -Z
 
         return axes;
     }
