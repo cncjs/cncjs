@@ -58,10 +58,10 @@ https://github.com/cheton/cnc.js/wiki
 ## TODOs
 - [x] Soft reset GRBL / Unlock GRBL
 - [x] Spindle on/off
+- [x] Display circular arcs with G02 and G03 in the 3D visualizer</br>
+      http://www.cnccookbook.com/CCCNCGCodeArcsG02G03.htm
 - [ ] Remember last working state upon browser refresh
 - [ ] Drag and drop *.gcode files
-- [ ] Display circular arcs with G02 and G03 in the 3D GCode viewer<br>
-      http://www.cnccookbook.com/CCCNCGCodeArcsG02G03.htm
 - [ ] Convert between Metric and Imperial unit<br>
       http://cnc-programming-tips.blogspot.tw/2014/12/g20-g21-unit-selection-codes.html
 - [ ] Webcam support
