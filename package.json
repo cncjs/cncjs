@@ -12,12 +12,7 @@
     "type": "git",
     "url": "git@github.com:cheton/cnc.js.git"
   },
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/cheton/cnc.js/blob/master/LICENSE"
-    }
-  ],
+  "license": "MIT",
   "engines": {
     "node": ">=0.10.x"
   },
