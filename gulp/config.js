@@ -90,8 +90,7 @@ module.exports = {
                     },
                     'rootDir': 'web/',
                     'minify': true
-                },
-                'browserify-shim': require('../config/shim')
+                }
             }
         }
     },
