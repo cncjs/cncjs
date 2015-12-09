@@ -1,13 +1,18 @@
 import _ from 'lodash';
+import path from 'path';
+import fse from 'fs-extra';
 import pkg from '../package.json';
+import gutil from 'gulp-util';
 
 const build = './build/';
 const dist = './dist/';
 const bundleDependencies = {
     'vendor': [
         //'i18next',
-        'lodash',
-        'rx'
+        'react',
+        'react-dom',
+        'react-addons-update',
+        'lodash'
     ]
 };
 
@@ -74,12 +79,39 @@ export default {
                     presets: ['es2015', 'stage-0', 'react']
                 },
                 'browserify-css': {
-                    'autoInject': true,
-                    'autoInjectOptions': {
+                    autoInject: true,
+                    autoInjectOptions: {
                         'verbose': true
                     },
-                    'rootDir': 'web/',
-                    'minify': true
+                    rootDir: 'web/',
+                    minify: true,
+                    // Example:
+                    //   source={webroot}/../node_modules/bootstrap/**/*
+                    //   target={webroot}/vendor/bootstrap/**/*
+                    processRelativeUrl: (relativeUrl) => {
+                        const stripQueryStringAndHashFromPath = (url) => {
+                            return url.split('?')[0].split('#')[0];
+                        };
+                        let rootDir = path.resolve(process.cwd(), 'web');
+                        let relativePath = stripQueryStringAndHashFromPath(relativeUrl);
+                        let queryStringAndHash = relativeUrl.substring(relativePath.length);
+
+                        let prefix = '../node_modules/';
+                        if (_.startsWith(relativePath, prefix)) {
+                            let vendorPath = 'vendor/' + relativePath.substring(prefix.length);
+                            let source = path.join(rootDir, relativePath);
+                            let target = path.join(rootDir, vendorPath);
+
+                            gutil.log('Copying file from ' + JSON.stringify(source) + ' to ' + JSON.stringify(target));
+                            fse.copySync(source, target);
+
+                            // Returns a new path string with original query string and hash fragments
+                            return vendorPath + queryStringAndHash;
+                        }
+
+                        return relativeUrl;
+
+                    }
                 }
             }
         }
