@@ -50,7 +50,6 @@
     "express": "4.13.x",
     "fbjs": "^0.5.0",
     "fixed-data-table": "^0.6.0",
-    "fs-extra": "^0.24.0",
     "history": "1.13.x",
     "hogan.js": "2.0.x",
     "i18next": "1.10.x",
