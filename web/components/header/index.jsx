@@ -2,7 +2,7 @@ import i18n from 'i18next';
 import React from 'react';
 import settings from '../../config/settings';
 import { Link } from 'react-router';
-import { Navbar, NavBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Navbar, NavbarBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 
 export default class Header extends React.Component {
     render() {
@@ -12,9 +12,9 @@ export default class Header extends React.Component {
         return (
             <div data-component="Header">
                 <Navbar fixedTop fluid inverse>
-                    <NavBrand>
+                    <NavbarBrand>
                         <a href={homepage} target="_blank">{settings.name}</a>
-                    </NavBrand>
+                    </NavbarBrand>
                     <Nav>
                         <NavItem href="#/workspace">{i18n._('Workspace')}</NavItem>
                         <NavDropdown title={i18n._('Settings')} id="nav-dropdown">
