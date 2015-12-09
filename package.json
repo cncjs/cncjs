@@ -144,7 +144,6 @@
     "async": "./web/vendor/async/lib/async.js",
     "bootstrap": "./web/vendor/bootstrap/dist/js/bootstrap.js",
     "i18next": "./web/vendor/i18next/i18next.js",
-    "jquery": "./web/vendor/jquery/dist/jquery.js",
     "jsUri": "./web/vendor/jsUri/Uri.js",
     "modernizr": "./web/vendor/modernizr/modernizr.js",
     "rx": "./web/vendor/rxjs/dist/rx.all.js",
