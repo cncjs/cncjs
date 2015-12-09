@@ -8,11 +8,32 @@ const build = './build/';
 const dist = './dist/';
 const bundleDependencies = {
     'vendor': [
-        //'i18next',
+        'async',
+        'classnames',
+        'fbjs/lib/joinClasses',
+        'fixed-data-table',
+        'i18next',
+        'jsuri',
+        'lodash',
+        'moment',
+        'pubsub-js',
         'react',
         'react-dom',
         'react-addons-update',
-        'lodash'
+        'react-bootstrap',
+        'react-datagrid',
+        'react-dom',
+        'react-infinite',
+        'react-router',
+        'react-select',
+        'redux',
+        'sha1',
+        'socketio-file-upload',
+        'three',
+
+        // Bower Components
+        'Sortable',
+        'stacktrace'
     ]
 };
 
