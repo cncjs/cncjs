@@ -1,9 +1,9 @@
 import log from './lib/log';
 import React from 'react';
-import Router from 'react-router';
-import { Route, DefaultRoute, Link, RouteHandler } from 'react-router';
-import Header from './components/header';
-import Workspace from './components/workspace';
+import ReactDOM from 'react-dom';
+import { Router, Route, IndexRoute } from 'react-router';
+import { Header } from './components/header';
+import { Workspace } from './components/workspace';
 
 class App extends React.Component {
     render() {
@@ -13,21 +13,19 @@ class App extends React.Component {
         };
         return (
             <div style={style}>
-                <Header/>
-                <RouteHandler/>
+                <Header />
+                {this.props.children}
             </div>
         );
     }
 }
 
 export default function() {
-    var routes = (
-        <Route name="app" path="/" handler={App}>
-            <DefaultRoute handler={Workspace}/>
-            <Route name="workspace" handler={Workspace}/>
-        </Route>
-    );
-    Router.run(routes, function(Handler) {
-        React.render(<Handler/>, document.querySelector('#components'));
-    });
+    ReactDOM.render((
+        <Router>
+            <Route path="/" component={App}>
+                <IndexRoute component={Workspace} />
+            </Route>
+        </Router>
+    ), document.querySelector('#components'));
 }
