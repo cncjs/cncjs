@@ -1,28 +1,26 @@
-var _ = require('lodash');
-var fs = require('fs');
-var path = require('path');
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var i18next = require('i18next-scanner');
-var hash = require('sha1');
-var table = require('text-table');
+import _ from 'lodash';
+import fs from 'fs';
+import path from 'path';
+import gulp from 'gulp';
+import gutil from 'gulp-util';
+import i18nextScanner from 'i18next-scanner';
+import hash from 'sha1';
+import table from 'text-table';
 
-var customTransform = function _transform(file, enc, done) {
-    var parser = this.parser;
-    var extname = path.extname(file.path);
-    var content = fs.readFileSync(file.path, enc);
-    var parseResults = [
+function customTransform(file, enc, done) {
+    let extname = path.extname(file.path);
+    let content = fs.readFileSync(file.path, enc);
+    let tableData = [
         ['Key', 'Value']
     ];
 
     gutil.log('parsing ' + JSON.stringify(file.relative) + ':');
 
-    // Using i18next-text
-    (function() {
-        var results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
-        _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
+    { // Using i18next-text
+        let results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
+        _.each(results, (result) => {
+            let key, value;
+            let r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
 
             if (r) {
                 value = _.trim(r[1], '\'"');
@@ -33,18 +31,17 @@ var customTransform = function _transform(file, enc, done) {
 
                 key = hash(value); // returns a hash value as its default key
 
-                parser.parse(key, value);
-                parseResults.push([key, value]);
+                this.parse(key, value);
+                tableData.push([key, value]);
             }
         });
-    }());
+    }
 
-    // i18n function helper
-    (function() {
-        var results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
-        _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
+    { // i18n function helper
+        let results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
+        _.each(results, (result) => {
+            let key, value;
+            let r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
 
             if ( ! _.isUndefined(r[1])) {
                 value = _.trim(r[1], '\'"');
@@ -54,7 +51,7 @@ var customTransform = function _transform(file, enc, done) {
                 value = value.replace(/\\\'/, '\'');
             }
 
-            var params = parser.parseHashArguments(r[2]);
+            let params = this.parseHashArguments(r[2]);
             if (_.has(params, 'defaultKey')) {
                 key = params['defaultKey'];
             }
@@ -67,17 +64,16 @@ var customTransform = function _transform(file, enc, done) {
                 key = hash(value); // returns a hash value as its default key
             }
 
-            parser.parse(key, value);
-            parseResults.push([key, value]);
+            this.parse(key, value);
+            tableData.push([key, value]);
         });
-    }());
+    }
 
-    // i18n block helper
-    (function() {
-        var results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
-        _.each(results, function(result) {
-            var key, value;
-            var r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
+    { // i18n block helper
+        let results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
+        _.each(results, (result) => {
+            let key, value;
+            let r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
 
             if ( ! _.isUndefined(r[2])) {
                 value = _.trim(r[2], '\'"');
@@ -89,25 +85,30 @@ var customTransform = function _transform(file, enc, done) {
 
             key = hash(value); // returns a hash value as its default key
 
-            parser.parse(key, value);
-            parseResults.push([key, value]);
+            this.parse(key, value);
+            tableData.push([key, value]);
         });
-    }());
+    }
 
-    if (_.size(parseResults) > 1) {
-        gutil.log('result of ' + JSON.stringify(file.relative) + ':\n' + table(parseResults, {'hsep': ' | '}));
+    if (_.size(tableData) > 1) {
+        let text = table(tableData, {
+            'hsep': ' | '
+        });
+        gutil.log('result of %s:\n%s', JSON.stringify(file.relative), text);
     }
 
     done();
-};
+}
 
-module.exports = function(options) {
-    gulp.task('i18next', function() {
-        var i18nextConfig = options.config.i18next;
+export default (options) => {
+    gulp.task('i18next', () => {
+        let i18nextConfig = options.config.i18next;
 
         return gulp.src(i18nextConfig.src)
-            .pipe(i18next(i18nextConfig.options, customTransform))
+            .pipe(i18nextScanner(i18nextConfig.options, function(file, enc, done) {
+                let parser = this.parser;
+                customTransform.call(parser, file, enc, done);
+            }))
             .pipe(gulp.dest(i18nextConfig.dest));
     });
 };
-

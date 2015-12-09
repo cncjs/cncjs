@@ -1,18 +1,9 @@
-var _ = require('lodash');
-var cwd = process.cwd();
-var src = './';
-var build = src + 'build/';
-var dist = src + 'dist/';
-var templates = src + 'templates/';
-var development = build + 'development/';
-var production = build + 'production/';
-var pkg = require('../package.json');
+import _ from 'lodash';
+import pkg from '../package.json';
 
-//
-// https://github.com/kogakure/gulp-tutorial/blob/master/gulp/config.js
-//
-
-var bundleDependencies = {
+const build = './build/';
+const dist = './dist/';
+const bundleDependencies = {
     'vendor': [
         //'i18next',
         'lodash',
@@ -20,7 +11,7 @@ var bundleDependencies = {
     ]
 };
 
-module.exports = {
+export default {
     clean: {
         styles: [
             'web/components/**/*.css',

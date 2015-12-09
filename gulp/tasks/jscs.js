@@ -1,14 +1,14 @@
-var gulp = require('gulp');
-var jscs = require('gulp-jscs');
-var stylish = require('gulp-jscs-stylish');
+import gulp from 'gulp';
+import jscs from 'gulp-jscs';
+import stylish from 'gulp-jscs-stylish';
 
-module.exports = function(options) {
-    gulp.task('jscs', function() {
-        var jscsConfig = options.config.jscs;
-        var noop = function () {};
+export default (options) => {
+    gulp.task('jscs', () => {
+        let jscsConfig = options.config.jscs;
+
         return gulp.src(jscsConfig.src)
             .pipe(jscs(jscsConfig.options)) // enforce style guide
-                .on('error', noop) // don't stop on error
+                .on('error', () => {}) // don't stop on error
             .pipe(stylish()); // log style errors
     });
 };

@@ -1,9 +1,11 @@
-var fs = require('fs');
-var _ = require('lodash');
-var gulp = require('gulp');
-var requireDir = require('require-dir');
-var pkg = require('./package.json');
-var bower = require('./bower.json');
+import _ from 'lodash';
+import fs from 'fs';
+import gulp from 'gulp';
+import requireDir from 'require-dir';
+import pkg from './package.json';
+import bower from './bower.json';
+import config from './gulp/config';
+import errorHandler from './gulp/error-handler';
 
 // Sync the following properties from `package.json` to `bower.json`:
 // * name
@@ -17,18 +19,23 @@ bower.license = pkg.license;
 fs.writeFileSync('bower.json', JSON.stringify(bower, null, 2));
 
 // Require all tasks in gulp/tasks, including subfolders
-var tasks = requireDir('./gulp/tasks', {recursive: true});
+let tasks = requireDir('./gulp/tasks', { recurse: true });
 
 // Get environment, for environment-specific activities
-var env = process.env.NODE_ENV || 'development';
+let env = process.env.NODE_ENV || 'development';
 
-_.each(tasks, function(task, relativePath) {
+_.each(tasks, (task, relativePath) => {
+    if (_.isObject(task) && _.isFunction(task.default)) {
+        task = task.default;
+    }
+
     console.assert(_.isFunction(task), 'gulp/tasks/%s: module\'s export is not a function', relativePath);
+
     task({
-        config: require('./gulp/config'),
+        config: config,
         env: env,
         watch: false,
-        errorHandler: require('./gulp/error-handler')
+        errorHandler: errorHandler
     });
 });
 
