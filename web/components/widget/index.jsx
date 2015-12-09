@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import i18n from 'i18next';
 import React from 'react';
-import joinClasses from 'react/lib/joinClasses';
+import joinClasses from 'fbjs/lib/joinClasses';
 import classNames from 'classnames';
 import './widget.css';
 
@@ -102,7 +102,7 @@ class WidgetHeaderToolbar extends React.Component {
     }
 }
 
-export class WidgetHeader extends React.Component {
+class WidgetHeader extends React.Component {
     render() {
         let options = _.defaultsDeep({}, this.props, {
             type: 'default',
@@ -125,7 +125,7 @@ export class WidgetHeader extends React.Component {
     }
 }
 
-export class WidgetContent extends React.Component {
+class WidgetContent extends React.Component {
     render() {
         let contentClass = classNames(
             'widget-content'
@@ -158,7 +158,7 @@ class WidgetFooter extends React.Component {
     }
 }
 
-export default class Widget extends React.Component {
+class Widget extends React.Component {
     static defaultProps = {
         options: {}
     };
@@ -185,3 +185,10 @@ export default class Widget extends React.Component {
         );
     }
 }
+
+export {
+    Widget,
+    WidgetHeader,
+    WidgetContent,
+    WidgetFooter
+};
