@@ -102,6 +102,7 @@
     "del": "0.1.x",
     "envify": "^3.4.0",
     "exorcist": "^0.1.6",
+    "fs-extra": "^0.24.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.1.0",
     "gulp-concat": "2.4.x",
