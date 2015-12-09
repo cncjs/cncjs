@@ -223,7 +223,7 @@ class Connection extends React.Component {
             <div style={optionStyle} title={option.label}>
                 <div>
                 {option.inuse &&
-                    <span><i className="icon ion-locked"></i>&nbsp;</span>
+                    <span><i className="glyphicon glyphicon-lock"></i>&nbsp;</span>
                 }
                 {option.label}
                 </div>
@@ -246,7 +246,7 @@ class Connection extends React.Component {
         return (
             <div style={style} title={option.label}>
                 {option.inuse &&
-                    <span><i className="icon ion-locked"></i>&nbsp;</span>
+                    <span><i className="glyphicon glyphicon-lock"></i>&nbsp;</span>
                 }
                 {option.label}
             </div>
@@ -343,7 +343,7 @@ class Connection extends React.Component {
                             disabled={!canOpenPort}
                             onClick={::this.openPort}
                         >
-                            <i className="icon ion-power"></i>&nbsp;{i18n._('Open')}
+                            <i className="glyphicon glyphicon-off"></i>&nbsp;{i18n._('Open')}
                         </button>
                     }
                     {isConnected &&
@@ -353,7 +353,7 @@ class Connection extends React.Component {
                             disabled={!canClosePort}
                             onClick={::this.closePort}
                         >
-                            <i className="icon ion-close"></i>&nbsp;{i18n._('Close')}
+                            <i className="glyphicon glyphicon-off"></i>&nbsp;{i18n._('Close')}
                         </button>
                     }
                 </div>
