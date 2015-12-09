@@ -32,7 +32,9 @@
     "webappengine"
   ],
   "dependencies": {
+    "async": "^1.5.0",
     "body-parser": "1.13.x",
+    "bootstrap": "^3.3.6",
     "classnames": "^2.2.1",
     "colors": "0.6.x",
     "commander": "^2.8.1",
@@ -59,6 +61,7 @@
     "moment": "^2.10.6",
     "morgan": "1.0.x",
     "multiparty": "3.2.x",
+    "normalize.css": "^3.0.3",
     "pkginfo": "0.3.x",
     "pubsub-js": "^1.5.2",
     "react": "^0.14.3",
@@ -142,9 +145,7 @@
     "yargs": "^2.3.0"
   },
   "browser": {
-    "bootstrap": "./web/vendor/bootstrap/dist/js/bootstrap.js",
     "i18next": "./web/vendor/i18next/i18next.js",
-    "modernizr": "./web/vendor/modernizr/modernizr.js",
     "Sortable": "./web/vendor/Sortable/Sortable.js",
     "stacktrace": "./web/vendor/stacktrace-js/stacktrace.js"
   },
