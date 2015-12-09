@@ -3,8 +3,8 @@ import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import classNames from 'classnames';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Sortable from 'Sortable';
-import Widget from '../widget';
 import {
     AxesWidget,
     ConnectionWidget,
@@ -21,6 +21,9 @@ export default class Workspace extends React.Component {
     state = {
         showPrimaryContainer: true,
         showSecondaryContainer: true,
+        mainContainer: [
+            <GCodeViewerWidget key="gcode-viewer" />
+        ],
         primaryContainer: [
             <ConnectionWidget key="connection" />,
             <GrblWidget key="grbl" />,
@@ -42,8 +45,8 @@ export default class Workspace extends React.Component {
         this.unsubscribeFromEvents();
     }
     createSortableGroups() {
-        this.createSortableGroupForPrimaryContainer(React.findDOMNode(this.refs.primaryContainer));
-        this.createSortableGroupForSecondaryContainer(React.findDOMNode(this.refs.secondaryContainer));
+        this.createSortableGroupForPrimaryContainer(ReactDOM.findDOMNode(this.refs.primaryContainer));
+        this.createSortableGroupForSecondaryContainer(ReactDOM.findDOMNode(this.refs.secondaryContainer));
     }
     createSortableGroupForPrimaryContainer(el) {
         let sortable = Sortable.create(el, {
@@ -171,7 +174,7 @@ export default class Workspace extends React.Component {
                                 </div>
                             </div>
                             <div className="main-container" ref="main-content">
-                                <GCodeViewerWidget />
+                                {this.state.mainContainer}
                             </div>
                             <div className="secondary-toggler-pane" onClick={::this.toggleSecondaryContainer}>
                                 <div>
