@@ -3,10 +3,9 @@ import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import Select from 'react-select';
 import classNames from 'classnames';
 import PressAndHold from '../common/PressAndHold';
-import Widget, { WidgetHeader, WidgetContent } from '../widget';
+import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import socket from '../../lib/socket';
 import serialport from '../../lib/serialport';
 import log from '../../lib/log';
@@ -102,10 +101,10 @@ class DisplayPanel extends React.Component {
         let { port, unit, activeState } = this.props;
         let machinePos = _.mapValues(this.props.machinePos, (pos, axis) => {
             return this.convertPositionUnit(pos);
-        }.bind(this));
+        });
         let workingPos = _.mapValues(this.props.workingPos, (pos, axis) => {
             return this.convertPositionUnit(pos);
-        }.bind(this));
+        });
         let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
 
         return (
@@ -716,7 +715,7 @@ class Axes extends React.Component {
     }
 }
 
-export default class AxesWidget extends React.Component {
+class AxesWidget extends React.Component {
     state = {
         isCollapsed: false
     };
@@ -756,3 +755,5 @@ export default class AxesWidget extends React.Component {
         );
     }
 }
+
+export default AxesWidget;

@@ -4,7 +4,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import classNames from 'classnames';
-import Widget, { WidgetHeader, WidgetContent } from '../widget';
+import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import socket from '../../lib/socket';
 import serialport from '../../lib/serialport';
@@ -266,7 +266,7 @@ class Grbl extends React.Component {
     }
 }
 
-export default class GrblWidget extends React.Component {
+class GrblWidget extends React.Component {
     state = {
         isCollapsed: false
     };
@@ -306,3 +306,5 @@ export default class GrblWidget extends React.Component {
         );
     }
 }
+
+export default GrblWidget;

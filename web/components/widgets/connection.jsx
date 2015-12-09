@@ -4,7 +4,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import Select from 'react-select';
 import classNames from 'classnames';
-import Widget, { WidgetHeader, WidgetContent } from '../widget';
+import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import socket from '../../lib/socket';
 import './connection.css';
@@ -223,7 +223,7 @@ class Connection extends React.Component {
             <div style={optionStyle} title={option.label}>
                 <div>
                 {option.inuse &&
-                    <span><i className="icon ion-locked"></i>&nbsp;</span>
+                    <span><i className="glyphicon glyphicon-lock"></i>&nbsp;</span>
                 }
                 {option.label}
                 </div>
@@ -246,7 +246,7 @@ class Connection extends React.Component {
         return (
             <div style={style} title={option.label}>
                 {option.inuse &&
-                    <span><i className="icon ion-locked"></i>&nbsp;</span>
+                    <span><i className="glyphicon glyphicon-lock"></i>&nbsp;</span>
                 }
                 {option.label}
             </div>
@@ -283,6 +283,7 @@ class Connection extends React.Component {
                     <label className="control-label">{i18n._('Port:')}</label>
                     <div className="input-group input-group-sm">
                         <Select
+                            className="sm"
                             name="port"
                             value={this.state.port}
                             options={_.map(this.state.ports, function(port) {
@@ -316,6 +317,7 @@ class Connection extends React.Component {
                 <div className="form-group">
                     <label className="control-label">{i18n._('Baud rate:')}</label>
                     <Select
+                        className="sm"
                         name="baudrate"
                         value={this.state.baudrate}
                         options={_.map(this.state.baudrates, function(baudrate) {
@@ -341,7 +343,7 @@ class Connection extends React.Component {
                             disabled={!canOpenPort}
                             onClick={::this.openPort}
                         >
-                            <i className="icon ion-power"></i>&nbsp;{i18n._('Open')}
+                            <i className="glyphicon glyphicon-off"></i>&nbsp;{i18n._('Open')}
                         </button>
                     }
                     {isConnected &&
@@ -351,7 +353,7 @@ class Connection extends React.Component {
                             disabled={!canClosePort}
                             onClick={::this.closePort}
                         >
-                            <i className="icon ion-close"></i>&nbsp;{i18n._('Close')}
+                            <i className="glyphicon glyphicon-off"></i>&nbsp;{i18n._('Close')}
                         </button>
                     }
                 </div>
@@ -360,7 +362,7 @@ class Connection extends React.Component {
     }
 }
 
-export default class ConnectionWidget extends React.Component {
+class ConnectionWidget extends React.Component {
     state = {
         isCollapsed: false
     };
@@ -400,3 +402,5 @@ export default class ConnectionWidget extends React.Component {
         );
     }
 }
+
+export default ConnectionWidget;
