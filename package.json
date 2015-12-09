@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "0.7.1",
+  "version": "0.7.2",
   "description": "CNC.js is a web-based CNC milling controller for the Arduino running GRBL",
   "homepage": "https://github.com/cheton/cnc.js",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -19,7 +19,7 @@
   "preferGlobal": true,
   "scripts": {
     "build": "gulp",
-    "test": "./babel-tap --coverage test/*.js",
+    "test": "npm run build && ./babel-tap --coverage test/*.js",
     "coveralls": "./babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
   "keywords": [
@@ -142,7 +142,6 @@
   "browser": {
     "async": "./web/vendor/async/lib/async.js",
     "bootstrap": "./web/vendor/bootstrap/dist/js/bootstrap.js",
-    "classnames": "./web/vendor/classnames/index.js",
     "i18next": "./web/vendor/i18next/i18next.js",
     "jquery": "./web/vendor/jquery/dist/jquery.js",
     "jsUri": "./web/vendor/jsUri/Uri.js",
