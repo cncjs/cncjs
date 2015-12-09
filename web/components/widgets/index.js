@@ -6,7 +6,7 @@ import GCodeViewerWidget from './gcode-viewer';
 import GrblWidget from './grbl';
 import SpindleWidget from './spindle';
 
-export default {
+export {
     AxesWidget,
     ConnectionWidget,
     ConsoleWidget,

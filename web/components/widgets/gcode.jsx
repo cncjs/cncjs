@@ -3,9 +3,10 @@ import i18n from 'i18next';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import update from 'react-addons-update';
 import classNames from 'classnames';
 import { Table, Column } from 'fixed-data-table';
-import Widget, { WidgetHeader, WidgetContent } from '../widget';
+import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import socket from '../../lib/socket';
 import './gcode.css';
@@ -98,7 +99,7 @@ class GCodeTable extends React.Component {
     }
     setTableColumnWidth(dataKey, newColumnWidth) {
         let columns = this.state.table.columns;
-        let newState = React.addons.update(this.state, {
+        let newState = update(this.state, {
             table: {
                 columns: {
                     $apply: function() {
@@ -455,7 +456,7 @@ export default class GCode extends React.Component {
             };
         }
 
-        let updatedCommands = React.addons.update(this.state.commands, list);
+        let updatedCommands = update(this.state.commands, list);
         this.setState({
             commands: updatedCommands,
             queueStatus: {
@@ -498,7 +499,7 @@ export default class GCode extends React.Component {
     }
 }
 
-export default class GCodeWidget extends React.Component {
+class GCodeWidget extends React.Component {
     state = {
         isCollapsed: false
     };
@@ -538,3 +539,5 @@ export default class GCodeWidget extends React.Component {
         );
     }
 }
+
+export default GCodeWidget;

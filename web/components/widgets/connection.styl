@@ -1,5 +1,30 @@
 [data-component="Widgets/ConnectionWidget"] {
     .widget-content {
         padding: 10px;
+
+        .Select.sm {
+            .Select-control {
+                height: 30px;
+                border-radius: 3px;
+            }
+            .Select-placeholder {
+                line-height: 28px;
+            }
+            .Select-value {
+                padding: 6px 52px 6px 10px;
+            }   
+            .Select-input {
+                height: 28px;
+            }
+        }
+        
+        .input-group > .Select:not(:last-child) .Select-control {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+        .input-group > .Select:not(:first-child) .Select-control {
+            border-top-left-radius: 0;
+            border-bottom-left-radius: 0;
+        }
     }
 }

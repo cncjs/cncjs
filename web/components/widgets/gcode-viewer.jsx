@@ -3,11 +3,12 @@ import i18n from 'i18next';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import THREE from 'three';
 import PressAndHold from '../common/PressAndHold';
 import TrackballControls from '../../lib/three/TrackballControls';
 import { GCodeRenderer } from '../../lib/gcode';
-import Widget, { WidgetHeader, WidgetContent } from '../widget';
+import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import siofu from '../../lib/siofu';
 import socket from '../../lib/socket';
@@ -189,7 +190,7 @@ class Toolbar extends React.Component {
         log.error('Upload file failed:', event);
     }
     handleUpload() {
-        let el = React.findDOMNode(this.refs.file);
+        let el = ReactDOM.findDOMNode(this.refs.file);
         if (el) {
             el.value = ''; // Clear file input value
             el.click(); // trigger file input click
@@ -316,7 +317,7 @@ export default class GCodeViewer extends React.Component {
         this.addSocketEvents();
         this.addResizeEventListener();
 
-        let el = React.findDOMNode(this.refs.gcodeViewer);
+        let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
         this.createScene(el);
     }
     componentWillUnmount() {
@@ -324,13 +325,6 @@ export default class GCodeViewer extends React.Component {
         this.removeSocketEvents();
         this.unsubscribe();
         this.clearScene();
-    }
-    componentDidUnmount() {
-        this.scene = null;
-        this.renderer = null;
-        this.camera = null;
-        this.trackballControls = null;
-        this.gcodeRenderer = null;
     }
     subscribe() {
         let that = this;
@@ -394,7 +388,7 @@ export default class GCodeViewer extends React.Component {
             return;
         }
 
-        let el = React.findDOMNode(this.refs.gcodeViewer);
+        let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
         let width = el.offsetWidth;
         let height = window.innerHeight - 50 - 1; // take off the navbar (50px) and an extra 1px space to disable scrollbar
 
@@ -527,7 +521,7 @@ export default class GCodeViewer extends React.Component {
         // Reset TrackballControls
         this.trackballControls.reset();
 
-        let el = React.findDOMNode(this.refs.gcodeViewer);
+        let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
         this.gcodeRenderer = new GCodeRenderer();
         this.object = this.gcodeRenderer.render({
             gcode: gcode,
@@ -575,7 +569,7 @@ export default class GCodeViewer extends React.Component {
     }
 }
 
-export default class GCodeViewerWidget extends React.Component {
+class GCodeViewerWidget extends React.Component {
     render() {
         return (
             <div data-component="Widgets/GCodeViewerWidget">
@@ -588,3 +582,5 @@ export default class GCodeViewerWidget extends React.Component {
         );
     }
 }
+
+export default GCodeViewerWidget;

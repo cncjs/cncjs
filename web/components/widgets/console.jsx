@@ -3,9 +3,10 @@ import log from '../../lib/log';
 import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import ReactDOM from 'react-dom';
 import Infinite from 'react-infinite';
 import classNames from 'classnames';
-import Widget, { WidgetHeader, WidgetContent } from '../widget';
+import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import serialport from '../../lib/serialport';
 import './console.css';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
@@ -31,7 +32,7 @@ class ConsoleInput extends React.Component {
         }
     }
     handleSend() {
-        let el = React.findDOMNode(this.refs.command);
+        let el = ReactDOM.findDOMNode(this.refs.command);
 
         if (el.value === '') {
             return;
@@ -94,12 +95,12 @@ class ConsoleWindow extends React.Component {
     // Scroll Position with React
     // http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
     componentWillUpdate() {
-        let node = React.findDOMNode(this.refs.infinite);
+        let node = ReactDOM.findDOMNode(this.refs.infinite);
         let hScrollBarHeight = (node.scrollWidth != node.clientWidth) ? 20 : 0;
         this.shouldScrollBottom = ((node.scrollTop + node.clientHeight + hScrollBarHeight) >= node.scrollHeight);
     }
     componentDidUpdate() {
-        let node = React.findDOMNode(this.refs.infinite);
+        let node = ReactDOM.findDOMNode(this.refs.infinite);
         if (this.shouldScrollBottom) {
             node.scrollTop = node.scrollHeight;
         }
@@ -129,7 +130,7 @@ class ConsoleWindow extends React.Component {
     }
 }
 
-export default class Console extends React.Component {
+class Console extends React.Component {
     state = {
         port: '',
         buffers: []
@@ -214,7 +215,7 @@ export default class Console extends React.Component {
     }
 }
 
-export default class ConsoleWidget extends React.Component {
+class ConsoleWidget extends React.Component {
     state = {
         isCollapsed: false
     };
@@ -254,3 +255,5 @@ export default class ConsoleWidget extends React.Component {
         );
     }
 }
+
+export default ConsoleWidget;

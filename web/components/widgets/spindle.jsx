@@ -3,7 +3,7 @@ import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import classNames from 'classnames';
-import Widget, { WidgetHeader, WidgetContent } from '../widget';
+import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import serialport from '../../lib/serialport';
 import './spindle.css';
@@ -91,7 +91,7 @@ class Spindle extends React.Component {
     }
 }
 
-export default class SpindleWidget extends React.Component {
+class SpindleWidget extends React.Component {
     state = {
         isCollapsed: false
     };
@@ -131,3 +131,5 @@ export default class SpindleWidget extends React.Component {
         );
     }
 }
+
+export default SpindleWidget;
