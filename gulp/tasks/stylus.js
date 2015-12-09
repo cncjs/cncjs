@@ -1,25 +1,25 @@
-var gulp = require('gulp');
-var plumber = require('gulp-plumber');
-var stylus = require('gulp-stylus');
-var autoprefixer = require('gulp-autoprefixer');
-var sourcemaps = require('gulp-sourcemaps');
-var nib = require('nib');
+import gulp from 'gulp';
+import plumber from 'gulp-plumber';
+import stylus from 'gulp-stylus';
+import autoprefixer from 'gulp-autoprefixer';
+import sourcemaps from 'gulp-sourcemaps';
+import nib from 'nib';
 
-module.exports = function(options) {
-    gulp.task('stylus', function() {
-        var stylusConfig = options.config.stylus;
-        var autoprefixerConfig = options.config.autoprefixer;
+export default (options) => {
+    gulp.task('stylus', () => {
+        let stylusConfig = options.config.stylus;
+        let autoprefixerConfig = options.config.autoprefixer;
 
         // nib - CSS3 extensions for Stylus
         stylusConfig.options.use = nib();
         stylusConfig.options.import = ['nib']; // no need to have a '@import "nib"' in the stylesheet
 
         return gulp.src(stylusConfig.src)
-            .pipe(plumber({errorHandler: options.errorHandler.error}))
+            .pipe(plumber({ errorHandler: options.errorHandler.error }))
             .pipe(sourcemaps.init())
                 .pipe(stylus(stylusConfig.options))
                 .pipe(autoprefixer(autoprefixerConfig.options))
-            .pipe(sourcemaps.write('/', {includeContent: false}))
+            .pipe(sourcemaps.write('/', { includeContent: false }))
             .pipe(gulp.dest(stylusConfig.dest));
     });
 };

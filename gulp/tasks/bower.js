@@ -1,12 +1,12 @@
-var gulp = require('gulp');
-var concat = require('gulp-concat');
-var mainBowerFiles = require('main-bower-files');
+import gulp from 'gulp';
+import concat from 'gulp-concat';
+import mainBowerFiles from 'main-bower-files';
 
-module.exports = function(options) {
-    var mainBowerFilesConfig = options.config.mainBowerFiles;
+export default (options) => {
+    let mainBowerFilesConfig = options.config.mainBowerFiles;
 
-    gulp.task('bower', function() {
-        return gulp.src(mainBowerFiles(mainBowerFilesConfig.options), {base: mainBowerFilesConfig.base})
+    gulp.task('bower', () => {
+        return gulp.src(mainBowerFiles(mainBowerFilesConfig.options), { base: mainBowerFilesConfig.base })
             .pipe(gulp.dest(mainBowerFilesConfig.dest));
     });
 };

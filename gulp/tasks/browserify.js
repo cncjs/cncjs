@@ -1,32 +1,32 @@
-var _ = require('lodash');
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var path = require('path');
-var browserify = require('browserify');
-var source = require('vinyl-source-stream');
-var streamify = require('gulp-streamify');
-var uglify = require('gulp-uglify');
-var notify = require('gulp-notify');
-var gulpif = require('gulp-if');
-var rename = require('gulp-rename');
-var exorcist = require('exorcist');
-var watchify = require('watchify');
-var livereload = require('gulp-livereload');
+import _ from 'lodash';
+import gulp from 'gulp';
+import gutil from 'gulp-util';
+import path from 'path';
+import browserify from 'browserify';
+import source from 'vinyl-source-stream';
+import streamify from 'gulp-streamify';
+import uglify from 'gulp-uglify';
+import notify from 'gulp-notify';
+import gulpif from 'gulp-if';
+import rename from 'gulp-rename';
+import exorcist from 'exorcist';
+import watchify from 'watchify';
+import livereload from 'gulp-livereload';
 
-var createVendorBundle = function(options) {
-    var browserifyConfig = _.get(options.config, 'browserify.vendor') || {};
-    var uglifyConfig = _.get(options.config, 'uglify') || {};
-    var bundleFile = 'vendor.js';
-    var bundleMapFile = path.join(browserifyConfig.dest, 'vendor.js.map');
-    var minifiedBundleFile = 'vendor.min.js';
+const createVendorBundle = (options) => {
+    let browserifyConfig = _.get(options.config, 'browserify.vendor') || {};
+    let uglifyConfig = _.get(options.config, 'uglify') || {};
+    let bundleFile = 'vendor.js';
+    let bundleMapFile = path.join(browserifyConfig.dest, 'vendor.js.map');
+    let minifiedBundleFile = 'vendor.min.js';
 
     // Create a separate vendor bundler that will only run when starting gulp
-    var bundler = browserify(browserifyConfig.options);
-    _.each(browserifyConfig.require, function(lib) {
+    let bundler = browserify(browserifyConfig.options);
+    _.each(browserifyConfig.require, (lib) => {
         bundler.require(lib);
     });
 
-    var rebundle = function() {
+    let rebundle = () => {
         gutil.log('Rebundling "%s"...', gutil.colors.cyan(bundleFile));
         return bundler.bundle()
             .pipe(exorcist(bundleMapFile))
@@ -34,14 +34,14 @@ var createVendorBundle = function(options) {
             .pipe(gulpif(options.env !== 'development', streamify(uglify(uglifyConfig.options))))
             .pipe(gulp.dest(browserifyConfig.dest))
             .pipe(gulpif(options.watch, livereload()))
-            .pipe(notify(function() {
+            .pipe(notify(() => {
                 gutil.log('Finished "%s" bundle.', gutil.colors.cyan(bundleFile));
             }));
     };
 
     if (options.watch) { // Also see at gulp/tasks/watch.js
         bundler = watchify(bundler);
-        bundler.on('time', function(time) {
+        bundler.on('time', (time) => {
             gutil.log('Browserify "%s" in %s.', gutil.colors.cyan(bundleFile), gutil.colors.magenta(time + ' ms'));
         });
         bundler.on('update', rebundle);
@@ -55,25 +55,25 @@ var createVendorBundle = function(options) {
     return rebundle();
 };
 
-var createAppBundle = function(options) {
-    var browserifyConfig = _.get(options.config, 'browserify.app') || {};
-    var uglifyConfig = _.get(options.config, 'uglify') || {};
-    var browserifyTransform = browserifyConfig.transform;
-    var bundleFile = 'app.js';
-    var bundleMapFile = path.join(browserifyConfig.dest, 'app.js.map');
-    var minifiedBundleFile = 'app.min.js';
+const createAppBundle = (options) => {
+    let browserifyConfig = _.get(options.config, 'browserify.app') || {};
+    let uglifyConfig = _.get(options.config, 'uglify') || {};
+    let browserifyTransform = browserifyConfig.transform;
+    let bundleFile = 'app.js';
+    let bundleMapFile = path.join(browserifyConfig.dest, 'app.js.map');
+    let minifiedBundleFile = 'app.min.js';
 
     // Create the application bundler
-    var bundler = browserify(browserifyConfig.options);
+    let bundler = browserify(browserifyConfig.options);
     bundler.add(browserifyConfig.src);
     bundler.transform('babelify', browserifyTransform['babelify']);
     bundler.transform('browserify-css', browserifyTransform['browserify-css']);
     bundler.transform('brfs');
-    _.each(browserifyConfig.external, function(lib) {
+    _.each(browserifyConfig.external, (lib) => {
         bundler.external(lib);
     });
 
-    var rebundle = function() {
+    let rebundle = () => {
         gutil.log('Rebundling "%s"...', gutil.colors.cyan(bundleFile));
         return bundler.bundle()
             .pipe(exorcist(bundleMapFile))
@@ -81,14 +81,14 @@ var createAppBundle = function(options) {
             .pipe(gulpif(options.env !== 'development', streamify(uglify(uglifyConfig.options))))
             .pipe(gulp.dest(browserifyConfig.dest))
             .pipe(gulpif(options.watch, livereload()))
-            .pipe(notify(function() {
+            .pipe(notify(() => {
                 gutil.log('Finished "%s" bundle.', gutil.colors.cyan(bundleFile));
             }));
     };
 
     if (options.watch) { // Also see at gulp/tasks/watch.js
         bundler = watchify(bundler);
-        bundler.on('time', function(time) {
+        bundler.on('time', (time) => {
             gutil.log('Browserify "%s" in %s.', gutil.colors.cyan(bundleFile), gutil.colors.magenta(time + ' ms'));
         });
         bundler.on('update', rebundle);
@@ -102,13 +102,13 @@ var createAppBundle = function(options) {
     return rebundle();
 };
 
-module.exports = function(options) {
-    gulp.task('browserify-watch', function() {
+export default (options) => {
+    gulp.task('browserify-watch', () => {
         options = _.extend(options, { watch: true });
         createVendorBundle(options);
         createAppBundle(options);
     });
-    gulp.task('browserify', function() {
+    gulp.task('browserify', () => {
         createVendorBundle(options);
         createAppBundle(options);
     });

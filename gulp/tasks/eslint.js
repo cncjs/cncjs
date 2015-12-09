@@ -1,10 +1,10 @@
-var gulp = require('gulp');
-var eslint = require('gulp-eslint');
+import gulp from 'gulp';
+import eslint from 'gulp-eslint';
 
-module.exports = function(options) {
+export default (options) => {
     // The pluggable linting utility for JavaScript and JSX
-    gulp.task('eslint', function() {
-        var eslintConfig = options.config.eslint;
+    gulp.task('eslint', () => {
+        let eslintConfig = options.config.eslint;
 
         return gulp.src(eslintConfig.src)
             // eslint() attaches the lint output to the eslint property

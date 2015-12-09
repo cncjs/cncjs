@@ -1,8 +1,8 @@
-var gulp = require('gulp');
-var runSequence = require('run-sequence');
+import gulp from 'gulp';
+import runSequence from 'run-sequence';
 
-module.exports = function(options) {
-    gulp.task('build', function(callback) {
+export default (options) => {
+    gulp.task('build', (callback) => {
         runSequence('clean',
             'bower',
             ['eslint', 'jscs', 'jshint'],

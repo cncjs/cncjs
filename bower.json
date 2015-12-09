@@ -1,39 +1,11 @@
 {
   "name": "cncjs",
-  "version": "0.7.2",
+  "version": "0.7.3",
   "description": "CNC.js is a web-based CNC milling controller for the Arduino running GRBL",
   "dependencies": {
-    "Sortable": "~1.2.1",
-    "async": "~1.4.2",
-    "bootstrap": "~3.3.5",
     "html5shiv": "~3.7.3",
     "i18next": "~1.10.2",
-    "jsUri": "~1.3.1",
-    "json2": "*",
-    "modernizr": "~2.8.3",
-    "normalize-css": "3.0.x",
-    "rxjs": "~3.0.0",
+    "Sortable": "~1.2.1",
     "stacktrace-js": "0.6.x"
-  },
-  "overrides": {
-    "bootstrap": {
-      "main": [
-        "dist/**"
-      ]
-    },
-    "json2": {
-      "main": "json2.js"
-    },
-    "modernizr": {
-      "main": "modernizr.js"
-    },
-    "rxjs": {
-      "main": [
-        "dist/rx.js",
-        "dist/rx.*.js",
-        "dist/rx.*.map"
-      ]
-    }
-  },
-  "license": "MIT"
+  }
 }

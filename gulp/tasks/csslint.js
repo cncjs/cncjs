@@ -1,17 +1,14 @@
-var gulp = require('gulp');
-var gutil = require('gulp-util');
-var plumber = require('gulp-plumber');
-var csslint = require('gulp-csslint');
+import gulp from 'gulp';
+import gutil from 'gulp-util';
+import plumber from 'gulp-plumber';
+import csslint from 'gulp-csslint';
 
-module.exports = function(options) {
-    /**
-     * Lint CSS files
-     */
-    gulp.task('csslint', ['stylus'], function() {
-        var csslintConfig = options.config.csslint;
+export default (options) => {
+    gulp.task('csslint', ['stylus'], () => {
+        let csslintConfig = options.config.csslint;
 
         return gulp.src(csslintConfig.src)
-            .pipe(plumber({errorHandler: options.errorHandler.error}))
+            .pipe(plumber({ errorHandler: options.errorHandler.error }))
             .pipe(csslint(csslintConfig.options))
             .pipe(csslint.reporter())
             .pipe(csslint.failReporter());
