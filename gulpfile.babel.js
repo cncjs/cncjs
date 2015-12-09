@@ -11,11 +11,9 @@ import errorHandler from './gulp/error-handler';
 // * name
 // * description
 // * version
-// * license
 bower.name = pkg.name;
 bower.description = pkg.description;
 bower.version = pkg.version;
-bower.license = pkg.license;
 fs.writeFileSync('bower.json', JSON.stringify(bower, null, 2));
 
 // Require all tasks in gulp/tasks, including subfolders
