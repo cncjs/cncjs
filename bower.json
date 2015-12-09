@@ -13,8 +13,6 @@
     "json2": "*",
     "modernizr": "~2.8.3",
     "normalize-css": "3.0.x",
-    "react": "~0.13.3",
-    "react-router": "~0.13.3",
     "rxjs": "~3.0.0",
     "stacktrace-js": "0.6.x"
   },
@@ -29,11 +27,6 @@
     },
     "modernizr": {
       "main": "modernizr.js"
-    },
-    "react": {
-      "main": [
-        "react*.js"
-      ]
     },
     "rxjs": {
       "main": [
