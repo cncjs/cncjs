@@ -53,6 +53,7 @@
     "hogan.js": "2.0.x",
     "i18next": "1.10.x",
     "jade": "0.35.x",
+    "jsuri": "^1.3.1",
     "lodash": "3.10.x",
     "method-override": "1.0.x",
     "moment": "^2.10.6",
@@ -141,12 +142,9 @@
     "yargs": "^2.3.0"
   },
   "browser": {
-    "async": "./web/vendor/async/lib/async.js",
     "bootstrap": "./web/vendor/bootstrap/dist/js/bootstrap.js",
     "i18next": "./web/vendor/i18next/i18next.js",
-    "jsUri": "./web/vendor/jsUri/Uri.js",
     "modernizr": "./web/vendor/modernizr/modernizr.js",
-    "rx": "./web/vendor/rxjs/dist/rx.all.js",
     "Sortable": "./web/vendor/Sortable/Sortable.js",
     "stacktrace": "./web/vendor/stacktrace-js/stacktrace.js"
   },
