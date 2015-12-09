@@ -67,7 +67,6 @@ var createAppBundle = function(options) {
     var bundler = browserify(browserifyConfig.options);
     bundler.add(browserifyConfig.src);
     bundler.transform('babelify', browserifyTransform['babelify']);
-    bundler.transform('reactify'); // Use reactify to transform JSX content
     bundler.transform('browserify-css', browserifyTransform['browserify-css']);
     bundler.transform('brfs');
     _.each(browserifyConfig.external, function(lib) {
