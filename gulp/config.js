@@ -16,7 +16,6 @@ var bundleDependencies = {
     'vendor': [
         //'i18next',
         'lodash',
-        'react',
         'rx'
     ]
 };
