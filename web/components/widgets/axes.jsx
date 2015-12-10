@@ -35,23 +35,6 @@ const ACTIVE_STATE_HOME = 'Home';
 const ACTIVE_STATE_ALARM = 'Alarm';
 const ACTIVE_STATE_CHECK = 'Check';
 
-class ToolbarButton extends React.Component {
-    static propTypes = {
-        onClick: React.PropTypes.func
-    };
-
-    onClick(btn) {
-        this.props.onClick(btn);
-    }
-    render() {
-        return (
-            <div className="toolbar-button btn-group">
-                <button type="button" className="btn btn-xs btn-default" onClick={() => this.onClick('toggle-display-unit')}>{i18n._('in / mm')}</button>
-            </div>
-        );
-    }
-}
-
 class DisplayPanel extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
@@ -61,32 +44,11 @@ class DisplayPanel extends React.Component {
         workingPos: React.PropTypes.object
     }
 
-    handleGoToZeroX() {
-        serialport.writeln('G0 X0');
-    }
-    handleGoToZeroY() {
-        serialport.writeln('G0 Y0');
-    }
-    handleGoToZeroZ() {
-        serialport.writeln('G0 Z0');
-    }
-    handleZeroOutX() {
-        serialport.writeln('G92 X0');
-    }
-    handleUnZeroOutX() {
-        serialport.writeln('G92.1 X0');
-    }
-    handleZeroOutY() {
-        serialport.writeln('G92 Y0');
-    }
-    handleUnZeroOutY() {
-        serialport.writeln('G92.1 Y0');
-    }
-    handleZeroOutZ() {
-        serialport.writeln('G92 Z0');
-    }
-    handleUnZeroOutZ() {
-        serialport.writeln('G92.1 Z0');
+    handleSendCommand(target, eventKey) {
+        let cmd = eventKey;
+        if (cmd) {
+            serialport.writeln(cmd);
+        }
     }
     convertPositionUnit(pos) {
         pos = Number(pos);
@@ -141,9 +103,21 @@ class DisplayPanel extends React.Component {
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-x-dropdown" pullRight>
-                                        <MenuItem onSelect={::this.handleGoToZeroX} disabled={!canClick}>{i18n._('Go To Zero On X Axis (G0 X0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleZeroOutX} disabled={!canClick}>{i18n._('Zero Out X Axis (G92 X0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleUnZeroOutX} disabled={!canClick}>{i18n._('Un-Zero Out X Axis (G92.1 X0)')}</MenuItem>
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem eventKey='G92 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary X Axis (G92 X0)')}</MenuItem>
+                                        <MenuItem eventKey='G92.1 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}</MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Work Coordinate Systems (G54 to G59)')}</MenuItem>
+                                        <MenuItem eventKey='G0 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero On X Axis (G0 X0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P1 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G54 Work X Axis (G10 L2 P1 X0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P2 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G55 Work X Axis (G10 L2 P2 X0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P3 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G56 Work X Axis (G10 L2 P3 X0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P4 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G57 Work X Axis (G10 L2 P4 X0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P5 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G58 Work X Axis (G10 L2 P5 X0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P6 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G59 Work X Axis (G10 L2 P6 X0)')}</MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                                        <MenuItem eventKey='G53 G0 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero On X Axis (G53 G0 X0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -165,9 +139,21 @@ class DisplayPanel extends React.Component {
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-y-dropdown" pullRight>
-                                        <MenuItem onSelect={::this.handleGoToZeroY} disabled={!canClick}>{i18n._('Go To Zero On Y Axis (G0 Y0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleZeroOutY} disabled={!canClick}>{i18n._('Zero Out Y Axis (G92 Y0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleUnZeroOutY} disabled={!canClick}>{i18n._('Un-Zero Out Y Axis (G92.1 Y0)')}</MenuItem>
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem eventKey='G92 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary Y Axis (G92 Y0)')}</MenuItem>
+                                        <MenuItem eventKey='G92.1 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}</MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Work Coordinate Systems (G54 to G59)')}</MenuItem>
+                                        <MenuItem eventKey='G0 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero On Y Axis (G0 Y0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P1 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G54 Work Y Axis (G10 L2 P1 Y0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P2 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G55 Work Y Axis (G10 L2 P2 Y0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P3 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G56 Work Y Axis (G10 L2 P3 Y0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P4 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G57 Work Y Axis (G10 L2 P4 Y0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P5 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G58 Work Y Axis (G10 L2 P5 Y0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P6 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G59 Work Y Axis (G10 L2 P6 Y0)')}</MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                                        <MenuItem eventKey='G53 G0 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero On Y Axis (G53 G0 Y0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -189,9 +175,21 @@ class DisplayPanel extends React.Component {
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton bsSize="xs" bsStyle="default" title="" id="axis-z-dropdown" pullRight>
-                                        <MenuItem onSelect={::this.handleGoToZeroZ} disabled={!canClick}>{i18n._('Go To Zero On Z Axis (G0 Z0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleZeroOutZ} disabled={!canClick}>{i18n._('Zero Out Z Axis (G92 Z0)')}</MenuItem>
-                                        <MenuItem onSelect={::this.handleUnZeroOutZ} disabled={!canClick}>{i18n._('Un-Zero Out Z Axis (G92.1 Z0)')}</MenuItem>
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem eventKey='G92 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary Z Axis (G92 Z0)')}</MenuItem>
+                                        <MenuItem eventKey='G92.1 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}</MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Work Coordinate Systems (G54 to G59)')}</MenuItem>
+                                        <MenuItem eventKey='G0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero On Z Axis (G0 Z0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P1 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G54 Work Z Axis (G10 L2 P1 Z0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P2 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G55 Work Z Axis (G10 L2 P2 Z0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P3 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G56 Work Z Axis (G10 L2 P3 Z0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P4 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G57 Work Z Axis (G10 L2 P4 Z0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P5 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G58 Work Z Axis (G10 L2 P5 Z0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P6 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G59 Work Z Axis (G10 L2 P6 Z0)')}</MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                                        <MenuItem eventKey='G53 G0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero On X Axis (G53 G0 Z0)')}</MenuItem>
                                     </DropdownButton>
                                 </td>
                             </tr>
@@ -489,16 +487,6 @@ class JogControlPanel extends React.Component {
     changeDistance(distance) {
         this.setState({ distance: distance });
     }
-    handleGoToZero() {
-        serialport.writeln('G0 X0 Y0 Z0');
-    }
-    handleZeroOut() {
-        serialport.writeln('G92 X0 Y0 Z0');
-    }
-    handleUnZeroOut() {
-        serialport.writeln('G92.1 X0 Y0 Z0');
-    }
-    // experimental feature
     handleToggleUnit() {
         let unit;
 
@@ -517,54 +505,39 @@ class JogControlPanel extends React.Component {
         let { port, unit, activeState } = this.props;
         let { feedrate, distance } = this.state;
         let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
+        let styles = {
+            jogJoystickControl: {
+                marginTop: 20
+            },
+            jogDistanceControl: {
+                marginLeft: 10
+            },
+            jogFeedrateControl: {
+                marginLeft: 10
+            }
+        };
 
         return (
             <div className="container-fluid control-panel">
                 <div className="row">
                     <div className="col-sm-6">
-                        <JogJoystickControl
-                            port={port}
-                            unit={unit}
-                            activeState={activeState}
-                            feedrate={feedrate}
-                            distance={distance}
-                        />
-                    </div>
-                    <div className="col-sm-6">
-                        <div className="btn-group-vertical">
-                            <button
-                                type="button"
-                                className="btn btn-xs btn-default"
-                                onClick={::this.handleGoToZero}
-                                disabled={!canClick}
-                            >
-                                {i18n._('Go To Zero (G0)')}
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-xs btn-default"
-                                onClick={::this.handleZeroOut}
-                                disabled={!canClick}
-                            >
-                                {i18n._('Zero Out (G92)')}
-                            </button>
-                            <button
-                                type="button"
-                                className="btn btn-xs btn-default"
-                                onClick={::this.handleUnZeroOut}
-                                disabled={!canClick}
-                            >
-                                {i18n._('Un-Zero Out (G92.1)')}
-                            </button>
+                        <div style={styles.jogJoystickControl}>
+                            <JogJoystickControl
+                                port={port}
+                                unit={unit}
+                                activeState={activeState}
+                                feedrate={feedrate}
+                                distance={distance}
+                            />
                         </div>
                     </div>
-                </div>
-                <div className="row">
                     <div className="col-sm-6">
-                        <JogDistanceControl onChange={::this.changeDistance} />
-                    </div>
-                    <div className="col-sm-6">
-                        <JogFeedrateControl onChange={::this.changeFeedrate} />
+                        <div className="form-group" style={styles.jogDistanceControl}>
+                            <JogDistanceControl onChange={::this.changeDistance} />
+                        </div>
+                        <div className="form-group" style={styles.jogFeedrateControl}>
+                            <JogFeedrateControl onChange={::this.changeFeedrate} />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -586,8 +559,7 @@ class Axes extends React.Component {
             x: '0.000',
             y: '0.000',
             z: '0.000'
-        },
-        isCollapsed: false
+        }
     };
 
     componentDidMount() {
@@ -663,29 +635,28 @@ class Axes extends React.Component {
         }
         this.setState({ unit: unit });
     }
-    toggleExpandCollapse() {
-        this.setState({
-            isCollapsed: !(this.state.isCollapsed)
-        });
-    }
-    handleToolbarButtonClick(btn) {
-        if (btn === 'toggle-display-unit') {
-            this.toggleDisplayUnit();
+    handleSendCommand(target, eventKey) {
+        let cmd = eventKey;
+        if (cmd) {
+            serialport.writeln(cmd);
         }
     }
     render() {
-        let { port, unit, activeState, machinePos, workingPos, isCollapsed } = this.state;
-        let classes = {
-            icon: classNames(
-                'glyphicon',
-                { 'glyphicon-chevron-up': !isCollapsed },
-                { 'glyphicon-chevron-down': isCollapsed }
-            )
-        };
+        let { port, unit, activeState, machinePos, workingPos } = this.state;
+        let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
 
         return (
             <div>
-                <ToolbarButton onClick={::this.handleToolbarButtonClick} />
+                <div className="toolbar-button btn-group">
+                    <button type="button" className="btn btn-xs btn-default" onClick={::this.toggleDisplayUnit}>{i18n._('in / mm')}</button>
+                    <DropdownButton bsSize="xs" bsStyle="default" title="XYZ" id="axes-dropdown" pullRight>
+                        <MenuItem eventKey='G0 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}</MenuItem>
+                        <MenuItem eventKey='G53 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero (G53 X0 Y0 Z0)')}</MenuItem>
+                        <MenuItem divider />
+                        <MenuItem eventKey='G92 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}</MenuItem>
+                        <MenuItem eventKey='G92.1 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}</MenuItem>
+                    </DropdownButton>
+                </div>
 
                 <DisplayPanel
                     port={port}
@@ -695,21 +666,11 @@ class Axes extends React.Component {
                     workingPos={workingPos}
                 />
 
-                <div className="container-fluid control-panel-toggler">
-                    <div className="row">
-                        <div className="toggle-expand-collapse noselect" onClick={::this.toggleExpandCollapse}>
-                            <i className={classes.icon}></i>
-                        </div>
-                    </div>
-                </div>
-
-                {!isCollapsed &&
                 <JogControlPanel
                     port={port}
                     unit={unit}
                     activeState={activeState}
                 />
-                }
             </div>
         );
     }
