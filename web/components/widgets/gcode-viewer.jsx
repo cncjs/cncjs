@@ -493,14 +493,14 @@ export default class GCodeViewer extends React.Component {
 
         if (dashed) {
             material = new THREE.LineDashedMaterial({
-                linewidth: 3,
+                linewidth: 1,
                 color: colorHex,
-                dashSize: 3,
-                gapSize: 3
+                dashSize: 1,
+                gapSize: 1
             });
         } else {
             material = new THREE.LineBasicMaterial({
-                linewidth: 3,
+                linewidth: 1,
                 color: colorHex
             });
         }
