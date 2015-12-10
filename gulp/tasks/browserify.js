@@ -4,7 +4,7 @@ import gutil from 'gulp-util';
 import path from 'path';
 import browserify from 'browserify';
 import source from 'vinyl-source-stream';
-import streamify from 'gulp-streamify';
+import buffer from 'vinyl-buffer';
 import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import gulpif from 'gulp-if';
@@ -29,8 +29,9 @@ const createVendorBundle = (options) => {
         gutil.log('Rebundling "%s"...', gutil.colors.cyan(bundleFile));
         return bundler.bundle()
             .pipe(exorcist(bundleMapFile))
-            .pipe(source(bundleFile))
-            .pipe(streamify(uglify(uglifyConfig.options)))
+            .pipe(source(bundleFile)) // streaming vinyl file object
+            .pipe(buffer()) // convert from streaming to buffered vinyl file object
+            .pipe(uglify(uglifyConfig.options))
             .pipe(gulp.dest(browserifyConfig.dest))
             .pipe(gulpif(options.watch, livereload()))
             .pipe(notify(() => {
@@ -75,8 +76,9 @@ const createAppBundle = (options) => {
         gutil.log('Rebundling "%s"...', gutil.colors.cyan(bundleFile));
         return bundler.bundle()
             .pipe(exorcist(bundleMapFile))
-            .pipe(source(bundleFile))
-            .pipe(streamify(uglify(uglifyConfig.options)))
+            .pipe(source(bundleFile)) // streaming vinyl file object
+            .pipe(buffer()) // convert from streaming to buffered vinyl file object
+            .pipe(uglify(uglifyConfig.options))
             .pipe(gulp.dest(browserifyConfig.dest))
             .pipe(gulpif(options.watch, livereload()))
             .pipe(notify(() => {
