@@ -18,7 +18,6 @@ const createVendorBundle = (options) => {
     let uglifyConfig = _.get(options.config, 'uglify') || {};
     let bundleFile = 'vendor.js';
     let bundleMapFile = path.join(browserifyConfig.dest, 'vendor.js.map');
-    let minifiedBundleFile = 'vendor.min.js';
 
     // Create a separate vendor bundler that will only run when starting gulp
     let bundler = browserify(browserifyConfig.options);
@@ -31,7 +30,7 @@ const createVendorBundle = (options) => {
         return bundler.bundle()
             .pipe(exorcist(bundleMapFile))
             .pipe(source(bundleFile))
-            .pipe(gulpif(options.env !== 'development', streamify(uglify(uglifyConfig.options))))
+            .pipe(streamify(uglify(uglifyConfig.options)))
             .pipe(gulp.dest(browserifyConfig.dest))
             .pipe(gulpif(options.watch, livereload()))
             .pipe(notify(() => {
@@ -61,7 +60,6 @@ const createAppBundle = (options) => {
     let browserifyTransform = browserifyConfig.transform;
     let bundleFile = 'app.js';
     let bundleMapFile = path.join(browserifyConfig.dest, 'app.js.map');
-    let minifiedBundleFile = 'app.min.js';
 
     // Create the application bundler
     let bundler = browserify(browserifyConfig.options);
@@ -78,7 +76,7 @@ const createAppBundle = (options) => {
         return bundler.bundle()
             .pipe(exorcist(bundleMapFile))
             .pipe(source(bundleFile))
-            .pipe(gulpif(options.env !== 'development', streamify(uglify(uglifyConfig.options))))
+            .pipe(streamify(uglify(uglifyConfig.options)))
             .pipe(gulp.dest(browserifyConfig.dest))
             .pipe(gulpif(options.watch, livereload()))
             .pipe(notify(() => {
