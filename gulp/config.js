@@ -67,6 +67,8 @@ export default {
     },
     uglify: {
         options: {
+            compress: true,
+            mangle: true
         }
     },
     browserify: {
