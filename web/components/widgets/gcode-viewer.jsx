@@ -311,6 +311,8 @@ export default class GCodeViewer extends React.Component {
         this.axes = null;
         this.object = null;
         this.gcodeRenderer = null;
+        this.offsetX = 0;
+        this.offsetY = 0;
     }
     componentDidMount() {
         this.subscribe();
@@ -518,20 +520,43 @@ export default class GCodeViewer extends React.Component {
             this.scene.remove(this.object);
         }
 
+        // Set the rotation pivot point to the XYZ zero point
+        this.axes.translateX(this.offsetX);
+        this.axes.translateY(-this.offsetY);
+        this.offsetX = 0;
+        this.offsetY = 0;
+
         // Reset TrackballControls
         this.trackballControls.reset();
 
         let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
         this.gcodeRenderer = new GCodeRenderer();
-        this.object = this.gcodeRenderer.render({
+        this.gcodeRenderer.render({
             gcode: gcode,
             width: el.clientWidth,
             height: el.clientHeight
-        }, function(dimension) {
+        }, (object, dimension) => {
             pubsub.publish('gcode:dimension', dimension);
-        }.bind(this));
 
-        this.scene.add(this.object);
+            this.object = object;
+            this.scene.add(this.object);
+
+            let center = new THREE.Vector3(
+                (dimension.delta.x / 2),
+                (dimension.delta.y / 2),
+                (dimension.delta.z / 2)
+            );
+
+            // Set the rotation pivot point to the object's center position
+            this.offsetX = center.x;
+            this.offsetY = center.y;
+
+            this.object.translateX(-this.offsetX);
+            this.object.translateY(this.offsetY);
+
+            this.axes.translateX(-this.offsetX);
+            this.axes.translateY(this.offsetY);
+        });
     }
     joystickUp() {
         let { x, y, z } = this.trackballControls.target;
