@@ -107,14 +107,9 @@ class DisplayPanel extends React.Component {
                                         <MenuItem eventKey='G92 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary X Axis (G92 X0)')}</MenuItem>
                                         <MenuItem eventKey='G92.1 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}</MenuItem>
                                         <MenuItem divider />
-                                        <MenuItem header>{i18n._('Work Coordinate Systems (G54 to G59)')}</MenuItem>
+                                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                                         <MenuItem eventKey='G0 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero On X Axis (G0 X0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P1 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G54 Work X Axis (G10 L2 P1 X0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P2 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G55 Work X Axis (G10 L2 P2 X0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P3 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G56 Work X Axis (G10 L2 P3 X0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P4 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G57 Work X Axis (G10 L2 P4 X0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P5 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G58 Work X Axis (G10 L2 P5 X0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P6 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G59 Work X Axis (G10 L2 P6 X0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P1 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Work X Axis (G10 L2 P1 X0)')}</MenuItem>
                                         <MenuItem divider />
                                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                         <MenuItem eventKey='G53 G0 X0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero On X Axis (G53 G0 X0)')}</MenuItem>
@@ -143,14 +138,9 @@ class DisplayPanel extends React.Component {
                                         <MenuItem eventKey='G92 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary Y Axis (G92 Y0)')}</MenuItem>
                                         <MenuItem eventKey='G92.1 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}</MenuItem>
                                         <MenuItem divider />
-                                        <MenuItem header>{i18n._('Work Coordinate Systems (G54 to G59)')}</MenuItem>
+                                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                                         <MenuItem eventKey='G0 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero On Y Axis (G0 Y0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P1 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G54 Work Y Axis (G10 L2 P1 Y0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P2 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G55 Work Y Axis (G10 L2 P2 Y0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P3 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G56 Work Y Axis (G10 L2 P3 Y0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P4 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G57 Work Y Axis (G10 L2 P4 Y0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P5 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G58 Work Y Axis (G10 L2 P5 Y0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P6 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G59 Work Y Axis (G10 L2 P6 Y0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P1 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Work Y Axis (G10 L2 P1 Y0)')}</MenuItem>
                                         <MenuItem divider />
                                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                         <MenuItem eventKey='G53 G0 Y0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero On Y Axis (G53 G0 Y0)')}</MenuItem>
@@ -179,14 +169,9 @@ class DisplayPanel extends React.Component {
                                         <MenuItem eventKey='G92 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary Z Axis (G92 Z0)')}</MenuItem>
                                         <MenuItem eventKey='G92.1 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}</MenuItem>
                                         <MenuItem divider />
-                                        <MenuItem header>{i18n._('Work Coordinate Systems (G54 to G59)')}</MenuItem>
+                                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                                         <MenuItem eventKey='G0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero On Z Axis (G0 Z0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P1 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G54 Work Z Axis (G10 L2 P1 Z0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P2 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G55 Work Z Axis (G10 L2 P2 Z0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P3 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G56 Work Z Axis (G10 L2 P3 Z0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P4 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G57 Work Z Axis (G10 L2 P4 Z0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P5 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G58 Work Z Axis (G10 L2 P5 Z0)')}</MenuItem>
-                                        <MenuItem eventKey='G10 L2 P6 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out G59 Work Z Axis (G10 L2 P6 Z0)')}</MenuItem>
+                                        <MenuItem eventKey='G10 L2 P1 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Work Z Axis (G10 L2 P1 Z0)')}</MenuItem>
                                         <MenuItem divider />
                                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                         <MenuItem eventKey='G53 G0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero On X Axis (G53 G0 Z0)')}</MenuItem>
