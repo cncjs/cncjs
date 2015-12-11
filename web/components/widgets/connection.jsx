@@ -339,7 +339,7 @@ class Connection extends React.Component {
                     {notConnected &&
                         <button
                             type="button"
-                            className="btn btn-default"
+                            className="btn btn-primary"
                             disabled={!canOpenPort}
                             onClick={::this.openPort}
                         >
