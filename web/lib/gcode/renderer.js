@@ -284,61 +284,34 @@ class GCodeRenderer {
             dimension.max.x = dimension.max.y = dimension.max.z = 0;
         }
 
-        let dX = dimension.max.x - dimension.min.x;
-        let dY = dimension.max.y - dimension.min.y;
-        let dZ = dimension.max.z - dimension.min.z;
-
         log.debug('GCodeRenderer.render:', {
             vertices: this.vertices,
             frames: this.frames,
             frameIndex: this.frameIndex,
-            dimension: {
-                dX: dX,
-                dY: dY,
-                dZ: dZ
-            }
+            dimension: dimension
         });
 
-        // take max X and Y and scale them to fit in the render area
-        let scaleX = width / dX;
-        let scaleY = height / dY;
-        let scale = 1;
+        let dX = dimension.max.x - dimension.min.x;
+        let dY = dimension.max.y - dimension.min.y;
+        let dZ = dimension.max.z - dimension.min.z;
 
-        if (scaleX < 1 && scaleY < 1) {
-            // both less than 1, take smaller
-            scale = Math.min(scaleX, scaleY);
-        } else if (scaleX > 1 && scaleY > 1) {
-            // both larger than 1, take larger
-            scale = Math.max(scaleX, scaleY);
-        } else {
-            // zoom out
-            scale = Math.min(scaleX, scaleY);
-        }
-        scale = scale / 10;
-
-        this.baseObject.scale.multiplyScalar(scale);
-
-        if (_.isFunction(callback)) {
-            callback({
-                min: {
-                    x: dimension.min.x,
-                    y: dimension.min.y,
-                    z: dimension.min.z
-                },
-                max: {
-                    x: dimension.max.x,
-                    y: dimension.max.y,
-                    z: dimension.max.z
-                },
-                delta: {
-                    x: dX,
-                    y: dY,
-                    z: dZ
-                }
-            });
-        }
-
-        return this.baseObject;
+        _.isFunction(callback) && callback(this.baseObject, {
+            min: {
+                x: dimension.min.x,
+                y: dimension.min.y,
+                z: dimension.min.z
+            },
+            max: {
+                x: dimension.max.x,
+                y: dimension.max.y,
+                z: dimension.max.z
+            },
+            delta: {
+                x: dX,
+                y: dY,
+                z: dZ
+            }
+        });
     }
     update() {
         while (this.baseObject.children.length > 0) {
