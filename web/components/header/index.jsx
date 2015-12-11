@@ -4,7 +4,7 @@ import { Link } from 'react-router';
 import { Navbar, NavbarBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import settings from '../../config/settings';
 import serialport from '../../lib/serialport';
-import './index.css';
+import './header.css';
 
 class GrblQuickAccessToolbar extends React.Component {
     handleGrblHelp() {
