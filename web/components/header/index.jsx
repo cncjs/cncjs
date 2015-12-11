@@ -1,8 +1,41 @@
 import i18n from 'i18next';
 import React from 'react';
-import settings from '../../config/settings';
 import { Link } from 'react-router';
 import { Navbar, NavbarBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import settings from '../../config/settings';
+import serialport from '../../lib/serialport';
+import './index.css';
+
+class GrblQuickAccessToolbar extends React.Component {
+    handleGrblHelp() {
+        serialport.writeln('$');
+    }
+    handleGrblSettings() {
+        serialport.writeln('$$');
+    }
+    handleReset() {
+        serialport.write('\x18');
+    }
+    handleHome() {
+        serialport.writeln('$H');
+    }
+    handleUnlock() {
+        serialport.writeln('$X');
+    }
+    render() {
+        return (
+            <div className="grbl-quick-access-toolbar">
+                <div className="btn-group btn-group-sm" role="group">
+                    <button type="button" className="btn btn-default" onClick={::this.handleGrblHelp}>{i18n._('Grbl Help ($)')}</button>
+                    <button type="button" className="btn btn-primary" onClick={::this.handleGrblSettings}>{i18n._('Grbl Settings ($$)')}</button>
+                    <button type="button" className="btn btn-success" onClick={::this.handleReset}>{i18n._('Reset (Ctrl-X)')}</button>
+                    <button type="button" className="btn btn-warning" onClick={::this.handleUnlock}>{i18n._('Unlock ($X)')}</button>
+                    <button type="button" className="btn btn-danger" onClick={::this.handleHome}>{i18n._('Home ($H)')}</button>
+                </div>
+            </div>
+        );
+    }
+}
 
 export default class Header extends React.Component {
     render() {
@@ -29,6 +62,9 @@ export default class Header extends React.Component {
                             <MenuItem href="?lang=zh-tw" active={lng === 'zh-tw'}>中文 (繁體)</MenuItem>
                         </NavDropdown>
                     </Nav>
+                    <div className="pull-right">
+                        <GrblQuickAccessToolbar />
+                    </div>
                 </Navbar>
             </div>
         );
