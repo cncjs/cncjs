@@ -635,11 +635,16 @@ class Axes extends React.Component {
                 <div className="toolbar-button btn-group">
                     <button type="button" className="btn btn-xs btn-default" onClick={::this.toggleDisplayUnit}>{i18n._('in / mm')}</button>
                     <DropdownButton bsSize="xs" bsStyle="default" title="XYZ" id="axes-dropdown" pullRight>
-                        <MenuItem eventKey='G0 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}</MenuItem>
-                        <MenuItem eventKey='G53 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero (G53 X0 Y0 Z0)')}</MenuItem>
-                        <MenuItem divider />
+                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                         <MenuItem eventKey='G92 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}</MenuItem>
                         <MenuItem eventKey='G92.1 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}</MenuItem>
+                        <MenuItem divider />
+                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
+                        <MenuItem eventKey='G0 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}</MenuItem>
+                        <MenuItem eventKey='G10 L2 P1 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Work Offsets (G10 L2 P1 X0 Y0 Z0)')}</MenuItem>
+                        <MenuItem divider />
+                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                        <MenuItem eventKey='G53 G0 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero (G53 G0 X0 Y0 Z0)')}</MenuItem>
                     </DropdownButton>
                 </div>
 
