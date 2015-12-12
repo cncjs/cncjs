@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import THREE from 'three';
-import GCodeParser from './parser';
+import { GCodeInterpreter } from 'gcode-interpreter';
 import log from '../log';
 import colorNames from '../color-names';
 
@@ -19,6 +19,19 @@ let translatePosition = (position, newPosition, relative) => {
     }
     return relative ? (position + newPosition) : newPosition;
 };
+
+const noop = () => {};
+
+class GCodeRunner extends GCodeInterpreter {
+    constructor(options) {
+        super(options);
+
+        options = _.extend({}, options);
+        _.each(options, (f, c) => {
+            this[c] = f;
+        });
+    }
+}
 
 class GCodeRenderer {
     constructor() {
@@ -92,6 +105,7 @@ class GCodeRenderer {
             width: 0,
             height: 0
         });
+        callback = _.isFunction(callback) ? callback : noop;
 
         let { gcode, width, height } = options;
         let dimension = {
@@ -116,13 +130,12 @@ class GCodeRenderer {
             dimension.max.z = _.max([dimension.max.z, v1.z, v2.z]);
         };
 
-        let parser = new GCodeParser({
-            'G0': (opts) => {
-                let { params } = opts;
+        let runner = new GCodeRunner({
+            G0: (params) => {
                 let v2 = {
-                    x: this.translateX(params.x),
-                    y: this.translateY(params.y),
-                    z: this.translateZ(params.z)
+                    x: this.translateX(params.X),
+                    y: this.translateY(params.Y),
+                    z: this.translateZ(params.Z)
                 };
                 let newState = v2;
 
@@ -143,17 +156,16 @@ class GCodeRenderer {
             //   G1 F1500 (Set the feedrate to 1500mm/minute)
             //   G1 X90.6 Y13.8 E22.4 (Move to 90.6mm on the X axis and 13.8mm on the Y axis while extruding 22.4mm of material)
             //
-            'G1': (opts) => {
-                let { params } = opts;
+            G1: (params) => {
                 let v1 = {
                     x: this.state.x,
                     y: this.state.y,
                     z: this.state.z
                 };
                 let v2 = {
-                    x: this.translateX(params.x),
-                    y: this.translateY(params.y),
-                    z: this.translateZ(params.z)
+                    x: this.translateX(params.X),
+                    y: this.translateY(params.Y),
+                    z: this.translateZ(params.Z)
                 };
                 let newState = v2;
 
@@ -182,8 +194,7 @@ class GCodeRenderer {
             // Referring
             //   http://linuxcnc.org/docs/2.5/html/gcode/gcode.html#sec:G2-G3-Arc
             //   https://github.com/grbl/grbl/issues/236
-            'G2': (opts) => {
-                let { params } = opts;
+            G2: (params) => {
                 let isClockwise = true;
                 let v1 = {
                     x: this.state.x,
@@ -191,14 +202,14 @@ class GCodeRenderer {
                     z: this.state.z
                 };
                 let v2 = {
-                    x: this.translateX(params.x),
-                    y: this.translateY(params.y),
-                    z: this.translateZ(params.z)
+                    x: this.translateX(params.X),
+                    y: this.translateY(params.Y),
+                    z: this.translateZ(params.Z)
                 };
                 let v0 = { // fixed point
-                    x: this.translateX(params.i, true),
-                    y: this.translateY(params.j, true),
-                    z: this.translateZ(params.k, true)
+                    x: this.translateX(params.I, true),
+                    y: this.translateY(params.J, true),
+                    z: this.translateZ(params.K, true)
                 };
                 let newState = v2;
 
@@ -207,8 +218,7 @@ class GCodeRenderer {
 
                 updateDimension(v1, v2);
             },
-            'G3': (opts) => {
-                let { params } = opts;
+            G3: (params) => {
                 let isClockwise = false;
                 let v1 = {
                     x: this.state.x,
@@ -216,14 +226,14 @@ class GCodeRenderer {
                     z: this.state.z
                 };
                 let v2 = newState = {
-                    x: this.translateX(params.x),
-                    y: this.translateY(params.y),
-                    z: this.translateZ(params.z)
+                    x: this.translateX(params.X),
+                    y: this.translateY(params.Y),
+                    z: this.translateZ(params.Z)
                 };
                 let v0 = { // fixed point
-                    x: this.translateX(params.i, true),
-                    y: this.translateY(params.j, true),
-                    z: this.translateZ(params.k, true)
+                    x: this.translateX(params.I, true),
+                    y: this.translateY(params.J, true),
+                    z: this.translateZ(params.K, true)
                 };
                 let newState = v2;
 
@@ -236,14 +246,14 @@ class GCodeRenderer {
             // Example
             //   G90
             // All coordinates from now on are absolute relative to the origin of the machine.
-            'G90': (opts) => {
+            G90: () => {
                 this.setState({ relative: false });
             },
             // G91: Set to Relative Positioning
             // Example
             //   G91
             // All coordinates from now on are relative to the last position.
-            'G91': (opts) => {
+            G91: () => {
                 this.setState({ relative: true });
             },
             // G92: Set Position
@@ -257,12 +267,11 @@ class GCodeRenderer {
             // Allows programming of absolute zero point, by reseting the current position to the params specified.
             // This would set the machine's X coordinate to 10, and the extrude coordinate to 90. No physical motion will occur.
             // A G92 without coordinates will reset all axes to zero.
-            'G92': (opts) => {
-                let { params } = opts;
+            G92: (params) => {
                 let v2 = {
-                    x: this.translateX(params.x),
-                    y: this.translateY(params.y),
-                    z: this.translateZ(params.z)
+                    x: this.translateX(params.X),
+                    y: this.translateY(params.Y),
+                    z: this.translateZ(params.Z)
                 };
                 let newState = v2;
 
@@ -270,47 +279,49 @@ class GCodeRenderer {
             }
         });
 
-        parser.parse(gcode, (line, index) => {
+        runner.on('data', (data) => {
             this.frames.push({
-                code: line,
+                data: data,
                 vertexIndex: this.vertices.length // remember current vertex index
             });
         });
 
-        this.update();
+        runner.interpretText(gcode, (err, results) => {
+            this.update();
 
-        if (_.size(this.frames) === 0) {
-            dimension.min.x = dimension.min.y = dimension.min.z = 0;
-            dimension.max.x = dimension.max.y = dimension.max.z = 0;
-        }
-
-        log.debug('GCodeRenderer.render:', {
-            vertices: this.vertices,
-            frames: this.frames,
-            frameIndex: this.frameIndex,
-            dimension: dimension
-        });
-
-        let dX = dimension.max.x - dimension.min.x;
-        let dY = dimension.max.y - dimension.min.y;
-        let dZ = dimension.max.z - dimension.min.z;
-
-        _.isFunction(callback) && callback(this.baseObject, {
-            min: {
-                x: dimension.min.x,
-                y: dimension.min.y,
-                z: dimension.min.z
-            },
-            max: {
-                x: dimension.max.x,
-                y: dimension.max.y,
-                z: dimension.max.z
-            },
-            delta: {
-                x: dX,
-                y: dY,
-                z: dZ
+            if (_.size(this.frames) === 0) {
+                dimension.min.x = dimension.min.y = dimension.min.z = 0;
+                dimension.max.x = dimension.max.y = dimension.max.z = 0;
             }
+
+            log.debug('GCodeRenderer.render:', {
+                vertices: this.vertices,
+                frames: this.frames,
+                frameIndex: this.frameIndex,
+                dimension: dimension
+            });
+
+            let dX = dimension.max.x - dimension.min.x;
+            let dY = dimension.max.y - dimension.min.y;
+            let dZ = dimension.max.z - dimension.min.z;
+
+            callback(this.baseObject, {
+                min: {
+                    x: dimension.min.x,
+                    y: dimension.min.y,
+                    z: dimension.min.z
+                },
+                max: {
+                    x: dimension.max.x,
+                    y: dimension.max.y,
+                    z: dimension.max.z
+                },
+                delta: {
+                    x: dX,
+                    y: dY,
+                    z: dZ
+                }
+            });
         });
     }
     update() {
