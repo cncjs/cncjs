@@ -321,6 +321,7 @@ export default class GCodeViewer extends React.Component {
 
         let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
         this.createScene(el);
+        this.resizeRenderer();
     }
     componentWillUnmount() {
         this.removeResizeEventListener();
@@ -522,7 +523,7 @@ export default class GCodeViewer extends React.Component {
 
         // Set the rotation pivot point to the XYZ zero point
         this.axes.translateX(this.offsetX);
-        this.axes.translateY(-this.offsetY);
+        this.axes.translateY(this.offsetY);
         this.offsetX = 0;
         this.offsetY = 0;
 
@@ -542,9 +543,9 @@ export default class GCodeViewer extends React.Component {
             this.scene.add(this.object);
 
             let center = new THREE.Vector3(
-                (dimension.delta.x / 2),
-                (dimension.delta.y / 2),
-                (dimension.delta.z / 2)
+                dimension.min.x + (dimension.delta.x / 2),
+                dimension.min.y + (dimension.delta.y / 2),
+                dimension.min.z + (dimension.delta.z / 2)
             );
 
             // Set the rotation pivot point to the object's center position
@@ -552,10 +553,10 @@ export default class GCodeViewer extends React.Component {
             this.offsetY = center.y;
 
             this.object.translateX(-this.offsetX);
-            this.object.translateY(this.offsetY);
+            this.object.translateY(-this.offsetY);
 
             this.axes.translateX(-this.offsetX);
-            this.axes.translateY(this.offsetY);
+            this.axes.translateY(-this.offsetY);
         });
     }
     joystickUp() {
