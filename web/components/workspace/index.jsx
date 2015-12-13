@@ -10,7 +10,7 @@ import {
     ConnectionWidget,
     ConsoleWidget,
     GCodeWidget,
-    GCodeViewerWidget,
+    VisualizerWidget,
     GrblWidget,
     SpindleWidget
 } from '../widgets';
@@ -21,8 +21,8 @@ export default class Workspace extends React.Component {
     state = {
         showPrimaryContainer: true,
         showSecondaryContainer: true,
-        mainContainer: [
-            <GCodeViewerWidget key="gcode-viewer" />
+        visualContainer: [
+            <VisualizerWidget key="visualizer" />
         ],
         primaryContainer: [
             <ConnectionWidget key="connection" />,
@@ -82,7 +82,7 @@ export default class Workspace extends React.Component {
                 log.trace('onEnd.foo:', [evt.item, evt.from]);
 
                 // Publish a 'resize' event
-                pubsub.publish('resize'); // Also see "widgets/gcode-viewer.jsx"
+                pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
             }
         });
         this._sortableGroups.push(sortable);
@@ -113,7 +113,7 @@ export default class Workspace extends React.Component {
                 log.trace('onEnd.foo:', [evt.item, evt.from]);
 
                 // Publish a 'resize' event
-                pubsub.publish('resize'); // Also see "widgets/gcode-viewer.jsx"
+                pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
             }
         });
         this._sortableGroups.push(sortable);
@@ -130,13 +130,13 @@ export default class Workspace extends React.Component {
         this.setState({ showPrimaryContainer: ! this.state.showPrimaryContainer });
 
         // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/gcode-viewer.jsx"
+        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     toggleSecondaryContainer() {
         this.setState({ showSecondaryContainer: ! this.state.showSecondaryContainer });
 
         // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/gcode-viewer.jsx"
+        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     render() {
         let classes = {
@@ -173,8 +173,8 @@ export default class Workspace extends React.Component {
                                     <i className={classes.primaryTogglerIcon}></i>
                                 </div>
                             </div>
-                            <div className="main-container" ref="main-content">
-                                {this.state.mainContainer}
+                            <div className="visual-container" ref="visualContainer">
+                                {this.state.visualContainer}
                             </div>
                             <div className="secondary-toggler-pane" onClick={::this.toggleSecondaryContainer}>
                                 <div>

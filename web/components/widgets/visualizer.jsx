@@ -13,7 +13,7 @@ import log from '../../lib/log';
 import siofu from '../../lib/siofu';
 import socket from '../../lib/socket';
 import colorNames from '../../lib/color-names';
-import './gcode-viewer.css';
+import './visualizer.css';
 
 const AXIS_LENGTH = 99999;
 
@@ -296,7 +296,7 @@ class Toolbar extends React.Component {
     }
 }
 
-export default class GCodeViewer extends React.Component {
+export default class Visualizer extends React.Component {
     state = {
         width: window.innerWidth,
         height: window.innerHeight
@@ -595,13 +595,13 @@ export default class GCodeViewer extends React.Component {
     }
 }
 
-class GCodeViewerWidget extends React.Component {
+class VisualizerWidget extends React.Component {
     render() {
         return (
-            <div data-component="Widgets/GCodeViewerWidget">
+            <div data-component="Widgets/VisualizerWidget">
                 <Widget borderless={true}>
                     <WidgetContent>
-                        <GCodeViewer />
+                        <Visualizer />
                     </WidgetContent>
                 </Widget>
             </div>
@@ -609,4 +609,4 @@ class GCodeViewerWidget extends React.Component {
     }
 }
 
-export default GCodeViewerWidget;
+export default VisualizerWidget;
