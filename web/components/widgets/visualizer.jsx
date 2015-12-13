@@ -148,8 +148,20 @@ class Toolbar extends React.Component {
         siofu.removeEventListener('complete', ::this.siofuOnComplete);
         siofu.removeEventListener('error', ::this.siofuOnError);
     }
+    startWaiting() {
+        // Adds the 'wait' class to <html>
+        let root = document.documentElement;
+        root.classList.add('wait');
+    }
+    stopWaiting() {
+        // Adds the 'wait' class to <html>
+        let root = document.documentElement;
+        root.classList.remove('wait');
+    }
     // https://github.com/vote539/socketio-file-upload#start
     siofuStart(event) {
+        this.startWaiting();
+
         log.debug('Upload start:', event);
 
         event.file.meta.port = this.state.port;
@@ -166,6 +178,8 @@ class Toolbar extends React.Component {
     // The server has received our file.
     // https://github.com/vote539/socketio-file-upload#complete
     siofuComplete(event) {
+        this.stopWaiting();
+
         log.debug('Upload complete:', event);
 
         if (!(event.success)) {
@@ -188,6 +202,8 @@ class Toolbar extends React.Component {
     // The server encountered an error.
     // https://github.com/vote539/socketio-file-upload#complete
     siofuError(event) {
+        this.stopWaiting();
+
         log.error('Upload file failed:', event);
     }
     handleUpload() {
