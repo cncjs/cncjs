@@ -7,7 +7,7 @@ import ReactDOM from 'react-dom';
 import THREE from 'three';
 import PressAndHold from '../common/PressAndHold';
 import TrackballControls from '../../lib/three/TrackballControls';
-import { GCodeRenderer } from '../../lib/gcode';
+import { GCodeRenderer } from '../../lib/gcode-renderer';
 import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import log from '../../lib/log';
 import siofu from '../../lib/siofu';

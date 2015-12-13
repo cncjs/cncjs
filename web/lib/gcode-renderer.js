@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import THREE from 'three';
 import { GCodeInterpreter } from 'gcode-interpreter';
-import log from '../log';
-import colorNames from '../color-names';
+import log from './log';
+import colorNames from './color-names';
 
 const DEFAULT_STATE = {
     x: 0,
