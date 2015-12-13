@@ -5,10 +5,11 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import THREE from 'three';
+import { Widget, WidgetHeader, WidgetContent } from '../widget';
 import PressAndHold from '../common/PressAndHold';
 import TrackballControls from '../../lib/three/TrackballControls';
-import { GCodeRenderer } from '../../lib/gcode-renderer';
-import { Widget, WidgetHeader, WidgetContent } from '../widget';
+import GCodeRenderer from '../../lib/GCodeRenderer';
+import PivotPoint3 from '../../lib/PivotPoint3';
 import log from '../../lib/log';
 import siofu from '../../lib/siofu';
 import socket from '../../lib/socket';
@@ -274,7 +275,7 @@ class Toolbar extends React.Component {
         return (
             <div className="btn-toolbar" role="toolbar">
                 <div className="btn-group btn-group-sm" role="group">
-                    <button type="button" className="btn btn-default" title={i18n._('Upload G-Code')} onClick={::this.handleUpload} disabled={!canUpload}>
+                    <button type="button" className="btn btn-default" title={i18n._('Upload G-code')} onClick={::this.handleUpload} disabled={!canUpload}>
                         <i className="glyphicon glyphicon-cloud-upload"></i>
                         <input type="file" className="hidden" ref="file" onChange={::this.handleFile} />
                     </button>
@@ -310,9 +311,7 @@ export default class Visualizer extends React.Component {
         this.directionalLight = null;
         this.axes = null;
         this.object = null;
-        this.gcodeRenderer = null;
-        this.offsetX = 0;
-        this.offsetY = 0;
+        this.objectRenderer = null;
     }
     componentDidMount() {
         this.subscribe();
@@ -322,6 +321,20 @@ export default class Visualizer extends React.Component {
         let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
         this.createScene(el);
         this.resizeRenderer();
+
+        this.pivotPoint = new PivotPoint3({
+            x: 0,
+            y: 0,
+            z: 0
+        }, (x, y, z) => { // The relative xyz position
+            console.assert(this.scene instanceof THREE.Scene, 'this.scene is not an instance of THREE.Scene', this.scene);
+
+            _.each(this.scene.children, (obj) => {
+                obj.translateX(x);
+                obj.translateY(y);
+                obj.translateZ(z);
+            });
+        });
     }
     componentWillUnmount() {
         this.removeResizeEventListener();
@@ -362,14 +375,14 @@ export default class Visualizer extends React.Component {
         socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     socketOnGCodeQueueStatus(data) {
-        if (!(this.gcodeRenderer)) {
+        if (!(this.objectRenderer)) {
             return;
         }
 
         log.trace('socketOnGCodeQueueStatus:', data);
 
         let frameIndex = data.executed;
-        this.gcodeRenderer.setFrameIndex(frameIndex);
+        this.objectRenderer.setFrameIndex(frameIndex);
     }
     addResizeEventListener() {
         // handle resize event
@@ -517,22 +530,20 @@ export default class Visualizer extends React.Component {
         return axis;
     }
     renderObject(gcode) {
+        // Sets the pivot point to the origin point (0, 0, 0)
+        this.pivotPoint.set(0, 0, 0);
+
         if (this.object) {
             this.scene.remove(this.object);
+            this.object = null;
         }
-
-        // Set the rotation pivot point to the XYZ zero point
-        this.axes.translateX(this.offsetX);
-        this.axes.translateY(this.offsetY);
-        this.offsetX = 0;
-        this.offsetY = 0;
 
         // Reset TrackballControls
         this.trackballControls.reset();
 
         let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
-        this.gcodeRenderer = new GCodeRenderer();
-        this.gcodeRenderer.render({
+        this.objectRenderer = new GCodeRenderer();
+        this.objectRenderer.render({
             gcode: gcode,
             width: el.clientWidth,
             height: el.clientHeight
@@ -548,15 +559,8 @@ export default class Visualizer extends React.Component {
                 dimension.min.z + (dimension.delta.z / 2)
             );
 
-            // Set the rotation pivot point to the object's center position
-            this.offsetX = center.x;
-            this.offsetY = center.y;
-
-            this.object.translateX(-this.offsetX);
-            this.object.translateY(-this.offsetY);
-
-            this.axes.translateX(-this.offsetX);
-            this.axes.translateY(-this.offsetY);
+            // Set the pivot point to the object's center position
+            this.pivotPoint.set(center.x, center.y, center.z);
         });
     }
     joystickUp() {
