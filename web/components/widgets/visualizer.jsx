@@ -395,10 +395,16 @@ export default class Visualizer extends React.Component {
         this.pubsubTokens = [];
     }
     addSocketEvents() {
+        socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
         socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     removeSocketEvents() {
+        socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
         socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
+    }
+    socketOnGrblCurrentStatus(data) {
+        let { workingPos } = data;
+        this.setEngravingCutterPosition(workingPos.x, workingPos.y, workingPos.z);
     }
     socketOnGCodeQueueStatus(data) {
         if (!(this.objectRenderer)) {
@@ -460,8 +466,9 @@ export default class Visualizer extends React.Component {
         let renderer = this.renderer = new THREE.WebGLRenderer({
             autoClearColor: true
         });
-        renderer.setClearColor(0xffffff, 1);
+        renderer.setClearColor(new THREE.Color(colorNames.white, 1.0));
         renderer.setSize(width, height);
+        renderer.shadowMapEnabled = true;
         el.appendChild(renderer.domElement);
         renderer.clear();
 
@@ -471,18 +478,20 @@ export default class Visualizer extends React.Component {
         scene.add(directionalLight);
 
         // Creating XYZ coordinate axes
-        let coordinateAxes = this.coordinateAxes = this.buildCoordinateAxes(COORDINATE_AXIS_LENGTH);
+        let coordinateAxes = this.coordinateAxes = this.createCoordinateAxes(COORDINATE_AXIS_LENGTH);
         coordinateAxes.name = 'CoordinateAxes';
         scene.add(coordinateAxes);
 
         // Creating an engraving cutter
-        let engravingCutter = this.engravingCutter = this.buildEngravingCutter();
+        let engravingCutter = this.engravingCutter = this.createEngravingCutter();
         engravingCutter.name = 'EngravingCutter';
         scene.add(engravingCutter);
 
         // By default, when we call scene.add(), the thing we add will be added to the coordinates (0,0,0).
         // This would cause both the camera and the cube to be inside each other.
         // To avoid this, we simply move the camera out a bit.
+        camera.position.x = 10;
+        camera.position.y = -100;
         camera.position.z = 300;
 
         // To zoom in/out using TrackballControls
@@ -501,18 +510,10 @@ export default class Visualizer extends React.Component {
             // Call the render() function up to 60 times per second (i.e. 60fps)
             requestAnimationFrame(render);
 
-            // The 'delta' is meant to return the amount of time between each frame.
-            // Ideally we will have approximately 1/60 = .016666 seconds between each frame.
-            let delta = clock.getDelta();
-
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                // Rotate the Engraving Cutter around the z axis
-                let rpm = 360; // 360 rounds per minutes
-                let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
-                this.engravingCutter.rotateZ(rpm / 60 * degrees);
+                this.setEngravingCutterRotationSpeed(360); // 360 rounds per minute (rpm)
             } else {
-                // It is necessary to set the rotation angle to zero if not running
-                this.engravingCutter.rotation.z = 0;
+                this.setEngravingCutterRotationSpeed(0);
             }
 
             trackballControls.update();
@@ -533,16 +534,26 @@ export default class Visualizer extends React.Component {
         });
     }
     createDirectionalLight() {
-        // White directional light at half intensity shining from the top.
-        let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-        directionalLight.position.set(0, 1, 0);
+        let directionalLight = new THREE.DirectionalLight(colorNames.gold, 0.5);
+
+        directionalLight.position.set(-40, 60, -10);
+        directionalLight.castShadow = true;
+        directionalLight.shadowCameraNear = 2;
+        directionalLight.shadowCameraFar = 200;
+        directionalLight.shadowCameraLeft = -50;
+        directionalLight.shadowCameraRight = 50;
+        directionalLight.shadowCameraTop = 50;
+        directionalLight.shadowCameraBottom = -50;
+        directionalLight.distance = 0;
+        directionalLight.intensity = 0.5;
+        directionalLight.shadowMapHeight = 1024;
+        directionalLight.shadowMapWidth = 1024;
         
-        return _.extend(directionalLight, { name: 'DirectionalLight' });
+        return directionalLight;
     }
-    //
-    // http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/
-    //
-    buildCoordinateAxes(length) {
+    // Creates the coordinate axes
+    // @see [Drawing the Coordinate Axes]{@http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/}
+    createCoordinateAxes(length) {
         let coordinateAxes = new THREE.Object3D();
 
         coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), colorNames.red, false)); // +X
@@ -578,15 +589,16 @@ export default class Visualizer extends React.Component {
 
         return new THREE.Line(geometry, material);
     }
-    buildEngravingCutter() {
+    // Creates an engraving cutter
+    createEngravingCutter() {
         let radiusTop = 3;
         let radiusBottom = 0.5;
         let cylinderHeight = 30;
-        let radiusSegments = 32;
+        let radiusSegments = 6;
         let heightSegments = 1;
         let openEnded = false;
         let thetaStart = 0;
-        let thetaLength = (7 / 8) * 2 * Math.PI;
+        let thetaLength = 2 * Math.PI;
 
         let geometry = new THREE.CylinderGeometry(
             radiusTop,
@@ -604,10 +616,38 @@ export default class Visualizer extends React.Component {
         geometry.translate(0, 0, cylinderHeight / 2);
 
         let material = new THREE.MeshBasicMaterial({
-            color: 0x337ab7
+            color: colorNames.steelblue
         });
 
         return new THREE.Mesh(geometry, material);
+    }
+    // Sets the position of the engraving cutter
+    // @param {number} x The position along the x axis
+    // @param {number} y The position along the y axis
+    // @param {number} z The position along the z axis
+    setEngravingCutterPosition(x, y, z) {
+        if (!(this.engravingCutter)) {
+            return;
+        }
+
+        let pivotPoint = this.pivotPoint.get();
+        x = (Number(x) || 0) - pivotPoint.x;
+        y = (Number(y) || 0) - pivotPoint.y;
+        z = (Number(z) || 0) - pivotPoint.z;
+
+        this.engravingCutter.position.set(x, y, z);
+    }
+    // Rotates the engraving cutter around the z axis with a given rpm and an optional fps
+    // @param {number} rpm The rounds per minutes
+    // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
+    setEngravingCutterRotationSpeed(rpm, fps = 60) {
+        if (!(this.engravingCutter)) {
+            return;
+        }
+
+        let delta = 1 / fps;
+        let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
+        this.engravingCutter.rotateZ(rpm / 60 * degrees);
     }
     renderObject(gcode) {
         // Sets the pivot point to the origin point (0, 0, 0)
