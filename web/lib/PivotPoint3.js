@@ -1,13 +1,6 @@
 import _ from 'lodash';
 
 export default class PivotPoint3 {
-    pivotPoint = {
-        x: 0,
-        y: 0,
-        z: 0
-    }
-    callback = () => {};
-
     // @param {object} options The options object
     // @param {number} [options.x] The pivot point on the x-axis
     // @param {number} [options.y] The pivot point on the y-axis
@@ -20,7 +13,8 @@ export default class PivotPoint3 {
         options.y = Number(options.y) || 0;
         options.z = Number(options.z) || 0;
 
-        this.callback = _.isFunction(callback) ? callback : this.callback;
+        this.pivotPoint = { x: 0, y: 0, z: 0 };
+        this.callback = _.isFunction(callback) ? callback : (() => {});
 
         this.set(options.x, options.y, options.z);
     }
