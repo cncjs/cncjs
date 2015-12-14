@@ -34,6 +34,11 @@ export default class PivotPoint3 {
 
         this.pivotPoint = { x: x, y: y, z: z };
     }
+    // Gets the pivot point
+    // @return {object} The { x, y, z } position of the pivot point
+    get() {
+        return this.pivotPoint;
+    }
     // Sets the pivot point to the origin point (0, 0, 0)
     clear() {
         let { pivotPoint } = this;
