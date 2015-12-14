@@ -16,7 +16,12 @@ import socket from '../../lib/socket';
 import colorNames from '../../lib/color-names';
 import './visualizer.css';
 
-const AXIS_LENGTH = 99999;
+const clock = new THREE.Clock();
+
+const COORDINATE_AXIS_LENGTH = 99999;
+const WORKFLOW_STATE_RUNNING = 'running';
+const WORKFLOW_STATE_PAUSED = 'paused';
+const WORKFLOW_STATE_IDLE = 'idle';
 
 class Joystick extends React.Component {
     static propTypes = {
@@ -101,7 +106,7 @@ class Toolbar extends React.Component {
         port: '',
         isLoaded: false,
         startTime: 0, // unix timestamp
-        currentStatus: 'idle' // idle|run
+        workflowState: WORKFLOW_STATE_IDLE
     };
 
     componentDidMount() {
@@ -111,6 +116,9 @@ class Toolbar extends React.Component {
     componentWillUnmount() {
         this.removeSocketIOFileUploadEvents();
         this.unsubscribe();
+    }
+    componentDidUpdate() {
+        this.props.setWorkflowState(this.state.workflowState);
     }
     subscribe() {
         let that = this;
@@ -245,20 +253,20 @@ class Toolbar extends React.Component {
         socket.emit('gcode:run', this.state.port);
         pubsub.publish('gcode:run');
         this.setState({
-            currentStatus: 'run'
+            workflowState: WORKFLOW_STATE_RUNNING
         });
     }
     handlePause() {
         socket.emit('gcode:pause', this.state.port);
         this.setState({
-            currentStatus: 'pause'
+            workflowState: WORKFLOW_STATE_PAUSED
         });
     }
     handleStop() {
         socket.emit('gcode:stop', this.state.port);
         pubsub.publish('gcode:stop');
         this.setState({
-            currentStatus: 'idle'
+            workflowState: WORKFLOW_STATE_IDLE
         });
     }
     handleClose() {
@@ -267,7 +275,7 @@ class Toolbar extends React.Component {
         pubsub.publish('gcode:data', '');
 
         this.setState({
-            currentStatus: 'idle',
+            workflowState: WORKFLOW_STATE_IDLE,
             isLoaded: false
         });
     }
@@ -275,7 +283,7 @@ class Toolbar extends React.Component {
         pubsub.publish('gcode:stop');
         pubsub.publish('gcode:data', '');
         this.setState({
-            currentStatus: 'idle',
+            workflowState: WORKFLOW_STATE_IDLE,
             isLoaded: false
         });
     }
@@ -283,10 +291,10 @@ class Toolbar extends React.Component {
         let isLoaded = this.state.isLoaded;
         let notLoaded = !isLoaded;
         let canUpload = !!this.state.port && notLoaded;
-        let canRun = isLoaded && _.includes(['idle', 'pause'], this.state.currentStatus);
-        let canPause = isLoaded && _.includes(['run'], this.state.currentStatus);
-        let canStop = isLoaded && _.includes(['run', 'pause'], this.state.currentStatus);
-        let canClose = isLoaded && _.includes(['idle'], this.state.currentStatus);
+        let canRun = isLoaded && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], this.state.workflowState);
+        let canPause = isLoaded && _.includes([WORKFLOW_STATE_RUNNING], this.state.workflowState);
+        let canStop = isLoaded && _.includes([WORKFLOW_STATE_RUNNING, WORKFLOW_STATE_PAUSED], this.state.workflowState);
+        let canClose = isLoaded && _.includes([WORKFLOW_STATE_IDLE], this.state.workflowState);
 
         return (
             <div className="btn-toolbar" role="toolbar">
@@ -320,12 +328,14 @@ export default class Visualizer extends React.Component {
     };
 
     componentWillMount() {
+        this.workflowState = WORKFLOW_STATE_IDLE;
         this.renderer = null;
         this.scene = null;
         this.camera = null;
         this.trackballControls = null;
         this.directionalLight = null;
-        this.axes = null;
+        this.coordinateAxes = null;
+        this.engravingCutter = null;
         this.object = null;
         this.objectRenderer = null;
     }
@@ -345,10 +355,10 @@ export default class Visualizer extends React.Component {
         }, (x, y, z) => { // The relative xyz position
             console.assert(this.scene instanceof THREE.Scene, 'this.scene is not an instance of THREE.Scene', this.scene);
 
-            _.each(this.scene.children, (obj) => {
-                obj.translateX(x);
-                obj.translateY(y);
-                obj.translateZ(z);
+            _.each(this.scene.children, (o) => {
+                o.translateX(x);
+                o.translateY(y);
+                o.translateZ(z);
             });
         });
     }
@@ -455,13 +465,20 @@ export default class Visualizer extends React.Component {
         el.appendChild(renderer.domElement);
         renderer.clear();
 
-        // Creating a Directional Light
+        // Creating a directional light
         let directionalLight = this.directionalLight = this.createDirectionalLight();
+        directionalLight.name = 'DirectionalLight';
         scene.add(directionalLight);
 
-        // Add axes
-        let axes = this.axes = this.buildAxes(AXIS_LENGTH);
-        scene.add(axes);
+        // Creating XYZ coordinate axes
+        let coordinateAxes = this.coordinateAxes = this.buildCoordinateAxes(COORDINATE_AXIS_LENGTH);
+        coordinateAxes.name = 'CoordinateAxes';
+        scene.add(coordinateAxes);
+
+        // Creating an engraving cutter
+        let engravingCutter = this.engravingCutter = this.buildEngravingCutter();
+        engravingCutter.name = 'EngravingCutter';
+        scene.add(engravingCutter);
 
         // By default, when we call scene.add(), the thing we add will be added to the coordinates (0,0,0).
         // This would cause both the camera and the cube to be inside each other.
@@ -481,8 +498,25 @@ export default class Visualizer extends React.Component {
         // Rendering the scene
         // This will create a loop that causes the renderer to draw the scene 60 times per second.
         let render = () => {
+            // Call the render() function up to 60 times per second (i.e. 60fps)
             requestAnimationFrame(render);
+
+            // The 'delta' is meant to return the amount of time between each frame.
+            // Ideally we will have approximately 1/60 = .016666 seconds between each frame.
+            let delta = clock.getDelta();
+
+            if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                // Rotate the Engraving Cutter around the z axis
+                let rpm = 360; // 360 rounds per minutes
+                let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
+                this.engravingCutter.rotateZ(rpm / 60 * degrees);
+            } else {
+                // It is necessary to set the rotation angle to zero if not running
+                this.engravingCutter.rotation.z = 0;
+            }
+
             trackballControls.update();
+
             renderer.render(scene, camera);
         };
         render();
@@ -499,27 +533,28 @@ export default class Visualizer extends React.Component {
         });
     }
     createDirectionalLight() {
+        // White directional light at half intensity shining from the top.
         let directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
         directionalLight.position.set(0, 1, 0);
         
-        return directionalLight;
+        return _.extend(directionalLight, { name: 'DirectionalLight' });
     }
     //
     // http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/
     //
-    buildAxes(length) {
-        let axes = new THREE.Object3D();
+    buildCoordinateAxes(length) {
+        let coordinateAxes = new THREE.Object3D();
 
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), colorNames.red, false)); // +X
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-length, 0, 0), colorNames.red, true)); // -X
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, length, 0), colorNames.green, false)); // +Y
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -length, 0), colorNames.green, true)); // -Y
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, length), colorNames.blue, false)); // +Z
-        axes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -length), colorNames.blue, true)); // -Z
+        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), colorNames.red, false)); // +X
+        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-length, 0, 0), colorNames.red, true)); // -X
+        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, length, 0), colorNames.green, false)); // +Y
+        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -length, 0), colorNames.green, true)); // -Y
+        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, length), colorNames.blue, false)); // +Z
+        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -length), colorNames.blue, true)); // -Z
 
-        return axes;
+        return coordinateAxes;
     }
-    buildAxis(src, dst, colorHex, dashed) {
+    buildCoordinateAxis(src, dst, colorHex, dashed) {
         let geometry = new THREE.Geometry();
         let material;
 
@@ -541,9 +576,38 @@ export default class Visualizer extends React.Component {
         geometry.vertices.push(dst.clone());
         geometry.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
 
-        let axis = new THREE.Line(geometry, material);
+        return new THREE.Line(geometry, material);
+    }
+    buildEngravingCutter() {
+        let radiusTop = 3;
+        let radiusBottom = 0.5;
+        let cylinderHeight = 30;
+        let radiusSegments = 32;
+        let heightSegments = 1;
+        let openEnded = false;
+        let thetaStart = 0;
+        let thetaLength = (7 / 8) * 2 * Math.PI;
 
-        return axis;
+        let geometry = new THREE.CylinderGeometry(
+            radiusTop,
+            radiusBottom,
+            cylinderHeight,
+            radiusSegments,
+            heightSegments,
+            openEnded,
+            thetaStart,
+            thetaLength
+        );
+        // Rotates the geometry 90 degrees around the X axis.
+        geometry.rotateX(Math.PI / 2);
+        // Set the desired position from the origin rather than its center.
+        geometry.translate(0, 0, cylinderHeight / 2);
+
+        let material = new THREE.MeshBasicMaterial({
+            color: 0x337ab7
+        });
+
+        return new THREE.Mesh(geometry, material);
     }
     renderObject(gcode) {
         // Sets the pivot point to the origin point (0, 0, 0)
@@ -567,6 +631,7 @@ export default class Visualizer extends React.Component {
             pubsub.publish('gcode:dimension', dimension);
 
             this.object = object;
+            this.object.name = 'G-code';
             this.scene.add(this.object);
 
             let center = new THREE.Vector3(
@@ -578,6 +643,9 @@ export default class Visualizer extends React.Component {
             // Set the pivot point to the object's center position
             this.pivotPoint.set(center.x, center.y, center.z);
         });
+    }
+    setWorkflowState(workflowState) {
+        this.workflowState = workflowState;
     }
     joystickUp() {
         let { x, y, z } = this.trackballControls.target;
@@ -601,7 +669,7 @@ export default class Visualizer extends React.Component {
     render() {
         return (
             <div>
-                <Toolbar />
+                <Toolbar setWorkflowState={::this.setWorkflowState} />
                 <Joystick
                     up={::this.joystickUp}
                     down={::this.joystickDown}
