@@ -3,33 +3,9 @@ import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import Select from 'react-select';
-import classNames from 'classnames';
-import { Widget, WidgetHeader, WidgetContent } from '../widget';
-import log from '../../lib/log';
-import socket from '../../lib/socket';
-import './connection.css';
-
-class Alert extends React.Component {
-    render() {
-        return (
-            <div>
-                {this.props.msg &&
-                <div className="alert alert-danger fade in" style={{padding: '4px'}}>
-                    <a
-                        href="javascript:void(0)"
-                        className="close"
-                        data-dismiss="alert"
-                        aria-label="close"
-                        style={{fontSize: '16px'}}
-                        onClick={this.props.dismiss}
-                    >×</a>
-                    {this.props.msg}
-                </div>
-                }
-            </div>
-        );
-    }
-}
+import Alert from './Alert';
+import log from '../../../lib/log';
+import socket from '../../../lib/socket';
 
 class Connection extends React.Component {
     state = {
@@ -362,45 +338,4 @@ class Connection extends React.Component {
     }
 }
 
-class ConnectionWidget extends React.Component {
-    state = {
-        isCollapsed: false
-    };
-
-    handleClick(target, val) {
-        if (target === 'toggle') {
-            this.setState({
-                isCollapsed: !!val
-            });
-        }
-    }
-    render() {
-        let width = 360;
-        let title = (
-            <div><i className="glyphicon glyphicon-log-in"></i>{i18n._('Connection')}</div>
-        );
-        let toolbarButtons = [
-            'toggle'
-        ];
-        let widgetContentClass = classNames(
-            { 'hidden': this.state.isCollapsed }
-        );
-
-        return (
-            <div data-component="Widgets/ConnectionWidget">
-                <Widget width={width}>
-                    <WidgetHeader
-                        title={title}
-                        toolbarButtons={toolbarButtons}
-                        handleClick={::this.handleClick}
-                    />
-                    <WidgetContent className={widgetContentClass}>
-                        <Connection />
-                    </WidgetContent>
-                </Widget>
-            </div>
-        );
-    }
-}
-
-export default ConnectionWidget;
+export default Connection;
