@@ -19,6 +19,13 @@ var stripComments = (function() {
 }());
 
 //
+// Grbl 0.9j ['$' for help]
+//
+var matchGrblInitializationMessage = function(msg) {
+    return msg.match(/^Grbl/i);
+};
+
+//
 // > ?
 // <Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>
 //
@@ -162,13 +169,16 @@ module.exports = function(server) {
             var port = _.get(data, 'port');
             var baudrate = Number(_.get(data, 'baudrate')) || 9600; // defaults to 9600
             var sp = serialports[port] = serialports[port] || {
-                isPending: {
+                port: port,
+                ready: false,
+                pending: {
                     '?': false, // current status
                     '$G': false, // view gcode parser state
                     '$G:rsp': false // Grbl response: 'ok' or 'error'
                 },
                 timer: {},
-                port: port,
+                serialPort: null,
+                queue: null,
                 q_total: 0,
                 q_executed: 0,
                 sockets: {
@@ -187,27 +197,38 @@ module.exports = function(server) {
                 })()
             };
 
-            if (!(sp.timer['grbl:current-status'])) {
-                sp.timer['grbl:current-status'] = setInterval(function() {
+            if (!(sp.timer['grbl:query'])) {
+                sp.timer['grbl:query'] = setInterval(function() {
                     if (!(sp.serialPort && sp.serialPort.isOpen())) {
                         return;
                     }
 
-                    if (!(sp.isPending['?'])) {
-                        sp.isPending['?'] = true;
+                    if (!(sp.ready)) {
+                        // The Grbl is not ready
+                        return;
+                    }
+
+                    if (!(sp.pending['?'])) {
+                        sp.pending['?'] = true;
                         sp.serialPort.write('?');
                     }
 
-                    if (!(sp.isPending['$G']) && !(sp.isPending['$G:rsp'])) {
-                        sp.isPending['$G'] = true;
+                    if (!(sp.pending['$G']) && !(sp.pending['$G:rsp'])) {
+                        sp.pending['$G'] = true;
                         sp.serialPort.write('$G' + '\n');
                     }
+
                 }, 250);
             }
 
             if (!(sp.queue)) {
                 sp.queue = queue();
                 sp.queue.on('data', function(msg) {
+                    if (!(sp.serialPort && sp.serialPort.isOpen())) {
+                        log.warn('The serial port is not open.', { port: port, msg: msg });
+                        return;
+                    }
+
                     var executed = sp.queue.executed();
                     var total = sp.queue.size();
 
@@ -268,6 +289,20 @@ module.exports = function(server) {
                     sp.serialPort = serialPort;
 
                     serialPort.on('open', function() {
+                        { // Initialization
+                            // Set ready to false
+                            sp.ready = false;
+
+                            // Set pending commands to false
+                            Object.keys(sp.pending).forEach(function(cmd) {
+                                sp.pending[cmd] = false;
+                            });
+
+                            // Ensure the queue is stopped and empty
+                            sp.queue.stop();
+                            sp.queue.clear();
+                        }
+
                         // Emit 'serialport:open' event to the connected socket
                         socket.emit('serialport:open', {
                             port: port,
@@ -285,6 +320,16 @@ module.exports = function(server) {
                         console.log(msg);
 
                         msg = ('' + msg).trim();
+
+                        // Example: Grbl 0.9j ['$' for help]
+                        if (matchGrblInitializationMessage(msg)) {
+                            // Reset pending commands to false
+                            Object.keys(sp.pending).forEach(function(cmd) {
+                                sp.pending[cmd] = false;
+                            });
+
+                            sp.ready = true;
+                        }
 
                         if (matchGrblCurrentStatus(msg)) {
                             var r = msg.match(/<(\w+),\w+:([^,]+),([^,]+),([^,]+),\w+:([^,]+),([^,]+),([^,]+)>/);
@@ -310,7 +355,7 @@ module.exports = function(server) {
                                 }
                             });
 
-                            sp.isPending['?'] = false;
+                            sp.pending['?'] = false;
 
                             return;
                         }
@@ -333,21 +378,21 @@ module.exports = function(server) {
                                 }
                             });
 
-                            sp.isPending['$G'] = false;
-                            sp.isPending['$G:rsp'] = true; // Wait for Grbl response
+                            sp.pending['$G'] = false;
+                            sp.pending['$G:rsp'] = true; // Wait for Grbl response
 
                             return;
                         }
 
                         if ((msg.indexOf('ok') === 0) || (msg.indexOf('error') === 0)) {
-                            if (sp.isPending['$G:rsp']) {
+                            if (sp.pending['$G:rsp']) {
                                 _.each(sp.sockets, function(o) {
                                     if (o.command.indexOf('$G') === 0) {
                                         o.command = ''; // Clear the command buffer
                                         o.socket.emit('serialport:data', msg);
                                     }
                                 });
-                                sp.isPending['$G:rsp'] = false;
+                                sp.pending['$G:rsp'] = false;
                                 return;
                             }
 
