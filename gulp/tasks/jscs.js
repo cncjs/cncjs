@@ -6,7 +6,7 @@ export default (options) => {
         let jscsConfig = options.config.jscs;
 
         return gulp.src(jscsConfig.src)
-            .pipe(jscs(jscsConfig.options)) // enforce style guide
+            .pipe(jscs()) // enforce style guide
             .pipe(jscs.reporter());
     });
 };

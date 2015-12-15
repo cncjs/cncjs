@@ -168,8 +168,7 @@ export default {
             '!web/**/handlebars-templates.js', // exclude handlebars-templates.js:w!
             '!web/{vendor,test}/**',
             '!**/node_modules/**'
-        ],
-        options: require('../config/jscs')
+        ]
     },
     eslint: {
         src: [

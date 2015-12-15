@@ -111,7 +111,7 @@
     "gulp-eslint": "^1.0.0",
     "gulp-filter": "^2.0.2",
     "gulp-if": "^1.2.5",
-    "gulp-jscs": "^3.0.0",
+    "gulp-jscs": "^3.0.2",
     "gulp-jshint": "1.9.x",
     "gulp-livereload": "^3.8.0",
     "gulp-markdown": "1.0.x",
