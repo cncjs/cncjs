@@ -1,5 +1,5 @@
 import React from 'react';
-import Visualizer from './visualizer';
+import Visualizer from './Visualizer';
 import { Widget, WidgetHeader, WidgetContent } from '../../widget';
 import './index.css';
 
