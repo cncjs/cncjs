@@ -8,14 +8,6 @@ import update from 'react-addons-update';
 import socket from '../../../lib/socket';
 import { GCODE_STATUS } from './constants';
 
-let stripComments = (() => {
-    let re1 = /^\s+|\s+$/g; // Strip leading and trailing spaces
-    let re2 = /\s*[#;].*$/g; // Strip everything after # or ; to the end of the line, including preceding spaces
-    return (s) => {
-        return s.replace(re1, '').replace(re2, '');
-    };
-})();
-
 class GCodeStats extends React.Component {
     state = {
         startTime: 0,
