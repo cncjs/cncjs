@@ -22,6 +22,10 @@ const COORDINATE_AXIS_LENGTH = 99999;
 const WORKFLOW_STATE_RUNNING = 'running';
 const WORKFLOW_STATE_PAUSED = 'paused';
 const WORKFLOW_STATE_IDLE = 'idle';
+const CAMERA_DEFAULT_FOV = 50;
+const CAMERA_DEFAULT_POSITION_X = 0;
+const CAMERA_DEFAULT_POSITION_Y = 0;
+const CAMERA_DEFAULT_POSITION_Z = 200; // Move the camera out a bit from the origin (0, 0, 0)
 
 class Joystick extends React.Component {
     static propTypes = {
@@ -454,55 +458,35 @@ export default class Visualizer extends React.Component {
     createScene(el) {
         let width = el.clientWidth;
         let height = el.clientHeight;
-        let fov = 45;
-        let aspect = width / height;
-        let near = 1;
-        let far = 12000;
 
         // To actually be able to display anything with Three.js, we need three things:
         // A scene, a camera, and a renderer so we can render the scene with the camera.
-        let scene = this.scene = new THREE.Scene();
-        let camera = this.camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
-        let renderer = this.renderer = new THREE.WebGLRenderer({
-            autoClearColor: true
-        });
-        renderer.setClearColor(new THREE.Color(colorNames.white, 1.0));
-        renderer.setSize(width, height);
-        renderer.shadowMapEnabled = true;
-        el.appendChild(renderer.domElement);
-        renderer.clear();
+        this.scene = new THREE.Scene();
+
+        // Creating a renderer
+        this.renderer = this.createRenderer(width, height);
+        el.appendChild(this.renderer.domElement);
+
+        // Creating a perspective camera
+        this.camera = this.createPerspectiveCamera(width, height);
 
         // Creating a directional light
-        let directionalLight = this.directionalLight = this.createDirectionalLight();
-        directionalLight.name = 'DirectionalLight';
-        scene.add(directionalLight);
+        this.directionalLight = this.createDirectionalLight();
+        this.directionalLight.name = 'DirectionalLight';
+        this.scene.add(this.directionalLight);
 
         // Creating XYZ coordinate axes
-        let coordinateAxes = this.coordinateAxes = this.createCoordinateAxes(COORDINATE_AXIS_LENGTH);
-        coordinateAxes.name = 'CoordinateAxes';
-        scene.add(coordinateAxes);
+        this.coordinateAxes = this.createCoordinateAxes(COORDINATE_AXIS_LENGTH);
+        this.coordinateAxes.name = 'CoordinateAxes';
+        this.scene.add(this.coordinateAxes);
 
         // Creating an engraving cutter
-        let engravingCutter = this.engravingCutter = this.createEngravingCutter();
-        engravingCutter.name = 'EngravingCutter';
-        scene.add(engravingCutter);
-
-        // By default, when we call scene.add(), the thing we add will be added to the coordinates (0,0,0).
-        // This would cause both the camera and the cube to be inside each other.
-        // To avoid this, we simply move the camera out a bit.
-        camera.position.x = 10;
-        camera.position.y = -100;
-        camera.position.z = 300;
+        this.engravingCutter = this.createEngravingCutter();
+        this.engravingCutter.name = 'EngravingCutter';
+        this.scene.add(this.engravingCutter);
 
         // To zoom in/out using TrackballControls
-        let trackballControls = this.trackballControls = new TrackballControls(camera, renderer.domElement);
-        trackballControls.rotateSpeed = 1.0;
-        trackballControls.zoomSpeed = 1.2;
-        trackballControls.panSpeed = 0.8;
-        trackballControls.noPan = false;
-        trackballControls.noZoom = false;
-        trackballControls.staticMoving = true;
-        trackballControls.dynamicDampingFactor = 0.3;
+        this.trackballControls = this.createTrackballControls(this.camera, this.renderer.domElement);
 
         // Rendering the scene
         // This will create a loop that causes the renderer to draw the scene 60 times per second.
@@ -511,18 +495,18 @@ export default class Visualizer extends React.Component {
             requestAnimationFrame(render);
 
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                this.setEngravingCutterRotationSpeed(360); // 360 rounds per minute (rpm)
+                this.rotateEngravingCutter(120); // 120 rounds per minute (rpm)
             } else {
-                this.setEngravingCutterRotationSpeed(0);
+                this.rotateEngravingCutter(0); // Stop rotation
             }
 
-            trackballControls.update();
+            this.trackballControls.update();
 
-            renderer.render(scene, camera);
+            this.renderer.render(this.scene, this.camera);
         };
         render();
 
-        return scene;
+        return this.scene;
     }
     clearScene() {
         let scene = this.scene;
@@ -532,6 +516,45 @@ export default class Visualizer extends React.Component {
         _.each(objsToRemove, (obj) => {
             scene.remove(obj);
         });
+    }
+    createRenderer(width, height) {
+        let renderer = new THREE.WebGLRenderer({
+            autoClearColor: true
+        });
+        renderer.setClearColor(new THREE.Color(colorNames.white, 1.0));
+        renderer.setSize(width, height);
+        renderer.shadowMap.enabled = true;
+        renderer.clear();
+
+        return renderer;
+    }
+    createPerspectiveCamera(width, height) {
+        let fov = CAMERA_DEFAULT_FOV;
+        let aspect = Number(width) / Number(height);
+        let near = 0.1;
+        let far = 2000;
+        let camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+        camera.position.x = CAMERA_DEFAULT_POSITION_X;
+        camera.position.y = CAMERA_DEFAULT_POSITION_Y;
+        camera.position.z = CAMERA_DEFAULT_POSITION_Z;
+
+        return camera;
+    }
+    createTrackballControls(object, domElement) {
+        let trackballControls = new TrackballControls(object, domElement);
+
+        _.extend(trackballControls, {
+            rotateSpeed: 1.0,
+            zoomSpeed: 1.2,
+            panSpeed: 0.8,
+            noPan: false,
+            noZoom: false,
+            staticMoving: true,
+            dynamicDampingFactor: 0.3
+        });
+
+        return trackballControls;
     }
     createDirectionalLight() {
         let directionalLight = new THREE.DirectionalLight(colorNames.gold, 0.5);
@@ -640,7 +663,7 @@ export default class Visualizer extends React.Component {
     // Rotates the engraving cutter around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
     // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
-    setEngravingCutterRotationSpeed(rpm, fps = 60) {
+    rotateEngravingCutter(rpm = 0, fps = 60) {
         if (!(this.engravingCutter)) {
             return;
         }
@@ -648,6 +671,55 @@ export default class Visualizer extends React.Component {
         let delta = 1 / fps;
         let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         this.engravingCutter.rotateZ(rpm / 60 * degrees);
+    }
+    resetCameraSettings() {
+    }
+    // Fits camera to object
+    // @param {number} width The object width
+    // @param {number} height The object height
+    // @param {THREE.Vector3} [lookTarget] The object's top position which is nearest to the camera
+    //
+    // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
+    //
+    // To match the object height with the visible height
+    //   fov = 2 * Math.atan(height / (2 * dist)) * ( 180 / Math.PI); // in degrees
+    //
+    // To match the object width with the visible width
+    //   fov = 2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI); // in degrees
+    //
+    fitCameraToObject(width, height, lookTarget) {
+        console.assert(_.isNumber(width));
+        console.assert(_.isNumber(height));
+        console.assert(lookTarget instanceof THREE.Vector3);
+
+        let v1 = (lookTarget instanceof THREE.Vector3) ? lookTarget : new THREE.Vector3(0, 0, 0);
+        let v2 = new THREE.Vector3(
+            this.camera.position.x,
+            this.camera.position.y,
+            this.camera.position.z
+        );
+        let dist = v1.distanceTo(v2); // the distance from the camera to the closest face of the object
+        let aspect = this.camera.aspect; // the aspect ratio of the canvas (width / height)
+
+        width = Number(width) || 0;
+        height = Number(height) || 0;
+
+        // Pick the largest camera field-of-view
+        let fov = Math.max(
+            2 * Math.atan(height / (2 * dist)) * (180 / Math.PI),
+            2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI)
+        );
+        fov = fov || CAMERA_DEFAULT_FOV;
+
+        this.camera.fov = fov;
+        this.camera.updateProjectionMatrix();
+
+        log.debug('fitCameraToObject:', {
+            width: width,
+            height: height,
+            dist: dist,
+            fov: fov
+        });
     }
     renderObject(gcode) {
         // Sets the pivot point to the origin point (0, 0, 0)
@@ -682,6 +754,15 @@ export default class Visualizer extends React.Component {
 
             // Set the pivot point to the object's center position
             this.pivotPoint.set(center.x, center.y, center.z);
+
+            { // Fit the camera to object
+                let objectWidth = dimension.delta.x;
+                let objectHeight = dimension.delta.y;
+                let lookTarget = new THREE.Vector3(0, 0, dimension.max.z);
+
+                this.fitCameraToObject(objectWidth, objectHeight, lookTarget);
+            }
+
         });
     }
     setWorkflowState(workflowState) {
