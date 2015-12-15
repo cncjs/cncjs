@@ -159,3 +159,5 @@ class DisplayPanel extends React.Component {
         );
     }
 }
+
+export default DisplayPanel;
