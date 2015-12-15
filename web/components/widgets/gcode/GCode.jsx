@@ -5,6 +5,7 @@ import update from 'react-addons-update';
 import GCodeStats from './GCodeStats';
 import GCodeTable from './GCodeTable';
 import socket from '../../../lib/socket';
+import { GCODE_STATUS } from './constants';
 
 let stripComments = (() => {
     let re1 = /^\s+|\s+$/g; // Strip leading and trailing spaces

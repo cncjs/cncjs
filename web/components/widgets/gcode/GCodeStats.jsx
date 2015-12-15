@@ -6,7 +6,6 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import update from 'react-addons-update';
 import socket from '../../../lib/socket';
-import { GCODE_STATUS } from './constants';
 
 class GCodeStats extends React.Component {
     state = {
