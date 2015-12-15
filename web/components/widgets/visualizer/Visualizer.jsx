@@ -369,8 +369,6 @@ class Visualizer extends React.Component {
         let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         this.engravingCutter.rotateZ(rpm / 60 * degrees);
     }
-    resetCameraSettings() {
-    }
     // Fits camera to object
     // @param {number} width The object width
     // @param {number} height The object height
@@ -468,21 +466,27 @@ class Visualizer extends React.Component {
     joystickUp() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x, y - 2, z);
+        //this.camera.position.setY(this.camera.position.y - 2);
     }
     joystickDown() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x, y + 2, z);
+        //this.camera.position.setY(this.camera.position.y + 2);
     }
     joystickLeft() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x + 2, y, z);
+        //this.camera.position.setX(this.camera.position.x - 2);
     }
     joystickRight() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x - 2, y, z);
+        //this.camera.position.setX(this.camera.position.x + 2);
     }
-    resetCamera() {
+    joystickCenter() {
         this.trackballControls.reset();
+        this.camera.position.setX(0);
+        this.camera.position.setY(0);
     }
     render() {
         return (
@@ -493,7 +497,7 @@ class Visualizer extends React.Component {
                     down={::this.joystickDown}
                     left={::this.joystickLeft}
                     right={::this.joystickRight}
-                    center={::this.resetCamera}
+                    center={::this.joystickCenter}
                 />
                 <div ref="gcodeViewer" className="preview" />
             </div>
