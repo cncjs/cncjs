@@ -39,6 +39,9 @@ class Axes extends React.Component {
         this.unsubscribe();
         this.removeSocketEvents();
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        return JSON.stringify(nextState) !== JSON.stringify(this.state);
+    }
     subscribe() {
         let that = this;
 
@@ -63,10 +66,29 @@ class Axes extends React.Component {
         this.pubsubTokens = [];
     }
     addSocketEvents() {
+        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
         socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
     }
     removeSocketEvents() {
+        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
         socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
+    }
+    socketOnGrblGCodeModes(modes) {
+        let unit = this.state.unit;
+
+        // Imperial
+        if (_.includes(modes, 'G20')) {
+            unit = IMPERIAL_UNIT;
+        }
+
+        // Metric
+        if (_.includes(modes, 'G21')) {
+            unit = METRIC_UNIT;
+        }
+
+        if (this.state.unit !== unit) {
+            this.setState({ unit: unit });
+        }
     }
     socketOnGrblCurrentStatus(data) {
         this.setState({
@@ -91,18 +113,11 @@ class Axes extends React.Component {
         });
     }
     toggleDisplayUnit() {
-        let unit;
-
         if (this.state.unit === METRIC_UNIT) {
-            unit = IMPERIAL_UNIT;
-            
-            //serialport.writeln('G20'); // G20 specifies Imperial (inch) unit
+            serialport.writeln('G20'); // G20 specifies Imperial (inch) unit
         } else {
-            unit = METRIC_UNIT;
-
-            //serialport.writeln('G21'); // G21 specifies Metric (mm) unit
+            serialport.writeln('G21'); // G21 specifies Metric (mm) unit
         }
-        this.setState({ unit: unit });
     }
     handleSendCommand(target, eventKey) {
         let cmd = eventKey;

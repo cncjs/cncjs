@@ -6,9 +6,7 @@ import JogJoystickControl from './JogJoystickControl';
 import {
     ACTIVE_STATE_RUN,
     DISTANCE_DEFAULT,
-    FEEDRATE_DEFAULT,
-    IMPERIAL_UNIT,
-    METRIC_UNIT
+    FEEDRATE_DEFAULT
 } from './constants';
 
 class JogControlPanel extends React.Component {
@@ -27,20 +25,6 @@ class JogControlPanel extends React.Component {
     }
     changeDistance(distance) {
         this.setState({ distance: distance });
-    }
-    handleToggleUnit() {
-        let unit;
-
-        if (this.props.unit === METRIC_UNIT) {
-            unit = IMPERIAL_UNIT;
-            
-            //serialport.writeln('G20'); // G20 specifies Imperial (inch) unit
-        } else {
-            unit = METRIC_UNIT;
-
-            //serialport.writeln('G21'); // G21 specifies Metric (mm) unit
-        }
-        this.props.changeDisplayUnit(unit);
     }
     render() {
         let { port, unit, activeState } = this.props;
