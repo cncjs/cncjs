@@ -26,7 +26,6 @@ const bundleDependencies = {
         'react-infinite',
         'react-router',
         'react-select',
-        'redux',
         'sha1',
         'socketio-file-upload',
         'three',
