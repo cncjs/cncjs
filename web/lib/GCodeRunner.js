@@ -17,14 +17,15 @@ const translatePosition = (position, newPosition, relative) => {
 };
 
 class GCodeRunner extends GCodeInterpreter {
-    state = {
+    position = {
         x: 0,
         y: 0,
-        z: 0,
-        modal: {
-            units: 'G21', // G20: inch, G21: mm
-            distance: 'G90' // G90: absolute, G91: relative
-        }
+        z: 0
+    };
+
+    modalState = {
+        units: 'G21', // G20: inch, G21: mm
+        distance: 'G90' // G90: absolute, G91: relative
     };
 
     // @param {object} [options]
@@ -36,66 +37,68 @@ class GCodeRunner extends GCodeInterpreter {
 
         options = options || {};
 
-        this.state.modal = _.extend({}, this.state.modal, options.modalState);
+        log.debug('GCodeRunner:', options);
+
+        this.modalState = _.extend({}, this.modalState, options.modalState);
+
         this.fn = {
             addLine: options.addLine || noop,
             addArcCurve: options.addArcCurve || noop
         };
-
-        if (this.isImperialUnits()) {
-            this.state.x = in2mm(this.state.x);
-            this.state.y = in2mm(this.state.y);
-            this.state.z = in2mm(this.state.z);
-        }
-
-        log.debug('GCodeRunner:', this.state);
     }
     isMetricUnits() {
-        return this.state.modal.units === 'G21';
+        return this.modalState.units === 'G21';
     }
     isImperialUnits() {
-        return this.state.modal.units === 'G20';
+        return this.modalState.units === 'G20';
     }
-    isAbsolute() {
-        return this.state.modal.distance === 'G90';
+    isAbsoluteDistance() {
+        return this.modalState.distance === 'G90';
     }
-    isRelative() {
-        return this.state.modal.distance === 'G91';
+    isRelativeDistance() {
+        return this.modalState.distance === 'G91';
     }
-    setXYZ(x, y, z) {
-        this.state.x = _.isNumber(x) ? x : this.state.x;
-        this.state.y = _.isNumber(y) ? y : this.state.y;
-        this.state.z = _.isNumber(z) ? z : this.state.z;
+    setPosition(x, y, z) {
+        this.position.x = _.isNumber(x) ? x : this.position.x;
+        this.position.y = _.isNumber(y) ? y : this.position.y;
+        this.position.z = _.isNumber(z) ? z : this.position.z;
+    }
+    setModalState(modalState) {
+        _.assign(this.modalState, modalState);
     }
     translateX(x, relative) {
         if (_.isUndefined(relative)) {
-            relative = this.isRelative();
+            relative = this.isRelativeDistance();
         }
         x = this.isImperialUnits() ? in2mm(x) : x;
-        return translatePosition(this.state.x, x, !!relative);
+        return translatePosition(this.position.x, x, !!relative);
     }
     translateY(y, relative) {
         if (_.isUndefined(relative)) {
-            relative = this.isRelative();
+            relative = this.isRelativeDistance();
         }
         y = this.isImperialUnits() ? in2mm(y) : y;
-        return translatePosition(this.state.y, y, !!relative);
+        return translatePosition(this.position.y, y, !!relative);
     }
     translateZ(z, relative) {
         if (_.isUndefined(relative)) {
-            relative = this.isRelative();
+            relative = this.isRelativeDistance();
         }
         z = this.isImperialUnits() ? in2mm(z) : z;
-        return translatePosition(this.state.z, z, !!relative);
+        return translatePosition(this.position.z, z, !!relative);
     }
+
+    // G0: Rapid Linear Move
     G0(params) {
         let v2 = {
             x: this.translateX(params.X),
             y: this.translateY(params.Y),
             z: this.translateZ(params.Z)
         };
+        let { x, y, z } = v2;
 
-        this.setXYZ(v2.x, v2.y, v2.z);
+        // Update position
+        this.setPosition(x, y, z);
     }
 
     // G1: Linear Move
@@ -115,18 +118,21 @@ class GCodeRunner extends GCodeInterpreter {
     //
     G1(params) {
         let v1 = {
-            x: this.state.x,
-            y: this.state.y,
-            z: this.state.z
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z
         };
         let v2 = {
             x: this.translateX(params.X),
             y: this.translateY(params.Y),
             z: this.translateZ(params.Z)
         };
+        let { x, y, z } = v2;
 
         this.fn.addLine(v1, v2);
-        this.setXYZ(v2.x, v2.y, v2.z);
+
+        // Update position
+        this.setPosition(x, y, z);
     }
 
     // G2 & G3: Controlled Arc Move
@@ -151,9 +157,9 @@ class GCodeRunner extends GCodeInterpreter {
     G2(params) {
         let isClockwise = true;
         let v1 = {
-            x: this.state.x,
-            y: this.state.y,
-            z: this.state.z
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z
         };
         let v2 = {
             x: this.translateX(params.X),
@@ -165,17 +171,20 @@ class GCodeRunner extends GCodeInterpreter {
             y: this.translateY(params.J, true),
             z: this.translateZ(params.K, true)
         };
+        let { x, y, z } = v2;
 
         this.fn.addArcCurve(v1, v2, v0, isClockwise);
-        this.setXYZ(v2.x, v2.y, v2.z);
+
+        // Update position
+        this.setPosition(x, y, z);
     }
 
     G3(params) {
         let isClockwise = false;
         let v1 = {
-            x: this.state.x,
-            y: this.state.y,
-            z: this.state.z
+            x: this.position.x,
+            y: this.position.y,
+            z: this.position.z
         };
         let v2 = {
             x: this.translateX(params.X),
@@ -187,19 +196,22 @@ class GCodeRunner extends GCodeInterpreter {
             y: this.translateY(params.J, true),
             z: this.translateZ(params.K, true)
         };
+        let { x, y, z } = v2;
 
         this.fn.addArcCurve(v1, v2, v0, isClockwise);
-        this.setXYZ(v2.x, v2.y, v2.z);
+
+        // Update position
+        this.setPosition(x, y, z);
     }
 
     // G20: use inches for length units 
     G20() {
-        _.set(this.state, 'modal.units', 'G20');
+        this.setModalState({ 'units': 'G20' });
     }
 
     // G21: use millimeters for length units 
     G21() {
-        _.set(this.state, 'modal.units', 'G21');
+        this.setModalState({ 'units': 'G21' });
     }
 
     // G90: Set to Absolute Positioning
@@ -207,7 +219,7 @@ class GCodeRunner extends GCodeInterpreter {
     //   G90
     // All coordinates from now on are absolute relative to the origin of the machine.
     G90() {
-        _.set(this.state, 'modal.distance', 'G90');
+        this.setModalState({ 'distance': 'G90' });
     }
 
     // G91: Set to Relative Positioning
@@ -215,7 +227,7 @@ class GCodeRunner extends GCodeInterpreter {
     //   G91
     // All coordinates from now on are relative to the last position.
     G91() {
-        _.set(this.state, 'modal.distance', 'G91');
+        this.setModalState({ 'distance': 'G91' });
     }
 
     // G92: Set Position
@@ -225,18 +237,25 @@ class GCodeRunner extends GCodeInterpreter {
     //   Ynnn new Y axis position
     //   Znnn new Z axis position
     // Example
-    //   G92 X10 E90
+    //   G92 X10
     // Allows programming of absolute zero point, by reseting the current position to the params specified.
-    // This would set the machine's X coordinate to 10, and the extrude coordinate to 90. No physical motion will occur.
+    // This would set the machine's X coordinate to 10. No physical motion will occur.
     // A G92 without coordinates will reset all axes to zero.
     G92(params) {
         let v2 = {
-            x: this.translateX(params.X),
-            y: this.translateY(params.Y),
-            z: this.translateZ(params.Z)
+            x: this.translateX(params.X, false),
+            y: this.translateY(params.Y, false),
+            z: this.translateZ(params.Z, false)
         };
+        let { x, y, z } = v2;
 
-        this.setXYZ(v2.x, v2.y, v2.z);
+        // A G92 without coordinates will reset all axes to zero.
+        if (_.isUndefined(params.X) && _.isUndefined(params.Y) && _.isUndefined(params.Z)) {
+            x = y = z = 0;
+        }
+ 
+        // Update position
+        this.setPosition(x, y, z);
     }
 }
 

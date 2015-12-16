@@ -10,13 +10,12 @@ class GCodeRenderer {
     constructor(options) {
         options = options || {};
 
-        // G-code modal state
-        this.modalState = _.extend({}, options.modalState);
+        log.debug('GCodeRenderer:', options);
+
+        this.options = options;
 
         this.baseObject = new THREE.Object3D();
-
         this.vertices = [];
-
         // Example
         // [
         //   {
@@ -55,14 +54,9 @@ class GCodeRenderer {
         this.vertices = this.vertices.concat(vertices);
     }
     render(options, callback) {
-        options = _.defaults(options, {
-            gcode: '',
-            width: 0,
-            height: 0
-        });
+        options = options || {};
         callback = _.isFunction(callback) ? callback : noop;
 
-        let { gcode, width, height } = options;
         let dimension = {
             min: {
                 x: Number.MAX_SAFE_INTEGER,
@@ -86,7 +80,7 @@ class GCodeRenderer {
         };
 
         let runner = new GCodeRunner({
-            modalState: this.modalState,
+            modalState: this.options.modalState,
             addLine: (v1, v2) => {
                 this.addLine(v1, v2);
                 updateDimension(v1, v2);
@@ -103,7 +97,7 @@ class GCodeRenderer {
             });
         });
 
-        runner.interpretText(gcode, (err, results) => {
+        runner.interpretText(options.gcode, (err, results) => {
             this.update();
 
             if (_.size(this.frames) === 0) {
@@ -111,7 +105,7 @@ class GCodeRenderer {
                 dimension.max.x = dimension.max.y = dimension.max.z = 0;
             }
 
-            log.debug('GCodeRenderer.render:', {
+            log.debug({
                 vertices: this.vertices,
                 frames: this.frames,
                 frameIndex: this.frameIndex,
