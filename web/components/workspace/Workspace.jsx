@@ -15,7 +15,6 @@ import {
     SpindleWidget
 } from '../widgets';
 import log from '../../lib/log';
-import './workspace.css';
 
 class Workspace extends React.Component {
     state = {
