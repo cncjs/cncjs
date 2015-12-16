@@ -66,12 +66,19 @@ class Axes extends React.Component {
         this.pubsubTokens = [];
     }
     addSocketEvents() {
-        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
         socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
+        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
     }
     removeSocketEvents() {
-        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
         socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
+        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+    }
+    socketOnGrblCurrentStatus(data) {
+        this.setState({
+            activeState: data.activeState,
+            machinePos: data.machinePos,
+            workingPos: data.workingPos
+        });
     }
     socketOnGrblGCodeModes(modes) {
         let unit = this.state.unit;
@@ -89,13 +96,6 @@ class Axes extends React.Component {
         if (this.state.unit !== unit) {
             this.setState({ unit: unit });
         }
-    }
-    socketOnGrblCurrentStatus(data) {
-        this.setState({
-            activeState: data.activeState,
-            machinePos: data.machinePos,
-            workingPos: data.workingPos
-        });
     }
     resetCurrentStatus() {
         this.setState({

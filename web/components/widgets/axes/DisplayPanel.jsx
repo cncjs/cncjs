@@ -24,23 +24,19 @@ class DisplayPanel extends React.Component {
             serialport.writeln(cmd);
         }
     }
-    convertPositionUnit(pos) {
-        pos = Number(pos);
+    toUnitString(val) {
+        val = Number(val) || 0;
         if (this.props.unit === METRIC_UNIT) {
-            pos = (pos / 1).toFixed(3);
+            val = (val / 1).toFixed(3);
         } else {
-            pos = (pos / 25.4).toFixed(4);
+            val = (val / 25.4).toFixed(4);
         }
-        return '' + pos;
+        return '' + val;
     }
     render() {
         let { port, unit, activeState } = this.props;
-        let machinePos = _.mapValues(this.props.machinePos, (pos, axis) => {
-            return this.convertPositionUnit(pos);
-        });
-        let workingPos = _.mapValues(this.props.workingPos, (pos, axis) => {
-            return this.convertPositionUnit(pos);
-        });
+        let machinePos = _.mapValues(this.props.machinePos, (pos, axis) => this.toUnitString(pos));
+        let workingPos = _.mapValues(this.props.workingPos, (pos, axis) => this.toUnitString(pos));
         let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
 
         return (

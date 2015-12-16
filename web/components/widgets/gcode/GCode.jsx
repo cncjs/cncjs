@@ -5,7 +5,11 @@ import update from 'react-addons-update';
 import GCodeStats from './GCodeStats';
 import GCodeTable from './GCodeTable';
 import socket from '../../../lib/socket';
-import { GCODE_STATUS } from './constants';
+import {
+    IMPERIAL_UNIT,
+    METRIC_UNIT,
+    GCODE_STATUS
+} from './constants';
 
 let stripComments = (() => {
     let re1 = /^\s+|\s+$/g; // Strip leading and trailing spaces
@@ -18,6 +22,7 @@ let stripComments = (() => {
 class GCode extends React.Component {
     state = {
         port: '',
+        unit: METRIC_UNIT,
         commands: [], // a list of gcode commands
         alertMessage: '',
 
@@ -78,9 +83,11 @@ class GCode extends React.Component {
     }
     addSocketEvents() {
         socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
+        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
     }
     removeSocketEvents() {
         socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
+        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
     }
     socketOnGCodeQueueStatus(data) {
         let list = {};
@@ -114,8 +121,25 @@ class GCode extends React.Component {
             }
         });
     }
+    socketOnGrblGCodeModes(modes) {
+        let unit = this.state.unit;
 
+        // Imperial
+        if (_.includes(modes, 'G20')) {
+            unit = IMPERIAL_UNIT;
+        }
+
+        // Metric
+        if (_.includes(modes, 'G21')) {
+            unit = METRIC_UNIT;
+        }
+
+        if (this.state.unit !== unit) {
+            this.setState({ unit: unit });
+        }
+    }
     render() {
+        let { port, unit, queueStatus } = this.state;
         let tableWidth = this.props.width - 2 /* border */ - 20 /* padding */;
         let tableHeight = 180;
         let rowHeight = 30;
@@ -123,15 +147,16 @@ class GCode extends React.Component {
         let isLoaded = (_.size(this.state.commands) > 0);
         let notLoaded = !isLoaded;
         let scrollToRow = Math.min(
-            this.state.queueStatus.executed + (Math.floor(visibleRows / 2) - 1),
-            this.state.queueStatus.total
+            queueStatus.executed + (Math.floor(visibleRows / 2) - 1),
+            queueStatus.total
         );
 
         return (
             <div>
                 <GCodeStats
-                    executed={this.state.queueStatus.executed}
-                    total={this.state.queueStatus.total}
+                    unit={unit}
+                    executed={queueStatus.executed}
+                    total={queueStatus.total}
                 />
 
                 {isLoaded &&
