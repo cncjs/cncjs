@@ -23,6 +23,7 @@ import {
     CAMERA_POSITION_Y,
     CAMERA_POSITION_Z
 } from './constants';
+import { MODAL_GROUPS } from '../../../constants/modal-groups';
 
 class Visualizer extends React.Component {
     state = {
@@ -41,7 +42,7 @@ class Visualizer extends React.Component {
         this.engravingCutter = null;
         this.object = null;
         this.objectRenderer = null;
-        this.grblModes = {};
+        this.modalState = {};
     }
     componentDidMount() {
         this.subscribe();
@@ -109,7 +110,17 @@ class Visualizer extends React.Component {
         socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     socketOnGrblGCodeModes(modes) {
-        this.grblModes = modes;
+        _.each(modes, (mode) => {
+            // Gx, Mx
+            if (mode.indexOf('G') === 0 || mode.indexOf('M') === 0) {
+                let r = _.find(MODAL_GROUPS, (group) => {
+                    return _.includes(group.modes, mode);
+                });
+                if (r) {
+                    _.set(this.modalState, r.group, mode);
+                }
+            }
+        });
     }
     socketOnGrblCurrentStatus(data) {
         let { workingPos } = data;
@@ -439,12 +450,11 @@ class Visualizer extends React.Component {
         this.trackballControls.reset();
 
         let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
+
         this.objectRenderer = new GCodeRenderer({
-            modalState: {
-                distance: _.get(this.grblModes, 'modal.distance'),
-                units: _.get(this.grblModes, 'modal.units')
-            }
+            modalState: this.modalState
         });
+
         this.objectRenderer.render({
             gcode: gcode,
             width: el.clientWidth,
