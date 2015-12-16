@@ -97,7 +97,7 @@
     "babelify": "^7.2.0",
     "brfs": "1.2.x",
     "browserify": "^12.0.1",
-    "browserify-css": "^0.8.2",
+    "browserify-css": "^0.8.3",
     "coveralls": "^2.11.4",
     "del": "0.1.x",
     "envify": "^3.4.0",
