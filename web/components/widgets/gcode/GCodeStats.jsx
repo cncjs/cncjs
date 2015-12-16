@@ -6,8 +6,17 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import update from 'react-addons-update';
 import socket from '../../../lib/socket';
+import {
+    METRIC_UNIT
+} from './constants';
 
 class GCodeStats extends React.Component {
+    static propTypes = {
+        unit: React.PropTypes.string,
+        executed: React.PropTypes.number,
+        total: React.PropTypes.number
+    };
+
     state = {
         startTime: 0,
         duration: 0,
@@ -115,19 +124,26 @@ class GCodeStats extends React.Component {
             this.timer = null;
         }
     }
+    toUnitString(val) {
+        val = Number(val) || 0;
+        if (this.props.unit === METRIC_UNIT) {
+            val = (val / 1).toFixed(3);
+        } else {
+            val = (val / 25.4).toFixed(4);
+        }
+        return '' + val;
+    }
     render() {
-        let dimension = this.state.dimension;
-        let total = this.props.total || 0;
-        let executed = this.props.executed || 0;
+        let { unit, total, executed } = this.props;
+        let dimension = _.mapValues(this.state.dimension, (position, dimension) => {
+            return _.mapValues(position, (val, axis) => this.toUnitString(val));
+        });
         let startTime = '–';
         let duration = '–';
-        let unit = 'mm';
-        let digits = (unit === 'mm') ? 3 : 4; // mm=3, inch=4
 
         if (this.state.startTime > 0) {
             startTime = moment.unix(this.state.startTime).format('YYYY-MM-DD HH:mm:ss');
         }
-
         if (this.state.duration > 0) {
             let d = moment.duration(this.state.duration, 'seconds');
             let hours = _.padLeft(d.hours(), 2, '0');
@@ -149,30 +165,30 @@ class GCodeStats extends React.Component {
                         <table className="table-bordered" data-table="dimension">
                             <thead>
                                 <tr>
-                                    <th className="axis">Axis</th>
-                                    <th>Min</th>
-                                    <th>Max</th>
-                                    <th>Delta</th>
+                                    <th className="axis">{i18n._('Axis')}</th>
+                                    <th>{i18n._('Min')}</th>
+                                    <th>{i18n._('Max')}</th>
+                                    <th>{i18n._('Delta')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
                                     <td className="axis">X</td>
-                                    <td>{dimension.min.x.toFixed(digits)} {unit}</td>
-                                    <td>{dimension.max.x.toFixed(digits)} {unit}</td>
-                                    <td>{dimension.delta.x.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.min.x} {unit}</td>
+                                    <td>{dimension.max.x} {unit}</td>
+                                    <td>{dimension.delta.x} {unit}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Y</td>
-                                    <td>{dimension.min.y.toFixed(digits)} {unit}</td>
-                                    <td>{dimension.max.y.toFixed(digits)} {unit}</td>
-                                    <td>{dimension.delta.y.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.min.y} {unit}</td>
+                                    <td>{dimension.max.y} {unit}</td>
+                                    <td>{dimension.delta.y} {unit}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Z</td>
-                                    <td>{dimension.min.z.toFixed(digits)} {unit}</td>
-                                    <td>{dimension.max.z.toFixed(digits)} {unit}</td>
-                                    <td>{dimension.delta.z.toFixed(digits)} {unit}</td>
+                                    <td>{dimension.min.z} {unit}</td>
+                                    <td>{dimension.max.z} {unit}</td>
+                                    <td>{dimension.delta.z} {unit}</td>
                                 </tr>
                             </tbody>
                         </table>
