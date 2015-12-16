@@ -4,7 +4,7 @@ import WidgetContent from './WidgetContent';
 import WidgetFooter from './WidgetFooter';
 import './index.css';
 
-export default {
+export {
     Widget,
     WidgetHeader,
     WidgetContent,
