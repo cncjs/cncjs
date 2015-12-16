@@ -81,7 +81,7 @@ export default {
         },
         'app': {
             src: [
-                './web/main.js'
+                './web/index.jsx'
             ],
             dest: dist + 'assets/',
             options: {
