@@ -367,7 +367,7 @@ class Visualizer extends React.Component {
 
         let delta = 1 / fps;
         let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
-        this.engravingCutter.rotateZ(rpm / 60 * degrees);
+        this.engravingCutter.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
     // Fits camera to object
     // @param {number} width The object width
