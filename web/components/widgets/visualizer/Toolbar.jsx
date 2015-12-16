@@ -16,6 +16,7 @@ class Toolbar extends React.Component {
     state = {
         port: '',
         isLoaded: false,
+        isUploading: false,
         startTime: 0, // unix timestamp
         workflowState: WORKFLOW_STATE_IDLE
     };
@@ -84,6 +85,10 @@ class Toolbar extends React.Component {
         log.debug('Upload start:', event);
 
         event.file.meta.port = this.state.port;
+
+        this.setState({
+            isLoading: true
+        });
     }
     // Part of the file has been loaded from the file system and
     // ready to be transmitted via Socket.IO.
@@ -116,7 +121,10 @@ class Toolbar extends React.Component {
             return;
         }
 
-        this.setState({ isLoaded: true });
+        this.setState({
+            isLoaded: true,
+            isLoading: false
+        });
     }
     // The server encountered an error.
     // https://github.com/vote539/socketio-file-upload#complete
@@ -200,8 +208,9 @@ class Toolbar extends React.Component {
     }
     render() {
         let isLoaded = this.state.isLoaded;
+        let notLoading = !(this.state.isLoading);
         let notLoaded = !isLoaded;
-        let canUpload = !!this.state.port && notLoaded;
+        let canUpload = !!this.state.port && notLoading && notLoaded;
         let canRun = isLoaded && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], this.state.workflowState);
         let canPause = isLoaded && _.includes([WORKFLOW_STATE_RUNNING], this.state.workflowState);
         let canStop = isLoaded && _.includes([WORKFLOW_STATE_RUNNING, WORKFLOW_STATE_PAUSED], this.state.workflowState);
