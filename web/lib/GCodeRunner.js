@@ -4,7 +4,7 @@ import { GCodeInterpreter } from 'gcode-interpreter';
 const in2mm = (v) => v * 25.4;
 const mm2in = (v) => v / 25.4;
 
-const nooo = () => {};
+const noop = () => {};
 
 const translatePosition = (position, newPosition, relative) => {
     relative = !!relative;
