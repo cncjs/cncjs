@@ -12,10 +12,12 @@ import colorNames from '../../../lib/color-names';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import {
-    COORDINATE_AXIS_LENGTH,
+    ACTIVE_STATE_IDLE,
+    ACTIVE_STATE_RUN,
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE,
+    COORDINATE_AXIS_LENGTH,
     CAMERA_FOV,
     CAMERA_NEAR,
     CAMERA_FAR,
@@ -33,6 +35,9 @@ class Visualizer extends React.Component {
 
     componentWillMount() {
         this.workflowState = WORKFLOW_STATE_IDLE;
+        this.activeState = ACTIVE_STATE_IDLE;
+        this.modalState = {};
+
         this.renderer = null;
         this.scene = null;
         this.camera = null;
@@ -42,7 +47,6 @@ class Visualizer extends React.Component {
         this.engravingCutter = null;
         this.object = null;
         this.objectRenderer = null;
-        this.modalState = {};
     }
     componentDidMount() {
         this.subscribe();
@@ -123,7 +127,9 @@ class Visualizer extends React.Component {
         });
     }
     socketOnGrblCurrentStatus(data) {
-        let { workingPos } = data;
+        let { activeState, workingPos } = data;
+
+        this.activeState = activeState;
         this.setEngravingCutterPosition(workingPos.x, workingPos.y, workingPos.z);
     }
     socketOnGCodeQueueStatus(data) {
@@ -210,10 +216,15 @@ class Visualizer extends React.Component {
             // Call the render() function up to 60 times per second (i.e. 60fps)
             requestAnimationFrame(render);
 
-            if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                this.rotateEngravingCutter(120); // 120 rounds per minute (rpm)
-            } else {
-                this.rotateEngravingCutter(0); // Stop rotation
+            { // Rotate engraving cutter
+                let rotate = (this.workflowState === WORKFLOW_STATE_RUNNING) &&
+                             (this.activeState === ACTIVE_STATE_RUN);
+
+                if (rotate) {
+                    this.rotateEngravingCutter(120); // 120 rounds per minute (rpm)
+                } else {
+                    this.rotateEngravingCutter(0); // Stop rotation
+                }
             }
 
             this.trackballControls.update();

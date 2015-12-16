@@ -9,3 +9,12 @@ export const COORDINATE_AXIS_LENGTH = 99999;
 export const WORKFLOW_STATE_RUNNING = 'running';
 export const WORKFLOW_STATE_PAUSED = 'paused';
 export const WORKFLOW_STATE_IDLE = 'idle';
+
+// Grbl Active State
+export const ACTIVE_STATE_IDLE = 'Idle';
+export const ACTIVE_STATE_RUN = 'Run';
+export const ACTIVE_STATE_HOLD = 'Hold';
+export const ACTIVE_STATE_DOOR = 'Door';
+export const ACTIVE_STATE_HOME = 'Home';
+export const ACTIVE_STATE_ALARM = 'Alarm';
+export const ACTIVE_STATE_CHECK = 'Check';
