@@ -16,10 +16,12 @@ import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE,
-    CAMERA_DEFAULT_FOV,
-    CAMERA_DEFAULT_POSITION_X,
-    CAMERA_DEFAULT_POSITION_Y,
-    CAMERA_DEFAULT_POSITION_Z
+    CAMERA_FOV,
+    CAMERA_NEAR,
+    CAMERA_FAR,
+    CAMERA_POSITION_X,
+    CAMERA_POSITION_Y,
+    CAMERA_POSITION_Z
 } from './constants';
 
 class Visualizer extends React.Component {
@@ -226,15 +228,15 @@ class Visualizer extends React.Component {
         return renderer;
     }
     createPerspectiveCamera(width, height) {
-        let fov = CAMERA_DEFAULT_FOV;
+        let fov = CAMERA_FOV;
         let aspect = Number(width) / Number(height);
-        let near = 0.1;
-        let far = 2000;
+        let near = CAMERA_NEAR;
+        let far = CAMERA_FAR;
         let camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-        camera.position.x = CAMERA_DEFAULT_POSITION_X;
-        camera.position.y = CAMERA_DEFAULT_POSITION_Y;
-        camera.position.z = CAMERA_DEFAULT_POSITION_Z;
+        camera.position.x = CAMERA_POSITION_X;
+        camera.position.y = CAMERA_POSITION_Y;
+        camera.position.z = CAMERA_POSITION_Z;
 
         return camera;
     }
@@ -399,12 +401,14 @@ class Visualizer extends React.Component {
         width = Number(width) || 0;
         height = Number(height) || 0;
 
-        // Pick the largest camera field-of-view
-        let fov = Math.max(
+        // Find the largest value of fov
+        let fov = _.max([
+            // to fit the object height
             2 * Math.atan(height / (2 * dist)) * (180 / Math.PI),
+            // to fit the object width
             2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI)
-        );
-        fov = fov || CAMERA_DEFAULT_FOV;
+        ]);
+        fov = fov || CAMERA_FOV;
 
         this.camera.fov = fov;
         this.camera.updateProjectionMatrix();
