@@ -1,4 +1,5 @@
 // https://github.com/grbl/grbl/wiki/Configuring-Grbl-v0.9
+// http://linuxcnc.org/docs/html/gcode/overview.html#cap:modal-groups
 export const MODAL_GROUPS = [
     { // Motion Mode (Defaults to G0)
         group: 'motion',

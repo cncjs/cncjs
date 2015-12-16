@@ -6,7 +6,7 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
-import { MODAL_GROUPS } from './constants';
+import { MODAL_GROUPS } from '../../../constants/modal-groups';
 
 class Grbl extends React.Component {
     state = {
