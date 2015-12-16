@@ -41,6 +41,7 @@ class Visualizer extends React.Component {
         this.engravingCutter = null;
         this.object = null;
         this.objectRenderer = null;
+        this.grblModes = {};
     }
     componentDidMount() {
         this.subscribe();
@@ -98,12 +99,17 @@ class Visualizer extends React.Component {
         this.pubsubTokens = [];
     }
     addSocketEvents() {
+        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
         socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
         socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     removeSocketEvents() {
+        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
         socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
         socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
+    }
+    socketOnGrblGCodeModes(modes) {
+        this.grblModes = modes;
     }
     socketOnGrblCurrentStatus(data) {
         let { workingPos } = data;
@@ -433,7 +439,12 @@ class Visualizer extends React.Component {
         this.trackballControls.reset();
 
         let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
-        this.objectRenderer = new GCodeRenderer();
+        this.objectRenderer = new GCodeRenderer({
+            modalState: {
+                distance: _.get(this.grblModes, 'modal.distance'),
+                units: _.get(this.grblModes, 'modal.units')
+            }
+        });
         this.objectRenderer.render({
             gcode: gcode,
             width: el.clientWidth,
