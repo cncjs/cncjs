@@ -51,7 +51,7 @@ class JogDistanceControl extends React.Component {
         return (
             <div>
                 <label className="control-label">
-                    {i18n._('Distance (mm):')}
+                    {i18n._('Distance:')}
                 </label>
                 <div className="input-group input-group-xs">
                     <div className="input-group-btn">
