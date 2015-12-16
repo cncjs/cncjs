@@ -132,7 +132,7 @@ class Axes extends React.Component {
         return (
             <div>
                 <div className="toolbar-button btn-group">
-                    <button type="button" className="btn btn-xs btn-default" onClick={::this.toggleDisplayUnit}>{i18n._('in / mm')}</button>
+                    <button type="button" className="btn btn-xs btn-default" onClick={::this.toggleDisplayUnit} disabled={!canClick}>{i18n._('in / mm')}</button>
                     <DropdownButton bsSize="xs" bsStyle="default" title="XYZ" id="axes-dropdown" pullRight>
                         <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                         <MenuItem eventKey='G92 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}</MenuItem>
