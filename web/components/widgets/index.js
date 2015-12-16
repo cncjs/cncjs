@@ -6,7 +6,7 @@ import VisualizerWidget from './visualizer';
 import GrblWidget from './grbl';
 import SpindleWidget from './spindle';
 
-export {
+export default {
     AxesWidget,
     ConnectionWidget,
     ConsoleWidget,
