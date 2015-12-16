@@ -146,16 +146,6 @@ export default {
         ],
         options: require('../config/csslint')
     },
-    handlebars: {
-        common: {
-            src: 'web/components/common/**/*.hbs',
-            dest: 'web/components/common/'
-        },
-        portal: {
-            src: 'web/components/portal/**/*.hbs',
-            dest: 'web/components/portal/'
-        }
-    },
     jscs: {
         src: [
             'gulp/**/*.js',
@@ -164,7 +154,6 @@ export default {
             '{app,web,test}/**/*.js',
 
             // exclusion
-            '!web/**/handlebars-templates.js', // exclude handlebars-templates.js:w!
             '!web/{vendor,test}/**',
             '!**/node_modules/**'
         ]
@@ -178,7 +167,6 @@ export default {
             '{app,web}/**/*.jsx',
 
             // exclusion
-            '!web/**/handlebars-templates.js', // exclude handlebars-templates.js:w!
             '!web/{vendor,test}/**',
             '!**/node_modules/**'
         ],
@@ -222,7 +210,8 @@ export default {
             'web/**/*.js',
             'web/**/*.jsx',
             // Use ! to filter out files or directories
-            '!web/{vendor,test,i18n}/**'
+            '!web/{vendor,test,i18n}/**',
+            '!**/node_modules/**'
         ],
         dest: './',
         options: {
