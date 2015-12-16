@@ -7,7 +7,12 @@ import log from './log';
 const noop = () => {};
 
 class GCodeRenderer {
-    constructor() {
+    constructor(options) {
+        options = options || {};
+
+        // G-code modal state
+        this.modalState = _.extend({}, options.modalState);
+
         this.baseObject = new THREE.Object3D();
 
         this.vertices = [];
@@ -81,6 +86,7 @@ class GCodeRenderer {
         };
 
         let runner = new GCodeRunner({
+            modalState: this.modalState,
             addLine: (v1, v2) => {
                 this.addLine(v1, v2);
                 updateDimension(v1, v2);

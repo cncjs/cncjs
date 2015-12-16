@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import { GCodeInterpreter } from 'gcode-interpreter';
+import log from './log';
 
 const in2mm = (v) => v * 25.4;
 const mm2in = (v) => v / 25.4;
@@ -20,53 +21,71 @@ class GCodeRunner extends GCodeInterpreter {
         x: 0,
         y: 0,
         z: 0,
-        relative: false,
-        units: 'G21' // G20: inch, G21: mm
+        modal: {
+            units: 'G21', // G20: inch, G21: mm
+            distance: 'G90' // G90: absolute, G91: relative
+        }
     };
 
     // @param {object} [options]
-    // @param {object} [options.state]
+    // @param {object} [options.modalState]
     // @param {function} [options.addLine]
     // @param {function} [options.addArcCurve]
     constructor(options) {
         super(options);
 
-        this.options = _.extend({}, options);
+        options = options || {};
 
-        this.state = _.extend({}, this.state, options.state);
-        this.options.addLine = this.options.addLine || noop;
-        this.options.addArcCurve = this.options.addArcCurve || noop;
+        this.state.modal = _.extend({}, this.state.modal, options.modalState);
+        this.fn = {
+            addLine: options.addLine || noop,
+            addArcCurve: options.addArcCurve || noop
+        };
 
-        if (this.state.units === 'G20') {
-            this.setState({
-                x: in2mm(this.state.x),
-                y: in2mm(this.state.y),
-                z: in2mm(this.state.z)
-            });
+        if (this.isImperialUnits()) {
+            this.state.x = in2mm(this.state.x);
+            this.state.y = in2mm(this.state.y);
+            this.state.z = in2mm(this.state.z);
         }
+
+        log.debug('GCodeRunner:', this.state);
     }
-    setState(newState) {
-        this.state = _.assign({}, this.state, newState);
+    isMetricUnits() {
+        return this.state.modal.units === 'G21';
+    }
+    isImperialUnits() {
+        return this.state.modal.units === 'G20';
+    }
+    isAbsolute() {
+        return this.state.modal.distance === 'G90';
+    }
+    isRelative() {
+        return this.state.modal.distance === 'G91';
+    }
+    setXYZ(x, y, z) {
+        this.state.x = _.isNumber(x) ? x : this.state.x;
+        this.state.y = _.isNumber(y) ? y : this.state.y;
+        this.state.z = _.isNumber(z) ? z : this.state.z;
     }
     translateX(x, relative) {
         if (_.isUndefined(relative)) {
-            relative = this.state.relative;
+            relative = this.isRelative();
         }
-        x = (this.state.units === 'G20') ? in2mm(x) : x;
+        x = this.isImperialUnits() ? in2mm(x) : x;
         return translatePosition(this.state.x, x, !!relative);
     }
     translateY(y, relative) {
         if (_.isUndefined(relative)) {
-            relative = this.state.relative;
+            relative = this.isRelative();
         }
-        y = (this.state.units === 'G20') ? in2mm(y) : y;
+        y = this.isImperialUnits() ? in2mm(y) : y;
         return translatePosition(this.state.y, y, !!relative);
     }
     translateZ(z, relative) {
         if (_.isUndefined(relative)) {
-            relative = this.state.relative;
+            relative = this.isRelative();
         }
-        z = (this.state.units === 'G20') ? in2mm(z) : z;
+        z = this.isImperialUnits() ? in2mm(z) : z;
         return translatePosition(this.state.z, z, !!relative);
     }
     G0(params) {
@@ -76,7 +95,7 @@ class GCodeRunner extends GCodeInterpreter {
             z: this.translateZ(params.Z)
         };
 
-        this.setState(v2);
+        this.setXYZ(v2.x, v2.y, v2.z);
     }
 
     // G1: Linear Move
@@ -106,8 +125,8 @@ class GCodeRunner extends GCodeInterpreter {
             z: this.translateZ(params.Z)
         };
 
-        this.options.addLine(v1, v2);
-        this.setState(v2);
+        this.fn.addLine(v1, v2);
+        this.setXYZ(v2.x, v2.y, v2.z);
     }
 
     // G2 & G3: Controlled Arc Move
@@ -147,8 +166,8 @@ class GCodeRunner extends GCodeInterpreter {
             z: this.translateZ(params.K, true)
         };
 
-        this.options.addArcCurve(v1, v2, v0, isClockwise);
-        this.setState(v2);
+        this.fn.addArcCurve(v1, v2, v0, isClockwise);
+        this.setXYZ(v2.x, v2.y, v2.z);
     }
 
     G3(params) {
@@ -169,18 +188,18 @@ class GCodeRunner extends GCodeInterpreter {
             z: this.translateZ(params.K, true)
         };
 
-        this.options.addArcCurve(v1, v2, v0, isClockwise);
-        this.setState(v2);
+        this.fn.addArcCurve(v1, v2, v0, isClockwise);
+        this.setXYZ(v2.x, v2.y, v2.z);
     }
 
     // G20: use inches for length units 
     G20() {
-        this.setState({ units: 'G20' });
+        _.set(this.state, 'modal.units', 'G20');
     }
 
     // G21: use millimeters for length units 
     G21() {
-        this.setState({ units: 'G21' });
+        _.set(this.state, 'modal.units', 'G21');
     }
 
     // G90: Set to Absolute Positioning
@@ -188,7 +207,7 @@ class GCodeRunner extends GCodeInterpreter {
     //   G90
     // All coordinates from now on are absolute relative to the origin of the machine.
     G90() {
-        this.setState({ relative: false });
+        _.set(this.state, 'modal.distance', 'G90');
     }
 
     // G91: Set to Relative Positioning
@@ -196,7 +215,7 @@ class GCodeRunner extends GCodeInterpreter {
     //   G91
     // All coordinates from now on are relative to the last position.
     G91() {
-        this.setState({ relative: true });
+        _.set(this.state, 'modal.distance', 'G91');
     }
 
     // G92: Set Position
@@ -217,7 +236,7 @@ class GCodeRunner extends GCodeInterpreter {
             z: this.translateZ(params.Z)
         };
 
-        this.setState(v2);
+        this.setXYZ(v2.x, v2.y, v2.z);
     }
 }
 
