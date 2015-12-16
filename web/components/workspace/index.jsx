@@ -17,7 +17,7 @@ import {
 import log from '../../lib/log';
 import './workspace.css';
 
-export default class Workspace extends React.Component {
+class Workspace extends React.Component {
     state = {
         showPrimaryContainer: true,
         showSecondaryContainer: true,
@@ -191,3 +191,5 @@ export default class Workspace extends React.Component {
         );
     }
 }
+
+export default Workspace;
