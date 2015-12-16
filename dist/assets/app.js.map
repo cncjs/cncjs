@@ -41,7 +41,7 @@
     "web/components/widget/WidgetHeader.jsx",
     "web/components/widget/WidgetHeaderToolbar.jsx",
     "web/components/widget/index.css",
-    "web/components/widget/index.jsx",
+    "web/components/widget/index.js",
     "web/components/widgets/axes/Axes.jsx",
     "web/components/widgets/axes/DisplayPanel.jsx",
     "web/components/widgets/axes/JogControlPanel.jsx",
