@@ -329,7 +329,7 @@ class Visualizer extends React.Component {
     }
     // Creates coordinate grid for the XY plane
     createCoordinateGridForXYPlane(gridSpacing = GRID_SPACING, lineLength = GRID_LINE_LENGTH) {
-        let color = colorNames.lightgrey;
+        let color = colorNames.grey89;
         let coordinateGrid = new THREE.Object3D();
         let list = _.range(-lineLength, lineLength, gridSpacing);
 
