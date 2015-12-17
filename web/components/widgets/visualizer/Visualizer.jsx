@@ -12,12 +12,20 @@ import colorNames from '../../../lib/color-names';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import {
+    COORDINATE_PLANE_XY,
+    COORDINATE_PLANE_XZ,
+    COORDINATE_PLANE_YZ,
+    IMPERIAL_AXIS_LINE_LENGTH,
+    IMPERIAL_GRID_LINE_LENGTH,
+    IMPERIAL_GRID_SPACING,
+    METRIC_AXIS_LINE_LENGTH,
+    METRIC_GRID_LINE_LENGTH,
+    METRIC_GRID_SPACING,
     ACTIVE_STATE_IDLE,
     ACTIVE_STATE_RUN,
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE,
-    COORDINATE_AXIS_LENGTH,
     CAMERA_FOV,
     CAMERA_NEAR,
     CAMERA_FAR,
@@ -44,6 +52,7 @@ class Visualizer extends React.Component {
         this.trackballControls = null;
         this.directionalLight = null;
         this.coordinateAxes = null;
+        this.coordinateGrid = null;
         this.engravingCutter = null;
         this.object = null;
         this.objectRenderer = null;
@@ -198,9 +207,14 @@ class Visualizer extends React.Component {
         this.scene.add(this.directionalLight);
 
         // Creating XYZ coordinate axes
-        this.coordinateAxes = this.createCoordinateAxes(COORDINATE_AXIS_LENGTH);
+        this.coordinateAxes = this.createCoordinateAxes();
         this.coordinateAxes.name = 'CoordinateAxes';
         this.scene.add(this.coordinateAxes);
+
+        // Creating coordinate grid
+        this.coordinateGrid = this.createCoordinateGridForXYPlane();
+        this.coordinateGrid.name = 'CoordinateGrid';
+        this.scene.add(this.coordinateGrid);
 
         // Creating an engraving cutter
         this.engravingCutter = this.createEngravingCutter();
@@ -248,7 +262,7 @@ class Visualizer extends React.Component {
         let renderer = new THREE.WebGLRenderer({
             autoClearColor: true
         });
-        renderer.setClearColor(new THREE.Color(colorNames.white, 1.0));
+        renderer.setClearColor(new THREE.Color(colorNames.grey94, 1.0));
         renderer.setSize(width, height);
         renderer.shadowMap.enabled = true;
         renderer.clear();
@@ -301,35 +315,51 @@ class Visualizer extends React.Component {
         
         return directionalLight;
     }
-    // Creates the coordinate axes
+    // Creates coordinate axes
     // @see [Drawing the Coordinate Axes]{@http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/}
-    createCoordinateAxes(length) {
+    createCoordinateAxes(lineLength = METRIC_AXIS_LINE_LENGTH) {
         let coordinateAxes = new THREE.Object3D();
 
-        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(length, 0, 0), colorNames.red, false)); // +X
-        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-length, 0, 0), colorNames.red, true)); // -X
-        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, length, 0), colorNames.green, false)); // +Y
-        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -length, 0), colorNames.green, true)); // -Y
-        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, length), colorNames.blue, false)); // +Z
-        coordinateAxes.add(this.buildCoordinateAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -length), colorNames.blue, true)); // -Z
+        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(lineLength, 0, 0), colorNames.red, false)); // +X
+        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-lineLength, 0, 0), colorNames.red, true)); // -X
+        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, lineLength, 0), colorNames.green, false)); // +Y
+        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -lineLength, 0), colorNames.green, true)); // -Y
+        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, lineLength), colorNames.blue, false)); // +Z
+        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -lineLength), colorNames.blue, true)); // -Z
 
         return coordinateAxes;
     }
-    buildCoordinateAxis(src, dst, colorHex, dashed) {
+    // Creates coordinate grid for the XY plane
+    createCoordinateGridForXYPlane(gridSpacing = METRIC_GRID_SPACING, lineLength = METRIC_GRID_LINE_LENGTH) {
+        let color = colorNames.lightgrey;
+        let coordinateGrid = new THREE.Object3D();
+        let list = _.range(-lineLength, lineLength, gridSpacing);
+
+        _.each(list, (pos) => {
+            if (pos === 0) { // skip the coordinate axis
+                return;
+            }
+            coordinateGrid.add(this.buildGridLine(new THREE.Vector3(-lineLength, pos, 0), new THREE.Vector3(lineLength, pos, 0), color));
+            coordinateGrid.add(this.buildGridLine(new THREE.Vector3(pos, -lineLength, 0), new THREE.Vector3(pos, lineLength, 0), color));
+        });
+
+        return coordinateGrid;
+    }
+    buildAxis(src, dst, color, dashed) {
         let geometry = new THREE.Geometry();
         let material;
 
         if (dashed) {
             material = new THREE.LineDashedMaterial({
                 linewidth: 1,
-                color: colorHex,
+                color: color,
                 dashSize: 1,
                 gapSize: 1
             });
         } else {
             material = new THREE.LineBasicMaterial({
                 linewidth: 1,
-                color: colorHex
+                color: color
             });
         }
 
@@ -337,6 +367,16 @@ class Visualizer extends React.Component {
         geometry.vertices.push(dst.clone());
         geometry.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
 
+        return new THREE.Line(geometry, material);
+    }
+    buildGridLine(src, dst, color) {
+        let geometry = new THREE.Geometry();
+        let material = new THREE.LineBasicMaterial({
+            linewidth: 0.5,
+            color: color
+        });
+        geometry.vertices.push(src.clone());
+        geometry.vertices.push(dst.clone());
         return new THREE.Line(geometry, material);
     }
     // Creates an engraving cutter
