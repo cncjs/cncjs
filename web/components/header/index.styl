@@ -2,6 +2,35 @@
     .grbl-quick-access-toolbar {
         margin: 10px 0;
 
+        [class^="ion-"]:before,
+        [class*=" ion-"]:before {
+            font-size: 14px;
+        }
+        .ion-reset:before {
+            display: inline-block;
+            font-family: "Ionicons";
+            speak: none;
+            font-style: normal;
+            font-weight: normal;
+            font-variant: normal;
+            text-transform: none;
+            text-rendering: auto;
+            line-height: 1;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+        .ion-reset:before {
+            content: "\f21c";
+            transform: scaleX(-1);
+        }
+
+        .btn-group {
+            margin-right: 10px;
+        }
+        .btn-group:last-child {
+            margin-right: 0;
+        }
+
         // Remove the outline on buttons
         button:focus {
             outline: none;
