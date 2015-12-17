@@ -143,19 +143,9 @@ class Workspace extends React.Component {
                 'primary-container',
                 { 'hidden': ! this.state.showPrimaryContainer }
             ),
-            primaryTogglerIcon: classNames(
-                'glyphicon',
-                { 'glyphicon-chevron-left': this.state.showPrimaryContainer },
-                { 'glyphicon-chevron-right': ! this.state.showPrimaryContainer }
-            ),
             secondaryContainer: classNames(
                 'secondary-container',
                 { 'hidden': ! this.state.showSecondaryContainer }
-            ),
-            secondaryTogglerIcon: classNames(
-                'glyphicon',
-                { 'glyphicon-chevron-left': ! this.state.showSecondaryContainer },
-                { 'glyphicon-chevron-right': this.state.showSecondaryContainer }
             )
         };
 
@@ -167,19 +157,11 @@ class Workspace extends React.Component {
                             <div className={classes.primaryContainer} ref="primaryContainer">
                                 {this.state.primaryContainer}
                             </div>
-                            <div className="primary-toggler-pane" onClick={::this.togglePrimaryContainer}>
-                                <div>
-                                    <i className={classes.primaryTogglerIcon}></i>
-                                </div>
-                            </div>
+                            <div className="primary-toggler-pane" onClick={::this.togglePrimaryContainer}></div>
                             <div className="visual-container" ref="visualContainer">
                                 {this.state.visualContainer}
                             </div>
-                            <div className="secondary-toggler-pane" onClick={::this.toggleSecondaryContainer}>
-                                <div>
-                                    <i className={classes.secondaryTogglerIcon}></i>
-                                </div>
-                            </div>
+                            <div className="secondary-toggler-pane" onClick={::this.toggleSecondaryContainer}></div>
                             <div className={classes.secondaryContainer} ref="secondaryContainer">
                                 {this.state.secondaryContainer}
                             </div>

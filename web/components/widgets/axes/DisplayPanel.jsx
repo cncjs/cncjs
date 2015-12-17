@@ -41,7 +41,7 @@ class DisplayPanel extends React.Component {
 
         return (
             <div className="container-fluid display-panel">
-                <div className="row">
+                <div className="row no-gutter">
                     <div className="active-state">
                         {i18n._('Active state:')}&nbsp;{activeState}
                     </div>
