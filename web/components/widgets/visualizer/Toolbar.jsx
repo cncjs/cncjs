@@ -219,7 +219,7 @@ class Toolbar extends React.Component {
         return (
             <div className="btn-toolbar" role="toolbar">
                 <div className="btn-group btn-group-sm" role="group">
-                    <button type="button" className="btn btn-default" title={i18n._('Upload G-code')} onClick={::this.handleUpload} disabled={!canUpload}>
+                    <button type="button" className="btn btn-primary" title={i18n._('Upload G-code')} onClick={::this.handleUpload} disabled={!canUpload}>
                         <i className="glyphicon glyphicon-cloud-upload"></i>
                         <input type="file" className="hidden" ref="file" onChange={::this.handleFile} />
                     </button>
