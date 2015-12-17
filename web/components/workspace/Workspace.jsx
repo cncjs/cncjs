@@ -29,8 +29,8 @@ class Workspace extends React.Component {
             <ConsoleWidget key="console" />
         ],
         secondaryContainer: [
-            <SpindleWidget key="spindle" />,
             <AxesWidget key="axes" />,
+            <SpindleWidget key="spindle" />,
             <GCodeWidget key="gcode" />
         ]
     };
