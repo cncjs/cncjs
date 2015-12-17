@@ -1,10 +1,13 @@
 [data-component="Widgets/AxesWidget"] {
     .widget-content {
         position: relative;
-        padding: 5px 10px 0 10px;
+        padding: 5px 10px 10px 10px;
 
-        .horizontal-mirror {
-            transform: scale(-1, 1);
+        .glyphicon-reset {
+            transform: scaleX(-1);
+            &:before {
+                content: "\e030";
+            }
         }
 
         .toolbar-button {
@@ -71,44 +74,41 @@
         .control-panel {
             margin-left: -10px;
             margin-right: -10px;
-        }
-        .control-panel {
-            padding: 10px;
 
-            .row {
-                margin: 0;
-
-                [class*="col-"] {
-                    padding: 0;
-                }
+            .form-group:last-child {
+                margin-bottom: 0;
             }
 
             table.table-centered {
                 margin: 0 auto;
             }
+            table.jog-joystick-control {
+                thead > tr > th,
+                tbody > tr > td {
+                    padding: 2px;
+                }
+            }
+            .rotate-45deg {
+                transform: rotate(45deg);
+            }
+            .rotate--45deg {
+                transform: rotate(-45deg);
+            }
+            [class^="jog-"],
+            [class*=" jog-"] {
+                font-size: 16px;
+                padding: 0;
+                width: 36px;
+                height: 32px;
+                text-align: center;
+                vertical-align: middle;
+            }
 
-            .jog-x,
-            .jog-y,
-            .jog-z {
-                font-size: 24px;
+            rotate-45deg {
+                transform: rotate(45deg);
             }
-            .jog-x {
-                padding: 0 5px;
-                .jog-x-minus {
-                    margin-left: -5px;
-                }
-            }
-            .jog-y {
-                padding: 0;
-                .jog-y-plus {
-                    margin-bottom: 5px;
-                }
-            }
-            .jog-z {
-                padding: 0;
-                .jog-z-plus {
-                    margin-bottom: 5px;
-                }
+            rotate--45deg {
+                transform: rotate(-45deg);
             }
         }
     }

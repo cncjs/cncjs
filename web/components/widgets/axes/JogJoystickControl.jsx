@@ -1,3 +1,5 @@
+import _ from 'lodash';
+import i18n from 'i18next';
 import React from 'react';
 import serialport from '../../../lib/serialport';
 import {
@@ -13,110 +15,157 @@ class JogJoystickControl extends React.Component {
         distance: React.PropTypes.number
     };
 
-    jogForwardX() {
-        let { feedrate, distance } = this.props;
-        serialport.writeln('G91');
-        serialport.writeln('G1 F' + feedrate + ' X' + distance);
-        serialport.writeln('G90');
+    jog(params) {
+        serialport.writeln('G91'); // relative distance
+        this.move(params);
+        serialport.writeln('G90'); // absolute distance
     }
-    jogBackwardX() {
-        let { feedrate, distance } = this.props;
-        serialport.writeln('G91');
-        serialport.writeln('G1 F' + feedrate + ' X-' + distance);
-        serialport.writeln('G90');
-    }
-    jogForwardY() {
-        let { feedrate, distance } = this.props;
-        serialport.writeln('G91');
-        serialport.writeln('G1 F' + feedrate + ' Y' + distance);
-        serialport.writeln('G90');
-    }
-    jogBackwardY() {
-        let { feedrate, distance } = this.props;
-        serialport.writeln('G91');
-        serialport.writeln('G1 F' + feedrate + ' Y-' + distance);
-        serialport.writeln('G90');
-    }
-    jogForwardZ() {
-        let { feedrate, distance } = this.props;
-        serialport.writeln('G91');
-        serialport.writeln('G1 F' + feedrate + ' Z' + distance);
-        serialport.writeln('G90');
-    }
-    jogBackwardZ() {
-        let { feedrate, distance } = this.props;
-        serialport.writeln('G91');
-        serialport.writeln('G1 F' + feedrate + ' Z-' + distance);
-        serialport.writeln('G90');
+    move(params) {
+        params = params || {};
+        if (_.isUndefined(params.F)) {
+            params.F = this.props.feedrate;
+        }
+        let s = _.map(params, (value, letter) => {
+            return '' + letter + value;
+        }).join(' ');
+
+        serialport.writeln('G0 ' + s);
     }
     render() {
-        let { port, activeState } = this.props;
+        let { port, activeState, distance } = this.props;
         let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
 
         return (
             <div>
-                <table className="table-centered">
+                <table className="table-centered jog-joystick-control">
                     <tbody>
                         <tr>
-                            <td className="jog-x">
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-x-minus jog-y-plus"
+                                    onClick={() => this.jog({ X: -distance, Y: distance })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move X- Y+')}
+                                >
+                                    <i className="glyphicon glyphicon-menu-up rotate--45deg"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-y-plus"
+                                    onClick={() => this.jog({ Y: distance })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move Y+')}
+                                >
+                                    <span className="jog-direction">Y+</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-x-plus jog-y-plus"
+                                    onClick={() => this.jog({ X: distance, Y: distance })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move X+ Y+')}
+                                >
+                                    <i className="glyphicon glyphicon-menu-up rotate-45deg"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-z-plus"
+                                    onClick={() => this.jog({ Z: distance })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move Z+')}
+                                >
+                                    <span className="jog-direction">Z+</span>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-minus"
-                                    onClick={::this.jogBackwardX}
+                                    onClick={() => this.jog({ X: -distance })}
                                     disabled={!canClick}
+                                    title={i18n._('Move X-')}
                                 >
-                                    X-
+                                    <span className="jog-direction">X-</span>
                                 </button>
                             </td>
-                            <td className="jog-y">
-                                <div className="btn-group-vertical">
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-default jog-y-plus"
-                                        onClick={::this.jogForwardY}
-                                        disabled={!canClick}
-                                    >
-                                        Y+
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-default jog-y-minus"
-                                        onClick={::this.jogBackwardY}
-                                        disabled={!canClick}
-                                    >
-                                        Y-
-                                    </button>
-                                </div>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default"
+                                    onClick={() => this.move({ X: 0, Y: 0, Z: 0 })}
+                                    disabled={!canClick}
+                                    title={i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}
+                                >
+                                    <i className="glyphicon glyphicon-unchecked"></i>
+                                </button>
                             </td>
-                            <td className="jog-x">
+                            <td>
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-plus"
-                                    onClick={::this.jogForwardX}
+                                    onClick={() => this.jog({ X: distance })}
                                     disabled={!canClick}
+                                    title={i18n._('Move X+')}
                                 >
-                                    X+
+                                    <span className="jog-direction">X+</span>
                                 </button>
                             </td>
-                            <td className="jog-z">
-                                <div className="btn-group-vertical">
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-default jog-z-plus"
-                                        onClick={::this.jogForwardZ}
-                                        disabled={!canClick}
-                                    >
-                                        Z+
-                                    </button>
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-default jog-z-minus"
-                                        onClick={::this.jogBackwardZ}
-                                        disabled={!canClick}
-                                    >
-                                        Z-
-                                    </button>
-                                </div>
+                            <td>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-x-minus jog-y-minus"
+                                    onClick={() => this.jog({ X: -distance, Y: -distance })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move X- Y-')}
+                                >
+                                    <i className="glyphicon glyphicon-menu-down rotate-45deg"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-y-minus"
+                                    onClick={() => this.jog({ Y: -distance })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move Y-')}
+                                >
+                                    <span className="jog-direction">Y-</span>
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-x-plus jog-y-minus"
+                                    onClick={() => this.jog({ X: distance, Y: -distance })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move X+ Y-')}
+                                >
+                                    <i className="glyphicon glyphicon-menu-down rotate--45deg"></i>
+                                </button>
+                            </td>
+                            <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-z-minus"
+                                    onClick={() => this.jog({ Z: -distance })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move Z-')}
+                                >
+                                    <span className="jog-direction">Z-</span>
+                                </button>
                             </td>
                         </tr>
                     </tbody>

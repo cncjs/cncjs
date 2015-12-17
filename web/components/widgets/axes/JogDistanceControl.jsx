@@ -23,7 +23,7 @@ class JogDistanceControl extends React.Component {
         if (n > max) {
             return max;
         }
-        return n;
+        return n * 1;
     }
     handleChange(event) {
         let distance = event.target.value;
@@ -65,14 +65,14 @@ class JogDistanceControl extends React.Component {
                             value={distance}
                             onChange={::this.handleChange}
                         />
-                        <PressAndHold className="btn btn-default" onClick={::this.increaseDistance}>
+                        <PressAndHold className="btn btn-default" onClick={::this.increaseDistance} title={i18n._('Increase by 0.1 unit')}>
                             <span className="glyphicon glyphicon-plus"></span>
                         </PressAndHold>
-                        <PressAndHold className="btn btn-default" onClick={::this.decreaseDistance}>
+                        <PressAndHold className="btn btn-default" onClick={::this.decreaseDistance} title={i18n._('Decrease by 0.1 unit')}>
                             <span className="glyphicon glyphicon-minus"></span>
                         </PressAndHold>
                         <button type="button" className="btn btn-default" onClick={::this.resetDistance} title={i18n._('Reset')}>
-                            <span className="glyphicon glyphicon-repeat horizontal-mirror"></span>
+                            <span className="glyphicon glyphicon-reset"></span>
                         </button>
                     </div>
                 </div>

@@ -32,19 +32,20 @@ class JogControlPanel extends React.Component {
         let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
         let styles = {
             jogJoystickControl: {
-                marginTop: 20
             },
             jogDistanceControl: {
-                marginLeft: 10
+                marginLeft: 10,
+                marginBottom: 15
             },
             jogFeedrateControl: {
-                marginLeft: 10
+                marginLeft: 10,
+                marginBottom: 0
             }
         };
 
         return (
             <div className="container-fluid control-panel">
-                <div className="row">
+                <div className="row no-gutter">
                     <div className="col-sm-6">
                         <div style={styles.jogJoystickControl}>
                             <JogJoystickControl
@@ -57,10 +58,10 @@ class JogControlPanel extends React.Component {
                         </div>
                     </div>
                     <div className="col-sm-6">
-                        <div className="form-group" style={styles.jogDistanceControl}>
+                        <div style={styles.jogDistanceControl}>
                             <JogDistanceControl onChange={::this.changeDistance} />
                         </div>
-                        <div className="form-group" style={styles.jogFeedrateControl}>
+                        <div style={styles.jogFeedrateControl}>
                             <JogFeedrateControl onChange={::this.changeFeedrate} />
                         </div>
                     </div>

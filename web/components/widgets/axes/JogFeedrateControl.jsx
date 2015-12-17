@@ -66,14 +66,14 @@ class JogFeedrateControl extends React.Component {
                             value={feedrate}
                             onChange={::this.handleChange}
                         />
-                        <PressAndHold className="btn btn-default" onClick={::this.increaseFeedrate}>
+                        <PressAndHold className="btn btn-default" onClick={::this.increaseFeedrate} title={i18n._('Increase by 10 mm/min')}>
                             <span className="glyphicon glyphicon-plus"></span>
                         </PressAndHold>
-                        <PressAndHold className="btn btn-default" onClick={::this.decreaseFeedrate}>
+                        <PressAndHold className="btn btn-default" onClick={::this.decreaseFeedrate} title={i18n._('Decrease by 10 mm/min')}>
                             <span className="glyphicon glyphicon-minus"></span>
                         </PressAndHold>
                         <button type="button" className="btn btn-default" onClick={::this.resetFeedrate} title={i18n._('Reset')}>
-                            <span className="glyphicon glyphicon-repeat horizontal-mirror"></span>
+                            <span className="glyphicon glyphicon-reset"></span>
                         </button>
                     </div>
                 </div>
