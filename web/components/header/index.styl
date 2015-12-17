@@ -2,26 +2,17 @@
     .grbl-quick-access-toolbar {
         margin: 10px 0;
 
+        [class^="glyphicon-"]:before,
+        [class*=" glyphicon-"]:before,
         [class^="ion-"]:before,
         [class*=" ion-"]:before {
             font-size: 14px;
         }
-        .ion-reset:before {
-            display: inline-block;
-            font-family: "Ionicons";
-            speak: none;
-            font-style: normal;
-            font-weight: normal;
-            font-variant: normal;
-            text-transform: none;
-            text-rendering: auto;
-            line-height: 1;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-        }
-        .ion-reset:before {
-            content: "\f21c";
+        .glyphicon-reset {
             transform: scaleX(-1);
+            &:before {
+                content: "\e030";
+            }
         }
 
         .btn-group {
