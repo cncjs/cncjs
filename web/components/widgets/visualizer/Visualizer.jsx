@@ -15,12 +15,9 @@ import {
     COORDINATE_PLANE_XY,
     COORDINATE_PLANE_XZ,
     COORDINATE_PLANE_YZ,
-    IMPERIAL_AXIS_LINE_LENGTH,
-    IMPERIAL_GRID_LINE_LENGTH,
-    IMPERIAL_GRID_SPACING,
-    METRIC_AXIS_LINE_LENGTH,
-    METRIC_GRID_LINE_LENGTH,
-    METRIC_GRID_SPACING,
+    AXIS_LINE_LENGTH,
+    GRID_LINE_LENGTH,
+    GRID_SPACING,
     ACTIVE_STATE_IDLE,
     ACTIVE_STATE_RUN,
     WORKFLOW_STATE_RUNNING,
@@ -36,10 +33,7 @@ import {
 import { MODAL_GROUPS } from '../../../constants/modal-groups';
 
 class Visualizer extends React.Component {
-    state = {
-        width: window.innerWidth,
-        height: window.innerHeight
-    };
+    state = {};
 
     componentWillMount() {
         this.workflowState = WORKFLOW_STATE_IDLE;
@@ -123,6 +117,8 @@ class Visualizer extends React.Component {
         socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     socketOnGrblGCodeModes(modes) {
+        let modalState = {};
+
         _.each(modes, (mode) => {
             // Gx, Mx
             if (mode.indexOf('G') === 0 || mode.indexOf('M') === 0) {
@@ -130,10 +126,12 @@ class Visualizer extends React.Component {
                     return _.includes(group.modes, mode);
                 });
                 if (r) {
-                    _.set(this.modalState, r.group, mode);
+                    _.set(modalState, r.group, mode);
                 }
             }
         });
+
+        this.modalState = modalState;
     }
     socketOnGrblCurrentStatus(data) {
         let { activeState, workingPos } = data;
@@ -317,7 +315,7 @@ class Visualizer extends React.Component {
     }
     // Creates coordinate axes
     // @see [Drawing the Coordinate Axes]{@http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/}
-    createCoordinateAxes(lineLength = METRIC_AXIS_LINE_LENGTH) {
+    createCoordinateAxes(lineLength = AXIS_LINE_LENGTH) {
         let coordinateAxes = new THREE.Object3D();
 
         coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(lineLength, 0, 0), colorNames.red, false)); // +X
@@ -330,7 +328,7 @@ class Visualizer extends React.Component {
         return coordinateAxes;
     }
     // Creates coordinate grid for the XY plane
-    createCoordinateGridForXYPlane(gridSpacing = METRIC_GRID_SPACING, lineLength = METRIC_GRID_LINE_LENGTH) {
+    createCoordinateGridForXYPlane(gridSpacing = GRID_SPACING, lineLength = GRID_LINE_LENGTH) {
         let color = colorNames.lightgrey;
         let coordinateGrid = new THREE.Object3D();
         let list = _.range(-lineLength, lineLength, gridSpacing);
