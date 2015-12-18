@@ -20,7 +20,7 @@ class GCodeStats extends React.Component {
     state = {
         startTime: 0,
         duration: 0,
-        dimension: {
+        box: { // bounding box
             min: {
                 x: 0,
                 y: 0,
@@ -52,26 +52,31 @@ class GCodeStats extends React.Component {
 
         this.pubsubTokens = [];
 
-        { // gcode:dimension
-            let token = pubsub.subscribe('gcode:dimension', (msg, dimension) => {
-                dimension = _.defaultsDeep(dimension, {
-                    min: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    },
-                    max: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    },
-                    delta: {
-                        x: 0,
-                        y: 0,
-                        z: 0
+        { // gcode:boundingBox
+            let token = pubsub.subscribe('gcode:boundingBox', (msg, box) => {
+                let dX = box.max.x - box.min.x;
+                let dY = box.max.y - box.min.y;
+                let dZ = box.max.z - box.min.z;
+
+                this.setState({
+                    box: {
+                        min: {
+                            x: box.min.x,
+                            y: box.min.y,
+                            z: box.min.z
+                        },
+                        max: {
+                            x: box.max.x,
+                            y: box.max.y,
+                            z: box.max.z
+                        },
+                        delta: {
+                            x: dX,
+                            y: dY,
+                            z: dZ
+                        }
                     }
                 });
-                that.setState({ dimension: dimension });
             });
             this.pubsubTokens.push(token);
         }
@@ -135,7 +140,7 @@ class GCodeStats extends React.Component {
     }
     render() {
         let { unit, total, executed } = this.props;
-        let dimension = _.mapValues(this.state.dimension, (position, dimension) => {
+        let box = _.mapValues(this.state.box, (position) => {
             return _.mapValues(position, (val, axis) => this.toUnitString(val));
         });
         let startTime = '–';
@@ -174,21 +179,21 @@ class GCodeStats extends React.Component {
                             <tbody>
                                 <tr>
                                     <td className="axis">X</td>
-                                    <td>{dimension.min.x} {unit}</td>
-                                    <td>{dimension.max.x} {unit}</td>
-                                    <td>{dimension.delta.x} {unit}</td>
+                                    <td>{box.min.x} {unit}</td>
+                                    <td>{box.max.x} {unit}</td>
+                                    <td>{box.delta.x} {unit}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Y</td>
-                                    <td>{dimension.min.y} {unit}</td>
-                                    <td>{dimension.max.y} {unit}</td>
-                                    <td>{dimension.delta.y} {unit}</td>
+                                    <td>{box.min.y} {unit}</td>
+                                    <td>{box.max.y} {unit}</td>
+                                    <td>{box.delta.y} {unit}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Z</td>
-                                    <td>{dimension.min.z} {unit}</td>
-                                    <td>{dimension.max.z} {unit}</td>
-                                    <td>{dimension.delta.z} {unit}</td>
+                                    <td>{box.min.z} {unit}</td>
+                                    <td>{box.max.z} {unit}</td>
+                                    <td>{box.delta.z} {unit}</td>
                                 </tr>
                             </tbody>
                         </table>

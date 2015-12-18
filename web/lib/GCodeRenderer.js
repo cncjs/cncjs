@@ -57,37 +57,13 @@ class GCodeRenderer {
         options = options || {};
         callback = _.isFunction(callback) ? callback : noop;
 
-        let dimension = {
-            min: {
-                x: Number.MAX_SAFE_INTEGER,
-                y: Number.MAX_SAFE_INTEGER,
-                z: Number.MAX_SAFE_INTEGER
-            },
-            max: {
-                x: Number.MIN_SAFE_INTEGER,
-                y: Number.MIN_SAFE_INTEGER,
-                z: Number.MIN_SAFE_INTEGER
-            }
-        };
-
-        let updateDimension = (v1, v2) => {
-            dimension.min.x = _.min([dimension.min.x, v1.x, v2.x]);
-            dimension.min.y = _.min([dimension.min.y, v1.y, v2.y]);
-            dimension.min.z = _.min([dimension.min.z, v1.z, v2.z]);
-            dimension.max.x = _.max([dimension.max.x, v1.x, v2.x]);
-            dimension.max.y = _.max([dimension.max.y, v1.y, v2.y]);
-            dimension.max.z = _.max([dimension.max.z, v1.z, v2.z]);
-        };
-
         let runner = new GCodeRunner({
             modalState: this.options.modalState,
             addLine: (v1, v2) => {
                 this.addLine(v1, v2);
-                updateDimension(v1, v2);
             },
             addArcCurve: (v1, v2, v0, isClockwise) => {
                 this.addArcCurve(v1, v2, v0, isClockwise);
-                updateDimension(v1, v2);
             }
         });
         runner.on('data', (data) => {
@@ -100,39 +76,13 @@ class GCodeRenderer {
         runner.interpretText(options.gcode, (err, results) => {
             this.update();
 
-            if (_.size(this.frames) === 0) {
-                dimension.min.x = dimension.min.y = dimension.min.z = 0;
-                dimension.max.x = dimension.max.y = dimension.max.z = 0;
-            }
-
             log.debug({
                 vertices: this.vertices,
                 frames: this.frames,
-                frameIndex: this.frameIndex,
-                dimension: dimension
+                frameIndex: this.frameIndex
             });
 
-            let dX = dimension.max.x - dimension.min.x;
-            let dY = dimension.max.y - dimension.min.y;
-            let dZ = dimension.max.z - dimension.min.z;
-
-            callback(this.baseObject, {
-                min: {
-                    x: dimension.min.x,
-                    y: dimension.min.y,
-                    z: dimension.min.z
-                },
-                max: {
-                    x: dimension.max.x,
-                    y: dimension.max.y,
-                    z: dimension.max.z
-                },
-                delta: {
-                    x: dX,
-                    y: dY,
-                    z: dZ
-                }
-            });
+            callback(this.baseObject);
         });
     }
     update() {
