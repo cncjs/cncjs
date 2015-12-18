@@ -32,6 +32,23 @@ import {
 } from './constants';
 import { MODAL_GROUPS } from '../../../constants/modal-groups';
 
+const loadTexture = (url, callback) => {
+    callback = callback || ((err, texture) => {});
+
+    const onLoad = (texture) => {
+        callback(null, texture);
+    };
+    const onProgress = (xhr) => {
+        log.trace((xhr.loaded / xhr.total * 100) + '% loaded');
+    };
+    const onError = (xhr) => {
+        callback(new Error('Failed to load texture with the url ' + JSON.stringify(url)));
+    };
+
+    let loader = new THREE.TextureLoader();
+    loader.load(url, onLoad, onProgress, onError);
+};
+
 class Visualizer extends React.Component {
     state = {};
 
@@ -56,7 +73,7 @@ class Visualizer extends React.Component {
         this.addSocketEvents();
         this.addResizeEventListener();
 
-        let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
+        let el = ReactDOM.findDOMNode(this.refs.visualizer);
         this.createScene(el);
         this.resizeRenderer();
 
@@ -169,7 +186,7 @@ class Visualizer extends React.Component {
             return;
         }
 
-        let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
+        let el = ReactDOM.findDOMNode(this.refs.visualizer);
         let width = el.offsetWidth;
         let height = window.innerHeight - 50 - 1; // take off the navbar (50px) and an extra 1px space to disable scrollbar
 
@@ -233,7 +250,7 @@ class Visualizer extends React.Component {
                              (this.activeState === ACTIVE_STATE_RUN);
 
                 if (rotate) {
-                    this.rotateEngravingCutter(120); // 120 rounds per minute (rpm)
+                    this.rotateEngravingCutter(360); // Set to 360 rounds per minute (rpm)
                 } else {
                     this.rotateEngravingCutter(0); // Stop rotation
                 }
@@ -296,7 +313,7 @@ class Visualizer extends React.Component {
         return trackballControls;
     }
     createDirectionalLight() {
-        let directionalLight = new THREE.DirectionalLight(colorNames.gold, 0.5);
+        let directionalLight = new THREE.DirectionalLight(colorNames.whitesmoke, 0.5);
 
         directionalLight.position.set(-40, 60, -10);
         directionalLight.castShadow = true;
@@ -316,32 +333,32 @@ class Visualizer extends React.Component {
     // Creates coordinate axes
     // @see [Drawing the Coordinate Axes]{@http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/}
     createCoordinateAxes(lineLength = AXIS_LINE_LENGTH) {
-        let coordinateAxes = new THREE.Object3D();
+        let group = new THREE.Group();
 
-        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(lineLength, 0, 0), colorNames.red, false)); // +X
-        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-lineLength, 0, 0), colorNames.red, true)); // -X
-        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, lineLength, 0), colorNames.green, false)); // +Y
-        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -lineLength, 0), colorNames.green, true)); // -Y
-        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, lineLength), colorNames.blue, false)); // +Z
-        coordinateAxes.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -lineLength), colorNames.blue, true)); // -Z
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(lineLength, 0, 0), colorNames.red, false)); // +X
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-lineLength, 0, 0), colorNames.red, true)); // -X
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, lineLength, 0), colorNames.green, false)); // +Y
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -lineLength, 0), colorNames.green, true)); // -Y
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, lineLength), colorNames.blue, false)); // +Z
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -lineLength), colorNames.blue, true)); // -Z
 
-        return coordinateAxes;
+        return group;
     }
     // Creates coordinate grid for the XY plane
     createCoordinateGridForXYPlane(gridSpacing = GRID_SPACING, lineLength = GRID_LINE_LENGTH) {
+        let group = new THREE.Group();
         let color = colorNames.grey89;
-        let coordinateGrid = new THREE.Object3D();
         let list = _.range(-lineLength, lineLength, gridSpacing);
 
         _.each(list, (pos) => {
             if (pos === 0) { // skip the coordinate axis
                 return;
             }
-            coordinateGrid.add(this.buildGridLine(new THREE.Vector3(-lineLength, pos, 0), new THREE.Vector3(lineLength, pos, 0), color));
-            coordinateGrid.add(this.buildGridLine(new THREE.Vector3(pos, -lineLength, 0), new THREE.Vector3(pos, lineLength, 0), color));
+            group.add(this.buildGridLine(new THREE.Vector3(-lineLength, pos, 0), new THREE.Vector3(lineLength, pos, 0), color));
+            group.add(this.buildGridLine(new THREE.Vector3(pos, -lineLength, 0), new THREE.Vector3(pos, lineLength, 0), color));
         });
 
-        return coordinateGrid;
+        return group;
     }
     buildAxis(src, dst, color, dashed) {
         let geometry = new THREE.Geometry();
@@ -379,35 +396,64 @@ class Visualizer extends React.Component {
     }
     // Creates an engraving cutter
     createEngravingCutter() {
-        let radiusTop = 3;
-        let radiusBottom = 0.5;
-        let cylinderHeight = 30;
-        let radiusSegments = 6;
-        let heightSegments = 1;
-        let openEnded = false;
-        let thetaStart = 0;
-        let thetaLength = 2 * Math.PI;
+        let group = new THREE.Group();
+        let url = 'textures/brushed-steel-texture.jpg';
 
-        let geometry = new THREE.CylinderGeometry(
-            radiusTop,
-            radiusBottom,
-            cylinderHeight,
-            radiusSegments,
-            heightSegments,
-            openEnded,
-            thetaStart,
-            thetaLength
-        );
-        // Rotates the geometry 90 degrees around the X axis.
-        geometry.rotateX(Math.PI / 2);
-        // Set the desired position from the origin rather than its center.
-        geometry.translate(0, 0, cylinderHeight / 2);
+        loadTexture(url, (err, texture) => {
+            const radiusTop = 2.0;
+            const radiusBottom = 0.1;
+            const cylinderHeight = 20;
+            const radiusSegments = 32;
+            const heightSegments = 1;
+            const openEnded = false;
+            const thetaStart = 0;
+            const thetaLength = 2 * Math.PI;
+            const color = colorNames.silver;
+            const opacity = 0.5;
 
-        let material = new THREE.MeshBasicMaterial({
-            color: colorNames.steelblue
+            let geometry = new THREE.CylinderGeometry(
+                radiusTop,
+                radiusBottom,
+                cylinderHeight,
+                radiusSegments,
+                heightSegments,
+                openEnded,
+                thetaStart,
+                thetaLength
+            );
+            // Rotates the geometry 90 degrees around the X axis.
+            geometry.rotateX(Math.PI / 2);
+            // Set the desired position from the origin rather than its center.
+            geometry.translate(0, 0, cylinderHeight / 2);
+
+            let materialFront = new THREE.MeshBasicMaterial({
+                color: color,
+                map: texture,
+                opacity: opacity,
+                shading: THREE.SmoothShading,
+                side: THREE.FrontSide,
+                transparent: true
+            });
+
+            let materialBack = new THREE.MeshBasicMaterial({
+                color: color,
+                map: texture,
+                opacity: opacity,
+                shading: THREE.SmoothShading,
+                side: THREE.BackSide,
+                transparent: true
+            });
+
+            // http://stackoverflow.com/questions/15514274/three-js-how-to-control-rendering-order
+            let meshFront = new THREE.Mesh(geometry, materialFront);
+            meshFront.renderOrder = 2;
+            group.add(meshFront);
+
+            let meshBack = new THREE.Mesh(geometry, materialBack);
+            group.add(meshBack);
         });
 
-        return new THREE.Mesh(geometry, material);
+        return group;
     }
     // Sets the position of the engraving cutter
     // @param {number} x The position along the x axis
@@ -498,7 +544,7 @@ class Visualizer extends React.Component {
         // Reset TrackballControls
         this.trackballControls.reset();
 
-        let el = ReactDOM.findDOMNode(this.refs.gcodeViewer);
+        let el = ReactDOM.findDOMNode(this.refs.visualizer);
 
         this.objectRenderer = new GCodeRenderer({
             modalState: this.modalState
@@ -540,22 +586,18 @@ class Visualizer extends React.Component {
     joystickUp() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x, y - 2, z);
-        //this.camera.position.setY(this.camera.position.y - 2);
     }
     joystickDown() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x, y + 2, z);
-        //this.camera.position.setY(this.camera.position.y + 2);
     }
     joystickLeft() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x + 2, y, z);
-        //this.camera.position.setX(this.camera.position.x - 2);
     }
     joystickRight() {
         let { x, y, z } = this.trackballControls.target;
         this.trackballControls.target.set(x - 2, y, z);
-        //this.camera.position.setX(this.camera.position.x + 2);
     }
     joystickCenter() {
         this.trackballControls.reset();
@@ -573,7 +615,7 @@ class Visualizer extends React.Component {
                     right={::this.joystickRight}
                     center={::this.joystickCenter}
                 />
-                <div ref="gcodeViewer" className="preview" />
+                <div ref="visualizer" className="visualizer" />
             </div>
         );
     }
