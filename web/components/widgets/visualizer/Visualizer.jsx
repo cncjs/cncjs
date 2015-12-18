@@ -554,30 +554,34 @@ class Visualizer extends React.Component {
             gcode: gcode,
             width: el.clientWidth,
             height: el.clientHeight
-        }, (object, dimension) => {
-            pubsub.publish('gcode:dimension', dimension);
-
+        }, (object) => {
             this.object = object;
             this.object.name = 'G-code';
             this.scene.add(this.object);
 
+            let box = new THREE.Box3().setFromObject(this.object);
+            let dX = box.max.x - box.min.x;
+            let dY = box.max.y - box.min.y;
+            let dZ = box.max.z - box.min.z;
+
             let center = new THREE.Vector3(
-                dimension.min.x + (dimension.delta.x / 2),
-                dimension.min.y + (dimension.delta.y / 2),
-                dimension.min.z + (dimension.delta.z / 2)
+                box.min.x + (dX / 2),
+                box.min.y + (dY / 2),
+                box.min.z + (dZ / 2)
             );
 
             // Set the pivot point to the object's center position
             this.pivotPoint.set(center.x, center.y, center.z);
 
             { // Fit the camera to object
-                let objectWidth = dimension.delta.x;
-                let objectHeight = dimension.delta.y;
-                let lookTarget = new THREE.Vector3(0, 0, dimension.max.z);
+                let objectWidth = dX;
+                let objectHeight = dY;
+                let lookTarget = new THREE.Vector3(0, 0, box.max.z);
 
                 this.fitCameraToObject(objectWidth, objectHeight, lookTarget);
             }
 
+            pubsub.publish('gcode:boundingBox', box);
         });
     }
     setWorkflowState(workflowState) {
