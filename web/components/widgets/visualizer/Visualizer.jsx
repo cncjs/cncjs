@@ -32,6 +32,22 @@ import {
 } from './constants';
 import { MODAL_GROUPS } from '../../../constants/modal-groups';
 
+const getBoundingBox = (object) => {
+    let box = new THREE.Box3().setFromObject(object);
+
+    if (box.max.x - box.min.x === -Infinity) {
+        box.max.x = box.min.x = 0;
+    }
+    if (box.max.y - box.min.y === -Infinity) {
+        box.max.y = box.min.y = 0;
+    }
+    if (box.max.z - box.min.z === -Infinity) {
+        box.max.z = box.min.z = 0;
+    }
+
+    return box;
+};
+
 const loadTexture = (url, callback) => {
     callback = callback || ((err, texture) => {});
 
@@ -49,6 +65,167 @@ const loadTexture = (url, callback) => {
     loader.load(url, onLoad, onProgress, onError);
 };
 
+// AxisHelper
+// An axis object to visualize the the 3 axes in a simple way. 
+// The X axis is red. The Y axis is green. The Z axis is blue.
+class AxisHelper {
+    group = new THREE.Group();
+
+    // Creates an axisHelper with lines of length size.
+    // @param {number} size Define the size of the line representing the axes.
+    // @see [Drawing the Coordinate Axes]{@http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/}
+    constructor(size) {
+        let group = this.group;
+
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(size, 0, 0), colorNames.red, false)); // +X
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-size, 0, 0), colorNames.red, true)); // -X
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, size, 0), colorNames.green, false)); // +Y
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -size, 0), colorNames.green, true)); // -Y
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, size), colorNames.blue, false)); // +Z
+        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -size), colorNames.blue, true)); // -Z
+
+        return group;
+    }
+    buildAxis(src, dst, color, dashed) {
+        let geometry = new THREE.Geometry();
+        let material;
+
+        if (dashed) {
+            material = new THREE.LineDashedMaterial({
+                linewidth: 1,
+                color: color,
+                dashSize: 1,
+                gapSize: 1
+            });
+        } else {
+            material = new THREE.LineBasicMaterial({
+                linewidth: 1,
+                color: color
+            });
+        }
+
+        geometry.vertices.push(src.clone());
+        geometry.vertices.push(dst.clone());
+        geometry.computeLineDistances();
+
+        return new THREE.Line(geometry, material);
+    }
+}
+
+class GridHelper {
+    group = new THREE.Group();
+
+    constructor(size, step, colorCenterLine, colorGrid) {
+        let group = this.group;
+        let list = _.range(-size, size, step);
+
+        if (typeof colorCenterLine === 'undefined') {
+            colorCenterLine = 0x444444;
+        }
+        if (typeof colorGrid === 'undefined') {
+            colorGrid = 0x888888;
+        }
+
+        _.each(list, (i) => {
+            let color = (i === 0) ? colorCenterLine : colorGrid;
+
+            if (color === null) { // transparent
+                return;
+            }
+
+            let gridLineX = this.buildGridLine(
+                new THREE.Vector3(-size, i, 0),
+                new THREE.Vector3(size, i, 0),
+                color
+            );
+
+            let gridLineY = this.buildGridLine(
+                new THREE.Vector3(i, -size, 0),
+                new THREE.Vector3(i, size, 0),
+                color
+            );
+
+            group.add(gridLineX);
+            group.add(gridLineY);
+        });
+
+        return group;
+    }
+    buildGridLine(src, dst, color) {
+        let geometry = new THREE.Geometry();
+        let material = new THREE.LineBasicMaterial({ color: color });
+
+        geometry.vertices.push(src.clone());
+        geometry.vertices.push(dst.clone());
+
+        return new THREE.Line(geometry, material);
+    }
+}
+
+class EngravingCutterHelper {
+    group = new THREE.Group();
+
+    constructor(texture) {
+        let group = this.group;
+
+        const radiusTop = 2.0;
+        const radiusBottom = 0.1;
+        const cylinderHeight = 20;
+        const radiusSegments = 32;
+        const heightSegments = 1;
+        const openEnded = false;
+        const thetaStart = 0;
+        const thetaLength = 2 * Math.PI;
+
+        let geometry = new THREE.CylinderGeometry(
+            radiusTop,
+            radiusBottom,
+            cylinderHeight,
+            radiusSegments,
+            heightSegments,
+            openEnded,
+            thetaStart,
+            thetaLength
+        );
+
+        // Rotates the geometry 90 degrees around the X axis.
+        geometry.rotateX(Math.PI / 2);
+        // Set the desired position from the origin rather than its center.
+        geometry.translate(0, 0, cylinderHeight / 2);
+
+        const color = colorNames.silver;
+        const opacity = 0.5;
+
+        let materialFront = new THREE.MeshBasicMaterial({
+            color: color,
+            map: texture,
+            opacity: opacity,
+            shading: THREE.SmoothShading,
+            side: THREE.FrontSide,
+            transparent: true
+        });
+
+        let materialBack = new THREE.MeshBasicMaterial({
+            color: color,
+            map: texture,
+            opacity: opacity,
+            shading: THREE.SmoothShading,
+            side: THREE.BackSide,
+            transparent: true
+        });
+
+        // http://stackoverflow.com/questions/15514274/three-js-how-to-control-rendering-order
+        let meshFront = new THREE.Mesh(geometry, materialFront);
+        meshFront.renderOrder = 2;
+        group.add(meshFront);
+
+        let meshBack = new THREE.Mesh(geometry, materialBack);
+        group.add(meshBack);
+
+        return group;
+    }
+}
+
 class Visualizer extends React.Component {
     state = {};
 
@@ -61,11 +238,8 @@ class Visualizer extends React.Component {
         this.scene = null;
         this.camera = null;
         this.trackballControls = null;
-        this.directionalLight = null;
-        this.coordinateAxes = null;
-        this.coordinateGrid = null;
-        this.engravingCutter = null;
-        this.object = null;
+        this.group = new THREE.Group();
+
         this.objectRenderer = null;
     }
     componentDidMount() {
@@ -82,9 +256,7 @@ class Visualizer extends React.Component {
             y: 0,
             z: 0
         }, (x, y, z) => { // The relative xyz position
-            console.assert(this.scene instanceof THREE.Scene, 'this.scene is not an instance of THREE.Scene', this.scene);
-
-            _.each(this.scene.children, (o) => {
+            _.each(this.group.children, (o) => {
                 o.translateX(x);
                 o.translateY(y);
                 o.translateZ(z);
@@ -105,7 +277,7 @@ class Visualizer extends React.Component {
         { // gcode:data
             let token = pubsub.subscribe('gcode:data', (msg, gcode) => {
                 gcode = gcode || '';
-                that.renderObject(gcode);
+                that.renderGCode(gcode);
             });
             this.pubsubTokens.push(token);
         }
@@ -216,25 +388,36 @@ class Visualizer extends React.Component {
         // Creating a perspective camera
         this.camera = this.createPerspectiveCamera(width, height);
 
-        // Creating a directional light
-        this.directionalLight = this.createDirectionalLight();
-        this.directionalLight.name = 'DirectionalLight';
-        this.scene.add(this.directionalLight);
+        { // Creating a directional light
+            let directionalLight = this.createDirectionalLight();
+            directionalLight.name = 'DirectionalLight';
+            this.group.add(directionalLight);
+        }
 
-        // Creating XYZ coordinate axes
-        this.coordinateAxes = this.createCoordinateAxes();
-        this.coordinateAxes.name = 'CoordinateAxes';
-        this.scene.add(this.coordinateAxes);
+        { // Creating the coordinate grid
+            let colorCenterLine = null;
+            let colorGrid = colorNames.grey89;
+            let gridHelper = new GridHelper(GRID_LINE_LENGTH, GRID_SPACING, colorCenterLine, colorNames.grey89);
+            gridHelper.name = 'CoordinateGrid';
+            this.group.add(gridHelper);
+        }
 
-        // Creating coordinate grid
-        this.coordinateGrid = this.createCoordinateGridForXYPlane();
-        this.coordinateGrid.name = 'CoordinateGrid';
-        this.scene.add(this.coordinateGrid);
+        { // Creating the coordinate axes
+            let axisHelper = new AxisHelper(AXIS_LINE_LENGTH);
+            axisHelper.name = 'CoordinateAxes';
+            this.group.add(axisHelper);
+        }
 
-        // Creating an engraving cutter
-        this.engravingCutter = this.createEngravingCutter();
-        this.engravingCutter.name = 'EngravingCutter';
-        this.scene.add(this.engravingCutter);
+        { // Creating an engraving cutter
+            let url = 'textures/brushed-steel-texture.jpg';
+            loadTexture(url, (err, texture) => {
+                let engravingCutterHelper = new EngravingCutterHelper(texture);
+                engravingCutterHelper.name = 'EngravingCutter';
+                this.group.add(engravingCutterHelper);
+            });
+        }
+
+        this.scene.add(this.group);
 
         // To zoom in/out using TrackballControls
         this.trackballControls = this.createTrackballControls(this.camera, this.renderer.domElement);
@@ -265,12 +448,10 @@ class Visualizer extends React.Component {
         return this.scene;
     }
     clearScene() {
-        let scene = this.scene;
-
         // to iterrate over all children (except the first) in a scene 
-        let objsToRemove = _.rest(scene.children);
+        let objsToRemove = _.rest(this.scene.children);
         _.each(objsToRemove, (obj) => {
-            scene.remove(obj);
+            this.scene.remove(obj);
         });
     }
     createRenderer(width, height) {
@@ -330,137 +511,13 @@ class Visualizer extends React.Component {
         
         return directionalLight;
     }
-    // Creates coordinate axes
-    // @see [Drawing the Coordinate Axes]{@http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/}
-    createCoordinateAxes(lineLength = AXIS_LINE_LENGTH) {
-        let group = new THREE.Group();
-
-        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(lineLength, 0, 0), colorNames.red, false)); // +X
-        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(-lineLength, 0, 0), colorNames.red, true)); // -X
-        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, lineLength, 0), colorNames.green, false)); // +Y
-        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, -lineLength, 0), colorNames.green, true)); // -Y
-        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, lineLength), colorNames.blue, false)); // +Z
-        group.add(this.buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, -lineLength), colorNames.blue, true)); // -Z
-
-        return group;
-    }
-    // Creates coordinate grid for the XY plane
-    createCoordinateGridForXYPlane(gridSpacing = GRID_SPACING, lineLength = GRID_LINE_LENGTH) {
-        let group = new THREE.Group();
-        let color = colorNames.grey89;
-        let list = _.range(-lineLength, lineLength, gridSpacing);
-
-        _.each(list, (pos) => {
-            if (pos === 0) { // skip the coordinate axis
-                return;
-            }
-            group.add(this.buildGridLine(new THREE.Vector3(-lineLength, pos, 0), new THREE.Vector3(lineLength, pos, 0), color));
-            group.add(this.buildGridLine(new THREE.Vector3(pos, -lineLength, 0), new THREE.Vector3(pos, lineLength, 0), color));
-        });
-
-        return group;
-    }
-    buildAxis(src, dst, color, dashed) {
-        let geometry = new THREE.Geometry();
-        let material;
-
-        if (dashed) {
-            material = new THREE.LineDashedMaterial({
-                linewidth: 1,
-                color: color,
-                dashSize: 1,
-                gapSize: 1
-            });
-        } else {
-            material = new THREE.LineBasicMaterial({
-                linewidth: 1,
-                color: color
-            });
-        }
-
-        geometry.vertices.push(src.clone());
-        geometry.vertices.push(dst.clone());
-        geometry.computeLineDistances(); // This one is SUPER important, otherwise dashed lines will appear as simple plain lines
-
-        return new THREE.Line(geometry, material);
-    }
-    buildGridLine(src, dst, color) {
-        let geometry = new THREE.Geometry();
-        let material = new THREE.LineBasicMaterial({
-            linewidth: 0.5,
-            color: color
-        });
-        geometry.vertices.push(src.clone());
-        geometry.vertices.push(dst.clone());
-        return new THREE.Line(geometry, material);
-    }
-    // Creates an engraving cutter
-    createEngravingCutter() {
-        let group = new THREE.Group();
-        let url = 'textures/brushed-steel-texture.jpg';
-
-        loadTexture(url, (err, texture) => {
-            const radiusTop = 2.0;
-            const radiusBottom = 0.1;
-            const cylinderHeight = 20;
-            const radiusSegments = 32;
-            const heightSegments = 1;
-            const openEnded = false;
-            const thetaStart = 0;
-            const thetaLength = 2 * Math.PI;
-            const color = colorNames.silver;
-            const opacity = 0.5;
-
-            let geometry = new THREE.CylinderGeometry(
-                radiusTop,
-                radiusBottom,
-                cylinderHeight,
-                radiusSegments,
-                heightSegments,
-                openEnded,
-                thetaStart,
-                thetaLength
-            );
-            // Rotates the geometry 90 degrees around the X axis.
-            geometry.rotateX(Math.PI / 2);
-            // Set the desired position from the origin rather than its center.
-            geometry.translate(0, 0, cylinderHeight / 2);
-
-            let materialFront = new THREE.MeshBasicMaterial({
-                color: color,
-                map: texture,
-                opacity: opacity,
-                shading: THREE.SmoothShading,
-                side: THREE.FrontSide,
-                transparent: true
-            });
-
-            let materialBack = new THREE.MeshBasicMaterial({
-                color: color,
-                map: texture,
-                opacity: opacity,
-                shading: THREE.SmoothShading,
-                side: THREE.BackSide,
-                transparent: true
-            });
-
-            // http://stackoverflow.com/questions/15514274/three-js-how-to-control-rendering-order
-            let meshFront = new THREE.Mesh(geometry, materialFront);
-            meshFront.renderOrder = 2;
-            group.add(meshFront);
-
-            let meshBack = new THREE.Mesh(geometry, materialBack);
-            group.add(meshBack);
-        });
-
-        return group;
-    }
     // Sets the position of the engraving cutter
     // @param {number} x The position along the x axis
     // @param {number} y The position along the y axis
     // @param {number} z The position along the z axis
     setEngravingCutterPosition(x, y, z) {
-        if (!(this.engravingCutter)) {
+        let engravingCutter = this.group.getObjectByName('EngravingCutter');
+        if (!engravingCutter) {
             return;
         }
 
@@ -469,19 +526,20 @@ class Visualizer extends React.Component {
         y = (Number(y) || 0) - pivotPoint.y;
         z = (Number(z) || 0) - pivotPoint.z;
 
-        this.engravingCutter.position.set(x, y, z);
+        engravingCutter.position.set(x, y, z);
     }
     // Rotates the engraving cutter around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
     // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
     rotateEngravingCutter(rpm = 0, fps = 60) {
-        if (!(this.engravingCutter)) {
+        let engravingCutter = this.group.getObjectByName('EngravingCutter');
+        if (!engravingCutter) {
             return;
         }
 
         let delta = 1 / fps;
         let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
-        this.engravingCutter.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
+        engravingCutter.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
     // Fits camera to object
     // @param {number} width The object width
@@ -532,14 +590,16 @@ class Visualizer extends React.Component {
             fov: fov
         });
     }
-    renderObject(gcode) {
+    renderGCode(gcode) {
+        { // Remove previous G-code object
+            let object = this.group.getObjectByName('G-code');
+            if (object) {
+                this.group.remove(object);
+            }
+        }
+
         // Sets the pivot point to the origin point (0, 0, 0)
         this.pivotPoint.set(0, 0, 0);
-
-        if (this.object) {
-            this.scene.remove(this.object);
-            this.object = null;
-        }
 
         // Reset TrackballControls
         this.trackballControls.reset();
@@ -555,15 +615,13 @@ class Visualizer extends React.Component {
             width: el.clientWidth,
             height: el.clientHeight
         }, (object) => {
-            this.object = object;
-            this.object.name = 'G-code';
-            this.scene.add(this.object);
+            object.name = 'G-code';
+            this.group.add(object);
 
-            let box = new THREE.Box3().setFromObject(this.object);
+            let box = getBoundingBox(object);
             let dX = box.max.x - box.min.x;
             let dY = box.max.y - box.min.y;
             let dZ = box.max.z - box.min.z;
-
             let center = new THREE.Vector3(
                 box.min.x + (dX / 2),
                 box.min.y + (dY / 2),
