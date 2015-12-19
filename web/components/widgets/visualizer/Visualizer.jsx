@@ -34,18 +34,20 @@ import { MODAL_GROUPS } from '../../../constants/modal-groups';
 
 const getBoundingBox = (object) => {
     let box = new THREE.Box3().setFromObject(object);
+    let boundingBox = {
+        min: {
+            x: box.min.x === Infinity ? 0 : box.min.x,
+            y: box.min.y === Infinity ? 0 : box.min.y,
+            z: box.min.z === Infinity ? 0 : box.min.z
+        },
+        max: {
+            x: box.max.x === -Infinity ? 0 : box.max.x,
+            y: box.max.y === -Infinity ? 0 : box.max.y,
+            z: box.max.z === -Infinity ? 0 : box.max.z
+        }
+    };
 
-    if (box.max.x - box.min.x === -Infinity) {
-        box.max.x = box.min.x = 0;
-    }
-    if (box.max.y - box.min.y === -Infinity) {
-        box.max.y = box.min.y = 0;
-    }
-    if (box.max.z - box.min.z === -Infinity) {
-        box.max.z = box.min.z = 0;
-    }
-
-    return box;
+    return boundingBox;
 };
 
 const loadTexture = (url, callback) => {
@@ -227,20 +229,34 @@ class EngravingCutterHelper {
 }
 
 class Visualizer extends React.Component {
-    state = {};
+    state = {
+        workflowState: WORKFLOW_STATE_IDLE,
+        activeState: ACTIVE_STATE_IDLE,
+        boundingBox: {
+            min: {
+                x: 0,
+                y: 0,
+                z: 0
+            },
+            max: {
+                x: 0,
+                y: 0,
+                z: 0
+            }
+        }
+    };
 
     componentWillMount() {
-        this.workflowState = WORKFLOW_STATE_IDLE;
-        this.activeState = ACTIVE_STATE_IDLE;
+        // Grbl
         this.modalState = {};
-
+        // G-code
+        this.runner = null;
+        // Three.js
         this.renderer = null;
         this.scene = null;
         this.camera = null;
         this.trackballControls = null;
         this.group = new THREE.Group();
-
-        this.objectRenderer = null;
     }
     componentDidMount() {
         this.subscribe();
@@ -268,6 +284,9 @@ class Visualizer extends React.Component {
         this.removeSocketEvents();
         this.unsubscribe();
         this.clearScene();
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return JSON.stringify(nextState) !== JSON.stringify(this.state);
     }
     subscribe() {
         let that = this;
@@ -325,18 +344,18 @@ class Visualizer extends React.Component {
     socketOnGrblCurrentStatus(data) {
         let { activeState, workingPos } = data;
 
-        this.activeState = activeState;
+        this.setState({ activeState: activeState });
         this.setEngravingCutterPosition(workingPos.x, workingPos.y, workingPos.z);
     }
     socketOnGCodeQueueStatus(data) {
-        if (!(this.objectRenderer)) {
+        if (!(this.runner)) {
             return;
         }
 
         log.trace('socketOnGCodeQueueStatus:', data);
 
         let frameIndex = data.executed;
-        this.objectRenderer.setFrameIndex(frameIndex);
+        this.runner.setFrameIndex(frameIndex);
     }
     addResizeEventListener() {
         // handle resize event
@@ -425,12 +444,13 @@ class Visualizer extends React.Component {
         // Rendering the scene
         // This will create a loop that causes the renderer to draw the scene 60 times per second.
         let render = () => {
+
             // Call the render() function up to 60 times per second (i.e. 60fps)
             requestAnimationFrame(render);
 
             { // Rotate engraving cutter
-                let rotate = (this.workflowState === WORKFLOW_STATE_RUNNING) &&
-                             (this.activeState === ACTIVE_STATE_RUN);
+                let rotate = (this.state.workflowState === WORKFLOW_STATE_RUNNING) &&
+                             (this.state.activeState === ACTIVE_STATE_RUN);
 
                 if (rotate) {
                     this.rotateEngravingCutter(360); // Set to 360 rounds per minute (rpm)
@@ -590,6 +610,8 @@ class Visualizer extends React.Component {
             fov: fov
         });
     }
+    resetCamera() {
+    }
     renderGCode(gcode) {
         { // Remove previous G-code object
             let object = this.group.getObjectByName('G-code');
@@ -606,11 +628,11 @@ class Visualizer extends React.Component {
 
         let el = ReactDOM.findDOMNode(this.refs.visualizer);
 
-        this.objectRenderer = new GCodeRenderer({
+        this.runner = new GCodeRenderer({
             modalState: this.modalState
         });
 
-        this.objectRenderer.render({
+        this.runner.render({
             gcode: gcode,
             width: el.clientWidth,
             height: el.clientHeight
@@ -640,10 +662,12 @@ class Visualizer extends React.Component {
             }
 
             pubsub.publish('gcode:boundingBox', box);
+
+            this.setState({ boundingBox: box });
         });
     }
     setWorkflowState(workflowState) {
-        this.workflowState = workflowState;
+        this.setState({ workflowState: workflowState });
     }
     joystickUp() {
         let { x, y, z } = this.trackballControls.target;
