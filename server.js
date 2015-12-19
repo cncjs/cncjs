@@ -160,7 +160,7 @@ module.exports = function(server) {
                     };
                 });
 
-                log.info('serialport.list():', ports);
+                log.debug('serialport.list():', ports);
                 socket.emit('serialport:list', ports);
             });
         });
