@@ -232,7 +232,7 @@ module.exports = function(server) {
                     var executed = sp.queue.executed();
                     var total = sp.queue.size();
 
-                    console.log('[' + executed + '/' + total + '] ' + msg);
+                    log.trace('[' + executed + '/' + total + '] ' + msg);
 
                     msg = ('' + msg).trim();
                     sp.serialPort.write(msg + '\n');
@@ -317,8 +317,6 @@ module.exports = function(server) {
                     });
 
                     serialPort.on('data', function(msg) {
-                        console.log(msg);
-
                         msg = ('' + msg).trim();
 
                         // Example: Grbl 0.9j ['$' for help]
