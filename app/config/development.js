@@ -20,7 +20,7 @@ var settings = {
         prefix: '',
         transports: {
             Console: {
-                level: 'trace',
+                level: 'debug',
                 silent: false,
                 colorize: true,
                 timestamp: true, // or function()
@@ -28,7 +28,7 @@ var settings = {
                 handleExceptions: true
             },
             File: {
-                level: 'trace',
+                level: 'debug',
                 silent: false,
                 colorize: false,
                 timestamp: true, // or function()
