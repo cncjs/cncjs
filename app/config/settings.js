@@ -3,7 +3,7 @@ var pkg = require('../../package.json'),
     urljoin = require('../lib/urljoin');
 
 // env
-var env = process.env.NODE_ENV || 'production';
+var env = process.env.NODE_ENV || 'development';
 
 // hashed_version
 var hashed_version = (function(version) {
