@@ -6,15 +6,15 @@ import log from './log';
 
 const noop = () => {};
 
-class GCodeRenderer {
+class GCodePath {
     constructor(options) {
         options = options || {};
 
-        log.debug('GCodeRenderer:', options);
+        log.debug('GCodePath:', options);
 
         this.options = options;
 
-        this.baseObject = new THREE.Object3D();
+        this.group = new THREE.Object3D();
         this.vertices = [];
         // Example
         // [
@@ -82,12 +82,14 @@ class GCodeRenderer {
                 frameIndex: this.frameIndex
             });
 
-            callback(this.baseObject);
+            callback(this.group);
         });
     }
     update() {
-        while (this.baseObject.children.length > 0) {
-            this.baseObject.remove(this.baseObject.children[0]);
+        while (this.group.children.length > 0) {
+            let path = this.group.children[0];
+            this.group.remove(path);
+            path.geometry.dispose();
         }
 
         { // Main object
@@ -97,7 +99,7 @@ class GCodeRenderer {
                 linewidth: 2
             });
             geometry.vertices = this.vertices;
-            this.baseObject.add(new THREE.Line(geometry, material));
+            this.group.add(new THREE.Line(geometry, material));
         }
 
         { // Preview with frames
@@ -108,7 +110,7 @@ class GCodeRenderer {
             });
             let currentFrame = this.frames[this.frameIndex] || {};
             geometry.vertices = this.vertices.slice(0, currentFrame.vertexIndex);
-            this.baseObject.add(new THREE.Line(geometry, material));
+            this.group.add(new THREE.Line(geometry, material));
         }
     }
     setFrameIndex(frameIndex) {
@@ -120,4 +122,4 @@ class GCodeRenderer {
     }
 }
 
-export default GCodeRenderer;
+export default GCodePath;
