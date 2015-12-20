@@ -1,6 +1,5 @@
 {
     "01125d9bed2e4cd04da09b280cd77b0b24724cf7": "Current Status (?)",
-    "025efb863aa2ed0612d67543aa1bba956172d48f": "Grbl Help",
     "0323baf7ac64cb65c8933469be7577b6617cda85": "Move X+ Y+",
     "04632d0dc4cee6e7aaa6ba4f827110ec1146a451": "Executed",
     "05f37c8f56d0f2db8e26acb849a04cc8bdb4aedc": "Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)",
@@ -43,7 +42,6 @@
     "4df4b35749b1ce5034f206509f12e9afbc9af738": "Un-Zero Out Temporary Y Axis (G92.1 Y0)",
     "56e3badc4e6c5cc95e0ea5a9a878b9bd09f319d4": "Refresh",
     "5a2fa2806ee74757bc2f6cf8f1e549b0335d2252": "Work Coordinate System (G54)",
-    "623d411100cd7a22f4bea6c42384d612683ad415": "Grbl Settings",
     "64954d8ee63e964d6b34156c2216bb75c0d78d20": "Feed rate:",
     "650870777860faffe539ccbcceab6b7df9eec4b8": "Decrease by 0.1 unit",
     "6512ee1541e9a6c52d5bf7cf465332e8df25ea3c": "Connection",
