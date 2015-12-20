@@ -4,6 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import THREE from 'three';
 import TrackballControls from '../../../lib/three/TrackballControls';
+import OrbitControls from '../../../lib/three/OrbitControls';
 import GCodePath from '../../../lib/GCodePath';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
@@ -37,8 +38,8 @@ import { MODAL_GROUPS } from '../../../constants/modal-groups';
 
 class Visualizer extends React.Component {
     state = {
-        workflowState: WORKFLOW_STATE_IDLE,
         activeState: ACTIVE_STATE_IDLE,
+        workflowState: WORKFLOW_STATE_IDLE,
         boundingBox: {
             min: {
                 x: 0,
@@ -84,12 +85,9 @@ class Visualizer extends React.Component {
                 o.translateZ(z);
             });
 
-            // Render the scene
-            this.renderScene();
+            // Update the scene
+            this.updateScene();
         });
-
-        // Render the scene
-        this.renderScene();
     }
     componentWillUnmount() {
         this.removeResizeEventListener();
@@ -98,7 +96,16 @@ class Visualizer extends React.Component {
         this.clearScene();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return JSON.stringify(nextState) !== JSON.stringify(this.state);
+        let shouldUpdate =
+            (nextState.activeState !== this.state.activeState) ||
+            (nextState.workflowState !== this.state.workflowState) ||
+            !(_.isEqual(nextState.boundingBox, this.state.boundingBox));
+
+        return shouldUpdate;
+    }
+    componentDidUpdate(prevProps, prevState) {
+        // The renderAnimationLoop will check the state of activeState and workflowState
+        requestAnimationFrame(::this.renderAnimationLoop);
     }
     subscribe() {
         this.pubsubTokens = [];
@@ -156,6 +163,9 @@ class Visualizer extends React.Component {
 
         this.setState({ activeState: activeState });
         this.setEngravingCutterPosition(workingPos.x, workingPos.y, workingPos.z);
+
+        // Update the scene
+        this.updateScene();
     }
     socketOnGCodeQueueStatus(data) {
         if (!(this.gcodePath)) {
@@ -198,8 +208,8 @@ class Visualizer extends React.Component {
 
         this.renderer.setSize(width, height);
 
-        // Render the scene
-        this.renderScene();
+        // Update the scene
+        this.updateScene();
     }
     //
     // Creating a scene
@@ -248,40 +258,23 @@ class Visualizer extends React.Component {
                 engravingCutter.name = 'EngravingCutter';
                 this.group.add(engravingCutter);
 
-                // Render the scene
-                this.renderScene();
+                // Update the scene
+                this.updateScene();
             });
         }
 
         this.scene.add(this.group);
 
-        // To zoom in/out using TrackballControls
-        this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
-
-        // Rendering the scene
-        // This will create a loop that causes the renderer to draw the scene 60 times per second.
-        const render = () => {
-            // Call the render() function up to 60 times per second (i.e. 60fps)
-            requestAnimationFrame(render);
-            
-            { // Rotate engraving cutter
-                let rotate = (this.state.workflowState === WORKFLOW_STATE_RUNNING) &&
-                             (this.state.activeState === ACTIVE_STATE_RUN);
-
-                if (rotate) {
-                    this.rotateEngravingCutter(360); // Set to 360 rounds per minute (rpm)
-                } else {
-                    this.rotateEngravingCutter(0); // Stop rotation
-                }
-            }
-
-            this.controls.update();
-        };
-        render();
+        //this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
+        this.controls = this.createOrbitControls(this.camera, this.renderer.domElement);
+        this.controls.addEventListener('change', () => {
+            // Update the scene
+            this.updateScene();
+        });
 
         return this.scene;
     }
-    renderScene() {
+    updateScene() {
         this.renderer.render(this.scene, this.camera);
     }
     clearScene() {
@@ -291,8 +284,28 @@ class Visualizer extends React.Component {
             this.scene.remove(obj);
         });
 
-        // Render the scene
-        this.renderScene();
+        // Update the scene
+        this.updateScene();
+    }
+    renderAnimationLoop() {
+        let isAgitated = (this.state.activeState === ACTIVE_STATE_RUN) &&
+                         (this.state.workflowState === WORKFLOW_STATE_RUNNING);
+
+        if (isAgitated) {
+            // Call the render() function up to 60 times per second (i.e. 60fps)
+            requestAnimationFrame(::this.renderAnimationLoop);
+
+            // Set to 360 rounds per minute (rpm)
+            this.rotateEngravingCutter(360);
+        } else {
+
+            // Stop rotation
+            this.rotateEngravingCutter(0);
+        }
+
+        //this.controls.update();
+
+        this.updateScene();
     }
     createRenderer(width, height) {
         let renderer = new THREE.WebGLRenderer({
@@ -317,17 +330,33 @@ class Visualizer extends React.Component {
 
         return camera;
     }
+    // TrackballControls was written to require an animation loop in which controls.update() is called.
     createTrackballControls(object, domElement) {
-        let controls = new TrackballControls(object, domElement);
+        let controls = new THREE.TrackballControls(object, domElement);
 
         _.extend(controls, {
-            rotateSpeed: 2,
-            zoomSpeed: 1,
-            panSpeed: 1,
-            noPan: false,
-            noZoom: false,
-            staticMoving: true,
-            dynamicDampingFactor: 0.3
+            rotateSpeed: 2.0,
+            zoomSpeed: 1.0,
+            panSpeed: 1.0
+            //staticMoving: false,
+            //dynamicDampingFactor: 0.3
+        });
+
+        return controls;
+    }
+    // OrbitControls, on the other hand, can be used in static scenes in which the scene is rendered only when the mouse is moved, like so:
+    // controls.addEventListener( 'change', render );
+    createOrbitControls(object, domElement) {
+        let controls = new THREE.OrbitControls(object, domElement);
+
+        _.extend(controls, {
+            rotateSpeed: 2.0,
+            zoomSpeed: 1.0,
+            panSpeed: 1.0
+            // Set to true to enable damping (inertia)
+            // If damping is enabled, you must call controls.update() in your animation loop
+            //enableDamping: true,
+            //dampingFactor: 0.3
         });
 
         return controls;
@@ -366,9 +395,6 @@ class Visualizer extends React.Component {
         z = (Number(z) || 0) - pivotPoint.z;
 
         engravingCutter.position.set(x, y, z);
-
-        // Render the scene
-        this.renderScene();
     }
     // Rotates the engraving cutter around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
@@ -382,9 +408,6 @@ class Visualizer extends React.Component {
         let delta = 1 / fps;
         let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         engravingCutter.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
-
-        // Render the scene
-        this.renderScene();
     }
     loadGCode(gcode) {
         { // Remove previous G-code object
@@ -432,8 +455,8 @@ class Visualizer extends React.Component {
                 fitCameraToObject(this.camera, objectWidth, objectHeight, lookTarget);
             }
 
-            // Render the scene
-            this.renderScene();
+            // Update the scene
+            this.updateScene();
 
             pubsub.publish('gcode:boundingBox', box);
 
