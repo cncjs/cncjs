@@ -3,7 +3,6 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import THREE from 'three';
-import TrackballControls from '../../../lib/three/TrackballControls';
 import OrbitControls from '../../../lib/three/OrbitControls';
 import GCodePath from '../../../lib/GCodePath';
 import log from '../../../lib/log';
@@ -265,7 +264,6 @@ class Visualizer extends React.Component {
 
         this.scene.add(this.group);
 
-        //this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
         this.controls = this.createOrbitControls(this.camera, this.renderer.domElement);
         this.controls.addEventListener('change', () => {
             // Update the scene
@@ -303,8 +301,6 @@ class Visualizer extends React.Component {
             this.rotateEngravingCutter(0);
         }
 
-        //this.controls.update();
-
         this.updateScene();
     }
     createRenderer(width, height) {
@@ -330,33 +326,19 @@ class Visualizer extends React.Component {
 
         return camera;
     }
-    // TrackballControls was written to require an animation loop in which controls.update() is called.
-    createTrackballControls(object, domElement) {
-        let controls = new THREE.TrackballControls(object, domElement);
-
-        _.extend(controls, {
-            rotateSpeed: 2.0,
-            zoomSpeed: 1.0,
-            panSpeed: 1.0
-            //staticMoving: false,
-            //dynamicDampingFactor: 0.3
-        });
-
-        return controls;
-    }
     // OrbitControls, on the other hand, can be used in static scenes in which the scene is rendered only when the mouse is moved, like so:
-    // controls.addEventListener( 'change', render );
+    // controls.addEventListener('change', render);
     createOrbitControls(object, domElement) {
         let controls = new THREE.OrbitControls(object, domElement);
 
         _.extend(controls, {
-            rotateSpeed: 2.0,
-            zoomSpeed: 1.0,
-            panSpeed: 1.0
+            rotateSpeed: 0.3,
+            zoomSpeed: 0.5,
+            panSpeed: 1.0,
             // Set to true to enable damping (inertia)
             // If damping is enabled, you must call controls.update() in your animation loop
-            //enableDamping: true,
-            //dampingFactor: 0.3
+            enableDamping: true,
+            dampingFactor: 0.25
         });
 
         return controls;
@@ -466,22 +448,36 @@ class Visualizer extends React.Component {
     setWorkflowState(workflowState) {
         this.setState({ workflowState: workflowState });
     }
+    pan(deltaX, deltaY) {
+        let domElement = this.renderer.domElement;
+        let element = (domElement === document) ? domElement.body : domElement;
+        this.controls.constraint.pan(deltaX, deltaY, element.clientWidth, element.clientHeight);
+        this.controls.update();
+    }
     // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
     joystickUp() {
-        let { x, y, z } = this.controls.target;
-        this.controls.target.set(x, y - 2, z);
+        if (this.controls.enablePan) {
+            let { keyPanSpeed } = this.controls;
+            this.pan(0, keyPanSpeed);
+        }
     }
     joystickDown() {
-        let { x, y, z } = this.controls.target;
-        this.controls.target.set(x, y + 2, z);
+        if (this.controls.enablePan) {
+            let { keyPanSpeed } = this.controls;
+            this.pan(0, -keyPanSpeed);
+        }
     }
     joystickLeft() {
-        let { x, y, z } = this.controls.target;
-        this.controls.target.set(x + 2, y, z);
+        if (this.controls.enablePan) {
+            let { keyPanSpeed } = this.controls;
+            this.pan(keyPanSpeed, 0);
+        }
     }
     joystickRight() {
-        let { x, y, z } = this.controls.target;
-        this.controls.target.set(x - 2, y, z);
+        if (this.controls.enablePan) {
+            let { keyPanSpeed } = this.controls;
+            this.pan(-keyPanSpeed, 0);
+        }
     }
     joystickCenter() {
         this.controls.reset();
