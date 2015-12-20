@@ -443,6 +443,7 @@ class Visualizer extends React.Component {
     setWorkflowState(workflowState) {
         this.setState({ workflowState: workflowState });
     }
+    // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
     joystickUp() {
         let { x, y, z } = this.controls.target;
         this.controls.target.set(x, y - 2, z);
@@ -461,8 +462,6 @@ class Visualizer extends React.Component {
     }
     joystickCenter() {
         this.controls.reset();
-        this.camera.position.setX(0);
-        this.camera.position.setY(0);
     }
     render() {
         return (
