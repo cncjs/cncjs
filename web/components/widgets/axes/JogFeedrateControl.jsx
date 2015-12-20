@@ -13,6 +13,7 @@ class JogFeedrateControl extends React.Component {
         feedrate: FEEDRATE_DEFAULT
     }
     static propTypes = {
+        unit: React.PropTypes.string,
         onChange: React.PropTypes.func
     };
 

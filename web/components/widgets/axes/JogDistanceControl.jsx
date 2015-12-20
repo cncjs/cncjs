@@ -2,6 +2,7 @@ import i18n from 'i18next';
 import React from 'react';
 import PressAndHold from '../../common/PressAndHold';
 import {
+    METRIC_UNIT,
     DISTANCE_MIN,
     DISTANCE_MAX,
     DISTANCE_STEP,
@@ -13,6 +14,7 @@ class JogDistanceControl extends React.Component {
         distance: DISTANCE_DEFAULT
     };
     static propTypes = {
+        unit: React.PropTypes.string,
         onChange: React.PropTypes.func
     };
 
@@ -23,21 +25,24 @@ class JogDistanceControl extends React.Component {
         if (n > max) {
             return max;
         }
-        return n * 1;
+        return n;
     }
     handleChange(event) {
         let distance = event.target.value;
+
         this.setState({ distance: distance });
         this.props.onChange(distance);
     }
     increaseDistance() {
         let distance = Math.min(Number(this.state.distance) + DISTANCE_STEP, DISTANCE_MAX);
-        this.setState({ distance: distance });
+        let digits = (this.props.unit === METRIC_UNIT) ? 3 : 4;
+        this.setState({ distance: distance.toFixed(digits) * 1 });
         this.props.onChange(distance);
     }
     decreaseDistance() {
         let distance = Math.max(Number(this.state.distance) - DISTANCE_STEP, DISTANCE_MIN);
-        this.setState({ distance: distance });
+        let digits = (this.props.unit === METRIC_UNIT) ? 3 : 4;
+        this.setState({ distance: distance.toFixed(digits) * 1 });
         this.props.onChange(distance);
     }
     resetDistance() {

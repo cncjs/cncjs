@@ -21,10 +21,10 @@ class JogControlPanel extends React.Component {
     };
 
     changeFeedrate(feedrate) {
-        this.setState({ feedrate: feedrate });
+        this.setState({ feedrate: Number(feedrate) || FEEDRATE_DEFAULT });
     }
     changeDistance(distance) {
-        this.setState({ distance: distance });
+        this.setState({ distance: Number(distance) || DISTANCE_DEFAULT });
     }
     render() {
         let { port, unit, activeState } = this.props;
@@ -59,10 +59,10 @@ class JogControlPanel extends React.Component {
                     </div>
                     <div className="col-sm-6">
                         <div style={styles.jogDistanceControl}>
-                            <JogDistanceControl onChange={::this.changeDistance} />
+                            <JogDistanceControl unit={unit} onChange={::this.changeDistance} />
                         </div>
                         <div style={styles.jogFeedrateControl}>
-                            <JogFeedrateControl onChange={::this.changeFeedrate} />
+                            <JogFeedrateControl unit={unit} onChange={::this.changeFeedrate} />
                         </div>
                     </div>
                 </div>
