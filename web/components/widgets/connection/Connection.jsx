@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import cookie from 'react-cookie';
 import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
@@ -51,9 +52,15 @@ class Connection extends React.Component {
 
         this.clearAlert();
 
-        this.setState({
-            ports: ports
-        });
+        let port = cookie.load('port');
+        if (_.includes(_.pluck(ports, 'port'), port)) {
+            this.setState({
+                port: port,
+                ports: ports
+            });
+        } else {
+            this.setState({ ports: ports });
+        }
     }
     socketOnSerialPortOpen(options) {
         let { port, baudrate, inuse } = options;
@@ -68,6 +75,9 @@ class Connection extends React.Component {
         this.clearAlert();
 
         pubsub.publish('port', port);
+
+        // save the port
+        cookie.save('port', port);
 
         this.setState({
             connecting: false,
@@ -262,7 +272,7 @@ class Connection extends React.Component {
                             className="sm"
                             name="port"
                             value={this.state.port}
-                            options={_.map(this.state.ports, function(port) {
+                            options={_.map(this.state.ports, (port) => {
                                 return {
                                     value: port.port,
                                     label: port.port,
