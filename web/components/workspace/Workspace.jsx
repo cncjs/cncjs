@@ -23,25 +23,41 @@ class Workspace extends React.Component {
         visualContainer: [
             <VisualizerWidget key="visualizer" />
         ],
-        primaryContainer: [
-            <ConnectionWidget key="connection" />,
-            <GrblWidget key="grbl" />,
-            <ConsoleWidget key="console" />
-        ],
-        secondaryContainer: [
-            <AxesWidget key="axes" />,
-            <SpindleWidget key="spindle" />,
-            <GCodeWidget key="gcode" />
-        ]
+        primaryContainer: [],
+        secondaryContainer: []
     };
 
     _sortableGroups = [];
 
     componentDidMount() {
         this.createSortableGroups();
+
+        // TODO: Loading widget settings
+        setTimeout(() => {
+            this.setState({
+                primaryContainer: [
+                    <ConnectionWidget key="connection" />,
+                    <GrblWidget key="grbl" />,
+                    <ConsoleWidget key="console" />
+                ],
+                secondaryContainer: [
+                    <AxesWidget key="axes" />,
+                    <SpindleWidget key="spindle" />,
+                    <GCodeWidget key="gcode" />
+                ]
+            });
+        }, 0);
     }
     componentWillUnmount() {
         this.unsubscribeFromEvents();
+
+        this._sortableGroups.each(function(sortable) {
+            sortable.destroy();
+        });
+        this._sortableGroups = [];
+    }
+    componentDidUpdate() {
+        this.resizeVisualContainer();
     }
     createSortableGroups() {
         this.createSortableGroupForPrimaryContainer(ReactDOM.findDOMNode(this.refs.primaryContainer));
@@ -119,12 +135,6 @@ class Workspace extends React.Component {
 
         return sortable;
     }
-    componentWillUnmount() {
-        this._sortableGroups.each(function(sortable) {
-            sortable.destroy();
-        });
-        this._sortableGroups = [];
-    }
     togglePrimaryContainer() {
         this.setState({ showPrimaryContainer: ! this.state.showPrimaryContainer });
 
@@ -137,6 +147,16 @@ class Workspace extends React.Component {
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
+    resizeVisualContainer() {
+        let primaryContainer = ReactDOM.findDOMNode(this.refs.primaryContainer);
+        let primaryTogglerPane = ReactDOM.findDOMNode(this.refs.primaryTogglerPane);
+        let secondaryContainer = ReactDOM.findDOMNode(this.refs.secondaryContainer);
+        let secondaryTogglerPane = ReactDOM.findDOMNode(this.refs.secondaryTogglerPane);
+        let visualContainer = ReactDOM.findDOMNode(this.refs.visualContainer);
+
+        visualContainer.style.left = primaryContainer.offsetWidth + primaryTogglerPane.offsetWidth + 'px';
+        visualContainer.style.right = secondaryContainer.offsetWidth + secondaryTogglerPane.offsetWidth + 'px';
+    }
     render() {
         let classes = {
             primaryContainer: classNames(
@@ -146,6 +166,10 @@ class Workspace extends React.Component {
             secondaryContainer: classNames(
                 'secondary-container',
                 { 'hidden': ! this.state.showSecondaryContainer }
+            ),
+            visualContainer: classNames(
+                'visual-container',
+                'fixed'
             )
         };
 
@@ -157,11 +181,11 @@ class Workspace extends React.Component {
                             <div className={classes.primaryContainer} ref="primaryContainer">
                                 {this.state.primaryContainer}
                             </div>
-                            <div className="primary-toggler-pane" onClick={::this.togglePrimaryContainer}></div>
-                            <div className="visual-container" ref="visualContainer">
+                            <div className="primary-toggler-pane" ref="primaryTogglerPane" onClick={::this.togglePrimaryContainer}></div>
+                            <div className={classes.visualContainer} ref="visualContainer">
                                 {this.state.visualContainer}
                             </div>
-                            <div className="secondary-toggler-pane" onClick={::this.toggleSecondaryContainer}></div>
+                            <div className="secondary-toggler-pane" ref="secondaryTogglerPane" onClick={::this.toggleSecondaryContainer}></div>
                             <div className={classes.secondaryContainer} ref="secondaryContainer">
                                 {this.state.secondaryContainer}
                             </div>
