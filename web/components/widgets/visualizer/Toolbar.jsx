@@ -224,6 +224,8 @@ class Toolbar extends React.Component {
                         &nbsp;{i18n._('Upload G-code')}
                         <input type="file" className="hidden" ref="file" onChange={::this.handleFile} />
                     </button>
+                </div>
+                <div className="btn-group btn-group-sm" role="group">
                     <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={!canRun}>
                         <i className="glyphicon glyphicon-play"></i>
                     </button>
