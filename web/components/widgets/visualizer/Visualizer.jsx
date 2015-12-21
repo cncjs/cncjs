@@ -402,7 +402,7 @@ class Visualizer extends React.Component {
         // Sets the pivot point to the origin point (0, 0, 0)
         this.pivotPoint.set(0, 0, 0);
 
-        // Reset TrackballControls
+        // Reset controls
         this.controls.reset();
 
         let el = ReactDOM.findDOMNode(this.refs.visualizer);
