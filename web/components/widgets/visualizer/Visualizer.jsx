@@ -117,11 +117,18 @@ class Visualizer extends React.Component {
         { // port
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
 
                 if (!port) {
+                    this.setState({
+                        port: '',
+                        ready: false
+                    });
+                    this.unloadGCode();
+
                     pubsub.publish('gcode:stop');
                     pubsub.publish('gcode:data', '');
+                } else {
+                    this.setState({ port: port });
                 }
 
             });
@@ -535,7 +542,8 @@ class Visualizer extends React.Component {
     }
     render() {
         let { port, ready } = this.state;
-        let notReady = !ready;
+        let hasLoaded = !!port && ready;
+        let notLoaded = !hasLoaded;
 
         return (
             <div>
@@ -553,7 +561,7 @@ class Visualizer extends React.Component {
                     right={::this.joystickRight}
                     center={::this.joystickCenter}
                 />
-                {notReady && 
+                {notLoaded && 
                     <FileUploader
                         port={port}
                         onLoad={::this.onLoad}
