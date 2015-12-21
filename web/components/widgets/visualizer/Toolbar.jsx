@@ -15,9 +15,8 @@ import {
 class Toolbar extends React.Component {
     state = {
         port: '',
-        isLoaded: false,
+        hasUploaded: false,
         isUploading: false,
-        startTime: 0, // unix timestamp
         workflowState: WORKFLOW_STATE_IDLE
     };
 
@@ -87,7 +86,7 @@ class Toolbar extends React.Component {
         event.file.meta.port = this.state.port;
 
         this.setState({
-            isLoading: true
+            isUploading: true
         });
     }
     // Part of the file has been loaded from the file system and
@@ -122,8 +121,8 @@ class Toolbar extends React.Component {
         }
 
         this.setState({
-            isLoaded: true,
-            isLoading: false
+            hasUploaded: true,
+            isUploading: false
         });
     }
     // The server encountered an error.
@@ -195,7 +194,7 @@ class Toolbar extends React.Component {
 
         this.setState({
             workflowState: WORKFLOW_STATE_IDLE,
-            isLoaded: false
+            hasUploaded: false
         });
     }
     reset() {
@@ -203,18 +202,18 @@ class Toolbar extends React.Component {
         pubsub.publish('gcode:data', '');
         this.setState({
             workflowState: WORKFLOW_STATE_IDLE,
-            isLoaded: false
+            hasUploaded: false
         });
     }
     render() {
-        let isLoaded = this.state.isLoaded;
-        let notLoading = !(this.state.isLoading);
-        let notLoaded = !isLoaded;
-        let canUpload = !!this.state.port && notLoading && notLoaded;
-        let canRun = isLoaded && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], this.state.workflowState);
-        let canPause = isLoaded && _.includes([WORKFLOW_STATE_RUNNING], this.state.workflowState);
-        let canStop = isLoaded && _.includes([WORKFLOW_STATE_RUNNING, WORKFLOW_STATE_PAUSED], this.state.workflowState);
-        let canClose = isLoaded && _.includes([WORKFLOW_STATE_IDLE], this.state.workflowState);
+        let hasUploaded = this.state.hasUploaded;
+        let notUploading = !(this.state.isUploading);
+        let notUploaded = !hasUploaded;
+        let canUpload = !!this.state.port && notUploading && notUploaded;
+        let canRun = hasUploaded && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], this.state.workflowState);
+        let canPause = hasUploaded && _.includes([WORKFLOW_STATE_RUNNING], this.state.workflowState);
+        let canStop = hasUploaded && _.includes([WORKFLOW_STATE_RUNNING, WORKFLOW_STATE_PAUSED], this.state.workflowState);
+        let canClose = hasUploaded && _.includes([WORKFLOW_STATE_IDLE], this.state.workflowState);
 
         return (
             <div className="btn-toolbar" role="toolbar">
