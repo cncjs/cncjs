@@ -134,6 +134,7 @@ class FileUploader extends React.Component {
                     disableClick={true}
                     multiple={false}
                     onDrop={::this.onDrop}
+                    disabled={!canClick}
                 >
                     <div>
                         <i style={{ fontSize: 48 }} className="glyphicon glyphicon-upload"></i>
