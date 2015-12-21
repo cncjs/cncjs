@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -10,6 +11,7 @@ import socket from '../../../lib/socket';
 import colorNames from '../../../lib/color-names';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
+import FileUploader from './FileUploader';
 import {
     fitCameraToObject, getBoundingBox, loadTexture,
     CoordinateAxes, EngravingCutter, GridLine, PivotPoint3
@@ -37,6 +39,8 @@ import { MODAL_GROUPS } from '../../../constants/modal-groups';
 
 class Visualizer extends React.Component {
     state = {
+        port: '',
+        ready: false,
         activeState: ACTIVE_STATE_IDLE,
         workflowState: WORKFLOW_STATE_IDLE,
         boundingBox: {
@@ -96,6 +100,8 @@ class Visualizer extends React.Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         let shouldUpdate =
+            (nextState.port !== this.state.port) ||
+            (nextState.ready !== this.state.ready) ||
             (nextState.activeState !== this.state.activeState) ||
             (nextState.workflowState !== this.state.workflowState) ||
             !(_.isEqual(nextState.boundingBox, this.state.boundingBox));
@@ -108,6 +114,20 @@ class Visualizer extends React.Component {
     }
     subscribe() {
         this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                this.setState({ port: port });
+
+                if (!port) {
+                    pubsub.publish('gcode:stop');
+                    pubsub.publish('gcode:data', '');
+                }
+
+            });
+            this.pubsubTokens.push(token);
+        }
 
         { // gcode:data
             let token = pubsub.subscribe('gcode:data', (msg, gcode) => {
@@ -136,9 +156,9 @@ class Visualizer extends React.Component {
         socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
     }
     removeSocketEvents() {
-        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
-        socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
-        socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
+        socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
+        socket.off('grbl:current-status', this.socketOnGrblCurrentStatus);
+        socket.off('gcode:queue-status', this.socketOnGCodeQueueStatus);
     }
     socketOnGrblGCodeModes(modes) {
         let modalState = {};
@@ -456,44 +476,91 @@ class Visualizer extends React.Component {
     }
     // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
     joystickUp() {
+        if (!(this.state.ready)) {
+            return;
+        }
+
         if (this.controls.enablePan) {
             let { keyPanSpeed } = this.controls;
             this.pan(0, keyPanSpeed);
         }
     }
     joystickDown() {
+        if (!(this.state.ready)) {
+            return;
+        }
+
         if (this.controls.enablePan) {
             let { keyPanSpeed } = this.controls;
             this.pan(0, -keyPanSpeed);
         }
     }
     joystickLeft() {
+        if (!(this.state.ready)) {
+            return;
+        }
+
         if (this.controls.enablePan) {
             let { keyPanSpeed } = this.controls;
             this.pan(keyPanSpeed, 0);
         }
     }
     joystickRight() {
+        if (!(this.state.ready)) {
+            return;
+        }
+
         if (this.controls.enablePan) {
             let { keyPanSpeed } = this.controls;
             this.pan(-keyPanSpeed, 0);
         }
     }
     joystickCenter() {
+        if (!(this.state.ready)) {
+            return;
+        }
+
         this.controls.reset();
     }
+    onLoad() {
+        this.setState({ ready: true });
+    }
+    onUnload() {
+        this.setState({ ready: false });
+    }
     render() {
+        let { port, ready } = this.state;
+        let notReady = !ready;
+        let classes = {
+            visualizer: classNames(
+                'visualizer'
+                //{ 'invisible': notReady } // Hide visually but maintain layout
+            )
+        };
+
         return (
             <div>
-                <Toolbar setWorkflowState={::this.setWorkflowState} />
+                <Toolbar
+                    port={port}
+                    ready={ready}
+                    setWorkflowState={::this.setWorkflowState}
+                    onUnload={::this.onUnload}
+                />
                 <Joystick
+                    ready={ready}
                     up={::this.joystickUp}
                     down={::this.joystickDown}
                     left={::this.joystickLeft}
                     right={::this.joystickRight}
                     center={::this.joystickCenter}
                 />
-                <div ref="visualizer" className="visualizer" />
+                {notReady && 
+                    <FileUploader
+                        port={port}
+                        onLoad={::this.onLoad}
+                    />
+                }
+                <div ref="visualizer" className={classes.visualizer} />
             </div>
         );
     }

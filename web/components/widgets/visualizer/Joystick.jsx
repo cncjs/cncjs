@@ -4,6 +4,7 @@ import PressAndHold from '../../common/PressAndHold';
 
 class Joystick extends React.Component {
     static propTypes = {
+        ready: React.PropTypes.bool,
         up: React.PropTypes.func,
         down: React.PropTypes.func,
         left: React.PropTypes.func,
@@ -12,7 +13,8 @@ class Joystick extends React.Component {
     };
 
     render() {
-        let { up, down, left, right, center } = this.props;
+        let { ready, up, down, left, right, center } = this.props;
+        let canClick = ready;
 
         return (
             <div className="joystick">
@@ -25,6 +27,7 @@ class Joystick extends React.Component {
                                     className="joystick-button"
                                     onClick={up}
                                     title={i18n._('Move Up')}
+                                    disabled={!canClick}
                                 >
                                     <i className="glyphicon glyphicon-chevron-up"></i>
                                 </PressAndHold>
@@ -37,6 +40,7 @@ class Joystick extends React.Component {
                                     className="joystick-button"
                                     onClick={left}
                                     title={i18n._('Move Left')}
+                                    disabled={!canClick}
                                 >
                                     <i className="glyphicon glyphicon-chevron-left"></i>
                                 </PressAndHold>
@@ -46,6 +50,7 @@ class Joystick extends React.Component {
                                     className="joystick-button"
                                     onClick={center}
                                     title={i18n._('Reset Position')}
+                                    disabled={!canClick}
                                 >
                                     <i className="glyphicon glyphicon-unchecked"></i>
                                 </PressAndHold>
@@ -55,6 +60,7 @@ class Joystick extends React.Component {
                                     className="joystick-button"
                                     onClick={right}
                                     title={i18n._('Move Right')}
+                                    disabled={!canClick}
                                 >
                                     <i className="glyphicon glyphicon-chevron-right"></i>
                                 </PressAndHold>
@@ -67,6 +73,7 @@ class Joystick extends React.Component {
                                     className="joystick-button"
                                     onClick={down}
                                     title={i18n._('Move Down')}
+                                    disabled={!canClick}
                                 >
                                     <i className="glyphicon glyphicon-chevron-down"></i>
                                 </PressAndHold>

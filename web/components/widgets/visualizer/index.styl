@@ -11,7 +11,7 @@
             position: absolute;
             top: 10px;
             left: 10px;
-            z-index: 102;
+            z-index: 1;
             background-color: #f0f0f0;
         }
 
@@ -19,15 +19,15 @@
             position: absolute;
             top: 5px;
             right: 5px;
-            z-index: 102;
+            z-index: 1;
 
             .joystick-button {
-                cursor: pointer;
                 font-size: 14px;
                 color: #777;
 
                 &:hover,
                 &:focus {
+                    cursor: pointer;
                     color: #333;
                 }
                 &:active {
@@ -35,15 +35,52 @@
                     text-shadow: 0 1px #ccc;
                 }
             }
+            .joystick-button[disabled] {
+                cursor: not-allowed;
+                color: #777;
+            }
+        }
+
+        .file-uploader {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+
+            // Centering in the Unknown
+            // https://css-tricks.com/centering-in-the-unknown/
+            text-align: center;
+            // May want to do this if there is risk the container may be narrower than the element inside
+            white-space: nowrap;
+
+            // The ghost, nudged to maintain perfect centering
+            &:before {
+                content: '';
+                display: inline-block;
+                height: 100%;
+                vertical-align: middle;
+                margin-right: -0.25em; // Adjusts for spacing
+            }
+
+            .dropzone {
+                display: inline-block;
+                vertical-align: middle;
+                background-color: #fff;
+                border-width: 2px;
+                border-color: #666;
+                border-style: dashed;
+                border-radius: 5px;
+                margin: 0 auto;
+                min-width: 240px;
+                max-width: 480px;
+                padding: 20px;
+                z-index: 1;
+            }
         }
 
         .visualizer {
-            position: absolute;
-            top: 0;
-            right: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 0;
         }
+
     }
 }

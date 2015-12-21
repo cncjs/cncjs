@@ -2,9 +2,6 @@ import _ from 'lodash';
 import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import ReactDOM from 'react-dom';
-import log from '../../../lib/log';
-import siofu from '../../../lib/siofu';
 import socket from '../../../lib/socket';
 import {
     WORKFLOW_STATE_RUNNING,
@@ -13,217 +10,66 @@ import {
 } from './constants';
 
 class Toolbar extends React.Component {
+    static propTypes = {
+        port: React.PropTypes.string,
+        ready: React.PropTypes.bool,
+        onUnload: React.PropTypes.func
+    };
+
     state = {
-        port: '',
-        hasUploaded: false,
-        isUploading: false,
         workflowState: WORKFLOW_STATE_IDLE
     };
 
-    componentDidMount() {
-        this.subscribe();
-        this.addSocketIOFileUploadEvents();
-    }
-    componentWillUnmount() {
-        this.removeSocketIOFileUploadEvents();
-        this.unsubscribe();
-    }
     componentDidUpdate() {
         this.props.setWorkflowState(this.state.workflowState);
     }
-    subscribe() {
-        let that = this;
+    componentWillReceiveProps(nextProps) {
+        let { port } = nextProps;
 
-        this.pubsubTokens = [];
-
-        { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-                that.setState({ port: port });
-
-                if (!port) {
-                    that.reset();
-                }
-
-            });
-            this.pubsubTokens.push(token);
+        if (!port) {
+            this.setState({ workflowState: WORKFLOW_STATE_IDLE });
         }
-    }
-    unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
-    addSocketIOFileUploadEvents() {
-        siofu.addEventListener('start', ::this.siofuStart);
-        siofu.addEventListener('progress', ::this.siofuProgress);
-        siofu.addEventListener('complete', ::this.siofuComplete);
-        siofu.addEventListener('error', ::this.siofuError);
-    }
-    removeSocketIOFileUploadEvents() {
-        siofu.removeEventListener('start', ::this.siofuOnStart);
-        siofu.removeEventListener('progress', ::this.siofuOnProgress);
-        siofu.removeEventListener('complete', ::this.siofuOnComplete);
-        siofu.removeEventListener('error', ::this.siofuOnError);
-    }
-    startWaiting() {
-        // Adds the 'wait' class to <html>
-        let root = document.documentElement;
-        root.classList.add('wait');
-    }
-    stopWaiting() {
-        // Adds the 'wait' class to <html>
-        let root = document.documentElement;
-        root.classList.remove('wait');
-    }
-    // https://github.com/vote539/socketio-file-upload#start
-    siofuStart(event) {
-        this.startWaiting();
-
-        log.debug('Upload start:', event);
-
-        event.file.meta.port = this.state.port;
-
-        this.setState({
-            isUploading: true
-        });
-    }
-    // Part of the file has been loaded from the file system and
-    // ready to be transmitted via Socket.IO.
-    // This event can be used to make an upload progress bar.
-    // https://github.com/vote539/socketio-file-upload#progress
-    siofuProgress(event) {
-        let percent = event.bytesLoaded / event.file.size * 100;
-
-        log.trace('File is', percent.toFixed(2), 'percent loaded');
-    }
-    // The server has received our file.
-    // https://github.com/vote539/socketio-file-upload#complete
-    siofuComplete(event) {
-        this.stopWaiting();
-
-        log.debug('Upload complete:', event);
-
-        if (!(event.success)) {
-            log.error('File upload to the server failed.');
-            return;
-        }
-
-        // event.detail
-        // @param connected
-        // @param queueStatus.executed
-        // @param queueStatus.total
-
-        if (!(event.detail.connected)) {
-            log.error('Upload failed. The port is not open.');
-            return;
-        }
-
-        this.setState({
-            hasUploaded: true,
-            isUploading: false
-        });
-    }
-    // The server encountered an error.
-    // https://github.com/vote539/socketio-file-upload#complete
-    siofuError(event) {
-        this.stopWaiting();
-
-        log.error('Upload file failed:', event);
-    }
-    handleUpload() {
-        let el = ReactDOM.findDOMNode(this.refs.file);
-        if (el) {
-            el.value = ''; // Clear file input value
-            el.click(); // trigger file input click
-        }
-    }
-    handleFile(e) {
-        let that = this;
-        let file = e.target.files[0];
-        let reader = new FileReader();
-
-        reader.onloadend = (e) => {
-            if (e.target.readyState !== FileReader.DONE) {
-                return;
-            }
-
-            log.debug('FileReader:', _.pick(file, [
-                'lastModified',
-                'lastModifiedDate',
-                'meta',
-                'name',
-                'size',
-                'type'
-            ]));
-
-            let gcode = e.target.result;
-            pubsub.publish('gcode:data', gcode);
-
-            let files = [file];
-            siofu.submitFiles(files);
-        };
-
-        reader.readAsText(file);
     }
     handleRun() {
-        socket.emit('gcode:run', this.state.port);
+        socket.emit('gcode:run', this.props.port);
         pubsub.publish('gcode:run');
         this.setState({
             workflowState: WORKFLOW_STATE_RUNNING
         });
     }
     handlePause() {
-        socket.emit('gcode:pause', this.state.port);
+        socket.emit('gcode:pause', this.props.port);
         this.setState({
             workflowState: WORKFLOW_STATE_PAUSED
         });
     }
     handleStop() {
-        socket.emit('gcode:stop', this.state.port);
+        socket.emit('gcode:stop', this.props.port);
         pubsub.publish('gcode:stop');
         this.setState({
             workflowState: WORKFLOW_STATE_IDLE
         });
     }
     handleClose() {
-        socket.emit('gcode:close', this.state.port);
-
-        pubsub.publish('gcode:data', '');
-
-        this.setState({
-            workflowState: WORKFLOW_STATE_IDLE,
-            hasUploaded: false
-        });
-    }
-    reset() {
-        pubsub.publish('gcode:stop');
+        socket.emit('gcode:close', this.props.port);
         pubsub.publish('gcode:data', '');
         this.setState({
-            workflowState: WORKFLOW_STATE_IDLE,
-            hasUploaded: false
+            workflowState: WORKFLOW_STATE_IDLE
         });
+
+        this.props.onUnload();
     }
     render() {
-        let hasUploaded = this.state.hasUploaded;
-        let notUploading = !(this.state.isUploading);
-        let notUploaded = !hasUploaded;
-        let canUpload = !!this.state.port && notUploading && notUploaded;
-        let canRun = hasUploaded && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], this.state.workflowState);
-        let canPause = hasUploaded && _.includes([WORKFLOW_STATE_RUNNING], this.state.workflowState);
-        let canStop = hasUploaded && _.includes([WORKFLOW_STATE_RUNNING, WORKFLOW_STATE_PAUSED], this.state.workflowState);
-        let canClose = hasUploaded && _.includes([WORKFLOW_STATE_IDLE], this.state.workflowState);
+        let { port, ready } = this.props;
+        let { workflowState } = this.state;
+        let canClick = !!port && ready;
+        let canRun = canClick && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
+        let canPause = canClick && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
+        let canStop = canClick && _.includes([WORKFLOW_STATE_RUNNING, WORKFLOW_STATE_PAUSED], workflowState);
+        let canClose = canClick && _.includes([WORKFLOW_STATE_IDLE], workflowState);
 
         return (
             <div className="btn-toolbar" role="toolbar">
-                <div className="btn-group btn-group-sm" role="group">
-                    <button type="button" className="btn btn-primary" title={i18n._('Upload G-code')} onClick={::this.handleUpload} disabled={!canUpload}>
-                        <i className="glyphicon glyphicon-upload"></i>
-                        &nbsp;{i18n._('Upload G-code')}
-                        <input type="file" className="hidden" ref="file" onChange={::this.handleFile} />
-                    </button>
-                </div>
                 <div className="btn-group btn-group-sm" role="group">
                     <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={!canRun}>
                         <i className="glyphicon glyphicon-play"></i>
