@@ -114,6 +114,7 @@
     "f31603a039025230b9f4e65bed9f4da3e9b937cf": "Go To Work Zero On Y Axis (G0 Y0)",
     "f3bb30ab43471c18852ae94a7e8f0cab6a41702e": "Feed Hold (!)",
     "f3ca18583f2ddf26898a4ac996c44adfb3515757": "Plane select:",
+    "f443b92da7d7035f48e89214c2067f418efe5b70": "Drop G-code file here or click below to upload.",
     "f63bc0d9498ed0a031e86cb3240982980dddd5e3": "Reset Position",
     "fa11f88ac3e397fe0deee1215176d1fe74c16298": "Cycle Start (~)",
     "fabb8c9eb25d506d1c8e75d1c8942c3fc4d5c233": "Zero Out Work Y Axis (G10 L2 P1 Y0)",
