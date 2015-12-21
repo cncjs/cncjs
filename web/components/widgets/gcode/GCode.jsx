@@ -86,8 +86,8 @@ class GCode extends React.Component {
         socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
     }
     removeSocketEvents() {
-        socket.off('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
-        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+        socket.off('gcode:queue-status', this.socketOnGCodeQueueStatus);
+        socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
     }
     socketOnGCodeQueueStatus(data) {
         let list = {};

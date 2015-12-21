@@ -40,10 +40,10 @@ class Connection extends React.Component {
         socket.on('serialport:error', ::this.socketOnSerialPortError);
     }
     removeSocketEvents() {
-        socket.off('serialport:list', ::this.socketOnSerialPortList);
-        socket.off('serialport:open', ::this.socketOnSerialPortOpen);
-        socket.off('serialport:close', ::this.socketOnSerialPortClose);
-        socket.off('serialport:error', ::this.socketOnSerialPortError);
+        socket.off('serialport:list', this.socketOnSerialPortList);
+        socket.off('serialport:open', this.socketOnSerialPortOpen);
+        socket.off('serialport:close', this.socketOnSerialPortClose);
+        socket.off('serialport:error', this.socketOnSerialPortError);
     }
     socketOnSerialPortList(ports) {
         log.debug('serialport:list', ports);

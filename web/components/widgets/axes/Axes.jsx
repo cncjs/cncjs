@@ -70,8 +70,8 @@ class Axes extends React.Component {
         socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
     }
     removeSocketEvents() {
-        socket.off('grbl:current-status', ::this.socketOnGrblCurrentStatus);
-        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+        socket.off('grbl:current-status', this.socketOnGrblCurrentStatus);
+        socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
     }
     socketOnGrblCurrentStatus(data) {
         this.setState({

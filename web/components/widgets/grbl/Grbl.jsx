@@ -51,7 +51,7 @@ class Grbl extends React.Component {
         socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
     }
     removeSocketEvents() {
-        socket.off('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+        socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
     }
     socketOnGrblGCodeModes(modes) {
         let state = {};
