@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -180,7 +179,9 @@ class Visualizer extends React.Component {
     socketOnGrblCurrentStatus(data) {
         let { activeState, workingPos } = data;
 
-        this.setState({ activeState: activeState });
+        if (this.state.activeState !== activeState) {
+            this.setState({ activeState: activeState });
+        }
         this.setEngravingCutterPosition(workingPos.x, workingPos.y, workingPos.z);
 
         // Update the scene
@@ -412,12 +413,8 @@ class Visualizer extends React.Component {
         engravingCutter.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
     loadGCode(gcode) {
-        { // Remove previous G-code object
-            let pathObject = this.group.getObjectByName('GCodePath');
-            if (pathObject) {
-                this.group.remove(pathObject);
-            }
-        }
+        // Remove previous G-code object
+        this.unloadGCode();
 
         // Sets the pivot point to the origin point (0, 0, 0)
         this.pivotPoint.set(0, 0, 0);
@@ -464,6 +461,12 @@ class Visualizer extends React.Component {
 
             this.setState({ boundingBox: box });
         });
+    }
+    unloadGCode() {
+        let pathObject = this.group.getObjectByName('GCodePath');
+        if (pathObject) {
+            this.group.remove(pathObject);
+        }
     }
     setWorkflowState(workflowState) {
         this.setState({ workflowState: workflowState });
@@ -526,17 +529,13 @@ class Visualizer extends React.Component {
         this.setState({ ready: true });
     }
     onUnload() {
+        this.unloadGCode();
+
         this.setState({ ready: false });
     }
     render() {
         let { port, ready } = this.state;
         let notReady = !ready;
-        let classes = {
-            visualizer: classNames(
-                'visualizer'
-                //{ 'invisible': notReady } // Hide visually but maintain layout
-            )
-        };
 
         return (
             <div>
@@ -560,7 +559,7 @@ class Visualizer extends React.Component {
                         onLoad={::this.onLoad}
                     />
                 }
-                <div ref="visualizer" className={classes.visualizer} />
+                <div ref="visualizer" className="visualizer" />
             </div>
         );
     }
