@@ -156,6 +156,9 @@ class Workspace extends React.Component {
 
         visualContainer.style.left = primaryContainer.offsetWidth + primaryTogglerPane.offsetWidth + 'px';
         visualContainer.style.right = secondaryContainer.offsetWidth + secondaryTogglerPane.offsetWidth + 'px';
+
+        // Publish a 'resize' event
+        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     render() {
         let classes = {
