@@ -36,6 +36,7 @@
     "body-parser": "1.13.x",
     "bootstrap": "^3.3.6",
     "classnames": "^2.2.1",
+    "colornames": "0.0.2",
     "colors": "0.6.x",
     "commander": "^2.8.1",
     "compression": "1.0.x",
