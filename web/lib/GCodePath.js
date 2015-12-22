@@ -26,7 +26,7 @@ class GCodePath {
         this.frames = []; // Example
         this.frameIndex = 0;
     }
-    addLine(v1, v2) {
+    drawLine(v1, v2) {
         this.vertices.push(new THREE.Vector3(v1.x, v1.y, v1.z));
         this.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
     }
@@ -34,7 +34,7 @@ class GCodePath {
     //   v1 The start point
     //   v2 The end point
     //   v0 The fixed point
-    addArcCurve(v1, v2, v0, isClockwise) {
+    drawArcCurve(v1, v2, v0, isClockwise) {
         let radius = Math.sqrt(
             Math.pow((v1.x - v0.x), 2) + Math.pow((v1.y - v0.y), 2)
         );
@@ -59,11 +59,11 @@ class GCodePath {
 
         let runner = new GCodeRunner({
             modalState: this.options.modalState,
-            addLine: (v1, v2) => {
-                this.addLine(v1, v2);
+            drawLine: (v1, v2) => {
+                this.drawLine(v1, v2);
             },
-            addArcCurve: (v1, v2, v0, isClockwise) => {
-                this.addArcCurve(v1, v2, v0, isClockwise);
+            drawArcCurve: (v1, v2, v0, isClockwise) => {
+                this.drawArcCurve(v1, v2, v0, isClockwise);
             }
         });
         runner.on('data', (data) => {
