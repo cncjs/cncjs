@@ -79,22 +79,22 @@ class Workspace extends React.Component {
                 }
             },
             onAdd: (evt) => {
-                log.trace('onAdd.foo:', [evt.item, evt.from]);
+                log.trace('onAdd:', [evt.item, evt.from]);
             },
             onUpdate: (evt) => {
-                log.trace('onUpdate.foo:', [evt.item, evt.from]);
+                log.trace('onUpdate:', [evt.item, evt.from]);
             },
             onRemove: (evt) => {
-                log.trace('onRemove.foo:', [evt.item, evt.from]);
+                log.trace('onRemove:', [evt.item, evt.from]);
             },
             onStart: (evt) => {
-                log.trace('onStart.foo:', [evt.item, evt.from]);
+                log.trace('onStart:', [evt.item, evt.from]);
             },
             onSort: (evt) => {
-                log.trace('onStart.foo:', [evt.item, evt.from]);
+                log.trace('onSort:', [evt.item, evt.from]);
             },
             onEnd: (evt) => {
-                log.trace('onEnd.foo:', [evt.item, evt.from]);
+                log.trace('onEnd:', [evt.item, evt.from]);
 
                 // Publish a 'resize' event
                 pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
@@ -110,22 +110,22 @@ class Workspace extends React.Component {
             handle: '.btn-drag',
             animation: 150,
             onAdd: (evt) => {
-                log.trace('onAdd.foo:', [evt.item, evt.from]);
+                log.trace('onAdd:', [evt.item, evt.from]);
             },
             onUpdate: (evt) => {
-                log.trace('onUpdate.foo:', [evt.item, evt.from]);
+                log.trace('onUpdate:', [evt.item, evt.from]);
             },
             onRemove: (evt) => {
-                log.trace('onRemove.foo:', [evt.item, evt.from]);
+                log.trace('onRemove:', [evt.item, evt.from]);
             },
             onStart: (evt) => {
-                log.trace('onStart.foo:', [evt.item, evt.from]);
+                log.trace('onStart:', [evt.item, evt.from]);
             },
             onSort: (evt) => {
-                log.trace('onStart.foo:', [evt.item, evt.from]);
+                log.trace('onSort:', [evt.item, evt.from]);
             },
             onEnd: (evt) => {
-                log.trace('onEnd.foo:', [evt.item, evt.from]);
+                log.trace('onEnd:', [evt.item, evt.from]);
 
                 // Publish a 'resize' event
                 pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
