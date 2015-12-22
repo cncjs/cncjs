@@ -32,40 +32,55 @@ class Toolbar extends React.Component {
         }
     }
     handleRun() {
-        if (this.state.workflowState === WORKFLOW_STATE_PAUSED) {
-            serialport.writeln('~'); // Grbl: Cycle Start
+        let { workflowState } = this.state;
+        console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
+
+        if (workflowState === WORKFLOW_STATE_PAUSED) {
+            serialport.write('~'); // Grbl: Cycle Start
         }
+
         socket.emit('gcode:run', this.props.port);
         pubsub.publish('gcode:run');
+
         this.setState({
             workflowState: WORKFLOW_STATE_RUNNING
         });
     }
     handlePause() {
-        serialport.writeln('!'); // Grbl: Feed Hold
+        let { workflowState } = this.state;
+        console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
+
+        serialport.write('!'); // Grbl: Feed Hold
         socket.emit('gcode:pause', this.props.port);
+
         this.setState({
             workflowState: WORKFLOW_STATE_PAUSED
         });
     }
     handleStop() {
-        if (this.state.workflowState === WORKFLOW_STATE_PAUSED) {
-            serialport.writeln('\x18'); // Grbl: Reset (ctrl-x)
-        }
+        let { workflowState } = this.state;
+        console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
+
+        serialport.write('\x18'); // Grbl: Reset (ctrl-x)
         socket.emit('gcode:stop', this.props.port);
         pubsub.publish('gcode:stop');
+
         this.setState({
             workflowState: WORKFLOW_STATE_IDLE
         });
     }
     handleClose() {
+        let { workflowState } = this.state;
+        console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
+
         socket.emit('gcode:close', this.props.port);
         pubsub.publish('gcode:data', '');
+
+        this.props.onUnload(); // Unload the G-code
+
         this.setState({
             workflowState: WORKFLOW_STATE_IDLE
         });
-
-        this.props.onUnload();
     }
     render() {
         let { port, ready } = this.props;
@@ -73,7 +88,7 @@ class Toolbar extends React.Component {
         let canClick = !!port && ready;
         let canRun = canClick && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
         let canPause = canClick && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
-        let canStop = canClick && _.includes([WORKFLOW_STATE_RUNNING, WORKFLOW_STATE_PAUSED], workflowState);
+        let canStop = canClick && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
         let canClose = canClick && _.includes([WORKFLOW_STATE_IDLE], workflowState);
 
         return (
