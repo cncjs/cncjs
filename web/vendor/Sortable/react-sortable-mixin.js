@@ -34,7 +34,8 @@
 		onUpdate: 'handleUpdate',
 		onRemove: 'handleRemove',
 		onSort: 'handleSort',
-		onFilter: 'handleFilter'
+		onFilter: 'handleFilter',
+		onMove: 'handleMove'
 	};
 
 
@@ -69,7 +70,7 @@
 	 * @mixin
 	 */
 	var SortableMixin = {
-		sortableMixinVersion: '0.1.0',
+		sortableMixinVersion: '0.1.1',
 
 
 		/**
@@ -80,7 +81,7 @@
 
 
 		componentDidMount: function () {
-			var options = _extend(_extend({}, _defaultOptions), this.sortableOptions || {}),
+			var DOMNode, options = _extend(_extend({}, _defaultOptions), this.sortableOptions || {}),
 				copyOptions = _extend({}, options),
 
 				emitEvent = function (/** string */type, /** Event */evt) {
@@ -90,7 +91,7 @@
 
 
 			// Bind callbacks so that "this" refers to the component
-			'onStart onEnd onAdd onSort onUpdate onRemove onFilter'.split(' ').forEach(function (/** string */name) {
+			'onStart onEnd onAdd onSort onUpdate onRemove onFilter onMove'.split(' ').forEach(function (/** string */name) {
 				copyOptions[name] = function (evt) {
 					if (name === 'onStart') {
 						_nextSibling = evt.item.nextElementSibling;
@@ -119,7 +120,13 @@
 						}
 
 						newState[_getModelName(this)] = items;
-						this.setState(newState);
+						
+						if (copyOptions.stateHandler) {
+							this[copyOptions.stateHandler](newState);
+						} else {
+							this.setState(newState);
+						}
+						
 						(this !== _activeComponent) && _activeComponent.setState(remoteState);
 					}
 
@@ -129,9 +136,10 @@
 				}.bind(this);
 			}, this);
 
+			DOMNode = this.getDOMNode() ? (this.refs[options.ref] || this).getDOMNode() : this.refs[options.ref] || this;
 
 			/** @namespace this.refs — http://facebook.github.io/react/docs/more-about-refs.html */
-			this._sortableInstance = Sortable.create((this.refs[options.ref] || this).getDOMNode(), copyOptions);
+			this._sortableInstance = Sortable.create(DOMNode, copyOptions);
 		},
 
 		componentWillReceiveProps: function (nextProps) {

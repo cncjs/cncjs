@@ -12,7 +12,7 @@ Demo: http://rubaxa.github.io/Sortable/
  * Supports drag handles *and selectable text* (better than voidberg's html5sortable)
  * Smart auto-scrolling
  * Built using native HTML5 drag and drop API
- * Supports [Meteor](meteor/README.md), [AngularJS](#ng) and [React](#react)
+ * Supports [Meteor](meteor/README.md), [AngularJS](#ng), [React](#react) and [Polymer](#polymer)
  * Supports any CSS library, e.g. [Bootstrap](#bs)
  * Simple API
  * [CDN](#cdn)
@@ -63,7 +63,12 @@ var sortable = new Sortable(el, {
 	filter: ".ignore-elements",  // Selectors that do not lead to dragging (String or Function)
 	draggable: ".item",  // Specifies which items inside the element should be sortable
 	ghostClass: "sortable-ghost",  // Class name for the drop placeholder
+	chosenClass: "sortable-chosen",  // Class name for the chosen item
 	dataIdAttr: 'data-id',
+	
+	forceFallback: false,  // ignore the HTML5 DnD behaviour and force the fallback to kick in
+	fallbackClass: "sortable-fallback"  // Class name for the cloned DOM Element when using forceFallback
+	fallbackOnBody: false  // Appends the cloned DOM Element into the Document's Body
 	
 	scroll: true, // or HTMLElement
 	scrollSensitivity: 30, // px, how near the mouse must be to an edge to start scrolling.
@@ -119,7 +124,7 @@ var sortable = new Sortable(el, {
 		evt.draggedRect; // TextRectangle {left, top, right и bottom}
 		evt.related; // HTMLElement on which have guided
 		evt.relatedRect; // TextRectangle
-		// retrun false; — for cancel
+		// return false; — for cancel
 	}
 });
 ```
@@ -233,7 +238,7 @@ Sortable.create(list, {
 
 
 #### `ghostClass` option
-Class name for the drop placeholder.
+Class name for the drop placeholder (default `sortable-ghost`).
 
 Demo: http://jsbin.com/hunifu/1/edit?css,js,output
 
@@ -248,6 +253,41 @@ Sortable.create(list, {
   ghostClass: "ghost"
 });
 ```
+
+
+---
+
+
+#### `chosenClass` option
+Class name for the chosen item  (default `sortable-chosen`).
+
+Demo: http://jsbin.com/hunifu/edit?html,css,js,output
+
+```css
+.chosen {
+  color: #fff;
+  background-color: #c00;
+}
+```
+
+```js
+Sortable.create(list, {
+  delay: 500,
+  chosenClass: "chosen"
+});
+```
+
+
+---
+
+
+#### `forceFallback` option
+If set to `true`, the Fallback for non HTML5 Browser will be used, even if we are using an HTML5 Browser.
+This gives us the possiblity to test the behaviour for older Browsers even in newer Browser, or make the Drag 'n Drop feel more consistent between Desktop , Mobile and old Browsers.
+
+On top of that, the Fallback always generates a copy of that DOM Element and appends the class `fallbackClass` definied in the options. This behaviour controls the look of this 'dragged' Element.
+
+Demo: http://jsbin.com/pucurizace/edit?html,css,js,output
 
 
 ---
@@ -370,7 +410,7 @@ var AllUsers = React.createClass({
 	render: function() {
 		return (
 			<h1>Users</h1>
-			<ul ref="users">{
+			<ul ref="user">{
 				this.state.users.map(function (text) {
 					return <li>{text}</li>
 				})
@@ -432,6 +472,18 @@ Other attributes are:
 
 ---
 
+<a name="polymer"></a>
+### Support Polymer
+```html
+
+<link rel="import" href="bower_components/Sortable/Sortable-js.html">
+
+<sortable-js handle=".handle">
+  <template is="dom-repeat" items={{names}}>
+    <div>{{item}}</div>
+  </template>
+<sortable-js>
+```
 
 ### Method
 
@@ -583,11 +635,11 @@ Link to the active instance.
 
 ```html
 <!-- CDNJS :: Sortable (https://cdnjs.com/) -->
-<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.2.1/Sortable.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/Sortable/1.4.2/Sortable.min.js"></script>
 
 
 <!-- jsDelivr :: Sortable (http://www.jsdelivr.com/) -->
-<script src="//cdn.jsdelivr.net/sortable/1.2.1/Sortable.min.js"></script>
+<script src="//cdn.jsdelivr.net/sortable/1.4.2/Sortable.min.js"></script>
 
 
 <!-- jsDelivr :: Sortable :: Latest (http://www.jsdelivr.com/) -->

@@ -5,8 +5,8 @@
   "dependencies": {
     "html5shiv": "~3.7.3",
     "i18next": "~1.10.2",
-    "Sortable": "~1.2.1",
     "stacktrace-js": "0.6.x",
-    "Ionicons": "ionicons#~2.0.1"
+    "Ionicons": "ionicons#~2.0.1",
+    "Sortable": "~1.4.2"
   }
 }
