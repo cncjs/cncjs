@@ -1,10 +1,18 @@
 import _ from 'lodash';
+import colornames from 'colornames';
 import THREE from 'three';
 import GCodeRunner from './GCodeRunner';
-import colorNames from './color-names';
 import log from './log';
 
 const noop = () => {};
+
+const defaultColor = new THREE.Color(colornames('darkgray'));
+const vertexColor = {
+    'G0': new THREE.Color(colornames('aquamarine')),
+    'G1': new THREE.Color(colornames('burlywood')),
+    'G2': new THREE.Color(colornames('antiquewhite')),
+    'G3': new THREE.Color(colornames('antiquewhite'))
+};
 
 class GCodePath {
     constructor(options) {
@@ -15,7 +23,8 @@ class GCodePath {
         this.options = options;
 
         this.group = new THREE.Object3D();
-        this.vertices = [];
+        this.geometry = new THREE.Geometry();
+
         // Example
         // [
         //   {
@@ -26,15 +35,20 @@ class GCodePath {
         this.frames = []; // Example
         this.frameIndex = 0;
     }
-    drawLine(v1, v2) {
-        this.vertices.push(new THREE.Vector3(v1.x, v1.y, v1.z));
-        this.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
+    drawLine(type, v1, v2) {
+        this.geometry.vertices.push(new THREE.Vector3(v1.x, v1.y, v1.z));
+        this.geometry.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
+
+        let color = vertexColor[type] || defaultColor;
+        this.geometry.colors.push(color);
+        this.geometry.colors.push(color);
     }
     // Parameters
     //   v1 The start point
     //   v2 The end point
     //   v0 The fixed point
-    drawArcCurve(v1, v2, v0, isClockwise) {
+    drawArcCurve(type, v1, v2, v0) {
+        let isClockwise = (type === 'G2');
         let radius = Math.sqrt(
             Math.pow((v1.x - v0.x), 2) + Math.pow((v1.y - v0.y), 2)
         );
@@ -47,11 +61,14 @@ class GCodePath {
             !!isClockwise // isClockwise
         );
         let divisions = 100;
+        let color = vertexColor[type] || defaultColor;
         let vertices = _.map(arcCurve.getPoints(divisions), (point) => {
             return new THREE.Vector3(point.x, point.y, v2.z); // FIXME: Now it can only move along the Z axis
         });
+        let colors = _.fill(Array(vertices.length), color);
 
-        this.vertices = this.vertices.concat(vertices);
+        this.geometry.vertices = this.geometry.vertices.concat(vertices);
+        this.geometry.colors = this.geometry.colors.concat(colors);
     }
     render(options, callback) {
         options = options || {};
@@ -59,17 +76,17 @@ class GCodePath {
 
         let runner = new GCodeRunner({
             modalState: this.options.modalState,
-            drawLine: (v1, v2) => {
-                this.drawLine(v1, v2);
+            drawLine: (type, v1, v2) => {
+                this.drawLine(type, v1, v2);
             },
-            drawArcCurve: (v1, v2, v0, isClockwise) => {
-                this.drawArcCurve(v1, v2, v0, isClockwise);
+            drawArcCurve: (type, v1, v2, v0) => {
+                this.drawArcCurve(type, v1, v2, v0);
             }
         });
         runner.on('data', (data) => {
             this.frames.push({
                 data: data,
-                vertexIndex: this.vertices.length // remember current vertex index
+                vertexIndex: this.geometry.vertices.length // remember current vertex index
             });
         });
 
@@ -77,7 +94,7 @@ class GCodePath {
             this.update();
 
             log.debug({
-                vertices: this.vertices,
+                geometry: this.geometry,
                 frames: this.frames,
                 frameIndex: this.frameIndex
             });
@@ -93,23 +110,23 @@ class GCodePath {
         }
 
         { // Main object
-            let geometry = new THREE.Geometry();
+            let geometry = this.geometry;
             let material = new THREE.LineBasicMaterial({
-                color: colorNames.darkgreen,
-                linewidth: 2
+                color: new THREE.Color(colornames('darkgray')),
+                linewidth: 2,
+                vertexColors: THREE.VertexColors
             });
-            geometry.vertices = this.vertices;
             this.group.add(new THREE.Line(geometry, material));
         }
 
         { // Preview with frames
             let geometry = new THREE.Geometry();
             let material = new THREE.LineBasicMaterial({
-                color: colorNames.brown,
+                color: new THREE.Color(colornames('crimson')),
                 linewidth: 2
             });
             let currentFrame = this.frames[this.frameIndex] || {};
-            geometry.vertices = this.vertices.slice(0, currentFrame.vertexIndex);
+            geometry.vertices = this.geometry.vertices.slice(0, currentFrame.vertexIndex);
             this.group.add(new THREE.Line(geometry, material));
         }
     }

@@ -24,13 +24,17 @@ class GCodeRunner {
     };
 
     // https://github.com/grbl/grbl/wiki/Configuring-Grbl-v0.9
+    // Also see "../constants/modal-groups.js"
     modalState = {
         motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
         coordinate: 'G54', // G54, G55, G56, G57, G58, G59
         plane: 'G17', // G17: XY plane, G18: XZ plane, G19: YZ plane
-        distance: 'G90', // G90: Absolute, G91: Relative
         units: 'G21', // G20: Inches, G21: Millimeters
-        feedrate: 'G94' // G93: Inverse Time Mode, G94: Units Per Minutes
+        distance: 'G90', // G90: Absolute, G91: Relative
+        feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
+        program: 'M0',
+        spindle: 'M5',
+        coolant: 'M9'
     };
 
     handlers = {
@@ -38,12 +42,19 @@ class GCodeRunner {
         'G0': (params) => {
             this.setModalState({ 'motion': 'G0' });
 
+            let v1 = {
+                x: this.position.x,
+                y: this.position.y,
+                z: this.position.z
+            };
             let v2 = {
                 x: this.translateX(params.X),
                 y: this.translateY(params.Y),
                 z: this.translateZ(params.Z)
             };
             let { x, y, z } = v2;
+
+            this.fn.drawLine('G0', v1, v2);
 
             // Update position
             this.setPosition(x, y, z);
@@ -77,7 +88,7 @@ class GCodeRunner {
             };
             let { x, y, z } = v2;
 
-            this.fn.drawLine(v1, v2);
+            this.fn.drawLine('G1', v1, v2);
 
             // Update position
             this.setPosition(x, y, z);
@@ -103,7 +114,6 @@ class GCodeRunner {
         'G2': (params) => {
             this.setModalState({ 'motion': 'G2' });
 
-            let isClockwise = true;
             let v1 = {
                 x: this.position.x,
                 y: this.position.y,
@@ -121,7 +131,7 @@ class GCodeRunner {
             };
             let { x, y, z } = v2;
 
-            this.fn.drawArcCurve(v1, v2, v0, isClockwise);
+            this.fn.drawArcCurve('G2', v1, v2, v0);
 
             // Update position
             this.setPosition(x, y, z);
@@ -129,7 +139,6 @@ class GCodeRunner {
         'G3': (params) => {
             this.setModalState({ 'motion': 'G3' });
 
-            let isClockwise = false;
             let v1 = {
                 x: this.position.x,
                 y: this.position.y,
@@ -147,7 +156,7 @@ class GCodeRunner {
             };
             let { x, y, z } = v2;
 
-            this.fn.drawArcCurve(v1, v2, v0, isClockwise);
+            this.fn.drawArcCurve('G3', v1, v2, v0);
 
             // Update position
             this.setPosition(x, y, z);
