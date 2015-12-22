@@ -1,17 +1,15 @@
 [data-component="Header"] {
     .grbl-quick-access-toolbar {
         margin: 10px 0;
+        height: 30px;
 
-        [class^="glyphicon-"]:before,
-        [class*=" glyphicon-"]:before,
-        [class^="ion-"]:before,
-        [class*=" ion-"]:before {
-            font-size: 14px;
-        }
-        .glyphicon-reset {
-            transform: scaleX(-1);
+        [class^="ion-"],
+        [class*=" ion-"] {
             &:before {
-                content: "\e030";
+                font-size: 14px;
+            }
+            &.mirror:before {
+                transform: scaleX(-1);
             }
         }
 
@@ -20,6 +18,9 @@
         }
         .btn-group:last-child {
             margin-right: 0;
+        }
+        .btn {
+            height: 30px;
         }
 
         // Remove the outline on buttons
