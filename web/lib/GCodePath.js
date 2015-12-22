@@ -9,7 +9,7 @@ const noop = () => {};
 const defaultColor = new THREE.Color(colornames('darkgray'));
 const vertexColor = {
     'G0': new THREE.Color(colornames('aquamarine')),
-    'G1': new THREE.Color(colornames('burlywood')),
+    'G1': new THREE.Color(colornames('silver')),
     'G2': new THREE.Color(colornames('antiquewhite')),
     'G3': new THREE.Color(colornames('antiquewhite'))
 };
