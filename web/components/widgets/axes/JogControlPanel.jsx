@@ -1,17 +1,14 @@
 import React from 'react';
 import serialport from '../../../lib/serialport';
 import JogDistanceControl from './JogDistanceControl';
-import JogFeedrateControl from './JogFeedrateControl';
 import JogJoystickControl from './JogJoystickControl';
 import {
     ACTIVE_STATE_IDLE,
-    DISTANCE_DEFAULT,
-    FEEDRATE_DEFAULT
+    DISTANCE_DEFAULT
 } from './constants';
 
 class JogControlPanel extends React.Component {
     state = {
-        feedrate: FEEDRATE_DEFAULT,
         distance: DISTANCE_DEFAULT
     };
     static propTypes = {
@@ -20,15 +17,12 @@ class JogControlPanel extends React.Component {
         activeState: React.PropTypes.string
     };
 
-    changeFeedrate(feedrate) {
-        this.setState({ feedrate: Number(feedrate) || FEEDRATE_DEFAULT });
-    }
     changeDistance(distance) {
         this.setState({ distance: Number(distance) || DISTANCE_DEFAULT });
     }
     render() {
         let { port, unit, activeState } = this.props;
-        let { feedrate, distance } = this.state;
+        let { distance } = this.state;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
         let styles = {
             jogJoystickControl: {
@@ -36,10 +30,6 @@ class JogControlPanel extends React.Component {
             jogDistanceControl: {
                 marginLeft: 10,
                 marginBottom: 15
-            },
-            jogFeedrateControl: {
-                marginLeft: 10,
-                marginBottom: 0
             }
         };
 
@@ -52,7 +42,6 @@ class JogControlPanel extends React.Component {
                                 port={port}
                                 unit={unit}
                                 activeState={activeState}
-                                feedrate={feedrate}
                                 distance={distance}
                             />
                         </div>
@@ -60,9 +49,6 @@ class JogControlPanel extends React.Component {
                     <div className="col-sm-6">
                         <div style={styles.jogDistanceControl}>
                             <JogDistanceControl unit={unit} onChange={::this.changeDistance} />
-                        </div>
-                        <div style={styles.jogFeedrateControl}>
-                            <JogFeedrateControl unit={unit} onChange={::this.changeFeedrate} />
                         </div>
                     </div>
                 </div>

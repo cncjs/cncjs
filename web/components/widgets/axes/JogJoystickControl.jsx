@@ -11,7 +11,6 @@ class JogJoystickControl extends React.Component {
         port: React.PropTypes.string,
         unit: React.PropTypes.string,
         activeState: React.PropTypes.string,
-        feedrate: React.PropTypes.number,
         distance: React.PropTypes.number
     };
 
@@ -22,9 +21,6 @@ class JogJoystickControl extends React.Component {
     }
     move(params) {
         params = params || {};
-        if (_.isUndefined(params.F)) {
-            params.F = this.props.feedrate;
-        }
         let s = _.map(params, (value, letter) => {
             return '' + letter + value;
         }).join(' ');
