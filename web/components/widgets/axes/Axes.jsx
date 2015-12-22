@@ -9,7 +9,6 @@ import DisplayPanel from './DisplayPanel';
 import JogControlPanel from './JogControlPanel';
 import {
     ACTIVE_STATE_IDLE,
-    ACTIVE_STATE_RUN,
     IMPERIAL_UNIT,
     METRIC_UNIT
 } from './constants';
@@ -127,7 +126,7 @@ class Axes extends React.Component {
     }
     render() {
         let { port, unit, activeState, machinePos, workingPos } = this.state;
-        let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
+        let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
             <div>

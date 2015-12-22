@@ -4,7 +4,7 @@ import JogDistanceControl from './JogDistanceControl';
 import JogFeedrateControl from './JogFeedrateControl';
 import JogJoystickControl from './JogJoystickControl';
 import {
-    ACTIVE_STATE_RUN,
+    ACTIVE_STATE_IDLE,
     DISTANCE_DEFAULT,
     FEEDRATE_DEFAULT
 } from './constants';
@@ -29,7 +29,7 @@ class JogControlPanel extends React.Component {
     render() {
         let { port, unit, activeState } = this.props;
         let { feedrate, distance } = this.state;
-        let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
+        let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
         let styles = {
             jogJoystickControl: {
             },

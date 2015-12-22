@@ -3,7 +3,7 @@ import i18n from 'i18next';
 import React from 'react';
 import serialport from '../../../lib/serialport';
 import {
-    ACTIVE_STATE_RUN
+    ACTIVE_STATE_IDLE
 } from './constants';
 
 class JogJoystickControl extends React.Component {
@@ -33,7 +33,7 @@ class JogJoystickControl extends React.Component {
     }
     render() {
         let { port, activeState, distance } = this.props;
-        let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
+        let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
             <div>

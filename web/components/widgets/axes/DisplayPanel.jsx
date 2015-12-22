@@ -4,8 +4,7 @@ import React from 'react';
 import serialport from '../../../lib/serialport';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import {
-    ACTIVE_STATE_RUN,
-    IMPERIAL_UNIT,
+    ACTIVE_STATE_IDLE,
     METRIC_UNIT
 } from './constants';
 
@@ -37,7 +36,7 @@ class DisplayPanel extends React.Component {
         let { port, unit, activeState } = this.props;
         let machinePos = _.mapValues(this.props.machinePos, (pos, axis) => this.toUnitString(pos));
         let workingPos = _.mapValues(this.props.workingPos, (pos, axis) => this.toUnitString(pos));
-        let canClick = (!!port && (activeState !== ACTIVE_STATE_RUN));
+        let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
             <div className="container-fluid display-panel">
