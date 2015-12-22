@@ -3,6 +3,7 @@ import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import socket from '../../../lib/socket';
+import serialport from '../../../lib/serialport';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -31,6 +32,9 @@ class Toolbar extends React.Component {
         }
     }
     handleRun() {
+        if (this.state.workflowState === WORKFLOW_STATE_PAUSED) {
+            serialport.writeln('~'); // Grbl: Cycle Start
+        }
         socket.emit('gcode:run', this.props.port);
         pubsub.publish('gcode:run');
         this.setState({
@@ -38,12 +42,16 @@ class Toolbar extends React.Component {
         });
     }
     handlePause() {
+        serialport.writeln('!'); // Grbl: Feed Hold
         socket.emit('gcode:pause', this.props.port);
         this.setState({
             workflowState: WORKFLOW_STATE_PAUSED
         });
     }
     handleStop() {
+        if (this.state.workflowState === WORKFLOW_STATE_PAUSED) {
+            serialport.writeln('\x18'); // Grbl: Reset (ctrl-x)
+        }
         socket.emit('gcode:stop', this.props.port);
         pubsub.publish('gcode:stop');
         this.setState({
