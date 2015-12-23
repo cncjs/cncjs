@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import colornames from 'colornames';
 import i18n from 'i18next';
 import React from 'react';
 import serialport from '../../../lib/serialport';
@@ -37,12 +38,17 @@ class DisplayPanel extends React.Component {
         let machinePos = _.mapValues(this.props.machinePos, (pos, axis) => this.toUnitString(pos));
         let workingPos = _.mapValues(this.props.workingPos, (pos, axis) => this.toUnitString(pos));
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        let styles = {
+            activeState: {
+                 color: (activeState === 'Alarm') ? colornames('crimson') : colornames('gray 20')
+            }
+        };
 
         return (
             <div className="container-fluid display-panel">
                 <div className="row no-gutter">
                     <div className="active-state">
-                        {i18n._('Active state:')}&nbsp;{activeState}
+                        {i18n._('Active state:')}&nbsp;<span style={styles.activeState}>{activeState}</span>
                     </div>
                     <table className="table-bordered">
                         <thead>
