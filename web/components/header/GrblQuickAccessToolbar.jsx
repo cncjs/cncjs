@@ -22,8 +22,8 @@ class GrblQuickAccessToolbar extends React.Component {
         return (
             <div className="grbl-quick-access-toolbar">
                 <div className="btn-group btn-group-sm" role="group">
-                    <button type="button" className="btn btn-default" onClick={::this.handleCycleStart} title={i18n._('Cycle start (~)')}><i className="ion-loop"></i>{i18n._('Cycle Start')}</button>
-                    <button type="button" className="btn btn-default" onClick={::this.handleFeedHold} title={i18n._('Feed hold (!)')}><i className="ion-pause"></i>{i18n._('Feed Hold')}</button>
+                    <button type="button" className="btn btn-default" onClick={::this.handleCycleStart} title={i18n._('Cycle Start (~)')}><i className="ion-loop"></i>{i18n._('Cycle Start')}</button>
+                    <button type="button" className="btn btn-default" onClick={::this.handleFeedHold} title={i18n._('Feed Hold (!)')}><i className="ion-pause"></i>{i18n._('Feed Hold')}</button>
                 </div>
                 <div className="btn-group btn-group-sm" role="group">
                     <button type="button" className="btn btn-primary" onClick={::this.handleHome} title={i18n._('Run homing cycle ($H)')}><i className="ion-home"></i>{i18n._('Home')}</button>
