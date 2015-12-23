@@ -1,5 +1,5 @@
+import colornames from 'colornames';
 import THREE from 'three';
-import colorNames from '../../../../lib/color-names';
 
 const buildAxis = (src, dst, color, dashed) => {
     let geometry = new THREE.Geometry();
@@ -36,7 +36,9 @@ class CoordinateAxes {
     // @param {number} size Define the size of the line representing the axes.
     // @see [Drawing the Coordinate Axes]{@http://soledadpenades.com/articles/three-js-tutorials/drawing-the-coordinate-axes/}
     constructor(size) {
-        const { red, green, blue } = colorNames;
+        const red = colornames('red');
+        const green = colornames('green');
+        const blue = colornames('blue');
 
         this.group.add(
             buildAxis(new THREE.Vector3(0, 0, 0), new THREE.Vector3(size, 0, 0), red, false), // +X
