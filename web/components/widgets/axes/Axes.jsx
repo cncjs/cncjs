@@ -139,7 +139,7 @@ class Axes extends React.Component {
                         <MenuItem divider />
                         <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                         <MenuItem eventKey='G0 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}</MenuItem>
-                        <MenuItem eventKey='G10 L2 P1 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Work Offsets (G10 L2 P1 X0 Y0 Z0)')}</MenuItem>
+                        <MenuItem eventKey='G10 L20 P1 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Work Offsets (G10 L20 P1 X0 Y0 Z0)')}</MenuItem>
                         <MenuItem divider />
                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                         <MenuItem eventKey='G53 G0 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero (G53 G0 X0 Y0 Z0)')}</MenuItem>
