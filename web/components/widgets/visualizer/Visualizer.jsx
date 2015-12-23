@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -7,7 +8,6 @@ import OrbitControls from '../../../lib/three/OrbitControls';
 import GCodePath from '../../../lib/GCodePath';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
-import colorNames from '../../../lib/color-names';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import FileUploader from './FileUploader';
@@ -265,8 +265,8 @@ class Visualizer extends React.Component {
 
         { // Creating the coordinate grid
             let colorCenterLine = null; // Set to null to keep it transparent
-            let colorGrid = colorNames.grey89;
-            let gridLine = new GridLine(GRID_LINE_LENGTH, GRID_SPACING, colorCenterLine, colorNames.grey89);
+            let colorGrid = colornames('gray 89');
+            let gridLine = new GridLine(GRID_LINE_LENGTH, GRID_SPACING, colorCenterLine, colorGrid);
             gridLine.name = 'GridLine';
             this.group.add(gridLine);
         }
@@ -278,7 +278,7 @@ class Visualizer extends React.Component {
         }
 
         { // Creating an engraving cutter
-            let color = colorNames.silver;
+            let color = colornames('silver');
             let url = 'textures/brushed-steel-texture.jpg';
             loadTexture(url, (err, texture) => {
                 let engravingCutter = new EngravingCutter(color, texture);
@@ -335,7 +335,7 @@ class Visualizer extends React.Component {
         let renderer = new THREE.WebGLRenderer({
             autoClearColor: true
         });
-        renderer.setClearColor(new THREE.Color(colorNames.grey94, 1.0));
+        renderer.setClearColor(new THREE.Color(colornames('gray 94'), 1.0));
         renderer.setSize(width, height);
         renderer.clear();
 
@@ -372,7 +372,7 @@ class Visualizer extends React.Component {
         return controls;
     }
     createDirectionalLight() {
-        let directionalLight = new THREE.DirectionalLight(colorNames.whitesmoke, 0.5);
+        let directionalLight = new THREE.DirectionalLight(colornames('whitesmoke'), 0.5);
 
         directionalLight.position.set(-40, 60, -10);
         directionalLight.castShadow = true;
