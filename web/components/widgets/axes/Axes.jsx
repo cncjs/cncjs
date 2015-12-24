@@ -2,11 +2,11 @@ import _ from 'lodash';
 import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
+import ToolbarButton from './ToolbarButton';
 import DisplayPanel from './DisplayPanel';
-import JogControlPanel from './JogControlPanel';
+import ControlPanel from './ControlPanel';
 import {
     ACTIVE_STATE_IDLE,
     IMPERIAL_UNIT,
@@ -111,40 +111,29 @@ class Axes extends React.Component {
             }
         });
     }
-    toggleDisplayUnit() {
+    toUnitString(val) {
+        val = Number(val) || 0;
         if (this.state.unit === METRIC_UNIT) {
-            serialport.writeln('G20'); // G20 specifies Imperial (inch) unit
+            val = (val / 1).toFixed(3);
         } else {
-            serialport.writeln('G21'); // G21 specifies Metric (mm) unit
+            val = (val / 25.4).toFixed(4);
         }
-    }
-    handleSendCommand(target, eventKey) {
-        let cmd = eventKey;
-        if (cmd) {
-            serialport.writeln(cmd);
-        }
+        return '' + val;
     }
     render() {
         let { port, unit, activeState, machinePos, workingPos } = this.state;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
+        machinePos = _.mapValues(machinePos, (pos, axis) => this.toUnitString(pos));
+        workingPos = _.mapValues(workingPos, (pos, axis) => this.toUnitString(pos));
+
         return (
             <div>
-                <div className="toolbar-button btn-group">
-                    <button type="button" className="btn btn-xs btn-default" onClick={::this.toggleDisplayUnit} disabled={!canClick}>{i18n._('in / mm')}</button>
-                    <DropdownButton bsSize="xs" bsStyle="default" title="XYZ" id="axes-dropdown" pullRight>
-                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                        <MenuItem eventKey='G92 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}</MenuItem>
-                        <MenuItem eventKey='G92.1 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                        <MenuItem eventKey='G0 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}</MenuItem>
-                        <MenuItem eventKey='G10 L20 P1 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Zero Out Work Offsets (G10 L20 P1 X0 Y0 Z0)')}</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
-                        <MenuItem eventKey='G53 G0 X0 Y0 Z0' onSelect={::this.handleSendCommand} disabled={!canClick}>{i18n._('Go To Machine Zero (G53 G0 X0 Y0 Z0)')}</MenuItem>
-                    </DropdownButton>
-                </div>
+                <ToolbarButton
+                    port={port}
+                    unit={unit}
+                    activeState={activeState}
+                />
 
                 <DisplayPanel
                     port={port}
@@ -154,10 +143,12 @@ class Axes extends React.Component {
                     workingPos={workingPos}
                 />
 
-                <JogControlPanel
+                <ControlPanel
                     port={port}
                     unit={unit}
                     activeState={activeState}
+                    machinePos={machinePos}
+                    workingPos={workingPos}
                 />
             </div>
         );

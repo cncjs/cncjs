@@ -54,31 +54,34 @@ class JogDistanceControl extends React.Component {
         let distance = this.normalizeToRange(this.state.distance, DISTANCE_MIN, DISTANCE_MAX);
 
         return (
-            <div>
-                <label className="control-label">
-                    {i18n._('Distance:')}
-                </label>
-                <div className="input-group input-group-xs">
-                    <div className="input-group-btn">
-                        <input
-                            type="number"
-                            className="form-control"
-                            style={{width: 80}}
-                            min={DISTANCE_MIN}
-                            max={DISTANCE_MAX}
-                            step={DISTANCE_STEP}
-                            value={distance}
-                            onChange={::this.handleChange}
-                        />
-                        <PressAndHold className="btn btn-default" onClick={::this.increaseDistance} title={i18n._('Increase by 0.1 unit')}>
-                            <span className="glyphicon glyphicon-plus"></span>
-                        </PressAndHold>
-                        <PressAndHold className="btn btn-default" onClick={::this.decreaseDistance} title={i18n._('Decrease by 0.1 unit')}>
-                            <span className="glyphicon glyphicon-minus"></span>
-                        </PressAndHold>
-                        <button type="button" className="btn btn-default" onClick={::this.resetDistance} title={i18n._('Reset')}>
-                            <span className="glyphicon glyphicon-reset"></span>
-                        </button>
+            <div className="jog-distance-control">
+                <div className="form-inline">
+                    <div className="form-group">
+                        <div className="input-group input-group-xs">
+                            <div className="input-group-addon">{i18n._('Step')}</div>
+                            <div className="input-group-btn">
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    style={{borderRadius: 0}}
+                                    min={DISTANCE_MIN}
+                                    max={DISTANCE_MAX}
+                                    step={DISTANCE_STEP}
+                                    value={distance}
+                                    onChange={::this.handleChange}
+                                    title={i18n._('Step for every move operation')}
+                                />
+                                <PressAndHold className="btn btn-default" onClick={::this.increaseDistance} title={i18n._('Increase step by 0.1 unit')}>
+                                    <span className="glyphicon glyphicon-plus"></span>
+                                </PressAndHold>
+                                <PressAndHold className="btn btn-default" onClick={::this.decreaseDistance} title={i18n._('Decrease step by 0.1 unit')}>
+                                    <span className="glyphicon glyphicon-minus"></span>
+                                </PressAndHold>
+                                <button type="button" className="btn btn-default" onClick={::this.resetDistance} title={i18n._('Reset')}>
+                                    <span className="glyphicon glyphicon-reset"></span>
+                                </button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

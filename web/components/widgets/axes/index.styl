@@ -3,6 +3,35 @@
         position: relative;
         padding: 5px 10px 10px 10px;
 
+        .rotate-45deg {
+            transform: rotate(45deg);
+            &:before {
+                transform: rotate(45deg);
+            }
+        }
+        .rotate--45deg {
+            transform: rotate(-45deg);
+            &:before {
+                transform: rotate(-45deg);
+            }
+        }
+        .rotate-90deg {
+            transform: rotate(90deg);
+            &:before {
+                transform: rotate(90deg);
+            }
+        }
+        .rotate--90deg {
+            transform: rotate(-90deg);
+            &:before {
+                transform: rotate(-90deg);
+            }
+        }
+
+        ion-log-in {
+            font-size: 16px;
+        }
+
         .glyphicon-reset {
             transform: scaleX(-1);
             &:before {
@@ -62,54 +91,44 @@
             }
         }
 
-        .toggle-expand-collapse {
-            height: 16px;
-            text-align: center;
-
-            &:hover {
-                cursor: pointer;
+        .control-panel {
+            table {
+                tbody > tr > td {
+                    padding: 0 5px 5px 0;
+                }
+                tbody > tr > td:last-child {
+                    padding-right: 0;
+                }
+                tbody > tr:last-child > td {
+                    padding-bottom: 0;
+                }
             }
         }
 
-        .control-panel {
-            margin-left: -10px;
-            margin-right: -10px;
+        .jog-joystick-control {
+            margin-bottom: 5px;
 
-            .form-group:last-child {
-                margin-bottom: 0;
-            }
-
-            table.table-centered {
-                margin: 0 auto;
-            }
-            table.jog-joystick-control {
-                thead > tr > th,
-                tbody > tr > td {
-                    padding: 2px;
-                }
-            }
-            .rotate-45deg {
-                transform: rotate(45deg);
-            }
-            .rotate--45deg {
-                transform: rotate(-45deg);
-            }
-            [class^="jog-"],
-            [class*=" jog-"] {
+            button[class^="jog-"],
+            button[class*=" jog-"] {
                 font-size: 16px;
                 padding: 0;
                 width: 36px;
-                height: 32px;
+                height: 30px;
                 text-align: center;
                 vertical-align: middle;
             }
+        }
 
-            rotate-45deg {
-                transform: rotate(45deg);
-            }
-            rotate--45deg {
-                transform: rotate(-45deg);
+        .jog-distance-control {
+        }
+
+        .motion-controls {
+            float: right;
+
+            .btn {
+                width: 100%;
             }
         }
+
     }
 }

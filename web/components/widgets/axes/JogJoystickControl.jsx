@@ -32,8 +32,8 @@ class JogJoystickControl extends React.Component {
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
-            <div>
-                <table className="table-centered jog-joystick-control">
+            <div className="jog-joystick-control">
+                <table>
                     <tbody>
                         <tr>
                             <td>
@@ -44,7 +44,7 @@ class JogJoystickControl extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y+')}
                                 >
-                                    <i className="glyphicon glyphicon-menu-up rotate--45deg"></i>
+                                    <i className="glyphicon glyphicon-circle-arrow-up rotate--45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -66,7 +66,7 @@ class JogJoystickControl extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y+')}
                                 >
-                                    <i className="glyphicon glyphicon-menu-up rotate-45deg"></i>
+                                    <i className="glyphicon glyphicon-circle-arrow-up rotate-45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -96,12 +96,12 @@ class JogJoystickControl extends React.Component {
                             <td>
                                 <button
                                     type="button"
-                                    className="btn btn-sm btn-default"
-                                    onClick={() => this.move({ X: 0, Y: 0, Z: 0 })}
+                                    className="btn btn-sm btn-default jog-xy-zero"
+                                    onClick={() => this.move({ X: 0, Y: 0 })}
                                     disabled={!canClick}
-                                    title={i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}
+                                    title={i18n._('Move To XY Zero (G0 X0 Y0)')}
                                 >
-                                    <i className="glyphicon glyphicon-unchecked"></i>
+                                    <i className="ion-log-in"></i>
                                 </button>
                             </td>
                             <td>
@@ -116,6 +116,15 @@ class JogJoystickControl extends React.Component {
                                 </button>
                             </td>
                             <td>
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default jog-z-zero"
+                                    onClick={() => this.move({ Z: 0 })}
+                                    disabled={!canClick}
+                                    title={i18n._('Move To Z Zero (G0 Z0)')}
+                                >
+                                    <i className="ion-log-in rotate--90deg"></i>
+                                </button>
                             </td>
                         </tr>
                         <tr>
@@ -127,7 +136,7 @@ class JogJoystickControl extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y-')}
                                 >
-                                    <i className="glyphicon glyphicon-menu-down rotate-45deg"></i>
+                                    <i className="glyphicon glyphicon-circle-arrow-down rotate-45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -149,7 +158,7 @@ class JogJoystickControl extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y-')}
                                 >
-                                    <i className="glyphicon glyphicon-menu-down rotate--45deg"></i>
+                                    <i className="glyphicon glyphicon-circle-arrow-down rotate--45deg"></i>
                                 </button>
                             </td>
                             <td>
