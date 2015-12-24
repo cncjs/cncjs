@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import i18n from 'i18next';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
@@ -10,6 +11,9 @@ class FileUploader extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
         onLoad: React.PropTypes.func
+    };
+    state = {
+        isDragging: false
     };
 
     componentDidMount() {
@@ -125,14 +129,25 @@ class FileUploader extends React.Component {
     render() {
         let { port } = this.props;
         let canClick = !!port;
+        let classes = classNames(
+            'dropzone',
+            'centered',
+            { 'dragging': this.state.isDragging }
+        );
 
         return (
             <div className="file-uploader">
                 <Dropzone
                     ref="dropzone"
-                    className="dropzone centered"
+                    className={classes}
                     disableClick={true}
                     multiple={false}
+                    onDragEnter={() => {
+                        this.setState({ isDragging: true });
+                    }}
+                    onDragLeave={() => {
+                        this.setState({ isDragging: false });
+                    }}
                     onDrop={::this.onDrop}
                     disabled={!canClick}
                 >
