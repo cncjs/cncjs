@@ -30,7 +30,7 @@ class AxesWidget extends React.Component {
         );
 
         return (
-            <div data-component="Widgets/AxesWidget">
+            <div {...this.props} data-component="Widgets/AxesWidget">
                 <Widget width={width}>
                     <WidgetHeader
                         title={title}

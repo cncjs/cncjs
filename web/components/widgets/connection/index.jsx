@@ -30,7 +30,7 @@ class ConnectionWidget extends React.Component {
         );
 
         return (
-            <div data-component="Widgets/ConnectionWidget">
+            <div {...this.props} data-component="Widgets/ConnectionWidget">
                 <Widget width={width}>
                     <WidgetHeader
                         title={title}

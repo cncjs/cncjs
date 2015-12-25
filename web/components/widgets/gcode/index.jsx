@@ -31,7 +31,7 @@ class GCodeWidget extends React.Component {
         );
 
         return (
-            <div data-component="Widgets/GCodeWidget">
+            <div {...this.props} data-component="Widgets/GCodeWidget">
                 <Widget width={width}>
                     <WidgetHeader
                         title={title}

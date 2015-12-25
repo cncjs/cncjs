@@ -19,7 +19,7 @@ class WidgetHeader extends React.Component {
         );
 
         return (
-            <div className={divClassNames}>
+            <div {...this.props} className={divClassNames}>
                 <h3 className="widget-header-title">{options.title}</h3>
                 <WidgetHeaderToolbar buttons={options.toolbarButtons} handleClick={this.props.handleClick}/>
             </div>

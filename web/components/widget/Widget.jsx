@@ -20,7 +20,7 @@ class Widget extends React.Component {
         };
 
         return (
-            <div data-component="Widget">
+            <div {...this.props} data-component="Widget">
                 <div className={widgetClass} style={widgetStyle}>
                     {this.props.children}
                 </div>

@@ -31,7 +31,7 @@ class GrblWidget extends React.Component {
         );
 
         return (
-            <div data-component="Widgets/GrblWidget">
+            <div {...this.props} data-component="Widgets/GrblWidget">
                 <Widget width={width}>
                     <WidgetHeader
                         title={title}

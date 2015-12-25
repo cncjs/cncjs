@@ -14,7 +14,7 @@ class WidgetFooter extends React.Component {
         );
 
         return (
-            <div className={footerClass}>
+            <div {...this.props} className={footerClass}>
                 {this.props.children}
             </div>
         );

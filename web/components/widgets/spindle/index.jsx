@@ -30,7 +30,7 @@ class SpindleWidget extends React.Component {
         );
 
         return (
-            <div data-component="Widgets/SpindleWidget">
+            <div {...this.props} data-component="Widgets/SpindleWidget">
                 <Widget width={width}>
                     <WidgetHeader
                         title={title}

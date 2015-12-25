@@ -31,7 +31,7 @@ class ConsoleWidget extends React.Component {
         );
 
         return (
-            <div data-component="Widgets/ConsoleWidget">
+            <div {...this.props} data-component="Widgets/ConsoleWidget">
                 <Widget width={width}>
                     <WidgetHeader
                         title={title}

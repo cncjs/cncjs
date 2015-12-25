@@ -9,7 +9,7 @@ class WidgetContent extends React.Component {
         );
 
         return (
-            <div className={joinClasses(contentClass, this.props.className)}>
+            <div {...this.props} className={joinClasses(contentClass, this.props.className)}>
                 {this.props.children}
             </div>
         );

@@ -20,14 +20,22 @@ class Workspace extends React.Component {
     state = {
         showPrimaryContainer: true,
         showSecondaryContainer: true,
-        visualContainer: [
-            <VisualizerWidget key="visualizer" />
-        ],
-        primaryContainer: [],
-        secondaryContainer: []
+        mainList: [],
+        primaryList: [],
+        secondaryList: []
     };
 
-    _sortableGroups = [];
+    primarySortableGroup = null;
+    secondarySortableGroup = null;
+    widgets = {
+        'connection': <ConnectionWidget data-id="connection" key="connection" />,
+        'grbl': <GrblWidget data-id="grbl" key="grbl" />,
+        'console': <ConsoleWidget data-id="console" key="console" />,
+        'axes': <AxesWidget data-id="axes" key="axes" />,
+        'spindle': <SpindleWidget data-id="spindle" key="spindle" />,
+        'gcode': <GCodeWidget data-id="gcode" key="gcode" />,
+        'visualizer': <VisualizerWidget data-id="visualizer" key="visualizer" />
+    };
 
     componentDidMount() {
         this.createSortableGroups();
@@ -35,105 +43,71 @@ class Workspace extends React.Component {
         // TODO: Loading widget settings
         setTimeout(() => {
             this.setState({
-                primaryContainer: [
-                    <ConnectionWidget key="connection" />,
-                    <GrblWidget key="grbl" />,
-                    <ConsoleWidget key="console" />
+                mainList: [
+                    this.widgets['visualizer']
                 ],
-                secondaryContainer: [
-                    <AxesWidget key="axes" />,
-                    <SpindleWidget key="spindle" />,
-                    <GCodeWidget key="gcode" />
+                primaryList: [
+                    this.widgets['connection'],
+                    this.widgets['grbl'],
+                    this.widgets['console']
+                ],
+                secondaryList: [
+                    this.widgets['axes'],
+                    this.widgets['spindle'],
+                    this.widgets['gcode']
                 ]
             });
         }, 0);
     }
     componentWillUnmount() {
-        this.unsubscribeFromEvents();
-
-        this._sortableGroups.each(function(sortable) {
-            sortable.destroy();
-        });
-        this._sortableGroups = [];
+        this.destroySortableGroups();
     }
     componentDidUpdate() {
         this.resizeVisualContainer();
     }
     createSortableGroups() {
-        this.createSortableGroupForPrimaryContainer(ReactDOM.findDOMNode(this.refs.primaryContainer));
-        this.createSortableGroupForSecondaryContainer(ReactDOM.findDOMNode(this.refs.secondaryContainer));
-    }
-    createSortableGroupForPrimaryContainer(el) {
-        let sortable = Sortable.create(el, {
-            group: 'workspace',
-            handle: '.btn-drag',
-            animation: 150,
-            store: {
-                get: function(sortable) {
-                    let order = localStorage.getItem(sortable.options.group);
-                    return order ? order.split('|') : [];
+        { // primary
+            let el = ReactDOM.findDOMNode(this.refs.primaryContainer);
+            this.primarySortableGroup = Sortable.create(el, {
+                group: {
+                    name: 'primary',
+                    pull: true,
+                    put: ['secondary']
                 },
-                set: function(sortable) {
-                    let order = sortable.toArray();
-                    localStorage.setItem(sortable.options.group, order.join('|'));
+                handle: '.btn-drag',
+                dataIdAttr: 'data-id',
+                onEnd: (evt) => {
+                    log.debug(this.primarySortableGroup.toArray());
+                    log.debug(this.secondarySortableGroup.toArray());
+
+                    // Publish a 'resize' event
+                    pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
                 }
-            },
-            onAdd: (evt) => {
-                log.trace('onAdd:', [evt.item, evt.from]);
-            },
-            onUpdate: (evt) => {
-                log.trace('onUpdate:', [evt.item, evt.from]);
-            },
-            onRemove: (evt) => {
-                log.trace('onRemove:', [evt.item, evt.from]);
-            },
-            onStart: (evt) => {
-                log.trace('onStart:', [evt.item, evt.from]);
-            },
-            onSort: (evt) => {
-                log.trace('onSort:', [evt.item, evt.from]);
-            },
-            onEnd: (evt) => {
-                log.trace('onEnd:', [evt.item, evt.from]);
+            });
+        }
+        { // secondary
+            let el = ReactDOM.findDOMNode(this.refs.secondaryContainer);
+            this.secondarySortableGroup = Sortable.create(el, {
+                group: {
+                    name: 'secondary',
+                    pull: true,
+                    put: ['primary']
+                },
+                handle: '.btn-drag',
+                dataIdAttr: 'data-id',
+                onEnd: (evt) => {
+                    log.debug(this.primarySortableGroup.toArray());
+                    log.debug(this.secondarySortableGroup.toArray());
 
-                // Publish a 'resize' event
-                pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
-            }
-        });
-        this._sortableGroups.push(sortable);
-
-        return sortable;
+                    // Publish a 'resize' event
+                    pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+                }
+            });
+        }
     }
-    createSortableGroupForSecondaryContainer(el) {
-        let sortable = Sortable.create(el, {
-            group: 'workspace',
-            handle: '.btn-drag',
-            animation: 150,
-            onAdd: (evt) => {
-                log.trace('onAdd:', [evt.item, evt.from]);
-            },
-            onUpdate: (evt) => {
-                log.trace('onUpdate:', [evt.item, evt.from]);
-            },
-            onRemove: (evt) => {
-                log.trace('onRemove:', [evt.item, evt.from]);
-            },
-            onStart: (evt) => {
-                log.trace('onStart:', [evt.item, evt.from]);
-            },
-            onSort: (evt) => {
-                log.trace('onSort:', [evt.item, evt.from]);
-            },
-            onEnd: (evt) => {
-                log.trace('onEnd:', [evt.item, evt.from]);
-
-                // Publish a 'resize' event
-                pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
-            }
-        });
-        this._sortableGroups.push(sortable);
-
-        return sortable;
+    destroySortableGroups() {
+        this.primarySortableGroup.destroy();
+        this.secondarySortableGroup.destroy();
     }
     togglePrimaryContainer() {
         this.setState({ showPrimaryContainer: ! this.state.showPrimaryContainer });
@@ -152,10 +126,10 @@ class Workspace extends React.Component {
         let primaryTogglerPane = ReactDOM.findDOMNode(this.refs.primaryTogglerPane);
         let secondaryContainer = ReactDOM.findDOMNode(this.refs.secondaryContainer);
         let secondaryTogglerPane = ReactDOM.findDOMNode(this.refs.secondaryTogglerPane);
-        let visualContainer = ReactDOM.findDOMNode(this.refs.visualContainer);
+        let mainContainer = ReactDOM.findDOMNode(this.refs.mainContainer);
 
-        visualContainer.style.left = primaryContainer.offsetWidth + primaryTogglerPane.offsetWidth + 'px';
-        visualContainer.style.right = secondaryContainer.offsetWidth + secondaryTogglerPane.offsetWidth + 'px';
+        mainContainer.style.left = primaryContainer.offsetWidth + primaryTogglerPane.offsetWidth + 'px';
+        mainContainer.style.right = secondaryContainer.offsetWidth + secondaryTogglerPane.offsetWidth + 'px';
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
@@ -170,8 +144,8 @@ class Workspace extends React.Component {
                 'secondary-container',
                 { 'hidden': ! this.state.showSecondaryContainer }
             ),
-            visualContainer: classNames(
-                'visual-container',
+            mainContainer: classNames(
+                'main-container',
                 'fixed'
             )
         };
@@ -182,15 +156,15 @@ class Workspace extends React.Component {
                     <div className="workspace-table">
                         <div className="workspace-table-row">
                             <div className={classes.primaryContainer} ref="primaryContainer">
-                                {this.state.primaryContainer}
+                                {this.state.primaryList}
                             </div>
                             <div className="primary-toggler-pane" ref="primaryTogglerPane" onClick={::this.togglePrimaryContainer}></div>
-                            <div className={classes.visualContainer} ref="visualContainer">
-                                {this.state.visualContainer}
+                            <div className={classes.mainContainer} ref="mainContainer">
+                                {this.state.mainList}
                             </div>
                             <div className="secondary-toggler-pane" ref="secondaryTogglerPane" onClick={::this.toggleSecondaryContainer}></div>
                             <div className={classes.secondaryContainer} ref="secondaryContainer">
-                                {this.state.secondaryContainer}
+                                {this.state.secondaryList}
                             </div>
                         </div>
                     </div>
