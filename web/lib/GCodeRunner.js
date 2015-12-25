@@ -52,12 +52,12 @@ class GCodeRunner {
                 y: this.translateY(params.Y),
                 z: this.translateZ(params.Z)
             };
-            let { x, y, z } = v2;
+            const targetPosition = { x: v2.x, y: v2.y, z: v2.z };
 
             this.fn.drawLine('G0', v1, v2);
 
             // Update position
-            this.setPosition(x, y, z);
+            this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
         },
         // G1: Linear Move
         // Usage
@@ -86,12 +86,12 @@ class GCodeRunner {
                 y: this.translateY(params.Y),
                 z: this.translateZ(params.Z)
             };
-            let { x, y, z } = v2;
+            const targetPosition = { x: v2.x, y: v2.y, z: v2.z };
 
             this.fn.drawLine('G1', v1, v2);
 
             // Update position
-            this.setPosition(x, y, z);
+            this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
         },
         // G2 & G3: Controlled Arc Move
         // Usage
@@ -125,16 +125,55 @@ class GCodeRunner {
                 z: this.translateZ(params.Z)
             };
             let v0 = { // fixed point
-                x: this.translateX(params.I, true),
-                y: this.translateY(params.J, true),
-                z: this.translateZ(params.K, true)
+                x: this.translateI(params.I),
+                y: this.translateJ(params.J),
+                z: this.translateK(params.K)
             };
-            let { x, y, z } = v2;
+            const isClockwise = true;
+            const targetPosition = { x: v2.x, y: v2.y, z: v2.z };
+
+            if (this.isXYPlane()) { // xy-plane
+                [ v1.x, v1.y, v1.z ] = [ v1.x, v1.y, v1.z ];
+                [ v2.x, v2.y, v2.z ] = [ v2.x, v2.y, v2.z ];
+                [ v0.x, v0.y, v0.z ] = [ v0.x, v0.y, v0.z ];
+            } else if (this.isXZPlane()) { // xz-plane
+                [ v1.x, v1.y, v1.z ] = [ v1.x, v1.z, v1.y ];
+                [ v2.x, v2.y, v2.z ] = [ v2.x, v2.z, v2.y ];
+                [ v0.x, v0.y, v0.z ] = [ v0.x, v0.z, v0.y ];
+            } else if (this.isYZPlane()) { // yz-plane
+                [ v1.x, v1.y, v1.z ] = [ v1.y, v1.z, v1.x ];
+                [ v2.x, v2.y, v2.z ] = [ v2.y, v2.z, v2.x ];
+                [ v0.x, v0.y, v0.z ] = [ v0.y, v0.z, v0.x ];
+            } else {
+                console.error('The plane mode is invalid', this.modalState.plane);
+                return;
+            }
+
+            if (params.R) {
+                let radius = this.translateR(params.R);
+                let x = v2.x - v1.x;
+                let y = v2.y - v1.y;
+                let distance = Math.sqrt(x * x + y * y);
+                let height = Math.sqrt(4 * radius * radius - x * x - y * y) / 2;
+
+                if (isClockwise) {
+                    height = -height;
+                }
+                if (radius < 0) {
+                    height = -height;
+                }
+
+                let offsetX = x / 2 - y / distance * height;
+                let offsetY = y / 2 + x / distance * height;
+
+                v0.x = v1.x + offsetX;
+                v0.y = v1.y + offsetY;
+            }
 
             this.fn.drawArcCurve('G2', v1, v2, v0);
 
             // Update position
-            this.setPosition(x, y, z);
+            this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
         },
         'G3': (params) => {
             this.setModalState({ 'motion': 'G3' });
@@ -150,16 +189,55 @@ class GCodeRunner {
                 z: this.translateZ(params.Z)
             };
             let v0 = { // fixed point
-                x: this.translateX(params.I, true),
-                y: this.translateY(params.J, true),
-                z: this.translateZ(params.K, true)
+                x: this.translateI(params.I),
+                y: this.translateJ(params.J),
+                z: this.translateK(params.K)
             };
-            let { x, y, z } = v2;
+            const isClockwise = false;
+            const targetPosition = { x: v2.x, y: v2.y, z: v2.z };
+
+            if (this.isXYPlane()) { // xy-plane
+                [ v1.x, v1.y, v1.z ] = [ v1.x, v1.y, v1.z ];
+                [ v2.x, v2.y, v2.z ] = [ v2.x, v2.y, v2.z ];
+                [ v0.x, v0.y, v0.z ] = [ v0.x, v0.y, v0.z ];
+            } else if (this.isXZPlane()) { // xz-plane
+                [ v1.x, v1.y, v1.z ] = [ v1.x, v1.z, v1.y ];
+                [ v2.x, v2.y, v2.z ] = [ v2.x, v2.z, v2.y ];
+                [ v0.x, v0.y, v0.z ] = [ v0.x, v0.z, v0.y ];
+            } else if (this.isYZPlane()) { // yz-plane
+                [ v1.x, v1.y, v1.z ] = [ v1.y, v1.z, v1.x ];
+                [ v2.x, v2.y, v2.z ] = [ v2.y, v2.z, v2.x ];
+                [ v0.x, v0.y, v0.z ] = [ v0.y, v0.z, v0.x ];
+            } else {
+                console.error('The plane mode is invalid', this.modalState.plane);
+                return;
+            }
+
+            if (params.R) {
+                let radius = this.translateR(Number(params.R) || 0);
+                let x = v2.x - v1.x;
+                let y = v2.y - v1.y;
+                let distance = Math.sqrt(x * x + y * y);
+                let height = Math.sqrt(4 * radius * radius - x * x - y * y) / 2;
+
+                if (isClockwise) {
+                    height = -height;
+                }
+                if (radius < 0) {
+                    height = -height;
+                }
+
+                let offsetX = x / 2 - y / distance * height;
+                let offsetY = y / 2 + x / distance * height;
+
+                v0.x = v1.x + offsetX;
+                v0.y = v1.y + offsetY;
+            }
 
             this.fn.drawArcCurve('G3', v1, v2, v0);
 
             // Update position
-            this.setPosition(x, y, z);
+            this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
         },
         // G4: Dwell
         // Parameters
@@ -273,15 +351,14 @@ class GCodeRunner {
                 y: this.translateY(params.Y, false),
                 z: this.translateZ(params.Z, false)
             };
-            let { x, y, z } = v2;
 
             // A G92 without coordinates will reset all axes to zero.
             if (_.isUndefined(params.X) && _.isUndefined(params.Y) && _.isUndefined(params.Z)) {
-                x = y = z = 0;
+                v2.x = v2.y = v2.z = 0;
             }
      
             // Update position
-            this.setPosition(x, y, z);
+            this.setPosition(v2.x, v2.y, v2.z);
         },
         // G93: start the inverse time mode
         // In inverse time feed rate mode, an F word means the move should be completed in
@@ -331,19 +408,19 @@ class GCodeRunner {
         return this.modalState.distance === 'G91';
     }
     isXYPlane() {
-        return this.plane === 'G17';
+        return this.modalState.plane === 'G17';
     }
     isXZPlane() {
-        return this.plane === 'G18';
+        return this.modalState.plane === 'G18';
     }
     isYZPlane() {
-        return this.plane === 'G19';
+        return this.modalState.plane === 'G19';
     }
     isInverseTimeFeedrateMode() {
-        return this.feedrate === 'G93';
+        return this.modalState.feedrate === 'G93';
     }
     isUnitsPerMinuteFeedrateMode() {
-        return this.feedrate === 'G94';
+        return this.modalState.feedrate === 'G94';
     }
     setPosition(x, y, z) {
         this.position.x = _.isNumber(x) ? x : this.position.x;
@@ -373,6 +450,22 @@ class GCodeRunner {
         }
         z = this.isImperialUnits() ? in2mm(z) : z;
         return translatePosition(this.position.z, z, !!relative);
+    }
+    translateI(i) {
+        return this.translateX(i, true);
+    }
+    translateJ(j) {
+        return this.translateY(j, true);
+    }
+    translateK(k) {
+        return this.translateZ(k, true);
+    }
+    translateR(r) {
+        r = Number(r);
+        if (_.isNaN(r)) {
+            return 0;
+        }
+        return this.isImperialUnits() ? in2mm(r) : r;
     }
 }
 

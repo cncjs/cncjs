@@ -8,10 +8,10 @@ const noop = () => {};
 
 const defaultColor = new THREE.Color(colornames('darkgray'));
 const vertexColor = {
-    'G0': new THREE.Color(colornames('aquamarine')),
-    'G1': new THREE.Color(colornames('silver')),
-    'G2': new THREE.Color(colornames('antiquewhite')),
-    'G3': new THREE.Color(colornames('antiquewhite'))
+    'G0': new THREE.Color('#77f777'),
+    'G1': new THREE.Color('#7777f7'),
+    'G2': new THREE.Color('#77ccf7'),
+    'G3': new THREE.Color('#77ccf7')
 };
 
 class GCodePath {
@@ -52,19 +52,27 @@ class GCodePath {
         let radius = Math.sqrt(
             Math.pow((v1.x - v0.x), 2) + Math.pow((v1.y - v0.y), 2)
         );
+        let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
+        let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
         let arcCurve = new THREE.ArcCurve(
             v0.x, // aX
             v0.y, // aY
             radius, // aRadius
-            Math.atan2(v1.y - v0.y, v1.x - v0.x), // aStartAngle
-            Math.atan2(v2.y - v0.y, v2.x - v0.x), // aEndAngle
+            startAngle, // aStartAngle
+            endAngle, // aEndAngle
             !!isClockwise // isClockwise
         );
-        let divisions = 100;
+        let divisions = 30;
+        let points = arcCurve.getPoints(divisions);
+        let vertices = [];
+
+        for (let i = 0; i < points.length; ++i) {
+            let point = points[i];
+            let z = ((v2.z - v1.z) / points.length) * i + v1.z;
+            vertices.push(new THREE.Vector3(point.x, point.y, z));
+        }
+
         let color = vertexColor[type] || defaultColor;
-        let vertices = _.map(arcCurve.getPoints(divisions), (point) => {
-            return new THREE.Vector3(point.x, point.y, v2.z); // FIXME: Now it can only move along the Z axis
-        });
         let colors = _.fill(Array(vertices.length), color);
 
         this.geometry.vertices = this.geometry.vertices.concat(vertices);
