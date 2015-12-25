@@ -112,6 +112,20 @@ async.series([
     i18nextInit,
     logInit
 ], (err, results) => {
+
+    { // Prevent browser from loading a drag-and-dropped file
+      // http://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
+        window.addEventListener('dragover', (e) => {
+            e = e || event;
+            e.preventDefault();
+        }, false);
+
+        window.addEventListener('drop', (e) => {
+            e = e || event;
+            e.preventDefault();
+        }, false);
+    }
+
     { // Hide loading
         let loading = document.getElementById('loading');
         if (loading) {
