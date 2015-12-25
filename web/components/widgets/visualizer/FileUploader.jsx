@@ -131,40 +131,41 @@ class FileUploader extends React.Component {
         let canClick = !!port;
         let classes = classNames(
             'dropzone',
-            'centered',
             { 'dragging': this.state.isDragging }
         );
 
         return (
             <div className="file-uploader">
-                <Dropzone
-                    ref="dropzone"
-                    className={classes}
-                    disableClick={true}
-                    multiple={false}
-                    onDragEnter={() => {
-                        this.setState({ isDragging: true });
-                    }}
-                    onDragLeave={() => {
-                        this.setState({ isDragging: false });
-                    }}
-                    onDrop={::this.onDrop}
-                    disabled={!canClick}
-                >
-                    <div>
-                        <i style={{ fontSize: 48 }} className="glyphicon glyphicon-upload"></i>
-                        <h4>{i18n._('Drop G-code file here or click below to upload.')}</h4>
-                        <br />
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={::this.onClickToUpload}
-                            disabled={!canClick}
-                        >
-                            {i18n._('Upload G-code')}
-                        </button>
-                    </div>
-                </Dropzone>
+                <div className="dropzone-container">
+                    <Dropzone
+                        ref="dropzone"
+                        className={classes}
+                        disableClick={true}
+                        multiple={false}
+                        onDragEnter={() => {
+                            this.setState({ isDragging: true });
+                        }}
+                        onDragLeave={() => {
+                            this.setState({ isDragging: false });
+                        }}
+                        onDrop={::this.onDrop}
+                        disabled={!canClick}
+                    >
+                        <div>
+                            <i style={{ fontSize: 48 }} className="glyphicon glyphicon-upload"></i>
+                            <h4>{i18n._('Drop G-code file here or click below to upload.')}</h4>
+                            <br />
+                            <button
+                                type="button"
+                                className="btn btn-primary"
+                                onClick={::this.onClickToUpload}
+                                disabled={!canClick}
+                            >
+                                {i18n._('Upload G-code')}
+                            </button>
+                        </div>
+                    </Dropzone>
+                </div>
             </div>
         );
     }

@@ -63,14 +63,17 @@
                 margin-right: -0.25em; // Adjusts for spacing
             }
 
-            .dropzone {
+            .dropzone-container {
+                background-color: #fff;
                 display: inline-block;
                 vertical-align: middle;
-                background-color: #fff;
-                border-width: 2px;
-                border-color: #666;
-                border-style: dashed;
-                border-radius: 5px;
+            }
+
+            .dropzone {
+                border-width: 1px;
+                border-color: #d0d0d0;
+                border-style: solid;
+                border-radius: 4px;
                 margin: 0 auto;
                 min-width: 240px;
                 max-width: 480px;
@@ -78,14 +81,16 @@
                 z-index: 1;
             }
             .dropzone.dragging {
-                border-color: #333;
+                border-style: dashed;
+                border-color: #666;
+                border-width: 2px;
                 box-shadow: 0 0 10px #666;
             }
 
             .dropzone[disabled] {
-                color: #ccc;
-                border-color: #ccc;
-                background-color: #f6f6f6;
+                cursor: not-allowed;
+                box-shadow: none;
+                opacity: .65;
             }
         }
 
