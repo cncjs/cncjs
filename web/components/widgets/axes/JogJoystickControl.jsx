@@ -123,7 +123,7 @@ class JogJoystickControl extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move To Z Zero (G0 Z0)')}
                                 >
-                                    <i className="glyphicon glyphicon-move"></i>
+                                    <i className="glyphicon glyphicon-resize-vertical"></i>
                                 </button>
                             </td>
                         </tr>
