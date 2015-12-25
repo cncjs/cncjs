@@ -102,8 +102,14 @@ module.exports = function(server) {
             var sp = serialports[port];
             var executed = 0;
             var total = 0;
+
             if (sp && sp.queue) {
                 executed = sp.queue.size();
+
+                // Stop the queue
+                sp.queue.stop();
+                sp.queue.clear();
+
                 sp.queue.push(lines);
                 total = sp.queue.size();
             } 
