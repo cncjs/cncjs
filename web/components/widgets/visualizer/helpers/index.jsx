@@ -19,7 +19,7 @@ import PivotPoint3 from './PivotPoint3';
 //   fov = 2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI); // in degrees
 //
 export const fitCameraToObject = (camera, width, height, lookTarget) => {
-    const DEFAULT_FOV = 50;
+    const FOV = 15;
 
     console.assert(_.isNumber(width));
     console.assert(_.isNumber(height));
@@ -42,9 +42,10 @@ export const fitCameraToObject = (camera, width, height, lookTarget) => {
         // to fit the object height
         2 * Math.atan(height / (2 * dist)) * (180 / Math.PI),
         // to fit the object width
-        2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI)
+        2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI),
+        // a minimum value of fov
+        FOV
     ]);
-    fov = fov || DEFAULT_FOV;
 
     camera.fov = fov;
     camera.updateProjectionMatrix();
