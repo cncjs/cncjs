@@ -9,6 +9,10 @@ module.exports = {
         // status
         app.get(urljoin(settings.route, 'api/status'), api.status);
 
+        // config
+        app.get(urljoin(settings.route, 'api/config'), api.config.loadConfig);
+        app.put(urljoin(settings.route, 'api/config'), api.config.saveConfig);
+
         // i18n
         app.get(urljoin(settings.route, 'api/i18n/lng'), api.i18n.getLanguage);
         app.post(urljoin(settings.route, 'api/i18n/lng/:__lng__'), api.i18n.setLanguage);

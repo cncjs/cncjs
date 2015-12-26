@@ -5,6 +5,9 @@ var pkg = require('../../package.json'),
 // env
 var env = process.env.NODE_ENV || 'development';
 
+// RCFile
+var RCFILE = '.cncrc';
+
 // hashed_version
 var hashed_version = (function(version) {
     var crypto = require('crypto');
@@ -14,6 +17,10 @@ var hashed_version = (function(version) {
     return hash.substr(0, 8); // 8 digits
 }(pkg.version));
 
+var getUserHome = function() {
+    return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+};
+
 var maxAge;
 if ('development' === env) {
     maxAge = 0;
@@ -22,6 +29,9 @@ if ('development' === env) {
 }
 
 var settings = { // Default settings
+    cnc: {}, // override this settings using `cnc -c ~/.cncrc`
+    cncrc: path.resolve(getUserHome(), RCFILE),
+
     // version from package.json
     version: pkg.version,
     // hashed version
@@ -134,9 +144,6 @@ var settings = { // Default settings
         'zh-cn',
         'zh-tw'
     ],
-    cnc: { // override this settings using `cnc -c /path/to/your/config.js`
-        ports: []
-    },
     siofu: { // SocketIOFileUploader
         dir: './tmp/siofu'
     },
