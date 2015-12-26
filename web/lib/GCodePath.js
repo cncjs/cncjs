@@ -121,8 +121,10 @@ class GCodePath {
             let geometry = this.geometry;
             let material = new THREE.LineBasicMaterial({
                 color: new THREE.Color(colornames('darkgray')),
-                linewidth: 2,
-                vertexColors: THREE.VertexColors
+                linewidth: 1,
+                vertexColors: THREE.VertexColors,
+                opacity: 0.7,
+                transparent: true
             });
             this.group.add(new THREE.Line(geometry, material));
         }
@@ -131,7 +133,9 @@ class GCodePath {
             let geometry = new THREE.Geometry();
             let material = new THREE.LineBasicMaterial({
                 color: new THREE.Color(colornames('crimson')),
-                linewidth: 2
+                linewidth: 1,
+                opacity: 0.7,
+                transparent: true
             });
             let currentFrame = this.frames[this.frameIndex] || {};
             geometry.vertices = this.geometry.vertices.slice(0, currentFrame.vertexIndex);

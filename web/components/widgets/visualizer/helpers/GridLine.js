@@ -3,7 +3,11 @@ import THREE from 'three';
 
 const buildLine = (src, dst, color) => {
     let geometry = new THREE.Geometry();
-    let material = new THREE.LineBasicMaterial({ color: color });
+    let material = new THREE.LineBasicMaterial({
+        color: color,
+        opacity: 0.5,
+        transparent: true
+    });
 
     geometry.vertices.push(src.clone());
     geometry.vertices.push(dst.clone());
