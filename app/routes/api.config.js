@@ -4,22 +4,19 @@ var fs = require('fs'),
     log = require('../lib/log');
 
 var loadConfig = function(file) {
-    var config = {};
-
+    var config;
     try {
         config = JSON.parse(fs.readFileSync(settings.cncrc, 'utf8'));
     }
     catch(err) {
-        config = {};
     }
-
-    return config;
+    return config || {};
 };
 
 module.exports = {};
 
 module.exports.loadConfig = function(req, res) {
-    config = loadConfig(settings.cncrc);
+    var config = loadConfig(settings.cncrc);
     res.send(config);
 };
 
