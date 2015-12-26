@@ -39,7 +39,7 @@ $ cnc -h
     -p, --port               set listen port (default: 8000)
     -l, --host               set listen address or hostname (default: 0.0.0.0)
     -b, --backlog            set listen backlog (default: 511)
-    -c, --config <filename>  set configuration file
+    -c, --config <filename>  set config file (default: ~/.cncrc)
 ```
 
 ## Examples
