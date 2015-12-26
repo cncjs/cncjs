@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "0.13.4",
+  "version": "0.13.5",
   "description": "CNC.js is a web-based CNC milling controller for the Arduino running GRBL",
   "homepage": "https://github.com/cheton/cnc.js",
   "author": "Cheton Wu <cheton@gmail.com>",
