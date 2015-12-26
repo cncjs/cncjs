@@ -85,6 +85,7 @@
     "socketio-file-upload": "^0.4.4",
     "sprintf": "0.1.x",
     "string-format": "0.2.x",
+    "superagent": "^1.6.1",
     "three": "^0.73.0",
     "webappengine": "^0.6.3",
     "winston": "0.7.x"
