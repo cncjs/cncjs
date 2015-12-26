@@ -7,28 +7,58 @@ import serialport from '../../../lib/serialport';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
+    WORKFLOW_STATE_IDLE,
+    ACTIVE_STATE_IDLE
 } from './constants';
 
 class Toolbar extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
         ready: React.PropTypes.bool,
+        activeState: React.PropTypes.string,
         onUnload: React.PropTypes.func
     };
 
     state = {
-        workflowState: WORKFLOW_STATE_IDLE
+        workflowState: WORKFLOW_STATE_IDLE,
+        queueFinished: false
     };
 
+    componentDidMount() {
+        this.addSocketEvents();
+    }
+    componentWillUnmount() {
+        this.removeSocketEvents();
+    }
     componentDidUpdate() {
         this.props.setWorkflowState(this.state.workflowState);
     }
     componentWillReceiveProps(nextProps) {
-        let { port } = nextProps;
+        let { port, activeState } = nextProps;
 
         if (!port) {
             this.setState({ workflowState: WORKFLOW_STATE_IDLE });
+            return;
+        }
+
+        if ((this.state.queueFinished) && (activeState === ACTIVE_STATE_IDLE)) {
+            socket.emit('gcode:stop', port);
+            pubsub.publish('gcode:stop');
+            this.setState({
+                workflowState: WORKFLOW_STATE_IDLE,
+                queueFinished: false
+            });
+        }
+    }
+    addSocketEvents() {
+        socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
+    }
+    removeSocketEvents() {
+        socket.off('gcode:queue-status', this.socketOnGCodeQueueStatus);
+    }
+    socketOnGCodeQueueStatus(data) {
+        if (data.executed >= data.total) {
+            this.setState({ queueFinished: true });
         }
     }
     handleRun() {
@@ -52,6 +82,7 @@ class Toolbar extends React.Component {
 
         serialport.write('!'); // Grbl: Feed Hold
         socket.emit('gcode:pause', this.props.port);
+        pubsub.publish('gcode:pause');
 
         this.setState({
             workflowState: WORKFLOW_STATE_PAUSED
@@ -74,6 +105,7 @@ class Toolbar extends React.Component {
         console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
 
         socket.emit('gcode:close', this.props.port);
+        pubsub.publish('gcode:close');
         pubsub.publish('gcode:data', '');
 
         this.props.onUnload(); // Unload the G-code

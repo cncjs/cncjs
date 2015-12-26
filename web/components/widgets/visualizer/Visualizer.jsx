@@ -541,7 +541,7 @@ class Visualizer extends React.Component {
         this.setState({ ready: false });
     }
     render() {
-        let { port, ready } = this.state;
+        let { port, ready, activeState } = this.state;
         let hasLoaded = !!port && ready;
         let notLoaded = !hasLoaded;
 
@@ -551,6 +551,7 @@ class Visualizer extends React.Component {
                     port={port}
                     ready={ready}
                     setWorkflowState={::this.setWorkflowState}
+                    activeState={activeState}
                     onUnload={::this.onUnload}
                 />
                 <Joystick

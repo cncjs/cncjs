@@ -48,8 +48,6 @@ class GCodeStats extends React.Component {
         this.unsubscribe();
     }
     subscribe() {
-        let that = this;
-
         this.pubsubTokens = [];
 
         { // gcode:boundingBox
@@ -84,19 +82,29 @@ class GCodeStats extends React.Component {
         { // gcode:run
             let token = pubsub.subscribe('gcode:run', (msg) => {
                 let now = moment().unix();
-                let startTime = that.state.startTime || now; // use startTime or current time
-                let duration = (startTime !== now) ? that.state.duration : 0;
-                that.setState({
+                let startTime = this.state.startTime || now; // use startTime or current time
+                let duration = (startTime !== now) ? this.state.duration : 0;
+                this.setState({
                     startTime: startTime,
                     duration: duration
                 });
             });
             this.pubsubTokens.push(token);
         }
-        
+
         { // gcode:stop
             let token = pubsub.subscribe('gcode:stop', (msg) => {
-                that.setState({
+                this.setState({
+                    startTime: 0,
+                    duration: 0
+                });
+            });
+            this.pubsubTokens.push(token);
+        }
+        
+        { // gcode:close
+            let token = pubsub.subscribe('gcode:close', (msg) => {
+                this.setState({
                     startTime: 0,
                     duration: 0
                 });
@@ -112,8 +120,7 @@ class GCodeStats extends React.Component {
     }
     setTimer() {
         this.timer = setInterval(() => {
-            if (this.state.startTime <= 0) {
-                this.setState({ duration: 0 });
+            if (this.state.startTime === 0) {
                 return;
             }
 
