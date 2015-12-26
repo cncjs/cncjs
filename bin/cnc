@@ -17,7 +17,7 @@ program
     .option('-p, --port <port>', 'set listen port (default: 8000)')
     .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)')
     .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)')
-    .option('-c, --config <filename>', 'set configuration file')
+    .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
     .parse(process.argv);
 
 // Overrides defaults
@@ -27,14 +27,16 @@ _.set(settings, 'backlog', program.backlog || settings.backlog);
 
 // Set configuration settings
 if (program.config) {
-    var config = require(path.resolve(program.config));
-    if ( ! _.isObject(config)) {
+    var cncrc = path.resolve(program.config);
+    var cnc = require(cncrc);
+    if ( ! _.isObject(cnc)) {
         console.log('Check your configuration file to ensure it contain valid settings.'.bold.red);
-        console.log(config);
+        console.log(cnc);
         process.exit(1);
     }
 
-    settings['cnc'] = _.extend({}, settings['cnc'], config);
+    settings['cncrc'] = cncrc;
+    settings['cnc'] = _.extend({}, settings['cnc'], cnc);
 }
 
 var options = {
