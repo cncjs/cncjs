@@ -28,7 +28,7 @@ class GCodeRunner {
     modalState = {
         motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
         coordinate: 'G54', // G54, G55, G56, G57, G58, G59
-        plane: 'G17', // G17: XY plane, G18: XZ plane, G19: YZ plane
+        plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
         units: 'G21', // G20: Inches, G21: Millimeters
         distance: 'G90', // G90: Absolute, G91: Relative
         feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
@@ -54,7 +54,7 @@ class GCodeRunner {
             };
             const targetPosition = { x: v2.x, y: v2.y, z: v2.z };
 
-            this.fn.drawLine('G0', v1, v2);
+            this.fn.drawLine(this.modalState, v1, v2);
 
             // Update position
             this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -88,7 +88,7 @@ class GCodeRunner {
             };
             const targetPosition = { x: v2.x, y: v2.y, z: v2.z };
 
-            this.fn.drawLine('G1', v1, v2);
+            this.fn.drawLine(this.modalState, v1, v2);
 
             // Update position
             this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -170,7 +170,7 @@ class GCodeRunner {
                 v0.y = v1.y + offsetY;
             }
 
-            this.fn.drawArcCurve('G2', v1, v2, v0);
+            this.fn.drawArcCurve(this.modalState, v1, v2, v0);
 
             // Update position
             this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -234,7 +234,7 @@ class GCodeRunner {
                 v0.y = v1.y + offsetY;
             }
 
-            this.fn.drawArcCurve('G3', v1, v2, v0);
+            this.fn.drawArcCurve(this.modalState, v1, v2, v0);
 
             // Update position
             this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);

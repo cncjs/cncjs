@@ -7,7 +7,7 @@ import log from './log';
 const noop = () => {};
 
 const defaultColor = new THREE.Color(colornames('darkgray'));
-const vertexColor = {
+const motionColor = {
     'G0': new THREE.Color('#77f777'),
     'G1': new THREE.Color('#7777f7'),
     'G2': new THREE.Color('#77ccf7'),
@@ -35,20 +35,23 @@ class GCodePath {
         this.frames = []; // Example
         this.frameIndex = 0;
     }
-    drawLine(type, v1, v2) {
+    drawLine(modalState, v1, v2) {
+        const { motion } = modalState;
         this.geometry.vertices.push(new THREE.Vector3(v1.x, v1.y, v1.z));
         this.geometry.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
 
-        let color = vertexColor[type] || defaultColor;
+        let color = motionColor[motion] || defaultColor;
         this.geometry.colors.push(color);
         this.geometry.colors.push(color);
     }
     // Parameters
+    //   modalState The modal state
     //   v1 The start point
     //   v2 The end point
     //   v0 The fixed point
-    drawArcCurve(type, v1, v2, v0) {
-        let isClockwise = (type === 'G2');
+    drawArcCurve(modalState, v1, v2, v0) {
+        const { motion, plane } = modalState;
+        let isClockwise = (motion === 'G2');
         let radius = Math.sqrt(
             Math.pow((v1.x - v0.x), 2) + Math.pow((v1.y - v0.y), 2)
         );
@@ -69,10 +72,17 @@ class GCodePath {
         for (let i = 0; i < points.length; ++i) {
             let point = points[i];
             let z = ((v2.z - v1.z) / points.length) * i + v1.z;
-            vertices.push(new THREE.Vector3(point.x, point.y, z));
+
+            if (plane === 'G17') { // xy-plane
+                vertices.push(new THREE.Vector3(point.x, point.y, z));
+            } else if (plane === 'G18') { // xz-plane
+                vertices.push(new THREE.Vector3(point.x, z, point.y));
+            } else if (plane === 'G19') { // yz-plane
+                vertices.push(new THREE.Vector3(z, point.x, point.y));
+            }
         }
 
-        let color = vertexColor[type] || defaultColor;
+        let color = motionColor[motion] || defaultColor;
         let colors = _.fill(Array(vertices.length), color);
 
         this.geometry.vertices = this.geometry.vertices.concat(vertices);
@@ -84,11 +94,11 @@ class GCodePath {
 
         let runner = new GCodeRunner({
             modalState: this.options.modalState,
-            drawLine: (type, v1, v2) => {
-                this.drawLine(type, v1, v2);
+            drawLine: (modalState, v1, v2) => {
+                this.drawLine(modalState, v1, v2);
             },
-            drawArcCurve: (type, v1, v2, v0) => {
-                this.drawArcCurve(type, v1, v2, v0);
+            drawArcCurve: (modalState, v1, v2, v0) => {
+                this.drawArcCurve(modalState, v1, v2, v0);
             }
         });
         runner.on('data', (data) => {
