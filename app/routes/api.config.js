@@ -9,6 +9,7 @@ var loadConfig = function(file) {
         config = JSON.parse(fs.readFileSync(settings.cncrc, 'utf8'));
     }
     catch(err) {
+        log.error(err);
     }
     return config || {};
 };
