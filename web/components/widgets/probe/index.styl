@@ -2,8 +2,11 @@
     .widget-content {
         padding: 10px;
 
-        .input-group {
-            max-width: 150px;
+        [class*="col-"]:nth-child(odd) {
+            padding-right: 10px;
+        }
+        [class*="col-"]:nth-child(even) {
+            padding-left: 10px;
         }
     }
 }
