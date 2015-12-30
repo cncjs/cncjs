@@ -19,9 +19,7 @@ class ConnectionWidget extends React.Component {
     }
     render() {
         let width = 360;
-        let title = (
-            <div><i className="glyphicon glyphicon-log-in"></i>{i18n._('Connection')}</div>
-        );
+        let title = i18n._('Connection');
         let toolbarButtons = [
             'toggle'
         ];

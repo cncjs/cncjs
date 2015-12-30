@@ -19,9 +19,7 @@ class SpindleWidget extends React.Component {
     }
     render() {
         let width = 360;
-        let title = (
-            <div><i className="glyphicon glyphicon-cd"></i>{i18n._('Spindle')}</div>
-        );
+        let title = i18n._('Spindle');
         let toolbarButtons = [
             'toggle'
         ];

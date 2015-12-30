@@ -20,9 +20,7 @@ class ConsoleWidget extends React.Component {
     }
     render() {
         let width = 360;
-        let title = (
-            <div><i className="glyphicon glyphicon-console"></i>{i18n._('Console')}</div>
-        );
+        let title = i18n._('Console');
         let toolbarButtons = [
             'toggle'
         ];

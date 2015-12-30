@@ -20,9 +20,7 @@ class GrblWidget extends React.Component {
     }
     render() {
         let width = 360;
-        let title = (
-            <div><i className="glyphicon glyphicon-wrench"></i>{i18n._('Grbl')}</div>
-        );
+        let title = i18n._('Grbl');
         let toolbarButtons = [
             'toggle'
         ];

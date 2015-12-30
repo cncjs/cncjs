@@ -19,9 +19,7 @@ class AxesWidget extends React.Component {
     }
     render() {
         let width = 360;
-        let title = (
-            <div><i className="glyphicon glyphicon-transfer"></i>{i18n._('Axes')}</div>
-        );
+        let title = i18n._('Axes');
         let toolbarButtons = [
             'toggle'
         ];
