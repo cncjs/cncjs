@@ -11,36 +11,41 @@ import {
     ConnectionWidget,
     ConsoleWidget,
     GCodeWidget,
-    VisualizerWidget,
     GrblWidget,
-    SpindleWidget
+    ProbeWidget,
+    SpindleWidget,
+    VisualizerWidget
 } from '../widgets';
 import log from '../../lib/log';
 
 const widgets = [
     {
-        id: 'connection',
-        el: <ConnectionWidget data-id="connection" key="connection" />
+        id: 'axes',
+        el: <AxesWidget data-id="axes" key="axes" />
     },
     {
-        id: 'grbl',
-        el: <GrblWidget data-id="grbl" key="grbl" />
+        id: 'connection',
+        el: <ConnectionWidget data-id="connection" key="connection" />
     },
     {
         id: 'console',
         el: <ConsoleWidget data-id="console" key="console" />
     },
     {
-        id: 'axes',
-        el: <AxesWidget data-id="axes" key="axes" />
+        id: 'gcode',
+        el: <GCodeWidget data-id="gcode" key="gcode" />
+    },
+    {
+        id: 'grbl',
+        el: <GrblWidget data-id="grbl" key="grbl" />
+    },
+    {
+        id: 'probe',
+        el: <ProbeWidget data-id="probe" key="probe" />
     },
     {
         id: 'spindle',
         el: <SpindleWidget data-id="spindle" key="spindle" />
-    },
-    {
-        id: 'gcode',
-        el: <GCodeWidget data-id="gcode" key="gcode" />
     },
     {
         id: 'visualizer',
@@ -77,7 +82,7 @@ class Workspace extends React.Component {
             let widgetList = _.pluck(widgets, 'id');
             let defaultList = ['visualizer'];
             let primaryDefault = ['connection', 'grbl', 'console'];
-            let secondaryDefault = ['axes', 'gcode', 'spindle'];
+            let secondaryDefault = ['axes', 'gcode', 'probe', 'spindle'];
             let primaryList = _.get(settings, 'workspace.container.primary') || primaryDefault;
             let secondaryList = _.get(settings, 'workspace.container.secondary') || secondaryDefault;
 
