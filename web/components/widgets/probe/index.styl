@@ -2,11 +2,32 @@
     .widget-content {
         padding: 10px;
 
-        [class*="col-"]:nth-child(odd) {
-            padding-right: 10px;
+        .Select {
+            margin-bottom: 5px;
         }
-        [class*="col-"]:nth-child(even) {
-            padding-left: 10px;
+        .Select.sm {
+            .Select-control {
+                height: 30px;
+                border-radius: 3px;
+            }
+            .Select-placeholder {
+                line-height: 28px;
+            }
+            .Select-value {
+                padding: 6px 52px 6px 10px;
+            }   
+            .Select-input {
+                height: 28px;
+            }
+        }
+        
+        .row.no-gutter {
+            [class*="col-"]:nth-child(odd) {
+                padding-right: 10px;
+            }
+            [class*="col-"]:nth-child(even) {
+                padding-left: 10px;
+            }
         }
     }
 }
