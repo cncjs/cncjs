@@ -27,6 +27,7 @@ class DisplayPanel extends React.Component {
     render() {
         let { port, unit, activeState, machinePos, workingPos } = this.props;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
         let styles = {
             activeState: {
                  color: (activeState === 'Alarm') ? colornames('crimson') : colornames('gray 20')
@@ -55,13 +56,13 @@ class DisplayPanel extends React.Component {
                                     <span className="integer-part">{machinePos.x.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
                                     <span className="fractional-part">{machinePos.x.split('.')[1]}</span>
-                                    <span className="dimension-unit">{unit}</span>
+                                    <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-position">
                                     <span className="integer-part">{workingPos.x.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
                                     <span className="fractional-part">{workingPos.x.split('.')[1]}</span>
-                                    <span className="dimension-unit">{unit}</span>
+                                    <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton
@@ -91,13 +92,13 @@ class DisplayPanel extends React.Component {
                                     <span className="integer-part">{machinePos.y.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
                                     <span className="fractional-part">{machinePos.y.split('.')[1]}</span>
-                                    <span className="dimension-unit">{unit}</span>
+                                    <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-position">
                                     <span className="integer-part">{workingPos.y.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
                                     <span className="fractional-part">{workingPos.y.split('.')[1]}</span>
-                                    <span className="dimension-unit">{unit}</span>
+                                    <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton
@@ -127,13 +128,13 @@ class DisplayPanel extends React.Component {
                                     <span className="integer-part">{machinePos.z.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
                                     <span className="fractional-part">{machinePos.z.split('.')[1]}</span>
-                                    <span className="dimension-unit">{unit}</span>
+                                    <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-position">
                                     <span className="integer-part">{workingPos.z.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
                                     <span className="fractional-part">{workingPos.z.split('.')[1]}</span>
-                                    <span className="dimension-unit">{unit}</span>
+                                    <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-control">
                                     <DropdownButton
