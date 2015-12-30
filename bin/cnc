@@ -3,6 +3,7 @@
 process.env.NODE_ENV = 'production';
 
 var _ = require('lodash');
+var fs = require('fs');
 var path = require('path');
 var webappengine = require('webappengine');
 var program = require('commander');
@@ -25,18 +26,25 @@ _.set(settings, 'port', program.port || settings.port);
 _.set(settings, 'host', program.host || settings.host);
 _.set(settings, 'backlog', program.backlog || settings.backlog);
 
-// Set configuration settings
-if (program.config) {
-    var cncrc = path.resolve(program.config);
-    var cnc = require(cncrc);
-    if ( ! _.isObject(cnc)) {
-        console.log('Check your configuration file to ensure it contain valid settings.'.bold.red);
-        console.log(cnc);
-        process.exit(1);
+{ // Load configuration settings
+    var cncrc = settings['cncrc'];
+
+    if (program.config) {
+        cncrc = path.resolve(program.config);
     }
 
-    settings['cncrc'] = cncrc;
-    settings['cnc'] = _.extend({}, settings['cnc'], cnc);
+    try {
+        var cnc = JSON.parse(fs.readFileSync(cncrc, 'utf8'));
+        if (!(_.isObject(cnc))) {
+            console.log('Check your configuration file to ensure it contain valid settings.'.bold.red);
+            console.log(cnc);
+            process.exit(1);
+        }
+        settings['cncrc'] = cncrc;
+        settings['cnc'] = _.extend({}, settings['cnc'], cnc);
+    }
+    catch(err) {
+    }
 }
 
 var options = {
