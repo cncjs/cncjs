@@ -150,6 +150,7 @@ class GCodeStats extends React.Component {
         let box = _.mapValues(this.state.box, (position) => {
             return _.mapValues(position, (val, axis) => this.toUnitString(val));
         });
+        let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
         let startTime = '–';
         let duration = '–';
 
@@ -186,21 +187,21 @@ class GCodeStats extends React.Component {
                             <tbody>
                                 <tr>
                                     <td className="axis">X</td>
-                                    <td>{box.min.x} {unit}</td>
-                                    <td>{box.max.x} {unit}</td>
-                                    <td>{box.delta.x} {unit}</td>
+                                    <td>{box.min.x} {displayUnit}</td>
+                                    <td>{box.max.x} {displayUnit}</td>
+                                    <td>{box.delta.x} {displayUnit}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Y</td>
-                                    <td>{box.min.y} {unit}</td>
-                                    <td>{box.max.y} {unit}</td>
-                                    <td>{box.delta.y} {unit}</td>
+                                    <td>{box.min.y} {displayUnit}</td>
+                                    <td>{box.max.y} {displayUnit}</td>
+                                    <td>{box.delta.y} {displayUnit}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Z</td>
-                                    <td>{box.min.z} {unit}</td>
-                                    <td>{box.max.z} {unit}</td>
-                                    <td>{box.delta.z} {unit}</td>
+                                    <td>{box.min.z} {displayUnit}</td>
+                                    <td>{box.max.z} {displayUnit}</td>
+                                    <td>{box.delta.z} {displayUnit}</td>
                                 </tr>
                             </tbody>
                         </table>
