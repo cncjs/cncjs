@@ -360,6 +360,7 @@ class Visualizer extends React.Component {
         let controls = new THREE.OrbitControls(object, domElement);
 
         _.extend(controls, {
+            enableKeys: false, // Disable use of the keys
             rotateSpeed: 0.3,
             zoomSpeed: 0.5,
             panSpeed: 1.0,
