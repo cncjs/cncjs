@@ -101,7 +101,7 @@ class JogJoystickControl extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move To XY Zero (G0 X0 Y0)')}
                                 >
-                                    <i className="glyphicon glyphicon-move"></i>
+                                    <span className="jog-direction">X/Y</span>
                                 </button>
                             </td>
                             <td>
@@ -123,7 +123,7 @@ class JogJoystickControl extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move To Z Zero (G0 Z0)')}
                                 >
-                                    <i className="glyphicon glyphicon-resize-vertical"></i>
+                                    <span className="jog-direction">Z</span>
                                 </button>
                             </td>
                         </tr>
