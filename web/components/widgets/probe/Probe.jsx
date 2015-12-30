@@ -6,13 +6,15 @@ import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
 import {
     IMPERIAL_UNIT,
-    METRIC_UNIT
+    METRIC_UNIT,
+    ACTIVE_STATE_IDLE
 } from './constants';
 
 class Probe extends React.Component {
     state = {
         port: '',
         unit: METRIC_UNIT,
+        activeState: ACTIVE_STATE_IDLE,
         depth: -10,
         feedrate: 25,
         tlo: 3, // Tool Length Offsets (TLO)
@@ -47,10 +49,17 @@ class Probe extends React.Component {
         this.pubsubTokens = [];
     }
     addSocketEvents() {
+        socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
         socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
     }
     removeSocketEvents() {
+        socket.off('grbl:current-status', this.socketOnGrblCurrentStatus);
         socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
+    }
+    socketOnGrblCurrentStatus(data) {
+        this.setState({
+            activeState: data.activeState
+        });
     }
     socketOnGrblGCodeModes(modes) {
         let unit = this.state.unit;
@@ -78,10 +87,10 @@ class Probe extends React.Component {
         serialport.writeln('G90');
     }
     render() {
-        let { port, unit, depth, feedrate, tlo, retract } = this.state;
+        let { port, unit, activeState, depth, feedrate, tlo, retract } = this.state;
         let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
         let feedrateUnit = (unit === METRIC_UNIT) ? i18n._('mm/min') : i18n._('in/mm');
-        let canClick = !!port;
+        let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
             <div>
