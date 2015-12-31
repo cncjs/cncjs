@@ -64,6 +64,10 @@ class Probe extends React.Component {
         socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
     }
     socketOnGrblCurrentStatus(data) {
+        if (data.activeState === this.state.activeState) {
+            return;
+        }
+
         this.setState({
             activeState: data.activeState
         });
@@ -85,10 +89,15 @@ class Probe extends React.Component {
             return;
         }
 
-        this.setState({ unit: unit });
+        let defaults = this.getUnitDefaults(unit);
+        let state = _.extend({}, this.state, defaults, { unit: unit });
+
+        this.setState(state);
     }
-    getUnitDefaults() {
-        if (this.state.unit === METRIC_UNIT) {
+    getUnitDefaults(unit) {
+        unit = unit || this.state.unit;
+
+        if (unit === METRIC_UNIT) {
             return {
                 probeCommand: 'G38.2',
                 probeDepth: 10,
@@ -97,7 +106,7 @@ class Probe extends React.Component {
                 retractionDistance: 2
             };
         }
-        if (this.state.unit === IMPERIAL_UNIT) {
+        if (unit === IMPERIAL_UNIT) {
             return {
                 probeCommand: 'G38.2',
                 probeDepth: 0.5,
@@ -118,20 +127,17 @@ class Probe extends React.Component {
             textOverflow: 'ellipsis',
             overflow: 'hidden'
         };
+        let text = {
+            'G38.2': i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure'),
+            'G38.3': i18n._('G38.3 probe toward workpiece, stop on contact'),
+            'G38.4': i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure'),
+            'G38.5': i18n._('G38.5 probe away from workpiece, stop on loss of contact')
+        }[option.value];
+
         return (
-            <div style={style} title={option.label}>
-                <div>{option.value}</div>
-                <div>{option.label}</div>
+            <div title={text}>
+                <p style={style}>{text}</p>
             </div>
-        );
-    }
-    renderProbeCommandValue(option) {
-        let style = {
-            textOverflow: 'ellipsis',
-            overflow: 'hidden'
-        };
-        return (
-            <div style={style} title={option.label}>{option.label}</div>
         );
     }
     handleProbeDepthChange(event) {
@@ -191,13 +197,15 @@ class Probe extends React.Component {
         this.sendGCode('G90');
     }
     restoreDefaults() {
-        // FIXME
+        let defaults = this.getUnitDefaults();
+        this.setState(defaults);
     }
     render() {
         let { port, unit, activeState } = this.state;
         let { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
         let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
         let feedrateUnit = (unit === METRIC_UNIT) ? i18n._('mm/min') : i18n._('in/mm');
+        let step = (unit === METRIC_UNIT) ? 1 : 0.1;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
         let probeCommandOptions = _.map(['G38.2', 'G38.3', 'G38.4', 'G38.5'], (cmd) => {
             return {
@@ -223,19 +231,20 @@ class Probe extends React.Component {
                         clearable={false}
                         searchable={false}
                         placeholder={i18n._('Choose a probe command')}
+                        optionRenderer={::this.renderProbeCommandOption}
                         onChange={::this.changeProbeCommand}
                     />
                     {probeCommand === 'G38.2' &&
-                        <p>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</p>
+                        <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
                     }
                     {probeCommand === 'G38.3' &&
-                        <p>{i18n._('G38.3 probe toward workpiece, stop on contact')}</p>
+                        <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>
                     }
                     {probeCommand === 'G38.4' &&
-                        <p>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</p>
+                        <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>
                     }
                     {probeCommand === 'G38.5' &&
-                        <p>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</p>
+                        <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
                     }
                 </div>
                 <div className="container-fluid">
@@ -247,10 +256,10 @@ class Probe extends React.Component {
                                     <input
                                         type="number"
                                         className="form-control"
-                                        defaultValue={probeDepth}
+                                        value={probeDepth}
                                         placeholder="0.00"
                                         min={0}
-                                        step={1}
+                                        step={step}
                                         onKeyDown={(e) => e.stopPropagation()}
                                         onChange={::this.handleProbeDepthChange}
                                     />
@@ -265,10 +274,10 @@ class Probe extends React.Component {
                                     <input
                                         type="number"
                                         className="form-control"
-                                        defaultValue={probeFeedrate}
+                                        value={probeFeedrate}
                                         placeholder="0.00"
                                         min={0}
-                                        step={1}
+                                        step={step}
                                         onChange={::this.handleProbeFeedrateChange}
                                     />
                                     <span className="input-group-addon">{feedrateUnit}</span>
@@ -282,10 +291,10 @@ class Probe extends React.Component {
                                     <input
                                         type="number"
                                         className="form-control"
-                                        defaultValue={tlo}
+                                        value={tlo}
                                         placeholder="0.00"
                                         min={0}
-                                        step={1}
+                                        step={step}
                                         onChange={::this.handleTLOChange}
                                     />
                                     <span className="input-group-addon">{displayUnit}</span>
@@ -299,10 +308,10 @@ class Probe extends React.Component {
                                     <input
                                         type="number"
                                         className="form-control"
-                                        defaultValue={retractionDistance}
+                                        value={retractionDistance}
                                         placeholder="0.00"
                                         min={0}
-                                        step={1}
+                                        step={step}
                                         onChange={::this.handleRetractionDistanceChange}
                                     />
                                     <span className="input-group-addon">{displayUnit}</span>
@@ -314,10 +323,23 @@ class Probe extends React.Component {
                         <div className="col-sm-12">
                             <div className="btn-toolbar">
                                 <div className="btn-group" role="group">
-                                    <button type="button" className="btn btn-sm btn-default" onClick={::this.runZProbe} disabled={!canClick}>{i18n._('Run Z-probe')}</button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-default"
+                                        onClick={::this.runZProbe}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Run Z-probe')}
+                                    </button>
                                 </div>
                                 <div className="btn-group" role="group">
-                                    <button type="button" className="btn btn-sm btn-default" onClick={::this.restoreDefaults} disabled={!canClick}>{i18n._('Restore Defaults')}</button>
+                                    <button
+                                        type="button"
+                                        className="btn btn-sm btn-default"
+                                        onClick={::this.restoreDefaults}
+                                    >
+                                        {i18n._('Restore Defaults')}
+                                    </button>
                                 </div>
                             </div>
                         </div>

@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import React from 'react';
+import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import serialport from '../../../lib/serialport';
 import {
-    ACTIVE_STATE_IDLE,
-    METRIC_UNIT
+    ACTIVE_STATE_IDLE
 } from './constants';
 
 class ToolbarButton extends React.Component {
@@ -13,8 +13,11 @@ class ToolbarButton extends React.Component {
         activeState: React.PropTypes.string
     };
 
-    cancelTLO() {
-        serialport.writeln('G49');
+    handleSelect(target, eventKey) {
+        let data = eventKey;
+        if (data) {
+            serialport.writeln(data);
+        }
     }
     render() {
         let { port, activeState } = this.props;
@@ -23,7 +26,16 @@ class ToolbarButton extends React.Component {
         return (
             <div>
                 <div className="toolbar-button btn-group">
-                    <button type="button" className="btn btn-xs btn-default" onClick={::this.cancelTLO} disabled={!canClick}>{i18n._('Cancel TLO (G49)')}</button>
+                    <DropdownButton
+                        bsSize="xs"
+                        bsStyle="default"
+                        title={i18n._('More')}
+                        id="probe-dropdown"
+                        pullRight
+                        disabled={!canClick}
+                    >
+                        <MenuItem eventKey='G49' onSelect={::this.handleSelect} disabled={!canClick}>{i18n._('Cancel Tool Length Offse (G49)')}</MenuItem>
+                    </DropdownButton>
                 </div>
             </div>
         );
