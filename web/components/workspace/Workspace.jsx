@@ -88,12 +88,14 @@ class Workspace extends React.Component {
 
             // primary list
             primaryList = _(primaryList) // Keep the order of primaryList
+                .uniq()
                 .intersection(widgetList) // intersect widgetList
                 .difference(defaultList) // exclude defaultList
                 .value();
 
             // secondary list
             secondaryList = _(secondaryList.concat(widgetList)) // Keep the order of secondaryList
+                .uniq()
                 .difference(primaryList) // exclude primaryList
                 .difference(defaultList) // exclude defaultList
                 .value();
