@@ -1,7 +1,7 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import Select from 'react-select';
 import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
@@ -16,15 +16,14 @@ class Probe extends React.Component {
     state = {
         port: '',
         unit: METRIC_UNIT,
-        activeState: ACTIVE_STATE_IDLE
+        activeState: ACTIVE_STATE_IDLE,
+        probeCommand: 'G38.2',
+        probeDepth: 10,
+        probeFeedrate: 20,
+        tlo: 10,
+        retractionDistance: 2
     }
 
-    constructor(props) {
-        super(props);
-
-        let defaults = this.getUnitDefaults();
-        this.state = _.defaults({}, this.state, defaults);
-    }
     componentDidMount() {
         this.subscribe();
         this.addSocketEvents();
@@ -99,7 +98,6 @@ class Probe extends React.Component {
 
         if (unit === METRIC_UNIT) {
             return {
-                probeCommand: 'G38.2',
                 probeDepth: 10,
                 probeFeedrate: 20,
                 tlo: 10,
@@ -108,7 +106,6 @@ class Probe extends React.Component {
         }
         if (unit === IMPERIAL_UNIT) {
             return {
-                probeCommand: 'G38.2',
                 probeDepth: 0.5,
                 probeFeedrate: 1,
                 tlo: 0.5,
@@ -120,25 +117,6 @@ class Probe extends React.Component {
         this.setState({
             probeCommand: value
         });
-    }
-    renderProbeCommandOption(option) {
-        let style = {
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden'
-        };
-        let text = {
-            'G38.2': i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure'),
-            'G38.3': i18n._('G38.3 probe toward workpiece, stop on contact'),
-            'G38.4': i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure'),
-            'G38.5': i18n._('G38.5 probe away from workpiece, stop on loss of contact')
-        }[option.value];
-
-        return (
-            <div title={text}>
-                <p style={style}>{text}</p>
-            </div>
-        );
     }
     handleProbeDepthChange(event) {
         let probeDepth = event.target.value;
@@ -164,6 +142,12 @@ class Probe extends React.Component {
         serialport.writeln(msg);
     }
     runZProbe() {
+        let { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
+
+        if (_.includes(['G38.2', 'G38.3'], probeCommand)) {
+            probeDepth = -probeDepth;
+        }
+
         // Set relative distance mode
         this.sendGCode('G91');
 
@@ -171,14 +155,14 @@ class Probe extends React.Component {
         this.sendGCode('G49');
 
         // Start Z-probing
-        this.sendGCode(this.state.probeCommand, {
-            Z: -this.state.probeDepth,
-            F: this.state.probeFeedrate
+        this.sendGCode(probeCommand, {
+            Z: probeDepth,
+            F: probeFeedrate
         });
 
         // Set TLO to the height of touch plate
         this.sendGCode('G43.1', {
-            Z: this.state.tlo
+            Z: tlo
         });
 
         // Zero out work z axis
@@ -190,7 +174,7 @@ class Probe extends React.Component {
 
         // Retract slightly from the touch plate
         this.sendGCode('G0', {
-            Z: this.state.retractionDistance
+            Z: retractionDistance
         });
 
         // Set asolute distance mode
@@ -213,6 +197,28 @@ class Probe extends React.Component {
                 label: cmd
             };
         });
+        let classes = {
+            'G38.2': classNames(
+                'btn',
+                { 'btn-inverse': probeCommand === 'G38.2' },
+                { 'btn-default': probeCommand !== 'G38.2' }
+            ),
+            'G38.3': classNames(
+                'btn',
+                { 'btn-inverse': probeCommand === 'G38.3' },
+                { 'btn-default': probeCommand !== 'G38.3' }
+            ),
+            'G38.4': classNames(
+                'btn',
+                { 'btn-inverse': probeCommand === 'G38.4' },
+                { 'btn-default': probeCommand !== 'G38.4' }
+            ),
+            'G38.5': classNames(
+                'btn',
+                { 'btn-inverse': probeCommand === 'G38.5' },
+                { 'btn-default': probeCommand !== 'G38.5' }
+            )
+        };
 
         return (
             <div>
@@ -222,18 +228,43 @@ class Probe extends React.Component {
                 />
                 <div className="form-group">
                     <label className="control-label">{i18n._('Probe Command:')}</label>
-                    <Select
-                        className="sm"
-                        name="probe-command"
-                        value={probeCommand}
-                        options={probeCommandOptions}
-                        backspaceRemoves={false}
-                        clearable={false}
-                        searchable={false}
-                        placeholder={i18n._('Choose a probe command')}
-                        optionRenderer={::this.renderProbeCommandOption}
-                        onChange={::this.changeProbeCommand}
-                    />
+                    <div className="btn-toolbar" role="toolbar">
+                        <div className="btn-group btn-group-xs">
+                            <button
+                                type="button"
+                                className={classes['G38.2']}
+                                title={i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}
+                                onClick={() => this.changeProbeCommand('G38.2')}
+                            >
+                                G38.2
+                            </button>
+                            <button
+                                type="button"
+                                className={classes['G38.3']}
+                                title={i18n._('G38.3 probe toward workpiece, stop on contact')}
+                                onClick={() => this.changeProbeCommand('G38.3')}
+                            >
+                                G38.3
+                            </button>
+                            <button
+                                type="button"
+                                className={classes['G38.4']}
+                                title={i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}
+                                onClick={() => this.changeProbeCommand('G38.4')}
+                            >
+                                G38.4
+                            </button>
+                            <button
+                                type="button"
+                                className={classes['G38.5']}
+                                title={i18n._('G38.5 probe away from workpiece, stop on loss of contact')}
+                                onClick={() => this.changeProbeCommand('G38.5')}
+                            >
+                                G38.5
+                            </button>
+                        </div>
+                    </div>
+                    <p className="probe-command-description">
                     {probeCommand === 'G38.2' &&
                         <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
                     }
@@ -246,9 +277,10 @@ class Probe extends React.Component {
                     {probeCommand === 'G38.5' &&
                         <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
                     }
+                    </p>
                 </div>
                 <div className="container-fluid">
-                    <div className="row no-gutter probe-controls">
+                    <div className="row no-gutter probe-options">
                         <div className="col-sm-6">
                             <div className="form-group">
                                 <label className="control-label">{i18n._('Probe Depth:')}</label>
