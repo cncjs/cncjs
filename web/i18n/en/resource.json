@@ -120,7 +120,6 @@
     "cf9b77061f7b3126b49d50a6fa68f7ca8c26b7a3": "Open",
     "d327fae9cfe4ab6e8b56b1516cda9c2f24631eda": "Set Predefined Position 2 (G30.1)",
     "d62b77a563484ee1eec2a54b9c9d5a9832d96483": "Machine Position",
-    "d67d7eb212387e9295173d88565ab25e30209611": "Choose a probe command",
     "d75f36f88797a19683a1b68037a0b63ba522f4c3": "Axes",
     "d7e472803041da4af2beb96bd6786efc6a34624a": "Un-Zero Out Temporary Z Axis (G92.1 Z0)",
     "d8a4d7169a4479d8acbb5a044aa9e7f323a76d29": "Go To Work Zero On Z Axis (G0 Z0)",
