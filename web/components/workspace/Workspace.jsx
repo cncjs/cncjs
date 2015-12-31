@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import request from 'superagent';
 import Sortable from 'Sortable';
+import i18n from '../../lib/i18n';
 import {
     AxesWidget,
     ConnectionWidget,

@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import Select from 'react-select';
+import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
 import {
@@ -22,19 +22,19 @@ const toCommandString = (cmd, params) => {
 const probeCommands = [
     {
         cmd: 'G38.2',
-        description: 'G38.2 probe toward workpiece, stop on contact, signal error if failure'
+        description: i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')
     },
     {
         cmd: 'G38.3',
-        description: 'G38.3 probe toward workpiece, stop on contact'
+        description: i18n._('G38.3 probe toward workpiece, stop on contact')
     },
     {
         cmd: 'G38.4',
-        description: 'G38.4 probe away from workpiece, stop on loss of contact, signal error if failure'
+        description: i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')
     },
     {
         cmd: 'G38.5',
-        description: 'G38.5 probe away from workpiece, stop on loss of contact'
+        description: i18n._('G38.5 probe away from workpiece, stop on loss of contact')
     }
 ];
 

@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import i18n from 'i18next';
 import React from 'react';
 import update from 'react-addons-update';
 import { Table, Column } from 'fixed-data-table';
+import i18n from '../../../lib/i18n';
 import { GCODE_STATUS } from './constants';
 
 let isColumnResizing = false;

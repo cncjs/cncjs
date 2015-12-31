@@ -1,13 +1,12 @@
 import _ from 'lodash';
 import async from 'async';
-import i18n from 'i18next';
 import Uri from 'jsuri';
-import log from './lib/log';
-import settings from './config/settings';
-import sha1 from 'sha1';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Router, Route, IndexRoute } from 'react-router';
+import settings from './config/settings';
+import i18n from './lib/i18n';
+import log from './lib/log';
 import App from './containers/App';
 import Workspace from './components/workspace';
 import './styles/vendor.css';
@@ -36,31 +35,9 @@ const cookie_get = (key) => {
     return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(key).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
 };
 
-const registerI18nHelpers = (i18n) => {
-    i18n = i18n || {};
-    i18n._ = function() {
-        let args = Array.prototype.slice.call(arguments);
-        if (_.size(args) === 0 || _.isEmpty(args[0])) {
-            i18n.t.apply(i18n, args);
-            return;
-        }
-
-        let value = args[0];
-        let options = args[1] || {};
-        let key = sha1(value);
-        args[0] = value;
-
-        options.defaultValue = value;
-
-        return i18n.t(key, options);
-    };
-};
-
 const i18nextInit = (next) => {
     let lng;
 
-    registerI18nHelpers(i18n);
-    
     // 1. query string: lang=en
     lng = query_params[settings.i18next.detectLngQS] || '';
 

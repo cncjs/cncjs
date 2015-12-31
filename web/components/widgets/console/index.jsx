@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import i18n from 'i18next';
 import React from 'react';
-import Console from './Console';
+import i18n from '../../../lib/i18n';
 import { Widget, WidgetHeader, WidgetContent } from '../../widget';
+import Console from './Console';
 import './index.css';
 
 class ConsoleWidget extends React.Component {

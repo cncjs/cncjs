@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import i18n from 'i18next';
 import React from 'react';
-import GCode from './GCode';
+import i18n from '../../../lib/i18n';
 import { Widget, WidgetHeader, WidgetContent } from '../../widget';
+import GCode from './GCode';
 import './index.css';
 
 class GCodeWidget extends React.Component {

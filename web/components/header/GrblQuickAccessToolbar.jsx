@@ -1,5 +1,5 @@
-import i18n from 'i18next';
 import React from 'react';
+import i18n from '../../lib/i18n';
 import serialport from '../../lib/serialport';
 
 class GrblQuickAccessToolbar extends React.Component {

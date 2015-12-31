@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import cookie from 'react-cookie';
-import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import Select from 'react-select';
 import Alert from './Alert';
+import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 

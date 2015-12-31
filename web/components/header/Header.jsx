@@ -1,6 +1,6 @@
-import i18n from 'i18next';
 import React from 'react';
 import { Navbar, NavbarBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import i18n from '../../lib/i18n';
 import settings from '../../config/settings';
 import GrblQuickAccessToolbar from './GrblQuickAccessToolbar';
 

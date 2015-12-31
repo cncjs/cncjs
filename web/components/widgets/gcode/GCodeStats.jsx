@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import i18n from 'i18next';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import update from 'react-addons-update';
+import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
 import {
     METRIC_UNIT

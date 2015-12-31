@@ -1,7 +1,7 @@
 import _ from 'lodash';
-import i18n from 'i18next';
 import React from 'react';
 import classNames from 'classnames';
+import i18n from '../../lib/i18n';
 
 class WidgetHeaderToolbar extends React.Component {
     state = {

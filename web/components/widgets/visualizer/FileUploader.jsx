@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import i18n from 'i18next';
+import i18n from '../../../lib/i18n';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React from 'react';

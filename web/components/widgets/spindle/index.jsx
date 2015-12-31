@@ -1,8 +1,8 @@
 import classNames from 'classnames';
-import i18n from 'i18next';
 import React from 'react';
-import Spindle from './Spindle';
+import i18n from '../../../lib/i18n';
 import { Widget, WidgetHeader, WidgetContent } from '../../widget';
+import Spindle from './Spindle';
 import './index.css';
 
 class SpindleWidget extends React.Component {

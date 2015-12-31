@@ -1,8 +1,8 @@
 import _ from 'lodash';
-import i18n from 'i18next';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
+import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
