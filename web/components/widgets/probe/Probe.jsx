@@ -148,11 +148,11 @@ class Probe extends React.Component {
             probeDepth = -probeDepth;
         }
 
-        // Set relative distance mode
-        this.sendGCode('G91');
-
         // Cancel Tool Length Offset (TLO)
         this.sendGCode('G49');
+
+        // Set relative distance mode
+        this.sendGCode('G91');
 
         // Start Z-probing
         this.sendGCode(probeCommand, {
@@ -160,10 +160,8 @@ class Probe extends React.Component {
             F: probeFeedrate
         });
 
-        // Set TLO to the height of touch plate
-        this.sendGCode('G43.1', {
-            Z: tlo
-        });
+        // Set back to asolute distance mode
+        this.sendGCode('G90');
 
         // Zero out work z axis
         this.sendGCode('G10', {
@@ -172,12 +170,20 @@ class Probe extends React.Component {
             Z: 0
         });
 
+        // Set TLO to the height of touch plate
+        this.sendGCode('G43.1', {
+            Z: -tlo
+        });
+
+        // Set relative distance mode
+        this.sendGCode('G91');
+
         // Retract slightly from the touch plate
         this.sendGCode('G0', {
             Z: retractionDistance
         });
 
-        // Set asolute distance mode
+        // Set back to asolute distance mode
         this.sendGCode('G90');
     }
     restoreDefaults() {
