@@ -29,9 +29,9 @@ $ npm install -g cncjs
 ```
 
 ## Usage
-Run `cnc` to start the server, and visit `http://yourhostname:8000/` to view the web console:
+Run `cnc` or `~/.npm/bin/cnc` to start the server, and visit `http://yourhostname:8000/` to view the web console:
 ```bash
-$ cnc
+$ cnc # or ~/.npm/bin/cnc
 ```
 
 Run `cnc` with -h for detailed usage:
