@@ -23,7 +23,7 @@ $ cat ~/.npmrc
 prefix=~/.npm
 ```
 
-Then, install `cncjs` without `sudo`, or the `serialport` module may not install correctly.
+Then, install `cncjs` without `sudo`, or the `serialport` module may not install correctly on some platforms like Raspberry Pi.
 ```bash
 $ npm install -g cncjs
 ```
