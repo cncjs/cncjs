@@ -16,6 +16,14 @@ JSDC 2015 speech: http://cheton.github.io/jsdc2015/#/81
 [![Photo Gallery](https://scontent.xx.fbcdn.net/hphotos-xat1/v/t1.0-9/12118907_10207901191546433_3867236073352040616_n.jpg?oh=97c977c426367130eef35b5e230637c4&oe=56A65008)](https://www.facebook.com/cheton.wu/media_set?set=a.10207901184746263.1073741852.1195704289&type=3)
 
 ## Installation
+First, ensure you have `prefix=~/.npm` in  `~/.npmrc`. For example:
+```bash
+$ echo "prefix=~/.npm" >> ~/.npmrc
+$ cat ~/.npmrc
+prefix=~/.npm
+```
+
+Then, install `cncjs` without `sudo`, or the `serialport` module may not install correctly.
 ```bash
 $ npm install -g cncjs
 ```
