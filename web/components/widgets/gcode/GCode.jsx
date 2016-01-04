@@ -5,6 +5,7 @@ import update from 'react-addons-update';
 import { parseText } from 'gcode-parser';
 import GCodeStats from './GCodeStats';
 import GCodeTable from './GCodeTable';
+import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 import {
     IMPERIAL_UNIT,
