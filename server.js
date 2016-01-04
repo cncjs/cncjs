@@ -4,6 +4,7 @@ var settings = require('./app/config/settings');
 var fs = require('fs');
 var fse = require('fs-extra');
 var path = require('path');
+var pubsub = require('pubsub-js');
 var readline = require('readline');
 var queue = require('./command-queue');
 var serialport = require('serialport');
@@ -44,6 +45,35 @@ var matchGrblGCodeModes = function(msg) {
 
 var serialports = {};
 
+pubsub.subscribe('file:upload', function(msg, data) {
+    var meta = data.meta || {};
+    var contents = data.contents || '';
+
+    // Client to Server Meta Data
+    var port = meta.port;
+
+    var lines = _(contents.split('\n'))
+        .map(function(line) {
+            return stripComments(line);
+        })
+        .compact()
+        .value();
+
+    var sp = serialports[port];
+    if (sp && sp.queue) {
+        // Stop the queue
+        sp.queue.stop();
+        sp.queue.clear();
+
+        sp.queue.push(lines);
+        total = sp.queue.size();
+
+        log.debug('Added %s to the queue: port=%s', JSON.stringify(meta.name), JSON.stringify(port));
+    } else {
+        log.error('Failed to add %s to the queue: port=%s', JSON.stringify(meta.name), JSON.stringify(port));
+    }
+});
+
 module.exports = function(server) {
     var io = require('socket.io')(server, {
         serveClient: true,
@@ -53,85 +83,7 @@ module.exports = function(server) {
     io.on('connection', function(socket) {
         log.debug('connection:', { id: socket.id });
 
-        // Create the directory for SocketIOFileUploader
-        fse.mkdirsSync(_.get(settings, 'siofu.dir'));
-
-        // Make an instance of SocketIOFileUpload and listen on this socket
-        var siofu = new SocketIOFileUpload();
-        siofu.dir = _.get(settings, 'siofu.dir');
-        siofu.listen(socket);
-
-        siofu.on('saved', function(event){
-            log.debug('siofu.saved:', _.pick(event.file, [
-                'name',
-                'mtime',
-                'encoding',
-                'clientDetail',
-                'meta',
-                'id',
-                'size',
-                'bytesLoaded',
-                'success',
-                'base',
-                'pathName'
-            ]));
-
-            if (!(event.file.success)) {
-                log.warn('The uploaded file \'%s\' was not created successfully.', event.file.pathName);
-            }
-
-            // Client to Server Meta Data
-            var port = _.get(event.file.meta, 'port');
-
-            var pathName = event.file.pathName;
-            var data = fs.readFileSync(pathName, 'utf-8');
-            var lines = _(data.split('\n'))
-                .map(function(line) {
-                    return stripComments(line);
-                })
-                .compact()
-                .value();
-
-            // Unlink temporary file
-            fs.unlink(pathName, function(err) {
-                if (err) {
-                    log.error('Unlink of file \'%s\' failed.', pathName, err);
-                }
-            });
-
-            var sp = serialports[port];
-            var executed = 0;
-            var total = 0;
-
-            if (sp && sp.queue) {
-                executed = sp.queue.size();
-
-                // Stop the queue
-                sp.queue.stop();
-                sp.queue.clear();
-
-                sp.queue.push(lines);
-                total = sp.queue.size();
-            } 
-
-            // Server to Client Meta Data
-            // The meta data will be available to the client on the "complete" event on the client.
-            event.file.clientDetail = _.extend({}, event.file.clientDetail, {
-                connected: sp && sp.serialPort && sp.serialPort.isOpen(),
-                queueStatus: {
-                    executed: executed,
-                    total: total
-                }
-            });
-        });
-            
-        siofu.on('error', function(event){
-            console.log('siofu.error:', event);
-        });
-
         socket.on('disconnect', function() {
-            siofu = undefined;
-
             // Remove the socket of the disconnected client
             _.each(serialports, function(sp) {
                 sp.sockets[socket.id] = undefined;
@@ -527,7 +479,7 @@ module.exports = function(server) {
             sp.queue.stop();
         });
 
-        socket.on('gcode:close', function(port) {
+        socket.on('gcode:unload', function(port) {
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
