@@ -54,8 +54,8 @@ class GCode extends React.Component {
             this.pubsubTokens.push(token);
         }
 
-        { // gcode:data
-            let token = pubsub.subscribe('gcode:data', (msg, gcode) => {
+        { // gcode:load
+            let token = pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
                 let lines = gcode.split('\n');
                 let commands = _(lines)

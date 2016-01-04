@@ -41,7 +41,7 @@
             }
         }
 
-        .file-uploader {
+        .file-uploader-block {
             position: absolute;
             top: 0;
             bottom: 0;
@@ -63,13 +63,10 @@
                 margin-right: -0.25em; // Adjusts for spacing
             }
 
-            .dropzone-container {
-                background-color: #fff;
+            .file-uploader-box {
                 display: inline-block;
                 vertical-align: middle;
-            }
-
-            .dropzone {
+                background-color: #fff;
                 border-width: 1px;
                 border-color: #d0d0d0;
                 border-style: solid;
@@ -80,14 +77,8 @@
                 padding: 20px;
                 z-index: 1;
             }
-            .dropzone.dragging {
-                border-style: dashed;
-                border-color: #666;
-                border-width: 2px;
-                box-shadow: 0 0 10px #666;
-            }
 
-            .dropzone[disabled] {
+            .file-uploader-content[disabled] {
                 cursor: not-allowed;
                 box-shadow: none;
                 opacity: .65;

@@ -1,11 +1,13 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import request from 'superagent';
 import Sortable from 'Sortable';
 import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import {
     AxesWidget,
     ConnectionWidget,
@@ -16,7 +18,6 @@ import {
     SpindleWidget,
     VisualizerWidget
 } from '../widgets';
-import log from '../../lib/log';
 
 const widgets = [
     {
@@ -60,6 +61,9 @@ const getWidgetElementById = (id) => {
 
 class Workspace extends React.Component {
     state = {
+        port: '',
+        isDragging: false,
+        isUploading: false,
         showPrimaryContainer: true,
         showSecondaryContainer: true,
         defaultContainer: [],
@@ -72,6 +76,8 @@ class Workspace extends React.Component {
     };
 
     componentDidMount() {
+        this.subscribe();
+
         this.createSortableGroups();
 
         this.loadSettings((err, settings) => {
@@ -113,11 +119,39 @@ class Workspace extends React.Component {
             });
         });
     }
-    componentWillUnmount() {
-        this.destroySortableGroups();
-    }
     componentDidUpdate() {
         this.resizeVisualContainer();
+    }
+    componentWillUnmount() {
+        this.destroySortableGroups();
+        this.unsubscribe();
+    }
+    subscribe() {
+        this.pubsubTokens = [];
+
+        { // port
+            let token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                this.setState({ port: port });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    startWaiting() {
+        // Adds the 'wait' class to <html>
+        let root = document.documentElement;
+        root.classList.add('wait');
+    }
+    stopWaiting() {
+        // Adds the 'wait' class to <html>
+        let root = document.documentElement;
+        root.classList.remove('wait');
     }
     loadSettings(callback) {
         request
@@ -213,7 +247,65 @@ class Workspace extends React.Component {
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
+    onDrop(files) {
+        let { port } = this.state;
+
+        if (!port) {
+            return;
+        }
+
+        let file = files[0];
+        let reader = new FileReader();
+
+        reader.onloadend = (event) => {
+            let contents = event.target.result,
+                error    = event.target.error;
+
+            if (error) {
+                log.error(error);
+                return;
+            }
+
+            log.debug('FileReader:', _.pick(file, [
+                'lastModified',
+                'lastModifiedDate',
+                'meta',
+                'name',
+                'size',
+                'type'
+            ]));
+
+            this.startWaiting();
+            this.setState({ isUploading: true });
+
+            request
+                .post('/api/file/upload')
+                .send({
+                    meta: {
+                        name: file.name,
+                        size: file.size,
+                        port: port
+                    },
+                    contents: contents
+                })
+                .end((err, res) => {
+                    this.stopWaiting();
+                    this.setState({ isUploading: false });
+
+                    if (err || !res.ok) {
+                        log.error('Failed to upload file', err, res);
+                        return;
+                    }
+
+                    pubsub.publish('gcode:load', contents);
+                });
+        };
+
+        reader.readAsText(file);
+    }
     render() {
+        let { isDragging, isUploading } = this.state;
+        let notDragging = !isDragging;
         let classes = {
             primaryContainer: classNames(
                 'primary-container',
@@ -226,27 +318,49 @@ class Workspace extends React.Component {
             defaultContainer: classNames(
                 'main-container',
                 'fixed'
+            ),
+            dropzoneOverlay: classNames(
+                'dropzone-overlay',
+                { 'hidden': notDragging }
             )
         };
 
         return (
             <div className="container-fluid" data-component="Workspace">
                 <div className="workspace-container">
-                    <div className="workspace-table">
-                        <div className="workspace-table-row">
-                            <div className={classes.primaryContainer} ref="primaryContainer">
-                                {this.state.primaryContainer}
-                            </div>
-                            <div className="primary-toggler-pane" ref="primaryTogglerPane" onClick={::this.togglePrimaryContainer}></div>
-                            <div className={classes.defaultContainer} ref="defaultContainer">
-                                {this.state.defaultContainer}
-                            </div>
-                            <div className="secondary-toggler-pane" ref="secondaryTogglerPane" onClick={::this.toggleSecondaryContainer}></div>
-                            <div className={classes.secondaryContainer} ref="secondaryContainer">
-                                {this.state.secondaryContainer}
+                    <div className={classes.dropzoneOverlay}></div>
+                    <Dropzone
+                        ref="dropzone"
+                        className="dropzone"
+                        disableClick={true}
+                        multiple={false}
+                        onDragEnter={() => {
+                            this.setState({ isDragging: true });
+                        }}
+                        onDragLeave={() => {
+                            this.setState({ isDragging: false });
+                        }}
+                        onDrop={(files) => {
+                            this.setState({ isDragging: false });
+                            this.onDrop(files);
+                        }}
+                    >
+                        <div className="workspace-table">
+                            <div className="workspace-table-row">
+                                <div className={classes.primaryContainer} ref="primaryContainer">
+                                    {this.state.primaryContainer}
+                                </div>
+                                <div className="primary-toggler-pane" ref="primaryTogglerPane" onClick={::this.togglePrimaryContainer}></div>
+                                <div className={classes.defaultContainer} ref="defaultContainer">
+                                    {this.state.defaultContainer}
+                                </div>
+                                <div className="secondary-toggler-pane" ref="secondaryTogglerPane" onClick={::this.toggleSecondaryContainer}></div>
+                                <div className={classes.secondaryContainer} ref="secondaryContainer">
+                                    {this.state.secondaryContainer}
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </Dropzone>
                 </div>
             </div>
         );

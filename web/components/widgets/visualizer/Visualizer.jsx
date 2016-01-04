@@ -119,14 +119,8 @@ class Visualizer extends React.Component {
                 port = port || '';
 
                 if (!port) {
-                    this.setState({
-                        port: '',
-                        ready: false
-                    });
-                    this.unloadGCode();
-
-                    pubsub.publish('gcode:stop');
-                    pubsub.publish('gcode:data', '');
+                    pubsub.publish('gcode:unload');
+                    this.setState({ port: '' });
                 } else {
                     this.setState({ port: port });
                 }
@@ -135,10 +129,34 @@ class Visualizer extends React.Component {
             this.pubsubTokens.push(token);
         }
 
-        { // gcode:data
-            let token = pubsub.subscribe('gcode:data', (msg, gcode) => {
+        { // gcode:load
+            let token = pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
-                this.loadGCode(gcode);
+
+                this.setState({ ready: true });
+
+                // It may take some time to render the G-code
+                setTimeout(() => {
+                    this.startWaiting();
+
+                    this.loadGCode(gcode, (options) => {
+                        pubsub.publish('gcode:boundingBox', options.boundingBox);
+
+                        this.setState({
+                            boundingBox: options.boundingBox
+                        });
+
+                        this.stopWaiting();
+                    });
+                }, 0);
+            });
+            this.pubsubTokens.push(token);
+        }
+
+        { // gcode:unload
+            let token = pubsub.subscribe('gcode:unload', (msg) => {
+                this.unloadGCode();
+                this.setState({ ready: false });
             });
             this.pubsubTokens.push(token);
         }
@@ -203,6 +221,16 @@ class Visualizer extends React.Component {
 
         let frameIndex = data.executed;
         this.gcodePath.setFrameIndex(frameIndex);
+    }
+    startWaiting() {
+        // Adds the 'wait' class to <html>
+        let root = document.documentElement;
+        root.classList.add('wait');
+    }
+    stopWaiting() {
+        // Adds the 'wait' class to <html>
+        let root = document.documentElement;
+        root.classList.remove('wait');
     }
     addResizeEventListener() {
         // handle resize event
@@ -420,15 +448,9 @@ class Visualizer extends React.Component {
         let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         engravingCutter.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
-    loadGCode(gcode) {
+    loadGCode(gcode, callback) {
         // Remove previous G-code object
         this.unloadGCode();
-
-        // Sets the pivot point to the origin point (0, 0, 0)
-        this.pivotPoint.set(0, 0, 0);
-
-        // Reset controls
-        this.controls.reset();
 
         let el = ReactDOM.findDOMNode(this.refs.visualizer);
 
@@ -441,14 +463,14 @@ class Visualizer extends React.Component {
             pathObject.name = 'GCodePath';
             this.group.add(pathObject);
 
-            let box = getBoundingBox(pathObject);
-            let dX = box.max.x - box.min.x;
-            let dY = box.max.y - box.min.y;
-            let dZ = box.max.z - box.min.z;
+            let bbox = getBoundingBox(pathObject);
+            let dX = bbox.max.x - bbox.min.x;
+            let dY = bbox.max.y - bbox.min.y;
+            let dZ = bbox.max.z - bbox.min.z;
             let center = new THREE.Vector3(
-                box.min.x + (dX / 2),
-                box.min.y + (dY / 2),
-                box.min.z + (dZ / 2)
+                bbox.min.x + (dX / 2),
+                bbox.min.y + (dY / 2),
+                bbox.min.z + (dZ / 2)
             );
 
             // Set the pivot point to the object's center position
@@ -457,7 +479,7 @@ class Visualizer extends React.Component {
             { // Fit the camera to object
                 let objectWidth = dX;
                 let objectHeight = dY;
-                let lookTarget = new THREE.Vector3(0, 0, box.max.z);
+                let lookTarget = new THREE.Vector3(0, 0, bbox.max.z);
 
                 fitCameraToObject(this.camera, objectWidth, objectHeight, lookTarget);
             }
@@ -465,9 +487,7 @@ class Visualizer extends React.Component {
             // Update the scene
             this.updateScene();
 
-            pubsub.publish('gcode:boundingBox', box);
-
-            this.setState({ boundingBox: box });
+            (typeof callback === 'function') && callback({ boundingBox: bbox });
         });
     }
     unloadGCode() {
@@ -475,6 +495,15 @@ class Visualizer extends React.Component {
         if (pathObject) {
             this.group.remove(pathObject);
         }
+
+        // Sets the pivot point to the origin point (0, 0, 0)
+        this.pivotPoint.set(0, 0, 0);
+
+        // Reset controls
+        this.controls.reset();
+
+        // Update the scene
+        this.updateScene();
     }
     setWorkflowState(workflowState) {
         this.setState({ workflowState: workflowState });
@@ -533,14 +562,6 @@ class Visualizer extends React.Component {
 
         this.controls.reset();
     }
-    onLoad() {
-        this.setState({ ready: true });
-    }
-    onUnload() {
-        this.unloadGCode();
-
-        this.setState({ ready: false });
-    }
     render() {
         let { port, ready, activeState } = this.state;
         let hasLoaded = !!port && ready;
@@ -553,7 +574,6 @@ class Visualizer extends React.Component {
                     ready={ready}
                     setWorkflowState={::this.setWorkflowState}
                     activeState={activeState}
-                    onUnload={::this.onUnload}
                 />
                 <Joystick
                     ready={ready}
@@ -564,10 +584,7 @@ class Visualizer extends React.Component {
                     center={::this.joystickCenter}
                 />
                 {notLoaded && 
-                    <FileUploader
-                        port={port}
-                        onLoad={::this.onLoad}
-                    />
+                    <FileUploader port={port} />
                 }
                 <div ref="visualizer" className="visualizer" />
             </div>

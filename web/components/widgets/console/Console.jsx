@@ -26,17 +26,15 @@ class Console extends React.Component {
         this.removeSerialPortEvents();
     }
     subscribe() {
-        let that = this;
-
         this.pubsubTokens = [];
 
         { // port
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                that.setState({ port: port });
+                this.setState({ port: port });
 
                 if (!port) {
-                    that.clear();
+                    this.clear();
                 }
             });
             this.pubsubTokens.push(token);
