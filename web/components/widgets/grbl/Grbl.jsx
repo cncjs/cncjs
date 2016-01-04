@@ -13,15 +13,18 @@ class Grbl extends React.Component {
         port: '',
         modes: {
         }
-    }
+    };
+    sokcetEventListener = {
+        'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
+    };
 
     componentDidMount() {
         this.subscribe();
-        this.addSocketEvents();
+        this.addSocketEventListener();
     }
     componentWillUnmount() {
         this.unsubscribe();
-        this.removeSocketEvents();
+        this.removeSocketEventListener();
     }
     subscribe() {
         this.pubsubTokens = [];
@@ -45,11 +48,15 @@ class Grbl extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEvents() {
-        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+    addSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.on(eventName, callback);
+        });
     }
-    removeSocketEvents() {
-        socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
+    removeSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.off(eventName, callback);
+        });
     }
     socketOnGrblGCodeModes(modes) {
         let state = {};

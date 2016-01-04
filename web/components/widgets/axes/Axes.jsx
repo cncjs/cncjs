@@ -29,14 +29,18 @@ class Axes extends React.Component {
             z: '0.000'
         }
     };
+    socketEventListener = {
+        'grbl:current-status': ::this.socketOnGrblCurrentStatus,
+        'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
+    };
 
     componentDidMount() {
         this.subscribe();
-        this.addSocketEvents();
+        this.addSocketEventListener();
     }
     componentWillUnmount() {
         this.unsubscribe();
-        this.removeSocketEvents();
+        this.removeSocketEventListener();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return JSON.stringify(nextState) !== JSON.stringify(this.state);
@@ -62,13 +66,15 @@ class Axes extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEvents() {
-        socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
-        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+    addSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.on(eventName, callback);
+        });
     }
-    removeSocketEvents() {
-        socket.off('grbl:current-status', this.socketOnGrblCurrentStatus);
-        socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
+    removeSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.off(eventName, callback);
+        });
     }
     socketOnGrblCurrentStatus(data) {
         this.setState({

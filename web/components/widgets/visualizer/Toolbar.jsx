@@ -17,17 +17,19 @@ class Toolbar extends React.Component {
         ready: React.PropTypes.bool,
         activeState: React.PropTypes.string
     };
-
     state = {
         workflowState: WORKFLOW_STATE_IDLE,
         queueFinished: false
     };
+    socketEventListener = {
+        'gcode:queue-status': ::this.socketOnGCodeQueueStatus
+    };
 
     componentDidMount() {
-        this.addSocketEvents();
+        this.addSocketEventListener();
     }
     componentWillUnmount() {
-        this.removeSocketEvents();
+        this.removeSocketEventListener();
     }
     componentDidUpdate() {
         this.props.setWorkflowState(this.state.workflowState);
@@ -49,11 +51,15 @@ class Toolbar extends React.Component {
             });
         }
     }
-    addSocketEvents() {
-        socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
+    addSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.on(eventName, callback);
+        });
     }
-    removeSocketEvents() {
-        socket.off('gcode:queue-status', this.socketOnGCodeQueueStatus);
+    removeSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.off(eventName, callback);
+        });
     }
     socketOnGCodeQueueStatus(data) {
         if (data.executed >= data.total) {
