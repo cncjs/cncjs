@@ -4,20 +4,12 @@ var settings = require('./app/config/settings');
 var fs = require('fs');
 var fse = require('fs-extra');
 var path = require('path');
+var parseText = require('gcode-parser').parseText;
 var pubsub = require('pubsub-js');
 var readline = require('readline');
 var queue = require('./command-queue');
 var serialport = require('serialport');
 var SerialPort = serialport.SerialPort;
-var SocketIOFileUpload = require('socketio-file-upload');
-
-var stripComments = (function() {
-    var re1 = /^\s+|\s+$/g; // Strip leading and trailing spaces
-    var re2 = /\s*[#;].*$/g; // Strip everything after # or ; to the end of the line, including preceding spaces
-    return function (s) {
-        return s.replace(re1, '').replace(re2, '');
-    };
-}());
 
 //
 // Grbl 0.9j ['$' for help]
@@ -49,18 +41,21 @@ pubsub.subscribe('file:upload', function(msg, data) {
     var meta = data.meta || {};
     var contents = data.contents || '';
 
-    // Client to Server Meta Data
-    var port = meta.port;
+    parseText(contents, function(err, data) {
+        if (err) {
+            log.error('Failed to parse the contents', err, contents);
+            return;
+        }
 
-    var lines = _(contents.split('\n'))
-        .map(function(line) {
-            return stripComments(line);
-        })
-        .compact()
-        .value();
+        var lines = _.pluck(data, 'line');
+        var port = meta.port;
+        var sp = serialports[port];
 
-    var sp = serialports[port];
-    if (sp && sp.queue) {
+        if (!(sp && sp.queue)) {
+            log.error('Failed to add %s to the queue: port=%s', JSON.stringify(meta.name), JSON.stringify(port));
+            return;
+        }
+
         // Stop the queue
         sp.queue.stop();
         sp.queue.clear();
@@ -69,9 +64,7 @@ pubsub.subscribe('file:upload', function(msg, data) {
         total = sp.queue.size();
 
         log.debug('Added %s to the queue: port=%s', JSON.stringify(meta.name), JSON.stringify(port));
-    } else {
-        log.error('Failed to add %s to the queue: port=%s', JSON.stringify(meta.name), JSON.stringify(port));
-    }
+    });
 });
 
 module.exports = function(server) {

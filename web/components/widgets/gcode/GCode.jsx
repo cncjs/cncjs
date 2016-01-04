@@ -2,6 +2,7 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import update from 'react-addons-update';
+import { parseText } from 'gcode-parser';
 import GCodeStats from './GCodeStats';
 import GCodeTable from './GCodeTable';
 import socket from '../../../lib/socket';
@@ -10,14 +11,6 @@ import {
     METRIC_UNIT,
     GCODE_STATUS
 } from './constants';
-
-let stripComments = (() => {
-    let re1 = /^\s+|\s+$/g; // Strip leading and trailing spaces
-    let re2 = /\s*[#;].*$/g; // Strip everything after # or ; to the end of the line, including preceding spaces
-    return (s) => {
-        return s.replace(re1, '').replace(re2, '');
-    };
-})();
 
 class GCode extends React.Component {
     state = {
@@ -42,14 +35,12 @@ class GCode extends React.Component {
         this.unsubscribe();
     }
     subscribe() {
-        let that = this;
-
         this.pubsubTokens = [];
 
         { // port
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                that.setState({ port: port });
+                this.setState({ port: port });
             });
             this.pubsubTokens.push(token);
         }
@@ -57,20 +48,24 @@ class GCode extends React.Component {
         { // gcode:load
             let token = pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
-                let lines = gcode.split('\n');
-                let commands = _(lines)
-                    .map(function(line) {
-                        return stripComments(line);
-                    })
-                    .compact()
-                    .map(function(line) {
-                        return {
-                            status: GCODE_STATUS.NOT_STARTED,
-                            cmd: line
-                        };
-                    })
-                    .value();
-                that.setState({ commands: commands });
+
+                parseText(gcode, (err, data) => {
+                    if (err) {
+                        log.error(err);
+                        return;
+                    }
+
+                    let commands = _(data)
+                        .map((o) => {
+                            return {
+                                status: GCODE_STATUS.NOT_STARTED,
+                                cmd: o.line
+                            };
+                        })
+                        .value();
+
+                    this.setState({ commands: commands });
+                });
             });
             this.pubsubTokens.push(token);
         }
