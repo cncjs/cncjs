@@ -61,9 +61,8 @@ pubsub.subscribe('file:upload', function(msg, data) {
         sp.queue.clear();
 
         sp.queue.push(lines);
-        total = sp.queue.size();
 
-        log.debug('Added %s to the queue: port=%s', JSON.stringify(meta.name), JSON.stringify(port));
+        log.debug('Added %d lines to the queue: port=%s', lines.length, JSON.stringify(port));
     });
 });
 

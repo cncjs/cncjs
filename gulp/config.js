@@ -12,6 +12,9 @@ const bundleDependencies = {
         'classnames',
         'fbjs/lib/joinClasses',
         'fixed-data-table',
+        'gcode-interpreter',
+        'gcode-parser',
+        'history',
         'i18next',
         'jsuri',
         'lodash',
@@ -23,11 +26,12 @@ const bundleDependencies = {
         'react-bootstrap',
         'react-datagrid',
         'react-dom',
+        'react-dropzone',
         'react-infinite',
         'react-router',
         'react-select',
+        'request',
         'sha1',
-        'socketio-file-upload',
         'three',
 
         // Bower Components
