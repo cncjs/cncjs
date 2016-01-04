@@ -48,6 +48,7 @@ $ cnc -h
     -l, --host               set listen address or hostname (default: 0.0.0.0)
     -b, --backlog            set listen backlog (default: 511)
     -c, --config <filename>  set config file (default: ~/.cncrc)
+    -d, --debug              run in debug mode
 ```
 
 ## Examples
