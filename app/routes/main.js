@@ -13,6 +13,9 @@ module.exports = {
         app.get(urljoin(settings.route, 'api/config'), api.config.loadConfig);
         app.put(urljoin(settings.route, 'api/config'), api.config.saveConfig);
 
+        // file
+        app.post(urljoin(settings.route, 'api/file/upload'), api.file.uploadFile);
+
         // i18n
         app.get(urljoin(settings.route, 'api/i18n/lng'), api.i18n.getLanguage);
         app.post(urljoin(settings.route, 'api/i18n/lng/:__lng__'), api.i18n.setLanguage);
