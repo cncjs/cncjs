@@ -1,7 +1,7 @@
-export const IMPERIAL_UNIT = 'inch';
+export const IMPERIAL_UNIT = 'in';
 export const METRIC_UNIT = 'mm';
 
-// mm (or inch)
+// mm (or in)
 export const DISTANCE_MIN = 0;
 export const DISTANCE_MAX = 10000;
 export const DISTANCE_STEP = 0.1;

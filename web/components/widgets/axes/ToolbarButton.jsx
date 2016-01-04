@@ -17,9 +17,9 @@ class ToolbarButton extends React.Component {
 
     toggleDisplayUnit() {
         if (this.props.unit === METRIC_UNIT) {
-            serialport.writeln('G20'); // G20 specifies Imperial (inch) unit
+            serialport.writeln('G20'); // G20 specifies Imperial unit
         } else {
-            serialport.writeln('G21'); // G21 specifies Metric (mm) unit
+            serialport.writeln('G21'); // G21 specifies Metric unit
         }
     }
     handleSelect(target, eventKey) {
