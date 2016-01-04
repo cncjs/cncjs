@@ -23,27 +23,31 @@ class Connection extends React.Component {
         baudrate: 115200,
         alertMessage: ''
     };
+    socketEventListener = {
+        'serialport:list': ::this.socketOnSerialPortList,
+        'serialport:open': ::this.socketOnSerialPortOpen,
+        'serialport:close': ::this.socketOnSerialPortClose,
+        'serialport:error': ::this.socketOnSerialPortError
+    };
 
     componentWillMount() {
         this.handleRefresh();
     }
     componentDidMount() {
-        this.addSocketEvents();
+        this.addSocketEventListener();
     }
     componentWillUnmount() {
-        this.removeSocketEvents();
+        this.removeSocketEventListener();
     }
-    addSocketEvents() {
-        socket.on('serialport:list', ::this.socketOnSerialPortList);
-        socket.on('serialport:open', ::this.socketOnSerialPortOpen);
-        socket.on('serialport:close', ::this.socketOnSerialPortClose);
-        socket.on('serialport:error', ::this.socketOnSerialPortError);
+    addSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.on(eventName, callback);
+        });
     }
-    removeSocketEvents() {
-        socket.off('serialport:list', this.socketOnSerialPortList);
-        socket.off('serialport:open', this.socketOnSerialPortOpen);
-        socket.off('serialport:close', this.socketOnSerialPortClose);
-        socket.off('serialport:error', this.socketOnSerialPortError);
+    removeSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.off(eventName, callback);
+        });
     }
     socketOnSerialPortList(ports) {
         log.debug('serialport:list', ports);
@@ -126,14 +130,13 @@ class Connection extends React.Component {
         this.setState({ alertMessage: '' });
     }
     startLoading() {
-        let that = this;
         let delay = 5 * 1000; // wait for 5 seconds
 
         this.setState({
             loading: true
         });
-        this._loadingTimer = setTimeout(function() {
-            that.setState({ loading: false });
+        this._loadingTimer = setTimeout(() => {
+            this.setState({ loading: false });
         }, delay);
     }
     stopLoading() {

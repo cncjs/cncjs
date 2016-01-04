@@ -26,13 +26,17 @@ class GCode extends React.Component {
             total: 0
         }
     };
+    socketEventListener = {
+        'gcode:queue-status': ::this.socketOnGCodeQueueStatus,
+        'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
+    };
 
     componentDidMount() {
         this.subscribe();
-        this.addSocketEvents();
+        this.addSocketEventListener();
     }
     componentWillUnmount() {
-        this.removeSocketEvents();
+        this.removeSocketEventListener();
         this.unsubscribe();
     }
     subscribe() {
@@ -77,13 +81,15 @@ class GCode extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEvents() {
-        socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
-        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
+    addSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.on(eventName, callback);
+        });
     }
-    removeSocketEvents() {
-        socket.off('gcode:queue-status', this.socketOnGCodeQueueStatus);
-        socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
+    removeSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.off(eventName, callback);
+        });
     }
     socketOnGCodeQueueStatus(data) {
         let list = {};

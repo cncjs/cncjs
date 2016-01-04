@@ -55,6 +55,11 @@ class Visualizer extends React.Component {
             }
         }
     };
+    socketEventListener = {
+        'grbl:gcode-modes': ::this.socketOnGrblGCodeModes,
+        'grbl:current-status': ::this.socketOnGrblCurrentStatus,
+        'gcode:queue-status': ::this.socketOnGCodeQueueStatus
+    };
 
     componentWillMount() {
         // Grbl
@@ -69,7 +74,7 @@ class Visualizer extends React.Component {
     }
     componentDidMount() {
         this.subscribe();
-        this.addSocketEvents();
+        this.addSocketEventListener();
         this.addResizeEventListener();
 
         let el = ReactDOM.findDOMNode(this.refs.visualizer);
@@ -93,7 +98,7 @@ class Visualizer extends React.Component {
     }
     componentWillUnmount() {
         this.removeResizeEventListener();
-        this.removeSocketEvents();
+        this.removeSocketEventListener();
         this.unsubscribe();
         this.clearScene();
     }
@@ -174,15 +179,15 @@ class Visualizer extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEvents() {
-        socket.on('grbl:gcode-modes', ::this.socketOnGrblGCodeModes);
-        socket.on('grbl:current-status', ::this.socketOnGrblCurrentStatus);
-        socket.on('gcode:queue-status', ::this.socketOnGCodeQueueStatus);
+    addSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.on(eventName, callback);
+        });
     }
-    removeSocketEvents() {
-        socket.off('grbl:gcode-modes', this.socketOnGrblGCodeModes);
-        socket.off('grbl:current-status', this.socketOnGrblCurrentStatus);
-        socket.off('gcode:queue-status', this.socketOnGCodeQueueStatus);
+    removeSocketEventListener() {
+        _.each(this.socketEventListener, (callback, eventName) => {
+            socket.off(eventName, callback);
+        });
     }
     socketOnGrblGCodeModes(modes) {
         let modalState = {};

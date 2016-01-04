@@ -18,14 +18,12 @@ class Spindle extends React.Component {
         this.unsubscribe();
     }
     subscribe() {
-        let that = this;
-
         this.pubsubTokens = [];
 
         { // port
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                that.setState({ port: port });
+                this.setState({ port: port });
             });
             this.pubsubTokens.push(token);
         }
