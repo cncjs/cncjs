@@ -36,7 +36,6 @@ module.exports = function() {
     var morgan = require('morgan');
     var compress = require('compression');
     var serveStatic = require('serve-static');
-    var SocketIOFileUpload = require('socketio-file-upload');
 
     // Setup i18n (i18next)
     i18n.init(settings.i18next);
@@ -108,9 +107,6 @@ module.exports = function() {
     app.use(methodOverride());
     app.use(morgan(settings.middleware['morgan']));
     app.use(compress(settings.middleware['compression']));
-
-    // https://github.com/vote539/socketio-file-upload#server-code-appjs
-    app.use(SocketIOFileUpload.router);
 
     _.each(settings.assets, function(asset, name) {
         log.info('assets: name=%s, asset=%s', name, JSON.stringify(asset));
