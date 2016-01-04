@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import cookie from 'react-cookie';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import Select from 'react-select';
@@ -7,6 +6,7 @@ import Alert from './Alert';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
+import store from '../../../store';
 
 class Connection extends React.Component {
     state = {
@@ -56,7 +56,8 @@ class Connection extends React.Component {
 
         this.clearAlert();
 
-        let port = cookie.load('port');
+        let port = store.getState('widgets.connection.port') || '';
+
         if (_.includes(_.pluck(ports, 'port'), port)) {
             this.setState({
                 port: port,
@@ -81,7 +82,7 @@ class Connection extends React.Component {
         pubsub.publish('port', port);
 
         // save the port
-        cookie.save('port', port);
+        store.setState('widgets.connection.port', port);
 
         this.setState({
             connecting: false,

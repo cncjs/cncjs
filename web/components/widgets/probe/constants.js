@@ -1,4 +1,4 @@
-export const IMPERIAL_UNIT = 'inch';
+export const IMPERIAL_UNIT = 'in';
 export const METRIC_UNIT = 'mm';
 
 // Grbl Active State
