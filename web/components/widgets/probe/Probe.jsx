@@ -6,6 +6,7 @@ import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
 import ToolbarButton from './ToolbarButton';
+import store from '../../../store';
 import {
     IMPERIAL_UNIT,
     METRIC_UNIT,
@@ -17,11 +18,11 @@ class Probe extends React.Component {
         port: '',
         unit: METRIC_UNIT,
         activeState: ACTIVE_STATE_IDLE,
-        probeCommand: 'G38.2',
-        probeDepth: 10,
-        probeFeedrate: 20,
-        tlo: 10,
-        retractionDistance: 2
+        probeCommand: store.getState('widgets.probe.probeCommand', 'G38.2'),
+        probeDepth: store.getState('widgets.probe.probeDepth.mm', 10),
+        probeFeedrate: store.getState('widgets.probe.probeFeedrate.mm', 20),
+        tlo: store.getState('widgets.probe.tlo.mm', 10),
+        retractionDistance: store.getState('widgets.probe.retractionDistance.mm', 2)
     }
     socketEventListener = {
         'grbl:current-status': ::this.socketOnGrblCurrentStatus,
@@ -38,6 +39,22 @@ class Probe extends React.Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         return ! _.isEqual(nextState, this.state);
+    }
+    componentDidUpdate() {
+        store.setState('widgets.probe.probeCommand', this.state.probeCommand);
+
+        if (this.state.unit === METRIC_UNIT) {
+            store.setState('widgets.probe.probeDepth.mm', this.state.probeDepth);
+            store.setState('widgets.probe.probeFeedrate.mm', this.state.probeFeedrate);
+            store.setState('widgets.probe.tlo.mm', this.state.tlo);
+            store.setState('widgets.probe.retractionDistance.mm', this.state.retractionDistance);
+        }
+        if (this.state.unit === IMPERIAL_UNIT) {
+            store.setState('widgets.probe.probeDepth.in', this.state.probeDepth);
+            store.setState('widgets.probe.probeFeedrate.in', this.state.probeFeedrate);
+            store.setState('widgets.probe.tlo.in', this.state.tlo);
+            store.setState('widgets.probe.retractionDistance.in', this.state.retractionDistance);
+        }
     }
     subscribe() {
         this.pubsubTokens = [];
@@ -102,18 +119,18 @@ class Probe extends React.Component {
 
         if (unit === METRIC_UNIT) {
             return {
-                probeDepth: 10,
-                probeFeedrate: 20,
-                tlo: 10,
-                retractionDistance: 2
+                probeDepth: store.getState('widgets.probe.probeDepth.mm', 10),
+                probeFeedrate: store.getState('widgets.probe.probeFeedrate.mm', 20),
+                tlo: store.getState('widgets.probe.tlo.mm', 10),
+                retractionDistance: store.getState('widgets.probe.retractionDistance.mm', 2)
             };
         }
         if (unit === IMPERIAL_UNIT) {
             return {
-                probeDepth: 0.5,
-                probeFeedrate: 1,
-                tlo: 0.5,
-                retractionDistance: 0.1
+                probeDepth: store.getState('widgets.probe.probeDepth.in', 0.5),
+                probeFeedrate: store.getState('widgets.probe.probeFeedrate.in', 1),
+                tlo: store.getState('widgets.probe.tlo.in', 0.5),
+                retractionDistance: store.getState('widgets.probe.retractionDistance.in', 0.1)
             };
         }
     }
@@ -374,15 +391,7 @@ class Probe extends React.Component {
                                         {i18n._('Run Z-probe')}
                                     </button>
                                 </div>
-                                <div className="btn-group" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-default"
-                                        onClick={::this.restoreDefaults}
-                                    >
-                                        {i18n._('Restore Defaults')}
-                                    </button>
-                                </div>
+                                <div className="btn-group" role="group"></div>
                             </div>
                         </div>
                     </div>
