@@ -13,11 +13,11 @@ require('colors');
 program
     .version(pkg.version)
     .usage('[options]')
-    .option('-d, --debug', 'run in debug mode')
     .option('-p, --port <port>', 'set listen port (default: 8000)')
     .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)')
     .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)')
     .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
+    .option('-d, --debug', 'run in debug mode')
     .parse(process.argv);
 
 if (program.debug) {
