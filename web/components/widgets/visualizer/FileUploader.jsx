@@ -1,38 +1,22 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import i18n from '../../../lib/i18n';
-import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import request from 'superagent';
 import log from '../../../lib/log';
-import siofu from '../../../lib/siofu';
 
 class FileUploader extends React.Component {
     static propTypes = {
-        port: React.PropTypes.string,
-        onLoad: React.PropTypes.func
+        port: React.PropTypes.string
     };
     state = {
-        isDragging: false
+        isUploading: false
     };
 
     componentDidMount() {
-        this.addSocketIOFileUploadEvents();
     }
     componentWillUnmount() {
-        this.removeSocketIOFileUploadEvents();
-    }
-    addSocketIOFileUploadEvents() {
-        siofu.addEventListener('start', ::this.siofuStart);
-        siofu.addEventListener('progress', ::this.siofuProgress);
-        siofu.addEventListener('complete', ::this.siofuComplete);
-        siofu.addEventListener('error', ::this.siofuError);
-    }
-    removeSocketIOFileUploadEvents() {
-        siofu.removeEventListener('start', this.siofuOnStart);
-        siofu.removeEventListener('progress', this.siofuOnProgress);
-        siofu.removeEventListener('complete', this.siofuOnComplete);
-        siofu.removeEventListener('error', this.siofuOnError);
     }
     startWaiting() {
         // Adds the 'wait' class to <html>
@@ -44,64 +28,23 @@ class FileUploader extends React.Component {
         let root = document.documentElement;
         root.classList.remove('wait');
     }
-    // https://github.com/vote539/socketio-file-upload#start
-    siofuStart(event) {
-        this.startWaiting();
+    onChangeFile(event) {
+        let files = event.target.files;
+        let { port } = this.props;
 
-        log.debug('Upload start:', event);
-
-        event.file.meta.port = this.props.port;
-    }
-    // Part of the file has been loaded from the file system and
-    // ready to be transmitted via Socket.IO.
-    // This event can be used to make an upload progress bar.
-    // https://github.com/vote539/socketio-file-upload#progress
-    siofuProgress(event) {
-        let percent = event.bytesLoaded / event.file.size * 100;
-
-        log.trace('File is', percent.toFixed(2), 'percent loaded');
-    }
-    // The server has received our file.
-    // https://github.com/vote539/socketio-file-upload#complete
-    siofuComplete(event) {
-        this.stopWaiting();
-
-        log.debug('Upload complete:', event);
-
-        if (!(event.success)) {
-            log.error('File upload to the server failed.');
-            return;
-        }
-
-        // event.detail
-        // @param connected
-        // @param queueStatus.executed
-        // @param queueStatus.total
-
-        if (!(event.detail.connected)) {
-            log.error('Upload failed. The port is not open.');
-            return;
-        }
-
-        this.props.onLoad();
-    }
-    // The server encountered an error.
-    // https://github.com/vote539/socketio-file-upload#complete
-    siofuError(event) {
-        this.stopWaiting();
-
-        log.error('Upload file failed:', event);
-    }
-    onDrop(files) {
-        if (!(this.props.port)) {
+        if (!port) {
             return;
         }
 
         let file = files[0];
         let reader = new FileReader();
 
-        reader.onloadend = (e) => {
-            if (e.target.readyState !== FileReader.DONE) {
+        reader.onloadend = (event) => {
+            let contents = event.target.result,
+                error    = event.target.error;
+
+            if (error) {
+                log.error(error);
                 return;
             }
 
@@ -114,57 +57,71 @@ class FileUploader extends React.Component {
                 'type'
             ]));
 
-            let gcode = e.target.result;
-            pubsub.publish('gcode:data', gcode);
+            this.startWaiting();
+            this.setState({ isUploading: true });
 
-            let files = [file];
-            siofu.submitFiles(files);
+            request
+                .post('/api/file/upload')
+                .send({
+                    meta: {
+                        name: file.name,
+                        size: file.size,
+                        port: port
+                    },
+                    contents: contents
+                })
+                .end((err, res) => {
+                    this.stopWaiting();
+
+                    if (err || !res.ok) {
+                        this.setState({ isUploading: false });
+                        log.error('Failed to upload file', err, res);
+                        return;
+                    }
+
+                    pubsub.publish('gcode:load', contents);
+                });
+
         };
 
         reader.readAsText(file);
     }
     onClickToUpload() {
-        this.refs.dropzone.open();
+        this.fileInputEl.value = null;
+        this.fileInputEl.click();
     }
     render() {
         let { port } = this.props;
-        let canClick = !!port;
-        let classes = classNames(
-            'dropzone',
-            { 'dragging': this.state.isDragging }
-        );
+        let { isUploading } = this.state;
+        let notUploading = !isUploading;
+        let canClick = !!port && notUploading;
+        const inputAttributes = {
+            type: 'file',
+            style: { display: 'none' },
+            multiple: false,
+            // The ref attribute adds a reference to the component to
+            // this.refs when the component is mounted.
+            ref: el => this.fileInputEl = el, 
+            onChange: ::this.onChangeFile
+        };
 
         return (
-            <div className="file-uploader">
-                <div className="dropzone-container">
-                    <Dropzone
-                        ref="dropzone"
-                        className={classes}
-                        disableClick={true}
-                        multiple={false}
-                        onDragEnter={() => {
-                            this.setState({ isDragging: true });
-                        }}
-                        onDragLeave={() => {
-                            this.setState({ isDragging: false });
-                        }}
-                        onDrop={::this.onDrop}
-                        disabled={!canClick}
-                    >
-                        <div>
-                            <i style={{ fontSize: 48 }} className="glyphicon glyphicon-upload"></i>
-                            <h4>{i18n._('Drop G-code file here or click below to upload.')}</h4>
-                            <br />
-                            <button
-                                type="button"
-                                className="btn btn-primary"
-                                onClick={::this.onClickToUpload}
-                                disabled={!canClick}
-                            >
-                                {i18n._('Upload G-code')}
-                            </button>
-                        </div>
-                    </Dropzone>
+            <div className="file-uploader-block">
+                <div className="file-uploader-box">
+                    <div className="file-uploader-content" disabled={!canClick}>
+                        <i style={{ fontSize: 48 }} className="glyphicon glyphicon-upload"></i>
+                        <h4>{i18n._('Drop G-code file here or click below to upload.')}</h4>
+                        <br />
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={::this.onClickToUpload}
+                            disabled={!canClick}
+                        >
+                            {i18n._('Upload G-code')}
+                        </button>
+                        <input {...inputAttributes} />
+                    </div>
                 </div>
             </div>
         );

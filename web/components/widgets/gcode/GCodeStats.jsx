@@ -102,8 +102,8 @@ class GCodeStats extends React.Component {
             this.pubsubTokens.push(token);
         }
         
-        { // gcode:close
-            let token = pubsub.subscribe('gcode:close', (msg) => {
+        { // gcode:unload
+            let token = pubsub.subscribe('gcode:unload', (msg) => {
                 this.setState({
                     startTime: 0,
                     duration: 0

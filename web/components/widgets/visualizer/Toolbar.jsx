@@ -15,8 +15,7 @@ class Toolbar extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
         ready: React.PropTypes.bool,
-        activeState: React.PropTypes.string,
-        onUnload: React.PropTypes.func
+        activeState: React.PropTypes.string
     };
 
     state = {
@@ -104,11 +103,8 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
 
-        socket.emit('gcode:close', this.props.port);
-        pubsub.publish('gcode:close');
-        pubsub.publish('gcode:data', '');
-
-        this.props.onUnload(); // Unload the G-code
+        socket.emit('gcode:unload', this.props.port);
+        pubsub.publish('gcode:unload'); // Unload the G-code
 
         this.setState({
             workflowState: WORKFLOW_STATE_IDLE
