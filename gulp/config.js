@@ -27,7 +27,6 @@ const bundleDependencies = {
         'react-router',
         'react-select',
         'sha1',
-        'socketio-file-upload',
         'three',
 
         // Bower Components
