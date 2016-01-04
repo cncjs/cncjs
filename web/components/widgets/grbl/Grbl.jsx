@@ -24,18 +24,16 @@ class Grbl extends React.Component {
         this.removeSocketEvents();
     }
     subscribe() {
-        let that = this;
-
         this.pubsubTokens = [];
 
         { // port
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                that.setState({ port: port });
+                this.setState({ port: port });
 
                 if (!port) {
                     let modes = {};
-                    that.setState({ modes: modes });
+                    this.setState({ modes: modes });
                 }
             });
             this.pubsubTokens.push(token);

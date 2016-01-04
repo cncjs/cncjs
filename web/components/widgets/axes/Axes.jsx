@@ -42,17 +42,15 @@ class Axes extends React.Component {
         return JSON.stringify(nextState) !== JSON.stringify(this.state);
     }
     subscribe() {
-        let that = this;
-
         this.pubsubTokens = [];
 
         { // port
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                that.setState({ port: port });
+                this.setState({ port: port });
 
                 if (!port) {
-                    that.resetCurrentStatus();
+                    this.resetCurrentStatus();
                 }
             });
             this.pubsubTokens.push(token);

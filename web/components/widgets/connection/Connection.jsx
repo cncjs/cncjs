@@ -126,14 +126,13 @@ class Connection extends React.Component {
         this.setState({ alertMessage: '' });
     }
     startLoading() {
-        let that = this;
         let delay = 5 * 1000; // wait for 5 seconds
 
         this.setState({
             loading: true
         });
-        this._loadingTimer = setTimeout(function() {
-            that.setState({ loading: false });
+        this._loadingTimer = setTimeout(() => {
+            this.setState({ loading: false });
         }, delay);
     }
     stopLoading() {
