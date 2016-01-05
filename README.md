@@ -29,10 +29,13 @@ Then, install `cncjs` without `sudo`, or the `serialport` module may not install
 $ npm install -g cncjs
 ```
 
+## Upgrade
+Use `npm update -g cncjs` to upgrade to a newer version.
+
 ## Usage
 Run `cnc` or `~/.npm/bin/cnc` to start the server, and visit `http://yourhostname:8000/` to view the web console:
 ```bash
-$ cnc # or ~/.npm/bin/cnc
+$ cnc
 ```
 
 Run `cnc` with -h for detailed usage:
