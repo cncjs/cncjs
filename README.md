@@ -87,7 +87,7 @@ Copyright (c) 2015-2016 Cheton Wu
 
 Licensed under the [MIT License](LICENSE).
 
---
+## Donate
 
 If you would like to support this project, you can make a donation using PayPal. Thank you!
 
