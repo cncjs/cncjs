@@ -1,3 +1,5 @@
+# NodeSource Docker Images
+# https://github.com/nodesource/docker-node
 FROM nodesource/vivid:4
 MAINTAINER Cheton Wu <cheton@gmail.com>
 
