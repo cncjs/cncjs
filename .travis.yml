@@ -25,6 +25,7 @@ after_success:
   - npm run coverage-clean
   - export DOCKER_REPO=cheton/cnc
   - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+  - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
   - echo "TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER"
   - echo "TRAVIS_COMMIT=$TRAVIS_COMMIT"
   - echo "TRAVIS_TAG=$TRAVIS_TAG"
