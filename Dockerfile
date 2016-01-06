@@ -5,11 +5,9 @@ MAINTAINER Cheton Wu <cheton@gmail.com>
 ADD package.json package.json
 RUN npm install --production
 
-# Add your source files
-ADD . .
-
 # Expose port
 EXPOSE  8000
 
-# Run app using nodemon
+# Add your source files
+ADD . .
 CMD ["npm", "start"]
