@@ -51,7 +51,7 @@ $ cnc -h
 ```
 
 ## Docker Image Installation
-Alternatively, you can install and run cnc.js from within a Docker container. The first installation may take a long time to complete, but further updates will be much faster.
+Alternatively, you can install and run a Docker image within a Docker container. The first installation may take a long time to complete, but further updates will be much faster.
 
 To install and set up cnc.js, take the following steps:
 
@@ -60,7 +60,7 @@ To install and set up cnc.js, take the following steps:
 $ docker pull cheton/cnc:latest
 ```
 
-<b>Step 2:</b> Use the `docker run` command to create the Docker container and run the cnc.js server, like so:
+<b>Step 2:</b> Use the `docker run` command to create the Docker container and run the server, like so:
 ```bash
 $ docker run -d -p 8000:8000 --name cnc cheton/cnc:latest
 ```
