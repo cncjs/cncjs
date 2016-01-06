@@ -9,9 +9,7 @@ RUN npm install -g nodemon
 ADD package.json package.json
 RUN npm install --production
 
-# Expose port
+WORKDIR /src
+ADD . /src
 EXPOSE 8000
-
-# Add your source files
-ADD . .
-CMD ["nodemon", "./bin/cnc"]
+CMD ["nodemon", "/src/bin/cnc"]
