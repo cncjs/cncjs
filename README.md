@@ -62,8 +62,9 @@ $ docker pull cheton/cnc:latest
 
 <b>Step 2:</b> Use the `docker run` command to create the Docker container and run the server, like so:
 ```bash
-$ docker run -p 8000:8000 --rm --name cnc cheton/cnc:latest
+$ docker run --privileged -p 8000:8000 --rm --name cnc cheton/cnc:latest
 ```
+By default a container is not allowed to access any devices, but a "privileged" container is given access to all devices on the host.
 
 <b>Step 3:</b> If everything works fine, you should be able to view the web interface at `http://yourhostname:8000/`.
 
@@ -72,7 +73,7 @@ $ docker run -p 8000:8000 --rm --name cnc cheton/cnc:latest
 If you run into issues and need to restart the Docker container, use the following commands to first stop the Docker application, and then start it up again:
 ```bash
 $ docker stop cnc
-$ docker start -i cnc 
+$ docker start cnc 
 ```
 
 To view a list of all containers that are currently running in your Docker environment, use:
