@@ -73,7 +73,7 @@ By default a container is not allowed to access any devices, but a "privileged" 
 If you run into issues and need to restart the Docker container, use the following commands to first stop the Docker application, and then start it up again:
 ```bash
 $ docker stop cnc
-$ docker start -i cnc 
+$ docker start cnc 
 ```
 
 To view a list of all containers that are currently running in your Docker environment, use:
