@@ -24,16 +24,18 @@ after_success:
   - npm run coveralls
   - npm run coverage-clean
   - export DOCKER_REPO=cheton/cnc
-  - export TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
+  - export DOCKER_BUILD_TAG=travis-$TRAVIS_BUILD_NUMBER.${TRAVIS_COMMIT::8}
+  - export DOCKER_BRANCH_TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo "latest"; else echo $TRAVIS_BRANCH; fi`
   - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH"
   - echo "TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER"
   - echo "TRAVIS_COMMIT=$TRAVIS_COMMIT"
   - echo "TRAVIS_TAG=$TRAVIS_TAG"
-  - echo "TAG=$TAG"
+  - echo "DOCKER_REPO=$DOCKER_REPO"
+  - echo "DOCKER_BUILD_TAG=$DOCKER_BUILD_TAG"
+  - echo "DOCKER_BRANCH_TAG=$DOCKER_BRANCH_TAG"
   - docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-  - docker build -f Dockerfile -t $DOCKER_REPO:$TRAVIS_COMMIT .
-  - docker tag $DOCKER_REPO:$TRAVIS_COMMIT $DOCKER_REPO:$TAG
-  - docker tag $DOCKER_REPO:$TRAVIS_COMMIT $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER
-  - if [ ! -z "$TRAVIS_TAG" ]; then docker tag $DOCKER_REPO:$TRAVIS_COMMIT $DOCKER_REPO:$TRAVIS_TAG; fi
+  - docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BUILD_TAG .
+  - docker tag $DOCKER_REPO:$DOCKER_BUILD_TAG $DOCKER_REPO:$DOCKER_BRANCH_TAG
+  - if [ ! -z "$TRAVIS_TAG" ]; then docker tag $DOCKER_REPO:$DOCKER_BUILD_TAG $DOCKER_REPO:$TRAVIS_TAG; fi
   - docker images
   - docker push $DOCKER_REPO
