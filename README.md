@@ -62,7 +62,7 @@ $ docker pull cheton/cnc:latest
 
 <b>Step 2:</b> Use the `docker run` command to create the Docker container and run the server, like so:
 ```bash
-$ docker run -d -p 8000:8000 --name cnc cheton/cnc:latest
+$ docker run -p 8000:8000 --rm --name cnc cheton/cnc:latest
 ```
 
 <b>Step 3:</b> If everything works fine, you should be able to view the web interface at `http://yourhostname:8000/`.
