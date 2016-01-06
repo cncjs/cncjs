@@ -8,13 +8,8 @@ CNC.js is a web-based CNC milling controller for the [Arduino](https://www.ardui
 ![cnc.js](https://raw.githubusercontent.com/cheton/cnc.js/master/media/cncjs.png) 
 
 ## Demo
-
-[![CNC](http://img.youtube.com/vi/fJyq4fyiGSc/0.jpg)](https://www.youtube.com/watch?v=fJyq4fyiGSc&hd=2 "CNC.js")
-
 JSDC 2015 speech: http://cheton.github.io/jsdc2015/#/81
-
-### Photo Gallery
-[![Photo Gallery](https://scontent.xx.fbcdn.net/hphotos-xat1/v/t1.0-9/12118907_10207901191546433_3867236073352040616_n.jpg?oh=97c977c426367130eef35b5e230637c4&oe=56A65008)](https://www.facebook.com/cheton.wu/media_set?set=a.10207901184746263.1073741852.1195704289&type=3)
+[![CNC](http://img.youtube.com/vi/fJyq4fyiGSc/0.jpg)](https://www.youtube.com/watch?v=fJyq4fyiGSc&hd=2 "CNC.js")
 
 ## Installation
 First, ensure you have `prefix=~/.npm` in  `~/.npmrc`. For example:
@@ -33,7 +28,7 @@ $ npm install -g cncjs
 Use `npm update -g cncjs` to upgrade to a newer version.
 
 ## Usage
-Run `cnc` or `~/.npm/bin/cnc` to start the server, and visit `http://yourhostname:8000/` to view the web console:
+Run `cnc` or `~/.npm/bin/cnc` to start the server, and visit `http://yourhostname:8000/` to view the web interface:
 ```bash
 $ cnc
 ```
@@ -53,6 +48,56 @@ $ cnc -h
     -b, --backlog            set listen backlog (default: 511)
     -c, --config <filename>  set config file (default: ~/.cncrc)
     -d, --debug              run in debug mode
+```
+
+## Docker Image Installation
+Alternatively, you can install and run cnc.js from within a Docker container. The first installation may take a long time to complete, but further updates will be much faster.
+
+To install and set up cnc.js, take the following steps:
+
+<b>Step 1:</b> Enter the following command to retrieve the latest version of the image:
+```bash
+$ docker pull cheton/cnc:latest
+```
+
+<b>Step 2:</b> Use the `docker run` command to create the Docker container and run the cnc.js server, like so:
+```bash
+$ docker run -d -p 8000:8000 --name cnc cheton/cnc:latest
+```
+
+<b>Step 3:</b> If everything works fine, you should be able to view the web interface at `http://yourhostname:8000/`.
+
+### Tips
+
+If you run into issues and need to restart the Docker container, use the following commands to first stop the Docker application, and then start it up again:
+```bash
+$ docker stop cnc
+$ docker start -i cnc 
+```
+
+To view a list of all containers that are currently running in your Docker environment, use:
+```bash
+$ docker ps
+```
+
+To view all the images you have pulled into your Docker environment, use:
+```bash
+$ docker images
+```
+
+To delete containers in your Docker environment, use:
+```bash
+$ docker rm CONTAINER_ID
+```
+
+To delete images in your Docker environment, use:
+```bash
+$ docker rmi IMAGE_ID
+```
+
+To view the container in your terminal, use:
+```bash
+$ docker attach cnc
 ```
 
 ## Examples
@@ -78,6 +123,9 @@ https://github.com/cheton/cnc.js/wiki
 - [x] Drag and drop support for loading G-code file
 - [ ] Remember last working state upon browser refresh
 - [ ] Webcam support
+
+### Photo Gallery
+[![Photo Gallery](https://scontent.xx.fbcdn.net/hphotos-xat1/v/t1.0-9/12118907_10207901191546433_3867236073352040616_n.jpg?oh=97c977c426367130eef35b5e230637c4&oe=56A65008)](https://www.facebook.com/cheton.wu/media_set?set=a.10207901184746263.1073741852.1195704289&type=3)
 
 ## License
 
