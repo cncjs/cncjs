@@ -50,7 +50,7 @@ $ cnc -h
     -d, --debug              run in debug mode
 ```
 
-## Docker Image Installation
+## Docker Image Installation (x64 only)
 Alternatively, you can install and run a Docker image within a Docker container. The first installation may take a long time to complete, but further updates will be much faster.
 
 To install and set up cnc.js, take the following steps:
