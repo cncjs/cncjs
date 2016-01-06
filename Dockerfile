@@ -9,7 +9,6 @@ RUN npm install -g nodemon
 ADD package.json package.json
 RUN npm install --production
 
-WORKDIR /src
-ADD . /src
+ADD . .
 EXPOSE 8000
-CMD ["nodemon", "/src/bin/cnc"]
+CMD ["nodemon", "bin/cnc"]
