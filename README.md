@@ -113,17 +113,6 @@ https://github.com/cheton/cnc.js/wiki
 * [User Guide](https://github.com/cheton/cnc.js/wiki/User-Guide)
 * [FAQ](https://github.com/cheton/cnc.js/wiki/FAQ)
 
-## TODOs
-- [x] Soft reset GRBL / Unlock GRBL
-- [x] Spindle on/off
-- [x] Display G2/G3 arcs in the 3D visualizer</br>
-      http://www.cnccookbook.com/CCCNCGCodeArcsG02G03.htm
-- [x] Convert between Metric and Imperial unit<br>
-      http://cnc-programming-tips.blogspot.tw/2014/12/g20-g21-unit-selection-codes.html
-- [x] Drag and drop support for loading G-code file
-- [ ] Remember last working state upon browser refresh
-- [ ] Webcam support
-
 ### Photo Gallery
 [![Photo Gallery](https://scontent.xx.fbcdn.net/hphotos-xat1/v/t1.0-9/12118907_10207901191546433_3867236073352040616_n.jpg?oh=97c977c426367130eef35b5e230637c4&oe=56A65008)](https://www.facebook.com/cheton.wu/media_set?set=a.10207901184746263.1073741852.1195704289&type=3)
 
