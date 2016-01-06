@@ -35,3 +35,4 @@ after_success:
   - docker tag $DOCKER_REPO:$TRAVIS_COMMIT $DOCKER_REPO:travis-$TRAVIS_BUILD_NUMBER
   - if [ ! -z "$TRAVIS_TAG" ]; then docker tag $DOCKER_REPO:$TRAVIS_COMMIT $DOCKER_REPO:$TRAVIS_TAG; fi
   - docker images
+  - docker push $DOCKER_REPO
