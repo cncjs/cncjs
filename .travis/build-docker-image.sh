@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 NODE_VERSION=`node --version`
 DOCKER_REPO=cheton/cnc
