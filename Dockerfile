@@ -1,22 +1,15 @@
-# Set the base image to Ubuntu
-FROM node:4
+FROM nodesource/vivid:4
+MAINTAINER Cheton Wu <cheton@gmail.com>
 
-# File Author / Maintainer
-MAINTAINER Cheton Wu
+# cache package.json and node_modules to speed up builds
+ADD package.json package.json
+RUN npm install --production
 
-RUN npm install -g nodemon
-
-# Provides cached layer for node_modules
-ADD package.json /tmp/package.json
-RUN cd /tmp && npm install --production
-RUN mkdir -p /src && cp -a /tmp/node_modules /src/
-
-# Define working directory
-WORKDIR /src
-ADD . /src
+# Add your source files
+ADD . .
 
 # Expose port
 EXPOSE  8000
 
 # Run app using nodemon
-CMD ["nodemon", "/src/bin/cnc"]
+CMD ["npm", "start"]
