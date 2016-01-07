@@ -2,10 +2,16 @@ import THREE from 'three';
 
 // TextSprite
 class TextSprite {
-    // Creates a text sprite.
+    // @param {object} options The options object
+    // @param {number} [options.x] The point on the x-axis
+    // @param {number} [options.y] The point on the y-axis
+    // @param {number} [options.z] The point on the z-axis
+    // @param {string} [options.text] The text string
+    // @param {number} [options.textHeight] The text height
+    // @param {string} [options.color] The color
     constructor(options) {
         let textObject = new THREE.Object3D();
-        let textHeight = 100;
+        let textHeight = options.textHeight || 100;
         let textWidth = 0;
         let actualFontSize = options.size || 10;
 
@@ -35,9 +41,9 @@ class TextSprite {
             opacity: 0.6
         });
 
-        textObject.position.x = options.x;
-        textObject.position.y = options.y;
-        textObject.position.z = options.z;
+        textObject.position.x = options.x || 0;
+        textObject.position.y = options.y || 0;
+        textObject.position.z = options.z || 0;
         textObject.textHeight = actualFontSize;
         textObject.textWidth = (textWidth / textHeight) * textObject.textHeight;
 
