@@ -9,7 +9,7 @@ class Spindle extends React.Component {
         port: '',
         isCCWChecked: false,
         spindleSpeed: 0
-    }
+    };
 
     componentDidMount() {
         this.subscribe();

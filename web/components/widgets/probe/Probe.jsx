@@ -23,7 +23,7 @@ class Probe extends React.Component {
         probeFeedrate: store.getState('widgets.probe.probeFeedrate.mm', 20),
         tlo: store.getState('widgets.probe.tlo.mm', 10),
         retractionDistance: store.getState('widgets.probe.retractionDistance.mm', 2)
-    }
+    };
     socketEventListener = {
         'grbl:current-status': ::this.socketOnGrblCurrentStatus,
         'grbl:gcode-modes': ::this.socketOnGrblGCodeModes

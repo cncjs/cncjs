@@ -11,17 +11,21 @@ import socket from '../../../lib/socket';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import FileUploader from './FileUploader';
-import {
-    fitCameraToObject, getBoundingBox, loadTexture,
-    CoordinateAxes, EngravingCutter, GridLine, PivotPoint3
-} from './helpers';
+import { fitCameraToObject, getBoundingBox, loadTexture } from './helpers';
+import CoordinateAxes from './CoordinateAxes';
+import EngravingCutter from './EngravingCutter';
+import GridLine from './GridLine';
+import PivotPoint3 from './PivotPoint3';
+import TextSprite from './TextSprite';
 import {
     COORDINATE_PLANE_XY,
     COORDINATE_PLANE_XZ,
     COORDINATE_PLANE_YZ,
-    AXIS_LINE_LENGTH,
-    GRID_LINE_LENGTH,
-    GRID_SPACING,
+    AXIS_LENGTH,
+    GRID_X_LENGTH,
+    GRID_Y_LENGTH,
+    GRID_X_SPACING,
+    GRID_Y_SPACING,
     ACTIVE_STATE_IDLE,
     ACTIVE_STATE_RUN,
     WORKFLOW_STATE_RUNNING,
@@ -297,17 +301,81 @@ class Visualizer extends React.Component {
         }
 
         { // Creating the coordinate grid
-            let colorCenterLine = null; // Set to null to keep it transparent
-            let colorGrid = colornames('gray 89');
-            let gridLine = new GridLine(GRID_LINE_LENGTH, GRID_SPACING, colorCenterLine, colorGrid);
+            let gridLine = new GridLine(GRID_X_LENGTH, GRID_X_SPACING * 2, GRID_Y_LENGTH, GRID_Y_SPACING * 2);
+            gridLine.setColors(colornames('blue'), colornames('gray 44'));
+            gridLine.material.opacity = 0.15;
+            gridLine.material.transparent = true;
+            gridLine.material.depthWrite = false;
             gridLine.name = 'GridLine';
             this.group.add(gridLine);
         }
 
-        { // Creating the coordinate axes
-            let coordinateAxes = new CoordinateAxes(AXIS_LINE_LENGTH);
+        { // Creating coordinate axes
+            let coordinateAxes = new CoordinateAxes(AXIS_LENGTH);
             coordinateAxes.name = 'CoordinateAxes';
             this.group.add(coordinateAxes);
+        }
+
+        { // Creating axis labels
+            let axisXLabel = new TextSprite({
+                x: AXIS_LENGTH + 10,
+                y: 0,
+                z: 0,
+                size: 20,
+                text: 'X',
+                color: colornames('red')
+            });
+            let axisYLabel = new TextSprite({
+                x: 0,
+                y: AXIS_LENGTH + 10,
+                z: 0,
+                size: 20,
+                text: 'Y',
+                color: colornames('green')
+            });
+            let axisZLabel = new TextSprite({
+                x: 0,
+                y: 0,
+                z: AXIS_LENGTH + 10,
+                size: 20,
+                text: 'Z',
+                color: colornames('blue')
+            });
+
+            this.group.add(axisXLabel);
+            this.group.add(axisYLabel);
+            this.group.add(axisZLabel);
+
+            for (let i = -GRID_X_LENGTH; i <= GRID_X_LENGTH; i += 50) {
+                if (i === 0) {
+                    continue;
+                }
+                let textLabel = new TextSprite({
+                    x: i,
+                    y: 10,
+                    z: 0,
+                    size: 8,
+                    text: i,
+                    color: colornames('red'),
+                    opacity: 0.5
+                });
+                this.group.add(textLabel);
+            }
+            for (let i = -GRID_Y_LENGTH; i <= GRID_Y_LENGTH; i += 50) {
+                if (i === 0) {
+                    continue;
+                }
+                let textLabel = new TextSprite({
+                    x: -10,
+                    y: i,
+                    z: 0,
+                    size: 8,
+                    text: i,
+                    color: colornames('green'),
+                    opacity: 0.5
+                });
+                this.group.add(textLabel);
+            }
         }
 
         { // Creating an engraving cutter
@@ -368,7 +436,7 @@ class Visualizer extends React.Component {
         let renderer = new THREE.WebGLRenderer({
             autoClearColor: true
         });
-        renderer.setClearColor(new THREE.Color(colornames('gray 94'), 1.0));
+        renderer.setClearColor(new THREE.Color(colornames('white'), 1.0));
         renderer.setSize(width, height);
         renderer.clear();
 
