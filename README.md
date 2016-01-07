@@ -24,6 +24,8 @@ Then, install `cncjs` without `sudo`, or the `serialport` module may not install
 $ npm install -g cncjs
 ```
 
+Check out [Git Installation](https://github.com/cheton/cnc.js#git-installation) and [Docker Image Installation (x64 only)](https://github.com/cheton/cnc.js#docker-image-installation-x64-only) for other installation methods.
+
 ## Upgrade
 Run `npm update -g cncjs` to upgrade to a newer version.
 
@@ -48,6 +50,22 @@ $ cnc -h
     -b, --backlog            set listen backlog (default: 511)
     -c, --config <filename>  set config file (default: ~/.cncrc)
     -d, --debug              run in debug mode
+```
+
+## Git Installation
+If you prefer to use Git instead of `npm install`, You can create a local clone of the repository on your computer and sync from GitHub. Type the following commands to install and run `cnc.js`:
+```bash
+$ git clone https://github.com/cheton/cnc.js.git
+$ cd cnc.js
+$ npm install --production
+$ ./bin/cnc
+```
+
+To update your local copy with latest changes, use:
+```bash
+$ git pull
+$ npm install --production
+$ ./bin/cnc
 ```
 
 ## Docker Image Installation (x64 only)
