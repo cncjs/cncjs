@@ -16,7 +16,7 @@ class DisplayPanel extends React.Component {
         activeState: React.PropTypes.string,
         machinePos: React.PropTypes.object,
         workingPos: React.PropTypes.object
-    }
+    };
 
     handleSelect(target, eventKey) {
         let data = eventKey;
