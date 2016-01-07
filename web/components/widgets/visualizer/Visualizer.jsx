@@ -301,7 +301,7 @@ class Visualizer extends React.Component {
         }
 
         { // Creating the coordinate grid
-            let gridLine = new GridLine(GRID_X_LENGTH, GRID_X_SPACING, GRID_Y_LENGTH, GRID_Y_SPACING);
+            let gridLine = new GridLine(GRID_X_LENGTH, GRID_X_SPACING * 2, GRID_Y_LENGTH, GRID_Y_SPACING * 2);
             gridLine.setColors(colornames('blue'), colornames('gray 44'));
             gridLine.material.opacity = 0.15;
             gridLine.material.transparent = true;
@@ -322,7 +322,6 @@ class Visualizer extends React.Component {
                 y: 0,
                 z: 0,
                 text: 'X',
-                textHeight: 200,
                 color: colornames('red')
             });
             let axisYLabel = new TextSprite({
@@ -330,7 +329,6 @@ class Visualizer extends React.Component {
                 y: AXIS_LENGTH + 10,
                 z: 0,
                 text: 'Y',
-                textHeight: 200,
                 color: colornames('green')
             });
             let axisZLabel = new TextSprite({
@@ -338,13 +336,39 @@ class Visualizer extends React.Component {
                 y: 0,
                 z: AXIS_LENGTH + 10,
                 text: 'Z',
-                textHeight: 200,
                 color: colornames('blue')
             });
 
             this.group.add(axisXLabel);
             this.group.add(axisYLabel);
             this.group.add(axisZLabel);
+
+            for (let i = -GRID_X_LENGTH; i <= GRID_X_LENGTH; i += 50) {
+                if (i === 0) {
+                    continue;
+                }
+                let textLabel = new TextSprite({
+                    x: i,
+                    y: -10,
+                    z: 0,
+                    text: i,
+                    color: colornames('red')
+                });
+                this.group.add(textLabel);
+            }
+            for (let i = -GRID_Y_LENGTH; i <= GRID_Y_LENGTH; i += 50) {
+                if (i === 0) {
+                    continue;
+                }
+                let textLabel = new TextSprite({
+                    x: -10,
+                    y: i,
+                    z: 0,
+                    text: i,
+                    color: colornames('green')
+                });
+                this.group.add(textLabel);
+            }
         }
 
         { // Creating an engraving cutter
