@@ -11,14 +11,14 @@ const buildAxis = (src, dst, color, dashed) => {
             color: color,
             dashSize: 1,
             gapSize: 1,
-            opacity: 0.5,
+            opacity: 0.8,
             transparent: true
         });
     } else {
         material = new THREE.LineBasicMaterial({
             linewidth: 1,
             color: color,
-            opacity: 0.5,
+            opacity: 0.8,
             transparent: true
         });
     }
