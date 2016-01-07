@@ -322,6 +322,7 @@ class Visualizer extends React.Component {
                 y: 0,
                 z: 0,
                 text: 'X',
+                textHeight: 200,
                 color: colornames('red')
             });
             let axisYLabel = new TextSprite({
@@ -329,6 +330,7 @@ class Visualizer extends React.Component {
                 y: AXIS_LENGTH + 10,
                 z: 0,
                 text: 'Y',
+                textHeight: 200,
                 color: colornames('green')
             });
             let axisZLabel = new TextSprite({
@@ -336,6 +338,7 @@ class Visualizer extends React.Component {
                 y: 0,
                 z: AXIS_LENGTH + 10,
                 text: 'Z',
+                textHeight: 200,
                 color: colornames('blue')
             });
 
