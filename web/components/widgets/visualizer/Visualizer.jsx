@@ -11,17 +11,20 @@ import socket from '../../../lib/socket';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import FileUploader from './FileUploader';
-import {
-    fitCameraToObject, getBoundingBox, loadTexture,
-    CoordinateAxes, EngravingCutter, GridLine, PivotPoint3
-} from './helpers';
+import { fitCameraToObject, getBoundingBox, loadTexture } from './helpers';
+import CoordinateAxes from './CoordinateAxes';
+import EngravingCutter from './EngravingCutter';
+import GridLine from './GridLine';
+import PivotPoint3 from './PivotPoint3';
 import {
     COORDINATE_PLANE_XY,
     COORDINATE_PLANE_XZ,
     COORDINATE_PLANE_YZ,
-    AXIS_LINE_LENGTH,
-    GRID_LINE_LENGTH,
-    GRID_SPACING,
+    AXIS_LENGTH,
+    GRID_X_LENGTH,
+    GRID_Y_LENGTH,
+    GRID_X_SPACING,
+    GRID_Y_SPACING,
     ACTIVE_STATE_IDLE,
     ACTIVE_STATE_RUN,
     WORKFLOW_STATE_RUNNING,
@@ -297,15 +300,17 @@ class Visualizer extends React.Component {
         }
 
         { // Creating the coordinate grid
-            let colorCenterLine = null; // Set to null to keep it transparent
-            let colorGrid = colornames('gray 89');
-            let gridLine = new GridLine(GRID_LINE_LENGTH, GRID_SPACING, colorCenterLine, colorGrid);
+            let gridLine = new GridLine(GRID_X_LENGTH, GRID_X_SPACING, GRID_Y_LENGTH, GRID_Y_SPACING);
+            gridLine.setColors(colornames('blue'), colornames('gray 44'));
+            gridLine.material.opacity = 0.15;
+            gridLine.material.transparent = true;
+            gridLine.material.depthWrite = false;
             gridLine.name = 'GridLine';
             this.group.add(gridLine);
         }
 
         { // Creating the coordinate axes
-            let coordinateAxes = new CoordinateAxes(AXIS_LINE_LENGTH);
+            let coordinateAxes = new CoordinateAxes(AXIS_LENGTH);
             coordinateAxes.name = 'CoordinateAxes';
             this.group.add(coordinateAxes);
         }
@@ -368,7 +373,7 @@ class Visualizer extends React.Component {
         let renderer = new THREE.WebGLRenderer({
             autoClearColor: true
         });
-        renderer.setClearColor(new THREE.Color(colornames('gray 94'), 1.0));
+        renderer.setClearColor(new THREE.Color(colornames('white'), 1.0));
         renderer.setSize(width, height);
         renderer.clear();
 

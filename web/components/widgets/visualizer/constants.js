@@ -1,9 +1,11 @@
 export const COORDINATE_PLANE_XY = 'XY';
 export const COORDINATE_PLANE_XZ = 'XZ';
 export const COORDINATE_PLANE_YZ = 'YZ';
-export const AXIS_LINE_LENGTH = 1200;
-export const GRID_LINE_LENGTH = 1200;
-export const GRID_SPACING = 10;
+export const AXIS_LENGTH = 600;
+export const GRID_X_LENGTH = 600;
+export const GRID_Y_LENGTH = 600;
+export const GRID_X_SPACING = 10;
+export const GRID_Y_SPACING = 10;
 
 export const CAMERA_FOV = 50;
 export const CAMERA_ASPECT = 1;
