@@ -16,6 +16,7 @@ import CoordinateAxes from './CoordinateAxes';
 import EngravingCutter from './EngravingCutter';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
+import TextSprite from './TextSprite';
 import {
     COORDINATE_PLANE_XY,
     COORDINATE_PLANE_XZ,
@@ -309,10 +310,38 @@ class Visualizer extends React.Component {
             this.group.add(gridLine);
         }
 
-        { // Creating the coordinate axes
+        { // Creating coordinate axes
             let coordinateAxes = new CoordinateAxes(AXIS_LENGTH);
             coordinateAxes.name = 'CoordinateAxes';
             this.group.add(coordinateAxes);
+        }
+
+        { // Creating axis labels
+            let axisXLabel = new TextSprite({
+                x: AXIS_LENGTH + 10,
+                y: 0,
+                z: 0,
+                text: 'X',
+                color: colornames('red')
+            });
+            let axisYLabel = new TextSprite({
+                x: 0,
+                y: AXIS_LENGTH + 10,
+                z: 0,
+                text: 'Y',
+                color: colornames('green')
+            });
+            let axisZLabel = new TextSprite({
+                x: 0,
+                y: 0,
+                z: AXIS_LENGTH + 10,
+                text: 'Z',
+                color: colornames('blue')
+            });
+
+            this.group.add(axisXLabel);
+            this.group.add(axisYLabel);
+            this.group.add(axisZLabel);
         }
 
         { // Creating an engraving cutter
