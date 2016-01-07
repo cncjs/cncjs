@@ -68,6 +68,8 @@ $ npm install --production
 $ ./bin/cnc
 ```
 
+This is the fastest method to bring your local copy up-to-date.
+
 ## Docker Image Installation (x64 only)
 Alternatively, you can install and run a Docker image within a Docker container. The first installation may take a long time to complete, but further updates will be much faster.
 
