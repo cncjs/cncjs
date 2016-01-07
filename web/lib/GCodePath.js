@@ -8,10 +8,10 @@ const noop = () => {};
 
 const defaultColor = new THREE.Color(colornames('darkgray'));
 const motionColor = {
-    'G0': new THREE.Color('#77f777'),
-    'G1': new THREE.Color('#7777f7'),
-    'G2': new THREE.Color('#77ccf7'),
-    'G3': new THREE.Color('#77ccf7')
+    'G0': new THREE.Color(colornames('green')),
+    'G1': new THREE.Color('#0033ff'),
+    'G2': new THREE.Color(colornames('violet')),
+    'G3': new THREE.Color(colornames('violet'))
 };
 
 class GCodePath {
@@ -133,7 +133,7 @@ class GCodePath {
                 color: new THREE.Color(colornames('darkgray')),
                 linewidth: 1,
                 vertexColors: THREE.VertexColors,
-                opacity: 0.7,
+                opacity: 0.5,
                 transparent: true
             });
             this.group.add(new THREE.Line(geometry, material));
@@ -142,9 +142,9 @@ class GCodePath {
         { // Preview with frames
             let geometry = new THREE.Geometry();
             let material = new THREE.LineBasicMaterial({
-                color: new THREE.Color(colornames('crimson')),
+                color: new THREE.Color(colornames('red')),
                 linewidth: 1,
-                opacity: 0.7,
+                opacity: 0.5,
                 transparent: true
             });
             let currentFrame = this.frames[this.frameIndex] || {};
