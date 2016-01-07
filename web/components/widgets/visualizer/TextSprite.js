@@ -7,11 +7,10 @@ class TextSprite {
     // @param {number} [options.y] The point on the y-axis
     // @param {number} [options.z] The point on the z-axis
     // @param {string} [options.text] The text string
-    // @param {number} [options.textHeight] The text height
-    // @param {string} [options.color] The color
+    // @param {number|string} [options.color] The color
     constructor(options) {
         let textObject = new THREE.Object3D();
-        let textHeight = options.textHeight || 100;
+        let textHeight = 100;
         let textWidth = 0;
         let actualFontSize = options.size || 10;
 
@@ -36,7 +35,6 @@ class TextSprite {
 
         let material = new THREE.SpriteMaterial({
             map: texture,
-            useScreenCoordinates: false,
             transparent: true,
             opacity: 0.6
         });
