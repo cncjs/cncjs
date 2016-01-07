@@ -1,9 +1,5 @@
 import _ from 'lodash';
 import THREE from 'three';
-import CoordinateAxes from './CoordinateAxes';
-import EngravingCutter from './EngravingCutter';
-import GridLine from './GridLine';
-import PivotPoint3 from './PivotPoint3';
 
 // Fits camera to object
 // @param {number} width The object width
@@ -87,13 +83,7 @@ export const loadTexture = (url, callback) => {
 };
 
 export {
-    // Function
     fitCameraToObject,
     getBoundingBox,
-    loadTexture,
-    // Class
-    CoordinateAxes,
-    EngravingCutter,
-    GridLine,
-    PivotPoint3
+    loadTexture
 };
