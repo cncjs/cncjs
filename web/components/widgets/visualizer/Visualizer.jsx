@@ -321,6 +321,7 @@ class Visualizer extends React.Component {
                 x: AXIS_LENGTH + 10,
                 y: 0,
                 z: 0,
+                size: 20,
                 text: 'X',
                 color: colornames('red')
             });
@@ -328,6 +329,7 @@ class Visualizer extends React.Component {
                 x: 0,
                 y: AXIS_LENGTH + 10,
                 z: 0,
+                size: 20,
                 text: 'Y',
                 color: colornames('green')
             });
@@ -335,6 +337,7 @@ class Visualizer extends React.Component {
                 x: 0,
                 y: 0,
                 z: AXIS_LENGTH + 10,
+                size: 20,
                 text: 'Z',
                 color: colornames('blue')
             });
@@ -351,8 +354,10 @@ class Visualizer extends React.Component {
                     x: i,
                     y: -10,
                     z: 0,
+                    size: 8,
                     text: i,
-                    color: colornames('red')
+                    color: colornames('red'),
+                    opacity: 0.5
                 });
                 this.group.add(textLabel);
             }
@@ -364,8 +369,10 @@ class Visualizer extends React.Component {
                     x: -10,
                     y: i,
                     z: 0,
+                    size: 8,
                     text: i,
-                    color: colornames('green')
+                    color: colornames('green'),
+                    opacity: 0.5
                 });
                 this.group.add(textLabel);
             }
