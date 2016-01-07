@@ -352,7 +352,7 @@ class Visualizer extends React.Component {
                 }
                 let textLabel = new TextSprite({
                     x: i,
-                    y: -10,
+                    y: 10,
                     z: 0,
                     size: 8,
                     text: i,
