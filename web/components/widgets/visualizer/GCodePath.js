@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import colornames from 'colornames';
 import THREE from 'three';
-import GCodeRunner from './GCodeRunner';
-import log from './log';
+import GCodeRunner from '../../../lib/GCodeRunner';
+import log from '../../../lib/log';
 
 const noop = () => {};
 
