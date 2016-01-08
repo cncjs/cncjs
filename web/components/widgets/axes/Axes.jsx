@@ -116,10 +116,13 @@ class Axes extends React.Component {
         });
     }
     toUnitString(val) {
+        let { unit } = this.state;
+
         val = Number(val) || 0;
-        if (this.state.unit === METRIC_UNIT) {
+        if (unit === METRIC_UNIT) {
             val = (val / 1).toFixed(3);
-        } else {
+        }
+        if (unit === IMPERIAL_UNIT) {
             val = (val / 25.4).toFixed(4);
         }
         return '' + val;

@@ -1,23 +1,59 @@
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import PressAndHold from '../../common/PressAndHold';
+import store from '../../../store';
 import {
     METRIC_UNIT,
+    IMPERIAL_UNIT,
     DISTANCE_MIN,
     DISTANCE_MAX,
     DISTANCE_STEP,
     DISTANCE_DEFAULT
 } from './constants';
 
+// from mm to in
+const mm2in = (val = 0) => val / 25.4;
+// from in to mm
+const in2mm = (val = 0) => val * 25.4;
+
 class JogDistanceControl extends React.Component {
-    state = {
-        distance: DISTANCE_DEFAULT
-    };
     static propTypes = {
         unit: React.PropTypes.string,
         onChange: React.PropTypes.func
     };
+    state = {
+        distance: store.getState('widgets.axes.jog.step')
+    };
 
+    componentWillReceiveProps(nextProps) {
+        let { distance } = this.state;
+        let unit = this.props.unit;
+        let nextUnit = nextProps.unit;
+
+        if (nextUnit === unit) {
+            return;
+        }
+
+        // unit conversion
+        if (nextUnit === IMPERIAL_UNIT) {
+            distance = mm2in(distance).toFixed(4) * 1;
+        }
+        if (nextUnit === METRIC_UNIT) {
+            distance = in2mm(distance);
+        }
+        this.setState({ distance: distance });
+    }
+    componentDidUpdate(prevProps, prevState) {
+        let { unit } = this.props;
+        let { distance } = this.state;
+
+        if (unit === IMPERIAL_UNIT) {
+            distance = in2mm(distance);
+        }
+
+        // To save in mm
+        store.setState('widgets.axes.jog.step', distance);
+    }
     normalizeToRange(n, min, max) {
         if (n < min) {
             return min;
@@ -29,7 +65,6 @@ class JogDistanceControl extends React.Component {
     }
     handleChange(event) {
         let distance = event.target.value;
-
         this.setState({ distance: distance });
         this.props.onChange(distance);
     }
