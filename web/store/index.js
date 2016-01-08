@@ -2,11 +2,32 @@ import _ from 'lodash';
 
 let state;
 
+const defaultState = {
+    widgets: {
+        connection: {
+            port: ''
+        },
+        axes: {
+            jog: {
+                step: 10
+            }
+        },
+        probe: {
+            probeCommand: 'G38.2',
+            probeDepth: 10,
+            probeFeedrate: 20,
+            tlo: 10,
+            retractionDistance: 4
+        }
+    }
+};
+
 try {
-    state = _.extend({}, JSON.parse(localStorage.getItem('state') || {}));
+    let userState = JSON.parse(localStorage.getItem('state') || {});
+    state = _.merge({}, defaultState, userState);
 }
 catch(err) {
-    state = {};
+    state = _.merge({}, defaultState);
 }
 
 const setState = (key, value) => {
