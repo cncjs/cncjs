@@ -5,7 +5,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import THREE from 'three';
 import OrbitControls from '../../../lib/three/OrbitControls';
-import GCodePath from '../../../lib/GCodePath';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 import Joystick from './Joystick';
@@ -17,6 +16,7 @@ import EngravingCutter from './EngravingCutter';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
+import GCodePath from './GCodePath';
 import {
     COORDINATE_PLANE_XY,
     COORDINATE_PLANE_XZ,
