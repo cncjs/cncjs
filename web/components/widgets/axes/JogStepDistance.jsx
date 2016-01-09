@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import i18n from '../../../lib/i18n';
+import { in2mm, mm2in } from '../../../lib/units';
 import PressAndHold from '../../common/PressAndHold';
 import store from '../../../store';
 import {
@@ -12,44 +13,48 @@ import {
     STEP_DISTANCE_DEFAULT
 } from './constants';
 
-// from mm to in
-const mm2in = (val = 0) => val / 25.4;
-// from in to mm
-const in2mm = (val = 0) => val * 25.4;
-
 class JogStepDistance extends React.Component {
     static propTypes = {
         unit: React.PropTypes.string
     };
     state = {
-        stepDistance: this.toUnitString(store.getState('widgets.axes.jog.stepDistance'))
+        stepDistance: this.toUnitValue(this.props.unit, store.getState('widgets.axes.jog.stepDistance'))
     };
+    unitDidChange = false;
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.unit !== this.props.unit) {
+            // Set `this.unitDidChange` to true if the unit has changed
+            this.unitDidChange = true;
+
             let stepDistance = store.getState('widgets.axes.jog.stepDistance');
 
             if (nextProps.unit === IMPERIAL_UNIT) {
                 stepDistance = mm2in(stepDistance).toFixed(4) * 1;
             }
             if (nextProps.unit === METRIC_UNIT) {
-                stepDistance = stepDistance.toFixed(3) * 1;
+                stepDistance = Number(stepDistance).toFixed(3) * 1;
             }
 
             this.setState({ stepDistance: stepDistance });
         }
     }
     componentDidUpdate(prevProps, prevState) {
-        let { unit } = this.props;
+        // Do not save to store if the unit did change between in and mm
+        if (this.unitDidChange) {
+            this.unitDidChange = false;
+            return;
+        }
 
-        let stepDistance = Number(this.state.stepDistance) || 0;
+        let { unit } = this.props;
+        let { stepDistance = 0 } = this.state;
+
         if (unit === IMPERIAL_UNIT) {
-            // from in to mm
             stepDistance = in2mm(stepDistance);
         }
 
         // To save in mm
-        store.setState('widgets.axes.jog.stepDistance', stepDistance);
+        store.setState('widgets.axes.jog.stepDistance', Number(stepDistance));
     }
     normalizeToRange(n, min, max) {
         if (n < min) {
@@ -91,9 +96,7 @@ class JogStepDistance extends React.Component {
         let stepDistance = STEP_DISTANCE_DEFAULT;
         this.setState({ stepDistance: stepDistance });
     }
-    toUnitString(val) {
-        let { unit } = this.props;
-
+    toUnitValue(unit, val) {
         val = Number(val) || 0;
         if (unit === IMPERIAL_UNIT) {
             val = mm2in(val).toFixed(4) * 1;
@@ -101,7 +104,8 @@ class JogStepDistance extends React.Component {
         if (unit === METRIC_UNIT) {
             val = val.toFixed(3) * 1;
         }
-        return '' + val;
+
+        return val;
     }
     render() {
         let { stepDistance } = this.state;

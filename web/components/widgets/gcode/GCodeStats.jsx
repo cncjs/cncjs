@@ -137,9 +137,7 @@ class GCodeStats extends React.Component {
             this.timer = null;
         }
     }
-    toUnitString(val) {
-        let { unit } = this.props;
-
+    toFixedUnitValue(unit, val) {
         val = Number(val) || 0;
         if (unit === METRIC_UNIT) {
             val = (val / 1).toFixed(3);
@@ -147,12 +145,13 @@ class GCodeStats extends React.Component {
         if (unit === IMPERIAL_UNIT) {
             val = (val / 25.4).toFixed(4);
         }
-        return '' + val;
+
+        return val;
     }
     render() {
         let { unit, total, executed } = this.props;
         let box = _.mapValues(this.state.box, (position) => {
-            return _.mapValues(position, (val, axis) => this.toUnitString(val));
+            return _.mapValues(position, (val, axis) => this.toFixedUnitValue(unit, val));
         });
         let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
         let startTime = '–';

@@ -5,6 +5,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
+import { in2mm, mm2in } from '../../../lib/units';
 import ToolbarButton from './ToolbarButton';
 import store from '../../../store';
 import {
@@ -13,21 +14,16 @@ import {
     ACTIVE_STATE_IDLE
 } from './constants';
 
-// from mm to in
-const mm2in = (val = 0) => val / 25.4;
-// from in to mm
-const in2mm = (val = 0) => val * 25.4;
-
 class Probe extends React.Component {
     state = {
         port: '',
         unit: METRIC_UNIT,
         activeState: ACTIVE_STATE_IDLE,
         probeCommand: store.getState('widgets.probe.probeCommand'),
-        probeDepth: store.getState('widgets.probe.probeDepth'),
-        probeFeedrate: store.getState('widgets.probe.probeFeedrate'),
-        tlo: store.getState('widgets.probe.tlo'),
-        retractionDistance: store.getState('widgets.probe.retractionDistance')
+        probeDepth: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.probeDepth')),
+        probeFeedrate: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.probeFeedrate')),
+        tlo: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.tlo')),
+        retractionDistance: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.retractionDistance'))
     };
     socketEventListener = {
         'grbl:current-status': ::this.socketOnGrblCurrentStatus,
@@ -231,6 +227,17 @@ class Probe extends React.Component {
 
         // Set back to asolute distance mode
         this.sendGCode('G90');
+    }
+    toUnitValue(unit, val) {
+        val = Number(val) || 0;
+        if (unit === IMPERIAL_UNIT) {
+            val = mm2in(val).toFixed(4) * 1;
+        }
+        if (unit === METRIC_UNIT) {
+            val = val.toFixed(3) * 1;
+        }
+
+        return val;
     }
     render() {
         let { port, unit, activeState } = this.state;

@@ -115,24 +115,23 @@ class Axes extends React.Component {
             }
         });
     }
-    toUnitString(val) {
-        let { unit } = this.state;
-
+    toFixedUnitString(unit, val) {
         val = Number(val) || 0;
-        if (unit === METRIC_UNIT) {
-            val = (val / 1).toFixed(3);
-        }
         if (unit === IMPERIAL_UNIT) {
             val = (val / 25.4).toFixed(4);
         }
+        if (unit === METRIC_UNIT) {
+            val = val.toFixed(3);
+        }
+
         return '' + val;
     }
     render() {
         let { port, unit, activeState, machinePos, workingPos } = this.state;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
-        machinePos = _.mapValues(machinePos, (pos, axis) => this.toUnitString(pos));
-        workingPos = _.mapValues(workingPos, (pos, axis) => this.toUnitString(pos));
+        machinePos = _.mapValues(machinePos, (pos, axis) => this.toFixedUnitString(unit, pos));
+        workingPos = _.mapValues(workingPos, (pos, axis) => this.toFixedUnitString(unit, pos));
 
         return (
             <div>
