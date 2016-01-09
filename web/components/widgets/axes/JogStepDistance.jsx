@@ -27,15 +27,13 @@ class JogStepDistance extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.unit !== this.props.unit) {
-            let stepDistance = Number(this.state.stepDistance) || 0;
+            let stepDistance = store.getState('widgets.axes.jog.stepDistance');
 
             if (nextProps.unit === IMPERIAL_UNIT) {
-                // from mm to in
                 stepDistance = mm2in(stepDistance).toFixed(4) * 1;
             }
             if (nextProps.unit === METRIC_UNIT) {
-                // from in to mm
-                stepDistance = in2mm(stepDistance).toFixed(3) * 1;
+                stepDistance = stepDistance.toFixed(3) * 1;
             }
 
             this.setState({ stepDistance: stepDistance });
@@ -97,11 +95,11 @@ class JogStepDistance extends React.Component {
         let { unit } = this.props;
 
         val = Number(val) || 0;
-        if (unit === METRIC_UNIT) {
-            val = val.toFixed(3) * 1;
-        }
         if (unit === IMPERIAL_UNIT) {
             val = mm2in(val).toFixed(4) * 1;
+        }
+        if (unit === METRIC_UNIT) {
+            val = val.toFixed(3) * 1;
         }
         return '' + val;
     }
