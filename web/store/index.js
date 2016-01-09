@@ -9,7 +9,7 @@ const defaultState = {
         },
         axes: {
             jog: {
-                step: 10
+                stepDistance: 10
             }
         },
         probe: {
