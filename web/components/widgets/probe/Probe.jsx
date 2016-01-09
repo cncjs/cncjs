@@ -33,6 +33,7 @@ class Probe extends React.Component {
         'grbl:current-status': ::this.socketOnGrblCurrentStatus,
         'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
     };
+    unitDidChange = false;
 
     componentDidMount() {
         this.subscribe();
@@ -46,7 +47,20 @@ class Probe extends React.Component {
         return ! _.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
-        let { unit, probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
+        // Do not save to store if the unit did change between in and mm
+        if (this.unitDidChange) {
+            this.unitDidChange = false;
+            return;
+        }
+
+        let {
+            unit,
+            probeCommand,
+            probeDepth,
+            probeFeedrate,
+            tlo,
+            retractionDistance
+        } = this.state;
 
         if (unit === IMPERIAL_UNIT) {
             probeDepth = in2mm(probeDepth);
@@ -57,10 +71,10 @@ class Probe extends React.Component {
 
         // To save in mm
         store.setState('widgets.probe.probeCommand', probeCommand);
-        store.setState('widgets.probe.probeDepth', probeDepth);
-        store.setState('widgets.probe.probeFeedrate', probeFeedrate);
-        store.setState('widgets.probe.tlo', tlo);
-        store.setState('widgets.probe.retractionDistance', retractionDistance);
+        store.setState('widgets.probe.probeDepth', Number(probeDepth));
+        store.setState('widgets.probe.probeFeedrate', Number(probeFeedrate));
+        store.setState('widgets.probe.tlo', Number(tlo));
+        store.setState('widgets.probe.retractionDistance', Number(retractionDistance));
     }
     subscribe() {
         this.pubsubTokens = [];
@@ -99,7 +113,7 @@ class Probe extends React.Component {
         });
     }
     socketOnGrblGCodeModes(modes) {
-        let { unit, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
+        let { unit } = this.state;
         let nextUnit = unit;
 
         // Imperial
@@ -116,6 +130,16 @@ class Probe extends React.Component {
             return;
         }
 
+        // Set `this.unitDidChange` to true if the unit has changed
+        this.unitDidChange = true;
+
+        let {
+            probeDepth,
+            probeFeedrate,
+            tlo,
+            retractionDistance
+        } = store.getState('widgets.probe');
+
         // unit conversion
         if (nextUnit === IMPERIAL_UNIT) {
             probeDepth = mm2in(probeDepth).toFixed(4) * 1;
@@ -124,10 +148,10 @@ class Probe extends React.Component {
             retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
         }
         if (nextUnit === METRIC_UNIT) {
-            probeDepth = in2mm(probeDepth);
-            probeFeedrate = in2mm(probeFeedrate);
-            tlo = in2mm(tlo);
-            retractionDistance = in2mm(retractionDistance);
+            probeDepth = Number(probeDepth).toFixed(3) * 1;
+            probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
+            tlo = Number(tlo).toFixed(3) * 1;
+            retractionDistance = Number(retractionDistance).toFixed(3) * 1;
         }
         this.setState({
             unit: nextUnit,
