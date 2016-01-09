@@ -8,12 +8,13 @@ class Header extends React.Component {
     render() {
         let homepage = 'https://github.com/cheton/cnc.js';
         let lng = i18n.lng();
+        let brandTitle = settings.name + ' v' + settings.version;
 
         return (
             <div data-component="Header">
                 <Navbar fixedTop fluid inverse>
                     <NavbarBrand>
-                        <a href={homepage} target="_blank">{settings.name}</a>
+                        <a href={homepage} target="_blank" title={brandTitle}>{settings.name}</a>
                     </NavbarBrand>
                     <Nav>
                         <NavItem href="#/workspace">{i18n._('Workspace')}</NavItem>

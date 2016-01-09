@@ -2,16 +2,19 @@ import _ from 'lodash';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import serialport from '../../../lib/serialport';
+import { mm2in } from '../../../lib/units'; 
+import store from '../../../store';
 import {
-    ACTIVE_STATE_IDLE
+    ACTIVE_STATE_IDLE,
+    IMPERIAL_UNIT,
+    METRIC_UNIT
 } from './constants';
 
-class JogJoystickControl extends React.Component {
+class JogPad extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
         unit: React.PropTypes.string,
-        activeState: React.PropTypes.string,
-        distance: React.PropTypes.number
+        activeState: React.PropTypes.string
     };
 
     jog(params) {
@@ -27,12 +30,29 @@ class JogJoystickControl extends React.Component {
 
         serialport.writeln('G0 ' + s);
     }
+    getStepDistance() {
+        let { unit } = this.props;
+        let stepDistance = store.getState('widgets.axes.jog.stepDistance');
+        stepDistance = this.toUnitValue(unit, stepDistance);
+        return stepDistance;
+    }
+    toUnitValue(unit, val) {
+        val = Number(val) || 0;
+        if (unit === IMPERIAL_UNIT) {
+            val = mm2in(val).toFixed(4) * 1;
+        }
+        if (unit === METRIC_UNIT) {
+            val = val.toFixed(3) * 1;
+        }
+
+        return val;
+    }
     render() {
-        let { port, activeState, distance } = this.props;
+        let { port, activeState, stepDistance } = this.props;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
-            <div className="jog-joystick-control">
+            <div className="jog-pad">
                 <table>
                     <tbody>
                         <tr>
@@ -40,7 +60,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-minus jog-y-plus"
-                                    onClick={() => this.jog({ X: -distance, Y: distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ X: -stepDistance, Y: stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y+')}
                                 >
@@ -51,7 +74,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-y-plus"
-                                    onClick={() => this.jog({ Y: distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ Y: stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move Y+')}
                                 >
@@ -62,7 +88,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-plus jog-y-plus"
-                                    onClick={() => this.jog({ X: distance, Y: distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ X: stepDistance, Y: stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y+')}
                                 >
@@ -73,7 +102,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-z-plus"
-                                    onClick={() => this.jog({ Z: distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ Z: stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move Z+')}
                                 >
@@ -86,7 +118,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-minus"
-                                    onClick={() => this.jog({ X: -distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ X: -stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move X-')}
                                 >
@@ -108,7 +143,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-plus"
-                                    onClick={() => this.jog({ X: distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ X: stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move X+')}
                                 >
@@ -132,7 +170,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-minus jog-y-minus"
-                                    onClick={() => this.jog({ X: -distance, Y: -distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ X: -stepDistance, Y: -stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y-')}
                                 >
@@ -143,7 +184,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-y-minus"
-                                    onClick={() => this.jog({ Y: -distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ Y: -stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move Y-')}
                                 >
@@ -154,7 +198,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-plus jog-y-minus"
-                                    onClick={() => this.jog({ X: distance, Y: -distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ X: stepDistance, Y: -stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y-')}
                                 >
@@ -165,7 +212,10 @@ class JogJoystickControl extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-z-minus"
-                                    onClick={() => this.jog({ Z: -distance })}
+                                    onClick={() => {
+                                        let stepDistance = this.getStepDistance();
+                                        this.jog({ Z: -stepDistance });
+                                    }}
                                     disabled={!canClick}
                                     title={i18n._('Move Z-')}
                                 >
@@ -180,4 +230,4 @@ class JogJoystickControl extends React.Component {
     }
 }
 
-export default JogJoystickControl;
+export default JogPad;

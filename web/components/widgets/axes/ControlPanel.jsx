@@ -1,18 +1,15 @@
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import serialport from '../../../lib/serialport';
-import JogDistanceControl from './JogDistanceControl';
-import JogJoystickControl from './JogJoystickControl';
+import JogPad from './JogPad';
+import JogStepDistance from './JogStepDistance';
 import MotionControls from './MotionControls';
 import {
     ACTIVE_STATE_IDLE,
-    DISTANCE_DEFAULT
+    STEP_DISTANCE_DEFAULT
 } from './constants';
 
 class ControlPanel extends React.Component {
-    state = {
-        distance: DISTANCE_DEFAULT
-    };
     static propTypes = {
         port: React.PropTypes.string,
         unit: React.PropTypes.string,
@@ -21,12 +18,8 @@ class ControlPanel extends React.Component {
         workingPos: React.PropTypes.object
     };
 
-    changeDistance(distance) {
-        this.setState({ distance: Number(distance) || DISTANCE_DEFAULT });
-    }
     render() {
         let { port, unit, activeState, machinePos, workingPos } = this.props;
-        let { distance } = this.state;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
         let styles = {
             jogControls: {
@@ -39,11 +32,10 @@ class ControlPanel extends React.Component {
             <div className="container-fluid control-panel">
                 <div className="row no-gutter">
                     <div className="col-sm-6">
-                        <JogJoystickControl
+                        <JogPad
                             port={port}
                             unit={unit}
                             activeState={activeState}
-                            distance={distance}
                         />
                     </div>
                     <div className="col-sm-6">
@@ -58,9 +50,8 @@ class ControlPanel extends React.Component {
                 </div>
                 <div className="row no-gutter">
                     <div className="col-sm-12">
-                        <JogDistanceControl
+                        <JogStepDistance
                             unit={unit}
-                            onChange={::this.changeDistance}
                         />
                     </div>
                 </div>

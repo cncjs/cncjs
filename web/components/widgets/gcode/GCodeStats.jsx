@@ -7,7 +7,8 @@ import update from 'react-addons-update';
 import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
 import {
-    METRIC_UNIT
+    METRIC_UNIT,
+    IMPERIAL_UNIT
 } from './constants';
 
 class GCodeStats extends React.Component {
@@ -136,19 +137,21 @@ class GCodeStats extends React.Component {
             this.timer = null;
         }
     }
-    toUnitString(val) {
+    toFixedUnitValue(unit, val) {
         val = Number(val) || 0;
-        if (this.props.unit === METRIC_UNIT) {
+        if (unit === METRIC_UNIT) {
             val = (val / 1).toFixed(3);
-        } else {
+        }
+        if (unit === IMPERIAL_UNIT) {
             val = (val / 25.4).toFixed(4);
         }
-        return '' + val;
+
+        return val;
     }
     render() {
         let { unit, total, executed } = this.props;
         let box = _.mapValues(this.state.box, (position) => {
-            return _.mapValues(position, (val, axis) => this.toUnitString(val));
+            return _.mapValues(position, (val, axis) => this.toFixedUnitValue(unit, val));
         });
         let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
         let startTime = '–';
