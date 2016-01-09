@@ -1,11 +1,8 @@
 import _ from 'lodash';
 import { GCodeInterpreter } from 'gcode-interpreter';
 import log from './log';
+import { in2mm } from './units';
 
-// from mm to in
-const mm2in = (val = 0) => val / 25.4;
-// from in to mm
-const in2mm = (val = 0) => val * 25.4;
 // noop
 const noop = () => {};
 
