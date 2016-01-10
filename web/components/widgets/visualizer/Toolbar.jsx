@@ -24,12 +24,15 @@ class Toolbar extends React.Component {
     socketEventListener = {
         'gcode:queue-status': ::this.socketOnGCodeQueueStatus
     };
+    pubsubTokens = [];
 
     componentDidMount() {
         this.addSocketEventListener();
+        this.subscribe();
     }
     componentWillUnmount() {
         this.removeSocketEventListener();
+        this.unsubscribe();
     }
     componentDidUpdate() {
         this.props.setWorkflowState(this.state.workflowState);
@@ -50,6 +53,20 @@ class Toolbar extends React.Component {
                 queueFinished: false
             });
         }
+    }
+    subscribe() {
+        { // setWorkflowState
+            let token = pubsub.subscribe('setWorkflowState', (msg, workflowState) => {
+                this.setState({ workflowState: workflowState });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     addSocketEventListener() {
         _.each(this.socketEventListener, (callback, eventName) => {

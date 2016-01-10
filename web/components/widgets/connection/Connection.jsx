@@ -8,6 +8,9 @@ import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 import store from '../../../store';
+import {
+    WORKFLOW_STATE_RUNNING
+} from './constants';
 
 class Connection extends React.Component {
     state = {
@@ -177,6 +180,11 @@ class Connection extends React.Component {
                 let portData = _.findWhere(res.body, { port: port }) || {};
                 if (portData.gcode) {
                     pubsub.publish('gcode:load', portData.gcode);
+                }
+
+                // TODO: Check paused and idle state as well
+                if (portData.queue.isRunning) {
+                    pubsub.publish('setWorkflowState', WORKFLOW_STATE_RUNNING);
                 }
             });
     }

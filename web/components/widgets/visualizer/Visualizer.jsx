@@ -64,6 +64,7 @@ class Visualizer extends React.Component {
         'grbl:current-status': ::this.socketOnGrblCurrentStatus,
         'gcode:queue-status': ::this.socketOnGCodeQueueStatus
     };
+    pubsubTokens = [];
 
     componentWillMount() {
         // Grbl
@@ -121,8 +122,6 @@ class Visualizer extends React.Component {
         requestAnimationFrame(::this.renderAnimationLoop);
     }
     subscribe() {
-        this.pubsubTokens = [];
-
         { // port
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
