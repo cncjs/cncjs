@@ -159,16 +159,12 @@ class Connection extends React.Component {
         this.startLoading();
     }
     openPort() {
-        let port = this.state.port;
-        let baudrate = this.state.baudrate;
+        let { port, baudrate } = this.state;
 
         this.setState({
             connecting: true
         });
-        socket.emit('open', {
-            port: port,
-            baudrate: baudrate
-        });
+        socket.emit('open', port, baudrate);
     }
     closePort() {
         let port = this.state.port;
@@ -180,9 +176,7 @@ class Connection extends React.Component {
             connecting: false,
             connected: false
         });
-        socket.emit('close', {
-            port: port
-        });
+        socket.emit('close', port);
 
         // Refresh ports
         socket.emit('list');
