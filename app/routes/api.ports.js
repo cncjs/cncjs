@@ -11,8 +11,11 @@ module.exports.listAllPorts = function(req, res) {
             connected: _.size(portData.sockets),
             ready: portData.ready,
             pending: portData.pending,
-            queueTotal: portData.q_total,
-            queueExecuted: portData.q_executed,
+            queue: {
+                size: portData.queue.size(),
+                executed: portData.queue.executed(),
+                isRunning: portData.queue.isRunning()
+            },
             gcode: portData.gcode
         });
     });
