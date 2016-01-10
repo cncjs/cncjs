@@ -25,7 +25,7 @@ if (program.debug) {
 }
 
 var settings = require('../app/config/settings');
-var server = require('../server');
+var server = require('../app/server');
 
 // Overrides defaults
 _.set(settings, 'port', program.port || settings.port);

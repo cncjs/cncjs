@@ -1,6 +1,6 @@
 var path = require('path');
 var webappengine = require('webappengine');
-var server = require('./server');
+var server = require('./app/server');
 var options = {
     port: 8000,
     routes: [
