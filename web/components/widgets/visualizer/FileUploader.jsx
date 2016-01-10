@@ -1,9 +1,9 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import i18n from '../../../lib/i18n';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import request from 'superagent';
+import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 
 class FileUploader extends React.Component {
