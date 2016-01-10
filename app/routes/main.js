@@ -16,6 +16,9 @@ module.exports = {
         // file
         app.post(urljoin(settings.route, 'api/file/upload'), api.file.uploadFile);
 
+        // ports
+        app.get(urljoin(settings.route, 'api/ports'), api.ports.listAllPorts);
+
         // i18n
         app.get(urljoin(settings.route, 'api/i18n/lng'), api.i18n.getLanguage);
         app.post(urljoin(settings.route, 'api/i18n/lng/:__lng__'), api.i18n.setLanguage);
