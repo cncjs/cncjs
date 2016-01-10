@@ -39,11 +39,11 @@ var serialports = {};
 
 pubsub.subscribe('file:upload', function(msg, data) {
     var meta = data.meta || {};
-    var contents = data.contents || '';
+    var gcode = data.contents || '';
 
-    parseText(contents, function(err, data) {
+    parseText(gcode, function(err, data) {
         if (err) {
-            log.error('Failed to parse the contents', err, contents);
+            log.error('Failed to parse the G-code', err, gcode);
             return;
         }
 
@@ -56,7 +56,10 @@ pubsub.subscribe('file:upload', function(msg, data) {
             return;
         }
 
-        // Stop the queue
+        // Load G-code
+        sp.gcode = gcode;
+
+        // Stop and clear queue
         sp.queue.stop();
         sp.queue.clear();
 
@@ -73,18 +76,21 @@ module.exports = function(server) {
     });
 
     io.on('connection', function(socket) {
-        log.debug('connection:', { id: socket.id });
+        log.debug('io.on(%s):', 'connection', { id: socket.id });
 
         socket.on('disconnect', function() {
+            log.debug('socket.on(%s):', 'disconnect', { id: socket.id });
+
             // Remove the socket of the disconnected client
             _.each(serialports, function(sp) {
                 sp.sockets[socket.id] = undefined;
                 delete sp.sockets[socket.id];
             });
-            log.debug('disconnect:', { id: socket.id });
         });
 
         socket.on('list', function() {
+            log.debug('socket.on(%s):', 'list', { id: socket.id });
+
             serialport.list(function(err, ports) {
                 if (err) {
                     log.error(err);
@@ -115,9 +121,9 @@ module.exports = function(server) {
             });
         });
 
-        socket.on('open', function(data) {
-            var port = _.get(data, 'port');
-            var baudrate = Number(_.get(data, 'baudrate')) || 9600; // defaults to 9600
+        socket.on('open', function(port, baudrate) {
+            log.debug('socket.on(%s):', 'open', { id: socket.id, port: port, baudrate: baudrate });
+
             var sp = serialports[port] = serialports[port] || {
                 port: port,
                 ready: false,
@@ -128,6 +134,7 @@ module.exports = function(server) {
                 },
                 timer: {},
                 serialPort: null,
+                gcode: '',
                 queue: null,
                 q_total: 0,
                 q_executed: 0,
@@ -248,7 +255,10 @@ module.exports = function(server) {
                                 sp.pending[cmd] = false;
                             });
 
-                            // Ensure the queue is stopped and empty
+                            // Unload G-code
+                            sp.gcode = '';
+
+                            // Stop and clear queue
                             sp.queue.stop();
                             sp.queue.clear();
                         }
@@ -388,15 +398,16 @@ module.exports = function(server) {
                 }
             }
 
-            log.debug('open:', {
+            log.debug({
                 port: port,
                 queued: sp.queue.size(),
                 sockets: _.keys(sp.sockets)
             });
         });
 
-        socket.on('close', function(data) {
-            var port = _.get(data, 'port');
+        socket.on('close', function(port) {
+            log.debug('socket.on(%s):', 'close', { id: socket.id, port: port });
+
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
@@ -429,19 +440,21 @@ module.exports = function(server) {
         });
 
         socket.on('serialport:write', function(port, msg) {
+            log.debug('socket.on(%s):', 'serialport:write', { id: socket.id, port: port, msg: msg });
+
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port, msg: msg });
                 return;
             }
 
-            log.debug('serialport:write:', { id: socket.id, port: port, msg: msg });
-
             sp.serialPort.write(msg);
             sp.sockets[socket.id].command = msg;
         });
 
         socket.on('gcode:run', function(port) {
+            log.debug('socket.on(%s):', 'gcode:run', { id: socket.id, port: port });
+
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
@@ -452,6 +465,8 @@ module.exports = function(server) {
         });
 
         socket.on('gcode:pause', function(port) {
+            log.debug('socket.on(%s):', 'gcode:pause', { id: socket.id, port: port });
+
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
@@ -462,6 +477,8 @@ module.exports = function(server) {
         });
 
         socket.on('gcode:stop', function(port) {
+            log.debug('socket.on(%s):', 'gcode:stop', { id: socket.id, port: port });
+
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
@@ -472,12 +489,18 @@ module.exports = function(server) {
         });
 
         socket.on('gcode:unload', function(port) {
+            log.debug('socket.on(%s):', 'gcode:unload', { id: socket.id, port: port });
+
             var sp = serialports[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
             }
 
+            // Unload G-code
+            sp.gcode = '';
+
+            // Clear queue
             sp.queue.clear();
         });
 
