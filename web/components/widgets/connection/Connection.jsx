@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import request from 'superagent';
 import Select from 'react-select';
 import Alert from './Alert';
 import i18n from '../../../lib/i18n';
@@ -165,6 +166,19 @@ class Connection extends React.Component {
             connecting: true
         });
         socket.emit('open', port, baudrate);
+
+        request
+            .get('/api/ports')
+            .end((err, res) => {
+                if (err || !res.ok) {
+                    return;
+                }
+
+                let portData = _.findWhere(res.body, { port: port }) || {};
+                if (portData.gcode) {
+                    pubsub.publish('gcode:load', portData.gcode);
+                }
+            });
     }
     closePort() {
         let port = this.state.port;
