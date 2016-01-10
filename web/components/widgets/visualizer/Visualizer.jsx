@@ -64,6 +64,7 @@ class Visualizer extends React.Component {
         'grbl:current-status': ::this.socketOnGrblCurrentStatus,
         'gcode:queue-status': ::this.socketOnGCodeQueueStatus
     };
+    pubsubTokens = [];
 
     componentWillMount() {
         // Grbl
@@ -121,8 +122,6 @@ class Visualizer extends React.Component {
         requestAnimationFrame(::this.renderAnimationLoop);
     }
     subscribe() {
-        this.pubsubTokens = [];
-
         { // port
             let token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
@@ -301,11 +300,19 @@ class Visualizer extends React.Component {
         }
 
         { // Creating the coordinate grid
-            let gridLine = new GridLine(GRID_X_LENGTH, GRID_X_SPACING * 2, GRID_Y_LENGTH, GRID_Y_SPACING * 2);
-            gridLine.setColors(colornames('blue'), colornames('gray 44'));
-            gridLine.material.opacity = 0.15;
-            gridLine.material.transparent = true;
-            gridLine.material.depthWrite = false;
+            let gridLine = new GridLine(
+                GRID_X_LENGTH,
+                GRID_X_SPACING,
+                GRID_Y_LENGTH,
+                GRID_Y_SPACING,
+                colornames('blue'), // center line
+                colornames('gray 44') // grid
+            );
+            _.each(gridLine.children, (o) => {
+                o.material.opacity = 0.15;
+                o.material.transparent = true;
+                o.material.depthWrite = false;
+            });
             gridLine.name = 'GridLine';
             this.group.add(gridLine);
         }

@@ -1,12 +1,16 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import request from 'superagent';
 import Select from 'react-select';
 import Alert from './Alert';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 import store from '../../../store';
+import {
+    WORKFLOW_STATE_RUNNING
+} from './constants';
 
 class Connection extends React.Component {
     state = {
@@ -159,16 +163,30 @@ class Connection extends React.Component {
         this.startLoading();
     }
     openPort() {
-        let port = this.state.port;
-        let baudrate = this.state.baudrate;
+        let { port, baudrate } = this.state;
 
         this.setState({
             connecting: true
         });
-        socket.emit('open', {
-            port: port,
-            baudrate: baudrate
-        });
+        socket.emit('open', port, baudrate);
+
+        request
+            .get('/api/ports')
+            .end((err, res) => {
+                if (err || !res.ok) {
+                    return;
+                }
+
+                let portData = _.findWhere(res.body, { port: port }) || {};
+                if (portData.gcode) {
+                    pubsub.publish('gcode:load', portData.gcode);
+                }
+
+                // TODO: Check paused and idle state as well
+                if (portData.queue.isRunning) {
+                    pubsub.publish('setWorkflowState', WORKFLOW_STATE_RUNNING);
+                }
+            });
     }
     closePort() {
         let port = this.state.port;
@@ -180,9 +198,7 @@ class Connection extends React.Component {
             connecting: false,
             connected: false
         });
-        socket.emit('close', {
-            port: port
-        });
+        socket.emit('close', port);
 
         // Refresh ports
         socket.emit('list');
