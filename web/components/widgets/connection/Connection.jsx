@@ -15,6 +15,8 @@ import {
 class Connection extends React.Component {
     state = {
         loading: false,
+        connecting: false,
+        connected: false,
         ports: [],
         baudrates: [
             9600,
@@ -24,7 +26,9 @@ class Connection extends React.Component {
             115200
         ],
         port: '',
-        baudrate: 115200,
+        baudrate: store.getState('widgets.connection.baudrate'),
+        autoReconnect: store.getState('widgets.connection.autoReconnect'),
+        hasReconnected: false,
         alertMessage: ''
     };
     socketEventListener = {
@@ -67,6 +71,13 @@ class Connection extends React.Component {
                 port: port,
                 ports: ports
             });
+
+            let { autoReconnect, hasReconnected } = this.state;
+
+            if (autoReconnect && !hasReconnected) {
+                this.setState({ hasReconnected: true });
+                this.openPort(port);
+            }
         } else {
             this.setState({ ports: ports });
         }
@@ -162,9 +173,7 @@ class Connection extends React.Component {
         socket.emit('list');
         this.startLoading();
     }
-    openPort() {
-        let { port, baudrate } = this.state;
-
+    openPort(port = this.state.port, baudrate = this.state.baudrate) {
         this.setState({
             connecting: true
         });
@@ -177,20 +186,25 @@ class Connection extends React.Component {
                     return;
                 }
 
-                let portData = _.findWhere(res.body, { port: port }) || {};
-                if (portData.gcode) {
-                    pubsub.publish('gcode:load', portData.gcode);
+                let portData = _.findWhere(res.body, { port: port });
+                if (!portData) {
+                    return;
+                }
+
+                let gcode = _.get(portData, 'gcode');
+                let isRunning = _.get(portData, 'queue.isRunning');
+
+                if (gcode) {
+                    pubsub.publish('gcode:load', gcode);
                 }
 
                 // TODO: Check paused and idle state as well
-                if (portData.queue.isRunning) {
+                if (isRunning) {
                     pubsub.publish('setWorkflowState', WORKFLOW_STATE_RUNNING);
                 }
             });
     }
-    closePort() {
-        let port = this.state.port;
-
+    closePort(port = this.state.port) {
         // Close port
         pubsub.publish('port', '');
 
@@ -214,6 +228,11 @@ class Connection extends React.Component {
             alertMessage: '',
             baudrate: value
         });
+        store.setState('widgets.connection.baudrate', value);
+    }
+    handleAutoReconnect(event) {
+        let checked = event.target.checked;
+        store.setState('widgets.connection.autoReconnect', checked);
     }
     renderPortOption(option) {
         let optionStyle = {
@@ -272,27 +291,33 @@ class Connection extends React.Component {
         );
     }
     render() {
-        let notLoading = !(this.state.loading);
-        let notConnecting = !(this.state.connecting);
-        let notConnected = !(this.state.connected);
-        let isConnected = this.state.connected;
+        let {
+            loading, connecting, connected,
+            ports, baudrates,
+            port, baudrate,
+            autoReconnect,
+            alertMessage
+        } = this.state;
+        let notLoading = !loading;
+        let notConnecting = !connecting;
+        let notConnected = !connected;
         let canRefresh = notLoading && notConnected;
         let canChangePort = notLoading && notConnected;
-        let canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(this.state.port)));
-        let canOpenPort = this.state.port && this.state.baudrate && notConnecting && notConnected;
-        let canClosePort = isConnected;
+        let canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(port)));
+        let canOpenPort = port && baudrate && notConnecting && notConnected;
+        let canClosePort = connected;
 
         return (
             <div>
-                <Alert msg={this.state.alertMessage} dismiss={::this.clearAlert} />
+                <Alert msg={alertMessage} dismiss={::this.clearAlert} />
                 <div className="form-group">
                     <label className="control-label">{i18n._('Port:')}</label>
                     <div className="input-group input-group-sm">
                         <Select
                             className="sm"
                             name="port"
-                            value={this.state.port}
-                            options={_.map(this.state.ports, (port) => {
+                            value={port}
+                            options={_.map(ports, (port) => {
                                 return {
                                     value: port.port,
                                     label: port.port,
@@ -325,8 +350,8 @@ class Connection extends React.Component {
                     <Select
                         className="sm"
                         name="baudrate"
-                        value={this.state.baudrate}
-                        options={_.map(this.state.baudrates, function(baudrate) {
+                        value={baudrate}
+                        options={_.map(baudrates, (baudrate) => {
                             return {
                                 value: baudrate,
                                 label: Number(baudrate).toString()
@@ -341,23 +366,33 @@ class Connection extends React.Component {
                         onChange={::this.changeBaudrate}
                     />
                 </div>
+                <div className="checkbox">
+                    <label>
+                        <input type="checkbox" defaultChecked={autoReconnect} onChange={::this.handleAutoReconnect} />
+                        {i18n._('Connect automatically')}
+                    </label>
+                </div>
                 <div className="btn-group btn-group-sm">
                     {notConnected &&
                         <button
                             type="button"
                             className="btn btn-primary"
                             disabled={!canOpenPort}
-                            onClick={::this.openPort}
+                            onClick={() => {
+                                this.openPort(port, baudrate);
+                            }}
                         >
                             <i className="glyphicon glyphicon-off"></i>&nbsp;{i18n._('Open')}
                         </button>
                     }
-                    {isConnected &&
+                    {connected &&
                         <button
                             type="button"
                             className="btn btn-danger"
                             disabled={!canClosePort}
-                            onClick={::this.closePort}
+                            onClick={() => {
+                                this.closePort(port);
+                            }}
                         >
                             <i className="glyphicon glyphicon-off"></i>&nbsp;{i18n._('Close')}
                         </button>

@@ -46,7 +46,9 @@ const migrateState = (userState) => {
 const defaultState = {
     widgets: {
         connection: {
-            port: ''
+            port: '',
+            baudrate: 115200,
+            autoReconnect: true
         },
         axes: {
             jog: {
