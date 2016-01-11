@@ -2,5 +2,33 @@
     .widget-content {
         position: relative;
         padding: 10px;
+
+        .code {
+            background-color: #e6e6e6;
+            padding: 2px;
+        }
+        button:hover {
+            .code {
+                background-color: #ccc;
+            }
+        }
+
+        .row {
+            margin-bottom: 5px;
+        }
+
+        [class*="col-"]:nth-child(odd) {
+            padding-left: 10px;
+        }
+        [class*="col-"]:first-child {
+            padding-left: 0;
+        }
+
+        .well-xs {
+             padding: 0 5px;
+             border-radius: 3px;
+             margin-bottom: 0;
+             line-height: 18px;
+        }
     }
 }
