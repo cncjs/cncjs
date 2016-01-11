@@ -24,6 +24,7 @@
   },
   "keywords": [
     "cnc",
+    "gcode",
     "grbl",
     "arduino",
     "raspberry-pi",
