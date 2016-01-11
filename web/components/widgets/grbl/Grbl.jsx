@@ -14,7 +14,7 @@ class Grbl extends React.Component {
         modes: {
         }
     };
-    sokcetEventListener = {
+    socketEventListener = {
         'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
     };
 
@@ -93,7 +93,7 @@ class Grbl extends React.Component {
         log.trace(state);
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return JSON.stringify(nextState) !== JSON.stringify(this.state);
+        return ! _.isEqual(nextState, this.state);
     }
     render() {
         let { port, modes } = this.state;
