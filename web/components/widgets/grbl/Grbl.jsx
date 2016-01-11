@@ -7,14 +7,18 @@ import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
 import { MODAL_GROUPS } from '../../../constants/modal-groups';
+import {
+    ACTIVE_STATE_IDLE
+} from './constants';
 
 class Grbl extends React.Component {
     state = {
         port: '',
-        modes: {
-        }
+        activeState: ACTIVE_STATE_IDLE,
+        modes: {}
     };
     socketEventListener = {
+        'grbl:current-status': ::this.socketOnGrblCurrentStatus,
         'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
     };
 
@@ -58,6 +62,11 @@ class Grbl extends React.Component {
             socket.off(eventName, callback);
         });
     }
+    socketOnGrblCurrentStatus(data) {
+        this.setState({
+            activeState: data.activeState
+        });
+    }
     socketOnGrblGCodeModes(modes) {
         let state = {};
 
@@ -96,127 +105,148 @@ class Grbl extends React.Component {
         return ! _.isEqual(nextState, this.state);
     }
     render() {
-        let { port, modes } = this.state;
+        let { port, activeState, modes } = this.state;
         let canClick = !!port;
 
         return (
             <div>
-                <div className="form-group">
-                    <div className="btn-group btn-group-justified" role="group" aria-label="...">
-                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('Real-Time Commands')} id="realtime-commands">
-                            <MenuItem onSelect={() => serialport.write('~')} disabled={!canClick}>{i18n._('Cycle Start (~)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.write('!')} disabled={!canClick}>{i18n._('Feed Hold (!)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.write('?')} disabled={!canClick}>{i18n._('Current Status (?)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.write('\x18')} disabled={!canClick}>{i18n._('Reset Grbl (Ctrl-X)')}</MenuItem>
-                        </DropdownButton>
-                        <DropdownButton bsSize="sm" bsStyle="default" title={i18n._('System Commands')} id="system-commands">
-                            <MenuItem onSelect={() => serialport.writeln('$')} disabled={!canClick}>{i18n._('Grbl Help ($)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.writeln('$$')} disabled={!canClick}>{i18n._('Grbl Settings ($$)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.writeln('$#')} disabled={!canClick}>{i18n._('View G-code Parameters ($#)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.writeln('$G')} disabled={!canClick}>{i18n._('View G-code Parser State ($G)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.writeln('$I')} disabled={!canClick}>{i18n._('View Build Info ($I)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.writeln('$N')} disabled={!canClick}>{i18n._('View Startup Blocks ($N)')}</MenuItem>
-                            <MenuItem divider />
-                            <MenuItem onSelect={() => serialport.writeln('$C')} disabled={!canClick}>{i18n._('Check G-code Mode ($C)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.writeln('$X')} disabled={!canClick}>{i18n._('Kill Alarm Lock ($X)')}</MenuItem>
-                            <MenuItem onSelect={() => serialport.writeln('$H')} disabled={!canClick}>{i18n._('Run Homing Cycle ($H)')}</MenuItem>
-                        </DropdownButton>
+                <div className="btn-group btn-group-sm">
+                    <button type="button"
+                        className="btn btn-default"
+                        onClick={() => serialport.write('~')}
+                        disabled={!canClick}
+                    >
+                        <span className="code">~</span>&nbsp;{i18n._('Cycle Start')}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={() => serialport.write('!')}
+                        disabled={!canClick}
+                    >
+                        <span className="code">!</span>&nbsp;{i18n._('Feed Hold')}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={() => serialport.write('\x18')}
+                        disabled={!canClick}
+                    >
+                        <span className="code">Ctrl-X</span>&nbsp;{i18n._('Reset Grbl')}
+                    </button>
+                    <DropdownButton bsSize="sm" bsStyle="default" title="">
+                        <MenuItem onSelect={() => serialport.writeln('$')} disabled={!canClick}>{i18n._('Grbl Help ($)')}</MenuItem>
+                        <MenuItem onSelect={() => serialport.writeln('$$')} disabled={!canClick}>{i18n._('Grbl Settings ($$)')}</MenuItem>
+                        <MenuItem onSelect={() => serialport.writeln('$#')} disabled={!canClick}>{i18n._('View G-code Parameters ($#)')}</MenuItem>
+                        <MenuItem onSelect={() => serialport.writeln('$G')} disabled={!canClick}>{i18n._('View G-code Parser State ($G)')}</MenuItem>
+                        <MenuItem onSelect={() => serialport.writeln('$I')} disabled={!canClick}>{i18n._('View Build Info ($I)')}</MenuItem>
+                        <MenuItem onSelect={() => serialport.writeln('$N')} disabled={!canClick}>{i18n._('View Startup Blocks ($N)')}</MenuItem>
+                        <MenuItem divider />
+                        <MenuItem onSelect={() => serialport.writeln('$C')} disabled={!canClick}>{i18n._('Check G-code Mode ($C)')}</MenuItem>
+                        <MenuItem onSelect={() => serialport.writeln('$X')} disabled={!canClick}>{i18n._('Kill Alarm Lock ($X)')}</MenuItem>
+                        <MenuItem onSelect={() => serialport.writeln('$H')} disabled={!canClick}>{i18n._('Run Homing Cycle ($H)')}</MenuItem>
+                    </DropdownButton>
+                </div>
+                <h6>{i18n._('Parser State')}</h6>
+                <div className="container-fluid">
+                    <div className="row no-gutter">
+                        <div className="col col-xs-3">
+                            {i18n._('State')}
+                        </div>
+                        <div className="col col-xs-9">
+                            <div className="well well-xs">{activeState}</div>
+                        </div>
+                    </div>
+                    <div className="row no-gutter">
+                        <div className="col col-xs-3">
+                            {i18n._('Feed Rate')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'feedrate')}</div>
+                        </div>
+                        <div className="col col-xs-3">
+                            {i18n._('Spindle')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'spindle')}</div>
+                        </div>
+                    </div>
+                    <div className="row no-gutter">
+                        <div className="col col-xs-3">
+                            {i18n._('Tool Number')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'tool')}</div>
+                        </div>
                     </div>
                 </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Feed rate:')}
+                <h6 className="modal-groups-header">
+                    {i18n._('Modal Groups')}
+                </h6>
+                <div className="container-fluid">
+                    <div className="row no-gutter">
+                        <div className="col col-xs-3">
+                            {i18n._('Motion')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.motion')}</div>
+                        </div>
+                        <div className="col col-xs-3">
+                            {i18n._('WCS')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.coordinate')}</div>
+                        </div>
                     </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'feedrate')}
+                    <div className="row no-gutter">
+                        <div className="col col-xs-3">
+                            {i18n._('Plane')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.plane')}</div>
+                        </div>
+                        <div className="col col-xs-3">
+                            {i18n._('Distance')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.distance')}</div>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Spindle speed:')}
+                    <div className="row no-gutter">
+                        <div className="col col-xs-3">
+                            {i18n._('Feed Rate')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.feedrate')}</div>
+                        </div>
+                        <div className="col col-xs-3">
+                            {i18n._('Units')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.units')}</div>
+                        </div>
                     </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'spindle')}
+                    <div className="row no-gutter">
+                        <div className="col col-xs-3">
+                            {i18n._('Program')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.program')}</div>
+                        </div>
+                        <div className="col col-xs-3">
+                            {i18n._('Spindle')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.spindle')}</div>
+                        </div>
                     </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Tool number:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'tool')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Motion mode:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.motion')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Coordinate system select:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.coordinate')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Plane select:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.plane')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Distance mode:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.distance')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Feed rate mode:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.feedrate')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Units mode:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.units')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Program mode:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.program')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Spindle state:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.spindle')}
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col col-xs-6">
-                        {i18n._('Coolant state:')}
-                    </div>
-                    <div className="col col-xs-6">
-                        {_.get(modes, 'modal.coolant')}
+                    <div className="row no-gutter">
+                        <div className="col col-xs-3">
+                            {i18n._('Coolant')}
+                        </div>
+                        <div className="col col-xs-3">
+                            <div className="well well-xs">{_.get(modes, 'modal.coolant')}</div>
+                        </div>
                     </div>
                 </div>
             </div>
