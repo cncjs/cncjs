@@ -19,6 +19,7 @@
   "preferGlobal": true,
   "scripts": {
     "build": "gulp",
+    "prepublish": "npm test",
     "test": "npm run build && ./babel-tap --coverage test/*.js",
     "coveralls": "./babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
