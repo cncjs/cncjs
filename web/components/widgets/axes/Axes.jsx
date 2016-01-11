@@ -43,7 +43,7 @@ class Axes extends React.Component {
         this.removeSocketEventListener();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return JSON.stringify(nextState) !== JSON.stringify(this.state);
+        return ! _.isEqual(nextState, this.state);
     }
     subscribe() {
         this.pubsubTokens = [];
