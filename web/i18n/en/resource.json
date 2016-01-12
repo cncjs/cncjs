@@ -16,6 +16,7 @@
     "1a4c7c755b5c99e2c11aca21039656ed9f058dbc": "Zero Out Temporary Offsets (G92 X0 Y0 Z0)",
     "1ab6fc31f1fed0a1e25b8a7ae75c46e2e009ca3c": "Move X+ Y-",
     "1c3d98b8dbdd1e7fa016a458fbc083f4967a09ff": "Probing",
+    "1d7a23a595e75ccbe6cbbdf3cd1ecd91b44e2e1b": "Toggle Display",
     "1fdd7fa421738126b2c0127908c92ee8ed4da87d": "G38.5 probe away from workpiece, stop on loss of contact",
     "2475adc5d3758f8a995b4080a4ac4b523fae95a5": "Move X- Y-",
     "2683c1b54c2c8d1adf23beb0330cba7c2a51af34": "CW Arc",
