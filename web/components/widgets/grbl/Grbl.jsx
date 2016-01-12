@@ -48,7 +48,7 @@ const lookupGCodeDefinition = (word) => {
         'G91': i18n._('Relative'),
 
         // Feed Rate
-        'G93': i18n._('Inverse'),
+        'G93': i18n._('Inverse Time'),
         'G94': i18n._('Units/Min'),
 
         // Tool Length Offset
