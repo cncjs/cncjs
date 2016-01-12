@@ -4,7 +4,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
-import ToolbarButton from './ToolbarButton';
+import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
 import ControlPanel from './ControlPanel';
 import {
@@ -135,7 +135,7 @@ class Axes extends React.Component {
 
         return (
             <div>
-                <ToolbarButton
+                <Toolbar
                     port={port}
                     unit={unit}
                     activeState={activeState}

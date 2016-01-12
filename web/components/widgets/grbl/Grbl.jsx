@@ -1,21 +1,84 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
-import { MODAL_GROUPS } from '../../../constants/modal-groups';
+import Toolbar from './Toolbar';
+import {
+    GRBL_MODAL_GROUPS
+} from '../../../constants';
 import {
     ACTIVE_STATE_IDLE
 } from './constants';
+
+const lookupGCodeDefinition = (word) => {
+    return {
+        // Motion
+        'G0': i18n._('Rapid Move'),
+        'G1': i18n._('Linear Move'),
+        'G2': i18n._('CW Arc'),
+        'G3': i18n._('CCW Arc'),
+        'G38.2': i18n._('Probing'),
+        'G38.3': i18n._('Probing'),
+        'G38.4': i18n._('Probing'),
+        'G38.5': i18n._('Probing'),
+        'G80': i18n._('Cancel Mode'),
+
+        // Work Coordinate System
+        'G54': 'G54 (P1)',
+        'G55': 'G55 (P2)',
+        'G56': 'G56 (P3)',
+        'G57': 'G57 (P4)',
+        'G58': 'G58 (P5)',
+        'G59': 'G59 (P6)',
+
+        // Plane
+        'G17': i18n._('XY Plane'),
+        'G18': i18n._('XZ Plane'),
+        'G19': i18n._('YZ Plane'),
+
+        // Units
+        'G20': i18n._('Inches'),
+        'G21': i18n._('Millimeters'),
+
+        // Distance
+        'G90': i18n._('Absolute'),
+        'G91': i18n._('Relative'),
+
+        // Feed Rate
+        'G93': i18n._('Inverse Time'),
+        'G94': i18n._('Units/Min'),
+
+        // Tool Length Offset
+        'G43.1': i18n._('Active Tool Offset'),
+        'G49': i18n._('No Tool Offset'),
+        
+        // Program
+        'M0': i18n._('Stop'),
+        'M1': i18n._('Stop'),
+        'M2': i18n._('End'),
+        'M30': i18n._('End'),
+
+        // Spindle
+        'M3': i18n._('On (CW)'),
+        'M4': i18n._('On (CCW)'),
+        'M5': i18n._('Off'),
+
+        // Coolant
+        'M7': i18n._('Mist'),
+        'M8': i18n._('Flood'),
+        'M9': i18n._('Off')
+    }[word] || word;
+};
 
 class Grbl extends React.Component {
     state = {
         port: '',
         activeState: ACTIVE_STATE_IDLE,
-        modes: {}
+        parserState: {},
+        showGCode: false
     };
     socketEventListener = {
         'grbl:current-status': ::this.socketOnGrblCurrentStatus,
@@ -30,6 +93,9 @@ class Grbl extends React.Component {
         this.unsubscribe();
         this.removeSocketEventListener();
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        return ! _.isEqual(nextState, this.state);
+    }
     subscribe() {
         this.pubsubTokens = [];
 
@@ -39,8 +105,8 @@ class Grbl extends React.Component {
                 this.setState({ port: port });
 
                 if (!port) {
-                    let modes = {};
-                    this.setState({ modes: modes });
+                    let parserState = {};
+                    this.setState({ parserState: parserState });
                 }
             });
             this.pubsubTokens.push(token);
@@ -67,88 +133,65 @@ class Grbl extends React.Component {
             activeState: data.activeState
         });
     }
-    socketOnGrblGCodeModes(modes) {
-        let state = {};
+    socketOnGrblGCodeModes(words) {
+        let parserState = {};
 
-        _.each(modes, (mode) => {
+        _.each(words, (word) => {
             // Gx, Mx
-            if (mode.indexOf('G') === 0 || mode.indexOf('M') === 0) {
-                let r = _.find(MODAL_GROUPS, (group) => {
-                    return _.includes(group.modes, mode);
+            if (word.indexOf('G') === 0 || word.indexOf('M') === 0) {
+                let r = _.find(GRBL_MODAL_GROUPS, (group) => {
+                    return _.includes(group.modes, word);
                 });
+
                 if (r) {
-                    _.set(state, 'modal.' + r.group, mode);
+                    _.set(parserState, 'modal.' + r.group, word);
                 }
             }
 
             // T: tool number
-            if (mode.indexOf('T') === 0) {
-                _.set(state, 'tool', mode.substring(1));
+            if (word.indexOf('T') === 0) {
+                _.set(parserState, 'tool', word.substring(1));
             }
 
             // F: feed rate
-            if (mode.indexOf('F') === 0) {
-                _.set(state, 'feedrate', mode.substring(1));
+            if (word.indexOf('F') === 0) {
+                _.set(parserState, 'feedrate', word.substring(1));
             }
 
             // S: spindle speed
-            if (mode.indexOf('S') === 0) {
-                _.set(state, 'spindle', mode.substring(1));
+            if (word.indexOf('S') === 0) {
+                _.set(parserState, 'spindle', word.substring(1));
             }
         });
 
-        this.setState({ modes: state });
+        this.setState({ parserState: parserState });
 
-        log.trace(state);
+        log.trace(parserState);
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        return ! _.isEqual(nextState, this.state);
+    toggleDisplay() {
+        let { showGCode } = this.state;
+        this.setState({ showGCode: !showGCode });
     }
     render() {
-        let { port, activeState, modes } = this.state;
+        let { port, activeState, parserState = {}, showGCode } = this.state;
+        let modal = parserState.modal || {};
+        let none = '–';
         let canClick = !!port;
+
+        if (!showGCode) {
+            modal = _.mapValues(modal, (word, group) => lookupGCodeDefinition(word));
+        }
 
         return (
             <div>
-                <div className="btn-group btn-group-sm">
-                    <button type="button"
-                        className="btn btn-default"
-                        onClick={() => serialport.write('~')}
-                        disabled={!canClick}
-                    >
-                        <span className="code">~</span>&nbsp;{i18n._('Cycle Start')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={() => serialport.write('!')}
-                        disabled={!canClick}
-                    >
-                        <span className="code">!</span>&nbsp;{i18n._('Feed Hold')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={() => serialport.write('\x18')}
-                        disabled={!canClick}
-                    >
-                        <span className="code">Ctrl-X</span>&nbsp;{i18n._('Reset Grbl')}
-                    </button>
-                    <DropdownButton bsSize="sm" bsStyle="default" title="">
-                        <MenuItem onSelect={() => serialport.writeln('$')} disabled={!canClick}>{i18n._('Grbl Help ($)')}</MenuItem>
-                        <MenuItem onSelect={() => serialport.writeln('$$')} disabled={!canClick}>{i18n._('Grbl Settings ($$)')}</MenuItem>
-                        <MenuItem onSelect={() => serialport.writeln('$#')} disabled={!canClick}>{i18n._('View G-code Parameters ($#)')}</MenuItem>
-                        <MenuItem onSelect={() => serialport.writeln('$G')} disabled={!canClick}>{i18n._('View G-code Parser State ($G)')}</MenuItem>
-                        <MenuItem onSelect={() => serialport.writeln('$I')} disabled={!canClick}>{i18n._('View Build Info ($I)')}</MenuItem>
-                        <MenuItem onSelect={() => serialport.writeln('$N')} disabled={!canClick}>{i18n._('View Startup Blocks ($N)')}</MenuItem>
-                        <MenuItem divider />
-                        <MenuItem onSelect={() => serialport.writeln('$C')} disabled={!canClick}>{i18n._('Check G-code Mode ($C)')}</MenuItem>
-                        <MenuItem onSelect={() => serialport.writeln('$X')} disabled={!canClick}>{i18n._('Kill Alarm Lock ($X)')}</MenuItem>
-                        <MenuItem onSelect={() => serialport.writeln('$H')} disabled={!canClick}>{i18n._('Run Homing Cycle ($H)')}</MenuItem>
-                    </DropdownButton>
-                </div>
-                <h6>{i18n._('Parser State')}</h6>
-                <div className="container-fluid">
+                <Toolbar port={port} />
+
+                <div className="container-fluid parser-state">
+                    <div className="row no-gutter">
+                        <div className="col col-xs-12">
+                            <h6>{i18n._('Parser State')}</h6>
+                        </div>
+                    </div>
                     <div className="row no-gutter">
                         <div className="col col-xs-3">
                             {i18n._('State')}
@@ -162,13 +205,13 @@ class Grbl extends React.Component {
                             {i18n._('Feed Rate')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'feedrate')}</div>
+                            <div className="well well-xs">{Number(parserState.feedrate) || 0}</div>
                         </div>
                         <div className="col col-xs-3">
                             {i18n._('Spindle')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'spindle')}</div>
+                            <div className="well well-xs">{Number(parserState.spindle) || 0}</div>
                         </div>
                     </div>
                     <div className="row no-gutter">
@@ -176,26 +219,40 @@ class Grbl extends React.Component {
                             {i18n._('Tool Number')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'tool')}</div>
+                            <div className="well well-xs">{parserState.tool || none}</div>
                         </div>
                     </div>
                 </div>
-                <h6 className="modal-groups-header">
-                    {i18n._('Modal Groups')}
-                </h6>
-                <div className="container-fluid">
+                <div className="container-fluid modal-groups">
+                    <div className="row no-gutter">
+                        <div className="col col-xs-6">
+                            <h6 className="modal-groups-header">
+                                {i18n._('Modal Groups')}
+                            </h6>
+                        </div>
+                        <div className="col col-xs-6 text-right">
+                            <button
+                                type="button"
+                                className="btn btn-xs btn-default btn-toggle-display"
+                                onClick={::this.toggleDisplay}
+                                disabled={!canClick}
+                            >
+                                {i18n._('Toggle Display')}
+                            </button>
+                        </div>
+                    </div>
                     <div className="row no-gutter">
                         <div className="col col-xs-3">
                             {i18n._('Motion')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.motion')}</div>
+                            <div className="well well-xs">{modal.motion || none}</div>
                         </div>
                         <div className="col col-xs-3">
                             {i18n._('WCS')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.coordinate')}</div>
+                            <div className="well well-xs">{modal.coordinate || none}</div>
                         </div>
                     </div>
                     <div className="row no-gutter">
@@ -203,13 +260,13 @@ class Grbl extends React.Component {
                             {i18n._('Plane')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.plane')}</div>
+                            <div className="well well-xs">{modal.plane || none}</div>
                         </div>
                         <div className="col col-xs-3">
                             {i18n._('Distance')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.distance')}</div>
+                            <div className="well well-xs">{modal.distance || none}</div>
                         </div>
                     </div>
                     <div className="row no-gutter">
@@ -217,13 +274,13 @@ class Grbl extends React.Component {
                             {i18n._('Feed Rate')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.feedrate')}</div>
+                            <div className="well well-xs">{modal.feedrate || none}</div>
                         </div>
                         <div className="col col-xs-3">
                             {i18n._('Units')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.units')}</div>
+                            <div className="well well-xs">{modal.units || none}</div>
                         </div>
                     </div>
                     <div className="row no-gutter">
@@ -231,13 +288,13 @@ class Grbl extends React.Component {
                             {i18n._('Program')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.program')}</div>
+                            <div className="well well-xs">{modal.program || none}</div>
                         </div>
                         <div className="col col-xs-3">
                             {i18n._('Spindle')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.spindle')}</div>
+                            <div className="well well-xs">{modal.spindle || none}</div>
                         </div>
                     </div>
                     <div className="row no-gutter">
@@ -245,7 +302,7 @@ class Grbl extends React.Component {
                             {i18n._('Coolant')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{_.get(modes, 'modal.coolant')}</div>
+                            <div className="well well-xs">{modal.coolant || none}</div>
                         </div>
                     </div>
                 </div>
