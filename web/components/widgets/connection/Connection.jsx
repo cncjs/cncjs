@@ -311,7 +311,7 @@ class Connection extends React.Component {
             <div>
                 <Alert msg={alertMessage} dismiss={::this.clearAlert} />
                 <div className="form-group">
-                    <label className="control-label">{i18n._('Port:')}</label>
+                    <label className="control-label">{i18n._('Port')}</label>
                     <div className="input-group input-group-sm">
                         <Select
                             className="sm"
@@ -346,7 +346,7 @@ class Connection extends React.Component {
                     </div>
                 </div>
                 <div className="form-group">
-                    <label className="control-label">{i18n._('Baud rate:')}</label>
+                    <label className="control-label">{i18n._('Baud rate')}</label>
                     <Select
                         className="sm"
                         name="baudrate"

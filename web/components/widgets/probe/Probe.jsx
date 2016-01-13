@@ -282,7 +282,7 @@ class Probe extends React.Component {
                     activeState={activeState}
                 />
                 <div className="form-group">
-                    <label className="control-label">{i18n._('Probe Command:')}</label>
+                    <label className="control-label">{i18n._('Probe Command')}</label>
                     <div className="btn-toolbar" role="toolbar">
                         <div className="btn-group btn-group-xs">
                             <button
@@ -338,7 +338,7 @@ class Probe extends React.Component {
                     <div className="row no-gutter probe-options">
                         <div className="col-sm-6">
                             <div className="form-group">
-                                <label className="control-label">{i18n._('Probe Depth:')}</label>
+                                <label className="control-label">{i18n._('Probe Depth')}</label>
                                 <div className="input-group input-group-xs">
                                     <input
                                         type="number"
@@ -356,7 +356,7 @@ class Probe extends React.Component {
                         </div>
                         <div className="col-sm-6">
                             <div className="form-group">
-                                <label className="control-label">{i18n._('Probe Feedrate:')}</label>
+                                <label className="control-label">{i18n._('Probe Feedrate')}</label>
                                 <div className="input-group input-group-xs">
                                     <input
                                         type="number"
@@ -373,7 +373,7 @@ class Probe extends React.Component {
                         </div>
                         <div className="col-sm-6">
                             <div className="form-group">
-                                <label className="control-label">{i18n._('Touch Plate Thickness:')}</label>
+                                <label className="control-label">{i18n._('Touch Plate Thickness')}</label>
                                 <div className="input-group input-group-xs">
                                     <input
                                         type="number"
@@ -390,7 +390,7 @@ class Probe extends React.Component {
                         </div>
                         <div className="col-sm-6">
                             <div className="form-group">
-                                <label className="control-label">{i18n._('Retraction Distance:')}</label>
+                                <label className="control-label">{i18n._('Retraction Distance')}</label>
                                 <div className="input-group input-group-xs">
                                     <input
                                         type="number"

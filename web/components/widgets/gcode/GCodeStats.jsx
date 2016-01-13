@@ -173,7 +173,7 @@ class GCodeStats extends React.Component {
             <div className="container-fluid gcode-stats">
                 <div className="row">
                     <div className="col-xs-12">
-                        <div>{i18n._('Dimension:')}</div>
+                        <div>{i18n._('Dimension')}</div>
                     </div>
                 </div>
                 <div className="row">
