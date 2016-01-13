@@ -1,6 +1,6 @@
 var path = require('path');
 var webappengine = require('webappengine');
-var server = require('./app/server');
+var server = require('./dist/app/server');
 var options = {
     port: 8000,
     routes: [
@@ -8,7 +8,7 @@ var options = {
             type: 'server',
             route: '/',
             // An absolute path is recommended to use
-            server: path.resolve(__dirname, 'app/app')
+            server: path.resolve(__dirname, 'dist/app/app')
         }
     ]
 };
