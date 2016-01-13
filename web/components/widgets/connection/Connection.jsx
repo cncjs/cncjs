@@ -127,7 +127,7 @@ class Connection extends React.Component {
     socketOnSerialPortError(options) {
         let { port } = options;
 
-        this.showAlert('Error opening serial port: ' + port);
+        this.showAlert('Error opening serial port \'' + port + '\'');
 
         // Close port
         pubsub.publish('port', '');
@@ -137,7 +137,7 @@ class Connection extends React.Component {
             connected: false
         });
 
-        log.error('Error opening serial port:', port);
+        log.error('Error opening serial port \'' + port + '\'');
     }
     showAlert(msg) {
         this.setState({ alertMessage: msg });

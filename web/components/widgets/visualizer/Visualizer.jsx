@@ -38,7 +38,7 @@ import {
     CAMERA_POSITION_Y,
     CAMERA_POSITION_Z
 } from './constants';
-import { MODAL_GROUPS } from '../../../constants/modal-groups';
+import { GRBL_MODAL_GROUPS } from '../../../constants';
 
 class Visualizer extends React.Component {
     state = {
@@ -198,7 +198,7 @@ class Visualizer extends React.Component {
         _.each(modes, (mode) => {
             // Gx, Mx
             if (mode.indexOf('G') === 0 || mode.indexOf('M') === 0) {
-                let r = _.find(MODAL_GROUPS, (group) => {
+                let r = _.find(GRBL_MODAL_GROUPS, (group) => {
                     return _.includes(group.modes, mode);
                 });
                 if (r) {
