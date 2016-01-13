@@ -33,7 +33,7 @@ class ConsoleWindow extends React.Component {
         let elements = this.buildElements(buffers);
 
         return (
-            <div className="console-window code">
+            <div className="console-window">
                 <Infinite
                     containerHeight={260}
                     elementHeight={20}
