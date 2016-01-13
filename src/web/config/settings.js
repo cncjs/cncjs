@@ -8,7 +8,7 @@ var settings = {
     cdn: root.app.config.cdn,
     name: 'CNC.js',
     log: {
-        level: 'debug', // trace, debug, info, warn, error
+        level: 'warn', // trace, debug, info, warn, error
         logger: 'console', // console
         prefix: ''
     },
