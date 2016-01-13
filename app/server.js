@@ -245,6 +245,8 @@ module.exports = function(server) {
                     sp.serialPort = serialPort;
 
                     serialPort.on('open', function() {
+                        log.debug('Serial port \'%s\' is connected', port);
+
                         { // Initialization
                             // Set ready to false
                             sp.ready = false;
@@ -271,8 +273,6 @@ module.exports = function(server) {
 
                         // Send Ctrl-X to reset Grbl when the serial port connection is established
                         sp.serialPort.write('\x18');
-
-                        log.debug('Connected to \'%s\' at %d.', port, baudrate);
                     });
 
                     serialPort.on('data', function(msg) {
@@ -365,9 +365,7 @@ module.exports = function(server) {
                     });
 
                     serialPort.on('close', function() {
-                        log.debug('The serial port connection is closed.', {
-                            port: port
-                        });
+                        log.debug('Serial port \'%s\' is disconnected', port);
 
                         // Emit 'serialport:close' event to all connected sockets
                         sp.emit('serialport:close', {
@@ -386,6 +384,9 @@ module.exports = function(server) {
                         socket.emit('serialport:error', {
                             port: port
                         });
+
+                        store.ports[port] = undefined;
+                        delete store.ports[port];
                     });
 
                 }
