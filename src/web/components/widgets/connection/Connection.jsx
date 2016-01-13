@@ -235,32 +235,36 @@ class Connection extends React.Component {
         store.setState('widgets.connection.autoReconnect', checked);
     }
     renderPortOption(option) {
-        let optionStyle = {
-            whiteSpace: 'nowrap',
-            textOverflow: 'ellipsis',
-            overflow: 'hidden'
-        };
-        let noteStyle = {
-            fontSize: '12px'
+        let { label, inuse, manufacturer } = option;
+        let styles = {
+            option:  {
+                whiteSpace: 'nowrap',
+                textOverflow: 'ellipsis',
+                overflow: 'hidden'
+            },
+            note: {
+                fontSize: '12px'
+            }
         };
 
         return (
-            <div style={optionStyle} title={option.label}>
+            <div style={styles.option} title={label}>
                 <div>
-                {option.inuse &&
+                {inuse &&
                     <span><i className="glyphicon glyphicon-lock"></i>&nbsp;</span>
                 }
-                {option.label}
+                {label}
                 </div>
-                {option.manufacturer && 
-                    <note style={noteStyle}>
-                        {i18n._('Manufacturer:')}&nbsp;{option.manufacturer}
+                {manufacturer && 
+                    <note style={styles.note}>
+                        {i18n._('Manufacturer: {{manufacturer}}', { manufacturer: manufacturer })}
                     </note>
                 }
             </div>
         );
     }
     renderPortValue(option) {
+        let { label, inuse } = option;
         let notLoading = !(this.state.loading);
         let canChangePort = notLoading;
         let style = {
@@ -269,11 +273,11 @@ class Connection extends React.Component {
             overflow: 'hidden'
         };
         return (
-            <div style={style} title={option.label}>
-                {option.inuse &&
+            <div style={style} title={label}>
+                {inuse &&
                     <span><i className="glyphicon glyphicon-lock"></i>&nbsp;</span>
                 }
-                {option.label}
+                {label}
             </div>
         );
     }

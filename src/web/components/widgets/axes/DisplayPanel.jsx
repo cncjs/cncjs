@@ -28,17 +28,12 @@ class DisplayPanel extends React.Component {
         let { port, unit, activeState, machinePos, workingPos } = this.props;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
         let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
-        let styles = {
-            activeState: {
-                 color: (activeState === 'Alarm') ? colornames('crimson') : colornames('gray 20')
-            }
-        };
 
         return (
             <div className="container-fluid display-panel">
                 <div className="row no-gutter">
                     <div className="active-state">
-                        {i18n._('Active state:')}&nbsp;<span style={styles.activeState}>{activeState}</span>
+                        {i18n._('Active state: {{activeState}}', { activeState: activeState })}
                     </div>
                     <table className="table-bordered">
                         <thead>
