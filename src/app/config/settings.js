@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import crypto from 'crypto';
 import path from 'path';
 import pkg from '../../../package.json';
 import urljoin from '../lib/urljoin';
@@ -11,13 +12,12 @@ const debug = ('development' === env);
 const RCFILE = '.cncrc';
 
 // hashed_version
-const hashed_version = (function(version) {
-    var crypto = require('crypto');
-    var algorithm = 'sha1';
-    var buf = String(version);
-    var hash = crypto.createHash(algorithm).update(buf).digest('hex');
+const hashed_version = ((version) => {
+    let algorithm = 'sha1';
+    let buf = String(version);
+    let hash = crypto.createHash(algorithm).update(buf).digest('hex');
     return hash.substr(0, 8); // 8 digits
-}(pkg.version));
+})(pkg.version);
 
 const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME']);
 

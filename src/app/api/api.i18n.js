@@ -6,8 +6,8 @@ import urljoin from '../lib/urljoin';
 import log from '../lib/log';
 
 export const getAcceptedLanguage = (req, res) => {
-    var headers = req['headers'] || {};
-    var http_accept = headers['accept-language'] || '';
+    let headers = req['headers'] || {};
+    let http_accept = headers['accept-language'] || '';
 
     // Tags for the Identification of Languages (http://www.ietf.org/rfc/rfc1766.txt)
     //
@@ -17,15 +17,15 @@ export const getAcceptedLanguage = (req, res) => {
     // Primary-tag = 1*8ALPHA
     // Subtag = 1*8ALPHA
 
-    var values = http_accept.split(',') || [];
-    var acceptedList = [];
-    _.each(values, function(val) {
-        var matches = val.match(/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i);
+    let values = http_accept.split(',') || [];
+    let acceptedList = [];
+    _.each(values, (val) => {
+        let matches = val.match(/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i);
         if ( ! matches) {
             return;
         }
-        var lang = matches[1];
-        var qval = Number(matches[4]) || Number(1.0);
+        let lang = matches[1];
+        let qval = Number(matches[4]) || Number(1.0);
         acceptedList.push({
             'lang':lang.toLowerCase(),
             'qval':qval
@@ -33,25 +33,25 @@ export const getAcceptedLanguage = (req, res) => {
     });
 
     // In decreasing order of preference
-    var sortedLngs = _.chain(acceptedList)
-                       .sortBy(function(o) { return o.qval; })
+    let sortedLngs = _.chain(acceptedList)
+                       .sortBy((o) => o.qval)
                        .reverse()
                        .pluck('lang')
                        .value();
 
-    var preferred, match;
+    let preferred, match;
 
     // 1. Look through sorted list and use first one that exactly matches our languages
     match = 'exact';
-    preferred = _.find(sortedLngs, function(lang) {
+    preferred = _.find(sortedLngs, (lang) => {
         return _.contains(settings.supportedLngs, lang);
     });
 
     // 2. Look through sorted list again and use first one that partially matches our languages
     if ( ! preferred) {
         match = 'partial';
-        _.some(sortedLngs, function(lang) {
-            preferred = _.find(settings.supportedLngs, function(supportedLng) {
+        _.some(sortedLngs, (lang) => {
+            preferred = _.find(settings.supportedLngs, (supportedLng) => {
                 console.log(lang, supportedLng, supportedLng.indexOf(lang) === 0);
                 return supportedLng.indexOf(lang) === 0;
             });
@@ -77,27 +77,27 @@ export const getAcceptedLanguage = (req, res) => {
 };
 
 export const saveMissing = (req, res) => {
-    var lng = req.params.__lng__;
-    var ns = req.params.__ns__;
+    let lng = req.params.__lng__;
+    let ns = req.params.__ns__;
 
-    var mergedFile = path.join(settings.assets['web'].path, 'i18n', lng, ns + '.json');
-    var mergedObject = require(mergedFile);
+    let mergedFile = path.join(settings.assets['web'].path, 'i18n', lng, ns + '.json');
+    let mergedObject = require(mergedFile);
 
-    var savedMissingFile = path.join(settings.assets['web'].path, 'i18n', lng, ns + '.savedMissing.json');
-    var savedMissingObject = req.body;
+    let savedMissingFile = path.join(settings.assets['web'].path, 'i18n', lng, ns + '.savedMissing.json');
+    let savedMissingObject = req.body;
 
     // Copy all of the properties in the sendMissing object over to the merged object
     _.extend(mergedObject, savedMissingObject);
 
     // Sort object by key
-    var sortedObject = {};
-    var sortedKeys = _.keys(mergedObject).sort();
-    _.each(sortedKeys, function(key) {
+    let sortedObject = {};
+    let sortedKeys = _.keys(mergedObject).sort();
+    _.each(sortedKeys, (key) => {
         sortedObject[key] = mergedObject[key];
     });
-    var prettyJSON = JSON.stringify(sortedObject, null, 4); // space=4
+    let prettyJSON = JSON.stringify(sortedObject, null, 4); // space=4
 
-    fs.writeFile(savedMissingFile, prettyJSON, function(err) {
+    fs.writeFile(savedMissingFile, prettyJSON, (err) => {
         if (err) {
             log.error(err);
         } else {

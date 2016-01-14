@@ -27,7 +27,7 @@ export const saveConfig = (req, res) => {
         _.extend(config, req.body);
 
         let text = JSON.stringify(config, null, 4); // space=4
-        fs.writeFile(settings.cncrc, text, function(err) {
+        fs.writeFile(settings.cncrc, text, (err) => {
             if (err) {
                 log.error(err);
                 res.send({ 'err': true });

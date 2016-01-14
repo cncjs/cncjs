@@ -1,11 +1,12 @@
 import _ from 'lodash';
 import store from '../store';
 
-export const listAllPorts = (req, res) => {
+export const listAllConnections = (req, res) => {
+    const { connection } = store;
     let list = [];
 
-    Object.keys(store.ports).forEach((port) => {
-        let portData = store.ports[port];
+    Object.keys(connection).forEach((port) => {
+        let portData = connection[port];
         list.push({
             port: portData.port,
             connected: _.size(portData.sockets),
@@ -13,7 +14,7 @@ export const listAllPorts = (req, res) => {
             pending: portData.pending,
             queue: {
                 size: portData.queue.size(),
-                executed: portData.queue.executed(),
+                executed: portData.queue.getExecutedCount(),
                 isRunning: portData.queue.isRunning()
             },
             gcode: portData.gcode

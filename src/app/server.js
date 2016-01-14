@@ -7,7 +7,7 @@ import pubsub from 'pubsub-js';
 import readline from 'readline';
 import serialport, { SerialPort } from 'serialport';
 import log from './lib/log';
-import queue from './lib/command-queue';
+import CommandQueue from './CommandQueue';
 import settings from './config/settings';
 import store from './store';
 
@@ -47,7 +47,7 @@ pubsub.subscribe('file:upload', function(msg, data) {
 
         var lines = _.pluck(data, 'line');
         var port = meta.port;
-        var sp = store.ports[port];
+        var sp = store.connection[port];
 
         if (!(sp && sp.queue)) {
             log.error('Failed to add %s to the queue: port=%s', JSON.stringify(meta.name), JSON.stringify(port));
@@ -80,7 +80,7 @@ module.exports = function(server) {
             log.debug('socket.on(%s):', 'disconnect', { id: socket.id });
 
             // Remove the socket of the disconnected client
-            _.each(store.ports, function(sp) {
+            _.each(store.connection, function(sp) {
                 sp.sockets[socket.id] = undefined;
                 delete sp.sockets[socket.id];
             });
@@ -97,7 +97,7 @@ module.exports = function(server) {
 
                 ports = ports.concat(_.get(settings, 'cnc.ports') || []);
 
-                var portsInUse = _(store.ports)
+                var portsInUse = _(store.connection)
                     .filter(function(sp) {
                         return sp.serialPort && sp.serialPort.isOpen();
                     })
@@ -122,7 +122,7 @@ module.exports = function(server) {
         socket.on('open', function(port, baudrate) {
             log.debug('socket.on(%s):', 'open', { id: socket.id, port: port, baudrate: baudrate });
 
-            var sp = store.ports[port] = store.ports[port] || {
+            var sp = store.connection[port] = store.connection[port] || {
                 port: port,
                 ready: false,
                 pending: {
@@ -177,14 +177,14 @@ module.exports = function(server) {
             }
 
             if (!(sp.queue)) {
-                sp.queue = queue();
+                sp.queue = new CommandQueue();
                 sp.queue.on('data', function(msg) {
                     if (!(sp.serialPort && sp.serialPort.isOpen())) {
                         log.warn('The serial port is not open.', { port: port, msg: msg });
                         return;
                     }
 
-                    var executed = sp.queue.executed();
+                    var executed = sp.queue.getExecutedCount();
                     var total = sp.queue.size();
 
                     log.trace('[' + executed + '/' + total + '] ' + msg);
@@ -200,7 +200,7 @@ module.exports = function(server) {
                         return;
                     }
 
-                    var q_executed = sp.queue.executed();
+                    var q_executed = sp.queue.getExecutedCount();
                     var q_total = sp.queue.size();
 
                     if (sp.q_total === q_total && sp.q_executed === q_executed) {
@@ -372,8 +372,8 @@ module.exports = function(server) {
                             inuse: false
                         });
 
-                        store.ports[port] = undefined;
-                        delete store.ports[port];
+                        store.connection[port] = undefined;
+                        delete store.connection[port];
                     });
 
                     serialPort.on('error', function() {
@@ -384,8 +384,8 @@ module.exports = function(server) {
                             port: port
                         });
 
-                        store.ports[port] = undefined;
-                        delete store.ports[port];
+                        store.connection[port] = undefined;
+                        delete store.connection[port];
                     });
 
                 }
@@ -407,7 +407,7 @@ module.exports = function(server) {
         socket.on('close', function(port) {
             log.debug('socket.on(%s):', 'close', { id: socket.id, port: port });
 
-            var sp = store.ports[port] || {};
+            var sp = store.connection[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
@@ -425,8 +425,8 @@ module.exports = function(server) {
                 });
 
                 // Delete serial port
-                store.ports[port] = undefined;
-                delete store.ports[port];
+                store.connection[port] = undefined;
+                delete store.connection[port];
             }
 
             // Emit 'serialport:close' event
@@ -441,7 +441,7 @@ module.exports = function(server) {
         socket.on('serialport:write', function(port, msg) {
             log.debug('socket.on(%s):', 'serialport:write', { id: socket.id, port: port, msg: msg });
 
-            var sp = store.ports[port] || {};
+            var sp = store.connection[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port, msg: msg });
                 return;
@@ -454,7 +454,7 @@ module.exports = function(server) {
         socket.on('gcode:run', function(port) {
             log.debug('socket.on(%s):', 'gcode:run', { id: socket.id, port: port });
 
-            var sp = store.ports[port] || {};
+            var sp = store.connection[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
@@ -466,7 +466,7 @@ module.exports = function(server) {
         socket.on('gcode:pause', function(port) {
             log.debug('socket.on(%s):', 'gcode:pause', { id: socket.id, port: port });
 
-            var sp = store.ports[port] || {};
+            var sp = store.connection[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
@@ -478,7 +478,7 @@ module.exports = function(server) {
         socket.on('gcode:stop', function(port) {
             log.debug('socket.on(%s):', 'gcode:stop', { id: socket.id, port: port });
 
-            var sp = store.ports[port] || {};
+            var sp = store.connection[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
@@ -490,7 +490,7 @@ module.exports = function(server) {
         socket.on('gcode:unload', function(port) {
             log.debug('socket.on(%s):', 'gcode:unload', { id: socket.id, port: port });
 
-            var sp = store.ports[port] || {};
+            var sp = store.connection[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;

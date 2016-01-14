@@ -23,7 +23,6 @@ import urljoin from './lib/urljoin';
 import log from './lib/log';
 import settings from './config/settings';
 import api from './api';
-import views from './views';
 
 let middleware = {};
 // Auto load middleware
@@ -35,26 +34,52 @@ fs.readdirSync(__dirname + '/lib/middleware').forEach((filename) => {
     middleware[name] = require('./lib/middleware/' + name);
 });
 
-const addRoutes = (app) => {
-    // status
-    app.get(urljoin(settings.route, 'api/status'), api.status.currentStatus);
+const renderPage = (req, res, next) => {
+    let view = req.params[0] || 'index';
+    let file = view + '.hbs';
 
-    // config
-    app.get(urljoin(settings.route, 'api/config'), api.config.loadConfig);
-    app.put(urljoin(settings.route, 'api/config'), api.config.saveConfig);
+    if (fs.existsSync(path.resolve(__dirname, 'views', file))) {
+        let cdn, webroot, version;
 
-    // file
-    app.post(urljoin(settings.route, 'api/file/upload'), api.file.uploadFile);
+        // cdn
+        if (_.isEmpty(settings.cdn.uri)) {
+            cdn = urljoin(settings.assets['web'].routes[0], '/'); // with trailing slash
+        } else {
+            cdn = urljoin(settings.cdn.uri, settings.assets['web'].routes[0], '/'); // with trailing slash
+        }
 
-    // ports
-    app.get(urljoin(settings.route, 'api/ports'), api.ports.listAllPorts);
+        // webroot
+        webroot = urljoin(settings.assets['web'].routes[0], '/'); // with trailing slash
 
-    // i18n
-    //app.get(urljoin(settings.route, 'api/i18n/acceptedLng'), api.i18n.getAcceptedLanguage);
-    //app.post(urljoin(settings.route, 'api/i18n/sendMissing/:__lng__/:__ns__'), api.i18n.saveMissing);
+        // version
+        version = settings.version;
 
-    // views
-    app.get(urljoin(settings.route, '*'), views);
+        let lng = req.language;
+        let lngs = req.languages;
+        let t = req.t;
+
+        // Override IE's Compatibility View Settings
+        // http://stackoverflow.com/questions/6156639/x-ua-compatible-is-set-to-ie-edge-but-it-still-doesnt-stop-compatibility-mode
+        res.set({ 'X-UA-Compatible': 'IE=edge' });
+
+        res.render(file, {
+            'livereload': !!settings.livereload.enable,
+            'cdn': cdn,
+            'webroot': webroot,
+            'version': version,
+            'lang': lng,
+            'title': t('title'),
+            'dir': t('config:dir'),
+            'loading': t('loading'),
+            partials: {
+                loading: 'loading' // views/loading.hbs
+            }
+        });
+
+        return;
+    }
+
+    next();
 };
 
 module.exports = function() {
@@ -151,10 +176,11 @@ module.exports = function() {
 
     app.use(i18nextHandle(i18next, {}));
 
-    // https://github.com/visionmedia/express/wiki/New-features-in-4.x
-    // No more app.use(app.router)
-    // All routing methods will be added in the order in which they appear. You should not do app.use(app.router). This eliminates the most common issue with Express.
-    addRoutes(app);
+    // api
+    api.addRoutes(app);
+
+    // page
+    app.get(urljoin(settings.route, '*'), renderPage);
 
     // Error handling
     console.assert( ! _.isUndefined(middleware.err_log), 'lib/middleware/err_log not found');
