@@ -15,13 +15,13 @@
  * @api public
  */
 
-module.exports = function err_notfound(options) {
+const err_notfound = (options) => {
     options = options || {};
 
-    var view = options.view || '404',
+    let view = options.view || '404',
         error = options.error || '';
 
-    return function(req, res, next) {
+    return (req, res, next) => {
         res.status(404);
 
         // respond with html page
@@ -40,3 +40,5 @@ module.exports = function err_notfound(options) {
         res.type('txt').send(error);
     };
 };
+
+module.exports = err_notfound;

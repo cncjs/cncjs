@@ -14,12 +14,12 @@
  * @api public
  */
 
-module.exports = function err_client(options) {
+const err_client = (options) => {
     options = options || {};
 
-    var error = options.error || '';
+    let error = options.error || '';
 
-    return function(err, req, res, next) {
+    return (err, req, res, next) => {
         if (req.xhr) {
             res.send(500, {
                 error: error
@@ -29,3 +29,5 @@ module.exports = function err_client(options) {
         }
     };
 };
+
+module.exports = err_client;

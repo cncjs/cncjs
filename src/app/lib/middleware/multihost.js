@@ -42,10 +42,8 @@
  * @return {Function}
  */
 
-module.exports = function multihost(options) {
-    var hosts = options.hosts;
-    var route = options.route;
-    var server = options.server;
+const multihost = (options) => {
+    let { hosts, route, server } = options;
 
     if (route && typeof(route) !== 'string') {
         throw new Error('multihost: route is not a string');
@@ -55,24 +53,24 @@ module.exports = function multihost(options) {
     }
     // hosts
     if (hosts) {
-        var regexps = [];
+        let regexps = [];
         if (typeof hosts === 'string') {
             hosts = [hosts];
         }
-        for (var i = 0; i < hosts.length; ++i) {
+        for (let i = 0; i < hosts.length; ++i) {
             regexps.push(new RegExp('^' + hosts[i].replace(/[*]/g, '(.*?)') + '$', 'i'));
         }
     }
-    return function(req, res, next) {
+    return (req, res, next) => {
         // hosts
         if (regexps) {
             if ( ! req.headers.host) {
                 return next();
             }
-            var hostname = req.headers.host.split(':')[0]; // e.g. localhost:8000
+            let hostname = req.headers.host.split(':')[0]; // e.g. localhost:8000
 
-            for (var i = 0; i < regexps.length; ++i) {
-                var regexp = regexps[i];
+            for (let i = 0; i < regexps.length; ++i) {
+                let regexp = regexps[i];
                 if (regexp.test(hostname)) {
                     break;
                 }
@@ -92,3 +90,5 @@ module.exports = function multihost(options) {
         server.emit('request', req, res);
     };
 };
+
+module.exports = multihost;

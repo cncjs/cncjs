@@ -9,6 +9,7 @@ import favicon from 'serve-favicon';
 import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
 import multiparty from 'connect-multiparty';
+import connectRestreamer from 'connect-restreamer';
 import methodOverride from 'method-override';
 import morgan from 'morgan';
 import compress from 'compression';
@@ -151,7 +152,7 @@ module.exports = function() {
     // https://github.com/dominictarr/connect-restreamer
     // connect's bodyParser has a problem when using it with a proxy.
     // It gobbles up all the body events, so that the proxy doesn't see anything!
-    app.use(require('connect-restreamer')());
+    app.use(connectRestreamer());
 
     app.use(methodOverride());
     app.use(morgan(settings.middleware['morgan']));

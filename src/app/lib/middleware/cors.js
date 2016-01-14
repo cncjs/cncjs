@@ -14,12 +14,12 @@
  * @api public
  */
 
-module.exports = function cors(options) {
+const cors = (options) => {
     options = options || {};
 
-    var allowedOrigin = options.allowedOrigin || '*';
+    let allowedOrigin = options.allowedOrigin || '*';
 
-    return function(req, res, next) {
+    return (req, res, next) => {
         // Specify origin from which requests are allowed
         res.header('Access-Control-Allow-Origin', allowedOrigin);
         // When responding to a credentialed request, server must specify a domain, and cannot use wild carding. 
@@ -37,3 +37,5 @@ module.exports = function cors(options) {
         }
     };
 };
+
+module.exports = cors;

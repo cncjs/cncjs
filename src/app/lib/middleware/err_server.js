@@ -27,13 +27,13 @@
  * @api public
  */
 
-module.exports = function err_server(options) {
+const err_server = (options) => {
     options = options || {};
 
-    var view = options.view || '500',
+    let view = options.view || '500',
         error = options.error || '';
 
-    return function(err, req, res, next) {
+    return (err, req, res, next) => {
         // we may use properties of the error object
         // here and next(err) appropriately, or if
         // we possibly recovered from the error, simply next().
@@ -41,3 +41,5 @@ module.exports = function err_server(options) {
         res.render(view, { error: error });
     };
 };
+
+module.exports = err_server;

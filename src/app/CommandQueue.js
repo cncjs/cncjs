@@ -49,7 +49,7 @@ class CommandQueue {
         }
 
         if (this.state.executed < this.state.queue.length) {
-            var data = this.state.queue[this.state.executed];
+            let data = this.state.queue[this.state.executed];
             this.state.executed++;
 
             this.state.callbacks.forEach((callback) => {
