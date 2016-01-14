@@ -103,7 +103,7 @@ module.exports = (server) => {
                         return sp.serialPort && sp.serialPort.isOpen();
                     })
                     .map((sp) => {
-                        return sp.port
+                        return sp.port;
                     })
                     .value();
                 
