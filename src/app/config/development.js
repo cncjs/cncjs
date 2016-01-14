@@ -1,6 +1,6 @@
-var os = require('os');
+import os from 'os';
 
-var settings = {
+const settings = {
     backend: {
         enable: true,
         host: 'localhost',
@@ -51,4 +51,4 @@ var settings = {
     }
 };
 
-module.exports = settings;
+export default settings;

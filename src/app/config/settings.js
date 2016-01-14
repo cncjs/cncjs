@@ -3,6 +3,8 @@ import crypto from 'crypto';
 import path from 'path';
 import pkg from '../../../package.json';
 import urljoin from '../lib/urljoin';
+import developmentSettings from './development';
+import productionSettings from './production';
 
 // env
 const env = process.env.NODE_ENV || 'development';
@@ -11,8 +13,8 @@ const debug = ('development' === env);
 // RCFile
 const RCFILE = '.cncrc';
 
-// hashed_version
-const hashed_version = ((version) => {
+// hashedVersion
+const hashedVersion = ((version) => {
     let algorithm = 'sha1';
     let buf = String(version);
     let hash = crypto.createHash(algorithm).update(buf).digest('hex');
@@ -31,7 +33,7 @@ let defaults = {
     // version from package.json
     version: pkg.version,
     // hashed version
-    hashed_version: hashed_version,
+    hashedVersion: hashedVersion,
 
     // for server.listen(port[, host][, backlog][, callback])
     // host and backlog are omitted by default
@@ -45,7 +47,7 @@ let defaults = {
         // web
         'web': {
             routes: [ // with trailing slash
-                urljoin(hashed_version, '/'), // hashed route
+                urljoin(hashedVersion, '/'), // hashed route
                 '/' // fallback
             ],
             path: path.resolve(__dirname, '..', '..', 'web'),
@@ -215,11 +217,9 @@ let defaults = {
 let settings = {};
 
 if (debug) {
-    let source = require('./development');
-    settings = _.merge({}, defaults, source);
+    settings = _.merge({}, defaults, developmentSettings);
 } else {
-    let source = require('./production');
-    settings = _.merge({}, defaults, source);
+    settings = _.merge({}, defaults, productionSettings);
 }
 
 export default settings;

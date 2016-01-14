@@ -1,6 +1,6 @@
-var os = require('os');
+import os from 'os';
 
-var settings = {
+const settings = {
     backend: {
         enable: false, // disable backend service in production
         host: 'localhost',
@@ -31,4 +31,4 @@ var settings = {
     }
 };
 
-module.exports = settings;
+export default settings;
