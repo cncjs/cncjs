@@ -83,8 +83,7 @@ const renderPage = (req, res, next) => {
     next();
 };
 
-module.exports = function() {
-    // Main app
+const appMain = () => {
     let app = express();
 
     // Setup i18n (i18next)
@@ -130,9 +129,6 @@ module.exports = function() {
         res.removeHeader('X-Powered-By');
         next();
     });
-
-    // Cross-origin resource sharing
-    //app.use(middleware.cors());
 
     // Middleware
     // https://github.com/senchalabs/connect
@@ -183,24 +179,24 @@ module.exports = function() {
     // page
     app.get(urljoin(settings.route, '*'), renderPage);
 
-    // Error handling
-    console.assert( ! _.isUndefined(middleware.err_log), 'lib/middleware/err_log not found');
-    console.assert( ! _.isUndefined(middleware.err_client), 'lib/middleware/err_client not found');
-    console.assert( ! _.isUndefined(middleware.err_notfound), 'lib/middleware/err_notfound not found');
-    console.assert( ! _.isUndefined(middleware.err_server), 'lib/middleware/err_server not found');
+    { // Error handling
+        let { err_log, err_client, err_notfound, err_server } = middleware;
 
-    app.use(middleware.err_log());
-    app.use(middleware.err_client({
-        error: 'XHR error'
-    }));
-    app.use(middleware.err_notfound({
-        view: path.join('common', '404.hogan'),
-        error: 'Not found'
-    }));
-    app.use(middleware.err_server({
-        view: path.join('common', '500.jade'),
-        error: 'Internal server error'
-    }));
+        app.use(err_log());
+        app.use(err_client({
+            error: 'XHR error'
+        }));
+        app.use(err_notfound({
+            view: path.join('common', '404.hogan'),
+            error: 'Not found'
+        }));
+        app.use(err_server({
+            view: path.join('common', '500.jade'),
+            error: 'Internal server error'
+        }));
+    }
 
     return app;
 };
+
+export default appMain;
