@@ -1,16 +1,15 @@
-var _ = require('lodash');
-var fs = require('fs');
-var fse = require('fs-extra');
-var path = require('path');
-var parseText = require('gcode-parser').parseText;
-var pubsub = require('pubsub-js');
-var readline = require('readline');
-var serialport = require('serialport');
-var SerialPort = serialport.SerialPort;
-var log = require('./lib/log');
-var queue = require('./lib/command-queue');
-var settings = require('./config/settings');
-var store = require('./store');
+import _ from 'lodash';
+import fs from 'fs';
+import fse from 'fs-extra';
+import path from 'path';
+import { parseText } from 'gcode-parser';
+import pubsub from 'pubsub-js';
+import readline from 'readline';
+import serialport, { SerialPort } from 'serialport';
+import log from './lib/log';
+import queue from './lib/command-queue';
+import settings from './config/settings';
+import store from './store';
 
 //
 // Grbl 0.9j ['$' for help]

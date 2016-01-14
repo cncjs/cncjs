@@ -1,17 +1,16 @@
-// Module dependencies
-var _ = require('lodash'),
-    path = require('path'),
-    fs = require('fs'),
-    urljoin = require('../lib/urljoin'),
-    i18next = require('i18next'),
-    settings = require('../config/settings');
+import _ from 'lodash';
+import fs from 'fs';
+import path from 'path';
+import i18next from 'i18next';
+import urljoin from '../lib/urljoin';
+import settings from '../config/settings';
 
-module.exports.view = function(req, res, next) {
-    var view = req.params[0] || 'index';
-    var file = view + '.hbs';
+const views = (req, res, next) => {
+    let view = req.params[0] || 'index';
+    let file = view + '.hbs';
 
     if (fs.existsSync(path.resolve(__dirname, '..', 'views', file))) {
-        var cdn, webroot, version;
+        let cdn, webroot, version;
 
         // cdn
         if (_.isEmpty(settings.cdn.uri)) {
@@ -26,9 +25,9 @@ module.exports.view = function(req, res, next) {
         // version
         version = settings.version;
 
-        var lng = req.language;
-        var lngs = req.languages;
-        var t = req.t;
+        let lng = req.language;
+        let lngs = req.languages;
+        let t = req.t;
 
         // Override IE's Compatibility View Settings
         // http://stackoverflow.com/questions/6156639/x-ua-compatible-is-set-to-ie-edge-but-it-still-doesnt-stop-compatibility-mode
@@ -53,3 +52,5 @@ module.exports.view = function(req, res, next) {
 
     next();
 };
+
+export default views;

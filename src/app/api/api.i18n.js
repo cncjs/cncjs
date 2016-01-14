@@ -1,15 +1,11 @@
-// Module dependencies
-var path = require('path'),
-    fs = require('fs'),
-    i18n = require('i18next'),
-    _ = require('lodash'),
-    settings = require('../config/settings'),
-    urljoin = require('../lib/urljoin'),
-    log = require('../lib/log');
+import _ from 'lodash';
+import fs from 'fs';
+import path from 'path';
+import settings from '../config/settings';
+import urljoin from '../lib/urljoin';
+import log from '../lib/log';
 
-module.exports = {};
-
-module.exports.getAcceptedLanguage = function(req, res) {
+export const getAcceptedLanguage = (req, res) => {
     var headers = req['headers'] || {};
     var http_accept = headers['accept-language'] || '';
 
@@ -80,25 +76,7 @@ module.exports.getAcceptedLanguage = function(req, res) {
     res.send(preferred);
 };
 
-module.exports.getLanguage = function(req, res) {
-    res.send({lng: i18n.lng()});
-};
-
-module.exports.setLanguage = function(req, res) {
-    var lng = req.params.__lng__;
-
-    if (settings.supportedLngs.indexOf(lng) >= 0) {
-        log.debug('Changed the language from %s to %s', i18n.lng(), lng);
-        i18n.persistCookie(req, res, lng); // set cookie value for the language
-        res.send(200);
-    } else {
-        log.warn('You cannot change the language to %s', lng);
-        res.send(400);
-    }
-};
-
-module.exports.saveMissing = function(req, res) {
-    var _ = require('lodash');
+export const saveMissing = (req, res) => {
     var lng = req.params.__lng__;
     var ns = req.params.__ns__;
 

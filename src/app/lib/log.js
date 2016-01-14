@@ -1,16 +1,17 @@
-var _ = require('lodash'),
-    cluster = require('cluster'),
-    winston = require('winston'),
-    util = require('util'),
-    fs = require('fs'),
-    path = require('path');
+import _ from 'lodash';
+import cluster from 'cluster';
+import fs from 'fs';
+import path from 'path';
+import util from 'util';
+import winston from 'winston';
+import settings from '../config/settings';
 
 // String utils
-require('colors');
-require('string-format');
+import 'colors';
+import 'string-format';
 
 // Default settings
-var defaultSettings = {
+const defaults = {
     levels: {
         trace: 0,
         debug: 1,
@@ -25,17 +26,14 @@ var defaultSettings = {
         warn: 'yellow',
         error: 'red'
     },
-    exitOnError: function(err) {
+    exitOnError: (err) => {
         console.log('Error:', err);
         return false;
     }
 };
 
-// Store the logger instance
-var logger;
-
-function meta() {
-    var _meta = {};
+const meta = () => {
+    let _meta = {};
     if (cluster.isMaster) {
         _meta.id = 0;
         _meta.pid = process.pid;
@@ -44,17 +42,18 @@ function meta() {
         _meta.pid = cluster.worker.process.pid;
     }
     return { meta: _meta };
-}
+};
 
 // https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
-var getStackTrace = function() {
-    var obj = {};
+const getStackTrace = () => {
+    let obj = {};
     Error.captureStackTrace(obj, getStackTrace);
     return (obj.stack || '').split('\n');
 };
 
-(function(settings) {
-    var logDirs = [];
+// Store the logger instance
+const getLoggerInstance = (settings) => {
+    let logDirs = [];
 
     if (_.get(settings, 'transports.File.filename')) {
         logDirs.push(path.dirname(settings.transports.File.filename));
@@ -63,7 +62,7 @@ var getStackTrace = function() {
         logDirs.push(path.dirname(settings.exceptionHandlers.File.filename));
     }
 
-    _.each(logDirs, function(logDir) {
+    _.each(logDirs, (logDir) => {
         if (!logDir) {
             return;
         }
@@ -89,9 +88,9 @@ var getStackTrace = function() {
         }
     }
 
-    logger = new (winston.Logger)(defaultSettings);
+    let logger = new (winston.Logger)(defaults);
 
-    if ( ! settings.transports) {
+    if (!(settings.transports)) {
         return;
     }
 
@@ -111,45 +110,46 @@ var getStackTrace = function() {
 
     logger.settings = settings;
 
-    return module.exports;
-})(require('../config/settings')['winston']);
+    return logger;
+};
 
-module.exports = (function() {
-    var arr = [];
-    if (logger.settings.prefix) { // prefix
-        arr.push(logger.settings.prefix);
+let logger = getLoggerInstance(settings.winston);
+
+let arr = [];
+if (logger.settings.prefix) { // prefix
+    arr.push(logger.settings.prefix);
+}
+
+export default {
+    log: function() {
+        let args = Array.prototype.slice.call(arguments);
+        let level = args.shift();
+        let stackTrace = getStackTrace()[2];
+        logger.log(level, util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
+    },
+    trace: function() {
+        let args = Array.prototype.slice.call(arguments);
+        let stackTrace = getStackTrace()[2];
+        logger.trace(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
+    },
+    debug: function() {
+        let args = Array.prototype.slice.call(arguments);
+        let stackTrace = getStackTrace()[2];
+        logger.debug(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
+    },
+    info: function() {
+        let args = Array.prototype.slice.call(arguments);
+        let stackTrace = getStackTrace()[2];
+        logger.info(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
+    },
+    warn: function() {
+        let args = Array.prototype.slice.call(arguments);
+        let stackTrace = getStackTrace()[2];
+        logger.warn(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
+    },
+    error: function() {
+        let args = Array.prototype.slice.call(arguments);
+        let stackTrace = getStackTrace()[2];
+        logger.error(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
     }
-    return {
-        log: function() {
-            var args = Array.prototype.slice.call(arguments);
-            var level = args.shift();
-            var stackTrace = getStackTrace()[2];
-            logger.log(level, util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
-        },
-        trace: function() {
-            var args = Array.prototype.slice.call(arguments);
-            var stackTrace = getStackTrace()[2];
-            logger.trace(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
-        },
-        debug: function() {
-            var args = Array.prototype.slice.call(arguments);
-            var stackTrace = getStackTrace()[2];
-            logger.debug(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
-        },
-        info: function() {
-            var args = Array.prototype.slice.call(arguments);
-            var stackTrace = getStackTrace()[2];
-            logger.info(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
-        },
-        warn: function() {
-            var args = Array.prototype.slice.call(arguments);
-            var stackTrace = getStackTrace()[2];
-            logger.warn(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
-        },
-        error: function() {
-            var args = Array.prototype.slice.call(arguments);
-            var stackTrace = getStackTrace()[2];
-            logger.error(util.format.apply(util.format, arr.concat(args).concat(stackTrace)), meta());
-        }
-    };
-})();
+};

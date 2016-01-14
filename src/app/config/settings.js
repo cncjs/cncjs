@@ -1,16 +1,17 @@
-var pkg = require('../../../package.json'),
-    path = require('path'),
-    urljoin = require('../lib/urljoin');
+import _ from 'lodash';
+import path from 'path';
+import pkg from '../../../package.json';
+import urljoin from '../lib/urljoin';
 
 // env
-var env = process.env.NODE_ENV || 'development';
-var debug = ('development' === env);
+const env = process.env.NODE_ENV || 'development';
+const debug = ('development' === env);
 
 // RCFile
-var RCFILE = '.cncrc';
+const RCFILE = '.cncrc';
 
 // hashed_version
-var hashed_version = (function(version) {
+const hashed_version = (function(version) {
     var crypto = require('crypto');
     var algorithm = 'sha1';
     var buf = String(version);
@@ -18,18 +19,12 @@ var hashed_version = (function(version) {
     return hash.substr(0, 8); // 8 digits
 }(pkg.version));
 
-var getUserHome = function() {
-    return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
-};
+const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME']);
 
-var maxAge;
-if (debug) {
-    maxAge = 0;
-} else {
-    maxAge = 365 * 24 * 60 * 60 * 1000; // one year
-}
+const maxAge = debug ? 0 : (365 * 24 * 60 * 60 * 1000); // one year
 
-var settings = { // Default settings
+let defaults = {
+    debug: debug,
     cnc: {}, // override this settings using `cnc -c ~/.cncrc`
     cncrc: path.resolve(getUserHome(), RCFILE),
 
@@ -217,15 +212,14 @@ var settings = { // Default settings
     }
 };
 
-var _settings = {};
-var _ = require('lodash');
+let settings = {};
 
-if ('development' === env) {
-    _settings = require('./development');
-    settings = _.extend(settings, _settings);
+if (debug) {
+    let source = require('./development');
+    settings = _.merge({}, defaults, source);
 } else {
-    _settings = require('./production');
-    settings = _.extend(settings, _settings);
+    let source = require('./production');
+    settings = _.merge({}, defaults, source);
 }
 
-module.exports = settings;
+export default settings;

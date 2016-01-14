@@ -1,12 +1,12 @@
-var fs = require('fs'),
-    _ = require('lodash'),
-    settings = require('../config/settings'),
-    log = require('../lib/log');
+import _ from 'lodash';
+import fs from 'fs';
+import settings from '../config/settings';
+import log from '../lib/log';
 
-var loadConfig = function(file) {
-    var config;
+const loadConfigFile = (file) => {
+    let config;
     try {
-        config = JSON.parse(fs.readFileSync(settings.cncrc, 'utf8'));
+        config = JSON.parse(fs.readFileSync(file, 'utf8'));
     }
     catch(err) {
         config = {};
@@ -14,21 +14,19 @@ var loadConfig = function(file) {
     return config;
 };
 
-module.exports = {};
-
-module.exports.loadConfig = function(req, res) {
-    var config = loadConfig(settings.cncrc);
+export const loadConfig = (req, res) => {
+    let config = loadConfigFile(settings.cncrc);
     res.send(config);
 };
 
-module.exports.saveConfig = function(req, res) {
-    var config = loadConfig(settings.cncrc);
+export const saveConfig = (req, res) => {
+    let config = loadConfigFile(settings.cncrc);
 
     try {
         // Copy all of the properties in request body over to the config
         _.extend(config, req.body);
 
-        var text = JSON.stringify(config, null, 4); // space=4
+        let text = JSON.stringify(config, null, 4); // space=4
         fs.writeFile(settings.cncrc, text, function(err) {
             if (err) {
                 log.error(err);

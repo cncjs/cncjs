@@ -1,11 +1,11 @@
-var _ = require('lodash');
-var store = require('../store');
+import _ from 'lodash';
+import store from '../store';
 
-module.exports.listAllPorts = function(req, res) {
-    var list = [];
+export const listAllPorts = (req, res) => {
+    let list = [];
 
-    Object.keys(store.ports).forEach(function(port) {
-        var portData = store.ports[port];
+    Object.keys(store.ports).forEach((port) => {
+        let portData = store.ports[port];
         list.push({
             port: portData.port,
             connected: _.size(portData.sockets),

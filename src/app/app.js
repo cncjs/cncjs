@@ -1,54 +1,74 @@
-//
-// Module dependencies
-//
-var fs = require('fs'),
-    path = require('path'),
-    connect = require('connect'),
-    express = require('express'),
-    engines = require('consolidate'),
-    i18next = require('i18next'),
-    i18nextNodeFSBackend = require('i18next-node-fs-backend'),
-    i18nextExpressMiddleware = require('i18next-express-middleware'),
-    urljoin = require('./lib/urljoin'),
-    _ = require('lodash'),
-    log = require('./lib/log'),
-    settings = require('./config/settings');
+import _ from 'lodash';
+import fs from 'fs';
+import path from 'path';
+import connect from 'connect';
+import express from 'express';
+import engines from 'consolidate';
+import errorhandler from 'errorhandler';
+import favicon from 'serve-favicon';
+import cookieParser from 'cookie-parser';
+import bodyParser from 'body-parser';
+import multiparty from 'connect-multiparty';
+import methodOverride from 'method-override';
+import morgan from 'morgan';
+import compress from 'compression';
+import serveStatic from 'serve-static';
+import i18next from 'i18next';
+import i18nextBackend from 'i18next-node-fs-backend';
+import {
+    LanguageDetector as i18nextLanguageDetector,
+    handle as i18nextHandle
+} from 'i18next-express-middleware';
+import urljoin from './lib/urljoin';
+import log from './lib/log';
+import settings from './config/settings';
+import api from './api';
+import views from './views';
 
-// Auto-load bundled middleware
-var middleware = {};
-
-fs.readdirSync(__dirname + '/lib/middleware').forEach(function(filename) {
+let middleware = {};
+// Auto load middleware
+fs.readdirSync(__dirname + '/lib/middleware').forEach((filename) => {
     if ( ! /\.js$/.test(filename)) {
         return;
     }
-    var name = path.basename(filename, '.js');
+    let name = path.basename(filename, '.js');
     middleware[name] = require('./lib/middleware/' + name);
 });
 
+const addRoutes = (app) => {
+    // status
+    app.get(urljoin(settings.route, 'api/status'), api.status.currentStatus);
+
+    // config
+    app.get(urljoin(settings.route, 'api/config'), api.config.loadConfig);
+    app.put(urljoin(settings.route, 'api/config'), api.config.saveConfig);
+
+    // file
+    app.post(urljoin(settings.route, 'api/file/upload'), api.file.uploadFile);
+
+    // ports
+    app.get(urljoin(settings.route, 'api/ports'), api.ports.listAllPorts);
+
+    // i18n
+    //app.get(urljoin(settings.route, 'api/i18n/acceptedLng'), api.i18n.getAcceptedLanguage);
+    //app.post(urljoin(settings.route, 'api/i18n/sendMissing/:__lng__/:__ns__'), api.i18n.saveMissing);
+
+    // views
+    app.get(urljoin(settings.route, '*'), views);
+};
+
 module.exports = function() {
     // Main app
-    var app = express();
-    var errorhandler = require('errorhandler');
-    var favicon = require('serve-favicon');
-    var cookieParser = require('cookie-parser');
-    var bodyParser = require('body-parser');
-    //var busboy = require('connect-busboy');
-    var multiparty = require('connect-multiparty');
-    var methodOverride = require('method-override');
-    var morgan = require('morgan');
-    var compress = require('compression');
-    var serveStatic = require('serve-static');
+    let app = express();
 
     // Setup i18n (i18next)
     i18next
-        .use(i18nextNodeFSBackend)
-        .use(i18nextExpressMiddleware.LanguageDetector)
+        .use(i18nextBackend)
+        .use(i18nextLanguageDetector)
         .init(settings.i18next);
 
-    // Settings
-    (function(app) {
-        var env = process.env.NODE_ENV || 'development';
-        if ('development' === env) {
+    {  // Settings
+        if (settings.debug) {
             // Error handler - https://github.com/expressjs/errorhandler
             // Development error handler, providing stack traces and error message responses
             // for requests accepting text, html, or json.
@@ -68,19 +88,19 @@ module.exports = function() {
         app.disable('strict routing'); // Enable strict routing, by default "/foo" and "/foo/" are treated the same by the router
         app.disable('x-powered-by'); // Enables the X-Powered-By: Express HTTP header, enabled by default
 
-        for (var i = 0; i < settings.view.engines.length; ++i) {
-            var extension = settings.view.engines[i].extension;
-            var template = settings.view.engines[i].template;
+        for (let i = 0; i < settings.view.engines.length; ++i) {
+            let extension = settings.view.engines[i].extension;
+            let template = settings.view.engines[i].template;
             app.engine(extension, engines[template]);
         }
         app.set('view engine', settings.view.defaultExtension); // The default engine extension to use when omitted
         app.set('views', path.join(__dirname, 'views')); // The view directory path
 
         log.info('app.settings: %j', app.settings);
-    }(app));
+    }
 
     // Removes the 'X-Powered-By' header in earlier versions of Express
-    app.use(function (req, res, next) {
+    app.use((req, res, next) => {
         res.removeHeader('X-Powered-By');
         next();
     });
@@ -112,16 +132,16 @@ module.exports = function() {
     app.use(morgan(settings.middleware['morgan']));
     app.use(compress(settings.middleware['compression']));
 
-    _.each(settings.assets, function(asset, name) {
+    _.each(settings.assets, (asset, name) => {
         log.info('assets: name=%s, asset=%s', name, JSON.stringify(asset));
 
-        if ( ! asset.path) {
+        if (!(asset.path)) {
             log.error('asset path is not defined');
             return;
         }
 
-        _.each(asset.routes, function(asset_route) {
-            var route = urljoin(settings.route || '/', asset_route || '');
+        _.each(asset.routes, (asset_route) => {
+            let route = urljoin(settings.route || '/', asset_route || '');
             log.info('> route=%s', name, route);
             app.use(route, serveStatic(asset.path, {
                 maxAge: asset.maxAge
@@ -129,13 +149,12 @@ module.exports = function() {
         });
     });
 
-    app.use(i18nextExpressMiddleware.handle(i18next, {}));
+    app.use(i18nextHandle(i18next, {}));
 
     // https://github.com/visionmedia/express/wiki/New-features-in-4.x
     // No more app.use(app.router)
     // All routing methods will be added in the order in which they appear. You should not do app.use(app.router). This eliminates the most common issue with Express.
-    var routes = require('./routes/main');
-    routes.init(app);
+    addRoutes(app);
 
     // Error handling
     console.assert( ! _.isUndefined(middleware.err_log), 'lib/middleware/err_log not found');

@@ -1,8 +1,8 @@
-function normalize(str) {
-    return str.replace(/[\/]+/g, '/').replace(/\/\?/g, '?').replace(/\/\#/g, '#').replace(/\:\//g, '://');
-}
+const normalize = (str) => str.replace(/[\/]+/g, '/').replace(/\/\?/g, '?').replace(/\/\#/g, '#').replace(/\:\//g, '://');
 
-module.exports = function () {
-    var joined = [].slice.call(arguments, 0).join('/');
+const urljoin = function() {
+    let joined = [].slice.call(arguments, 0).join('/');
     return normalize(joined);
 };
+
+export default urljoin;
