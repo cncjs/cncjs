@@ -25,7 +25,7 @@ if (program.debug) {
 }
 
 var settings = require('../dist/app/config/settings');
-var server = require('../dist/app/server');
+var cncserver = require('../dist/app/cncserver');
 
 // Overrides defaults
 _.set(settings, 'port', program.port || settings.port);
@@ -66,4 +66,4 @@ var options = {
 };
 
 webappengine(options)
-    .on('ready', server);
+    .on('ready', cncserver);

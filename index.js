@@ -1,6 +1,6 @@
 var path = require('path');
 var webappengine = require('webappengine');
-var server = require('./dist/app/server');
+var cncserver = require('./dist/app/cncserver');
 var options = {
     port: 8000,
     routes: [
@@ -14,4 +14,4 @@ var options = {
 };
 
 webappengine(options)
-    .on('ready', server);
+    .on('ready', cncserver);
