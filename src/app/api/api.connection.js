@@ -1,23 +1,26 @@
 import _ from 'lodash';
-import store from '../store';
+import { controllers } from '../store';
 
 export const listAllConnections = (req, res) => {
-    const { connection } = store;
     let list = [];
 
-    Object.keys(connection).forEach((port) => {
-        let portData = connection[port];
+    Object.keys(controllers).forEach((port) => {
+        let controller = controllers[port];
+        if (!controller) {
+            return;
+        }
+
         list.push({
-            port: portData.port,
-            connected: _.size(portData.sockets),
-            ready: portData.ready,
-            pending: portData.pending,
+            port: controller.serialport.path,
+            baudrate: controller.serialport.options.baudRate,
+            isOpen: controller.serialport.isOpen(),
+            connected: _.size(controller.sockets),
             queue: {
-                size: portData.queue.size(),
-                executed: portData.queue.getExecutedCount(),
-                isRunning: portData.queue.isRunning()
+                size: controller.queue.size(),
+                executed: controller.queue.getExecutedCount(),
+                isRunning: controller.queue.isRunning()
             },
-            gcode: portData.gcode
+            gcode: controller.gcode
         });
     });
 
