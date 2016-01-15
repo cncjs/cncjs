@@ -1,10 +1,13 @@
 import _ from 'lodash';
+import pubsub from 'pubsub-js';
+import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
-import rangeCheck from 'range_check';
+import { controllers } from './store';
 import log from './lib/log';
 import settings from './config/settings';
 import Grbl from './grbl';
+import CommandQueue from './CommandQueue';
 
 const ALLOWED_IP_RANGES = [
     // IPv4 reserved space
@@ -26,29 +29,40 @@ const ALLOWED_IP_RANGES = [
 ];
 
 class GrblController {
+    serialport = null;
     controller = new Grbl();
+    queue = new CommandQueue();
     gcode = '';
     sockets = [];
 
     constructor(serialport) {
+        this.serialport = serialport;
         this.controller = new Grbl(serialport);
     }
-    open(socket) {
-        this.sockets.push(socket);
-        this.controller.open();
+    isOpen() {
+        return this.serialport.isOpen();
     }
-    close(socket) {
+    isClose() {
+        return !(this.isOpen());
+    }
+    connect(socket) {
+        this.sockets.push(socket);
+    }
+    disconnect(socket) {
         this.sockets.splice(this.sockets.indexOf(socket), 1);
-        if (this.sockets.length === 0) {
-            this.controller.close();
-        }
+    }
+    open(callback) {
+        this.controller.open(callback);
+    }
+    close(callback) {
+        this.controller.close(callback);
     }
 }
 
 class CNCServer {
     server = null;
-    sessions = [];
-    controllers = {};
+    sockets = [];
+    controllers = controllers;
 
     constructor(server) {
         this.server = server;
@@ -78,25 +92,18 @@ class CNCServer {
             let address = socket.handshake.address;
             log.debug('New connection from %s', address);
 
-            this.sessions.push({
-                id: socket.id,
-                address: address,
-                socket: socket,
-                lastCommand: ''
-            });
+            // Add to the socket pool
+            this.sockets.push(socket);
 
             socket.on('disconnect', () => {
                 log.debug('socket.on(\'%s\'):', 'disconnect', { id: socket.id });
 
-                this.sessions.splice(_.findIndex(this.sessions, { id: socket.id }), 1);
-
-                // Remove the socket of the disconnected client
-                /* FIXME
-                _.each(store.connection, (sp) => {
-                    sp.sockets[socket.id] = undefined;
-                    delete sp.sockets[socket.id];
+                _.each(this.controllers, (controller, port) => {
+                    controller.disconnect(socket);
                 });
-                */
+
+                // Remove from the socket pool
+                this.sockets.splice(this.sockets.indexOf(socket), 1);
             });
 
             // Show available serial ports
@@ -149,7 +156,29 @@ class CNCServer {
 
                     controller = this.controllers[port] = new GrblController(sp);
                 }
-                controller.open(socket);
+
+                if (controller.isOpen()) {
+                    controller.connect(socket);
+                    socket.emit('serialport:open', {
+                        port: port,
+                        baudrate: baudrate,
+                        inuse: true
+                    });
+                    return;
+                }
+
+                controller.open((err) => {
+                    if (err) {
+                        return;
+                    }
+
+                    controller.connect(socket);
+                    socket.emit('serialport:open', {
+                        port: port,
+                        baudrate: baudrate,
+                        inuse: true
+                    });
+                });
             });
 
             // Close serial port
@@ -157,11 +186,16 @@ class CNCServer {
                 log.debug('socket.on(\'%s\'):', 'close', { id: socket.id, port: port });
 
                 let controller = this.controllers[port];
+
                 if (!controller) {
                     log.warn('No controller found on serial port \'%s\'', port);
                     return;
                 }
-                controller.close(socket);
+
+                controller.close((err) => {
+                    delete this.controllers[port];
+                    this.controllers[port] = undefined;
+                });
             });
         });
     }

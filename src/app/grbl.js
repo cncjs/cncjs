@@ -1,6 +1,7 @@
 import events from 'events';
 import serialport from 'serialport';
 import log from './lib/log';
+import settings from './config/settings';
 
 const STATE_IDLE = 'Idle';
 const STATE_RUN = 'Run';
@@ -44,24 +45,27 @@ class Grbl extends events.EventEmitter {
         this.waitingQueue = [];
         this.readyToStart = false;
     }
-    open() {
+    open(callback) {
         let port = this.serialport.path;
+        let isOpen = this.serialport.isOpen();
 
-        if (this.serialport.isOpen()) {
-            log.warn('The serial port \'%s\' has already opened', port);
+        // Assertion check
+        if (isOpen) {
+            log.warn('Cannot open serial port \'%s\'', port);
+            if (callback) {
+                callback(new Error('Cannot open serial port ' + port));
+            }
             return;
         }
 
         this.serialport.open((err) => {
             if (err) {
+                if (callback) {
+                    callback(err);
+                }
                 log.error('Error opening serial port \'%s\':', port, err);
                 return;
             }
-
-            log.debug('Connected to serial port \'%s\'', port);
-
-            // Reset Grbl after opening serial port
-            this.resetGrbl();
 
             this.serialport.on('data', (data) => {
                 this.processData(data);
@@ -76,10 +80,30 @@ class Grbl extends events.EventEmitter {
                 log.error('Unexpected error while reading/writing serial port \'%s\':', port, err);
                 this.destroy();
             });
+
+            log.debug('Connected to serial port \'%s\'', port);
+
+            // Reset Grbl after opening serial port
+            this.resetGrbl();
+
+            if (callback) {
+                callback();
+            }
         });
     }
-    close() {
+    close(callback) {
         let port = this.serialport.path;
+        let isOpen = this.serialport.isOpen();
+        let isClose = !isOpen;
+
+        // Assertion check
+        if (isClose) {
+            log.warn('Cannot close serial port \'%s\'', port);
+            if (callback) {
+                callback(new Error('Cannot close serial port ' + port));
+            }
+            return;
+        }
 
         // Reset Grbl before closing serial port
         this.resetGrbl();
@@ -89,10 +113,16 @@ class Grbl extends events.EventEmitter {
                 log.error('Error closing serial port \'%s\':', port, err);
             }
             this.destroy();
+
+            if (callback) {
+                callback(err);
+            }
         });
     }
     processData(data) {
-        log.debug('> ', data);
+        if (settings.debug) {
+            console.log('> ' + data);
+        }
     }
     resetGrbl() {
         this.sendRealtimeCommand('\x18');

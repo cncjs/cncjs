@@ -1,3 +1,1 @@
-export default {
-    connection: {}
-};
+export let controllers = {};
