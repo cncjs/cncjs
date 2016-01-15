@@ -421,7 +421,7 @@ module.exports = (server) => {
             if (_.size(sp.sockets) === 0) {
                 sp.serialPort.close((err) => {
                     if (err) {
-                        log.error('Error opening serial port \'%s\'', port);
+                        log.error('Error closing serial port \'%s\'', port);
                     }
                 });
 
