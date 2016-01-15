@@ -73,6 +73,7 @@
     "normalize.css": "^3.0.3",
     "pkginfo": "0.3.x",
     "pubsub-js": "^1.5.2",
+    "range_check": "^1.2.0",
     "react": "^0.14.3",
     "react-addons-update": "^0.14.3",
     "react-bootstrap": "^0.28.1",
