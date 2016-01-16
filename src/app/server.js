@@ -48,7 +48,7 @@ pubsub.subscribe('file:upload', (msg, data) => {
 
         let lines = _.pluck(data, 'line');
         let port = meta.port;
-        let sp = store.connection[port];
+        let sp = store.controllers[port];
 
         if (!(sp && sp.queue)) {
             log.error('Failed to add %s to the queue: port=%s', JSON.stringify(meta.name), JSON.stringify(port));
@@ -81,7 +81,7 @@ module.exports = (server) => {
             log.debug('socket.on(%s):', 'disconnect', { id: socket.id });
 
             // Remove the socket of the disconnected client
-            _.each(store.connection, (sp) => {
+            _.each(store.controllers, (sp) => {
                 sp.sockets[socket.id] = undefined;
                 delete sp.sockets[socket.id];
             });
@@ -98,7 +98,7 @@ module.exports = (server) => {
 
                 ports = ports.concat(_.get(settings, 'cnc.ports') || []);
 
-                let portsInUse = _(store.connection)
+                let portsInUse = _(store.controllers)
                     .filter((sp) => {
                         return sp.serialPort && sp.serialPort.isOpen();
                     })
@@ -123,7 +123,7 @@ module.exports = (server) => {
         socket.on('open', (port, baudrate) => {
             log.debug('socket.on(%s):', 'open', { id: socket.id, port: port, baudrate: baudrate });
 
-            let sp = store.connection[port] = store.connection[port] || {
+            let sp = store.controllers[port] = store.controllers[port] || {
                 port: port,
                 ready: false,
                 pending: {
@@ -373,8 +373,8 @@ module.exports = (server) => {
                             inuse: false
                         });
 
-                        store.connection[port] = undefined;
-                        delete store.connection[port];
+                        store.controllers[port] = undefined;
+                        delete store.controllers[port];
                     });
 
                     serialPort.on('error', () => {
@@ -385,8 +385,8 @@ module.exports = (server) => {
                             port: port
                         });
 
-                        store.connection[port] = undefined;
-                        delete store.connection[port];
+                        store.controllers[port] = undefined;
+                        delete store.controllers[port];
                     });
 
                 }
@@ -408,7 +408,7 @@ module.exports = (server) => {
         socket.on('close', (port) => {
             log.debug('socket.on(%s):', 'close', { id: socket.id, port: port });
 
-            let sp = store.connection[port] || {};
+            let sp = store.controllers[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
@@ -426,8 +426,8 @@ module.exports = (server) => {
                 });
 
                 // Delete serial port
-                store.connection[port] = undefined;
-                delete store.connection[port];
+                store.controllers[port] = undefined;
+                delete store.controllers[port];
             }
 
             // Emit 'serialport:close' event
@@ -442,7 +442,7 @@ module.exports = (server) => {
         socket.on('serialport:write', (port, msg) => {
             log.debug('socket.on(%s):', 'serialport:write', { id: socket.id, port: port, msg: msg });
 
-            let sp = store.connection[port] || {};
+            let sp = store.controllers[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port, msg: msg });
                 return;
@@ -455,7 +455,7 @@ module.exports = (server) => {
         socket.on('gcode:run', (port) => {
             log.debug('socket.on(%s):', 'gcode:run', { id: socket.id, port: port });
 
-            let sp = store.connection[port] || {};
+            let sp = store.controllers[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
@@ -467,7 +467,7 @@ module.exports = (server) => {
         socket.on('gcode:pause', (port) => {
             log.debug('socket.on(%s):', 'gcode:pause', { id: socket.id, port: port });
 
-            let sp = store.connection[port] || {};
+            let sp = store.controllers[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
@@ -479,7 +479,7 @@ module.exports = (server) => {
         socket.on('gcode:stop', (port) => {
             log.debug('socket.on(%s):', 'gcode:stop', { id: socket.id, port: port });
 
-            let sp = store.connection[port] || {};
+            let sp = store.controllers[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
@@ -491,7 +491,7 @@ module.exports = (server) => {
         socket.on('gcode:unload', (port) => {
             log.debug('socket.on(%s):', 'gcode:unload', { id: socket.id, port: port });
 
-            let sp = store.connection[port] || {};
+            let sp = store.controllers[port] || {};
             if (!(sp.serialPort && sp.serialPort.isOpen())) {
                 log.warn('The serial port is not open.', { port: port });
                 return;
