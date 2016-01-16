@@ -60,10 +60,10 @@ class Grbl extends events.EventEmitter {
 
         this.serialport.open((err) => {
             if (err) {
+                log.error('Error opening serial port \'%s\':', port, err);
                 if (callback) {
                     callback(err);
                 }
-                log.error('Error opening serial port \'%s\':', port, err);
                 return;
             }
 
