@@ -180,7 +180,7 @@ class Connection extends React.Component {
         socket.emit('open', port, baudrate);
 
         request
-            .get('/api/connection')
+            .get('/api/controllers')
             .end((err, res) => {
                 if (err || !res.ok) {
                     return;
