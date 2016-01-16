@@ -30,7 +30,6 @@ const ALLOWED_IP_RANGES = [
 
 class CNCController {
     serialport = null;
-    controller = null;
     queue = new CommandQueue();
     gcode = '';
     sockets = [];
@@ -54,10 +53,10 @@ class CNCController {
         this.sockets.splice(this.sockets.indexOf(socket), 1);
     }
     open(callback) {
-        this.controller.open(callback);
+        callback(new Error('Method not implemented'));
     }
     close(callback) {
-        this.controller.close(callback);
+        callback(new Error('Method not implemented'));
     }
 }
 
@@ -65,7 +64,15 @@ class GrblController extends CNCController {
     constructor(serialport) {
         super(serialport);
 
-        this.controller = new Grbl(serialport);
+        this.grbl = new Grbl(serialport);
+        this.grbl.on('raw', (data) => {
+        });
+    }
+    open(callback) {
+        this.grbl.open(callback);
+    }
+    close(callback) {
+        this.grbl.close(callback);
     }
 }
 
@@ -176,9 +183,8 @@ class CNCServer {
 
                 controller.open((err) => {
                     if (err) {
-                        socket.emit('serialport:error', {
-                            port: port
-                        });
+                        log.error('Error opening serial port \'%s\':', port, err);
+                        socket.emit('serialport:error', { port: port });
                         return;
                     }
 
@@ -207,6 +213,9 @@ class CNCServer {
                 }
 
                 controller.close((err) => {
+                    if (err) {
+                        log.error('Error closing serial port \'%s\':', port, err);
+                    }
                     this.controllers[port] = undefined;
                     delete this.controllers[port];
                 });
