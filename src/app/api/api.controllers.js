@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import { controllers } from '../store';
 
-export const listAllConnections = (req, res) => {
+export const getActiveControllers = (req, res) => {
     let list = [];
 
     Object.keys(controllers).forEach((port) => {

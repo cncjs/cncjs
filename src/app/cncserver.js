@@ -28,22 +28,24 @@ const ALLOWED_IP_RANGES = [
     'fe80::/10' // Link-local address
 ];
 
-class GrblController {
+class CNCController {
     serialport = null;
-    controller = new Grbl();
+    controller = null;
     queue = new CommandQueue();
     gcode = '';
     sockets = [];
 
     constructor(serialport) {
         this.serialport = serialport;
-        this.controller = new Grbl(serialport);
     }
     isOpen() {
         return this.serialport.isOpen();
     }
     isClose() {
         return !(this.isOpen());
+    }
+    getPort() {
+        return this.serialport.path;
     }
     connect(socket) {
         this.sockets.push(socket);
@@ -56,6 +58,14 @@ class GrblController {
     }
     close(callback) {
         this.controller.close(callback);
+    }
+}
+
+class GrblController extends CNCController {
+    constructor(serialport) {
+        super(serialport);
+
+        this.controller = new Grbl(serialport);
     }
 }
 
@@ -118,17 +128,14 @@ class CNCServer {
 
                     ports = ports.concat(_.get(settings, 'cnc.ports') || []);
 
-                    let portsInUse = [];
-                    /* // FIXME
-                    let portsInUse = _(store.connection)
-                        .filter((sp) => {
-                            return sp.serialPort && sp.serialPort.isOpen();
+                    let portsInUse = _(this.controllers)
+                        .filter((controller) => {
+                            return controller.isOpen();
                         })
-                        .map((sp) => {
-                            return sp.port;
+                        .map((controller) => {
+                            return controller.getPort();
                         })
                         .value();
-                    */
                     
                     ports = _.map(ports, (port) => {
                         return {
@@ -154,7 +161,7 @@ class CNCServer {
                         parser: serialport.parsers.readline('\n')
                     }, false);
 
-                    controller = this.controllers[port] = new GrblController(sp);
+                    controller = new GrblController(sp);
                 }
 
                 if (controller.isOpen()) {
@@ -169,8 +176,15 @@ class CNCServer {
 
                 controller.open((err) => {
                     if (err) {
+                        socket.emit('serialport:error', {
+                            port: port
+                        });
                         return;
                     }
+
+                    // It should default to an undefined value
+                    console.assert(_.isUndefined(this.controllers[port]));
+                    this.controllers[port] = controller;
 
                     controller.connect(socket);
                     socket.emit('serialport:open', {
@@ -193,8 +207,8 @@ class CNCServer {
                 }
 
                 controller.close((err) => {
-                    delete this.controllers[port];
                     this.controllers[port] = undefined;
+                    delete this.controllers[port];
                 });
             });
         });
