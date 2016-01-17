@@ -413,7 +413,7 @@ class Visualizer extends React.Component {
     }
     clearScene() {
         // to iterrate over all children (except the first) in a scene 
-        let objsToRemove = _.tail(this.scene.children);
+        let objsToRemove = _.rest(this.scene.children);
         _.each(objsToRemove, (obj) => {
             this.scene.remove(obj);
         });
