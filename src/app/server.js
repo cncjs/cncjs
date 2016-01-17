@@ -46,7 +46,7 @@ pubsub.subscribe('file:upload', (msg, data) => {
             return;
         }
 
-        let lines = _.pluck(data, 'line');
+        let lines = _.map(data, 'line');
         let port = meta.port;
         let sp = store.controllers[port];
 
