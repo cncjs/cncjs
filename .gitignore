@@ -4,5 +4,4 @@ node_modules
 npm-debug.log
 .nodemonignore
 /coverage
-/dist
 /.nyc_output
