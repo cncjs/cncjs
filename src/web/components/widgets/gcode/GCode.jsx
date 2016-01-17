@@ -74,6 +74,14 @@ class GCode extends React.Component {
             });
             this.pubsubTokens.push(token);
         }
+
+        { // gcode:unload
+            let token = pubsub.subscribe('gcode:unload', (msg) => {
+                let commands = [];
+                this.setState({ commands: commands });
+            });
+            this.pubsubTokens.push(token);
+        }
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {
