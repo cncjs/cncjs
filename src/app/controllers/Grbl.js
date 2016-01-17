@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import events from 'events';
 import serialport from 'serialport';
+import { parseText } from 'gcode-parser';
 import log from '../lib/log';
 import settings from '../config/settings';
 import CommandQueue from './CommandQueue';
@@ -187,6 +188,26 @@ class GrblController {
     }
     isClose() {
         return !(this.isOpen());
+    }
+    loadGCode(gcode, callback) {
+        parseText(gcode, (err, data) => {
+            if (err) {
+                callback && callback(err);
+                return;
+            }
+
+            let lines = _.map(data, 'line');
+
+            this.gcode = gcode;
+
+            // Stop and clear queue
+            this.queue.stop();
+            this.queue.clear();
+
+            this.queue.push(lines);
+
+            log.debug('Added %d lines to the queue', lines.length);
+        });
     }
     connect(socket) {
         this.sockets.push(socket);

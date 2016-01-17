@@ -18,7 +18,8 @@ class ImmutableStore extends events.EventEmitter {
     }
     unset(key) {
         let state = _.extend({}, this.state);
-        _.unset(state, key);
+        _.set(state, key, undefined);
+        //_.unset(state, key); // TODO: _.unset() is available in lodash@v4
         this.state = state;
         this.emit('change', this.state);
         return this.state;

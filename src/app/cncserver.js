@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import pubsub from 'pubsub-js';
 import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
@@ -25,6 +26,26 @@ const ALLOWED_IP_RANGES = [
     'fc00::/7', // Unique local address
     'fe80::/10' // Link-local address
 ];
+
+pubsub.subscribe('file:upload', (msg, data) => {
+    let meta = data.meta || {};
+    let port = meta.port;
+    let controller = store.get('controllers["' + port + '"]');
+
+    if (!controller) {
+        log.error('The controller is undefined', { meta: meta });
+        return;
+    }
+
+    let gcode = data.contents || '';
+
+    // Load new G-code
+    controller.loadGCode(gcode, (err) => {
+        if (err) {
+            log.error('Failed to parse the G-code', err, gcode);
+        }
+    });
+});
 
 class CNCServer {
     server = null;
@@ -71,6 +92,9 @@ class CNCServer {
                 log.debug('socket.on(\'%s\'):', 'disconnect', { id: socket.id });
 
                 _.each(this.controllers, (controller, port) => {
+                    if (!controller) {
+                        return;
+                    }
                     controller.disconnect(socket);
                 });
 
@@ -92,7 +116,7 @@ class CNCServer {
 
                     let portsInUse = _(this.controllers)
                         .filter((controller) => {
-                            return controller.isOpen();
+                            return controller && controller.isOpen();
                         })
                         .map((controller) => {
                             return controller.port;
@@ -156,7 +180,6 @@ class CNCServer {
                 log.debug('socket.on(\'%s\'):', 'close', { id: socket.id, port: port });
 
                 let controller = this.controllers[port];
-
                 if (!controller) {
                     log.warn('No controller found on serial port \'%s\'', port);
                     return;
