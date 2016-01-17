@@ -66,7 +66,7 @@ class Connection extends React.Component {
 
         let port = store.getState('widgets.connection.port') || '';
 
-        if (_.includes(_.pluck(ports, 'port'), port)) {
+        if (_.includes(_.map(ports, 'port'), port)) {
             this.setState({
                 port: port,
                 ports: ports
@@ -166,7 +166,7 @@ class Connection extends React.Component {
     }
     isPortInUse(port) {
         port = port || this.state.port;
-        let o = _.findWhere(this.state.ports, { port: port }) || {};
+        let o = _.find(this.state.ports, { port: port }) || {};
         return !!(o.inuse);
     }
     handleRefresh() {
@@ -186,7 +186,7 @@ class Connection extends React.Component {
                     return;
                 }
 
-                let portData = _.findWhere(res.body, { port: port });
+                let portData = _.find(res.body, { port: port });
                 if (!portData) {
                     return;
                 }

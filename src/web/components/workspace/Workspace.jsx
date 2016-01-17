@@ -55,7 +55,7 @@ const widgets = [
 ];
 
 const getWidgetElementById = (id) => {
-    let widget = _.findWhere(widgets, { id: id }) || {};
+    let widget = _.find(widgets, { id: id }) || {};
     return widget.el;
 };
 
@@ -85,7 +85,7 @@ class Workspace extends React.Component {
                 settings = {};
             }
 
-            let widgetList = _.pluck(widgets, 'id');
+            let widgetList = _.map(widgets, 'id');
             let defaultList = ['visualizer'];
             let primaryDefault = ['connection', 'grbl', 'console'];
             let secondaryDefault = ['axes', 'gcode', 'probe', 'spindle'];

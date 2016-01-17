@@ -162,9 +162,9 @@ class GCodeStats extends React.Component {
         }
         if (this.state.duration > 0) {
             let d = moment.duration(this.state.duration, 'seconds');
-            let hours = _.padLeft(d.hours(), 2, '0');
-            let minutes = _.padLeft(d.minutes(), 2, '0');
-            let seconds = _.padLeft(d.seconds(), 2, '0');
+            let hours = _.padStart(d.hours(), 2, '0');
+            let minutes = _.padStart(d.minutes(), 2, '0');
+            let seconds = _.padStart(d.seconds(), 2, '0');
 
             duration = hours + ':' + minutes + ':' + seconds;
         }
