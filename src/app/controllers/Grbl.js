@@ -1,7 +1,9 @@
+import _ from 'lodash';
 import events from 'events';
 import serialport from 'serialport';
-import log from './lib/log';
-import settings from './config/settings';
+import log from '../lib/log';
+import settings from '../config/settings';
+import CommandQueue from './CommandQueue';
 
 const STATE_IDLE = 'Idle';
 const STATE_RUN = 'Run';
@@ -18,13 +20,13 @@ class GrblLineParser {
 }
 
 class Grbl extends events.EventEmitter {
-    currentStatus = {};
+    status = {};
+    parserstate = {};
 
     parser = new GrblLineParser();
     serialport = null;
     queryTimer = null;
     waitingQueue = [];
-    readyToStart = false;
 
     constructor(serialport) {
         super();
@@ -39,13 +41,12 @@ class Grbl extends events.EventEmitter {
             return;
         }
 
-        this.currentStatus = {
+        this.status = {
             state: STATE_UNKNOWN
         };
         this.serialport = null;
         this.stopQueryTimer();
         this.waitingQueue = [];
-        this.readyToStart = false;
     }
     open(callback = noop) {
         let port = this.serialport.path;
@@ -141,4 +142,66 @@ class Grbl extends events.EventEmitter {
     }
 }
 
-export default Grbl;
+class GrblController {
+    options = {
+        port: '',
+        baudrate: 9600
+    };
+    serialport = null;
+    queue = new CommandQueue();
+    gcode = '';
+    sockets = [];
+
+    constructor(port, baudrate) {
+        this.options = _.merge({}, this.options, { port: port, baudrate: baudrate });
+        this.serialport = new serialport.SerialPort(this.options.port, {
+            baudrate: this.options.baudrate,
+            parser: serialport.parsers.readline('\n')
+        }, false);
+
+        this.grbl = new Grbl(this.serialport);
+
+        this.grbl.on('raw', (data) => {
+        });
+
+        this.grbl.on('status', (status) => {
+        });
+
+        this.grbl.on('statuschange', (status) => {
+        });
+
+        this.grbl.on('parserstate', (parsestate) => {
+        });
+
+        this.grbl.on('parserstatechange', (parsestate) => {
+        });
+    }
+    open(callback) {
+        this.grbl.open(callback);
+    }
+    close(callback) {
+        this.grbl.close(callback);
+    }
+    isOpen() {
+        return this.serialport.isOpen();
+    }
+    isClose() {
+        return !(this.isOpen());
+    }
+    connect(socket) {
+        this.sockets.push(socket);
+    }
+    disconnect(socket) {
+        this.sockets.splice(this.sockets.indexOf(socket), 1);
+    }
+    sendMessage(socket, message = {}) {
+        socket.emit('message', message);
+    }
+    sendBroadcastMessage(message = {}) {
+        _.each(this.sockets, (socket) => {
+            this.sendMessage(socket, message);
+        });
+    }
+}
+
+export default GrblController;

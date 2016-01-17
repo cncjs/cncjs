@@ -1,13 +1,11 @@
 import _ from 'lodash';
-import pubsub from 'pubsub-js';
 import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
-import { controllers } from './store';
+import store from './store';
 import log from './lib/log';
 import settings from './config/settings';
-import Grbl from './grbl';
-import CommandQueue from './CommandQueue';
+import GrblController from './controllers/grbl';
 
 const ALLOWED_IP_RANGES = [
     // IPv4 reserved space
@@ -28,61 +26,18 @@ const ALLOWED_IP_RANGES = [
     'fe80::/10' // Link-local address
 ];
 
-class CNCController {
-    serialport = null;
-    queue = new CommandQueue();
-    gcode = '';
-    sockets = [];
-
-    constructor(serialport) {
-        this.serialport = serialport;
-    }
-    isOpen() {
-        return this.serialport.isOpen();
-    }
-    isClose() {
-        return !(this.isOpen());
-    }
-    getPort() {
-        return this.serialport.path;
-    }
-    connect(socket) {
-        this.sockets.push(socket);
-    }
-    disconnect(socket) {
-        this.sockets.splice(this.sockets.indexOf(socket), 1);
-    }
-    open(callback) {
-        callback(new Error('Method not implemented'));
-    }
-    close(callback) {
-        callback(new Error('Method not implemented'));
-    }
-}
-
-class GrblController extends CNCController {
-    constructor(serialport) {
-        super(serialport);
-
-        this.grbl = new Grbl(serialport);
-        this.grbl.on('raw', (data) => {
-        });
-    }
-    open(callback) {
-        this.grbl.open(callback);
-    }
-    close(callback) {
-        this.grbl.close(callback);
-    }
-}
-
 class CNCServer {
     server = null;
     sockets = [];
-    controllers = controllers;
+    controllers = store.get('controllers');
 
     constructor(server) {
         this.server = server;
+
+        store.on('change', (state) => {
+            log.debug('store.on(\'change\'):', state);
+            this.controllers = _.get(state, 'controllers', {});
+        });
     }
     start() {
         let io = socketIO(this.server, {
@@ -140,7 +95,7 @@ class CNCServer {
                             return controller.isOpen();
                         })
                         .map((controller) => {
-                            return controller.getPort();
+                            return controller.port;
                         })
                         .value();
                     
@@ -163,12 +118,7 @@ class CNCServer {
                 
                 let controller = this.controllers[port];
                 if (!controller) {
-                    const sp = new serialport.SerialPort(port, {
-                        baudrate: baudrate,
-                        parser: serialport.parsers.readline('\n')
-                    }, false);
-
-                    controller = new GrblController(sp);
+                    controller = new GrblController(port, baudrate);
                 }
 
                 if (controller.isOpen()) {
@@ -190,7 +140,7 @@ class CNCServer {
 
                     // It should default to an undefined value
                     console.assert(_.isUndefined(this.controllers[port]));
-                    this.controllers[port] = controller;
+                    store.set('controllers["' + port + '"]', controller);
 
                     controller.connect(socket);
                     socket.emit('serialport:open', {
@@ -216,8 +166,7 @@ class CNCServer {
                     if (err) {
                         log.error('Error closing serial port \'%s\':', port, err);
                     }
-                    this.controllers[port] = undefined;
-                    delete this.controllers[port];
+                    store.unset('controllers["' + port + '"]');
                 });
             });
         });

@@ -1,8 +1,9 @@
 import _ from 'lodash';
-import { controllers } from '../store';
+import store from '../store';
 
 export const getActiveControllers = (req, res) => {
     let list = [];
+    let controllers = store.get('controllers');
 
     Object.keys(controllers).forEach((port) => {
         let controller = controllers[port];
