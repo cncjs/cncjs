@@ -95,7 +95,7 @@ class CNCServer {
                     if (!controller) {
                         return;
                     }
-                    controller.disconnect(socket);
+                    controller.removeConnection(socket);
                 });
 
                 // Remove from the socket pool
@@ -146,7 +146,7 @@ class CNCServer {
                 }
 
                 if (controller.isOpen()) {
-                    controller.connect(socket);
+                    controller.addConnection(socket);
                     socket.emit('serialport:open', {
                         port: port,
                         baudrate: baudrate,
@@ -166,7 +166,7 @@ class CNCServer {
                     console.assert(_.isUndefined(this.controllers[port]));
                     store.set('controllers["' + port + '"]', controller);
 
-                    controller.connect(socket);
+                    controller.addConnection(socket);
                     socket.emit('serialport:open', {
                         port: port,
                         baudrate: baudrate,
@@ -193,8 +193,8 @@ class CNCServer {
                 });
             });
 
-            socket.on('write', (port, data) => {
-                log.debug('socket.on(%s):', 'write', { id: socket.id, port: port, data: data });
+            socket.on('command', (port, cmd) => {
+                log.debug('socket.on(\'%s\'):', 'command', { id: socket.id, port: port, cmd: cmd });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
@@ -202,11 +202,23 @@ class CNCServer {
                     return;
                 }
 
-                controller.write(data);
+                controller.command(cmd, { socket: socket });
+            });
+
+            socket.on('write', (port, data) => {
+                log.debug('socket.on(\'%s\'):', 'write', { id: socket.id, port: port, data: data });
+
+                let controller = this.controllers[port];
+                if (!controller || controller.isClose()) {
+                    log.error('Serial port not accessible:', { port: port });
+                    return;
+                }
+
+                controller.write(data, { socket: socket });
             });
 
             socket.on('gcode:start', (port) => {
-                log.debug('socket.on(%s):', 'gcode:start', { id: socket.id, port: port });
+                log.debug('socket.on(\'%s\'):', 'gcode:start', { id: socket.id, port: port });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
@@ -218,7 +230,7 @@ class CNCServer {
             });
 
             socket.on('gcode:resume', (port) => {
-                log.debug('socket.on(%s):', 'gcode:resume', { id: socket.id, port: port });
+                log.debug('socket.on(\'%s\'):', 'gcode:resume', { id: socket.id, port: port });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
@@ -230,7 +242,7 @@ class CNCServer {
             });
 
             socket.on('gcode:pause', (port) => {
-                log.debug('socket.on(%s):', 'gcode:pause', { id: socket.id, port: port });
+                log.debug('socket.on(\'%s\'):', 'gcode:pause', { id: socket.id, port: port });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
@@ -242,7 +254,7 @@ class CNCServer {
             });
 
             socket.on('gcode:stop', (port) => {
-                log.debug('socket.on(%s):', 'gcode:stop', { id: socket.id, port: port });
+                log.debug('socket.on(\'%s\'):', 'gcode:stop', { id: socket.id, port: port });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
@@ -254,7 +266,7 @@ class CNCServer {
             });
 
             socket.on('gcode:unload', (port) => {
-                log.debug('socket.on(%s):', 'gcode:unload', { id: socket.id, port: port });
+                log.debug('socket.on(\'%s\'):', 'gcode:unload', { id: socket.id, port: port });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {

@@ -52,7 +52,7 @@ class Grbl extends events.EventEmitter {
     parse(data) {
         data = data.replace(/\s+$/, '');
         if (settings.debug) {
-            console.log('<<', data);
+            //console.log('<<', data);
         }
         if (!data) {
             return;
@@ -62,9 +62,7 @@ class Grbl extends events.EventEmitter {
 
         // Example: Grbl 0.9j ['$' for help]
         if (matchGrblInitializationMessage(data)) {
-            this.emit('startup', {
-                raw: data
-            });
+            this.emit('startup', { raw: data });
             return;
         }
 
@@ -84,12 +82,13 @@ class Grbl extends events.EventEmitter {
                 }
             };
 
-            this.status = status;
+            this.emit('status', { raw: data, status: status });
 
-            this.emit('status', {
-                raw: data,
-                status: status
-            });
+            if (!(_.isEqual(this.status, status))) {
+                this.emit('statuschange', { raw: data, status: status });
+            }
+
+            this.status = status;
 
             return;
         }
@@ -102,6 +101,7 @@ class Grbl extends events.EventEmitter {
                     return _.trim(word);
                 })
                 .value();
+
             let parserstate = {};
             _.each(words, (word) => {
                 // Gx, Mx
@@ -131,52 +131,33 @@ class Grbl extends events.EventEmitter {
                 }
             });
 
-            this.parserstate = parserstate;
+            this.emit('parserstate', { raw: data, parserstate: parserstate });
 
-            this.emit('parserstate', {
-                raw: data,
-                parserstate: parserstate
-            });
+            if (!(_.isEqual(this.parserstate, parserstate))) {
+                this.emit('parserstatechange', { raw: data, parserstate: parserstate });
+            }
+
+            this.parserstate = parserstate;
 
             return;
         }
 
         if (data.indexOf('ok') === 0) {
-            this.emit('ok', {
-                raw: data
-            });
+            this.emit('ok', { raw: data });
             return;
         }
             
         if (data.indexOf('error') === 0) {
-            this.emit('error', {
-                raw: data
-            });
+            this.emit('error', { raw: data });
             return;
         }
 
         if (data.length > 0) {
-            this.emit('others', {
-                raw: data
-            });
+            this.emit('others', { raw: data });
             return;
         }
 
     }
-    /*
-    startQueryTimer() {
-        this.queryTimer = setTimeout(() => {
-            this.status();
-            if (this.serialport && this.serialport.isOpen()) {
-                this.startQueryTimer();
-            }
-        }, 1/10 * 1000);
-    }
-    stopQueryTimer() {
-        clearTimeout(this.queryTimer);
-        this.queryTimer = null;
-    }
-    */
 }
 
 class GrblController {
@@ -192,9 +173,11 @@ class GrblController {
     queryTimer = null;
     state = {
         isReady: false,
-        q_total: 0,
-        q_executed: 0,
-        waitingFor: {
+        queue: {
+            executed: 0,
+            total: 0
+        },
+        waitFor: {
             status: false,
             parserstate: false,
             parserstateOkError: false
@@ -210,71 +193,92 @@ class GrblController {
 
         this.grbl = new Grbl(this.serialport);
 
-        this.grbl.on('raw', (raw) => {
-        });
+        this.grbl.on('raw', (raw) => {});
 
-        this.grbl.on('startup', () => {
-            // Reset to false
-            Object.keys(this.state.waitingFor).forEach((key) => {
-                this.state.waitingFor[key] = false;
+        this.grbl.on('startup', (res) => {
+            this.setState({
+                isReady: true,
+                waitFor: {
+                    status: false,
+                    parserstate: false,
+                    parserstateOkError: false
+                }
+            });
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
             });
         });
 
         this.grbl.on('status', (res) => {
-            this.state.waitingFor['status'] = false;
+            this.setState({
+                waitFor: {
+                    status: false
+                }
+            });
 
             this.connections.forEach((c) => {
                 c.socket.emit('grbl:status', res.status);
 
-                if (c.command.indexOf('?') === 0) {
-                    c.command = '';
+                if (c.sentCommand.indexOf('?') === 0) {
+                    c.sentCommand = '';
                     c.socket.emit('serialport:read', res.raw);
                 }
             });
         });
-        this.grbl.on('statuschange', (res) => {
-            // TODO
-        });
+        this.grbl.on('statuschange', (res) => {});
 
         this.grbl.on('parserstate', (res) => {
-            this.state.waitingFor['parserstate'] = false;
-            this.state.waitingFor['parserstateOkError'] = true; // Wait for Grbl response
+            this.setState({
+                waitFor: {
+                    parserstate: false,
+                    parserstateOkError: true // wait for ok/error response
+                }
+            });
 
             this.connections.forEach((c) => {
                 c.socket.emit('grbl:parserstate', res.parserstate);
 
-                if (c.command.indexOf('$G') === 0) {
-                    c.command = '';
+                if (c.sentCommand.indexOf('$G') === 0) {
+                    c.sentCommand = '';
                     c.socket.emit('serialport:read', res.raw);
                 }
             });
         });
-        this.grbl.on('parserstatechange', (parsestate) => {
-            // TODO
-        });
+        this.grbl.on('parserstatechange', (res) => {});
 
         let handleOkError = (res) => {
-            if (this.state.waitingFor['parserstateOkError']) {
+            let { waitFor } = this.state;
+
+            if (waitFor['parserstateOkError']) {
                 this.connections.forEach((c) => {
-                    if (c.command.indexOf('$G') === 0) {
-                        c.command = '';
+                    if (c.sentCommand.indexOf('$G') === 0) {
+                        c.sentCommand = '';
                         c.socket.emit('serialport:read', res.raw);
                     }
                 });
-                this.state.waitingFor['parserstateOkError'] = false;
+                this.setState({
+                    waitFor: {
+                        parserstateOkError: false
+                    }
+                });
                 return;
             }
 
             if (this.queue.isRunning()) {
                 this.queue.next();
+                return;
             }
+
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
         };
         this.grbl.on('ok', handleOkError);
         this.grbl.on('error', handleOkError);
 
         this.grbl.on('others', (res) => {
             this.connections.forEach((c) => {
-                c.socket.emit('grbl:status', res.raw);
+                c.socket.emit('serialport:read', res.raw);
             });
         });
 
@@ -291,41 +295,59 @@ class GrblController {
             log.trace('[' + executed + '/' + total + '] ' + code);
 
             code = ('' + code).trim();
-            this.serialport.write(code + '\n');
+            this.write(code + '\n');
         });
 
         this.queryTimer = setInterval(() => {
+            let { isReady, waitFor } = this.state;
+            let notReady = !isReady;
+
             if (this.isClose()) {
                 return;
             }
 
-            if (!(this.state.isReady)) {
+            if (notReady) {
                 // The Grbl is not ready
                 return;
             }
 
-            if (!(this.state.waitingFor['status'])) {
-                this.state.waitingFor['status'] = true;
+            if (!(waitFor['status'])) {
+                this.setState({
+                    waitFor: {
+                        status: true
+                    }
+                });
                 this.write('?');
             }
 
-            if (!(this.state.waitingFor['parserstate']) && !(this.state.waitingFor['parserstateOkError'])) {
-                this.state.waitingFor['parserstate'] = true;
+            if (!(waitFor['parserstate']) && !(waitFor['parserstateOkError'])) {
+                this.setState({
+                    waitFor: {
+                        parserstate: true,
+                        parserstateOkError: false
+                    }
+                });
                 this.write('$G' + '\n');
             }
 
             { // G-code execution status
-                let q_executed = this.queue.getExecutedCount();
-                let q_total = this.queue.size();
+                let lastExecuted = this.state.queue.executed;
+                let lastTotal = this.state.queue.total;
+                let executed = this.queue.getExecutedCount();
+                let total = this.queue.size();
 
-                if (this.state.q_total !== q_total || this.state.q_executed !== q_executed) {
-                    this.state.q_total = q_total;
-                    this.state.q_executed = q_executed;
+                if ((lastExecuted !== executed) || (lastTotal !== total)) {
+                    this.setState({
+                        queue: {
+                            executed: executed,
+                            total: total
+                        }
+                    });
 
                     this.connections.forEach((c) => {
-                        c.socket.emit('gcode:queue-status', {
-                            executed: this.state.q_executed,
-                            total: this.state.q_total
+                        c.socket.emit('gcode:queuestatuschange', {
+                            executed: executed,
+                            total: total
                         });
                     });
                 }
@@ -337,6 +359,10 @@ class GrblController {
             clearInterval(this.queryTimer);
             this.queryTimer = null;
         }
+    }
+    setState(state) {
+        this.state = _.merge({}, this.state, state);
+        return this.state;
     }
     open(callback = noop) {
         let { port } = this.options;
@@ -370,18 +396,24 @@ class GrblController {
             log.debug('Connected to serial port \'%s\'', port);
 
             { // Initialization
-                // Set ready to false
-                this.state.isReady = false;
-
-                Object.keys(this.state.waitingFor).forEach((key) => {
-                    this.state.waitingFor[key] = false;
+                this.setState({
+                    isReady: false,
+                    queue: {
+                        lastExecuted: 0,
+                        lastTotal: 0
+                    },
+                    waitFor: {
+                        status: false,
+                        parserstate: false,
+                        parserstateOkError: false
+                    }
                 });
 
                 this.gcode_unload();
             }
 
             // Reset Grbl while opening serial port
-            this.reset();
+            this.command('reset');
 
             callback();
         });
@@ -396,7 +428,7 @@ class GrblController {
         }
 
         // Reset Grbl while closing serial port
-        this.reset();
+        this.command('reset');
 
         this.serialport.close((err) => {
             this.destroy();
@@ -437,45 +469,79 @@ class GrblController {
         this.queue.stop();
         this.queue.clear();
 
-        this.state.q_total = 0;
-        this.state.q_executed = 0;
+        this.setState({
+            queue: {
+                lastExecuted: 0,
+                lastTotal: 0
+            }
+        });
     }
     gcode_start() {
         this.queue.play();
     }
     gcode_resume() {
-        this.resume();
+        this.command('resume');
         this.queue.play();
     }
     gcode_pause() {
-        this.pause();
+        this.command('pause');
         this.queue.pause();
     }
     gcode_stop() {
-        this.reset();
+        this.command('reset');
         this.queue.stop();
     }
-    connect(socket) {
+    addConnection(socket) {
         this.connections.push({
             socket: socket,
-            command: ''
+            sentCommand: ''
         });
     }
-    disconnect(socket) {
+    removeConnection(socket) {
         let index = _.findIndex(this.connections, { socket: socket });
         this.connections.splice(index, 1);
     }
-    write(data) {
+    command(cmd, params = {}) {
+        let { socket } = params;
+
+        const handler = {
+            'resume': () => {
+                socket && socket.emit('serialport:read', '~');
+                this.write('~', params);
+            },
+            'pause': () => {
+                socket && socket.emit('serialport:read', '!');
+                this.write('!', params);
+            },
+            'reset': () => {
+                socket && socket.emit('serialport:read', '(ctrl-x)');
+                this.write('\x18', params);
+            },
+            'homing': () => {
+                socket && socket.emit('serialport:read', '$H');
+                this.write('$H\n', params);
+            },
+            'unlock': () => {
+                socket && socket.emit('serialport:read', '$X');
+                this.write('$X\n', params);
+            }
+        }[cmd];
+
+        if (!handler) {
+            log.error('Unknown command:', cmd);
+            return;
+        }
+
+        handler();
+    }
+    write(data, params = {}) {
+        if (params.socket) {
+            let index = _.findIndex(this.connections, { socket: params.socket });
+            if (index >= 0) {
+                this.connections[index].sentCommand = data;
+            }
+        }
         this.serialport.write(data);
-    }
-    reset() {
-        this.serialport.write('\x18');
-    }
-    resume() {
-        this.serialport.write('~');
-    }
-    pause() {
-        this.serialport.write('!');
     }
 }
 
