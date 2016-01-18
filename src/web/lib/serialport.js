@@ -11,7 +11,7 @@ pubsub.subscribe('port', (msg, _port) => {
     port = _port || port;
 });
 
-let on = (msg, callback) => {
+const on = (msg, callback) => {
     if (!(_.includes(['read', 'write'], msg))) {
         return;
     }
@@ -33,7 +33,7 @@ let on = (msg, callback) => {
     }
 };
 
-let off = (msg, callback) => {
+const off = (msg, callback) => {
     if (!(_.includes(['read', 'write'], msg))) {
         return;
     }
@@ -50,31 +50,38 @@ let off = (msg, callback) => {
     }
 };
 
-let write = (buffer) => {
+const command = (data) => {
     if (!port) {
         return;
     }
 
-    pubsub.publishSync.apply(pubsub, ['write', buffer]);
-
-    socket.emit.apply(socket, ['write', port, buffer]);
+    pubsub.publishSync.apply(pubsub, ['command', data]);
+    socket.emit.apply(socket, ['command', port, data]);
 };
 
-let writeln = (buffer) => {
+const write = (data) => {
     if (!port) {
         return;
     }
 
-    buffer = ('' + buffer).trim() + '\n';
+    pubsub.publishSync.apply(pubsub, ['write', data]);
+    socket.emit.apply(socket, ['write', port, data]);
+};
 
-    pubsub.publishSync.apply(pubsub, ['write', buffer]);
+const writeln = (data) => {
+    if (!port) {
+        return;
+    }
 
-    socket.emit.apply(socket, ['write', port, buffer]);
+    data = ('' + data).trim() + '\n';
+    pubsub.publishSync.apply(pubsub, ['write', data]);
+    socket.emit.apply(socket, ['write', port, data]);
 };
 
 export default {
     on,
     off,
+    command,
     write,
     writeln
 };
