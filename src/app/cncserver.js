@@ -193,8 +193,8 @@ class CNCServer {
                 });
             });
 
-            socket.on('serialport:write', (port, cmd) => {
-                log.debug('socket.on(%s):', 'serialport:write', { id: socket.id, port: port, cmd: cmd });
+            socket.on('write', (port, data) => {
+                log.debug('socket.on(%s):', 'write', { id: socket.id, port: port, data: data });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
@@ -202,7 +202,7 @@ class CNCServer {
                     return;
                 }
 
-                controller.command(cmd);
+                controller.write(data);
             });
 
             socket.on('gcode:start', (port) => {

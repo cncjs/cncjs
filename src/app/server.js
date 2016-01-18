@@ -308,7 +308,7 @@ module.exports = (server) => {
                             _.each(sp.sockets, (o) => {
                                 if (o.command === '?') {
                                     o.command = '';
-                                    o.socket.emit('serialport:data', msg);
+                                    o.socket.emit('serialport:read', msg);
                                 }
                             });
 
@@ -331,7 +331,7 @@ module.exports = (server) => {
 
                             _.each(sp.sockets, (o) => {
                                 if (o.command.indexOf('$G') === 0) {
-                                    o.socket.emit('serialport:data', msg);
+                                    o.socket.emit('serialport:read', msg);
                                 }
                             });
 
@@ -346,7 +346,7 @@ module.exports = (server) => {
                                 _.each(sp.sockets, (o) => {
                                     if (o.command.indexOf('$G') === 0) {
                                         o.command = ''; // Clear the command buffer
-                                        o.socket.emit('serialport:data', msg);
+                                        o.socket.emit('serialport:read', msg);
                                     }
                                 });
                                 sp.pending['$G:rsp'] = false;
@@ -360,7 +360,7 @@ module.exports = (server) => {
                         }
 
                         if (msg.length > 0) {
-                            sp.emit('serialport:data', msg);
+                            sp.emit('serialport:read', msg);
                         }
                     });
 
@@ -373,6 +373,10 @@ module.exports = (server) => {
                             inuse: false
                         });
 
+                        if (store.controllers[port]) {
+                            store.controllers[port].destroy(); // terminate timer
+                        }
+
                         store.controllers[port] = undefined;
                         delete store.controllers[port];
                     });
@@ -384,6 +388,10 @@ module.exports = (server) => {
                         socket.emit('serialport:error', {
                             port: port
                         });
+
+                        if (store.controllers[port]) {
+                            store.controllers[port].destroy(); // terminate timer
+                        }
 
                         store.controllers[port] = undefined;
                         delete store.controllers[port];
