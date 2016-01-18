@@ -67,7 +67,7 @@ class Visualizer extends React.Component {
 
     componentWillMount() {
         // Grbl
-        this.parserState = {};
+        this.parserstate = {};
         this.gcodePath = null;
         // Three.js
         this.renderer = null;
@@ -191,8 +191,8 @@ class Visualizer extends React.Component {
             socket.off(eventName, callback);
         });
     }
-    socketOnGrblParserState(parserState) {
-        this.parserState = parserState;
+    socketOnGrblParserState(parserstate) {
+        this.parserstate = parserstate;
     }
     socketOnGrblStatus(data) {
         let { activeState, workingPos } = data;
@@ -519,7 +519,7 @@ class Visualizer extends React.Component {
 
         let el = ReactDOM.findDOMNode(this.refs.visualizer);
 
-        this.gcodePath = new GCodePath({ modalState: this.parserState.modal });
+        this.gcodePath = new GCodePath({ modalState: this.parserstate.modal });
         this.gcodePath.render({
             gcode: gcode,
             width: el.clientWidth,

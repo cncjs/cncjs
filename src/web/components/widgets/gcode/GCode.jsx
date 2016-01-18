@@ -131,16 +131,16 @@ class GCode extends React.Component {
             }
         });
     }
-    socketOnGrblParserState(parserState) {
+    socketOnGrblParserState(parserstate) {
         let unit = this.state.unit;
 
         // Imperial
-        if (parserState.modal.units === 'G20') {
+        if (parserstate.modal.units === 'G20') {
             unit = IMPERIAL_UNIT;
         }
 
         // Metric
-        if (parserState.modal.units === 'G21') {
+        if (parserstate.modal.units === 'G21') {
             unit = METRIC_UNIT;
         }
 

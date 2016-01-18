@@ -74,7 +74,7 @@ class Grbl extends React.Component {
     state = {
         port: '',
         activeState: ACTIVE_STATE_IDLE,
-        parserState: {},
+        parserstate: {},
         showGCode: false
     };
     socketEventListener = {
@@ -102,8 +102,8 @@ class Grbl extends React.Component {
                 this.setState({ port: port });
 
                 if (!port) {
-                    let parserState = {};
-                    this.setState({ parserState: parserState });
+                    let parserstate = {};
+                    this.setState({ parserstate: parserstate });
                 }
             });
             this.pubsubTokens.push(token);
@@ -130,17 +130,17 @@ class Grbl extends React.Component {
             activeState: data.activeState
         });
     }
-    socketOnGrblParserState(parserState) {
-        this.setState({ parserState: parserState });
-        log.trace(parserState);
+    socketOnGrblParserState(parserstate) {
+        this.setState({ parserstate: parserstate });
+        log.trace(parserstate);
     }
     toggleDisplay() {
         let { showGCode } = this.state;
         this.setState({ showGCode: !showGCode });
     }
     render() {
-        let { port, activeState, parserState = {}, showGCode } = this.state;
-        let modal = parserState.modal || {};
+        let { port, activeState, parserstate = {}, showGCode } = this.state;
+        let modal = parserstate.modal || {};
         let none = '–';
         let canClick = !!port;
 
@@ -171,13 +171,13 @@ class Grbl extends React.Component {
                             {i18n._('Feed Rate')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{Number(parserState.feedrate) || 0}</div>
+                            <div className="well well-xs">{Number(parserstate.feedrate) || 0}</div>
                         </div>
                         <div className="col col-xs-3">
                             {i18n._('Spindle')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{Number(parserState.spindle) || 0}</div>
+                            <div className="well well-xs">{Number(parserstate.spindle) || 0}</div>
                         </div>
                     </div>
                     <div className="row no-gutter">
@@ -185,7 +185,7 @@ class Grbl extends React.Component {
                             {i18n._('Tool Number')}
                         </div>
                         <div className="col col-xs-3">
-                            <div className="well well-xs">{parserState.tool || none}</div>
+                            <div className="well well-xs">{parserstate.tool || none}</div>
                         </div>
                     </div>
                 </div>
