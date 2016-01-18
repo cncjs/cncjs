@@ -80,8 +80,8 @@ class GCodeStats extends React.Component {
             this.pubsubTokens.push(token);
         }
 
-        { // gcode:run
-            let token = pubsub.subscribe('gcode:run', (msg) => {
+        { // gcode:start
+            let token = pubsub.subscribe('gcode:start', (msg) => {
                 let now = moment().unix();
                 let startTime = this.state.startTime || now; // use startTime or current time
                 let duration = (startTime !== now) ? this.state.duration : 0;

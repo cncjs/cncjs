@@ -40,7 +40,7 @@ pubsub.subscribe('file:upload', (msg, data) => {
     let gcode = data.contents || '';
 
     // Load new G-code
-    controller.loadGCode(gcode, (err) => {
+    controller.gcode_load(gcode, (err) => {
         if (err) {
             log.error('Failed to parse the G-code', err, gcode);
         }
@@ -181,7 +181,7 @@ class CNCServer {
 
                 let controller = this.controllers[port];
                 if (!controller) {
-                    log.warn('No controller found on serial port \'%s\'', port);
+                    log.error('Serial port not accessible:', { port: port });
                     return;
                 }
 
@@ -192,6 +192,79 @@ class CNCServer {
                     store.unset('controllers["' + port + '"]');
                 });
             });
+
+            socket.on('serialport:write', (port, cmd) => {
+                log.debug('socket.on(%s):', 'serialport:write', { id: socket.id, port: port, cmd: cmd });
+
+                let controller = this.controllers[port];
+                if (!controller || controller.isClose()) {
+                    log.error('Serial port not accessible:', { port: port });
+                    return;
+                }
+
+                controller.command(cmd);
+            });
+
+            socket.on('gcode:start', (port) => {
+                log.debug('socket.on(%s):', 'gcode:start', { id: socket.id, port: port });
+
+                let controller = this.controllers[port];
+                if (!controller || controller.isClose()) {
+                    log.error('Serial port not accessible:', { port: port });
+                    return;
+                }
+
+                controller.gcode_start();
+            });
+
+            socket.on('gcode:resume', (port) => {
+                log.debug('socket.on(%s):', 'gcode:resume', { id: socket.id, port: port });
+
+                let controller = this.controllers[port];
+                if (!controller || controller.isClose()) {
+                    log.error('Serial port not accessible:', { port: port });
+                    return;
+                }
+
+                controller.gcode_resume();
+            });
+
+            socket.on('gcode:pause', (port) => {
+                log.debug('socket.on(%s):', 'gcode:pause', { id: socket.id, port: port });
+
+                let controller = this.controllers[port];
+                if (!controller || controller.isClose()) {
+                    log.error('Serial port not accessible:', { port: port });
+                    return;
+                }
+
+                controller.gcode_pause();
+            });
+
+            socket.on('gcode:stop', (port) => {
+                log.debug('socket.on(%s):', 'gcode:stop', { id: socket.id, port: port });
+
+                let controller = this.controllers[port];
+                if (!controller || controller.isClose()) {
+                    log.error('Serial port not accessible:', { port: port });
+                    return;
+                }
+
+                controller.gcode_stop();
+            });
+
+            socket.on('gcode:unload', (port) => {
+                log.debug('socket.on(%s):', 'gcode:unload', { id: socket.id, port: port });
+
+                let controller = this.controllers[port];
+                if (!controller || controller.isClose()) {
+                    log.error('Serial port not accessible:', { port: port });
+                    return;
+                }
+
+                controller.gcode_unload();
+            });
+
         });
     }
     stop() {

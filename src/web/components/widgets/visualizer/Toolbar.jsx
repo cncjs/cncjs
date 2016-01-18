@@ -88,11 +88,12 @@ class Toolbar extends React.Component {
         console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
 
         if (workflowState === WORKFLOW_STATE_PAUSED) {
-            serialport.write('~'); // Grbl: Cycle Start
+            socket.emit('gcode:resume', this.props.port);
+            pubsub.publish('gcode:resume');
+        } else {
+            socket.emit('gcode:start', this.props.port);
+            pubsub.publish('gcode:start');
         }
-
-        socket.emit('gcode:run', this.props.port);
-        pubsub.publish('gcode:run');
 
         this.setState({
             workflowState: WORKFLOW_STATE_RUNNING
@@ -102,7 +103,6 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
 
-        serialport.write('!'); // Grbl: Feed Hold
         socket.emit('gcode:pause', this.props.port);
         pubsub.publish('gcode:pause');
 
@@ -114,7 +114,6 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
 
-        serialport.write('\x18'); // Grbl: Reset (ctrl-x)
         socket.emit('gcode:stop', this.props.port);
         pubsub.publish('gcode:stop');
 

@@ -81,8 +81,8 @@ class Grbl extends events.EventEmitter {
 
             log.debug('Connected to serial port \'%s\'', port);
 
-            // Reset Grbl after opening serial port
-            this.resetGrbl();
+            // Reset Grbl while opening serial port
+            this.reset();
 
             callback();
         });
@@ -98,8 +98,8 @@ class Grbl extends events.EventEmitter {
             return;
         }
 
-        // Reset Grbl before closing serial port
-        this.resetGrbl();
+        // Reset Grbl while closing serial port
+        this.reset();
 
         this.serialport.close((err) => {
             this.destroy();
@@ -117,21 +117,27 @@ class Grbl extends events.EventEmitter {
 
         this.emit('raw', data);
     }
-    resetGrbl() {
-        this.sendRealtimeCommand('\x18');
+    reset() {
+        this.realtimeCommand('\x18');
     }
-    getCurrentStatus() {
-        this.sendRealtimeCommand('?');
+    resume() {
+        this.realtimeCommand('~');
     }
-    sendCommand(cmd) {
+    pause() {
+        this.realtimeCommand('!');
+    }
+    currentStatus() {
+        this.realtimeCommand('?');
+    }
+    command(cmd) {
         this.serialport.write(cmd + '\n');
     }
-    sendRealtimeCommand(cmd) {
+    realtimeCommand(cmd) {
         this.serialport.write(cmd);
     }
     startQueryTimer() {
         this.queryTimer = setTimeout(() => {
-            this.getCurrentStatus();
+            this.currentStatus();
             if (this.serialport && this.serialport.isOpen()) {
                 this.startQueryTimer();
             }
@@ -149,7 +155,8 @@ class GrblController {
         baudrate: 9600
     };
     serialport = null;
-    queue = new CommandQueue();
+    grbl = null;
+    queue = null;
     gcode = '';
     sockets = [];
 
@@ -161,20 +168,31 @@ class GrblController {
         }, false);
 
         this.grbl = new Grbl(this.serialport);
-
         this.grbl.on('raw', (data) => {
         });
-
         this.grbl.on('status', (status) => {
         });
-
         this.grbl.on('statuschange', (status) => {
         });
-
         this.grbl.on('parserstate', (parsestate) => {
         });
-
         this.grbl.on('parserstatechange', (parsestate) => {
+        });
+
+        this.queue = new CommandQueue();
+        this.queue.on('data', (code) => {
+            if (this.isClose()) {
+                log.error('Serial port not accessible:', { port: this.options.port });
+                return;
+            }
+
+            let executed = this.queue.getExecutedCount();
+            let total = this.queue.size();
+
+            log.trace('[' + executed + '/' + total + '] ' + code);
+
+            code = ('' + code).trim();
+            this.serialport.write(code + '\n');
         });
     }
     open(callback) {
@@ -189,7 +207,7 @@ class GrblController {
     isClose() {
         return !(this.isOpen());
     }
-    loadGCode(gcode, callback) {
+    gcode_load(gcode, callback) {
         parseText(gcode, (err, data) => {
             if (err) {
                 callback && callback(err);
@@ -209,19 +227,46 @@ class GrblController {
             log.debug('Added %d lines to the queue', lines.length);
         });
     }
+    gcode_unload() {
+        // Unload G-code
+        this.gcode = '';
+
+        // Clear queue
+        this.queue.stop();
+        this.queue.clear();
+    }
+    gcode_start() {
+        this.queue.play();
+    }
+    gcode_resume() {
+        this.grbl.resume(); // ~ Cycle Start
+        this.queue.play();
+    }
+    gcode_pause() {
+        this.grbl.pause(); // ! Feed Hold
+        this.queue.pause();
+    }
+    gcode_stop() {
+        this.grbl.reset(); // \x18 Ctrl-x
+        this.queue.stop();
+    }
     connect(socket) {
         this.sockets.push(socket);
     }
     disconnect(socket) {
         this.sockets.splice(this.sockets.indexOf(socket), 1);
     }
-    sendMessage(socket, message = {}) {
-        socket.emit('message', message);
+    command(cmd) {
+        this.grbl.command(cmd);
     }
-    sendBroadcastMessage(message = {}) {
-        _.each(this.sockets, (socket) => {
-            this.sendMessage(socket, message);
-        });
+    reset() {
+        this.grbl.reset();
+    }
+    resume() {
+        this.grbl.resume();
+    }
+    pause() {
+        this.grbl.pause();
     }
 }
 
