@@ -28,7 +28,7 @@ class GCode extends React.Component {
     };
     socketEventListener = {
         'gcode:queue-status': ::this.socketOnGCodeQueueStatus,
-        'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
+        'grbl:parserstate': ::this.socketOnGrblParserState
     };
 
     componentDidMount() {
@@ -131,16 +131,16 @@ class GCode extends React.Component {
             }
         });
     }
-    socketOnGrblGCodeModes(modes) {
+    socketOnGrblParserState(parserState) {
         let unit = this.state.unit;
 
         // Imperial
-        if (_.includes(modes, 'G20')) {
+        if (parserState.modal.units === 'G20') {
             unit = IMPERIAL_UNIT;
         }
 
         // Metric
-        if (_.includes(modes, 'G21')) {
+        if (parserState.modal.units === 'G21') {
             unit = METRIC_UNIT;
         }
 

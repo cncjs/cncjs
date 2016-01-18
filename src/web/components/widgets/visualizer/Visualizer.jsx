@@ -38,7 +38,6 @@ import {
     CAMERA_POSITION_Y,
     CAMERA_POSITION_Z
 } from './constants';
-import { GRBL_MODAL_GROUPS } from '../../../constants';
 
 class Visualizer extends React.Component {
     state = {
@@ -60,7 +59,7 @@ class Visualizer extends React.Component {
         }
     };
     socketEventListener = {
-        'grbl:gcode-modes': ::this.socketOnGrblGCodeModes,
+        'grbl:parserstate': ::this.socketOnGrblParserState,
         'grbl:status': ::this.socketOnGrblStatus,
         'gcode:queue-status': ::this.socketOnGCodeQueueStatus
     };
@@ -68,7 +67,7 @@ class Visualizer extends React.Component {
 
     componentWillMount() {
         // Grbl
-        this.modalState = {};
+        this.parserState = {};
         this.gcodePath = null;
         // Three.js
         this.renderer = null;
@@ -192,22 +191,8 @@ class Visualizer extends React.Component {
             socket.off(eventName, callback);
         });
     }
-    socketOnGrblGCodeModes(modes) {
-        let modalState = {};
-
-        _.each(modes, (mode) => {
-            // Gx, Mx
-            if (mode.indexOf('G') === 0 || mode.indexOf('M') === 0) {
-                let r = _.find(GRBL_MODAL_GROUPS, (group) => {
-                    return _.includes(group.modes, mode);
-                });
-                if (r) {
-                    _.set(modalState, r.group, mode);
-                }
-            }
-        });
-
-        this.modalState = modalState;
+    socketOnGrblParserState(parserState) {
+        this.parserState = parserState;
     }
     socketOnGrblStatus(data) {
         let { activeState, workingPos } = data;
@@ -534,7 +519,7 @@ class Visualizer extends React.Component {
 
         let el = ReactDOM.findDOMNode(this.refs.visualizer);
 
-        this.gcodePath = new GCodePath({ modalState: this.modalState });
+        this.gcodePath = new GCodePath({ modalState: this.parserState.modal });
         this.gcodePath.render({
             gcode: gcode,
             width: el.clientWidth,

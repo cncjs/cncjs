@@ -27,7 +27,7 @@ class Probe extends React.Component {
     };
     socketEventListener = {
         'grbl:status': ::this.socketOnGrblStatus,
-        'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
+        'grbl:parserstate': ::this.socketOnGrblParserState
     };
     unitDidChange = false;
 
@@ -108,17 +108,17 @@ class Probe extends React.Component {
             activeState: data.activeState
         });
     }
-    socketOnGrblGCodeModes(modes) {
+    socketOnGrblParserState(parserState) {
         let { unit } = this.state;
         let nextUnit = unit;
 
         // Imperial
-        if (_.includes(modes, 'G20')) {
+        if (parserState.modal.units === 'G20') {
             nextUnit = IMPERIAL_UNIT;
         }
 
         // Metric
-        if (_.includes(modes, 'G21')) {
+        if (parserState.modal.units === 'G21') {
             nextUnit = METRIC_UNIT;
         }
 

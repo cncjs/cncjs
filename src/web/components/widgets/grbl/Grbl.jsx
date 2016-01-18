@@ -7,9 +7,6 @@ import socket from '../../../lib/socket';
 import serialport from '../../../lib/serialport';
 import Toolbar from './Toolbar';
 import {
-    GRBL_MODAL_GROUPS
-} from '../../../constants';
-import {
     ACTIVE_STATE_IDLE
 } from './constants';
 
@@ -82,7 +79,7 @@ class Grbl extends React.Component {
     };
     socketEventListener = {
         'grbl:status': ::this.socketOnGrblStatus,
-        'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
+        'grbl:parserstate': ::this.socketOnGrblParserState
     };
 
     componentDidMount() {
@@ -133,39 +130,8 @@ class Grbl extends React.Component {
             activeState: data.activeState
         });
     }
-    socketOnGrblGCodeModes(words) {
-        let parserState = {};
-
-        _.each(words, (word) => {
-            // Gx, Mx
-            if (word.indexOf('G') === 0 || word.indexOf('M') === 0) {
-                let r = _.find(GRBL_MODAL_GROUPS, (group) => {
-                    return _.includes(group.modes, word);
-                });
-
-                if (r) {
-                    _.set(parserState, 'modal.' + r.group, word);
-                }
-            }
-
-            // T: tool number
-            if (word.indexOf('T') === 0) {
-                _.set(parserState, 'tool', word.substring(1));
-            }
-
-            // F: feed rate
-            if (word.indexOf('F') === 0) {
-                _.set(parserState, 'feedrate', word.substring(1));
-            }
-
-            // S: spindle speed
-            if (word.indexOf('S') === 0) {
-                _.set(parserState, 'spindle', word.substring(1));
-            }
-        });
-
+    socketOnGrblParserState(parserState) {
         this.setState({ parserState: parserState });
-
         log.trace(parserState);
     }
     toggleDisplay() {
