@@ -26,7 +26,7 @@ class Probe extends React.Component {
         retractionDistance: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.retractionDistance'))
     };
     socketEventListener = {
-        'grbl:current-status': ::this.socketOnGrblCurrentStatus,
+        'grbl:status': ::this.socketOnGrblStatus,
         'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
     };
     unitDidChange = false;
@@ -99,7 +99,7 @@ class Probe extends React.Component {
             socket.off(eventName, callback);
         });
     }
-    socketOnGrblCurrentStatus(data) {
+    socketOnGrblStatus(data) {
         if (data.activeState === this.state.activeState) {
             return;
         }

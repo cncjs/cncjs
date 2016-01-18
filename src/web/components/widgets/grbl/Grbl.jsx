@@ -81,7 +81,7 @@ class Grbl extends React.Component {
         showGCode: false
     };
     socketEventListener = {
-        'grbl:current-status': ::this.socketOnGrblCurrentStatus,
+        'grbl:status': ::this.socketOnGrblStatus,
         'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
     };
 
@@ -128,7 +128,7 @@ class Grbl extends React.Component {
             socket.off(eventName, callback);
         });
     }
-    socketOnGrblCurrentStatus(data) {
+    socketOnGrblStatus(data) {
         this.setState({
             activeState: data.activeState
         });

@@ -30,7 +30,7 @@ class Axes extends React.Component {
         }
     };
     socketEventListener = {
-        'grbl:current-status': ::this.socketOnGrblCurrentStatus,
+        'grbl:status': ::this.socketOnGrblStatus,
         'grbl:gcode-modes': ::this.socketOnGrblGCodeModes
     };
 
@@ -76,7 +76,7 @@ class Axes extends React.Component {
             socket.off(eventName, callback);
         });
     }
-    socketOnGrblCurrentStatus(data) {
+    socketOnGrblStatus(data) {
         this.setState({
             activeState: data.activeState,
             machinePos: data.machinePos,

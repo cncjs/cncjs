@@ -61,7 +61,7 @@ class Visualizer extends React.Component {
     };
     socketEventListener = {
         'grbl:gcode-modes': ::this.socketOnGrblGCodeModes,
-        'grbl:current-status': ::this.socketOnGrblCurrentStatus,
+        'grbl:status': ::this.socketOnGrblStatus,
         'gcode:queue-status': ::this.socketOnGCodeQueueStatus
     };
     pubsubTokens = [];
@@ -209,7 +209,7 @@ class Visualizer extends React.Component {
 
         this.modalState = modalState;
     }
-    socketOnGrblCurrentStatus(data) {
+    socketOnGrblStatus(data) {
         let { activeState, workingPos } = data;
 
         if (this.state.activeState !== activeState) {

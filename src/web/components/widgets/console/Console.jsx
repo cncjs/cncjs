@@ -14,6 +14,10 @@ class Console extends React.Component {
         port: '',
         buffers: []
     };
+    socketEvents = {
+        'write': ::this.onSerialPortWrite,
+        'read': ::this.onSerialPortRead
+    };
 
     buffers = [];
 
@@ -47,12 +51,14 @@ class Console extends React.Component {
         this.pubsubTokens = [];
     }
     addSerialPortEvents() {
-        serialport.on('write', ::this.onSerialPortWrite);
-        serialport.on('data', ::this.onSerialPortRead);
+        _.each(this.socketEvents, (eventHandler, eventName) => {
+            serialport.on(eventName, eventHandler);
+        });
     }
     removeSocketEvents() {
-        serialport.off('write', ::this.onSerialPortWrite);
-        serialport.off('data', ::this.onSerialPortRead);
+        _.each(this.socketEvents, (eventHandler, eventName) => {
+            serialport.off(eventName, eventHandler);
+        });
     }
     onSerialPortRead(data) {
         this.append(data);
