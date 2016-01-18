@@ -27,7 +27,7 @@ class GCode extends React.Component {
         }
     };
     socketEventListener = {
-        'gcode:queue-status': ::this.socketOnGCodeQueueStatus,
+        'gcode:queuestatuschange': ::this.socketOnGCodeQueueStatusChange,
         'grbl:parserstate': ::this.socketOnGrblParserState
     };
 
@@ -99,7 +99,7 @@ class GCode extends React.Component {
             socket.off(eventName, callback);
         });
     }
-    socketOnGCodeQueueStatus(data) {
+    socketOnGCodeQueueStatusChange(data) {
         let list = {};
         let from = this.state.queueStatus.executed;
         let to = data.executed;

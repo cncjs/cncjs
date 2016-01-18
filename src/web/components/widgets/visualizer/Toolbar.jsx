@@ -22,7 +22,7 @@ class Toolbar extends React.Component {
         queueFinished: false
     };
     socketEventListener = {
-        'gcode:queue-status': ::this.socketOnGCodeQueueStatus
+        'gcode:queuestatuschange': ::this.socketOnGCodeQueueStatusChange
     };
     pubsubTokens = [];
 
@@ -78,7 +78,7 @@ class Toolbar extends React.Component {
             socket.off(eventName, callback);
         });
     }
-    socketOnGCodeQueueStatus(data) {
+    socketOnGCodeQueueStatusChange(data) {
         if (data.executed >= data.total) {
             this.setState({ queueFinished: true });
         }

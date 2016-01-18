@@ -61,7 +61,7 @@ class Visualizer extends React.Component {
     socketEventListener = {
         'grbl:parserstate': ::this.socketOnGrblParserState,
         'grbl:status': ::this.socketOnGrblStatus,
-        'gcode:queue-status': ::this.socketOnGCodeQueueStatus
+        'gcode:queuestatuschange': ::this.socketOnGCodeQueueStatusChange
     };
     pubsubTokens = [];
 
@@ -205,12 +205,10 @@ class Visualizer extends React.Component {
         // Update the scene
         this.updateScene();
     }
-    socketOnGCodeQueueStatus(data) {
+    socketOnGCodeQueueStatusChange(data) {
         if (!(this.gcodePath)) {
             return;
         }
-
-        log.trace('socketOnGCodeQueueStatus:', data);
 
         let frameIndex = data.executed;
         this.gcodePath.setFrameIndex(frameIndex);

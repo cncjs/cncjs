@@ -3,7 +3,7 @@ import React from 'react';
 import { Navbar, NavbarBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import i18n from '../../lib/i18n';
 import settings from '../../config/settings';
-import GrblQuickAccessToolbar from './GrblQuickAccessToolbar';
+import QuickAccessToolbar from './QuickAccessToolbar';
 
 class Header extends React.Component {
     render() {
@@ -32,7 +32,7 @@ class Header extends React.Component {
                         </NavDropdown>
                     </Nav>
                     <div className="pull-right">
-                        <GrblQuickAccessToolbar />
+                        <QuickAccessToolbar />
                     </div>
                 </Navbar>
             </div>
