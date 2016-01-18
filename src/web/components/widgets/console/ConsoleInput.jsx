@@ -3,7 +3,7 @@ import i18n from '../../../lib/i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import serialport from '../../../lib/serialport';
+import controller from '../../../lib/controller';
 import {
     GRBL_REALTIME_COMMANDS
 } from './constants';
@@ -28,9 +28,9 @@ class ConsoleInput extends React.Component {
         }
 
         if (_.includes(GRBL_REALTIME_COMMANDS, el.value)) {
-            serialport.write(el.value);
+            controller.write(el.value);
         } else {
-            serialport.writeln(el.value);
+            controller.writeln(el.value);
         }
 
         el.value = '';

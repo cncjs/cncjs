@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
-import serialport from '../../../lib/serialport';
+import controller from '../../../lib/controller';
 import {
     ACTIVE_STATE_IDLE,
     METRIC_UNIT
@@ -17,15 +17,15 @@ class ToolbarButton extends React.Component {
 
     toggleDisplayUnit() {
         if (this.props.unit === METRIC_UNIT) {
-            serialport.writeln('G20'); // G20 specifies Imperial unit
+            controller.writeln('G20'); // G20 specifies Imperial unit
         } else {
-            serialport.writeln('G21'); // G21 specifies Metric unit
+            controller.writeln('G21'); // G21 specifies Metric unit
         }
     }
     handleSelect(target, eventKey) {
         let data = eventKey;
         if (data) {
-            serialport.writeln(data);
+            controller.writeln(data);
         }
     }
     render() {

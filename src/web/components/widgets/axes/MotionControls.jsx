@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
-import serialport from '../../../lib/serialport';
+import controller from '../../../lib/controller';
 import {
     ACTIVE_STATE_IDLE
 } from './constants';
@@ -21,7 +21,7 @@ class MotionControls extends React.Component {
         this.send(data);
     }
     send(data) {
-        serialport.writeln(data);
+        controller.writeln(data);
     }
     render() {
         let { port, unit, activeState, machinePos } = this.props;

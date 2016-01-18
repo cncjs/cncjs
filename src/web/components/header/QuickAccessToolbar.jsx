@@ -1,22 +1,22 @@
 import React from 'react';
 import i18n from '../../lib/i18n';
-import serialport from '../../lib/serialport';
+import controller from '../../lib/controller';
 
 class QuickAccessToolbar extends React.Component {
     handleCycleStart() {
-        serialport.command('resume');
+        controller.command('resume');
     }
     handleFeedHold() {
-        serialport.command('pause');
+        controller.command('pause');
     }
     handleReset() {
-        serialport.command('reset');
+        controller.command('reset');
     }
     handleHoming() {
-        serialport.command('homing');
+        controller.command('homing');
     }
     handleUnlock() {
-        serialport.command('unlock');
+        controller.command('unlock');
     }
     render() {
         return (

@@ -2,7 +2,7 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import i18n from '../../../lib/i18n';
-import serialport from '../../../lib/serialport';
+import controller from '../../../lib/controller';
 
 class Spindle extends React.Component {
     state = {
@@ -53,9 +53,9 @@ class Spindle extends React.Component {
                             className="btn btn-default"
                             onClick={() => {
                                 if (spindleSpeed > 0) {
-                                    serialport.writeln(cmd + ' S' + spindleSpeed);
+                                    controller.writeln(cmd + ' S' + spindleSpeed);
                                 } else {
-                                    serialport.writeln(cmd);
+                                    controller.writeln(cmd);
                                 }
                             }}
                             title={i18n._('Start the spindle turning CW/CCW (M3/M4)')}
@@ -66,7 +66,7 @@ class Spindle extends React.Component {
                         <button
                             type="button"
                             className="btn btn-default"
-                            onClick={() => serialport.writeln('M5')}
+                            onClick={() => controller.writeln('M5')}
                             title={i18n._('Stop the spindle from turning (M5)')}
                             disabled={!canClick}
                         >

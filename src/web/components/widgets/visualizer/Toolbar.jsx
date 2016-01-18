@@ -3,7 +3,6 @@ import i18n from '../../../lib/i18n';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import socket from '../../../lib/socket';
-import serialport from '../../../lib/serialport';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,

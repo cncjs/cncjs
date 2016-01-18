@@ -4,7 +4,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ConsoleInput from './ConsoleInput';
 import ConsoleWindow from './ConsoleWindow';
-import serialport from '../../../lib/serialport';
+import controller from '../../../lib/controller';
 import {
     SCROLL_BUFFER_SIZE
 } from './constants';
@@ -14,20 +14,20 @@ class Console extends React.Component {
         port: '',
         buffers: []
     };
-    socketEvents = {
-        'write': ::this.onSerialPortWrite,
-        'read': ::this.onSerialPortRead
+    controllerEvents = {
+        'write': ::this.onControllerWrite,
+        'read': ::this.onControllerRead
     };
 
     buffers = [];
 
     componentDidMount() {
         this.subscribe();
-        this.addSerialPortEvents();
+        this.addControllerEvents();
     }
     componentWillUnmount() {
         this.unsubscribe();
-        this.removeSerialPortEvents();
+        this.removeControllerEvents();
     }
     subscribe() {
         this.pubsubTokens = [];
@@ -50,20 +50,20 @@ class Console extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSerialPortEvents() {
-        _.each(this.socketEvents, (eventHandler, eventName) => {
-            serialport.on(eventName, eventHandler);
+    addControllerEvents() {
+        _.each(this.controllerEvents, (eventHandler, eventName) => {
+            controller.on(eventName, eventHandler);
         });
     }
-    removeSocketEvents() {
-        _.each(this.socketEvents, (eventHandler, eventName) => {
-            serialport.off(eventName, eventHandler);
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (eventHandler, eventName) => {
+            controller.off(eventName, eventHandler);
         });
     }
-    onSerialPortRead(data) {
+    onControllerRead(data) {
         this.append(data);
     }
-    onSerialPortWrite(data) {
+    onControllerWrite(data) {
         let lines = data.split('\n');
         let values = _(lines)
             .compact()

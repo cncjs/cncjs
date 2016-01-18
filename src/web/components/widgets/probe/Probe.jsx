@@ -4,7 +4,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
-import serialport from '../../../lib/serialport';
+import controller from '../../../lib/controller';
 import { in2mm, mm2in } from '../../../lib/units';
 import ToolbarButton from './ToolbarButton';
 import store from '../../../store';
@@ -181,7 +181,7 @@ class Probe extends React.Component {
             return '' + letter + value;
         }).join(' ');
         let msg = (s.length > 0) ? (gcode + ' ' + s) : gcode;
-        serialport.writeln(msg);
+        controller.writeln(msg);
     }
     runZProbe() {
         let { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;

@@ -3,7 +3,6 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import socket from '../../../lib/socket';
-import serialport from '../../../lib/serialport';
 import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
 import ControlPanel from './ControlPanel';

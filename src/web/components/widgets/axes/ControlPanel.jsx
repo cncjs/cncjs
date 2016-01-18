@@ -1,6 +1,5 @@
 import React from 'react';
 import i18n from '../../../lib/i18n';
-import serialport from '../../../lib/serialport';
 import JogPad from './JogPad';
 import JogStepDistance from './JogStepDistance';
 import MotionControls from './MotionControls';

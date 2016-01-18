@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import i18n from '../../../lib/i18n';
-import serialport from '../../../lib/serialport';
+import controller from '../../../lib/controller';
 import { mm2in } from '../../../lib/units'; 
 import store from '../../../store';
 import {
@@ -18,9 +18,9 @@ class JogPad extends React.Component {
     };
 
     jog(params) {
-        serialport.writeln('G91'); // relative distance
+        controller.writeln('G91'); // relative distance
         this.move(params);
-        serialport.writeln('G90'); // absolute distance
+        controller.writeln('G90'); // absolute distance
     }
     move(params) {
         params = params || {};
@@ -28,7 +28,7 @@ class JogPad extends React.Component {
             return '' + letter + value;
         }).join(' ');
 
-        serialport.writeln('G0 ' + s);
+        controller.writeln('G0 ' + s);
     }
     getStepDistance() {
         let { unit } = this.props;
