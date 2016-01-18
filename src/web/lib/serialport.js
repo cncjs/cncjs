@@ -12,7 +12,7 @@ pubsub.subscribe('port', (msg, _port) => {
 });
 
 let on = (msg, callback) => {
-    if (!(_.includes(['data', 'write'], msg))) {
+    if (!(_.includes(['read', 'write'], msg))) {
         return;
     }
 
@@ -20,10 +20,10 @@ let on = (msg, callback) => {
         return;
     }
 
-    if (msg === 'data') {
-        socket.on('serialport:data', callback);
+    if (msg === 'read') {
+        socket.on('serialport:read', callback);
     } else if (msg === 'write') {
-        let token = pubsub.subscribe('serialport:write', (msg, data) => {
+        let token = pubsub.subscribe('write', (msg, data) => {
             callback(data);
         });
         listeners['write'].push({
@@ -34,16 +34,16 @@ let on = (msg, callback) => {
 };
 
 let off = (msg, callback) => {
-    if (!(_.includes(['data', 'write'], msg))) {
+    if (!(_.includes(['read', 'write'], msg))) {
         return;
     }
 
-    if (msg === 'data') {
-        socket.off('serialport:data', callback);
+    if (msg === 'read') {
+        socket.off('serialport:read', callback);
     } else if (msg === 'write') {
         listeners['write'] = _.filter(listeners['write'], (o) => {
             if (o.callback === callback) {
-                pubsub.unsubscribe('serialport:write', o.token);
+                pubsub.unsubscribe('write', o.token);
             }
             return o.callback !== callback;
         });
@@ -55,9 +55,9 @@ let write = (buffer) => {
         return;
     }
 
-    pubsub.publishSync.apply(pubsub, ['serialport:write', buffer]);
+    pubsub.publishSync.apply(pubsub, ['write', buffer]);
 
-    socket.emit.apply(socket, ['serialport:write', port, buffer]);
+    socket.emit.apply(socket, ['write', port, buffer]);
 };
 
 let writeln = (buffer) => {
@@ -67,9 +67,9 @@ let writeln = (buffer) => {
 
     buffer = ('' + buffer).trim() + '\n';
 
-    pubsub.publishSync.apply(pubsub, ['serialport:write', buffer]);
+    pubsub.publishSync.apply(pubsub, ['write', buffer]);
 
-    socket.emit.apply(socket, ['serialport:write', port, buffer]);
+    socket.emit.apply(socket, ['write', port, buffer]);
 };
 
 export default {
