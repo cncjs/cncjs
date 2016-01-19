@@ -3,7 +3,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
-import socket from '../../../lib/socket';
+import controller from '../../../lib/controller';
 import Toolbar from './Toolbar';
 import {
     ACTIVE_STATE_IDLE
@@ -76,18 +76,25 @@ class Grbl extends React.Component {
         parserstate: {},
         showGCode: false
     };
-    socketEventListener = {
-        'grbl:status': ::this.socketOnGrblStatus,
-        'grbl:parserstate': ::this.socketOnGrblParserState
+    controllerEvents = {
+        'grbl:status': (data) => {
+            this.setState({
+                activeState: data.activeState
+            });
+        },
+        'grbl:parserstate': (parserstate) => {
+            this.setState({ parserstate: parserstate });
+            log.trace(parserstate);
+        }
     };
 
     componentDidMount() {
         this.subscribe();
-        this.addSocketEventListener();
+        this.addControllerEvents();
     }
     componentWillUnmount() {
         this.unsubscribe();
-        this.removeSocketEventListener();
+        this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return ! _.isEqual(nextState, this.state);
@@ -114,24 +121,15 @@ class Grbl extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.on(eventName, callback);
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
         });
     }
-    removeSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.off(eventName, callback);
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
         });
-    }
-    socketOnGrblStatus(data) {
-        this.setState({
-            activeState: data.activeState
-        });
-    }
-    socketOnGrblParserState(parserstate) {
-        this.setState({ parserstate: parserstate });
-        log.trace(parserstate);
     }
     toggleDisplay() {
         let { showGCode } = this.state;
