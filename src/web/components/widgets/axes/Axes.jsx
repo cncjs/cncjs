@@ -2,7 +2,7 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import i18n from '../../../lib/i18n';
-import socket from '../../../lib/socket';
+import controller from '../../../lib/controller';
 import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
 import ControlPanel from './ControlPanel';
@@ -28,18 +28,40 @@ class Axes extends React.Component {
             z: '0.000'
         }
     };
-    socketEventListener = {
-        'grbl:status': ::this.socketOnGrblStatus,
-        'grbl:parserstate': ::this.socketOnGrblParserState
+    controllerEvents = {
+        'grbl:status': (data) => {
+            this.setState({
+                activeState: data.activeState,
+                machinePos: data.machinePos,
+                workingPos: data.workingPos
+            });
+        },
+        'grbl:parserstate': (parserstate) => {
+            let unit = this.state.unit;
+
+            // Imperial
+            if (parserstate.modal.units === 'G20') {
+                unit = IMPERIAL_UNIT;
+            }
+
+            // Metric
+            if (parserstate.modal.units === 'G21') {
+                unit = METRIC_UNIT;
+            }
+
+            if (this.state.unit !== unit) {
+                this.setState({ unit: unit });
+            }
+        }
     };
 
     componentDidMount() {
         this.subscribe();
-        this.addSocketEventListener();
+        this.addControllerEvents();
     }
     componentWillUnmount() {
         this.unsubscribe();
-        this.removeSocketEventListener();
+        this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return ! _.isEqual(nextState, this.state);
@@ -65,39 +87,15 @@ class Axes extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.on(eventName, callback);
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
         });
     }
-    removeSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.off(eventName, callback);
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
         });
-    }
-    socketOnGrblStatus(data) {
-        this.setState({
-            activeState: data.activeState,
-            machinePos: data.machinePos,
-            workingPos: data.workingPos
-        });
-    }
-    socketOnGrblParserState(parserstate) {
-        let unit = this.state.unit;
-
-        // Imperial
-        if (parserstate.modal.units === 'G20') {
-            unit = IMPERIAL_UNIT;
-        }
-
-        // Metric
-        if (parserstate.modal.units === 'G21') {
-            unit = METRIC_UNIT;
-        }
-
-        if (this.state.unit !== unit) {
-            this.setState({ unit: unit });
-        }
     }
     resetCurrentStatus() {
         this.setState({
