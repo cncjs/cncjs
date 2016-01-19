@@ -16,7 +16,7 @@ import EngravingCutter from './EngravingCutter';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
-import GCodePath from './GCodePath';
+import GCodeVisualizer from './GCodeVisualizer';
 import {
     COORDINATE_PLANE_XY,
     COORDINATE_PLANE_XZ,
@@ -74,12 +74,12 @@ class Visualizer extends React.Component {
             this.updateScene();
         },
         'gcode:queuestatuschange': (data) => {
-            if (!(this.gcodePath)) {
+            if (!(this.gcodeVisualizer)) {
                 return;
             }
 
             let frameIndex = data.executed;
-            this.gcodePath.setFrameIndex(frameIndex);
+            this.gcodeVisualizer.setFrameIndex(frameIndex);
         }
     };
     pubsubTokens = [];
@@ -87,7 +87,7 @@ class Visualizer extends React.Component {
     componentWillMount() {
         // Grbl
         this.parserstate = {};
-        this.gcodePath = null;
+        this.gcodeVisualizer = null;
         // Three.js
         this.renderer = null;
         this.scene = null;
@@ -514,16 +514,18 @@ class Visualizer extends React.Component {
 
         let el = ReactDOM.findDOMNode(this.refs.visualizer);
 
-        this.gcodePath = new GCodePath({ modalState: this.parserstate.modal });
-        this.gcodePath.render({
+        this.gcodeVisualizer = new GCodeVisualizer({
+            modalState: this.parserstate.modal
+        });
+        this.gcodeVisualizer.render({
             gcode: gcode,
             width: el.clientWidth,
             height: el.clientHeight
-        }, (pathObject) => {
-            pathObject.name = 'GCodePath';
-            this.group.add(pathObject);
+        }, (gcodeVisualizerObject) => {
+            gcodeVisualizerObject.name = 'GCodeVisualizer';
+            this.group.add(gcodeVisualizerObject);
 
-            let bbox = getBoundingBox(pathObject);
+            let bbox = getBoundingBox(gcodeVisualizerObject);
             let dX = bbox.max.x - bbox.min.x;
             let dY = bbox.max.y - bbox.min.y;
             let dZ = bbox.max.z - bbox.min.z;
@@ -551,9 +553,9 @@ class Visualizer extends React.Component {
         });
     }
     unloadGCode() {
-        let pathObject = this.group.getObjectByName('GCodePath');
-        if (pathObject) {
-            this.group.remove(pathObject);
+        let gcodeVisualizerObject = this.group.getObjectByName('GCodeVisualizer');
+        if (gcodeVisualizerObject) {
+            this.group.remove(gcodeVisualizerObject);
         }
 
         // Sets the pivot point to the origin point (0, 0, 0)

@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import colornames from 'colornames';
 import THREE from 'three';
-import GCodeRunner from '../../../lib/GCodeRunner';
+import GCodeToolpath from '../../../lib/gcode-toolpath';
 import log from '../../../lib/log';
 
 const noop = () => {};
@@ -14,11 +14,9 @@ const motionColor = {
     'G3': new THREE.Color(colornames('violet'))
 };
 
-class GCodePath {
+class GCodeVisualizer {
     constructor(options) {
         options = options || {};
-
-        log.debug('GCodePath:', options);
 
         this.options = options;
 
@@ -35,7 +33,7 @@ class GCodePath {
         this.frames = []; // Example
         this.frameIndex = 0;
     }
-    drawLine(modalState, v1, v2) {
+    addLine(modalState, v1, v2) {
         const { motion } = modalState;
         this.geometry.vertices.push(new THREE.Vector3(v1.x, v1.y, v1.z));
         this.geometry.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
@@ -49,7 +47,7 @@ class GCodePath {
     //   v1 The start point
     //   v2 The end point
     //   v0 The fixed point
-    drawArcCurve(modalState, v1, v2, v0) {
+    addArcCurve(modalState, v1, v2, v0) {
         const { motion, plane } = modalState;
         let isClockwise = (motion === 'G2');
         let radius = Math.sqrt(
@@ -57,13 +55,18 @@ class GCodePath {
         );
         let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
         let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
+
+        if (plane === 'G18') { // View xz-plane in the opposite direction
+            isClockwise = !isClockwise;
+        }
+
         let arcCurve = new THREE.ArcCurve(
             v0.x, // aX
             v0.y, // aY
             radius, // aRadius
             startAngle, // aStartAngle
             endAngle, // aEndAngle
-            !!isClockwise // isClockwise
+            isClockwise // isClockwise
         );
         let divisions = 30;
         let points = arcCurve.getPoints(divisions);
@@ -92,23 +95,24 @@ class GCodePath {
         options = options || {};
         callback = _.isFunction(callback) ? callback : noop;
 
-        let runner = new GCodeRunner({
+        let gcodeToolpath = new GCodeToolpath({
             modalState: this.options.modalState,
-            drawLine: (modalState, v1, v2) => {
-                this.drawLine(modalState, v1, v2);
+            addLine: (modalState, v1, v2) => {
+                this.addLine(modalState, v1, v2);
             },
-            drawArcCurve: (modalState, v1, v2, v0) => {
-                this.drawArcCurve(modalState, v1, v2, v0);
+            addArcCurve: (modalState, v1, v2, v0) => {
+                this.addArcCurve(modalState, v1, v2, v0);
             }
         });
-        runner.on('data', (data) => {
+
+        gcodeToolpath.on('data', (data) => {
             this.frames.push({
                 data: data,
                 vertexIndex: this.geometry.vertices.length // remember current vertex index
             });
         });
 
-        runner.interpretText(options.gcode, (err, results) => {
+        gcodeToolpath.interpretText(options.gcode, (err, results) => {
             this.update();
 
             log.debug({
@@ -161,4 +165,4 @@ class GCodePath {
     }
 }
 
-export default GCodePath;
+export default GCodeVisualizer;
