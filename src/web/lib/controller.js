@@ -5,8 +5,14 @@ import socket from './socket';
 class CNCController {
     port = '';
     callbacks = {
+        'serialport:list': [],
+        'serialport:open': [],
+        'serialport:close': [],
+        'serialport:error': [],
         'serialport:read': [],
-        'serialport:write': []
+        'serialport:write': [],
+        'grbl:status': [],
+        'grbl:parserstate': []
     };
 
     constructor() {
@@ -14,16 +20,13 @@ class CNCController {
             this.port = port || this.port;
         });
 
-        socket.on('serialport:read', (data) => {
-            this.callbacks['serialport:read'].forEach((callback) => {
-                callback(data);
-            });
-        });
-
-        socket.on('serialport:write', (data) => {
-            this.callbacks['serialport:write'].forEach((callback) => {
-                callback(data);
-            });
+        Object.keys(this.callbacks).forEach((eventName) => {
+            socket.on(eventName, function() {
+                let args = Array.prototype.slice.call(arguments);
+                this.callbacks[eventName].forEach((callback) => {
+                    callback.apply(callback, args);
+                });
+            }.bind(this));
         });
     }
     on(eventName, callback) {
@@ -37,6 +40,15 @@ class CNCController {
         if (_.isArray(callbacks) && _.isFunction(callback)) {
             callbacks.splice(callbacks.indexOf(callback), 1);
         }
+    }
+    openPort(port, baudrate) {
+        socket.emit('open', port, baudrate);
+    }
+    closePort(port) {
+        socket.emit('close', port);
+    }
+    listAllPorts() {
+        socket.emit('list');
     }
     command(cmd) {
         let { port } = this;
