@@ -15,8 +15,17 @@ class Console extends React.Component {
         buffers: []
     };
     controllerEvents = {
-        'write': ::this.onControllerWrite,
-        'read': ::this.onControllerRead
+        'serialport:write': (data) => {
+            let lines = data.split('\n');
+            let values = _(lines)
+                .compact()
+                .map((line) => ('> ' + line))
+                .value();
+            this.append(values);
+        },
+        'serialport:read': (data) => {
+            this.append(data);
+        }
     };
 
     buffers = [];
@@ -59,18 +68,6 @@ class Console extends React.Component {
         _.each(this.controllerEvents, (eventHandler, eventName) => {
             controller.off(eventName, eventHandler);
         });
-    }
-    onControllerRead(data) {
-        this.append(data);
-    }
-    onControllerWrite(data) {
-        let lines = data.split('\n');
-        let values = _(lines)
-            .compact()
-            .map((line) => ('> ' + line))
-            .value();
-
-        this.append(values);
     }
     append(buffer) {
         this.buffers = _(this.buffers)

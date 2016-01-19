@@ -5,8 +5,8 @@ import socket from './socket';
 class CNCController {
     port = '';
     callbacks = {
-        'read': [],
-        'write': []
+        'serialport:read': [],
+        'serialport:write': []
     };
 
     constructor() {
@@ -14,14 +14,14 @@ class CNCController {
             this.port = port || this.port;
         });
 
-        pubsub.subscribe('write', (msg, data) => {
-            this.callbacks['write'].forEach((callback) => {
+        socket.on('serialport:read', (data) => {
+            this.callbacks['serialport:read'].forEach((callback) => {
                 callback(data);
             });
         });
 
-        socket.on('serialport:read', (data) => {
-            this.callbacks['read'].forEach((callback) => {
+        socket.on('serialport:write', (data) => {
+            this.callbacks['serialport:write'].forEach((callback) => {
                 callback(data);
             });
         });
@@ -43,7 +43,6 @@ class CNCController {
         if (!port) {
             return;
         }
-        pubsub.publishSync('command', cmd);
         socket.emit('command', port, cmd);
     }
     write(data) {
@@ -51,7 +50,6 @@ class CNCController {
         if (!port) {
             return;
         }
-        pubsub.publishSync('write', data);
         socket.emit('write', port, data);
     }
     writeln(data) {
