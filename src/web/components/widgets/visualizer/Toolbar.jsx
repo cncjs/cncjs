@@ -18,12 +18,12 @@ class Toolbar extends React.Component {
     };
     state = {
         workflowState: WORKFLOW_STATE_IDLE,
-        queueFinished: false
+        gcodeFinished: false
     };
     controllerEvents = {
-        'gcode:queuestatuschange': (data) => {
+        'gcode:statuschange': (data) => {
             if (data.executed >= data.total) {
-                this.setState({ queueFinished: true });
+                this.setState({ gcodeFinished: true });
             }
         }
     };
@@ -48,12 +48,12 @@ class Toolbar extends React.Component {
             return;
         }
 
-        if ((this.state.queueFinished) && (activeState === ACTIVE_STATE_IDLE)) {
+        if ((this.state.gcodeFinished) && (activeState === ACTIVE_STATE_IDLE)) {
             controller.gcode.stop();
             pubsub.publish('gcode:stop');
             this.setState({
                 workflowState: WORKFLOW_STATE_IDLE,
-                queueFinished: false
+                gcodeFinished: false
             });
         }
     }

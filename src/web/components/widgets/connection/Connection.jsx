@@ -187,8 +187,10 @@ class Connection extends React.Component {
                     return;
                 }
 
-                let gcode = _.get(portData, 'gcode');
-                let isRunning = _.get(portData, 'queue.isRunning');
+                log.debug(portData);
+
+                let isRunning = _.get(portData, 'state.isRunning');
+                let gcode = _.get(portData, 'gcode.gcode');
 
                 if (gcode) {
                     pubsub.publish('gcode:load', gcode);

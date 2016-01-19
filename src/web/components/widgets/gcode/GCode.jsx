@@ -20,16 +20,16 @@ class GCode extends React.Component {
         commands: [], // a list of gcode commands
         alertMessage: '',
 
-        // Queue Status
-        queueStatus: {
+        // G-code Status
+        gcodeStatus: {
             executed: 0,
             total: 0
         }
     };
     controllerEvents = {
-        'gcode:queuestatuschange': (data) => {
+        'gcode:statuschange': (data) => {
             let list = {};
-            let from = this.state.queueStatus.executed;
+            let from = this.state.gcodeStatus.executed;
             let to = data.executed;
 
             // Reset obsolete queue items
@@ -53,7 +53,7 @@ class GCode extends React.Component {
             let updatedCommands = update(this.state.commands, list);
             this.setState({
                 commands: updatedCommands,
-                queueStatus: {
+                gcodeStatus: {
                     executed: Number(data.executed),
                     total: Number(data.total)
                 }
@@ -147,7 +147,7 @@ class GCode extends React.Component {
         });
     }
     render() {
-        let { port, unit, queueStatus } = this.state;
+        let { port, unit, gcodeStatus } = this.state;
         let tableWidth = this.props.width - 2 /* border */ - 20 /* padding */;
         let tableHeight = 180;
         let rowHeight = 30;
@@ -155,16 +155,16 @@ class GCode extends React.Component {
         let isLoaded = (_.size(this.state.commands) > 0);
         let notLoaded = !isLoaded;
         let scrollToRow = Math.min(
-            queueStatus.executed + (Math.floor(visibleRows / 2) - 1),
-            queueStatus.total
+            gcodeStatus.executed + (Math.floor(visibleRows / 2) - 1),
+            gcodeStatus.total
         );
 
         return (
             <div>
                 <GCodeStats
                     unit={unit}
-                    executed={queueStatus.executed}
-                    total={queueStatus.total}
+                    executed={gcodeStatus.executed}
+                    total={gcodeStatus.total}
                 />
 
                 {isLoaded &&

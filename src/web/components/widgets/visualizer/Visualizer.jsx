@@ -73,7 +73,7 @@ class Visualizer extends React.Component {
             // Update the scene
             this.updateScene();
         },
-        'gcode:queuestatuschange': (data) => {
+        'gcode:statuschange': (data) => {
             if (!(this.gcodeVisualizer)) {
                 return;
             }
