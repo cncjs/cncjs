@@ -6,7 +6,7 @@ import ReactDOM from 'react-dom';
 import THREE from 'three';
 import OrbitControls from '../../../lib/three/OrbitControls';
 import log from '../../../lib/log';
-import socket from '../../../lib/socket';
+import controller from '../../../lib/controller';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import FileUploader from './FileUploader';
@@ -58,10 +58,29 @@ class Visualizer extends React.Component {
             }
         }
     };
-    socketEventListener = {
-        'grbl:parserstate': ::this.socketOnGrblParserState,
-        'grbl:status': ::this.socketOnGrblStatus,
-        'gcode:queuestatuschange': ::this.socketOnGCodeQueueStatusChange
+    controllerEvents = {
+        'grbl:parserstate': (parserstate) => {
+            this.parserstate = parserstate;
+        },
+        'grbl:status': (data) => {
+            let { activeState, workingPos } = data;
+
+            if (this.state.activeState !== activeState) {
+                this.setState({ activeState: activeState });
+            }
+            this.setEngravingCutterPosition(workingPos.x, workingPos.y, workingPos.z);
+
+            // Update the scene
+            this.updateScene();
+        },
+        'gcode:queuestatuschange': (data) => {
+            if (!(this.gcodePath)) {
+                return;
+            }
+
+            let frameIndex = data.executed;
+            this.gcodePath.setFrameIndex(frameIndex);
+        }
     };
     pubsubTokens = [];
 
@@ -78,7 +97,7 @@ class Visualizer extends React.Component {
     }
     componentDidMount() {
         this.subscribe();
-        this.addSocketEventListener();
+        this.addControllerEvents();
         this.addResizeEventListener();
 
         let el = ReactDOM.findDOMNode(this.refs.visualizer);
@@ -102,7 +121,7 @@ class Visualizer extends React.Component {
     }
     componentWillUnmount() {
         this.removeResizeEventListener();
-        this.removeSocketEventListener();
+        this.removeControllerEvents();
         this.unsubscribe();
         this.clearScene();
     }
@@ -181,37 +200,15 @@ class Visualizer extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.on(eventName, callback);
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
         });
     }
-    removeSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.off(eventName, callback);
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
         });
-    }
-    socketOnGrblParserState(parserstate) {
-        this.parserstate = parserstate;
-    }
-    socketOnGrblStatus(data) {
-        let { activeState, workingPos } = data;
-
-        if (this.state.activeState !== activeState) {
-            this.setState({ activeState: activeState });
-        }
-        this.setEngravingCutterPosition(workingPos.x, workingPos.y, workingPos.z);
-
-        // Update the scene
-        this.updateScene();
-    }
-    socketOnGCodeQueueStatusChange(data) {
-        if (!(this.gcodePath)) {
-            return;
-        }
-
-        let frameIndex = data.executed;
-        this.gcodePath.setFrameIndex(frameIndex);
     }
     startWaiting() {
         // Adds the 'wait' class to <html>
