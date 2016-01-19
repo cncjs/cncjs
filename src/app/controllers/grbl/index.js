@@ -506,23 +506,18 @@ class GrblController {
 
         const handler = {
             'resume': () => {
-                socket && socket.emit('serialport:read', '> ~');
                 this.write('~', params);
             },
             'pause': () => {
-                socket && socket.emit('serialport:read', '> !');
                 this.write('!', params);
             },
             'reset': () => {
-                socket && socket.emit('serialport:read', '> (ctrl-x)');
                 this.write('\x18', params);
             },
             'homing': () => {
-                socket && socket.emit('serialport:read', '> $H');
                 this.write('$H\n', params);
             },
             'unlock': () => {
-                socket && socket.emit('serialport:read', '> $X');
                 this.write('$X\n', params);
             }
         }[cmd];
@@ -535,11 +530,12 @@ class GrblController {
         handler();
     }
     write(data, params = {}) {
-        if (params.socket) {
-            let index = _.findIndex(this.connections, { socket: params.socket });
-            if (index >= 0) {
-                this.connections[index].sentCommand = data;
-            }
+        let { socket } = params;
+
+        socket && socket.emit('serialport:write', data);
+        let index = _.findIndex(this.connections, { socket: socket });
+        if (index >= 0) {
+            this.connections[index].sentCommand = data;
         }
         this.serialport.write(data);
     }
