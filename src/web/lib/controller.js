@@ -22,7 +22,7 @@ class CNCController {
         'serialport:write': [],
         'grbl:status': [],
         'grbl:parserstate': [],
-        'gcode:queuestatuschange': []
+        'gcode:statuschange': []
     };
 
     constructor() {
