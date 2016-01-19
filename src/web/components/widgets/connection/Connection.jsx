@@ -6,7 +6,7 @@ import Select from 'react-select';
 import Alert from './Alert';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
-import socket from '../../../lib/socket';
+import controller from '../../../lib/controller';
 import store from '../../../store';
 import {
     WORKFLOW_STATE_RUNNING
@@ -31,113 +31,109 @@ class Connection extends React.Component {
         hasReconnected: false,
         alertMessage: ''
     };
-    socketEventListener = {
-        'serialport:list': ::this.socketOnSerialPortList,
-        'serialport:open': ::this.socketOnSerialPortOpen,
-        'serialport:close': ::this.socketOnSerialPortClose,
-        'serialport:error': ::this.socketOnSerialPortError
+    controllerEvents = {
+        'serialport:list': (ports) => {
+            log.debug('Received a list of serial ports:', ports);
+
+            this.stopLoading();
+
+            this.clearAlert();
+
+            let port = store.getState('widgets.connection.port') || '';
+
+            if (_.includes(_.map(ports, 'port'), port)) {
+                this.setState({
+                    port: port,
+                    ports: ports
+                });
+
+                let { autoReconnect, hasReconnected } = this.state;
+
+                if (autoReconnect && !hasReconnected) {
+                    this.setState({ hasReconnected: true });
+                    this.openPort(port);
+                }
+            } else {
+                this.setState({ ports: ports });
+            }
+        },
+        'serialport:open': (options) => {
+            let { port, baudrate, inuse } = options;
+            let ports = _.map(this.state.ports, function(o) {
+                if (o.port !== port) {
+                    return o;
+                }
+
+                return _.extend(o, { inuse: inuse });
+            });
+
+            this.clearAlert();
+
+            pubsub.publish('port', port);
+
+            // save the port
+            store.setState('widgets.connection.port', port);
+
+            this.setState({
+                connecting: false,
+                connected: true,
+                port: port,
+                baudrate: baudrate,
+                ports: ports
+            });
+
+            log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
+        },
+        'serialport:close': (options) => {
+            let { port, inuse } = options;
+
+            this.clearAlert();
+
+            // Close port
+            pubsub.publish('port', '');
+
+            this.setState({
+                connecting: false,
+                connected: false
+            });
+
+            log.debug('Disconnected from \'' + port + '\'.');
+        },
+        'serialport:error': (options) => {
+            let { port } = options;
+
+            this.showAlert('Error opening serial port \'' + port + '\'');
+
+            // Close port
+            pubsub.publish('port', '');
+
+            this.setState({
+                connecting: false,
+                connected: false
+            });
+
+            log.error('Error opening serial port \'' + port + '\'');
+        }
     };
 
     componentWillMount() {
         this.handleRefresh();
     }
     componentDidMount() {
-        this.addSocketEventListener();
+        this.addControllerEvents();
     }
     componentWillUnmount() {
-        this.removeSocketEventListener();
+        this.removeControllerEvents();
     }
-    addSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.on(eventName, callback);
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
         });
     }
-    removeSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.off(eventName, callback);
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
         });
-    }
-    socketOnSerialPortList(ports) {
-        log.debug('serialport:list', ports);
-
-        this.stopLoading();
-
-        this.clearAlert();
-
-        let port = store.getState('widgets.connection.port') || '';
-
-        if (_.includes(_.map(ports, 'port'), port)) {
-            this.setState({
-                port: port,
-                ports: ports
-            });
-
-            let { autoReconnect, hasReconnected } = this.state;
-
-            if (autoReconnect && !hasReconnected) {
-                this.setState({ hasReconnected: true });
-                this.openPort(port);
-            }
-        } else {
-            this.setState({ ports: ports });
-        }
-    }
-    socketOnSerialPortOpen(options) {
-        let { port, baudrate, inuse } = options;
-        let ports = _.map(this.state.ports, function(o) {
-            if (o.port !== port) {
-                return o;
-            }
-
-            return _.extend(o, { inuse: inuse });
-        });
-
-        this.clearAlert();
-
-        pubsub.publish('port', port);
-
-        // save the port
-        store.setState('widgets.connection.port', port);
-
-        this.setState({
-            connecting: false,
-            connected: true,
-            port: port,
-            baudrate: baudrate,
-            ports: ports
-        });
-
-        log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
-    }
-    socketOnSerialPortClose(options) {
-        let { port, inuse } = options;
-
-        this.clearAlert();
-
-        // Close port
-        pubsub.publish('port', '');
-
-        this.setState({
-            connecting: false,
-            connected: false
-        });
-
-        log.debug('Disconnected from \'' + port + '\'.');
-    }
-    socketOnSerialPortError(options) {
-        let { port } = options;
-
-        this.showAlert('Error opening serial port \'' + port + '\'');
-
-        // Close port
-        pubsub.publish('port', '');
-
-        this.setState({
-            connecting: false,
-            connected: false
-        });
-
-        log.error('Error opening serial port \'' + port + '\'');
     }
     showAlert(msg) {
         this.setState({ alertMessage: msg });
@@ -170,14 +166,14 @@ class Connection extends React.Component {
         return !!(o.inuse);
     }
     handleRefresh() {
-        socket.emit('list');
+        controller.listAllPorts();
         this.startLoading();
     }
     openPort(port = this.state.port, baudrate = this.state.baudrate) {
         this.setState({
             connecting: true
         });
-        socket.emit('open', port, baudrate);
+        controller.openPort(port, baudrate);
 
         request
             .get('/api/controllers')
@@ -212,10 +208,10 @@ class Connection extends React.Component {
             connecting: false,
             connected: false
         });
-        socket.emit('close', port);
+        controller.closePort(port);
 
         // Refresh ports
-        socket.emit('list');
+        controller.listAllPorts();
     }
     changePort(value) {
         this.setState({
