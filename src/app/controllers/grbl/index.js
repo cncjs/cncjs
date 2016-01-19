@@ -276,6 +276,10 @@ class GrblController {
         this.grbl.on('ok', handleOkError);
         this.grbl.on('error', handleOkError);
 
+        this.grbl.on('error', (res) => {
+            log.warn('Grbl:', res.raw); // Grbl errors
+        });
+
         this.grbl.on('others', (res) => {
             this.connections.forEach((c) => {
                 c.socket.emit('serialport:read', res.raw);
