@@ -18,9 +18,9 @@
   },
   "preferGlobal": true,
   "scripts": {
+    "prepublish": "npm run build && npm test",
     "build": "gulp",
-    "prepublish": "npm test",
-    "test": "npm run build && ./babel-tap --coverage test/*.js",
+    "test": "./babel-tap --coverage test/*.js",
     "coveralls": "./babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
   "keywords": [
