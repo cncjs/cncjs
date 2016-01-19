@@ -5,7 +5,6 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import update from 'react-addons-update';
 import i18n from '../../../lib/i18n';
-import socket from '../../../lib/socket';
 import {
     METRIC_UNIT,
     IMPERIAL_UNIT

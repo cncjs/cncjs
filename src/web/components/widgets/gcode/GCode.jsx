@@ -5,8 +5,8 @@ import update from 'react-addons-update';
 import { parseText } from 'gcode-parser';
 import GCodeStats from './GCodeStats';
 import GCodeTable from './GCodeTable';
+import controller from '../../../lib/controller';
 import log from '../../../lib/log';
-import socket from '../../../lib/socket';
 import {
     IMPERIAL_UNIT,
     METRIC_UNIT,
@@ -26,17 +26,64 @@ class GCode extends React.Component {
             total: 0
         }
     };
-    socketEventListener = {
-        'gcode:queuestatuschange': ::this.socketOnGCodeQueueStatusChange,
-        'grbl:parserstate': ::this.socketOnGrblParserState
+    controllerEvents = {
+        'gcode:queuestatuschange': (data) => {
+            let list = {};
+            let from = this.state.queueStatus.executed;
+            let to = data.executed;
+
+            // Reset obsolete queue items
+            for (let i = to; i < from; ++i) {
+                list[i] = {
+                    status: {
+                        $set: GCODE_STATUS.NOT_STARTED
+                    }
+                };
+            }
+
+            // Update completed queue items
+            for (let i = from; i < to; ++i) {
+                list[i] = {
+                    status: {
+                        $set: GCODE_STATUS.COMPLETED
+                    }
+                };
+            }
+
+            let updatedCommands = update(this.state.commands, list);
+            this.setState({
+                commands: updatedCommands,
+                queueStatus: {
+                    executed: Number(data.executed),
+                    total: Number(data.total)
+                }
+            });
+        },
+        'grbl:parserstate': (parserstate) => {
+            let unit = this.state.unit;
+
+            // Imperial
+            if (parserstate.modal.units === 'G20') {
+                unit = IMPERIAL_UNIT;
+            }
+
+            // Metric
+            if (parserstate.modal.units === 'G21') {
+                unit = METRIC_UNIT;
+            }
+
+            if (this.state.unit !== unit) {
+                this.setState({ unit: unit });
+            }
+        }
     };
 
     componentDidMount() {
         this.subscribe();
-        this.addSocketEventListener();
+        this.addControllerEvents();
     }
     componentWillUnmount() {
-        this.removeSocketEventListener();
+        this.removeControllerEvents();
         this.unsubscribe();
     }
     subscribe() {
@@ -89,64 +136,15 @@ class GCode extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.on(eventName, callback);
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
         });
     }
-    removeSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.off(eventName, callback);
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
         });
-    }
-    socketOnGCodeQueueStatusChange(data) {
-        let list = {};
-        let from = this.state.queueStatus.executed;
-        let to = data.executed;
-
-        // Reset obsolete queue items
-        for (let i = to; i < from; ++i) {
-            list[i] = {
-                status: {
-                    $set: GCODE_STATUS.NOT_STARTED
-                }
-            };
-        }
-
-        // Update completed queue items
-        for (let i = from; i < to; ++i) {
-            list[i] = {
-                status: {
-                    $set: GCODE_STATUS.COMPLETED
-                }
-            };
-        }
-
-        let updatedCommands = update(this.state.commands, list);
-        this.setState({
-            commands: updatedCommands,
-            queueStatus: {
-                executed: Number(data.executed),
-                total: Number(data.total)
-            }
-        });
-    }
-    socketOnGrblParserState(parserstate) {
-        let unit = this.state.unit;
-
-        // Imperial
-        if (parserstate.modal.units === 'G20') {
-            unit = IMPERIAL_UNIT;
-        }
-
-        // Metric
-        if (parserstate.modal.units === 'G21') {
-            unit = METRIC_UNIT;
-        }
-
-        if (this.state.unit !== unit) {
-            this.setState({ unit: unit });
-        }
     }
     render() {
         let { port, unit, queueStatus } = this.state;
