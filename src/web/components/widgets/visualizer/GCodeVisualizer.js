@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import colornames from 'colornames';
 import THREE from 'three';
-import GCodeToolpath from '../../../lib/gcode-toolpath';
+import { GCodeToolpath } from 'gcode-toolpath';
 import log from '../../../lib/log';
 
 const noop = () => {};
