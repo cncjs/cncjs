@@ -4,6 +4,14 @@ import socket from './socket';
 
 class CNCController {
     port = '';
+    gcode = {
+        load: () => {},
+        unload: () => socket.emit('gcode:unload', this.port),
+        start: () => socket.emit('gcode:start', this.port),
+        pause: () => socket.emit('gcode:pause', this.port),
+        resume: () => socket.emit('gcode:resume', this.port),
+        stop: () => socket.emit('gcode:stop', this.port)
+    };
     callbacks = {
         'serialport:list': [],
         'serialport:open': [],
@@ -12,7 +20,8 @@ class CNCController {
         'serialport:read': [],
         'serialport:write': [],
         'grbl:status': [],
-        'grbl:parserstate': []
+        'grbl:parserstate': [],
+        'gcode:queuestatuschange': []
     };
 
     constructor() {
@@ -31,13 +40,21 @@ class CNCController {
     }
     on(eventName, callback) {
         let callbacks = this.callbacks[eventName];
-        if (_.isArray(callbacks) && _.isFunction(callback)) {
+        if (!callbacks) {
+            log.error('Undefined event name:', eventName);
+            return;
+        }
+        if (_.isFunction(callback)) {
             callbacks.push(callback);
         }
     }
     off(eventName, callback) {
         let callbacks = this.callbacks[eventName];
-        if (_.isArray(callbacks) && _.isFunction(callback)) {
+        if (!callbacks) {
+            log.error('Undefined event name:', eventName);
+            return;
+        }
+        if (_.isFunction(callback)) {
             callbacks.splice(callbacks.indexOf(callback), 1);
         }
     }
