@@ -1,7 +1,7 @@
+dist
 log
 tmp
 node_modules
 npm-debug.log
-.nodemonignore
 /coverage
 /.nyc_output
