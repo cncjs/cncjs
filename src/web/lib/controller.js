@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import socket from './socket';
+import log from './log';
 
 class CNCController {
     port = '';
