@@ -2,7 +2,7 @@ import _ from 'lodash';
 import i18n from '../../../lib/i18n';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import socket from '../../../lib/socket';
+import controller from '../../../lib/controller';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -20,17 +20,21 @@ class Toolbar extends React.Component {
         workflowState: WORKFLOW_STATE_IDLE,
         queueFinished: false
     };
-    socketEventListener = {
-        'gcode:queuestatuschange': ::this.socketOnGCodeQueueStatusChange
+    controllerEvents = {
+        'gcode:queuestatuschange': (data) => {
+            if (data.executed >= data.total) {
+                this.setState({ queueFinished: true });
+            }
+        }
     };
     pubsubTokens = [];
 
     componentDidMount() {
-        this.addSocketEventListener();
+        this.addControllerEvents();
         this.subscribe();
     }
     componentWillUnmount() {
-        this.removeSocketEventListener();
+        this.removeControllerEvents();
         this.unsubscribe();
     }
     componentDidUpdate() {
@@ -45,7 +49,7 @@ class Toolbar extends React.Component {
         }
 
         if ((this.state.queueFinished) && (activeState === ACTIVE_STATE_IDLE)) {
-            socket.emit('gcode:stop', port);
+            controller.gcode.stop();
             pubsub.publish('gcode:stop');
             this.setState({
                 workflowState: WORKFLOW_STATE_IDLE,
@@ -67,30 +71,25 @@ class Toolbar extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    addSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.on(eventName, callback);
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
         });
     }
-    removeSocketEventListener() {
-        _.each(this.socketEventListener, (callback, eventName) => {
-            socket.off(eventName, callback);
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
         });
-    }
-    socketOnGCodeQueueStatusChange(data) {
-        if (data.executed >= data.total) {
-            this.setState({ queueFinished: true });
-        }
     }
     handleRun() {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
 
         if (workflowState === WORKFLOW_STATE_PAUSED) {
-            socket.emit('gcode:resume', this.props.port);
+            controller.gcode.resume();
             pubsub.publish('gcode:resume');
         } else {
-            socket.emit('gcode:start', this.props.port);
+            controller.gcode.start();
             pubsub.publish('gcode:start');
         }
 
@@ -102,7 +101,7 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
 
-        socket.emit('gcode:pause', this.props.port);
+        controller.gcode.pause();
         pubsub.publish('gcode:pause');
 
         this.setState({
@@ -113,7 +112,7 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
 
-        socket.emit('gcode:stop', this.props.port);
+        controller.gcode.stop();
         pubsub.publish('gcode:stop');
 
         this.setState({
@@ -124,7 +123,8 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
 
-        socket.emit('gcode:unload', this.props.port);
+        controller.gcode.unload();
+
         pubsub.publish('gcode:unload'); // Unload the G-code
 
         this.setState({
