@@ -12,15 +12,11 @@ export const getActiveControllers = (req, res) => {
         }
 
         list.push({
-            port: controller.serialport.path,
-            baudrate: controller.serialport.options.baudRate,
+            port: controller.options.port,
+            baudrate: controller.options.baudrate,
             isOpen: controller.serialport.isOpen(),
-            connected: _.size(controller.sockets),
-            queue: {
-                size: controller.queue.size(),
-                executed: controller.queue.getExecutedCount(),
-                isRunning: controller.queue.isRunning()
-            },
+            connections: _.size(controller.connections),
+            state: controller.state,
             gcode: controller.gcode
         });
     });

@@ -4,7 +4,6 @@ import serialport from 'serialport';
 import { parseText } from 'gcode-parser';
 import log from '../../lib/log';
 import settings from '../../config/settings';
-import CommandQueue from './CommandQueue';
 import { GRBL_MODAL_GROUPS } from './constants';
 
 const noop = () => {};
@@ -41,6 +40,92 @@ const matchGrblCurrentStatus = (msg) => {
 const matchGrblParserState = (msg) => {
     return msg.match(/\[(?:\w+[0-9]+\.?[0-9]*\s*)+\]/);
 };
+
+class GCode extends events.EventEmitter {
+    name = '';
+    gcode = '';
+    remain = [];
+    sent = [];
+    total = 0;
+    createdTime = 0;
+    startedTime = 0;
+    finishedTime = 0;
+
+    constructor() {
+        super();
+    }
+    load(name, gcode, callback) {
+        parseText(gcode, (err, data) => {
+            if (err) {
+                callback(err);
+                return;
+            }
+
+            this.name = name;
+            this.gcode = gcode;
+            this.remain = _.map(data, 'line');
+            this.sent = [];
+            this.total = this.remain.length;
+            this.createdTime = new Date().getTime();
+            this.startedTime = 0;
+            this.finishedTime = 0;
+
+            this.emit('load', {
+                name: name,
+                gcode: gcode
+            });
+
+            callback();
+        });
+    }
+    unload() {
+        this.name = '';
+        this.gcode = '';
+        this.remain = [];
+        this.sent = [];
+        this.total = 0;
+        this.createdTime = 0;
+        this.startedTime = 0;
+        this.finishedTime = 0;
+
+        this.emit('unload');
+    }
+    next() {
+        let remainLength = this.remain.length;
+        let sentLength = this.sent.length;
+
+        if (remainLength === 0 && sentLength === 0) {
+            return;
+        }
+        if (remainLength === 0) {
+            this.finishedTime = new Date().getTime();
+            this.emit('done', {
+                time: this.finishedTime
+            });
+            return;
+        }
+        if (sentLength === 0) {
+            this.startedTime = new Date().getTime();
+            this.emit('start', {
+                time: this.startedTime
+            });
+        }
+
+        let gcode = this.remain.shift();
+        this.sent.push(gcode);
+        this.emit('progress', {
+            gcode: gcode
+        });
+
+        return gcode;
+    }
+    rewind() {
+        this.remain = this.sent.concat(this.remain);
+        this.sent = [];
+        this.startedTime = 0;
+        this.finishedTime = 0;
+    }
+}
 
 class Grbl extends events.EventEmitter {
     status = {};
@@ -167,13 +252,13 @@ class GrblController {
     };
     serialport = null;
     grbl = null;
-    queue = null;
-    gcode = '';
+    gcode = null;
     connections = [];
     queryTimer = null;
     state = {
         isReady: false,
-        queue: {
+        isRunning: false,
+        gcode: {
             executed: 0,
             total: 0
         },
@@ -264,8 +349,8 @@ class GrblController {
                 return;
             }
 
-            if (this.queue.isRunning()) {
-                this.queue.next();
+            if (this.state.isRunning) {
+                this.gcode.next();
                 return;
             }
 
@@ -286,20 +371,23 @@ class GrblController {
             });
         });
 
-        this.queue = new CommandQueue();
-        this.queue.on('data', (code) => {
+        this.gcode = new GCode();
+        this.gcode.on('progress', (res) => {
+            let { gcode } = res;
+
             if (this.isClose()) {
                 log.error('Serial port not accessible:', { port: this.options.port });
                 return;
             }
 
-            let executed = this.queue.getExecutedCount();
-            let total = this.queue.size();
+            let executed = this.gcode.sent.length;
+            let total = this.gcode.total;
 
-            log.trace('[' + executed + '/' + total + '] ' + code);
+            log.trace('[' + executed + '/' + total + '] ' + gcode);
 
-            code = ('' + code).trim();
-            this.write(code + '\n');
+            gcode = ('' + gcode).trim();
+
+            this.write(gcode + '\n');
         });
 
         this.queryTimer = setInterval(() => {
@@ -335,21 +423,21 @@ class GrblController {
             }
 
             { // G-code execution status
-                let lastExecuted = this.state.queue.executed;
-                let lastTotal = this.state.queue.total;
-                let executed = this.queue.getExecutedCount();
-                let total = this.queue.size();
+                let lastExecuted = this.state.gcode.executed;
+                let lastTotal = this.state.gcode.total;
+                let executed = this.gcode.sent.length;
+                let total = this.gcode.total;
 
                 if ((lastExecuted !== executed) || (lastTotal !== total)) {
                     this.setState({
-                        queue: {
+                        gcode: {
                             executed: executed,
                             total: total
                         }
                     });
 
                     this.connections.forEach((c) => {
-                        c.socket.emit('gcode:queuestatuschange', {
+                        c.socket.emit('gcode:statuschange', {
                             executed: executed,
                             total: total
                         });
@@ -402,9 +490,9 @@ class GrblController {
             { // Initialization
                 this.setState({
                     isReady: false,
-                    queue: {
-                        lastExecuted: 0,
-                        lastTotal: 0
+                    gcode: {
+                        executed: 0,
+                        total: 0
                     },
                     waitFor: {
                         status: false,
@@ -445,55 +533,48 @@ class GrblController {
     isClose() {
         return !(this.isOpen());
     }
-    gcode_load(gcode, callback) {
-        parseText(gcode, (err, data) => {
+    gcode_load(gcode, callback = noop) {
+        this.gcode.load('', gcode, (err) => {
             if (err) {
-                callback && callback(err);
+                callback(err);
                 return;
             }
 
-            let lines = _.map(data, 'line');
+            this.setState({ isRunning: false });
 
-            this.gcode = gcode;
+            log.debug('Added %d lines', this.gcode.total);
 
-            // Stop and clear queue
-            this.queue.stop();
-            this.queue.clear();
-
-            this.queue.push(lines);
-
-            log.debug('Added %d lines to the queue', lines.length);
+            callback();
         });
     }
     gcode_unload() {
-        // Unload G-code
-        this.gcode = '';
-
-        // Clear queue
-        this.queue.stop();
-        this.queue.clear();
+        this.gcode.unload();
 
         this.setState({
-            queue: {
-                lastExecuted: 0,
-                lastTotal: 0
+            isRunning: false,
+            gcode: {
+                executed: 0,
+                total: 0
             }
         });
     }
     gcode_start() {
-        this.queue.play();
+        this.setState({ isRunning: true });
+        this.gcode.next();
     }
     gcode_resume() {
         this.command('resume');
-        this.queue.play();
+        this.setState({ isRunning: true });
+        this.gcode.next();
     }
     gcode_pause() {
         this.command('pause');
-        this.queue.pause();
+        this.setState({ isRunning: false });
     }
     gcode_stop() {
         this.command('reset');
-        this.queue.stop();
+        this.setState({ isRunning: false });
+        this.gcode.rewind();
     }
     addConnection(socket) {
         this.connections.push({
