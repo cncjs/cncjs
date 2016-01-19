@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { GCodeInterpreter } from 'gcode-interpreter';
-import log from './log';
 import { in2mm } from './units';
 
 // noop
@@ -15,7 +14,7 @@ const translatePosition = (position, newPosition, relative) => {
     return relative ? (position + newPosition) : newPosition;
 };
 
-class GCodeRunner {
+class GCodeToolpath {
     position = {
         x: 0,
         y: 0,
@@ -53,7 +52,7 @@ class GCodeRunner {
             };
             const targetPosition = { x: v2.x, y: v2.y, z: v2.z };
 
-            this.fn.drawLine(this.modalState, v1, v2);
+            this.fn.addLine(this.modalState, v1, v2);
 
             // Update position
             this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -87,7 +86,7 @@ class GCodeRunner {
             };
             const targetPosition = { x: v2.x, y: v2.y, z: v2.z };
 
-            this.fn.drawLine(this.modalState, v1, v2);
+            this.fn.addLine(this.modalState, v1, v2);
 
             // Update position
             this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -169,7 +168,7 @@ class GCodeRunner {
                 v0.y = v1.y + offsetY;
             }
 
-            this.fn.drawArcCurve(this.modalState, v1, v2, v0);
+            this.fn.addArcCurve(this.modalState, v1, v2, v0);
 
             // Update position
             this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -233,7 +232,7 @@ class GCodeRunner {
                 v0.y = v1.y + offsetY;
             }
 
-            this.fn.drawArcCurve(this.modalState, v1, v2, v0);
+            this.fn.addArcCurve(this.modalState, v1, v2, v0);
 
             // Update position
             this.setPosition(targetPosition.x, targetPosition.y, targetPosition.z);
@@ -378,18 +377,19 @@ class GCodeRunner {
 
     // @param {object} [options]
     // @param {object} [options.modalState]
-    // @param {function} [options.drawLine]
-    // @param {function} [options.drawArcCurve]
+    // @param {function} [options.addLine]
+    // @param {function} [options.addArcCurve]
     constructor(options) {
         options = options || {};
 
-        log.debug('GCodeRunner:', options);
-
-        this.modalState = _.extend({}, this.modalState, options.modalState);
+        this.modalState = _.extend({},
+            this.modalState,
+            _.pick(options.modalState, _.keys(this.modalState))
+        );
 
         this.fn = {
-            drawLine: options.drawLine || noop,
-            drawArcCurve: options.drawArcCurve || noop
+            addLine: options.addLine || noop,
+            addArcCurve: options.addArcCurve || noop
         };
 
         return new GCodeInterpreter({ handlers: this.handlers });
@@ -468,4 +468,4 @@ class GCodeRunner {
     }
 }
 
-export default GCodeRunner;
+export default GCodeToolpath;
