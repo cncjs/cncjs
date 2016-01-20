@@ -70,10 +70,14 @@ class CNCController {
     //   controller.command('start')
     // - Stop sending G-code
     //   controller.command('stop')
-    // - Pause/Feed Hold
+    // - Pause
     //   controller.command('pause')
-    // - Resume/Cycle Start
+    // - Resume
     //   controller.command('resume')
+    // - Feed Hold
+    //   controller.command('feedhold')
+    // - Cycle Start
+    //   controller.command('cyclestart')
     // - Reset
     //   controller.command('reset')
     // - Homing

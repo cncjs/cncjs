@@ -4,10 +4,10 @@ import controller from '../../lib/controller';
 
 class QuickAccessToolbar extends React.Component {
     handleCycleStart() {
-        controller.command('resume');
+        controller.command('cyclestart');
     }
     handleFeedHold() {
-        controller.command('pause');
+        controller.command('feedhold');
     }
     handleReset() {
         controller.command('reset');
