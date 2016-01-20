@@ -27,19 +27,15 @@ const ALLOWED_IP_RANGES = [
     'fe80::/10' // Link-local address
 ];
 
-pubsub.subscribe('file:upload', (msg, data) => {
-    let meta = data.meta || {};
-    let port = meta.port;
+pubsub.subscribe('gcode:upload', (msg, data) => {
+    let { port, meta, gcode } = data;
+    let { name = '', size = 0 } = meta;
     let controller = store.get('controllers["' + port + '"]');
 
     if (!controller) {
         log.error('The controller is undefined', { meta: meta });
         return;
     }
-
-    let gcode = data.contents || '';
-
-    log.debug('meta:', meta);
 
     // Load G-code
     let socket = null;

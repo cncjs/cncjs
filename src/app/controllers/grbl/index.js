@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import serialport from 'serialport';
 import log from '../../lib/log';
 import { GCode } from './gcode';
@@ -16,6 +17,8 @@ class Connection {
 }
 
 class GrblController {
+    static type = 'Grbl';
+
     options = {
         port: '',
         baudrate: 9600
@@ -58,19 +61,7 @@ class GrblController {
 
             gcode = ('' + gcode).trim();
 
-            this.write(gcode + '\n');
-        });
-        this.gcode.on('statuschange', (res) => {
-            this.connections.forEach((c) => {
-                c.socket.emit('gcode:statuschange', _.pick(this.gcode, [
-                    'remain',
-                    'sent',
-                    'total',
-                    'createdTime',
-                    'startedTime',
-                    'finishedtime'
-                ]));
-            });
+            this.serialport.write(gcode + '\n');
         });
 
         this.grbl = new Grbl(this.serialport);
@@ -187,7 +178,7 @@ class GrblController {
                         status: true
                     }
                 });
-                this.write('?');
+                this.serialport.write('?');
             }
 
             if (!(waitFor['parserstate']) && !(waitFor['parserstateOkError'])) {
@@ -197,8 +188,23 @@ class GrblController {
                         parserstateOkError: false
                     }
                 });
-                this.write('$G' + '\n');
+                this.serialport.write('$G' + '\n');
             }
+
+            // Detect for any status changes
+            if (this.gcode.peek()) {
+                this.connections.forEach((c) => {
+                    c.socket.emit('gcode:statuschange', {
+                        'remain': this.gcode.remain.length,
+                        'sent': this.gcode.sent.length,
+                        'total': this.gcode.total,
+                        'createdTime': this.gcode.createdTime,
+                        'startedTime': this.gcode.startedTime,
+                        'finishedTime': this.gcode.finishedTime
+                    });
+                });
+            }
+
         }, 250);
     }
     destroy() {
@@ -206,6 +212,25 @@ class GrblController {
             clearInterval(this.queryTimer);
             this.queryTimer = null;
         }
+    }
+    getData() {
+        return {
+            type: GrblController.type,
+            port: this.options.port,
+            baudrate: this.options.baudrate,
+            connections: _.size(this.connections),
+            gcode: {
+                name: this.gcode.name,
+                gcode: this.gcode.gcode,
+                remain: this.gcode.remain.length,
+                sent: this.gcode.sent.length,
+                total: this.gcode.total,
+                createdTime: this.gcode.createdTime ? moment.unix(this.gcode.createdTime).toISOString() : '',
+                startedTime: this.gcode.startedTime ? moment.unix(this.gcode.startedTime).toISOString() : '',
+                finishedTime: this.gcode.finishedTime ? moment.unix(this.gcode.finishedTime).toISOString() : ''
+            },
+            state: this.state
+        };
     }
     setState(state) {
         this.state = _.merge({}, this.state, state);
@@ -215,10 +240,6 @@ class GrblController {
         this.setState({
             isReady: false,
             isRunning: false,
-            gcode: {
-                sent: 0,
-                total: 0
-            },
             waitFor: {
                 status: false,
                 parserstate: false,
@@ -257,13 +278,14 @@ class GrblController {
 
             log.debug('Connected to serial port \'%s\'', port);
 
-            { // Initialization
-                this.clearState();
-                this.gcode_unload();
-            }
+            // Clear state
+            this.clearState();
+
+            // Unload G-code
+            this.command(null, 'unload');
 
             // Reset Grbl while opening serial port
-            this.command('reset');
+            this.command(null, 'reset');
 
             callback();
         });
@@ -278,7 +300,7 @@ class GrblController {
         }
 
         // Reset Grbl while closing serial port
-        this.command('reset');
+        this.command(null, 'reset');
 
         this.serialport.close((err) => {
             this.destroy();
@@ -320,15 +342,9 @@ class GrblController {
             'unload': () => {
                 log.debug('Unload G-code: name=%s', this.gcode.name);
 
-                this.setState({
-                    isRunning: false,
-                    gcode: {
-                        executed: 0,
-                        total: 0
-                    }
-                });
+                this.setState({ isRunning: false });
                 this.gcode.unload();
-                this.command('reset'); // Reset Grbl
+                this.command(socket, 'reset'); // Reset Grbl
             },
             'start': () => {
                 this.setState({ isRunning: true });
@@ -337,13 +353,13 @@ class GrblController {
             'stop': () => {
                 this.setState({ isRunning: false });
                 this.gcode.rewind();
-                this.command('reset'); // Reset Grbl
-            },
-            'resume': () => {
-                this.write(socket, '~');
+                this.command(socket, 'reset'); // Reset Grbl
             },
             'pause': () => {
                 this.write(socket, '!');
+            },
+            'resume': () => {
+                this.write(socket, '~');
             },
             'reset': () => {
                 this.write(socket, '\x18');

@@ -12,8 +12,14 @@ class GCode extends events.EventEmitter {
     startedTime = 0;
     finishedTime = 0;
 
+    _changed = false;
+
     constructor() {
         super();
+
+        this.on('statuschange', () => {
+            this._changed = true;
+        });
     }
     load(name, gcode, callback) {
         parser.parseText(gcode, (err, data) => {
@@ -84,6 +90,12 @@ class GCode extends events.EventEmitter {
         this.startedTime = 0;
         this.finishedTime = 0;
         this.emit('statuschange');
+    }
+    // Returns true if any state have changes
+    peek() {
+        let changed = this._changed;
+        this._changed = false;
+        return changed;
     }
 }
 
