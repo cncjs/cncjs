@@ -1,7 +1,6 @@
 {
     "0227ca7d144a33150979057b4d5c918a108a04dc": "Move To Z Zero (G0 Z0)",
     "0323baf7ac64cb65c8933469be7577b6617cda85": "Move X+ Y+",
-    "04632d0dc4cee6e7aaa6ba4f827110ec1146a451": "Executed",
     "054033f7a217a528c9870de3b9667d6fc0e5d3dc": "Rapid Move",
     "05f37c8f56d0f2db8e26acb849a04cc8bdb4aedc": "Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)",
     "09267fd04b23e6b48b72e59c603b70f6203102d5": "Homing",
@@ -32,6 +31,7 @@
     "32bc658d0c301dec87e8aa44a357dce3bdaa33a1": "Coolant",
     "33a74f90177a0187275255a20e91140861ac290c": "Zero Out Work Z Axis (G10 L20 P1 Z0)",
     "35d2c30a5e67ccb4c896486c5e3893c3958b16a9": "Go To Predefined Position 1 (G28)",
+    "35f49dcfbfb2e03fdce327671e82bf173b1ccb8b": "Sent",
     "366988d998afa51eb0fda8f66712aaa5952c4f06": "Stop the spindle from turning (M5)",
     "3b4428a56d2a4be0d1f3d96719a907031f14fffe": "Grbl Settings ($$)",
     "3d95acba7d5fe24592a75e6bb9f8f27a3054623d": "WCS",
