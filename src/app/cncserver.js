@@ -55,7 +55,6 @@ class CNCServer {
         this.server = server;
 
         store.on('change', (state) => {
-            log.debug('[cncserver] Update controllers:', state);
             this.controllers = _.get(state, 'controllers', {});
         });
     }
