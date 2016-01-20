@@ -189,18 +189,13 @@ class GCodeStats extends React.Component {
             <div className="container-fluid gcode-stats">
                 <div className="row">
                     <div className="col-xs-12">
-                        <div>{i18n._('Dimension')}</div>
-                    </div>
-                </div>
-                <div className="row">
-                    <div className="col-xs-12">
                         <table className="table-bordered" data-table="dimension">
                             <thead>
                                 <tr>
                                     <th className="axis">{i18n._('Axis')}</th>
                                     <th>{i18n._('Min')}</th>
                                     <th>{i18n._('Max')}</th>
-                                    <th>{i18n._('Delta')}</th>
+                                    <th>{i18n._('Dimension')}</th>
                                 </tr>
                             </thead>
                             <tbody>
