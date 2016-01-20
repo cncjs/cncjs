@@ -1,3 +1,23 @@
+// Grbl Active States
+export const GRBL_ACTIVE_STATE_UNKNOWN = 'Unknown'; // Custom state
+export const GRBL_ACTIVE_STATE_IDLE = 'Idle';
+export const GRBL_ACTIVE_STATE_RUN = 'Run';
+export const GRBL_ACTIVE_STATE_HOLD = 'Hold';
+export const GRBL_ACTIVE_STATE_DOOR = 'Door';
+export const GRBL_ACTIVE_STATE_HOME = 'Home';
+export const GRBL_ACTIVE_STATE_ALARM = 'Alarm';
+export const GRBL_ACTIVE_STATE_CHECK = 'Check';
+export const GRBL_ACTIVE_STATES = [
+    GRBL_ACTIVE_STATE_UNKNOWN,
+    GRBL_ACTIVE_STATE_IDLE,
+    GRBL_ACTIVE_STATE_RUN,
+    GRBL_ACTIVE_STATE_HOLD,
+    GRBL_ACTIVE_STATE_DOOR,
+    GRBL_ACTIVE_STATE_HOME,
+    GRBL_ACTIVE_STATE_ALARM,
+    GRBL_ACTIVE_STATE_CHECK
+];
+
 // https://github.com/grbl/grbl/wiki/Configuring-Grbl-v0.9
 // http://linuxcnc.org/docs/html/gcode/overview.html#cap:modal-groups
 export const GRBL_MODAL_GROUPS = [
