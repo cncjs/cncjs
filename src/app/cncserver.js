@@ -55,7 +55,7 @@ class CNCServer {
         this.server = server;
 
         store.on('change', (state) => {
-            log.debug('[cncserver] store.on("change"):', state);
+            log.debug('[cncserver] Update controllers:', state);
             this.controllers = _.get(state, 'controllers', {});
         });
     }
@@ -82,13 +82,13 @@ class CNCServer {
 
         io.on('connection', (socket) => {
             let address = socket.handshake.address;
-            log.debug('[cncserver] New connection from %s', address);
+            log.debug('[cncserver] New connection from %s:', address, { id: socket.id });
 
             // Add to the socket pool
             this.sockets.push(socket);
 
             socket.on('disconnect', () => {
-                log.debug('[cncserver] socket.on("%s"):', 'disconnect', { id: socket.id });
+                log.debug('[cncserver] socket.disconnect():', { id: socket.id });
 
                 _.each(this.controllers, (controller, port) => {
                     if (!controller) {
@@ -103,7 +103,7 @@ class CNCServer {
 
             // Show available serial ports
             socket.on('list', () => {
-                log.debug('[cncserver] socket.on("%s"):', 'list', { id: socket.id });
+                log.debug('[cncserver] socket.list():', { id: socket.id });
 
                 serialport.list((err, ports) => {
                     if (err) {
@@ -130,14 +130,13 @@ class CNCServer {
                         };
                     });
 
-                    log.debug('[cncserver] serialport.list():', ports);
                     socket.emit('serialport:list', ports);
                 });
             });
 
             // Open serial port
             socket.on('open', (port, baudrate) => {
-                log.debug('[cncserver] socket.on("%s"):', 'open', { id: socket.id, port: port, baudrate: baudrate });
+                log.debug('[cncserver] socket.open("%s", %d):', port, baudrate, { id: socket.id });
                 
                 let controller = this.controllers[port];
                 if (!controller) {
@@ -176,7 +175,7 @@ class CNCServer {
 
             // Close serial port
             socket.on('close', (port) => {
-                log.debug('[cncserver] socket.on("%s"):', 'close', { id: socket.id, port: port });
+                log.debug('[cncserver] socket.close("%s"):', port, { id: socket.id });
 
                 let controller = this.controllers[port];
                 if (!controller) {
@@ -193,7 +192,7 @@ class CNCServer {
             });
 
             socket.on('command', (port, cmd) => {
-                log.debug('[cncserver] socket.on("%s"):', 'command', { id: socket.id, port: port, cmd: cmd });
+                log.debug('[cncserver] socket.command("%s", "%s"):', port, cmd, { id: socket.id });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
@@ -205,7 +204,7 @@ class CNCServer {
             });
 
             socket.on('write', (port, data) => {
-                log.debug('[cncserver] socket.on("%s"):', 'write', { id: socket.id, port: port, data: data });
+                log.debug('[cncserver] socket.write("%s", "%s"):', port, data, { id: socket.id });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
