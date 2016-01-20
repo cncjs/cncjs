@@ -86,7 +86,6 @@ class Toolbar extends React.Component {
         console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
 
         if (workflowState === WORKFLOW_STATE_PAUSED) {
-            controller.command('cyclestart');
             controller.command('resume');
             pubsub.publish('gcode:resume');
         } else {
@@ -102,7 +101,6 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
 
-        controller.command('feedhold');
         controller.command('pause');
         pubsub.publish('gcode:pause');
 
