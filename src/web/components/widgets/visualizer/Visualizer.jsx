@@ -78,7 +78,7 @@ class Visualizer extends React.Component {
                 return;
             }
 
-            let frameIndex = data.executed;
+            let frameIndex = data.sent;
             this.gcodeVisualizer.setFrameIndex(frameIndex);
         }
     };

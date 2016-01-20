@@ -22,7 +22,7 @@ class Toolbar extends React.Component {
     };
     controllerEvents = {
         'gcode:statuschange': (data) => {
-            if (data.executed >= data.total) {
+            if (data.sent >= data.total) {
                 this.setState({ gcodeFinished: true });
             }
         }
@@ -49,7 +49,7 @@ class Toolbar extends React.Component {
         }
 
         if ((this.state.gcodeFinished) && (activeState === ACTIVE_STATE_IDLE)) {
-            controller.gcode.stop();
+            controller.comamnd('stop');
             pubsub.publish('gcode:stop');
             this.setState({
                 workflowState: WORKFLOW_STATE_IDLE,
@@ -86,10 +86,10 @@ class Toolbar extends React.Component {
         console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
 
         if (workflowState === WORKFLOW_STATE_PAUSED) {
-            controller.gcode.resume();
+            controller.command('resume');
             pubsub.publish('gcode:resume');
         } else {
-            controller.gcode.start();
+            controller.command('start');
             pubsub.publish('gcode:start');
         }
 
@@ -101,7 +101,7 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
 
-        controller.gcode.pause();
+        controller.command('pause');
         pubsub.publish('gcode:pause');
 
         this.setState({
@@ -112,7 +112,7 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
 
-        controller.gcode.stop();
+        controller.command('stop');
         pubsub.publish('gcode:stop');
 
         this.setState({
@@ -123,8 +123,7 @@ class Toolbar extends React.Component {
         let { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
 
-        controller.gcode.unload();
-
+        controller.command('unload');
         pubsub.publish('gcode:unload'); // Unload the G-code
 
         this.setState({

@@ -22,15 +22,15 @@ class GCode extends React.Component {
 
         // G-code Status
         gcodeStatus: {
-            executed: 0,
+            sent: 0,
             total: 0
         }
     };
     controllerEvents = {
         'gcode:statuschange': (data) => {
             let list = {};
-            let from = this.state.gcodeStatus.executed;
-            let to = data.executed;
+            let from = this.state.gcodeStatus.sent;
+            let to = data.sent;
 
             // Reset obsolete queue items
             for (let i = to; i < from; ++i) {
@@ -54,7 +54,7 @@ class GCode extends React.Component {
             this.setState({
                 commands: updatedCommands,
                 gcodeStatus: {
-                    executed: Number(data.executed),
+                    sent: Number(data.sent),
                     total: Number(data.total)
                 }
             });
@@ -155,7 +155,7 @@ class GCode extends React.Component {
         let isLoaded = (_.size(this.state.commands) > 0);
         let notLoaded = !isLoaded;
         let scrollToRow = Math.min(
-            gcodeStatus.executed + (Math.floor(visibleRows / 2) - 1),
+            gcodeStatus.sent + (Math.floor(visibleRows / 2) - 1),
             gcodeStatus.total
         );
 
@@ -163,7 +163,7 @@ class GCode extends React.Component {
             <div>
                 <GCodeStats
                     unit={unit}
-                    executed={gcodeStatus.executed}
+                    sent={gcodeStatus.sent}
                     total={gcodeStatus.total}
                 />
 

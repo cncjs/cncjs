@@ -13,7 +13,7 @@ import {
 class GCodeStats extends React.Component {
     static propTypes = {
         unit: React.PropTypes.string,
-        executed: React.PropTypes.number,
+        sent: React.PropTypes.number,
         total: React.PropTypes.number
     };
 
@@ -165,7 +165,7 @@ class GCodeStats extends React.Component {
         return val;
     }
     render() {
-        let { unit, total, executed } = this.props;
+        let { unit, total, sent } = this.props;
         let box = _.mapValues(this.state.box, (position) => {
             return _.mapValues(position, (val, axis) => this.toFixedUnitValue(unit, val));
         });
@@ -227,11 +227,11 @@ class GCodeStats extends React.Component {
                     </div>
                 </div>
                 <div className="row">
-                    <div className="col-xs-6">{i18n._('Executed')}</div>
+                    <div className="col-xs-6">{i18n._('Sent')}</div>
                     <div className="col-xs-6">{i18n._('Total')}</div>
                 </div>
                 <div className="row">
-                    <div className="col-xs-6">{executed}</div>
+                    <div className="col-xs-6">{sent}</div>
                     <div className="col-xs-6">{total}</div>
                 </div>
                 <div className="row">
