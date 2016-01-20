@@ -34,7 +34,7 @@ class GrblController {
         waitFor: {
             status: false,
             parserstate: false,
-            parserstateOkError: false
+            parserstateEnd: false
         }
     };
 
@@ -50,7 +50,7 @@ class GrblController {
             let { gcode } = res;
 
             if (this.isClose()) {
-                log.error('Serial port not accessible:', { port: this.options.port });
+                log.error('Grbl: Serial port not accessible:', { port: this.options.port });
                 return;
             }
 
@@ -74,7 +74,7 @@ class GrblController {
                 waitFor: {
                     status: false,
                     parserstate: false,
-                    parserstateOkError: false
+                    parserstateEnd: false
                 }
             });
             this.connections.forEach((c) => {
@@ -104,7 +104,7 @@ class GrblController {
             this.setState({
                 waitFor: {
                     parserstate: false,
-                    parserstateOkError: true // wait for ok/error response
+                    parserstateEnd: true // wait for ok response
                 }
             });
 
@@ -119,10 +119,10 @@ class GrblController {
         });
         this.grbl.on('parserstatechange', (res) => {});
 
-        let handleOkError = (res) => {
+        this.grbl.on('ok', (res) => {
             let { waitFor } = this.state;
 
-            if (waitFor['parserstateOkError']) {
+            if (waitFor['parserstateEnd']) {
                 this.connections.forEach((c) => {
                     if (c.sentCommand.indexOf('$G') === 0) {
                         c.sentCommand = '';
@@ -131,7 +131,7 @@ class GrblController {
                 });
                 this.setState({
                     waitFor: {
-                        parserstateOkError: false
+                        parserstateEnd: false
                     }
                 });
                 return;
@@ -145,12 +145,12 @@ class GrblController {
             this.connections.forEach((c) => {
                 c.socket.emit('serialport:read', res.raw);
             });
-        };
-        this.grbl.on('ok', handleOkError);
-        this.grbl.on('error', handleOkError);
+        });
 
         this.grbl.on('error', (res) => {
-            log.warn('Grbl:', res.raw); // Grbl errors
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
         });
 
         this.grbl.on('others', (res) => {
@@ -164,14 +164,16 @@ class GrblController {
             let notReady = !isReady;
 
             if (this.isClose()) {
+                // Serial port is closed
                 return;
             }
 
             if (notReady) {
-                // The Grbl is not ready
+                // The Grbl is not ready yet
                 return;
             }
 
+            // ? - Current Status
             if (!(waitFor['status'])) {
                 this.setState({
                     waitFor: {
@@ -181,17 +183,18 @@ class GrblController {
                 this.serialport.write('?');
             }
 
-            if (!(waitFor['parserstate']) && !(waitFor['parserstateOkError'])) {
+            // $G - Parser State
+            if (!(waitFor['parserstate']) && !(waitFor['parserstateEnd'])) {
                 this.setState({
                     waitFor: {
                         parserstate: true,
-                        parserstateOkError: false
+                        parserstateEnd: false
                     }
                 });
                 this.serialport.write('$G' + '\n');
             }
 
-            // Detect for any status changes
+            // Detect for any G-code status changes
             if (this.gcode.peek()) {
                 this.connections.forEach((c) => {
                     c.socket.emit('gcode:statuschange', {
@@ -243,7 +246,7 @@ class GrblController {
             waitFor: {
                 status: false,
                 parserstate: false,
-                parserstateOkError: false
+                parserstateEnd: false
             }
         });
     }
@@ -267,16 +270,16 @@ class GrblController {
             });
 
             this.serialport.on('disconnect', (err) => {
-                log.warn('Disconnected from serial port \'%s\':', port, err);
+                log.warn('Grbl: Disconnected from serial port \'%s\':', port, err);
                 this.destroy();
             });
 
             this.serialport.on('error', (err) => {
-                log.error('Unexpected error while reading/writing serial port \'%s\':', port, err);
+                log.error('Grbl: Unexpected error while reading/writing serial port \'%s\':', port, err);
                 this.destroy();
             });
 
-            log.debug('Connected to serial port \'%s\'', port);
+            log.debug('Grbl: Connected to serial port \'%s\'', port);
 
             // Clear state
             this.clearState();
@@ -333,18 +336,17 @@ class GrblController {
                         return;
                     }
 
-                    log.debug('Load G-code: name=%s, total=%d', this.gcode.name, this.gcode.total);
+                    log.debug('Grbl: Load G-code: name=%s, total=%d', this.gcode.name, this.gcode.total);
 
                     this.setState({ isRunning: false });
                     callback();
                 });
             },
             'unload': () => {
-                log.debug('Unload G-code: name=%s', this.gcode.name);
+                log.debug('Grbl: Unload G-code: name=%s', this.gcode.name);
 
                 this.setState({ isRunning: false });
                 this.gcode.unload();
-                this.command(socket, 'reset'); // Reset Grbl
             },
             'start': () => {
                 this.setState({ isRunning: true });
@@ -353,12 +355,20 @@ class GrblController {
             'stop': () => {
                 this.setState({ isRunning: false });
                 this.gcode.rewind();
-                this.command(socket, 'reset'); // Reset Grbl
             },
             'pause': () => {
+                this.setState({ isRunning: false });
                 this.write(socket, '!');
             },
             'resume': () => {
+                this.write(socket, '~');
+                this.setState({ isRunning: true });
+                this.gcode.next();
+            },
+            'feedhold': () => {
+                this.write(socket, '!');
+            },
+            'cyclestart': () => {
                 this.write(socket, '~');
             },
             'reset': () => {
@@ -373,7 +383,7 @@ class GrblController {
         }[cmd];
 
         if (!handler) {
-            log.error('Unknown command:', cmd);
+            log.error('Grbl: Unknown command:', cmd);
             return;
         }
 
