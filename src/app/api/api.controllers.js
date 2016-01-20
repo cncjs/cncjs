@@ -17,7 +17,14 @@ export const getActiveControllers = (req, res) => {
             isOpen: controller.serialport.isOpen(),
             connections: _.size(controller.connections),
             state: controller.state,
-            gcode: controller.gcode
+            gcode: _.pick(controller.gcode, [
+                'remain',
+                'sent',
+                'total',
+                'createdTime',
+                'startedTime',
+                'finishedtime'
+            ])
         });
     });
 
