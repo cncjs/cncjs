@@ -5,14 +5,6 @@ import log from './log';
 
 class CNCController {
     port = '';
-    gcode = {
-        load: () => {},
-        unload: () => socket.emit('gcode:unload', this.port),
-        start: () => socket.emit('gcode:start', this.port),
-        pause: () => socket.emit('gcode:pause', this.port),
-        resume: () => socket.emit('gcode:resume', this.port),
-        stop: () => socket.emit('gcode:stop', this.port)
-    };
     callbacks = {
         'serialport:list': [],
         'serialport:open': [],
