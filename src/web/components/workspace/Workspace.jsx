@@ -258,8 +258,7 @@ class Workspace extends React.Component {
         let reader = new FileReader();
 
         reader.onloadend = (event) => {
-            let contents = event.target.result,
-                error    = event.target.error;
+            const { result, error } = event.target;
 
             if (error) {
                 log.error(error);
@@ -278,15 +277,16 @@ class Workspace extends React.Component {
             this.startWaiting();
             this.setState({ isUploading: true });
 
+            const gcode = result;
             request
-                .post('/api/file/upload')
+                .post('/api/gcode/upload')
                 .send({
+                    port: port,
                     meta: {
                         name: file.name,
-                        size: file.size,
-                        port: port
+                        size: file.size
                     },
-                    contents: contents
+                    gcode: gcode
                 })
                 .end((err, res) => {
                     this.stopWaiting();
@@ -297,7 +297,7 @@ class Workspace extends React.Component {
                         return;
                     }
 
-                    pubsub.publish('gcode:load', contents);
+                    pubsub.publish('gcode:load', gcode);
                 });
         };
 

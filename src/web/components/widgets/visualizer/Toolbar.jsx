@@ -49,7 +49,7 @@ class Toolbar extends React.Component {
         }
 
         if ((this.state.gcodeFinished) && (activeState === ACTIVE_STATE_IDLE)) {
-            controller.comamnd('stop');
+            controller.command('stop');
             pubsub.publish('gcode:stop');
             this.setState({
                 workflowState: WORKFLOW_STATE_IDLE,
