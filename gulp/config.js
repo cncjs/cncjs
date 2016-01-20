@@ -4,8 +4,6 @@ import fse from 'fs-extra';
 import pkg from '../package.json';
 import gutil from 'gulp-util';
 
-const build = './build/';
-const dist = './dist/';
 const bundleDependencies = {
     'vendor': [
         'async',
@@ -41,18 +39,41 @@ const bundleDependencies = {
 };
 
 export default {
+    'babel': {
+        src: [
+            'src/app/**/*.js',
+            // exclusion
+            '!src/app/test/**'
+        ],
+        dest: 'dist/app',
+        options: {
+            presets: ['es2015', 'stage-0', 'react']
+        }
+    },
     clean: {
-        styles: [
-            'web/components/**/*.css',
-            'web/styles/**/*.css'
+        src: [
+            'src/web/**/*.css',
+            // exclusion
+            '!src/web/vendor/**'
         ],
-        scripts: [
-        ],
-        templates: [
-        ],
-        vendor: [
-            'web/vendor/**'
+        dist: [
+            'dist/**/*'
         ]
+    },
+    dist: {
+        base: 'src',
+        src: [
+            // app
+            'src/app/views/**/*',
+            'src/app/i18n/**/*',
+            // web
+            'src/web/favicon.ico',
+            'src/web/plugins.js',
+            'src/web/**/{images,textures}/**/*',
+            'src/web/vendor/**/*',
+            'src/web/i18n/**/*'
+        ],
+        dest: 'dist'
     },
     autoprefixer: {
         options: {
@@ -76,7 +97,7 @@ export default {
     },
     browserify: {
         'vendor': {
-            dest: dist + 'assets/',
+            dest: 'dist/web/',
             options: {
                 debug: true // Sourcemapping
             },
@@ -84,9 +105,9 @@ export default {
         },
         'app': {
             src: [
-                './web/index.jsx'
+                './src/web/index.jsx'
             ],
-            dest: dist + 'assets/',
+            dest: 'dist/web/',
             options: {
                 paths: [],
                 extensions: ['.jsx'], // default: .js and .json
@@ -109,7 +130,7 @@ export default {
                     autoInjectOptions: {
                         'verbose': true
                     },
-                    rootDir: 'web/',
+                    rootDir: 'src/web/',
                     minify: true,
                     // Example:
                     //   source={webroot}/../node_modules/bootstrap/**/*
@@ -118,15 +139,16 @@ export default {
                         const stripQueryStringAndHashFromPath = (url) => {
                             return url.split('?')[0].split('#')[0];
                         };
-                        let rootDir = path.resolve(process.cwd(), 'web');
+                        let sourceDir = path.resolve(process.cwd(), 'src', 'web');
+                        let targetDir = path.resolve(process.cwd(), 'dist', 'web');
                         let relativePath = stripQueryStringAndHashFromPath(relativeUrl);
                         let queryStringAndHash = relativeUrl.substring(relativePath.length);
 
-                        let prefix = '../node_modules/';
+                        let prefix = '../../node_modules/';
                         if (_.startsWith(relativePath, prefix)) {
                             let vendorPath = 'vendor/' + relativePath.substring(prefix.length);
-                            let source = path.join(rootDir, relativePath);
-                            let target = path.join(rootDir, vendorPath);
+                            let source = path.join(sourceDir, relativePath);
+                            let target = path.join(targetDir, vendorPath);
 
                             gutil.log('Copying file from ' + JSON.stringify(source) + ' to ' + JSON.stringify(target));
                             fse.copySync(source, target);
@@ -144,8 +166,8 @@ export default {
     },
     csslint: {
         src: [
-            'web/components/**/*.css',
-            'web/styles/**/*.css'
+            'src/web/components/**/*.css',
+            'src/web/styles/**/*.css'
             // exclusion
         ],
         options: require('../config/csslint')
@@ -155,10 +177,12 @@ export default {
             'gulp/**/*.js',
             '*.js',
             '*.jsx',
-            '{app,web,test}/**/*.js',
+            'src/{app,web}/**/*.js',
+            'test/**/*.js',
 
             // exclusion
-            '!web/{vendor,test}/**',
+            '!src/web/vendor/**',
+            '!test/**',
             '!**/node_modules/**'
         ]
     },
@@ -167,11 +191,12 @@ export default {
             'gulp/**/*.js',
             '*.js',
             '*.jsx',
-            '{app,web}/**/*.js',
-            '{app,web}/**/*.jsx',
+            'src/{app,web}/**/*.js',
+            'src/{app,web}/**/*.jsx',
+            'test/**/*.js',
 
             // exclusion
-            '!web/{vendor,test}/**',
+            '!src/web/vendor/**',
             '!**/node_modules/**'
         ],
         options: require('../config/eslint')
@@ -179,17 +204,18 @@ export default {
     jshint: {
         src: [
             '*.json',
-            '{app,web,test}/**/*.json',
+            'src/{app,web}/**/*.json',
+            'test/**/*.json',
 
             // exclusion
-            '!web/{vendor,test}/**',
+            '!src/web/vendor/**',
             '!**/node_modules/**'
         ],
         options: require('../config/jshint')
     },
     mainBowerFiles: {
         base: 'bower_components/',
-        dest: 'web/vendor/',
+        dest: 'src/web/vendor/',
         options: {
             checkExistence: true,
             debugging: true,
@@ -201,20 +227,21 @@ export default {
         }
     },
     stylus: {
-        src: ['web/**/*.styl'],
-        dest: 'web/',
+        src: ['src/web/**/*.styl'],
+        dest: 'src/web/',
         options: {
             compress: true
         }
     },
     i18next: {
         src: [
-            'web/**/*.html',
-            'web/**/*.hbs',
-            'web/**/*.js',
-            'web/**/*.jsx',
+            'src/web/**/*.html',
+            'src/web/**/*.hbs',
+            'src/web/**/*.js',
+            'src/web/**/*.jsx',
             // Use ! to filter out files or directories
-            '!web/{vendor,test,i18n}/**',
+            '!src/web/{vendor,i18n}/**',
+            '!test/**',
             '!**/node_modules/**'
         ],
         dest: './',
@@ -223,8 +250,8 @@ export default {
             sort: true,
             lngs: ['en'],
             defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
-            resGetPath: 'web/i18n/{{lng}}/{{ns}}.json',
-            resSetPath: 'web/i18n/{{lng}}/{{ns}}.json', // or 'web/i18n/${lng}/${ns}.saveAll.json'
+            resGetPath: 'src/web/i18n/{{lng}}/{{ns}}.json',
+            resSetPath: 'src/web/i18n/{{lng}}/{{ns}}.json', // or 'src/web/i18n/${lng}/${ns}.saveAll.json'
             nsseparator: ':', // namespace separator
             keyseparator: '.', // key separator
             interpolationPrefix: '{{',

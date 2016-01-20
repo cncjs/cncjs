@@ -18,9 +18,9 @@
   },
   "preferGlobal": true,
   "scripts": {
+    "prepublish": "npm run build && npm test",
     "build": "gulp",
-    "prepublish": "npm test",
-    "test": "npm run build && ./babel-tap --coverage test/*.js",
+    "test": "./babel-tap --coverage test/*.js",
     "coveralls": "./babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
   "keywords": [
@@ -54,14 +54,19 @@
     "fbjs": "^0.5.0",
     "fixed-data-table": "^0.6.0",
     "fs-extra": "^0.24.0",
-    "gcode-interpreter": "^0.4.0",
-    "gcode-parser": "^0.5.0",
+    "gcode-interpreter": "^0.5.2",
+    "gcode-parser": "^0.5.1",
+    "gcode-toolpath": "^0.1.1",
     "history": "1.17.x",
     "hogan.js": "2.0.x",
-    "i18next": "1.10.x",
+    "i18next": "^2.0.20",
+    "i18next-browser-languagedetector": "0.0.14",
+    "i18next-express-middleware": "^0.1.2",
+    "i18next-node-fs-backend": "0.0.6",
+    "i18next-xhr-backend": "^0.2.0",
     "jade": "0.35.x",
     "jsuri": "^1.3.1",
-    "lodash": "3.10.x",
+    "lodash": "^4.0.0",
     "method-override": "1.0.x",
     "moment": "^2.10.6",
     "morgan": "1.0.x",
@@ -69,6 +74,7 @@
     "normalize.css": "^3.0.3",
     "pkginfo": "0.3.x",
     "pubsub-js": "^1.5.2",
+    "range_check": "^1.2.0",
     "react": "^0.14.3",
     "react-addons-update": "^0.14.3",
     "react-bootstrap": "^0.28.1",
@@ -88,7 +94,7 @@
     "string-format": "0.2.x",
     "superagent": "^1.6.1",
     "three": "^0.73.0",
-    "webappengine": "^0.6.3",
+    "webappengine": "^0.7.0",
     "winston": "0.7.x"
   },
   "devDependencies": {
@@ -109,6 +115,7 @@
     "exorcist": "^0.4.0",
     "gulp": "^3.9.0",
     "gulp-autoprefixer": "^2.1.0",
+    "gulp-babel": "^6.1.1",
     "gulp-concat": "2.4.x",
     "gulp-csslint": "^0.2.0",
     "gulp-declare": "^0.3.0",
@@ -148,9 +155,8 @@
     "yargs": "^2.3.0"
   },
   "browser": {
-    "i18next": "./web/vendor/i18next/i18next.js",
-    "Sortable": "./web/vendor/Sortable/Sortable.js",
-    "stacktrace": "./web/vendor/stacktrace-js/stacktrace.js"
+    "Sortable": "./src/web/vendor/Sortable/Sortable.js",
+    "stacktrace": "./src/web/vendor/stacktrace-js/stacktrace.js"
   },
   "browserify-shim": "./config/shim.js"
 }

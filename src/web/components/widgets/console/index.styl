@@ -1,0 +1,30 @@
+[data-component="Widgets/ConsoleWidget"] {
+    .widget-content {
+        position: relative;
+        padding: 10px;
+
+        .console-input {
+            margin-bottom: 10px;
+
+            button.dropdown-toggle {
+                height: 30px; // hack for react-bootstrap
+            }
+        }
+
+        .console-window {
+            font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+            //overflow: auto;
+            //height: 250px;
+            //min-height: 250px;
+            //max-height: 400px;
+            background-color: #000;
+            color: #FFF;
+            //padding: 5px 10px;
+
+            .infinite-list-item {
+                white-space: nowrap;
+                height: 20px;
+            }
+        }
+    }
+}
