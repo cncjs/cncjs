@@ -60,13 +60,34 @@ class CNCController {
     listAllPorts() {
         socket.emit('list');
     }
-    command(cmd) {
+    // @param {string} cmd The command string
+    // @example Example Usage
+    // - Load G-code
+    //   controller.command('load', name, gcode, callback)
+    // - Unload G-code
+    //   controller.command('unload')
+    // - Start sending G-code
+    //   controller.command('start')
+    // - Stop sending G-code
+    //   controller.command('stop')
+    // - Pause/Feed Hold
+    //   controller.command('pause')
+    // - Resume/Cycle Start
+    //   controller.command('resume')
+    // - Reset
+    //   controller.command('reset')
+    // - Homing
+    //   controller.command('homing')
+    // - Unlock
+    //   controller.command('unlock')
+    command(cmd, ...args) {
         let { port } = this;
         if (!port) {
             return;
         }
-        socket.emit('command', port, cmd);
+        socket.emit.apply(socket, ['command', port, cmd].concat(args));
     }
+    // @param {string} data The data to write
     write(data) {
         let { port } = this;
         if (!port) {
@@ -74,6 +95,7 @@ class CNCController {
         }
         socket.emit('write', port, data);
     }
+    // @param {string} data The data to write
     writeln(data) {
         data = ('' + data).trim() + '\n';
         this.write(data);
