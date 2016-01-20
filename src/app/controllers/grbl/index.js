@@ -50,7 +50,7 @@ class GrblController {
             let { gcode } = res;
 
             if (this.isClose()) {
-                log.error('Grbl: Serial port not accessible:', { port: this.options.port });
+                log.error('[grbl] Serial port "%s" not accessible', this.options.port);
                 return;
             }
 
@@ -270,16 +270,16 @@ class GrblController {
             });
 
             this.serialport.on('disconnect', (err) => {
-                log.warn('Grbl: Disconnected from serial port \'%s\':', port, err);
+                log.warn('[grbl] Disconnected from serial port "%s":', port, err);
                 this.destroy();
             });
 
             this.serialport.on('error', (err) => {
-                log.error('Grbl: Unexpected error while reading/writing serial port \'%s\':', port, err);
+                log.error('[grbl] Unexpected error while reading/writing serial port "%s":', port, err);
                 this.destroy();
             });
 
-            log.debug('Grbl: Connected to serial port \'%s\'', port);
+            log.debug('[grbl] Connected to serial port "%s"', port);
 
             // Clear state
             this.clearState();
@@ -336,14 +336,15 @@ class GrblController {
                         return;
                     }
 
-                    log.debug('Grbl: Load G-code: name=%s, total=%d', this.gcode.name, this.gcode.total);
+                    log.debug('[grbl] Load G-code: name="%s", size=%d, total=%d',
+                        this.gcode.name, this.gcode.gcode.length, this.gcode.total);
 
                     this.setState({ isRunning: false });
                     callback();
                 });
             },
             'unload': () => {
-                log.debug('Grbl: Unload G-code: name=%s', this.gcode.name);
+                log.debug('[grbl] Unload G-code: name="%s"', this.gcode.name);
 
                 this.setState({ isRunning: false });
                 this.gcode.unload();
@@ -383,7 +384,7 @@ class GrblController {
         }[cmd];
 
         if (!handler) {
-            log.error('Grbl: Unknown command:', cmd);
+            log.error('[grbl] Unknown command:', cmd);
             return;
         }
 
