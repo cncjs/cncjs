@@ -55,11 +55,6 @@ class GCodeVisualizer {
         );
         let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
         let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
-
-        if (plane === 'G18') { // View xz-plane in the opposite direction
-            isClockwise = !isClockwise;
-        }
-
         let arcCurve = new THREE.ArcCurve(
             v0.x, // aX
             v0.y, // aY
@@ -76,11 +71,11 @@ class GCodeVisualizer {
             let point = points[i];
             let z = ((v2.z - v1.z) / points.length) * i + v1.z;
 
-            if (plane === 'G17') { // xy-plane
+            if (plane === 'G17') { // XY-plane
                 vertices.push(new THREE.Vector3(point.x, point.y, z));
-            } else if (plane === 'G18') { // xz-plane
-                vertices.push(new THREE.Vector3(point.x, z, point.y));
-            } else if (plane === 'G19') { // yz-plane
+            } else if (plane === 'G18') { // ZX-plane
+                vertices.push(new THREE.Vector3(point.y, z, point.x));
+            } else if (plane === 'G19') { // YZ-plane
                 vertices.push(new THREE.Vector3(z, point.x, point.y));
             }
         }
