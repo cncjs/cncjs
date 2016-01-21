@@ -7,6 +7,18 @@ const buildCombokeys = (key) => {
 };
 
 const commandKeys = [
+    { // Decrease step
+        cmd: 'DECREASE_STEP',
+        keys: buildCombokeys('[')
+    },
+    { // Increase step
+        cmd: 'INCREASE_STEP',
+        keys: buildCombokeys(']')
+    },
+    { // Reset step
+        cmd: 'RESET_STEP',
+        keys: buildCombokeys('=')
+    },
     { // X-left, Y-up
         cmd: 'X-Y+',
         keys: buildCombokeys('q')
