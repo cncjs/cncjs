@@ -1,9 +1,11 @@
+import _ from 'lodash';
+import i18n from '../../../lib/i18n';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import i18n from '../../../lib/i18n';
+import store from '../../../store';
+import combokeys from '../../../lib/combokeys';
 import { in2mm, mm2in } from '../../../lib/units';
 import PressAndHold from '../../common/PressAndHold';
-import store from '../../../store';
 import {
     METRIC_UNIT,
     IMPERIAL_UNIT,
@@ -21,7 +23,22 @@ class JogStepDistance extends React.Component {
         stepDistance: this.toUnitValue(this.props.unit, store.getState('widgets.axes.jog.stepDistance'))
     };
     unitDidChange = false;
+    actionHandlers = {
+        'INCREASE_STEP': ::this.increaseDistance,
+        'DECREASE_STEP': ::this.decreaseDistance,
+        'RESET_STEP': ::this.resetDistance
+    };
 
+    componentDidMount() {
+        _.each(this.actionHandlers, (callback, eventName) => {
+            combokeys.on(eventName, callback);
+        });
+    }
+    componentWillUnmount() {
+        _.each(this.actionHandlers, (callback, eventName) => {
+            combokeys.off(eventName, callback);
+        });
+    }
     componentWillReceiveProps(nextProps) {
         if (nextProps.unit !== this.props.unit) {
             // Set `this.unitDidChange` to true if the unit has changed
