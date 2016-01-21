@@ -1,22 +1,44 @@
-import pubsub from 'pubsub-js';
+import log from '../lib/log';
+import store from '../store';
 
 export const upload = (req, res) => {
     const { port, meta, gcode } = req.body;
 
     if (!port) {
-        res.send({ ok: false, msg: 'No port specified' });
+        res.status(400).send({
+            ok: false,
+            msg: 'No port specified'
+        });
         return;
     }
     if (!gcode) {
-        res.send({ ok: false, msg: 'Empty G-code' });
+        res.status(400).send({
+            ok: false,
+            msg: 'Empty G-code'
+        });
         return;
     }
 
-    pubsub.publish('gcode:upload', {
-        port: port,
-        meta: meta,
-        gcode: gcode
-    });
+    let controller = store.get('controllers["' + port + '"]');
+    if (!controller) {
+        res.status(400).send({
+            ok: false,
+            msg: 'Controller not found'
+        });
+        return;
+    }
 
-    res.send({ ok: true });
+    // Load G-code
+    const { name = '', size = 0 } = meta;
+    controller.command(null, 'load', name, gcode, (err) => {
+        if (err) {
+            res.status(500).send({
+                ok: false,
+                msg: 'Failed to load G-code: ' + err
+            });
+            return;
+        }
+
+        res.send({ ok: true });
+    });
 };

@@ -27,25 +27,6 @@ const ALLOWED_IP_RANGES = [
     'fe80::/10' // Link-local address
 ];
 
-pubsub.subscribe('gcode:upload', (msg, data) => {
-    let { port, meta, gcode } = data;
-    let { name = '', size = 0 } = meta;
-    let controller = store.get('controllers["' + port + '"]');
-
-    if (!controller) {
-        log.error('[cncserver] Controller not found:', { meta: meta });
-        return;
-    }
-
-    // Load G-code
-    let socket = null;
-    controller.command(socket, 'load', name, gcode, (err) => {
-        if (err) {
-            log.error('[cncserver] Failed to load G-code: name="%s":', name, err);
-        }
-    });
-});
-
 class CNCServer {
     server = null;
     sockets = [];
