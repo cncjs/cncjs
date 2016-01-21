@@ -94,7 +94,7 @@
     "string-format": "0.2.x",
     "superagent": "^1.6.1",
     "three": "^0.73.0",
-    "webappengine": "^0.7.0",
+    "webappengine": "^0.7.1",
     "winston": "0.7.x"
   },
   "devDependencies": {
