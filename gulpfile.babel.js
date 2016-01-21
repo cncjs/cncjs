@@ -37,4 +37,5 @@ _.each(tasks, (task, relativePath) => {
     });
 });
 
-gulp.task('default', ['build']);
+gulp.task('default', ['build-production']);
+gulp.task('dev', ['build-development']);

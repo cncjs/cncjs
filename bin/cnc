@@ -24,8 +24,8 @@ if (program.debug) {
     process.env.NODE_ENV = 'development';
 }
 
-var settings = require('../app/config/settings');
-var server = require('../app/server');
+var settings = require('../dist/app/config/settings');
+var cncserver = require('../dist/app/cncserver');
 
 // Overrides defaults
 _.set(settings, 'port', program.port || settings.port);
@@ -60,10 +60,10 @@ var options = {
             type: 'server',
             route: '/',
             // An absolute path is recommended to use
-            server: path.resolve(__dirname, '../app/app')
+            server: path.resolve(__dirname, '../dist/app/app')
         }
     ]
 };
 
 webappengine(options)
-    .on('ready', server);
+    .on('ready', cncserver);

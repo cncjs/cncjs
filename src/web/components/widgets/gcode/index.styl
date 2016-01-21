@@ -1,0 +1,53 @@
+[data-component="Widgets/GCodeWidget"] {
+    .widget-content {
+        position: relative;
+        padding: 10px;
+
+        .gcode-table {
+            .public_fixedDataTable_topShadow {
+                background: none;
+            }
+            .public_fixedDataTable_bottomShadow {
+                background: none;
+            }
+            .public_fixedDataTable_header {
+                border: none;
+            }
+        }
+
+        .gcode-table + .gcode-stats {
+            border-top: none;
+        }
+
+        .gcode-stats {
+            padding: 0 5px;
+
+            table[data-table="dimension"] {
+                width: 100%;
+
+                thead > tr > th.axis,
+                tbody > tr > td.axis {
+                    width: 1%;
+                }
+                tbody > tr > td {
+                    text-align: right;
+                    &.axis {
+                        text-align: center;
+                    }
+                }
+            }
+
+            .row > [class^="col-"] {
+                padding-right: 10px;
+                padding-left: 10px;
+            }
+
+            .row:nth-child(odd) {
+                margin-bottom: 10px;
+            }
+            .row:last-child {
+                margin-bottom: 0;
+            }
+        }
+    }
+}

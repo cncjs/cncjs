@@ -2,22 +2,23 @@ import gulp from 'gulp';
 import runSequence from 'run-sequence';
 
 export default (options) => {
-    gulp.task('b', (callback) => {
+    gulp.task('build-development', (callback) => {
         runSequence(
-            'styles',
-            'browserify'
+            ['stylus', 'csslint'],
+            ['babel', 'browserify'],
+            'dist'
         );
     });
 
-    gulp.task('build', (callback) => {
+    gulp.task('build-production', (callback) => {
         runSequence('clean',
             'bower',
             ['eslint', 'jscs', 'jshint'],
-            ['styles'],
-            'browserify',
+            ['stylus', 'csslint'],
+            ['babel', 'browserify'],
             'i18next',
+            'dist',
             callback
         );
     });
-    gulp.task('styles', ['stylus', 'csslint']);
 };

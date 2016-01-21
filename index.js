@@ -1,6 +1,6 @@
 var path = require('path');
 var webappengine = require('webappengine');
-var server = require('./app/server');
+var cncserver = require('./dist/app/cncserver');
 var options = {
     port: 8000,
     routes: [
@@ -8,10 +8,10 @@ var options = {
             type: 'server',
             route: '/',
             // An absolute path is recommended to use
-            server: path.resolve(__dirname, 'app/app')
+            server: path.resolve(__dirname, 'dist/app/app')
         }
     ]
 };
 
 webappengine(options)
-    .on('ready', server);
+    .on('ready', cncserver);

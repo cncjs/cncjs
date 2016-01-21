@@ -2,21 +2,13 @@ import gulp from 'gulp';
 import del from 'del';
 
 export default (options) => {
-    gulp.task('clean', ['clean-vendor', 'clean-scripts', 'clean-styles', 'clean-templates']);
-    gulp.task('clean-vendor', (callback) => {
+    gulp.task('clean', ['clean-src', 'clean-dist']);
+    gulp.task('clean-src', (callback) => {
         let cleanConfig = options.config.clean;
-        del(cleanConfig.vendor, callback);
+        del(cleanConfig.src, callback);
     });
-    gulp.task('clean-scripts', (callback) => {
+    gulp.task('clean-dist', (callback) => {
         let cleanConfig = options.config.clean;
-        del(cleanConfig.scripts, callback);
-    });
-    gulp.task('clean-styles', (callback) => {
-        let cleanConfig = options.config.clean;
-        del(cleanConfig.styles, callback);
-    });
-    gulp.task('clean-templates', (callback) => {
-        let cleanConfig = options.config.clean;
-        del(cleanConfig.templates, callback);
+        del(cleanConfig.dist, callback);
     });
 };

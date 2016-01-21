@@ -1,1 +1,5 @@
-.gitignore
+log
+tmp
+npm-debug.log
+/coverage
+/.nyc_output
