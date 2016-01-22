@@ -1,5 +1,6 @@
 import events from 'events';
 import Mousetrap from 'mousetrap';
+import log from './log';
 
 const buildCombokeys = (key) => {
     const keys = ['ctrl', 'alt', 'command'];
@@ -7,65 +8,49 @@ const buildCombokeys = (key) => {
 };
 
 const commandKeys = [
-    { // Decrease step
-        cmd: 'DECREASE_STEP',
-        keys: buildCombokeys('[')
+    { // Cycle Start
+        cmd: 'CYCLE_START',
+        keys: '!'
     },
-    { // Increase step
-        cmd: 'INCREASE_STEP',
-        keys: buildCombokeys(']')
+    { // Feed Hold
+        cmd: 'FEED_HOLD',
+        keys: '~'
     },
-    { // Reset step
-        cmd: 'RESET_STEP',
-        keys: buildCombokeys('=')
+    { // Homing
+        cmd: 'HOMING',
+        keys: ['ctrl','alt','command','h'].join('+')
     },
-    { // X-left, Y-up
-        cmd: 'X-Y+',
-        keys: buildCombokeys('q')
+    { // Unlock
+        cmd: 'UNLOCK',
+        keys: ['ctrl','alt','command','u'].join('+')
     },
-    { // Y-up
-        cmd: 'Y+',
-        keys: buildCombokeys('w')
+    { // Reset
+        cmd: 'RESET',
+        keys: ['ctrl','alt','command','r'].join('+')
     },
-    { // X-right, Y-up
-        cmd: 'X+Y+',
-        keys: buildCombokeys('e')
+    { // Increment Button
+        cmd: 'INCREMENT_BUTTON',
+        keys: '^'
     },
-    { // X-left
-        cmd: 'X-',
-        keys: buildCombokeys('a')
+    { // Forward Button
+        cmd: 'FORWARD_BUTTON',
+        keys: '>'
     },
-    { // X-zero, Y-zero
-        cmd: 'X0Y0',
-        keys: buildCombokeys('s')
+    { // Backward Button
+        cmd: 'BACKWARD_BUTTON',
+        keys: '<'
     },
-    { // X-right
-        cmd: 'X+',
-        keys: buildCombokeys('d')
+    { // X-Axis Button
+        cmd: 'X_AXIS_BUTTON',
+        keys: ['ctrl','alt','command','x'].join('+')
     },
-    { // X-left, Y-down
-        cmd: 'X-Y-',
-        keys: buildCombokeys('z')
+    { // Y-Axis Button
+        cmd: 'Y_AXIS_BUTTON',
+        keys: ['ctrl','alt','command','y'].join('+')
     },
-    { // Y-down
-        cmd: 'Y-',
-        keys: buildCombokeys('x')
-    },
-    { // X-right, Y-down
-        cmd: 'X+Y-',
-        keys: buildCombokeys('c')
-    },
-    { // Z-up
-        cmd: 'Z+',
-        keys: buildCombokeys('r')
-    },
-    { // Z-zero
-        cmd: 'Z0',
-        keys: buildCombokeys('f')
-    },
-    { // Z-down
-        cmd: 'Z-',
-        keys: buildCombokeys('v')
+    { // Z-Axis Button
+        cmd: 'Z_AXIS_BUTTON',
+        keys: ['ctrl','alt','command','z'].join('+')
     }
 ];
 
@@ -89,6 +74,7 @@ class Combokeys extends events.EventEmitter {
         commandKeys.forEach((o) => {
             const { cmd, keys } = o;
             const callback = () => {
+                log.debug('Combokeys:', cmd, keys);
                 this.emit(cmd);
             };
             Mousetrap.bind(keys, callback);
