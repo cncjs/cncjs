@@ -28,28 +28,28 @@ const commandKeys = [
         cmd: 'RESET',
         keys: ['ctrl','alt','command','r'].join('+')
     },
-    { // Increment Button
-        cmd: 'INCREMENT_BUTTON',
+    { // Jog Lever Switch
+        cmd: 'JOG_LEVER_SWITCH',
         keys: '^'
     },
-    { // Forward Button
-        cmd: 'FORWARD_BUTTON',
+    { // Jog Forward
+        cmd: 'JOG_FORWARD',
         keys: '>'
     },
-    { // Backward Button
-        cmd: 'BACKWARD_BUTTON',
+    { // Jog Backward
+        cmd: 'JOG_BACKWARD',
         keys: '<'
     },
-    { // X-Axis Button
-        cmd: 'X_AXIS_BUTTON',
+    { // X-Axis
+        cmd: 'X_AXIS',
         keys: ['ctrl','alt','command','x'].join('+')
     },
-    { // Y-Axis Button
-        cmd: 'Y_AXIS_BUTTON',
+    { // Y-Axis
+        cmd: 'Y_AXIS',
         keys: ['ctrl','alt','command','y'].join('+')
     },
-    { // Z-Axis Button
-        cmd: 'Z_AXIS_BUTTON',
+    { // Z-Axis
+        cmd: 'Z_AXIS',
         keys: ['ctrl','alt','command','z'].join('+')
     }
 ];
