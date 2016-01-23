@@ -26,7 +26,7 @@ class JogPad extends React.Component {
             let jog = {
                 'x': () => this.jog({ X: distance }),
                 'y': () => this.jog({ Y: distance }),
-                'z': () => this.jog({ Z: distance }),
+                'z': () => this.jog({ Z: distance })
             }[this.state.selectedAxis];
 
             jog && jog();
@@ -36,7 +36,7 @@ class JogPad extends React.Component {
             let jog = {
                 'x': () => this.jog({ X: -distance }),
                 'y': () => this.jog({ Y: -distance }),
-                'z': () => this.jog({ Z: -distance }),
+                'z': () => this.jog({ Z: -distance })
             }[this.state.selectedAxis];
 
             jog && jog();
