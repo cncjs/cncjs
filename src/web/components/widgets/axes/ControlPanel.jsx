@@ -1,11 +1,10 @@
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import JogPad from './JogPad';
-import JogStepDistance from './JogStepDistance';
+import JogDistance from './JogDistance';
 import MotionControls from './MotionControls';
 import {
-    ACTIVE_STATE_IDLE,
-    STEP_DISTANCE_DEFAULT
+    ACTIVE_STATE_IDLE
 } from './constants';
 
 class ControlPanel extends React.Component {
@@ -49,7 +48,7 @@ class ControlPanel extends React.Component {
                 </div>
                 <div className="row no-gutter">
                     <div className="col-sm-12">
-                        <JogStepDistance
+                        <JogDistance
                             unit={unit}
                         />
                     </div>

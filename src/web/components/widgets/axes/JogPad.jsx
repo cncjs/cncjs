@@ -17,52 +17,38 @@ class JogPad extends React.Component {
         unit: React.PropTypes.string,
         activeState: React.PropTypes.string
     };
+    state = {
+        selectedAxis: '' // FIXME
+    };
     actionHandlers = {
-        'Z+': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ Z: stepDistance });
+        'JOG_FORWARD': () => {
+            let distance = this.getJogDistance();
+            let jog = {
+                'x': () => this.jog({ X: distance }),
+                'y': () => this.jog({ Y: distance }),
+                'z': () => this.jog({ Z: distance })
+            }[this.state.selectedAxis];
+
+            jog && jog();
         },
-        'Z0': () => {
-            this.move({ Z: 0 });
+        'JOG_BACKWARD': () => {
+            let distance = this.getJogDistance();
+            let jog = {
+                'x': () => this.jog({ X: -distance }),
+                'y': () => this.jog({ Y: -distance }),
+                'z': () => this.jog({ Z: -distance })
+            }[this.state.selectedAxis];
+
+            jog && jog();
         },
-        'Z-': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ Z: -stepDistance });
+        'X_AXIS': () => {
+            this.setState({ selectedAxis: 'x' });
         },
-        'X-Y+': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ X: -stepDistance, Y: stepDistance });
+        'Y_AXIS': () => {
+            this.setState({ selectedAxis: 'y' });
         },
-        'Y+': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ Y: stepDistance });
-        },
-        'X+Y+': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ X: stepDistance, Y: stepDistance });
-        },
-        'X-': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ X: -stepDistance });
-        },
-        'X0Y0': () => {
-            this.move({ X: 0, Y: 0 });
-        },
-        'X+': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ X: stepDistance });
-        },
-        'X-Y-': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ X: -stepDistance, Y: -stepDistance });
-        },
-        'Y-': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ Y: -stepDistance });
-        },
-        'X+Y-': () => {
-            const stepDistance = this.getStepDistance();
-            this.jog({ X: stepDistance, Y: -stepDistance });
+        'Z_AXIS': () => {
+            this.setState({ selectedAxis: 'z' });
         }
     };
 
@@ -79,24 +65,27 @@ class JogPad extends React.Component {
     invoke(action) {
         return _.result(this.actionHandlers, action);
     }
-    jog(params) {
-        controller.writeln('G91'); // relative distance
-        this.move(params);
-        controller.writeln('G90'); // absolute distance
-    }
-    move(params) {
-        params = params || {};
+    jog(params = {}) {
         let s = _.map(params, (value, letter) => {
             return '' + letter + value;
         }).join(' ');
-
+        controller.writeln('G91 G0 ' + s); // relative distance
+        controller.writeln('G90'); // absolute distance
+    }
+    move(params = {}) {
+        let s = _.map(params, (value, letter) => {
+            return '' + letter + value;
+        }).join(' ');
         controller.writeln('G0 ' + s);
     }
-    getStepDistance() {
+    getJogDistance() {
         let { unit } = this.props;
-        let stepDistance = store.getState('widgets.axes.jog.stepDistance');
-        stepDistance = this.toUnitValue(unit, stepDistance);
-        return stepDistance;
+        let selectedDistance = store.getState('widgets.axes.jog.selectedDistance');
+        let customDistance = store.getState('widgets.axes.jog.customDistance');
+        if (selectedDistance) {
+            return Number(selectedDistance) || 0;
+        }
+        return this.toUnitValue(unit, customDistance);
     }
     toUnitValue(unit, val) {
         val = Number(val) || 0;
@@ -110,7 +99,7 @@ class JogPad extends React.Component {
         return val;
     }
     render() {
-        let { port, activeState, stepDistance } = this.props;
+        let { port, activeState, distance } = this.props;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
