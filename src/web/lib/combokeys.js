@@ -10,51 +10,47 @@ const buildCombokeys = (key) => {
 const commandKeys = [
     { // Feed Hold
         cmd: 'FEED_HOLD',
-        keys: ['ctrl','alt','shift','1'].join('+')
+        keys: '!'
     },
     { // Resume
         cmd: 'RESUME',
-        keys: ['ctrl','alt','shift','`'].join('+')
+        keys: '~'
     },
     { // Homing
         cmd: 'HOMING',
-        keys: ['ctrl','alt','shift','h'].join('+')
+        keys: ['ctrl','alt','command','h'].join('+')
     },
     { // Unlock
         cmd: 'UNLOCK',
-        keys: ['ctrl','alt','shift','u'].join('+')
+        keys: ['ctrl','alt','command','u'].join('+')
     },
     { // Reset
         cmd: 'RESET',
-        keys: ['ctrl','alt','shift','r'].join('+')
+        keys: ['ctrl','alt','command','r'].join('+')
     },
     { // Jog Lever Switch
         cmd: 'JOG_LEVER_SWITCH',
-        keys: ['ctrl','alt','shift','6'].join('+')
+        keys: ['ctrl','alt','command','='].join('+')
     },
     { // Jog Forward
         cmd: 'JOG_FORWARD',
-        keys: ['ctrl','alt','shift','.'].join('+')
+        keys: ['ctrl','alt','command',']'].join('+')
     },
     { // Jog Backward
         cmd: 'JOG_BACKWARD',
-        keys: ['ctrl','alt','shift',','].join('+')
-    },
-    { // Jog Stop
-        cmd: 'JOG_STOP',
-        keys: ['ctrl','alt','shift','/'].join('+')
+        keys: ['ctrl','alt','command','['].join('+')
     },
     { // X-Axis
         cmd: 'X_AXIS',
-        keys: ['ctrl','alt','shift','x'].join('+')
+        keys: ['ctrl','alt','command','x'].join('+')
     },
     { // Y-Axis
         cmd: 'Y_AXIS',
-        keys: ['ctrl','alt','shift','y'].join('+')
+        keys: ['ctrl','alt','command','y'].join('+')
     },
     { // Z-Axis
         cmd: 'Z_AXIS',
-        keys: ['ctrl','alt','shift','z'].join('+')
+        keys: ['ctrl','alt','command','z'].join('+')
     }
 ];
 
