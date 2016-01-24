@@ -143,27 +143,27 @@ class JogDistance extends React.Component {
         let classes = {
             '1': classNames(
                 'btn',
-                { 'btn-inverse': selectedDistance === '1' },
+                { 'btn-select': selectedDistance === '1' },
                 { 'btn-default': selectedDistance !== '1' }
             ),
             '0.1': classNames(
                 'btn',
-                { 'btn-inverse': selectedDistance === '0.1' },
+                { 'btn-select': selectedDistance === '0.1' },
                 { 'btn-default': selectedDistance !== '0.1' }
             ),
             '0.01': classNames(
                 'btn',
-                { 'btn-inverse': selectedDistance === '0.01' },
+                { 'btn-select': selectedDistance === '0.01' },
                 { 'btn-default': selectedDistance !== '0.01' }
             ),
             '0.001': classNames(
                 'btn',
-                { 'btn-inverse': selectedDistance === '0.001' },
+                { 'btn-select': selectedDistance === '0.001' },
                 { 'btn-default': selectedDistance !== '0.001' }
             ),
             'custom': classNames(
                 'btn',
-                { 'btn-inverse': isCustomDistanceSelected },
+                { 'btn-select': isCustomDistanceSelected },
                 { 'btn-default': !isCustomDistanceSelected }
             )
         };
@@ -176,7 +176,7 @@ class JogDistance extends React.Component {
                         <button
                             type="button"
                             className={classes['1']}
-                            title={i18n._('1 unit')}
+                            title={'1 ' + unit}
                             onClick={() => this.changeSelectedDistance('1')}
                         >
                             1
@@ -184,7 +184,7 @@ class JogDistance extends React.Component {
                         <button
                             type="button"
                             className={classes['0.1']}
-                            title={i18n._('0.1 units')}
+                            title={'0.1 ' + unit}
                             onClick={() => this.changeSelectedDistance('0.1')}
                         >
                             0.1
@@ -192,7 +192,7 @@ class JogDistance extends React.Component {
                         <button
                             type="button"
                             className={classes['0.01']}
-                            title={i18n._('0.01 units')}
+                            title={'0.01 ' + unit}
                             onClick={() => this.changeSelectedDistance('0.01')}
                         >
                             0.01
@@ -200,7 +200,7 @@ class JogDistance extends React.Component {
                         <button
                             type="button"
                             className={classes['0.001']}
-                            title={i18n._('0.001 units')}
+                            title={'0.001 ' + unit}
                             onClick={() => this.changeSelectedDistance('0.001')}
                         >
                             0.001
