@@ -28,7 +28,7 @@ const settings = {
                 handleExceptions: true
             },
             File: {
-                level: 'debug',
+                level: 'info',
                 silent: false,
                 colorize: false,
                 timestamp: true, // or function()
