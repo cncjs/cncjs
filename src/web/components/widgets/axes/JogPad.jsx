@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import combokeys from '../../../lib/combokeys';
@@ -22,36 +23,55 @@ class JogPad extends React.Component {
     };
     actionHandlers = {
         'JOG_FORWARD': () => {
-            let distance = this.getJogDistance();
-            let jog = {
-                'x': () => this.jog({ X: distance }),
-                'y': () => this.jog({ Y: distance }),
-                'z': () => this.jog({ Z: distance })
-            }[this.state.selectedAxis];
+            let { port, activeState } = this.props;
+            let canJog = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
-            jog && jog();
+            if (canJog) {
+                let distance = this.getJogDistance();
+                let jog = {
+                    'x': () => this.jog({ X: distance }),
+                    'y': () => this.jog({ Y: distance }),
+                    'z': () => this.jog({ Z: distance })
+                }[this.state.selectedAxis];
+
+                jog && jog();
+            }
         },
         'JOG_BACKWARD': () => {
-            let distance = this.getJogDistance();
-            let jog = {
-                'x': () => this.jog({ X: -distance }),
-                'y': () => this.jog({ Y: -distance }),
-                'z': () => this.jog({ Z: -distance })
-            }[this.state.selectedAxis];
+            let { port, activeState } = this.props;
+            let canJog = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
-            jog && jog();
-        },
-        'JOG_STOP': () => {
-            // TODO
+            if (canJog) {
+                let distance = this.getJogDistance();
+                let jog = {
+                    'x': () => this.jog({ X: -distance }),
+                    'y': () => this.jog({ Y: -distance }),
+                    'z': () => this.jog({ Z: -distance })
+                }[this.state.selectedAxis];
+
+                jog && jog();
+            }
         },
         'X_AXIS': () => {
-            this.setState({ selectedAxis: 'x' });
+            if (this.state.selectedAxis === 'x') {
+                this.setState({ selectedAxis: '' });
+            } else {
+                this.setState({ selectedAxis: 'x' });
+            }
         },
         'Y_AXIS': () => {
-            this.setState({ selectedAxis: 'y' });
+            if (this.state.selectedAxis === 'y') {
+                this.setState({ selectedAxis: '' });
+            } else {
+                this.setState({ selectedAxis: 'y' });
+            }
         },
         'Z_AXIS': () => {
-            this.setState({ selectedAxis: 'z' });
+            if (this.state.selectedAxis === 'z') {
+                this.setState({ selectedAxis: '' });
+            } else {
+                this.setState({ selectedAxis: 'z' });
+            }
         }
     };
 
@@ -99,8 +119,23 @@ class JogPad extends React.Component {
         return val;
     }
     render() {
+        let { selectedAxis } = this.state;
         let { port, activeState, distance } = this.props;
         let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        let classes = {
+            'jog-direction-x': classNames(
+                'jog-direction',
+                { 'jog-direction-highlight': selectedAxis === 'x' }
+            ),
+            'jog-direction-y': classNames(
+                'jog-direction',
+                { 'jog-direction-highlight': selectedAxis === 'y' }
+            ),
+            'jog-direction-z': classNames(
+                'jog-direction',
+                { 'jog-direction-highlight': selectedAxis === 'z' }
+            )
+        };
 
         return (
             <div className="jog-pad">
@@ -132,7 +167,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move Y+')}
                                 >
-                                    <span className="jog-direction">Y+</span>
+                                    <span className={classes['jog-direction-y']}>Y+</span>
                                 </button>
                             </td>
                             <td>
@@ -160,7 +195,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move Z+')}
                                 >
-                                    <span className="jog-direction">Z+</span>
+                                    <span className={classes['jog-direction-z']}>Z+</span>
                                 </button>
                             </td>
                         </tr>
@@ -176,7 +211,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X-')}
                                 >
-                                    <span className="jog-direction">X-</span>
+                                    <span className={classes['jog-direction-x']}>X-</span>
                                 </button>
                             </td>
                             <td>
@@ -201,7 +236,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+')}
                                 >
-                                    <span className="jog-direction">X+</span>
+                                    <span className={classes['jog-direction-x']}>X+</span>
                                 </button>
                             </td>
                             <td>
@@ -242,7 +277,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move Y-')}
                                 >
-                                    <span className="jog-direction">Y-</span>
+                                    <span className={classes['jog-direction-y']}>Y-</span>
                                 </button>
                             </td>
                             <td>
@@ -270,7 +305,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move Z-')}
                                 >
-                                    <span className="jog-direction">Z-</span>
+                                    <span className={classes['jog-direction-z']}>Z-</span>
                                 </button>
                             </td>
                         </tr>
