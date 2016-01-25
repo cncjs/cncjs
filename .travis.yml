@@ -1,4 +1,7 @@
 sudo: required
+os:
+  - linux
+  - osx
 services:
   - docker
 language: node_js
