@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "0.15.2",
+  "version": "0.15.3",
   "description": "CNC.js is a web-based CNC milling controller for the Arduino running GRBL",
   "dependencies": {
     "html5shiv": "~3.7.3",
