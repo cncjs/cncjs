@@ -1,7 +1,6 @@
 sudo: required
 os:
   - linux
-  - osx
 services:
   - docker
 language: node_js
@@ -22,8 +21,6 @@ addons:
       - ubuntu-toolchain-r-test
     packages:
       - g++-4.8
-before_install:
-  - git clone https://github.com/creationix/nvm.git /tmp/.nvm; source /tmp/.nvm/nvm.sh
 after_success:
   - npm run coveralls
   - npm run coverage-clean
