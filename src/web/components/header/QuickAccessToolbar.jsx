@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import combokeys from '../../lib/combokeys';
 import i18n from '../../lib/i18n';

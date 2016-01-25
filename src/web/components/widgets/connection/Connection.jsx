@@ -19,11 +19,13 @@ class Connection extends React.Component {
         connected: false,
         ports: [],
         baudrates: [
-            9600,
-            19200,
-            38400,
+            115200,
             57600,
-            115200
+            38400,
+            19200,
+            9600,
+            4800,
+            2400
         ],
         port: '',
         baudrate: store.getState('widgets.connection.baudrate'),
