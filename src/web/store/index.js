@@ -52,7 +52,8 @@ const defaultState = {
         },
         axes: {
             jog: {
-                stepDistance: 10
+                selectedDistance: '1',
+                customDistance: 10
             }
         },
         probe: {

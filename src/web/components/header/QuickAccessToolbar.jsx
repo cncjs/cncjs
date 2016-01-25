@@ -1,8 +1,38 @@
+import _ from 'lodash';
 import React from 'react';
+import combokeys from '../../lib/combokeys';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
 
 class QuickAccessToolbar extends React.Component {
+    actionHandlers = {
+        'FEED_HOLD': () => {
+            controller.command('feedhold');
+        },
+        'RESUME': () => {
+            controller.command('cyclestart');
+        },
+        'HOMING': () => {
+            controller.command('homing');
+        },
+        'UNLOCK': () => {
+            controller.command('unlock');
+        },
+        'RESET': () => {
+            controller.command('reset');
+        }
+    };
+
+    componentDidMount() {
+        _.each(this.actionHandlers, (callback, eventName) => {
+            combokeys.on(eventName, callback);
+        });
+    }
+    componentWillUnmount() {
+        _.each(this.actionHandlers, (callback, eventName) => {
+            combokeys.off(eventName, callback);
+        });
+    }
     handleCycleStart() {
         controller.command('cyclestart');
     }
