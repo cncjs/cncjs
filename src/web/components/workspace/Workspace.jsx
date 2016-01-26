@@ -8,6 +8,7 @@ import request from 'superagent';
 import Sortable from 'Sortable';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
+import store from '../../store';
 import {
     AxesWidget,
     ConnectionWidget,
@@ -74,6 +75,25 @@ class Workspace extends React.Component {
         primary: null,
         secondary: null
     };
+    storeEvents = {
+        'change': (state) => {
+            const primaryContainer = _.filter(this.state.primaryContainer, (o) => {
+                let widget = o.key;
+                let visibility = store.get('widgets["' + widget + '"].state.visibility');
+                return visibility !== 'hidden';
+            });
+            const secondaryContainer = _.filter(this.state.secondaryContainer, (o) => {
+                let widget = o.key;
+                let visibility = store.get('widgets["' + widget + '"].state.visibility');
+                return visibility !== 'hidden';
+            });
+
+            this.setState({
+                primaryContainer: primaryContainer,
+                secondaryContainer: secondaryContainer
+            });
+        }
+    };
 
     componentDidMount() {
         this.subscribe();
@@ -107,24 +127,49 @@ class Workspace extends React.Component {
                 .value();
 
             this.setState({
-                defaultContainer: _.map(defaultList, (id) => {
-                    return getWidgetElementById(id);
-                }),
-                primaryContainer: _.map(primaryList, (id) => {
-                    return getWidgetElementById(id);
-                }),
-                secondaryContainer: _.map(secondaryList, (id) => {
-                    return getWidgetElementById(id);
-                })
+                defaultContainer: _(defaultList)
+                    .filter((id) => {
+                        const visibility = store.get('widgets["' + id + '"].state.visibility');
+                        return visibility !== 'hidden';
+                    })
+                    .map(id => getWidgetElementById(id))
+                    .value(),
+                primaryContainer: _(primaryList)
+                    .filter((id) => {
+                        const visibility = store.get('widgets["' + id + '"].state.visibility');
+                        return visibility !== 'hidden';
+                    })
+                    .map(id => getWidgetElementById(id))
+                    .value(),
+                secondaryContainer: _(secondaryList)
+                    .filter((id) => {
+                        const visibility = store.get('widgets["' + id + '"].state.visibility');
+                        return visibility !== 'hidden';
+                    })
+                    .map(id => getWidgetElementById(id))
+                    .value()
             });
         });
+
+        this.addStoreEvents();
+    }
+    componentWillUnmount() {
+        this.removeStoreEvents();
+        this.destroySortableGroups();
+        this.unsubscribe();
     }
     componentDidUpdate() {
         this.resizeVisualContainer();
     }
-    componentWillUnmount() {
-        this.destroySortableGroups();
-        this.unsubscribe();
+    addStoreEvents() {
+        _.each(this.storeEvents, (callback, eventName) => {
+            store.on(eventName, callback);
+        });
+    }
+    removeStoreEvents() {
+        _.each(this.storeEvents, (callback, eventName) => {
+            store.removeListener(eventName, callback);
+        });
     }
     subscribe() {
         this.pubsubTokens = [];
