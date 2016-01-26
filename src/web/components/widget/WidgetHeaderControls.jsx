@@ -16,7 +16,6 @@ class WidgetHeaderControls extends React.Component {
             this.setState({ isCollapsed: !isCollapsed });
             return;
         }
-
         if (btn === 'fullscreen') {
             let { isFullscreen } = this.state;
             this.props.handleClick(btn, !isFullscreen);
