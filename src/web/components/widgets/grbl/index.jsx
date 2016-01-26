@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
+import store from '../../../store';
 import { Widget, WidgetHeader, WidgetContent } from '../../widget';
 import Grbl from './Grbl';
 import './index.css';
@@ -18,6 +19,9 @@ class GrblWidget extends React.Component {
             },
             'fullscreen': () => {
                 this.setState({ isFullscreen: !!val });
+            },
+            'delete': () => {
+                store.set('widgets.grbl.state.visibility', 'hidden');
             }
         }[target];
 

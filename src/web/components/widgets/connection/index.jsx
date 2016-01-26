@@ -27,8 +27,7 @@ class ConnectionWidget extends React.Component {
         let title = i18n._('Connection');
         let controlButtons = [
             'toggle',
-            'fullscreen',
-            'delete'
+            'fullscreen'
         ];
         let classes = {
             widgetContent: classNames(

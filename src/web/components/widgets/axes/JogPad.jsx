@@ -82,7 +82,7 @@ class JogPad extends React.Component {
     }
     componentWillUnmount() {
         _.each(this.actionHandlers, (callback, eventName) => {
-            combokeys.off(eventName, callback);
+            combokeys.removeListener(eventName, callback);
         });
     }
     jog(params = {}) {
@@ -100,8 +100,8 @@ class JogPad extends React.Component {
     }
     getJogDistance() {
         let { unit } = this.props;
-        let selectedDistance = store.getState('widgets.axes.jog.selectedDistance');
-        let customDistance = store.getState('widgets.axes.jog.customDistance');
+        let selectedDistance = store.get('widgets.axes.jog.selectedDistance');
+        let customDistance = store.get('widgets.axes.jog.customDistance');
         if (selectedDistance) {
             return Number(selectedDistance) || 0;
         }

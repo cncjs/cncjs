@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
+import store from '../../../store';
 import { Widget, WidgetHeader, WidgetContent } from '../../widget';
 import Console from './Console';
 import './index.css';
@@ -18,6 +19,9 @@ class ConsoleWidget extends React.Component {
             },
             'fullscreen': () => {
                 this.setState({ isFullscreen: !!val });
+            },
+            'delete': () => {
+                store.set('widgets.console.state.visibility', 'hidden');
             }
         }[target];
 

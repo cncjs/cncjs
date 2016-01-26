@@ -18,11 +18,11 @@ class Probe extends React.Component {
         port: '',
         unit: METRIC_UNIT,
         activeState: ACTIVE_STATE_IDLE,
-        probeCommand: store.getState('widgets.probe.probeCommand'),
-        probeDepth: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.probeDepth')),
-        probeFeedrate: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.probeFeedrate')),
-        tlo: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.tlo')),
-        retractionDistance: this.toUnitValue(METRIC_UNIT, store.getState('widgets.probe.retractionDistance'))
+        probeCommand: store.get('widgets.probe.probeCommand'),
+        probeDepth: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.probeDepth')),
+        probeFeedrate: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.probeFeedrate')),
+        tlo: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.tlo')),
+        retractionDistance: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.retractionDistance'))
     };
     controllerEvents = {
         'grbl:status': (data) => {
@@ -60,7 +60,7 @@ class Probe extends React.Component {
                 probeFeedrate,
                 tlo,
                 retractionDistance
-            } = store.getState('widgets.probe');
+            } = store.get('widgets.probe');
 
             // unit conversion
             if (nextUnit === IMPERIAL_UNIT) {
@@ -121,11 +121,11 @@ class Probe extends React.Component {
         }
 
         // To save in mm
-        store.setState('widgets.probe.probeCommand', probeCommand);
-        store.setState('widgets.probe.probeDepth', Number(probeDepth));
-        store.setState('widgets.probe.probeFeedrate', Number(probeFeedrate));
-        store.setState('widgets.probe.tlo', Number(tlo));
-        store.setState('widgets.probe.retractionDistance', Number(retractionDistance));
+        store.set('widgets.probe.probeCommand', probeCommand);
+        store.set('widgets.probe.probeDepth', Number(probeDepth));
+        store.set('widgets.probe.probeFeedrate', Number(probeFeedrate));
+        store.set('widgets.probe.tlo', Number(tlo));
+        store.set('widgets.probe.retractionDistance', Number(retractionDistance));
     }
     subscribe() {
         this.pubsubTokens = [];
