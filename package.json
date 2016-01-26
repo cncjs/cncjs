@@ -83,7 +83,7 @@
     "react-datagrid": "^1.2.13",
     "react-dom": "^0.14.3",
     "react-dropzone": "^3.3.2",
-    "react-infinite": "^0.7.1",
+    "react-infinite": "^0.8.0",
     "react-router": "^1.0.2",
     "react-select": "^0.9.1",
     "request": "^2.53.0",
