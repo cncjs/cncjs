@@ -24,6 +24,8 @@ Then, install `cncjs` without `sudo`, or the `serialport` module may not install
 $ npm install -g cncjs
 ```
 
+If you want to run it on Raspberry Pi with Raspbian Wheezy, be sure to [install gcc/g++ 4.8](https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/) before npm install.
+
 Check out [Git Installation](https://github.com/cheton/cnc.js#git-installation) and [Docker Image Installation (x64 only)](https://github.com/cheton/cnc.js#docker-image-installation-x64-only) for other installation methods.
 
 ## Upgrade
