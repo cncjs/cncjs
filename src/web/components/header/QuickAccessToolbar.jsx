@@ -30,7 +30,7 @@ class QuickAccessToolbar extends React.Component {
     }
     componentWillUnmount() {
         _.each(this.actionHandlers, (callback, eventName) => {
-            combokeys.off(eventName, callback);
+            combokeys.removeListener(eventName, callback);
         });
     }
     handleCycleStart() {
