@@ -22,9 +22,9 @@ class GCodeTable extends React.Component {
                     cellRenderer: (cellData, cellDataKey, rowData, rowIndex, columnData, width) => {
                         let classes = {
                             icon: classNames(
-                                'glyphicon',
-                                { 'glyphicon-ok': cellData !== GCODE_STATUS.ERROR },
-                                { 'glyphicon-remove': cellData === GCODE_STATUS.ERROR }
+                                'fa',
+                                { 'fa-check': cellData !== GCODE_STATUS.ERROR },
+                                { 'fa-ban': cellData === GCODE_STATUS.ERROR }
                             )
                         };
                         let styles = {

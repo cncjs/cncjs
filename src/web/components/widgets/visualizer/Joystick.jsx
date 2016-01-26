@@ -18,70 +18,68 @@ class Joystick extends React.Component {
 
         return (
             <div className="joystick">
-                <table>
-                    <tbody>
-                        <tr>
-                            <td></td>
-                            <td className="noselect">
-                                <PressAndHold
-                                    className="joystick-button"
-                                    onClick={up}
-                                    title={i18n._('Move Up')}
-                                    disabled={!canClick}
-                                >
-                                    <i className="glyphicon glyphicon-chevron-up"></i>
-                                </PressAndHold>
-                            </td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td className="noselect">
-                                <PressAndHold
-                                    className="joystick-button"
-                                    onClick={left}
-                                    title={i18n._('Move Left')}
-                                    disabled={!canClick}
-                                >
-                                    <i className="glyphicon glyphicon-chevron-left"></i>
-                                </PressAndHold>
-                            </td>
-                            <td className="noselect">
-                                <PressAndHold
-                                    className="joystick-button"
-                                    onClick={center}
-                                    title={i18n._('Reset Position')}
-                                    disabled={!canClick}
-                                >
-                                    <i className="glyphicon glyphicon-unchecked"></i>
-                                </PressAndHold>
-                            </td>
-                            <td className="noselect">
-                                <PressAndHold
-                                    className="joystick-button"
-                                    onClick={right}
-                                    title={i18n._('Move Right')}
-                                    disabled={!canClick}
-                                >
-                                    <i className="glyphicon glyphicon-chevron-right"></i>
-                                </PressAndHold>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td></td>
-                            <td className="noselect">
-                                <PressAndHold
-                                    className="joystick-button"
-                                    onClick={down}
-                                    title={i18n._('Move Down')}
-                                    disabled={!canClick}
-                                >
-                                    <i className="glyphicon glyphicon-chevron-down"></i>
-                                </PressAndHold>
-                            </td>
-                            <td></td>
-                        </tr>
-                    </tbody>
-                </table>
+                <div className="container-fluid">
+                    <div className="row no-gutter">
+                        <div className="col-sm-4"></div>
+                        <div className="col-sm-4">
+                            <PressAndHold
+                                className="joystick-button"
+                                onClick={up}
+                                title={i18n._('Move Up')}
+                                disabled={!canClick}
+                            >
+                                <i className="fa fa-chevron-up"></i>
+                            </PressAndHold>
+                        </div>
+                        <div className="col-sm-4"></div>
+                    </div>
+                    <div className="row no-gutter">
+                        <div className="col-sm-4 texe-center">
+                            <PressAndHold
+                                className="joystick-button"
+                                onClick={left}
+                                title={i18n._('Move Left')}
+                                disabled={!canClick}
+                            >
+                                <i className="fa fa-chevron-left"></i>
+                            </PressAndHold>
+                        </div>
+                        <div className="col-sm-4">
+                            <PressAndHold
+                                className="joystick-button"
+                                onClick={center}
+                                title={i18n._('Reset Position')}
+                                disabled={!canClick}
+                            >
+                                <i className="fa fa-square-o"></i>
+                            </PressAndHold>
+                        </div>
+                        <div className="col-sm-4">
+                            <PressAndHold
+                                className="joystick-button"
+                                onClick={right}
+                                title={i18n._('Move Right')}
+                                disabled={!canClick}
+                            >
+                                <i className="fa fa-chevron-right"></i>
+                            </PressAndHold>
+                        </div>
+                    </div>
+                    <div className="row no-gutter">
+                        <div className="col-sm-4"></div>
+                        <div className="col-sm-4">
+                            <PressAndHold
+                                className="joystick-button"
+                                onClick={down}
+                                title={i18n._('Move Down')}
+                                disabled={!canClick}
+                            >
+                                <i className="fa fa-chevron-down" style={{verticalAlign: 'top'}}></i>
+                            </PressAndHold>
+                        </div>
+                        <div className="col-sm-4"></div>
+                    </div>
+                </div>
             </div>
         );
     }

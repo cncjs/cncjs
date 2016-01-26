@@ -198,7 +198,7 @@ class Workspace extends React.Component {
                     pull: true,
                     put: ['secondary']
                 },
-                handle: '.btn-drag',
+                handle: '.widget-header',
                 dataIdAttr: 'data-id',
                 onEnd: onEndCallback
             });
@@ -212,7 +212,7 @@ class Workspace extends React.Component {
                     pull: true,
                     put: ['primary']
                 },
-                handle: '.btn-drag',
+                handle: '.widget-header',
                 dataIdAttr: 'data-id',
                 onEnd: onEndCallback
             });

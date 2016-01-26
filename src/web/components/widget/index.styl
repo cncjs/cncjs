@@ -1,87 +1,82 @@
-$header-title-height = 32px
-$header-title-icon-size = 14px
-$header-toolbar-icon-size = 12px
-
 [data-component="Widget"] {
     .widget {
-        
-        &.widget-borderless {
-            border: none;
-        }
-
         background-color: #FFF;
-        border-color: #d0d0d0;
-        border-radius: 3px;
-        border-width: 1px;
-        border-style: solid;
         margin-bottom: 10px;
 
-        &.widget-no-header {
-            .widget-content {
-                .widget-title {
-                    margin-top: 0;
-                    font-size: 14px;
-                    color: #333;
-                }
+        &.widget-borderless {
+            .widget-header,
+            .widget-content,
+            .widget-footer {
+                border: none;
             }
         }
-        &.widget-no-content {
-            .widget-header {
-                border-bottom: none;
+
+        &.widget-fullscreen {
+            width: 100%;
+            height: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1050;
+        }
+        &.widget-fullscreen {
+            .widget-content {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+            .widget-header + .widget-content {
+                position: absolute;
+                top: 34px;
+                bottom: 0;
+                left: 0;
+                right: 0;
             }
         }
 
         .widget-header {
-            padding: 0 10px;
-            border-bottom: 1px solid #fff;
-            line-height: $header-title-height;
-
-            &.widget-header-default {
-                background-color: #fff;
-            }
-            &.widget-header-inverse {
-                background-color: #222;
-            }
+            background-color: #fafafa;
+            cursor: move;
+            padding-left: 10px;
+            border: 1px solid #ccc;
 
             .widget-header-title {
                 margin-top: 0;
                 font-size: 14px;
-                font-weight: bold;
-                color: #6a6a6a;
+                font-weight: 400;
+                line-height: 32px;
                 display: inline-block;
                 vertical-align: middle;
                 margin-bottom: 0;
 
                 .glyphicon {
-                    font-size: $header-title-icon-size;
+                    font-size: 14px;
                     top: 0;
                     vertical-align: middle;
                     margin-right: 5px;
                 }
             }
 
-            .btn-group > a,
-            .btn-group .dropdown-toggle .icon {
-                color: #838383;
-            }
-            .btn-group > a:hover,
-            .btn-group > a:focus,
-            .btn-group .dropdown-toggle .icon:hover,
-            .btn-group .dropdown-toggle .icon:focus {
-                color: #505050
-            }
             .btn .glyphicon {
                 position: relative;
                 font-size: 12px;
                 line-height: 1;
             }
 
-            .widget-header-toolbar {
+            .widget-header-controls {
                 float: right;
                 width: auto;
-                margin: 6px 0 0 10px;
 
-                &.btn-group {
+                a {
+                    text-decoration: none;
+                    font-size: 14px;
+                    text-align: center;
+                    display: inline-block;
+                    line-height: 32px;
+                    padding: 0;
+                    margin: 0;
                 }
 
                 .badge {
@@ -98,21 +93,30 @@ $header-toolbar-icon-size = 12px
                         font-size: 14px;
                     }
                 }
-                .btn-link {
-                    padding: 0;
-                    margin-left: 8px;
+                .btn-icon {
+                    min-width: 30px;
+                    height: 32px;
+                    float: left;
+                    position: relative;
+                    font-family: Arial,Helvetica,sans-serif;
+                    border-left: 1px solid rgba(0,0,0,.09);
+                    margin: 0;
+
+                    &:hover {
+                        background-color: rgba(0,0,0,.05);
+                    }
 
                     &:first-child {
                         padding-left: 0
                     }
                     .glyphicon {
-                        font-size: $header-toolbar-icon-size;
+                        font-size: 14px;
                     }
                 }
             }
 
             @media screen and (max-width: 480px) {
-                .widget-header-toolbar {
+                .widget-header-controls {
                     display: block;
                     position: inherit;
 
@@ -132,15 +136,11 @@ $header-toolbar-icon-size = 12px
         }
 
         .widget-content {
+            border: 1px solid #CCC;
+            border-top: none;
         }
 
         .widget-footer {
-            &.widget-footer-default {
-                background-color: #fff;
-            }
-            &.widget-footer-inverse {
-                background-color: #222;
-            }
         }
     }
 }

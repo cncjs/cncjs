@@ -251,7 +251,7 @@ class Connection extends React.Component {
             <div style={styles.option} title={label}>
                 <div>
                 {inuse &&
-                    <span><i className="glyphicon glyphicon-lock"></i>&nbsp;</span>
+                    <span><i className="fa fa-lock"></i>&nbsp;</span>
                 }
                 {label}
                 </div>
@@ -275,7 +275,7 @@ class Connection extends React.Component {
         return (
             <div style={style} title={label}>
                 {inuse &&
-                    <span><i className="glyphicon glyphicon-lock"></i>&nbsp;</span>
+                    <span><i className="fa fa-lock"></i>&nbsp;</span>
                 }
                 {label}
             </div>
@@ -342,8 +342,8 @@ class Connection extends React.Component {
                         <div className="input-group-btn">
                             <button type="button" className="btn btn-default" name="btn-refresh" title={i18n._('Refresh')} onClick={::this.handleRefresh} disabled={!canRefresh}>
                             {notLoading
-                                ? <i className="glyphicon glyphicon-refresh"></i>
-                                : <i className="glyphicon glyphicon-refresh rotating"></i>
+                                ? <i className="fa fa-refresh"></i>
+                                : <i className="fa fa-refresh rotating"></i>
                             }
                             </button>
                         </div>
@@ -386,7 +386,7 @@ class Connection extends React.Component {
                                 this.openPort(port, baudrate);
                             }}
                         >
-                            <i className="glyphicon glyphicon-off"></i>&nbsp;{i18n._('Open')}
+                            <i className="fa fa-toggle-off"></i>&nbsp;{i18n._('Open')}
                         </button>
                     }
                     {connected &&
@@ -398,7 +398,7 @@ class Connection extends React.Component {
                                 this.closePort(port);
                             }}
                         >
-                            <i className="glyphicon glyphicon-off"></i>&nbsp;{i18n._('Close')}
+                            <i className="fa fa-toggle-on"></i>&nbsp;{i18n._('Close')}
                         </button>
                     }
                 </div>

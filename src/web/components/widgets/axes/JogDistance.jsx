@@ -227,10 +227,10 @@ class JogDistance extends React.Component {
                     />
                     <div className="input-group-btn">
                         <PressAndHold className="btn btn-default" onClick={::this.increaseCustomDistance} title={i18n._('Increase custom distance by one unit')}>
-                            <span className="glyphicon glyphicon-plus"></span>
+                            <span className="fa fa-plus"></span>
                         </PressAndHold>
                         <PressAndHold className="btn btn-default" onClick={::this.decreaseCustomDistance} title={i18n._('Decrease custom distance by one unit')}>
-                            <span className="glyphicon glyphicon-minus"></span>
+                            <span className="fa fa-minus"></span>
                         </PressAndHold>
                     </div>
                 </div>

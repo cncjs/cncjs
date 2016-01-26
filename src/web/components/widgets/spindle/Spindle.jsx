@@ -61,7 +61,7 @@ class Spindle extends React.Component {
                             title={i18n._('Start the spindle turning CW/CCW (M3/M4)')}
                             disabled={!canClick}
                         >
-                            <i className="glyphicon glyphicon-play"></i>
+                            <i className="fa fa-play"></i>
                         </button>
                         <button
                             type="button"
@@ -70,7 +70,7 @@ class Spindle extends React.Component {
                             title={i18n._('Stop the spindle from turning (M5)')}
                             disabled={!canClick}
                         >
-                            <i className="glyphicon glyphicon-stop"></i>
+                            <i className="fa fa-stop"></i>
                         </button>
                     </div>
                 </div>

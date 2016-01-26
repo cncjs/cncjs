@@ -3,101 +3,133 @@ import React from 'react';
 import classNames from 'classnames';
 import i18n from '../../lib/i18n';
 
-class WidgetHeaderToolbar extends React.Component {
+class WidgetHeaderControls extends React.Component {
     state = {
-        isCollapsed: false
+        isCollapsed: false,
+        isFullscreen: false
     };
 
     handleClick(btn) {
         if (btn === 'toggle') {
-            this.props.handleClick(btn, ! this.state.isCollapsed);
-            this.setState({isCollapsed: ! this.state.isCollapsed});
+            let { isCollapsed } = this.state;
+            this.props.handleClick(btn, !isCollapsed);
+            this.setState({ isCollapsed: !isCollapsed });
+            return;
+        }
+
+        if (btn === 'fullscreen') {
+            let { isFullscreen } = this.state;
+            this.props.handleClick(btn, !isFullscreen);
+            this.setState({ isFullscreen: !isFullscreen });
             return;
         }
 
         this.props.handleClick(btn);
     }
-    renderDragButton() {
-        let style = {
-            cursor: 'move'
-        };
-
+    renderEditButton() {
         return (
             <a href="javascript:void(0)"
-               key='drag'
-               title=""
-               className="btn btn-link btn-drag"
-               style={style}
-               onClick={() => this.handleClick('drag')}
+               key="edit"
+               title={i18n._('Edit')}
+               className="btn-icon btn-edit"
+               onClick={() => this.handleClick('edit')}
             >
-                <i className="glyphicon glyphicon-menu-hamburger"></i>
+                <i className="fa fa-cog"></i>
             </a>
         );
     }
     renderRefreshButton() {
         return (
             <a href="javascript:void(0)"
-               key='refresh'
-               title=""
-               className="btn btn-link btn-refresh"
+               key="refresh"
+               title={i18n._('Refresh')}
+               className="btn-icon btn-refresh"
                onClick={() => this.handleClick('refresh')}
             >
-                <i className="glyphicon glyphicon-refresh"></i>
-            </a>
-        );
-    }
-    renderRemoveButton() {
-        return (
-            <a href="javascript:void(0)"
-               key='remove'
-               title={i18n._('Remove')}
-               className="btn btn-link btn-remove"
-               onClick={() => this.handleClick('remove')}
-            >
-                <i className="glyphicon glyphicon-remove"></i>
+                <i className="fa fa-refresh"></i>
             </a>
         );
     }
     renderToggleButton() {
-        let iconClassNames = classNames(
-            'glyphicon',
-            { 'glyphicon-chevron-up': ! this.state.isCollapsed },
-            { 'glyphicon-chevron-down': this.state.isCollapsed }
-        );
+        let { isCollapsed } = this.state;
+        let classes = {
+            icon: classNames(
+                'fa',
+                { 'fa-chevron-up': !isCollapsed },
+                { 'fa-chevron-down': isCollapsed }
+            )
+        };
 
         return (
             <a href="javascript:void(0)"
-               key='toggle'
-               title={i18n._('Expand/Collapse')}
-               className="btn btn-link btn-toggle"
+               key="toggle"
+               title={i18n._('Toggle Expand/Collapse')}
+               className="btn-icon btn-toggle"
                onClick={() => this.handleClick('toggle')}
             >
-                <i className={iconClassNames}></i>
+                <i className={classes.icon}></i>
+            </a>
+        );
+    }
+    renderFullscreenButton() {
+        let { isFullscreen } = this.state;
+        let classes = {
+            icon: classNames(
+                'fa',
+                { 'fa-expand': !isFullscreen },
+                { 'fa-compress': isFullscreen }
+            )
+        };
+
+        return (
+            <a href="javascript:void(0)"
+               key="fullscreen"
+               title={i18n._('Toggle Fullscreen')}
+               className="btn-icon btn-fullscreen"
+               onClick={() => this.handleClick('fullscreen')}
+            >
+                <i className={classes.icon}></i>
+            </a>
+        );
+    }
+    renderDeleteButton() {
+        return (
+            <a href="javascript:void(0)"
+               key="delete"
+               title={i18n._('Delete')}
+               className="btn-icon btn-delete"
+               onClick={() => this.handleClick('delete')}
+            >
+                <i className="fa fa-times"></i>
             </a>
         );
     }
     render() {
-        let that = this;
         let buttons = _.map(this.props.buttons, (button) => {
             if (_.isObject(button)) {
                 return button;
             }
-            if (button === 'refresh') {
-                return that.renderRefreshButton();
+            if (button === 'edit') {
+                return this.renderEditButton();
             }
-            if (button === 'remove') {
-                return that.renderRemoveButton();
+            if (button === 'refresh') {
+                return this.renderRefreshButton();
             }
             if (button === 'toggle') {
-                return that.renderToggleButton();
+                return this.renderToggleButton();
             }
-        })
-        .concat(this.renderDragButton());
+            if (button === 'fullscreen') {
+                return this.renderFullscreenButton();
+            }
+            if (button === 'delete') {
+                return this.renderDeleteButton();
+            }
+        });
 
         return (
-            <div className="widget-header-toolbar btn-group">{buttons}</div>
+            <div className="widget-header-controls btn-group">{buttons}</div>
         );
     }
 }
 
-export default WidgetHeaderToolbar;
+export default WidgetHeaderControls;

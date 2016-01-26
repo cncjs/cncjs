@@ -153,7 +153,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y+')}
                                 >
-                                    <i className="glyphicon glyphicon-circle-arrow-up rotate--45deg"></i>
+                                    <i className="fa fa-arrow-circle-up rotate--45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -181,7 +181,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y+')}
                                 >
-                                    <i className="glyphicon glyphicon-circle-arrow-up rotate-45deg"></i>
+                                    <i className="fa fa-arrow-circle-up rotate-45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -263,7 +263,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y-')}
                                 >
-                                    <i className="glyphicon glyphicon-circle-arrow-down rotate-45deg"></i>
+                                    <i className="fa fa-arrow-circle-down rotate-45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -291,7 +291,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y-')}
                                 >
-                                    <i className="glyphicon glyphicon-circle-arrow-down rotate--45deg"></i>
+                                    <i className="fa fa-arrow-circle-down rotate--45deg"></i>
                                 </button>
                             </td>
                             <td>

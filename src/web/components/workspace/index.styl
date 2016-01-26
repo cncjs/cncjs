@@ -1,5 +1,4 @@
 [data-component="Workspace"] {
-
     .dropzone-overlay {
         position: fixed;
         top: 50px;
@@ -13,6 +12,9 @@
         border: 4px dashed #286090;
         text-align: center;
         pointer-events: none;
+    }
+    .dropzone {
+        height: 100%;
     }
 
     .workspace-container {
@@ -44,7 +46,8 @@
     .secondary-container {
         vertical-align: top;
         background-color: #f0f0f0;
-        width: 1%;
+        width: 360px;
+        max-width: 360px;
         padding: 10px;
     }
     .main-container {

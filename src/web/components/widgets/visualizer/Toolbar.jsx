@@ -144,16 +144,16 @@ class Toolbar extends React.Component {
             <div className="btn-toolbar" role="toolbar">
                 <div className="btn-group btn-group-sm" role="group">
                     <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={!canRun}>
-                        <i className="glyphicon glyphicon-play"></i>
+                        <i className="fa fa-play"></i>
                     </button>
                     <button type="button" className="btn btn-default" title={i18n._('Pause')} onClick={::this.handlePause} disabled={!canPause}>
-                        <i className="glyphicon glyphicon-pause"></i>
+                        <i className="fa fa-pause"></i>
                     </button>
                     <button type="button" className="btn btn-default" title={i18n._('Stop')} onClick={::this.handleStop} disabled={!canStop}>
-                        <i className="glyphicon glyphicon-stop"></i>
+                        <i className="fa fa-stop"></i>
                     </button>
                     <button type="button" className="btn btn-default" title={i18n._('Close')} onClick={::this.handleClose} disabled={!canClose}>
-                        <i className="glyphicon glyphicon-trash"></i>
+                        <i className="fa fa-times" style={{fontSize: 14}}></i>
                     </button>
                 </div>
             </div>
