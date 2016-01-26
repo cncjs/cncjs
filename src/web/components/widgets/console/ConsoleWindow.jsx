@@ -8,6 +8,10 @@ class ConsoleWindow extends React.Component {
         buffers: React.PropTypes.array,
         fullscreen: React.PropTypes.bool
     };
+    state = {
+        containerHeight: 260,
+        elementHeight: 20
+    };
 
     // Scroll Position with React
     // http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
@@ -35,10 +39,14 @@ class ConsoleWindow extends React.Component {
                                 - widgetContentPadding * 2
                                 - consoleInputHeight;
                                 - 20; // extra padding
-            node.style.height = containerHeight + 'px';
+            if (this.state.containerHeight !== containerHeight) {
+                this.setState({ containerHeight: containerHeight });
+            }
         } else {
             let containerHeight = 260;
-            node.style.height = containerHeight + 'px';
+            if (this.state.containerHeight !== containerHeight) {
+                this.setState({ containerHeight: containerHeight });
+            }
         }
     }
     buildElements(buffers) {
@@ -50,14 +58,14 @@ class ConsoleWindow extends React.Component {
     }
     render() {
         let { buffers, fullscreen } = this.props;
+        let { containerHeight, elementHeight } = this.state;
         let elements = this.buildElements(buffers);
-        let containerHeight = 260;
 
         return (
             <div className="console-window">
                 <Infinite
-                    containerHeight={260}
-                    elementHeight={20}
+                    containerHeight={containerHeight}
+                    elementHeight={elementHeight}
                     ref="infinite"
                 >
                     {elements}
