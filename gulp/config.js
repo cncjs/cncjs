@@ -30,10 +30,10 @@ const bundleDependencies = {
         'react-select',
         'request',
         'sha1',
+        'sortablejs',
         'three',
 
         // Bower Components
-        'Sortable',
         'stacktrace'
     ]
 };

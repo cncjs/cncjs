@@ -148,7 +148,7 @@ class GCode extends React.Component {
     }
     render() {
         let { port, unit, gcodeStatus } = this.state;
-        let tableWidth = this.props.width - 2 /* border */ - 20 /* padding */;
+        let tableWidth = 360 - 2 /* border */ - 20 /* padding */; // FIXME: calculate width
         let tableHeight = 180;
         let rowHeight = 30;
         let visibleRows = Math.floor(tableHeight / rowHeight);

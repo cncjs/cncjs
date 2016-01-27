@@ -1,11 +1,20 @@
 import i18next from 'i18next';
 import React from 'react';
 import { Navbar, NavbarBrand, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
-import i18n from '../../lib/i18n';
 import settings from '../../config/settings';
+import i18n from '../../lib/i18n';
+import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 
 class Header extends React.Component {
+    handleRestoreDefaults() {
+        const confirmText = i18n._('Are you sure you want to restore the default settings?');
+
+        if (window.confirm(confirmText)) {
+            store.clear();
+            window.location.reload();
+        }
+    }
     render() {
         let homepage = 'https://github.com/cheton/cnc.js';
         let language = i18next.language;
@@ -29,6 +38,10 @@ class Header extends React.Component {
                             <MenuItem href="?lang=ja" active={language === 'ja'}>日本語</MenuItem>
                             <MenuItem href="?lang=zh-cn" active={language === 'zh-cn'}>中文 (简体)</MenuItem>
                             <MenuItem href="?lang=zh-tw" active={language === 'zh-tw'}>中文 (繁體)</MenuItem>
+                            <MenuItem divider />
+                            <MenuItem onSelect={::this.handleRestoreDefaults}>
+                                {i18n._('Restore Defaults')}
+                            </MenuItem>
                         </NavDropdown>
                     </Nav>
                     <div className="pull-right">

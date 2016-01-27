@@ -81,6 +81,8 @@ class Console extends React.Component {
         this.setState({ buffers: this.buffers });
     }
     render() {
+        let { fullscreen } = this.props;
+
         return (
             <div>
                 <ConsoleInput
@@ -89,6 +91,7 @@ class Console extends React.Component {
                 />
                 <ConsoleWindow
                     buffers={this.state.buffers}
+                    fullscreen={fullscreen}
                 />
             </div>
         );

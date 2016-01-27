@@ -37,7 +37,7 @@ class MotionControls extends React.Component {
                                     bsSize="sm"
                                     bsStyle="default"
                                     title={
-                                        <span><i className="glyphicon glyphicon-home"></i>&nbsp;{i18n._('Predefined Position')}</span>
+                                        <span><i className="fa fa-h-square"></i>&nbsp;{i18n._('Predefined Position')}</span>
                                     }
                                     id="predefined-position-dropdown"
                                     pullRight

@@ -2,26 +2,17 @@ import classNames from 'classnames';
 import React from 'react';
 
 class Widget extends React.Component {
-    static defaultProps = {
-        options: {}
-    };
-    static propTypes = {
-        options: React.PropTypes.object
-    };
-
     render() {
-        let options = this.props;
+        let { borderless, fullscreen } = this.props;
         let widgetClass = classNames(
             'widget',
-            { 'widget-borderless': !!options.borderless }
+            { 'widget-borderless': !!borderless },
+            { 'widget-fullscreen': !!fullscreen }
         );
-        let widgetStyle = {
-            width: options.width ? options.width : null
-        };
 
         return (
             <div {...this.props} data-component="Widget">
-                <div className={widgetClass} style={widgetStyle}>
+                <div className={widgetClass}>
                     {this.props.children}
                 </div>
             </div>

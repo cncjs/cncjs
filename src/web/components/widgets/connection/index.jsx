@@ -6,36 +6,50 @@ import Connection from './Connection';
 import './index.css';
 
 class ConnectionWidget extends React.Component {
+    static propTypes = {
+        onDelete: React.PropTypes.func
+    };
     state = {
-        isCollapsed: false
+        isCollapsed: false,
+        isFullscreen: false
     };
 
     handleClick(target, val) {
-        if (target === 'toggle') {
-            this.setState({
-                isCollapsed: !!val
-            });
-        }
+        const handler = {
+            'toggle': () => {
+                this.setState({ isCollapsed: !!val });
+            },
+            'fullscreen': () => {
+                this.setState({ isFullscreen: !!val });
+            },
+            'delete': () => {
+                this.props.onDelete();
+            }
+        }[target];
+
+        handler && handler();
     }
     render() {
-        let width = 360;
         let title = i18n._('Connection');
-        let toolbarButtons = [
-            'toggle'
+        let controlButtons = [
+            'toggle',
+            'fullscreen'
         ];
-        let widgetContentClass = classNames(
-            { 'hidden': this.state.isCollapsed }
-        );
+        let classes = {
+            widgetContent: classNames(
+                { 'hidden': this.state.isCollapsed }
+            )
+        };
 
         return (
             <div {...this.props} data-component="Widgets/ConnectionWidget">
-                <Widget width={width}>
+                <Widget fullscreen={this.state.isFullscreen}>
                     <WidgetHeader
                         title={title}
-                        toolbarButtons={toolbarButtons}
+                        controlButtons={controlButtons}
                         handleClick={::this.handleClick}
                     />
-                    <WidgetContent className={widgetContentClass}>
+                    <WidgetContent className={classes.widgetContent}>
                         <Connection />
                     </WidgetContent>
                 </Widget>

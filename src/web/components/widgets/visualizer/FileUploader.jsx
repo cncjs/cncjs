@@ -109,7 +109,7 @@ class FileUploader extends React.Component {
             <div className="file-uploader-block">
                 <div className="file-uploader-box">
                     <div className="file-uploader-content" disabled={!canClick}>
-                        <i style={{ fontSize: 48 }} className="glyphicon glyphicon-upload"></i>
+                        <i style={{ fontSize: 48 }} className="fa fa-arrow-circle-o-up"></i>
                         <h4>{i18n._('Drop G-code file here or click below to upload.')}</h4>
                         <br />
                         <button

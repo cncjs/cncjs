@@ -20,8 +20,8 @@ class JogDistance extends React.Component {
         unit: React.PropTypes.string
     };
     state = {
-        selectedDistance: store.getState('widgets.axes.jog.selectedDistance'),
-        customDistance: this.toUnitValue(this.props.unit, store.getState('widgets.axes.jog.customDistance'))
+        selectedDistance: store.get('widgets.axes.jog.selectedDistance'),
+        customDistance: this.toUnitValue(this.props.unit, store.get('widgets.axes.jog.customDistance'))
     };
     unitDidChange = false;
     actionHandlers = {
@@ -41,7 +41,7 @@ class JogDistance extends React.Component {
     }
     componentWillUnmount() {
         _.each(this.actionHandlers, (callback, eventName) => {
-            combokeys.off(eventName, callback);
+            combokeys.removeListener(eventName, callback);
         });
     }
     componentWillReceiveProps(nextProps) {
@@ -49,7 +49,7 @@ class JogDistance extends React.Component {
             // Set `this.unitDidChange` to true if the unit has changed
             this.unitDidChange = true;
 
-            let customDistance = store.getState('widgets.axes.jog.customDistance');
+            let customDistance = store.get('widgets.axes.jog.customDistance');
 
             if (nextProps.unit === IMPERIAL_UNIT) {
                 customDistance = mm2in(customDistance).toFixed(4) * 1;
@@ -79,10 +79,10 @@ class JogDistance extends React.Component {
         }
 
         // '1', '0.1', '0.01', '0.001' or ''
-        store.setState('widgets.axes.jog.selectedDistance', selectedDistance);
+        store.set('widgets.axes.jog.selectedDistance', selectedDistance);
 
         // To save in mm
-        store.setState('widgets.axes.jog.customDistance', Number(customDistance));
+        store.set('widgets.axes.jog.customDistance', Number(customDistance));
     }
     normalizeToRange(n, min, max) {
         if (n < min) {
@@ -227,10 +227,10 @@ class JogDistance extends React.Component {
                     />
                     <div className="input-group-btn">
                         <PressAndHold className="btn btn-default" onClick={::this.increaseCustomDistance} title={i18n._('Increase custom distance by one unit')}>
-                            <span className="glyphicon glyphicon-plus"></span>
+                            <span className="fa fa-plus"></span>
                         </PressAndHold>
                         <PressAndHold className="btn btn-default" onClick={::this.decreaseCustomDistance} title={i18n._('Decrease custom distance by one unit')}>
-                            <span className="glyphicon glyphicon-minus"></span>
+                            <span className="fa fa-minus"></span>
                         </PressAndHold>
                     </div>
                 </div>

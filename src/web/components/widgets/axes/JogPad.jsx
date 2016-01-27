@@ -82,7 +82,7 @@ class JogPad extends React.Component {
     }
     componentWillUnmount() {
         _.each(this.actionHandlers, (callback, eventName) => {
-            combokeys.off(eventName, callback);
+            combokeys.removeListener(eventName, callback);
         });
     }
     jog(params = {}) {
@@ -100,8 +100,8 @@ class JogPad extends React.Component {
     }
     getJogDistance() {
         let { unit } = this.props;
-        let selectedDistance = store.getState('widgets.axes.jog.selectedDistance');
-        let customDistance = store.getState('widgets.axes.jog.customDistance');
+        let selectedDistance = store.get('widgets.axes.jog.selectedDistance');
+        let customDistance = store.get('widgets.axes.jog.customDistance');
         if (selectedDistance) {
             return Number(selectedDistance) || 0;
         }
@@ -153,7 +153,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y+')}
                                 >
-                                    <i className="glyphicon glyphicon-circle-arrow-up rotate--45deg"></i>
+                                    <i className="fa fa-arrow-circle-up rotate--45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -181,7 +181,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y+')}
                                 >
-                                    <i className="glyphicon glyphicon-circle-arrow-up rotate-45deg"></i>
+                                    <i className="fa fa-arrow-circle-up rotate-45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -263,7 +263,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y-')}
                                 >
-                                    <i className="glyphicon glyphicon-circle-arrow-down rotate-45deg"></i>
+                                    <i className="fa fa-arrow-circle-down rotate-45deg"></i>
                                 </button>
                             </td>
                             <td>
@@ -291,7 +291,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y-')}
                                 >
-                                    <i className="glyphicon glyphicon-circle-arrow-down rotate--45deg"></i>
+                                    <i className="fa fa-arrow-circle-down rotate--45deg"></i>
                                 </button>
                             </td>
                             <td>

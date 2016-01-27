@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
@@ -7,37 +6,52 @@ import GCode from './GCode';
 import './index.css';
 
 class GCodeWidget extends React.Component {
+    static propTypes = {
+        onDelete: React.PropTypes.func
+    };
     state = {
-        isCollapsed: false
+        isCollapsed: false,
+        isFullscreen: false
     };
 
     handleClick(target, val) {
-        if (target === 'toggle') {
-            this.setState({
-                isCollapsed: !!val
-            });
-        }
+        const handler = {
+            'toggle': () => {
+                this.setState({ isCollapsed: !!val });
+            },
+            'fullscreen': () => {
+                this.setState({ isFullscreen: !!val });
+            },
+            'delete': () => {
+                this.props.onDelete();
+            }
+        }[target];
+
+        handler && handler();
     }
     render() {
-        let width = 360;
         let title = i18n._('G-code');
-        let toolbarButtons = [
-            'toggle'
+        let controlButtons = [
+            'toggle',
+            'fullscreen',
+            'delete'
         ];
-        let widgetContentClass = classNames(
-            { 'hidden': this.state.isCollapsed }
-        );
+        let classes = {
+            widgetContent: classNames(
+                { 'hidden': this.state.isCollapsed }
+            )
+        };
 
         return (
             <div {...this.props} data-component="Widgets/GCodeWidget">
-                <Widget width={width}>
+                <Widget fullscreen={this.state.isFullscreen}>
                     <WidgetHeader
                         title={title}
-                        toolbarButtons={toolbarButtons}
+                        controlButtons={controlButtons}
                         handleClick={::this.handleClick}
                     />
-                    <WidgetContent className={widgetContentClass}>
-                        <GCode width={width} />
+                    <WidgetContent className={classes.widgetContent}>
+                        <GCode />
                     </WidgetContent>
                 </Widget>
             </div>

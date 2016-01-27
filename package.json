@@ -53,6 +53,7 @@
     "express": "4.13.x",
     "fbjs": "^0.5.0",
     "fixed-data-table": "^0.6.0",
+    "font-awesome": "^4.5.0",
     "fs-extra": "^0.24.0",
     "gcode-interpreter": "^0.5.2",
     "gcode-parser": "^0.5.1",
@@ -82,7 +83,7 @@
     "react-datagrid": "^1.2.13",
     "react-dom": "^0.14.3",
     "react-dropzone": "^3.3.2",
-    "react-infinite": "^0.7.1",
+    "react-infinite": "^0.8.0",
     "react-router": "^1.0.2",
     "react-select": "^0.9.1",
     "request": "^2.53.0",
@@ -91,6 +92,7 @@
     "serve-static": "^1.0.4",
     "sha1": "^1.1.1",
     "socket.io": "^1.3.7",
+    "sortablejs": "^1.4.2",
     "sprintf": "0.1.x",
     "string-format": "0.2.x",
     "superagent": "^1.6.1",
@@ -156,7 +158,6 @@
     "yargs": "^2.3.0"
   },
   "browser": {
-    "Sortable": "./src/web/vendor/Sortable/Sortable.js",
     "stacktrace": "./src/web/vendor/stacktrace-js/stacktrace.js"
   },
   "browserify-shim": "./config/shim.js"

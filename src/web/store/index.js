@@ -1,60 +1,39 @@
 import _ from 'lodash';
-
-let state;
-
-// Data Migration from v0.14.5
-const migrateState = (userState) => {
-    let probeWidget = _.get(userState, 'widgets.probe');
-
-    // probeDepth
-    let probeDepth = _.get(userState, 'widgets.probe.probeDepth');
-    if (_.isObject(probeDepth)) {
-        let value = probeDepth.mm || probeDepth.in;
-        delete probeWidget.probeDepth.mm;
-        delete probeWidget.probeDepth.in;
-        _.set(probeWidget, 'probeDepth', value);
-    }
-
-    // probeFeedrate
-    let probeFeedrate = _.get(userState, 'widgets.probe.probeFeedrate');
-    if (_.isObject(probeFeedrate)) {
-        let value = probeFeedrate.mm || probeFeedrate.in;
-        delete probeWidget.probeFeedrate.mm;
-        delete probeWidget.probeFeedrate.in;
-        _.set(probeWidget, 'probeFeedrate', value);
-    }
-
-    // tlo
-    let tlo = _.get(userState, 'widgets.probe.tlo');
-    if (_.isObject(tlo)) {
-        let value = tlo.mm || tlo.in;
-        delete probeWidget.tlo.mm;
-        delete probeWidget.tlo.in;
-        _.set(probeWidget, 'tlo', value);
-    }
-
-    // retractionDistance
-    let retractionDistance = _.get(userState, 'widgets.probe.retractionDistance');
-    if (_.isObject(retractionDistance)) {
-        let value = retractionDistance.mm || retractionDistance.in;
-        delete probeWidget.retractionDistance.mm;
-        delete probeWidget.retractionDistance.in;
-        _.set(probeWidget, 'retractionDistance', value);
-    }
-};
+import settings from '../config/settings';
+import ImmutableStore from '../lib/immutable-store';
+import log from '../lib/log';
 
 const defaultState = {
+    workspace: {
+        container: {
+            default: [
+                'visualizer'
+            ],
+            primary: [
+                'connection', 'grbl', 'console'
+            ],
+            secondary: [
+                'axes', 'gcode', 'probe', 'spindle'
+            ]
+        }
+    },
     widgets: {
-        connection: {
-            port: '',
-            baudrate: 115200,
-            autoReconnect: true
-        },
         axes: {
             jog: {
                 selectedDistance: '1',
                 customDistance: 10
             }
+        },
+        connection: {
+            port: '',
+            baudrate: 115200,
+            autoReconnect: true
+        },
+        console: {
+        },
+        gcode: {
+        },
+        grbl: {
         },
         probe: {
             probeCommand: 'G38.2',
@@ -62,38 +41,70 @@ const defaultState = {
             probeFeedrate: 20,
             tlo: 10,
             retractionDistance: 4
+        },
+        spindle: {
+        },
+        visualizer: {
         }
     }
 };
 
+let state;
+
 try {
-    let userState = JSON.parse(localStorage.getItem('state') || {});
+    let cnc = JSON.parse(localStorage.getItem('cnc') || {});
+    log.debug('cnc:', cnc);
 
-    migrateState(userState); // for v0.14.5
+    state = _.merge({}, defaultState, cnc.state);
+    
+    { // Post-process the state after merging defaultState and cnc.state
+        let defaultList = _.get(defaultState, 'workspace.container.default'); // always use defaultState
+        let primaryList = _.get(cnc.state, 'workspace.container.primary');
+        let secondaryList = _.get(cnc.state, 'workspace.container.secondary');
 
-    state = _.merge({}, defaultState, userState);
+        if (defaultList) {
+            _.set(state, 'workspace.container.default', defaultList);
+        }
+        if (primaryList) {
+            _.set(state, 'workspace.container.primary', primaryList);
+        }
+        if (secondaryList) {
+            _.set(state, 'workspace.container.secondary', secondaryList);
+        }
+    }
+
+    { // Remove duplicate ones
+        let defaultList = _.get(state, 'workspace.container.default');
+        let primaryList = _.get(state, 'workspace.container.primary');
+        let secondaryList = _.get(state, 'workspace.container.secondary');
+
+        primaryList = _(primaryList) // Keep the order of primaryList
+            .uniq()
+            .difference(defaultList) // exclude defaultList
+            .value();
+
+        secondaryList = _(secondaryList) // Keep the order of secondaryList
+            .uniq()
+            .difference(primaryList) // exclude primaryList
+            .difference(defaultList) // exclude defaultList
+            .value();
+
+        _.set(state, 'workspace.container.primary', primaryList);
+        _.set(state, 'workspace.container.secondary', secondaryList);
+    }
 }
 catch(err) {
     state = _.merge({}, defaultState);
 }
 
-const setState = (key, value) => {
-    let result = _.set(state, key, value);
-    localStorage.setItem('state', JSON.stringify(state));
-    return result;
-};
+const store = new ImmutableStore(state);
 
-const getState = (key, defaultValue) => {
-    let value = _.get(state, key);
-    return (typeof value !== 'undefined') ? value : defaultValue;
-};
+store.on('change', (state) => {
+    let cnc = {
+        version: settings.version,
+        state: state
+    };
+    localStorage.setItem('cnc', JSON.stringify(cnc));
+});
 
-const clearState = () => {
-    localStorage.setItem('state', JSON.stringify({}));
-};
-
-export default {
-    setState: setState,
-    getState: getState,
-    clearState: clearState
-};
+export default store;
