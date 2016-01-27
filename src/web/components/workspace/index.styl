@@ -35,12 +35,18 @@
     }
 
     .primary-container,
-    .primary-toggler-pane,
     .secondary-container,
-    .secondary-toggler-pane,
+    .primary-toggler,
+    .secondary-toggler,
     .default-container {
         display: table-cell;
         position: relative;
+    }
+    .primary-container {
+        border-right: 1px solid #ccc;
+    }
+    .secondary-container {
+        border-left: 1px solid #ccc;
     }
     .primary-container,
     .secondary-container {
@@ -48,31 +54,44 @@
         background-color: #f0f0f0;
         width: 360px;
         max-width: 360px;
-        padding: 10px;
+        padding: 0 10px;
+
+        .btn-toolbar {
+            margin-top: 5px;
+        }
+        .widgets {
+            position: absolute;
+            left: 10px;
+            right: 10px;
+            top: (22 + 10)px;
+            bottom: 0;
+        }
+    }
+    .primary-toggler,
+    .secondary-toggler {
+        position: absolute;
+        top: 0;
+        bottom: 0;
+        z-index: 1;
+        background-color: #efefef;
+        border-right: 1px solid #ccc;
+        padding: 5px;
+    }
+    .primary-toggler {
+        left: 0;
+    }
+    .secondary-toggler {
+        right: 0;
     }
     .default-container {
         min-width: 250px;
-    }
-    .default-container.fixed {
-        position: fixed;
-        left: (360 + 10)px;
-        right: (360 + 10)px;
-        top: 50px;
-        bottom: 0;
-    }
 
-    .primary-toggler-pane,
-    .secondary-toggler-pane {
-        width: 10px;
-        padding-top: 10px;
-        vertical-align: top;
-        background-color: #f0f0f0;
-        cursor: pointer;
-        border-left: 1px solid #ddd;
-        border-right: 1px solid #ddd;
-
-        &:hover {
-            background-color: #e0e0e0;
+        &.fixed {
+            position: fixed;
+            left: (360 + 10)px;
+            right: (360 + 10)px;
+            top: 50px;
+            bottom: 0;
         }
     }
 }
