@@ -1,12 +1,14 @@
 import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
-import store from '../../../store';
 import { Widget, WidgetHeader, WidgetContent } from '../../widget';
 import Axes from './Axes';
 import './index.css';
 
 class AxesWidget extends React.Component {
+    static propTypes = {
+        onDelete: React.PropTypes.func
+    };
     state = {
         isCollapsed: false,
         isFullscreen: false
@@ -21,7 +23,7 @@ class AxesWidget extends React.Component {
                 this.setState({ isFullscreen: !!val });
             },
             'delete': () => {
-                store.set('widgets.axes.state.visibility', 'hidden');
+                this.props.onDelete();
             }
         }[target];
 

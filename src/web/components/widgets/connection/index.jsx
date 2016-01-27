@@ -6,6 +6,9 @@ import Connection from './Connection';
 import './index.css';
 
 class ConnectionWidget extends React.Component {
+    static propTypes = {
+        onDelete: React.PropTypes.func
+    };
     state = {
         isCollapsed: false,
         isFullscreen: false
@@ -18,6 +21,9 @@ class ConnectionWidget extends React.Component {
             },
             'fullscreen': () => {
                 this.setState({ isFullscreen: !!val });
+            },
+            'delete': () => {
+                this.props.onDelete();
             }
         }[target];
 

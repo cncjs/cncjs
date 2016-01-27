@@ -5,9 +5,10 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import request from 'superagent';
-import Sortable from 'Sortable';
+import Sortable from 'sortablejs';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
+import ReactSortable from '../../lib/react-sortable';
 import store from '../../store';
 import {
     AxesWidget,
@@ -20,156 +21,163 @@ import {
     VisualizerWidget
 } from '../widgets';
 
-const widgets = [
-    {
-        id: 'axes',
-        el: <AxesWidget data-id="axes" key="axes" />
-    },
-    {
-        id: 'connection',
-        el: <ConnectionWidget data-id="connection" key="connection" />
-    },
-    {
-        id: 'console',
-        el: <ConsoleWidget data-id="console" key="console" />
-    },
-    {
-        id: 'gcode',
-        el: <GCodeWidget data-id="gcode" key="gcode" />
-    },
-    {
-        id: 'grbl',
-        el: <GrblWidget data-id="grbl" key="grbl" />
-    },
-    {
-        id: 'probe',
-        el: <ProbeWidget data-id="probe" key="probe" />
-    },
-    {
-        id: 'spindle',
-        el: <SpindleWidget data-id="spindle" key="spindle" />
-    },
-    {
-        id: 'visualizer',
-        el: <VisualizerWidget data-id="visualizer" key="visualizer" />
-    }
-];
+const getWidgetComponent = (widgetId, props) => {
+    let handler = {
+        'axes': (props) => <AxesWidget {...props} data-id="axes" key="axes" />,
+        'connection': (props) => <ConnectionWidget {...props} data-id="connection" key="connection" />,
+        'console': (props) => <ConsoleWidget {...props} data-id="console" key="console" />,
+        'gcode': (props) => <GCodeWidget {...props} data-id="gcode" key="gcode" />,
+        'grbl': (props) => <GrblWidget {...props} data-id="grbl" key="grbl" />,
+        'probe': (props) => <ProbeWidget {...props} data-id="probe" key="probe" />,
+        'spindle': (props) => <SpindleWidget {...props} data-id="spindle" key="spindle" />,
+        'visualizer': (props) => <VisualizerWidget {...props} data-id="visualizer" key="visualizer" />
+    }[widgetId];
 
-const getWidgetElementById = (id) => {
-    let widget = _.find(widgets, { id: id }) || {};
-    return widget.el;
+    return handler ? handler(props) : null;
 };
+
+class DefaultContainer extends React.Component {
+    state = {
+        widgets: store.get('workspace.container.default')
+    };
+
+    componentDidUpdate() {
+        let { widgets } = this.state;
+        store.set('workspace.container.default', widgets);
+
+        // Publish a 'resize' event
+        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+    }
+    render() {
+        let widgets = _.map(this.state.widgets, (widgetId) => {
+            return getWidgetComponent(widgetId);
+        });
+
+        return (
+            <div>{widgets}</div>
+        );
+    }
+}
+
+class PrimaryContainer extends ReactSortable {
+    state = {
+        widgets: store.get('workspace.container.primary')
+    };
+    sortableOptions = {
+        model: 'widgets',
+        group: {
+            name: 'primary',
+            pull: true,
+            put: ['secondary']
+        },
+        handle: '.widget-header',
+        dataIdAttr: 'data-id'
+    };
+
+    componentDidUpdate() {
+        let { widgets } = this.state;
+
+        // Calling store.set() will merge two different arrays into one.
+        // Remove the property first to avoid duplication.
+        store.unset('workspace.container.primary');
+        store.set('workspace.container.primary', widgets);
+
+        // Publish a 'resize' event
+        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+    }
+    handleDeleteWidget(widgetId) {
+        let widgets = _.slice(this.state.widgets);
+        _.remove(widgets, (n) => (n === widgetId));
+        this.setState({ widgets: widgets });
+    }
+    render() {
+        let widgets = _.map(this.state.widgets, (widgetId) => {
+            return getWidgetComponent(widgetId, {
+                onDelete: () => {
+                    this.handleDeleteWidget(widgetId);
+                }
+            });
+        });
+
+        return (
+            <div>{widgets}</div>
+        );
+    }
+}
+
+class SecondaryContainer extends ReactSortable {
+    state = {
+        widgets: store.get('workspace.container.secondary')
+    };
+    sortableOptions = {
+        model: 'widgets',
+        group: {
+            name: 'secondary',
+            pull: true,
+            put: ['primary']
+        },
+        handle: '.widget-header',
+        dataIdAttr: 'data-id'
+    };
+
+    componentDidUpdate() {
+        let { widgets } = this.state;
+
+        // Calling store.set() will merge two different arrays into one.
+        // Remove the property first to avoid duplication.
+        store.unset('workspace.container.secondary');
+        store.set('workspace.container.secondary', widgets);
+
+        // Publish a 'resize' event
+        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+    }
+    handleDeleteWidget(widgetId) {
+        let widgets = _.slice(this.state.widgets);
+        _.remove(widgets, (n) => (n === widgetId));
+        this.setState({ widgets: widgets });
+    }
+    render() {
+        let widgets = _.map(this.state.widgets, (widgetId) => {
+            return getWidgetComponent(widgetId, {
+                onDelete: () => {
+                    this.handleDeleteWidget(widgetId);
+                }
+            });
+        });
+
+        return (
+            <div>{widgets}</div>
+        );
+    }
+}
 
 class Workspace extends React.Component {
     state = {
+        mounted: false,
         port: '',
         isDragging: false,
         isUploading: false,
         showPrimaryContainer: true,
-        showSecondaryContainer: true,
-        defaultContainer: [],
-        primaryContainer: [],
-        secondaryContainer: []
+        showSecondaryContainer: true
     };
     sortableGroup = {
         primary: null,
         secondary: null
     };
-    storeEvents = {
-        'change': (state) => {
-            const primaryContainer = _.filter(this.state.primaryContainer, (o) => {
-                let widget = o.key;
-                let visibility = store.get('widgets["' + widget + '"].state.visibility');
-                return visibility !== 'hidden';
-            });
-            const secondaryContainer = _.filter(this.state.secondaryContainer, (o) => {
-                let widget = o.key;
-                let visibility = store.get('widgets["' + widget + '"].state.visibility');
-                return visibility !== 'hidden';
-            });
-
-            this.setState({
-                primaryContainer: primaryContainer,
-                secondaryContainer: secondaryContainer
-            });
-        }
-    };
 
     componentDidMount() {
         this.subscribe();
 
-        this.createSortableGroups();
-
-        this.loadSettings((err, settings) => {
-            if (err) {
-                settings = {};
-            }
-
-            let widgetList = _.map(widgets, 'id');
-            let defaultList = ['visualizer'];
-            let primaryDefault = ['connection', 'grbl', 'console'];
-            let secondaryDefault = ['axes', 'gcode', 'probe', 'spindle'];
-            let primaryList = _.get(settings, 'workspace.container.primary') || primaryDefault;
-            let secondaryList = _.get(settings, 'workspace.container.secondary') || secondaryDefault;
-
-            // primary list
-            primaryList = _(primaryList) // Keep the order of primaryList
-                .uniq()
-                .intersection(widgetList) // intersect widgetList
-                .difference(defaultList) // exclude defaultList
-                .value();
-
-            // secondary list
-            secondaryList = _(secondaryList.concat(widgetList)) // Keep the order of secondaryList
-                .uniq()
-                .difference(primaryList) // exclude primaryList
-                .difference(defaultList) // exclude defaultList
-                .value();
-
-            this.setState({
-                defaultContainer: _(defaultList)
-                    .filter((id) => {
-                        const visibility = store.get('widgets["' + id + '"].state.visibility');
-                        return visibility !== 'hidden';
-                    })
-                    .map(id => getWidgetElementById(id))
-                    .value(),
-                primaryContainer: _(primaryList)
-                    .filter((id) => {
-                        const visibility = store.get('widgets["' + id + '"].state.visibility');
-                        return visibility !== 'hidden';
-                    })
-                    .map(id => getWidgetElementById(id))
-                    .value(),
-                secondaryContainer: _(secondaryList)
-                    .filter((id) => {
-                        const visibility = store.get('widgets["' + id + '"].state.visibility');
-                        return visibility !== 'hidden';
-                    })
-                    .map(id => getWidgetElementById(id))
-                    .value()
-            });
-        });
-
-        this.addStoreEvents();
+        setTimeout(() => {
+            // A workaround solution to trigger componentDidUpdate on initial render
+            this.setState({ mounted: true });
+        }, 0);
     }
     componentWillUnmount() {
-        this.removeStoreEvents();
-        this.destroySortableGroups();
         this.unsubscribe();
     }
     componentDidUpdate() {
-        this.resizeVisualContainer();
-    }
-    addStoreEvents() {
-        _.each(this.storeEvents, (callback, eventName) => {
-            store.on(eventName, callback);
-        });
-    }
-    removeStoreEvents() {
-        _.each(this.storeEvents, (callback, eventName) => {
-            store.removeListener(eventName, callback);
-        });
+        this.resizeDefaultContainer();
     }
     subscribe() {
         this.pubsubTokens = [];
@@ -198,88 +206,21 @@ class Workspace extends React.Component {
         let root = document.documentElement;
         root.classList.remove('wait');
     }
-    loadSettings(callback) {
-        request
-            .get('/api/config')
-            .end((err, res) => {
-                callback(err, res.body || {});
-            });
-    }
-    saveSettings(settings, callback) {
-        settings = settings || {};
-        request
-            .put('/api/config')
-            .set('Content-Type', 'application/json')
-            .send(settings)
-            .end(callback);
-    }
-    createSortableGroups() {
-        const onEndCallback = (evt) => {
-            let settings = {
-                workspace: {
-                    container: {
-                        primary: this.sortableGroup['primary'].toArray(),
-                        secondary: this.sortableGroup['secondary'].toArray()
-                    }
-                }
-            };
-
-            this.saveSettings(settings, (err, res) => {
-                // Publish a 'resize' event
-                pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
-
-                if (err) {
-                    log.error(res.text);
-                    return;
-                }
-            });
-        };
-
-        { // primary
-            let el = ReactDOM.findDOMNode(this.refs.primaryContainer);
-            this.sortableGroup['primary'] = Sortable.create(el, {
-                group: {
-                    name: 'primary',
-                    pull: true,
-                    put: ['secondary']
-                },
-                handle: '.widget-header',
-                dataIdAttr: 'data-id',
-                onEnd: onEndCallback
-            });
-        }
-
-        { // secondary
-            let el = ReactDOM.findDOMNode(this.refs.secondaryContainer);
-            this.sortableGroup['secondary'] = Sortable.create(el, {
-                group: {
-                    name: 'secondary',
-                    pull: true,
-                    put: ['primary']
-                },
-                handle: '.widget-header',
-                dataIdAttr: 'data-id',
-                onEnd: onEndCallback
-            });
-        }
-    }
-    destroySortableGroups() {
-        this.sortableGroup['primary'].destroy();
-        this.sortableGroup['secondary'].destroy();
-    }
     togglePrimaryContainer() {
-        this.setState({ showPrimaryContainer: ! this.state.showPrimaryContainer });
+        let { showPrimaryContainer } = this.state;
+        this.setState({ showPrimaryContainer: !showPrimaryContainer });
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     toggleSecondaryContainer() {
-        this.setState({ showSecondaryContainer: ! this.state.showSecondaryContainer });
+        let { showSecondaryContainer } = this.state;
+        this.setState({ showSecondaryContainer: !showSecondaryContainer });
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
-    resizeVisualContainer() {
+    resizeDefaultContainer() {
         let primaryContainer = ReactDOM.findDOMNode(this.refs.primaryContainer);
         let primaryTogglerPane = ReactDOM.findDOMNode(this.refs.primaryTogglerPane);
         let secondaryContainer = ReactDOM.findDOMNode(this.refs.secondaryContainer);
@@ -361,7 +302,7 @@ class Workspace extends React.Component {
                 { 'hidden': ! this.state.showSecondaryContainer }
             ),
             defaultContainer: classNames(
-                'main-container',
+                'default-container',
                 'fixed'
             ),
             dropzoneOverlay: classNames(
@@ -393,15 +334,15 @@ class Workspace extends React.Component {
                         <div className="workspace-table">
                             <div className="workspace-table-row">
                                 <div className={classes.primaryContainer} ref="primaryContainer">
-                                    {this.state.primaryContainer}
+                                    <PrimaryContainer />
                                 </div>
                                 <div className="primary-toggler-pane" ref="primaryTogglerPane" onClick={::this.togglePrimaryContainer}></div>
                                 <div className={classes.defaultContainer} ref="defaultContainer">
-                                    {this.state.defaultContainer}
+                                    <DefaultContainer />
                                 </div>
                                 <div className="secondary-toggler-pane" ref="secondaryTogglerPane" onClick={::this.toggleSecondaryContainer}></div>
                                 <div className={classes.secondaryContainer} ref="secondaryContainer">
-                                    {this.state.secondaryContainer}
+                                    <SecondaryContainer />
                                 </div>
                             </div>
                         </div>

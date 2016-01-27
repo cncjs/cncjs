@@ -38,7 +38,7 @@
     .primary-toggler-pane,
     .secondary-container,
     .secondary-toggler-pane,
-    .main-container {
+    .default-container {
         display: table-cell;
         position: relative;
     }
@@ -50,13 +50,13 @@
         max-width: 360px;
         padding: 10px;
     }
-    .main-container {
+    .default-container {
         min-width: 250px;
     }
-    .main-container.fixed {
+    .default-container.fixed {
         position: fixed;
-        left: 0;
-        right: 0;
+        left: (360 + 10)px;
+        right: (360 + 10)px;
         top: 50px;
         bottom: 0;
     }
