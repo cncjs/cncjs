@@ -92,6 +92,7 @@
     "serve-static": "^1.0.4",
     "sha1": "^1.1.1",
     "socket.io": "^1.3.7",
+    "sortablejs": "^1.4.2",
     "sprintf": "0.1.x",
     "string-format": "0.2.x",
     "superagent": "^1.6.1",
@@ -157,7 +158,6 @@
     "yargs": "^2.3.0"
   },
   "browser": {
-    "Sortable": "./src/web/vendor/Sortable/Sortable.js",
     "stacktrace": "./src/web/vendor/stacktrace-js/stacktrace.js"
   },
   "browserify-shim": "./config/shim.js"
