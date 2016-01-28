@@ -2,38 +2,36 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Confirm from '../components/common/Confirm';
 
-// @param {string} message The confirmation message
-// @param {object} [options] The options object
-// @param {string} [options.description] An optional descriptipn
-// @param {string} [options.okLabel] The text for the OK button
+// @param {object} options The options object
+// @param {string} [options.message] The message string
+// @param {string} [options.description] The description string
+// @param {string} [options.confirmLabel] The text for the OK button
 // @param {string} [options.cancelLabel] The text for the Cancel button
-const confirm = (message, options = {}) => {
-    return new Promise((resolve, reject) => {
-        const wrapper = document.body.appendChild(document.createElement('div'));  
-        const cleanup = () => {
-            React.unmountComponentAtNode(wrapper);
-            setTimeout(() => {
-                wrapper.remove();
-            }, 0);
-        };
-        const handleConfirm = (e) => {
-            resolve();
-            cleanup();
-        };
-        const handleCancel = (e) => {
-            reject();
-            cleanup();
-        };
+// @param {function} [confirmCallback] The confirm callback
+// @param {function} [cancelCallback] The cancel callback
+const confirm = (options = {}, confirmCallback, cancelCallback) => {
+    const el = document.body.appendChild(document.createElement('div'));  
+    const handleClose = (e) => {
+        ReactDOM.unmountComponentAtNode(el);
+        setTimeout(() => {
+            el.remove();
+        }, 0);
+    };
+    const handleConfirm = (e) => {
+        confirmCallback && confirmCallback();
+    };
+    const handleCancel = (e) => {
+        cancelCallback && cancelCallback();
+    };
 
-        ReactDOM.render(
-            <Confirm {...options}
-                message={message}
-                onConfirm={handleConfirm}
-                onCancel={handleCancel}
-            />,
-            wrapper
-        );
-    });
+    ReactDOM.render(
+        <Confirm {...options}
+            onClose={handleClose}
+            onConfirm={handleConfirm}
+            onCancel={handleCancel}
+        />,
+        el
+    );
 };
 
 export default confirm;
