@@ -5,15 +5,18 @@ import settings from '../../config/settings';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
+import confirm from '../../lib/confirm';
 
 class Header extends React.Component {
     handleRestoreDefaults() {
-        const confirmText = i18n._('Are you sure you want to restore the default settings?');
+        const heading = i18n._('Restore Defaults');
+        const description = i18n._('Are you sure you want to restore the default settings?');
 
-        if (window.confirm(confirmText)) {
-            store.clear();
-            window.location.reload();
-        }
+        confirm(heading, { description: description })
+            .then(() => {
+                store.clear();
+                window.location.reload();
+            });
     }
     render() {
         let homepage = 'https://github.com/cheton/cnc.js';
