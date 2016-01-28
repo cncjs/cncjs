@@ -5,10 +5,10 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import request from 'superagent';
-import Sortable from 'sortablejs';
+import { Button, Modal } from 'react-bootstrap';
+import Sortable from '../common/Sortable';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
-import ReactSortable from '../../lib/react-sortable';
 import store from '../../store';
 import {
     AxesWidget,
@@ -36,13 +36,40 @@ const getWidgetComponent = (widgetId, props) => {
     return handler ? handler(props) : null;
 };
 
+class AddWidgets extends React.Component {
+    static propTypes = {
+        show: React.PropTypes.bool,
+        onHide: React.PropTypes.func
+    };
+
+    render() {
+        return (
+            <Modal
+                dialogClassName="modal-vertical-center"
+                show={this.props.show}
+                onHide={this.props.onHide}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>{i18n._('Add Widgets')}</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    Add Widgets
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button onClick={this.props.onHide}>{i18n._('Close')}</Button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+}
+
 class DefaultWidgets extends React.Component {
     state = {
         widgets: store.get('workspace.container.default')
     };
 
     componentDidUpdate() {
-        let { widgets } = this.state;
+        const { widgets } = this.state;
         store.set('workspace.container.default', widgets);
 
         // Publish a 'resize' event
@@ -59,7 +86,7 @@ class DefaultWidgets extends React.Component {
     }
 }
 
-class PrimaryWidgets extends ReactSortable {
+class PrimaryWidgets extends Sortable {
     state = {
         widgets: store.get('workspace.container.primary')
     };
@@ -75,7 +102,7 @@ class PrimaryWidgets extends ReactSortable {
     };
 
     componentDidUpdate() {
-        let { widgets } = this.state;
+        const { widgets } = this.state;
 
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
@@ -105,7 +132,7 @@ class PrimaryWidgets extends ReactSortable {
     }
 }
 
-class SecondaryWidgets extends ReactSortable {
+class SecondaryWidgets extends Sortable {
     state = {
         widgets: store.get('workspace.container.secondary')
     };
@@ -121,7 +148,7 @@ class SecondaryWidgets extends ReactSortable {
     };
 
     componentDidUpdate() {
-        let { widgets } = this.state;
+        const { widgets } = this.state;
 
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
@@ -158,7 +185,8 @@ class Workspace extends React.Component {
         isDragging: false,
         isUploading: false,
         showPrimaryContainer: true,
-        showSecondaryContainer: true
+        showSecondaryContainer: true,
+        showAddWidgets: false
     };
     sortableGroup = {
         primary: null,
@@ -207,14 +235,14 @@ class Workspace extends React.Component {
         root.classList.remove('wait');
     }
     togglePrimaryContainer() {
-        let { showPrimaryContainer } = this.state;
+        const { showPrimaryContainer } = this.state;
         this.setState({ showPrimaryContainer: !showPrimaryContainer });
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     toggleSecondaryContainer() {
-        let { showSecondaryContainer } = this.state;
+        const { showSecondaryContainer } = this.state;
         this.setState({ showSecondaryContainer: !showSecondaryContainer });
 
         // Publish a 'resize' event
@@ -242,8 +270,14 @@ class Workspace extends React.Component {
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
+    openAddWidgets() {
+        this.setState({ showAddWidgets: true });
+    }
+    closeAddWidgets() {
+        this.setState({ showAddWidgets: false });
+    }
     onDrop(files) {
-        let { port } = this.state;
+        const { port } = this.state;
 
         if (!port) {
             return;
@@ -299,11 +333,17 @@ class Workspace extends React.Component {
         reader.readAsText(file);
     }
     render() {
-        let { isDragging, isUploading, showPrimaryContainer, showSecondaryContainer } = this.state;
-        let notDragging = !isDragging;
-        let hidePrimaryContainer = !showPrimaryContainer;
-        let hideSecondaryContainer = !showSecondaryContainer;
-        let classes = {
+        const {
+            isDragging,
+            isUploading,
+            showPrimaryContainer,
+            showSecondaryContainer,
+            showAddWidgets
+        } = this.state;
+        const notDragging = !isDragging;
+        const hidePrimaryContainer = !showPrimaryContainer;
+        const hideSecondaryContainer = !showSecondaryContainer;
+        const classes = {
             primaryContainer: classNames(
                 'primary-container',
                 { 'hidden': hidePrimaryContainer }
@@ -347,8 +387,8 @@ class Workspace extends React.Component {
                                 <div className={classes.primaryContainer} ref="primaryContainer">
                                     <div className="btn-toolbar clearfix" role="toolbar">
                                         <div className="btn-group btn-group-xs pull-left" role="group">
-                                            <button type="button" className="btn btn-default">
-                                                <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widget')}
+                                            <button type="button" className="btn btn-default" onClick={::this.openAddWidgets}>
+                                                <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
                                             </button>
                                         </div>
                                         <div className="btn-group btn-group-xs pull-right" role="group">
@@ -388,8 +428,8 @@ class Workspace extends React.Component {
                                             </button>
                                         </div>
                                         <div className="btn-group btn-group-xs pull-right" role="group">
-                                            <button type="button" className="btn btn-default">
-                                                <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widget')}
+                                            <button type="button" className="btn btn-default" onClick={::this.openAddWidgets}>
+                                                <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
                                             </button>
                                         </div>
                                     </div>
@@ -399,6 +439,8 @@ class Workspace extends React.Component {
                         </div>
                     </Dropzone>
                 </div>
+
+                <AddWidgets show={showAddWidgets} onHide={::this.closeAddWidgets} />
             </div>
         );
     }
