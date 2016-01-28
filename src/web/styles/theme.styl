@@ -82,3 +82,16 @@ row {
         padding-left: 0;
     }
 }
+
+// To vertically align the modal
+// https://github.com/react-bootstrap/react-bootstrap/issues/995
+.modal-dialog.modal-vertical-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin: auto;
+    transform: translate(-50%, -50%) !important;
+}
+.modal-body {
+    font-size: 14px;
+}

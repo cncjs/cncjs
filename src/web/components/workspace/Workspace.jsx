@@ -5,11 +5,11 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import request from 'superagent';
-import Sortable from 'sortablejs';
+import Sortable from '../common/Sortable';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
-import ReactSortable from '../../lib/react-sortable';
 import store from '../../store';
+import * as addWidgets from './AddWidgets';
 import {
     AxesWidget,
     ConnectionWidget,
@@ -36,13 +36,13 @@ const getWidgetComponent = (widgetId, props) => {
     return handler ? handler(props) : null;
 };
 
-class DefaultContainer extends React.Component {
+class DefaultWidgets extends React.Component {
     state = {
         widgets: store.get('workspace.container.default')
     };
 
     componentDidUpdate() {
-        let { widgets } = this.state;
+        const { widgets } = this.state;
         store.set('workspace.container.default', widgets);
 
         // Publish a 'resize' event
@@ -54,12 +54,12 @@ class DefaultContainer extends React.Component {
         });
 
         return (
-            <div>{widgets}</div>
+            <div {...this.props}>{widgets}</div>
         );
     }
 }
 
-class PrimaryContainer extends ReactSortable {
+class PrimaryWidgets extends Sortable {
     state = {
         widgets: store.get('workspace.container.primary')
     };
@@ -75,7 +75,7 @@ class PrimaryContainer extends ReactSortable {
     };
 
     componentDidUpdate() {
-        let { widgets } = this.state;
+        const { widgets } = this.state;
 
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
@@ -100,12 +100,12 @@ class PrimaryContainer extends ReactSortable {
         });
 
         return (
-            <div>{widgets}</div>
+            <div {...this.props}>{widgets}</div>
         );
     }
 }
 
-class SecondaryContainer extends ReactSortable {
+class SecondaryWidgets extends Sortable {
     state = {
         widgets: store.get('workspace.container.secondary')
     };
@@ -121,7 +121,7 @@ class SecondaryContainer extends ReactSortable {
     };
 
     componentDidUpdate() {
-        let { widgets } = this.state;
+        const { widgets } = this.state;
 
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
@@ -146,7 +146,7 @@ class SecondaryContainer extends ReactSortable {
         });
 
         return (
-            <div>{widgets}</div>
+            <div {...this.props}>{widgets}</div>
         );
     }
 }
@@ -207,14 +207,14 @@ class Workspace extends React.Component {
         root.classList.remove('wait');
     }
     togglePrimaryContainer() {
-        let { showPrimaryContainer } = this.state;
+        const { showPrimaryContainer } = this.state;
         this.setState({ showPrimaryContainer: !showPrimaryContainer });
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     toggleSecondaryContainer() {
-        let { showSecondaryContainer } = this.state;
+        const { showSecondaryContainer } = this.state;
         this.setState({ showSecondaryContainer: !showSecondaryContainer });
 
         // Publish a 'resize' event
@@ -222,19 +222,28 @@ class Workspace extends React.Component {
     }
     resizeDefaultContainer() {
         let primaryContainer = ReactDOM.findDOMNode(this.refs.primaryContainer);
-        let primaryTogglerPane = ReactDOM.findDOMNode(this.refs.primaryTogglerPane);
         let secondaryContainer = ReactDOM.findDOMNode(this.refs.secondaryContainer);
-        let secondaryTogglerPane = ReactDOM.findDOMNode(this.refs.secondaryTogglerPane);
+        let primaryToggler = ReactDOM.findDOMNode(this.refs.primaryToggler);
+        let secondaryToggler = ReactDOM.findDOMNode(this.refs.secondaryToggler);
         let defaultContainer = ReactDOM.findDOMNode(this.refs.defaultContainer);
 
-        defaultContainer.style.left = primaryContainer.offsetWidth + primaryTogglerPane.offsetWidth + 'px';
-        defaultContainer.style.right = secondaryContainer.offsetWidth + secondaryTogglerPane.offsetWidth + 'px';
+        if (this.state.showPrimaryContainer) {
+            defaultContainer.style.left = primaryContainer.offsetWidth + 'px';
+        } else {
+            defaultContainer.style.left = primaryToggler.offsetWidth + 'px';
+        }
+
+        if (this.state.showSecondaryContainer) {
+            defaultContainer.style.right = secondaryContainer.offsetWidth + 'px';
+        } else {
+            defaultContainer.style.right = secondaryToggler.offsetWidth + 'px';
+        }
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     onDrop(files) {
-        let { port } = this.state;
+        const { port } = this.state;
 
         if (!port) {
             return;
@@ -290,16 +299,24 @@ class Workspace extends React.Component {
         reader.readAsText(file);
     }
     render() {
-        let { isDragging, isUploading } = this.state;
-        let notDragging = !isDragging;
-        let classes = {
+        const {
+            isDragging,
+            isUploading,
+            showPrimaryContainer,
+            showSecondaryContainer,
+            showAddWidgets
+        } = this.state;
+        const notDragging = !isDragging;
+        const hidePrimaryContainer = !showPrimaryContainer;
+        const hideSecondaryContainer = !showSecondaryContainer;
+        const classes = {
             primaryContainer: classNames(
                 'primary-container',
-                { 'hidden': ! this.state.showPrimaryContainer }
+                { 'hidden': hidePrimaryContainer }
             ),
             secondaryContainer: classNames(
                 'secondary-container',
-                { 'hidden': ! this.state.showSecondaryContainer }
+                { 'hidden': hideSecondaryContainer }
             ),
             defaultContainer: classNames(
                 'default-container',
@@ -334,15 +351,55 @@ class Workspace extends React.Component {
                         <div className="workspace-table">
                             <div className="workspace-table-row">
                                 <div className={classes.primaryContainer} ref="primaryContainer">
-                                    <PrimaryContainer />
+                                    <div className="btn-toolbar clearfix" role="toolbar">
+                                        <div className="btn-group btn-group-xs pull-left" role="group">
+                                            <button type="button" className="btn btn-default" onClick={addWidgets.show}>
+                                                <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
+                                            </button>
+                                        </div>
+                                        <div className="btn-group btn-group-xs pull-right" role="group">
+                                            <button type="button" className="btn btn-default" onClick={::this.togglePrimaryContainer}>
+                                                <i className="fa fa-chevron-left"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <PrimaryWidgets className="widgets"/>
                                 </div>
-                                <div className="primary-toggler-pane" ref="primaryTogglerPane" onClick={::this.togglePrimaryContainer}></div>
+                                {hidePrimaryContainer &&
+                                <div className="primary-toggler" ref="primaryToggler">
+                                    <div className="btn-group btn-group-xs">
+                                        <button type="button" className="btn btn-default" onClick={::this.togglePrimaryContainer}>
+                                            <i className="fa fa-chevron-right"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                }
                                 <div className={classes.defaultContainer} ref="defaultContainer">
-                                    <DefaultContainer />
+                                    <DefaultWidgets className="widgets"/>
                                 </div>
-                                <div className="secondary-toggler-pane" ref="secondaryTogglerPane" onClick={::this.toggleSecondaryContainer}></div>
+                                {hideSecondaryContainer &&
+                                <div className="secondary-toggler" ref="secondaryToggler">
+                                    <div className="btn-group btn-group-xs">
+                                        <button type="button" className="btn btn-default" onClick={::this.toggleSecondaryContainer}>
+                                            <i className="fa fa-chevron-left"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                }
                                 <div className={classes.secondaryContainer} ref="secondaryContainer">
-                                    <SecondaryContainer />
+                                    <div className="btn-toolbar clearfix" role="toolbar">
+                                        <div className="btn-group btn-group-xs pull-left" role="group">
+                                            <button type="button" className="btn btn-default" onClick={::this.toggleSecondaryContainer}>
+                                                <i className="fa fa-chevron-right"></i>
+                                            </button>
+                                        </div>
+                                        <div className="btn-group btn-group-xs pull-right" role="group">
+                                            <button type="button" className="btn btn-default" onClick={addWidgets.show}>
+                                                <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <SecondaryWidgets className="widgets"/>
                                 </div>
                             </div>
                         </div>

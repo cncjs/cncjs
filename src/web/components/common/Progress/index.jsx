@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class Progress extends React.Component {
+class Progress extends React.Component {
     render() {
         let now = this.props.now || 0;
         let min = this.props.min || 0;
@@ -23,3 +23,5 @@ export default class Progress extends React.Component {
         );
     }
 }
+
+export default Progress;

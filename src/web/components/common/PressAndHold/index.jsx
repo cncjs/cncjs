@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default class PressAndHold extends React.Component {
+class PressAndHold extends React.Component {
     componentWillMount() {
         this.timeout = null;
         this.interval = null;
@@ -46,3 +46,5 @@ export default class PressAndHold extends React.Component {
         );
     }
 }
+
+export default PressAndHold;
