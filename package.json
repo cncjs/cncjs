@@ -79,7 +79,7 @@
     "range_check": "^1.2.0",
     "react": "^0.14.3",
     "react-addons-update": "^0.14.3",
-    "react-bootstrap": "^0.28.1",
+    "react-bootstrap": "^0.28.2",
     "react-datagrid": "^1.2.13",
     "react-dom": "^0.14.3",
     "react-dropzone": "^3.3.2",
