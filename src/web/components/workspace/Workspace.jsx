@@ -5,11 +5,11 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import request from 'superagent';
-import { Button, Modal } from 'react-bootstrap';
 import Sortable from '../common/Sortable';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import store from '../../store';
+import * as addWidgets from './AddWidgets';
 import {
     AxesWidget,
     ConnectionWidget,
@@ -35,33 +35,6 @@ const getWidgetComponent = (widgetId, props) => {
 
     return handler ? handler(props) : null;
 };
-
-class AddWidgets extends React.Component {
-    static propTypes = {
-        show: React.PropTypes.bool,
-        onHide: React.PropTypes.func
-    };
-
-    render() {
-        return (
-            <Modal
-                dialogClassName="modal-vertical-center"
-                show={this.props.show}
-                onHide={this.props.onHide}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>{i18n._('Add Widgets')}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    Add Widgets
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button onClick={this.props.onHide}>{i18n._('Close')}</Button>
-                </Modal.Footer>
-            </Modal>
-        );
-    }
-}
 
 class DefaultWidgets extends React.Component {
     state = {
@@ -185,8 +158,7 @@ class Workspace extends React.Component {
         isDragging: false,
         isUploading: false,
         showPrimaryContainer: true,
-        showSecondaryContainer: true,
-        showAddWidgets: false
+        showSecondaryContainer: true
     };
     sortableGroup = {
         primary: null,
@@ -269,12 +241,6 @@ class Workspace extends React.Component {
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
-    }
-    openAddWidgets() {
-        this.setState({ showAddWidgets: true });
-    }
-    closeAddWidgets() {
-        this.setState({ showAddWidgets: false });
     }
     onDrop(files) {
         const { port } = this.state;
@@ -387,7 +353,7 @@ class Workspace extends React.Component {
                                 <div className={classes.primaryContainer} ref="primaryContainer">
                                     <div className="btn-toolbar clearfix" role="toolbar">
                                         <div className="btn-group btn-group-xs pull-left" role="group">
-                                            <button type="button" className="btn btn-default" onClick={::this.openAddWidgets}>
+                                            <button type="button" className="btn btn-default" onClick={addWidgets.show}>
                                                 <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
                                             </button>
                                         </div>
@@ -428,7 +394,7 @@ class Workspace extends React.Component {
                                             </button>
                                         </div>
                                         <div className="btn-group btn-group-xs pull-right" role="group">
-                                            <button type="button" className="btn btn-default" onClick={::this.openAddWidgets}>
+                                            <button type="button" className="btn btn-default" onClick={addWidgets.show}>
                                                 <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
                                             </button>
                                         </div>
@@ -439,8 +405,6 @@ class Workspace extends React.Component {
                         </div>
                     </Dropzone>
                 </div>
-
-                <AddWidgets show={showAddWidgets} onHide={::this.closeAddWidgets} />
             </div>
         );
     }
