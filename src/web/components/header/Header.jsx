@@ -9,14 +9,13 @@ import confirm from '../../lib/confirm';
 
 class Header extends React.Component {
     handleRestoreDefaults() {
-        const heading = i18n._('Restore Defaults');
-        const description = i18n._('Are you sure you want to restore the default settings?');
-
-        confirm(heading, { description: description })
-            .then(() => {
-                store.clear();
-                window.location.reload();
-            });
+        confirm({
+            message: i18n._('Restore Defaults'),
+            description: i18n._('Are you sure you want to restore the default settings?')
+        }, () => {
+            store.clear();
+            window.location.reload();
+        });
     }
     render() {
         let homepage = 'https://github.com/cheton/cnc.js';
