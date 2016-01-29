@@ -43,12 +43,12 @@ class ProbeWidget extends React.Component {
         };
 
         return (
-            <div {...this.props} data-component="Widgets/ProbeWidget">
+            <div {...this.props} data-ns="widgets/probe">
                 <Widget fullscreen={this.state.isFullscreen}>
                     <WidgetHeader
                         title={title}
                         controlButtons={controlButtons}
-                        handleClick={::this.handleClick}
+                        onClick={::this.handleClick}
                     />
                     <WidgetContent className={classes.widgetContent}>
                         <Probe />
