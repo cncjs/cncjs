@@ -55,7 +55,7 @@ class WidgetListItem extends React.Component {
                 <WidgetFooter className="text-right" style={{padding: 4}}>
                     <Switch
                         disabled={this.props.disabled}
-                        defaultChecked={this.props.checked}
+                        defaultChecked={checked}
                         onChange={::this.handleChange}
                         checkedChildren={i18n._('ON')}
                         unCheckedChildren={i18n._('OFF')}
@@ -182,6 +182,18 @@ class AddWidgets extends React.Component {
         }
     }
     render() {
+        const widgets = _.concat(
+            store.get('workspace.container.primary'),
+            store.get('workspace.container.secondary')
+        );
+        _.each(this.widgetList, (widget) => {
+            if (_.includes(widgets, widget.id)) {
+                widget.visible = true;
+            } else {
+                widget.visible = false;
+            }
+        });
+
         return (
             <Modal
                 dialogClassName="modal-vertical-center"
