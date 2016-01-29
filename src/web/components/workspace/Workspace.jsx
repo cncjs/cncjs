@@ -73,7 +73,14 @@ class PrimaryWidgets extends Sortable {
         handle: '.widget-header',
         dataIdAttr: 'data-id'
     };
+    pubsubTokens = [];
 
+    componentDidMount() {
+        this.subscribe();
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
     componentDidUpdate() {
         const { widgets } = this.state;
 
@@ -84,6 +91,20 @@ class PrimaryWidgets extends Sortable {
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+    }
+    subscribe() {
+        { // updatePrimaryWidgets
+            let token = pubsub.subscribe('updatePrimaryWidgets', (msg, widgets) => {
+                this.setState({ widgets: widgets });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     handleDeleteWidget(widgetId) {
         let widgets = _.slice(this.state.widgets);
@@ -119,7 +140,14 @@ class SecondaryWidgets extends Sortable {
         handle: '.widget-header',
         dataIdAttr: 'data-id'
     };
+    pubsubTokens = [];
 
+    componentDidMount() {
+        this.subscribe();
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
     componentDidUpdate() {
         const { widgets } = this.state;
 
@@ -130,6 +158,20 @@ class SecondaryWidgets extends Sortable {
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+    }
+    subscribe() {
+        { // updateSecondaryWidgets
+            let token = pubsub.subscribe('updateSecondaryWidgets', (msg, widgets) => {
+                this.setState({ widgets: widgets });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     handleDeleteWidget(widgetId) {
         let widgets = _.slice(this.state.widgets);
@@ -298,6 +340,34 @@ class Workspace extends React.Component {
 
         reader.readAsText(file);
     }
+    updateWidgetsForPrimaryContainer() {
+        addWidgets.show((list) => {
+            let primaryWidgets = store.get('workspace.container.primary');
+            let secondaryWidgets = store.get('workspace.container.secondary');
+
+            primaryWidgets = list.slice();
+            _.pullAll(primaryWidgets, secondaryWidgets);
+            pubsub.publish('updatePrimaryWidgets', primaryWidgets);
+
+            secondaryWidgets = list.slice();
+            _.pullAll(secondaryWidgets, primaryWidgets);
+            pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
+        });
+    }
+    updateWidgetsForSecondaryContainer() {
+        addWidgets.show((list) => {
+            let primaryWidgets = store.get('workspace.container.primary');
+            let secondaryWidgets = store.get('workspace.container.secondary');
+
+            secondaryWidgets = list.slice();
+            _.pullAll(secondaryWidgets, primaryWidgets);
+            pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
+
+            primaryWidgets = list.slice();
+            _.pullAll(primaryWidgets, secondaryWidgets);
+            pubsub.publish('updatePrimaryWidgets', primaryWidgets);
+        });
+    }
     render() {
         const {
             isDragging,
@@ -354,7 +424,7 @@ class Workspace extends React.Component {
                                     <div className={classes.primaryContainer} ref="primaryContainer">
                                         <div className="btn-toolbar clearfix" role="toolbar">
                                             <div className="btn-group btn-group-xs pull-left" role="group">
-                                                <button type="button" className="btn btn-default" onClick={addWidgets.show}>
+                                                <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForPrimaryContainer}>
                                                     <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
                                                 </button>
                                             </div>
@@ -395,7 +465,7 @@ class Workspace extends React.Component {
                                                 </button>
                                             </div>
                                             <div className="btn-group btn-group-xs pull-right" role="group">
-                                                <button type="button" className="btn btn-default" onClick={addWidgets.show}>
+                                                <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForSecondaryContainer}>
                                                     <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
                                                 </button>
                                             </div>
