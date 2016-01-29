@@ -18,6 +18,7 @@ const bundleDependencies = {
         'lodash',
         'moment',
         'pubsub-js',
+        'rc-switch',
         'react',
         'react-dom',
         'react-addons-update',
