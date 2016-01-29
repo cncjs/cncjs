@@ -11,3 +11,31 @@
 
 // fixed-data-table
 @import url("node_modules/fixed-data-table/dist/fixed-data-table.css");
+
+// rc-switch
+@import url("node_modules/rc-switch/assets/index.css");
+.rc-switch {
+    width: 50px;
+}
+.rc-switch-checked {
+    border-width: 1px;
+    border-style: solid;
+    border-color: #435a8b #3c5488 #334c83;
+    background-color: #4e69a2;
+}
+.rc-switch-checked:after {
+    left: 28px;
+}
+.rc-switch-checked .rc-switch-inner {
+    left: 7px;
+}
+.rc-switch-checked[disabled],
+.rc-switch-checked.rc-switch-disabled {
+    cursor: not-allowed;
+    box-shadow: none;
+    opacity: .65;
+}
+.rc-switch-inner {
+    font-size: 80%;
+    left: 23px;
+}

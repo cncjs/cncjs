@@ -73,7 +73,16 @@ class PrimaryWidgets extends Sortable {
         handle: '.widget-header',
         dataIdAttr: 'data-id'
     };
+    pubsubTokens = [];
 
+    componentDidMount() {
+        super.componentDidMount();
+        this.subscribe();
+    }
+    componentWillUnmount() {
+        super.componentWillUnmount();
+        this.unsubscribe();
+    }
     componentDidUpdate() {
         const { widgets } = this.state;
 
@@ -84,6 +93,20 @@ class PrimaryWidgets extends Sortable {
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+    }
+    subscribe() {
+        { // updatePrimaryWidgets
+            let token = pubsub.subscribe('updatePrimaryWidgets', (msg, widgets) => {
+                this.setState({ widgets: widgets });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     handleDeleteWidget(widgetId) {
         let widgets = _.slice(this.state.widgets);
@@ -119,7 +142,16 @@ class SecondaryWidgets extends Sortable {
         handle: '.widget-header',
         dataIdAttr: 'data-id'
     };
+    pubsubTokens = [];
 
+    componentDidMount() {
+        super.componentDidMount();
+        this.subscribe();
+    }
+    componentWillUnmount() {
+        super.componentWillUnmount();
+        this.unsubscribe();
+    }
     componentDidUpdate() {
         const { widgets } = this.state;
 
@@ -130,6 +162,20 @@ class SecondaryWidgets extends Sortable {
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+    }
+    subscribe() {
+        { // updateSecondaryWidgets
+            let token = pubsub.subscribe('updateSecondaryWidgets', (msg, widgets) => {
+                this.setState({ widgets: widgets });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     handleDeleteWidget(widgetId) {
         let widgets = _.slice(this.state.widgets);
@@ -298,6 +344,34 @@ class Workspace extends React.Component {
 
         reader.readAsText(file);
     }
+    updateWidgetsForPrimaryContainer() {
+        addWidgets.show((list) => {
+            let primaryWidgets = store.get('workspace.container.primary');
+            let secondaryWidgets = store.get('workspace.container.secondary');
+
+            primaryWidgets = list.slice();
+            _.pullAll(primaryWidgets, secondaryWidgets);
+            pubsub.publish('updatePrimaryWidgets', primaryWidgets);
+
+            secondaryWidgets = list.slice();
+            _.pullAll(secondaryWidgets, primaryWidgets);
+            pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
+        });
+    }
+    updateWidgetsForSecondaryContainer() {
+        addWidgets.show((list) => {
+            let primaryWidgets = store.get('workspace.container.primary');
+            let secondaryWidgets = store.get('workspace.container.secondary');
+
+            secondaryWidgets = list.slice();
+            _.pullAll(secondaryWidgets, primaryWidgets);
+            pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
+
+            primaryWidgets = list.slice();
+            _.pullAll(primaryWidgets, secondaryWidgets);
+            pubsub.publish('updatePrimaryWidgets', primaryWidgets);
+        });
+    }
     render() {
         const {
             isDragging,
@@ -329,81 +403,83 @@ class Workspace extends React.Component {
         };
 
         return (
-            <div className="container-fluid" data-component="Workspace">
-                <div className="workspace-container">
-                    <div className={classes.dropzoneOverlay}></div>
-                    <Dropzone
-                        ref="dropzone"
-                        className="dropzone"
-                        disableClick={true}
-                        multiple={false}
-                        onDragEnter={() => {
-                            this.setState({ isDragging: true });
-                        }}
-                        onDragLeave={() => {
-                            this.setState({ isDragging: false });
-                        }}
-                        onDrop={(files) => {
-                            this.setState({ isDragging: false });
-                            this.onDrop(files);
-                        }}
-                    >
-                        <div className="workspace-table">
-                            <div className="workspace-table-row">
-                                <div className={classes.primaryContainer} ref="primaryContainer">
-                                    <div className="btn-toolbar clearfix" role="toolbar">
-                                        <div className="btn-group btn-group-xs pull-left" role="group">
-                                            <button type="button" className="btn btn-default" onClick={addWidgets.show}>
-                                                <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
+            <div className="workspace" data-ns="workspace">
+                <div className="container-fluid">
+                    <div className="workspace-container">
+                        <div className={classes.dropzoneOverlay}></div>
+                        <Dropzone
+                            ref="dropzone"
+                            className="dropzone"
+                            disableClick={true}
+                            multiple={false}
+                            onDragEnter={() => {
+                                this.setState({ isDragging: true });
+                            }}
+                            onDragLeave={() => {
+                                this.setState({ isDragging: false });
+                            }}
+                            onDrop={(files) => {
+                                this.setState({ isDragging: false });
+                                this.onDrop(files);
+                            }}
+                        >
+                            <div className="workspace-table">
+                                <div className="workspace-table-row">
+                                    <div className={classes.primaryContainer} ref="primaryContainer">
+                                        <div className="btn-toolbar clearfix" role="toolbar">
+                                            <div className="btn-group btn-group-xs pull-left" role="group">
+                                                <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForPrimaryContainer}>
+                                                    <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
+                                                </button>
+                                            </div>
+                                            <div className="btn-group btn-group-xs pull-right" role="group">
+                                                <button type="button" className="btn btn-default" onClick={::this.togglePrimaryContainer}>
+                                                    <i className="fa fa-chevron-left"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <PrimaryWidgets className="widgets"/>
+                                    </div>
+                                    {hidePrimaryContainer &&
+                                    <div className="primary-toggler" ref="primaryToggler">
+                                        <div className="btn-group btn-group-xs">
+                                            <button type="button" className="btn btn-default" onClick={::this.togglePrimaryContainer}>
+                                                <i className="fa fa-chevron-right"></i>
                                             </button>
                                         </div>
-                                        <div className="btn-group btn-group-xs pull-right" role="group">
-                                            <button type="button" className="btn btn-default" onClick={::this.togglePrimaryContainer}>
+                                    </div>
+                                    }
+                                    <div className={classes.defaultContainer} ref="defaultContainer">
+                                        <DefaultWidgets className="widgets"/>
+                                    </div>
+                                    {hideSecondaryContainer &&
+                                    <div className="secondary-toggler" ref="secondaryToggler">
+                                        <div className="btn-group btn-group-xs">
+                                            <button type="button" className="btn btn-default" onClick={::this.toggleSecondaryContainer}>
                                                 <i className="fa fa-chevron-left"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <PrimaryWidgets className="widgets"/>
-                                </div>
-                                {hidePrimaryContainer &&
-                                <div className="primary-toggler" ref="primaryToggler">
-                                    <div className="btn-group btn-group-xs">
-                                        <button type="button" className="btn btn-default" onClick={::this.togglePrimaryContainer}>
-                                            <i className="fa fa-chevron-right"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                }
-                                <div className={classes.defaultContainer} ref="defaultContainer">
-                                    <DefaultWidgets className="widgets"/>
-                                </div>
-                                {hideSecondaryContainer &&
-                                <div className="secondary-toggler" ref="secondaryToggler">
-                                    <div className="btn-group btn-group-xs">
-                                        <button type="button" className="btn btn-default" onClick={::this.toggleSecondaryContainer}>
-                                            <i className="fa fa-chevron-left"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                                }
-                                <div className={classes.secondaryContainer} ref="secondaryContainer">
-                                    <div className="btn-toolbar clearfix" role="toolbar">
-                                        <div className="btn-group btn-group-xs pull-left" role="group">
-                                            <button type="button" className="btn btn-default" onClick={::this.toggleSecondaryContainer}>
-                                                <i className="fa fa-chevron-right"></i>
-                                            </button>
+                                    }
+                                    <div className={classes.secondaryContainer} ref="secondaryContainer">
+                                        <div className="btn-toolbar clearfix" role="toolbar">
+                                            <div className="btn-group btn-group-xs pull-left" role="group">
+                                                <button type="button" className="btn btn-default" onClick={::this.toggleSecondaryContainer}>
+                                                    <i className="fa fa-chevron-right"></i>
+                                                </button>
+                                            </div>
+                                            <div className="btn-group btn-group-xs pull-right" role="group">
+                                                <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForSecondaryContainer}>
+                                                    <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
+                                                </button>
+                                            </div>
                                         </div>
-                                        <div className="btn-group btn-group-xs pull-right" role="group">
-                                            <button type="button" className="btn btn-default" onClick={addWidgets.show}>
-                                                <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
-                                            </button>
-                                        </div>
+                                        <SecondaryWidgets className="widgets"/>
                                     </div>
-                                    <SecondaryWidgets className="widgets"/>
                                 </div>
                             </div>
-                        </div>
-                    </Dropzone>
+                        </Dropzone>
+                    </div>
                 </div>
             </div>
         );

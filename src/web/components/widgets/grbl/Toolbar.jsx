@@ -20,7 +20,7 @@ class Toolbar extends React.Component {
                         onClick={() => controller.write('~')}
                         disabled={!canClick}
                     >
-                        <span className="code">~</span>&nbsp;{i18n._('Cycle Start')}
+                        {i18n._('Cycle Start')}
                     </button>
                     <button
                         type="button"
@@ -28,7 +28,7 @@ class Toolbar extends React.Component {
                         onClick={() => controller.write('!')}
                         disabled={!canClick}
                     >
-                        <span className="code">!</span>&nbsp;{i18n._('Feed Hold')}
+                        {i18n._('Feed Hold')}
                     </button>
                     <button
                         type="button"
@@ -36,7 +36,7 @@ class Toolbar extends React.Component {
                         onClick={() => controller.write('\x18')}
                         disabled={!canClick}
                     >
-                        <span className="code">Ctrl-X</span>&nbsp;{i18n._('Reset Grbl')}
+                        {i18n._('Reset Grbl')}
                     </button>
                     <DropdownButton
                         bsSize="sm"

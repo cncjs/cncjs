@@ -1,21 +1,27 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import React from 'react';
-import WidgetHeaderControls from './WidgetHeaderControls';
+import WidgetControls from './WidgetControls';
 
 class WidgetHeader extends React.Component {
+    static propTypes = {
+        onClick: React.PropTypes.func
+    };
+
     render() {
-        let options = _.defaultsDeep({}, this.props, {
-            type: 'default',
-            title: '',
-            controlButtons: []
-        });
+        const { className, title, controlButtons = [], onClick, ...props } = this.props;
+        const widgetHeaderClass = classNames(
+            'widget-header',
+            'clearfix',
+            className
+        );
 
         return (
-            <div {...this.props} className="widget-header clearfix">
-                <h3 className="widget-header-title">{options.title}</h3>
-                <WidgetHeaderControls
-                    buttons={options.controlButtons}
-                    handleClick={this.props.handleClick}
+            <div {...props} className={widgetHeaderClass}>
+                <h3 className="widget-header-title">{title}</h3>
+                <WidgetControls
+                    buttons={controlButtons}
+                    onClick={onClick}
                 />
             </div>
         );

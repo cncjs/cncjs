@@ -43,12 +43,12 @@ class SpindleWidget extends React.Component {
         };
 
         return (
-            <div {...this.props} data-component="Widgets/SpindleWidget">
+            <div {...this.props} data-ns="widgets/spindle">
                 <Widget fullscreen={this.state.isFullscreen}>
                     <WidgetHeader
                         title={title}
                         controlButtons={controlButtons}
-                        handleClick={::this.handleClick}
+                        onClick={::this.handleClick}
                     />
                     <WidgetContent className={classes.widgetContent}>
                         <Spindle />

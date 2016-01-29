@@ -23,7 +23,7 @@ class Header extends React.Component {
         let brandTitle = settings.name + ' v' + settings.version;
 
         return (
-            <div data-component="Header">
+            <div className="header" data-ns="header">
                 <Navbar fixedTop fluid inverse>
                     <NavbarBrand>
                         <a href={homepage} target="_blank" title={brandTitle}>{settings.name}</a>

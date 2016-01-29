@@ -1,15 +1,16 @@
 import classNames from 'classnames';
-import joinClasses from 'fbjs/lib/joinClasses';
 import React from 'react';
 
 class WidgetContent extends React.Component {
     render() {
-        let contentClass = classNames(
-            'widget-content'
+        const { className, ...props } = this.props;
+        const widgetContentClass = classNames(
+            'widget-content',
+            className
         );
 
         return (
-            <div {...this.props} className={joinClasses(contentClass, this.props.className)}>
+            <div {...props} className={widgetContentClass}>
                 {this.props.children}
             </div>
         );

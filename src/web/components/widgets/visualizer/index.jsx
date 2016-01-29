@@ -6,7 +6,7 @@ import './index.css';
 class VisualizerWidget extends React.Component {
     render() {
         return (
-            <div {...this.props} data-component="Widgets/VisualizerWidget">
+            <div {...this.props} data-ns="widgets/visualizer">
                 <Widget borderless={true}>
                     <WidgetContent>
                         <Visualizer />

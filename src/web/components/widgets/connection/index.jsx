@@ -42,12 +42,12 @@ class ConnectionWidget extends React.Component {
         };
 
         return (
-            <div {...this.props} data-component="Widgets/ConnectionWidget">
+            <div {...this.props} data-ns="widgets/connection">
                 <Widget fullscreen={this.state.isFullscreen}>
                     <WidgetHeader
                         title={title}
                         controlButtons={controlButtons}
-                        handleClick={::this.handleClick}
+                        onClick={::this.handleClick}
                     />
                     <WidgetContent className={classes.widgetContent}>
                         <Connection />

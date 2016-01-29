@@ -3,7 +3,7 @@ import React from 'react';
 import classNames from 'classnames';
 import i18n from '../../lib/i18n';
 
-class WidgetHeaderControls extends React.Component {
+class WidgetControls extends React.Component {
     state = {
         isCollapsed: false,
         isFullscreen: false
@@ -12,18 +12,18 @@ class WidgetHeaderControls extends React.Component {
     handleClick(btn) {
         if (btn === 'toggle') {
             let { isCollapsed } = this.state;
-            this.props.handleClick(btn, !isCollapsed);
+            this.props.onClick(btn, !isCollapsed);
             this.setState({ isCollapsed: !isCollapsed });
             return;
         }
         if (btn === 'fullscreen') {
             let { isFullscreen } = this.state;
-            this.props.handleClick(btn, !isFullscreen);
+            this.props.onClick(btn, !isFullscreen);
             this.setState({ isFullscreen: !isFullscreen });
             return;
         }
 
-        this.props.handleClick(btn);
+        this.props.onClick(btn);
     }
     renderEditButton() {
         return (
@@ -126,9 +126,9 @@ class WidgetHeaderControls extends React.Component {
         });
 
         return (
-            <div className="widget-header-controls btn-group">{buttons}</div>
+            <div className="widget-controls btn-group">{buttons}</div>
         );
     }
 }
 
-export default WidgetHeaderControls;
+export default WidgetControls;

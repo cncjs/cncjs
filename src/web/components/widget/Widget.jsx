@@ -3,18 +3,17 @@ import React from 'react';
 
 class Widget extends React.Component {
     render() {
-        let { borderless, fullscreen } = this.props;
-        let widgetClass = classNames(
+        const { className, borderless, fullscreen, ...props } = this.props;
+        const widgetClass = classNames(
             'widget',
             { 'widget-borderless': !!borderless },
-            { 'widget-fullscreen': !!fullscreen }
+            { 'widget-fullscreen': !!fullscreen },
+            className
         );
 
         return (
-            <div {...this.props} data-component="Widget">
-                <div className={widgetClass}>
-                    {this.props.children}
-                </div>
+            <div {...props} className={widgetClass} data-ns="widget">
+                {this.props.children}
             </div>
         );
     }

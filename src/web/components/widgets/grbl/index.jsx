@@ -43,12 +43,12 @@ class GrblWidget extends React.Component {
         };
 
         return (
-            <div {...this.props} data-component="Widgets/GrblWidget">
+            <div {...this.props} data-ns="widgets/grbl">
                 <Widget fullscreen={this.state.isFullscreen}>
                     <WidgetHeader
                         title={title}
                         controlButtons={controlButtons}
-                        handleClick={::this.handleClick}
+                        onClick={::this.handleClick}
                     />
                     <WidgetContent className={classes.widgetContent}>
                         <Grbl />
