@@ -4,17 +4,14 @@ import React from 'react';
 
 class WidgetFooter extends React.Component {
     render() {
-        let options = _.defaultsDeep({}, this.props, {
-            type: 'default'
-        });
-        let footerClass = classNames(
+        const { className, ...props } = this.props;
+        const widgetFooterClass = classNames(
             'widget-footer',
-            { 'widget-footer-default': options.type === 'default' },
-            { 'widget-footer-inverse': options.type === 'inverse' }
+            className
         );
 
         return (
-            <div {...this.props} className={footerClass}>
+            <div {...props} className={widgetFooterClass}>
                 {this.props.children}
             </div>
         );

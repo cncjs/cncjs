@@ -1,146 +1,141 @@
-[data-component="Widget"] {
-    .widget {
-        background-color: #FFF;
-        margin-bottom: 10px;
+.widget[data-ns="widget"] {
+    background-color: #FFF;
+    margin-bottom: 10px;
 
-        &.widget-borderless {
-            .widget-header,
-            .widget-content,
-            .widget-footer {
-                border: none;
-            }
-        }
-
-        &.widget-fullscreen {
-            width: 100%;
-            height: 100%;
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: 1050;
-        }
-        &.widget-fullscreen {
-            .widget-content {
-                position: absolute;
-                top: 0;
-                bottom: 0;
-                left: 0;
-                right: 0;
-            }
-            .widget-header + .widget-content {
-                position: absolute;
-                top: 34px;
-                bottom: 0;
-                left: 0;
-                right: 0;
-            }
-        }
-
-        .widget-header {
-            background-color: #fafafa;
-            cursor: move;
-            padding-left: 10px;
-            border: 1px solid #ccc;
-
-            .widget-header-title {
-                margin-top: 0;
-                font-size: 14px;
-                font-weight: 400;
-                line-height: 32px;
-                display: inline-block;
-                vertical-align: middle;
-                margin-bottom: 0;
-
-                .glyphicon {
-                    font-size: 14px;
-                    top: 0;
-                    vertical-align: middle;
-                    margin-right: 5px;
-                }
-            }
-
-            .btn .glyphicon {
-                position: relative;
-                font-size: 12px;
-                line-height: 1;
-            }
-
-            .widget-header-controls {
-                float: right;
-                width: auto;
-
-                a {
-                    text-decoration: none;
-                    font-size: 14px;
-                    text-align: center;
-                    display: inline-block;
-                    line-height: 32px;
-                    padding: 0;
-                    margin: 0;
-                }
-
-                .badge {
-                    margin-top: 10px;
-                }
-
-                .label {
-                    position: relative;
-                    top: 11px;
-                    padding: 5px;
-                    font-size: 85%;
-
-                    .glyphicon {
-                        font-size: 14px;
-                    }
-                }
-                .btn-icon {
-                    min-width: 30px;
-                    height: 32px;
-                    float: left;
-                    position: relative;
-                    font-family: Arial,Helvetica,sans-serif;
-                    border-left: 1px solid rgba(0,0,0,.09);
-                    margin: 0;
-
-                    &:hover {
-                        background-color: rgba(0,0,0,.05);
-                    }
-
-                    &:first-child {
-                        padding-left: 0
-                    }
-                    .glyphicon {
-                        font-size: 14px;
-                    }
-                }
-            }
-
-            @media screen and (max-width: 480px) {
-                .widget-header-controls {
-                    display: block;
-                    position: inherit;
-
-                    &.btn-group > .btn {
-                    }
-
-                    .badge {
-                        margin-top: 0;
-                    }
-
-                    .label {
-                        top: 0;
-                    }
-                }
-            }
-
-        }
-
-        .widget-content {
-            border: 1px solid #CCC;
-            border-top: none;
-        }
-
+    &.widget-borderless {
+        .widget-header,
+        .widget-content,
         .widget-footer {
+            border: none;
+        }
+    }
+
+    &.widget-fullscreen {
+        width: 100%;
+        height: 100%;
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 1050;
+    }
+    &.widget-fullscreen {
+        .widget-content {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+        .widget-header + .widget-content {
+            position: absolute;
+            top: 34px;
+            bottom: 0;
+            left: 0;
+            right: 0;
+        }
+    }
+
+    .widget-header {
+        background-color: #fafafa;
+        cursor: move;
+        padding-left: 10px;
+        border: 1px solid #ccc;
+
+        .widget-header-title {
+            margin-top: 0;
+            font-size: 14px;
+            font-weight: 400;
+            line-height: 32px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-bottom: 0;
+
+            .glyphicon {
+                font-size: 14px;
+                top: 0;
+                vertical-align: middle;
+                margin-right: 5px;
+            }
+        }
+
+        .btn .glyphicon {
+            position: relative;
+            font-size: 12px;
+            line-height: 1;
+        }
+    }
+
+    .widget-content,
+    .widget-footer {
+        border: 1px solid #CCC;
+        border-top: none;
+    }
+
+    .widget-controls {
+        float: right;
+        width: auto;
+
+        a {
+            text-decoration: none;
+            font-size: 14px;
+            text-align: center;
+            display: inline-block;
+            line-height: 32px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .badge {
+            margin-top: 10px;
+        }
+
+        .label {
+            position: relative;
+            top: 11px;
+            padding: 5px;
+            font-size: 85%;
+
+            .glyphicon {
+                font-size: 14px;
+            }
+        }
+        .btn-icon {
+            min-width: 30px;
+            height: 32px;
+            float: left;
+            position: relative;
+            font-family: Arial,Helvetica,sans-serif;
+            border-left: 1px solid rgba(0,0,0,.09);
+            margin: 0;
+
+            &:hover {
+                background-color: rgba(0,0,0,.05);
+            }
+
+            &:first-child {
+                padding-left: 0
+            }
+            .glyphicon {
+                font-size: 14px;
+            }
+        }
+    }
+
+    @media screen and (max-width: 480px) {
+        .widget-controls {
+            display: block;
+            position: inherit;
+
+            &.btn-group > .btn {
+            }
+
+            .badge {
+                margin-top: 0;
+            }
+
+            .label {
+                top: 0;
+            }
         }
     }
 }
