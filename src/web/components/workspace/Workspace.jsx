@@ -76,9 +76,11 @@ class PrimaryWidgets extends Sortable {
     pubsubTokens = [];
 
     componentDidMount() {
+        super.componentDidMount();
         this.subscribe();
     }
     componentWillUnmount() {
+        super.componentWillUnmount();
         this.unsubscribe();
     }
     componentDidUpdate() {
@@ -143,9 +145,11 @@ class SecondaryWidgets extends Sortable {
     pubsubTokens = [];
 
     componentDidMount() {
+        super.componentDidMount();
         this.subscribe();
     }
     componentWillUnmount() {
+        super.componentWillUnmount();
         this.unsubscribe();
     }
     componentDidUpdate() {
