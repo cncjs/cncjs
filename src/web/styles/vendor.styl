@@ -15,7 +15,19 @@
 // rc-switch
 @import url("node_modules/rc-switch/assets/index.css");
 .rc-switch {
-    width: 50px;
+    width: 60px;
+}
+.rc-switch:after {
+    top: 0;
+    left: 0;
+    width: 20px;
+    height: 20px;
+}
+.rc-switch-inner {
+    font-size: 75%;
+    left: 20px;
+    right: 5px;
+    text-align: center;
 }
 .rc-switch-checked {
     border-width: 1px;
@@ -24,18 +36,17 @@
     background-color: #4e69a2;
 }
 .rc-switch-checked:after {
-    left: 28px;
+    left: 38px;
 }
 .rc-switch-checked .rc-switch-inner {
-    left: 7px;
+    font-size: 75%;
+    left: 5px;
+    right: 20px;
+    text-align: center;
 }
 .rc-switch-checked[disabled],
 .rc-switch-checked.rc-switch-disabled {
     cursor: not-allowed;
     box-shadow: none;
     opacity: .65;
-}
-.rc-switch-inner {
-    font-size: 80%;
-    left: 23px;
 }
