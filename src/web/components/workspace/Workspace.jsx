@@ -9,7 +9,7 @@ import Sortable from '../common/Sortable';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import store from '../../store';
-import * as addWidgets from './AddWidgets';
+import * as widgets from './Widgets';
 import {
     AxesWidget,
     ConnectionWidget,
@@ -345,7 +345,7 @@ class Workspace extends React.Component {
         reader.readAsText(file);
     }
     updateWidgetsForPrimaryContainer() {
-        addWidgets.show((list) => {
+        widgets.show((list) => {
             let primaryWidgets = store.get('workspace.container.primary');
             let secondaryWidgets = store.get('workspace.container.secondary');
 
@@ -359,7 +359,7 @@ class Workspace extends React.Component {
         });
     }
     updateWidgetsForSecondaryContainer() {
-        addWidgets.show((list) => {
+        widgets.show((list) => {
             let primaryWidgets = store.get('workspace.container.primary');
             let secondaryWidgets = store.get('workspace.container.secondary');
 
@@ -429,7 +429,7 @@ class Workspace extends React.Component {
                                         <div className="btn-toolbar clearfix" role="toolbar">
                                             <div className="btn-group btn-group-xs pull-left" role="group">
                                                 <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForPrimaryContainer}>
-                                                    <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
+                                                    <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widget')}
                                                 </button>
                                             </div>
                                             <div className="btn-group btn-group-xs pull-right" role="group">
@@ -470,7 +470,7 @@ class Workspace extends React.Component {
                                             </div>
                                             <div className="btn-group btn-group-xs pull-right" role="group">
                                                 <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForSecondaryContainer}>
-                                                    <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widgets')}
+                                                    <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widget')}
                                                 </button>
                                             </div>
                                         </div>

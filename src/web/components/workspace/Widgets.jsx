@@ -11,7 +11,8 @@ import store from '../../store';
 class WidgetListItem extends React.Component {
     static propTypes = {
         id: React.PropTypes.string,
-        title: React.PropTypes.string,
+        caption: React.PropTypes.string,
+        details: React.PropTypes.string,
         checked: React.PropTypes.bool,
         disabled: React.PropTypes.bool,
         onChange: React.PropTypes.func
@@ -34,34 +35,53 @@ class WidgetListItem extends React.Component {
             )
         };
         const styles = {
-            statusText: {
-                fontSize: 60,
-                color: checked ? '#333' : '#c9302c',
-                opacity: 0.8
+            thumbnail: {
+                fontSize: 100,
+                backgroundColor: checked ? '#4e69a2' : '#f5f6f7',
+                color: checked ? '#fff' : '#ccc'
+            },
+            caption: {
+                color: '#333',
+                fontWeight: 500,
+                opacity: checked ? 1 : 0.6
+            },
+            details: {
+                color: '#333',
+                height: 60,
+                marginTop: 15,
+                maxHeight: 60,
+                opacity: checked ? 1 : 0.6
             }
         };
 
         return (
-            <Widget>
-                <WidgetHeader
-                    style={{cursor: 'auto'}}
-                    title={this.props.title}
-                />
-                <WidgetContent>
-                    <div className="text-center" style={styles.statusText}>
-                        <i className={classes.statusIcon}></i>
+            <div className="panel panel-default">
+                <div className="panel-head text-center" style={styles.thumbnail}>
+                    <i className="fa fa-list-alt"></i>
+                </div>
+                <div className="panel-body">
+                    <div className="container-fluid">
+                        <div className="row no-gutter">
+                            <div className="col-sm-8 text-left">
+                                <span style={styles.caption}>{this.props.caption}</span>
+                            </div>
+                            <div className="col-sm-4 text-right">
+                                <Switch
+                                    className="noselect"
+                                    disabled={this.props.disabled}
+                                    defaultChecked={checked}
+                                    onChange={::this.handleChange}
+                                    checkedChildren={i18n._('ON')}
+                                    unCheckedChildren={i18n._('OFF')}
+                                />
+                            </div>
+                        </div>
                     </div>
-                </WidgetContent>
-                <WidgetFooter className="text-right" style={{padding: 4}}>
-                    <Switch
-                        disabled={this.props.disabled}
-                        defaultChecked={checked}
-                        onChange={::this.handleChange}
-                        checkedChildren={i18n._('ON')}
-                        unCheckedChildren={i18n._('OFF')}
-                    />
-                </WidgetFooter>
-            </Widget>
+                    <div style={styles.details}>
+                        <p>{this.props.details}</p>
+                    </div>
+                </div>
+            </div>
         );
     }
 }
@@ -87,7 +107,8 @@ class WidgetList extends React.Component {
                     <Col xs={6} md={4} key={key}>
                         <WidgetListItem
                             id={o.id}
-                            title={o.caption}
+                            caption={o.caption}
+                            details={o.details}
                             checked={o.visible}
                             disabled={o.disabled}
                             onChange={this.props.onChange}
@@ -100,7 +121,7 @@ class WidgetList extends React.Component {
     }
 }
 
-class AddWidgets extends React.Component {
+class Widgets extends React.Component {
     static propTypes = {
         onSave: React.PropTypes.func,
         onClose: React.PropTypes.func.isRequired
@@ -111,43 +132,50 @@ class AddWidgets extends React.Component {
     widgetList = [
         {
             id: 'connection',
-            caption: i18n._('Connection'),
+            caption: i18n._('Connection Widget'),
+            details: i18n._('This widget lets you establish a connection to a serial port.'),
             visible: true,
             disabled: true
         },
         {
             id: 'grbl',
-            caption: i18n._('Grbl'),
+            caption: i18n._('Grbl Widget'),
+            details: i18n._('This widet shows the Grbl state and provides Grbl specific features.'),
             visible: true,
             disabled: false
         },
         {
             id: 'console',
-            caption: i18n._('Console'),
+            caption: i18n._('Console Widget'),
+            details: i18n._('This widget lets you read and write data to the CNC controller connected to a serial port.'),
             visible: true,
             disabled: false
         },
         {
             id: 'axes',
-            caption: i18n._('Axes'),
+            caption: i18n._('Axes Widget'),
+            details: i18n._('This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.'),
             visible: true,
             disabled: false
         },
         {
             id: 'gcode',
-            caption: i18n._('G-code'),
+            caption: i18n._('G-code Widget'),
+            details: i18n._('This widgets shows the current status of G-code commands.'),
             visible: true,
             disabled: false
         },
         {
             id: 'probe',
-            caption: i18n._('Probe'),
+            caption: i18n._('Probe Widget'),
+            details: i18n._('This widget helps you use a touch plate to set your Z zero offset.'),
             visible: true,
             disabled: false
         },
         {
             id: 'spindle',
-            caption: i18n._('Spindle'),
+            caption: i18n._('Spindle Widget'),
+            details: i18n._('This widget provides the spindle control.'),
             visible: true,
             disabled: false
         }
@@ -196,12 +224,13 @@ class AddWidgets extends React.Component {
 
         return (
             <Modal
+                bsSize="large"
                 dialogClassName="modal-vertical-center"
-                show={this.state.show}
                 onHide={::this.handleCancel}
+                show={this.state.show}
             >
                 <Modal.Header closeButton>
-                    <Modal.Title>{i18n._('Add Widgets')}</Modal.Title>
+                    <Modal.Title>{i18n._('Widgets')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body className="nopadding">
                     <WidgetList list={this.widgetList} onChange={::this.handleChange} />
@@ -225,7 +254,7 @@ export const show = (callback) => {
         }, 0);
     };
 
-    ReactDOM.render(<AddWidgets onSave={callback} onClose={handleClose} />, el);
+    ReactDOM.render(<Widgets onSave={callback} onClose={handleClose} />, el);
 };
 
-export default AddWidgets;
+export default Widgets;
