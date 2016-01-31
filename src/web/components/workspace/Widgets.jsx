@@ -211,8 +211,8 @@ class Widgets extends React.Component {
     }
     render() {
         const widgets = _.concat(
-            store.get('workspace.container.primary'),
-            store.get('workspace.container.secondary')
+            store.get('workspace.container.primary.widgets'),
+            store.get('workspace.container.secondary.widgets')
         );
         _.each(this.widgetList, (widget) => {
             if (_.includes(widgets, widget.id)) {
