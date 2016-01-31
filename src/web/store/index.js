@@ -6,15 +6,21 @@ import log from '../lib/log';
 const defaultState = {
     workspace: {
         container: {
-            default: [
-                'visualizer'
-            ],
-            primary: [
-                'connection', 'grbl', 'console'
-            ],
-            secondary: [
-                'axes', 'gcode', 'probe', 'spindle'
-            ]
+            default: {
+                widgets: ['visualizer']
+            },
+            primary: {
+                show: true,
+                widgets: [
+                    'connection', 'grbl', 'console'
+                ]
+            },
+            secondary: {
+                show: true,
+                widgets: [
+                    'axes', 'gcode', 'probe', 'spindle'
+                ]
+            }
         }
     },
     widgets: {
@@ -58,25 +64,25 @@ try {
     state = _.merge({}, defaultState, cnc.state);
     
     { // Post-process the state after merging defaultState and cnc.state
-        let defaultList = _.get(defaultState, 'workspace.container.default'); // always use defaultState
-        let primaryList = _.get(cnc.state, 'workspace.container.primary');
-        let secondaryList = _.get(cnc.state, 'workspace.container.secondary');
+        let defaultList = _.get(defaultState, 'workspace.container.default.widgets'); // use defaultState for the default container
+        let primaryList = _.get(cnc.state, 'workspace.container.primary.widgets');
+        let secondaryList = _.get(cnc.state, 'workspace.container.secondary.widgets');
 
         if (defaultList) {
-            _.set(state, 'workspace.container.default', defaultList);
+            _.set(state, 'workspace.container.default.widgets', defaultList);
         }
         if (primaryList) {
-            _.set(state, 'workspace.container.primary', primaryList);
+            _.set(state, 'workspace.container.primary.widgets', primaryList);
         }
         if (secondaryList) {
-            _.set(state, 'workspace.container.secondary', secondaryList);
+            _.set(state, 'workspace.container.secondary.widgets', secondaryList);
         }
     }
 
     { // Remove duplicate ones
-        let defaultList = _.get(state, 'workspace.container.default');
-        let primaryList = _.get(state, 'workspace.container.primary');
-        let secondaryList = _.get(state, 'workspace.container.secondary');
+        let defaultList = _.get(state, 'workspace.container.default.widgets');
+        let primaryList = _.get(state, 'workspace.container.primary.widgets');
+        let secondaryList = _.get(state, 'workspace.container.secondary.widgets');
 
         primaryList = _(primaryList) // Keep the order of primaryList
             .uniq()
@@ -89,8 +95,8 @@ try {
             .difference(defaultList) // exclude defaultList
             .value();
 
-        _.set(state, 'workspace.container.primary', primaryList);
-        _.set(state, 'workspace.container.secondary', secondaryList);
+        _.set(state, 'workspace.container.primary.widgets', primaryList);
+        _.set(state, 'workspace.container.secondary.widgets', secondaryList);
     }
 }
 catch(err) {

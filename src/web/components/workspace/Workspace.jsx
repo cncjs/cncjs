@@ -38,12 +38,12 @@ const getWidgetComponent = (widgetId, props) => {
 
 class DefaultWidgets extends React.Component {
     state = {
-        widgets: store.get('workspace.container.default')
+        widgets: store.get('workspace.container.default.widgets')
     };
 
     componentDidUpdate() {
         const { widgets } = this.state;
-        store.set('workspace.container.default', widgets);
+        store.set('workspace.container.default.widgets', widgets);
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
@@ -61,7 +61,7 @@ class DefaultWidgets extends React.Component {
 
 class PrimaryWidgets extends Sortable {
     state = {
-        widgets: store.get('workspace.container.primary')
+        widgets: store.get('workspace.container.primary.widgets')
     };
     sortableOptions = {
         model: 'widgets',
@@ -88,8 +88,8 @@ class PrimaryWidgets extends Sortable {
 
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
-        store.unset('workspace.container.primary');
-        store.set('workspace.container.primary', widgets);
+        store.unset('workspace.container.primary.widgets');
+        store.set('workspace.container.primary.widgets', widgets);
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
@@ -130,7 +130,7 @@ class PrimaryWidgets extends Sortable {
 
 class SecondaryWidgets extends Sortable {
     state = {
-        widgets: store.get('workspace.container.secondary')
+        widgets: store.get('workspace.container.secondary.widgets')
     };
     sortableOptions = {
         model: 'widgets',
@@ -157,8 +157,8 @@ class SecondaryWidgets extends Sortable {
 
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
-        store.unset('workspace.container.secondary');
-        store.set('workspace.container.secondary', widgets);
+        store.unset('workspace.container.secondary.widgets');
+        store.set('workspace.container.secondary.widgets', widgets);
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
@@ -203,8 +203,8 @@ class Workspace extends React.Component {
         port: '',
         isDragging: false,
         isUploading: false,
-        showPrimaryContainer: true,
-        showSecondaryContainer: true
+        showPrimaryContainer: store.get('workspace.container.primary.show'),
+        showSecondaryContainer: store.get('workspace.container.secondary.show')
     };
     sortableGroup = {
         primary: null,
@@ -223,6 +223,9 @@ class Workspace extends React.Component {
         this.unsubscribe();
     }
     componentDidUpdate() {
+        store.set('workspace.container.primary.show', this.state.showPrimaryContainer);
+        store.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
+
         this.resizeDefaultContainer();
     }
     subscribe() {
@@ -346,8 +349,8 @@ class Workspace extends React.Component {
     }
     updateWidgetsForPrimaryContainer() {
         widgets.show((list) => {
-            let primaryWidgets = store.get('workspace.container.primary');
-            let secondaryWidgets = store.get('workspace.container.secondary');
+            let primaryWidgets = store.get('workspace.container.primary.widgets');
+            let secondaryWidgets = store.get('workspace.container.secondary.widgets');
 
             primaryWidgets = list.slice();
             _.pullAll(primaryWidgets, secondaryWidgets);
@@ -360,8 +363,8 @@ class Workspace extends React.Component {
     }
     updateWidgetsForSecondaryContainer() {
         widgets.show((list) => {
-            let primaryWidgets = store.get('workspace.container.primary');
-            let secondaryWidgets = store.get('workspace.container.secondary');
+            let primaryWidgets = store.get('workspace.container.primary.widgets');
+            let secondaryWidgets = store.get('workspace.container.secondary.widgets');
 
             secondaryWidgets = list.slice();
             _.pullAll(secondaryWidgets, primaryWidgets);
