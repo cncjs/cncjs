@@ -37,7 +37,7 @@ class Toolbar extends React.Component {
         this.removeControllerEvents();
         this.unsubscribe();
     }
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         this.props.setWorkflowState(this.state.workflowState);
     }
     componentWillReceiveProps(nextProps) {
