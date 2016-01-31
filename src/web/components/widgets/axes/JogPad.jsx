@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import combokeys from '../../../lib/combokeys';
@@ -8,6 +9,7 @@ import { mm2in } from '../../../lib/units';
 import store from '../../../store';
 import {
     ACTIVE_STATE_IDLE,
+    ACTIVE_STATE_RUN,
     IMPERIAL_UNIT,
     METRIC_UNIT
 } from './constants';
@@ -24,7 +26,7 @@ class JogPad extends React.Component {
     actionHandlers = {
         'JOG_FORWARD': () => {
             let { port, activeState } = this.props;
-            let canJog = (!!port && (activeState === ACTIVE_STATE_IDLE));
+            let canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
 
             if (canJog) {
                 let distance = this.getJogDistance();
@@ -39,7 +41,7 @@ class JogPad extends React.Component {
         },
         'JOG_BACKWARD': () => {
             let { port, activeState } = this.props;
-            let canJog = (!!port && (activeState === ACTIVE_STATE_IDLE));
+            let canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
 
             if (canJog) {
                 let distance = this.getJogDistance();
@@ -53,37 +55,77 @@ class JogPad extends React.Component {
             }
         },
         'X_AXIS': () => {
-            if (this.state.selectedAxis === 'x') {
-                this.setState({ selectedAxis: '' });
-            } else {
-                this.setState({ selectedAxis: 'x' });
+            let { port, activeState } = this.props;
+            let canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
+
+            if (canSelect) {
+                if (this.state.selectedAxis === 'x') {
+                    this.setState({ selectedAxis: '' });
+                } else {
+                    this.setState({ selectedAxis: 'x' });
+                }
             }
         },
         'Y_AXIS': () => {
-            if (this.state.selectedAxis === 'y') {
-                this.setState({ selectedAxis: '' });
-            } else {
-                this.setState({ selectedAxis: 'y' });
+            let { port, activeState } = this.props;
+            let canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
+
+            if (canSelect) {
+                if (this.state.selectedAxis === 'y') {
+                    this.setState({ selectedAxis: '' });
+                } else {
+                    this.setState({ selectedAxis: 'y' });
+                }
             }
         },
         'Z_AXIS': () => {
-            if (this.state.selectedAxis === 'z') {
-                this.setState({ selectedAxis: '' });
-            } else {
-                this.setState({ selectedAxis: 'z' });
+            let { port, activeState } = this.props;
+            let canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
+
+            if (canSelect) {
+                if (this.state.selectedAxis === 'z') {
+                    this.setState({ selectedAxis: '' });
+                } else {
+                    this.setState({ selectedAxis: 'z' });
+                }
             }
         }
     };
+    pubsubTokens = [];
 
     componentDidMount() {
+        this.subscribe();
         _.each(this.actionHandlers, (callback, eventName) => {
             combokeys.on(eventName, callback);
         });
     }
     componentWillUnmount() {
+        this.unsubscribe();
         _.each(this.actionHandlers, (callback, eventName) => {
             combokeys.removeListener(eventName, callback);
         });
+    }
+    subscribe() {
+        { // gcode:start
+            let token = pubsub.subscribe('gcode:start', (msg) => {
+                // unset the selected axis to prevent from accidental movement while running a G-code file
+                this.setState({ selectedAxis: '' });
+            });
+            this.pubsubTokens.push(token);
+        }
+        { // gcode:resume
+            let token = pubsub.subscribe('gcode:resume', (msg) => {
+                // unset the selected axis to prevent from accidental movement while running a G-code file
+                this.setState({ selectedAxis: '' });
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     jog(params = {}) {
         let s = _.map(params, (value, letter) => {
