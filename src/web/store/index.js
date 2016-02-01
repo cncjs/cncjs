@@ -2,6 +2,19 @@ import _ from 'lodash';
 import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
 import log from '../lib/log';
+import request from 'superagent';
+
+const migrate = () => { // schema change since v0.15.4
+    // Clear localStorage
+    localStorage.clear();
+
+    // Remove "workspace" from ~/.cncrc
+    request
+        .del('/api/config')
+        .query({ key: 'workspace' })
+        .end((err, res) => {
+        });
+};
 
 const defaultState = {
     workspace: {
@@ -58,8 +71,12 @@ const defaultState = {
 let state;
 
 try {
-    let cnc = JSON.parse(localStorage.getItem('cnc') || {});
+    let cnc = JSON.parse(localStorage.getItem('cnc')) || {};
     log.debug('cnc:', cnc);
+
+    if (!(cnc.version)) {
+        migrate();
+    }
 
     state = _.merge({}, defaultState, cnc.state);
     
