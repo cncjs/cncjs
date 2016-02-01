@@ -14,17 +14,54 @@ const loadConfigFile = (file) => {
     return config;
 };
 
-export const loadConfig = (req, res) => {
+export const get = (req, res) => {
+    let query = req.query || {};
     let config = loadConfigFile(settings.cncrc);
-    res.send(config);
+
+    if (query.key) {
+        res.send(_.get(config, query.key));
+    } else {
+        res.send(config);
+    }
 };
 
-export const saveConfig = (req, res) => {
+export const unset = (req, res) => {
+    let query = req.query || {};
     let config = loadConfigFile(settings.cncrc);
 
     try {
-        // Copy all of the properties in request body over to the config
-        _.extend(config, req.body);
+        if (query.key) {
+            _.unset(config, query.key, req.body);
+        } else {
+            config = {};
+        }
+
+        let text = JSON.stringify(config, null, 4); // space=4
+        fs.writeFile(settings.cncrc, text, (err) => {
+            if (err) {
+                log.error(err);
+                res.send({ 'err': true });
+            } else {
+                res.send({ 'err': false });
+            }
+        });
+    }
+    catch(err) {
+        res.status(500).send('Failed to save ' + JSON.stringify(settings.cncrc));
+    }
+};
+
+export const set = (req, res) => {
+    let query = req.query || {};
+    let config = loadConfigFile(settings.cncrc);
+
+    try {
+        if (query.key) {
+            _.set(config, query.key, req.body);
+        } else {
+            // Copy all of the properties in request body over to the config
+            config = _.merge({}, config, req.body);
+        }
 
         let text = JSON.stringify(config, null, 4); // space=4
         fs.writeFile(settings.cncrc, text, (err) => {
