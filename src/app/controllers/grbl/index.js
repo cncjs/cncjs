@@ -40,11 +40,14 @@ class GrblController {
 
     constructor(port, baudrate) {
         this.options = _.merge({}, this.options, { port: port, baudrate: baudrate });
+
+        // SerialPort
         this.serialport = new serialport.SerialPort(this.options.port, {
             baudrate: this.options.baudrate,
             parser: serialport.parsers.readline('\n')
         }, false);
 
+        // GCode
         this.gcode = new GCode();
         this.gcode.on('progress', (res) => {
             let { gcode } = res;
@@ -64,6 +67,7 @@ class GrblController {
             this.serialport.write(gcode + '\n');
         });
 
+        // Grbl
         this.grbl = new Grbl(this.serialport);
 
         this.grbl.on('raw', (raw) => {});

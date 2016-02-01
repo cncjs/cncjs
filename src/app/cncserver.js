@@ -171,8 +171,8 @@ class CNCServer {
                 });
             });
 
-            socket.on('command', (port, cmd) => {
-                log.debug('[cncserver] socket.command("%s", "%s"):', port, cmd, { id: socket.id });
+            socket.on('command', (port, cmd, ...args) => {
+                log.debug('[cncserver] socket.command("%s", "%s"):', port, cmd, { id: socket.id, args: args });
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
@@ -180,7 +180,7 @@ class CNCServer {
                     return;
                 }
 
-                controller.command(socket, cmd);
+                controller.command.apply(controller, [socket, cmd].concat(args));
             });
 
             socket.on('write', (port, data) => {
