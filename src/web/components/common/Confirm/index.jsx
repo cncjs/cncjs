@@ -62,7 +62,7 @@ class Confirm extends React.Component {
                     </Button>
                 </Modal.Footer>
             </Modal>
-        )
+        );
     }
 }
 

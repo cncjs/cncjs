@@ -17,8 +17,9 @@ const api = {
         app.get(urljoin(settings.route, 'api/status'), api.status.currentStatus);
 
         // config
-        app.get(urljoin(settings.route, 'api/config'), api.config.loadConfig);
-        app.put(urljoin(settings.route, 'api/config'), api.config.saveConfig);
+        app.get(urljoin(settings.route, 'api/config'), api.config.get);
+        app.put(urljoin(settings.route, 'api/config'), api.config.set);
+        app.delete(urljoin(settings.route, 'api/config'), api.config.unset);
 
         // gcode 
         app.post(urljoin(settings.route, 'api/gcode/upload'), api.gcode.upload);
