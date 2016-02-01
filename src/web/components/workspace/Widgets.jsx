@@ -42,7 +42,7 @@ class WidgetListItem extends React.Component {
             },
             caption: {
                 color: '#333',
-                fontWeight: 500,
+                fontWeight: 'bold',
                 opacity: checked ? 1 : 0.6
             },
             details: {
@@ -236,7 +236,7 @@ class Widgets extends React.Component {
                     <WidgetList list={this.widgetList} onChange={::this.handleChange} />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button bsStyle="primary" onClick={::this.handleSave}>{i18n._('Save')}</Button>
+                    <Button onClick={::this.handleSave}>{i18n._('Save')}</Button>
                     <Button onClick={::this.handleCancel}>{i18n._('Cancel')}</Button>
                 </Modal.Footer>
             </Modal>
