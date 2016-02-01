@@ -2,11 +2,6 @@ import events from 'events';
 import Mousetrap from 'mousetrap';
 import log from './log';
 
-const buildCombokeys = (key) => {
-    const keys = ['ctrl', 'alt', 'command'];
-    return keys.concat(key).join('+');
-};
-
 const commandKeys = [
     { // Feed Hold
         cmd: 'FEED_HOLD',
@@ -40,6 +35,81 @@ const commandKeys = [
         cmd: 'JOG_BACKWARD',
         keys: ['ctrl','alt','command','['].join('+')
     },
+    { // Shuttle Zone -7
+        cmd: 'SHUTTLE_ZONE',
+        value: -7,
+        keys: ['ctrl','alt','shift','7'].join('+')
+    },
+    { // Shuttle Zone -6
+        cmd: 'SHUTTLE_ZONE',
+        value: -6,
+        keys: ['ctrl','alt','shift','6'].join('+')
+    },
+    { // Shuttle Zone -5
+        cmd: 'SHUTTLE_ZONE',
+        value: -5,
+        keys: ['ctrl','alt','shift','5'].join('+')
+    },
+    { // Shuttle Zone -4
+        cmd: 'SHUTTLE_ZONE',
+        value: -4,
+        keys: ['ctrl','alt','shift','4'].join('+')
+    },
+    { // Shuttle Zone -3
+        cmd: 'SHUTTLE_ZONE',
+        value: -3,
+        keys: ['ctrl','alt','shift','3'].join('+')
+    },
+    { // Shuttle Zone -2
+        cmd: 'SHUTTLE_ZONE',
+        value: -2,
+        keys: ['ctrl','alt','shift','2'].join('+')
+    },
+    { // Shuttle Zone -1
+        cmd: 'SHUTTLE_ZONE',
+        value: -1,
+        keys: ['ctrl','alt','shift','1'].join('+')
+    },
+    { // Shuttle Zone 0
+        cmd: 'SHUTTLE_ZONE',
+        value: 0,
+        keys: ['ctrl','alt','command','0'].join('+')
+    },
+    { // Shuttle Zone 1
+        cmd: 'SHUTTLE_ZONE',
+        value: 1,
+        keys: ['ctrl','alt','command','1'].join('+')
+    },
+    { // Shuttle Zone 2
+        cmd: 'SHUTTLE_ZONE',
+        value: 2,
+        keys: ['ctrl','alt','command','2'].join('+')
+    },
+    { // Shuttle Zone 3
+        cmd: 'SHUTTLE_ZONE',
+        value: 3,
+        keys: ['ctrl','alt','command','3'].join('+')
+    },
+    { // Shuttle Zone 4
+        cmd: 'SHUTTLE_ZONE',
+        value: 4,
+        keys: ['ctrl','alt','command','4'].join('+')
+    },
+    { // Shuttle Zone 5
+        cmd: 'SHUTTLE_ZONE',
+        value: 5,
+        keys: ['ctrl','alt','command','5'].join('+')
+    },
+    { // Shuttle Zone 6
+        cmd: 'SHUTTLE_ZONE',
+        value: 6,
+        keys: ['ctrl','alt','command','6'].join('+')
+    },
+    { // Shuttle Zone 7
+        cmd: 'SHUTTLE_ZONE',
+        value: 7,
+        keys: ['ctrl','alt','command','7'].join('+')
+    },
     { // X-Axis
         cmd: 'X_AXIS',
         keys: ['ctrl','alt','command','x'].join('+')
@@ -72,10 +142,10 @@ class Combokeys extends events.EventEmitter {
             return;
         }
         commandKeys.forEach((o) => {
-            const { cmd, keys } = o;
+            const { keys, cmd, value } = o;
             const callback = () => {
-                log.debug('Combokeys:', cmd, keys);
-                this.emit(cmd);
+                log.debug('combokeys:', keys, cmd, value);
+                this.emit(cmd, value);
             };
             Mousetrap.bind(keys, callback);
             this.list.push({ keys: keys, callback: callback });

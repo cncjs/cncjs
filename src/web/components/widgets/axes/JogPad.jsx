@@ -24,36 +24,6 @@ class JogPad extends React.Component {
         selectedAxis: '' // Defaults to empty
     };
     actionHandlers = {
-        'JOG_FORWARD': () => {
-            let { port, activeState } = this.props;
-            let canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
-
-            if (canJog) {
-                let distance = this.getJogDistance();
-                let jog = {
-                    'x': () => this.jog({ X: distance }),
-                    'y': () => this.jog({ Y: distance }),
-                    'z': () => this.jog({ Z: distance })
-                }[this.state.selectedAxis];
-
-                jog && jog();
-            }
-        },
-        'JOG_BACKWARD': () => {
-            let { port, activeState } = this.props;
-            let canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
-
-            if (canJog) {
-                let distance = this.getJogDistance();
-                let jog = {
-                    'x': () => this.jog({ X: -distance }),
-                    'y': () => this.jog({ Y: -distance }),
-                    'z': () => this.jog({ Z: -distance })
-                }[this.state.selectedAxis];
-
-                jog && jog();
-            }
-        },
         'X_AXIS': () => {
             let { port, activeState } = this.props;
             let canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
@@ -89,6 +59,66 @@ class JogPad extends React.Component {
                     this.setState({ selectedAxis: 'z' });
                 }
             }
+        },
+        'JOG_FORWARD': () => {
+            let { port, activeState } = this.props;
+            let canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
+
+            if (canJog) {
+                let distance = this.getJogDistance();
+                let jog = {
+                    'x': () => this.jog({ X: distance }),
+                    'y': () => this.jog({ Y: distance }),
+                    'z': () => this.jog({ Z: distance })
+                }[this.state.selectedAxis];
+
+                jog && jog();
+            }
+        },
+        'JOG_BACKWARD': () => {
+            let { port, activeState } = this.props;
+            let canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
+
+            if (canJog) {
+                let distance = this.getJogDistance();
+                let jog = {
+                    'x': () => this.jog({ X: -distance }),
+                    'y': () => this.jog({ Y: -distance }),
+                    'z': () => this.jog({ Z: -distance })
+                }[this.state.selectedAxis];
+
+                jog && jog();
+            }
+        },
+        'SHUTTLE_ZONE': (value = 0) => {
+            if (value === 0) {
+                if (this.state.selectedAxis) {
+                    controller.writeln('G90');
+                }
+                return;
+            }
+
+            let distance = Math.min(this.getJogDistance(), 1);
+            let direction = (value < 0) ? -1 : 1;
+            let cycleInterval = 100000 / 1000000; // 0.1s
+            let feedrate = (1500 * (distance / 1) * (Math.abs(value) / 7)).toFixed(3) * 1;
+            let relativeDistance = (direction * (feedrate / 60.0) * cycleInterval).toFixed(4) * 1;
+            let shuttle = {
+                'x': () => {
+                    controller.writeln('G91 G1 F' + feedrate + ' X' + relativeDistance);
+                    controller.writeln('G90');
+                },
+                'y': () => {
+                    controller.writeln('G91 G1 F' + feedrate + ' Y' + relativeDistance);
+                    controller.writeln('G90');
+                },
+                'z': () => {
+                    controller.writeln('G91 G1 F' + feedrate + ' Z' + relativeDistance);
+                    controller.writeln('G90');
+                }
+            }[this.state.selectedAxis];
+
+            shuttle && shuttle();
         }
     };
     pubsubTokens = [];
