@@ -57,7 +57,7 @@
     "fs-extra": "^0.24.0",
     "gcode-interpreter": "^0.5.2",
     "gcode-parser": "^0.5.1",
-    "gcode-toolpath": "^0.2.0",
+    "gcode-toolpath": "^0.2.1",
     "history": "1.17.x",
     "hogan.js": "2.0.x",
     "i18next": "^2.0.20",
