@@ -4,10 +4,12 @@ import ReactDOM from 'react-dom';
 class Iframe extends React.Component {
     static propTypes = {
         url: React.PropTypes.string.isRequired,
+        sandbox: React.PropTypes.string,
         width: React.PropTypes.string,
         height: React.PropTypes.string
     };
     static defaultProps = {
+        sandbox: "allow-forms allow-same-origin allow-scripts",
         width: '100%',
         height: '100%'
     };
