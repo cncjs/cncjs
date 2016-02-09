@@ -1,17 +1,20 @@
 import Widget from './Widget';
-import WidgetHeader from './WidgetHeader';
-import WidgetControls from './WidgetControls';
-import WidgetToolbar from './WidgetToolbar';
-import WidgetContent from './WidgetContent';
-import WidgetFooter from './WidgetFooter';
+import Header from './WidgetHeader';
+import Content from './WidgetContent';
+import Footer from './WidgetFooter';
+import Title from './WidgetTitle';
+import Button from './WidgetButton';
+import Controls from './WidgetControls';
+import Toolbar from './WidgetToolbar';
 import './index.css';
 import './theme.css';
 
-export {
-    Widget,
-    WidgetHeader,
-    WidgetControls,
-    WidgetToolbar,
-    WidgetContent,
-    WidgetFooter
-};
+Widget.Header = Header;
+Widget.Content = Content;
+Widget.Footer = Footer;
+Widget.Title = Title;
+Widget.Button = Button;
+Widget.Controls = Controls;
+Widget.Toolbar = Toolbar;
+
+export default Widget;

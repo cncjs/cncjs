@@ -1,6 +1,6 @@
 import React from 'react';
 import Visualizer from './Visualizer';
-import { Widget, WidgetHeader, WidgetContent } from '../../widget';
+import Widget from '../../widget';
 import './index.css';
 
 class VisualizerWidget extends React.Component {
@@ -8,9 +8,9 @@ class VisualizerWidget extends React.Component {
         return (
             <div {...this.props} data-ns="widgets/visualizer">
                 <Widget borderless={true}>
-                    <WidgetContent>
+                    <Widget.Content>
                         <Visualizer />
-                    </WidgetContent>
+                    </Widget.Content>
                 </Widget>
             </div>
         );

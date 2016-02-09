@@ -17,7 +17,7 @@ class WebcamSettings extends React.Component {
         url: store.get('widgets.webcam.url')
     };
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         if (!(this.state.show)) {
             this.props.onClose();
         }

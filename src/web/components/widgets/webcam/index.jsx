@@ -2,13 +2,13 @@ import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
-import { Widget, WidgetHeader, WidgetControls, WidgetToolbar, WidgetContent } from '../../widget';
+import Widget from '../../widget';
 import Webcam from './Webcam';
 import './index.css';
 
 class WebcamWidget extends React.Component {
     static propTypes = {
-        onDelete: React.PropTypes.func
+        onDelete: React.PropTypes.func.isRequired
     };
     state = {
         disabled: store.get('widgets.webcam.disabled'),
@@ -16,45 +16,12 @@ class WebcamWidget extends React.Component {
         isFullscreen: false
     };
 
-    componentDidUpdate() {
+    componentDidUpdate(prevProps, prevState) {
         store.set('widgets.webcam.disabled', this.state.disabled);
-    }
-    handleWebcamOnOff() {
-        const { disabled } = this.state;
-        this.setState({ disabled: !disabled });
-    }
-    handleClick(target, val) {
-        const handler = {
-            'edit': () => {
-                this.refs.webcam.editSettings();
-            },
-            'refresh': () => {
-                this.refs.webcam.reload();
-            },
-            'toggle': () => {
-                this.setState({ isCollapsed: !!val });
-            },
-            'fullscreen': () => {
-                this.setState({ isFullscreen: !!val });
-            },
-            'delete': () => {
-                this.props.onDelete();
-            }
-        }[target];
-
-        handler && handler();
     }
     render() {
         const { disabled, isCollapsed, isFullscreen } = this.state;
-        let title = i18n._('Webcam');
-        let controlButtons = [
-            'edit',
-            'refresh',
-            'toggle',
-            'fullscreen',
-            'delete'
-        ];
-        let classes = {
+        const classes = {
             widgetContent: classNames(
                 { 'hidden': isCollapsed }
             ),
@@ -68,26 +35,44 @@ class WebcamWidget extends React.Component {
         return (
             <div {...this.props} data-ns="widgets/webcam">
                 <Widget fullscreen={isFullscreen}>
-                    <WidgetHeader>
-                        <h3 className="widget-header-title">{title}</h3>
-                        <WidgetControls
-                            buttons={controlButtons}
-                            onClick={::this.handleClick}
-                        />
-                        <WidgetToolbar>
-                            <a
-                                href="javascript:void(0)"
-                                className="btn-icon"
-                                onClick={::this.handleWebcamOnOff}
-                                title={i18n._('Webcam On/Off')}
+                    <Widget.Header>
+                        <Widget.Title>{i18n._('Webcam')}</Widget.Title>
+                        <Widget.Controls>
+                            <Widget.Button
+                                type="edit"
+                                onClick={(event, val) => this.refs.webcam.editSettings()}
+                            />
+                            <Widget.Button
+                                type="refresh"
+                                onClick={(event, val) => this.refs.webcam.reload()}
+                            />
+                            <Widget.Button
+                                type="toggle"
+                                defaultValue={isCollapsed}
+                                onClick={(event, val) => this.setState({ isCollapsed: !!val })}
+                            />
+                            <Widget.Button
+                                type="fullscreen"
+                                defaultValue={isFullscreen}
+                                onClick={(event, val) => this.setState({ isFullscreen: !!val })}
+                            />
+                            <Widget.Button
+                                type="delete"
+                                onClick={(event) => this.props.onDelete()}
+                            />
+                        </Widget.Controls>
+                        <Widget.Toolbar>
+                            <Widget.Button
+                                type="default"
+                                onClick={(event) => this.setState({ disabled: !disabled })}
                             >
                                 <i className={classes.webcamOnOff}></i>
-                            </a>
-                        </WidgetToolbar>
-                    </WidgetHeader>
-                    <WidgetContent className={classes.widgetContent}>
+                            </Widget.Button>
+                        </Widget.Toolbar>
+                    </Widget.Header>
+                    <Widget.Content className={classes.widgetContent}>
                         <Webcam ref="webcam" disabled={disabled} />
-                    </WidgetContent>
+                    </Widget.Content>
                 </Widget>
             </div>
         );
