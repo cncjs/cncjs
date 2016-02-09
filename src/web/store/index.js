@@ -25,7 +25,7 @@ const defaultState = {
             primary: {
                 show: true,
                 widgets: [
-                    'connection', 'grbl', 'console'
+                    'connection', 'grbl', 'console', 'webcam'
                 ]
             },
             secondary: {
@@ -64,6 +64,10 @@ const defaultState = {
         spindle: {
         },
         visualizer: {
+        },
+        webcam: {
+            disabled: false,
+            url: ''
         }
     }
 };
