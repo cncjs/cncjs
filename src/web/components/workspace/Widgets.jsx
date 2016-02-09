@@ -178,6 +178,13 @@ class Widgets extends React.Component {
             details: i18n._('This widget provides the spindle control.'),
             visible: true,
             disabled: false
+        },
+        {
+            id: 'webcam',
+            caption: i18n._('Webcam Widget'),
+            details: i18n._('This widget lets you monitor a webcam.'),
+            visible: true,
+            disabled: false
         }
     ];
 

@@ -18,7 +18,8 @@ import {
     GrblWidget,
     ProbeWidget,
     SpindleWidget,
-    VisualizerWidget
+    VisualizerWidget,
+    WebcamWidget
 } from '../widgets';
 
 const getWidgetComponent = (widgetId, props) => {
@@ -30,7 +31,8 @@ const getWidgetComponent = (widgetId, props) => {
         'grbl': (props) => <GrblWidget {...props} data-id="grbl" key="grbl" />,
         'probe': (props) => <ProbeWidget {...props} data-id="probe" key="probe" />,
         'spindle': (props) => <SpindleWidget {...props} data-id="spindle" key="spindle" />,
-        'visualizer': (props) => <VisualizerWidget {...props} data-id="visualizer" key="visualizer" />
+        'visualizer': (props) => <VisualizerWidget {...props} data-id="visualizer" key="visualizer" />,
+        'webcam': (props) => <WebcamWidget {...props} data-id="webcam" key="webcam" />
     }[widgetId];
 
     return handler ? handler(props) : null;
