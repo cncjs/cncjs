@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
-import WidgetControls from './WidgetControls';
 
 class WidgetHeader extends React.Component {
     static propTypes = {
@@ -9,7 +8,7 @@ class WidgetHeader extends React.Component {
     };
 
     render() {
-        const { className, title, controlButtons = [], onClick, ...props } = this.props;
+        const { className, ...props } = this.props;
         const widgetHeaderClass = classNames(
             'widget-header',
             'clearfix',
@@ -18,11 +17,7 @@ class WidgetHeader extends React.Component {
 
         return (
             <div {...props} className={widgetHeaderClass}>
-                <h3 className="widget-header-title">{title}</h3>
-                <WidgetControls
-                    buttons={controlButtons}
-                    onClick={onClick}
-                />
+                {this.props.children}
             </div>
         );
     }
