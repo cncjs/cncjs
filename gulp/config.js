@@ -144,8 +144,8 @@ export default {
                         let targetDir = path.resolve(process.cwd(), 'dist', 'web');
                         let relativePath = stripQueryStringAndHashFromPath(relativeUrl);
                         let queryStringAndHash = relativeUrl.substring(relativePath.length);
-
                         let prefix = '../../node_modules/';
+
                         if (_.startsWith(relativePath, prefix)) {
                             let vendorPath = 'vendor/' + relativePath.substring(prefix.length);
                             let source = path.join(sourceDir, relativePath);
@@ -156,6 +156,12 @@ export default {
 
                             // Returns a new path string with original query string and hash fragments
                             return vendorPath + queryStringAndHash;
+                        }
+
+                        if (_.startsWith(relativeUrl, 'components')) {
+                            let source = path.join(sourceDir, relativeUrl);
+                            let target = path.join(targetDir, relativeUrl);
+                            fse.copySync(source, target);
                         }
 
                         return relativeUrl;
