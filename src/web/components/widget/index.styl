@@ -40,28 +40,22 @@
         cursor: move;
         padding-left: 10px;
         border: 1px solid #ccc;
+    }
 
-        .widget-header-title {
-            margin-top: 0;
+    .widget-title {
+        margin-top: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 32px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-bottom: 0;
+
+        .glyphicon {
             font-size: 14px;
-            font-weight: 400;
-            line-height: 32px;
-            display: inline-block;
+            top: 0;
             vertical-align: middle;
-            margin-bottom: 0;
-
-            .glyphicon {
-                font-size: 14px;
-                top: 0;
-                vertical-align: middle;
-                margin-right: 5px;
-            }
-        }
-
-        .btn .glyphicon {
-            position: relative;
-            font-size: 12px;
-            line-height: 1;
+            margin-right: 5px;
         }
     }
 
@@ -71,7 +65,30 @@
         border-top: none;
     }
 
+    .widget-toolbar {
+        cursor: auto;
+        float: right;
+        width: auto;
+        height: 32px;
+        line-height: 32px;
+        position: relative;
+        border-left: 1px solid rgba(0,0,0,.09);
+        padding: 0 8px;
+        text-align: center;
+
+        a {
+            text-decoration: none;
+            font-size: 14px;
+            text-align: center;
+            display: inline-block;
+            line-height: 32px;
+            padding: 0;
+            margin: 0;
+        }
+    }
+
     .widget-controls {
+        cursor: auto;
         float: right;
         width: auto;
 
@@ -85,20 +102,6 @@
             margin: 0;
         }
 
-        .badge {
-            margin-top: 10px;
-        }
-
-        .label {
-            position: relative;
-            top: 11px;
-            padding: 5px;
-            font-size: 85%;
-
-            .glyphicon {
-                font-size: 14px;
-            }
-        }
         .btn-icon {
             min-width: 30px;
             height: 32px;
@@ -121,21 +124,4 @@
         }
     }
 
-    @media screen and (max-width: 480px) {
-        .widget-controls {
-            display: block;
-            position: inherit;
-
-            &.btn-group > .btn {
-            }
-
-            .badge {
-                margin-top: 0;
-            }
-
-            .label {
-                top: 0;
-            }
-        }
-    }
 }

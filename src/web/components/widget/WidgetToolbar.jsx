@@ -1,20 +1,20 @@
 import classNames from 'classnames';
 import React from 'react';
 
-class WidgetFooter extends React.Component {
+class WidgetToolbar extends React.Component {
     render() {
         const { className, ...props } = this.props;
-        const widgetFooterClass = classNames(
-            'widget-footer',
+        const widgetToolbarClass = classNames(
+            'widget-toolbar',
             className
         );
 
         return (
-            <div {...props} className={widgetFooterClass}>
+            <div {...props} className={widgetToolbarClass}>
                 {this.props.children}
             </div>
         );
     }
 }
 
-export default WidgetFooter;
+export default WidgetToolbar;

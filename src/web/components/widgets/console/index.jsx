@@ -1,58 +1,52 @@
 import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
-import { Widget, WidgetHeader, WidgetContent } from '../../widget';
+import Widget, { Buttons } from '../../widget';
 import Console from './Console';
 import './index.css';
 
 class ConsoleWidget extends React.Component {
     static propTypes = {
-        onDelete: React.PropTypes.func
+        onDelete: React.PropTypes.func.isRequired
     };
     state = {
         isCollapsed: false,
         isFullscreen: false
     };
 
-    handleClick(target, val) {
-        const handler = {
-            'toggle': () => {
-                this.setState({ isCollapsed: !!val });
-            },
-            'fullscreen': () => {
-                this.setState({ isFullscreen: !!val });
-            },
-            'delete': () => {
-                this.props.onDelete();
-            }
-        }[target];
-
-        handler && handler();
-    }
     render() {
-        let title = i18n._('Console');
-        let controlButtons = [
-            'toggle',
-            'fullscreen',
-            'delete'
-        ];
-        let classes = {
+        const { isCollapsed, isFullscreen } = this.state;
+        const classes = {
             widgetContent: classNames(
-                { 'hidden': this.state.isCollapsed }
+                { 'hidden': isCollapsed }
             )
         };
 
         return (
             <div {...this.props} data-ns="widgets/console">
-                <Widget fullscreen={this.state.isFullscreen}>
-                    <WidgetHeader
-                        title={title}
-                        controlButtons={controlButtons}
-                        onClick={::this.handleClick}
-                    />
-                    <WidgetContent className={classes.widgetContent}>
-                        <Console fullscreen={this.state.isFullscreen} />
-                    </WidgetContent>
+                <Widget fullscreen={isFullscreen}>
+                    <Widget.Header>
+                        <Widget.Title>{i18n._('Console')}</Widget.Title>
+                        <Widget.Controls>
+                            <Widget.Button
+                                type="toggle"
+                                defaultValue={isCollapsed}
+                                onClick={(event, val) => this.setState({ isCollapsed: !!val })}
+                            />
+                            <Widget.Button
+                                type="fullscreen"
+                                defaultValue={isFullscreen}
+                                onClick={(event, val) => this.setState({ isFullscreen: !!val })}
+                            />
+                            <Widget.Button
+                                type="delete"
+                                onClick={(event) => this.props.onDelete()}
+                            />
+                        </Widget.Controls>
+                    </Widget.Header>
+                    <Widget.Content className={classes.widgetContent}>
+                        <Console />
+                    </Widget.Content>
                 </Widget>
             </div>
         );

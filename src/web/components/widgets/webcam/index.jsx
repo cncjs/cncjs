@@ -1,33 +1,51 @@
 import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
+import store from '../../../store';
 import Widget from '../../widget';
-import Spindle from './Spindle';
+import Webcam from './Webcam';
 import './index.css';
 
-class SpindleWidget extends React.Component {
+class WebcamWidget extends React.Component {
     static propTypes = {
         onDelete: React.PropTypes.func.isRequired
     };
     state = {
+        disabled: store.get('widgets.webcam.disabled'),
         isCollapsed: false,
         isFullscreen: false
     };
 
+    componentDidUpdate(prevProps, prevState) {
+        store.set('widgets.webcam.disabled', this.state.disabled);
+    }
     render() {
-        const { isCollapsed, isFullscreen } = this.state;
+        const { disabled, isCollapsed, isFullscreen } = this.state;
         const classes = {
             widgetContent: classNames(
                 { 'hidden': isCollapsed }
+            ),
+            webcamOnOff: classNames(
+                'fa',
+                { 'fa-toggle-on': !disabled },
+                { 'fa-toggle-off': disabled }
             )
         };
 
         return (
-            <div {...this.props} data-ns="widgets/spindle">
+            <div {...this.props} data-ns="widgets/webcam">
                 <Widget fullscreen={isFullscreen}>
                     <Widget.Header>
-                        <Widget.Title>{i18n._('Spindle')}</Widget.Title>
+                        <Widget.Title>{i18n._('Webcam')}</Widget.Title>
                         <Widget.Controls>
+                            <Widget.Button
+                                type="edit"
+                                onClick={(event, val) => this.refs.webcam.editSettings()}
+                            />
+                            <Widget.Button
+                                type="refresh"
+                                onClick={(event, val) => this.refs.webcam.reload()}
+                            />
                             <Widget.Button
                                 type="toggle"
                                 defaultValue={isCollapsed}
@@ -43,9 +61,17 @@ class SpindleWidget extends React.Component {
                                 onClick={(event) => this.props.onDelete()}
                             />
                         </Widget.Controls>
+                        <Widget.Toolbar>
+                            <Widget.Button
+                                type="default"
+                                onClick={(event) => this.setState({ disabled: !disabled })}
+                            >
+                                <i className={classes.webcamOnOff}></i>
+                            </Widget.Button>
+                        </Widget.Toolbar>
                     </Widget.Header>
                     <Widget.Content className={classes.widgetContent}>
-                        <Spindle />
+                        <Webcam ref="webcam" disabled={disabled} />
                     </Widget.Content>
                 </Widget>
             </div>
@@ -53,4 +79,4 @@ class SpindleWidget extends React.Component {
     }
 }
 
-export default SpindleWidget;
+export default WebcamWidget;
