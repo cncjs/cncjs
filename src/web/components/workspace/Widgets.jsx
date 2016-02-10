@@ -131,6 +131,13 @@ class Widgets extends React.Component {
     };
     widgetList = [
         {
+            id: 'visualizer',
+            caption: i18n._('Visualizer Widget'),
+            details: i18n._('This widget visualizes a G-code file and simulates the tool path.'),
+            visible: true,
+            disabled: true
+        },
+        {
             id: 'connection',
             caption: i18n._('Connection Widget'),
             details: i18n._('This widget lets you establish a connection to a serial port.'),
@@ -196,7 +203,7 @@ class Widgets extends React.Component {
     handleSave() {
         this.setState({ show: false });
 
-        let list = _(this.widgetList)
+        let activeWidgets = _(this.widgetList)
             .filter((item) => {
                 return item.visible;
             })
@@ -204,8 +211,12 @@ class Widgets extends React.Component {
                 return item.id;
             })
             .value();
+        let inactiveWidgets = _(this.widgetList)
+            .map('id')
+            .difference(activeWidgets)
+            .value();
 
-        this.props.onSave(list);
+        this.props.onSave(activeWidgets, inactiveWidgets);
     }
     handleCancel() {
         this.setState({ show: false });
@@ -218,6 +229,7 @@ class Widgets extends React.Component {
     }
     render() {
         const widgets = _.concat(
+            store.get('workspace.container.default.widgets'),
             store.get('workspace.container.primary.widgets'),
             store.get('workspace.container.secondary.widgets')
         );
@@ -250,6 +262,25 @@ class Widgets extends React.Component {
         );
     }
 }
+
+export const getActiveWidgets = () => {
+    const defaultWidgets = store.get('workspace.container.default.widgets');
+    const primaryWidgets = store.get('workspace.container.primary.widgets');
+    const secondaryWidgets = store.get('workspace.container.secondary.widgets');
+    const activeWidgets = _.concat(defaultWidgets, primaryWidgets, secondaryWidgets);
+
+    return activeWidgets;
+};
+
+export const getInactiveWidgets = () => {
+    const allWidgets = _.keys(store.get('widgets'));
+    const defaultWidgets = store.get('workspace.container.default.widgets');
+    const primaryWidgets = store.get('workspace.container.primary.widgets');
+    const secondaryWidgets = store.get('workspace.container.secondary.widgets');
+    const inactiveWidgets = _.difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets);
+
+    return inactiveWidgets;
+};
 
 // @param {string} targetContainer The target container: primary|secondary
 export const show = (callback) => {

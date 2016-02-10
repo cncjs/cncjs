@@ -206,7 +206,8 @@ class Workspace extends React.Component {
         isDragging: false,
         isUploading: false,
         showPrimaryContainer: store.get('workspace.container.primary.show'),
-        showSecondaryContainer: store.get('workspace.container.secondary.show')
+        showSecondaryContainer: store.get('workspace.container.secondary.show'),
+        inactiveCount: _.size(widgets.getInactiveWidgets())
     };
     sortableGroup = {
         primary: null,
@@ -350,31 +351,45 @@ class Workspace extends React.Component {
         reader.readAsText(file);
     }
     updateWidgetsForPrimaryContainer() {
-        widgets.show((list) => {
+        widgets.show((activeWidgets, inactiveWidgets) => {
+            const defaultWidgets = store.get('workspace.container.default.widgets');
             let primaryWidgets = store.get('workspace.container.primary.widgets');
             let secondaryWidgets = store.get('workspace.container.secondary.widgets');
 
-            primaryWidgets = list.slice();
+            // Return a new array of filtered values
+            activeWidgets = _.difference(activeWidgets, defaultWidgets);
+
+            primaryWidgets = activeWidgets.slice();
             _.pullAll(primaryWidgets, secondaryWidgets);
             pubsub.publish('updatePrimaryWidgets', primaryWidgets);
 
-            secondaryWidgets = list.slice();
+            secondaryWidgets = activeWidgets.slice();
             _.pullAll(secondaryWidgets, primaryWidgets);
             pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
+
+            // Update inactive count
+            this.setState({ inactiveCount: _.size(inactiveWidgets) });
         });
     }
     updateWidgetsForSecondaryContainer() {
-        widgets.show((list) => {
+        widgets.show((activeWidgets, inactiveWidgets) => {
+            const defaultWidgets = store.get('workspace.container.default.widgets');
             let primaryWidgets = store.get('workspace.container.primary.widgets');
             let secondaryWidgets = store.get('workspace.container.secondary.widgets');
 
-            secondaryWidgets = list.slice();
+            // Return a new array of filtered values
+            activeWidgets = _.difference(activeWidgets, defaultWidgets);
+
+            secondaryWidgets = activeWidgets.slice();
             _.pullAll(secondaryWidgets, primaryWidgets);
             pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
 
-            primaryWidgets = list.slice();
+            primaryWidgets = activeWidgets.slice();
             _.pullAll(primaryWidgets, secondaryWidgets);
             pubsub.publish('updatePrimaryWidgets', primaryWidgets);
+
+            // Update inactive count
+            this.setState({ inactiveCount: _.size(inactiveWidgets) });
         });
     }
     render() {
@@ -383,7 +398,8 @@ class Workspace extends React.Component {
             isUploading,
             showPrimaryContainer,
             showSecondaryContainer,
-            showAddWidgets
+            showAddWidgets,
+            inactiveCount
         } = this.state;
         const notDragging = !isDragging;
         const hidePrimaryContainer = !showPrimaryContainer;
@@ -434,7 +450,7 @@ class Workspace extends React.Component {
                                         <div className="btn-toolbar clearfix" role="toolbar">
                                             <div className="btn-group btn-group-xs pull-left" role="group">
                                                 <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForPrimaryContainer}>
-                                                    <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widget')}
+                                                    <i className="fa fa-list-alt"></i>&nbsp;{i18n._('Manage Widgets ({{inactiveCount}})', {inactiveCount: inactiveCount})}
                                                 </button>
                                             </div>
                                             <div className="btn-group btn-group-xs pull-right" role="group">
@@ -475,7 +491,7 @@ class Workspace extends React.Component {
                                             </div>
                                             <div className="btn-group btn-group-xs pull-right" role="group">
                                                 <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForSecondaryContainer}>
-                                                    <i className="fa fa-plus"></i>&nbsp;{i18n._('Add Widget')}
+                                                    <i className="fa fa-list-alt"></i>&nbsp;{i18n._('Manage Widgets ({{inactiveCount}})', {inactiveCount: inactiveCount})}
                                                 </button>
                                             </div>
                                         </div>
