@@ -7,6 +7,7 @@ import combokeys from '../../../lib/combokeys';
 import controller from '../../../lib/controller';
 import { mm2in } from '../../../lib/units'; 
 import store from '../../../store';
+import ShuttleZone from './ShuttleZone';
 import {
     ACTIVE_STATE_IDLE,
     ACTIVE_STATE_RUN,
@@ -25,8 +26,8 @@ class JogPad extends React.Component {
     };
     actionHandlers = {
         'X_AXIS': () => {
-            let { port, activeState } = this.props;
-            let canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
+            const { port, activeState } = this.props;
+            const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
 
             if (canSelect) {
                 if (this.state.selectedAxis === 'x') {
@@ -37,8 +38,8 @@ class JogPad extends React.Component {
             }
         },
         'Y_AXIS': () => {
-            let { port, activeState } = this.props;
-            let canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
+            const { port, activeState } = this.props;
+            const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
 
             if (canSelect) {
                 if (this.state.selectedAxis === 'y') {
@@ -49,8 +50,8 @@ class JogPad extends React.Component {
             }
         },
         'Z_AXIS': () => {
-            let { port, activeState } = this.props;
-            let canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
+            const { port, activeState } = this.props;
+            const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
 
             if (canSelect) {
                 if (this.state.selectedAxis === 'z') {
@@ -61,8 +62,8 @@ class JogPad extends React.Component {
             }
         },
         'JOG_FORWARD': () => {
-            let { port, activeState } = this.props;
-            let canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
+            const { port, activeState } = this.props;
+            const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
 
             if (canJog) {
                 let distance = this.getJogDistance();
@@ -76,8 +77,8 @@ class JogPad extends React.Component {
             }
         },
         'JOG_BACKWARD': () => {
-            let { port, activeState } = this.props;
-            let canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
+            const { port, activeState } = this.props;
+            const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
 
             if (canJog) {
                 let distance = this.getJogDistance();
@@ -91,49 +92,55 @@ class JogPad extends React.Component {
             }
         },
         'SHUTTLE_ZONE': (value = 0) => {
+            const { selectedAxis } = this.state;
+
             if (value === 0) {
-                if (this.state.selectedAxis) {
+                // Clear accumulated result
+                this.shuttleZone.clear();
+
+                if (selectedAxis) {
                     controller.writeln('G90');
                 }
                 return;
             }
 
-            let distance = Math.min(this.getJogDistance(), 1);
-            let direction = (value < 0) ? -1 : 1;
-            let cycleInterval = 100000 / 1000000; // 0.1s
-            let feedrate = (1500 * (distance / 1) * (Math.abs(value) / 7)).toFixed(3) * 1;
-            let relativeDistance = (direction * (feedrate / 60.0) * cycleInterval).toFixed(4) * 1;
-            let shuttle = {
-                'x': () => {
-                    controller.writeln('G91 G1 F' + feedrate + ' X' + relativeDistance);
-                    controller.writeln('G90');
-                },
-                'y': () => {
-                    controller.writeln('G91 G1 F' + feedrate + ' Y' + relativeDistance);
-                    controller.writeln('G90');
-                },
-                'z': () => {
-                    controller.writeln('G91 G1 F' + feedrate + ' Z' + relativeDistance);
-                    controller.writeln('G90');
-                }
-            }[this.state.selectedAxis];
+            if (!selectedAxis) {
+                return;
+            }
 
-            shuttle && shuttle();
+            const distance = Math.min(this.getJogDistance(), 1);
+
+            this.shuttleZone.accumulate(selectedAxis, value, distance);
         }
     };
     pubsubTokens = [];
+    shuttleZone = null;
 
     componentDidMount() {
         this.subscribe();
+
         _.each(this.actionHandlers, (callback, eventName) => {
             combokeys.on(eventName, callback);
+        });
+
+        // Shuttle Zone
+        this.shuttleZone = new ShuttleZone();
+        this.shuttleZone.on('flush', (accumulatedResult) => {
+            const { axis, feedrate, relativeDistance } = accumulatedResult;
+
+            controller.writeln('G91 G1 F' + (feedrate.toFixed(3) * 1) + ' ' + axis + (relativeDistance.toFixed(4) * 1));
+            controller.writeln('G90');
         });
     }
     componentWillUnmount() {
         this.unsubscribe();
+
         _.each(this.actionHandlers, (callback, eventName) => {
             combokeys.removeListener(eventName, callback);
         });
+
+        this.shuttleZone.removeAllListeners('flush');
+        this.shuttleZone = null;
     }
     subscribe() {
         { // gcode:start
