@@ -1,14 +1,14 @@
 import _ from 'lodash';
 import events from 'events';
+import store from '../../../store';
 
+const HERTZ_LIMIT = 60; // 60 items per second
 const FLUSH_INTERVAL = 250; // milliseconds
-const RATE_LIMIT = 60; // 60 items per second
-const QUEUE_LENGTH = Math.floor(RATE_LIMIT / (1000 / FLUSH_INTERVAL));
-const FEEDRATE_MIN = 200;
-const FEEDRATE_MAX = 800;
-const VALUE_MIN = 1;
-const VALUE_MAX = 7;
-const CYCLE_INTERVAL = 100000 / 1000000; // 0.1s
+const QUEUE_LENGTH = Math.floor(HERTZ_LIMIT / (1000 / FLUSH_INTERVAL));
+const DEFAULT_FEEDRATE_MIN = 300;
+const DEFAULT_FEEDRATE_MAX = 1500;
+const DEFAULT_HERTZ = 10; // 10 times per second
+const DEFAULT_OVERSHOOT = 1;
 
 class ShuttleZone extends events.EventEmitter {
     axis = '';
@@ -26,9 +26,15 @@ class ShuttleZone extends events.EventEmitter {
             this.flush();
         }
 
+        const valueMax = 7; // Shuttle Zone +7/-7
+        const valueMin = 1; // Shuttle Zone +1/-1
+        const feedrateMin = Number(store.get('widgets.axes.shuttle.feedrateMin')) || DEFAULT_FEEDRATE_MIN;
+        const feedrateMax = Number(store.get('widgets.axes.shuttle.feedrateMax')) || DEFAULT_FEEDRATE_MAX;
+        const hertz = Number(store.get('widgets.axes.shuttle.hertz')) || DEFAULT_HERTZ;
+        const overshoot = Number(store.get('widgets.axes.shuttle.overshoot')) || DEFAULT_OVERSHOOT;
         const direction = (value < 0) ? -1 : 1;
-        const feedrate = ((FEEDRATE_MAX - FEEDRATE_MIN) * distance * ((Math.abs(value) - VALUE_MIN) / (VALUE_MAX - VALUE_MIN))) + FEEDRATE_MIN;
-        const relativeDistance = (direction * (feedrate / 60.0) * CYCLE_INTERVAL);
+        const feedrate = ((feedrateMax - feedrateMin) * distance * ((Math.abs(value) - valueMin) / (valueMax - valueMin))) + feedrateMin;
+        const relativeDistance = direction * overshoot * (feedrate / 60.0) / hertz;
 
         this.axis = axis;
         this.value = value;

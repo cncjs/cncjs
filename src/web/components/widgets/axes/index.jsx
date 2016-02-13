@@ -29,6 +29,10 @@ class AxesWidget extends React.Component {
                         <Widget.Title>{i18n._('Axes')}</Widget.Title>
                         <Widget.Controls>
                             <Widget.Button
+                                type="edit"
+                                onClick={(event, val) => this.refs.axes.editSettings()}
+                            />
+                            <Widget.Button
                                 type="toggle"
                                 defaultValue={isCollapsed}
                                 onClick={(event, val) => this.setState({ isCollapsed: !!val })}
@@ -45,7 +49,7 @@ class AxesWidget extends React.Component {
                         </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content className={classes.widgetContent}>
-                        <Axes />
+                        <Axes ref="axes" />
                     </Widget.Content>
                 </Widget>
             </div>

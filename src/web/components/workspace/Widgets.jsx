@@ -243,6 +243,7 @@ class Widgets extends React.Component {
 
         return (
             <Modal
+                backdrop="static"
                 bsSize="large"
                 dialogClassName="modal-vertical-center"
                 onHide={::this.handleCancel}

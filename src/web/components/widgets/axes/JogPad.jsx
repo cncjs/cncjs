@@ -126,9 +126,12 @@ class JogPad extends React.Component {
         // Shuttle Zone
         this.shuttleZone = new ShuttleZone();
         this.shuttleZone.on('flush', (accumulatedResult) => {
-            const { axis, feedrate, relativeDistance } = accumulatedResult;
+            let { axis, feedrate, relativeDistance } = accumulatedResult;
 
-            controller.writeln('G91 G1 F' + (feedrate.toFixed(3) * 1) + ' ' + axis + (relativeDistance.toFixed(4) * 1));
+            feedrate = feedrate.toFixed(3) * 1;
+            relativeDistance = relativeDistance.toFixed(4) * 1;
+
+            controller.writeln('G91 G1 F' + feedrate + ' ' + axis + relativeDistance);
             controller.writeln('G90');
         });
     }

@@ -6,6 +6,7 @@ import controller from '../../../lib/controller';
 import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
 import ControlPanel from './ControlPanel';
+import * as axesSettings from './AxesSettings';
 import {
     ACTIVE_STATE_IDLE,
     IMPERIAL_UNIT,
@@ -95,6 +96,10 @@ class Axes extends React.Component {
     removeControllerEvents() {
         _.each(this.controllerEvents, (callback, eventName) => {
             controller.off(eventName, callback);
+        });
+    }
+    editSettings() {
+        axesSettings.show(() => {
         });
     }
     resetCurrentStatus() {
