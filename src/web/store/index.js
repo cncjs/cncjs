@@ -41,6 +41,12 @@ const defaultState = {
             jog: {
                 selectedDistance: '1',
                 customDistance: 10
+            },
+            shuttle: {
+                feedrateMin: 300,
+                feedrateMax: 1500,
+                hertz: 10,
+                overshoot: 1
             }
         },
         connection: {
