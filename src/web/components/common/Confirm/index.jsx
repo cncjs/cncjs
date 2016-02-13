@@ -39,6 +39,7 @@ class Confirm extends React.Component {
 
         return (
             <Modal
+                backdrop="static"
                 dialogClassName="modal-vertical-center"
                 show={this.state.show}
                 onHide={::this.handleCancel}

@@ -35,13 +35,14 @@ class WebcamSettings extends React.Component {
         this.setState({ show: false });
     }
     render() {
-        const { url } = this.state;
+        const { show, url } = this.state;
 
         return (
             <Modal
+                backdrop="static"
                 dialogClassName="modal-vertical-center"
                 onHide={::this.handleCancel}
-                show={this.state.show}
+                show={show}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>
@@ -63,7 +64,6 @@ class WebcamSettings extends React.Component {
     }
 }
 
-// @param {string} targetContainer The target container: primary|secondary
 export const show = (callback = noop) => {
     const el = document.body.appendChild(document.createElement('div'));  
     const handleClose = (e) => {
