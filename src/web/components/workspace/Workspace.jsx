@@ -62,6 +62,9 @@ class DefaultWidgets extends React.Component {
 }
 
 class PrimaryWidgets extends Sortable {
+    static propTypes = {
+        onDelete: React.PropTypes.func.isRequired
+    };
     state = {
         widgets: store.get('workspace.container.primary.widgets')
     };
@@ -113,6 +116,8 @@ class PrimaryWidgets extends Sortable {
         let widgets = _.slice(this.state.widgets);
         _.remove(widgets, (n) => (n === widgetId));
         this.setState({ widgets: widgets });
+
+        this.props.onDelete();
     }
     render() {
         let widgets = _.map(this.state.widgets, (widgetId) => {
@@ -130,6 +135,9 @@ class PrimaryWidgets extends Sortable {
 }
 
 class SecondaryWidgets extends Sortable {
+    static propTypes = {
+        onDelete: React.PropTypes.func.isRequired
+    };
     state = {
         widgets: store.get('workspace.container.secondary.widgets')
     };
@@ -181,6 +189,8 @@ class SecondaryWidgets extends Sortable {
         let widgets = _.slice(this.state.widgets);
         _.remove(widgets, (n) => (n === widgetId));
         this.setState({ widgets: widgets });
+
+        this.props.onDelete();
     }
     render() {
         let widgets = _.map(this.state.widgets, (widgetId) => {
@@ -390,6 +400,12 @@ class Workspace extends React.Component {
             this.setState({ inactiveCount: _.size(inactiveWidgets) });
         });
     }
+    handleDeleteWidget() {
+        const { inactiveCount } = this.state;
+
+        // Update inactive count
+        this.setState({ inactiveCount: inactiveCount + 1 });
+    }
     render() {
         const {
             isDragging,
@@ -457,7 +473,10 @@ class Workspace extends React.Component {
                                                 </button>
                                             </div>
                                         </div>
-                                        <PrimaryWidgets className="widgets"/>
+                                        <PrimaryWidgets
+                                            className="widgets"
+                                            onDelete={::this.handleDeleteWidget}
+                                        />
                                     </div>
                                     {hidePrimaryContainer &&
                                     <div className="primary-toggler" ref="primaryToggler">
@@ -493,7 +512,10 @@ class Workspace extends React.Component {
                                                 </button>
                                             </div>
                                         </div>
-                                        <SecondaryWidgets className="widgets"/>
+                                        <SecondaryWidgets
+                                            className="widgets"
+                                            onDelete={::this.handleDeleteWidget}
+                                        />
                                     </div>
                                 </div>
                             </div>
