@@ -43,8 +43,8 @@ const defaultState = {
                 customDistance: 10
             },
             shuttle: {
-                feedrateMin: 300,
-                feedrateMax: 1500,
+                feedrateMin: 500,
+                feedrateMax: 2000,
                 hertz: 10,
                 overshoot: 1
             }

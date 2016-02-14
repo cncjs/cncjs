@@ -30,7 +30,7 @@ class AxesWidget extends React.Component {
                         <Widget.Controls>
                             <Widget.Button
                                 type="edit"
-                                onClick={(event, val) => this.refs.axes.editSettings()}
+                                onClick={(event) => this.refs.axes.onEdit()}
                             />
                             <Widget.Button
                                 type="toggle"

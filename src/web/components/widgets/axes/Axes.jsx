@@ -98,9 +98,8 @@ class Axes extends React.Component {
             controller.off(eventName, callback);
         });
     }
-    editSettings() {
-        axesSettings.show(() => {
-        });
+    onEdit() {
+        axesSettings.show();
     }
     resetCurrentStatus() {
         this.setState({
