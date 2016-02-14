@@ -15,11 +15,11 @@ if [ "${NODE_VERSION::2}" == "v5" ]; then
     echo "DOCKER_BUILD_TAG=$DOCKER_BUILD_TAG"
     echo "DOCKER_BRANCH_TAG=$DOCKER_BRANCH_TAG"
     docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
-    docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BUILD_TAG .
-    docker tag $DOCKER_REPO:$DOCKER_BUILD_TAG $DOCKER_REPO:$DOCKER_BRANCH_TAG
-    if [ ! -z "$TRAVIS_TAG" ]; then
-        docker tag -f $DOCKER_REPO:$DOCKER_BUILD_TAG $DOCKER_REPO:$TRAVIS_TAG;
-    fi
+    docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BRANCH_TAG .
+    #docker tag $DOCKER_REPO:$DOCKER_BUILD_TAG $DOCKER_REPO:$DOCKER_BRANCH_TAG
+    #if [ ! -z "$TRAVIS_TAG" ]; then
+    #    docker tag -f $DOCKER_REPO:$DOCKER_BUILD_TAG $DOCKER_REPO:$TRAVIS_TAG;
+    #fi
     docker images
     docker push $DOCKER_REPO
 fi
