@@ -90,8 +90,7 @@ class PrimaryWidgets extends Sortable {
 
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
-        store.unset('workspace.container.primary.widgets');
-        store.set('workspace.container.primary.widgets', widgets);
+        store.replace('workspace.container.primary.widgets', widgets);
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
@@ -159,8 +158,7 @@ class SecondaryWidgets extends Sortable {
 
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
-        store.unset('workspace.container.secondary.widgets');
-        store.set('workspace.container.secondary.widgets', widgets);
+        store.replace('workspace.container.secondary.widgets', widgets);
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
