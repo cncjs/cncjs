@@ -4,7 +4,6 @@ const defaultState = {
     controllers: {}
 };
 
-const state = _.merge({}, defaultState);
-const store = new ImmutableStore(state);
+const store = new ImmutableStore(defaultState);
 
 export default store;
