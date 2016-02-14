@@ -4,10 +4,10 @@ import events from 'events';
 class ImmutableStore extends events.EventEmitter {
     state = {};
 
-    constructor(defaults = {}) {
+    constructor(state = {}) {
         super();
 
-        this.state = defaults;
+        this.state = state;
     }
     get(key, defaultValue) {
         return _.get(this.state, key, defaultValue);
