@@ -7,7 +7,7 @@ import combokeys from '../../../lib/combokeys';
 import controller from '../../../lib/controller';
 import { mm2in } from '../../../lib/units'; 
 import store from '../../../store';
-import ShuttleZone from './ShuttleZone';
+import ShuttleControl from './ShuttleControl';
 import {
     ACTIVE_STATE_IDLE,
     ACTIVE_STATE_RUN,
@@ -96,7 +96,7 @@ class JogPad extends React.Component {
 
             if (value === 0) {
                 // Clear accumulated result
-                this.shuttleZone.clear();
+                this.shuttleControl.clear();
 
                 if (selectedAxis) {
                     controller.writeln('G90');
@@ -110,11 +110,11 @@ class JogPad extends React.Component {
 
             const distance = Math.min(this.getJogDistance(), 1);
 
-            this.shuttleZone.accumulate(selectedAxis, value, distance);
+            this.shuttleControl.accumulate(selectedAxis, value, distance);
         }
     };
     pubsubTokens = [];
-    shuttleZone = null;
+    shuttleControl = null;
 
     componentDidMount() {
         this.subscribe();
@@ -124,8 +124,8 @@ class JogPad extends React.Component {
         });
 
         // Shuttle Zone
-        this.shuttleZone = new ShuttleZone();
-        this.shuttleZone.on('flush', (accumulatedResult) => {
+        this.shuttleControl = new ShuttleControl();
+        this.shuttleControl.on('flush', (accumulatedResult) => {
             let { axis, feedrate, relativeDistance } = accumulatedResult;
 
             feedrate = feedrate.toFixed(3) * 1;
@@ -142,8 +142,8 @@ class JogPad extends React.Component {
             combokeys.removeListener(eventName, callback);
         });
 
-        this.shuttleZone.removeAllListeners('flush');
-        this.shuttleZone = null;
+        this.shuttleControl.removeAllListeners('flush');
+        this.shuttleControl = null;
     }
     subscribe() {
         { // gcode:start
@@ -238,7 +238,7 @@ class JogPad extends React.Component {
                                     <i className="fa fa-arrow-circle-up rotate--45deg"></i>
                                 </button>
                             </td>
-                            <td>
+                            <td className={classes['jog-direction-y']}>
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-y-plus"
@@ -249,7 +249,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move Y+')}
                                 >
-                                    <span className={classes['jog-direction-y']}>Y+</span>
+                                    <span className="jog-text">Y+</span>
                                 </button>
                             </td>
                             <td>
@@ -266,7 +266,7 @@ class JogPad extends React.Component {
                                     <i className="fa fa-arrow-circle-up rotate-45deg"></i>
                                 </button>
                             </td>
-                            <td>
+                            <td className={classes['jog-direction-z']}>
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-z-plus"
@@ -277,12 +277,12 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move Z+')}
                                 >
-                                    <span className={classes['jog-direction-z']}>Z+</span>
+                                    <span className="jog-text">Z+</span>
                                 </button>
                             </td>
                         </tr>
                         <tr>
-                            <td>
+                            <td className={classes['jog-direction-x']}>
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-minus"
@@ -293,7 +293,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X-')}
                                 >
-                                    <span className={classes['jog-direction-x']}>X-</span>
+                                    <span className="jog-text">X-</span>
                                 </button>
                             </td>
                             <td>
@@ -304,10 +304,10 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move To XY Zero (G0 X0 Y0)')}
                                 >
-                                    <span className="jog-direction">X/Y</span>
+                                    <span className="jog-text">X/Y</span>
                                 </button>
                             </td>
-                            <td>
+                            <td className={classes['jog-direction-x']}>
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-x-plus"
@@ -318,7 +318,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+')}
                                 >
-                                    <span className={classes['jog-direction-x']}>X+</span>
+                                    <span className="jog-text">X+</span>
                                 </button>
                             </td>
                             <td>
@@ -329,7 +329,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move To Z Zero (G0 Z0)')}
                                 >
-                                    <span className="jog-direction">Z</span>
+                                    <span className="jog-text">Z</span>
                                 </button>
                             </td>
                         </tr>
@@ -348,7 +348,7 @@ class JogPad extends React.Component {
                                     <i className="fa fa-arrow-circle-down rotate-45deg"></i>
                                 </button>
                             </td>
-                            <td>
+                            <td className={classes['jog-direction-y']}>
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-y-minus"
@@ -359,7 +359,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move Y-')}
                                 >
-                                    <span className={classes['jog-direction-y']}>Y-</span>
+                                    <span className="jog-text">Y-</span>
                                 </button>
                             </td>
                             <td>
@@ -376,7 +376,7 @@ class JogPad extends React.Component {
                                     <i className="fa fa-arrow-circle-down rotate--45deg"></i>
                                 </button>
                             </td>
-                            <td>
+                            <td className={classes['jog-direction-z']}>
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-z-minus"
@@ -387,7 +387,7 @@ class JogPad extends React.Component {
                                     disabled={!canClick}
                                     title={i18n._('Move Z-')}
                                 >
-                                    <span className={classes['jog-direction-z']}>Z-</span>
+                                    <span className="jog-text">Z-</span>
                                 </button>
                             </td>
                         </tr>

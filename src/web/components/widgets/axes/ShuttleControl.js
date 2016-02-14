@@ -5,12 +5,13 @@ import store from '../../../store';
 const HERTZ_LIMIT = 60; // 60 items per second
 const FLUSH_INTERVAL = 250; // milliseconds
 const QUEUE_LENGTH = Math.floor(HERTZ_LIMIT / (1000 / FLUSH_INTERVAL));
-const DEFAULT_FEEDRATE_MIN = 300;
+
+const DEFAULT_FEEDRATE_MIN = 500;
 const DEFAULT_FEEDRATE_MAX = 1500;
 const DEFAULT_HERTZ = 10; // 10 times per second
 const DEFAULT_OVERSHOOT = 1;
 
-class ShuttleZone extends events.EventEmitter {
+class ShuttleControl extends events.EventEmitter {
     axis = '';
     value = 0;
     queue = [];
@@ -75,4 +76,4 @@ class ShuttleZone extends events.EventEmitter {
     }
 }
 
-export default ShuttleZone;
+export default ShuttleControl;
