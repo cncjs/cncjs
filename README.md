@@ -59,19 +59,18 @@ $ cnc -h
 
 Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
 
+## [Wiki](https://github.com/cheton/cnc.js/wiki)
+* [Installation](https://github.com/cheton/cnc.js/wiki/Installation)
+* [Prerequisite](https://github.com/cheton/cnc.js/wiki/Prerequisite)
+* [User Guide](https://github.com/cheton/cnc.js/wiki/User-Guide)
+* [FAQ](https://github.com/cheton/cnc.js/wiki/FAQ)
+
 ## Examples
 There are several *.gcode files in the [examples](https://github.com/cheton/cnc.js/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
 
 If you don't have a CAM software, try using [jscut](http://jscut.org/) to create G-Code from *.svg. It's a simple CAM package that runs in the browser.
 
-Check out a live demo at http://jscut.org/jscut.html.
-
-## Wiki
-https://github.com/cheton/cnc.js/wiki
-* [Installation](https://github.com/cheton/cnc.js/wiki/Installation)
-* [Prerequisite](https://github.com/cheton/cnc.js/wiki/Prerequisite)
-* [User Guide](https://github.com/cheton/cnc.js/wiki/User-Guide)
-* [FAQ](https://github.com/cheton/cnc.js/wiki/FAQ)
+Check out a live demo at http://jscut.org/jscut.html. 
 
 ### Photo Gallery
 [![Photo Gallery](https://scontent-iad3-1.xx.fbcdn.net/hphotos-xtp1/t31.0-8/12138529_10207901191546433_3867236073352040616_o.jpg)](https://www.facebook.com/cheton.wu/media_set?set=a.10207901184746263.1073741852.1195704289&type=3)
