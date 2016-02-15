@@ -59,11 +59,8 @@ $ cnc -h
 
 Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
 
-## [Wiki](https://github.com/cheton/cnc.js/wiki)
-* [Installation](https://github.com/cheton/cnc.js/wiki/Installation)
-* [Prerequisite](https://github.com/cheton/cnc.js/wiki/Prerequisite)
-* [User Guide](https://github.com/cheton/cnc.js/wiki/User-Guide)
-* [FAQ](https://github.com/cheton/cnc.js/wiki/FAQ)
+## Wiki
+https://github.com/cheton/cnc.js/wiki
 
 ## Examples
 There are several *.gcode files in the [examples](https://github.com/cheton/cnc.js/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
