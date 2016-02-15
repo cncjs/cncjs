@@ -57,77 +57,7 @@ $ cnc -h
     -d, --debug              run in debug mode
 ```
 
-## Git Installation
-If you prefer to use Git instead of `npm install`, You can create a local clone of the repository on your computer and sync from GitHub. Type the following commands to install and run `cnc.js`:
-```bash
-$ git clone https://github.com/cheton/cnc.js.git
-$ cd cnc.js
-$ npm install --production
-$ ./bin/cnc
-```
-
-To update your local copy with latest changes, use:
-```bash
-$ git pull
-$ npm install --production
-$ ./bin/cnc
-```
-
-This is the fastest method to bring your local copy up-to-date.
-
-## Docker Image Installation (x64 only)
-Alternatively, you can install and run a Docker image within a Docker container. The first installation may take a long time to complete, but further updates will be much faster.
-
-To install and set up cnc.js, take the following steps:
-
-<b>Step 1:</b> Enter the following command to retrieve the latest version of the image:
-```bash
-$ docker pull cheton/cnc:latest
-```
-
-<b>Step 2:</b> Use the `docker run` command to create the Docker container and run the server, like so:
-```bash
-$ docker run --privileged -p 8000:8000 --rm --name cnc cheton/cnc:latest
-```
-By default a container is not allowed to access any devices, but a "privileged" container is given access to all devices on the host.
-
-<b>Step 3:</b> If everything works fine, you should be able to view the web interface at `http://yourhostname:8000/`.
-
-### Docker Images
-https://hub.docker.com/r/cheton/cnc/tags/
-
-### Tips
-
-If you run into issues and need to restart the Docker container, use the following commands to first stop the Docker application, and then start it up again:
-```bash
-$ docker stop cnc
-$ docker start cnc 
-```
-
-To view a list of all containers that are currently running in your Docker environment, use:
-```bash
-$ docker ps
-```
-
-To view all the images you have pulled into your Docker environment, use:
-```bash
-$ docker images
-```
-
-To delete containers in your Docker environment, use:
-```bash
-$ docker rm CONTAINER_ID
-```
-
-To delete images in your Docker environment, use:
-```bash
-$ docker rmi IMAGE_ID
-```
-
-To view the container in your terminal, use:
-```bash
-$ docker attach cnc
-```
+Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
 
 ## Examples
 There are several *.gcode files in the [examples](https://github.com/cheton/cnc.js/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
@@ -138,6 +68,7 @@ Check out a live demo at http://jscut.org/jscut.html.
 
 ## Wiki
 https://github.com/cheton/cnc.js/wiki
+* [Installation](https://github.com/cheton/cnc.js/wiki/Installation)
 * [Prerequisite](https://github.com/cheton/cnc.js/wiki/Prerequisite)
 * [User Guide](https://github.com/cheton/cnc.js/wiki/User-Guide)
 * [FAQ](https://github.com/cheton/cnc.js/wiki/FAQ)
