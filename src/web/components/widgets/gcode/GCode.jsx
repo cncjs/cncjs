@@ -17,20 +17,24 @@ class GCode extends React.Component {
     state = {
         port: '',
         unit: METRIC_UNIT,
-        commands: [], // a list of gcode commands
+        lines: [], // List of G-code lines
         alertMessage: '',
 
         // G-code Status
-        gcodeStatus: {
-            sent: 0,
-            total: 0
-        }
+        remain: 0,
+        sent: 0,
+        total: 0,
+        createdTime: 0,
+        startedTime: 0,
+        finishedTime: 0
     };
     controllerEvents = {
         'gcode:statuschange': (data) => {
+            const { remain, sent, total, createdTime, startedTime, finishedTime } = data;
+            const from = this.state.sent;
+            const to = sent;
+
             let list = {};
-            let from = this.state.gcodeStatus.sent;
-            let to = data.sent;
 
             // Reset obsolete queue items
             for (let i = to; i < from; ++i) {
@@ -50,13 +54,15 @@ class GCode extends React.Component {
                 };
             }
 
-            let updatedCommands = update(this.state.commands, list);
+            const lines = update(this.state.lines, list);
             this.setState({
-                commands: updatedCommands,
-                gcodeStatus: {
-                    sent: Number(data.sent),
-                    total: Number(data.total)
-                }
+                lines,
+                remain,
+                sent,
+                total,
+                createdTime,
+                startedTime,
+                finishedTime
             });
         },
         'grbl:parserstate': (parserstate) => {
@@ -107,16 +113,17 @@ class GCode extends React.Component {
                         return;
                     }
 
-                    let commands = _(data)
-                        .map((o) => {
+                    const lines = _(data)
+                        .map((o, index) => {
                             return {
+                                id: index,
                                 status: GCODE_STATUS.NOT_STARTED,
                                 cmd: o.line
                             };
                         })
                         .value();
 
-                    this.setState({ commands: commands });
+                    this.setState({ lines: lines });
                 });
             });
             this.pubsubTokens.push(token);
@@ -124,8 +131,7 @@ class GCode extends React.Component {
 
         { // gcode:unload
             let token = pubsub.subscribe('gcode:unload', (msg) => {
-                let commands = [];
-                this.setState({ commands: commands });
+                this.setState({ lines: [] });
             });
             this.pubsubTokens.push(token);
         }
@@ -147,33 +153,25 @@ class GCode extends React.Component {
         });
     }
     render() {
-        let { port, unit, gcodeStatus } = this.state;
-        let tableWidth = 360 - 2 /* border */ - 20 /* padding */; // FIXME: calculate width
-        let tableHeight = 180;
-        let rowHeight = 30;
-        let visibleRows = Math.floor(tableHeight / rowHeight);
-        let isLoaded = (_.size(this.state.commands) > 0);
-        let notLoaded = !isLoaded;
-        let scrollToRow = Math.min(
-            gcodeStatus.sent + (Math.floor(visibleRows / 2) - 1),
-            gcodeStatus.total
-        );
+        const { unit, lines } = this.state;
+        const { remain, sent, total, createdTime, startedTime, finishedTime } = this.state;
+        const isLoaded = (_.size(lines) > 0);
+        const notLoaded = !isLoaded;
+        const scrollToLine = Math.min(sent, total);
 
         return (
             <div>
                 <GCodeStats
                     unit={unit}
-                    sent={gcodeStatus.sent}
-                    total={gcodeStatus.total}
+                    remain={remain}
+                    sent={sent}
+                    total={total}
                 />
 
                 {isLoaded &&
                 <GCodeTable
-                    width={tableWidth}
-                    height={tableHeight}
-                    rowHeight={rowHeight}
-                    data={this.state.commands}
-                    scrollToRow={scrollToRow}
+                    data={this.state.lines}
+                    scrollToLine={scrollToLine}
                 />
                 }
             </div>

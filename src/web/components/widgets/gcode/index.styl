@@ -3,20 +3,11 @@
         position: relative;
         padding: 10px;
 
-        .gcode-table {
-            .public_fixedDataTable_topShadow {
-                background: none;
+        // react-datagrid
+        .react-datagrid.hide-header {
+            .z-header-wrapper {
+                display: none;
             }
-            .public_fixedDataTable_bottomShadow {
-                background: none;
-            }
-            .public_fixedDataTable_header {
-                border: none;
-            }
-        }
-
-        .gcode-table + .gcode-stats {
-            border-top: none;
         }
 
         .gcode-stats {
@@ -48,6 +39,9 @@
             .row:last-child {
                 margin-bottom: 0;
             }
+        }
+
+        .gcode-table {
         }
     }
 }

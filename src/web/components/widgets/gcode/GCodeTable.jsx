@@ -1,99 +1,95 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import colornames from 'colornames';
 import React from 'react';
 import update from 'react-addons-update';
-import { Table, Column, Cell } from 'fixed-data-table';
+import DataGrid from 'react-datagrid';
 import i18n from '../../../lib/i18n';
 import { GCODE_STATUS } from './constants';
 
+const columns = [
+    {
+        name: 'id',
+        width: 'auto',
+
+        render: (value, data, cellProps) => {
+            const { rowIndex } = cellProps;
+            const style = {
+                backgroundColor: colornames('gray 25')
+            };
+
+            return <span className="label" style={style}>{rowIndex + 1}</span>;
+        }
+    },
+    {
+        name: 'status',
+        width: 'auto',
+        render: (value) => {
+            const classes = {
+                icon: classNames(
+                    'fa',
+                    { 'fa-check': value !== GCODE_STATUS.ERROR },
+                    { 'fa-ban': value === GCODE_STATUS.ERROR }
+                )
+            };
+            const styles = {
+                icon: {
+                    color: ((value) => {
+                        let color = {};
+                        color[GCODE_STATUS.ERROR] = colornames('indian red');
+                        color[GCODE_STATUS.NOT_STARTED] = colornames('gray 80');
+                        color[GCODE_STATUS.IN_PROGRESS] = colornames('gray 80');
+                        color[GCODE_STATUS.COMPLETED] = colornames('gray 20');
+                        return color[value] || colornames('gray 80');
+                    })(value)
+                }
+            };
+
+            return <i className={classes.icon} style={styles.icon}></i>;
+        }
+    },
+    {
+        name: 'cmd'
+    }
+];
+
 class GCodeTable extends React.Component {
     static propTypes = {
-        width: React.PropTypes.number,
         height: React.PropTypes.number,
         rowHeight: React.PropTypes.number,
         data: React.PropTypes.array,
-        scrollToRow: React.PropTypes.number
+        scrollToLine: React.PropTypes.number
+    };
+    static defaultProps = {
+        height: 180,
+        rowHeight: 30,
+        data: [],
+        scrollToLine: 0
     };
 
     render() {
-        if (_.size(this.props.data) > 0) {
-            return this.renderTable();
-        } else {
-            return this.renderEmptyMessage();
-        }
-    }
-    renderTable() {
-        return (
-            <div className="gcode-table">
-                <Table
-                    className="noHeader"
-                    headerHeight={0}
-                    rowHeight={this.props.rowHeight || 30}
-                    rowsCount={_.size(this.props.data)}
-                    width={this.props.width}
-                    height={this.props.height}
-                    scrollToRow={this.props.scrollToRow}
-                    scrollTop={this.props.top}
-                    scrollLeft={this.props.left}
-                >
-                    <Column
-                        header={<Cell></Cell>}
-                        cell={({rowIndex, width, height, ...props}) => {
-                            const status = this.props.data[rowIndex].status;
-                            const classes = {
-                                icon: classNames(
-                                    'fa',
-                                    { 'fa-check': status !== GCODE_STATUS.ERROR },
-                                    { 'fa-ban': status === GCODE_STATUS.ERROR }
-                                )
-                            };
-                            const styles = {
-                                icon: {
-                                    color: (() => {
-                                        let cdata = {};
-                                        cdata[GCODE_STATUS.ERROR] = '#a71d5d';
-                                        cdata[GCODE_STATUS.NOT_STARTED] = '#ddd';
-                                        cdata[GCODE_STATUS.IN_PROGRESS] = '#ddd'; // FIXME
-                                        cdata[GCODE_STATUS.COMPLETED] = '#333';
-                                        return cdata[status] || '#ddd';
-                                    })()
-                                }
-                            };
+        const { data, height, rowHeight, scrollToLine } = this.props;
+        const outerStyle = {
+            borderWidth: 1,
+            borderStyle: 'solid',
+            borderColor: colornames('gray 80')
+        };
 
-                            return (
-                                <Cell
-                                    width={width}
-                                    heigh={height}
-                                >
-                                    <i className={classes.icon} style={styles.icon}></i>
-                                </Cell>
-                            );
-                        }}
-                        width={28}
-                    />
-                    <Column
-                        header={<Cell></Cell>}
-                        cell={({rowIndex, width, height, ...props}) => (
-                            <Cell
-                                width={width}
-                                heigh={height}
-                            >
-                                <span className="text-overflow-ellipsis" style={{width: width}}>
-                                    <span className="label label-default">{rowIndex+1}</span> {this.props.data[rowIndex].cmd} 
-                                </span>
-                            </Cell>
-                        )}
-                        isResizable={true}
-                        flexGrow={1}
-                        width={100}
-                    />
-                </Table>
-            </div>
-        );
-    }
-    renderEmptyMessage() {
         return (
-            <p className="">{i18n._('No data to display')}</p>
+            <div className="gcode-table" style={outerStyle}>
+                <DataGrid
+                    className="hide-header"
+                    ref="dataGrid"
+                    idProperty="id"
+                    dataSource={data}
+                    columns={columns}
+                    emptyText={i18n._('No data to display')}
+                    rowHeight={rowHeight}
+                    style={{height: height}}
+                    withColumnMenu={false}
+                    scrollBy={scrollToLine}
+                />
+            </div>
         );
     }
 }
