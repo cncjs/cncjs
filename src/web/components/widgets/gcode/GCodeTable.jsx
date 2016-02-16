@@ -9,18 +9,11 @@ import { GCODE_STATUS } from './constants';
 
 const columns = [
     {
-        name: 'id',
-        render: (value, data, cellProps) => {
-            const { rowIndex } = cellProps;
-            const style = {
-                backgroundColor: colornames('gray 25')
-            };
-
-            return <span className="label" style={style}>{rowIndex + 1}</span>;
-        }
-    },
-    {
         name: 'status',
+        width: 22,
+        style: {
+            backgroundColor: colornames('gray 95')
+        },
         render: (value) => {
             const classes = {
                 icon: classNames(
@@ -46,7 +39,20 @@ const columns = [
         }
     },
     {
-        name: 'cmd'
+        name: 'cmd',
+        render: (value, data, cellProps) => {
+            const { rowIndex } = cellProps;
+            const style = {
+                backgroundColor: colornames('gray 25'),
+                marginRight: 5
+            };
+
+            return (
+                <div>
+                    <span className="label" style={style}>{rowIndex + 1}</span>{value}
+                </div>
+            );
+        }
     }
 ];
 
@@ -55,25 +61,20 @@ class GCodeTable extends React.Component {
         height: React.PropTypes.number,
         rowHeight: React.PropTypes.number,
         data: React.PropTypes.array,
-        scrollToLine: React.PropTypes.number
+        scrollTo: React.PropTypes.number
     };
     static defaultProps = {
         height: 180,
         rowHeight: 30,
         data: [],
-        scrollToLine: 0
+        scrollTo: 0
     };
 
     render() {
-        const { data, height, rowHeight, scrollToLine } = this.props;
-        const outerStyle = {
-            borderWidth: 1,
-            borderStyle: 'solid',
-            borderColor: colornames('gray 80')
-        };
+        const { data, height, rowHeight, scrollTo } = this.props;
 
         return (
-            <div className="gcode-table" style={outerStyle}>
+            <div className="gcode-table">
                 <DataGrid
                     className="hide-header"
                     ref="dataGrid"
@@ -84,7 +85,7 @@ class GCodeTable extends React.Component {
                     rowHeight={rowHeight}
                     style={{height: height}}
                     withColumnMenu={false}
-                    scrollBy={scrollToLine}
+                    showCellBorders={true}
                 />
             </div>
         );

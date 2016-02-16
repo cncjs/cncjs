@@ -157,7 +157,7 @@ class GCode extends React.Component {
         const { remain, sent, total, createdTime, startedTime, finishedTime } = this.state;
         const isLoaded = (_.size(lines) > 0);
         const notLoaded = !isLoaded;
-        const scrollToLine = Math.min(sent, total);
+        const scrollTo = sent;
 
         return (
             <div>
@@ -166,12 +166,15 @@ class GCode extends React.Component {
                     remain={remain}
                     sent={sent}
                     total={total}
+                    createdTime={createdTime}
+                    startedTime={startedTime}
+                    finishedTime={finishedTime}
                 />
 
                 {isLoaded &&
                 <GCodeTable
                     data={this.state.lines}
-                    scrollToLine={scrollToLine}
+                    scrollTo={scrollTo}
                 />
                 }
             </div>
