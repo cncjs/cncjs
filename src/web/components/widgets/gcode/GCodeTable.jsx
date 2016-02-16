@@ -10,8 +10,6 @@ import { GCODE_STATUS } from './constants';
 const columns = [
     {
         name: 'id',
-        width: 'auto',
-
         render: (value, data, cellProps) => {
             const { rowIndex } = cellProps;
             const style = {
@@ -23,7 +21,6 @@ const columns = [
     },
     {
         name: 'status',
-        width: 'auto',
         render: (value) => {
             const classes = {
                 icon: classNames(
