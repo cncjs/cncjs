@@ -2,7 +2,7 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import update from 'react-addons-update';
-import { parseText } from 'gcode-parser';
+import { parseString } from 'gcode-parser';
 import GCodeStats from './GCodeStats';
 import GCodeTable from './GCodeTable';
 import controller from '../../../lib/controller';
@@ -107,7 +107,7 @@ class GCode extends React.Component {
             let token = pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
 
-                parseText(gcode, (err, data) => {
+                parseString(gcode, (err, data) => {
                     if (err) {
                         log.error(err);
                         return;
