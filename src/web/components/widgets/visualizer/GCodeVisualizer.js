@@ -107,7 +107,7 @@ class GCodeVisualizer {
             });
         });
 
-        gcodeToolpath.interpretText(options.gcode, (err, results) => {
+        gcodeToolpath.interpretString(options.gcode, (err, results) => {
             this.update();
 
             log.debug({
