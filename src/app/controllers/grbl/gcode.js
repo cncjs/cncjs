@@ -22,7 +22,7 @@ class GCode extends events.EventEmitter {
         });
     }
     load(name, gcode, callback) {
-        parser.parseText(gcode, (err, data) => {
+        parser.parseString(gcode, (err, data) => {
             if (err) {
                 callback(err);
                 return;
