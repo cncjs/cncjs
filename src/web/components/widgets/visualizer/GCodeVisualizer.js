@@ -90,7 +90,7 @@ class GCodeVisualizer {
         options = options || {};
         callback = _.isFunction(callback) ? callback : noop;
 
-        let gcodeToolpath = new GCodeToolpath({
+        const toolpath = new GCodeToolpath({
             modalState: this.options.modalState,
             addLine: (modalState, v1, v2) => {
                 this.addLine(modalState, v1, v2);
@@ -100,14 +100,14 @@ class GCodeVisualizer {
             }
         });
 
-        gcodeToolpath.on('data', (data) => {
+        toolpath.on('data', (data) => {
             this.frames.push({
                 data: data,
                 vertexIndex: this.geometry.vertices.length // remember current vertex index
             });
         });
 
-        gcodeToolpath.interpretString(options.gcode, (err, results) => {
+        toolpath.loadFromString(options.gcode, (err, results) => {
             this.update();
 
             log.debug({
