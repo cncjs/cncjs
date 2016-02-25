@@ -514,11 +514,14 @@ class Visualizer extends React.Component {
             modalState: this.parserstate.modal
         });
 
-        let obj = this.gcodeVisualizer.render({
+        this.gcodeVisualizer.render({
             gcode: gcode,
             width: el.clientWidth,
             height: el.clientHeight
         }, (obj) => {
+            obj.name = 'GCodeVisualizer';
+            this.group.add(obj);
+
             let bbox = getBoundingBox(obj);
             let dX = bbox.max.x - bbox.min.x;
             let dY = bbox.max.y - bbox.min.y;
@@ -545,9 +548,6 @@ class Visualizer extends React.Component {
 
             (typeof callback === 'function') && callback({ boundingBox: bbox });
         });
-
-        obj.name = 'GCodeVisualizer';
-        this.group.add(obj);
     }
     unloadGCode() {
         let gcodeVisualizerObject = this.group.getObjectByName('GCodeVisualizer');
