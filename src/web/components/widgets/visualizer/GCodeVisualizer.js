@@ -114,7 +114,7 @@ class GCodeVisualizer {
                     data: data,
                     vertexIndex: this.geometry.vertices.length // remember current vertex index
                 });
-            })
+            });
 
         return this.group;
     }
