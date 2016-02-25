@@ -86,10 +86,7 @@ class GCodeVisualizer {
         this.geometry.vertices = this.geometry.vertices.concat(vertices);
         this.geometry.colors = this.geometry.colors.concat(colors);
     }
-    render(options, callback) {
-        options = options || {};
-        callback = _.isFunction(callback) ? callback : noop;
-
+    render(options = {}, callback = noop) {
         const toolpath = new GCodeToolpath({
             modalState: this.options.modalState,
             addLine: (modalState, v1, v2) => {
@@ -100,24 +97,26 @@ class GCodeVisualizer {
             }
         });
 
-        toolpath.on('data', (data) => {
-            this.frames.push({
-                data: data,
-                vertexIndex: this.geometry.vertices.length // remember current vertex index
+        toolpath
+            .on('data', (data) => {
+                this.frames.push({
+                    data: data,
+                    vertexIndex: this.geometry.vertices.length // remember current vertex index
+                });
+            })
+            .loadFromString(options.gcode, (err, results) => {
+                this.update();
+
+                log.debug({
+                    geometry: this.geometry,
+                    frames: this.frames,
+                    frameIndex: this.frameIndex
+                });
+
+                callback(this.group);
             });
-        });
 
-        toolpath.loadFromString(options.gcode, (err, results) => {
-            this.update();
-
-            log.debug({
-                geometry: this.geometry,
-                frames: this.frames,
-                frameIndex: this.frameIndex
-            });
-
-            callback(this.group);
-        });
+        return this.group;
     }
     update() {
         while (this.group.children.length > 0) {
