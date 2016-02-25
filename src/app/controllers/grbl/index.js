@@ -64,7 +64,9 @@ class GrblController {
 
             gcode = ('' + gcode).trim();
 
-            this.serialport.write(gcode + '\n');
+            if (gcode.length > 0) {
+                this.serialport.write(gcode + '\n');
+            }
         });
 
         // Grbl
@@ -152,6 +154,19 @@ class GrblController {
         });
 
         this.grbl.on('error', (res) => {
+            if (this.state.isRunning) {
+                let length = this.gcode.sent.length;
+                if (length > 0) {
+                    let lastDataSent = this.gcode.sent[length - 1];
+                    let msg = '> [' + length + '] ' + lastDataSent;
+                    this.connections.forEach((c) => {
+                        c.socket.emit('serialport:read', msg);
+                    });
+                }
+
+                this.gcode.next();
+            }
+
             this.connections.forEach((c) => {
                 c.socket.emit('serialport:read', res.raw);
             });
