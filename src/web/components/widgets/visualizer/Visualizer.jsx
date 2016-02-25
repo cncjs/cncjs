@@ -159,22 +159,18 @@ class Visualizer extends React.Component {
             let token = pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
 
-                this.setState({ ready: true });
+                this.startWaiting();
 
-                // It may take some time to render the G-code
-                setTimeout(() => {
-                    this.startWaiting();
+                this.loadGCode(gcode, (options) => {
+                    pubsub.publish('gcode:boundingBox', options.boundingBox);
 
-                    this.loadGCode(gcode, (options) => {
-                        pubsub.publish('gcode:boundingBox', options.boundingBox);
-
-                        this.setState({
-                            boundingBox: options.boundingBox
-                        });
-
-                        this.stopWaiting();
+                    this.setState({
+                        ready: true,
+                        boundingBox: options.boundingBox
                     });
-                }, 0);
+
+                    this.stopWaiting();
+                });
             });
             this.pubsubTokens.push(token);
         }
@@ -517,15 +513,13 @@ class Visualizer extends React.Component {
         this.gcodeVisualizer = new GCodeVisualizer({
             modalState: this.parserstate.modal
         });
-        this.gcodeVisualizer.render({
+
+        let obj = this.gcodeVisualizer.render({
             gcode: gcode,
             width: el.clientWidth,
             height: el.clientHeight
-        }, (gcodeVisualizerObject) => {
-            gcodeVisualizerObject.name = 'GCodeVisualizer';
-            this.group.add(gcodeVisualizerObject);
-
-            let bbox = getBoundingBox(gcodeVisualizerObject);
+        }, (obj) => {
+            let bbox = getBoundingBox(obj);
             let dX = bbox.max.x - bbox.min.x;
             let dY = bbox.max.y - bbox.min.y;
             let dZ = bbox.max.z - bbox.min.z;
@@ -551,6 +545,9 @@ class Visualizer extends React.Component {
 
             (typeof callback === 'function') && callback({ boundingBox: bbox });
         });
+
+        obj.name = 'GCodeVisualizer';
+        this.group.add(obj);
     }
     unloadGCode() {
         let gcodeVisualizerObject = this.group.getObjectByName('GCodeVisualizer');
