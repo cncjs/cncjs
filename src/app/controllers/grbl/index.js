@@ -158,7 +158,7 @@ class GrblController {
                 let length = this.gcode.sent.length;
                 if (length > 0) {
                     let lastDataSent = this.gcode.sent[length - 1];
-                    let msg = '> [' + length + '] ' + lastDataSent;
+                    let msg = '> (' + length + ') ' + lastDataSent;
                     this.connections.forEach((c) => {
                         c.socket.emit('serialport:read', msg);
                     });
