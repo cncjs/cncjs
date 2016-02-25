@@ -98,12 +98,6 @@ class GCodeVisualizer {
         });
 
         toolpath
-            .on('data', (data) => {
-                this.frames.push({
-                    data: data,
-                    vertexIndex: this.geometry.vertices.length // remember current vertex index
-                });
-            })
             .loadFromString(options.gcode, (err, results) => {
                 this.update();
 
@@ -114,7 +108,13 @@ class GCodeVisualizer {
                 });
 
                 callback(this.group);
-            });
+            })
+            .on('data', (data) => {
+                this.frames.push({
+                    data: data,
+                    vertexIndex: this.geometry.vertices.length // remember current vertex index
+                });
+            })
 
         return this.group;
     }
