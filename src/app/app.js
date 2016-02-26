@@ -64,7 +64,6 @@ const renderPage = (req, res, next) => {
         res.set({ 'X-UA-Compatible': 'IE=edge' });
 
         res.render(file, {
-            'livereload': !!settings.livereload.enable,
             'cdn': cdn,
             'webroot': webroot,
             'version': version,
@@ -93,7 +92,7 @@ const appMain = () => {
         .init(settings.i18next);
 
     {  // Settings
-        if (settings.debug) {
+        if (settings.env === 'development') {
             // Error handler - https://github.com/expressjs/errorhandler
             // Development error handler, providing stack traces and error message responses
             // for requests accepting text, html, or json.
@@ -151,7 +150,9 @@ const appMain = () => {
     app.use(connectRestreamer());
 
     app.use(methodOverride());
-    app.use(morgan(settings.middleware['morgan']));
+    if (settings.verbosity > 0) {
+        app.use(morgan(settings.middleware['morgan']));
+    }
     app.use(compress(settings.middleware['compression']));
 
     _.each(settings.assets, (asset, name) => {
