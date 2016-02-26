@@ -46,13 +46,17 @@ let defaults = {
     },
     assets: {
         // web
-        'web': {
+        web: {
             routes: [ // with trailing slash
                 urljoin(hashedVersion, '/'), // hashed route
                 '/' // fallback
             ],
             path: path.resolve(__dirname, '..', '..', 'web'),
             maxAge: maxAge
+        },
+        // webAssets
+        webAssets: {
+            // TODO
         }
     },
     // Express view engine
