@@ -1119,4 +1119,4 @@ var THREE = require('three');
 
 }() );
 
-module.exports = THREE.TrackballControls;
+module.exports = THREE.OrbitControls;
