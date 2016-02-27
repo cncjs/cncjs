@@ -9,9 +9,9 @@ const noop = () => {};
 const defaultColor = new THREE.Color(colornames('darkgray'));
 const motionColor = {
     'G0': new THREE.Color(colornames('green')),
-    'G1': new THREE.Color('#0033ff'),
-    'G2': new THREE.Color(colornames('violet')),
-    'G3': new THREE.Color(colornames('violet'))
+    'G1': new THREE.Color(colornames('blue')),
+    'G2': new THREE.Color(colornames('deepskyblue')),
+    'G3': new THREE.Color(colornames('deepskyblue'))
 };
 
 class GCodeVisualizer {
