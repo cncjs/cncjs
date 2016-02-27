@@ -4,7 +4,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import THREE from 'three';
-import OrbitControls from '../../../lib/three/OrbitControls';
+import TrackballControls from '../../../lib/three/TrackballControls';
 import log from '../../../lib/log';
 import controller from '../../../lib/controller';
 import Joystick from './Joystick';
@@ -279,6 +279,9 @@ class Visualizer extends React.Component {
         // Perspective camera
         this.camera = this.createPerspectiveCamera(width, height);
 
+        // Trackball Controls
+        this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
+
         // Ambient light
         let light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
         this.scene.add(light);
@@ -384,12 +387,6 @@ class Visualizer extends React.Component {
 
         this.scene.add(this.group);
 
-        this.controls = this.createOrbitControls(this.camera, el);
-        this.controls.addEventListener('change', () => {
-            // Update the scene
-            this.updateScene();
-        });
-
         return this.scene;
     }
     updateScene() {
@@ -450,17 +447,38 @@ class Visualizer extends React.Component {
 
         return camera;
     }
+    createTrackballControls(object, domElement) {
+        let controls = new THREE.TrackballControls(object, domElement);
 
-    // OrbitControls, on the other hand, can be used in static scenes in which the scene is rendered only when the mouse is moved, like so:
-    // controls.addEventListener('change', render);
-    createOrbitControls(object, domElement) {
-        let controls = new THREE.OrbitControls(object, domElement);
+        controls.rotateSpeed = 1.0;
+        controls.zoomSpeed = 0.5;
+        controls.panSpeed = 0.3;
+        controls.dynamicDampingFactor = 0.15;
+        controls.minDistance = 1;
+        controls.maxDistance = 5000;
 
-        _.extend(controls, {
-            enableKeys: false, // Disable use of the keys
-            rotateSpeed: 0.3,
-            zoomSpeed: 0.5,
-            panSpeed: 1.0
+        let shouldAnimate = false;
+        const animate = () => {
+            controls.update();
+
+            // Update the scene
+            this.updateScene();
+
+            if (shouldAnimate) {
+                requestAnimationFrame(animate);
+            }
+        };
+
+        controls.addEventListener('start', () => {
+            shouldAnimate = true;
+            animate();
+        });
+        controls.addEventListener('end', () => {
+            shouldAnimate = false;
+        });
+        controls.addEventListener('change', () => {
+            // Update the scene
+            this.updateScene();
         });
 
         return controls;
