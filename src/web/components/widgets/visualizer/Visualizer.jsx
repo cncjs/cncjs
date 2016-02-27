@@ -12,7 +12,7 @@ import Toolbar from './Toolbar';
 import FileUploader from './FileUploader';
 import { fitCameraToObject, getBoundingBox, loadTexture } from './helpers';
 import CoordinateAxes from './CoordinateAxes';
-import EngravingCutter from './EngravingCutter';
+import ToolHead from './ToolHead';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
@@ -44,6 +44,11 @@ class Visualizer extends React.Component {
         port: '',
         ready: false,
         activeState: ACTIVE_STATE_IDLE,
+        workingPos: {
+            x: 0,
+            y: 0,
+            z: 0
+        },
         workflowState: WORKFLOW_STATE_IDLE,
         boundingBox: {
             min: {
@@ -68,10 +73,15 @@ class Visualizer extends React.Component {
             if (this.state.activeState !== activeState) {
                 this.setState({ activeState: activeState });
             }
-            this.setEngravingCutterPosition(workingPos.x, workingPos.y, workingPos.z);
 
-            // Update the scene
-            this.updateScene();
+            if (!(_.isEqual(this.state.workingPos, workingPos))) {
+                this.setState({ workingPos: workingPos });
+
+                this.setToolHeadPosition(workingPos.x, workingPos.y, workingPos.z);
+
+                // Update the scene
+                this.updateScene();
+            }
         },
         'gcode:statuschange': (data) => {
             if (!(this.gcodeVisualizer)) {
@@ -266,16 +276,14 @@ class Visualizer extends React.Component {
         this.renderer = this.createRenderer(width, height);
         el.appendChild(this.renderer.domElement);
 
-        // Creating a perspective camera
+        // Perspective camera
         this.camera = this.createPerspectiveCamera(width, height);
 
-        { // Creating a directional light
-            let directionalLight = this.createDirectionalLight();
-            directionalLight.name = 'DirectionalLight';
-            this.group.add(directionalLight);
-        }
+        // Ambient light
+        let light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
+        this.scene.add(light);
 
-        { // Creating the coordinate grid
+        { // Coordinate Grid
             let gridLine = new GridLine(
                 GRID_X_LENGTH,
                 GRID_X_SPACING,
@@ -293,13 +301,13 @@ class Visualizer extends React.Component {
             this.group.add(gridLine);
         }
 
-        { // Creating coordinate axes
+        { // Coordinate Axes
             let coordinateAxes = new CoordinateAxes(AXIS_LENGTH);
             coordinateAxes.name = 'CoordinateAxes';
             this.group.add(coordinateAxes);
         }
 
-        { // Creating axis labels
+        { // Axis Labels
             let axisXLabel = new TextSprite({
                 x: AXIS_LENGTH + 10,
                 y: 0,
@@ -361,13 +369,13 @@ class Visualizer extends React.Component {
             }
         }
 
-        { // Creating an engraving cutter
+        { // Tool Head
             let color = colornames('silver');
             let url = 'textures/brushed-steel-texture.jpg';
             loadTexture(url, (err, texture) => {
-                let engravingCutter = new EngravingCutter(color, texture);
-                engravingCutter.name = 'EngravingCutter';
-                this.group.add(engravingCutter);
+                let toolhead = new ToolHead(color, texture);
+                toolhead.name = 'ToolHead';
+                this.group.add(toolhead);
 
                 // Update the scene
                 this.updateScene();
@@ -376,7 +384,7 @@ class Visualizer extends React.Component {
 
         this.scene.add(this.group);
 
-        this.controls = this.createOrbitControls(this.camera, this.renderer.domElement);
+        this.controls = this.createOrbitControls(this.camera, el);
         this.controls.addEventListener('change', () => {
             // Update the scene
             this.updateScene();
@@ -406,21 +414,25 @@ class Visualizer extends React.Component {
             requestAnimationFrame(::this.renderAnimationLoop);
 
             // Set to 360 rounds per minute (rpm)
-            this.rotateEngravingCutter(360);
+            this.rotateToolHead(360);
         } else {
 
             // Stop rotation
-            this.rotateEngravingCutter(0);
+            this.rotateToolHead(0);
         }
 
         this.updateScene();
     }
     createRenderer(width, height) {
         let renderer = new THREE.WebGLRenderer({
-            autoClearColor: true
+            autoClearColor: true,
+            antialias: true,
+            alpha: true
         });
-        renderer.setClearColor(new THREE.Color(colornames('white'), 1.0));
+        renderer.setClearColor(new THREE.Color(colornames('white')), 1);
         renderer.setSize(width, height);
+        renderer.shadowMap.enabled = true;
+        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         renderer.clear();
 
         return renderer;
@@ -438,6 +450,7 @@ class Visualizer extends React.Component {
 
         return camera;
     }
+
     // OrbitControls, on the other hand, can be used in static scenes in which the scene is rendered only when the mouse is moved, like so:
     // controls.addEventListener('change', render);
     createOrbitControls(object, domElement) {
@@ -447,40 +460,18 @@ class Visualizer extends React.Component {
             enableKeys: false, // Disable use of the keys
             rotateSpeed: 0.3,
             zoomSpeed: 0.5,
-            panSpeed: 1.0,
-            // Set to true to enable damping (inertia)
-            // If damping is enabled, you must call controls.update() in your animation loop
-            enableDamping: true,
-            dampingFactor: 0.25
+            panSpeed: 1.0
         });
 
         return controls;
     }
-    createDirectionalLight() {
-        let directionalLight = new THREE.DirectionalLight(colornames('whitesmoke'), 0.5);
-
-        directionalLight.position.set(-40, 60, -10);
-        directionalLight.castShadow = true;
-        directionalLight.shadowCameraNear = 2;
-        directionalLight.shadowCameraFar = 200;
-        directionalLight.shadowCameraLeft = -50;
-        directionalLight.shadowCameraRight = 50;
-        directionalLight.shadowCameraTop = 50;
-        directionalLight.shadowCameraBottom = -50;
-        directionalLight.distance = 0;
-        directionalLight.intensity = 0.5;
-        directionalLight.shadowMapHeight = 1024;
-        directionalLight.shadowMapWidth = 1024;
-        
-        return directionalLight;
-    }
-    // Sets the position of the engraving cutter
+    // Sets the tool head position
     // @param {number} x The position along the x axis
     // @param {number} y The position along the y axis
     // @param {number} z The position along the z axis
-    setEngravingCutterPosition(x, y, z) {
-        let engravingCutter = this.group.getObjectByName('EngravingCutter');
-        if (!engravingCutter) {
+    setToolHeadPosition(x, y, z) {
+        let toolhead = this.group.getObjectByName('ToolHead');
+        if (!toolhead) {
             return;
         }
 
@@ -489,20 +480,24 @@ class Visualizer extends React.Component {
         y = (Number(y) || 0) - pivotPoint.y;
         z = (Number(z) || 0) - pivotPoint.z;
 
-        engravingCutter.position.set(x, y, z);
+        toolhead.position.set(x, y, z);
     }
-    // Rotates the engraving cutter around the z axis with a given rpm and an optional fps
+    // Rotates the tool head around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
     // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
-    rotateEngravingCutter(rpm = 0, fps = 60) {
-        let engravingCutter = this.group.getObjectByName('EngravingCutter');
-        if (!engravingCutter) {
+    rotateToolHead(rpm = 0, fps = 60) {
+        let toolhead = this.group.getObjectByName('ToolHead');
+        if (!toolhead) {
             return;
         }
 
         let delta = 1 / fps;
         let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
-        engravingCutter.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
+        toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
+    }
+    // Make the controls look at the center of G-code object
+    lookAtCenter() {
+        this.controls.reset();
     }
     loadGCode(gcode, callback) {
         // Remove previous G-code object
@@ -574,7 +569,7 @@ class Visualizer extends React.Component {
         this.controls.update();
     }
     // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
-    joystickUp() {
+    panUp() {
         if (!(this.state.ready)) {
             return;
         }
@@ -584,7 +579,7 @@ class Visualizer extends React.Component {
             this.pan(0, keyPanSpeed);
         }
     }
-    joystickDown() {
+    panDown() {
         if (!(this.state.ready)) {
             return;
         }
@@ -594,7 +589,7 @@ class Visualizer extends React.Component {
             this.pan(0, -keyPanSpeed);
         }
     }
-    joystickLeft() {
+    panLeft() {
         if (!(this.state.ready)) {
             return;
         }
@@ -604,7 +599,7 @@ class Visualizer extends React.Component {
             this.pan(keyPanSpeed, 0);
         }
     }
-    joystickRight() {
+    panRight() {
         if (!(this.state.ready)) {
             return;
         }
@@ -613,13 +608,6 @@ class Visualizer extends React.Component {
             let { keyPanSpeed } = this.controls;
             this.pan(-keyPanSpeed, 0);
         }
-    }
-    joystickCenter() {
-        if (!(this.state.ready)) {
-            return;
-        }
-
-        this.controls.reset();
     }
     render() {
         let { port, ready, activeState } = this.state;
@@ -636,11 +624,11 @@ class Visualizer extends React.Component {
                 />
                 <Joystick
                     ready={ready}
-                    up={::this.joystickUp}
-                    down={::this.joystickDown}
-                    left={::this.joystickLeft}
-                    right={::this.joystickRight}
-                    center={::this.joystickCenter}
+                    up={::this.panUp}
+                    down={::this.panDown}
+                    left={::this.panLeft}
+                    right={::this.panRight}
+                    center={::this.lookAtCenter}
                 />
                 {notLoaded && 
                     <FileUploader port={port} />

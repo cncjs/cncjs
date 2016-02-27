@@ -1,6 +1,6 @@
 import THREE from 'three';
 
-const buildEngravingCutter = (color, texture) => {
+const buildToolHead = (color, texture) => {
     let object = new THREE.Object3D();
     let geometry, materialFront, materialBack;
 
@@ -51,10 +51,10 @@ const buildEngravingCutter = (color, texture) => {
     return object;
 };
 
-class EngravingCutter {
+class ToolHead {
     constructor(color, texture) {
-        return buildEngravingCutter(color, texture);
+        return buildToolHead(color, texture);
     }
 }
 
-export default EngravingCutter;
+export default ToolHead;
