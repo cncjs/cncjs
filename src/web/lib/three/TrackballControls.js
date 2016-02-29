@@ -1,4 +1,3 @@
-// jscs:disable
 /*eslint-disable */
 
 var THREE = require('three');
@@ -361,6 +360,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		if ( _this.enabled === false ) return;
 
+		window.removeEventListener( 'keydown', keydown );
+
 		_prevState = _state;
 
 		if ( _state !== STATE.NONE ) {
@@ -389,11 +390,16 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		_state = _prevState;
 
+		window.addEventListener( 'keydown', keydown, false );
+
 	}
 
 	function mousedown( event ) {
 
 		if ( _this.enabled === false ) return;
+
+		event.preventDefault();
+		event.stopPropagation();
 
 		if ( _state === STATE.NONE ) {
 
@@ -429,6 +435,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		if ( _this.enabled === false ) return;
 
+		event.preventDefault();
+		event.stopPropagation();
+
 		if ( _state === STATE.ROTATE && ! _this.noRotate ) {
 
 			_movePrev.copy( _moveCurr );
@@ -450,6 +459,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 		if ( _this.enabled === false ) return;
 
+		event.preventDefault();
+		event.stopPropagation();
+
 		_state = STATE.NONE;
 
 		document.removeEventListener( 'mousemove', mousemove );
@@ -461,6 +473,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 	function mousewheel( event ) {
 
 		if ( _this.enabled === false ) return;
+
+		event.preventDefault();
+		event.stopPropagation();
 
 		var delta = 0;
 
@@ -517,6 +532,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 	function touchmove( event ) {
 
 		if ( _this.enabled === false ) return;
+
+		event.preventDefault();
+		event.stopPropagation();
 
 		switch ( event.touches.length ) {
 
