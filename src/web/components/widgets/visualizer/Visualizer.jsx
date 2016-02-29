@@ -452,7 +452,7 @@ class Visualizer extends React.Component {
 
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 0.5;
-        controls.panSpeed = 0.3;
+        controls.panSpeed = 1.0;
         controls.dynamicDampingFactor = 0.15;
         controls.minDistance = 1;
         controls.maxDistance = 5000;
@@ -580,52 +580,62 @@ class Visualizer extends React.Component {
     setWorkflowState(workflowState) {
         this.setState({ workflowState: workflowState });
     }
+	// deltaX and deltaY are in pixels; right and down are positive
     pan(deltaX, deltaY) {
-        let domElement = this.renderer.domElement;
-        let element = (domElement === document) ? domElement.body : domElement;
-        this.controls.constraint.pan(deltaX, deltaY, element.clientWidth, element.clientHeight);
+        let eye = new THREE.Vector3();
+        let pan = new THREE.Vector3();
+        let objectUp = new THREE.Vector3();
+
+		eye.subVectors(this.controls.object.position, this.controls.target);
+        objectUp.copy(this.controls.object.up);
+
+        pan.copy(eye).cross(objectUp.clone()).setLength(deltaX);
+        pan.add(objectUp.clone().setLength(deltaY));
+
+        this.controls.object.position.add(pan);
+        this.controls.target.add(pan);
         this.controls.update();
     }
     // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
     panUp() {
-        if (!(this.state.ready)) {
+        let { ready } = this.state;
+        let { noPan, panSpeed } = this.controls;
+
+        if (!ready || noPan) {
             return;
         }
 
-        if (this.controls.enablePan) {
-            let { keyPanSpeed } = this.controls;
-            this.pan(0, keyPanSpeed);
-        }
+        this.pan(0, 1 * panSpeed);
     }
     panDown() {
-        if (!(this.state.ready)) {
+        let { ready } = this.state;
+        let { noPan, panSpeed } = this.controls;
+
+        if (!ready || noPan) {
             return;
         }
 
-        if (this.controls.enablePan) {
-            let { keyPanSpeed } = this.controls;
-            this.pan(0, -keyPanSpeed);
-        }
+        this.pan(0, -1 * panSpeed);
     }
     panLeft() {
-        if (!(this.state.ready)) {
+        let { ready } = this.state;
+        let { noPan, panSpeed } = this.controls;
+
+        if (!ready || noPan) {
             return;
         }
 
-        if (this.controls.enablePan) {
-            let { keyPanSpeed } = this.controls;
-            this.pan(keyPanSpeed, 0);
-        }
+        this.pan(1 * panSpeed, 0);
     }
     panRight() {
-        if (!(this.state.ready)) {
+        let { ready } = this.state;
+        let { noPan, panSpeed } = this.controls;
+
+        if (!ready || noPan) {
             return;
         }
 
-        if (this.controls.enablePan) {
-            let { keyPanSpeed } = this.controls;
-            this.pan(-keyPanSpeed, 0);
-        }
+        this.pan(-1 * panSpeed, 0);
     }
     render() {
         let { port, ready, activeState } = this.state;
