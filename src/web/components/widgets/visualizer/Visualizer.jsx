@@ -75,9 +75,18 @@ class Visualizer extends React.Component {
             }
 
             if (!(_.isEqual(this.state.workingPos, workingPos))) {
+                // Update workingPos
                 this.setState({ workingPos: workingPos });
 
-                this.setToolHeadPosition(workingPos.x, workingPos.y, workingPos.z);
+                const pivotPoint = this.pivotPoint.get();
+
+                let { x, y, z } = workingPos;
+                x = (Number(x) || 0) - pivotPoint.x;
+                y = (Number(y) || 0) - pivotPoint.y;
+                z = (Number(z) || 0) - pivotPoint.z;
+
+                // Set tool head position
+                this.toolhead.position.set(x, y, z);
 
                 // Update the scene
                 this.updateScene();
@@ -103,6 +112,7 @@ class Visualizer extends React.Component {
         this.scene = null;
         this.camera = null;
         this.controls = null;
+        this.toolhead = null;
         this.group = new THREE.Group();
     }
     componentDidMount() {
@@ -376,9 +386,9 @@ class Visualizer extends React.Component {
             let color = colornames('silver');
             let url = 'textures/brushed-steel-texture.jpg';
             loadTexture(url, (err, texture) => {
-                let toolhead = new ToolHead(color, texture);
-                toolhead.name = 'ToolHead';
-                this.group.add(toolhead);
+                this.toolhead = new ToolHead(color, texture);
+                this.toolhead.name = 'ToolHead';
+                this.group.add(this.toolhead);
 
                 // Update the scene
                 this.updateScene();
@@ -483,37 +493,26 @@ class Visualizer extends React.Component {
 
         return controls;
     }
-    // Sets the tool head position
-    // @param {number} x The position along the x axis
-    // @param {number} y The position along the y axis
-    // @param {number} z The position along the z axis
-    setToolHeadPosition(x, y, z) {
-        let toolhead = this.group.getObjectByName('ToolHead');
-        if (!toolhead) {
-            return;
-        }
-
-        let pivotPoint = this.pivotPoint.get();
-        x = (Number(x) || 0) - pivotPoint.x;
-        y = (Number(y) || 0) - pivotPoint.y;
-        z = (Number(z) || 0) - pivotPoint.z;
-
-        toolhead.position.set(x, y, z);
-    }
     // Rotates the tool head around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
     // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
     rotateToolHead(rpm = 0, fps = 60) {
-        let toolhead = this.group.getObjectByName('ToolHead');
-        if (!toolhead) {
+        if (!this.toolhead) {
             return;
         }
 
         let delta = 1 / fps;
         let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
-        toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
+        this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
-    // Make the controls look at the center of G-code object
+    // Make the controls look at the specified position
+    lookAt(x, y, z) {
+        this.controls.target.x = x;
+        this.controls.target.y = y;
+        this.controls.target.z = z;
+        this.controls.update();
+    }
+    // Make the controls look at the center position
     lookAtCenter() {
         this.controls.reset();
     }
