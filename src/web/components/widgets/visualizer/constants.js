@@ -7,9 +7,9 @@ export const GRID_Y_LENGTH = 600;
 export const GRID_X_SPACING = 10;
 export const GRID_Y_SPACING = 10;
 
-export const CAMERA_FOV = 50;
+export const CAMERA_FOV = 70;
 export const CAMERA_ASPECT = 1;
-export const CAMERA_NEAR = 0.1;
+export const CAMERA_NEAR = 0.001;
 export const CAMERA_FAR = 10000;
 export const CAMERA_POSITION_X = 0;
 export const CAMERA_POSITION_Y = 0;

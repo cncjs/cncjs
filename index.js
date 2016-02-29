@@ -1,8 +1,9 @@
 var path = require('path');
 var webappengine = require('webappengine');
+var settings = require('./dist/app/config/settings');
 var cncserver = require('./dist/app/cncserver');
 var options = {
-    port: 8000,
+    port: settings.port,
     routes: [
         {
             type: 'server',

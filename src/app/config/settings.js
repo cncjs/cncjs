@@ -26,7 +26,8 @@ const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPRO
 const maxAge = debug ? 0 : (365 * 24 * 60 * 60 * 1000); // one year
 
 let defaults = {
-    debug: debug,
+    env: env,
+    verbosity: 0,
     cnc: {}, // override this settings using `cnc -c ~/.cncrc`
     cncrc: path.resolve(getUserHome(), RCFILE),
 
@@ -45,13 +46,17 @@ let defaults = {
     },
     assets: {
         // web
-        'web': {
+        web: {
             routes: [ // with trailing slash
                 urljoin(hashedVersion, '/'), // hashed route
                 '/' // fallback
             ],
             path: path.resolve(__dirname, '..', '..', 'web'),
             maxAge: maxAge
+        },
+        // webAssets
+        webAssets: {
+            // TODO
         }
     },
     // Express view engine
@@ -140,7 +145,7 @@ let defaults = {
         lowerCaseLng: true,
 
         // logs out more info (console)
-        debug: debug,
+        debug: false,
 
         // language to use
         //lng: lng,

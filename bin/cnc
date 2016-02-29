@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-process.env.NODE_ENV = 'production';
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
 var _ = require('lodash');
 var fs = require('fs');
@@ -10,6 +10,10 @@ var program = require('commander');
 var pkg = require('../package.json');
 require('colors');
 
+function increaseVerbosityLevel(val, total) {
+    return total + 1;
+}
+
 program
     .version(pkg.version)
     .usage('[options]')
@@ -17,20 +21,25 @@ program
     .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)')
     .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)')
     .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
-    .option('-d, --debug', 'run in debug mode')
+    .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
+    .option('-w, --web-assets <path>', 'set web assets directory')
     .parse(process.argv);
 
-if (program.debug) {
-    process.env.NODE_ENV = 'development';
-}
-
 var settings = require('../dist/app/config/settings');
-var cncserver = require('../dist/app/cncserver');
 
 // Overrides defaults
 _.set(settings, 'port', program.port || settings.port);
 _.set(settings, 'host', program.host || settings.host);
 _.set(settings, 'backlog', program.backlog || settings.backlog);
+
+if (program.verbose === 1) {
+    _.set(settings, 'verbosity', 1);
+    _.set(settings, 'winston.level', 'debug');
+}
+if (program.verbose === 2) {
+    _.set(settings, 'verbosity', 2);
+    _.set(settings, 'winston.level', 'trace');
+}
 
 { // Load configuration settings
     var cncrc = settings['cncrc'];
@@ -53,17 +62,4 @@ _.set(settings, 'backlog', program.backlog || settings.backlog);
     }
 }
 
-var options = {
-    port: settings.port,
-    routes: [
-        {
-            type: 'server',
-            route: '/',
-            // An absolute path is recommended to use
-            server: path.resolve(__dirname, '../dist/app/app')
-        }
-    ]
-};
-
-webappengine(options)
-    .on('ready', cncserver);
+require('..');

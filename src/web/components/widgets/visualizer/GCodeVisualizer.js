@@ -9,9 +9,9 @@ const noop = () => {};
 const defaultColor = new THREE.Color(colornames('darkgray'));
 const motionColor = {
     'G0': new THREE.Color(colornames('green')),
-    'G1': new THREE.Color('#0033ff'),
-    'G2': new THREE.Color(colornames('violet')),
-    'G3': new THREE.Color(colornames('violet'))
+    'G1': new THREE.Color(colornames('blue')),
+    'G2': new THREE.Color(colornames('deepskyblue')),
+    'G3': new THREE.Color(colornames('deepskyblue'))
 };
 
 class GCodeVisualizer {
@@ -55,6 +55,12 @@ class GCodeVisualizer {
         );
         let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
         let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
+
+        // Draw full circle if startAngle and endAngle are both zero
+        if (startAngle === endAngle) {
+            endAngle += (2 * Math.PI);
+        }
+
         let arcCurve = new THREE.ArcCurve(
             v0.x, // aX
             v0.y, // aY
