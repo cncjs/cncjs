@@ -39,8 +39,22 @@
         <div class="container">
             <h1>Welcome to CNC.js!</h1>
             <p>If you see this page, the mount point for serving static files is working. Further configuration is required.</p>
-            <p>Specify a mount path for the static directory, as shown below:</p>
-            <p class="code">$ cnc -m /static:/path/to/your/static/files/</p>
+            <ol>
+                <li>
+                    <h5>Run <span class="code">cnc</span> with -h for detailed usage:</h5>
+                    <pre>
+$ cnc -h
+
+  Usage: cnc [options]
+  
+  Options:
+    -m, --mount [&lt;url&gt;:]&lt;path&gt;  set the mount point for serving static files (default: /static:static)</pre>
+                </li>
+                <li>
+                    <h5>Specify a mount path for the static directory, as shown below:</h5>
+                    <pre>$ cnc -m /static:/path/to/your/static/files</pre>
+                </li>
+            </ol>
             <p>For online documentation please refer to <a href="https://github.com/cheton/cnc.js/wiki">https://github.com/cheton/cnc.js/wiki</a>.</p>
             <p><a class="btn btn-primary btn-lg" href="https://github.com/cheton/cnc.js#usage" role="button">Learn more »</a></p>
         </div>
