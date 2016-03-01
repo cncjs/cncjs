@@ -36,10 +36,6 @@ let defaults = {
     // hashed version
     hashedVersion: hashedVersion,
 
-    // for server.listen(port[, host][, backlog][, callback])
-    // host and backlog are omitted by default
-    port: process.env.PORT || 8000,
-
     route: '/', // with trailing slash
     cdn: {
         uri: ''
@@ -53,10 +49,6 @@ let defaults = {
             ],
             path: path.resolve(__dirname, '..', '..', 'web'),
             maxAge: maxAge
-        },
-        // webAssets
-        webAssets: {
-            // TODO
         }
     },
     // Express view engine
