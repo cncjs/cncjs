@@ -29,7 +29,7 @@ $ npm install -g cncjs
 
 If you want to run it on Raspberry Pi with Raspbian Wheezy, be sure to [install gcc/g++ 4.8](https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/) before npm install.
 
-Check out [Git Installation](https://github.com/cheton/cnc.js#git-installation) and [Docker Image Installation (x64 only)](https://github.com/cheton/cnc.js#docker-image-installation-x64-only) for other installation methods.
+Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
 
 ## Upgrade
 Run `npm update -g cncjs` to upgrade to a newer version.
@@ -57,8 +57,6 @@ $ cnc -h
     -v, --verbose               increase the verbosity level
     -m, --mount [<url>:]<path>  set the mount point for serving static files (default: /static:static)
 ```
-
-Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
 
 ## Wiki
 https://github.com/cheton/cnc.js/wiki
