@@ -48,13 +48,14 @@ $ cnc -h
   
   Options:
 
-    -h, --help               output usage information
-    -V, --version            output the version number
-    -p, --port               set listen port (default: 8000)
-    -l, --host               set listen address or hostname (default: 0.0.0.0)
-    -b, --backlog            set listen backlog (default: 511)
-    -c, --config <filename>  set config file (default: ~/.cncrc)
-    -d, --debug              run in debug mode
+    -h, --help                  output usage information
+    -V, --version               output the version number
+    -p, --port                  set listen port (default: 8000)
+    -l, --host                  set listen address or hostname (default: 0.0.0.0)
+    -b, --backlog               set listen backlog (default: 511)
+    -c, --config <filename>     set config file (default: ~/.cncrc)
+    -v, --verbose               increase the verbosity level
+    -m, --mount [<url>:]<path>  set the mount point for serving static files (default: /static:static)
 ```
 
 Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
