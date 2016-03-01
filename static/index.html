@@ -1,0 +1,49 @@
+<!--[if IE]><![endif]-->
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js ie7 lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html lang="{{lang}}" class="no-js ie8 lt-ie9"> <![endif]-->
+<!--[if IE 9]>         <html lang="{{lang}}" class="no-js ie9"> <![endif]-->
+<!--[if gt IE 9]><!--> <html lang="{{lang}}" class="no-js"> <!--<![endif]-->
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<title>CNC.js</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
+<link rel="shortcut icon" href="/favicon.ico">
+<link rel="stylesheet" type="text/css" href="normalize.css">
+<link rel="stylesheet" type="text/css" href="bootstrap.min.css">
+<style>
+.jumbotron {
+    height: 100vh;
+    background-color: #fff;
+}
+.code {
+    padding: 0.2em;
+    margin: 0;
+    font-size: 85%;
+    background-color: rgba(0,0,0,0.04);
+    border-radius: 3px;
+}
+.code:before,
+.code:after {
+    letter-spacing: -0.2em;
+    content: "\00a0";
+}
+</style>
+</head>
+<body>
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Welcome to CNC.js!</h1>
+            <p>If you see this page, the mount point for serving static files is working. Further configuration is required.</p>
+            <p>Specify a mount path for the static directory, as shown below:</p>
+            <p class="code">$ cnc -m /static:/path/to/your/static/files/</p>
+            <p>For online documentation please refer to <a href="https://github.com/cheton/cnc.js/wiki">https://github.com/cheton/cnc.js/wiki</a>.</p>
+            <p><a class="btn btn-primary btn-lg" href="https://github.com/cheton/cnc.js#usage" role="button">Learn more »</a></p>
+        </div>
+    </div>
+</body>
+</html>
