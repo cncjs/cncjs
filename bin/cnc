@@ -5,7 +5,6 @@ process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 var _ = require('lodash');
 var fs = require('fs');
 var path = require('path');
-var webappengine = require('webappengine');
 var program = require('commander');
 var pkg = require('../package.json');
 require('colors');
@@ -14,23 +13,35 @@ function increaseVerbosityLevel(val, total) {
     return total + 1;
 }
 
+function parseMountPoint(val) {
+    val = val || '';
+
+    if (val.indexOf(':') >= 0) {
+        var r = val.match(/(?:([^:]*)(?::(.*)))/);
+        return {
+            url: r[1] || '/static',
+            path: r[2]
+        };
+    }
+
+    return {
+        url: '/static',
+        path: val
+    };
+}
+
 program
     .version(pkg.version)
     .usage('[options]')
-    .option('-p, --port <port>', 'set listen port (default: 8000)')
-    .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)')
-    .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)')
-    .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
+    .option('-p, --port <port>', 'set listen port (default: 8000)', parseInt, 8000)
+    .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)', '0.0.0.0')
+    .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)', parseInt, 511)
+    .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)', '~/.cncrc')
     .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
-    .option('-w, --web-assets <path>', 'set web assets directory')
+    .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
     .parse(process.argv);
 
 var settings = require('../dist/app/config/settings');
-
-// Overrides defaults
-_.set(settings, 'port', program.port || settings.port);
-_.set(settings, 'host', program.host || settings.host);
-_.set(settings, 'backlog', program.backlog || settings.backlog);
 
 if (program.verbose === 1) {
     _.set(settings, 'verbosity', 1);
@@ -62,4 +73,27 @@ if (program.verbose === 2) {
     }
 }
 
-require('..');
+var routes = [
+    {
+        type: 'server',
+        route: '/',
+        // An absolute path is recommended to use
+        server: path.resolve(__dirname, '../dist/app/app')
+    }
+];
+
+if (program.mount) {
+    routes.unshift({
+        type: 'static',
+        route: program.mount.url,
+        directory: program.mount.path
+    });
+}
+
+var main = require('..');
+main({
+    port: program.port,
+    host: program.host,
+    backlog: program.backlog,
+    routes: routes
+});
