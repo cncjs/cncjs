@@ -26,7 +26,8 @@ const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPRO
 const maxAge = debug ? 0 : (365 * 24 * 60 * 60 * 1000); // one year
 
 let defaults = {
-    debug: debug,
+    env: env,
+    verbosity: 0,
     cnc: {}, // override this settings using `cnc -c ~/.cncrc`
     cncrc: path.resolve(getUserHome(), RCFILE),
 
@@ -35,17 +36,13 @@ let defaults = {
     // hashed version
     hashedVersion: hashedVersion,
 
-    // for server.listen(port[, host][, backlog][, callback])
-    // host and backlog are omitted by default
-    port: process.env.PORT || 8000,
-
     route: '/', // with trailing slash
     cdn: {
         uri: ''
     },
     assets: {
         // web
-        'web': {
+        web: {
             routes: [ // with trailing slash
                 urljoin(hashedVersion, '/'), // hashed route
                 '/' // fallback
@@ -140,7 +137,7 @@ let defaults = {
         lowerCaseLng: true,
 
         // logs out more info (console)
-        debug: debug,
+        debug: false,
 
         // language to use
         //lng: lng,

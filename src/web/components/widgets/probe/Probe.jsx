@@ -252,23 +252,23 @@ class Probe extends React.Component {
         let classes = {
             'G38.2': classNames(
                 'btn',
-                { 'btn-select': probeCommand === 'G38.2' },
-                { 'btn-default': probeCommand !== 'G38.2' }
+                'btn-default',
+                { 'btn-select': probeCommand === 'G38.2' }
             ),
             'G38.3': classNames(
                 'btn',
-                { 'btn-select': probeCommand === 'G38.3' },
-                { 'btn-default': probeCommand !== 'G38.3' }
+                'btn-default',
+                { 'btn-select': probeCommand === 'G38.3' }
             ),
             'G38.4': classNames(
                 'btn',
-                { 'btn-select': probeCommand === 'G38.4' },
-                { 'btn-default': probeCommand !== 'G38.4' }
+                'btn-default',
+                { 'btn-select': probeCommand === 'G38.4' }
             ),
             'G38.5': classNames(
                 'btn',
-                { 'btn-select': probeCommand === 'G38.5' },
-                { 'btn-default': probeCommand !== 'G38.5' }
+                'btn-default',
+                { 'btn-select': probeCommand === 'G38.5' }
             )
         };
 

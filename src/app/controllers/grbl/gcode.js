@@ -22,7 +22,7 @@ class GCode extends events.EventEmitter {
         });
     }
     load(name, gcode, callback) {
-        parser.parseText(gcode, (err, data) => {
+        parser.parseString(gcode, (err, results) => {
             if (err) {
                 callback(err);
                 return;
@@ -30,7 +30,12 @@ class GCode extends events.EventEmitter {
 
             this.name = name;
             this.gcode = gcode;
-            this.remain = _.map(data, 'line');
+            this.remain = _(results)
+                .map('words')
+                .map((words) => {
+                    return _.map(words, (word) => word[0] + word[1]).join(' ');
+                })
+                .value();
             this.sent = [];
             this.total = this.remain.length;
             this.createdTime = new Date().getTime();
@@ -76,10 +81,13 @@ class GCode extends events.EventEmitter {
         }
 
         let gcode = this.remain.shift();
-        if (gcode) {
-            this.sent.push(gcode);
-            this.emit('progress', { gcode: gcode });
-            this.emit('statuschange');
+        this.sent.push(gcode);
+        this.emit('statuschange');
+        this.emit('progress', { gcode: gcode });
+
+        // Continue to the next line if empty
+        if (!gcode) {
+            return this.next();
         }
 
         return gcode;

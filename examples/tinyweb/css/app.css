@@ -1,0 +1,156 @@
+[data-route="workspace"] {
+  padding: 10px;
+}
+[data-route="connection"] {
+  padding: 10px;
+}
+[data-route="axes"] {
+  padding: 5px;
+  font-size: 14px;
+}
+[data-route="axes"] > * {
+  margin-bottom: 5px;
+}
+[data-route="axes"] > *:last-child {
+  margin-bottom: 0;
+}
+[data-route="axes"] .dropdown-menu>li>a .fa {
+  width: 16px;
+}
+[data-route="axes"] .nav-panel .btn {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+[data-route="axes"] .nav-panel .row [class^="col-"],
+[data-route="axes"] .nav-panel .row [class*=" col-"] {
+  padding-right: 5px;
+}
+[data-route="axes"] .nav-panel .row [class^="col-"]:last-child,
+[data-route="axes"] .nav-panel .row [class*=" col-"]:last-child {
+  padding-right: 0;
+}
+[data-route="axes"] .active-state {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f6f6f6;
+  padding: 5px 10px;
+  text-align: center;
+}
+[data-route="axes"] .axis-label {
+  text-align: right;
+  font-size: 20px;
+  padding: 0 8px;
+}
+[data-route="axes"] .axis-position {
+  text-align: right;
+}
+[data-route="axes"] .rotate-45deg {
+  transform: rotate(45deg);
+}
+[data-route="axes"] .rotate-45deg:before {
+  transform: rotate(45deg);
+}
+[data-route="axes"] .rotate--45deg {
+  transform: rotate(-45deg);
+}
+[data-route="axes"] .rotate--45deg:before {
+  transform: rotate(-45deg);
+}
+[data-route="axes"] .rotate-90deg {
+  transform: rotate(90deg);
+}
+[data-route="axes"] .rotate-90deg:before {
+  transform: rotate(90deg);
+}
+[data-route="axes"] .rotate--90deg {
+  transform: rotate(-90deg);
+}
+[data-route="axes"] .rotate--90deg:before {
+  transform: rotate(-90deg);
+}
+[data-route="axes"] .control-pad .row [class^="col-"],
+[data-route="axes"] .control-pad .row [class*=" col-"] {
+  padding-right: 5px;
+}
+[data-route="axes"] .control-pad .row [class^="col-"]:last-child,
+[data-route="axes"] .control-pad .row [class*=" col-"]:last-child {
+  padding-right: 0;
+}
+[data-route="axes"] .control-pad .row {
+  padding-bottom: 5px;
+}
+[data-route="axes"] .control-pad .row:last-child {
+  padding-bottom: 0;
+}
+[data-route="axes"] .control-pad .btn {
+  width: 100%;
+  padding-left: 0;
+  padding-right: 0;
+}
+@media (min-width: 768px) {
+  [data-route="axes"] {
+    font-size: 20px;
+  }
+  [data-route="axes"] .dropdown-menu {
+    min-width: 180px;
+  }
+  [data-route="axes"] .dropdown-menu>li>a .fa {
+    width: 20px;
+  }
+  [data-route="axes"] .axis-label {
+    font-size: 24px;
+  }
+  [data-route="axes"] .dropdown-menu {
+    font-size: 20px;
+  }
+  [data-route="axes"] .btn,
+  [data-route="axes"] .form-control {
+    font-size: 20px;
+    height: 40px;
+  }
+}
+@media (min-width: 992px) {
+  [data-route="axes"] {
+    font-size: 24px;
+  }
+  [data-route="axes"] .dropdown-menu {
+    min-width: 200px;
+  }
+  [data-route="axes"] .dropdown-menu>li>a .fa {
+    width: 24px;
+  }
+  [data-route="axes"] .axis-label {
+    font-size: 28px;
+  }
+  [data-route="axes"] .dropdown-menu {
+    font-size: 24px;
+  }
+  [data-route="axes"] .btn,
+  [data-route="axes"] .form-control {
+    font-size: 24px;
+    height: 46px;
+  }
+}
+@media (min-width: 1200px) {
+  [data-route="axes"] {
+    font-size: 28px;
+  }
+  [data-route="axes"] .dropdown-menu {
+    min-width: 220px;
+  }
+  [data-route="axes"] .dropdown-menu>li>a .fa {
+    width: 28px;
+  }
+  [data-route="axes"] .axis-label {
+    font-size: 32px;
+  }
+  [data-route="axes"] .dropdown-menu {
+    font-size: 28px;
+  }
+  [data-route="axes"] .btn,
+  [data-route="axes"] .form-control {
+    font-size: 28px;
+    height: 52px;
+  }
+}

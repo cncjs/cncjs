@@ -13,8 +13,12 @@ import {
 class GCodeStats extends React.Component {
     static propTypes = {
         unit: React.PropTypes.string,
+        remain: React.PropTypes.number,
         sent: React.PropTypes.number,
-        total: React.PropTypes.number
+        total: React.PropTypes.number,
+        createdTime: React.PropTypes.number,
+        startedTime: React.PropTypes.number,
+        finishedTime: React.PropTypes.number
     };
 
     state = {

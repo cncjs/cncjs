@@ -1,155 +1,93 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import colornames from 'colornames';
 import React from 'react';
 import update from 'react-addons-update';
-import { Table, Column } from 'fixed-data-table';
+import DataGrid from 'react-datagrid';
 import i18n from '../../../lib/i18n';
 import { GCODE_STATUS } from './constants';
 
-let isColumnResizing = false;
+const columns = [
+    {
+        name: 'status',
+        width: 22,
+        style: {
+            backgroundColor: colornames('gray 95')
+        },
+        render: (value) => {
+            const classes = {
+                icon: classNames(
+                    'fa',
+                    { 'fa-check': value !== GCODE_STATUS.ERROR },
+                    { 'fa-ban': value === GCODE_STATUS.ERROR }
+                )
+            };
+            const styles = {
+                icon: {
+                    color: ((value) => {
+                        let color = {};
+                        color[GCODE_STATUS.ERROR] = colornames('indian red');
+                        color[GCODE_STATUS.NOT_STARTED] = colornames('gray 80');
+                        color[GCODE_STATUS.IN_PROGRESS] = colornames('gray 80');
+                        color[GCODE_STATUS.COMPLETED] = colornames('gray 20');
+                        return color[value] || colornames('gray 80');
+                    })(value)
+                }
+            };
+
+            return <i className={classes.icon} style={styles.icon}></i>;
+        }
+    },
+    {
+        name: 'cmd',
+        render: (value, data, cellProps) => {
+            const { rowIndex } = cellProps;
+            const style = {
+                backgroundColor: colornames('gray 25'),
+                marginRight: 5
+            };
+
+            return (
+                <div>
+                    <span className="label" style={style}>{rowIndex + 1}</span>{value}
+                </div>
+            );
+        }
+    }
+];
 
 class GCodeTable extends React.Component {
-    state = {
-        table: {
-            width: this.props.width,
-            height: this.props.height,
-            columns: [
-                {
-                    dataKey: 'status',
-                    isResizable: false,
-                    width: 28,
-                    align: 'center',
-                    cellRenderer: (cellData, cellDataKey, rowData, rowIndex, columnData, width) => {
-                        let classes = {
-                            icon: classNames(
-                                'fa',
-                                { 'fa-check': cellData !== GCODE_STATUS.ERROR },
-                                { 'fa-ban': cellData === GCODE_STATUS.ERROR }
-                            )
-                        };
-                        let styles = {
-                            icon: {
-                                color: (() => {
-                                    let cdata = {};
-                                    cdata[GCODE_STATUS.ERROR] = '#a71d5d';
-                                    cdata[GCODE_STATUS.NOT_STARTED] = '#ddd';
-                                    cdata[GCODE_STATUS.IN_PROGRESS] = '#ddd'; // FIXME
-                                    cdata[GCODE_STATUS.COMPLETED] = '#333';
-                                    return cdata[cellData] || '#ddd';
-                                })()
-                            }
-                        };
-                        return (
-                            <i className={classes.icon} style={styles.icon}></i>
-                        );
-                    }
-                },
-                {
-                    dataKey: 'cmd',
-                    isResizable: true,
-                    flexGrow: 1,
-                    width: 100,
-                    cellRenderer: (cellData, cellDataKey, rowData, rowIndex, columnData, width) => {
-                        return (
-                            <span className="text-overflow-ellipsis" style={{width: width}}>
-                                <span className="label label-default">{rowIndex + 1}</span> {cellData} 
-                            </span>
-                        );
-                    }
-                }
-            ]
-        }
+    static propTypes = {
+        height: React.PropTypes.number,
+        rowHeight: React.PropTypes.number,
+        data: React.PropTypes.array,
+        scrollTo: React.PropTypes.number
+    };
+    static defaultProps = {
+        height: 180,
+        rowHeight: 30,
+        data: [],
+        scrollTo: 0
     };
 
-    rowGetter(index) {
-        return this.props.data[index];
-    }
-    onContentHeightChange(contentHeight) {
-        if (!(this.props.onContentDimensionsChange)) {
-            return;
-        }
-        this.props.onContentDimensionsChange(
-            contentHeight,
-            Math.max(600, this.props.tableWidth)
-        );
-    }
-    onColumnResizeEndCallback(newColumnWidth, dataKey) {
-        isColumnResizing = false;
-        this.setTableColumnWidth(dataKey, newColumnWidth);
-    }
-    setTableColumnWidth(dataKey, newColumnWidth) {
-        let columns = this.state.table.columns;
-        let newState = update(this.state, {
-            table: {
-                columns: {
-                    $apply: function() {
-                        let key = _.findKey(columns, { dataKey: dataKey });
-                        columns[key].width = newColumnWidth;
-                        return columns;
-                    }
-                }
-            }
-        });
-        this.setState(newState);
-    }
     render() {
-        if (_.size(this.props.data) > 0) {
-            return this.renderTable();
-        } else {
-            return this.renderEmptyMessage();
-        }
-    }
-    renderTable() {
-        let controlledScrolling =
-            this.props.left !== undefined || this.props.top !== undefined;
+        const { data, height, rowHeight, scrollTo } = this.props;
 
         return (
             <div className="gcode-table">
-                <Table
-                    className="noHeader"
-                    headerHeight={0}
-                    rowHeight={this.props.rowHeight || 30}
-                    rowGetter={::this.rowGetter}
-                    rowsCount={_.size(this.props.data)}
-                    width={this.state.table.width}
-                    height={this.state.table.height}
-                    onContentHeightChange={::this.onContentHeightChange}
-                    scrollToRow={this.props.scrollToRow}
-                    scrollTop={this.props.top}
-                    scrollLeft={this.props.left}
-                    overflowX={controlledScrolling ? "hidden" : "auto"}
-                    overflowY={controlledScrolling ? "hidden" : "auto"}
-                    isColumnResizing={isColumnResizing}
-                    onColumnResizeEndCallback={::this.onColumnResizeEndCallback}
-                >
-                    {this.renderTableColumns()}
-                </Table>
-            </div>
-        );
-    }
-    renderTableColumns() {
-        let columns = this.state.table.columns;
-        return columns.map(function(column, key) {
-            return (
-                <Column
-                    label={column.name}
-                    dataKey={column.dataKey}
-                    width={column.width}
-                    flexGrow={column.flexGrow}
-                    isResizable={!!column.isResizable}
-                    key={key}
-                    align={column.align}
-                    headerClassName={column.headerClassName}
-                    headerRenderer={column.headerRenderer}
-                    cellClassName={column.cellClassName}
-                    cellRenderer={column.cellRenderer}
+                <DataGrid
+                    className="hide-header"
+                    ref="dataGrid"
+                    idProperty="id"
+                    dataSource={data}
+                    columns={columns}
+                    emptyText={i18n._('No data to display')}
+                    rowHeight={rowHeight}
+                    style={{height: height}}
+                    withColumnMenu={false}
+                    showCellBorders={true}
                 />
-            );
-        }.bind(this));
-    }
-    renderEmptyMessage() {
-        return (
-            <p className="">{i18n._('No data to display')}</p>
+            </div>
         );
     }
 }

@@ -143,28 +143,28 @@ class JogDistance extends React.Component {
         let classes = {
             '1': classNames(
                 'btn',
-                { 'btn-select': selectedDistance === '1' },
-                { 'btn-default': selectedDistance !== '1' }
+                'btn-default',
+                { 'btn-select': selectedDistance === '1' }
             ),
             '0.1': classNames(
                 'btn',
-                { 'btn-select': selectedDistance === '0.1' },
-                { 'btn-default': selectedDistance !== '0.1' }
+                'btn-default',
+                { 'btn-select': selectedDistance === '0.1' }
             ),
             '0.01': classNames(
                 'btn',
-                { 'btn-select': selectedDistance === '0.01' },
-                { 'btn-default': selectedDistance !== '0.01' }
+                'btn-default',
+                { 'btn-select': selectedDistance === '0.01' }
             ),
             '0.001': classNames(
                 'btn',
-                { 'btn-select': selectedDistance === '0.001' },
-                { 'btn-default': selectedDistance !== '0.001' }
+                'btn-default',
+                { 'btn-select': selectedDistance === '0.001' }
             ),
             'custom': classNames(
                 'btn',
-                { 'btn-select': isCustomDistanceSelected },
-                { 'btn-default': !isCustomDistanceSelected }
+                'btn-default',
+                { 'btn-select': isCustomDistanceSelected }
             )
         };
 

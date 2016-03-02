@@ -29,7 +29,7 @@ $ npm install -g cncjs
 
 If you want to run it on Raspberry Pi with Raspbian Wheezy, be sure to [install gcc/g++ 4.8](https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/) before npm install.
 
-Check out [Git Installation](https://github.com/cheton/cnc.js#git-installation) and [Docker Image Installation (x64 only)](https://github.com/cheton/cnc.js#docker-image-installation-x64-only) for other installation methods.
+Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
 
 ## Upgrade
 Run `npm update -g cncjs` to upgrade to a newer version.
@@ -48,16 +48,15 @@ $ cnc -h
   
   Options:
 
-    -h, --help               output usage information
-    -V, --version            output the version number
-    -p, --port               set listen port (default: 8000)
-    -l, --host               set listen address or hostname (default: 0.0.0.0)
-    -b, --backlog            set listen backlog (default: 511)
-    -c, --config <filename>  set config file (default: ~/.cncrc)
-    -d, --debug              run in debug mode
+    -h, --help                  output usage information
+    -V, --version               output the version number
+    -p, --port                  set listen port (default: 8000)
+    -l, --host                  set listen address or hostname (default: 0.0.0.0)
+    -b, --backlog               set listen backlog (default: 511)
+    -c, --config <filename>     set config file (default: ~/.cncrc)
+    -v, --verbose               increase the verbosity level
+    -m, --mount [<url>:]<path>  set the mount point for serving static files (default: /static:static)
 ```
-
-Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
 
 ## Wiki
 https://github.com/cheton/cnc.js/wiki

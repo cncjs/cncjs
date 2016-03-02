@@ -9,9 +9,9 @@ const noop = () => {};
 const defaultColor = new THREE.Color(colornames('darkgray'));
 const motionColor = {
     'G0': new THREE.Color(colornames('green')),
-    'G1': new THREE.Color('#0033ff'),
-    'G2': new THREE.Color(colornames('violet')),
-    'G3': new THREE.Color(colornames('violet'))
+    'G1': new THREE.Color(colornames('blue')),
+    'G2': new THREE.Color(colornames('deepskyblue')),
+    'G3': new THREE.Color(colornames('deepskyblue'))
 };
 
 class GCodeVisualizer {
@@ -55,6 +55,12 @@ class GCodeVisualizer {
         );
         let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
         let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
+
+        // Draw full circle if startAngle and endAngle are both zero
+        if (startAngle === endAngle) {
+            endAngle += (2 * Math.PI);
+        }
+
         let arcCurve = new THREE.ArcCurve(
             v0.x, // aX
             v0.y, // aY
@@ -86,11 +92,8 @@ class GCodeVisualizer {
         this.geometry.vertices = this.geometry.vertices.concat(vertices);
         this.geometry.colors = this.geometry.colors.concat(colors);
     }
-    render(options, callback) {
-        options = options || {};
-        callback = _.isFunction(callback) ? callback : noop;
-
-        let gcodeToolpath = new GCodeToolpath({
+    render(options = {}, callback = noop) {
+        const toolpath = new GCodeToolpath({
             modalState: this.options.modalState,
             addLine: (modalState, v1, v2) => {
                 this.addLine(modalState, v1, v2);
@@ -100,24 +103,26 @@ class GCodeVisualizer {
             }
         });
 
-        gcodeToolpath.on('data', (data) => {
-            this.frames.push({
-                data: data,
-                vertexIndex: this.geometry.vertices.length // remember current vertex index
+        toolpath
+            .loadFromString(options.gcode, (err, results) => {
+                this.update();
+
+                log.debug({
+                    geometry: this.geometry,
+                    frames: this.frames,
+                    frameIndex: this.frameIndex
+                });
+
+                callback(this.group);
+            })
+            .on('data', (data) => {
+                this.frames.push({
+                    data: data,
+                    vertexIndex: this.geometry.vertices.length // remember current vertex index
+                });
             });
-        });
 
-        gcodeToolpath.interpretText(options.gcode, (err, results) => {
-            this.update();
-
-            log.debug({
-                geometry: this.geometry,
-                frames: this.frames,
-                frameIndex: this.frameIndex
-            });
-
-            callback(this.group);
-        });
+        return this.group;
     }
     update() {
         while (this.group.children.length > 0) {
