@@ -1,0 +1,106 @@
+#container {
+    padding: 10px;
+    width: 320px;
+    height: 240px;
+}
+#container > * {
+    margin-bottom: 5px;
+}
+#container > *:last-child {
+    margin-bottom: 0;
+}
+
+.nav-panel .row [class^="col-"],
+.nav-panel .row [class*=" col-"] {
+    padding-right: 5px;
+}
+.nav-panel .row [class^="col-"]:last-child,
+.nav-panel .row [class*=" col-"]:last-child {
+    padding-right: 0;
+}
+.nav-panel .btn {
+    font-size: 16px;
+}
+
+.active-state {
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background-color: #f6f6f6;
+    padding: 5px 10px;
+}
+
+.axis-status {
+    font-size: 12px;
+    margin-right: 5px;
+}
+.axis-status .table {
+    margin-bottom: 0;
+}
+.axis-status .table>tbody>tr>td,
+.axis-status .table>tbody>tr>th,
+.axis-status .table>tfoot>tr>td,
+.axis-status .table>tfoot>tr>th,
+.axis-status .table>thead>tr>td,
+.axis-status .table>thead>tr>th {
+    padding: 4px 2px;
+}
+.axis-label {
+    text-align: center;
+    font-size: 16px;
+}
+.axis-position {
+    text-align: right;
+    font-size: 16px;
+}
+.dimension-unit {
+    font-size: 12px;
+}
+
+.rotate-45deg {
+    transform: rotate(45deg);
+}
+.rotate-45deg:before {
+    transform: rotate(45deg);
+}
+.rotate--45deg {
+    transform: rotate(-45deg);
+}
+.rotate--45deg:before {
+    transform: rotate(-45deg);
+}
+.rotate-90deg {
+    transform: rotate(90deg);
+}
+.rotate-90deg:before {
+    transform: rotate(90deg);
+}
+.rotate--90deg {
+    transform: rotate(-90deg);
+}
+.rotate--90deg:before {
+    transform: rotate(-90deg);
+}
+
+.control-pad .row [class^="col-"],
+.control-pad .row [class*=" col-"] {
+    padding-right: 5px;
+}
+.control-pad .row [class^="col-"]:last-child,
+.control-pad .row [class*=" col-"]:last-child {
+    padding-right: 0;
+}
+.control-pad .row {
+    padding-bottom: 5px;
+}
+.control-pad .row:last-child {
+    padding-bottom: 0;
+}
+.control-pad .btn {
+    font-size: 16px;
+    padding: 0;
+    width: 100%;
+    height: 34px;
+    text-align: center;
+    vertical-align: middle;
+}
