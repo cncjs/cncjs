@@ -128,6 +128,7 @@ controller.on('grbl:status', function(data) {
     $('#wpos-z').text(workingPos.z);
 });
 
+$('#btn-dropdown').dropdown();
 $('#active-state').text('Not connected');
 $('#select-distance').val('1');
 

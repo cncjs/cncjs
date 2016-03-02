@@ -27,9 +27,26 @@
                 <div class="col-xs-2">
                     <div class="btn-group btn-group-justified">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-default">
-                                <i class="fa fa-list"></i>
-                            </button>
+                            <div class="dropdown">
+                                <button type="button" class="btn btn-default" id="btn-dropdown" data-toggle="dropdown">
+                                    <i class="fa fa-list"></i>
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li>
+                                        <a role="menuitem" href="#" onclick="cnc.controller.command('homing')"><i class="fa fa-home"></i>&nbsp;Homing</a>
+                                    </li>
+                                    <li>
+                                        <a role="menuitem" href="#" onclick="cnc.controller.command('unlock')"><i class="fa fa-unlock-alt"></i>&nbsp;Unlock</a>
+                                    </li>
+                                    <li>
+                                        <a role="menuitem" href="#" onclick="cnc.controller.command('reset')"><i class="fa fa-undo"></i>&nbsp;Reset</a>
+                                    </li>
+                                    <li role="separator" class="divider"></li>
+                                    <li>
+                                        <a role="menuitem" href="#" onclick="cnc.controller.close()"><i class="fa fa-sign-out"></i>&nbsp;Close</a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>

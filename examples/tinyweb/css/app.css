@@ -21,6 +21,9 @@
 .nav-panel .btn {
     font-size: 14px;
 }
+.nav-panel .dropdown-menu>li>a .fa {
+    width: 16px;
+}
 
 .active-state {
     font-size: 16px;
