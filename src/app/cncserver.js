@@ -168,6 +168,11 @@ class CNCServer {
                         log.error('[cncserver] Error closing serial port "%s":', port, err);
                     }
                     store.unset('controllers["' + port + '"]');
+
+                    socket.emit('serialport:close', {
+                        port: port,
+                        inuse: false
+                    });
                 });
             });
 
