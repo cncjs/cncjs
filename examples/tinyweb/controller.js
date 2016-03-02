@@ -1,11 +1,8 @@
 (function(root) {
 
-var cnc = root.cnc;
-var socket = cnc.socket;
+var socket = root.socket;
 
-var CNCController = function(port, baudrate) {
-    this.port = port;
-    this.baudrate = baudrate;
+var CNCController = function() {
     this.callbacks = {
         'serialport:list': [],
         'serialport:open': [],
@@ -88,18 +85,24 @@ CNCController.prototype.writeln = function(data) {
     this.write(data);
 };
 
-CNCController.prototype.open = function() {
-    socket.emit('open', this.port, this.baudrate);
+CNCController.prototype.open = function(port, baudrate) {
+    socket.emit('open', port, baudrate);
+
+    this.port = port;
+    this.baudrate = baudrate;
 };
 
 CNCController.prototype.close = function() {
     socket.emit('close', this.port);
+
+    this.port = '';
+    this.baudrate = 0;
 };
 
 CNCController.prototype.list = function() {
     socket.emit('list');
 };
 
-cnc.CNCController = CNCController;
+root.CNCController = CNCController;
 
 })(this);

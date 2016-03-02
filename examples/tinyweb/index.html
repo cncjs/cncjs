@@ -20,7 +20,44 @@
 <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
-<div id="container-axes">
+<div class="hidden" data-route="workspace">
+    <div class="form-group clearfix">
+        <div class="pull-left">
+            <input type="text" class="form-control" data-name="port" readonly value="" />
+        </div>
+        <div class="btn-group pull-right">
+            <button type="button" class="btn btn-danger" onclick="cnc.controller.close()"><i class="fa fa-power-off"></i>&nbsp;Close</button>
+        </div>
+    </div>
+    <div class="form-group">
+        <ul class="list-group">
+            <a href="#/axes" class="list-group-item">Axes</a>
+        </ul>
+    </div>
+</div>
+<div class="hidden" data-route="connection">
+    <div class="form-group">
+        <label>Port</label>
+        <select class="form-control" data-name="port"></select>
+    </div>
+    <div class="form-group">
+        <label>Baud rate</label>
+        <select class="form-control" data-name="baudrate">
+            <option>115200</option>
+            <option>57600</option>
+            <option>38400</option>
+            <option>19200</option>
+            <option>9600</option>
+            <option>4800</option>
+            <option>2400</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <button type="button" class="btn btn-primary" data-name="btn-open">Open</button>
+    </div>
+    <div data-name="msg"></div>
+</div>
+<div class="hidden" data-route="axes">
     <div class="nav-panel">
         <div class="container-fluid">
             <div class="row no-gutter">
@@ -28,7 +65,7 @@
                     <div class="btn-group btn-group-justified">
                         <div class="btn-group">
                             <div class="dropdown">
-                                <button type="button" class="btn btn-default" id="btn-dropdown" data-toggle="dropdown">
+                                <button type="button" class="btn btn-default" data-name="btn-dropdown" data-toggle="dropdown">
                                     <i class="fa fa-list"></i>
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
@@ -43,7 +80,7 @@
                                     </li>
                                     <li role="separator" class="divider"></li>
                                     <li>
-                                        <a role="menuitem" href="#" onclick="cnc.controller.close()"><i class="fa fa-sign-out"></i>&nbsp;Back</a>
+                                        <a role="menuitem" href="#/workspace"><i class="fa fa-chevron-left"></i>&nbsp;Back</a>
                                     </li>
                                 </ul>
                             </div>
@@ -51,7 +88,7 @@
                     </div>
                 </div>
                 <div class="col-xs-6">
-                    <div class="active-state" id="active-state"></div>
+                    <div class="active-state" data-name="active-state"></div>
                 </div>
                 <div class="col-xs-2">
                     <button type="button" class="btn btn-default" onclick="cnc.controller.command('cyclestart')">
@@ -89,13 +126,13 @@
                 </div>
                 <div class="col-xs-10">
                     <div class="col-xs-4">
-                        <div class="axis-position" id="mpos-x">0.000</div>
+                        <div class="axis-position" data-name="mpos-x">0.000</div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="axis-position" id="mpos-y">0.000</div>
+                        <div class="axis-position" data-name="mpos-y">0.000</div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="axis-position" id="mpos-z">0.000</div>
+                        <div class="axis-position" data-name="mpos-z">0.000</div>
                     </div>
                 </div>
             </div>
@@ -105,13 +142,13 @@
                 </div>
                 <div class="col-xs-10">
                     <div class="col-xs-4">
-                        <div class="axis-position" id="wpos-x">0.000</div>
+                        <div class="axis-position" data-name="wpos-x">0.000</div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="axis-position" id="wpos-y">0.000</div>
+                        <div class="axis-position" data-name="wpos-y">0.000</div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="axis-position" id="wpos-z">0.000</div>
+                        <div class="axis-position" data-name="wpos-z">0.000</div>
                     </div>
                 </div>
             </div>
@@ -274,7 +311,7 @@
                     </button>
                 </div>
                 <div class="col-xs-4">
-                    <select class="form-control" id="select-distance">
+                    <select class="form-control" data-name="select-distance">
                         <option>0.001</option>
                         <option>0.005</option>
                         <option>0.01</option>
@@ -304,14 +341,56 @@
     </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
+<script src="vendor/director/director.min.js"></script>
 <script src="vendor/lodash/lodash.min.js"></script>
 <script src="vendor/jquery/jquery-2.2.1.min.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script>
-this.cnc = {};
-</script>
 <script src="socket.js"></script>
 <script src="controller.js"></script>
+<script>
+root = this;
+root.cnc = {
+    port: '',
+    baudrate: 0,
+    connected: false,
+    controller: new CNCController()
+};
+
+$('document').ready(function() {
+var root = window;
+
+var routes = {
+    '/': function() {
+        if (root.cnc.connected) {
+            window.location = '#/workspace';
+        } else {
+            window.location = '#/connection';
+        }
+    },
+    '/workspace': function() {
+    },
+    '/connection': function() {
+    },
+    '/axes': function() {
+    }
+};
+var router = Router(routes);
+router.configure({
+    on: function() {
+        var route = window.location.hash.slice(2);
+        var views = $('[data-route]');
+        var view = views.filter('[data-route="' + route + '"]');
+
+        if (view.length) {
+            views.addClass('hidden');
+            view.removeClass('hidden');
+        }
+    }
+});
+router.init();
+window.location = '#/';
+});
+</script>
 <script src="app.js"></script>
 </body>
 </html>

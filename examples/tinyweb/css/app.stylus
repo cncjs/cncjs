@@ -1,4 +1,12 @@
-#container-axes {
+[data-route="workspace"] {
+    padding: 10px;
+}
+
+[data-route="connection"] {
+    padding: 10px;
+}
+
+[data-route="axes"] {
     padding: 5px;
     font-size: 14px;
 

@@ -1,12 +1,58 @@
 (function(root) {
 
-var cnc = root.cnc;
-var CNCController = cnc.CNCController;
-var port = '/dev/cu.usbmodemFD121';
-var baudrate = 115200;
-var controller = new CNCController(port, baudrate);
+var cnc = root.cnc || {};
+var controller = cnc.controller;
 
-cnc.controller = controller;
+controller.on('serialport:list', function(list) {
+    var $el = $('[data-route="connection"] select[data-name="port"]');
+
+    $el.empty();
+    $.each(list, function(key, value) {
+        var $option = $('<option></option>')
+            .attr('value', value.port)
+            .attr('data-inuse', value.inuse)
+            .text(value.port);
+        $el.append($option);
+    });
+});
+
+controller.on('serialport:open', function(options) {
+    var port = options.port;
+    var baudrate = options.baudrate;
+
+    console.log('Connected to \'' + port + '\' at ' + baudrate + '.');
+
+    cnc.connected = true;
+    cnc.port = port;
+    cnc.baudrate = baudrate;
+
+    $('[data-route="workspace"] [data-name="port"]').val(port);
+
+    root.location = '#/workspace';
+});
+
+controller.on('serialport:close', function(options) {
+    var port = options.port;
+
+    console.log('Disconnected from \'' + port + '\'.');
+
+    cnc.connected = false;
+    cnc.port = '';
+    cnc.baudrate = 0;
+
+    $('[data-route="workspace"] [data-name="port"]').val('');
+
+    root.location = '#/connection';
+});
+
+controller.on('serialport:error', function(options) {
+    var port = options.port;
+
+    console.log('Error opening serial port \'' + port + '\'');
+
+    $('[data-route="connection"] [data-name="msg"]').html('<p style="color: red">Error opening serial port \'' + port + '\'</p>');
+
+});
 
 cnc.sendMove = function(cmd) {
     var jog = function(params) {
@@ -24,7 +70,7 @@ cnc.sendMove = function(cmd) {
         }).join(' ');
         controller.writeln('G0 ' + s);
     };
-    var distance = Number($('select[id="select-distance"]').val()) || 0;
+    var distance = Number($('[data-route="axes"] select[data-name="select-distance"]').val()) || 0;
 
     var fn = {
         'G28': function() {
@@ -80,29 +126,6 @@ cnc.sendMove = function(cmd) {
     fn && fn();
 };
 
-controller.on('serialport:list', function(ports) {
-    console.log('ports:', ports);
-});
-
-controller.on('serialport:open', function(options) {
-    var port = options.port;
-    var baudrate = options.baudrate;
-
-    console.log('Connected to \'' + port + '\' at ' + baudrate + '.');
-});
-
-controller.on('serialport:close', function(options) {
-    var port = options.port;
-
-    console.log('Disconnected from \'' + port + '\'.');
-});
-
-controller.on('serialport:error', function(options) {
-    var port = options.port;
-
-    console.log('Error opening serial port \'' + port + '\'');
-});
-
 controller.on('serialport:read', function(data) {
     var style = 'font-weight: bold; line-height: 20px; padding: 2px 4px; border: 1px solid; color: #222; background: #F5F5F5';
     console.log('%cR%c', style, '', data);
@@ -118,20 +141,38 @@ controller.on('grbl:status', function(data) {
     var machinePos = data.machinePos;
     var workingPos = data.workingPos;
 
-    $('.control-pad .btn').prop('disabled', activeState !== 'Idle');
-    $('#active-state').text(activeState);
-    $('#mpos-x').text(machinePos.x);
-    $('#mpos-y').text(machinePos.y);
-    $('#mpos-z').text(machinePos.z);
-    $('#wpos-x').text(workingPos.x);
-    $('#wpos-y').text(workingPos.y);
-    $('#wpos-z').text(workingPos.z);
+    $('[data-route="axes"] .control-pad .btn').prop('disabled', activeState !== 'Idle');
+    $('[data-route="axes"] [data-name="active-state"]').text(activeState);
+    $('[data-route="axes"] [data-name="mpos-x"]').text(machinePos.x);
+    $('[data-route="axes"] [data-name="mpos-y"]').text(machinePos.y);
+    $('[data-route="axes"] [data-name="mpos-z"]').text(machinePos.z);
+    $('[data-route="axes"] [data-name="wpos-x"]').text(workingPos.x);
+    $('[data-route="axes"] [data-name="wpos-y"]').text(workingPos.y);
+    $('[data-route="axes"] [data-name="wpos-z"]').text(workingPos.z);
 });
 
-$('#btn-dropdown').dropdown();
-$('#active-state').text('Not connected');
-$('#select-distance').val('1');
+controller.list();
 
-controller.open();
+
+// Workspace 
+$('[data-route="workspace"] [data-name="port"]').val('');
+
+//
+// Connection
+//
+$('[data-route="connection"] [data-name="btn-open"]').on('click', function() {
+    var port = $('[data-route="connection"] [data-name="port"]').val();
+    var baudrate = $('[data-route="connection"] [data-name="baudrate"]').val();
+
+    $('[data-route="connection"] [data-name="msg"]').val('');
+    controller.open(port, baudrate);
+});
+
+//
+// Axes
+//
+$('[data-route="axes"] [data-name="btn-dropdown"]').dropdown();
+$('[data-route="axes"] [data-name="active-state"]').text('Not connected');
+$('[data-route="axes"] select[data-name="select-distance"]').val('1');
 
 })(this);
