@@ -50,6 +50,30 @@ CNCController.prototype.off = function(eventName, callback) {
     }
 };
 
+// @param {string} cmd The command string
+// @example Example Usage
+// - Load G-code
+//   controller.command('load', name, gcode, callback)
+// - Unload G-code
+//   controller.command('unload')
+// - Start sending G-code
+//   controller.command('start')
+// - Stop sending G-code
+//   controller.command('stop')
+// - Pause
+//   controller.command('pause')
+// - Resume
+//   controller.command('resume')
+// - Feed Hold
+//   controller.command('feedhold')
+// - Cycle Start
+//   controller.command('cyclestart')
+// - Reset
+//   controller.command('reset')
+// - Homing
+//   controller.command('homing')
+// - Unlock
+//   controller.command('unlock')
 CNCController.prototype.command = function(cmd) {
     var args = Array.prototype.slice.call(arguments, 1);
     socket.emit.apply(socket, ['command', this.port, cmd].concat(args));
@@ -61,7 +85,7 @@ CNCController.prototype.write = function(data) {
 
 CNCController.prototype.writeln = function(data) {
     data = ('' + data).trim() + '\n';
-    write(data);
+    this.write(data);
 };
 
 CNCController.prototype.open = function() {

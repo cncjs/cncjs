@@ -13,9 +13,9 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 <link rel="shortcut icon" href="/favicon.ico">
-<link rel="stylesheet" type="text/css" href="css/normalize.css">
-<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
-<link rel="stylesheet" type="text/css" href="css/font-awesome.min.css">
+<link rel="stylesheet" type="text/css" href="vendor/normalize/normalize.css">
+<link rel="stylesheet" type="text/css" href="vendor/bootstrap/css/bootstrap.min.css">
+<link rel="stylesheet" type="text/css" href="vendor/font-awesome/css/font-awesome.min.css">
 <link rel="stylesheet" type="text/css" href="css/theme.css">
 <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
@@ -33,14 +33,23 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-xs-8">
-                    <div class="active-state">Idle</div>
+                <div class="col-xs-6">
+                    <div class="active-state" id="active-state"></div>
                 </div>
                 <div class="col-xs-2">
                     <div class="btn-group btn-group-justified">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-danger">
-                                <i class="fa fa-stop-circle-o"></i>
+                            <button type="button" class="btn btn-default" onclick="cnc.controller.command('cyclestart')">
+                                <i class="fa fa-play"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-xs-2">
+                    <div class="btn-group btn-group-justified">
+                        <div class="btn-group">
+                            <button type="button" class="btn btn-default" onclick="cnc.controller.command('feedhold')">
+                                <i class="fa fa-pause"></i>
                             </button>
                         </div>
                     </div>
@@ -51,7 +60,8 @@
     <div class="axis-position">
         <div class="container-fluid">
             <div class="row no-gutter">
-                <div class="col-xs-2"></div>
+                <div class="col-xs-2">
+                </div>
                 <div class="col-xs-10">
                     <div class="col-xs-4">
                         <div class="axis-label">X</div>
@@ -70,13 +80,13 @@
                 </div>
                 <div class="col-xs-10">
                     <div class="col-xs-4">
-                        <div class="axis-position">0000.000</div>
+                        <div class="axis-position" id="mpos-x">0.000</div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="axis-position">0000.000</div>
+                        <div class="axis-position" id="mpos-y">0.000</div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="axis-position">0000.000</div>
+                        <div class="axis-position" id="mpos-z">0.000</div>
                     </div>
                 </div>
             </div>
@@ -86,13 +96,13 @@
                 </div>
                 <div class="col-xs-10">
                     <div class="col-xs-4">
-                        <div class="axis-position">0000.000</div>
+                        <div class="axis-position" id="wpos-x">0.000</div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="axis-position">0000.000</div>
+                        <div class="axis-position" id="wpos-y">0.000</div>
                     </div>
                     <div class="col-xs-4">
-                        <div class="axis-position">0000.000</div>
+                        <div class="axis-position" id="wpos-z">0.000</div>
                     </div>
                 </div>
             </div>
@@ -106,6 +116,7 @@
                         type="button"
                         class="btn btn-default jog-x-minus jog-y-plus"
                         title="Move X- Y+"
+                        onclick="cnc.sendMove('X-Y+')"
                     >
                         <i class="fa fa-arrow-circle-up rotate--45deg"></i>
                     </button>
@@ -115,6 +126,7 @@
                         type="button"
                         class="btn btn-default jog-y-plus"
                         title="Move Y+"
+                        onclick="cnc.sendMove('Y+')"
                     >
                         Y+
                     </button>
@@ -124,6 +136,7 @@
                         type="button"
                         class="btn btn-default jog-x-plus jog-y-plus"
                         title="Move X+ Y+"
+                        onclick="cnc.sendMove('X+Y+')"
                     >
                         <i class="fa fa-arrow-circle-up rotate-45deg"></i>
                     </button>
@@ -132,14 +145,17 @@
                     <button
                         type="button"
                         class="btn btn-default"
+                        title="G28"
+                        onclick="cnc.sendMove('G28')"
                     >
-                                G28
+                        G28
                     </button>
                 </div>
                 <div class="col-xs-2">
                     <button
                         type="button"
                         class="btn btn-default"
+                        onclick="cnc.sendMove('G30')"
                     >
                         G30
                     </button>
@@ -149,6 +165,7 @@
                         type="button"
                         class="btn btn-default jog-z-plus"
                         title="Move Z+"
+                        onclick="cnc.sendMove('Z+')"
                     >
                         Z+
                     </button>
@@ -160,6 +177,7 @@
                         type="button"
                         class="btn btn-default jog-x-minus"
                         title="Move X-"
+                        onclick="cnc.sendMove('X-')"
                     >
                         X-
                     </button>
@@ -169,6 +187,7 @@
                         type="button"
                         class="btn btn-default jog-xy-zero"
                         title="Move To Zero (G0 X0 Y0 Z0)"
+                        onclick="cnc.sendMove('X0Y0Z0')"
                     >
                         <i class="fa fa-circle-o"></i>
                     </button>
@@ -178,6 +197,7 @@
                         type="button"
                         class="btn btn-default jog-x-plus"
                         title="Move X+"
+                        onclick="cnc.sendMove('X+')"
                     >
                         X+
                     </button>
@@ -187,6 +207,7 @@
                         type="button"
                         class="btn btn-default jog-x-zero"
                         title="Move To X Zero (G0 X0)"
+                        onclick="cnc.sendMove('X0')"
                     >
                         X0
                     </button>
@@ -196,6 +217,7 @@
                         type="button"
                         class="btn btn-default jog-y-zero"
                         title="Move To Y Zero (G0 Y0)"
+                        onclick="cnc.sendMove('Y0')"
                     >
                         Y0
                     </button>
@@ -205,6 +227,7 @@
                         type="button"
                         class="btn btn-default jog-z-zero"
                         title="Move To Z Zero (G0 Z0)"
+                        onclick="cnc.sendMove('Z0')"
                     >
                         Z0
                     </button>
@@ -216,6 +239,7 @@
                         type="button"
                         class="btn btn-default jog-x-minus jog-y-minus"
                         title="Move X- Y-"
+                        onclick="cnc.sendMove('X-Y-')"
                     >
                         <i class="fa fa-arrow-circle-down rotate-45deg"></i>
                     </button>
@@ -225,6 +249,7 @@
                         type="button"
                         class="btn btn-default jog-y-minus"
                         title="Move Y-"
+                        onclick="cnc.sendMove('Y-')"
                     >
                         Y-
                     </button>
@@ -234,12 +259,13 @@
                         type="button"
                         class="btn btn-default jog-x-plus jog-y-minus"
                         title="Move X+ Y-"
+                        onclick="cnc.sendMove('X+Y-')"
                     >
                         <i class="fa fa-arrow-circle-down rotate--45deg"></i>
                     </button>
                 </div>
                 <div class="col-xs-4">
-                    <select class="form-control">
+                    <select class="form-control" id="select-distance">
                         <option>0.001</option>
                         <option>0.005</option>
                         <option>0.01</option>
@@ -257,8 +283,9 @@
                 <div class="col-xs-2">
                     <button
                         type="button"
-                        class="btn btn-default jog-z-zero"
-                        title="Move To Z Zero (G0 Z0)"
+                        class="btn btn-default jog-z-minus"
+                        title="Move Z-"
+                        onclick="cnc.sendMove('Z-')"
                     >
                         Z-
                     </button>
@@ -268,6 +295,9 @@
     </div>
 </div>
 <script src="/socket.io/socket.io.js"></script>
+<script src="vendor/lodash/lodash.min.js"></script>
+<script src="vendor/jquery/jquery-2.2.1.min.js"></script>
+<script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 <script>
 this.cnc = {};
 </script>
