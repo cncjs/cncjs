@@ -20,7 +20,7 @@
 <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
-<div id="container">
+<div id="container-axes">
     <div class="nav-panel">
         <div class="container-fluid">
             <div class="row no-gutter">
@@ -33,17 +33,17 @@
                                 </button>
                                 <ul class="dropdown-menu" role="menu">
                                     <li>
-                                        <a role="menuitem" href="#" onclick="cnc.controller.command('homing')"><i class="fa fa-home"></i>&nbsp;Homing</a>
+                                        <a role="menuitem" href="javascript:void(0)" onclick="cnc.controller.command('homing')"><i class="fa fa-home"></i>&nbsp;Homing</a>
                                     </li>
                                     <li>
-                                        <a role="menuitem" href="#" onclick="cnc.controller.command('unlock')"><i class="fa fa-unlock-alt"></i>&nbsp;Unlock</a>
+                                        <a role="menuitem" href="javascript:void(0)" onclick="cnc.controller.command('unlock')"><i class="fa fa-unlock-alt"></i>&nbsp;Unlock</a>
                                     </li>
                                     <li>
-                                        <a role="menuitem" href="#" onclick="cnc.controller.command('reset')"><i class="fa fa-undo"></i>&nbsp;Reset</a>
+                                        <a role="menuitem" href="javascript:void(0)" onclick="cnc.controller.command('reset')"><i class="fa fa-undo"></i>&nbsp;Reset</a>
                                     </li>
                                     <li role="separator" class="divider"></li>
                                     <li>
-                                        <a role="menuitem" href="#" onclick="cnc.controller.close()"><i class="fa fa-sign-out"></i>&nbsp;Close</a>
+                                        <a role="menuitem" href="#" onclick="cnc.controller.close()"><i class="fa fa-sign-out"></i>&nbsp;Back</a>
                                     </li>
                                 </ul>
                             </div>
@@ -54,22 +54,14 @@
                     <div class="active-state" id="active-state"></div>
                 </div>
                 <div class="col-xs-2">
-                    <div class="btn-group btn-group-justified">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default" onclick="cnc.controller.command('cyclestart')">
-                                <i class="fa fa-play"></i>
-                            </button>
-                        </div>
-                    </div>
+                    <button type="button" class="btn btn-default" onclick="cnc.controller.command('cyclestart')">
+                        <i class="fa fa-play"></i>
+                    </button>
                 </div>
                 <div class="col-xs-2">
-                    <div class="btn-group btn-group-justified">
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default" onclick="cnc.controller.command('feedhold')">
-                                <i class="fa fa-pause"></i>
-                            </button>
-                        </div>
-                    </div>
+                    <button type="button" class="btn btn-default" onclick="cnc.controller.command('feedhold')">
+                        <i class="fa fa-pause"></i>
+                    </button>
                 </div>
             </div>
         </div>
