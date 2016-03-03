@@ -344,14 +344,15 @@
 <script src="vendor/director/director.min.js"></script>
 <script src="vendor/lodash/lodash.min.js"></script>
 <script src="vendor/jquery/jquery-2.2.1.min.js"></script>
+<script src="vendor/js-cookie/js.cookie.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
 <script src="socket.js"></script>
 <script src="controller.js"></script>
 <script>
 root = this;
 root.cnc = {
-    port: '',
-    baudrate: 0,
+    port: Cookies.get('cnc.port'),
+    baudrate: Cookies.get('cnc.baudrate'),
     connected: false,
     controller: new CNCController()
 };
