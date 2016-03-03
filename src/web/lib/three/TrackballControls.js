@@ -1,3 +1,4 @@
+// jscs:disable
 /*eslint-disable */
 
 var THREE = require('three');
