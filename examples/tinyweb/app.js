@@ -28,7 +28,7 @@ controller.on('serialport:open', function(options) {
 
     $('[data-route="workspace"] [data-name="port"]').val(port);
 
-    root.location = '#/workspace';
+    root.location = '#/axes';
 });
 
 controller.on('serialport:close', function(options) {
