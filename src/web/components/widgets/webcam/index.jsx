@@ -4,7 +4,7 @@ import i18n from '../../../lib/i18n';
 import store from '../../../store';
 import Widget from '../../widget';
 import Webcam from './Webcam';
-import './index.css';
+import './index.styl';
 
 class WebcamWidget extends React.Component {
     static propTypes = {

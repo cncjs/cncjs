@@ -3,7 +3,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Probe from './Probe';
-import './index.css';
+import './index.styl';
 
 class ProbeWidget extends React.Component {
     static propTypes = {

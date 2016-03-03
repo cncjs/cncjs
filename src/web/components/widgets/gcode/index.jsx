@@ -3,7 +3,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import Widget, { Buttons } from '../../widget';
 import GCode from './GCode';
-import './index.css';
+import './index.styl';
 
 class GCodeWidget extends React.Component {
     static propTypes = {

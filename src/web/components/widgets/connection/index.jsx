@@ -3,7 +3,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import Widget, { Buttons } from '../../widget';
 import Connection from './Connection';
-import './index.css';
+import './index.styl';
 
 class ConnectionWidget extends React.Component {
     static propTypes = {

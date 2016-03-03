@@ -1,7 +1,7 @@
 import React from 'react';
 import Visualizer from './Visualizer';
 import Widget from '../../widget';
-import './index.css';
+import './index.styl';
 
 class VisualizerWidget extends React.Component {
     render() {

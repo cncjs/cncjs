@@ -11,8 +11,8 @@ import XHR from 'i18next-xhr-backend';
 import log from './lib/log';
 import App from './containers/App';
 import Workspace from './components/workspace';
-import './styles/vendor.css';
-import './styles/app.css';
+import './styles/vendor.styl';
+import './styles/app.styl';
 
 const query_params = ((qs) => {
     qs = String(qs || '');

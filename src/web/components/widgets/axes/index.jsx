@@ -3,7 +3,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Axes from './Axes';
-import './index.css';
+import './index.styl';
 
 class AxesWidget extends React.Component {
     static propTypes = {

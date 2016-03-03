@@ -1,4 +1,4 @@
 import Workspace from './Workspace';
-import './index.css';
+import './index.styl';
 
 export default Workspace;

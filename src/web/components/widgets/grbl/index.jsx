@@ -3,7 +3,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import Widget, { Buttons } from '../../widget';
 import Grbl from './Grbl';
-import './index.css';
+import './index.styl';
 
 class GrblWidget extends React.Component {
     static propTypes = {

@@ -1,4 +1,4 @@
 import Header from './Header';
-import './index.css';
+import './index.styl';
 
 export default Header;
