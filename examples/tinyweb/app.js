@@ -41,6 +41,7 @@ controller.on('serialport:close', function(options) {
     cnc.baudrate = 0;
 
     $('[data-route="workspace"] [data-name="port"]').val('');
+    $('[data-route="axes"] [data-name="active-state"]').text('Not connected');
 
     root.location = '#/connection';
 });
