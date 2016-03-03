@@ -14,6 +14,14 @@ controller.on('serialport:list', function(list) {
             .text(value.port);
         $el.append($option);
     });
+
+    if (cnc.port) {
+        $('[data-route="connection"] select[data-name="port"]').val(cnc.port);
+    }
+    if (cnc.baudrate) {
+        $('[data-route="connection"] select[data-name="baudrate"]').val(cnc.baudrate);
+    }
+
 });
 
 controller.on('serialport:open', function(options) {
@@ -27,6 +35,9 @@ controller.on('serialport:open', function(options) {
     cnc.baudrate = baudrate;
 
     $('[data-route="workspace"] [data-name="port"]').val(port);
+
+    Cookies.set('cnc.port', port);
+    Cookies.set('cnc.baudrate', baudrate);
 
     root.location = '#/axes';
 });
