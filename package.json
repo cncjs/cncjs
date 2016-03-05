@@ -4,7 +4,7 @@
   "description": "CNC.js is a web-based CNC milling controller for the Arduino running GRBL",
   "homepage": "https://github.com/cheton/cnc.js",
   "author": "Cheton Wu <cheton@gmail.com>",
-  "main": "./index.js",
+  "main": "./dist/app/index.js",
   "bin": {
     "cnc": "./bin/cnc"
   },
@@ -94,6 +94,7 @@
     "socket.io": "^1.3.7",
     "sortablejs": "^1.4.2",
     "sprintf": "0.1.x",
+    "stacktrace-js": "^1.0.4",
     "string-format": "0.2.x",
     "superagent": "^1.6.1",
     "three": "^0.73.0",
@@ -104,7 +105,7 @@
     "amd-optimize": "0.3.x",
     "babel-cli": "^6.3.15",
     "babel-core": "^6.3.15",
-    "babel-eslint": "^5.0.0-beta6",
+    "babel-eslint": "^5.0.0",
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.3.13",
     "babel-preset-react": "^6.3.13",
@@ -117,15 +118,17 @@
     "css-loader": "^0.23.1",
     "del": "0.1.x",
     "envify": "^3.4.0",
+    "eslint": "^2.2.0",
+    "eslint-loader": "^1.3.0",
+    "eslint-plugin-react": "^4.1.0",
     "exorcist": "^0.4.0",
     "file-loader": "^0.8.5",
     "gulp": "^3.9.0",
-    "gulp-autoprefixer": "^2.1.0",
     "gulp-babel": "^6.1.1",
     "gulp-concat": "2.4.x",
     "gulp-csslint": "^0.2.0",
     "gulp-declare": "^0.3.0",
-    "gulp-eslint": "^1.0.0",
+    "gulp-eslint": "^2.0.0",
     "gulp-filter": "^2.0.2",
     "gulp-if": "^1.2.5",
     "gulp-jscs": "^3.0.2",
@@ -142,6 +145,8 @@
     "gulp-util": "^3.0.3",
     "gulp-wrap": "0.11.x",
     "i18next-scanner": "^0.5.6",
+    "jscs": "^2.11.0",
+    "jscs-loader": "^0.2.0",
     "json-loader": "^0.5.4",
     "main-bower-files": "2.6.x",
     "merge-stream": "^0.1.7",
@@ -164,11 +169,10 @@
     "watchify": "^3.3.1",
     "webpack": "^1.12.14",
     "webpack-dev-middleware": "^1.5.1",
+    "webpack-dev-server": "^1.14.1",
     "webpack-hot-middleware": "^2.9.1",
     "yargs": "^2.3.0"
   },
-  "browser": {
-    "stacktrace": "./src/web/vendor/stacktrace-js/stacktrace.js"
-  },
+  "browser": {},
   "browserify-shim": "./config/shim.js"
 }
