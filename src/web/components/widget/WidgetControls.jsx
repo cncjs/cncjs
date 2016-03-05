@@ -3,8 +3,12 @@ import React from 'react';
 import classNames from 'classnames';
 
 class WidgetControls extends React.Component {
+    static propTypes = {
+        children: React.PropTypes.node
+    };
+
     render() {
-        const { className, ...props } = this.props;
+        const { children, className, ...props } = this.props;
         const widgetControlsClass = classNames(
             'widget-controls',
             className
@@ -12,7 +16,7 @@ class WidgetControls extends React.Component {
 
         return (
             <div {...props} className={widgetControlsClass}>
-                {this.props.children}
+                {children}
             </div>
         );
     }

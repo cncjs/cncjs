@@ -2,8 +2,12 @@ import classNames from 'classnames';
 import React from 'react';
 
 class WidgetTitle extends React.Component {
+    static propTypes = {
+        children: React.PropTypes.node
+    };
+
     render() {
-        const { className, ...props } = this.props;
+        const { children, className, ...props } = this.props;
         const widgetTitleClass = classNames(
             'widget-title',
             className
@@ -11,7 +15,7 @@ class WidgetTitle extends React.Component {
 
         return (
             <div {...props} className={widgetTitleClass}>
-                {this.props.children}
+                {children}
             </div>
         );
     }
