@@ -1,7 +1,21 @@
 {
     "parser": "babel-eslint",
-    "ecmaFeatures": {
-        "modules": true,
-        "jsx": true
-    }
+    "env": {
+        "browser": true,
+        "node": true
+    },
+    "parserOptions": {
+        "ecmaVersion": 7,
+        "sourceType": "module",
+        "ecmaFeatures": {
+            "jsx": true
+        }
+    },
+    "plugins": [
+        "react"
+    ],
+    "rules": {
+        "react/prop-types": [2, { "ignore": ["className"] }]
+    },
+    "extends": ["eslint:recommended", "plugin:react/recommended"]
 }
