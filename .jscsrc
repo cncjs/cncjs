@@ -1,8 +1,12 @@
 {
-    "disallowMixedSpacesAndTabs": true,
     "esnext": true,
+    "preset": "google",
+    "fileExtensions": [".js", ".jsx"],
+    "disallowMixedSpacesAndTabs": true,
+    "maximumLineLength": 160,
+    "validateLineBreaks": "LF",
+    "validateIndentation": 4,
     "excludeFiles": [
         "node_modules/**"
-    ],
-    "validateIndentation": 4
+    ]
 }
