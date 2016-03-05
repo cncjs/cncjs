@@ -5,7 +5,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import combokeys from '../../../lib/combokeys';
 import controller from '../../../lib/controller';
-import { mm2in } from '../../../lib/units'; 
+import { mm2in } from '../../../lib/units';
 import store from '../../../store';
 import ShuttleControl from './ShuttleControl';
 import {
