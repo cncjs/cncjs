@@ -4,7 +4,6 @@ import gulp from 'gulp';
 import requireDir from 'require-dir';
 import pkg from './package.json';
 import bower from './bower.json';
-import config from './gulp/config';
 import errorHandler from './gulp/error-handler';
 
 // Sync the following properties from `package.json` to `bower.json`:
@@ -30,12 +29,11 @@ _.each(tasks, (task, relativePath) => {
     console.assert(_.isFunction(task), 'gulp/tasks/%s: module\'s export is not a function', relativePath);
 
     task({
-        config: config,
         env: env,
         watch: false,
         errorHandler: errorHandler
     });
 });
 
-gulp.task('default', ['build-production']);
-gulp.task('dev', ['build-development']);
+gulp.task('default', ['build']);
+gulp.task('dev', ['build-dev']);

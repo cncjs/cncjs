@@ -7,6 +7,39 @@ import i18nextScanner from 'i18next-scanner';
 import hash from 'sha1';
 import table from 'text-table';
 
+const i18nextConfig = {
+    src: [
+        'src/web/**/*.html',
+        'src/web/**/*.hbs',
+        'src/web/**/*.js',
+        'src/web/**/*.jsx',
+        // Use ! to filter out files or directories
+        '!src/web/{vendor,i18n}/**',
+        '!test/**',
+        '!**/node_modules/**'
+    ],
+    dest: './',
+    options: {
+        debug: true,
+        sort: true,
+        lngs: ['en'],
+        defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
+        resGetPath: 'src/web/i18n/{{lng}}/{{ns}}.json',
+        resSetPath: 'src/web/i18n/{{lng}}/{{ns}}.json', // or 'src/web/i18n/${lng}/${ns}.saveAll.json'
+        nsseparator: ':', // namespace separator
+        keyseparator: '.', // key separator
+        interpolationPrefix: '{{',
+        interpolationSuffix: '}}',
+        ns: {
+            namespaces: [
+                'locale', // locale: language, timezone, ...
+                'resource' // default
+            ],
+            defaultNs: 'resource'
+        }
+    }
+};
+
 function customTransform(file, enc, done) {
     let extname = path.extname(file.path);
     let content = fs.readFileSync(file.path, enc);
@@ -102,8 +135,6 @@ function customTransform(file, enc, done) {
 
 export default (options) => {
     gulp.task('i18next', () => {
-        let i18nextConfig = options.config.i18next;
-
         return gulp.src(i18nextConfig.src)
             .pipe(i18nextScanner(i18nextConfig.options, function(file, enc, done) {
                 let parser = this.parser;

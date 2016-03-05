@@ -2,20 +2,18 @@ import gulp from 'gulp';
 import runSequence from 'run-sequence';
 
 export default (options) => {
-    gulp.task('build-development', (callback) => {
+    gulp.task('build-dev', (callback) => {
         runSequence(
-            ['stylus', 'csslint'],
-            ['babel', 'browserify'],
+            ['server', 'webpack:build-dev'],
             'dist'
         );
     });
 
-    gulp.task('build-production', (callback) => {
+    gulp.task('build', (callback) => {
         runSequence('clean',
             'bower',
             ['eslint', 'jscs', 'jshint'],
-            ['stylus', 'csslint'],
-            ['babel', 'browserify'],
+            ['server', 'webpack:build'],
             'i18next',
             'dist',
             callback

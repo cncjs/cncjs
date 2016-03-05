@@ -1,11 +1,25 @@
 import gulp from 'gulp';
 import eslint from 'gulp-eslint';
 
+const eslintConfig = {
+    src: [
+        'gulp/**/*.js',
+        '*.js',
+        '*.jsx',
+        'src/{app,web}/**/*.js',
+        'src/{app,web}/**/*.jsx',
+        'test/**/*.js',
+
+        // exclusion
+        '!src/web/vendor/**',
+        '!**/node_modules/**'
+    ],
+    options: require('../../config/eslint')
+};
+
 export default (options) => {
     // The pluggable linting utility for JavaScript and JSX
     gulp.task('eslint', () => {
-        let eslintConfig = options.config.eslint;
-
         return gulp.src(eslintConfig.src)
             // eslint() attaches the lint output to the eslint property
             // of the file object so it can be used by other modules.
