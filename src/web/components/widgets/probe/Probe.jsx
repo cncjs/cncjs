@@ -35,7 +35,7 @@ class Probe extends React.Component {
             });
         },
         'grbl:parserstate': (parserstate) => {
-            let { unit } = this.state;
+            const { unit } = this.state;
             let nextUnit = unit;
 
             // Imperial
@@ -77,10 +77,10 @@ class Probe extends React.Component {
             }
             this.setState({
                 unit: nextUnit,
-                probeDepth: probeDepth,
-                probeFeedrate: probeFeedrate,
-                tlo: tlo,
-                retractionDistance: retractionDistance
+                probeDepth,
+                probeFeedrate,
+                tlo,
+                retractionDistance
             });
         }
     };
@@ -104,9 +104,8 @@ class Probe extends React.Component {
             return;
         }
 
+        const { unit, probeCommand } = this.state;
         let {
-            unit,
-            probeCommand,
             probeDepth,
             probeFeedrate,
             tlo,
@@ -131,9 +130,9 @@ class Probe extends React.Component {
         this.pubsubTokens = [];
 
         { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
+            const token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+                this.setState({ port });
             });
             this.pubsubTokens.push(token);
         }
@@ -158,34 +157,29 @@ class Probe extends React.Component {
         this.setState({ probeCommand: value });
     }
     handleProbeDepthChange(event) {
-        let probeDepth = event.target.value;
-        this.setState({ probeDepth: probeDepth });
+        const probeDepth = event.target.value;
+        this.setState({ probeDepth });
     }
     handleProbeFeedrateChange(event) {
-        let probeFeedrate = event.target.value;
-        this.setState({ probeFeedrate: probeFeedrate });
+        const probeFeedrate = event.target.value;
+        this.setState({ probeFeedrate });
     }
     handleTLOChange(event) {
-        let tlo = event.target.value;
-        this.setState({ tlo: tlo });
+        const tlo = event.target.value;
+        this.setState({ tlo });
     }
     handleRetractionDistanceChange(event) {
-        let retractionDistance = event.target.value;
-        this.setState({ retractionDistance: retractionDistance });
+        const retractionDistance = event.target.value;
+        this.setState({ retractionDistance });
     }
     sendGCode(gcode, params) {
-        let s = _.map(params, (value, letter) => {
-            return '' + letter + value;
-        }).join(' ');
-        let msg = (s.length > 0) ? (gcode + ' ' + s) : gcode;
+        const s = _.map(params, (value, letter) => String(letter + value)).join(' ');
+        const msg = (s.length > 0) ? (gcode + ' ' + s) : gcode;
         controller.writeln(msg);
     }
     runZProbe() {
-        let { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
-
-        if (_.includes(['G38.2', 'G38.3'], probeCommand)) {
-            probeDepth = -probeDepth;
-        }
+        const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
+        const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
 
         // Cancel Tool Length Offset (TLO)
         this.sendGCode('G49');
@@ -195,7 +189,7 @@ class Probe extends React.Component {
 
         // Start Z-probing
         this.sendGCode(probeCommand, {
-            Z: probeDepth,
+            Z: towardWorkpiece ? -probeDepth : probeDepth,
             F: probeFeedrate
         });
 
@@ -237,19 +231,13 @@ class Probe extends React.Component {
         return val;
     }
     render() {
-        let { port, unit, activeState } = this.state;
-        let { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
-        let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
-        let feedrateUnit = (unit === METRIC_UNIT) ? i18n._('mm/min') : i18n._('in/mm');
-        let step = (unit === METRIC_UNIT) ? 1 : 0.1;
-        let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
-        let probeCommandOptions = _.map(['G38.2', 'G38.3', 'G38.4', 'G38.5'], (cmd) => {
-            return {
-                value: cmd,
-                label: cmd
-            };
-        });
-        let classes = {
+        const { port, unit, activeState } = this.state;
+        const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
+        const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
+        const feedrateUnit = (unit === METRIC_UNIT) ? i18n._('mm/min') : i18n._('in/mm');
+        const step = (unit === METRIC_UNIT) ? 1 : 0.1;
+        const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        const classes = {
             'G38.2': classNames(
                 'btn',
                 'btn-default',

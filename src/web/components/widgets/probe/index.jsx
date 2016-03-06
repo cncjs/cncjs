@@ -18,7 +18,7 @@ class ProbeWidget extends React.Component {
         const { isCollapsed, isFullscreen } = this.state;
         const classes = {
             widgetContent: classNames(
-                { 'hidden': isCollapsed }
+                { hidden: isCollapsed }
             )
         };
 
