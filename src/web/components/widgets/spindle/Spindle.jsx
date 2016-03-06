@@ -21,9 +21,9 @@ class Spindle extends React.Component {
         this.pubsubTokens = [];
 
         { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
+            const token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+                this.setState({ port });
             });
             this.pubsubTokens.push(token);
         }
@@ -40,9 +40,9 @@ class Spindle extends React.Component {
         });
     }
     render() {
-        let canClick = !!this.state.port;
-        let cmd = this.state.isCCWChecked ? 'M4' : 'M3';
-        let spindleSpeed = this.state.spindleSpeed;
+        const canClick = !!this.state.port;
+        const cmd = this.state.isCCWChecked ? 'M4' : 'M3';
+        const spindleSpeed = this.state.spindleSpeed;
 
         return (
             <div>
