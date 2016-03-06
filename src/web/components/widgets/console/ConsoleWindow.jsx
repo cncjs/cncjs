@@ -16,12 +16,12 @@ class ConsoleWindow extends React.Component {
     // Scroll Position with React
     // http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
     componentWillUpdate(nextProps, nextState) {
-        let node = ReactDOM.findDOMNode(this.refs.infinite);
-        let hScrollBarHeight = (node.scrollWidth != node.clientWidth) ? 20 : 0;
+        const node = ReactDOM.findDOMNode(this.refs.infinite);
+        const hScrollBarHeight = (node.scrollWidth !== node.clientWidth) ? 20 : 0;
         this.shouldScrollBottom = ((node.scrollTop + node.clientHeight + hScrollBarHeight) >= node.scrollHeight);
     }
     componentDidUpdate(prevProps, prevState) {
-        let node = ReactDOM.findDOMNode(this.refs.infinite);
+        const node = ReactDOM.findDOMNode(this.refs.infinite);
         if (this.shouldScrollBottom) {
             node.scrollTop = node.scrollHeight;
         }
@@ -30,36 +30,39 @@ class ConsoleWindow extends React.Component {
         // https://github.com/seatgeek/react-infinite/issues/62
         if (this.props.fullscreen) {
             // widgetEl = <div class="widget widget-fullscreen"></div>
-            let widgetEl = node.parentNode.parentNode.parentNode.parentNode;
-            let widgetHeaderEl = widgetEl.querySelector('.widget-header');
-            let widgetContentPadding = 10;
-            let consoleInputHeight = 40;
-            let containerHeight = widgetEl.clientHeight
+            const widgetEl = node.parentNode.parentNode.parentNode.parentNode;
+            const widgetHeaderEl = widgetEl.querySelector('.widget-header');
+            const widgetContentPadding = 10;
+            const consoleInputHeight = 40;
+            const containerHeight = widgetEl.clientHeight
                                 - widgetHeaderEl.offsetHeight
                                 - widgetContentPadding * 2
-                                - consoleInputHeight;
+                                - consoleInputHeight
                                 - 20; // extra padding
+
             if (this.state.containerHeight !== containerHeight) {
-                this.setState({ containerHeight: containerHeight });
+                setTimeout(() => {
+                    this.setState({ containerHeight });
+                }, 0);
             }
         } else {
-            let containerHeight = 260;
+            const containerHeight = 260;
             if (this.state.containerHeight !== containerHeight) {
-                this.setState({ containerHeight: containerHeight });
+                setTimeout(() => {
+                    this.setState({ containerHeight });
+                }, 0);
             }
         }
     }
     buildElements(buffers) {
-        return _.map(buffers, (msg, index) => {
-            return (
-                <div key={index} className="infinite-list-item" title={msg}>{msg}</div>
-            );
-        });
+        return _.map(buffers, (msg, index) => (
+            <div key={index} className="infinite-list-item" title={msg}>{msg}</div>
+        ));
     }
     render() {
-        let { buffers, fullscreen } = this.props;
-        let { containerHeight, elementHeight } = this.state;
-        let elements = this.buildElements(buffers);
+        const { buffers } = this.props;
+        const { containerHeight, elementHeight } = this.state;
+        const elements = this.buildElements(buffers);
 
         return (
             <div className="console-window">

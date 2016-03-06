@@ -15,13 +15,13 @@ class ConsoleInput extends React.Component {
     };
 
     handleKeyDown(e) {
-        let ENTER = 13;
+        const ENTER = 13;
         if (e.keyCode === ENTER) {
             this.handleSend();
         }
     }
     handleSend() {
-        let el = ReactDOM.findDOMNode(this.refs.command);
+        const el = ReactDOM.findDOMNode(this.refs.command);
 
         if (el.value === '') {
             return;
@@ -39,12 +39,10 @@ class ConsoleInput extends React.Component {
         this.props.onClear();
     }
     render() {
-        let { port } = this.props;
-        let canInput = !!port;
-        let canSend = canInput;
-        let canClearAll = canInput;
-        let canViewGrblHelp = canInput;
-        let canViewGrblSettings = canInput;
+        const { port } = this.props;
+        const canInput = !!port;
+        const canSend = canInput;
+        const canClearAll = canInput;
 
         return (
             <div className="console-input">

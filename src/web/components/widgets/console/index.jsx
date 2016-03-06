@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
-import Widget, { Buttons } from '../../widget';
+import Widget from '../../widget';
 import Console from './Console';
 import './index.styl';
 
@@ -18,7 +18,7 @@ class ConsoleWidget extends React.Component {
         const { isCollapsed, isFullscreen } = this.state;
         const classes = {
             widgetContent: classNames(
-                { 'hidden': isCollapsed }
+                { hidden: isCollapsed }
             )
         };
 

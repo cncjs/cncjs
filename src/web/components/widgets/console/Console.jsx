@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import ConsoleInput from './ConsoleInput';
@@ -10,14 +9,18 @@ import {
 } from './constants';
 
 class Console extends React.Component {
+    static propTypes = {
+        fullscreen: React.PropTypes.bool
+    };
+
     state = {
         port: '',
         buffers: []
     };
     controllerEvents = {
         'serialport:write': (data) => {
-            let lines = data.split('\n');
-            let values = _(lines)
+            const lines = data.split('\n');
+            const values = _(lines)
                 .compact()
                 .map((line) => ('> ' + line))
                 .value();
@@ -42,9 +45,9 @@ class Console extends React.Component {
         this.pubsubTokens = [];
 
         { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
+            const token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+                this.setState({ port });
 
                 if (!port) {
                     this.clear();
@@ -81,7 +84,7 @@ class Console extends React.Component {
         this.setState({ buffers: this.buffers });
     }
     render() {
-        let { fullscreen } = this.props;
+        const { fullscreen } = this.props;
 
         return (
             <div>
