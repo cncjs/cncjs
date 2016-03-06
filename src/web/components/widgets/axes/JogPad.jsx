@@ -25,7 +25,7 @@ class JogPad extends React.Component {
         selectedAxis: '' // Defaults to empty
     };
     actionHandlers = {
-        'X_AXIS': () => {
+        X_AXIS: () => {
             const { port, activeState } = this.props;
             const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
 
@@ -37,7 +37,7 @@ class JogPad extends React.Component {
                 }
             }
         },
-        'Y_AXIS': () => {
+        Y_AXIS: () => {
             const { port, activeState } = this.props;
             const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
 
@@ -49,7 +49,7 @@ class JogPad extends React.Component {
                 }
             }
         },
-        'Z_AXIS': () => {
+        Z_AXIS: () => {
             const { port, activeState } = this.props;
             const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
 
@@ -61,37 +61,37 @@ class JogPad extends React.Component {
                 }
             }
         },
-        'JOG_FORWARD': () => {
+        JOG_FORWARD: () => {
             const { port, activeState } = this.props;
             const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
 
             if (canJog) {
-                let distance = this.getJogDistance();
-                let jog = {
-                    'x': () => this.jog({ X: distance }),
-                    'y': () => this.jog({ Y: distance }),
-                    'z': () => this.jog({ Z: distance })
+                const distance = this.getJogDistance();
+                const jog = {
+                    x: () => this.jog({ X: distance }),
+                    y: () => this.jog({ Y: distance }),
+                    z: () => this.jog({ Z: distance })
                 }[this.state.selectedAxis];
 
                 jog && jog();
             }
         },
-        'JOG_BACKWARD': () => {
+        JOG_BACKWARD: () => {
             const { port, activeState } = this.props;
             const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
 
             if (canJog) {
-                let distance = this.getJogDistance();
-                let jog = {
-                    'x': () => this.jog({ X: -distance }),
-                    'y': () => this.jog({ Y: -distance }),
-                    'z': () => this.jog({ Z: -distance })
+                const distance = this.getJogDistance();
+                const jog = {
+                    x: () => this.jog({ X: -distance }),
+                    y: () => this.jog({ Y: -distance }),
+                    z: () => this.jog({ Z: -distance })
                 }[this.state.selectedAxis];
 
                 jog && jog();
             }
         },
-        'SHUTTLE_ZONE': (value = 0) => {
+        SHUTTLE_ZONE: (value = 0) => {
             const { selectedAxis } = this.state;
 
             if (value === 0) {
@@ -125,9 +125,7 @@ class JogPad extends React.Component {
 
         // Shuttle Zone
         this.shuttleControl = new ShuttleControl();
-        this.shuttleControl.on('flush', (accumulatedResult) => {
-            let { axis, feedrate, relativeDistance } = accumulatedResult;
-
+        this.shuttleControl.on('flush', ({ axis, feedrate, relativeDistance }) => {
             feedrate = feedrate.toFixed(3) * 1;
             relativeDistance = relativeDistance.toFixed(4) * 1;
 
@@ -147,14 +145,14 @@ class JogPad extends React.Component {
     }
     subscribe() {
         { // gcode:start
-            let token = pubsub.subscribe('gcode:start', (msg) => {
+            const token = pubsub.subscribe('gcode:start', (msg) => {
                 // unset the selected axis to prevent from accidental movement while running a G-code file
                 this.setState({ selectedAxis: '' });
             });
             this.pubsubTokens.push(token);
         }
         { // gcode:resume
-            let token = pubsub.subscribe('gcode:resume', (msg) => {
+            const token = pubsub.subscribe('gcode:resume', (msg) => {
                 // unset the selected axis to prevent from accidental movement while running a G-code file
                 this.setState({ selectedAxis: '' });
             });
@@ -168,22 +166,18 @@ class JogPad extends React.Component {
         this.pubsubTokens = [];
     }
     jog(params = {}) {
-        let s = _.map(params, (value, letter) => {
-            return '' + letter + value;
-        }).join(' ');
+        const s = _.map(params, (value, letter) => ('' + letter + value)).join(' ');
         controller.writeln('G91 G0 ' + s); // relative distance
         controller.writeln('G90'); // absolute distance
     }
     move(params = {}) {
-        let s = _.map(params, (value, letter) => {
-            return '' + letter + value;
-        }).join(' ');
+        const s = _.map(params, (value, letter) => ('' + letter + value)).join(' ');
         controller.writeln('G0 ' + s);
     }
     getJogDistance() {
-        let { unit } = this.props;
-        let selectedDistance = store.get('widgets.axes.jog.selectedDistance');
-        let customDistance = store.get('widgets.axes.jog.customDistance');
+        const { unit } = this.props;
+        const selectedDistance = store.get('widgets.axes.jog.selectedDistance');
+        const customDistance = store.get('widgets.axes.jog.customDistance');
         if (selectedDistance) {
             return Number(selectedDistance) || 0;
         }
@@ -201,10 +195,10 @@ class JogPad extends React.Component {
         return val;
     }
     render() {
-        let { selectedAxis } = this.state;
-        let { port, activeState, distance } = this.props;
-        let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
-        let classes = {
+        const { selectedAxis } = this.state;
+        const { port, activeState } = this.props;
+        const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        const classes = {
             'jog-direction-x': classNames(
                 'jog-direction',
                 { 'jog-direction-highlight': selectedAxis === 'x' }
@@ -230,7 +224,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-x-minus jog-y-plus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({X: -distance, Y: distance});
+                                        this.jog({ X: -distance, Y: distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y+')}
@@ -244,7 +238,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-y-plus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({Y: distance});
+                                        this.jog({ Y: distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move Y+')}
@@ -258,7 +252,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-x-plus jog-y-plus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({X: distance, Y: distance});
+                                        this.jog({ X: distance, Y: distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y+')}
@@ -272,7 +266,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-z-plus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({Z: distance});
+                                        this.jog({ Z: distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move Z+')}
@@ -288,7 +282,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-x-minus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({X: -distance});
+                                        this.jog({ X: -distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move X-')}
@@ -300,7 +294,7 @@ class JogPad extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-xy-zero"
-                                    onClick={() => this.move({X: 0, Y: 0})}
+                                    onClick={() => this.move({ X: 0, Y: 0 })}
                                     disabled={!canClick}
                                     title={i18n._('Move To XY Zero (G0 X0 Y0)')}
                                 >
@@ -313,7 +307,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-x-plus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({X: distance});
+                                        this.jog({ X: distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move X+')}
@@ -325,7 +319,7 @@ class JogPad extends React.Component {
                                 <button
                                     type="button"
                                     className="btn btn-sm btn-default jog-z-zero"
-                                    onClick={() => this.move({Z: 0})}
+                                    onClick={() => this.move({ Z: 0 })}
                                     disabled={!canClick}
                                     title={i18n._('Move To Z Zero (G0 Z0)')}
                                 >
@@ -340,7 +334,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-x-minus jog-y-minus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({X: -distance, Y: -distance});
+                                        this.jog({ X: -distance, Y: -distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y-')}
@@ -354,7 +348,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-y-minus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({Y: -distance});
+                                        this.jog({ Y: -distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move Y-')}
@@ -368,7 +362,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-x-plus jog-y-minus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({X: distance, Y: -distance});
+                                        this.jog({ X: distance, Y: -distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y-')}
@@ -382,7 +376,7 @@ class JogPad extends React.Component {
                                     className="btn btn-sm btn-default jog-z-minus"
                                     onClick={() => {
                                         const distance = this.getJogDistance();
-                                        this.jog({Z: -distance});
+                                        this.jog({ Z: -distance });
                                     }}
                                     disabled={!canClick}
                                     title={i18n._('Move Z-')}

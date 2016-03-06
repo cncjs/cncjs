@@ -18,7 +18,7 @@ class AxesWidget extends React.Component {
         const { isCollapsed, isFullscreen } = this.state;
         const classes = {
             widgetContent: classNames(
-                { 'hidden': isCollapsed }
+                { hidden: isCollapsed }
             )
         };
 
@@ -30,7 +30,7 @@ class AxesWidget extends React.Component {
                         <Widget.Controls>
                             <Widget.Button
                                 type="edit"
-                                onClick={(event) => this.refs.axes.onEdit()}
+                                onClick={(event) => this.refs.axes.edit()}
                             />
                             <Widget.Button
                                 type="toggle"

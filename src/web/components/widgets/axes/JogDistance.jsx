@@ -2,7 +2,6 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import i18n from '../../../lib/i18n';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import store from '../../../store';
 import combokeys from '../../../lib/combokeys';
 import { in2mm, mm2in } from '../../../lib/units';
@@ -25,11 +24,11 @@ class JogDistance extends React.Component {
     };
     unitDidChange = false;
     actionHandlers = {
-        'JOG_LEVER_SWITCH': () => {
-            let { selectedDistance } = this.state;
-            let distances = ['1', '0.1', '0.01', '0.001', ''];
-            let currentIndex = distances.indexOf(selectedDistance);
-            let distance = distances[(currentIndex + 1) % distances.length];
+        JOG_LEVER_SWITCH: () => {
+            const { selectedDistance } = this.state;
+            const distances = ['1', '0.1', '0.01', '0.001', ''];
+            const currentIndex = distances.indexOf(selectedDistance);
+            const distance = distances[(currentIndex + 1) % distances.length];
             this.setState({ selectedDistance: distance });
         }
     };
@@ -58,7 +57,7 @@ class JogDistance extends React.Component {
                 customDistance = Number(customDistance).toFixed(3) * 1;
             }
 
-            this.setState({ customDistance: customDistance });
+            this.setState({ customDistance });
         }
     }
     componentDidUpdate(prevProps, prevState) {
@@ -68,11 +67,9 @@ class JogDistance extends React.Component {
             return;
         }
 
-        let { unit } = this.props;
-        let {
-            selectedDistance = '',
-            customDistance = 0
-        } = this.state;
+        const { unit } = this.props;
+        const { selectedDistance } = this.state;
+        let { customDistance = 0 } = this.state;
 
         if (unit === IMPERIAL_UNIT) {
             customDistance = in2mm(customDistance);
@@ -99,10 +96,10 @@ class JogDistance extends React.Component {
     handleChangeCustomDistance(event) {
         let customDistance = event.target.value;
         customDistance = this.normalizeToRange(customDistance, DISTANCE_MIN, DISTANCE_MAX);
-        this.setState({ customDistance: customDistance });
+        this.setState({ customDistance });
     }
     increaseCustomDistance() {
-        let { unit } = this.props;
+        const { unit } = this.props;
         let customDistance = Math.min(Number(this.state.customDistance) + DISTANCE_STEP, DISTANCE_MAX);
         if (unit === IMPERIAL_UNIT) {
             customDistance = customDistance.toFixed(4) * 1;
@@ -110,10 +107,10 @@ class JogDistance extends React.Component {
         if (unit === METRIC_UNIT) {
             customDistance = customDistance.toFixed(3) * 1;
         }
-        this.setState({ customDistance: customDistance });
+        this.setState({ customDistance });
     }
     decreaseCustomDistance() {
-        let { unit } = this.props;
+        const { unit } = this.props;
         let customDistance = Math.max(Number(this.state.customDistance) - DISTANCE_STEP, DISTANCE_MIN);
         if (unit === IMPERIAL_UNIT) {
             customDistance = customDistance.toFixed(4) * 1;
@@ -121,7 +118,7 @@ class JogDistance extends React.Component {
         if (unit === METRIC_UNIT) {
             customDistance = customDistance.toFixed(3) * 1;
         }
-        this.setState({ customDistance: customDistance });
+        this.setState({ customDistance });
     }
     toUnitValue(unit, val) {
         val = Number(val) || 0;
@@ -135,33 +132,32 @@ class JogDistance extends React.Component {
         return val;
     }
     render() {
-        let { selectedDistance, customDistance } = this.state;
-        let { unit } = this.props;
-
-        selectedDistance = '' + selectedDistance; // force convert to string
-        let isCustomDistanceSelected = !(_.includes(['1', '0.1', '0.01', '0.001'], selectedDistance));
-        let classes = {
-            '1': classNames(
+        const { selectedDistance, customDistance } = this.state;
+        const { unit } = this.props;
+        const distance = String(selectedDistance); // force convert to string
+        const isCustomDistanceSelected = !(_.includes(['1', '0.1', '0.01', '0.001'], distance));
+        const classes = {
+            1: classNames(
                 'btn',
                 'btn-default',
-                { 'btn-select': selectedDistance === '1' }
+                { 'btn-select': distance === '1' }
             ),
-            '0.1': classNames(
+            0.1: classNames(
                 'btn',
                 'btn-default',
-                { 'btn-select': selectedDistance === '0.1' }
+                { 'btn-select': distance === '0.1' }
             ),
-            '0.01': classNames(
+            0.01: classNames(
                 'btn',
                 'btn-default',
-                { 'btn-select': selectedDistance === '0.01' }
+                { 'btn-select': distance === '0.01' }
             ),
-            '0.001': classNames(
+            0.001: classNames(
                 'btn',
                 'btn-default',
-                { 'btn-select': selectedDistance === '0.001' }
+                { 'btn-select': distance === '0.001' }
             ),
-            'custom': classNames(
+            custom: classNames(
                 'btn',
                 'btn-default',
                 { 'btn-select': isCustomDistanceSelected }
@@ -207,7 +203,7 @@ class JogDistance extends React.Component {
                         </button>
                         <button
                             type="button"
-                            className={classes['custom']}
+                            className={classes.custom}
                             title={i18n._('Custom')}
                             onClick={() => this.changeSelectedDistance('')}
                         >
@@ -217,7 +213,7 @@ class JogDistance extends React.Component {
                     <input
                         type="number"
                         className="form-control"
-                        style={{borderRadius: 0}}
+                        style={{ borderRadius: 0 }}
                         min={DISTANCE_MIN}
                         max={DISTANCE_MAX}
                         step={DISTANCE_STEP}
@@ -226,10 +222,18 @@ class JogDistance extends React.Component {
                         title={i18n._('Custom distance for every move operation')}
                     />
                     <div className="input-group-btn">
-                        <PressAndHold className="btn btn-default" onClick={::this.increaseCustomDistance} title={i18n._('Increase custom distance by one unit')}>
+                        <PressAndHold
+                            className="btn btn-default"
+                            onClick={::this.increaseCustomDistance}
+                            title={i18n._('Increase custom distance by one unit')}
+                        >
                             <span className="fa fa-plus"></span>
                         </PressAndHold>
-                        <PressAndHold className="btn btn-default" onClick={::this.decreaseCustomDistance} title={i18n._('Decrease custom distance by one unit')}>
+                        <PressAndHold
+                            className="btn btn-default"
+                            onClick={::this.decreaseCustomDistance}
+                            title={i18n._('Decrease custom distance by one unit')}
+                        >
                             <span className="fa fa-minus"></span>
                         </PressAndHold>
                     </div>

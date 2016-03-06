@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
@@ -51,7 +50,7 @@ class Axes extends React.Component {
             }
 
             if (this.state.unit !== unit) {
-                this.setState({ unit: unit });
+                this.setState({ unit });
             }
         }
     };
@@ -60,20 +59,20 @@ class Axes extends React.Component {
         this.subscribe();
         this.addControllerEvents();
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        return ! _.isEqual(nextState, this.state);
+    }
     componentWillUnmount() {
         this.unsubscribe();
         this.removeControllerEvents();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return ! _.isEqual(nextState, this.state);
     }
     subscribe() {
         this.pubsubTokens = [];
 
         { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
+            const token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+                this.setState({ port });
 
                 if (!port) {
                     this.resetCurrentStatus();
@@ -98,7 +97,7 @@ class Axes extends React.Component {
             controller.off(eventName, callback);
         });
     }
-    onEdit() {
+    edit() {
         axesSettings.show();
     }
     resetCurrentStatus() {
@@ -125,14 +124,12 @@ class Axes extends React.Component {
             val = val.toFixed(3);
         }
 
-        return '' + val;
+        return String(val);
     }
     render() {
-        let { port, unit, activeState, machinePos, workingPos } = this.state;
-        let canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
-
-        machinePos = _.mapValues(machinePos, (pos, axis) => this.toFixedUnitString(unit, pos));
-        workingPos = _.mapValues(workingPos, (pos, axis) => this.toFixedUnitString(unit, pos));
+        const { port, unit, activeState } = this.state;
+        const machinePos = _.mapValues(this.state.machinePos, (pos, axis) => this.toFixedUnitString(unit, pos));
+        const workingPos = _.mapValues(this.state.workingPos, (pos, axis) => this.toFixedUnitString(unit, pos));
 
         return (
             <div>
