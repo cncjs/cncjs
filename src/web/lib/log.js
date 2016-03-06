@@ -1,12 +1,12 @@
 /**
  * Libraries
  */
-var printStackTrace = require('stacktrace');
+import StackTrace from 'stacktrace-js';
 
 /**
  * Modules
  */
-var browser = require('./browser');
+import browser from './browser';
 
 // Constants
 var TRACE = 0,
@@ -105,8 +105,8 @@ var consoleLogger = function(logger) {
     if (logger.args) {
         args = args.concat(logger.args);
     }
-    if (logger.stackTrace) {
-        args.push(logger.stackTrace[6]);
+    if (logger.stackframes) {
+        args.push(logger.stackframes[4].source);
     }
 
     try {
@@ -139,18 +139,18 @@ var Log = function() {
 };
 
 Log.prototype._log = function(level, args) {
-    var stackTrace = printStackTrace({
-        // stacktrace.js will try to get the source via AJAX to guess anonymous functions.
-        // It is necessary to disable AJAX requests in production to avoid unwanted traffic.
-        guess: false
-    });
-    var d = new Date();
-    this._logger({
-        datetime: getISODateTime(d),
-        level: level,
-        prefix: this.getPrefix(),
-        args: args,
-        stackTrace: stackTrace
+    StackTrace.get({
+        // offline: Boolean (default: false) - Set to true to prevent all network requests
+        offline: true
+    }).then((stackframes) => {
+        var d = new Date();
+        this._logger({
+            datetime: getISODateTime(d),
+            level: level,
+            prefix: this.getPrefix(),
+            args: args,
+            stackframes: stackframes
+        });
     });
 };
 
