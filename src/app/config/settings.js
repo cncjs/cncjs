@@ -219,4 +219,4 @@ if (debug) {
     settings = _.merge({}, defaults, productionSettings);
 }
 
-module.exports = settings; // use `module.exports` instead of `export default`
+export default settings;
