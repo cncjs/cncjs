@@ -24,16 +24,10 @@ import urljoin from './lib/urljoin';
 import log from './lib/log';
 import settings from './config/settings';
 import api from './api';
-
-let middleware = {};
-// Auto load middleware
-fs.readdirSync(__dirname + '/lib/middleware').forEach((filename) => {
-    if ( ! /\.js$/.test(filename)) {
-        return;
-    }
-    let name = path.basename(filename, '.js');
-    middleware[name] = require('./lib/middleware/' + name);
-});
+import err_client from './lib/middleware/err_client';
+import err_log from './lib/middleware/err_log';
+import err_notfound from './lib/middleware/err_notfound';
+import err_server from './lib/middleware/err_server';
 
 const renderPage = (req, res, next) => {
     let view = req.params[0] || 'index';
@@ -181,8 +175,6 @@ const appMain = () => {
     app.get(urljoin(settings.route, '*'), renderPage);
 
     { // Error handling
-        let { err_log, err_client, err_notfound, err_server } = middleware;
-
         app.use(err_log());
         app.use(err_client({
             error: 'XHR error'
