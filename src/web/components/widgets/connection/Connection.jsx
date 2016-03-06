@@ -41,32 +41,29 @@ class Connection extends React.Component {
 
             this.clearAlert();
 
-            let port = store.get('widgets.connection.port') || '';
+            const port = store.get('widgets.connection.port') || '';
 
             if (_.includes(_.map(ports, 'port'), port)) {
-                this.setState({
-                    port: port,
-                    ports: ports
-                });
+                this.setState({ port, ports });
 
-                let { autoReconnect, hasReconnected } = this.state;
+                const { autoReconnect, hasReconnected } = this.state;
 
                 if (autoReconnect && !hasReconnected) {
                     this.setState({ hasReconnected: true });
                     this.openPort(port);
                 }
             } else {
-                this.setState({ ports: ports });
+                this.setState({ ports });
             }
         },
         'serialport:open': (options) => {
-            let { port, baudrate, inuse } = options;
-            let ports = _.map(this.state.ports, function(o) {
+            const { port, baudrate, inuse } = options;
+            const ports = _.map(this.state.ports, (o) => {
                 if (o.port !== port) {
                     return o;
                 }
 
-                return _.extend(o, { inuse: inuse });
+                return _.extend(o, { inuse });
             });
 
             this.clearAlert();
@@ -79,15 +76,15 @@ class Connection extends React.Component {
             this.setState({
                 connecting: false,
                 connected: true,
-                port: port,
-                baudrate: baudrate,
-                ports: ports
+                port,
+                baudrate,
+                ports
             });
 
             log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
         },
         'serialport:close': (options) => {
-            let { port, inuse } = options;
+            const { port } = options;
 
             this.clearAlert();
 
@@ -102,7 +99,7 @@ class Connection extends React.Component {
             log.debug('Disconnected from \'' + port + '\'.');
         },
         'serialport:error': (options) => {
-            let { port } = options;
+            const { port } = options;
 
             this.showAlert('Error opening serial port \'' + port + '\'');
 
@@ -144,7 +141,7 @@ class Connection extends React.Component {
         this.setState({ alertMessage: '' });
     }
     startLoading() {
-        let delay = 5 * 1000; // wait for 5 seconds
+        const delay = 5 * 1000; // wait for 5 seconds
 
         this.setState({
             loading: true
@@ -164,7 +161,7 @@ class Connection extends React.Component {
     }
     isPortInUse(port) {
         port = port || this.state.port;
-        let o = _.find(this.state.ports, { port: port }) || {};
+        const o = _.find(this.state.ports, { port }) || {};
         return !!(o.inuse);
     }
     handleRefresh() {
@@ -184,15 +181,15 @@ class Connection extends React.Component {
                     return;
                 }
 
-                let portData = _.find(res.body, { port: port });
+                const portData = _.find(res.body, { port });
                 if (!portData) {
                     return;
                 }
 
                 log.debug(portData);
 
-                let isRunning = _.get(portData, 'state.isRunning');
-                let gcode = _.get(portData, 'gcode.gcode');
+                const isRunning = _.get(portData, 'state.isRunning');
+                const gcode = _.get(portData, 'gcode.gcode');
 
                 if (gcode) {
                     pubsub.publish('gcode:load', gcode);
@@ -231,13 +228,13 @@ class Connection extends React.Component {
         store.set('widgets.connection.baudrate', value);
     }
     handleAutoReconnect(event) {
-        let checked = event.target.checked;
+        const checked = event.target.checked;
         store.set('widgets.connection.autoReconnect', checked);
     }
     renderPortOption(option) {
-        let { label, inuse, manufacturer } = option;
-        let styles = {
-            option:  {
+        const { label, inuse, manufacturer } = option;
+        const styles = {
+            option: {
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden'
@@ -255,19 +252,19 @@ class Connection extends React.Component {
                 }
                 {label}
                 </div>
-                {manufacturer && 
+                {manufacturer &&
                     <note style={styles.note}>
-                        {i18n._('Manufacturer: {{manufacturer}}', { manufacturer: manufacturer })}
+                        {i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}
                     </note>
                 }
             </div>
         );
     }
     renderPortValue(option) {
-        let { label, inuse } = option;
-        let notLoading = !(this.state.loading);
-        let canChangePort = notLoading;
-        let style = {
+        const { label, inuse } = option;
+        const notLoading = !(this.state.loading);
+        const canChangePort = notLoading;
+        const style = {
             color: canChangePort ? '#333' : '#ccc',
             textOverflow: 'ellipsis',
             overflow: 'hidden'
@@ -282,10 +279,10 @@ class Connection extends React.Component {
         );
     }
     renderBaudrateValue(option) {
-        let notLoading = !(this.state.loading);
-        let notInUse = !(this.isPortInUse(this.state.port));
-        let canChangeBaudrate = notLoading && notInUse;
-        let style = {
+        const notLoading = !(this.state.loading);
+        const notInUse = !(this.isPortInUse(this.state.port));
+        const canChangeBaudrate = notLoading && notInUse;
+        const style = {
             color: canChangeBaudrate ? '#333' : '#ccc',
             textOverflow: 'ellipsis',
             overflow: 'hidden'
@@ -295,21 +292,21 @@ class Connection extends React.Component {
         );
     }
     render() {
-        let {
+        const {
             loading, connecting, connected,
             ports, baudrates,
             port, baudrate,
             autoReconnect,
             alertMessage
         } = this.state;
-        let notLoading = !loading;
-        let notConnecting = !connecting;
-        let notConnected = !connected;
-        let canRefresh = notLoading && notConnected;
-        let canChangePort = notLoading && notConnected;
-        let canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(port)));
-        let canOpenPort = port && baudrate && notConnecting && notConnected;
-        let canClosePort = connected;
+        const notLoading = !loading;
+        const notConnecting = !connecting;
+        const notConnected = !connected;
+        const canRefresh = notLoading && notConnected;
+        const canChangePort = notLoading && notConnected;
+        const canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(port)));
+        const canOpenPort = port && baudrate && notConnecting && notConnected;
+        const canClosePort = connected;
 
         return (
             <div>
@@ -321,14 +318,12 @@ class Connection extends React.Component {
                             className="sm"
                             name="port"
                             value={port}
-                            options={_.map(ports, (port) => {
-                                return {
-                                    value: port.port,
-                                    label: port.port,
-                                    manufacturer: port.manufacturer,
-                                    inuse: port.inuse
-                                };
-                            })}
+                            options={_.map(ports, (o) => ({
+                                value: o.port,
+                                label: o.port,
+                                manufacturer: o.manufacturer,
+                                inuse: o.inuse
+                            }))}
                             disabled={!canChangePort}
                             backspaceRemoves={false}
                             clearable={false}
@@ -340,7 +335,14 @@ class Connection extends React.Component {
                             onChange={::this.changePort}
                         />
                         <div className="input-group-btn">
-                            <button type="button" className="btn btn-default" name="btn-refresh" title={i18n._('Refresh')} onClick={::this.handleRefresh} disabled={!canRefresh}>
+                            <button
+                                type="button"
+                                className="btn btn-default"
+                                name="btn-refresh"
+                                title={i18n._('Refresh')}
+                                onClick={::this.handleRefresh}
+                                disabled={!canRefresh}
+                            >
                             {notLoading
                                 ? <i className="fa fa-refresh"></i>
                                 : <i className="fa fa-refresh rotating"></i>
@@ -355,12 +357,10 @@ class Connection extends React.Component {
                         className="sm"
                         name="baudrate"
                         value={baudrate}
-                        options={_.map(baudrates, (baudrate) => {
-                            return {
-                                value: baudrate,
-                                label: Number(baudrate).toString()
-                            };
-                        })}
+                        options={_.map(baudrates, (value) => ({
+                            value,
+                            label: Number(value).toString()
+                        }))}
                         disabled={!canChangeBaudrate}
                         backspaceRemoves={false}
                         clearable={false}
