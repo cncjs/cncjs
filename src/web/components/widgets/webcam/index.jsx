@@ -23,7 +23,7 @@ class WebcamWidget extends React.Component {
         const { disabled, isCollapsed, isFullscreen } = this.state;
         const classes = {
             widgetContent: classNames(
-                { 'hidden': isCollapsed }
+                { hidden: isCollapsed }
             ),
             webcamOnOff: classNames(
                 'fa',

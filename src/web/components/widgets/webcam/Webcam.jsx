@@ -33,7 +33,7 @@ class Webcam extends React.Component {
                     <Iframe url={url} ref="iframe" />
                 </div>
                 }
-                {disabled && 
+                {disabled &&
                 <div className="webcam-off-container">
                     <h4><i className="icon-webcam"></i></h4>
                     <h5>{i18n._('Webcam is off')}</h5>

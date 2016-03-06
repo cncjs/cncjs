@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Modal } from 'react-bootstrap';
@@ -23,8 +22,8 @@ class WebcamSettings extends React.Component {
         }
     }
     handleChangeURL(event) {
-        let url = event.target.value;
-        this.setState({ url: url });
+        const url = event.target.value;
+        this.setState({ url });
     }
     handleSave() {
         store.set('widgets.webcam.url', this.state.url);
@@ -65,7 +64,7 @@ class WebcamSettings extends React.Component {
 }
 
 export const show = (callback = noop) => {
-    const el = document.body.appendChild(document.createElement('div'));  
+    const el = document.body.appendChild(document.createElement('div'));
     const handleClose = (e) => {
         ReactDOM.unmountComponentAtNode(el);
         setTimeout(() => {
