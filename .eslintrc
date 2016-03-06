@@ -13,17 +13,29 @@
     },
     "extends": "airbnb",
     "rules": {
+        "comma-dangle": [2, "never"],
         "default-case": 0,
         "indent": [2, 4],
-        "max-len": [1, 120, 2, {ignoreComments: true}],
+        "max-len": [1, 160, 2, {"ignoreComments": true}],
         "no-cond-assign": [2, "except-parens"],
         "no-else-return": 0,
         "no-param-reassign": 0,
-        "no-unused-vars": [1, {"vars": "local", "args": "none"}],
-        "quote-props": [1, "consistent-as-needed"],
-        "quotes": 0,
-        "radix": 0,
-        "space-infix-ops": 0,
-        "react/jsx-indent-props": [2, 4]
+        "no-unused-expressions": [2, {
+            "allowShortCircuit": true,
+            "allowTernary": true
+        }],
+        "no-unused-vars": [1, {
+            "vars": "local",
+            "args": "none"
+        }],
+        "prefer-template": 0,
+        "quote-props": [1, "as-needed"],
+        "react/jsx-indent-props": [2, 4],
+        "react/jsx-no-bind": [2, {
+            "ignoreRefs": false,
+            "allowArrowFunctions": true,
+            "allowBind": false
+        }],
+        "react/sort-comp": 0
     }
 }
