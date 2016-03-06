@@ -34,7 +34,7 @@ class GCode extends React.Component {
             const from = this.state.sent;
             const to = sent;
 
-            let list = {};
+            const list = {};
 
             // Reset obsolete queue items
             for (let i = to; i < from; ++i) {
@@ -79,7 +79,7 @@ class GCode extends React.Component {
             }
 
             if (this.state.unit !== unit) {
-                this.setState({ unit: unit });
+                this.setState({ unit });
             }
         }
     };
@@ -96,15 +96,15 @@ class GCode extends React.Component {
         this.pubsubTokens = [];
 
         { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
+            const token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+                this.setState({ port });
             });
             this.pubsubTokens.push(token);
         }
 
         { // gcode:load
-            let token = pubsub.subscribe('gcode:load', (msg, gcode) => {
+            const token = pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
 
                 parseString(gcode, (err, data) => {
@@ -114,23 +114,21 @@ class GCode extends React.Component {
                     }
 
                     const lines = _(data)
-                        .map((o, index) => {
-                            return {
-                                id: index,
-                                status: GCODE_STATUS.NOT_STARTED,
-                                cmd: o.line
-                            };
-                        })
+                        .map((o, index) => ({
+                            id: index,
+                            status: GCODE_STATUS.NOT_STARTED,
+                            cmd: o.line
+                        }))
                         .value();
 
-                    this.setState({ lines: lines });
+                    this.setState({ lines });
                 });
             });
             this.pubsubTokens.push(token);
         }
 
         { // gcode:unload
-            let token = pubsub.subscribe('gcode:unload', (msg) => {
+            const token = pubsub.subscribe('gcode:unload', (msg) => {
                 this.setState({ lines: [] });
             });
             this.pubsubTokens.push(token);
@@ -156,7 +154,6 @@ class GCode extends React.Component {
         const { unit, lines } = this.state;
         const { remain, sent, total, createdTime, startedTime, finishedTime } = this.state;
         const isLoaded = (_.size(lines) > 0);
-        const notLoaded = !isLoaded;
         const scrollTo = sent;
 
         return (

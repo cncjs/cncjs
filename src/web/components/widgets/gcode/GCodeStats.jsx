@@ -1,14 +1,24 @@
 import _ from 'lodash';
-import classNames from 'classnames';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import update from 'react-addons-update';
 import i18n from '../../../lib/i18n';
 import {
     METRIC_UNIT,
     IMPERIAL_UNIT
 } from './constants';
+
+const toFixedUnitValue = (unit, val) => {
+    val = Number(val) || 0;
+    if (unit === METRIC_UNIT) {
+        val = (val / 1).toFixed(3);
+    }
+    if (unit === IMPERIAL_UNIT) {
+        val = (val / 25.4).toFixed(4);
+    }
+
+    return val;
+};
 
 class GCodeStats extends React.Component {
     static propTypes = {
@@ -55,10 +65,10 @@ class GCodeStats extends React.Component {
         this.pubsubTokens = [];
 
         { // gcode:boundingBox
-            let token = pubsub.subscribe('gcode:boundingBox', (msg, box) => {
-                let dX = box.max.x - box.min.x;
-                let dY = box.max.y - box.min.y;
-                let dZ = box.max.z - box.min.z;
+            const token = pubsub.subscribe('gcode:boundingBox', (msg, box) => {
+                const dX = box.max.x - box.min.x;
+                const dY = box.max.y - box.min.y;
+                const dZ = box.max.z - box.min.z;
 
                 this.setState({
                     box: {
@@ -84,20 +94,17 @@ class GCodeStats extends React.Component {
         }
 
         { // gcode:start
-            let token = pubsub.subscribe('gcode:start', (msg) => {
-                let now = moment().unix();
-                let startTime = this.state.startTime || now; // use startTime or current time
-                let duration = (startTime !== now) ? this.state.duration : 0;
-                this.setState({
-                    startTime: startTime,
-                    duration: duration
-                });
+            const token = pubsub.subscribe('gcode:start', (msg) => {
+                const now = moment().unix();
+                const startTime = this.state.startTime || now; // use startTime or current time
+                const duration = (startTime !== now) ? this.state.duration : 0;
+                this.setState({ startTime, duration });
             });
             this.pubsubTokens.push(token);
         }
 
         { // gcode:stop
-            let token = pubsub.subscribe('gcode:stop', (msg) => {
+            const token = pubsub.subscribe('gcode:stop', (msg) => {
                 this.setState({
                     startTime: 0,
                     duration: 0
@@ -105,9 +112,9 @@ class GCodeStats extends React.Component {
             });
             this.pubsubTokens.push(token);
         }
-        
+
         { // gcode:unload
-            let token = pubsub.subscribe('gcode:unload', (msg) => {
+            const token = pubsub.subscribe('gcode:unload', (msg) => {
                 this.setState({
                     startTime: 0,
                     duration: 0,
@@ -145,10 +152,10 @@ class GCodeStats extends React.Component {
                 return;
             }
 
-            let from = moment.unix(this.state.startTime);
-            let to = moment();
-            let duration = to.diff(from, 'seconds');
-            this.setState({ duration: duration });
+            const from = moment.unix(this.state.startTime);
+            const to = moment();
+            const duration = to.diff(from, 'seconds');
+            this.setState({ duration });
         }, 1000);
     }
     clearTimer() {
@@ -157,23 +164,13 @@ class GCodeStats extends React.Component {
             this.timer = null;
         }
     }
-    toFixedUnitValue(unit, val) {
-        val = Number(val) || 0;
-        if (unit === METRIC_UNIT) {
-            val = (val / 1).toFixed(3);
-        }
-        if (unit === IMPERIAL_UNIT) {
-            val = (val / 25.4).toFixed(4);
-        }
-
-        return val;
-    }
     render() {
-        let { unit, total, sent } = this.props;
-        let box = _.mapValues(this.state.box, (position) => {
-            return _.mapValues(position, (val, axis) => this.toFixedUnitValue(unit, val));
+        const { unit, total, sent } = this.props;
+        const box = _.mapValues(this.state.box, (position) => {
+            const obj = _.mapValues(position, (val, axis) => toFixedUnitValue(unit, val));
+            return obj;
         });
-        let displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
+        const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
         let startTime = '–';
         let duration = '–';
 
@@ -181,12 +178,12 @@ class GCodeStats extends React.Component {
             startTime = moment.unix(this.state.startTime).format('YYYY-MM-DD HH:mm:ss');
         }
         if (this.state.duration > 0) {
-            let d = moment.duration(this.state.duration, 'seconds');
-            let hours = _.padStart(d.hours(), 2, '0');
-            let minutes = _.padStart(d.minutes(), 2, '0');
-            let seconds = _.padStart(d.seconds(), 2, '0');
+            const d = moment.duration(this.state.duration, 'seconds');
+            const hours = _.padStart(d.hours(), 2, '0');
+            const minutes = _.padStart(d.minutes(), 2, '0');
+            const seconds = _.padStart(d.seconds(), 2, '0');
 
-            duration = hours + ':' + minutes + ':' + seconds;
+            duration = (hours + ':' + minutes + ':' + seconds);
         }
 
         return (

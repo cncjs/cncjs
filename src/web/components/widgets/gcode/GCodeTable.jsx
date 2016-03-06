@@ -1,8 +1,6 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import colornames from 'colornames';
 import React from 'react';
-import update from 'react-addons-update';
 import DataGrid from 'react-datagrid';
 import i18n from '../../../lib/i18n';
 import { GCODE_STATUS } from './constants';
@@ -24,14 +22,14 @@ const columns = [
             };
             const styles = {
                 icon: {
-                    color: ((value) => {
-                        let color = {};
+                    color: (() => {
+                        const color = {};
                         color[GCODE_STATUS.ERROR] = colornames('indian red');
                         color[GCODE_STATUS.NOT_STARTED] = colornames('gray 80');
                         color[GCODE_STATUS.IN_PROGRESS] = colornames('gray 80');
                         color[GCODE_STATUS.COMPLETED] = colornames('gray 20');
                         return color[value] || colornames('gray 80');
-                    })(value)
+                    })()
                 }
             };
 
@@ -71,7 +69,7 @@ class GCodeTable extends React.Component {
     };
 
     render() {
-        const { data, height, rowHeight, scrollTo } = this.props;
+        const { data, height, rowHeight } = this.props;
 
         return (
             <div className="gcode-table">
@@ -83,7 +81,7 @@ class GCodeTable extends React.Component {
                     columns={columns}
                     emptyText={i18n._('No data to display')}
                     rowHeight={rowHeight}
-                    style={{height: height}}
+                    style={{ height }}
                     withColumnMenu={false}
                     showCellBorders={true}
                 />
