@@ -210,4 +210,4 @@ const serverMain = (server) => {
     cncServer.start();
 };
 
-module.exports = serverMain; // use `module.exports` instead of `export default`
+export default serverMain;
