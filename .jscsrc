@@ -1,11 +1,14 @@
 {
     "esnext": true,
-    "preset": "google",
+    "preset": "airbnb",
     "fileExtensions": [".js", ".jsx"],
-    "disallowMixedSpacesAndTabs": true,
-    "maximumLineLength": 160,
-    "validateLineBreaks": "LF",
+    "maximumLineLength": {
+        "value": 160,
+        "allExcept": ["comments", "regex"]
+    },
     "validateIndentation": 4,
+    "requirePaddingNewLinesAfterBlocks": false,
+    "requireTrailingComma": false,
     "excludeFiles": [
         "node_modules/**"
     ]
