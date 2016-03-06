@@ -1,7 +1,0 @@
-[
-    {
-        "type": "server",
-        "route": "/",
-        "server": "./app.standalone"
-    }
-]
