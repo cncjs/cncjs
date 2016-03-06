@@ -9,6 +9,11 @@ var program = require('commander');
 var pkg = require('../package.json');
 require('colors');
 
+const RCFILE = '.cncrc';
+const getUserHome = function() {
+    return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
+};
+
 function increaseVerbosityLevel(val, total) {
     return total + 1;
 }
@@ -41,7 +46,7 @@ program
     .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
     .parse(process.argv);
 
-var settings = require('../dist/app/config/settings');
+var settings = {};
 
 if (program.verbose === 1) {
     _.set(settings, 'verbosity', 1);
@@ -53,7 +58,7 @@ if (program.verbose === 2) {
 }
 
 { // Load configuration settings
-    var cncrc = settings['cncrc'];
+    var cncrc = path.resolve(getUserHome(), RCFILE);
 
     if (program.config) {
         cncrc = path.resolve(program.config);
@@ -73,27 +78,20 @@ if (program.verbose === 2) {
     }
 }
 
-var routes = [
-    {
-        type: 'server',
-        route: '/',
-        // An absolute path is recommended to use
-        server: path.resolve(__dirname, '../dist/app/app')
-    }
-];
-
+var routes = [];
 if (program.mount) {
-    routes.unshift({
+    routes.push({
         type: 'static',
         route: program.mount.url,
         directory: program.mount.path
     });
 }
 
-var main = require('..');
-main({
+var appMain = require('../dist/app');
+appMain({
     port: program.port,
     host: program.host,
     backlog: program.backlog,
-    routes: routes
+    routes: routes,
+    settings: settings
 });
