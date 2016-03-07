@@ -1,9 +1,8 @@
 {
-    "ecmaFeatures": {
-        "classes": true,
-        "modules": true,
-        "jsx": true
-    },
+    "plugins": [
+        "react"
+    ],
+    "extends": "airbnb",
     "env": {
         "browser": true,
         "node": true,
@@ -14,13 +13,10 @@
         "ecmaVersion": 7,
         "sourceType": "module",
         "ecmaFeatures": {
+            "experimentalObjectRestSpread": true,
             "jsx": true
         }
     },
-    "plugins": [
-        "react"
-    ],
-    "extends": "airbnb",
     "rules": {
         "arrow-body-style": 0,
         "block-spacing": 2,
@@ -52,6 +48,7 @@
         "no-const-assign": 2,
         "no-console": [1, { "allow": ["assert", "warn", "error"]}],
         "no-else-return": 0,
+        "no-lone-blocks": 0,
         "no-param-reassign": 0,
         "no-shadow": 0,
         "no-var": 0,
@@ -63,6 +60,7 @@
             "vars": "local",
             "args": "none"
         }],
+        "no-use-before-define": 0,
         "object-shorthand": 0,
         "one-var": 0,
         "one-var-declaration-per-line": 0,
@@ -89,10 +87,10 @@
         "react/no-danger": 1,
         "react/no-did-mount-set-state": 1,
         "react/no-did-update-set-state": 1,
-        "react/no-multi-comp": 1,
+        "react/no-multi-comp": [1, { "ignoreStateless": true }],
         "react/no-unknown-property": 1,
         "react/prefer-stateless-function": 1,
-        "react/prop-types": [1, { "ignore": ["className", "children"] }],
+        "react/prop-types": [1, { "ignore": ["className"] }],
         "react/react-in-jsx-scope": 1,
         "react/require-extension": 1,
         "react/self-closing-comp": 1,
