@@ -50,7 +50,13 @@ class WebcamSettings extends React.Component {
                     <form onSubmit={event => event.preventDefault()}>
                         <div className="form-group">
                             <label>{i18n._('URL')}</label>
-                            <input type="url" className="form-control" placeholder="http://" defaultValue={url} onChange={::this.handleChangeURL} />
+                            <input
+                                type="url"
+                                className="form-control"
+                                placeholder="http://"
+                                defaultValue={url}
+                                onChange={::this.handleChangeURL}
+                            />
                         </div>
                     </form>
                 </Modal.Body>

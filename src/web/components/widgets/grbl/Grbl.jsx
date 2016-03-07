@@ -10,7 +10,7 @@ import {
 } from './constants';
 
 const lookupGCodeDefinition = (word) => {
-    return {
+    const wordText = {
         // Motion
         'G0': i18n._('Rapid Move'),
         'G1': i18n._('Linear Move'),
@@ -50,7 +50,7 @@ const lookupGCodeDefinition = (word) => {
         // Tool Length Offset
         'G43.1': i18n._('Active Tool Offset'),
         'G49': i18n._('No Tool Offset'),
-        
+
         // Program
         'M0': i18n._('Stop'),
         'M1': i18n._('Stop'),
@@ -66,7 +66,9 @@ const lookupGCodeDefinition = (word) => {
         'M7': i18n._('Mist'),
         'M8': i18n._('Flood'),
         'M9': i18n._('Off')
-    }[word] || word;
+    };
+
+    return (wordText[word] || word);
 };
 
 class Grbl extends React.Component {
@@ -83,7 +85,7 @@ class Grbl extends React.Component {
             });
         },
         'grbl:parserstate': (parserstate) => {
-            this.setState({ parserstate: parserstate });
+            this.setState({ parserstate });
             log.trace(parserstate);
         }
     };
@@ -103,13 +105,13 @@ class Grbl extends React.Component {
         this.pubsubTokens = [];
 
         { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
+            const token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+                this.setState({ port });
 
                 if (!port) {
-                    let parserstate = {};
-                    this.setState({ parserstate: parserstate });
+                    const parserstate = {};
+                    this.setState({ parserstate });
                 }
             });
             this.pubsubTokens.push(token);
@@ -132,14 +134,14 @@ class Grbl extends React.Component {
         });
     }
     toggleDisplay() {
-        let { showGCode } = this.state;
+        const { showGCode } = this.state;
         this.setState({ showGCode: !showGCode });
     }
     render() {
-        let { port, activeState, parserstate = {}, showGCode } = this.state;
+        const { port, activeState, parserstate = {}, showGCode } = this.state;
+        const none = '–';
+        const canClick = !!port;
         let modal = parserstate.modal || {};
-        let none = '–';
-        let canClick = !!port;
 
         if (!showGCode) {
             modal = _.mapValues(modal, (word, group) => lookupGCodeDefinition(word));

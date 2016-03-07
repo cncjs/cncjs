@@ -64,7 +64,12 @@ class ConsoleInput extends React.Component {
                         >
                             {i18n._('Send')}
                         </button>
-                        <DropdownButton bsSize="sm" title="" id="console-command-dropdown" pullRight>
+                        <DropdownButton
+                            bsSize="sm"
+                            title=""
+                            id="console-command-dropdown"
+                            pullRight
+                        >
                             <MenuItem onSelect={::this.handleClear} disabled={!canClearAll}>{i18n._('Clear all')}</MenuItem>
                         </DropdownButton>
                     </div>
