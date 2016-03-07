@@ -1,5 +1,4 @@
 import gulp from 'gulp';
-import concat from 'gulp-concat';
 import mainBowerFiles from 'main-bower-files';
 
 const mainBowerFilesConfig = {

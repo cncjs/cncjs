@@ -9,7 +9,6 @@ import buffer from 'vinyl-buffer';
 import uglify from 'gulp-uglify';
 import notify from 'gulp-notify';
 import gulpif from 'gulp-if';
-import rename from 'gulp-rename';
 import exorcist from 'exorcist';
 import watchify from 'watchify';
 import livereload from 'gulp-livereload';
@@ -161,9 +160,6 @@ const createVendorBundle = (options) => {
         });
         bundler.on('update', rebundle);
         bundler.on('log', gutil.log);
-        bundler.on('error', options.errorHandler.warning);
-    } else {
-        bundler.on('error', options.errorHandler.error);
     }
 
     // Trigger initial bundling
@@ -206,9 +202,6 @@ const createAppBundle = (options) => {
         });
         bundler.on('update', rebundle);
         bundler.on('log', gutil.log);
-        bundler.on('error', options.errorHandler.warning);
-    } else {
-        bundler.on('error', options.errorHandler.error);
     }
 
     // Trigger initial bundling

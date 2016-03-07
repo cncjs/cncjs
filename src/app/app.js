@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
-import connect from 'connect';
 import express from 'express';
 import engines from 'consolidate';
 import errorhandler from 'errorhandler';
@@ -50,7 +49,6 @@ const renderPage = (req, res, next) => {
         version = settings.version;
 
         let lng = req.language;
-        let lngs = req.languages;
         let t = req.t;
 
         // Override IE's Compatibility View Settings

@@ -22,7 +22,6 @@ export default (options) => {
             // You can choose any JSHint reporter when you call
             // https://github.com/jshint/jshint/tree/master/src/reporters
             .pipe(jshint.reporter('default', { verbose: true }))
-            .pipe(jshint.reporter('fail'))
-                .on('error', options.errorHandler.error);
+            .pipe(jshint.reporter('fail'));
     });
 };

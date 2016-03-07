@@ -1,5 +1,4 @@
 import gulp from 'gulp';
-import plumber from 'gulp-plumber';
 import stylus from 'gulp-stylus';
 import sourcemaps from 'gulp-sourcemaps';
 import nib from 'nib';
@@ -18,7 +17,6 @@ const stylusConfig = {
 export default (options) => {
     gulp.task('stylus', () => {
         return gulp.src(stylusConfig.src)
-            .pipe(plumber({ errorHandler: options.errorHandler.error }))
             .pipe(sourcemaps.init())
                 .pipe(stylus(stylusConfig.options))
             .pipe(sourcemaps.write('/', { includeContent: false }))

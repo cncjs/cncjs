@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import fs from 'fs';
-import path from 'path';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import i18nextScanner from 'i18next-scanner';
@@ -41,7 +40,6 @@ const i18nextConfig = {
 };
 
 function customTransform(file, enc, done) {
-    let extname = path.extname(file.path);
     let content = fs.readFileSync(file.path, enc);
     let tableData = [
         ['Key', 'Value']

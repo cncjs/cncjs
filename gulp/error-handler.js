@@ -36,10 +36,6 @@ const ERROR_EMOTES = {
 // If the fatalLevel is 'off', then this will always return false.
 // Defaults the fatalLevel to 'error'.
 const isFatal = function(level) {
-    const errorLevels = [
-        'error',
-        'warning'
-    ];
     return ERROR_LEVELS.indexOf(level) <= ERROR_LEVELS.indexOf(fatalLevel || 'error');
 };
 
