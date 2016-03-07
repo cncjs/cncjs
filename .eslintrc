@@ -15,7 +15,7 @@
     ],
     "extends": "airbnb",
     "rules": {
-        "arrow-body-style": [1, "as-needed"],
+        "arrow-body-style": 0,
         "block-spacing": 2,
         "brace-style": [2, "1tbs"],
         "camelcase": [2, { "properties": "never" }],
