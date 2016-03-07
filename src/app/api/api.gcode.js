@@ -1,4 +1,3 @@
-import log from '../lib/log';
 import store from '../store';
 
 export const upload = (req, res) => {
@@ -29,7 +28,7 @@ export const upload = (req, res) => {
     }
 
     // Load G-code
-    const { name = '', size = 0 } = meta;
+    const { name = '' } = meta;
     controller.command(null, 'load', name, gcode, (err) => {
         if (err) {
             res.status(500).send({

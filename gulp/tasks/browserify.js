@@ -61,7 +61,7 @@ const vendorConfig = {
     options: {
         debug: true // Sourcemapping
     },
-    require: bundleDependencies['vendor']
+    require: bundleDependencies.vendor
 };
 
 const appConfig = {
@@ -80,7 +80,7 @@ const appConfig = {
         fullPaths: true
     },
     external: _.union(
-        bundleDependencies['vendor']
+        bundleDependencies.vendor
     ),
     transform: {
         'babelify': {
@@ -125,7 +125,6 @@ const appConfig = {
                 }
 
                 return relativeUrl;
-
             }
         }
     }
@@ -179,7 +178,7 @@ const createAppBundle = (options) => {
     // Create the application bundler
     let bundler = browserify(appConfig.options);
     bundler.add(appConfig.src);
-    bundler.transform('babelify', browserifyTransform['babelify']);
+    bundler.transform('babelify', browserifyTransform.babelify);
     bundler.transform('browserify-css', browserifyTransform['browserify-css']);
     bundler.transform('brfs');
     _.each(appConfig.external, (lib) => {

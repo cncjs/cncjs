@@ -13,114 +13,114 @@ const commandKeys = [
     },
     { // Homing
         cmd: 'HOMING',
-        keys: ['ctrl','alt','command','h'].join('+')
+        keys: ['ctrl', 'alt', 'command', 'h'].join('+')
     },
     { // Unlock
         cmd: 'UNLOCK',
-        keys: ['ctrl','alt','command','u'].join('+')
+        keys: ['ctrl', 'alt', 'command', 'u'].join('+')
     },
     { // Reset
         cmd: 'RESET',
-        keys: ['ctrl','alt','command','r'].join('+')
+        keys: ['ctrl', 'alt', 'command', 'r'].join('+')
     },
     { // Jog Lever Switch
         cmd: 'JOG_LEVER_SWITCH',
-        keys: ['ctrl','alt','command','='].join('+')
+        keys: ['ctrl', 'alt', 'command', '='].join('+')
     },
     { // Jog Forward
         cmd: 'JOG_FORWARD',
-        keys: ['ctrl','alt','command',']'].join('+')
+        keys: ['ctrl', 'alt', 'command', ']'].join('+')
     },
     { // Jog Backward
         cmd: 'JOG_BACKWARD',
-        keys: ['ctrl','alt','command','['].join('+')
+        keys: ['ctrl', 'alt', 'command', '['].join('+')
     },
     { // Shuttle Zone -7
         cmd: 'SHUTTLE_ZONE',
         value: -7,
-        keys: ['ctrl','alt','shift','7'].join('+')
+        keys: ['ctrl', 'alt', 'shift', '7'].join('+')
     },
     { // Shuttle Zone -6
         cmd: 'SHUTTLE_ZONE',
         value: -6,
-        keys: ['ctrl','alt','shift','6'].join('+')
+        keys: ['ctrl', 'alt', 'shift', '6'].join('+')
     },
     { // Shuttle Zone -5
         cmd: 'SHUTTLE_ZONE',
         value: -5,
-        keys: ['ctrl','alt','shift','5'].join('+')
+        keys: ['ctrl', 'alt', 'shift', '5'].join('+')
     },
     { // Shuttle Zone -4
         cmd: 'SHUTTLE_ZONE',
         value: -4,
-        keys: ['ctrl','alt','shift','4'].join('+')
+        keys: ['ctrl', 'alt', 'shift', '4'].join('+')
     },
     { // Shuttle Zone -3
         cmd: 'SHUTTLE_ZONE',
         value: -3,
-        keys: ['ctrl','alt','shift','3'].join('+')
+        keys: ['ctrl', 'alt', 'shift', '3'].join('+')
     },
     { // Shuttle Zone -2
         cmd: 'SHUTTLE_ZONE',
         value: -2,
-        keys: ['ctrl','alt','shift','2'].join('+')
+        keys: ['ctrl', 'alt', 'shift', '2'].join('+')
     },
     { // Shuttle Zone -1
         cmd: 'SHUTTLE_ZONE',
         value: -1,
-        keys: ['ctrl','alt','shift','1'].join('+')
+        keys: ['ctrl', 'alt', 'shift', '1'].join('+')
     },
     { // Shuttle Zone 0
         cmd: 'SHUTTLE_ZONE',
         value: 0,
-        keys: ['ctrl','alt','command','0'].join('+')
+        keys: ['ctrl', 'alt', 'command', '0'].join('+')
     },
     { // Shuttle Zone 1
         cmd: 'SHUTTLE_ZONE',
         value: 1,
-        keys: ['ctrl','alt','command','1'].join('+')
+        keys: ['ctrl', 'alt', 'command', '1'].join('+')
     },
     { // Shuttle Zone 2
         cmd: 'SHUTTLE_ZONE',
         value: 2,
-        keys: ['ctrl','alt','command','2'].join('+')
+        keys: ['ctrl', 'alt', 'command', '2'].join('+')
     },
     { // Shuttle Zone 3
         cmd: 'SHUTTLE_ZONE',
         value: 3,
-        keys: ['ctrl','alt','command','3'].join('+')
+        keys: ['ctrl', 'alt', 'command', '3'].join('+')
     },
     { // Shuttle Zone 4
         cmd: 'SHUTTLE_ZONE',
         value: 4,
-        keys: ['ctrl','alt','command','4'].join('+')
+        keys: ['ctrl', 'alt', 'command', '4'].join('+')
     },
     { // Shuttle Zone 5
         cmd: 'SHUTTLE_ZONE',
         value: 5,
-        keys: ['ctrl','alt','command','5'].join('+')
+        keys: ['ctrl', 'alt', 'command', '5'].join('+')
     },
     { // Shuttle Zone 6
         cmd: 'SHUTTLE_ZONE',
         value: 6,
-        keys: ['ctrl','alt','command','6'].join('+')
+        keys: ['ctrl', 'alt', 'command', '6'].join('+')
     },
     { // Shuttle Zone 7
         cmd: 'SHUTTLE_ZONE',
         value: 7,
-        keys: ['ctrl','alt','command','7'].join('+')
+        keys: ['ctrl', 'alt', 'command', '7'].join('+')
     },
     { // X-Axis
         cmd: 'X_AXIS',
-        keys: ['ctrl','alt','command','x'].join('+')
+        keys: ['ctrl', 'alt', 'command', 'x'].join('+')
     },
     { // Y-Axis
         cmd: 'Y_AXIS',
-        keys: ['ctrl','alt','command','y'].join('+')
+        keys: ['ctrl', 'alt', 'command', 'y'].join('+')
     },
     { // Z-Axis
         cmd: 'Z_AXIS',
-        keys: ['ctrl','alt','command','z'].join('+')
+        keys: ['ctrl', 'alt', 'command', 'z'].join('+')
     }
 ];
 

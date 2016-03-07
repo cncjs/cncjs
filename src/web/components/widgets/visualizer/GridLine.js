@@ -7,10 +7,6 @@ class GridLine {
     colorGrid = new THREE.Color(0x888888);
 
     constructor(sizeX, stepX, sizeY, stepY, colorCenterLine, colorGrid) {
-        let material = new THREE.LineBasicMaterial({
-            vertexColors: THREE.VertexColors
-        });
-
         colorCenterLine = new THREE.Color(colorCenterLine) || this.colorCenterLine;
         colorGrid = new THREE.Color(colorGrid) || this.colorGrid;
 
@@ -18,11 +14,11 @@ class GridLine {
         stepY = (typeof stepY === 'undefined') ? stepX : stepY;
 
         for (let i = -1 * sizeX; i <= sizeX; i += stepX) {
-            let geometry = new THREE.Geometry();
-            let material = new THREE.LineBasicMaterial({
+            const geometry = new THREE.Geometry();
+            const material = new THREE.LineBasicMaterial({
                 vertexColors: THREE.VertexColors
             });
-            let color = (i === 0) ? colorCenterLine : colorGrid;
+            const color = (i === 0) ? colorCenterLine : colorGrid;
 
             geometry.vertices.push(
                 new THREE.Vector3(-sizeX, i, 0),
@@ -34,11 +30,11 @@ class GridLine {
         }
 
         for (let i = -1 * sizeY; i <= sizeY; i += stepY) {
-            let geometry = new THREE.Geometry();
-            let material = new THREE.LineBasicMaterial({
+            const geometry = new THREE.Geometry();
+            const material = new THREE.LineBasicMaterial({
                 vertexColors: THREE.VertexColors
             });
-            let color = (i === 0) ? colorCenterLine : colorGrid;
+            const color = (i === 0) ? colorCenterLine : colorGrid;
 
             geometry.vertices.push(
                 new THREE.Vector3(i, -sizeY, 0),

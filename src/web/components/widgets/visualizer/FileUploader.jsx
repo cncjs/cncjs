@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import request from 'superagent';
@@ -20,24 +19,24 @@ class FileUploader extends React.Component {
     }
     startWaiting() {
         // Adds the 'wait' class to <html>
-        let root = document.documentElement;
+        const root = document.documentElement;
         root.classList.add('wait');
     }
     stopWaiting() {
         // Adds the 'wait' class to <html>
-        let root = document.documentElement;
+        const root = document.documentElement;
         root.classList.remove('wait');
     }
     onChangeFile(event) {
-        let files = event.target.files;
-        let { port } = this.props;
+        const files = event.target.files;
+        const { port } = this.props;
 
         if (!port) {
             return;
         }
 
-        let file = files[0];
-        let reader = new FileReader();
+        const file = files[0];
+        const reader = new FileReader();
 
         reader.onloadend = (event) => {
             const { result, error } = event.target;
@@ -63,12 +62,12 @@ class FileUploader extends React.Component {
             request
                 .post('/api/gcode/upload')
                 .send({
-                    port: port,
+                    port,
                     meta: {
                         name: file.name,
                         size: file.size
                     },
-                    gcode: gcode
+                    gcode
                 })
                 .end((err, res) => {
                     this.stopWaiting();
@@ -81,7 +80,6 @@ class FileUploader extends React.Component {
 
                     pubsub.publish('gcode:load', gcode);
                 });
-
         };
 
         reader.readAsText(file);
@@ -91,17 +89,20 @@ class FileUploader extends React.Component {
         this.fileInputEl.click();
     }
     render() {
-        let { port } = this.props;
-        let { isUploading } = this.state;
-        let notUploading = !isUploading;
-        let canClick = !!port && notUploading;
+        const { port } = this.props;
+        const { isUploading } = this.state;
+        const notUploading = !isUploading;
+        const canClick = !!port && notUploading;
         const inputAttributes = {
             type: 'file',
             style: { display: 'none' },
             multiple: false,
             // The ref attribute adds a reference to the component to
             // this.refs when the component is mounted.
-            ref: el => this.fileInputEl = el, 
+            ref: (el) => {
+                this.fileInputEl = el;
+                return el;
+            },
             onChange: ::this.onChangeFile
         };
 

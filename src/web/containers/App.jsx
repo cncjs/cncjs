@@ -1,15 +1,19 @@
 import React from 'react';
 import Header from '../components/header';
 
-class App extends React.Component {
-    render() {
-        return (
-            <div>
-                <Header />
-                {this.props.children}
-            </div>
-        );
-    }
-}
+const App = (props) => {
+    const { children } = props;
+
+    return (
+        <div>
+            <Header />
+            {children}
+        </div>
+    );
+};
+
+App.propTypes = {
+    children: React.PropTypes.node
+};
 
 export default App;

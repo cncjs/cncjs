@@ -1,9 +1,9 @@
 /**
- * err_client
- * 
+ * errclient
+ *
  * Examples:
  *
- *     app.use(middleware.err_client({ error: 'XHR error' }))
+ *     app.use(middleware.errclient({ error: 'XHR error' }))
  *
  * Options:
  *
@@ -14,7 +14,7 @@
  * @api public
  */
 
-const err_client = (options) => {
+const errclient = (options) => {
     options = options || {};
 
     let error = options.error || '';
@@ -24,10 +24,11 @@ const err_client = (options) => {
             res.send(500, {
                 error: error
             });
-        } else {
-            next(err);
+            return;
         }
+
+        next(err);
     };
 };
 
-module.exports = err_client;
+module.exports = errclient;

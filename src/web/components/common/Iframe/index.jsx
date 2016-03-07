@@ -1,19 +1,23 @@
+import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 class Iframe extends React.Component {
     static propTypes = {
         url: React.PropTypes.string.isRequired,
-        sandbox: React.PropTypes.string,
         width: React.PropTypes.string,
-        height: React.PropTypes.string
+        height: React.PropTypes.string,
+        sandbox: React.PropTypes.string
     };
     static defaultProps = {
-        sandbox: "allow-forms allow-same-origin allow-scripts",
+        sandbox: 'allow-forms allow-same-origin allow-scripts',
         width: '100%',
         height: '100%'
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return ! _.isEqual(nextProps, this.props);
+    }
     reload() {
         let el = ReactDOM.findDOMNode(this);
         el.src = this.props.url;

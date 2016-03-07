@@ -8,7 +8,7 @@ import productionSettings from './production';
 
 // env
 const env = process.env.NODE_ENV || 'development';
-const debug = ('development' === env);
+const debug = (env === 'development');
 
 // RCFile
 const RCFILE = '.cncrc';
@@ -55,7 +55,7 @@ let defaults = {
     view: {
         // Set html (w/o dot) as the default extension
         defaultExtension: 'html',
-        
+
         // Format: <extension>: <template>
         engines: [
             { // Hogan template with .html extension
@@ -138,9 +138,6 @@ let defaults = {
 
         // logs out more info (console)
         debug: false,
-
-        // language to use
-        //lng: lng,
 
         // language to lookup key if not found on set language
         fallbackLng: 'en',

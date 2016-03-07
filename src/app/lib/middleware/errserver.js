@@ -1,5 +1,5 @@
 /**
- * err_server:
+ * errserver:
  *
  * error-handling middleware, take the same form
  * as regular middleware, however they require an
@@ -12,10 +12,10 @@
  * continue passing the error, only error-handling middleware
  * would remain being executed, however here
  * we simply respond with an error page.
- * 
+ *
  * Examples:
  *
- *     app.use(middleware.err_server({ view: '500', error: 'Internal server error' }))
+ *     app.use(middleware.errserver({ view: '500', error: 'Internal server error' }))
  *
  * Options:
  *
@@ -27,7 +27,7 @@
  * @api public
  */
 
-const err_server = (options) => {
+const errserver = (options) => {
     options = options || {};
 
     let view = options.view || '500',
@@ -42,4 +42,4 @@ const err_server = (options) => {
     };
 };
 
-module.exports = err_server;
+module.exports = errserver;

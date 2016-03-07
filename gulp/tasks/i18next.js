@@ -76,7 +76,7 @@ function customTransform(file, enc, done) {
             let key, value;
             let r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
 
-            if ( ! _.isUndefined(r[1])) {
+            if (!_.isUndefined(r[1])) {
                 value = _.trim(r[1], '\'"');
 
                 // Replace double backslash with single backslash
@@ -86,7 +86,7 @@ function customTransform(file, enc, done) {
 
             let params = this.parseHashArguments(r[2]);
             if (_.has(params, 'defaultKey')) {
-                key = params['defaultKey'];
+                key = params.defaultKey;
             }
 
             if (_.isUndefined(key) && _.isUndefined(value)) {
@@ -108,7 +108,7 @@ function customTransform(file, enc, done) {
             let key, value;
             let r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
 
-            if ( ! _.isUndefined(r[2])) {
+            if (!_.isUndefined(r[2])) {
                 value = _.trim(r[2], '\'"');
             }
 

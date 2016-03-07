@@ -1,5 +1,9 @@
 import _ from 'lodash';
 
+const noop = () => {
+    // do nothing
+};
+
 export default class PivotPoint3 {
     // @param {object} options The options object
     // @param {number} [options.x] The pivot point on the x-axis
@@ -14,7 +18,7 @@ export default class PivotPoint3 {
         options.z = Number(options.z) || 0;
 
         this.pivotPoint = { x: 0, y: 0, z: 0 };
-        this.callback = _.isFunction(callback) ? callback : (() => {});
+        this.callback = _.isFunction(callback) ? callback : noop;
 
         this.set(options.x, options.y, options.z);
     }

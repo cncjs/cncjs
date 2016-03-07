@@ -13,8 +13,7 @@ const eslintConfig = {
         // exclusion
         '!src/web/vendor/**',
         '!**/node_modules/**'
-    ],
-    options: require('../../config/eslint')
+    ]
 };
 
 export default (options) => {
@@ -23,7 +22,7 @@ export default (options) => {
         return gulp.src(eslintConfig.src)
             // eslint() attaches the lint output to the eslint property
             // of the file object so it can be used by other modules.
-            .pipe(eslint(eslintConfig.options))
+            .pipe(eslint())
             // eslint.format() outputs the lint results to the console.
             // Alternatively use eslint.formatEach() (see Docs).
             .pipe(eslint.format())

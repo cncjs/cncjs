@@ -76,7 +76,12 @@ class Spindle extends React.Component {
                 </div>
                 <div className="checkbox" >
                     <label>
-                        <input type="checkbox" checked={this.state.isCCWChecked} onChange={::this.handleCCWChange} disabled={!canClick} />
+                        <input
+                            type="checkbox"
+                            checked={this.state.isCCWChecked}
+                            onChange={::this.handleCCWChange}
+                            disabled={!canClick}
+                        />
                         &nbsp;{i18n._('Turn counterclockwise')}
                     </label>
                 </div>

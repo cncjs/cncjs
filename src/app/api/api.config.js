@@ -7,8 +7,7 @@ const loadConfigFile = (file) => {
     let config;
     try {
         config = JSON.parse(fs.readFileSync(file, 'utf8'));
-    }
-    catch(err) {
+    } catch (err) {
         config = {};
     }
     return config;
@@ -45,8 +44,7 @@ export const unset = (req, res) => {
                 res.send({ 'err': false });
             }
         });
-    }
-    catch(err) {
+    } catch (err) {
         res.status(500).send('Failed to save ' + JSON.stringify(settings.cncrc));
     }
 };
@@ -72,8 +70,7 @@ export const set = (req, res) => {
                 res.send({ 'err': false });
             }
         });
-    }
-    catch(err) {
+    } catch (err) {
         res.status(500).send('Failed to save ' + JSON.stringify(settings.cncrc));
     }
 };

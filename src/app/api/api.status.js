@@ -1,3 +1,3 @@
 export const currentStatus = (req, res) => {
-    res.send({'reply':'ok'});
+    res.send({ 'reply': 'ok' });
 };

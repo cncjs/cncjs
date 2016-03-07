@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, ButtonToolbar, Modal } from 'react-bootstrap';
+import { Button, Modal } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 
 class Confirm extends React.Component {
@@ -55,10 +55,10 @@ class Confirm extends React.Component {
                 </Modal.Body>
                 }
                 <Modal.Footer>
-                    <Button bsStyle='default' onClick={::this.handleCancel}>
+                    <Button bsStyle="default" onClick={::this.handleCancel}>
                         {cancelLabel}
                     </Button>
-                    <Button bsStyle='primary' onClick={::this.handleConfirm}>
+                    <Button bsStyle="primary" onClick={::this.handleConfirm}>
                         {confirmLabel}
                     </Button>
                 </Modal.Footer>

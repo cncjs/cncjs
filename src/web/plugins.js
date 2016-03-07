@@ -1,3 +1,4 @@
+/* eslint no-console: 0*/
 var root = this.parent || this;
 
 // Define global variables
@@ -30,7 +31,7 @@ root.window.document.title = window.document.title;
         method = methods[length];
 
         // Only stub undefined methods.
-        if ( ! console[method]) {
+        if (!console[method]) {
             console[method] = noop;
         }
 
@@ -42,14 +43,8 @@ root.window.document.title = window.document.title;
     }
 }(this));
 
-// Parse data-version, data-webroot, and data-cdn attributes from the script tag 
+// Parse data-version, data-webroot, and data-cdn attributes from the script tag
 (function(global) {
-    var data = {
-        version: (new Date()).getTime(),
-        webroot: '/',
-        cdn: '/'
-    };
-
     // Helper function for iterating over an array backwards. If the func
     // returns a true value, it will break out of the loop.
     var eachReverse = function(ary, func) {
@@ -64,15 +59,16 @@ root.window.document.title = window.document.title;
     };
 
     var scripts = document.getElementsByTagName('script') || [];
-    eachReverse(scripts, function(script) {
+    eachReverse(scripts, (script) => {
         if (script.getAttribute('data-version')) {
             root.app.config.version = script.getAttribute('data-version') || root.app.config.version;
             root.app.config.webroot = script.getAttribute('data-webroot') || root.app.config.webroot;
             root.app.config.cdn = script.getAttribute('data-cdn') || root.app.config.cdn;
             return true;
         }
-    });
 
+        return false;
+    });
 }(this));
 
 // Clears HTML5 Local Storage while rolling out a new version
@@ -83,7 +79,7 @@ root.window.document.title = window.document.title;
 
         // localStorage is available
         var localVersion = window.localStorage.getItem('version');
-        if ( ! localVersion || localVersion !== version) {
+        if (!localVersion || localVersion !== version) {
             window.localStorage.clear(); // clear local
             window.localStorage.setItem('version', version);
         }

@@ -1,9 +1,9 @@
 /**
- * err_notfound:
+ * errnotfound:
  *
  * Examples:
  *
- *     app.use(middleware.err_notfound({ view: '404', error: 'Not found' }))
+ *     app.use(middleware.errnotfound({ view: '404', error: 'Not found' }))
  *
  * Options:
  *
@@ -15,7 +15,7 @@
  * @api public
  */
 
-const err_notfound = (options) => {
+const errnotfound = (options) => {
     options = options || {};
 
     let view = options.view || '404',
@@ -41,4 +41,4 @@ const err_notfound = (options) => {
     };
 };
 
-module.exports = err_notfound;
+module.exports = errnotfound;

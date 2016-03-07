@@ -31,7 +31,7 @@ const buildAxis = (src, dst, color, dashed) => {
 };
 
 // CoordinateAxes
-// An axis object to visualize the the 3 axes in a simple way. 
+// An axis object to visualize the the 3 axes in a simple way.
 // The X axis is red. The Y axis is green. The Z axis is blue.
 class CoordinateAxes {
     group = new THREE.Object3D();

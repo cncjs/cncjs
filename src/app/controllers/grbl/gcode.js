@@ -66,13 +66,13 @@ class GCode extends events.EventEmitter {
         let sentLength = this.sent.length;
 
         if (remainLength === 0 && sentLength === 0) {
-            return;
+            return false;
         }
         if (remainLength === 0) {
             this.finishedTime = new Date().getTime();
             this.emit('done', { time: this.finishedTime });
             this.emit('statuschange');
-            return;
+            return false;
         }
         if (sentLength === 0) {
             this.startedTime = new Date().getTime();

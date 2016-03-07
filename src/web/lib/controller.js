@@ -23,12 +23,11 @@ class CNCController {
         });
 
         Object.keys(this.callbacks).forEach((eventName) => {
-            socket.on(eventName, function() {
-                let args = Array.prototype.slice.call(arguments);
+            socket.on(eventName, (...args) => {
                 this.callbacks[eventName].forEach((callback) => {
                     callback.apply(callback, args);
                 });
-            }.bind(this));
+            });
         });
     }
     on(eventName, callback) {
@@ -85,7 +84,7 @@ class CNCController {
     // - Unlock
     //   controller.command('unlock')
     command(cmd, ...args) {
-        let { port } = this;
+        const { port } = this;
         if (!port) {
             return;
         }
@@ -93,7 +92,7 @@ class CNCController {
     }
     // @param {string} data The data to write
     write(data) {
-        let { port } = this;
+        const { port } = this;
         if (!port) {
             return;
         }

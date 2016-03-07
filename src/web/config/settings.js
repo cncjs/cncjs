@@ -18,9 +18,6 @@ var settings = {
         // logs out more info (console)
         debug: false,
 
-        // language to use
-        //lng: lng,
-
         // language to lookup key if not found on set language
         fallbackLng: 'en',
 
@@ -63,7 +60,7 @@ var settings = {
             suffix: '}}'
         },
 
-        // options for language detection 
+        // options for language detection
         // https://github.com/i18next/i18next-browser-languageDetector
         detection: {
             // order and from where user language should be detected

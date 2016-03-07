@@ -70,13 +70,13 @@ class ReactSortable extends React.Component {
                     }
 
                     newState[getModelName(this)] = items;
-                    
+
                     if (copyOptions.stateHandler) {
                         this[copyOptions.stateHandler](newState);
                     } else {
                         this.setState(newState);
                     }
-                    
+
                     (this !== _activeComponent) && _activeComponent.setState(remoteState);
                 }
 
@@ -84,7 +84,6 @@ class ReactSortable extends React.Component {
                     emitEvent(name, evt);
                 }, 0);
             };
-
         });
 
         let domNode = ReactDOM.findDOMNode(this.refs[options.ref] || this);

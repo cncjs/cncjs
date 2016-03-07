@@ -11,8 +11,7 @@ export default (options) => {
 
     gulp.task('build', (callback) => {
         runSequence('clean',
-            'bower',
-            ['eslint', 'jscs', 'jshint'],
+            ['bower', 'eslint'],
             ['server', 'webpack:build'],
             'i18next',
             'dist',

@@ -1,6 +1,13 @@
 import React from 'react';
 
 class PressAndHold extends React.Component {
+    static propTypes = {
+        delay: React.PropTypes.number,
+        throttle: React.PropTypes.number,
+        onClick: React.PropTypes.func,
+        children: React.PropTypes.node
+    };
+
     componentWillMount() {
         this.timeout = null;
         this.interval = null;
@@ -9,16 +16,15 @@ class PressAndHold extends React.Component {
         this.handleRelease();
     }
     handleHoldDown() {
-        let that = this;
-        let delay = Number(this.props.delay) || 500;
-        let throttle = Number(this.props.throttle) || 50;
+        const delay = Number(this.props.delay) || 500;
+        const throttle = Number(this.props.throttle) || 50;
 
-        this.timeout = setTimeout(function() {
-            that.handleRelease();
+        this.timeout = setTimeout(() => {
+            this.handleRelease();
 
-            that.interval = setInterval(function() {
-                if (that.interval) {
-                    that.props.onClick();
+            this.interval = setInterval(function() {
+                if (this.interval) {
+                    this.props.onClick();
                 }
             }, throttle);
         }, delay);

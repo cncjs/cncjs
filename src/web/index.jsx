@@ -14,7 +14,7 @@ import Workspace from './components/workspace';
 import './styles/vendor.styl';
 import './styles/app.styl';
 
-const query_params = ((qs) => {
+const queryparams = ((qs) => {
     qs = String(qs || '');
     if (qs[0] !== '?') {
         qs = '?' + qs;
@@ -39,13 +39,13 @@ async.series([
             });
     },
     (next) => {
-        const log_level = query_params['log_level'] || settings.log.level;
-        const log_logger = query_params['log_logger'] || settings.log.logger;
-        const log_prefix = query_params['log_prefix'] || settings.log.prefix;
+        const level = queryparams.log_level || settings.log.level;
+        const logger = queryparams.log_logger || settings.log.logger;
+        const prefix = queryparams.log_prefix || settings.log.prefix;
 
-        log.setLevel(log_level);
-        log.setLogger(log_logger);
-        log.setPrefix(log_prefix);
+        log.setLevel(level);
+        log.setLogger(logger);
+        log.setPrefix(prefix);
 
         let msg = [
             'version=' + settings.version,
@@ -57,7 +57,6 @@ async.series([
         next();
     }
 ], (err, results) => {
-
     { // Prevent browser from loading a drag-and-dropped file
       // http://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
         window.addEventListener('dragover', (e) => {

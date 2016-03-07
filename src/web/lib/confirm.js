@@ -10,7 +10,7 @@ import Confirm from '../components/common/Confirm';
 // @param {function} [confirmCallback] The confirm callback
 // @param {function} [cancelCallback] The cancel callback
 const confirm = (options = {}, confirmCallback, cancelCallback) => {
-    const el = document.body.appendChild(document.createElement('div'));  
+    const el = document.body.appendChild(document.createElement('div'));
     const handleClose = (e) => {
         ReactDOM.unmountComponentAtNode(el);
         setTimeout(() => {

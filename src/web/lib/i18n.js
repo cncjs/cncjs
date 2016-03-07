@@ -1,16 +1,14 @@
 import i18next from 'i18next';
 import sha1 from 'sha1';
 
-const translateText = function() {
-    let args = Array.prototype.slice.call(arguments);
+const translateText = (...args) => {
     if ((args.length === 0) || (typeof args[0] === 'undefined')) {
-        i18next.t.apply(i18next, args);
-        return;
+        return i18next.t.apply(i18next, args);
     }
 
-    let value = args[0];
-    let options = args[1] || {};
-    let key = sha1(value);
+    const value = args[0];
+    const options = args[1] || {};
+    const key = sha1(value);
     args[0] = value;
 
     options.defaultValue = value;

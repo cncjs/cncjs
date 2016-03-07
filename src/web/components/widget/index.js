@@ -1,11 +1,11 @@
 import Widget from './Widget';
-import Header from './WidgetHeader';
-import Content from './WidgetContent';
-import Footer from './WidgetFooter';
-import Title from './WidgetTitle';
-import Button from './WidgetButton';
-import Controls from './WidgetControls';
-import Toolbar from './WidgetToolbar';
+import Header from './Header';
+import Content from './Content';
+import Footer from './Footer';
+import Title from './Title';
+import Button from './Button';
+import Controls from './Controls';
+import Toolbar from './Toolbar';
 import './index.styl';
 import './theme.styl';
 

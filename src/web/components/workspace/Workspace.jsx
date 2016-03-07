@@ -409,10 +409,8 @@ class Workspace extends React.Component {
     render() {
         const {
             isDragging,
-            isUploading,
             showPrimaryContainer,
             showSecondaryContainer,
-            showAddWidgets,
             inactiveCount
         } = this.state;
         const notDragging = !isDragging;
@@ -463,12 +461,21 @@ class Workspace extends React.Component {
                                     <div className={classes.primaryContainer} ref="primaryContainer">
                                         <div className="btn-toolbar clearfix" role="toolbar">
                                             <div className="btn-group btn-group-xs pull-left" role="group">
-                                                <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForPrimaryContainer}>
-                                                    <i className="fa fa-list-alt"></i>&nbsp;{i18n._('Manage Widgets ({{inactiveCount}})', {inactiveCount: inactiveCount})}
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-default"
+                                                    onClick={::this.updateWidgetsForPrimaryContainer}
+                                                >
+                                                    <i className="fa fa-list-alt"></i>&nbsp;
+                                                    {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                                 </button>
                                             </div>
                                             <div className="btn-group btn-group-xs pull-right" role="group">
-                                                <button type="button" className="btn btn-default" onClick={::this.togglePrimaryContainer}>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-default"
+                                                    onClick={::this.togglePrimaryContainer}
+                                                >
                                                     <i className="fa fa-chevron-left"></i>
                                                 </button>
                                             </div>
@@ -481,19 +488,27 @@ class Workspace extends React.Component {
                                     {hidePrimaryContainer &&
                                     <div className="primary-toggler" ref="primaryToggler">
                                         <div className="btn-group btn-group-xs">
-                                            <button type="button" className="btn btn-default" onClick={::this.togglePrimaryContainer}>
+                                            <button
+                                                type="button"
+                                                className="btn btn-default"
+                                                onClick={::this.togglePrimaryContainer}
+                                            >
                                                 <i className="fa fa-chevron-right"></i>
                                             </button>
                                         </div>
                                     </div>
                                     }
                                     <div className={classes.defaultContainer} ref="defaultContainer">
-                                        <DefaultWidgets className="widgets"/>
+                                        <DefaultWidgets className="widgets" />
                                     </div>
                                     {hideSecondaryContainer &&
                                     <div className="secondary-toggler" ref="secondaryToggler">
                                         <div className="btn-group btn-group-xs">
-                                            <button type="button" className="btn btn-default" onClick={::this.toggleSecondaryContainer}>
+                                            <button
+                                                type="button"
+                                                className="btn btn-default"
+                                                onClick={::this.toggleSecondaryContainer}
+                                            >
                                                 <i className="fa fa-chevron-left"></i>
                                             </button>
                                         </div>
@@ -502,13 +517,22 @@ class Workspace extends React.Component {
                                     <div className={classes.secondaryContainer} ref="secondaryContainer">
                                         <div className="btn-toolbar clearfix" role="toolbar">
                                             <div className="btn-group btn-group-xs pull-left" role="group">
-                                                <button type="button" className="btn btn-default" onClick={::this.toggleSecondaryContainer}>
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-default"
+                                                    onClick={::this.toggleSecondaryContainer}
+                                                >
                                                     <i className="fa fa-chevron-right"></i>
                                                 </button>
                                             </div>
                                             <div className="btn-group btn-group-xs pull-right" role="group">
-                                                <button type="button" className="btn btn-default" onClick={::this.updateWidgetsForSecondaryContainer}>
-                                                    <i className="fa fa-list-alt"></i>&nbsp;{i18n._('Manage Widgets ({{inactiveCount}})', {inactiveCount: inactiveCount})}
+                                                <button
+                                                    type="button"
+                                                    className="btn btn-default"
+                                                    onClick={::this.updateWidgetsForSecondaryContainer}
+                                                >
+                                                    <i className="fa fa-list-alt"></i>&nbsp;
+                                                    {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                                 </button>
                                             </div>
                                         </div>

@@ -1,6 +1,6 @@
 import log from './log';
 
-let socket = root.io.connect('');
+const socket = root.io.connect('');
 
 socket.on('connect', () => {
     log.debug('socket.io: connected');

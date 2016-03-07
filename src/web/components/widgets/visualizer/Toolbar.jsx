@@ -14,7 +14,8 @@ class Toolbar extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
         ready: React.PropTypes.bool,
-        activeState: React.PropTypes.string
+        activeState: React.PropTypes.string,
+        setWorkflowState: React.PropTypes.func
     };
     state = {
         workflowState: WORKFLOW_STATE_IDLE,
@@ -41,7 +42,7 @@ class Toolbar extends React.Component {
         this.props.setWorkflowState(this.state.workflowState);
     }
     componentWillReceiveProps(nextProps) {
-        let { port, activeState } = nextProps;
+        const { port, activeState } = nextProps;
 
         if (!port) {
             this.setState({ workflowState: WORKFLOW_STATE_IDLE });
@@ -59,8 +60,8 @@ class Toolbar extends React.Component {
     }
     subscribe() {
         { // setWorkflowState
-            let token = pubsub.subscribe('setWorkflowState', (msg, workflowState) => {
-                this.setState({ workflowState: workflowState });
+            const token = pubsub.subscribe('setWorkflowState', (msg, workflowState) => {
+                this.setState({ workflowState });
             });
             this.pubsubTokens.push(token);
         }
@@ -82,7 +83,7 @@ class Toolbar extends React.Component {
         });
     }
     handleRun() {
-        let { workflowState } = this.state;
+        const { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
 
         if (workflowState === WORKFLOW_STATE_PAUSED) {
@@ -98,7 +99,7 @@ class Toolbar extends React.Component {
         });
     }
     handlePause() {
-        let { workflowState } = this.state;
+        const { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
 
         controller.command('pause');
@@ -109,7 +110,7 @@ class Toolbar extends React.Component {
         });
     }
     handleStop() {
-        let { workflowState } = this.state;
+        const { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
 
         controller.command('stop');
@@ -121,7 +122,7 @@ class Toolbar extends React.Component {
         });
     }
     handleClose() {
-        let { workflowState } = this.state;
+        const { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
 
         controller.command('unload');
@@ -132,28 +133,52 @@ class Toolbar extends React.Component {
         });
     }
     render() {
-        let { port, ready } = this.props;
-        let { workflowState } = this.state;
-        let canClick = !!port && ready;
-        let canRun = canClick && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
-        let canPause = canClick && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
-        let canStop = canClick && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
-        let canClose = canClick && _.includes([WORKFLOW_STATE_IDLE], workflowState);
+        const { port, ready } = this.props;
+        const { workflowState } = this.state;
+        const canClick = !!port && ready;
+        const canRun = canClick && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
+        const canPause = canClick && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
+        const canStop = canClick && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
+        const canClose = canClick && _.includes([WORKFLOW_STATE_IDLE], workflowState);
 
         return (
             <div className="btn-toolbar" role="toolbar">
                 <div className="btn-group btn-group-sm" role="group">
-                    <button type="button" className="btn btn-default" title={i18n._('Run')} onClick={::this.handleRun} disabled={!canRun}>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        title={i18n._('Run')}
+                        onClick={::this.handleRun}
+                        disabled={!canRun}
+                    >
                         <i className="fa fa-play"></i>
                     </button>
-                    <button type="button" className="btn btn-default" title={i18n._('Pause')} onClick={::this.handlePause} disabled={!canPause}>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        title={i18n._('Pause')}
+                        onClick={::this.handlePause}
+                        disabled={!canPause}
+                    >
                         <i className="fa fa-pause"></i>
                     </button>
-                    <button type="button" className="btn btn-default" title={i18n._('Stop')} onClick={::this.handleStop} disabled={!canStop}>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        title={i18n._('Stop')}
+                        onClick={::this.handleStop}
+                        disabled={!canStop}
+                    >
                         <i className="fa fa-stop"></i>
                     </button>
-                    <button type="button" className="btn btn-default" title={i18n._('Close')} onClick={::this.handleClose} disabled={!canClose}>
-                        <i className="fa fa-times" style={{fontSize: 14}}></i>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        title={i18n._('Close')}
+                        onClick={::this.handleClose}
+                        disabled={!canClose}
+                    >
+                        <i className="fa fa-times" style={{ fontSize: 14 }}></i>
                     </button>
                 </div>
             </div>

@@ -65,7 +65,7 @@ export default {
         ],
         loaders: [
             {
-                test:  /\.json$/,
+                test: /\.json$/,
                 loader: 'json'
             },
             {
@@ -116,7 +116,7 @@ export default {
             'i18next-browser-languagedetector': 'i18next-browser-languagedetector/lib/index.js',
             'i18next-xhr-backend': 'i18next-xhr-backend/lib/index.js'
         },
-        extensions: ['', '.js', '.jsx', '.styl'],
+        extensions: ['', '.js', '.jsx', '.styl']
     },
     node: {
         fs: 'empty',

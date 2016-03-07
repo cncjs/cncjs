@@ -81,7 +81,7 @@ const defaultState = {
 let state;
 
 try {
-    let cnc = JSON.parse(localStorage.getItem('cnc')) || {};
+    const cnc = JSON.parse(localStorage.getItem('cnc')) || {};
     log.debug('cnc:', cnc);
 
     if (!(cnc.version)) {
@@ -89,7 +89,7 @@ try {
     }
 
     state = _.merge({}, defaultState, cnc.state);
-    
+
     { // Post-process the state after merging defaultState and cnc.state
         let defaultList = _.get(defaultState, 'workspace.container.default.widgets'); // use defaultState for the default container
         let primaryList = _.get(cnc.state, 'workspace.container.primary.widgets');
@@ -125,15 +125,14 @@ try {
         _.set(state, 'workspace.container.primary.widgets', primaryList);
         _.set(state, 'workspace.container.secondary.widgets', secondaryList);
     }
-}
-catch(err) {
+} catch (err) {
     state = _.merge({}, defaultState);
 }
 
 const store = new ImmutableStore(state);
 
 store.on('change', (state) => {
-    let cnc = {
+    const cnc = {
         version: settings.version,
         state: state
     };

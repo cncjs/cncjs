@@ -1,26 +1,26 @@
-// 
-// Error handling in gulp 
+//
+// Error handling in gulp
 //
 // http://www.artandlogic.com/blog/2014/05/error-handling-in-gulp/
 // https://github.com/ethanmuller/gulp-init/blob/master/error-handler.coffee
 
-var gutil = require('gulp-util');
+import gutil from 'gulp-util';
 
 // Command line option:
 //  --fatal=[warning|error|off]
-var fatalLevel = require('yargs').argv.fatal;
+const fatalLevel = require('yargs').argv.fatal;
 
-var ERROR_LEVELS = [
+const ERROR_LEVELS = [
     'error',
     'warning'
 ];
 
-var ERROR_COLORS = {
+const ERROR_COLORS = {
     warning: gutil.colors.yellow,
     error: gutil.colors.red
 };
 
-var ERROR_EMOTES = {
+const ERROR_EMOTES = {
     warning: [
         '¯\\_(ツ)_/¯',
         '(╯︵╰,)',
@@ -35,8 +35,8 @@ var ERROR_EMOTES = {
 
 // If the fatalLevel is 'off', then this will always return false.
 // Defaults the fatalLevel to 'error'.
-var isFatal = function(level) {
-    var errorLevels = [
+const isFatal = function(level) {
+    const errorLevels = [
         'error',
         'warning'
     ];
@@ -45,11 +45,11 @@ var isFatal = function(level) {
 
 // Handle an error based on its severity level.
 // Log all levels, and exit the process for fatal levels.
-var handleError = function(level, error) {
-    var emotes = ERROR_EMOTES[level];
-    var color = ERROR_COLORS[level];
-    var msg = color(level.toUpperCase()) + ' triggered by ' + gutil.colors.magenta(error.plugin);
-    var randomEmote = emotes[Math.floor(Math.random()*emotes.length)];
+const handleError = function(level, error) {
+    const emotes = ERROR_EMOTES[level];
+    const color = ERROR_COLORS[level];
+    const msg = color(level.toUpperCase()) + ' triggered by ' + gutil.colors.magenta(error.plugin);
+    const randomEmote = emotes[Math.floor(Math.random() * emotes.length)];
 
     gutil.beep();
     gutil.log(msg);
@@ -60,15 +60,12 @@ var handleError = function(level, error) {
     }
 };
 
-module.exports = {
-    // Convenience handler for error-level errors.
-    error: function(error) {
-        handleError.call(this, 'error', error);
-        this.emit('end');
-    },
-    // Convenience handler for warning-level errors.
-    warning: function(error) {
-        handleError.call(this, 'warning', error);
-        this.emit('end');
-    }
+export const error = (error) => {
+    handleError('error', error);
+    this.emit('end');
+};
+
+export const warning = (error) => {
+    handleError('warning', error);
+    this.emit('end');
 };

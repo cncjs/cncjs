@@ -1,7 +1,5 @@
 import _ from 'lodash';
 import cluster from 'cluster';
-import fs from 'fs';
-import path from 'path';
 import util from 'util';
 import winston from 'winston';
 import settings from '../config/settings';
@@ -27,7 +25,7 @@ const defaults = {
         error: 'red'
     },
     exitOnError: (err) => {
-        console.log('Error:', err);
+        console.error('Error:', err);
         return false;
     }
 };
@@ -55,34 +53,28 @@ const logger = new winston.Logger(_.defaults({}, settings.winston, defaults));
 const prefix = [];
 
 export default {
-    log: function() {
-        let args = Array.prototype.slice.call(arguments);
+    log: function(...args) {
         let level = args.shift();
         let stackTrace = getStackTrace()[2];
         logger.log(level, util.format.apply(util.format, prefix.concat(args).concat(stackTrace)), meta());
     },
-    trace: function() {
-        let args = Array.prototype.slice.call(arguments);
+    trace: function(...args) {
         let stackTrace = getStackTrace()[2];
         logger.trace(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)), meta());
     },
-    debug: function() {
-        let args = Array.prototype.slice.call(arguments);
+    debug: function(...args) {
         let stackTrace = getStackTrace()[2];
         logger.debug(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)), meta());
     },
-    info: function() {
-        let args = Array.prototype.slice.call(arguments);
+    info: function(...args) {
         let stackTrace = getStackTrace()[2];
         logger.info(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)), meta());
     },
-    warn: function() {
-        let args = Array.prototype.slice.call(arguments);
+    warn: function(...args) {
         let stackTrace = getStackTrace()[2];
         logger.warn(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)), meta());
     },
-    error: function() {
-        let args = Array.prototype.slice.call(arguments);
+    error: function(...args) {
         let stackTrace = getStackTrace()[2];
         logger.error(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)), meta());
     }

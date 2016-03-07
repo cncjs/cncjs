@@ -1,3 +1,5 @@
+/* eslint no-console: 0 */
+
 /**
  * Libraries
  */
@@ -9,72 +11,71 @@ import StackTrace from 'stacktrace-js';
 import browser from './browser';
 
 // Constants
-var TRACE = 0,
-    DEBUG = 1,
-    INFO = 2,
-    WARN = 3,
-    ERROR = 4,
-    NONE = 5,
-    SEPARATOR = '\t';
+const TRACE = 0;
+const DEBUG = 1;
+const INFO = 2;
+const WARN = 3;
+const ERROR = 4;
+const NONE = 5;
 
-var supportSafari = function() {
-    var m = navigator.userAgent.match(/AppleWebKit\/(\d+)\.(\d+)(\.|\+|\s)/);
-    if ( ! m) {
+const supportSafari = function() {
+    const m = navigator.userAgent.match(/AppleWebKit\/(\d+)\.(\d+)(\.|\+|\s)/);
+    if (!m) {
         return false;
     }
-    return 537.38 <= parseInt(m[1], 10) + (parseInt(m[2], 10) / 100);
+    return (parseInt(m[1], 10) + (parseInt(m[2], 10) / 100)) >= 537.38;
 };
 
-var supportOpera = function() {
-    var m = navigator.userAgent.match(/OPR\/(\d+)\./);
-    if ( ! m) {
+const supportOpera = function() {
+    const m = navigator.userAgent.match(/OPR\/(\d+)\./);
+    if (!m) {
         return false;
     }
-    return 15 <= parseInt(m[1], 10);
+    return parseInt(m[1], 10) >= 15;
 };
 
-var supportFirefox = function() {
+const supportFirefox = function() {
     return window.console.firebug || window.console.exception;
 };
 
-var getISODateTime = function(d) {
+const getISODateTime = function(d) {
     if (typeof d === 'undefined') {
         d = new Date();
     }
 
-    function pad(number, length) {
-        var str = '' + number;
+    const pad = (number, length) => {
+        let str = '' + number;
         while (str.length < length) {
             str = '0' + str;
         }
         return str;
-    }
+    };
 
-    function getTimeZoneDesignator(d) {
-        var tz_offset = d.getTimezoneOffset();
-        var hour = pad(Math.abs(tz_offset / 60), 2);
-        var minute = pad(Math.abs(tz_offset % 60), 2);
-        tz_offset = ((tz_offset < 0) ? '+' : '-') + hour + ':' + minute;
-        return tz_offset;
-    }
+    const getTimeZoneDesignator = (d) => {
+        const tzOffset = d.getTimezoneOffset();
+        const hour = pad(Math.abs(tzOffset / 60), 2);
+        const minute = pad(Math.abs(tzOffset % 60), 2);
+
+        return ((tzOffset < 0) ? '+' : '-') + hour + ':' + minute;
+    };
 
     return (d.getFullYear() + '-' + pad(d.getMonth() + 1, 2) + '-' + pad(d.getDate(), 2) + 'T' +
             pad(d.getHours(), 2) + ':' + pad(d.getMinutes(), 2) + ':' + pad(d.getSeconds(), 2) +
             getTimeZoneDesignator(d));
 };
 
-var consoleLogger = function(logger) {
+const consoleLogger = (logger) => {
     window.console.assert(typeof logger !== 'undefined', 'logger is undefined');
     window.console.assert(typeof logger.datetime === 'string', 'datetime is not a string');
     window.console.assert(typeof logger.level === 'string', 'level is not a string');
 
-    var console = window.console;
+    const console = window.console;
 
-    if ( ! console) {
+    if (!console) {
         return;
     }
 
-    var args = [];
+    let args = [];
     if (browser.isIE() ||
        (browser.isFirefox() && ! supportFirefox()) ||
        (browser.isOpera() && ! supportOpera()) ||
@@ -82,7 +83,7 @@ var consoleLogger = function(logger) {
         args.push(logger.datetime || '');
         args.push(logger.level || '');
     } else {
-        var styles = {
+        const styles = {
             datetime: 'font-weight: bold; line-height: 20px; padding: 2px 4px; color: #3B5998; background: #EDEFF4',
             level: {
                 'T': 'font-weight: bold; line-height: 20px; padding: 2px 4px; border: 1px solid; color: #4F8A10; background: #DFF2BF',
@@ -116,7 +117,7 @@ var consoleLogger = function(logger) {
         // Use console.log(message) for IE and console.log.apply(console, arguments) for Safari, Firefox, Chrome, etc.
         if ((browser.isIE() && (browser.getIEVersion() <= 9)) ||
             (browser.isFirefox() && ! supportFirefox())) {
-            var message = args.join(' ');
+            const message = args.join(' ');
             console.log(message);
             return;
         }
@@ -124,161 +125,152 @@ var consoleLogger = function(logger) {
         if (typeof console !== 'undefined' && typeof console.log !== 'undefined' && console.log.apply) {
             console.log.apply(console, args);
         }
-    }
-    catch (e) {
+    } catch (e) {
         console.error(e);
     }
 };
 
-var Log = function() {
-    this._prefix = false;
-    this._level = DEBUG;
-    this._logger = consoleLogger;
+class Log {
+    _prefix = false;
+    _level = DEBUG;
+    _logger = consoleLogger;
 
-    return this;
-};
-
-Log.prototype._log = function(level, args) {
-    StackTrace.get({
-        // offline: Boolean (default: false) - Set to true to prevent all network requests
-        offline: true
-    }).then((stackframes) => {
-        var d = new Date();
-        this._logger({
-            datetime: getISODateTime(d),
-            level: level,
-            prefix: this.getPrefix(),
-            args: args,
-            stackframes: stackframes
+    _log(level, args) {
+        StackTrace.get({
+            // offline: Boolean (default: false) - Set to true to prevent all network requests
+            offline: true
+        }).then((stackframes) => {
+            const d = new Date();
+            this._logger({
+                datetime: getISODateTime(d),
+                level: level,
+                prefix: this.getPrefix(),
+                args: args,
+                stackframes: stackframes
+            });
         });
-    });
-};
-
-Log.prototype.setPrefix = function(prefix) {
-    if (typeof prefix !== 'undefined') {
-        this._prefix = prefix;
-    } else {
-        this._prefix = false;
     }
-};
+    setPrefix(prefix) {
+        if (typeof prefix !== 'undefined') {
+            this._prefix = prefix;
+        } else {
+            this._prefix = false;
+        }
 
-Log.prototype.getPrefix = function() {
-    return (this._prefix !== false) ? this._prefix : '';
-};
+        return this._prefix;
+    }
+    getPrefix() {
+        return (this._prefix !== false) ? this._prefix : '';
+    }
+    setLogger(logger) {
+        if (typeof logger === 'function') {
+            this._logger = logger;
+            return this._logger;
+        } else if (typeof logger === 'string') {
+            this._logger = {
+                'console': consoleLogger
+            }[logger] || this._logger;
 
-Log.prototype.setLogger = function(logger) {
-    if (typeof logger !== 'undefined' && typeof logger === 'function') {
-        this._logger = logger;
-    } else if (typeof logger !== 'undefined' && typeof logger === 'string') {
-        var log_loggers = {
-            'console': consoleLogger
-        };
-        this._logger = log_loggers[logger];
+            if (typeof this._logger === 'undefined') {
+                this._logger = function nullLogger(logger) { }; // default
+            }
+        }
 
-        if (typeof this._logger === 'undefined') {
-            this._logger = function nullLogger(logger) { }; // default
+        return this._logger;
+    }
+    getLogger() {
+        return this._logger;
+    }
+    setLevel(level) {
+        if (typeof level === 'number') {
+            this._level = level;
+        } else if (typeof level === 'string') {
+            this._level = {
+                'trace': TRACE,
+                'debug': DEBUG,
+                'info': INFO,
+                'warn': WARN,
+                'error': ERROR
+            }[level] || this._level;
+
+            if (typeof this._level === 'undefined') {
+                this._level = NONE; // default
+            }
+        }
+
+        return this._level;
+    }
+    getLevel() {
+        return this._level;
+    }
+    log(...args) {
+        this._log('', args);
+    }
+    trace(...args) {
+        const level = this._level;
+        if (level <= TRACE) {
+            this._log('T', args);
         }
     }
-};
-
-Log.prototype.getLogger = function() {
-    return this._logger;
-};
-
-Log.prototype.setLevel = function(level) {
-    if (typeof level !== 'undefined' && typeof level === 'number') {
-        this._level = level;
-    } else if (typeof level !== 'undefined' && typeof level === 'string') {
-        var log_levels = {
-            'trace': TRACE,
-            'debug': DEBUG,
-            'info': INFO,
-            'warn': WARN,
-            'error': ERROR
-        };
-        this._level = log_levels[level];
-        if (typeof this._level === 'undefined') {
-            this._level = NONE; // default
+    debug(...args) {
+        if (this._level <= DEBUG) {
+            this._log('D', args);
         }
     }
-};
-
-Log.prototype.getLevel = function() {
-    return this._level;
-};
-
-Log.prototype.log = function() {
-    this._log('', Array.prototype.slice.call(arguments));
-};
-
-Log.prototype.trace = function() {
-    var level = this._level;
-    if (level <= TRACE) {
-        this._log('T', Array.prototype.slice.call(arguments));
+    info(...args) {
+        if (this._level <= INFO) {
+            this._log('I', args);
+        }
     }
-};
-
-Log.prototype.debug = function() {
-    if (this._level <= DEBUG) {
-        this._log('D', Array.prototype.slice.call(arguments));
+    warn(...args) {
+        if (this._level <= WARN) {
+            this._log('W', args);
+        }
     }
-};
-
-Log.prototype.info = function() {
-    if (this._level <= INFO) {
-        this._log('I', Array.prototype.slice.call(arguments));
+    error(...args) {
+        if (this._level <= ERROR) {
+            this._log('E', args);
+        }
     }
-};
+}
 
-Log.prototype.warn = function() {
-    if (this._level <= WARN) {
-        this._log('W', Array.prototype.slice.call(arguments));
-    }
-};
-
-Log.prototype.error = function() {
-    if (this._level <= ERROR) {
-        this._log('E', Array.prototype.slice.call(arguments));
-    }
-};
-
-var log = new Log();
+const log = new Log();
 
 module.exports = {
-    setLevel: function() {
-        log.setLevel.apply(log, Array.prototype.slice.call(arguments));
+    setLevel: (...args) => {
+        log.setLevel.apply(log, args);
     },
-    getLevel: function() {
-        return log.getLevel.apply(log, Array.prototype.slice.call(arguments));
+    getLevel: (...args) => {
+        return log.getLevel.apply(log, args);
     },
-    setLogger: function() {
-        log.setLogger.apply(log, Array.prototype.slice.call(arguments));
+    setLogger: (...args) => {
+        log.setLogger.apply(log, args);
     },
-    getLogger: function() {
-        return log.getLogger.apply(log, Array.prototype.slice.call(arguments));
+    getLogger: (...args) => {
+        return log.getLogger.apply(log, args);
     },
-    setPrefix: function() {
-        log.setPrefix.apply(log, Array.prototype.slice.call(arguments));
+    setPrefix: (...args) => {
+        log.setPrefix.apply(log, args);
     },
-    getPrefix: function() {
-        return log.getPrefix.apply(log, Array.prototype.slice.call(arguments));
+    getPrefix: (...args) => {
+        return log.getPrefix.apply(log, args);
     },
-    log: function() {
-        return log.log.apply(log, Array.prototype.slice.call(arguments));
+    log: (...args) => {
+        return log.log.apply(log, args);
     },
-    trace: function() {
-        return log.trace.apply(log, Array.prototype.slice.call(arguments));
+    trace: (...args) => {
+        return log.trace.apply(log, args);
     },
-    debug: function() {
-        return log.debug.apply(log, Array.prototype.slice.call(arguments));
+    debug: (...args) => {
+        return log.debug.apply(log, args);
     },
-    info: function() {
-        return log.info.apply(log, Array.prototype.slice.call(arguments));
+    info: (...args) => {
+        return log.info.apply(log, args);
     },
-    warn: function() {
-        return log.warn.apply(log, Array.prototype.slice.call(arguments));
+    warn: (...args) => {
+        return log.warn.apply(log, args);
     },
-    error: function() {
-        return log.error.apply(log, Array.prototype.slice.call(arguments));
+    error: (...args) => {
+        return log.error.apply(log, args);
     }
 };

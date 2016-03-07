@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import store from '../store';
 
 export const getActiveControllers = (req, res) => {

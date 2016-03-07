@@ -5,7 +5,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import THREE from 'three';
 import TrackballControls from '../../../lib/three/TrackballControls';
-import log from '../../../lib/log';
 import controller from '../../../lib/controller';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
@@ -18,9 +17,6 @@ import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
 import {
-    COORDINATE_PLANE_XY,
-    COORDINATE_PLANE_XZ,
-    COORDINATE_PLANE_YZ,
     AXIS_LENGTH,
     GRID_X_LENGTH,
     GRID_Y_LENGTH,
@@ -29,7 +25,6 @@ import {
     ACTIVE_STATE_IDLE,
     ACTIVE_STATE_RUN,
     WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE,
     CAMERA_FOV,
     CAMERA_NEAR,
@@ -68,15 +63,15 @@ class Visualizer extends React.Component {
             this.parserstate = parserstate;
         },
         'grbl:status': (data) => {
-            let { activeState, workingPos } = data;
+            const { activeState, workingPos } = data;
 
             if (this.state.activeState !== activeState) {
-                this.setState({ activeState: activeState });
+                this.setState({ activeState });
             }
 
             if (!(_.isEqual(this.state.workingPos, workingPos))) {
                 // Update workingPos
-                this.setState({ workingPos: workingPos });
+                this.setState({ workingPos });
 
                 const pivotPoint = this.pivotPoint.get();
 
@@ -97,7 +92,7 @@ class Visualizer extends React.Component {
                 return;
             }
 
-            let frameIndex = data.sent;
+            const frameIndex = data.sent;
             this.gcodeVisualizer.setFrameIndex(frameIndex);
         }
     };
@@ -120,7 +115,7 @@ class Visualizer extends React.Component {
         this.addControllerEvents();
         this.addResizeEventListener();
 
-        let el = ReactDOM.findDOMNode(this.refs.visualizer);
+        const el = ReactDOM.findDOMNode(this.refs.visualizer);
         this.createScene(el);
         this.resizeRenderer();
 
@@ -146,7 +141,7 @@ class Visualizer extends React.Component {
         this.clearScene();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        let shouldUpdate =
+        const shouldUpdate =
             (nextState.port !== this.state.port) ||
             (nextState.ready !== this.state.ready) ||
             (nextState.activeState !== this.state.activeState) ||
@@ -161,22 +156,21 @@ class Visualizer extends React.Component {
     }
     subscribe() {
         { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
+            const token = pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
 
                 if (!port) {
                     pubsub.publish('gcode:unload');
                     this.setState({ port: '' });
                 } else {
-                    this.setState({ port: port });
+                    this.setState({ port });
                 }
-
             });
             this.pubsubTokens.push(token);
         }
 
         { // gcode:load
-            let token = pubsub.subscribe('gcode:load', (msg, gcode) => {
+            const token = pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
 
                 this.startWaiting();
@@ -196,7 +190,7 @@ class Visualizer extends React.Component {
         }
 
         { // gcode:unload
-            let token = pubsub.subscribe('gcode:unload', (msg) => {
+            const token = pubsub.subscribe('gcode:unload', (msg) => {
                 this.unloadGCode();
                 this.setState({ ready: false });
             });
@@ -204,7 +198,7 @@ class Visualizer extends React.Component {
         }
 
         { // resize
-            let token = pubsub.subscribe('resize', (msg) => {
+            const token = pubsub.subscribe('resize', (msg) => {
                 this.resizeRenderer();
             });
             this.pubsubTokens.push(token);
@@ -228,12 +222,12 @@ class Visualizer extends React.Component {
     }
     startWaiting() {
         // Adds the 'wait' class to <html>
-        let root = document.documentElement;
+        const root = document.documentElement;
         root.classList.add('wait');
     }
     stopWaiting() {
         // Adds the 'wait' class to <html>
-        let root = document.documentElement;
+        const root = document.documentElement;
         root.classList.remove('wait');
     }
     addResizeEventListener() {
@@ -256,9 +250,9 @@ class Visualizer extends React.Component {
             return;
         }
 
-        let el = ReactDOM.findDOMNode(this.refs.visualizer);
-        let width = el.offsetWidth;
-        let height = window.innerHeight - 50 - 1; // take off the navbar (50px) and an extra 1px space to disable scrollbar
+        const el = ReactDOM.findDOMNode(this.refs.visualizer);
+        const width = el.offsetWidth;
+        const height = window.innerHeight - 50 - 1; // take off the navbar (50px) and an extra 1px space to disable scrollbar
 
         // Update the camera aspect ratio (width / height), and set a new size to the renderer.
         // Also see "Window on resize, and aspect ratio #69" at https://github.com/mrdoob/three.js/issues/69
@@ -275,8 +269,8 @@ class Visualizer extends React.Component {
     // http://threejs.org/docs/#Manual/Introduction/Creating_a_scene
     //
     createScene(el) {
-        let width = el.clientWidth;
-        let height = el.clientHeight;
+        const width = el.clientWidth;
+        const height = el.clientHeight;
 
         // To actually be able to display anything with Three.js, we need three things:
         // A scene, a camera, and a renderer so we can render the scene with the camera.
@@ -293,11 +287,11 @@ class Visualizer extends React.Component {
         this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
 
         // Ambient light
-        let light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
+        const light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
         this.scene.add(light);
 
         { // Coordinate Grid
-            let gridLine = new GridLine(
+            const gridLine = new GridLine(
                 GRID_X_LENGTH,
                 GRID_X_SPACING,
                 GRID_Y_LENGTH,
@@ -315,13 +309,13 @@ class Visualizer extends React.Component {
         }
 
         { // Coordinate Axes
-            let coordinateAxes = new CoordinateAxes(AXIS_LENGTH);
+            const coordinateAxes = new CoordinateAxes(AXIS_LENGTH);
             coordinateAxes.name = 'CoordinateAxes';
             this.group.add(coordinateAxes);
         }
 
         { // Axis Labels
-            let axisXLabel = new TextSprite({
+            const axisXLabel = new TextSprite({
                 x: AXIS_LENGTH + 10,
                 y: 0,
                 z: 0,
@@ -329,7 +323,7 @@ class Visualizer extends React.Component {
                 text: 'X',
                 color: colornames('red')
             });
-            let axisYLabel = new TextSprite({
+            const axisYLabel = new TextSprite({
                 x: 0,
                 y: AXIS_LENGTH + 10,
                 z: 0,
@@ -337,7 +331,7 @@ class Visualizer extends React.Component {
                 text: 'Y',
                 color: colornames('green')
             });
-            let axisZLabel = new TextSprite({
+            const axisZLabel = new TextSprite({
                 x: 0,
                 y: 0,
                 z: AXIS_LENGTH + 10,
@@ -354,7 +348,7 @@ class Visualizer extends React.Component {
                 if (i === 0) {
                     continue;
                 }
-                let textLabel = new TextSprite({
+                const textLabel = new TextSprite({
                     x: i,
                     y: 10,
                     z: 0,
@@ -369,7 +363,7 @@ class Visualizer extends React.Component {
                 if (i === 0) {
                     continue;
                 }
-                let textLabel = new TextSprite({
+                const textLabel = new TextSprite({
                     x: -10,
                     y: i,
                     z: 0,
@@ -383,8 +377,8 @@ class Visualizer extends React.Component {
         }
 
         { // Tool Head
-            let color = colornames('silver');
-            let url = 'textures/brushed-steel-texture.jpg';
+            const color = colornames('silver');
+            const url = 'textures/brushed-steel-texture.jpg';
             loadTexture(url, (err, texture) => {
                 this.toolhead = new ToolHead(color, texture);
                 this.toolhead.name = 'ToolHead';
@@ -403,8 +397,8 @@ class Visualizer extends React.Component {
         this.renderer.render(this.scene, this.camera);
     }
     clearScene() {
-        // to iterrate over all children (except the first) in a scene 
-        let objsToRemove = _.tail(this.scene.children);
+        // to iterrate over all children (except the first) in a scene
+        const objsToRemove = _.tail(this.scene.children);
         _.each(objsToRemove, (obj) => {
             this.scene.remove(obj);
         });
@@ -413,7 +407,7 @@ class Visualizer extends React.Component {
         this.updateScene();
     }
     renderAnimationLoop() {
-        let isAgitated = (this.state.activeState === ACTIVE_STATE_RUN) &&
+        const isAgitated = (this.state.activeState === ACTIVE_STATE_RUN) &&
                          (this.state.workflowState === WORKFLOW_STATE_RUNNING);
 
         if (isAgitated) {
@@ -423,7 +417,6 @@ class Visualizer extends React.Component {
             // Set to 360 rounds per minute (rpm)
             this.rotateToolHead(360);
         } else {
-
             // Stop rotation
             this.rotateToolHead(0);
         }
@@ -431,7 +424,7 @@ class Visualizer extends React.Component {
         this.updateScene();
     }
     createRenderer(width, height) {
-        let renderer = new THREE.WebGLRenderer({
+        const renderer = new THREE.WebGLRenderer({
             autoClearColor: true,
             antialias: true,
             alpha: true
@@ -445,11 +438,11 @@ class Visualizer extends React.Component {
         return renderer;
     }
     createPerspectiveCamera(width, height) {
-        let fov = CAMERA_FOV;
-        let aspect = Number(width) / Number(height);
-        let near = CAMERA_NEAR;
-        let far = CAMERA_FAR;
-        let camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+        const fov = CAMERA_FOV;
+        const aspect = Number(width) / Number(height);
+        const near = CAMERA_NEAR;
+        const far = CAMERA_FAR;
+        const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
         camera.position.x = CAMERA_POSITION_X;
         camera.position.y = CAMERA_POSITION_Y;
@@ -458,7 +451,7 @@ class Visualizer extends React.Component {
         return camera;
     }
     createTrackballControls(object, domElement) {
-        let controls = new THREE.TrackballControls(object, domElement);
+        const controls = new TrackballControls(object, domElement);
 
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 0.5;
@@ -501,8 +494,8 @@ class Visualizer extends React.Component {
             return;
         }
 
-        let delta = 1 / fps;
-        let degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
+        const delta = 1 / fps;
+        const degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
     // Make the controls look at the specified position
@@ -520,7 +513,7 @@ class Visualizer extends React.Component {
         // Remove previous G-code object
         this.unloadGCode();
 
-        let el = ReactDOM.findDOMNode(this.refs.visualizer);
+        const el = ReactDOM.findDOMNode(this.refs.visualizer);
 
         this.gcodeVisualizer = new GCodeVisualizer({
             modalState: this.parserstate.modal
@@ -534,11 +527,11 @@ class Visualizer extends React.Component {
             obj.name = 'GCodeVisualizer';
             this.group.add(obj);
 
-            let bbox = getBoundingBox(obj);
-            let dX = bbox.max.x - bbox.min.x;
-            let dY = bbox.max.y - bbox.min.y;
-            let dZ = bbox.max.z - bbox.min.z;
-            let center = new THREE.Vector3(
+            const bbox = getBoundingBox(obj);
+            const dX = bbox.max.x - bbox.min.x;
+            const dY = bbox.max.y - bbox.min.y;
+            const dZ = bbox.max.z - bbox.min.z;
+            const center = new THREE.Vector3(
                 bbox.min.x + (dX / 2),
                 bbox.min.y + (dY / 2),
                 bbox.min.z + (dZ / 2)
@@ -548,9 +541,9 @@ class Visualizer extends React.Component {
             this.pivotPoint.set(center.x, center.y, center.z);
 
             { // Fit the camera to object
-                let objectWidth = dX;
-                let objectHeight = dY;
-                let lookTarget = new THREE.Vector3(0, 0, bbox.max.z);
+                const objectWidth = dX;
+                const objectHeight = dY;
+                const lookTarget = new THREE.Vector3(0, 0, bbox.max.z);
 
                 fitCameraToObject(this.camera, objectWidth, objectHeight, lookTarget);
             }
@@ -562,7 +555,7 @@ class Visualizer extends React.Component {
         });
     }
     unloadGCode() {
-        let gcodeVisualizerObject = this.group.getObjectByName('GCodeVisualizer');
+        const gcodeVisualizerObject = this.group.getObjectByName('GCodeVisualizer');
         if (gcodeVisualizerObject) {
             this.group.remove(gcodeVisualizerObject);
         }
@@ -577,15 +570,15 @@ class Visualizer extends React.Component {
         this.updateScene();
     }
     setWorkflowState(workflowState) {
-        this.setState({ workflowState: workflowState });
+        this.setState({ workflowState });
     }
 	// deltaX and deltaY are in pixels; right and down are positive
     pan(deltaX, deltaY) {
-        let eye = new THREE.Vector3();
-        let pan = new THREE.Vector3();
-        let objectUp = new THREE.Vector3();
+        const eye = new THREE.Vector3();
+        const pan = new THREE.Vector3();
+        const objectUp = new THREE.Vector3();
 
-		eye.subVectors(this.controls.object.position, this.controls.target);
+        eye.subVectors(this.controls.object.position, this.controls.target);
         objectUp.copy(this.controls.object.up);
 
         pan.copy(eye).cross(objectUp.clone()).setLength(deltaX);
@@ -597,8 +590,8 @@ class Visualizer extends React.Component {
     }
     // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
     panUp() {
-        let { ready } = this.state;
-        let { noPan, panSpeed } = this.controls;
+        const { ready } = this.state;
+        const { noPan, panSpeed } = this.controls;
 
         if (!ready || noPan) {
             return;
@@ -607,8 +600,8 @@ class Visualizer extends React.Component {
         this.pan(0, 1 * panSpeed);
     }
     panDown() {
-        let { ready } = this.state;
-        let { noPan, panSpeed } = this.controls;
+        const { ready } = this.state;
+        const { noPan, panSpeed } = this.controls;
 
         if (!ready || noPan) {
             return;
@@ -617,8 +610,8 @@ class Visualizer extends React.Component {
         this.pan(0, -1 * panSpeed);
     }
     panLeft() {
-        let { ready } = this.state;
-        let { noPan, panSpeed } = this.controls;
+        const { ready } = this.state;
+        const { noPan, panSpeed } = this.controls;
 
         if (!ready || noPan) {
             return;
@@ -627,8 +620,8 @@ class Visualizer extends React.Component {
         this.pan(1 * panSpeed, 0);
     }
     panRight() {
-        let { ready } = this.state;
-        let { noPan, panSpeed } = this.controls;
+        const { ready } = this.state;
+        const { noPan, panSpeed } = this.controls;
 
         if (!ready || noPan) {
             return;
@@ -637,9 +630,9 @@ class Visualizer extends React.Component {
         this.pan(-1 * panSpeed, 0);
     }
     render() {
-        let { port, ready, activeState } = this.state;
-        let hasLoaded = !!port && ready;
-        let notLoaded = !hasLoaded;
+        const { port, ready, activeState } = this.state;
+        const hasLoaded = !!port && ready;
+        const notLoaded = !hasLoaded;
 
         return (
             <div>
@@ -657,7 +650,7 @@ class Visualizer extends React.Component {
                     right={::this.panRight}
                     center={::this.lookAtCenter}
                 />
-                {notLoaded && 
+                {notLoaded &&
                     <FileUploader port={port} />
                 }
                 <div ref="visualizer" className="visualizer" />

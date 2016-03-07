@@ -2,12 +2,11 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import settings from '../config/settings';
-import urljoin from '../lib/urljoin';
 import log from '../lib/log';
 
 export const getAcceptedLanguage = (req, res) => {
-    let headers = req['headers'] || {};
-    let http_accept = headers['accept-language'] || '';
+    let headers = req.headers || {};
+    let httpAccept = headers['accept-language'] || '';
 
     // Tags for the Identification of Languages (http://www.ietf.org/rfc/rfc1766.txt)
     //
@@ -17,18 +16,18 @@ export const getAcceptedLanguage = (req, res) => {
     // Primary-tag = 1*8ALPHA
     // Subtag = 1*8ALPHA
 
-    let values = http_accept.split(',') || [];
+    let values = httpAccept.split(',') || [];
     let acceptedList = [];
     _.each(values, (val) => {
         let matches = val.match(/([a-z]{1,8}(-[a-z]{1,8})?)\s*(;\s*q\s*=\s*(1|0\.[0-9]+))?/i);
-        if ( ! matches) {
+        if (!matches) {
             return;
         }
         let lang = matches[1];
         let qval = Number(matches[4]) || Number(1.0);
         acceptedList.push({
-            'lang':lang.toLowerCase(),
-            'qval':qval
+            lang: lang.toLowerCase(),
+            qval: qval
         });
     });
 
@@ -48,11 +47,10 @@ export const getAcceptedLanguage = (req, res) => {
     });
 
     // 2. Look through sorted list again and use first one that partially matches our languages
-    if ( ! preferred) {
+    if (!preferred) {
         match = 'partial';
         _.some(sortedLngs, (lang) => {
             preferred = _.find(settings.supportedLngs, (supportedLng) => {
-                console.log(lang, supportedLng, supportedLng.indexOf(lang) === 0);
                 return supportedLng.indexOf(lang) === 0;
             });
 
@@ -61,7 +59,7 @@ export const getAcceptedLanguage = (req, res) => {
     }
 
     // 3. Fallback to default language that matches nothing
-    if ( ! preferred) {
+    if (!preferred) {
         match = 'none';
         preferred = settings.supportedLngs[0];
     }
@@ -80,10 +78,10 @@ export const saveMissing = (req, res) => {
     let lng = req.params.__lng__;
     let ns = req.params.__ns__;
 
-    let mergedFile = path.join(settings.assets['web'].path, 'i18n', lng, ns + '.json');
+    let mergedFile = path.join(settings.assets.web.path, 'i18n', lng, ns + '.json');
     let mergedObject = JSON.parse(fs.readFileSync(mergedFile, 'utf8'));
 
-    let savedMissingFile = path.join(settings.assets['web'].path, 'i18n', lng, ns + '.savedMissing.json');
+    let savedMissingFile = path.join(settings.assets.web.path, 'i18n', lng, ns + '.savedMissing.json');
     let savedMissingObject = req.body;
 
     // Copy all of the properties in the sendMissing object over to the merged object
@@ -105,5 +103,5 @@ export const saveMissing = (req, res) => {
         }
     });
 
-    res.send({'reply':'ok'});
+    res.send({ 'reply': 'ok' });
 };

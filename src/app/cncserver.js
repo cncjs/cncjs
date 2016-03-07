@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import pubsub from 'pubsub-js';
 import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
@@ -101,12 +100,12 @@ class CNCServer {
                             return controller.port;
                         })
                         .value();
-                    
+
                     ports = _.map(ports, (port) => {
                         return {
                             port: port.comName,
                             manufacturer: port.manufacturer,
-                            inuse: _.includes(portsInUse, port.comName) ? true : false
+                            inuse: _.includes(portsInUse, port.comName)
                         };
                     });
 
@@ -117,7 +116,7 @@ class CNCServer {
             // Open serial port
             socket.on('open', (port, baudrate) => {
                 log.debug('[cncserver] socket.open("%s", %d):', port, baudrate, { id: socket.id });
-                
+
                 let controller = this.controllers[port];
                 if (!controller) {
                     controller = new GrblController(port, baudrate);

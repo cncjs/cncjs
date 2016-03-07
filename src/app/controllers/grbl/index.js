@@ -128,7 +128,7 @@ class GrblController {
         this.grbl.on('ok', (res) => {
             let { waitFor } = this.state;
 
-            if (waitFor['parserstateEnd']) {
+            if (waitFor.parserstateEnd) {
                 this.connections.forEach((c) => {
                     if (c.sentCommand.indexOf('$G') === 0) {
                         c.sentCommand = '';
@@ -193,7 +193,7 @@ class GrblController {
             }
 
             // ? - Current Status
-            if (!(waitFor['status'])) {
+            if (!(waitFor.status)) {
                 this.setState({
                     waitFor: {
                         status: true
@@ -203,7 +203,7 @@ class GrblController {
             }
 
             // $G - Parser State
-            if (!(waitFor['parserstate']) && !(waitFor['parserstateEnd'])) {
+            if (!(waitFor.parserstate) && !(waitFor.parserstateEnd)) {
                 this.setState({
                     waitFor: {
                         parserstate: true,
@@ -226,7 +226,6 @@ class GrblController {
                     });
                 });
             }
-
         }, 250);
     }
     destroy() {
@@ -347,7 +346,7 @@ class GrblController {
     command(socket, cmd, ...args) {
         const handler = {
             'load': () => {
-                const [ name, gcode, callback ] = args;
+                const [name, gcode, callback] = args;
 
                 this.gcode.load(name, gcode, (err) => {
                     if (err) {

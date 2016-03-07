@@ -22,7 +22,7 @@ class ShuttleControl extends events.EventEmitter {
         value = Number(value) || 0;
 
         if ((this.axis !== axis) ||
-            (this.value !== value) || 
+            (this.value !== value) ||
             (this.queue.length >= QUEUE_LENGTH)) {
             this.flush();
         }

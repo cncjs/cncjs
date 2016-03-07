@@ -1,6 +1,6 @@
 /**
  * multihost:
- * 
+ *
  * Setup multi-host for the given `hosts`, `route` and `server`.
  * The `server` may be a Connect server or a regular Node `http.Server`.
  *
@@ -61,10 +61,11 @@ const multihost = (options) => {
             regexps.push(new RegExp('^' + hosts[i].replace(/[*]/g, '(.*?)') + '$', 'i'));
         }
     }
+
     return (req, res, next) => {
         // hosts
         if (regexps.length > 0) {
-            if ( ! req.headers.host) {
+            if (!(req.headers.host)) {
                 return next();
             }
             let hostname = req.headers.host.split(':')[0]; // e.g. localhost:8000
@@ -79,15 +80,18 @@ const multihost = (options) => {
                 return next();
             }
         }
+
         // route
-        if (route && req.url.indexOf(route) !== 0)  {
+        if (route && req.url.indexOf(route) !== 0) {
             return next();
         }
+
         // server
         if (typeof(server) === 'function') {
             return server(req, res, next);
         }
-        server.emit('request', req, res);
+
+        return next();
     };
 };
 

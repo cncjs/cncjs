@@ -1,17 +1,17 @@
 import settings from '../config/settings';
 import urljoin from '../lib/urljoin';
-import * as api_status from './api.status';
-import * as api_config from './api.config';
-import * as api_gcode from './api.gcode';
-import * as api_i18n from './api.i18n';
-import * as api_controllers from './api.controllers';
+import * as statusAPI from './api.status';
+import * as configAPI from './api.config';
+import * as gcodeAPI from './api.gcode';
+import * as i18nAPI from './api.i18n';
+import * as controllersAPI from './api.controllers';
 
 const api = {
-    status: api_status,
-    config: api_config,
-    gcode: api_gcode,
-    i18n: api_i18n,
-    controllers: api_controllers,
+    status: statusAPI,
+    config: configAPI,
+    gcode: gcodeAPI,
+    i18n: i18nAPI,
+    controllers: controllersAPI,
     addRoutes: (app) => {
         // status
         app.get(urljoin(settings.route, 'api/status'), api.status.currentStatus);
@@ -21,7 +21,7 @@ const api = {
         app.put(urljoin(settings.route, 'api/config'), api.config.set);
         app.delete(urljoin(settings.route, 'api/config'), api.config.unset);
 
-        // gcode 
+        // gcode
         app.post(urljoin(settings.route, 'api/gcode/upload'), api.gcode.upload);
 
         // controllers

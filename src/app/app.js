@@ -24,10 +24,10 @@ import urljoin from './lib/urljoin';
 import log from './lib/log';
 import settings from './config/settings';
 import api from './api';
-import err_client from './lib/middleware/err_client';
-import err_log from './lib/middleware/err_log';
-import err_notfound from './lib/middleware/err_notfound';
-import err_server from './lib/middleware/err_server';
+import errclient from './lib/middleware/errclient';
+import errlog from './lib/middleware/errlog';
+import errnotfound from './lib/middleware/errnotfound';
+import errserver from './lib/middleware/errserver';
 
 const renderPage = (req, res, next) => {
     let view = req.params[0] || 'index';
@@ -38,13 +38,13 @@ const renderPage = (req, res, next) => {
 
         // cdn
         if (_.isEmpty(settings.cdn.uri)) {
-            cdn = urljoin(settings.assets['web'].routes[0], '/'); // with trailing slash
+            cdn = urljoin(settings.assets.web.routes[0], '/'); // with trailing slash
         } else {
-            cdn = urljoin(settings.cdn.uri, settings.assets['web'].routes[0], '/'); // with trailing slash
+            cdn = urljoin(settings.cdn.uri, settings.assets.web.routes[0], '/'); // with trailing slash
         }
 
         // webroot
-        webroot = urljoin(settings.assets['web'].routes[0], '/'); // with trailing slash
+        webroot = urljoin(settings.assets.web.routes[0], '/'); // with trailing slash
 
         // version
         version = settings.version;
@@ -130,13 +130,13 @@ const appMain = () => {
 
     // Connect's body parsing middleware. This only handles urlencoded and json bodies.
     // https://github.com/expressjs/body-parser
-    app.use(bodyParser.json(settings.middleware['body-parser']['json']));
-    app.use(bodyParser.urlencoded(settings.middleware['body-parser']['urlencoded']));
+    app.use(bodyParser.json(settings.middleware['body-parser'].json));
+    app.use(bodyParser.urlencoded(settings.middleware['body-parser'].urlencoded));
 
     // For multipart bodies, please use the following modules:
     // - [busboy](https://github.com/mscdex/busboy) and [connect-busboy](https://github.com/mscdex/connect-busboy)
     // - [multiparty](https://github.com/andrewrk/node-multiparty) and [connect-multiparty](https://github.com/andrewrk/connect-multiparty)
-    app.use(multiparty(settings.middleware['multiparty']));
+    app.use(multiparty(settings.middleware.multiparty));
 
     // https://github.com/dominictarr/connect-restreamer
     // connect's bodyParser has a problem when using it with a proxy.
@@ -145,9 +145,9 @@ const appMain = () => {
 
     app.use(methodOverride());
     if (settings.verbosity > 0) {
-        app.use(morgan(settings.middleware['morgan']));
+        app.use(morgan(settings.middleware.morgan));
     }
-    app.use(compress(settings.middleware['compression']));
+    app.use(compress(settings.middleware.compression));
 
     _.each(settings.assets, (asset, name) => {
         log.debug('assets: name=%s, asset=%s', name, JSON.stringify(asset));
@@ -157,8 +157,8 @@ const appMain = () => {
             return;
         }
 
-        _.each(asset.routes, (asset_route) => {
-            let route = urljoin(settings.route || '/', asset_route || '');
+        _.each(asset.routes, (assetRoute) => {
+            let route = urljoin(settings.route || '/', assetRoute || '');
             log.debug('> route=%s', name, route);
             app.use(route, serveStatic(asset.path, {
                 maxAge: asset.maxAge
@@ -175,15 +175,15 @@ const appMain = () => {
     app.get(urljoin(settings.route, '*'), renderPage);
 
     { // Error handling
-        app.use(err_log());
-        app.use(err_client({
+        app.use(errlog());
+        app.use(errclient({
             error: 'XHR error'
         }));
-        app.use(err_notfound({
+        app.use(errnotfound({
             view: path.join('common', '404.hogan'),
             error: 'Not found'
         }));
-        app.use(err_server({
+        app.use(errserver({
             view: path.join('common', '500.jade'),
             error: 'Internal server error'
         }));

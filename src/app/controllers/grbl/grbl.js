@@ -54,9 +54,6 @@ class Grbl extends events.EventEmitter {
         spindle: ''
     };
 
-    constructor() {
-        super();
-    }
     getActiveState() {
         const { activeState } = this.status;
 
@@ -68,7 +65,7 @@ class Grbl extends events.EventEmitter {
     parse(data) {
         data = data.replace(/\s+$/, '');
         if (settings.debug) {
-            //console.log('<<', data);
+            // console.log('<<', data);
         }
         if (!data) {
             return;
@@ -87,7 +84,7 @@ class Grbl extends events.EventEmitter {
             let status = {
                 activeState: r[1], // Active States: Idle, Run, Hold, Door, Home, Alarm, Check
                 machinePos: { // Machine position
-                    x: r[2], 
+                    x: r[2],
                     y: r[3],
                     z: r[4]
                 },
@@ -162,7 +159,7 @@ class Grbl extends events.EventEmitter {
             this.emit('ok', { raw: data });
             return;
         }
-            
+
         if (data.indexOf('error') === 0) {
             this.emit('error', { raw: data });
             return;
@@ -172,7 +169,6 @@ class Grbl extends events.EventEmitter {
             this.emit('others', { raw: data });
             return;
         }
-
     }
 }
 
