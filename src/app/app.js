@@ -13,8 +13,11 @@ import methodOverride from 'method-override';
 import morgan from 'morgan';
 import compress from 'compression';
 import serveStatic from 'serve-static';
+import session from 'express-session';
+import FileStore from 'session-file-store';
 import i18next from 'i18next';
 import i18nextBackend from 'i18next-node-fs-backend';
+import del from 'del';
 import {
     LanguageDetector as i18nextLanguageDetector,
     handle as i18nextHandle
@@ -123,6 +126,18 @@ const appMain = () => {
 
     // Middleware
     // https://github.com/senchalabs/connect
+
+    { // https://github.com/valery-barysok/session-file-store
+        const path = './sessions';
+
+        del.sync([path]);
+        fs.mkdirSync(path); // Defaults to ./sessions
+
+        app.use(session(_.merge({}, settings.middleware.session, {
+            store: new (FileStore(session))({ path })
+        })));
+    }
+
     app.use(favicon(path.join(__dirname, '../web/favicon.ico')));
     app.use(cookieParser());
 
@@ -141,9 +156,15 @@ const appMain = () => {
     // It gobbles up all the body events, so that the proxy doesn't see anything!
     app.use(connectRestreamer());
 
+    // https://github.com/expressjs/method-override
     app.use(methodOverride());
     if (settings.verbosity > 0) {
-        app.use(morgan(settings.middleware.morgan));
+        // https://github.com/expressjs/morgan#use-custom-token-formats
+        // Add an ID to all requests and displays it using the :id token
+        morgan.token('id', (req, res) => {
+            return req.session.id;
+        });
+        app.use(morgan(settings.middleware.morgan.format));
     }
     app.use(compress(settings.middleware.compression));
 
