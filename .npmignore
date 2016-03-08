@@ -1,6 +1,6 @@
 tmp
 npm-debug.log
 /log
-/.sessions
+/sessions
 /coverage
 /.nyc_output
