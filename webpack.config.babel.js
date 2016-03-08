@@ -60,6 +60,10 @@ export default {
                 test: /\.jsx?$/,
                 loaders: ['eslint'],
                 exclude: /node_modules/
+            },
+            {
+                test: /\.styl$/,
+                loader: 'stylint'
             }
         ],
         loaders: [
@@ -106,7 +110,9 @@ export default {
         ]
     },
     stylus: {
+        // nib - CSS3 extensions for Stylus
         use: [nib()],
+        // no need to have a '@import "nib"' in the stylesheet
         import: ['~nib/lib/nib/index.styl']
     },
     resolve: {
