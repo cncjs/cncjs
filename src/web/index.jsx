@@ -3,7 +3,7 @@ import async from 'async';
 import Uri from 'jsuri';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, IndexRoute } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import settings from './config/settings';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
@@ -78,7 +78,7 @@ async.series([
     }
 
     ReactDOM.render(
-        <Router>
+        <Router history={browserHistory}>
             <Route path="/" component={App}>
                 <IndexRoute component={Workspace} />
             </Route>
