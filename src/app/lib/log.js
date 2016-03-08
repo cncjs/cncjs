@@ -6,7 +6,6 @@ import settings from '../config/settings';
 
 // String utils
 import 'colors';
-import 'string-format';
 
 // Default settings
 const defaults = {
