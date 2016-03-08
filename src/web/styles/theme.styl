@@ -15,7 +15,7 @@ label {
     font-size: 14px;
 }
 .dropdown-menu > li > a:focus {
-    outline: none;
+    outline: 0;
 }
 .dropdown-header {
     font-weight: bold;
@@ -39,7 +39,7 @@ table tbody > tr > td {
 
 // Vertical Spacing for Bootstrap Columns
 // https://coderwall.com/p/0jezca/vertical-spacing-for-bootstrap-columns
-row {
+.row {
     &.row-grid {
         [class*="col-"] + [class*="col-"] {
             margin-top: 15px;
@@ -83,6 +83,8 @@ row {
     }
 }
 
+// @stylint off
+
 // To vertically align the modal
 // https://github.com/react-bootstrap/react-bootstrap/issues/995
 .modal-dialog.modal-vertical-center {
@@ -92,6 +94,8 @@ row {
     margin: auto;
     transform: translate(-50%, -50%) !important;
 }
+
+// @stylint on
 
 // Modal
 .modal-header,

@@ -11,20 +11,20 @@
     }
 
     &.widget-fullscreen {
-        width: 100%;
-        height: 100%;
         position: fixed;
         top: 0;
         left: 0;
         z-index: 1050;
+        width: 100%;
+        height: 100%;
     }
     &.widget-fullscreen {
         .widget-content {
             position: absolute;
             top: 0;
+            right: 0;
             bottom: 0;
             left: 0;
-            right: 0;
         }
         .widget-header + .widget-content {
             position: absolute;
@@ -72,7 +72,7 @@
         height: 32px;
         line-height: 32px;
         position: relative;
-        border-left: 1px solid rgba(0,0,0,.09);
+        border-left: 1px solid rgba(0, 0, 0, .09);
         padding: 0 8px;
         text-align: center;
 
@@ -107,16 +107,16 @@
             height: 32px;
             float: left;
             position: relative;
-            font-family: Arial,Helvetica,sans-serif;
-            border-left: 1px solid rgba(0,0,0,.09);
+            font-family: Arial, Helvetica, sans-serif;
+            border-left: 1px solid rgba(0, 0, 0, .09);
             margin: 0;
 
             &:hover {
-                background-color: rgba(0,0,0,.05);
+                background-color: rgba(0, 0, 0, .05);
             }
 
             &:first-child {
-                padding-left: 0
+                padding-left: 0;
             }
             .glyphicon {
                 font-size: 14px;
