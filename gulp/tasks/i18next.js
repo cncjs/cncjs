@@ -6,7 +6,39 @@ import i18nextScanner from 'i18next-scanner';
 import hash from 'sha1';
 import table from 'text-table';
 
-const i18nextConfig = {
+const appConfig = {
+    src: [
+        'src/app/**/*.html',
+        'src/app/**/*.hbs',
+        'src/app/**/*.js',
+        'src/app/**/*.jsx',
+        // Use ! to filter out files or directories
+        '!src/app/i18n/**',
+        '!**/node_modules/**'
+    ],
+    dest: './',
+    options: {
+        debug: true,
+        sort: true,
+        lngs: ['en'],
+        defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
+        resGetPath: 'src/app/i18n/{{lng}}/{{ns}}.json',
+        resSetPath: 'src/app/i18n/{{lng}}/{{ns}}.json', // or 'src/app/i18n/${lng}/${ns}.saveAll.json'
+        nsseparator: ':', // namespace separator
+        keyseparator: '.', // key separator
+        interpolationPrefix: '{{',
+        interpolationSuffix: '}}',
+        ns: {
+            namespaces: [
+                'config', // config
+                'resource' // default
+            ],
+            defaultNs: 'resource'
+        }
+    }
+};
+
+const webConfig = {
     src: [
         'src/web/**/*.html',
         'src/web/**/*.hbs',
@@ -132,12 +164,20 @@ function customTransform(file, enc, done) {
 }
 
 export default (options) => {
-    gulp.task('i18next', () => {
-        return gulp.src(i18nextConfig.src)
-            .pipe(i18nextScanner(i18nextConfig.options, function(file, enc, done) {
-                let parser = this.parser;
+    gulp.task('i18next:app', () => {
+        return gulp.src(appConfig.src)
+            .pipe(i18nextScanner(appConfig.options, function(file, enc, done) {
+                const parser = this.parser;
                 customTransform.call(parser, file, enc, done);
             }))
-            .pipe(gulp.dest(i18nextConfig.dest));
+            .pipe(gulp.dest(appConfig.dest));
+    });
+    gulp.task('i18next:web', () => {
+        return gulp.src(webConfig.src)
+            .pipe(i18nextScanner(webConfig.options, function(file, enc, done) {
+                const parser = this.parser;
+                customTransform.call(parser, file, enc, done);
+            }))
+            .pipe(gulp.dest(webConfig.dest));
     });
 };

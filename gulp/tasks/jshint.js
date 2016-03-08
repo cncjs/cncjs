@@ -8,7 +8,6 @@ const jshintConfig = {
         'test/**/*.json',
 
         // exclusion
-        '!src/web/vendor/**',
         '!**/node_modules/**'
     ],
     options: require('../../config/jshint')

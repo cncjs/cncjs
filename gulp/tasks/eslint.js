@@ -5,13 +5,9 @@ const eslintConfig = {
     src: [
         'gulp/**/*.js',
         '*.js',
-        '*.jsx',
-        'src/{app,web}/**/*.js',
-        'src/{app,web}/**/*.jsx',
         'test/**/*.js',
 
         // exclusion
-        '!src/web/vendor/**',
         '!**/node_modules/**'
     ]
 };
