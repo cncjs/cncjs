@@ -1,0 +1,38 @@
+//
+// https://github.com/rossPatton/stylint
+//
+{
+    "blocks": false,
+    "brackets": "always",
+    "colons": "always",
+    "colors": false,
+    "commaSpace": "always",
+    "commentSpace": false,
+    "cssLiteral": "never",
+    "depthLimit": false,
+    "duplicates": true,
+    "efficient": "always",
+    "extendPref": false,
+    "globalDupe": false,
+    "indentPref": false,
+    "leadingZero": "never",
+    "maxErrors": false,
+    "maxWarnings": false,
+    "mixed": false,
+    "namingConvention": false,
+    "namingConventionStrict": false,
+    "none": "never",
+    "noImportant": true,
+    "parenSpace": false,
+    "placeholders": "always",
+    "prefixVarsWithDollar": "always",
+    "quotePref": false,
+    "semicolons": "always",
+    "sortOrder": false,
+    "stackedProperties": "never",
+    "trailingWhitespace": "never",
+    "universal": false,
+    "valid": true,
+    "zeroUnits": "never",
+    "zIndexNormalize": false
+}
