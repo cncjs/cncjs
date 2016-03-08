@@ -51,7 +51,7 @@
         "no-lone-blocks": 0,
         "no-param-reassign": 0,
         "no-shadow": 0,
-        "no-var": 0,
+        "no-var": 1,
         "no-unused-expressions": [2, {
             "allowShortCircuit": true,
             "allowTernary": true
@@ -69,6 +69,7 @@
         "quote-props": [0, "as-needed"],
         "quotes": [2, "single"],
         "space-before-function-paren": 0,
+        "spaced-comment": 0,
         "vars-on-top": 0,
 
         "react/jsx-boolean-value": 0,
