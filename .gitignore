@@ -1,7 +1,8 @@
-dist
-log
 tmp
 node_modules
 npm-debug.log
+/dist
+/log
+/.sessions
 /coverage
 /.nyc_output
