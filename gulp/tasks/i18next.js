@@ -18,7 +18,7 @@ const appConfig = {
     ],
     dest: './',
     options: {
-        debug: true,
+        debug: false,
         sort: true,
         lngs: ['en'],
         defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
@@ -51,7 +51,7 @@ const webConfig = {
     ],
     dest: './',
     options: {
-        debug: true,
+        debug: false,
         sort: true,
         lngs: ['en'],
         defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key

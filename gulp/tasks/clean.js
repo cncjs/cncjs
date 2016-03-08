@@ -1,23 +1,19 @@
 import gulp from 'gulp';
 import del from 'del';
 
-const cleanConfig = {
-    src: [
-        'src/web/**/*.css',
-        // exclusion
-        '!src/web/vendor/**'
-    ],
-    dist: [
-        'dist/**/*'
-    ]
-};
+const list = [
+    'src/web/**/*.css',
+    'src/web/**/*.css.map',
+    'src/web/**/*.js.map',
+    'dist/**/*',
+    // exclusion
+    '!src/web/vendor/**'
+];
 
 export default (options) => {
-    gulp.task('clean', ['clean-src', 'clean-dist']);
-    gulp.task('clean-src', (callback) => {
-        del(cleanConfig.src, callback);
-    });
-    gulp.task('clean-dist', (callback) => {
-        del(cleanConfig.dist, callback);
+    gulp.task('clean', (callback) => {
+        del(list).then(() => {
+            callback();
+        });
     });
 };
