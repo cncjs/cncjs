@@ -13,11 +13,14 @@ const debug = (env === 'development');
 // RCFile
 const RCFILE = '.cncrc';
 
+// Secret
+const secret = pkg.version;
+
 // hashedVersion
 const hashedVersion = ((version) => {
-    let algorithm = 'sha1';
-    let buf = String(version);
-    let hash = crypto.createHash(algorithm).update(buf).digest('hex');
+    const algorithm = 'sha1';
+    const buf = String(version);
+    const hash = crypto.createHash(algorithm).update(buf).digest('hex');
     return hash.substr(0, 8); // 8 digits
 })(pkg.version);
 
@@ -25,7 +28,7 @@ const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPRO
 
 const maxAge = debug ? 0 : (365 * 24 * 60 * 60 * 1000); // one year
 
-let defaults = {
+const defaults = {
     env: env,
     verbosity: 0,
     cnc: {}, // override this settings using `cnc -c ~/.cncrc`
@@ -111,12 +114,22 @@ let defaults = {
         },
         // https://github.com/expressjs/morgan
         'morgan': {
-            format: '\x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m \x1b[34m:status\x1b[0m :response-time ms'
+            // The ':id' token is defined at app.js
+            format: ':id \x1b[1m:method\x1b[0m \x1b[33m:url\x1b[0m \x1b[34m:status\x1b[0m :response-time ms'
         },
         // https://github.com/expressjs/compression
         'compression': {
             // response is only compressed if the byte size is at or above this threshold.
             threshold: 512
+        },
+        // https://github.com/expressjs/session
+        'session': {
+            // https://github.com/expressjs/session#resave
+            resave: true,
+            // https://github.com/expressjs/session#saveuninitialized
+            saveUninitialized: true,
+            // https://github.com/expressjs/session#secret
+            secret: secret
         }
     },
     // Supported languages
