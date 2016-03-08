@@ -236,7 +236,7 @@ class Log {
 
 const log = new Log();
 
-module.exports = {
+export default {
     setLevel: (...args) => {
         log.setLevel.apply(log, args);
     },

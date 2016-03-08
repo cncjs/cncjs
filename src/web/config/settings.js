@@ -1,8 +1,8 @@
-var root = window.root;
+const root = window.root;
 
 console.assert(typeof root.app.config === 'object', 'root.app.config is not an object');
 
-var settings = {
+const settings = {
     version: root.app.config.version,
     webroot: root.app.config.webroot,
     cdn: root.app.config.cdn,

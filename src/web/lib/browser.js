@@ -1,4 +1,4 @@
-var browser = {
+const browser = {
     isSafari: function() {
         return (/Safari/).test(navigator.userAgent) && (/Apple Computer/).test(navigator.vendor);
     },
@@ -20,21 +20,22 @@ var browser = {
     // http://msdn.microsoft.com/en-us/library/ie/bg182625(v=vs.110).aspx
     // http://stackoverflow.com/questions/17907445/how-to-detect-ie11
     getIEVersion: function() {
-        var rv = -1;
-        var ua, re;
+        let rv = -1;
+
         if (navigator.appName === 'Microsoft Internet Explorer') {
-            ua = navigator.userAgent;
-            re = new RegExp(/MSIE ([0-9]{1,}[\.0-9]{0,})/);
+            let ua = navigator.userAgent;
+            let re = new RegExp(/MSIE ([0-9]{1,}[\.0-9]{0,})/);
             if (re.exec(ua) !== null) {
                 rv = parseFloat(RegExp.$1);
             }
         } else if (navigator.appName === 'Netscape') {
-            ua = navigator.userAgent;
-            re = new RegExp(/Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/);
+            let ua = navigator.userAgent;
+            let re = new RegExp(/Trident\/.*rv:([0-9]{1,}[\.0-9]{0,})/);
             if (re.exec(ua) !== null) {
                 rv = parseFloat(RegExp.$1);
             }
         }
+
         return rv;
     }
 };
@@ -46,4 +47,4 @@ browser.datauri = {
     over32kb: ! (browser.isIE() && browser.getIEVersion() < 9)
 };
 
-module.exports = browser;
+export default browser;
