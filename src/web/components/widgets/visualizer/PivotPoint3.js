@@ -10,7 +10,7 @@ export default class PivotPoint3 {
     // @param {number} [options.y] The pivot point on the y-axis
     // @param {number} [options.z] The pivot point on the z-axis
     // @param callback {function} The callback function
-    constructor(options, callback) {
+    constructor(options, callback = noop) {
         options = _.defaults({}, options, { x: 0, y: 0, z: 0 });
 
         options.x = Number(options.x) || 0;
@@ -18,7 +18,7 @@ export default class PivotPoint3 {
         options.z = Number(options.z) || 0;
 
         this.pivotPoint = { x: 0, y: 0, z: 0 };
-        this.callback = _.isFunction(callback) ? callback : noop;
+        this.callback = callback;
 
         this.set(options.x, options.y, options.z);
     }
