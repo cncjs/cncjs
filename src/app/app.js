@@ -32,8 +32,8 @@ import errnotfound from './lib/middleware/errnotfound';
 import errserver from './lib/middleware/errserver';
 
 const renderPage = (req, res, next) => {
-    let view = req.params[0] || 'index';
-    let file = view + '.hbs';
+    const view = req.params[0] || 'index';
+    const file = view + '.hbs';
 
     if (fs.existsSync(path.resolve(__dirname, 'views', file))) {
         let cdn, webroot, version;
@@ -78,7 +78,7 @@ const renderPage = (req, res, next) => {
 };
 
 const appMain = () => {
-    let app = express();
+    const app = express();
 
     // Setup i18n (i18next)
     i18next
@@ -108,12 +108,12 @@ const appMain = () => {
         app.disable('x-powered-by'); // Enables the X-Powered-By: Express HTTP header, enabled by default
 
         for (let i = 0; i < settings.view.engines.length; ++i) {
-            let extension = settings.view.engines[i].extension;
-            let template = settings.view.engines[i].template;
+            const extension = settings.view.engines[i].extension;
+            const template = settings.view.engines[i].template;
             app.engine(extension, engines[template]);
         }
         app.set('view engine', settings.view.defaultExtension); // The default engine extension to use when omitted
-        app.set('views', path.join(__dirname, 'views')); // The view directory path
+        app.set('views', path.resolve(__dirname, 'views')); // The view directory path
 
         log.debug('app.settings: %j', app.settings);
     }
@@ -138,7 +138,7 @@ const appMain = () => {
         })));
     }
 
-    app.use(favicon(path.join(__dirname, '../web/favicon.ico')));
+    app.use(favicon(path.join(settings.assets.web.path, 'favicon.ico')));
     app.use(cookieParser());
 
     // Connect's body parsing middleware. This only handles urlencoded and json bodies.
@@ -177,7 +177,7 @@ const appMain = () => {
         }
 
         _.each(asset.routes, (assetRoute) => {
-            let route = urljoin(settings.route || '/', assetRoute || '');
+            const route = urljoin(settings.route || '/', assetRoute || '');
             log.debug('> route=%s', name, route);
             app.use(route, serveStatic(asset.path, {
                 maxAge: asset.maxAge
