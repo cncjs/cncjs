@@ -48,8 +48,8 @@ export default {
         global: true,
         process: true,
         Buffer: true,
-        __filename: true, // use relative path
-        __dirname: true, // use relative path
+        __filename: true, // Use relative path
+        __dirname: true, // Use relative path
         setImmediate: true
     }
 };
