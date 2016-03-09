@@ -75,15 +75,15 @@ class GCodeTable extends React.Component {
             <div className="gcode-table">
                 <DataGrid
                     className="hide-header"
-                    ref="dataGrid"
-                    idProperty="id"
-                    dataSource={data}
                     columns={columns}
+                    dataSource={data}
                     emptyText={i18n._('No data to display')}
+                    idProperty="id"
+                    ref="dataGrid"
                     rowHeight={rowHeight}
-                    style={{ height }}
-                    withColumnMenu={false}
                     showCellBorders={true}
+                    style={{ height: height }}
+                    withColumnMenu={false}
                 />
             </div>
         );
