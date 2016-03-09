@@ -75,7 +75,7 @@
     "react": "^0.14.7",
     "react-addons-update": "^0.14.7",
     "react-bootstrap": "^0.28.3",
-    "react-datagrid": "^2.0.2",
+    "react-datagrid": "^1.2.15",
     "react-dom": "^0.14.7",
     "react-dropzone": "^3.3.2",
     "react-infinite": "^0.8.0",
