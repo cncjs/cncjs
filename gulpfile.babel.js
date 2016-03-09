@@ -29,7 +29,7 @@ gulp.task('dev', ['build-dev']);
 
 gulp.task('build-dev', (callback) => {
     runSequence(
-        ['app:build', 'web:build-dev'],
+        ['app:build-dev', 'web:build-dev'],
         callback
     );
 });
