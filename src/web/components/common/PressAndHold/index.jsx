@@ -22,7 +22,7 @@ class PressAndHold extends React.Component {
         this.timeout = setTimeout(() => {
             this.handleRelease();
 
-            this.interval = setInterval(function() {
+            this.interval = setInterval(() => {
                 if (this.interval) {
                     this.props.onClick();
                 }
