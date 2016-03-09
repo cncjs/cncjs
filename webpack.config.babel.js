@@ -115,13 +115,10 @@ export default {
         import: ['~nib/lib/nib/index.styl']
     },
     resolve: {
-        alias: {
-        },
+        alias: {},
         extensions: ['', '.js', '.jsx', '.styl']
     },
     node: {
-        fs: 'empty',
-        net: 'empty',
-        tls: 'empty'
+        fs: 'empty'
     }
 };
