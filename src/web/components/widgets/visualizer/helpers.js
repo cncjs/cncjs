@@ -48,8 +48,8 @@ export const fitCameraToObject = (camera, width, height, lookTarget) => {
 };
 
 export const getBoundingBox = (object) => {
-    let box = new THREE.Box3().setFromObject(object);
-    let boundingBox = {
+    const box = new THREE.Box3().setFromObject(object);
+    const boundingBox = {
         min: {
             x: box.min.x === Infinity ? 0 : box.min.x,
             y: box.min.y === Infinity ? 0 : box.min.y,
