@@ -3,8 +3,9 @@ import eslint from 'gulp-eslint';
 
 const eslintConfig = {
     src: [
-        'gulp/**/*.js',
         '*.js',
+        'bin/**/*.js',
+        'gulp/**/*.js',
         'test/**/*.js',
 
         // exclusion
