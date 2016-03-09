@@ -10,6 +10,7 @@ import nib from 'nib';
 
 export default {
     cache: true,
+    target: 'web',
     entry: {
         app: './src/web/index.jsx',
         vendor: [
@@ -115,9 +116,6 @@ export default {
     },
     resolve: {
         alias: {
-            // FIXME
-            'i18next-browser-languagedetector': 'i18next-browser-languagedetector/lib/index.js',
-            'i18next-xhr-backend': 'i18next-xhr-backend/lib/index.js'
         },
         extensions: ['', '.js', '.jsx', '.styl']
     },
