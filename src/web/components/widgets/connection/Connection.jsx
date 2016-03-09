@@ -214,18 +214,18 @@ class Connection extends React.Component {
         // Refresh ports
         controller.listAllPorts();
     }
-    changePort(value) {
+    changePortOption(option) {
         this.setState({
             alertMessage: '',
-            port: value
+            port: option.value
         });
     }
-    changeBaudrate(value) {
+    changeBaudrateOption(option) {
         this.setState({
             alertMessage: '',
-            baudrate: value
+            baudrate: option.value
         });
-        store.set('widgets.connection.baudrate', value);
+        store.set('widgets.connection.baudrate', option.value);
     }
     handleAutoReconnect(event) {
         const checked = event.target.checked;
@@ -315,24 +315,24 @@ class Connection extends React.Component {
                     <label className="control-label">{i18n._('Port')}</label>
                     <div className="input-group input-group-sm">
                         <Select
+                            backspaceRemoves={false}
                             className="sm"
+                            clearable={false}
+                            disabled={!canChangePort}
                             name="port"
-                            value={port}
+                            noResultsText={i18n._('No ports available')}
+                            onChange={::this.changePortOption}
+                            optionRenderer={::this.renderPortOption}
                             options={_.map(ports, (o) => ({
                                 value: o.port,
                                 label: o.port,
                                 manufacturer: o.manufacturer,
                                 inuse: o.inuse
                             }))}
-                            disabled={!canChangePort}
-                            backspaceRemoves={false}
-                            clearable={false}
-                            searchable={false}
                             placeholder={i18n._('Choose a port')}
-                            noResultsText={i18n._('No ports available')}
-                            optionRenderer={::this.renderPortOption}
+                            searchable={false}
+                            value={port}
                             valueRenderer={::this.renderPortValue}
-                            onChange={::this.changePort}
                         />
                         <div className="input-group-btn">
                             <button
@@ -354,20 +354,20 @@ class Connection extends React.Component {
                 <div className="form-group">
                     <label className="control-label">{i18n._('Baud rate')}</label>
                     <Select
+                        backspaceRemoves={false}
                         className="sm"
+                        clearable={false}
+                        disabled={!canChangeBaudrate}
                         name="baudrate"
-                        value={baudrate}
+                        onChange={::this.changeBaudrateOption}
                         options={_.map(baudrates, (value) => ({
-                            value,
+                            value: value,
                             label: Number(value).toString()
                         }))}
-                        disabled={!canChangeBaudrate}
-                        backspaceRemoves={false}
-                        clearable={false}
-                        searchable={false}
                         placeholder={i18n._('Choose a baud rate')}
+                        searchable={false}
+                        value={baudrate}
                         valueRenderer={::this.renderBaudrateValue}
-                        onChange={::this.changeBaudrate}
                     />
                 </div>
                 <div className="checkbox">
