@@ -1,18 +1,14 @@
 #!/usr/bin/env node
 
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-
-var _ = require('lodash');
-var fs = require('fs');
 var path = require('path');
 var program = require('commander');
 var pkg = require('../package.json');
-require('colors');
 
-const RCFILE = '.cncrc';
-const getUserHome = function() {
-    return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
-};
+// Defaults to 'production'
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
+
+// Change working directory to 'dist/app'
+process.chdir(path.resolve(__dirname, '../dist/app'));
 
 function increaseVerbosityLevel(val, total) {
     return total + 1;
@@ -41,57 +37,17 @@ program
     .option('-p, --port <port>', 'set listen port (default: 8000)', parseInt, 8000)
     .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)', '0.0.0.0')
     .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)', parseInt, 511)
-    .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)', '~/.cncrc')
+    .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
     .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
     .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
     .parse(process.argv);
 
-var settings = {};
-
-if (program.verbose === 1) {
-    _.set(settings, 'verbosity', 1);
-    _.set(settings, 'winston.level', 'debug');
-}
-if (program.verbose === 2) {
-    _.set(settings, 'verbosity', 2);
-    _.set(settings, 'winston.level', 'trace');
-}
-
-{ // Load configuration settings
-    var cncrc = path.resolve(getUserHome(), RCFILE);
-
-    if (program.config) {
-        cncrc = path.resolve(program.config);
-    }
-
-    try {
-        var cnc = JSON.parse(fs.readFileSync(cncrc, 'utf8'));
-        if (!(_.isObject(cnc))) {
-            console.log('Check your configuration file to ensure it contain valid settings.'.bold.red);
-            console.log(cnc);
-            process.exit(1);
-        }
-        settings['cncrc'] = cncrc;
-        settings['cnc'] = _.extend({}, settings['cnc'], cnc);
-    }
-    catch(err) {
-    }
-}
-
-var routes = [];
-if (program.mount) {
-    routes.push({
-        type: 'static',
-        route: program.mount.url,
-        directory: program.mount.path
-    });
-}
-
-var appMain = require('../dist/app');
-appMain({
+var app = require('../dist/app');
+app.run({
     port: program.port,
     host: program.host,
     backlog: program.backlog,
-    routes: routes,
-    settings: settings
+    config: program.config,
+    verbose: program.verbose,
+    mount: program.mount
 });
