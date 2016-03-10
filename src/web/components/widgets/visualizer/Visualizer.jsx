@@ -527,7 +527,7 @@ class Visualizer extends React.Component {
             obj.name = 'GCodeVisualizer';
             this.group.add(obj);
 
-            const bbox = getBoundingBox(obj.children[0]);
+            const bbox = getBoundingBox(obj);
             const dX = bbox.max.x - bbox.min.x;
             const dY = bbox.max.y - bbox.min.y;
             const dZ = bbox.max.z - bbox.min.z;
