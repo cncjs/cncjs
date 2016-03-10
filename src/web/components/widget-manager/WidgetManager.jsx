@@ -6,7 +6,7 @@ import i18n from '../../lib/i18n';
 import store from '../../store';
 import WidgetList from './WidgetList';
 
-class Widgets extends React.Component {
+class WidgetManager extends React.Component {
     static propTypes = {
         onSave: React.PropTypes.func,
         onClose: React.PropTypes.func.isRequired
@@ -149,36 +149,4 @@ class Widgets extends React.Component {
     }
 }
 
-export const getActiveWidgets = () => {
-    const defaultWidgets = store.get('workspace.container.default.widgets');
-    const primaryWidgets = store.get('workspace.container.primary.widgets');
-    const secondaryWidgets = store.get('workspace.container.secondary.widgets');
-    const activeWidgets = _.concat(defaultWidgets, primaryWidgets, secondaryWidgets);
-
-    return activeWidgets;
-};
-
-export const getInactiveWidgets = () => {
-    const allWidgets = _.keys(store.get('widgets'));
-    const defaultWidgets = store.get('workspace.container.default.widgets');
-    const primaryWidgets = store.get('workspace.container.primary.widgets');
-    const secondaryWidgets = store.get('workspace.container.secondary.widgets');
-    const inactiveWidgets = _.difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets);
-
-    return inactiveWidgets;
-};
-
-// @param {string} targetContainer The target container: primary|secondary
-export const show = (callback) => {
-    const el = document.body.appendChild(document.createElement('div'));
-    const handleClose = (e) => {
-        ReactDOM.unmountComponentAtNode(el);
-        setTimeout(() => {
-            el.remove();
-        }, 0);
-    };
-
-    ReactDOM.render(<Widgets onSave={callback} onClose={handleClose} />, el);
-};
-
-export default Widgets;
+export default WidgetManager;
