@@ -36,6 +36,7 @@ export default {
             'react-infinite',
             'react-router',
             'react-select',
+            'react-sortablejs',
             'sha1',
             'sortablejs',
             'stacktrace-js',
