@@ -5,207 +5,13 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import request from 'superagent';
-import Sortable from '../common/Sortable';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import store from '../../store';
-import * as widgets from './Widgets';
-import {
-    AxesWidget,
-    ConnectionWidget,
-    ConsoleWidget,
-    GCodeWidget,
-    GrblWidget,
-    ProbeWidget,
-    SpindleWidget,
-    VisualizerWidget,
-    WebcamWidget
-} from '../widgets';
-
-const getWidgetComponent = (widgetId, props) => {
-    let handler = {
-        'axes': (props) => <AxesWidget {...props} data-id="axes" key="axes" />,
-        'connection': (props) => <ConnectionWidget {...props} data-id="connection" key="connection" />,
-        'console': (props) => <ConsoleWidget {...props} data-id="console" key="console" />,
-        'gcode': (props) => <GCodeWidget {...props} data-id="gcode" key="gcode" />,
-        'grbl': (props) => <GrblWidget {...props} data-id="grbl" key="grbl" />,
-        'probe': (props) => <ProbeWidget {...props} data-id="probe" key="probe" />,
-        'spindle': (props) => <SpindleWidget {...props} data-id="spindle" key="spindle" />,
-        'visualizer': (props) => <VisualizerWidget {...props} data-id="visualizer" key="visualizer" />,
-        'webcam': (props) => <WebcamWidget {...props} data-id="webcam" key="webcam" />
-    }[widgetId];
-
-    return handler ? handler(props) : null;
-};
-
-class DefaultWidgets extends React.Component {
-    state = {
-        widgets: store.get('workspace.container.default.widgets')
-    };
-
-    componentDidUpdate() {
-        const { widgets } = this.state;
-        store.set('workspace.container.default.widgets', widgets);
-
-        // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
-    }
-    render() {
-        let widgets = _.map(this.state.widgets, (widgetId) => {
-            return getWidgetComponent(widgetId);
-        });
-
-        return (
-            <div {...this.props}>{widgets}</div>
-        );
-    }
-}
-
-class PrimaryWidgets extends Sortable {
-    static propTypes = {
-        onDelete: React.PropTypes.func.isRequired
-    };
-    state = {
-        widgets: store.get('workspace.container.primary.widgets')
-    };
-    sortableOptions = {
-        model: 'widgets',
-        group: {
-            name: 'primary',
-            pull: true,
-            put: ['secondary']
-        },
-        handle: '.widget-header',
-        dataIdAttr: 'data-id'
-    };
-    pubsubTokens = [];
-
-    componentDidMount() {
-        super.componentDidMount();
-        this.subscribe();
-    }
-    componentWillUnmount() {
-        super.componentWillUnmount();
-        this.unsubscribe();
-    }
-    componentDidUpdate() {
-        const { widgets } = this.state;
-
-        // Calling store.set() will merge two different arrays into one.
-        // Remove the property first to avoid duplication.
-        store.replace('workspace.container.primary.widgets', widgets);
-
-        // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
-    }
-    subscribe() {
-        { // updatePrimaryWidgets
-            let token = pubsub.subscribe('updatePrimaryWidgets', (msg, widgets) => {
-                this.setState({ widgets: widgets });
-            });
-            this.pubsubTokens.push(token);
-        }
-    }
-    unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
-    handleDeleteWidget(widgetId) {
-        let widgets = _.slice(this.state.widgets);
-        _.remove(widgets, (n) => (n === widgetId));
-        this.setState({ widgets: widgets });
-
-        this.props.onDelete();
-    }
-    render() {
-        let widgets = _.map(this.state.widgets, (widgetId) => {
-            return getWidgetComponent(widgetId, {
-                onDelete: () => {
-                    this.handleDeleteWidget(widgetId);
-                }
-            });
-        });
-
-        return (
-            <div {...this.props}>{widgets}</div>
-        );
-    }
-}
-
-class SecondaryWidgets extends Sortable {
-    static propTypes = {
-        onDelete: React.PropTypes.func.isRequired
-    };
-    state = {
-        widgets: store.get('workspace.container.secondary.widgets')
-    };
-    sortableOptions = {
-        model: 'widgets',
-        group: {
-            name: 'secondary',
-            pull: true,
-            put: ['primary']
-        },
-        handle: '.widget-header',
-        dataIdAttr: 'data-id'
-    };
-    pubsubTokens = [];
-
-    componentDidMount() {
-        super.componentDidMount();
-        this.subscribe();
-    }
-    componentWillUnmount() {
-        super.componentWillUnmount();
-        this.unsubscribe();
-    }
-    componentDidUpdate() {
-        const { widgets } = this.state;
-
-        // Calling store.set() will merge two different arrays into one.
-        // Remove the property first to avoid duplication.
-        store.replace('workspace.container.secondary.widgets', widgets);
-
-        // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
-    }
-    subscribe() {
-        { // updateSecondaryWidgets
-            let token = pubsub.subscribe('updateSecondaryWidgets', (msg, widgets) => {
-                this.setState({ widgets: widgets });
-            });
-            this.pubsubTokens.push(token);
-        }
-    }
-    unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
-    handleDeleteWidget(widgetId) {
-        let widgets = _.slice(this.state.widgets);
-        _.remove(widgets, (n) => (n === widgetId));
-        this.setState({ widgets: widgets });
-
-        this.props.onDelete();
-    }
-    render() {
-        let widgets = _.map(this.state.widgets, (widgetId) => {
-            return getWidgetComponent(widgetId, {
-                onDelete: () => {
-                    this.handleDeleteWidget(widgetId);
-                }
-            });
-        });
-
-        return (
-            <div {...this.props}>{widgets}</div>
-        );
-    }
-}
+import * as widgetManager from '../widget-manager';
+import DefaultWidgets from './DefaultWidgets';
+import PrimaryWidgets from './PrimaryWidgets';
+import SecondaryWidgets from './SecondaryWidgets';
 
 class Workspace extends React.Component {
     state = {
@@ -215,7 +21,7 @@ class Workspace extends React.Component {
         isUploading: false,
         showPrimaryContainer: store.get('workspace.container.primary.show'),
         showSecondaryContainer: store.get('workspace.container.secondary.show'),
-        inactiveCount: _.size(widgets.getInactiveWidgets())
+        inactiveCount: _.size(widgetManager.getInactiveWidgets())
     };
     sortableGroup = {
         primary: null,
@@ -359,7 +165,7 @@ class Workspace extends React.Component {
         reader.readAsText(file);
     }
     updateWidgetsForPrimaryContainer() {
-        widgets.show((activeWidgets, inactiveWidgets) => {
+        widgetManager.show((activeWidgets, inactiveWidgets) => {
             const defaultWidgets = store.get('workspace.container.default.widgets');
             let primaryWidgets = store.get('workspace.container.primary.widgets');
             let secondaryWidgets = store.get('workspace.container.secondary.widgets');
@@ -380,7 +186,7 @@ class Workspace extends React.Component {
         });
     }
     updateWidgetsForSecondaryContainer() {
-        widgets.show((activeWidgets, inactiveWidgets) => {
+        widgetManager.show((activeWidgets, inactiveWidgets) => {
             const defaultWidgets = store.get('workspace.container.default.widgets');
             let primaryWidgets = store.get('workspace.container.primary.widgets');
             let secondaryWidgets = store.get('workspace.container.secondary.widgets');
