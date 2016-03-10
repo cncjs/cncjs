@@ -18,9 +18,9 @@ const Widget = (props) => {
 };
 
 Widget.propTypes = {
+    children: React.PropTypes.node,
     borderless: React.PropTypes.bool,
-    fullscreen: React.PropTypes.bool,
-    children: React.PropTypes.node
+    fullscreen: React.PropTypes.bool
 };
 
 export default Widget;
