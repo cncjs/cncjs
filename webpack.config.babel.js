@@ -77,7 +77,9 @@ export default {
                 exclude: /(node_modules|bower_components)/,
                 query: {
                     presets: ['es2015', 'stage-0', 'react'],
-                    plugins: []
+                    plugins: [
+                        'transform-decorators-legacy'
+                    ]
                 }
             },
             {
