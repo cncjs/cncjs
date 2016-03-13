@@ -8,8 +8,12 @@ import './index.styl';
 
 class WebcamWidget extends React.Component {
     static propTypes = {
-        onDelete: React.PropTypes.func.isRequired
+        onDelete: React.PropTypes.func
     };
+    static defaultProps = {
+        onDelete: () => {}
+    };
+
     state = {
         disabled: store.get('widgets.webcam.disabled'),
         isCollapsed: false,

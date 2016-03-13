@@ -3,7 +3,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import Sortable from 'react-sortablejs';
 import store from '../../store';
-import Widget from './Widget';
+import Widget from '../widgets';
 
 const sortableOptions = {
     model: 'widgets',
@@ -16,7 +16,8 @@ const sortableOptions = {
     dataIdAttr: 'data-widgetid'
 };
 
-class PrimaryWidgets extends React.Component {
+@Sortable(sortableOptions)
+export default class PrimaryWidgets extends React.Component {
     static propTypes = {
         onDelete: React.PropTypes.func.isRequired
     };
@@ -55,20 +56,20 @@ class PrimaryWidgets extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    handleDeleteWidget(widgetId) {
+    handleDeleteWidget(widgetid) {
         let widgets = _.slice(this.state.widgets);
-        _.remove(widgets, (n) => (n === widgetId));
+        _.remove(widgets, (n) => (n === widgetid));
         this.setState({ widgets: widgets });
 
         this.props.onDelete();
     }
     render() {
-        const widgets = _.map(this.state.widgets, (widgetId) => (
+        const widgets = _.map(this.state.widgets, (widgetid) => (
             <Widget
-                key={widgetId}
-                data-widgetid={widgetId}
+                widgetid={widgetid}
+                key={widgetid}
                 onDelete={() => {
-                    this.handleDeleteWidget(widgetId);
+                    this.handleDeleteWidget(widgetid);
                 }}
             />
         ));
@@ -78,5 +79,3 @@ class PrimaryWidgets extends React.Component {
         );
     }
 }
-
-export default Sortable(PrimaryWidgets, sortableOptions);

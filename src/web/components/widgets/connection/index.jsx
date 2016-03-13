@@ -6,9 +6,6 @@ import Connection from './Connection';
 import './index.styl';
 
 class ConnectionWidget extends React.Component {
-    static propTypes = {
-        onDelete: React.PropTypes.func.isRequired
-    };
     state = {
         isCollapsed: false,
         isFullscreen: false

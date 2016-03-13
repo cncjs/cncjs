@@ -2,7 +2,7 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import store from '../../store';
-import Widget from './Widget';
+import Widget from '../widgets';
 
 class DefaultWidgets extends React.Component {
     state = {
@@ -17,10 +17,10 @@ class DefaultWidgets extends React.Component {
         pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     render() {
-        const widgets = _.map(this.state.widgets, (widgetId) => (
+        const widgets = _.map(this.state.widgets, (widgetid) => (
             <Widget
-                key={widgetId}
-                data-widgetid={widgetId}
+                key={widgetid}
+                widgetid={widgetid}
             />
         ));
 

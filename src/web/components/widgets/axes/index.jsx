@@ -7,8 +7,12 @@ import './index.styl';
 
 class AxesWidget extends React.Component {
     static propTypes = {
-        onDelete: React.PropTypes.func.isRequired
+        onDelete: React.PropTypes.func
     };
+    static defaultProps = {
+        onDelete: () => {}
+    };
+
     state = {
         isCollapsed: false,
         isFullscreen: false
