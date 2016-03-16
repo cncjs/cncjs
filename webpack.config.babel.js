@@ -6,7 +6,9 @@ export default {
     cache: true,
     target: 'web',
     entry: {
-        app: './src/web/index.jsx',
+        app: [
+            './src/web/index.jsx'
+        ],
         vendor: [
             'async',
             'classnames',
