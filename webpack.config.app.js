@@ -1,8 +1,8 @@
-import fs from 'fs';
-import path from 'path';
+var fs = require('fs');
+var path = require('path');
 
 // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
-let nodeModules = {};
+var nodeModules = {};
 fs.readdirSync('node_modules')
     .filter((x) => {
         return ['.bin'].indexOf(x) === -1;
@@ -11,7 +11,7 @@ fs.readdirSync('node_modules')
         nodeModules[mod] = 'commonjs ' + mod;
     });
 
-export default {
+module.exports = {
     target: 'node',
     context: './src/app',
     entry: {

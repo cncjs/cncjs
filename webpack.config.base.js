@@ -1,8 +1,8 @@
-import path from 'path';
-import webpack from 'webpack';
-import nib from 'nib';
+var nib = require('nib');
+var path = require('path');
+var webpack = require('webpack');
 
-export default {
+module.exports = {
     cache: true,
     target: 'web',
     entry: {
