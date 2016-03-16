@@ -134,7 +134,12 @@ const appMain = () => {
         fs.mkdirSync(path); // Defaults to ./sessions
 
         app.use(session(_.merge({}, settings.middleware.session, {
-            store: new (FileStore(session))({ path })
+            store: new (FileStore(session))({
+                path: path,
+                logFn: (...args) => {
+                    log.debug.apply(log, args);
+                }
+            })
         })));
     }
 
