@@ -20,9 +20,24 @@ export default (options) => {
     gulp.task('web:build-dev', (callback) => {
         const config = _.merge({}, webpackConfig, {
             debug: true,
-            devtool: 'source-map'
+            devtool: 'eval',
+            output: {
+                publicPath: '/dist/web/'
+            }
         });
 
+        Object.keys(config.entry).forEach((name) => {
+            config.entry[name].unshift(
+                // necessary for hot reloading with IE:
+                'eventsource-polyfill',
+                // listen to code updates emitted by hot middleware:
+                'webpack-hot-middleware/client',
+            );
+        });
+        config.plugins = config.plugins.concat(
+            new webpack.HotModuleReplacementPlugin(),
+            new webpack.NoErrorsPlugin()
+        );
         webpack(config, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build-dev', err);
@@ -33,7 +48,9 @@ export default (options) => {
     });
 
     gulp.task('web:build', (callback) => {
-        const config = Object.create(webpackConfig);
+        const config = _.merge({}, webpackConfig, {
+            devtool: 'source-map'
+        });
         config.plugins = config.plugins.concat(
             new webpack.DefinePlugin({
                 'process.env': {
@@ -41,8 +58,13 @@ export default (options) => {
                     'NODE_ENV': JSON.stringify('production')
                 }
             }),
+            new webpack.optimize.OccurrenceOrderPlugin(),
             new webpack.optimize.DedupePlugin(),
-            new webpack.optimize.UglifyJsPlugin()
+            new webpack.optimize.UglifyJsPlugin({
+                compressor: {
+                    warnings: false
+                }
+            })
         );
 
         webpack(config, (err, stats) => {
