@@ -1,7 +1,6 @@
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import webpack from 'webpack';
-import webpackConfig from '../../webpack-app.config.babel';
 
 const distConfig = {
     base: 'src/app',
@@ -15,6 +14,8 @@ export default (options) => {
     gulp.task('app:build-dev', ['app:build']);
 
     gulp.task('app:build', (callback) => {
+        const webpackConfig = require('../../webpack.config.app');
+
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('app:build', err);
