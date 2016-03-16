@@ -22,18 +22,21 @@ const appConfig = {
         sort: true,
         lngs: ['en'],
         defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
-        resGetPath: 'src/app/i18n/{{lng}}/{{ns}}.json',
-        resSetPath: 'src/app/i18n/{{lng}}/{{ns}}.json', // or 'src/app/i18n/${lng}/${ns}.saveAll.json'
-        nsseparator: ':', // namespace separator
-        keyseparator: '.', // key separator
-        interpolationPrefix: '{{',
-        interpolationSuffix: '}}',
-        ns: {
-            namespaces: [
-                'config', // config
-                'resource' // default
-            ],
-            defaultNs: 'resource'
+        ns: [
+            'config',
+            'resource' // default
+        ],
+        defaultNs: 'resource',
+        resource: {
+            loadPath: 'src/app/i18n/{{lng}}/{{ns}}.json',
+            savePath: 'src/app/i18n/{{lng}}/{{ns}}.json', // or 'src/app/i18n/${lng}/${ns}.saveAll.json'
+            jsonIndent: 4
+        },
+        nsSeparator: ':', // namespace separator
+        keySeparator: '.', // key separator
+        interpolation: {
+            prefix: '{{',
+            suffix: '}}'
         }
     }
 };
@@ -55,24 +58,28 @@ const webConfig = {
         sort: true,
         lngs: ['en'],
         defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
-        resGetPath: 'src/web/i18n/{{lng}}/{{ns}}.json',
-        resSetPath: 'src/web/i18n/{{lng}}/{{ns}}.json', // or 'src/web/i18n/${lng}/${ns}.saveAll.json'
-        nsseparator: ':', // namespace separator
-        keyseparator: '.', // key separator
-        interpolationPrefix: '{{',
-        interpolationSuffix: '}}',
-        ns: {
-            namespaces: [
-                'locale', // locale: language, timezone, ...
-                'resource' // default
-            ],
-            defaultNs: 'resource'
+        ns: [
+            'locale', // language & timezone,
+            'resource' // default
+        ],
+        defaultNs: 'resource',
+        resource: {
+            loadPath: 'src/web/i18n/{{lng}}/{{ns}}.json',
+            savePath: 'src/web/i18n/{{lng}}/{{ns}}.json', // or 'src/web/i18n/${lng}/${ns}.saveAll.json'
+            jsonIndent: 4
+        },
+        nsSeparator: ':', // namespace separator
+        keySeparator: '.', // key separator
+        interpolation: {
+            prefix: '{{',
+            suffix: '}}'
         }
     }
 };
 
 function customTransform(file, enc, done) {
-    let content = fs.readFileSync(file.path, enc);
+    const parser = this.parser;
+    const content = fs.readFileSync(file.path, enc);
     let tableData = [
         ['Key', 'Value']
     ];
@@ -80,76 +87,11 @@ function customTransform(file, enc, done) {
     gutil.log('parsing ' + JSON.stringify(file.relative) + ':');
 
     { // Using i18next-text
-        let results = content.match(/i18n\._\(("[^"]*"|'[^']*')\s*[\,\)]/igm) || '';
-        _.each(results, (result) => {
-            let key, value;
-            let r = result.match(/i18n\._\(("[^"]*"|'[^']*')/);
+        parser.parseFuncFromString(content, { list: ['i18n._'] }, (key) => {
+            const defaultValue = key;
+            key = hash(defaultValue);
 
-            if (r) {
-                value = _.trim(r[1], '\'"');
-
-                // Replace double backslash with single backslash
-                value = value.replace(/\\\\/g, '\\');
-                value = value.replace(/\\\'/, '\'');
-
-                key = hash(value); // returns a hash value as its default key
-
-                this.parse(key, value);
-                tableData.push([key, value]);
-            }
-        });
-    }
-
-    { // i18n function helper
-        let results = content.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/gm) || [];
-        _.each(results, (result) => {
-            let key, value;
-            let r = result.match(/{{i18n\s+("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')?([^}]*)}}/m) || [];
-
-            if (!_.isUndefined(r[1])) {
-                value = _.trim(r[1], '\'"');
-
-                // Replace double backslash with single backslash
-                value = value.replace(/\\\\/g, '\\');
-                value = value.replace(/\\\'/, '\'');
-            }
-
-            let params = this.parseHashArguments(r[2]);
-            if (_.has(params, 'defaultKey')) {
-                key = params.defaultKey;
-            }
-
-            if (_.isUndefined(key) && _.isUndefined(value)) {
-                return;
-            }
-
-            if (_.isUndefined(key)) {
-                key = hash(value); // returns a hash value as its default key
-            }
-
-            this.parse(key, value);
-            tableData.push([key, value]);
-        });
-    }
-
-    { // i18n block helper
-        let results = content.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/gm) || [];
-        _.each(results, (result) => {
-            let key, value;
-            let r = result.match(/{{#i18n\s*([^}]*)}}((?:(?!{{\/i18n}})(?:.|\n))*){{\/i18n}}/m) || [];
-
-            if (!_.isUndefined(r[2])) {
-                value = _.trim(r[2], '\'"');
-            }
-
-            if (_.isUndefined(value)) {
-                return;
-            }
-
-            key = hash(value); // returns a hash value as its default key
-
-            this.parse(key, value);
-            tableData.push([key, value]);
+            parser.set(key, defaultValue);
         });
     }
 
@@ -166,18 +108,12 @@ function customTransform(file, enc, done) {
 export default (options) => {
     gulp.task('i18next:app', () => {
         return gulp.src(appConfig.src)
-            .pipe(i18nextScanner(appConfig.options, function(file, enc, done) {
-                const parser = this.parser;
-                customTransform.call(parser, file, enc, done);
-            }))
+            .pipe(i18nextScanner(appConfig.options, customTransform))
             .pipe(gulp.dest(appConfig.dest));
     });
     gulp.task('i18next:web', () => {
         return gulp.src(webConfig.src)
-            .pipe(i18nextScanner(webConfig.options, function(file, enc, done) {
-                const parser = this.parser;
-                customTransform.call(parser, file, enc, done);
-            }))
+            .pipe(i18nextScanner(webConfig.options, customTransform))
             .pipe(gulp.dest(webConfig.dest));
     });
 };
