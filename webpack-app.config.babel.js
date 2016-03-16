@@ -15,7 +15,9 @@ export default {
     target: 'node',
     context: './src/app',
     entry: {
-        index: './index.js'
+        index: [
+            './index.js'
+        ]
     },
     output: {
         path: path.join(__dirname, 'dist', 'app'),
