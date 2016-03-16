@@ -20,7 +20,7 @@ export default (options) => {
     gulp.task('web:build-dev', (callback) => {
         const config = _.merge({}, webpackConfig, {
             debug: true,
-            devtool: 'sourcemap'
+            devtool: 'source-map'
         });
 
         webpack(config, (err, stats) => {
