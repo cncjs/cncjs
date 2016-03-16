@@ -1,4 +1,4 @@
-/* eslint no-console: 0*/
+/* eslint no-console: 0, no-var: 0 */
 var root = this.parent || this;
 
 // Define global variables
