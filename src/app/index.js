@@ -1,4 +1,6 @@
+/* eslint no-unused-vars: 0 */
 import _ from 'lodash';
+import fs from 'fs';
 import path from 'path';
 import app from './app';
 import cncserver from './cncserver';
@@ -45,9 +47,9 @@ const run = ({ port, host, backlog, config, verbose, mount }) => {
                 process.exit(1);
             }
 
-            _.set(settings, 'cncrc', crcrc);
+            _.set(settings, 'cncrc', cncrc);
             _.set(settings, 'cnc', _.merge({}, settings.cnc, cnc));
-        } catch(err) {
+        } catch (err) {
             // skip error
         }
     }
