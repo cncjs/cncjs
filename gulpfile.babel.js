@@ -37,7 +37,7 @@ gulp.task('build-dev', (callback) => {
 gulp.task('build', (callback) => {
     runSequence(
         'clean',
-        ['bower', 'eslint', 'jshint'],
+        'bower',
         ['app:build', 'web:build'],
         ['app:i18n', 'web:i18n'],
         ['app:dist', 'web:dist'],
