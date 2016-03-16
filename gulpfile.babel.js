@@ -8,7 +8,7 @@ const loadGulpTasks = () => {
     const tasks = requireDir('./gulp/tasks', { recurse: true });
 
     // Get environment, for environment-specific activities
-    const env = process.env.NODE_ENV || 'development';
+    const env = process.env.NODE_ENV || 'production';
 
     _.each(tasks, (task, relativePath) => {
         if (_.isObject(task) && _.isFunction(task.default)) {
@@ -30,6 +30,7 @@ gulp.task('dev', ['build-dev']);
 gulp.task('build-dev', (callback) => {
     runSequence(
         ['app:build-dev', 'web:build-dev'],
+        ['app:dist', 'web:dist'],
         callback
     );
 });
