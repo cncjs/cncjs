@@ -2,12 +2,6 @@ import path from 'path';
 import webpack from 'webpack';
 import nib from 'nib';
 
-// https://github.com/react-bootstrap/react-router-bootstrap/blob/master/webpack.config.babel.js
-// https://github.com/choonkending/react-webpack-node/blob/master/webpack/webpack.config.dev.js
-// http://jlongster.com/Backend-Apps-with-Webpack--Part-I
-// http://stackoverflow.com/questions/31102035/how-can-i-use-webpack-with-express
-// https://github.com/webpack/webpack-with-common-libs/blob/master/webpack.config.js
-
 export default {
     cache: true,
     target: 'web',
@@ -51,9 +45,6 @@ export default {
         new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
     ],
     module: {
-        // Problem with amd modules: "define cannot be used indirect"
-        // https://github.com/webpack/webpack/issues/138
-        noParse: /node_modules\/json-schema\/lib\/validate\.js/,
         preLoaders: [
             // http://survivejs.com/webpack_react/linting_in_webpack/
             {
