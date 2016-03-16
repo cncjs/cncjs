@@ -24,18 +24,22 @@ const loadGulpTasks = () => {
 
 loadGulpTasks();
 
-gulp.task('default', ['build']);
-gulp.task('dev', ['build-dev']);
+gulp.task('default', ['prod']);
+gulp.task('prod', ['production']);
+gulp.task('dev', ['development']);
 
-gulp.task('build-dev', (callback) => {
+gulp.task('development', (callback) => {
     runSequence(
+        'clean',
+        'bower',
         ['app:build-dev', 'web:build-dev'],
+        ['app:i18n', 'web:i18n'],
         ['app:dist', 'web:dist'],
         callback
     );
 });
 
-gulp.task('build', (callback) => {
+gulp.task('production', (callback) => {
     runSequence(
         'clean',
         'bower',
