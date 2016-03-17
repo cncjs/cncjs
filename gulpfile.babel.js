@@ -29,6 +29,8 @@ gulp.task('prod', ['production']);
 gulp.task('dev', ['development']);
 
 gulp.task('development', (callback) => {
+    process.env.NODE_ENV = 'development';
+
     runSequence(
         'clean',
         'bower',
@@ -40,6 +42,8 @@ gulp.task('development', (callback) => {
 });
 
 gulp.task('production', (callback) => {
+    process.env.NODE_ENV = 'production';
+
     runSequence(
         'clean',
         'bower',
