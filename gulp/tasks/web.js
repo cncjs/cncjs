@@ -17,8 +17,12 @@ const distConfig = {
 
 export default (options) => {
     gulp.task('web:build-dev', (callback) => {
-        const webpackConfig = require('../../webpack.config.development');
+        if (process.env.NODE_ENV !== 'development') {
+            const err = new Error('Set NODE_ENV to "development" for development build');
+            throw new gutil.PluginError('web:build-dev', err);
+        }
 
+        const webpackConfig = require('../../webpack.config.development');
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build-dev', err);
@@ -29,8 +33,12 @@ export default (options) => {
     });
 
     gulp.task('web:build-prod', (callback) => {
-        const webpackConfig = require('../../webpack.config.production');
+        if (process.env.NODE_ENV !== 'production') {
+            const err = new Error('Set NODE_ENV to "production" for production build');
+            throw new gutil.PluginError('web:build-prod', err);
+        }
 
+        const webpackConfig = require('../../webpack.config.production');
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build', err);

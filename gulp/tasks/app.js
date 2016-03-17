@@ -5,14 +5,16 @@ import babel from 'gulp-babel';
 import gutil from 'gulp-util';
 import webpack from 'webpack';
 
+const NODE_MODULES = path.resolve(__dirname, '../../node_modules');
+
 // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
-let nodeModules = {};
-fs.readdirSync('node_modules')
+const externals = {};
+fs.readdirSync(NODE_MODULES)
     .filter((x) => {
         return ['.bin'].indexOf(x) === -1;
     })
     .forEach((mod) => {
-        nodeModules[mod] = 'commonjs ' + mod;
+        externals[mod] = 'commonjs ' + mod;
     });
 
 const webpackProductionConfig = {
@@ -24,20 +26,12 @@ const webpackProductionConfig = {
         ]
     },
     output: {
-        path: path.join(__dirname, 'dist', 'app'),
+        path: path.join(__dirname, '../../dist/app'),
         filename: '[name].js',
         libraryTarget: 'commonjs2'
     },
     plugins: [
-        /*
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new webpack.optimize.DedupePlugin(),
-        new webpack.optimize.UglifyJsPlugin({
-            compressor: {
-                warnings: false
-            }
-        })
-        */
+        new webpack.optimize.OccurrenceOrderPlugin()
     ],
     module: {
         loaders: [
@@ -55,9 +49,11 @@ const webpackProductionConfig = {
             }
         ]
     },
-    externals: nodeModules,
+    externals: externals,
     resolveLoader: {
-        modulesDirectories: [path.resolve(__dirname, 'node_modules')]
+        modulesDirectories: [
+            NODE_MODULES
+        ]
     },
     node: {
         console: true,
@@ -80,17 +76,26 @@ const distConfig = {
 
 export default (options) => {
     gulp.task('app:build-dev', (callback) => {
+        if (process.env.NODE_ENV !== 'development') {
+            const err = new Error('Set NODE_ENV to "development" for development build');
+            throw new gutil.PluginError('app:build-dev', err);
+        }
+
         const src = [
             'src/app/**/*.js'
             // exclusion
         ];
-
         return gulp.src(src)
             .pipe(babel())
             .pipe(gulp.dest('dist/app'));
     });
 
     gulp.task('app:build-prod', (callback) => {
+        if (process.env.NODE_ENV !== 'production') {
+            const err = new Error('Set NODE_ENV to "production" for production build');
+            throw new gutil.PluginError('app:build', err);
+        }
+
         webpack(webpackProductionConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('app:build', err);
