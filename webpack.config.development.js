@@ -26,6 +26,7 @@ module.exports = Object.assign({}, baseConfig, {
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
+        new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.HotModuleReplacementPlugin(),
         new webpack.NoErrorsPlugin()
     ]
