@@ -14,18 +14,18 @@ module.exports = Object.assign({}, baseConfig, {
         publicPath: '/'
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'process.env': {
+                // This has effect on the react lib size
+                NODE_ENV: JSON.stringify('production')
+            }
+        }),
         new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js'),
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
             compressor: {
                 warnings: false
-            }
-        }),
-        new webpack.DefinePlugin({
-            'process.env': {
-                // This has effect on the react lib size
-                NODE_ENV: JSON.stringify('production')
             }
         })
     ]
