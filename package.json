@@ -19,9 +19,12 @@
   "preferGlobal": true,
   "scripts": {
     "prepublish": "npm run lint && npm run build && npm test",
-    "build": "npm run build-app && gulp",
-    "build-app": "babel -d dist/app src/app",
-    "dev": "NODE_ENV=\"development\" ./bin/cnc -vv",
+    "build": "npm run build-prod",
+    "build-dev": "gulp dev",
+    "build-prod": "gulp prod",
+    "start": "npm run start-prod",
+    "start-dev": "NODE_ENV=\"development\" ./bin/cnc -vv",
+    "start-prod": "NODE_ENV=\"production\" ./bin/cnc",
     "lint": "npm run eslint",
     "eslint": "eslint *.js src bin gulp test",
     "test": "./babel-tap --coverage test/*.js",
@@ -118,6 +121,7 @@
     "eventsource-polyfill": "^0.9.6",
     "file-loader": "^0.8.5",
     "gulp": "^3.9.0",
+    "gulp-babel": "^6.1.2",
     "gulp-util": "^3.0.3",
     "i18next-scanner": "^1.0.0",
     "json-loader": "^0.5.4",
@@ -135,7 +139,6 @@
     "url-loader": "^0.5.7",
     "webpack": "^1.12.14",
     "webpack-dev-middleware": "^1.5.1",
-    "webpack-dev-server": "^1.14.1",
     "webpack-hot-middleware": "^2.9.1"
   },
   "browser": {}
