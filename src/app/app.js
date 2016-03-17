@@ -92,9 +92,12 @@ const webpackMain = (app) => {
         noInfo: false,
         quite: false,
         lazy: false,
+        
+        // https://webpack.github.io/docs/node.js-api.html#compiler
         watchOptions: {
-            poll: true
+            poll: true // use polling instead of native watchers
         },
+
         publicPath: '/',
         stats: {
             colors: true
