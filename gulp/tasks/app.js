@@ -11,9 +11,7 @@ const distConfig = {
 };
 
 export default (options) => {
-    gulp.task('app:build-dev', ['app:build']);
-
-    gulp.task('app:build', (callback) => {
+    gulp.task('app:build-prod', (callback) => {
         const webpackConfig = require('../../webpack.config.app');
 
         webpack(webpackConfig, (err, stats) => {
