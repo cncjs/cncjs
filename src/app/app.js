@@ -78,13 +78,27 @@ const renderPage = (req, res, next) => {
 };
 
 const webpackMain = (app) => {
+    if (process.env.NODE_ENV !== 'development') {
+        log.error('The process.env.NODE_ENV should be "development" while running a webpack server');
+        return;
+    }
+
     const webpack = require('webpack');
     const config = require('../../webpack.config.development');
     const compiler = webpack(config);
 
+    // https://github.com/webpack/webpack-dev-middleware
     app.use(require('webpack-dev-middleware')(compiler, {
-        nInfo: true,
-        publicPath: config.output.publicPath
+        noInfo: false,
+        quite: false,
+        lazy: false,
+        watchOptions: {
+            poll: true
+        },
+        publicPath: '/',
+        stats: {
+            colors: true
+        }
     }));
 
     app.use(require('webpack-hot-middleware')(compiler));
@@ -93,16 +107,10 @@ const webpackMain = (app) => {
 const appMain = () => {
     const app = express();
 
-    webpackMain(app);
-
-    // Setup i18n (i18next)
-    i18next
-        .use(i18nextBackend)
-        .use(i18nextLanguageDetector)
-        .init(settings.i18next);
-
     {  // Settings
         if (settings.env === 'development') {
+            webpackMain(app);
+
             // Error handler - https://github.com/expressjs/errorhandler
             // Development error handler, providing stack traces and error message responses
             // for requests accepting text, html, or json.
@@ -132,6 +140,12 @@ const appMain = () => {
 
         log.debug('app.settings: %j', app.settings);
     }
+
+    // Setup i18n (i18next)
+    i18next
+        .use(i18nextBackend)
+        .use(i18nextLanguageDetector)
+        .init(settings.i18next);
 
     // Removes the 'X-Powered-By' header in earlier versions of Express
     app.use((req, res, next) => {
