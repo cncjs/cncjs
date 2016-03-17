@@ -32,7 +32,7 @@ gulp.task('development', (callback) => {
     runSequence(
         'clean',
         'bower',
-        ['web:build-dev'],
+        ['app:build-dev', 'web:build-dev'],
         ['app:i18n', 'web:i18n'],
         ['app:dist', 'web:dist'],
         callback
