@@ -77,8 +77,23 @@ const renderPage = (req, res, next) => {
     next();
 };
 
+const webpackMain = (app) => {
+    const webpack = require('webpack');
+    const config = require('../../webpack.config.development');
+    const compiler = webpack(config);
+
+    app.use(require('webpack-dev-middleware')(compiler, {
+        nInfo: true,
+        publicPath: config.output.publicPath
+    }));
+
+    app.use(require('webpack-hot-middleware')(compiler));
+};
+
 const appMain = () => {
     const app = express();
+
+    webpackMain(app);
 
     // Setup i18n (i18next)
     i18next
