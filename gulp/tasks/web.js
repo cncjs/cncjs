@@ -28,7 +28,7 @@ export default (options) => {
         });
     });
 
-    gulp.task('web:build', (callback) => {
+    gulp.task('web:build-prod', (callback) => {
         const webpackConfig = require('../../webpack.config.production');
 
         webpack(webpackConfig, (err, stats) => {
