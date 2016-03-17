@@ -7,7 +7,7 @@ module.exports = {
     target: 'web',
     entry: {
         app: [
-            './src/web/index.jsx'
+            path.resolve(__dirname, 'src/web/index.jsx')
         ],
         vendor: [
             'async',
