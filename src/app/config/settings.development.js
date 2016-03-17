@@ -1,8 +1,21 @@
 import os from 'os';
+import path from 'path';
 
-const settings = {
+const maxAge = 0;
+
+module.exports = {
+    assets: {
+        // web
+        web: {
+            routes: [
+                '/'
+            ],
+            path: path.resolve(__dirname, '..', '..', 'web'),
+            maxAge: maxAge
+        }
+    },
     backend: {
-        enable: false, // disable backend service in production
+        enable: true,
         host: 'localhost',
         port: 80,
         route: 'api/'
@@ -13,12 +26,10 @@ const settings = {
         maxWorkers: os.cpus().length || 1
     },
     winston: {
-        level: 'info',
+        level: 'debug',
         colorize: true,
         timestamp: true, // or function()
         json: false,
         handleExceptions: true
     }
 };
-
-export default settings;
