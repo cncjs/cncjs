@@ -19,7 +19,9 @@
   "preferGlobal": true,
   "scripts": {
     "prepublish": "npm run lint && npm run build && npm test",
-    "build": "gulp",
+    "build": "npm run build-app && gulp",
+    "build-app": "babel -d dist/app src/app",
+    "dev": "NODE_ENV=\"development\" ./bin/cnc -vv",
     "lint": "npm run eslint",
     "eslint": "eslint *.js src bin gulp test",
     "test": "./babel-tap --coverage test/*.js",
