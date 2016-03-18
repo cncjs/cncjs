@@ -9,7 +9,7 @@ const secret = pkg.version;
 
 const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME']);
 
-module.exports = {
+export default {
     verbosity: 0,
     cnc: {}, // override this settings using `cnc -c ~/.cncrc`
     cncrc: path.resolve(getUserHome(), RCFILE),

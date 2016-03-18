@@ -3,7 +3,7 @@ import path from 'path';
 
 const maxAge = 0;
 
-module.exports = {
+export default {
     assets: {
         // web
         web: {
