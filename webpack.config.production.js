@@ -1,3 +1,4 @@
+/* eslint no-var: 0 */
 var path = require('path');
 var webpack = require('webpack');
 var baseConfig = require('./webpack.config.base');

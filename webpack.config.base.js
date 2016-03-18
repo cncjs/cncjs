@@ -1,3 +1,4 @@
+/* eslint no-var: 0 */
 var nib = require('nib');
 var path = require('path');
 var webpack = require('webpack');
