@@ -2,7 +2,7 @@
   "name": "cncjs",
   "version": "1.0.0",
   "description": "A web-based CNC milling controller for the Arduino running GRBL",
-  "homepage": "https://github.com/cheton/cnc.js",
+  "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
   "main": "./dist/app/index.js",
   "bin": {
@@ -10,7 +10,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:cheton/cnc.js.git"
+    "url": "git@github.com:cheton/cnc.git"
   },
   "license": "MIT",
   "engines": {
