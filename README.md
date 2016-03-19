@@ -1,18 +1,18 @@
-# CNC.js [![build status](https://travis-ci.org/cheton/cnc.js.svg?branch=master)](https://travis-ci.org/cheton/cnc.js) [![Coverage Status](https://coveralls.io/repos/cheton/cnc.js/badge.svg)](https://coveralls.io/r/cheton/cnc.js)
+# CNC [![build status](https://travis-ci.org/cheton/cnc.svg?branch=master)](https://travis-ci.org/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/cheton/cnc/badge.svg)](https://coveralls.io/r/cheton/cnc)
 
 [![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://nodei.co/npm/cncjs/)
-![cncjs](https://raw.githubusercontent.com/cheton/cnc.js/master/media/banner2.png)
+![cncjs](https://raw.githubusercontent.com/cheton/cnc/master/media/banner2.png)
 
-CNC.js is a web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) running [Grbl](https://github.com/grbl/grbl). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
+A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) running [Grbl](https://github.com/grbl/grbl). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
 
-![cncjs.png](https://raw.githubusercontent.com/cheton/cnc.js/master/media/cncjs.png) 
+![cncjs.png](https://raw.githubusercontent.com/cheton/cnc/master/media/cncjs.png) 
 
 ##### Widgets Management
-![widgets.png](https://raw.githubusercontent.com/cheton/cnc.js/master/media/widgets.png)
+![widgets.png](https://raw.githubusercontent.com/cheton/cnc/master/media/widgets.png)
 
 ## Demo
 JSDC 2015 speech: http://cheton.github.io/jsdc2015/#/81
-[![CNC](http://img.youtube.com/vi/fJyq4fyiGSc/0.jpg)](https://www.youtube.com/watch?v=fJyq4fyiGSc&hd=2 "CNC.js")
+[![CNC](http://img.youtube.com/vi/fJyq4fyiGSc/0.jpg)](https://www.youtube.com/watch?v=fJyq4fyiGSc&hd=2 "CNC")
 
 ## Installation
 First, ensure you have `prefix=~/.npm` in  `~/.npmrc`. For example:
@@ -29,7 +29,7 @@ $ npm install -g cncjs
 
 If you want to run it on Raspberry Pi with Raspbian Wheezy, be sure to [install gcc/g++ 4.8](https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/) before npm install.
 
-Check out [wiki](https://github.com/cheton/cnc.js/wiki/Installation) for other installation methods.
+Check out [wiki](https://github.com/cheton/cnc/wiki/Installation) for other installation methods.
 
 ## Upgrade
 Run `npm update -g cncjs` to upgrade to a newer version.
@@ -59,10 +59,10 @@ $ cnc -h
 ```
 
 ## Wiki
-https://github.com/cheton/cnc.js/wiki
+https://github.com/cheton/cnc/wiki
 
 ## Examples
-There are several *.gcode files in the [examples](https://github.com/cheton/cnc.js/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
+There are several *.gcode files in the [examples](https://github.com/cheton/cnc/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
 
 If you don't have a CAM software, try using [jscut](http://jscut.org/) to create G-Code from *.svg. It's a simple CAM package that runs in the browser.
 
