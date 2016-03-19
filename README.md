@@ -5,7 +5,7 @@
 
 A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) running [Grbl](https://github.com/grbl/grbl). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
 
-![cncjs.png](https://raw.githubusercontent.com/cheton/cnc/master/media/cncjs.png) 
+![cnc.png](https://raw.githubusercontent.com/cheton/cnc/master/media/cnc.png) 
 
 
 ## Key Features
