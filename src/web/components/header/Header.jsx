@@ -18,7 +18,7 @@ const Header = (props) => {
         });
     };
 
-    const homepage = 'https://github.com/cheton/cnc.js';
+    const homepage = 'https://github.com/cheton/cnc';
     const language = i18next.language;
     const brandTitle = settings.name + ' v' + settings.version;
 
