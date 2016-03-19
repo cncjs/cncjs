@@ -1,9 +1,10 @@
 /* eslint no-var: 0 */
+var _ = require('lodash');
 var path = require('path');
 var webpack = require('webpack');
 var baseConfig = require('./webpack.config.base');
 
-module.exports = Object.assign({}, baseConfig, {
+module.exports = _.assign({}, baseConfig, {
     devtool: 'source-map',
     entry: {
         app: baseConfig.entry.app,
