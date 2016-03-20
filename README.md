@@ -21,10 +21,6 @@ A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) ru
 * I18n Ready
 * Z-Probing
 
-## Demo
-JSDC 2015 speech: http://cheton.github.io/jsdc2015/#/81
-[![CNC](http://img.youtube.com/vi/fJyq4fyiGSc/0.jpg)](https://www.youtube.com/watch?v=fJyq4fyiGSc&hd=2 "CNC")
-
 ## Installation
 First, ensure you have `prefix=~/.npm` in  `~/.npmrc`. For example:
 ```bash
@@ -79,8 +75,12 @@ If you don't have a CAM software, try using [jscut](http://jscut.org/) to create
 
 Check out a live demo at http://jscut.org/jscut.html. 
 
-### Photo Gallery
+## Photo Gallery
 [![Photo Gallery](https://scontent-iad3-1.xx.fbcdn.net/hphotos-xtp1/t31.0-8/12138529_10207901191546433_3867236073352040616_o.jpg)](https://www.facebook.com/cheton.wu/media_set?set=a.10207901184746263.1073741852.1195704289&type=3)
+
+## Speech
+JSDC 2015 speech: http://cheton.github.io/jsdc2015/#/81
+[![CNC](http://img.youtube.com/vi/fJyq4fyiGSc/0.jpg)](https://www.youtube.com/watch?v=fJyq4fyiGSc&hd=2 "CNC")
 
 ## License
 
