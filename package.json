@@ -63,7 +63,7 @@
     "gcode-toolpath": "^0.6.2",
     "hogan.js": "^3.0.2",
     "i18next": "^2.4.1",
-    "i18next-browser-languagedetector": "^0.1.0",
+    "i18next-browser-languagedetector": "^0.2.2",
     "i18next-express-middleware": "^0.3.2",
     "i18next-node-fs-backend": "0.0.6",
     "i18next-xhr-backend": "^0.4.0",
