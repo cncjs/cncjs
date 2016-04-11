@@ -96,7 +96,7 @@
     "sha1": "^1.1.1",
     "socket.io": "^1.4.5",
     "sortablejs": "^1.4.2",
-    "stacktrace-js": "^1.0.4",
+    "stacktrace-js": "^1.1.0",
     "superagent": "^1.8.3",
     "three": "^0.73.0",
     "webappengine": "^0.7.1",
