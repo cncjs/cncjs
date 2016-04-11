@@ -238,7 +238,7 @@ const appMain = () => {
             error: 'Not found'
         }));
         app.use(errserver({
-            view: path.join('common', '500.jade'),
+            view: path.join('common', '500.hogan'),
             error: 'Internal server error'
         }));
     }
