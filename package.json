@@ -88,7 +88,7 @@
     "react-infinite": "^0.8.0",
     "react-router": "^2.0.0",
     "react-select": "^1.0.0-beta10",
-    "react-sortablejs": "^0.7.0",
+    "react-sortablejs": "^1.0.0",
     "serialport": "^2.0.6",
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.2",
