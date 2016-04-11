@@ -74,7 +74,7 @@
     "morgan": "^1.7.0",
     "mousetrap": "^1.5.3",
     "multiparty": "3.2.x",
-    "normalize.css": "^3.0.3",
+    "normalize.css": "^4.0.0",
     "pubsub-js": "^1.5.3",
     "range_check": "^1.2.0",
     "rc-slider": "^3.3.2",
