@@ -5,18 +5,6 @@ import Sortable from 'react-sortablejs';
 import store from '../../store';
 import Widget from '../widgets';
 
-const sortableOptions = {
-    model: 'widgets',
-    group: {
-        name: 'primary',
-        pull: true,
-        put: ['secondary']
-    },
-    handle: '.widget-header',
-    dataIdAttr: 'data-widgetid'
-};
-
-@Sortable(sortableOptions)
 export default class PrimaryWidgets extends React.Component {
     static propTypes = {
         onDelete: React.PropTypes.func.isRequired
@@ -75,7 +63,23 @@ export default class PrimaryWidgets extends React.Component {
         ));
 
         return (
-            <div {...this.props}>{widgets}</div>
+            <Sortable
+                {...this.props}
+                options={{
+                    group: {
+                        name: 'primary',
+                        pull: true,
+                        put: ['secondary']
+                    },
+                    handle: '.widget-header',
+                    dataIdAttr: 'data-widgetid'
+                }}
+                onChange={(order) => {
+                    this.setState({ widgets: order });
+                }}
+            >
+                {widgets}
+            </Sortable>
         );
     }
 }
