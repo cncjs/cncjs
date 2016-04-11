@@ -89,7 +89,7 @@
     "react-router": "^2.0.0",
     "react-select": "^1.0.0-beta10",
     "react-sortablejs": "^1.0.0",
-    "serialport": "^2.0.6",
+    "serialport": "^2.1.0",
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.2",
     "session-file-store": "^0.2.0",
