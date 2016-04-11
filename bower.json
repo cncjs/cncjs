@@ -1,8 +1,0 @@
-{
-  "name": "cncjs",
-  "version": "1.0.0",
-  "description": "A web-based CNC milling controller for the Arduino running GRBL",
-  "dependencies": {
-    "html5shiv": "~3.7.3"
-  }
-}
