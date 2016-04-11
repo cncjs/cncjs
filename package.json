@@ -61,6 +61,7 @@
     "gcode-parser": "^0.8.2",
     "gcode-toolpath": "^0.6.2",
     "hogan.js": "^3.0.2",
+    "html5shiv": "^3.7.3",
     "i18next": "^2.4.1",
     "i18next-browser-languagedetector": "^0.2.2",
     "i18next-express-middleware": "^0.4.0",
