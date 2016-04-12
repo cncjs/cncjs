@@ -85,6 +85,10 @@ $ npm install
 $ npm run dev  # it may take several minutes...
   :  :  :
 Server is listening on 0.0.0.0:8000
+```
+
+Connect to `http://localhost:8000` and wait until bundle finished.
+```bash
 webpack: wait until bundle finished: /__webpack_hmr
   :  :  :
 webpack: bundle is now VALID
