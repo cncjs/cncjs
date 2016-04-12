@@ -143,7 +143,7 @@ class GCodeVisualizer {
             this.group.add(new THREE.Line(geometry, material));
         }
 
-        { // Preview with frames
+        if (this.frameIndex > 0) { // Preview with frames
             let geometry = new THREE.Geometry();
             let material = new THREE.LineBasicMaterial({
                 color: new THREE.Color(colornames('red')),
