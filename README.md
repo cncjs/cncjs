@@ -65,6 +65,11 @@ $ cnc -h
     -m, --mount [<url>:]<path>  set the mount point for serving static files (default: /static:static)
 ```
 
+If you need view detailed logs for troubleshooting, you can run the server in debug mode.
+```bash
+$ cnc -vv
+```
+
 ## Wiki
 https://github.com/cheton/cnc/wiki
 
