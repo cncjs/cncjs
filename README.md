@@ -78,7 +78,7 @@ Check out a live demo at http://jscut.org/jscut.html.
 ## Contributions
 Use [GitHub issues](https://github.com/cheton/cnc/issues) for requests.
 
-Pull requests are welcome. Learn how to [contribute](CONTRIBUTING.md).
+Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
 
 ## Photo Gallery
 [![Photo Gallery](https://scontent-iad3-1.xx.fbcdn.net/hphotos-xtp1/t31.0-8/12138529_10207901191546433_3867236073352040616_o.jpg)](https://www.facebook.com/cheton.wu/media_set?set=a.10207901184746263.1073741852.1195704289&type=3)
