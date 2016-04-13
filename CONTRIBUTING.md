@@ -1,4 +1,4 @@
-# Contributing to this project
+# Contributing
 
 ## Running Local Development Server
 
