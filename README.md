@@ -75,27 +75,10 @@ If you don't have a CAM software, try using [jscut](http://jscut.org/) to create
 
 Check out a live demo at http://jscut.org/jscut.html.
 
-## Contribution
-If you want to contribute to this project, ensure you have Node v4 (or v5) installed, and run `npm run dev` to start a local development server for development and testing. Every code changes will trigger webpack Hot Module Replacement (HMR) which will be really useful while developing in React.
+## Contributions
+Use [GitHub issues](https://github.com/cheton/cnc/issues) for requests.
 
-```bash
-$ git clone https://github.com/cheton/cnc.git
-$ cd cnc
-$ npm install
-$ npm run dev  # it may take several minutes...
-  :  :  :
-Server is listening on 0.0.0.0:8000
-```
-
-Connect to `http://localhost:8000` and wait until bundle finished.
-```bash
-webpack: wait until bundle finished: /__webpack_hmr
-  :  :  :
-webpack: bundle is now VALID
-```
-
-Now you're ready to go!
-
+Pull requests are welcome. Learn how to [contribute](CONTRIBUTING.md).
 
 ## Photo Gallery
 [![Photo Gallery](https://scontent-iad3-1.xx.fbcdn.net/hphotos-xtp1/t31.0-8/12138529_10207901191546433_3867236073352040616_o.jpg)](https://www.facebook.com/cheton.wu/media_set?set=a.10207901184746263.1073741852.1195704289&type=3)
