@@ -170,7 +170,7 @@ class GCode extends React.Component {
 
                 {isLoaded &&
                 <GCodeTable
-                    rows={this.state.lines.map(line => [line.id, line.status, line.cmd])}
+                    rows={lines}
                     scrollToRow={scrollToRow}
                 />
                 }

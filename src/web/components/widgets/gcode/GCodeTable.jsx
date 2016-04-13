@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import colornames from 'colornames';
 import React from 'react';
-import { Table, Column, Cell } from 'fixed-data-table';
+import { FlexTable, FlexColumn } from 'react-virtualized';
 import { GCODE_STATUS } from './constants';
 
 class GCodeTable extends React.Component {
@@ -22,22 +22,24 @@ class GCodeTable extends React.Component {
         const height = headerHeight + rowHeight * visibleRows;
         const width = 320;
         const offset = (visibleRows % 2 === 0) ? 0 : 1;
-        const scrollToRow = Math.max(0, (this.props.scrollToRow - 1) + (Math.ceil(visibleRows / 2) - offset));
+        const scrollToIndex = Math.max(0, (this.props.scrollToRow - 1) + (Math.ceil(visibleRows / 2) - offset));
 
         return (
             <div className="gcode-table">
-                <Table
+                <FlexTable
+                    disableHeader={true}
+                    headerHeight={headerHeight}
+                    height={height}
+                    rowGetter={index => rows[index]}
                     rowHeight={rowHeight}
                     rowsCount={rows.length}
+                    scrollToIndex={scrollToIndex}
                     width={width}
-                    height={height}
-                    headerHeight={headerHeight}
-                    scrollToRow={scrollToRow} // zero-based index
                 >
-                    <Column
-                        header={<Cell></Cell>}
-                        cell={({ rowIndex, ...props }) => {
-                            const value = rows[rowIndex][1];
+                    <FlexColumn
+                        cellClassName="gcode-table-cell-status"
+                        cellRenderer={(cellData, cellDataKey, rowData, rowIndex, columnData) => {
+                            const value = rowData.status;
                             const classes = {
                                 icon: classNames(
                                     'fa',
@@ -46,9 +48,6 @@ class GCodeTable extends React.Component {
                                 )
                             };
                             const styles = {
-                                cell: {
-                                    backgroundColor: colornames('gray 95')
-                                },
                                 icon: {
                                     color: (() => {
                                         const color = {};
@@ -62,31 +61,32 @@ class GCodeTable extends React.Component {
                             };
 
                             return (
-                                <Cell style={styles.cell} {...props}>
-                                    <i className={classes.icon} style={styles.icon}></i>
-                                </Cell>
+                                <i className={classes.icon} style={styles.icon}></i>
                             );
                         }}
+                        dataKey="status"
                         width={30}
                     />
-                    <Column
-                        header={<Cell>G-code</Cell>}
-                        cell={({ rowIndex, ...props }) => {
-                            const value = rows[rowIndex][2];
+                    <FlexColumn
+                        cellClassName="gcode-table-cell-command"
+                        cellRenderer={(cellData, cellDataKey, rowData, rowIndex, columnData) => {
+                            const value = rowData.cmd;
                             const style = {
                                 backgroundColor: colornames('gray 25'),
                                 marginRight: 5
                             };
 
                             return (
-                                <Cell {...props}>
+                                <div>
                                     <span className="label" style={style}>{rowIndex + 1}</span>{value}
-                                </Cell>
+                                </div>
                             );
                         }}
+                        dataKey="cmd"
+                        flexGrow={1}
                         width={290}
                     />
-                </Table>
+                </FlexTable>
             </div>
         );
     }
