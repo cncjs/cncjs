@@ -85,14 +85,14 @@ Use [GitHub issues](https://github.com/cheton/cnc/issues) for requests.
 
 Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
 
-## License
-
-Copyright (c) 2015-2016 Cheton Wu
-
-Licensed under the [MIT License](LICENSE).
-
 ## Donate
 
 If you would like to support this project, you can make a donation using PayPal. Thank you!
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38CYN33CWPBR2)
+
+## License
+
+Copyright (c) 2015-2016 Cheton Wu
+
+Licensed under the [MIT License](LICENSE).
