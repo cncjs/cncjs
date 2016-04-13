@@ -84,7 +84,7 @@ function customTransform(file, enc, done) {
         ['Key', 'Value']
     ];
 
-    gutil.log('parsing ' + JSON.stringify(file.relative) + ':');
+    gutil.log('Scanning \'' + file.relative + '\'...');
 
     { // Using i18next-text
         parser.parseFuncFromString(content, { list: ['i18n._'] }, (key) => {

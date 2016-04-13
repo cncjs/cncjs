@@ -26,9 +26,10 @@ module.exports = _.assign({}, baseConfig, {
         new webpack.optimize.OccurrenceOrderPlugin(),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
-            compressor: {
+            compress: {
                 warnings: false
-            }
+            },
+            mangle: false
         })
     ]
 });

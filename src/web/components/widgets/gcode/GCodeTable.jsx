@@ -1,90 +1,92 @@
 import classNames from 'classnames';
 import colornames from 'colornames';
 import React from 'react';
-import DataGrid from 'react-datagrid';
-import i18n from '../../../lib/i18n';
+import { FlexTable, FlexColumn } from 'react-virtualized';
 import { GCODE_STATUS } from './constants';
-
-const columns = [
-    {
-        name: 'status',
-        width: 22,
-        style: {
-            backgroundColor: colornames('gray 95')
-        },
-        render: (value) => {
-            const classes = {
-                icon: classNames(
-                    'fa',
-                    { 'fa-check': value !== GCODE_STATUS.ERROR },
-                    { 'fa-ban': value === GCODE_STATUS.ERROR }
-                )
-            };
-            const styles = {
-                icon: {
-                    color: (() => {
-                        const color = {};
-                        color[GCODE_STATUS.ERROR] = colornames('indian red');
-                        color[GCODE_STATUS.NOT_STARTED] = colornames('gray 80');
-                        color[GCODE_STATUS.IN_PROGRESS] = colornames('gray 80');
-                        color[GCODE_STATUS.COMPLETED] = colornames('gray 20');
-                        return color[value] || colornames('gray 80');
-                    })()
-                }
-            };
-
-            return <i className={classes.icon} style={styles.icon}></i>;
-        }
-    },
-    {
-        name: 'cmd',
-        render: (value, data, cellProps) => {
-            const { rowIndex } = cellProps;
-            const style = {
-                backgroundColor: colornames('gray 25'),
-                marginRight: 5
-            };
-
-            return (
-                <div>
-                    <span className="label" style={style}>{rowIndex + 1}</span>{value}
-                </div>
-            );
-        }
-    }
-];
 
 class GCodeTable extends React.Component {
     static propTypes = {
-        height: React.PropTypes.number,
-        rowHeight: React.PropTypes.number,
-        data: React.PropTypes.array,
-        scrollTo: React.PropTypes.number
+        rows: React.PropTypes.array,
+        scrollToRow: React.PropTypes.number
     };
     static defaultProps = {
-        height: 180,
-        rowHeight: 30,
-        data: [],
-        scrollTo: 0
+        rows: [],
+        scrollToRow: 0
     };
 
     render() {
-        const { data, height, rowHeight } = this.props;
+        const rows = this.props.rows;
+        const headerHeight = 32;
+        const rowHeight = 30;
+        const visibleRows = 6;
+        const height = headerHeight + rowHeight * visibleRows;
+        const width = 320;
+        const offset = (visibleRows % 2 === 0) ? 0 : 1;
+        const scrollToIndex = Math.max(0, (this.props.scrollToRow - 1) + (Math.ceil(visibleRows / 2) - offset));
 
         return (
             <div className="gcode-table">
-                <DataGrid
-                    className="hide-header"
-                    columns={columns}
-                    dataSource={data}
-                    emptyText={i18n._('No data to display')}
-                    idProperty="id"
-                    ref="dataGrid"
+                <FlexTable
+                    disableHeader={true}
+                    headerHeight={headerHeight}
+                    height={height}
+                    rowGetter={index => rows[index]}
                     rowHeight={rowHeight}
-                    showCellBorders={true}
-                    style={{ height: height }}
-                    withColumnMenu={false}
-                />
+                    rowsCount={rows.length}
+                    scrollToIndex={scrollToIndex}
+                    width={width}
+                >
+                    <FlexColumn
+                        cellClassName="gcode-table-cell-status"
+                        cellRenderer={(cellData, cellDataKey, rowData, rowIndex, columnData) => {
+                            const value = rowData.status;
+                            const classes = {
+                                icon: classNames(
+                                    'fa',
+                                    { 'fa-check': value !== GCODE_STATUS.ERROR },
+                                    { 'fa-ban': value === GCODE_STATUS.ERROR }
+                                )
+                            };
+                            const styles = {
+                                icon: {
+                                    color: (() => {
+                                        const color = {};
+                                        color[GCODE_STATUS.ERROR] = colornames('indian red');
+                                        color[GCODE_STATUS.NOT_STARTED] = colornames('gray 80');
+                                        color[GCODE_STATUS.IN_PROGRESS] = colornames('gray 80');
+                                        color[GCODE_STATUS.COMPLETED] = colornames('gray 20');
+                                        return color[value] || colornames('gray 80');
+                                    })()
+                                }
+                            };
+
+                            return (
+                                <i className={classes.icon} style={styles.icon}></i>
+                            );
+                        }}
+                        dataKey="status"
+                        width={30}
+                    />
+                    <FlexColumn
+                        cellClassName="gcode-table-cell-command"
+                        cellRenderer={(cellData, cellDataKey, rowData, rowIndex, columnData) => {
+                            const value = rowData.cmd;
+                            const style = {
+                                backgroundColor: colornames('gray 25'),
+                                marginRight: 5
+                            };
+
+                            return (
+                                <div>
+                                    <span className="label" style={style}>{rowIndex + 1}</span>{value}
+                                </div>
+                            );
+                        }}
+                        dataKey="cmd"
+                        flexGrow={1}
+                        width={290}
+                    />
+                </FlexTable>
             </div>
         );
     }
