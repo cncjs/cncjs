@@ -39,7 +39,7 @@ If you want to run it on Raspberry Pi with Raspbian Wheezy, be sure to [install 
 Check out [wiki](https://github.com/cheton/cnc/wiki/Installation) for other installation methods.
 
 ## Upgrade
-Run `npm update -g cncjs` to upgrade to a newer version.
+Run `npm update -g cncjs` to upgrade to a newer version. To determine the version, use `cnc -V`.
 
 ## Usage
 Run `cnc` or `~/.npm/bin/cnc` to start the server, and visit `http://yourhostname:8000/` to view the web interface:
