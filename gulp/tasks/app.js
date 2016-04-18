@@ -50,6 +50,9 @@ const webpackProductionConfig = {
         ]
     },
     externals: externals,
+    resolve: {
+        extensions: ['', '.js', '.jsx']
+    },
     resolveLoader: {
         modulesDirectories: [
             NODE_MODULES
