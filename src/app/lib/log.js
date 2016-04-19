@@ -4,9 +4,6 @@ import util from 'util';
 import winston from 'winston';
 import settings from '../config/settings';
 
-// String utils
-import 'colors';
-
 // Default settings
 const defaults = {
     levels: {

@@ -6,7 +6,7 @@ import app from './app';
 import cncserver from './cncserver';
 import settings from './config/settings';
 import webappengine from 'webappengine';
-import colors from 'colors';
+import chalk from 'chalk';
 
 const run = ({ port, host, backlog, config, verbose, mount }) => {
     const routes = [];
@@ -42,7 +42,7 @@ const run = ({ port, host, backlog, config, verbose, mount }) => {
             const cnc = JSON.parse(fs.readFileSync(cncrc, 'utf8'));
 
             if (!(_.isObject(cnc))) {
-                console.error('Check your configuration file to ensure it contain valid settings.'.bold.red);
+                console.error(chalk.bold.red('Check your configuration file to ensure it contain valid settings.'));
                 console.error(cnc);
                 process.exit(1);
             }
