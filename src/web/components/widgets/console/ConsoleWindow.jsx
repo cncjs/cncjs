@@ -18,7 +18,7 @@ class ConsoleWindow extends React.Component {
     componentWillUpdate(nextProps, nextState) {
         const node = ReactDOM.findDOMNode(this.refs.infinite);
         const hScrollBarHeight = (node.scrollWidth !== node.clientWidth) ? 20 : 0;
-        this.shouldScrollBottom = ((node.scrollTop + node.clientHeight + hScrollBarHeight) >= node.scrollHeight);
+        this.shouldScrollBottom = (Math.ceil(node.scrollTop) + node.clientHeight + hScrollBarHeight) >= node.scrollHeight;
     }
     componentDidUpdate(prevProps, prevState) {
         const node = ReactDOM.findDOMNode(this.refs.infinite);
