@@ -1,4 +1,11 @@
 .header[data-ns="header"] {
+
+    // https://github.com/react-bootstrap/react-bootstrap/issues/1830
+    // FIXME: Remove this workaround once it has fixed
+    .navbar-nav .dropdown-toggle {
+        -webkit-appearance: initial;
+    }
+
     .navbar-fixed-top {
         border-width: 0;
     }
