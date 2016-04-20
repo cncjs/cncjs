@@ -50,8 +50,8 @@ class QuickAccessToolbar extends React.Component {
     }
     render() {
         return (
-            <div className="quick-access-toolbar">
-                <div className="btn-group btn-group-sm" role="group">
+            <ul className="nav navbar-nav pull-right quick-access-toolbar">
+                <li className="btn-group btn-group-sm" role="group">
                     <button
                         type="button"
                         className="btn btn-default"
@@ -68,8 +68,8 @@ class QuickAccessToolbar extends React.Component {
                     >
                         <i className="fa fa-pause"></i>&nbsp;{i18n._('Feed Hold')}
                     </button>
-                </div>
-                <div className="btn-group btn-group-sm" role="group">
+                </li>
+                <li className="btn-group btn-group-sm" role="group">
                     <button
                         type="button"
                         className="btn btn-primary"
@@ -94,8 +94,8 @@ class QuickAccessToolbar extends React.Component {
                     >
                         <i className="fa fa-undo"></i>&nbsp;{i18n._('Reset')}
                     </button>
-                </div>
-            </div>
+                </li>
+            </ul>
         );
     }
 }

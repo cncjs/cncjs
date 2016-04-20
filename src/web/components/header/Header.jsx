@@ -50,9 +50,7 @@ const Header = (props) => {
                             </MenuItem>
                         </NavDropdown>
                     </Nav>
-                    <Nav className="pull-right">
-                        <QuickAccessToolbar />
-                    </Nav>
+                    <QuickAccessToolbar />
                 </Navbar.Collapse>
             </Navbar>
         </div>
