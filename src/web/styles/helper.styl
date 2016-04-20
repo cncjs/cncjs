@@ -2,24 +2,26 @@
 // Helper classes
 // ==========================================================================
 
+// @stylint off
 .wait,
 .wait * {
     cursor: wait !important;
 }
+// @stylint on
 
+// @stylint off
 /*
  * Hide visually and from screen readers: h5bp.com/u
  */
-
 .hidden {
     display: none !important;
     visibility: hidden;
 }
+// @stylint on
 
 /*
  * Hide only visually, but have it available for screen readers: h5bp.com/v
  */
-
 .visuallyhidden {
     border: 0;
     clip: rect(0 0 0 0);
@@ -35,7 +37,6 @@
  * Extends the .visuallyhidden class to allow the element to be focusable
  * when navigated to via the keyboard: h5bp.com/p
  */
-
 .visuallyhidden.focusable:active,
 .visuallyhidden.focusable:focus {
     clip: auto;
@@ -49,7 +50,6 @@
 /*
  * Hide visually and from screen readers, but maintain layout
  */
-
 .invisible {
     visibility: hidden;
 }
@@ -65,7 +65,6 @@
  * 2. The use of `table` rather than `block` is only necessary if using
  *    `:before` to contain the top-margins of child elements.
  */
-
 .clearfix:before,
 .clearfix:after {
     content: " "; /* 1 */
@@ -97,15 +96,15 @@
 }
 
 .code {
-    padding: 0.2em;
+    padding: .2em;
     margin: 0;
     font-size: 85%;
-    background-color: rgba(0,0,0,0.04);
+    background-color: rgba(0, 0, 0, .04);
     border-radius: 3px;
 
     &:before,
     &:after {
-        letter-spacing: -0.2em;
+        letter-spacing: -.2em;
         content: "\00a0";
     }
 }
