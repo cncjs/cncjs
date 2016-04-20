@@ -1,4 +1,4 @@
-# CNC [![build status](https://travis-ci.org/cheton/cnc.svg?branch=master)](https://travis-ci.org/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/cheton/cnc/badge.svg)](https://coveralls.io/r/cheton/cnc)
+# cncjs [![build status](https://travis-ci.org/cheton/cnc.svg?branch=master)](https://travis-ci.org/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/cheton/cnc/badge.svg)](https://coveralls.io/r/cheton/cnc)
 
 [![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://nodei.co/npm/cncjs/)
 ![cncjs](https://raw.githubusercontent.com/cheton/cnc/master/media/banner2.png)
