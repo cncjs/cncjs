@@ -4,6 +4,10 @@
     }
 
     .quick-access-toolbar {
+        @media (min-width: 768px) {
+            float: right;
+        }
+
         margin: 10px 0;
 
         [class^="ion-"],
@@ -18,6 +22,7 @@
         }
 
         .btn-group {
+            float: left;
             margin-right: 15px;
 
             &:last-child {
