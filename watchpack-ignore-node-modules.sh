@@ -20,5 +20,5 @@ MISSING_OPTION="ignored: /node_modules/,"
 
 if ! cat ${FILEPATH} 2>/dev/null | grep -q "${MISSING_OPTION}"; then
   echo 'Fixing webpack watch (polling) slowness with a manual hack. See https://github.com/webpack/watchpack/pull/23 for more info.'
-  sed -i "s|${INSERTION_POINT_BEFORE}|&\n${MISSING_OPTION}|" "${FILEPATH}"
+  sed -i -e 's|'"${INSERTION_POINT_BEFORE}"'|'"${INSERTION_POINT_BEFORE} ${MISSING_OPTION}"'|' "${FILEPATH}"
 fi

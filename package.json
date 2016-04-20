@@ -23,6 +23,7 @@
     "build-dev": "gulp dev",
     "build-prod": "gulp prod",
     "start": "./bin/cnc",
+    "predev": "./watchpack-ignore-node-modules.sh",
     "dev": "npm run build-dev && NODE_ENV=\"development\" ./bin/cnc -vv",
     "prod": "npm run build-prod && NODE_ENV=\"production\" ./bin/cnc",
     "lint": "npm run eslint && npm run stylint",
