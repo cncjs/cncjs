@@ -25,7 +25,8 @@ const confirm = (options = {}, confirmCallback, cancelCallback) => {
     };
 
     ReactDOM.render(
-        <Confirm {...options}
+        <Confirm
+            {...options}
             onClose={handleClose}
             onConfirm={handleConfirm}
             onCancel={handleCancel}

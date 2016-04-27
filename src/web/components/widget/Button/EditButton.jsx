@@ -18,9 +18,9 @@ const EditButton = (props) => {
             className="btn-icon btn-edit"
             onClick={handleClick}
         >
-            {children ||
+        {children ||
             <i className="fa fa-cog"></i>
-            }
+        }
         </a>
     );
 };

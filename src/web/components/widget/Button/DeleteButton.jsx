@@ -18,9 +18,9 @@ const DeleteButton = (props) => {
             className="btn-icon btn-delete"
             onClick={handleClick}
         >
-            {children ||
+        {children ||
             <i className="fa fa-times"></i>
-            }
+        }
         </a>
     );
 };

@@ -9,7 +9,8 @@ const Toolbar = ({ port }) => {
     return (
         <div>
             <div className="btn-group btn-group-sm">
-                <button type="button"
+                <button
+                    type="button"
                     className="btn btn-default"
                     onClick={() => controller.write('~')}
                     disabled={!canClick}

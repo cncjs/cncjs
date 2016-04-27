@@ -168,12 +168,12 @@ class GCode extends React.Component {
                     finishedTime={finishedTime}
                 />
 
-                {isLoaded &&
+            {isLoaded &&
                 <GCodeTable
                     rows={lines}
                     scrollToRow={scrollToRow}
                 />
-                }
+            }
             </div>
         );
     }

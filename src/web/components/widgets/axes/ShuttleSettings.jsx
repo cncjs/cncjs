@@ -53,7 +53,9 @@ class ShuttleSettings extends React.Component {
                             &nbsp;
                             {i18n._('{{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
                         </p>
-                        <Slider range allowCross={false}
+                        <Slider
+                            range
+                            allowCross={false}
                             defaultValue={[feedrateMin, feedrateMax]}
                             min={FEEDRATE_RANGE[0]}
                             max={FEEDRATE_RANGE[1]}

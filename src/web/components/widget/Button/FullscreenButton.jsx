@@ -43,9 +43,9 @@ class FullscreenButton extends React.Component {
                 className="btn-icon btn-fullscreen"
                 onClick={::this.handleClick}
             >
-                {children ||
+            {children ||
                 <i className={classes.icon}></i>
-                }
+            }
             </a>
         );
     }

@@ -14,7 +14,7 @@ import THREE from 'three';
 // To match the object width with the visible width
 //   fov = 2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI); // in degrees
 //
-export const fitCameraToObject = (camera, width, height, lookTarget) => {
+const fitCameraToObject = (camera, width, height, lookTarget) => {
     const FOV = 15;
 
     console.assert(_.isNumber(width));
@@ -47,7 +47,7 @@ export const fitCameraToObject = (camera, width, height, lookTarget) => {
     camera.updateProjectionMatrix();
 };
 
-export const getBoundingBox = (object) => {
+const getBoundingBox = (object) => {
     const box = new THREE.Box3().setFromObject(object);
     const boundingBox = {
         min: {
@@ -65,7 +65,7 @@ export const getBoundingBox = (object) => {
     return boundingBox;
 };
 
-export const loadTexture = (url, callback) => {
+const loadTexture = (url, callback) => {
     callback = callback || ((err, texture) => {});
 
     const onLoad = (texture) => {

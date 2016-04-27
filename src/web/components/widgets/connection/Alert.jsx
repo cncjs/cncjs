@@ -2,7 +2,7 @@ import React from 'react';
 
 const Alert = ({ msg, dismiss }) => (
     <div>
-        {msg &&
+    {msg &&
         <div className="alert alert-danger fade in" style={{ padding: '4px' }}>
             <a
                 href="#"
@@ -17,7 +17,7 @@ const Alert = ({ msg, dismiss }) => (
             >×</a>
             {msg}
         </div>
-        }
+    }
     </div>
 );
 

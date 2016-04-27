@@ -291,7 +291,7 @@ class Workspace extends React.Component {
                                             onDelete={::this.handleDeleteWidget}
                                         />
                                     </div>
-                                    {hidePrimaryContainer &&
+                                {hidePrimaryContainer &&
                                     <div className="primary-toggler" ref="primaryToggler">
                                         <div className="btn-group btn-group-xs">
                                             <button
@@ -303,11 +303,11 @@ class Workspace extends React.Component {
                                             </button>
                                         </div>
                                     </div>
-                                    }
+                                }
                                     <div className={classes.defaultContainer} ref="defaultContainer">
                                         <DefaultWidgets className="widgets" />
                                     </div>
-                                    {hideSecondaryContainer &&
+                                {hideSecondaryContainer &&
                                     <div className="secondary-toggler" ref="secondaryToggler">
                                         <div className="btn-group btn-group-xs">
                                             <button
@@ -319,7 +319,7 @@ class Workspace extends React.Component {
                                             </button>
                                         </div>
                                     </div>
-                                    }
+                                }
                                     <div className={classes.secondaryContainer} ref="secondaryContainer">
                                         <div className="btn-toolbar clearfix" role="toolbar">
                                             <div className="btn-group btn-group-xs pull-left" role="group">

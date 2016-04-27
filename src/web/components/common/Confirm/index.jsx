@@ -49,11 +49,11 @@ class Confirm extends React.Component {
                         {message}
                     </Modal.Title>
                 </Modal.Header>
-                {description &&
+            {description &&
                 <Modal.Body>
                     {description}
                 </Modal.Body>
-                }
+            }
                 <Modal.Footer>
                     <Button bsStyle="default" onClick={::this.handleCancel}>
                         {cancelLabel}

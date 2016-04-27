@@ -43,9 +43,9 @@ class ToggleButton extends React.Component {
                 className="btn-icon btn-toggle"
                 onClick={::this.handleClick}
             >
-                {children ||
+            {children ||
                 <i className={classes.icon}></i>
-                }
+            }
             </a>
         );
     }

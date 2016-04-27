@@ -27,7 +27,13 @@ const Header = (props) => {
             <Navbar fixedTop fluid inverse>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <a href={homepage} target="_blank" title={brandTitle}>{settings.name}</a>
+                        <a
+                            href={homepage}
+                            target="_blank"
+                            title={brandTitle}
+                        >
+                            {settings.name}
+                        </a>
                     </Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>
