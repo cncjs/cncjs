@@ -1,7 +1,7 @@
 #!/bin/bash
 
 FILE=$1
-RELEASE="cncjs-${APPVEYOR_TAG_NAME:-${APPVEYOR_REPO_BRANCH:-latest}}-win32-x64
+RELEASE="cncjs-${APPVEYOR_TAG_NAME:-${APPVEYOR_REPO_BRANCH:-latest}}"
 
 if [[ -z "$FILE" ]]; then
     echo "The file is not specified."
@@ -13,5 +13,5 @@ scripts/github-release.sh \
     --repo="cnc-builds" \
     --tag="$RELEASE" \
     --description="AppVeyor build: $APPVEYOR_BUILD_VERSION" \
-    --name="${RELEASE}.zip" \
+    --name="${RELEASE}-win32-x64.zip" \
     --file="$FILE"
