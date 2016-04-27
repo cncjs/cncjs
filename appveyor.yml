@@ -32,14 +32,14 @@ matrix:
 
 install:
   - ps: |
-    Write-Host "Commit being built = " -NoNewLine
-    Write-Host $Env:APPVEYOR_REPO_COMMIT -ForegroundColor "Green"
-    Write-Host "Current build version = " -NoNewLine
-    Write-Host $Env:VERSION -ForegroundColor "Green"
-    Write-Host "Target branch = " -NoNewLine
-    Write-Host $Env:APPVEYOR_REPO_BRANCH -ForegroundColor "Green"
-    Write-Host "Commit UTC timestamp = " -NoNewLine
-    Write-Host $Env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
+  Write-Host "Commit being built = " -NoNewLine
+  Write-Host $Env:APPVEYOR_REPO_COMMIT -ForegroundColor "Green"
+  Write-Host "Current build version = " -NoNewLine
+  Write-Host $Env:VERSION -ForegroundColor "Green"
+  Write-Host "Target branch = " -NoNewLine
+  Write-Host $Env:APPVEYOR_REPO_BRANCH -ForegroundColor "Green"
+  Write-Host "Commit UTC timestamp = " -NoNewLine
+  Write-Host $Env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
   - set PATH=%GOPATH%\bin;%PATH%
   - go get github.com/cheton/github-release
   - github-release --version
