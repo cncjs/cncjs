@@ -68,3 +68,18 @@ after_success:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash -c 'cd output; zip -q -r cncjs-linux-x64.zip cncjs-linux-x64/'; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash -c 'scripts/travis-release-linux-x64.sh output/cncjs-linux-x64.zip'; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash -c 'scripts/travis-docker-build.sh'; fi
+
+before_deploy:
+  - export DEPLOY_FILE=$(ls output/cncjs-*.zip)
+  - echo "Deploying $DEPLOY_FILE to GitHub releases"
+deploy:
+  provider: releases
+  api_key:
+    secure: "x9nz3bvNesYVCesjj36yFYlYIAVykchBR4Ffzzysd4Tk1v+0eh0mRc9jmTzfF7xYsAjpKRCMGCjWG39aPwVG7rbs0EZDrXVxT7KObZ31HS9A1VWkOs/LKAlDrwjylx4umNswmVWAW+pVr9N431Be21+mZg4Xu8z6iDnLgHWxhK9n2IewKanPVV3pbB6hNVKpshnbYMraqwnJQE4gOVhBc2EBHUAUIhtVN1ntmRL76+trlpPFTzbhBVywf0TRvW4J67wYQO0was/qRww+wKmUvymD+7vk8P/23+uVi9pDpUix2TMZfyCPUG1PpQ0cZfIaaUg4POQD3hqFCJGeAgxZzIPEHOVd+TLF+B2eZjSMlTDyrVI2+JzVwx9SIPBkLgsRy1xNGFfMHXidJGOnkG9efv2artjkNblx3SGkx9EgAd1fsfM/epvggaJvW3rsU0AlRN9IKOeHToYVkWGJIJNjFGt1AL7a98SvtQ56xsXocUeLjLRnh14VFxZ22IeBRClOpyMGVLuTBy+m4hJMSB8JbjdBkJW45Ou6Pdswt5cW6WWXM1sepmxjttStp0FyiOr0qCkQfJsEEg1fYF0Rj7zNfUTFlRCX9+JWhQ/Lb61kEsBjqKc7/lPFOiKB/iLkQo+gQNb5ToaQMZIK0vmYf4gZZ6tkFkicbp8JjZu6mlNKdSE="
+  file: "${DEPLOY_FILE}"
+  overwrite: true
+  skip_cleanup: true
+  on:
+    # When set to true, the application is deployed when a tag is applied to the commit.
+    # This causes the branch condition to be ignored.
+    tags: true
