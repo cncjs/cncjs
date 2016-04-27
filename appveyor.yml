@@ -19,7 +19,6 @@ environment:
   matrix:
   - nodejs_version: "4"
   - nodejs_version: "5"
-  GOROOT: c:\go
   GOPATH: c:\gopath
   GITHUB_TOKEN:
     secure: 8GAPx69HrhLHtbsZyBG9KhOWHVnltZlWZuj2EQjRmAgG7t/vvzWxmTRsDM5uhwYx
@@ -32,7 +31,7 @@ matrix:
   fast_finish: true
 
 install:
-  - set PATH=%GOROOT%\bin;%GOPATH%\bin;%PATH%
+  - set PATH=%GOPATH%\bin;%PATH%
   - go get github.com/aktau/github-release
   - github-release --version
   - ps: Install-Product node $env:nodejs_version $env:platform
