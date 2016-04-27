@@ -69,7 +69,7 @@ github-release -q delete \
     --repo $GITHUB_REPO \
     --tag "$TAG"
 
-github-release -v release \
+github-release -q release \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
     --tag "$TAG" \
@@ -77,7 +77,7 @@ github-release -v release \
     --description "${DESCRIPTION:-$TAG}" \
     --pre-release
 
-github-release -v upload \
+github-release -q upload \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
     --tag "$TAG" \
