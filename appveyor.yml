@@ -48,7 +48,7 @@ deploy_script:
   - ps: >-
       If ($env:nodejs_version -eq '5') {
         pushd output
-        7z a -r cncjs-win32-x64.zip cncjs-win32-x64 > NUL
+        7z a -r cncjs-win32-x64.zip cncjs-win32-x64
         popd
         bash -c 'scripts/appveyor-release-win32-x64.sh'
       }
