@@ -64,11 +64,10 @@ echo "- description=${DESCRIPTION:-$TAG}"
 echo "- name=$NAME"
 echo "- file=$FILE"
 
-github-release -q delete \
+github-release info \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
-    --tag "$TAG" \
-    > /dev/null 2>&1
+    --tag "$TAG"
 
 github-release -q release \
     --user $GITHUB_USER \
@@ -85,4 +84,5 @@ github-release -q upload \
     --tag "$TAG" \
     --name "$NAME" \
     --file "$FILE" \
+    --replace \
     > /dev/null 2>&1
