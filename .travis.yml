@@ -37,8 +37,7 @@ before_install:
   - git config --global user.email "travis@travis-ci.org"
   - go version
   - go env
-  # https://github.com/aktau/github-release
-  - go get github.com/aktau/github-release
+  - go get github.com/cheton/github-release
   - github-release --version
   #
   # https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#os-x

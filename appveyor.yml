@@ -32,7 +32,7 @@ matrix:
 
 install:
   - set PATH=%GOPATH%\bin;%PATH%
-  - go get github.com/aktau/github-release
+  - go get github.com/cheton/github-release
   - github-release --version
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install -g npm
