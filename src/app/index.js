@@ -1,14 +1,15 @@
 /* eslint no-unused-vars: 0 */
 import _ from 'lodash';
+import chalk from 'chalk';
 import fs from 'fs';
 import path from 'path';
+import webappengine from 'webappengine';
 import app from './app';
 import cncserver from './cncserver';
+import log from './lib/log';
 import settings from './config/settings';
-import webappengine from 'webappengine';
-import chalk from 'chalk';
 
-const run = ({ port, host, backlog, config, verbose, mount }) => {
+const createServer = ({ port = 0, host, backlog, config, verbose, mount }, callback) => {
     const routes = [];
 
     { // routes
@@ -57,9 +58,10 @@ const run = ({ port, host, backlog, config, verbose, mount }) => {
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
             cncserver(server);
+            callback && callback(server);
         });
 };
 
 export {
-    run
+    createServer
 };

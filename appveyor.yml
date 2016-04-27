@@ -1,0 +1,53 @@
+# http://www.appveyor.com/docs/appveyor-yml
+
+version: "{build}-{branch}"
+
+cache:
+  - node_modules
+  - '%APPDATA%\npm-cache'
+  - '%USERPROFILE%\.electron'
+
+init:
+  - git --version
+  - git config --global core.autocrlf false
+  - git config --global user.name "AppVeyor"
+  - git config --global user.email "appveyor@ci.appveyor.com"
+  - go version
+  - go env
+
+environment:
+  matrix:
+  - nodejs_version: "4"
+  - nodejs_version: "5"
+  GOROOT: c:\go
+  GOPATH: c:\gopath
+  GITHUB_TOKEN:
+    secure: 8GAPx69HrhLHtbsZyBG9KhOWHVnltZlWZuj2EQjRmAgG7t/vvzWxmTRsDM5uhwYx
+
+platform:
+  - x64
+
+matrix:
+  # Enable fast fail strategy 
+  fast_finish: true
+
+install:
+  - set PATH=%GOROOT%\bin;%GOPATH%\bin;%PATH%
+  - go get github.com/aktau/github-release
+  - github-release --version
+  - ps: Install-Product node $env:nodejs_version $env:platform
+  - npm install -g npm
+  - npm install
+
+build_script:
+  - node --version
+  - npm --version
+  - npm run build
+  - npm run electron-packager:win32-x64
+  - cmd: cd output\current && 7z.exe -a cncjs-win32-x64.zip cncjs-win32-x64
+
+deploy_script:
+  - ps: if($env:nodejs_version -eq '5') {
+      bash -c 'scripts/appveyor-release-win32-x64.sh'; }
+
+test: off

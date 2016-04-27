@@ -210,7 +210,7 @@ class GrblController {
                         parserstateEnd: false
                     }
                 });
-                this.serialport.write('$G' + '\n');
+                this.serialport.write('$G\n');
             }
 
             // Detect for any G-code status changes

@@ -45,7 +45,7 @@ module.exports = {
         ]
     },
     output: {
-        path: path.join(__dirname, 'dist', 'web'),
+        path: path.join(__dirname, 'dist/cncjs/web'),
         filename: '[name].js'
     },
     plugins: [

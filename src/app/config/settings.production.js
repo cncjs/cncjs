@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import os from 'os';
 import path from 'path';
 import urljoin from '../lib/urljoin';
-import pkg from '../../../package.json';
+import pkg from '../../package.json';
 
 // hashedVersion
 const hashedVersion = ((version) => {
