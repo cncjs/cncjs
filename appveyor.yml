@@ -45,11 +45,13 @@ build_script:
   - npm run electron-packager:win32-x64
 
 deploy_script:
-  - ps: if($env:nodejs_version -eq '5') {
-      pushd output;
-      7z a -r cncjs-win32-x64.zip cncjs-win32-x64 > nul;
-      popd;
-      bash -c 'scripts/appveyor-release-win32-x64.sh'; }
+  - ps: >-
+      If ($env:nodejs_version -eq '5') {
+        pushd output
+        7z a -r cncjs-win32-x64.zip cncjs-win32-x64 > NUL
+        popd
+        bash -c 'scripts/appveyor-release-win32-x64.sh'
+      }
 
 test: off
 
