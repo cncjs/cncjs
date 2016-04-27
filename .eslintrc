@@ -33,6 +33,7 @@
         "eol-last": 2,
         "eqeqeq": 2,
         "func-names": 0,
+        "global-require": 0,
         "indent": [2, 4],
         "key-spacing": [2, {
             "beforeColon": false,
@@ -52,6 +53,7 @@
         "no-param-reassign": 0,
         "no-shadow": 0,
         "no-var": 1,
+        "no-underscore-dangle": 0,
         "no-unused-expressions": [2, {
             "allowShortCircuit": true,
             "allowTernary": true
@@ -74,6 +76,7 @@
 
         "react/jsx-boolean-value": 0,
         "react/jsx-curly-spacing": 1,
+        "react/jsx-indent": [1, 4],
         "react/jsx-indent-props": [1, 4],
         "react/jsx-max-props-per-line": [1, { "maximum": 3 }],
         "react/jsx-no-bind": [1, {
