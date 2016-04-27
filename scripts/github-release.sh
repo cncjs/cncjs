@@ -54,15 +54,7 @@ if [[ -z "$TAG" || -z "$NAME" || -z "$FILE" ]]; then
 fi
 
 # Commandline app to create and edit releases on Github (and upload artifacts)
-# https://github.com/aktau/github-release
-
-echo "github-release:"
-echo "- user=$GITHUB_USER"
-echo "- repo=$GITHUB_REPO"
-echo "- tag=$TAG"
-echo "- description=${DESCRIPTION:-$TAG}"
-echo "- name=$NAME"
-echo "- file=$FILE"
+# https://github.com/cheton/github-release
 
 github-release info \
     --user $GITHUB_USER \
@@ -76,6 +68,14 @@ github-release -q release \
     --name $TAG \
     --description "${DESCRIPTION:-$TAG}" \
     --pre-release \
+    > /dev/null 2>&1
+
+github-release -q edit \
+    --user $GITHUB_USER \
+    --repo $GITHUB_REPO \
+    --tag "$TAG" \
+    --name $TAG \
+    --description "${DESCRIPTION:-$TAG}" \
     > /dev/null 2>&1
 
 github-release -q upload \
