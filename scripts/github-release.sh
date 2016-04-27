@@ -56,6 +56,7 @@ fi
 # Commandline app to create and edit releases on Github (and upload artifacts)
 # https://github.com/cheton/github-release
 
+echo "before_github_release:"
 github-release info \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
@@ -86,3 +87,9 @@ github-release -q upload \
     --file "$FILE" \
     --replace \
     > /dev/null 2>&1
+
+echo "after_github_release:"
+github-release info \
+    --user $GITHUB_USER \
+    --repo $GITHUB_REPO \
+    --tag "$TAG"
