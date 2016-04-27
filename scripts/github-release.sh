@@ -67,7 +67,8 @@ echo "- file=$FILE"
 github-release -q delete \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
-    --tag "$TAG"
+    --tag "$TAG" \
+    > /dev/null 2>&1
 
 github-release -q release \
     --user $GITHUB_USER \
@@ -75,11 +76,13 @@ github-release -q release \
     --tag "$TAG" \
     --name $TAG \
     --description "${DESCRIPTION:-$TAG}" \
-    --pre-release
+    --pre-release \
+    > /dev/null 2>&1
 
 github-release -q upload \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
     --tag "$TAG" \
     --name "$NAME" \
-    --file "$FILE"
+    --file "$FILE" \
+    > /dev/null 2>&1
