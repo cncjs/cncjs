@@ -19,9 +19,10 @@ environment:
   matrix:
   - nodejs_version: "4"
   - nodejs_version: "5"
-  GOPATH: c:\gopath
-  GITHUB_TOKEN:
-    secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
+  global:
+    GOPATH: c:\gopath
+    GITHUB_TOKEN:
+      secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
 
 platform:
   - x64
@@ -45,8 +46,30 @@ build_script:
   - npm run electron-packager:win32-x64
 
 deploy_script:
-  - cd output; 7z a cncjs-win32-x64.zip cncjs-win32-x64 > nul
   - ps: if($env:nodejs_version -eq '5') {
+      pushd output;
+      7z a -r cncjs-win32-x64.zip cncjs-win32-x64 > nul;
+      popd;
       bash -c 'scripts/appveyor-release-win32-x64.sh'; }
 
 test: off
+
+# Packaging artifacts
+# https://www.appveyor.com/docs/packaging-artifacts
+artifacts:
+  - path: output/cncjs-win32-x64.zip
+    name: cncjs-win32-x64
+    type: zip
+
+# Publishing artifacts to GitHub Releases
+# https://www.appveyor.com/docs/deployment/github
+deploy:
+  provider: GitHub
+  auth_token:
+    secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
+  artifact: cncjs-win32-x64
+  draft: false
+  prerelease: false
+  on:
+    branch: master                 # release from master branch only
+    appveyor_repo_tag: true        # deploy on tag push only
