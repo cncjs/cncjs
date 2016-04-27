@@ -1,15 +1,17 @@
 #!/bin/bash
 
-RELEASE=${TRAVIS_TAG:-${TRAVIS_BRANCH:-latest}}-linux-x64
+FILE=$1
+RELEASE="cncjs-${TRAVIS_TAG:-${TRAVIS_BRANCH:-latest}}-linux-x64"
 
-pushd output
-zip -q -r cncjs-linux-x64.zip cncjs-linux-x64/
-popd
+if [[ -z "$FILE" ]]; then
+    echo "The file is not specified."
+    exit 1;
+fi
 
 scripts/github-release.sh \
     --user="cheton" \
     --repo="cnc-builds" \
     --tag="$RELEASE" \
     --description="Travis build: ${TRAVIS_BUILD_NUMBER}" \
-    --name="cncjs-${RELEASE}.zip" \
-    --file="output/cncjs-linux-x64.zip"
+    --name="${RELEASE}.zip" \
+    --file="$FILE"
