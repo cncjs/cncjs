@@ -21,7 +21,7 @@ environment:
   - nodejs_version: "5"
   GOPATH: c:\gopath
   GITHUB_TOKEN:
-    secure: 8GAPx69HrhLHtbsZyBG9KhOWHVnltZlWZuj2EQjRmAgG7t/vvzWxmTRsDM5uhwYx
+    secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
 
 platform:
   - x64
