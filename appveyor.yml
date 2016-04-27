@@ -43,7 +43,6 @@ build_script:
   - npm --version
   - npm run build
   - npm run electron-packager:win32-x64
-  - cmd: cd output\current && 7z.exe -a cncjs-win32-x64.zip cncjs-win32-x64
 
 deploy_script:
   - ps: if($env:nodejs_version -eq '5') {
