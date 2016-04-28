@@ -1,7 +1,7 @@
 {
   "name": "cnc",
   "version": "1.1.0",
-  "description": "A web-based CNC milling controller for the Arduino running GRBL",
+  "description": "CNC Milling Controller",
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
   "license": "MIT",
@@ -67,7 +67,7 @@
     "stacktrace-js": "~1.1.1",
     "superagent": "~1.8.0-beta.2",
     "three": "~0.76.1",
-    "webappengine": "~0.8.1",
+    "webappengine": "~0.8.3",
     "winston": "~2.2.0"
   }
 }
