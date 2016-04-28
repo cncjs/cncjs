@@ -3,16 +3,43 @@ import { app, BrowserWindow, Menu } from 'electron';
 import open from 'open';
 import cnc from './cnc';
 
-const menu = Menu.buildFromTemplate([
+const template = [
     {
-        label: 'cncjs',
+        label: 'CNC',
         submenu: [
             {
-                label: 'About cncjs',
+                label: 'About CNC',
                 selector: 'orderFrontStandardAboutPanel:'
             },
             {
-                label: 'Quit cncjs',
+                type: 'separator'
+            },
+            {
+                label: 'Services',
+                submenu: []
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Hide CNC',
+                accelerator: 'CmdOrCtrl+H',
+                selector: 'hide:'
+            },
+            {
+                label: 'Hide Others',
+                accelerator: 'CmdOrCtrl+Shift+H',
+                selector: 'hideOtherApplications:'
+            },
+            {
+                label: 'Show All',
+                selector: 'unhideAllApplications:'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Quit CNC',
                 accelerator: 'CmdOrCtrl+Q',
                 click: function() {
                     forceQuit = true;
@@ -20,8 +47,53 @@ const menu = Menu.buildFromTemplate([
                 }
             }
         ]
+    },
+    {
+        label: 'View',
+        submenu: [
+            {
+                label: 'Reload',
+                accelerator: 'CmdOrCtrl+R',
+                click: function() {
+                    BrowserWindow.getFocusedWindow().reloadIgnoringCache();
+                }
+            },
+            {
+                label: 'Toggle DevTools',
+                accelerator: 'Alt+CmdOrCtrl+I',
+                click: function() {
+                    BrowserWindow.getFocusedWindow().toggleDevTools();
+                }
+            }
+        ]
+    },
+    {
+        label: 'Window',
+        submenu: [
+            {
+                label: 'Minimize',
+                accelerator: 'CmdOrCtrl+M',
+                selector: 'performMiniaturize'
+            },
+            {
+                label: 'Close',
+                accelerator: 'CmdOrCtrl+W',
+                selector: 'performClose'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Bring All to Front',
+                selector: 'arrangeInFront:'
+            }
+        ]
+    },
+    {
+        label: 'Help',
+        submenu: []
     }
-]);
+];
 
 let forceQuit = false;
 
@@ -79,6 +151,7 @@ app.on('window-all-closed', () => {
 });
 
 app.on('ready', () => {
+    const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 
     cnc((server) => {
