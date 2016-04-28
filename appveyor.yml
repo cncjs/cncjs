@@ -55,7 +55,7 @@ build_script:
   - node --version
   - npm --version
   - npm run build
-  - npm run electron-packager:win32-x64
+  - npm run electron-builder:win32-x64
 
 deploy_script:
   - ps: |
