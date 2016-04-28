@@ -59,7 +59,7 @@ deploy_script:
         pushd output
         7z a -r cncjs-win32-x64.zip cncjs-win32-x64 > $NULL
         popd
-        bash -c 'scripts/appveyor-release-win32-x64.sh'
+        bash -c 'scripts/appveyor-release-win32-x64.sh output/cncjs-win32-x64.zip'
       }
 
 test: off
