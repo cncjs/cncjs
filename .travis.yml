@@ -56,13 +56,13 @@ before_install:
   - npm install -g npm
 
 script:
-  - echo "Build directory: ${TRAVIS_BUILD_DIR}"
-  - echo "Build number: ${TRAVIS_BUILD_NUMBER}"
-  - echo "Branch: ${TRAVIS_BRANCH}"
-  - echo "Tag: ${TRAVIS_TAG}"
-  - echo "Commit: ${TRAVIS_COMMIT}"
+  - echo "Build directory = ${TRAVIS_BUILD_DIR}"
+  - echo "Build number = ${TRAVIS_BUILD_NUMBER}"
+  - echo "Branch = ${TRAVIS_BRANCH}"
+  - echo "Tag = ${TRAVIS_TAG}"
+  - echo "Commit = ${TRAVIS_COMMIT}"
   - COMMIT_TIMESTAMP=`git log -1 --pretty=format:%ci | sed -r 's/(.*) (.*) (.*)/\1T\2\3/'`
-  - echo "Commit timestamp: ${COMMIT_TIMESTAMP}"
+  - echo "Commit timestamp = ${COMMIT_TIMESTAMP}"
   - npm run build
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run electron-builder:darwin-x64; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run electron-builder:linux-x64; fi
