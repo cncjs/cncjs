@@ -4,7 +4,7 @@
   "description": "A web-based CNC milling controller for the Arduino running GRBL",
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
-  "main": "./dist/cncjs/cnc.js",
+  "main": "./dist/cnc/cnc.js",
   "bin": {
     "cnc": "./bin/cnc"
   },
@@ -32,7 +32,7 @@
     "electron-builder:win32-x64": "bash -c 'PLATFORM=win32 ARCH=x64 scripts/electron-builder.sh'",
     "prepublish": "npm run clean && npm run lint && npm run build",
     "start": "./bin/cnc",
-    "start-electron": "electron ./dist/cncjs/main",
+    "start-electron": "electron ./dist/cnc/main",
     "predev": "bash -c 'watchpack-ignore-node-modules.sh'",
     "dev": "npm run build-dev && NODE_ENV=\"development\" ./bin/cnc -vv",
     "prod": "npm run build-prod && NODE_ENV=\"production\" ./bin/cnc",
@@ -43,11 +43,11 @@
     "coveralls": "node babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
   "build": {
-    "app-bundle-id": "cncjs",
+    "app-bundle-id": "cnc",
     "app-category-type": "public.app-category.productivity",
     "asar": false,
     "osx": {
-      "title": "cncjs",
+      "title": "CNC",
       "icon": "build/icon.icns",
       "background": "build/background.png",
       "icon-size": 80,
@@ -69,7 +69,7 @@
   "directories": {
     "buildResources": "build",
     "output": "output",
-    "app": "dist/cncjs"
+    "app": "dist/cnc"
   },
   "keywords": [
     "cnc",
