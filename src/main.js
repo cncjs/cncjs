@@ -73,12 +73,12 @@ const template = [
             {
                 label: 'Minimize',
                 accelerator: 'CmdOrCtrl+M',
-                selector: 'performMiniaturize'
+                selector: 'performMiniaturize:'
             },
             {
                 label: 'Close',
                 accelerator: 'CmdOrCtrl+W',
-                selector: 'performClose'
+                selector: 'performClose:'
             },
             {
                 type: 'separator'
