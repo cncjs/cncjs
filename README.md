@@ -1,7 +1,7 @@
-# CNC [![build status](https://travis-ci.org/cheton/cnc.svg?branch=master)](https://travis-ci.org/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/cheton/cnc/badge.svg)](https://coveralls.io/r/cheton/cnc)
+# cnc [![build status](https://travis-ci.org/cheton/cnc.svg?branch=master)](https://travis-ci.org/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/cheton/cnc/badge.svg)](https://coveralls.io/r/cheton/cnc)
 
 [![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://nodei.co/npm/cncjs/)
-![cncjs](https://raw.githubusercontent.com/cheton/cnc/master/media/banner2.png)
+![cnc](https://raw.githubusercontent.com/cheton/cnc/master/media/banner.png)
 
 A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) running [Grbl](https://github.com/grbl/grbl). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
 
@@ -9,7 +9,7 @@ A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) ru
 
 
 ## Key Features
-* Supported CNC controller
+* Supported CNC controllers
   * Grbl v0.9 or later
   * TinyG2 will be supported in v2.x
 * 3D Visualizer
