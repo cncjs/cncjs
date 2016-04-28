@@ -6,7 +6,7 @@ if [[ -z "$FILE" ]]; then
     exit 1;
 fi
 
-RELEASE="cncjs-${TRAVIS_TAG:-${TRAVIS_BRANCH:-latest}}"
+RELEASE="cnc-${TRAVIS_TAG:-${TRAVIS_BRANCH:-latest}}"
 DESCRIPTION=`git log -1 --date=iso`
 
 scripts/github-release.sh \

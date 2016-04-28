@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-var cnc = require('../dist/cncjs/cnc').default;
+var cnc = require('../dist/cnc/cnc').default;
 
 cnc(function(server) {
     const address = server.address();

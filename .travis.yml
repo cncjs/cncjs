@@ -65,22 +65,22 @@ after_success:
   - set -e
   - if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       pushd output;
-      zip -q -r cncjs-darwin-x64.zip cncjs-darwin-x64/;
+      zip -q -r cnc-darwin-x64.zip cnc-darwin-x64/;
       popd;
-      scripts/travis-release-darwin-x64.sh output/cncjs-darwin-x64.zip;
+      scripts/travis-release-darwin-x64.sh output/cnc-darwin-x64.zip;
     fi
   - if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       pushd output;
-      zip -q -r cncjs-linux-x64.zip cncjs-linux-x64/;
+      zip -q -r cnc-linux-x64.zip cnc-linux-x64/;
       popd;
-      scripts/travis-release-linux-x64.sh output/cncjs-linux-x64.zip;
+      scripts/travis-release-linux-x64.sh output/cnc-linux-x64.zip;
     fi
   - if [[ "$TRAVIS_NODE_VERSION" == "5" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       scripts/travis-docker-build.sh;
     fi
 
 before_deploy:
-  - export DEPLOY_FILE=$(ls output/cncjs-*.zip)
+  - export DEPLOY_FILE=$(ls output/cnc-*.zip)
   - echo "Deploying $DEPLOY_FILE to GitHub releases"
 deploy:
   provider: releases

@@ -6,7 +6,7 @@ if [[ -z "$FILE" ]]; then
     exit 1;
 fi
 
-RELEASE="cncjs-${APPVEYOR_TAG_NAME:-${APPVEYOR_REPO_BRANCH:-latest}}"
+RELEASE="cnc-${APPVEYOR_TAG_NAME:-${APPVEYOR_REPO_BRANCH:-latest}}"
 DESCRIPTION=`git log -1 --date=iso`
 
 scripts/github-release.sh \
