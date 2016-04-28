@@ -11,7 +11,7 @@ module.exports = _.assign({}, baseConfig, {
         vendor: baseConfig.entry.vendor
     },
     output: {
-        path: path.join(__dirname, 'dist/cncjs/web'),
+        path: path.join(__dirname, 'dist/cnc/web'),
         filename: '[name].js',
         publicPath: '/'
     },
