@@ -6,7 +6,7 @@ const settings = {
     version: root.app.config.version,
     webroot: root.app.config.webroot,
     cdn: root.app.config.cdn,
-    name: 'CNC',
+    name: 'cnc',
     log: {
         level: 'warn', // trace, debug, info, warn, error
         logger: 'console', // console

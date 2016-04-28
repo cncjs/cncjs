@@ -5,10 +5,10 @@ import cnc from './cnc';
 
 const template = [
     {
-        label: 'CNC',
+        label: 'cnc',
         submenu: [
             {
-                label: 'About CNC',
+                label: 'About cnc',
                 selector: 'orderFrontStandardAboutPanel:'
             },
             {
@@ -22,7 +22,7 @@ const template = [
                 type: 'separator'
             },
             {
-                label: 'Hide CNC',
+                label: 'Hide cnc',
                 accelerator: 'CmdOrCtrl+H',
                 selector: 'hide:'
             },
@@ -39,7 +39,7 @@ const template = [
                 type: 'separator'
             },
             {
-                label: 'Quit CNC',
+                label: 'Quit cnc',
                 accelerator: 'CmdOrCtrl+Q',
                 click: function() {
                     forceQuit = true;
