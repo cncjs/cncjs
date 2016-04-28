@@ -68,7 +68,7 @@ script:
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run electron-builder:linux-x64; fi
 
 after_success:
-  - if [[ "$TRAVIS_NODE_VERSION" != "5" ]]; then exit 0; fi
+  - if [[ "$TRAVIS_NODE_VERSION" != "4" ]]; then exit 0; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then bash -c 'cd output; zip -q -r cncjs-darwin-x64.zip cncjs-darwin-x64/'; fi
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then bash -c 'scripts/travis-release-darwin-x64.sh output/cncjs-darwin-x64.zip'; fi
   - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then bash -c 'cd output; zip -q -r cncjs-linux-x64.zip cncjs-linux-x64/'; fi

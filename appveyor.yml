@@ -59,7 +59,7 @@ build_script:
 
 deploy_script:
   - ps: |
-      If ($env:nodejs_version -eq '5') {
+      If ($env:nodejs_version -eq '4') {
         pushd output
         7z a -r cncjs-win32-x64.zip cncjs-win32-x64 > $NULL
         popd
