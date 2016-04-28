@@ -37,7 +37,8 @@ before_install:
   - echo "Branch: $TRAVIS_BRANCH"
   - echo "Tag: $TRAVIS_TAG"
   - echo "Commit: $TRAVIS_COMMIT"
-  - echo "Commit timestamp: "`git log -1 --pretty=format:%ci | sed -r 's/(.*) (.*) (.*)/\1T\2\3/'`
+  - COMMIT_TIMESTAMP=`git log -1 --pretty=format:%ci | sed -r 's/(.*) (.*) (.*)/\1T\2\3/'`
+  - echo "Commit timestamp: $COMMIT_TIMESTAMP"
   - git --version
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
