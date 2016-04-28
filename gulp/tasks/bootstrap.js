@@ -11,7 +11,7 @@ export default (options) => {
         ];
         return gulp.src(src)
             .pipe(babel())
-            .pipe(gulp.dest('dist/cncjs'));
+            .pipe(gulp.dest('dist/cnc'));
     });
     gulp.task('bootstrap:pkg', (callback) => {
         // Copy necessary properties from 'package.json' to 'src/package.json'
@@ -29,7 +29,7 @@ export default (options) => {
         fs.writeFileSync(path.resolve(__dirname, '../../src/package.json'), JSON.stringify(_pkg, null, 2), 'utf8');
 
         return gulp.src('src/package.json')
-            .pipe(gulp.dest('dist/cncjs'));
+            .pipe(gulp.dest('dist/cnc'));
     });
     gulp.task('bootstrap', ['bootstrap:babel', 'bootstrap:pkg']);
 };

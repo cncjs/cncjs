@@ -26,7 +26,7 @@ const webpackProductionConfig = {
         ]
     },
     output: {
-        path: path.join(__dirname, '../../dist/cncjs/app'),
+        path: path.join(__dirname, '../../dist/cnc/app'),
         filename: '[name].js',
         libraryTarget: 'commonjs2'
     },
@@ -74,7 +74,7 @@ const distConfig = {
     src: [
         'src/app/{i18n,views}/**/*'
     ],
-    dest: 'dist/cncjs/app'
+    dest: 'dist/cnc/app'
 };
 
 export default (options) => {
@@ -90,7 +90,7 @@ export default (options) => {
         ];
         return gulp.src(src)
             .pipe(babel())
-            .pipe(gulp.dest('dist/cncjs/app'));
+            .pipe(gulp.dest('dist/cnc/app'));
     });
 
     gulp.task('app:build-prod', (callback) => {

@@ -11,7 +11,7 @@ const distConfig = {
         'src/web/vendor/**/*',
         'src/web/i18n/**/*'
     ],
-    dest: 'dist/cncjs/web'
+    dest: 'dist/cnc/web'
 };
 
 export default (options) => {
