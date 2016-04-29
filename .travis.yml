@@ -73,7 +73,7 @@ after_success:
           --repo="cnc-builds" \
           --tag="cnc-${TRAVIS_BRANCH}-latest" \
           --name="cnc-darwin-x64-latest.zip" \
-          --file="output/cnc-darwin-x64.zip"
+          --file="output/cnc-darwin-x64.zip";
       fi
     fi
   - if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
@@ -88,7 +88,7 @@ after_success:
           --repo="cnc-builds" \
           --tag="cnc-${TRAVIS_BRANCH}-latest" \
           --name="cnc-linux-ia32-latest.zip" \
-          --file="output/cnc-linux-ia32.zip"
+          --file="output/cnc-linux-ia32.zip";
       fi
       # cnc-linux-x64
       npm run electron-builder:linux-x64;
@@ -101,7 +101,7 @@ after_success:
           --repo="cnc-builds" \
           --tag="cnc-${TRAVIS_BRANCH}-latest" \
           --name="cnc-linux-x64-latest.zip" \
-          --file="output/cnc-linux-x64.zip"
+          --file="output/cnc-linux-x64.zip";
       fi
     fi
   - if [[ "$TRAVIS_NODE_VERSION" == "5" && "$TRAVIS_OS_NAME" == "linux" ]]; then
