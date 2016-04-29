@@ -39,9 +39,14 @@ program
     .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
     .parse(process.argv);
 
-const createServer = (callback) => {
+const cnc = (options = {}, callback) => {
     // Change working directory to 'app' before require('./app')
     process.chdir(path.resolve(__dirname, 'app'));
+
+    if (typeof options === 'function') {
+        callback = options;
+        options = {};
+    }
 
     require('./app').createServer({
         port: program.port,
@@ -49,8 +54,9 @@ const createServer = (callback) => {
         backlog: program.backlog,
         config: program.config,
         verbose: program.verbose,
-        mount: program.mount
+        mount: program.mount,
+        ...options // Override command-line options if specified
     }, callback);
 };
 
-export default createServer;
+export default cnc;
