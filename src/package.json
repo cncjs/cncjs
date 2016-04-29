@@ -67,7 +67,7 @@
     "stacktrace-js": "~1.1.1",
     "superagent": "~1.8.0-beta.2",
     "three": "~0.76.1",
-    "webappengine": "~0.8.3",
+    "webappengine": "~0.8.4",
     "winston": "~2.2.0"
   }
 }
