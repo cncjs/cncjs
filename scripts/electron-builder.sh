@@ -2,9 +2,15 @@
 
 PLATFORM=${PLATFORM:-all}
 ARCH=${ARCH:-all}
-VERSION=0.37.6
 
-VERSION=${VERSION} scripts/electron-rebuild.sh
+pushd dist/cnc
+echo "Cleaning up dist/cnc/node_modules..."
+rm -rf node_modules
+echo "Installing packages..."
+npm install --production
+popd
+
+scripts/electron-rebuild.sh
 
 ./node_modules/.bin/build \
     --platform=${PLATFORM} \

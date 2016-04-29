@@ -57,23 +57,52 @@ before_install:
 
 script:
   - npm run build
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then npm run electron-builder:darwin-x64; fi
-  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then npm run electron-builder:linux-x64; fi
 
 after_success:
   # This makes the script exit with a non-zero error code if any of the commands fails.
   - set -e
   - if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
+      # cnc-darwin-x64
+      npm run electron-builder:darwin-x64;
       pushd output;
       zip -q -r cnc-darwin-x64.zip cnc-darwin-x64/;
       popd;
-      scripts/travis-release-darwin-x64.sh output/cnc-darwin-x64.zip;
+      if [[ -z "$TRAVIS_TAG" ]]; then
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc-builds" \
+          --tag="cnc-${TRAVIS_BRANCH}-latest" \
+          --name="cnc-darwin-x64-latest.zip" \
+          --file="output/cnc-darwin-x64.zip"
+      fi
     fi
   - if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+      # cnc-linux-ia32
+      npm run electron-builder:linux-ia32;
+      pushd output;
+      zip -q -r cnc-linux-ia32.zip cnc-linux-ia32/;
+      popd;
+      if [[ -z "$TRAVIS_TAG" ]]; then
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc-builds" \
+          --tag="cnc-${TRAVIS_BRANCH}-latest" \
+          --name="cnc-linux-ia32-latest.zip" \
+          --file="output/cnc-linux-ia32.zip"
+      fi
+      # cnc-linux-x64
+      npm run electron-builder:linux-x64;
       pushd output;
       zip -q -r cnc-linux-x64.zip cnc-linux-x64/;
       popd;
-      scripts/travis-release-linux-x64.sh output/cnc-linux-x64.zip;
+      if [[ -z "$TRAVIS_TAG" ]]; then
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc-builds" \
+          --tag="cnc-${TRAVIS_BRANCH}-latest" \
+          --name="cnc-linux-x64-latest.zip" \
+          --file="output/cnc-linux-x64.zip"
+      fi
     fi
   - if [[ "$TRAVIS_NODE_VERSION" == "5" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       scripts/travis-docker-build.sh;

@@ -55,15 +55,18 @@ build_script:
   - node --version
   - npm --version
   - npm run build
-  - npm run electron-builder:win32-x64
 
 deploy_script:
   - ps: |
-      If ($env:nodejs_version -eq '4') {
+      if ($env:nodejs_version -eq '4') {
+        # cnc-win32-x64
+        npm run electron-builder:win32-x64
         pushd output
         7z a -r cnc-win32-x64.zip cnc-win32-x64 > $NULL
         popd
-        bash -c 'scripts/appveyor-release-win32-x64.sh output/cnc-win32-x64.zip'
+        if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc-builds" --tag="cnc-${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-win32-x64-latest.zip" --file="output/cnc-win32-x64.zip"'
+        }
       }
 
 test: off

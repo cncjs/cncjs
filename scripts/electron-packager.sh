@@ -2,13 +2,20 @@
 
 PLATFORM=${PLATFORM:-all}
 ARCH=${ARCH:-all}
-VERSION=0.37.6
+ELECTRON_VERSION=$(./node_modules/.bin/electron --version)
 
-VERSION=${VERSION} scripts/electron-rebuild.sh
+pushd dist/cnc
+echo "Cleaning up dist/cnc/node_modules..."
+rm -rf node_modules
+echo "Installing packages..."
+npm install --production
+popd
+
+scripts/electron-rebuild.sh
 
 ./node_modules/.bin/electron-packager dist/cnc \
     --out=output \
     --overwrite \
     --platform=${PLATFORM} \
     --arch=${ARCH} \
-    --version=${VERSION}
+    --version=${ELECTRON_VERSION:1}
