@@ -30,7 +30,7 @@ export default (options) => {
         _pkg.license = pkg.license;
         _pkg.dependencies = pkg.dependencies;
 
-        fs.writeFileSync(path.resolve(__dirname, '../../src/package.json'), JSON.stringify(_pkg, null, 2), 'utf8');
+        fs.writeFileSync(path.resolve(__dirname, '../../src/package.json'), JSON.stringify(_pkg, null, 2) + '\n', 'utf8');
 
         return gulp.src('src/package.json')
             .pipe(gulp.dest('dist/cnc'));
