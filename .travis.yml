@@ -59,8 +59,6 @@ script:
   - npm run build
 
 after_success:
-  # This makes the script exit with a non-zero error code if any of the commands fails.
-  - set -e
   - if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       # cnc-darwin-x64
       npm run electron-builder:darwin-x64;
