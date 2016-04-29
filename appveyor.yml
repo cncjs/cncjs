@@ -65,7 +65,7 @@ deploy_script:
         7z a -r cnc-win32-ia32.zip cnc-win32-ia32 > $NULL
         popd
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc-builds" --tag="cnc-${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-win32-ia32-latest.zip" --file="output/cnc-win32-ia32.zip"'
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-win32-ia32-latest.zip" --file="output/cnc-win32-ia32.zip"'
         }
       }
   - ps: |
@@ -75,7 +75,7 @@ deploy_script:
         7z a -r cnc-win32-x64.zip cnc-win32-x64 > $NULL
         popd
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc-builds" --tag="cnc-${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-win32-x64-latest.zip" --file="output/cnc-win32-x64.zip"'
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-win32-x64-latest.zip" --file="output/cnc-win32-x64.zip"'
         }
       }
 
