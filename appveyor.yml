@@ -24,6 +24,7 @@ environment:
       secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
 
 platform:
+  - x86
   - x64
 
 matrix:
@@ -58,7 +59,17 @@ build_script:
 
 deploy_script:
   - ps: |
-      if ($env:nodejs_version -eq '4') {
+      if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
+        npm run electron-builder:win32-ia32
+        pushd output
+        7z a -r cnc-win32-ia32.zip cnc-win32-ia32 > $NULL
+        popd
+        if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc-builds" --tag="cnc-${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-win32-ia32-latest.zip" --file="output/cnc-win32-ia32.zip"'
+        }
+      }
+  - ps: |
+      if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
         npm run electron-builder:win32-x64
         pushd output
         7z a -r cnc-win32-x64.zip cnc-win32-x64 > $NULL
@@ -73,8 +84,11 @@ test: off
 # Packaging artifacts
 # https://www.appveyor.com/docs/packaging-artifacts
 artifacts:
+  - path: output/cnc-win32-ia32.zip
+    name: cnc-win32-ia32.zip
+    type: zip
   - path: output/cnc-win32-x64.zip
-    name: cnc-win32-x64
+    name: cnc-win32-x64.zip
     type: zip
 
 # Publishing artifacts to GitHub Releases
@@ -83,9 +97,8 @@ deploy:
   provider: GitHub
   auth_token:
     secure: IZ0tfrzBdm07S3zt3Hli+p1BbHkTJf4SfZMH2VcOU7k89lpOFyAolYf7zID6VKSJ
-  artifact: cnc-win32-x64
+  artifact: /.*\.zip/
   draft: false
   prerelease: false
   on:
-    branch: master                 # release from master branch only
-    appveyor_repo_tag: true        # deploy on tag push only
+    appveyor_repo_tag: true  # deploy on tag push only
