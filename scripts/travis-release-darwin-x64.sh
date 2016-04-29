@@ -6,13 +6,14 @@ if [[ -z "$FILE" ]]; then
     exit 1;
 fi
 
-RELEASE="cnc-${TRAVIS_TAG:-${TRAVIS_BRANCH:-latest}}"
-DESCRIPTION=`git log -1 --date=iso`
+RELEASE="cnc-${TRAVIS_TAG:-${TRAVIS_BRANCH:-local}}"
+USER=cheton
+REPO=cnc-builds
+TAG="${RELEASE}-latest"
 
 scripts/github-release.sh \
-    --user="cheton" \
-    --repo="cnc-builds" \
-    --tag="$RELEASE" \
-    --description="$DESCRIPTION" \
+    --user="$USER" \
+    --repo="$REPO" \
+    --tag="$TAG" \
     --name="${RELEASE}-darwin-x64.zip" \
     --file="$FILE"
