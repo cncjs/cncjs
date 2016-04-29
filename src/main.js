@@ -1,99 +1,131 @@
 /* eslint import/no-unresolved: 0 */
-import { app, BrowserWindow, Menu } from 'electron';
-import open from 'open';
+import { app, BrowserWindow, Menu, shell } from 'electron';
 import cnc from './cnc';
 
+// https://github.com/electron/electron/blob/master/docs/api/menu/
 const template = [
-    {
-        label: 'cnc',
-        submenu: [
-            {
-                label: 'About cnc',
-                selector: 'orderFrontStandardAboutPanel:'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Services',
-                submenu: []
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Hide cnc',
-                accelerator: 'CmdOrCtrl+H',
-                selector: 'hide:'
-            },
-            {
-                label: 'Hide Others',
-                accelerator: 'CmdOrCtrl+Shift+H',
-                selector: 'hideOtherApplications:'
-            },
-            {
-                label: 'Show All',
-                selector: 'unhideAllApplications:'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Quit cnc',
-                accelerator: 'CmdOrCtrl+Q',
-                click: function() {
-                    forceQuit = true;
-                    app.quit();
-                }
-            }
-        ]
-    },
     {
         label: 'View',
         submenu: [
             {
                 label: 'Reload',
                 accelerator: 'CmdOrCtrl+R',
-                click: function() {
-                    BrowserWindow.getFocusedWindow().reloadIgnoringCache();
+                click: (item, focusedWindow) => {
+                    if (focusedWindow) {
+                        focusedWindow.reload();
+                    }
                 }
             },
             {
-                label: 'Toggle DevTools',
-                accelerator: 'Alt+CmdOrCtrl+I',
-                click: function() {
-                    BrowserWindow.getFocusedWindow().toggleDevTools();
+                label: 'Toggle Full Screen',
+                accelerator: (process.platform === 'darwin') ? 'Ctrl+Command+F' : 'F11',
+                click: (item, focusedWindow) => {
+                    if (focusedWindow) {
+                        focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
+                    }
+                }
+            },
+            {
+                label: 'Toggle Developer Tools',
+                accelerator: (process.platform === 'darwin') ? 'Alt+Command+I' : 'Ctrl+Shift+I',
+                click: (item, focusedWindow) => {
+                    if (focusedWindow) {
+                        focusedWindow.toggleDevTools();
+                    }
                 }
             }
         ]
     },
     {
         label: 'Window',
+        role: 'window',
         submenu: [
             {
                 label: 'Minimize',
                 accelerator: 'CmdOrCtrl+M',
-                selector: 'performMiniaturize:'
+                role: 'minimize'
             },
             {
                 label: 'Close',
                 accelerator: 'CmdOrCtrl+W',
-                selector: 'performClose:'
-            },
-            {
-                type: 'separator'
-            },
-            {
-                label: 'Bring All to Front',
-                selector: 'arrangeInFront:'
+                role: 'close'
             }
         ]
     },
     {
         label: 'Help',
-        submenu: []
+        role: 'help',
+        submenu: [
+            {
+                label: 'Learn More',
+                click: () => {
+                    shell.openExternal('https://github.com/cheton/cnc');
+                }
+            }
+        ]
     }
 ];
+
+if (process.platform === 'darwin') {
+    const name = app.getName();
+
+    template.unshift({
+        label: name,
+        submenu: [
+            {
+                label: 'About ' + name,
+                role: 'about'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Services',
+                role: 'services',
+                submenu: []
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Hide ' + name,
+                accelerator: 'Command+H',
+                role: 'hide'
+            },
+            {
+                label: 'Hide Others',
+                accelerator: 'Command+Alt+H',
+                role: 'hideothers'
+            },
+            {
+                label: 'Show All',
+                role: 'unhide'
+            },
+            {
+                type: 'separator'
+            },
+            {
+                label: 'Quit',
+                accelerator: 'Command+Q',
+                click: () => {
+                    forceQuit = true;
+                    app.quit();
+                }
+            }
+        ]
+    });
+
+    // Window menu
+    template[2].submenu.push(
+        {
+            type: 'separator'
+        },
+        {
+            label: 'Bring All to Front',
+            role: 'front'
+        }
+    );
+}
 
 let forceQuit = false;
 
@@ -105,6 +137,7 @@ const createMainWindow = ({ address, port }) => {
         width: 1280,
         height: 768
     });
+    const webContents = win.webContents;
 
     win.loadURL('http://' + address + ':' + port);
 
@@ -116,10 +149,10 @@ const createMainWindow = ({ address, port }) => {
     });
 
     // Open every external link in a new window
-    // https://github.com/electron/electron/blob/master/docs/api/web-contents.md#event-new-window
-    win.webContents.on('new-window', (event, url) => {
+    // https://github.com/electron/electron/blob/master/docs/api/web-contents.md
+    webContents.on('new-window', (event, url) => {
         event.preventDefault();
-        open(url);
+        shell.openExternal(url);
     });
 
     return win;
@@ -154,7 +187,7 @@ app.on('ready', () => {
     const menu = Menu.buildFromTemplate(template);
     Menu.setApplicationMenu(menu);
 
-    cnc((server) => {
+    cnc({ host: '127.0.0.1', port: 0 }, (server) => {
         const address = server.address();
         if (!address) {
             console.error('Unable to start the server:', address);
