@@ -72,7 +72,7 @@ after_success:
           --tag="cnc-${TRAVIS_BRANCH}-latest" \
           --name="cnc-darwin-x64-latest.zip" \
           --file="output/cnc-darwin-x64.zip";
-      fi
+      fi;
     fi
   - if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       # cnc-linux-ia32
@@ -87,7 +87,7 @@ after_success:
           --tag="cnc-${TRAVIS_BRANCH}-latest" \
           --name="cnc-linux-ia32-latest.zip" \
           --file="output/cnc-linux-ia32.zip";
-      fi
+      fi;
       # cnc-linux-x64
       npm run electron-builder:linux-x64;
       pushd output;
@@ -100,7 +100,7 @@ after_success:
           --tag="cnc-${TRAVIS_BRANCH}-latest" \
           --name="cnc-linux-x64-latest.zip" \
           --file="output/cnc-linux-x64.zip";
-      fi
+      fi;
     fi
   - if [[ "$TRAVIS_NODE_VERSION" == "5" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       scripts/travis-docker-build.sh;
