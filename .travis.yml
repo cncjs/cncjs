@@ -60,45 +60,52 @@ script:
 
 after_success:
   - |
+    # osx
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       # cnc-darwin-x64
       npm run electron-builder:darwin-x64;
       pushd output;
       zip -q -r cnc-darwin-x64.zip cnc-darwin-x64/;
       popd;
-      scripts/github-release.sh \
-        --user="cheton" \
-        --repo="cnc-builds" \
-        --tag="cnc-${TRAVIS_BRANCH}-latest" \
-        --name="cnc-darwin-x64-latest.zip" \
-        --file="output/cnc-darwin-x64.zip";
+      if [[ -z "TRAVIS_TAG" ]]; then
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc-builds" \
+          --tag="cnc-${TRAVIS_BRANCH}-latest" \
+          --name="cnc-darwin-x64-latest.zip" \
+          --file="output/cnc-darwin-x64.zip";
+      fi
     fi
-  - |
+    # linux
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       # cnc-linux-ia32
       npm run electron-builder:linux-ia32;
       pushd output;
       zip -q -r cnc-linux-ia32.zip cnc-linux-ia32/;
       popd;
-      scripts/github-release.sh \
-        --user="cheton" \
-        --repo="cnc-builds" \
-        --tag="cnc-${TRAVIS_BRANCH}-latest" \
-        --name="cnc-linux-ia32-latest.zip" \
-        --file="output/cnc-linux-ia32.zip";
+      if [[ -z "TRAVIS_TAG" ]]; then
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc-builds" \
+          --tag="cnc-${TRAVIS_BRANCH}-latest" \
+          --name="cnc-linux-ia32-latest.zip" \
+          --file="output/cnc-linux-ia32.zip";
+      fi
       # cnc-linux-x64
       npm run electron-builder:linux-x64;
       pushd output;
       zip -q -r cnc-linux-x64.zip cnc-linux-x64/;
       popd;
-      scripts/github-release.sh \
-        --user="cheton" \
-        --repo="cnc-builds" \
-        --tag="cnc-${TRAVIS_BRANCH}-latest" \
-        --name="cnc-linux-x64-latest.zip" \
-        --file="output/cnc-linux-x64.zip";
+      if [[ -z "TRAVIS_TAG" ]]; then
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc-builds" \
+          --tag="cnc-${TRAVIS_BRANCH}-latest" \
+          --name="cnc-linux-x64-latest.zip" \
+          --file="output/cnc-linux-x64.zip";
+      fi
     fi
-  - |
+    # docker image
     if [[ "$TRAVIS_NODE_VERSION" == "5" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       scripts/travis-docker-build.sh;
     fi
