@@ -67,10 +67,10 @@ after_success:
       pushd output;
       zip -q -r cnc-darwin-x64.zip cnc-darwin-x64/;
       popd;
-      if [[ -z "TRAVIS_TAG" ]]; then
+      if [[ -z "$TRAVIS_TAG" ]]; then
         scripts/github-release.sh \
           --user="cheton" \
-          --repo="cnc-builds" \
+          --repo="cnc" \
           --tag="ci-${TRAVIS_BRANCH}-latest" \
           --name="cnc-darwin-x64-latest.zip" \
           --file="output/cnc-darwin-x64.zip";
@@ -84,10 +84,10 @@ after_success:
       pushd output;
       zip -q -r cnc-linux-ia32.zip cnc-linux-ia32/;
       popd;
-      if [[ -z "TRAVIS_TAG" ]]; then
+      if [[ -z "$TRAVIS_TAG" ]]; then
         scripts/github-release.sh \
           --user="cheton" \
-          --repo="cnc-builds" \
+          --repo="cnc" \
           --tag="ci-${TRAVIS_BRANCH}-latest" \
           --name="cnc-linux-ia32-latest.zip" \
           --file="output/cnc-linux-ia32.zip";
@@ -97,10 +97,10 @@ after_success:
       pushd output;
       zip -q -r cnc-linux-x64.zip cnc-linux-x64/;
       popd;
-      if [[ -z "TRAVIS_TAG" ]]; then
+      if [[ -z "$TRAVIS_TAG" ]]; then
         scripts/github-release.sh \
           --user="cheton" \
-          --repo="cnc-builds" \
+          --repo="cnc" \
           --tag="ci-${TRAVIS_BRANCH}-latest" \
           --name="cnc-linux-x64-latest.zip" \
           --file="output/cnc-linux-x64.zip";
