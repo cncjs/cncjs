@@ -55,6 +55,12 @@ fi
 
 DESCRIPTION=`git log -1 --date=iso`
 
+echo "github-release info --tag=$TAG"
+github-release info \
+    --user $GITHUB_USER \
+    --repo $GITHUB_REPO \
+    --tag "$TAG"
+
 # Compare commit hash
 GREP_COMMIT_HASH=`github-release -q info -u $GITHUB_USER -r $GITHUB_REPO -t "$TAG" | grep 'commit '`
 PREV_COMMIT_HASH=${GREP_COMMIT_HASH##* }
@@ -62,6 +68,7 @@ COMMIT_HASH=`git log -1 --format=%H`
 
 if [[ ! -z "$PREV_COMMIT_HASH" && "$PREV_COMMIT_HASH" != "$COMMIT_HASH" ]]; then
     # Remove previous release tag
+    echo "github-release delete --tag=$TAG"
     github-release -q delete \
         --user $USER \
         --repo $REPO \
@@ -69,6 +76,7 @@ if [[ ! -z "$PREV_COMMIT_HASH" && "$PREV_COMMIT_HASH" != "$COMMIT_HASH" ]]; then
         > /dev/null 2>&1
 fi
 
+echo "github-release release --tag=$TAG"
 github-release -q release \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
@@ -78,6 +86,7 @@ github-release -q release \
     --pre-release \
     > /dev/null 2>&1
 
+echo "github-release edit --tag=$TAG"
 github-release -q edit \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
@@ -86,6 +95,7 @@ github-release -q edit \
     --description "${DESCRIPTION:-$TAG}" \
     > /dev/null 2>&1
 
+echo "github-release upload --tag=$TAG --file=$FILE"
 github-release -q upload \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
@@ -95,6 +105,7 @@ github-release -q upload \
     --replace \
     > /dev/null 2>&1
 
+echo "github-release info --tag=$TAG"
 github-release info \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
