@@ -70,9 +70,11 @@ after_success:
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="ci-${TRAVIS_BRANCH}-latest" \
-          --name="cnc-darwin-x64-latest.zip" \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="cnc-${TRAVIS_BRANCH}-latest-darwin-x64.zip" \
           --file="output/cnc-darwin-x64.zip";
+      else
+        mv "output/cnc-darwin-x64.zip" "output/cnc-${TRAVIS_TAG}-darwin-x64.zip";
       fi
     fi
   - |
@@ -86,9 +88,11 @@ after_success:
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="ci-${TRAVIS_BRANCH}-latest" \
-          --name="cnc-linux-ia32-latest.zip" \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="cnc-${TRAVIS_BRANCH}-latest-linux-ia32.zip" \
           --file="output/cnc-linux-ia32.zip";
+      else
+        mv "output/cnc-linux-ia32.zip" "output/cnc-${TRAVIS_TAG}-linux-ia32.zip";
       fi
     fi
   - |
@@ -102,9 +106,11 @@ after_success:
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="ci-${TRAVIS_BRANCH}-latest" \
-          --name="cnc-linux-x64-latest.zip" \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="cnc-${TRAVIS_BRANCH}-latest-linux-x64.zip" \
           --file="output/cnc-linux-x64.zip";
+      else
+        mv "output/cnc-linux-x64.zip" "output/cnc-${TRAVIS_TAG}-linux-x64.zip";
       fi
     fi
   - |
