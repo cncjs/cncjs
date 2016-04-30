@@ -56,7 +56,7 @@ fi
 DESCRIPTION=`git log -1 --date=iso`
 
 echo "github-release info --tag=$TAG"
-github-release info \
+github-release -q info \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
     --tag "$TAG"
@@ -106,7 +106,7 @@ github-release -q upload \
     > /dev/null 2>&1
 
 echo "github-release info --tag=$TAG"
-github-release info \
+github-release -q info \
     --user $GITHUB_USER \
     --repo $GITHUB_REPO \
     --tag "$TAG"
