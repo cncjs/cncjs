@@ -114,7 +114,7 @@ after_success:
     fi
 
 before_deploy:
-  - export DEPLOY_FILE=$(ls output/cnc-*.zip)
+  - export DEPLOY_FILE=$(cd output; ls *.zip)
   - echo "Deploying $DEPLOY_FILE to GitHub releases"
 deploy:
   provider: releases
