@@ -29,7 +29,7 @@ platform:
 
 matrix:
   # Enable fast fail strategy 
-  fast_finish: true
+  #fast_finish: true
 
 install:
   - ps: |
@@ -66,6 +66,8 @@ deploy_script:
         popd
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-win32-ia32-latest.zip" --file="output/cnc-win32-ia32.zip"'
+        } else {
+            rename "output/cnc-win32-ia32.zip" "output/cnc-%APPVEYOR_REPO_TAG%-win32-ia32.zip"
         }
       }
   - ps: |
@@ -76,6 +78,8 @@ deploy_script:
         popd
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-win32-x64-latest.zip" --file="output/cnc-win32-x64.zip"'
+        } else {
+            rename "output/cnc-win32-x64.zip" "output/cnc-%APPVEYOR_REPO_TAG%-win32-x64.zip"
         }
       }
 
@@ -84,11 +88,9 @@ test: off
 # Packaging artifacts
 # https://www.appveyor.com/docs/packaging-artifacts
 artifacts:
-  - path: output/cnc-win32-ia32.zip
-    name: cnc-win32-ia32.zip
+  - path: 'output/cnc-*-win32-ia32.zip'
     type: zip
-  - path: output/cnc-win32-x64.zip
-    name: cnc-win32-x64.zip
+  - path: 'output/cnc-*-win32-x64.zip'
     type: zip
 
 # Publishing artifacts to GitHub Releases
