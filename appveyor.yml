@@ -27,10 +27,6 @@ platform:
   - x86
   - x64
 
-matrix:
-  # Enable fast fail strategy 
-  fast_finish: true
-
 install:
   - ps: |
       Write-Host "Build directory: " -NoNewLine

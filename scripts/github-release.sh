@@ -55,12 +55,6 @@ fi
 
 DESCRIPTION=`git log -1 --date=iso`
 
-echo "github-release info --tag=$TAG"
-github-release -q info \
-    --user $GITHUB_USER \
-    --repo $GITHUB_REPO \
-    --tag "$TAG"
-
 # Compare commit hash
 GREP_COMMIT_HASH=`github-release -q info -u $GITHUB_USER -r $GITHUB_REPO -t "$TAG" | grep 'commit '`
 PREV_COMMIT_HASH=${GREP_COMMIT_HASH##* }
@@ -74,6 +68,7 @@ if [[ ! -z "$PREV_COMMIT_HASH" && "$PREV_COMMIT_HASH" != "$COMMIT_HASH" ]]; then
         --repo $REPO \
         --tag $TAG \
         > /dev/null 2>&1
+    ([ $? == 0 ] && echo "ok") || (echo "error")
 fi
 
 echo "github-release release --tag=$TAG"
@@ -85,6 +80,7 @@ github-release -q release \
     --description "${DESCRIPTION:-$TAG}" \
     --pre-release \
     > /dev/null 2>&1
+([ $? == 0 ] && echo "ok") || (echo "error")
 
 echo "github-release edit --tag=$TAG"
 github-release -q edit \
@@ -94,6 +90,7 @@ github-release -q edit \
     --name $TAG \
     --description "${DESCRIPTION:-$TAG}" \
     > /dev/null 2>&1
+([ $? == 0 ] && echo "ok") || (echo "error")
 
 echo "github-release upload --tag=$TAG --file=$FILE"
 github-release -q upload \
@@ -104,9 +101,4 @@ github-release -q upload \
     --file "$FILE" \
     --replace \
     > /dev/null 2>&1
-
-echo "github-release info --tag=$TAG"
-github-release -q info \
-    --user $GITHUB_USER \
-    --repo $GITHUB_REPO \
-    --tag "$TAG"
+([ $? == 0 ] && echo "ok") || (echo "error")
