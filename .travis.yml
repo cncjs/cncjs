@@ -121,6 +121,7 @@ after_success:
 
 before_deploy:
   - echo "Deploying to GitHub releases"
+  - ls -al output/*.zip
 deploy:
   provider: releases
   api_key:
