@@ -125,6 +125,7 @@ deploy:
   provider: releases
   api_key:
     secure: "x9nz3bvNesYVCesjj36yFYlYIAVykchBR4Ffzzysd4Tk1v+0eh0mRc9jmTzfF7xYsAjpKRCMGCjWG39aPwVG7rbs0EZDrXVxT7KObZ31HS9A1VWkOs/LKAlDrwjylx4umNswmVWAW+pVr9N431Be21+mZg4Xu8z6iDnLgHWxhK9n2IewKanPVV3pbB6hNVKpshnbYMraqwnJQE4gOVhBc2EBHUAUIhtVN1ntmRL76+trlpPFTzbhBVywf0TRvW4J67wYQO0was/qRww+wKmUvymD+7vk8P/23+uVi9pDpUix2TMZfyCPUG1PpQ0cZfIaaUg4POQD3hqFCJGeAgxZzIPEHOVd+TLF+B2eZjSMlTDyrVI2+JzVwx9SIPBkLgsRy1xNGFfMHXidJGOnkG9efv2artjkNblx3SGkx9EgAd1fsfM/epvggaJvW3rsU0AlRN9IKOeHToYVkWGJIJNjFGt1AL7a98SvtQ56xsXocUeLjLRnh14VFxZ22IeBRClOpyMGVLuTBy+m4hJMSB8JbjdBkJW45Ou6Pdswt5cW6WWXM1sepmxjttStp0FyiOr0qCkQfJsEEg1fYF0Rj7zNfUTFlRCX9+JWhQ/Lb61kEsBjqKc7/lPFOiKB/iLkQo+gQNb5ToaQMZIK0vmYf4gZZ6tkFkicbp8JjZu6mlNKdSE="
+  file_glob: true
   file:
     - 'output/*.zip'
   overwrite: true
