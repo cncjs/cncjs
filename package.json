@@ -173,7 +173,7 @@
     "gulp": "~3.9.0",
     "gulp-babel": "~6.1.2",
     "gulp-util": "~3.0.3",
-    "i18next-scanner": "~1.1.0",
+    "i18next-scanner": "~1.2.0",
     "json-loader": "~0.5.4",
     "nib": "~1.1.0",
     "require-dir": "~0.3.0",

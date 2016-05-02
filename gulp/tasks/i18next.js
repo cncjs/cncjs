@@ -87,11 +87,11 @@ function customTransform(file, enc, done) {
     gutil.log('Scanning \'' + file.relative + '\'...');
 
     { // Using i18next-text
-        parser.parseFuncFromString(content, { list: ['i18n._'] }, (key) => {
+        parser.parseFuncFromString(content, { list: ['i18n._'] }, (key, options) => {
             const defaultValue = key;
             key = hash(defaultValue);
-
-            parser.set(key, defaultValue);
+            options.defaultValue = defaultValue;
+            parser.set(key, options);
         });
     }
 
