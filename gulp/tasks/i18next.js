@@ -34,6 +34,8 @@ const appConfig = {
         },
         nsSeparator: ':', // namespace separator
         keySeparator: '.', // key separator
+        pluralSeparator: '_', // plural separator
+        contextSeparator: '_', // context separator
         interpolation: {
             prefix: '{{',
             suffix: '}}'
@@ -84,22 +86,21 @@ function customTransform(file, enc, done) {
         ['Key', 'Value']
     ];
 
-    gutil.log('Scanning \'' + file.relative + '\'...');
-
     { // Using i18next-text
         parser.parseFuncFromString(content, { list: ['i18n._'] }, (key, options) => {
             const defaultValue = key;
             key = hash(defaultValue);
             options.defaultValue = defaultValue;
             parser.set(key, options);
+            tableData.push([key, defaultValue]);
         });
     }
 
     if (_.size(tableData) > 1) {
-        let text = table(tableData, {
-            'hsep': ' | '
-        });
-        gutil.log('result of %s:\n%s', JSON.stringify(file.relative), text);
+        const text = table(tableData, { 'hsep': ' | ' });
+        gutil.log('i18next-scanner:', file.relative + '\n' + text);
+    } else {
+        gutil.log('i18next-scanner:', file.relative);
     }
 
     done();
