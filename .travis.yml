@@ -68,18 +68,26 @@ after_success:
     # cncjs-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       npm run electron-builder:darwin-x64;
-      pushd output;
-      zip -q -r cnc-darwin-x64.zip cnc-darwin-x64/cnc.app/;
-      popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
+        DMG_FILE=`ls output/cnc-darwin-x64/cnc-*.dmg`;
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="cnc-latest-darwin-x64.zip" \
-          --file="output/cnc-darwin-x64.zip";
+          --name="cnc-latest-osx-x64.dmg" \
+          --file="$DMG_FILE";
+        ZIP_FILE=`ls output/cnc-darwin-x64/cnc-*.zip`;
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc" \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="cnc-latest-osx-x64.zip" \
+          --file="$ZIP_FILE";
       else
-        mv "output/cnc-darwin-x64.zip" "output/cnc-${TRAVIS_TAG}-darwin-x64.zip";
+        DMG_FILE=`ls output/cnc-darwin-x64/cnc-*.dmg`;
+        mv "$DMG_FILE" "output/cnc-${TRAVIS_TAG}-osx-x64.dmg";
+        ZIP_FILE=`ls output/cnc-darwin-x64/cnc-*.zip`;
+        mv "$ZIP_FILE" "output/cnc-${TRAVIS_TAG}-osx-x64.zip";
       fi
     fi
   - |
@@ -126,7 +134,7 @@ after_success:
 
 before_deploy:
   - echo "Deploying to GitHub releases"
-  - ls -al output/*.zip
+  - ls -al output/
 deploy:
   provider: releases
   api_key:
@@ -134,6 +142,7 @@ deploy:
   file_glob: true
   file:
     - 'output/*.zip'
+    - 'output/*.dmg'
   overwrite: true
   skip_cleanup: true
   on:
