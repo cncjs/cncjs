@@ -19,8 +19,8 @@
   "preferGlobal": true,
   "scripts": {
     "prepublish": "npm run clean && npm run lint && npm run build",
-    "prebuild": "gulp pkg-sync; bash -c 'scripts/prebuild.sh'",
-    "prebuild-latest": "npm run prebuild; cd dist/cnc; npm version ${npm_package_version}-latest",
+    "prebuild": "bash -c 'scripts/prebuild.sh'",
+    "prebuild-latest": "bash -c 'scripts/prebuild-latest.sh'",
     "prebuild-dev": "npm run prebuild",
     "prebuild-prod": "npm run prebuild",
     "build": "gulp prod",
