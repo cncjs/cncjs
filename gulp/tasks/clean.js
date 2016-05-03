@@ -2,10 +2,11 @@ import gulp from 'gulp';
 import del from 'del';
 
 const list = [
+    'dist/cnc/app',
+    'dist/cnc/web',
     'src/web/**/*.css',
     'src/web/**/*.css.map',
     'src/web/**/*.js.map',
-    'dist/**/*',
     // exclusion
     '!src/web/vendor/**'
 ];
