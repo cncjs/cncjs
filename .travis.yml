@@ -56,7 +56,12 @@ before_install:
   - npm install -g npm
 
 script:
-  - npm run build
+  - |
+    if [[ -z "$TRAVIS_TAG" ]]; then
+      npm run build-latest
+    else
+      npm run build
+    fi
 
 after_success:
   - |
@@ -64,14 +69,14 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       npm run electron-builder:darwin-x64;
       pushd output;
-      zip -q -r cnc-darwin-x64.zip cnc-darwin-x64/;
+      zip -q -r cnc-darwin-x64.zip cnc-darwin-x64/cnc.app/;
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="cnc-${TRAVIS_BRANCH}-latest-darwin-x64.zip" \
+          --name="cnc-latest-darwin-x64.zip" \
           --file="output/cnc-darwin-x64.zip";
       else
         mv "output/cnc-darwin-x64.zip" "output/cnc-${TRAVIS_TAG}-darwin-x64.zip";
@@ -89,7 +94,7 @@ after_success:
           --user="cheton" \
           --repo="cnc" \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="cnc-${TRAVIS_BRANCH}-latest-linux-ia32.zip" \
+          --name="cnc-latest-linux-ia32.zip" \
           --file="output/cnc-linux-ia32.zip";
       else
         mv "output/cnc-linux-ia32.zip" "output/cnc-${TRAVIS_TAG}-linux-ia32.zip";
@@ -107,7 +112,7 @@ after_success:
           --user="cheton" \
           --repo="cnc" \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="cnc-${TRAVIS_BRANCH}-latest-linux-x64.zip" \
+          --name="cnc-latest-linux-x64.zip" \
           --file="output/cnc-linux-x64.zip";
       else
         mv "output/cnc-linux-x64.zip" "output/cnc-${TRAVIS_TAG}-linux-x64.zip";
