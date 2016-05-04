@@ -67,7 +67,7 @@ after_success:
   - mkdir -p releases
   - PACKAGE_NAME=`scripts/package-name.sh src/package.json`
   - PACKAGE_VERSION=`scripts/package-version.sh src/package.json`
-  - RELEASE=${PACKAGE_NAME}-${PACKAGE_VRSION}
+  - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
   - |
     # cncjs-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
