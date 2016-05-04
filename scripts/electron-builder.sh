@@ -13,5 +13,6 @@ popd
 scripts/electron-rebuild.sh
 
 ./node_modules/.bin/build \
+    --dist \
     --platform=${PLATFORM} \
     --arch=${ARCH}
