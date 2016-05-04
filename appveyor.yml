@@ -57,7 +57,7 @@ build_script:
       }
       else {
         npm run build
-      fi
+      }
 
 deploy_script:
   - ps: mkdir releases
