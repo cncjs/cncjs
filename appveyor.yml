@@ -47,17 +47,22 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install -g npm
   - npm install
-
-build_script:
   - node --version
   - npm --version
-  - npm run build
+
+build_script:
+  - ps: |
+    if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
+      npm run build-latest
+    else
+      npm run build
+    fi
 
 deploy_script:
   - ps: mkdir releases
   - ps: $PACKAGE_NAME = bash -c 'scripts/package-name.sh src/package.json'
   - ps: $PACKAGE_VERSION = bash -c 'scripts/package-version.sh src/package.json'
-  - ps: $RELEASE = $PACKAGE_NAME + '_' + $PACKAGE_VERSION
+  - ps: $RELEASE = "$PACKAGE_NAME-$PACKAGE_VERSION"
   - ps: echo $RELEASE
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
