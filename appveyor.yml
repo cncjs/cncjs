@@ -55,9 +55,9 @@ build_script:
 
 deploy_script:
   - bash -c 'mkdir -p releases'
-  - bash -c 'export PACKAGE_NAME=`scripts/package-name.sh src/package.json`'
-  - bash -c 'export PACKAGE_VERSION=`scripts/package-version.sh src/package.json`'
-  - bash -c 'export RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}'
+  - bash -c 'set PACKAGE_NAME=`scripts/package-name.sh src/package.json`'
+  - bash -c 'set PACKAGE_VERSION=`scripts/package-version.sh src/package.json`'
+  - bash -c 'set RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}'
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
         npm run electron-builder:win32-ia32
