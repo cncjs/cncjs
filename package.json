@@ -54,7 +54,7 @@
     "app-category-type": "public.app-category.productivity",
     "asar": false,
     "osx": {
-      "title": "CNC",
+      "title": "cnc",
       "icon": "build/icon.icns",
       "background": "build/background.png",
       "icon-size": 80,
