@@ -52,12 +52,12 @@ install:
 
 build_script:
   - ps: |
-    if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-      npm run build-latest
-    }
-    else {
-      npm run build
-    fi
+      if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
+        npm run build-latest
+      }
+      else {
+        npm run build
+      fi
 
 deploy_script:
   - ps: mkdir releases
