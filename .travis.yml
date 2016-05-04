@@ -72,6 +72,7 @@ after_success:
     # cncjs-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       npm run electron-builder:darwin-x64;
+      ls -al output output/*;
       cp -af "output/cnc-darwin-x64/${RELEASE}.dmg" "releases/${RELEASE}-osx-x64.dmg";
       cp -af "output/cnc-darwin-x64/${RELEASE}-mac.zip" "releases/${RELEASE}-osx-x64.zip";
       if [[ -z "$TRAVIS_TAG" ]]; then
@@ -93,6 +94,7 @@ after_success:
     # cnc-linux-ia32
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run electron-builder:linux-ia32;
+      ls -al output output/*;
       cp -af "output/${RELEASE}-i386.deb" "releases/${RELEASE}-linux-i386.deb";
       pushd releases;
       ln -sf ../output/cnc-linux-ia32 "${RELEASE}-linux-ia32";
@@ -118,6 +120,7 @@ after_success:
     # cnc-linux-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run electron-builder:linux-x64;
+      ls -al output output/*;
       cp -af "output/${RELEASE}-amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
       pushd releases;
       ln -sf ../output/cnc-linux-x64 "${RELEASE}-linux-x64";

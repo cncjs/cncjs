@@ -61,6 +61,7 @@ deploy_script:
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
         npm run electron-builder:win32-ia32
+        bash -c 'ls -al output output/*'
         bash -c 'cp -af "output/win/${PACKAGE_NAME}Setup-${PACKAGE_VERSION}-ia32.exe" "releases/${RELEASE}-win32-ia32.exe"'
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-ia32.exe" --file="releases/${RELEASE}-win32-ia32.exe"'
@@ -69,6 +70,7 @@ deploy_script:
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
         npm run electron-builder:win32-x64
+        bash -c 'ls -al output output/*'
         bash -c 'cp -af "output/win-x64/${PACKAGE_NAME}Setup-${PACKAGE_VERSION}.exe" "releases/${RELEASE}-win32-x64.exe"'
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-x64.exe" --file="releases/${RELEASE}-win32-x64.exe"'
