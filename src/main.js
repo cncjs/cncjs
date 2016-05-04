@@ -59,7 +59,7 @@ const template = [
             {
                 label: 'Learn More',
                 click: () => {
-                    shell.openExternal('https://github.com/cheton/cnc');
+                    shell.openExternal('https://github.com/cheton/cnc/wiki');
                 }
             }
         ]
