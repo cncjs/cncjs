@@ -54,28 +54,24 @@ build_script:
   - npm run build
 
 deploy_script:
+  - ps: bash -c 'mkdir -p releases'
+  - ps: bash -c 'PACKAGE_NAME=`scripts/package-name.sh src/package.json`'
+  - ps: bash -c 'PACKAGE_VERSION=`scripts/package-version.sh src/package.json`'
+  - ps: bash -c 'RELEASE=${PACKAGE_NAME}-${PACKAGE_VRSION}'
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
         npm run electron-builder:win32-ia32
-        pushd output
-        7z a -r cnc-win32-ia32.zip cnc-win32-ia32 > $NULL
-        popd
+        bash -c 'cp -af "output/win/${PACKAGE_NAME}Setup-${PACKAGE_VERSION}-ia32.exe" "releases/${RELEASE}-win32-ia32.exe"'
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-latest-win32-ia32.zip" --file="output/cnc-win32-ia32.zip"'
-        } else {
-            bash -c 'mv -f "output/cnc-win32-ia32.zip" "output/cnc-${APPVEYOR_REPO_TAG}-win32-ia32.zip"'
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-ia32.exe" --file="releases/${RELEASE}-win32-ia32.exe"'
         }
       }
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
         npm run electron-builder:win32-x64
-        pushd output
-        7z a -r cnc-win32-x64.zip cnc-win32-x64 > $NULL
-        popd
+        bash -c 'cp -af "output/win-x64/${PACKAGE_NAME}Setup-${PACKAGE_VERSION}.exe" "releases/${RELEASE}-win32-x64.exe"'
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="cnc-latest-win32-x64.zip" --file="output/cnc-win32-x64.zip"'
-        } else {
-            bash -c 'mv -f "output/cnc-win32-x64.zip" "output/cnc-${APPVEYOR_REPO_TAG}-win32-x64.zip"'
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-x64.exe" --file="releases/${RELEASE}-win32-x64.exe"'
         }
       }
 
@@ -84,8 +80,7 @@ test: off
 # Packaging artifacts
 # https://www.appveyor.com/docs/packaging-artifacts
 artifacts:
-  - path: 'output\cnc-*.zip'
-    type: zip
+  - path: 'releases\*.exe'
 
 # Publishing artifacts to GitHub Releases
 # https://www.appveyor.com/docs/deployment/github
@@ -93,7 +88,7 @@ deploy:
   provider: GitHub
   auth_token:
     secure: IZ0tfrzBdm07S3zt3Hli+p1BbHkTJf4SfZMH2VcOU7k89lpOFyAolYf7zID6VKSJ
-  artifact: /.*\.zip/
+  artifact: /.*\.exe/
   draft: false
   prerelease: false
   on:

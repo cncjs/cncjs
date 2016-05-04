@@ -64,66 +64,79 @@ script:
     fi
 
 after_success:
+  - mkdir -p releases
+  - PACKAGE_NAME=`scripts/package-name.sh src/package.json`
+  - PACKAGE_VERSION=`scripts/package-version.sh src/package.json`
+  - RELEASE=${PACKAGE_NAME}-${PACKAGE_VRSION}
   - |
     # cncjs-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       npm run electron-builder:darwin-x64;
+      cp -af "output/cnc-darwin-x64/${RELEASE}.dmg" "releases/${RELEASE}-osx-x64.dmg";
+      cp -af "output/cnc-darwin-x64/${RELEASE}-mac.zip" "releases/${RELEASE}-osx-x64.zip";
       if [[ -z "$TRAVIS_TAG" ]]; then
-        DMG_FILE=`ls output/cnc-darwin-x64/cnc-*.dmg`;
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="cnc-latest-osx-x64.dmg" \
-          --file="$DMG_FILE";
-        ZIP_FILE=`ls output/cnc-darwin-x64/cnc-*.zip`;
+          --name="${RELEASE}-osx-x64.dmg" \
+          --file="releases/${RELEASE}-osx-x64.dmg";
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="cnc-latest-osx-x64.zip" \
-          --file="$ZIP_FILE";
-      else
-        DMG_FILE=`ls output/cnc-darwin-x64/cnc-*.dmg`;
-        mv "$DMG_FILE" "output/cnc-${TRAVIS_TAG}-osx-x64.dmg";
-        ZIP_FILE=`ls output/cnc-darwin-x64/cnc-*.zip`;
-        mv "$ZIP_FILE" "output/cnc-${TRAVIS_TAG}-osx-x64.zip";
+          --name="${RELEASE}-osx-x64.zip" \
+          --file="releases/${RELEASE}-osx-x64.zip";
       fi
     fi
   - |
     # cnc-linux-ia32
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run electron-builder:linux-ia32;
-      pushd output;
-      zip -q -r cnc-linux-ia32.zip cnc-linux-ia32/;
+      cp -af "output/${RELEASE}-i386.deb" "releases/${RELEASE}-linux-i386.deb";
+      pushd releases;
+      ln -sf ../output/cnc-linux-ia32 "${RELEASE}-linux-ia32";
+      tar zcfL "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
+      rm -f "${RELEASE}-linux-ia32";
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="cnc-latest-linux-ia32.zip" \
-          --file="output/cnc-linux-ia32.zip";
-      else
-        mv "output/cnc-linux-ia32.zip" "output/cnc-${TRAVIS_TAG}-linux-ia32.zip";
+          --name="${RELEASE}-linux-i386.deb" \
+          --file="releases/${RELEASE}-linux-i386.deb";
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc" \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="${RELEASE}-linux-ia32.tar.gz" \
+          --file="releases/${RELEASE}-linux-ia32.tar.gz";
       fi
     fi
   - |
     # cnc-linux-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run electron-builder:linux-x64;
-      pushd output;
-      zip -q -r cnc-linux-x64.zip cnc-linux-x64/;
+      cp -af "output/${RELEASE}-amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
+      pushd releases;
+      ln -sf ../output/cnc-linux-x64 "${RELEASE}-linux-x64";
+      tar zcfL "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64";
+      rm -f "${RELEASE}-linux-x64";
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
           --tag="${TRAVIS_BRANCH}-latest" \
-          --name="cnc-latest-linux-x64.zip" \
-          --file="output/cnc-linux-x64.zip";
-      else
-        mv "output/cnc-linux-x64.zip" "output/cnc-${TRAVIS_TAG}-linux-x64.zip";
+          --name="${RELEASE}-linux-amd64.deb" \
+          --file="releases/${RELEASE}-linux-amd64.deb";
+        scripts/github-release.sh \
+          --user="cheton" \
+          --repo="cnc" \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="${RELEASE}-linux-x64.tar.gz" \
+          --file="releases/${RELEASE}-linux-x64.tar.gz";
       fi
     fi
   - |
@@ -134,15 +147,14 @@ after_success:
 
 before_deploy:
   - echo "Deploying to GitHub releases"
-  - ls -al output/
+  - ls -al releases/
 deploy:
   provider: releases
   api_key:
     secure: "x9nz3bvNesYVCesjj36yFYlYIAVykchBR4Ffzzysd4Tk1v+0eh0mRc9jmTzfF7xYsAjpKRCMGCjWG39aPwVG7rbs0EZDrXVxT7KObZ31HS9A1VWkOs/LKAlDrwjylx4umNswmVWAW+pVr9N431Be21+mZg4Xu8z6iDnLgHWxhK9n2IewKanPVV3pbB6hNVKpshnbYMraqwnJQE4gOVhBc2EBHUAUIhtVN1ntmRL76+trlpPFTzbhBVywf0TRvW4J67wYQO0was/qRww+wKmUvymD+7vk8P/23+uVi9pDpUix2TMZfyCPUG1PpQ0cZfIaaUg4POQD3hqFCJGeAgxZzIPEHOVd+TLF+B2eZjSMlTDyrVI2+JzVwx9SIPBkLgsRy1xNGFfMHXidJGOnkG9efv2artjkNblx3SGkx9EgAd1fsfM/epvggaJvW3rsU0AlRN9IKOeHToYVkWGJIJNjFGt1AL7a98SvtQ56xsXocUeLjLRnh14VFxZ22IeBRClOpyMGVLuTBy+m4hJMSB8JbjdBkJW45Ou6Pdswt5cW6WWXM1sepmxjttStp0FyiOr0qCkQfJsEEg1fYF0Rj7zNfUTFlRCX9+JWhQ/Lb61kEsBjqKc7/lPFOiKB/iLkQo+gQNb5ToaQMZIK0vmYf4gZZ6tkFkicbp8JjZu6mlNKdSE="
   file_glob: true
   file:
-    - 'output/*.zip'
-    - 'output/*.dmg'
+    - 'releases/*.*'
   overwrite: true
   skip_cleanup: true
   on:
