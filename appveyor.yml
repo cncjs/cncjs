@@ -54,11 +54,11 @@ build_script:
   - npm run build
 
 deploy_script:
-  - mkdir releases
+  - ps: mkdir releases
   - ps: $PACKAGE_NAME = bash -c 'scripts/package-name.sh src/package.json'
   - ps: $PACKAGE_VERSION = bash -c 'scripts/package-version.sh src/package.json'
   - ps: $RELEASE = $PACKAGE_NAME + '_' + $PACKAGE_VERSION
-  - echo $RELEASE
+  - ps: echo $RELEASE
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
         npm run electron-builder:win32-ia32
