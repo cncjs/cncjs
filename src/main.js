@@ -135,11 +135,14 @@ let mainWindow;
 const createMainWindow = ({ address, port }) => {
     const win = new BrowserWindow({
         width: 1280,
-        height: 768
+        height: 768,
+        show: false
     });
     const webContents = win.webContents;
 
-    win.loadURL('http://' + address + ':' + port);
+    win.on('closed', () => {
+        mainWindow = null;
+    });
 
     win.on('close', (e) => {
         if (!forceQuit) {
@@ -154,6 +157,9 @@ const createMainWindow = ({ address, port }) => {
         event.preventDefault();
         shell.openExternal(url);
     });
+
+    win.loadURL('http://' + address + ':' + port);
+    win.show();
 
     return win;
 };
