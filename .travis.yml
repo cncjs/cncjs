@@ -96,7 +96,7 @@ after_success:
       cp -af "output/${RELEASE}-i386.deb" "releases/${RELEASE}-linux-i386.deb";
       pushd releases;
       ln -sf ../output/cnc-linux-ia32 "${RELEASE}-linux-ia32";
-      tar zcfL "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
+      tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
       rm -f "${RELEASE}-linux-ia32";
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
@@ -121,7 +121,7 @@ after_success:
       cp -af "output/${RELEASE}-amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
       pushd releases;
       ln -sf ../output/cnc-linux-x64 "${RELEASE}-linux-x64";
-      tar zcfL "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64";
+      tar zcfh "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64";
       rm -f "${RELEASE}-linux-x64";
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
