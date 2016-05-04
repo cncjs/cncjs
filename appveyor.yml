@@ -54,17 +54,20 @@ build_script:
   - npm run build
 
 deploy_script:
-  - bash -c 'mkdir -p releases'
-  - bash -c 'set PACKAGE_NAME=`scripts/package-name.sh src/package.json`'
-  - bash -c 'set PACKAGE_VERSION=`scripts/package-version.sh src/package.json`'
-  - bash -c 'set RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}'
+  - mkdir releases
+  - ps: $PACKAGE_NAME = bash -c 'scripts/package-name.sh src/package.json'
+  - ps: $PACKAGE_VERSION = bash -c 'scripts/package-version.sh src/package.json'
+  - ps: $RELEASE = $PACKAGE_NAME + '_' + $PACKAGE_VERSION
+  - echo $RELEASE
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
         npm run electron-builder:win32-ia32
         bash -c 'ls -al output output/*'
         bash -c 'cp -af "output/win/${PACKAGE_NAME}Setup-${PACKAGE_VERSION}-ia32.exe" "releases/${RELEASE}-win32-ia32.exe"'
+        bash -c 'cp -af "output/win/Setup.msi" "releases/${RELEASE}-win32-ia32.msi"'
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-ia32.exe" --file="releases/${RELEASE}-win32-ia32.exe"'
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-ia32.msi" --file="releases/${RELEASE}-win32-ia32.msi"'
         }
       }
   - ps: |
@@ -72,8 +75,10 @@ deploy_script:
         npm run electron-builder:win32-x64
         bash -c 'ls -al output output/*'
         bash -c 'cp -af "output/win-x64/${PACKAGE_NAME}Setup-${PACKAGE_VERSION}.exe" "releases/${RELEASE}-win32-x64.exe"'
+        bash -c 'cp -af "output/win-x64/Setup.msi" "releases/${RELEASE}-win32-x64.msi"'
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-x64.exe" --file="releases/${RELEASE}-win32-x64.exe"'
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-x64.msi" --file="releases/${RELEASE}-win32-x64.msi"'
         }
       }
 
