@@ -50,7 +50,7 @@
     "coveralls": "node babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
   "build": {
-    "app-bundle-id": "cnc",
+    "app-bundle-id": "com.github.cnc",
     "app-category-type": "public.app-category.productivity",
     "asar": false,
     "osx": {
