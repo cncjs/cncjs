@@ -8,8 +8,10 @@
 <title>{{title}} v{{version}}</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
-<link rel="shortcut icon" href="{{webroot}}favicon.ico">
+<!-- For old IEs -->
+<link rel="shortcut icon" href="{{webroot}}favicon.ico" />
+<!-- For new browsers multisize ico  -->
+<link rel="icon" type="image/x-icon" sizes="16x16 32x32" href="{{webroot}}favicon.ico">
 <script src="/socket.io/socket.io.js"></script>
 </head>
 <body class="{{dir}}">
