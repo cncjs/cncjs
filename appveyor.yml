@@ -54,7 +54,8 @@ build_script:
   - ps: |
     if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
       npm run build-latest
-    else
+    }
+    else {
       npm run build
     fi
 
