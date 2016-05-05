@@ -2,6 +2,12 @@
 import { app, BrowserWindow, Menu, shell } from 'electron';
 import cnc from './cnc';
 
+// Handling Squirrel Events
+// https://github.com/electron/windows-installer#handling-squirrel-events
+if (require('electron-squirrel-startup')) {
+    return;
+}
+
 // https://github.com/electron/electron/blob/master/docs/api/menu/
 const template = [
     {
