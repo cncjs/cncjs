@@ -70,11 +70,9 @@ deploy_script:
         npm run electron-builder:win32-ia32
         Get-ChildItem output\win
         Copy-Item "output\win\${PACKAGE_NAME}Setup-${PACKAGE_VERSION}-ia32.exe" "releases\${env:RELEASE}-win32-ia32.exe"
-        Copy-Item "output\win\Setup.msi" "releases\${env:RELEASE}-win32-ia32.msi"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-ia32.exe" --file="releases/${RELEASE}-win32-ia32.exe"'
-            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-ia32.msi" --file="releases/${RELEASE}-win32-ia32.msi"'
         }
       }
   - ps: |
@@ -82,11 +80,9 @@ deploy_script:
         npm run electron-builder:win32-x64
         Get-ChildItem output\win-x64
         Copy-Item "output\win-x64\${PACKAGE_NAME}Setup-${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win32-x64.exe"
-        Copy-Item "output\win-x64\Setup.msi" "releases\${env:RELEASE}-win32-x64.msi"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-x64.exe" --file="releases/${RELEASE}-win32-x64.exe"'
-            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-x64.msi" --file="releases/${RELEASE}-win32-x64.msi"'
         }
       }
 
