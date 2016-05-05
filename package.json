@@ -71,9 +71,6 @@
           "type": "file"
         }
       ]
-    },
-    "win": {
-      "noMsi": false
     }
   },
   "directories": {
