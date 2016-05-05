@@ -181,6 +181,7 @@
     "i18next-scanner": "~1.2.1",
     "json-loader": "~0.5.4",
     "nib": "~1.1.0",
+    "node-pre-gyp": "^0.6.27",
     "require-dir": "~0.3.0",
     "run-sequence": "~1.1.5",
     "style-loader": "~0.13.0",
