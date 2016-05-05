@@ -22,9 +22,6 @@ echo "Rebuilding native modules..."
     --electron-prebuilt-dir=node_modules/electron-prebuilt/ \
     --which-module=serialport
 
-# Resolve an issue of System.IO.PathTooLongException for Win32 build
-rm -rf dist/cnc/node_modules/serialport/node_modules/node-pre-gyp
-
 ./node_modules/.bin/electron-packager dist/cnc \
     --out=output \
     --overwrite \
