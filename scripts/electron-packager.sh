@@ -11,7 +11,20 @@ echo "Installing packages..."
 npm install --production
 popd
 
-scripts/electron-rebuild.sh
+# https://github.com/electron/electron-rebuild/issues/59
+rm -f dist/cnc/node_modules/serialport/build/Release/serialport.node
+
+echo "Rebuilding native modules..."
+./node_modules/.bin/electron-rebuild \
+    --version=${ELECTRON_VERSION:1} \
+    --pre-gyp-fix \
+    --module-dir=dist/cnc/node_modules \
+    --electron-prebuilt-dir=node_modules/electron-prebuilt/ \
+    --which-module=serialport
+
+# Resolve an issue of System.IO.PathTooLongException for Win32 build
+rm -f dist/cnc/node_modules/serialport/node_modules/.bin/node-pre-gyp
+rm -rf dist/cnc/node_modules/serialport/node_modules/node-pre-gyp
 
 ./node_modules/.bin/electron-packager dist/cnc \
     --out=output \
