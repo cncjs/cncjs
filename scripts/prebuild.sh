@@ -3,7 +3,7 @@
 gulp pkg-sync
 
 pushd src
-mkdir -p dist/cnc
-cp -af package.json ../dist/cnc
-babel -d ../dist/cnc *.js
+mkdir -p ../dist/cnc/
+cp -af package.json ../dist/cnc/
+babel -d ../dist/cnc/ *.js
 popd
