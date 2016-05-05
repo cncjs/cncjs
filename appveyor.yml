@@ -64,7 +64,7 @@ deploy_script:
   - ps: $PACKAGE_NAME = bash -c 'scripts/package-name.sh src/package.json'
   - ps: $PACKAGE_VERSION = bash -c 'scripts/package-version.sh src/package.json'
   - ps: $env:RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
-  - ps: Get-ChildItem env:
+  - ps: echo $env:RELEASE
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
         npm run electron-builder:win32-ia32
