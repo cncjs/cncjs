@@ -45,7 +45,7 @@ const handleSquirrelEvents = () => {
         return true;
     }
 
-    // This is called on the outgoing version of your app before updating to the new version - 
+    // This is called on the outgoing version of your app before updating to the new version -
     // it's the opposite of --squirrel-updated
     if (cmd === '--squirrel-obsolete') {
         app.quit();
@@ -55,7 +55,7 @@ const handleSquirrelEvents = () => {
     return false;
 };
 
-if (!handleSquirrelEvent()) {
+if (!handleSquirrelEvents()) {
     // https://github.com/electron/electron/blob/master/docs/api/menu/
     const template = [
         {
