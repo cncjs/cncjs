@@ -39,10 +39,6 @@ export default {
         maxWorkers: os.cpus().length || 1
     },
     winston: {
-        level: 'info',
-        colorize: true,
-        timestamp: true, // or function()
-        json: false,
-        handleExceptions: true
+        level: 'info'
     }
 };

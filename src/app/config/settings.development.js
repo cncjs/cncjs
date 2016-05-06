@@ -26,10 +26,6 @@ export default {
         maxWorkers: os.cpus().length || 1
     },
     winston: {
-        level: 'debug',
-        colorize: true,
-        timestamp: true, // or function()
-        json: false,
-        handleExceptions: true
+        level: 'debug'
     }
 };

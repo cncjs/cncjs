@@ -53,7 +53,7 @@ const cnc = (options = {}, callback) => {
         host: program.host,
         backlog: program.backlog,
         config: program.config,
-        verbose: program.verbose,
+        verbosity: program.verbose,
         mount: program.mount,
         ...options // Override command-line options if specified
     }, callback);

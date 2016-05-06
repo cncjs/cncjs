@@ -9,7 +9,7 @@ import cncserver from './cncserver';
 import log from './lib/log';
 import settings from './config/settings';
 
-const createServer = ({ port = 0, host, backlog, config, verbose, mount }, callback) => {
+const createServer = ({ port = 0, host, backlog, config, verbosity, mount }, callback) => {
     const routes = [];
 
     { // routes
@@ -29,13 +29,13 @@ const createServer = ({ port = 0, host, backlog, config, verbose, mount }, callb
     }
 
     { // settings
-        if (verbose === 1) {
+        if (verbosity === 1) {
             _.set(settings, 'verbosity', 1);
-            _.set(settings, 'winston.level', 'debug');
+            log.logger.level = 'verbose';
         }
-        if (verbose === 2) {
+        if (verbosity === 2) {
             _.set(settings, 'verbosity', 2);
-            _.set(settings, 'winston.level', 'trace');
+            log.logger.level = 'debug';
         }
 
         const cncrc = path.resolve(config || settings.cncrc);
