@@ -9,6 +9,7 @@ echo "Cleaning up dist/cnc/node_modules..."
 rm -rf node_modules
 echo "Installing packages..."
 npm install --production
+npm dedupe
 popd
 
 # https://github.com/electron/electron-rebuild/issues/59
