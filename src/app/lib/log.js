@@ -1,5 +1,3 @@
-import _ from 'lodash';
-import cluster from 'cluster';
 import util from 'util';
 import winston from 'winston';
 import settings from '../config/settings';
@@ -30,7 +28,7 @@ export default {
     log: function(...args) {
         let level = args.shift();
         let stackTrace = getStackTrace()[2];
-        logger.log(level, util.format.apply(util.format, prefix.concat(args).concat(stackTrace)), meta());
+        logger.log(level, util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
     },
     debug: function(...args) {
         let stackTrace = getStackTrace()[2];
