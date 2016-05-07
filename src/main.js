@@ -189,7 +189,8 @@ if (!handleSquirrelEvents()) {
         const win = new BrowserWindow({
             width: 1280,
             height: 768,
-            show: false
+            show: false,
+            title: 'cnc'
         });
         const webContents = win.webContents;
 
