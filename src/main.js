@@ -194,17 +194,6 @@ if (!handleSquirrelEvents()) {
         });
         const webContents = win.webContents;
 
-        win.on('closed', () => {
-            mainWindow = null;
-        });
-
-        win.on('close', (e) => {
-            if ((process.platform === 'darwin') && !forceQuit) {
-                e.preventDefault();
-                mainWindow.hide();
-            }
-        });
-
         // Open every external link in a new window
         // https://github.com/electron/electron/blob/master/docs/api/web-contents.md
         webContents.on('new-window', (event, url) => {
@@ -225,9 +214,11 @@ if (!handleSquirrelEvents()) {
         mainWindow.show();
     });
 
-    app.on('before-quit', () => {
-        // handle menu-item or keyboard shortcut quit
-        forceQuit = true;
+    app.on('before-quit', (e) => {
+        if ((process.platform === 'darwin') && !forceQuit) {
+            e.preventDefault();
+            mainWindow.hide();
+        }
     });
 
     app.on('will-quit', () => {
