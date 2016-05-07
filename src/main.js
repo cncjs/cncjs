@@ -55,6 +55,10 @@ const handleSquirrelEvents = () => {
     return false;
 };
 
+// prevent window being garbage collected
+let mainWindow;
+let forceQuit = false;
+
 if (!handleSquirrelEvents()) {
     // https://github.com/electron/electron/blob/master/docs/api/menu/
     const template = [
@@ -181,11 +185,6 @@ if (!handleSquirrelEvents()) {
         );
     }
 
-    let forceQuit = false;
-
-    // prevent window being garbage collected
-    let mainWindow;
-
     const createMainWindow = ({ address, port }) => {
         const win = new BrowserWindow({
             width: 1280,
@@ -207,13 +206,34 @@ if (!handleSquirrelEvents()) {
         return win;
     };
 
-    app.on('activate', () => {
+    // https://github.com/electron/electron/blob/master/docs/api/app.md#event-activate-os-x
+    // Emitted when the application is activated, which usually happens
+    // when the user clicks on the application's dock icon.
+    app.on('activate', (e) => {
         if (!mainWindow) {
             mainWindow = createMainWindow();
         }
         mainWindow.show();
     });
 
+    // https://github.com/electron/electron/blob/master/docs/api/app.md#event-window-all-closed
+    // Emitted when all windows have been closed.
+    // This event is only emitted when the application is not going to quit.
+    // If the user pressed Cmd + Q, or the developer called app.quit(), Electron
+    // will first try to close all the windows and then emit the will-quit event,
+    // and in this case the window-all-closed event would not be emitted.
+    app.on('window-all-closed', () => {
+        // On OS X it is common for applications and their menu bar
+        // to stay active until the user quits explicitly with Cmd + Q
+        if (process.platform !== 'darwin') {
+            app.quit();
+        }
+    });
+
+    // https://github.com/electron/electron/blob/master/docs/api/app.md#event-before-quit
+    // Emitted before the application starts closing its windows.
+    // Calling event.preventDefault() will prevent the default behaviour, which
+    // is terminating the application.
     app.on('before-quit', (e) => {
         if ((process.platform === 'darwin') && !forceQuit) {
             e.preventDefault();
@@ -221,17 +241,13 @@ if (!handleSquirrelEvents()) {
         }
     });
 
-    app.on('will-quit', () => {
+    // https://github.com/electron/electron/blob/master/docs/api/app.md#event-will-quit
+    // Emitted when all windows have been closed and the application will quit.
+    // Calling event.preventDefault() will prevent the default behaviour, which
+    // is terminating the application.
+    app.on('will-quit', (e) => {
         // dereference the window
         mainWindow = null;
-    });
-
-    app.on('window-all-closed', () => {
-        // On OS X it is common for applications and their menu bar
-        // to stay active until the user quits explicitly with Cmd + Q
-        if (process.platform !== 'darwin') {
-            app.quit();
-        }
     });
 
     app.on('ready', () => {
