@@ -199,7 +199,7 @@ if (!handleSquirrelEvents()) {
         });
 
         win.on('close', (e) => {
-            if (!forceQuit) {
+            if ((process.platform === 'darwin') && !forceQuit) {
                 e.preventDefault();
                 mainWindow.hide();
             }
