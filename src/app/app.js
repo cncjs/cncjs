@@ -31,6 +31,9 @@ import errlog from './lib/middleware/errlog';
 import errnotfound from './lib/middleware/errnotfound';
 import errserver from './lib/middleware/errserver';
 
+// Required by consolidate.js
+import 'hogan.js';
+
 const renderPage = (req, res, next) => {
     const view = req.params[0] || 'index';
     const file = view + '.hbs';
