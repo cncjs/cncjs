@@ -57,9 +57,6 @@ class GrblController {
                 return;
             }
 
-            let sent = this.gcode.sent.length;
-            let total = this.gcode.total;
-
             gcode = ('' + gcode).trim();
 
             if (gcode.length > 0) {
