@@ -79,13 +79,13 @@ after_success:
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="${TRAVIS_BRANCH}-latest" \
+          --tag="${TRAVIS_BRANCH}" \
           --name="${RELEASE}-osx-x64.dmg" \
           --file="releases/${RELEASE}-osx-x64.dmg";
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="${TRAVIS_BRANCH}-latest" \
+          --tag="${TRAVIS_BRANCH}" \
           --name="${RELEASE}-osx-x64.zip" \
           --file="releases/${RELEASE}-osx-x64.zip";
       fi
@@ -105,13 +105,13 @@ after_success:
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="${TRAVIS_BRANCH}-latest" \
+          --tag="${TRAVIS_BRANCH}" \
           --name="${RELEASE}-linux-i386.deb" \
           --file="releases/${RELEASE}-linux-i386.deb";
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="${TRAVIS_BRANCH}-latest" \
+          --tag="${TRAVIS_BRANCH}" \
           --name="${RELEASE}-linux-ia32.tar.gz" \
           --file="releases/${RELEASE}-linux-ia32.tar.gz";
       fi
@@ -131,13 +131,13 @@ after_success:
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="${TRAVIS_BRANCH}-latest" \
+          --tag="${TRAVIS_BRANCH}" \
           --name="${RELEASE}-linux-amd64.deb" \
           --file="releases/${RELEASE}-linux-amd64.deb";
         scripts/github-release.sh \
           --user="cheton" \
           --repo="cnc" \
-          --tag="${TRAVIS_BRANCH}-latest" \
+          --tag="${TRAVIS_BRANCH}" \
           --name="${RELEASE}-linux-x64.tar.gz" \
           --file="releases/${RELEASE}-linux-x64.tar.gz";
       fi

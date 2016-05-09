@@ -72,7 +72,7 @@ deploy_script:
         Copy-Item "output\win\${PACKAGE_NAME}Setup-${PACKAGE_VERSION}-ia32.exe" "releases\${env:RELEASE}-win32-ia32.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-ia32.exe" --file="releases/${RELEASE}-win32-ia32.exe"'
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}" --name="${RELEASE}-win32-ia32.exe" --file="releases/${RELEASE}-win32-ia32.exe"'
         }
       }
   - ps: |
@@ -82,7 +82,7 @@ deploy_script:
         Copy-Item "output\win-x64\${PACKAGE_NAME}Setup-${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win32-x64.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}-latest" --name="${RELEASE}-win32-x64.exe" --file="releases/${RELEASE}-win32-x64.exe"'
+            bash -c 'scripts/github-release.sh --user="cheton" --repo="cnc" --tag="${APPVEYOR_REPO_BRANCH}" --name="${RELEASE}-win32-x64.exe" --file="releases/${RELEASE}-win32-x64.exe"'
         }
       }
 
