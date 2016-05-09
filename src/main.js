@@ -1,8 +1,10 @@
 /* eslint import/no-unresolved: 0 */
 import path from 'path';
+import util from 'util';
 import { spawn } from 'child_process';
 import { app, BrowserWindow, Menu, shell } from 'electron';
 import cnc from './cnc';
+import pkg from './package.json';
 
 const debug = require('debug')('cnc');
 
@@ -190,7 +192,7 @@ if (!handleSquirrelEvents()) {
             width: 1280,
             height: 768,
             show: false,
-            title: 'cnc'
+            title: util.format('%s v%s', pkg.name, pkg.version)
         });
         const webContents = win.webContents;
 
@@ -201,8 +203,13 @@ if (!handleSquirrelEvents()) {
             shell.openExternal(url);
         });
 
-        win.loadURL('http://' + address + ':' + port);
-        win.show();
+        // Call `ses.setProxy` to ignore proxy settings
+        // http://electron.atom.io/docs/latest/api/session/#sessetproxyconfig-callback
+        const ses = webContents.session;
+        ses.setProxy({ proxyRules: 'direct://' }, () => {
+            win.loadURL('http://' + address + ':' + port);
+            win.show();
+        });
 
         return win;
     };
