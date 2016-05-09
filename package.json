@@ -178,6 +178,7 @@
     "eslint-plugin-react": "~5.0.1",
     "eventsource-polyfill": "~0.9.6",
     "file-loader": "~0.8.5",
+    "github": "~0.2.4",
     "glob": "~7.0.3",
     "gulp": "~3.9.0",
     "gulp-babel": "~6.1.2",
