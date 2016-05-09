@@ -1,3 +1,4 @@
+/* eslint max-len: 0 */
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
@@ -74,7 +75,7 @@ export default (options) => {
         // Copy only Node.js dependencies to application package.json
         _pkg.dependencies = _.pick(pkg.dependencies, findDeps([
             'src/*.js',
-            'src/app/**/*.{js,jsx}',
+            'src/app/**/*.{js,jsx}'
         ]));
 
         const target = path.resolve(__dirname, '../../src/package.json');
