@@ -35,10 +35,6 @@ before_install:
   - git --version
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
-  - go version
-  - go env
-  - go get github.com/cheton/github-release
-  - github-release --version
   #
   # https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#os-x
   #
@@ -72,19 +68,19 @@ after_success:
   - |
     # cncjs-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
-      npm run electron-builder:darwin-x64;
+      npm run build:darwin-x64;
       ls -al output output/*;
       cp -af "output/cnc-darwin-x64/${RELEASE}.dmg" "releases/${RELEASE}-osx-x64.dmg";
       cp -af "output/cnc-darwin-x64/${RELEASE}-mac.zip" "releases/${RELEASE}-osx-x64.zip";
       if [[ -z "$TRAVIS_TAG" ]]; then
-        npm run babel-node -- github-release \
+        npm run github-release -- \
           --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-osx-x64.dmg";
-        npm run babel-node -- github-release \
+        npm run github-release -- \
           --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
@@ -96,7 +92,7 @@ after_success:
   - |
     # cnc-linux-ia32
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      npm run electron-builder:linux-ia32;
+      npm run build:linux-ia32;
       ls -al output output/*;
       cp -af "output/${RELEASE}-i386.deb" "releases/${RELEASE}-linux-i386.deb";
       pushd releases;
@@ -105,14 +101,14 @@ after_success:
       rm -f "${RELEASE}-linux-ia32";
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
-        npm run babel-node -- github-release \
+        npm run github-release -- \
           --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-i386.deb";
-        npm run babel-node -- github-release \
+        npm run github-release -- \
           --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
@@ -124,7 +120,7 @@ after_success:
   - |
     # cnc-linux-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      npm run electron-builder:linux-x64;
+      npm run build:linux-x64;
       ls -al output output/*;
       cp -af "output/${RELEASE}-amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
       pushd releases;
@@ -133,14 +129,14 @@ after_success:
       rm -f "${RELEASE}-linux-x64";
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
-        npm run babel-node -- github-release \
+        npm run github-release -- \
           --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-amd64.deb";
-        npm run babel-node -- github-release \
+        npm run github-release -- \
           --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \

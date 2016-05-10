@@ -11,15 +11,12 @@ init:
   - git config --global core.autocrlf false
   - git config --global user.name "AppVeyor"
   - git config --global user.email "appveyor@ci.appveyor.com"
-  - go version
-  - go env
 
 environment:
   matrix:
   - nodejs_version: "4"
   - nodejs_version: "5"
   global:
-    GOPATH: c:\gopath
     GITHUB_TOKEN:
       secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
 
@@ -41,9 +38,6 @@ install:
       Write-Host $env:APPVEYOR_REPO_COMMIT -ForegroundColor "Green"
       Write-Host "Commit timestamp: " -NoNewLine
       Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
-  - set PATH=%GOPATH%\bin;%PATH%
-  - go get github.com/cheton/github-release
-  - github-release --version
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install -g npm
   - npm install
@@ -69,22 +63,22 @@ deploy_script:
   - ps: echo $env:COMMIT_LOG
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
-        npm run electron-builder:win32-ia32
+        npm run build:win32-ia32
         Get-ChildItem output\win
         Copy-Item "output\win\${PACKAGE_NAME}Setup-${PACKAGE_VERSION}-ia32.exe" "releases\${env:RELEASE}-win32-ia32.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            npm run babel-node -- github-release --user=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases/${env:RELEASE}-win32-ia32.exe"
+            npm run github-release -- --user=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases/${env:RELEASE}-win32-ia32.exe"
         }
       }
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
-        npm run electron-builder:win32-x64
+        npm run build:win32-x64
         Get-ChildItem output\win-x64
         Copy-Item "output\win-x64\${PACKAGE_NAME}Setup-${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win32-x64.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            npm run babel-node -- github-release --user=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases/${env:RELEASE}-win32-x64.exe"
+            npm run github-release -- --user=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases/${env:RELEASE}-win32-x64.exe"
         }
       }
 
