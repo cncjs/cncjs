@@ -68,6 +68,7 @@ after_success:
   - PACKAGE_NAME=`scripts/package-name.sh src/package.json`
   - PACKAGE_VERSION=`scripts/package-version.sh src/package.json`
   - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
+  - COMMIT_LOG=`git log -1 --date=iso`
   - |
     # cncjs-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
@@ -76,18 +77,20 @@ after_success:
       cp -af "output/cnc-darwin-x64/${RELEASE}.dmg" "releases/${RELEASE}-osx-x64.dmg";
       cp -af "output/cnc-darwin-x64/${RELEASE}-mac.zip" "releases/${RELEASE}-osx-x64.zip";
       if [[ -z "$TRAVIS_TAG" ]]; then
-        scripts/github-release.sh \
-          --user="cheton" \
-          --repo="cnc" \
+        node_modules/.bin/babel-node github-release.js \
+          --user=cheton \
+          --repo=cnc \
           --tag="${TRAVIS_BRANCH}" \
-          --name="${RELEASE}-osx-x64.dmg" \
-          --file="releases/${RELEASE}-osx-x64.dmg";
-        scripts/github-release.sh \
-          --user="cheton" \
-          --repo="cnc" \
+          --name="${TRAVIS_BRANCH}" \
+          --body="${COMMIT_LOG}" \
+          "releases/${RELEASE}-osx-x64.dmg";
+        node_modules/.bin/babel-node github-release.js \
+          --user=cheton \
+          --repo=cnc \
           --tag="${TRAVIS_BRANCH}" \
-          --name="${RELEASE}-osx-x64.zip" \
-          --file="releases/${RELEASE}-osx-x64.zip";
+          --name="${TRAVIS_BRANCH}" \
+          --body="${COMMIT_LOG}" \
+          "releases/${RELEASE}-osx-x64.zip";
       fi
     fi
   - |
@@ -102,18 +105,20 @@ after_success:
       rm -f "${RELEASE}-linux-ia32";
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
-        scripts/github-release.sh \
-          --user="cheton" \
-          --repo="cnc" \
+        node_modules/.bin/babel-node github-release.js \
+          --user=cheton \
+          --repo=cnc \
           --tag="${TRAVIS_BRANCH}" \
-          --name="${RELEASE}-linux-i386.deb" \
-          --file="releases/${RELEASE}-linux-i386.deb";
-        scripts/github-release.sh \
-          --user="cheton" \
-          --repo="cnc" \
+          --name="${TRAVIS_BRANCH}" \
+          --body="${COMMIT_LOG}" \
+          "releases/${RELEASE}-linux-i386.deb";
+        node_modules/.bin/babel-node github-release.js \
+          --user=cheton \
+          --repo=cnc \
           --tag="${TRAVIS_BRANCH}" \
-          --name="${RELEASE}-linux-ia32.tar.gz" \
-          --file="releases/${RELEASE}-linux-ia32.tar.gz";
+          --name="${TRAVIS_BRANCH}" \
+          --body="${COMMIT_LOG}" \
+          "releases/${RELEASE}-linux-ia32.tar.gz";
       fi
     fi
   - |
@@ -128,18 +133,20 @@ after_success:
       rm -f "${RELEASE}-linux-x64";
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
-        scripts/github-release.sh \
-          --user="cheton" \
-          --repo="cnc" \
+        node_modules/.bin/babel-node github-release.js \
+          --user=cheton \
+          --repo=cnc \
           --tag="${TRAVIS_BRANCH}" \
-          --name="${RELEASE}-linux-amd64.deb" \
-          --file="releases/${RELEASE}-linux-amd64.deb";
-        scripts/github-release.sh \
-          --user="cheton" \
-          --repo="cnc" \
+          --name="${TRAVIS_BRANCH}" \
+          --body="${COMMIT_LOG}" \
+          "releases/${RELEASE}-linux-amd64.deb";
+        node_modules/.bin/babel-node github-release.js \
+          --user=cheton \
+          --repo=cnc \
           --tag="${TRAVIS_BRANCH}" \
-          --name="${RELEASE}-linux-x64.tar.gz" \
-          --file="releases/${RELEASE}-linux-x64.tar.gz";
+          --name="${TRAVIS_BRANCH}" \
+          --body="${COMMIT_LOG}" \
+          "releases/${RELEASE}-linux-x64.tar.gz";
       fi
     fi
   - |
