@@ -80,14 +80,14 @@ after_success:
         node_modules/.bin/babel-node github-release.js \
           --user=cheton \
           --repo=cnc \
-          --tag="${TRAVIS_BRANCH}" \
+          --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-osx-x64.dmg";
         node_modules/.bin/babel-node github-release.js \
           --user=cheton \
           --repo=cnc \
-          --tag="${TRAVIS_BRANCH}" \
+          --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-osx-x64.zip";
@@ -108,14 +108,14 @@ after_success:
         node_modules/.bin/babel-node github-release.js \
           --user=cheton \
           --repo=cnc \
-          --tag="${TRAVIS_BRANCH}" \
+          --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-i386.deb";
         node_modules/.bin/babel-node github-release.js \
           --user=cheton \
           --repo=cnc \
-          --tag="${TRAVIS_BRANCH}" \
+          --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-ia32.tar.gz";
@@ -136,14 +136,14 @@ after_success:
         node_modules/.bin/babel-node github-release.js \
           --user=cheton \
           --repo=cnc \
-          --tag="${TRAVIS_BRANCH}" \
+          --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-amd64.deb";
         node_modules/.bin/babel-node github-release.js \
           --user=cheton \
           --repo=cnc \
-          --tag="${TRAVIS_BRANCH}" \
+          --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-x64.tar.gz";
