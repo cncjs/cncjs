@@ -5,7 +5,7 @@ import path from 'path';
 import _ from 'lodash';
 import GitHub from 'github';
 import program from 'commander';
-import pkg from '../package.json';
+import pkg from './package.json';
 
 program
     .version(pkg.version)
