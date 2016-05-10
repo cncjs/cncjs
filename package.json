@@ -18,6 +18,7 @@
   },
   "preferGlobal": true,
   "scripts": {
+    "babel-node": "babel-node",
     "prepublish": "npm run clean && npm run lint && npm run build",
     "prebuild": "bash ./scripts/prebuild.sh",
     "prebuild-latest": "bash ./scripts/prebuild-latest.sh",
