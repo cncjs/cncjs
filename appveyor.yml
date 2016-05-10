@@ -59,8 +59,8 @@ deploy_script:
   - ps: $PACKAGE_VERSION = bash -c 'scripts/package-version.sh src/package.json'
   - ps: $env:RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
   - ps: $env:COMMIT_LOG = git log -1 --date=iso
-  - ps: echo $env:RELEASE
-  - ps: echo $env:COMMIT_LOG
+  - ps: echo "$env:RELEASE"
+  - ps: echo "$env:COMMIT_LOG"
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
         npm run build:win32-ia32
@@ -68,7 +68,7 @@ deploy_script:
         Copy-Item "output\win\${PACKAGE_NAME}Setup-${PACKAGE_VERSION}-ia32.exe" "releases\${env:RELEASE}-win32-ia32.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases/${env:RELEASE}-win32-ia32.exe"
+            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-ia32.exe"
         }
       }
   - ps: |
@@ -78,7 +78,7 @@ deploy_script:
         Copy-Item "output\win-x64\${PACKAGE_NAME}Setup-${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win32-x64.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases/${env:RELEASE}-win32-x64.exe"
+            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-x64.exe"
         }
       }
 
