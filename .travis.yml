@@ -74,14 +74,14 @@ after_success:
       cp -af "output/cnc-darwin-x64/${RELEASE}-mac.zip" "releases/${RELEASE}-osx-x64.zip";
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- \
-          --user=cheton \
+          --owner=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-osx-x64.dmg";
         npm run github-release -- \
-          --user=cheton \
+          --owner=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
@@ -102,14 +102,14 @@ after_success:
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- \
-          --user=cheton \
+          --owner=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-i386.deb";
         npm run github-release -- \
-          --user=cheton \
+          --owner=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
@@ -130,14 +130,14 @@ after_success:
       popd;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- \
-          --user=cheton \
+          --owner=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-amd64.deb";
         npm run github-release -- \
-          --user=cheton \
+          --owner=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
