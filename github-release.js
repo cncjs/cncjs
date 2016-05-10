@@ -1,6 +1,5 @@
 #!/usr/bin/env node
-
-import fs from 'fs';
+/* eslint no-console: 0 */
 import path from 'path';
 import _ from 'lodash';
 import GitHub from 'github';
@@ -32,7 +31,7 @@ github.authenticate({
 });
 
 const listReleases = (options) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         github.releases.listReleases(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
@@ -40,7 +39,7 @@ const listReleases = (options) => {
 };
 
 const createRelease = (options) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         github.releases.createRelease(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
@@ -48,7 +47,7 @@ const createRelease = (options) => {
 };
 
 const editRelease = (options) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         github.releases.editRelease(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
@@ -56,7 +55,7 @@ const editRelease = (options) => {
 };
 
 const listAssets = (options) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         github.releases.listAssets(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
@@ -64,7 +63,7 @@ const listAssets = (options) => {
 };
 
 const deleteAsset = (options) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         github.releases.deleteAsset(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
@@ -72,7 +71,7 @@ const deleteAsset = (options) => {
 };
 
 const uploadAsset = (options) => {
-    return new Promise(function(resolve, reject) {
+    return new Promise((resolve, reject) => {
         github.releases.uploadAsset(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
@@ -83,8 +82,6 @@ const main = async () => {
     const { owner, repo, tag, name, body = '' } = program;
 
     try {
-        let res;
-
         console.log('> releases#listReleases');
         let releases = await listReleases({
             owner: owner,
@@ -95,7 +92,7 @@ const main = async () => {
         let release = _.find(releases, { tag_name: tag });
         if (!release) {
             console.log('> releases#createRelease');
-            res = await createRelease({
+            await createRelease({
                 owner: owner,
                 repo: repo,
                 tag_name: tag,
@@ -105,7 +102,7 @@ const main = async () => {
             console.log('ok');
         } else if (release.body !== body) {
             console.log('> releases#editRelease');
-            res = await editRelease({
+            await editRelease({
                 owner: owner,
                 repo: repo,
                 id: release.id,
@@ -160,7 +157,7 @@ const main = async () => {
                     created_at: asset.created_at,
                     updated_at: asset.updated_at
                 });
-                res = await deleteAsset({
+                await deleteAsset({
                     owner: owner,
                     repo: repo,
                     id: asset.id
@@ -173,7 +170,7 @@ const main = async () => {
             for (let i = 0; i < files.length; ++i) {
                 const file = files[i];
                 console.log('#%d name="%s" filePath="%s"', i + 1, path.basename(file), file);
-                res = await uploadAsset({
+                await uploadAsset({
                     owner: owner,
                     repo: repo,
                     id: release.id,
@@ -182,7 +179,6 @@ const main = async () => {
                 });
             }
         }
-
     } catch (err) {
         console.error(err);
     }
