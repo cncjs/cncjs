@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 /* eslint no-console: 0 */
+/* eslint max-len: 0 */
 import path from 'path';
 import _ from 'lodash';
 import GitHub from 'github';

@@ -4,13 +4,12 @@ import development from './settings.development';
 import production from './settings.production';
 
 const env = process.env.NODE_ENV || 'production'; // Ensure production environment if empty
-
-let settings = {};
+const settings = {};
 
 if (env === 'development') {
-    settings = _.merge({}, base, development, { env: env });
+    _.merge(settings, base, development, { env: env });
 } else {
-    settings = _.merge({}, base, production, { env: env });
+    _.merge(settings, base, production, { env: env });
 }
 
 export default settings;
