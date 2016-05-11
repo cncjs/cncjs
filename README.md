@@ -97,4 +97,4 @@ If you would like to support this project, you can make a donation using PayPal.
 
 Copyright (c) 2015-2016 Cheton Wu
 
-Licensed under the [MIT License](LICENSE).
+Licensed under the [MIT License](https://raw.githubusercontent.com/cheton/cnc/master/LICENSE).
