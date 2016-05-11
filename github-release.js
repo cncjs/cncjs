@@ -92,17 +92,17 @@ const main = async () => {
         let release = _.find(releases, { tag_name: tag });
         if (!release) {
             console.log('> releases#createRelease');
-            await createRelease({
+            release = await createRelease({
                 owner: owner,
                 repo: repo,
                 tag_name: tag,
                 name: name || tag,
                 body: body
             });
-            console.log('ok');
+            console.log('ok', release);
         } else if (release.body !== body) {
             console.log('> releases#editRelease');
-            await editRelease({
+            release = await editRelease({
                 owner: owner,
                 repo: repo,
                 id: release.id,
@@ -110,7 +110,7 @@ const main = async () => {
                 name: name || tag,
                 body: body
             });
-            console.log('ok');
+            console.log('ok', release);
         }
 
         console.log('> releases#listAssets');
