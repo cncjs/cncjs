@@ -122,7 +122,10 @@ const main = async () => {
         console.log('assets=%d', assets.length);
 
         assets = _.filter(assets, (asset) => {
-            const pattern = new RegExp(/([a-zA-Z0-9_]+)\-(\d+\.\d+\.\d+)(?:\-([a-zA-Z0-9]+))?(?:\-(linux|osx|win32))(?:\-([a-zA-Z0-9_\-]+)\.(.*))/);
+            // Example:
+            // 'cnc-1.1.0-latest-08c256a-linux-x64.tar.gz'
+            // ["cnc-1.1.0-latest-08c256a-linux-x64.tar.gz", "cnc", "1.1.0-latest-08c256a", "linux", "x64", "tar.gz"]
+            const pattern = new RegExp(/([a-zA-Z0-9][a-zA-Z0-9\-]*)\-(\d+\.\d+\.\d+(?:\-[a-zA-Z0-9][a-zA-Z0-9\-]*)?)(?:\-(linux|osx|win32))(?:\-([a-zA-Z0-9_\-]+)\.(.*))/);
 
             return _.some(files, (file) => {
                 const r1 = asset.name.match(pattern);
@@ -131,14 +134,14 @@ const main = async () => {
                 // 0: full
                 // 1: name
                 // 2: version
-                // 3: commit
-                // 4: platform
-                // 5: arch
-                // 6: extname
-                r1[0] = r1[3] = undefined;
-                r2[0] = r2[3] = undefined;
+                // 3: platform
+                // 4: arch
+                // 5: extname
 
-                // Do not check #0 (full) and #3 (commit)
+                // Skip checking for #0 (full) and #2 (version)
+                r1[0] = r1[2] = undefined;
+                r2[0] = r2[2] = undefined;
+
                 return _.isEqual(_.compact(r1), _.compact(r2));
             });
         });
