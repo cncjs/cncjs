@@ -37,7 +37,7 @@ class GCodeTable extends React.Component {
                     width={width}
                 >
                     <FlexColumn
-                        cellClassName="gcode-table-cell-status"
+                        className="gcode-table-cell-status"
                         cellRenderer={(cellData, cellDataKey, rowData, rowIndex, columnData) => {
                             const value = rowData.status;
                             const classes = {
@@ -68,7 +68,7 @@ class GCodeTable extends React.Component {
                         width={30}
                     />
                     <FlexColumn
-                        cellClassName="gcode-table-cell-command"
+                        className="gcode-table-cell-command"
                         cellRenderer={(cellData, cellDataKey, rowData, rowIndex, columnData) => {
                             const value = rowData.cmd;
                             const style = {
