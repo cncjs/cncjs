@@ -2,7 +2,12 @@
 
 var cnc = require('../dist/cnc/cnc').default;
 
-cnc(function(server) {
+cnc(function(err, server) {
+    if (err) {
+        console.error(err);
+        return;
+    }
+
     const address = server.address();
     console.log('Started the server at http://%s:%d/.', address.address, address.port);
 });

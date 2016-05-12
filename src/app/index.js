@@ -58,7 +58,10 @@ const createServer = ({ port = 0, host, backlog, config, verbosity, mount }, cal
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
             cncserver(server);
-            callback && callback(server);
+            callback && callback(null, server);
+        })
+        .on('error', (err) => {
+            callback && callback(err);
         });
 };
 
