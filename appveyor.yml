@@ -20,6 +20,9 @@ environment:
     GITHUB_TOKEN:
       secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
 
+matrix:
+  fast_finish: true
+
 platform:
   - x86
   - x64
