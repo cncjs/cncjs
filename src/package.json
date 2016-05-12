@@ -5,6 +5,10 @@
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:cheton/cnc.git"
+  },
   "main": "main.js",
   "dependencies": {
     "body-parser": "~1.15.1",
