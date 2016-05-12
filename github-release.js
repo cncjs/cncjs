@@ -132,6 +132,11 @@ const main = async () => {
                 const r1 = asset.name.match(pattern);
                 const r2 = path.basename(file).match(pattern);
 
+                if ((r1 === null) || (r2 === null)) {
+                    console.error('Unable to match file: asset="%s", file="%s"', asset.name, path.basename(file));
+                    return false;
+                }
+
                 // 0: full
                 // 1: name
                 // 2: version
