@@ -71,6 +71,7 @@ export default (options) => {
         _pkg.homepage = pkg.homepage;
         _pkg.author = pkg.author;
         _pkg.license = pkg.license;
+        _pkg.repository = pkg.repository;
 
         // Copy only Node.js dependencies to application package.json
         _pkg.dependencies = _.pick(pkg.dependencies, findDeps([
