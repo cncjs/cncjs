@@ -2,15 +2,14 @@
 import path from 'path';
 import { spawn } from 'child_process';
 import { app } from 'electron';
-
-const debug = require('debug')('cnc');
+import log from './log';
 
 const run = (args, done) => {
     const appPath = path.resolve(process.execPath, '..');
     const rootAtomPath = path.resolve(appPath, '..');
     const updateExe = path.resolve(path.join(rootAtomPath, 'Update.exe'));
 
-    debug('Spawning `%s` with args `%s`', updateExe, args);
+    log.debug('Spawning `%s` with args `%s`', updateExe, args);
     spawn(updateExe, args, { detached: true })
         .on('close', done);
 };
@@ -25,7 +24,7 @@ const handleStartupEvent = () => {
     const cmd = process.argv[1];
     const exeName = path.basename(process.execPath);
 
-    debug('Processing squirrel command `%s`', cmd);
+    log.debug('Processing squirrel command `%s`', cmd);
 
     // Optionally do things such as:
     // - Install desktop and start menu shortcuts
