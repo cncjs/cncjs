@@ -8,5 +8,5 @@ pushd src
 npm version ${npm_package_version}-latest-${abbrev_commit}
 mkdir -p ../dist/cnc/
 cp -af package.json ../dist/cnc/
-babel -d ../dist/cnc/ *.js
+babel -d ../dist/cnc/ *.js desktop/**/*.js
 popd
