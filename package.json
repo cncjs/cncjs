@@ -145,7 +145,7 @@
     "react-router": "~2.4.0",
     "react-select": "~1.0.0-beta12",
     "react-sortablejs": "~1.0.0",
-    "react-virtualized": "~7.0.1",
+    "react-virtualized": "~7.0.3",
     "serialport": "~3.1.1",
     "serve-favicon": "~2.3.0",
     "serve-static": "~1.10.2",
@@ -156,7 +156,7 @@
     "stacktrace-js": "~1.1.2",
     "superagent": "~1.8.0-beta.2",
     "three": "~0.76.1",
-    "webappengine": "~1.0.0",
+    "webappengine": "~1.1.0",
     "winston": "~2.2.0"
   },
   "devDependencies": {
