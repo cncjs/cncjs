@@ -19,6 +19,10 @@ environment:
   global:
     GITHUB_TOKEN:
       secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
+    CSC_LINK:
+      secure: a+2xo1z15zej505BjOcL6iIaGEbVgJd4usmxpKZWUP4sI2tLvQdBLMOXdxr/KGzVtS2awPmID4D3tNk3x3pa1dx/rxtWUS9H6kF8Jnw7bgs=
+    CSC_KEY_PASSWORD:
+      secure: vysRX38PjZMwcrzs07Kn7w==
 
 matrix:
   fast_finish: true
