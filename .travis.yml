@@ -11,6 +11,8 @@ os:
   - linux
   - osx
 
+osx_image: xcode7.3
+
 node_js:
   - '4'
   - '5'
@@ -47,7 +49,9 @@ before_install:
   # To build app in distributable format for Linux on OS X:
   # $ brew install ruby gnu-tar libicns graphicsmagick
   #
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew update; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      brew update;
+    fi
   - gem install fpm
   # npm v3
   - npm install -g npm
