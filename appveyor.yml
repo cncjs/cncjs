@@ -20,7 +20,7 @@ environment:
     GITHUB_TOKEN:
       secure: 2E6+EjsBQq8Fp5aZzJVyf9LmSC1vfjzxUIYnIZdhNLn5EXk65zMrKewVTJFKPUV0
     CSC_LINK:
-      secure: a+2xo1z15zej505BjOcL6iIaGEbVgJd4usmxpKZWUP4sI2tLvQdBLMOXdxr/KGzVIdKpeRSBw4FlPTTh9rHGw0dBvKU+eOCSoOIsOl7Tktg=
+      secure: a+2xo1z15zej505BjOcL6iIaGEbVgJd4usmxpKZWUP4sI2tLvQdBLMOXdxr/KGzVBtMYKDHJcl3Xpv+iOUXeRjd4iplIZkkSaCUkE9mbccs=
     CSC_KEY_PASSWORD:
       secure: vysRX38PjZMwcrzs07Kn7w==
 
