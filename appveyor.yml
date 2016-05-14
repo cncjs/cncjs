@@ -74,10 +74,9 @@ deploy_script:
         npm run build:win32-ia32
         Get-ChildItem output\win
         Copy-Item "output\win\Setup.exe" "releases\${env:RELEASE}-win32-ia32.exe"
-        Copy-Item "output\win\Setup.msi" "releases\${env:RELEASE}-win32-ia32.msi"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-ia32.exe" "releases\${env:RELEASE}-win32-ia32.msi"
+            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-ia32.exe"
         }
       }
   - ps: |
@@ -85,10 +84,9 @@ deploy_script:
         npm run build:win32-x64
         Get-ChildItem output\win-x64
         Copy-Item "output\win-x64\Setup.exe" "releases\${env:RELEASE}-win32-x64.exe"
-        Copy-Item "output\win-x64\Setup.msi" "releases\${env:RELEASE}-win32-x64.msi"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-x64.exe" "releases\${env:RELEASE}-win32-x64.msi"
+            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-x64.exe"
         }
       }
 
