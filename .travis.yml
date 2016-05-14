@@ -25,7 +25,6 @@ env:
     - secure: "wfMu1Zs0mIriCTGEi9vc/3QVOsr6JsGmdw9p1JkNL/GyTCOUlpCY2Om3jKaoZsV6QfhpaPif8iTk5kH2+DWZq+PtQhlq+XdaUyBxs97/7W/0XtlhWDzVZTxEYXHE3g29+Yetyfep0y630YY9qSGSulVUUOwzgdr0bb0JZct6ojpuRMHuLpVJL/eW+hnIHLA3WLUmHNT9XLQ8o6niZAnefzXeeZco3eZKk639ptohTJ4R/9lzxLRegVwko7AX++o5oM8Mogd7fMHeD4ILssKYbslurNU5OkeEmjggU8O+00Y2J8iLS7G77o8zgyoQ8EJrT9TORyghliB8hUmIwa8CQKmkZZFf4xONbXOEY8ocUsXRinUXRiUzEWTziyTTZa5jYJWXINXCzOZLskCdvD09YLr0PS4aCBCzHdnd1XFfzq7Q8ML9ebV7Jw6GrrxRMRkQRWkd4zbC1OAP4Mft8cicLqlTJO8q/KSa4P1tOVoZyjUTHQLe5Z/mMAFZUIwfN4fHE0/sJDe4XJnjOcBfRUdORVc1Hj3JRd55TxACOUWwKbdXpYXu5KTxZGR/BjDB5eMSXf4mWC8nXD28yNGCeb+Te9NClFJWkqoiXWH9affNbk6eCsSNbDAH6NtHqFp51UDJHBig+zEyDL9KNaw9FXSNcFg4vltmZYLiP97NB6woyqQ=" # GITHUB_TOKEN
     - secure: "BHPlvBZpC5dQGrCX7mmJgnQASUfnMko9IFVOVPCk9NZP08N0nElNRKQ8WBFZr3jpL/i+tapwiYcbUMoK3z0xkRKhTo5Esl3pToPkGNvpKlN23GsyKBP+KdRJAGTFfhz8o9NkviKPcMjFRqOyc/0hsOBAb8Pp9t7z1JeXLjLDIFD43kektWJylNjQHyK0KKnL0f2vyJEhedAsddHru4TQg52BuLZGxuZb8cziFkfaokObdrwe5XGTu7IL7Vs+MDIzstp+8cBzqaNmcYGALzULEDxIfWtwWjQdZHnZzyfmWDoTxf19TjXTyebmtFWDf5aCXZXd/Un+1bq3D41PbOmNmq26MS95y9GclmZxRD3VMB3Sg1ZWlp8E6UN6jzmS45pMy0msLoZv/I7ile0CElr1dWww1oG8bKnlfUv+aSGL+A0NSRnp5v4JpmqIpF9AQaz/rWpYslyoVwK8t4/abfcSZtexga2d018nnLu7q5J2uM766Kpvc5RH8k4hX9/ar6Gy5s+nmum9a5DDncLlOcQCO8r2kQKRgJ+2Daw1+A+PTSpwWoqCo/SxZ4EumxPUYKsnk15PAxgNTXua3KdZRt2ZIqNxJp08dnr9bS/hRAY20mCpbLKEfIOSx//muKDgFvPVLsIq1U9mMs5WtDr8rov+CBQOmV069EJSjz09HmeLFD8=" # CSC_LINK
     - secure: "LenBHoTcLW6cF7ML3+dB7JICMzEkawrJHiqFcGSo+hgapB0NCHGUiihr2zrjGSlHmElPiQ2TCnCRmPvOzVfpZswg36D0+1niPgZ+0vfGfPEoPmHhlvIsMPLb7v0lCIeh8z2o9eNbSvnv6NRXS4o5NLlHzM+RhAYARSXvRmFxqCCBn1Sj9pB5TB9NX3mK0Lb3mEJcIgEVFBr/xLiISPUBGFmncHUpxYjZHwxXQXRcGyfOEphLM9tvmEdoILRxM67k035csAIeaLKKPJcMGmO0e/JwZacQN7s3MhD2M8NddhQvWklNjabXAJ0L9Ycujf6rI5RsGcZL2U80HKr0aYRMiVW7/MPMpLARFOUoLfuFAXKkkLHp7Lbb1W6Zftr4yxkrfDXIQsh976HkBj+czr6wGwzBwb39zX4KEm/Yc3TEIxC/kKs9bt+vVW6BG+J41neiDiuIY1D1tRA0OEq0j04zpU6n683ojfYddzFoUWCN+TB3i0HQxWsKTOGKdcQwrJs7xZ4//UzD/vOTHj18SH0nm6ImF2/7q+9wJO646gHWTGTjGFYdupuR402wb3h5vWmGfFRvX6B1QtYImmEwMFnqf2XRwTTSz3niKn2Rt1YUiCP5bEz+Dcr+e+A8Jidt6ZuJEXv5SbykTG4YBmgCuuFT5KRwv08kule7FiUtQ2KD5XE=" # CSC_KEY_PASSWORD
-    - CSA_LINK='https://repository.certum.pl/cscasha2.cer' # CSA_LINK
 
 cache:
   directories:
@@ -80,6 +79,7 @@ after_success:
   - |
     # cncjs-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
+      security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign;
       npm run build:darwin-x64;
       ls -al output output/*;
       cp -af "output/cnc-darwin-x64/${RELEASE}.dmg" "releases/${RELEASE}-osx-x64.dmg";
