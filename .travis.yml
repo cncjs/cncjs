@@ -75,7 +75,7 @@ after_success:
   - PACKAGE_NAME=`scripts/package-name.sh src/package.json`
   - PACKAGE_VERSION=`scripts/package-version.sh src/package.json`
   - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
-  - COMMIT_LOG=`git log -1 --date=iso`
+  - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
     # cncjs-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then

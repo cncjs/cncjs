@@ -66,7 +66,7 @@ deploy_script:
   - ps: $PACKAGE_NAME = bash -c 'scripts/package-name.sh src/package.json'
   - ps: $PACKAGE_VERSION = bash -c 'scripts/package-version.sh src/package.json'
   - ps: $env:RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
-  - ps: $env:COMMIT_LOG = git log -1 --date=iso
+  - ps: $env:COMMIT_LOG = git log -1 --format='%ci %H %s'
   - ps: echo "$env:RELEASE"
   - ps: echo "$env:COMMIT_LOG"
   - ps: |
