@@ -77,7 +77,7 @@ after_success:
   - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
-    # cncjs-darwin-x64
+    # cnc-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign;
       npm run build:darwin-x64;
