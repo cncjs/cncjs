@@ -33,7 +33,7 @@
     "moment": "~2.13.0",
     "morgan": "~1.7.0",
     "range_check": "~1.2.0",
-    "serialport": "~3.1.1",
+    "serialport": "~3.1.2",
     "serve-favicon": "~2.3.0",
     "serve-static": "~1.10.2",
     "session-file-store": "~0.2.0",
