@@ -80,7 +80,7 @@
     "win": {
       "iconUrl": "https://raw.githubusercontent.com/cheton/cnc/master/build/icon.ico",
       "loadingGif": "build/install-spinner.gif",
-      "msi": true
+      "msi": false
     }
   },
   "directories": {
