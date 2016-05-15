@@ -73,8 +73,7 @@ deploy_script:
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
         npm run build:win32-x64
         Get-ChildItem output\win
-        Get-ChildItem output\win-unpacked
-        Copy-Item "output\win-x64\Setup.exe" "releases\${env:RELEASE}-win32-x64.exe"
+        Copy-Item "output\win\${PACKAGE_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win32-x64.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
             npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-x64.exe"
