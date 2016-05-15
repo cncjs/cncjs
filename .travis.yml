@@ -79,6 +79,7 @@ after_success:
   - |
     # cnc-darwin-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
+      # https://github.com/electron-userland/electron-builder/issues/398
       security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign;
       npm run build:darwin-x64;
       ls -al output output/*;
