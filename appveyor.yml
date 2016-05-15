@@ -72,6 +72,7 @@ deploy_script:
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
         npm run build:win32-x64
+        Get-ChildItem output
         Get-ChildItem output\win-x64
         Copy-Item "output\win-x64\Setup.exe" "releases\${env:RELEASE}-win32-x64.exe"
         Get-ChildItem releases
