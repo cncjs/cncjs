@@ -2,7 +2,10 @@
 
 abbrev_commit=`git log -1 --format=%h`
 
-gulp pkg-sync
+mkdir -p output
+rm -rf output/*
+
+npm run package-update
 
 pushd src
 npm version ${npm_package_version}-latest-${abbrev_commit}

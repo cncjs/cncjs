@@ -1,6 +1,9 @@
 #!/bin/bash
 
-gulp pkg-sync
+mkdir -p output
+rm -rf output/*
+
+npm run package-update
 
 pushd src
 mkdir -p ../dist/cnc/
