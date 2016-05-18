@@ -80,40 +80,13 @@ const renderPage = (req, res, next) => {
     next();
 };
 
-const webpackMain = (app) => {
-    if (process.env.NODE_ENV !== 'development') {
-        log.error('The process.env.NODE_ENV should be "development" while running a webpack server');
-        return;
-    }
-
-    const webpack = require('webpack');
-    const config = require('../../webpack.config.development');
-    const compiler = webpack(config);
-
-    // https://github.com/webpack/webpack-dev-middleware
-    app.use(require('webpack-dev-middleware')(compiler, {
-        noInfo: false,
-        quite: false,
-        lazy: false,
-        // https://webpack.github.io/docs/node.js-api.html#compiler
-        watchOptions: {
-            poll: true // use polling instead of native watchers
-        },
-        publicPath: config.output.publicPath,
-        stats: {
-            colors: true
-        }
-    }));
-
-    app.use(require('webpack-hot-middleware')(compiler));
-};
-
 const appMain = () => {
     const app = express();
 
     {  // Settings
-        if (settings.env === 'development') {
-            webpackMain(app);
+        if (process.env.NODE_ENV === 'development') {
+            const webpackDevServer = require('./webpack-dev-server').default;
+            webpackDevServer(app);
 
             // Error handler - https://github.com/expressjs/errorhandler
             // Development error handler, providing stack traces and error message responses
