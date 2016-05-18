@@ -31,23 +31,23 @@ module.exports = {
             'react-addons-shallow-compare',
             'react-addons-update',
             'react-bootstrap',
+            'react-css-modules',
             'react-dom',
             'react-dropzone',
             'react-infinite',
+            'react-redux',
             'react-router',
+            'react-router-redux',
             'react-select',
             'react-sortablejs',
             'react-virtualized',
+            'redux',
             'sha1',
             'sortablejs',
             'stacktrace-js',
             'superagent',
             'three'
         ]
-    },
-    output: {
-        path: path.join(__dirname, 'dist/cnc/web'),
-        filename: '[name].js'
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
