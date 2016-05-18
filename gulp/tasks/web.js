@@ -2,19 +2,12 @@ import gulp from 'gulp';
 import gutil from 'gulp-util';
 import webpack from 'webpack';
 
-const distConfig = {
-    base: 'src/web',
-    src: [
-        'src/web/favicon.ico',
-        'src/web/plugins.js',
-        'src/web/{images,textures}/**/*',
-        'src/web/vendor/**/*',
-        'src/web/i18n/**/*'
-    ],
-    dest: 'dist/cnc/web'
-};
-
 export default (options) => {
+    gulp.task('web:i18n', ['i18next:web']);
+
+    //
+    // Development Build
+    //
     gulp.task('web:build-dev', (callback) => {
         if (process.env.NODE_ENV !== 'development') {
             const err = new Error('Set NODE_ENV to "development" for development build');
@@ -30,7 +23,22 @@ export default (options) => {
             callback();
         });
     });
+    gulp.task('web:output', () => {
+        const files = [
+            'src/web/favicon.ico',
+            'src/web/plugins.js',
+            'src/web/{images,textures}/**/*',
+            'src/web/vendor/**/*',
+            'src/web/i18n/**/*'
+        ];
 
+        return gulp.src(files, { base: 'src/web' })
+            .pipe(gulp.dest('output/web'));
+    });
+
+    //
+    // Production Build
+    //
     gulp.task('web:build-prod', (callback) => {
         if (process.env.NODE_ENV !== 'production') {
             const err = new Error('Set NODE_ENV to "production" for production build');
@@ -46,11 +54,16 @@ export default (options) => {
             callback();
         });
     });
-
-    gulp.task('web:i18n', ['i18next:web']);
-
     gulp.task('web:dist', () => {
-        return gulp.src(distConfig.src, { base: distConfig.base })
-            .pipe(gulp.dest(distConfig.dest));
+        const files = [
+            'src/web/favicon.ico',
+            'src/web/plugins.js',
+            'src/web/{images,textures}/**/*',
+            'src/web/vendor/**/*',
+            'src/web/i18n/**/*'
+        ];
+
+        return gulp.src(files, { base: 'src/web' })
+            .pipe(gulp.dest('dist/cnc/web'));
     });
 };

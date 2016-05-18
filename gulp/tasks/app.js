@@ -69,15 +69,12 @@ const webpackProductionConfig = {
     }
 };
 
-const distConfig = {
-    base: 'src/app',
-    src: [
-        'src/app/{i18n,views}/**/*'
-    ],
-    dest: 'dist/cnc/app'
-};
-
 export default (options) => {
+    gulp.task('app:i18n', ['i18next:app']);
+
+    //
+    // Development Build
+    //
     gulp.task('app:build-dev', (callback) => {
         if (process.env.NODE_ENV !== 'development') {
             const err = new Error('Set NODE_ENV to "development" for development build');
@@ -90,9 +87,20 @@ export default (options) => {
         ];
         return gulp.src(src)
             .pipe(babel())
-            .pipe(gulp.dest('dist/cnc/app'));
+            .pipe(gulp.dest('output/app'));
+    });
+    gulp.task('app:output', () => {
+        const files = [
+            'src/app/{i18n,views}/**/*'
+        ];
+
+        return gulp.src(files, { base: 'src/app' })
+            .pipe(gulp.dest('output/app'));
     });
 
+    //
+    // Production Build
+    //
     gulp.task('app:build-prod', (callback) => {
         if (process.env.NODE_ENV !== 'production') {
             const err = new Error('Set NODE_ENV to "production" for production build');
@@ -107,11 +115,12 @@ export default (options) => {
             callback();
         });
     });
-
-    gulp.task('app:i18n', ['i18next:app']);
-
     gulp.task('app:dist', () => {
-        return gulp.src(distConfig.src, { base: distConfig.base })
-            .pipe(gulp.dest(distConfig.dest));
+        const files = [
+            'src/app/{i18n,views}/**/*'
+        ];
+
+        return gulp.src(files, { base: 'src/app' })
+            .pipe(gulp.dest('dist/cnc/app'));
     });
 };

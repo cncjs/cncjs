@@ -1,6 +1,12 @@
 #!/usr/bin/env node
 
-var cnc = require('../dist/cnc/cnc').default;
+var cnc;
+
+if (process.env.NODE_ENV === 'development') {
+    cnc = require('../output/cnc').default;
+} else {
+    cnc = require('../dist/cnc/cnc').default;
+}
 
 cnc(function(err, server) {
     if (err) {

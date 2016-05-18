@@ -35,7 +35,7 @@ gulp.task('development', (callback) => {
         'clean',
         ['app:build-dev', 'web:build-dev'],
         ['app:i18n', 'web:i18n'],
-        ['app:dist', 'web:dist'],
+        ['app:output', 'web:output'],
         callback
     );
 });
