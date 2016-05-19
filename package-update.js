@@ -10,55 +10,24 @@ import gulp from 'gulp';
 // Copy necessary properties from 'package.json' to 'src/package.json'
 import pkg from './package.json';
 import pkgApp from './src/package.json';
+import findImports from 'find-imports';
 
-const findDeps = (patterns) => {
-    let filenames = [];
-
-    patterns.forEach((pattern) => {
-        filenames = filenames.concat(glob.sync(pattern));
-    });
-
-    let deps = [];
-    _.each(filenames, (pathname) => {
-        const content = fs.readFileSync(pathname, 'utf8');
-
-        { // import
-            let r = null;
-            const patternImport = new RegExp(/[^0-9a-zA-Z_$\n]*import\s+("[^"]+"|'[^']+'|\{[^\}]+\}|[a-zA-Z_$][0-9a-zA-Z_$]*|(?:\*\s+as\s+[a-zA-Z_$][0-9a-zA-Z_$]*\s*,?\s*)*)\s*(?:from\s*((?:"[^"]+")|(?:'[^']+')))?/gm);
-            while ((r = patternImport.exec(content))) {
-                const dep = (r[2] || r[1] || '')
-                    .replace(/^"(.+)"$/, '$1')
-                    .replace(/^'(.+)'$/, '$1');
-
-                if (dep.startsWith('.') || dep.startsWith('/')) {
-                    continue;
-                }
-
-                deps = _.union(deps, [dep]);
-            }
+const files = [
+    'src/*.js',
+    'src/app/**/*.{js,jsx}'
+];
+const deps = _(findImports(files))
+    .toArray()
+    .flatten()
+    .uniq()
+    .filter((dep) => {
+        if (dep.startsWith('.') || dep.startsWith('/')) {
+            return false
         }
-
-        { // require
-            let r = null;
-            const patternRequire = new RegExp(/[^a-zA-Z0-9_\n]*require\(("[^"]+"|'[^']+'|[^"']+)\)/gm);
-            while ((r = patternRequire.exec(content))) {
-                const dep = (r[1] || '')
-                    .replace(/^"(.+)"$/, '$1')
-                    .replace(/^'(.+)'$/, '$1');
-
-                if (dep.startsWith('.') || dep.startsWith('/')) {
-                    continue;
-                }
-
-                deps = _.union(deps, [dep]);
-            }
-        }
-    });
-
-    deps = deps.sort();
-
-    return deps;
-};
+        return true;
+    })
+    .sort()
+    .value();
 
 // Development:
 //   package.json
@@ -74,10 +43,7 @@ pkgApp.license = pkg.license;
 pkgApp.repository = pkg.repository;
 
 // Copy only Node.js dependencies to application package.json
-pkgApp.dependencies = _.pick(pkg.dependencies, findDeps([
-    'src/*.js',
-    'src/app/**/*.{js,jsx}'
-]));
+pkgApp.dependencies = _.pick(pkg.dependencies, deps);
 
 const target = path.resolve(__dirname, 'src/package.json');
 const content = JSON.stringify(pkgApp, null, 2);
