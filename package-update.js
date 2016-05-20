@@ -16,18 +16,7 @@ const files = [
     'src/*.js',
     'src/app/**/*.{js,jsx}'
 ];
-const deps = _(findImports(files))
-    .toArray()
-    .flatten()
-    .uniq()
-    .filter((dep) => {
-        if (dep.startsWith('.') || dep.startsWith('/')) {
-            return false
-        }
-        return true;
-    })
-    .sort()
-    .value();
+const deps = findImports(files, { flatten: true }).sort();
 
 // Development:
 //   package.json
