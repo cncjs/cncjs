@@ -2,6 +2,7 @@
 var nib = require('nib');
 var path = require('path');
 var webpack = require('webpack');
+var findImports = require('find-imports');
 
 module.exports = {
     cache: true,
@@ -10,44 +11,7 @@ module.exports = {
         app: [
             path.resolve(__dirname, 'src/web/index.jsx')
         ],
-        vendor: [
-            'async',
-            'classnames',
-            'colornames',
-            'gcode-interpreter',
-            'gcode-parser',
-            'gcode-toolpath',
-            'i18next',
-            'i18next-browser-languagedetector',
-            'i18next-xhr-backend',
-            'jsuri',
-            'lodash',
-            'moment',
-            'mousetrap',
-            'pubsub-js',
-            'rc-slider',
-            'rc-switch',
-            'react',
-            'react-addons-shallow-compare',
-            'react-addons-update',
-            'react-bootstrap',
-            'react-css-modules',
-            'react-dom',
-            'react-dropzone',
-            'react-infinite',
-            'react-redux',
-            'react-router',
-            'react-router-redux',
-            'react-select',
-            'react-sortablejs',
-            'react-virtualized',
-            'redux',
-            'sha1',
-            'sortablejs',
-            'stacktrace-js',
-            'superagent',
-            'three'
-        ]
+        vendor: findImports('src/web/**/*.{js,jsx}', { flatten: true })
     },
     plugins: [
         new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
