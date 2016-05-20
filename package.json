@@ -190,7 +190,7 @@
     "esprima": "^2.7.2",
     "eventsource-polyfill": "~0.9.6",
     "file-loader": "~0.8.5",
-    "find-imports": "^0.1.0",
+    "find-imports": "^0.3.1",
     "github": "~0.2.4",
     "glob": "~7.0.3",
     "gulp": "~3.9.1",
