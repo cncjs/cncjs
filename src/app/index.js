@@ -56,6 +56,8 @@ const run = ({ port, host, backlog, config, verbose, mount }) => {
 
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
+            const address = server.address();
+            console.log('Started the server at http://%s:%d/.', address.address, address.port);
             cncserver(server);
         });
 };
