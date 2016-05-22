@@ -57,6 +57,8 @@ const createServer = ({ port = 0, host, backlog, config, verbosity, mount }, cal
 
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
+            const address = server.address();
+            console.log('Started the server at http://%s:%d/.', address.address, address.port);
             cncserver(server);
             callback && callback(null, server);
         })
