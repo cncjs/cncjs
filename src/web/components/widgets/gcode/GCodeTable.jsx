@@ -30,15 +30,17 @@ class GCodeTable extends React.Component {
                     disableHeader={true}
                     headerHeight={headerHeight}
                     height={height}
-                    rowGetter={index => rows[index]}
+                    rowGetter={({ index }) => {
+                        return rows[index];
+                    }}
                     rowHeight={rowHeight}
-                    rowsCount={rows.length}
+                    rowCount={rows.length}
                     scrollToIndex={scrollToIndex}
                     width={width}
                 >
                     <FlexColumn
                         className="gcode-table-cell-status"
-                        cellRenderer={(cellData, cellDataKey, rowData, rowIndex, columnData) => {
+                        cellRenderer={({ cellData, columnData, dataKey, rowData, rowIndex }) => {
                             const value = rowData.status;
                             const classes = {
                                 icon: classNames(
@@ -69,7 +71,7 @@ class GCodeTable extends React.Component {
                     />
                     <FlexColumn
                         className="gcode-table-cell-command"
-                        cellRenderer={(cellData, cellDataKey, rowData, rowIndex, columnData) => {
+                        cellRenderer={({ cellData, columnData, dataKey, rowData, rowIndex }) => {
                             const value = rowData.cmd;
                             const style = {
                                 backgroundColor: colornames('gray 25'),
