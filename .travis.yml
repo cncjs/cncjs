@@ -93,14 +93,7 @@ after_success:
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
-          "releases/${RELEASE}-osx-x64.dmg";
-        npm run github-release -- \
-          --owner=cheton \
-          --repo=cnc \
-          --tag="${TRAVIS_BRANCH}-latest" \
-          --name="${TRAVIS_BRANCH}" \
-          --body="${COMMIT_LOG}" \
-          "releases/${RELEASE}-osx-x64.zip";
+          "releases/${RELEASE}-osx-x64.dmg" "releases/${RELEASE}-osx-x64.zip";
       fi
     fi
   - |
