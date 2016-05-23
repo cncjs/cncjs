@@ -150,7 +150,7 @@
     "react-router-redux": "~4.0.4",
     "react-select": "~1.0.0-beta13",
     "react-sortablejs": "~1.0.0",
-    "react-virtualized": "~7.0.5",
+    "react-virtualized": "~7.1.1",
     "redux": "~3.5.2",
     "serialport": "~3.1.2",
     "serve-favicon": "~2.3.0",
