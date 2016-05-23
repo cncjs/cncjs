@@ -36,8 +36,13 @@ program
     .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)', 511)
     .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
     .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
-    .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
-    .parse(process.argv);
+    .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' });
+
+// https://github.com/tj/commander.js/issues/512
+// Commander assumes that process.argv[0] is 'node' and argv[1] is script name
+if (process.argv.length > 1) {
+    program.parse(process.argv);
+}
 
 const cnc = (options = {}, callback) => {
     // Change working directory to 'app' before require('./app')
