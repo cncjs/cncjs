@@ -238,7 +238,7 @@ class Visualizer extends React.Component {
             };
         }
         this.onResize();
-        this.onResizeThrottled = _.throttle(this.onResize, 10);
+        this.onResizeThrottled = _.throttle(::this.onResize, 10);
         window.addEventListener('resize', this.onResizeThrottled);
     }
     removeResizeEventListener() {

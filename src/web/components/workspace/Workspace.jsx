@@ -29,8 +29,8 @@ class Workspace extends React.Component {
     };
 
     componentDidMount() {
-        this.subscribe();
         this.addResizeEventListener();
+        this.subscribe();
 
         setTimeout(() => {
             // A workaround solution to trigger componentDidUpdate on initial render
@@ -38,8 +38,8 @@ class Workspace extends React.Component {
         }, 0);
     }
     componentWillUnmount() {
-        this.removeResizeEventListener();
         this.unsubscribe();
+        this.removeResizeEventListener();
     }
     componentDidUpdate() {
         store.set('workspace.container.primary.show', this.state.showPrimaryContainer);
@@ -48,7 +48,7 @@ class Workspace extends React.Component {
         this.resizeDefaultContainer();
     }
     addResizeEventListener() {
-        this.onResizeThrottled = _.throttle(this.resizeDefaultContainer, 10);
+        this.onResizeThrottled = _.throttle(::this.resizeDefaultContainer, 10);
         window.addEventListener('resize', this.onResizeThrottled);
     }
     removeResizeEventListener() {
