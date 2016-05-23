@@ -12,39 +12,7 @@ class FileUploader extends React.Component {
     state = {
         isUploading: false
     };
-    pubsubTokens = [];
 
-    componentDidMount() {
-        this.subscribe();
-    }
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
-    subscribe() {
-        { // resize
-            const token = pubsub.subscribe('resize', (msg) => {
-                this.repositionFileUploaderBox();
-            });
-            this.pubsubTokens.push(token);
-        }
-    }
-    unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
-    // Position the file uploader box to the center of workspace
-    repositionFileUploaderBox() {
-        const containerEl = document.querySelector('[data-ns=workspace] .default-container');
-        const left = parseInt(containerEl.style.left, 10) || 0;
-        const right = parseInt(containerEl.style.right, 10) || 0;
-        const offset = left - right;
-        const ref = this.refs['file-uploader-box'];
-
-        ref.style.marginLeft = offset > 0 ? offset + 'px' : '';
-        ref.style.marginRight = offset < 0 ? -offset + 'px' : '';
-    }
     startWaiting() {
         // Adds the 'wait' class to <html>
         const root = document.documentElement;
@@ -139,7 +107,7 @@ class FileUploader extends React.Component {
                 <div className="file-uploader-box" ref="file-uploader-box">
                     <div className="file-uploader-content" disabled={!canClick}>
                         <i style={{ fontSize: 48 }} className="fa fa-arrow-circle-o-up"></i>
-                        <h4>{i18n._('Drop G-code file here or click below to upload.')}</h4>
+                        <p className="file-uploader-tips">{i18n._('Drop G-code file here or click below to upload.')}</p>
                         <br />
                         <button
                             type="button"

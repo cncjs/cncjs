@@ -44,8 +44,8 @@
         }
 
         .file-uploader-block {
-            position: fixed;
-            top: 50px;
+            position: absolute;
+            top: 0;
             bottom: 0;
             left: 15px;
             right: 15px;
@@ -74,15 +74,25 @@
                 border-style: solid;
                 border-radius: 4px;
                 margin: 0 auto;
-                min-width: 240px;
+                min-width: 180px;
                 max-width: 480px;
                 padding: 20px;
             }
 
+            .file-uploader-content {
+                white-space: normal;
+            }
             .file-uploader-content[disabled] {
                 cursor: not-allowed;
                 box-shadow: none;
                 opacity: .65;
+            }
+        }
+        .file-uploader-tips {
+            font-size: 18px;
+
+            @media (max-width: 991px) {
+                font-size: 14px;
             }
         }
 
