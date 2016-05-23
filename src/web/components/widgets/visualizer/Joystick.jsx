@@ -10,8 +10,8 @@ const Joystick = (props) => {
         <div className="joystick">
             <div className="container-fluid">
                 <div className="row no-gutter">
-                    <div className="col-sm-4"></div>
-                    <div className="col-sm-4">
+                    <div className="col-xs-4"></div>
+                    <div className="col-xs-4">
                         <PressAndHold
                             className="joystick-button"
                             onClick={up}
@@ -21,10 +21,10 @@ const Joystick = (props) => {
                             <i className="fa fa-chevron-up"></i>
                         </PressAndHold>
                     </div>
-                    <div className="col-sm-4"></div>
+                    <div className="col-xs-4"></div>
                 </div>
                 <div className="row no-gutter">
-                    <div className="col-sm-4 texe-center">
+                    <div className="col-xs-4 texe-center">
                         <PressAndHold
                             className="joystick-button"
                             onClick={left}
@@ -34,7 +34,7 @@ const Joystick = (props) => {
                             <i className="fa fa-chevron-left"></i>
                         </PressAndHold>
                     </div>
-                    <div className="col-sm-4">
+                    <div className="col-xs-4">
                         <PressAndHold
                             className="joystick-button"
                             onClick={center}
@@ -44,7 +44,7 @@ const Joystick = (props) => {
                             <i className="fa fa-square-o"></i>
                         </PressAndHold>
                     </div>
-                    <div className="col-sm-4">
+                    <div className="col-xs-4">
                         <PressAndHold
                             className="joystick-button"
                             onClick={right}
@@ -56,8 +56,8 @@ const Joystick = (props) => {
                     </div>
                 </div>
                 <div className="row no-gutter">
-                    <div className="col-sm-4"></div>
-                    <div className="col-sm-4">
+                    <div className="col-xs-4"></div>
+                    <div className="col-xs-4">
                         <PressAndHold
                             className="joystick-button"
                             onClick={down}
@@ -67,7 +67,7 @@ const Joystick = (props) => {
                             <i className="fa fa-chevron-down" style={{ verticalAlign: 'top' }}></i>
                         </PressAndHold>
                     </div>
-                    <div className="col-sm-4"></div>
+                    <div className="col-xs-4"></div>
                 </div>
             </div>
         </div>
