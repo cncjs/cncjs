@@ -244,6 +244,7 @@ class Visualizer extends React.Component {
     removeResizeEventListener() {
         // handle resize event
         window.removeEventListener('resize', this.onResizeThrottled);
+        this.onResizeThrottled = null;
     }
     resizeRenderer() {
         if (!(this.camera && this.renderer)) {
