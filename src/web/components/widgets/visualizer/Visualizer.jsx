@@ -80,8 +80,10 @@ class Visualizer extends React.Component {
                 y = (Number(y) || 0) - pivotPoint.y;
                 z = (Number(z) || 0) - pivotPoint.z;
 
-                // Set tool head position
-                this.toolhead.position.set(x, y, z);
+                if (this.toolhead) {
+                    // Set tool head position
+                    this.toolhead.position.set(x, y, z);
+                }
 
                 // Update the scene
                 this.updateScene();
