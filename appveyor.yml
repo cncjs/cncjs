@@ -57,8 +57,6 @@ build_script:
       else {
         npm run build
       }
-
-deploy_script:
   - ps: mkdir releases
   - ps: $PACKAGE_NAME = bash -c 'scripts/package-name.sh src/package.json'
   - ps: $PACKAGE_VERSION = bash -c 'scripts/package-version.sh src/package.json'
@@ -73,7 +71,7 @@ deploy_script:
         Copy-Item "output\win\${PACKAGE_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win32-x64.exe"
         Get-ChildItem releases
         if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-            npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-x64.exe"
+          npm run github-release -- --owner=cheton --repo=cnc --tag="${env:APPVEYOR_REPO_BRANCH}-latest" --name="${env:APPVEYOR_REPO_BRANCH}" --body="${env:COMMIT_LOG}" "releases\${env:RELEASE}-win32-x64.exe"
         }
       }
 
@@ -95,3 +93,4 @@ deploy:
     prerelease: false
     on:
       appveyor_repo_tag: true  # deploy on tag push only
+      nodejs_version: "4"
