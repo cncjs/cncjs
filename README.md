@@ -14,9 +14,9 @@ A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) ru
   * Grbl v0.9 or later
   * TinyG2 will be supported in v2.x
 * Desktop app for Linux, OS X, and Windows
-  * Linux (i386, amd64): <i>.deb</i> installer and tar ball
-  * OS X (x64): <i>.dmg</i> installer (signed with <i>Certum Open Source Code Signing certificate</i>)
-  * Windows (x64): <i>.exe</i> installer (signed with <i>Certum Open Source Code Signing certificate</i>)
+  * Linux (i386, amd64): <i>.deb</i> installer and <i>.tar.gz</i> file
+  * OS X (x64): <i>.dmg</i> installer
+  * Windows (x64): <i>.exe</i> installer
 * 3D Visualizer
 * Allows multiple HTTP connections at the same serial port
 * Responsive view for small screen display with device width less than 720px
