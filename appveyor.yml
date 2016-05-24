@@ -3,7 +3,6 @@
 version: "{build}-{branch}"
 
 cache:
-  - node_modules
   - '%APPDATA%\npm-cache'
   - '%USERPROFILE%\.electron'
 
@@ -16,7 +15,6 @@ init:
 environment:
   matrix:
   - nodejs_version: "4"
-  - nodejs_version: "5"
   global:
     GITHUB_TOKEN:
       secure: pHSSJbIpu8XvZzBVVLN50Scjic1Wo01v8WhCn0SBOQji4zZPWrM7zssrwuQjRzwn
@@ -84,17 +82,17 @@ test: off
 # Packaging artifacts
 # https://www.appveyor.com/docs/packaging-artifacts
 artifacts:
-  - path: 'releases\*.exe'
+  # pushing all *.exe files in a directory
+  - path: releases\*.exe
 
 # Publishing artifacts to GitHub Releases
 # https://www.appveyor.com/docs/deployment/github
 deploy:
-  provider: GitHub
-  auth_token:
-    secure: pHSSJbIpu8XvZzBVVLN50Scjic1Wo01v8WhCn0SBOQji4zZPWrM7zssrwuQjRzwn
-  artifact: /.*\.exe/
-  draft: false
-  prerelease: false
-  on:
-    appveyor_repo_tag: true  # deploy on tag push only
-    nodejs_version: "4"
+  - provider: GitHub
+    auth_token:
+      secure: pHSSJbIpu8XvZzBVVLN50Scjic1Wo01v8WhCn0SBOQji4zZPWrM7zssrwuQjRzwn
+    draft: false
+    prerelease: false
+    on:
+      branch: master           # release from master branch only
+      appveyor_repo_tag: true  # deploy on tag push only
