@@ -14,7 +14,7 @@ program
     .option('-r, --repo <repo>', 'repo')
     .option('-t, --tag <tag>', 'tag')
     .option('-n, --name <name>', 'name')
-    .option('-b, --body <body>', 'body')
+    .option('-b, --body <body>', 'body', false)
     .parse(process.argv);
 
 const github = new GitHub({
@@ -80,7 +80,7 @@ const uploadAsset = (options) => {
 };
 
 const main = async () => {
-    const { owner, repo, tag, name, body = '' } = program;
+    const { owner, repo, tag, name, body } = program;
 
     try {
         console.log('> releases#listReleases');
@@ -98,19 +98,22 @@ const main = async () => {
                 repo: repo,
                 tag_name: tag,
                 name: name || tag,
-                body: body
+                body: body || ''
             });
             console.log('ok', release);
         } else if (release.body !== body) {
             console.log('> releases#editRelease');
-            release = await editRelease({
+            let releaseOptions = {
                 owner: owner,
                 repo: repo,
                 id: release.id,
                 tag_name: tag,
-                name: name || tag,
-                body: body
-            });
+                name: name || tag
+            };
+            if (body) {
+                releaseOptions.body = body || '';
+            }
+            release = await editRelease(releaseOptions);
             console.log('ok', release);
         }
 
