@@ -13,9 +13,13 @@ A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) ru
 * Supported CNC controllers
   * Grbl v0.9 or later
   * TinyG2 will be supported in v2.x
+* Desktop app for Linux, OS X, and Windows
+  * Linux (i386, amd64): <i>.deb</i> installer and tar ball
+  * OS X (x64): <i>.dmg</i> installer (signed with <i>Certum Open Source Code Signing certificate</i>)
+  * Windows (x64): <i>.exe</i> installer (signed with <i>Certum Open Source Code Signing certificate</i>)
 * 3D Visualizer
 * Allows multiple HTTP connections at the same serial port
-* Supports a minimum width of 720px to target small-screen devices
+* Responsive view for small screen display with device width less than 720px
 * [Widget Management](https://github.com/cheton/cnc/wiki/User-Guide#widget-management)
 * [TinyWeb Console for 320x240 LCD Display](https://github.com/cheton/cnc/wiki/User-Guide#tinyweb-console-for-320x240-lcd-display)
 * [Keyboard Shortcuts](https://github.com/cheton/cnc/wiki/User-Guide#keyboard-shortcuts)
