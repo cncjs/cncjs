@@ -3,8 +3,7 @@ import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import THREE from 'three';
-import TrackballControls from '../../../lib/three/TrackballControls';
+import { THREE, Detector } from '../../../lib/three';
 import controller from '../../../lib/controller';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
@@ -427,15 +426,20 @@ class Visualizer extends React.Component {
         this.updateScene();
     }
     createRenderer(width, height) {
-        const renderer = new THREE.WebGLRenderer({
+        const options = {
             autoClearColor: true,
             antialias: true,
             alpha: true
-        });
+        };
+        const renderer = Detector.webgl
+            ? new THREE.WebGLRenderer(options)
+            : new THREE.CanvasRenderer(options);
         renderer.setClearColor(new THREE.Color(colornames('white')), 1);
         renderer.setSize(width, height);
-        renderer.shadowMap.enabled = true;
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        if (Detector.webgl) {
+            renderer.shadowMap.enabled = true;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        }
         renderer.clear();
 
         return renderer;
@@ -454,7 +458,7 @@ class Visualizer extends React.Component {
         return camera;
     }
     createTrackballControls(object, domElement) {
-        const controls = new TrackballControls(object, domElement);
+        const controls = new THREE.TrackballControls(object, domElement);
 
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 0.5;
