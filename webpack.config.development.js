@@ -24,6 +24,7 @@ module.exports = _.assign({}, baseConfig, {
     output: {
         path: path.join(__dirname, 'output/web'),
         filename: '[name].js',
+        pathinfo: true,
         publicPath: '/'
     },
     plugins: [
