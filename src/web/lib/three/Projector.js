@@ -374,7 +374,7 @@ THREE.Projector = function () {
 			} else if ( object instanceof THREE.Sprite ) {
 
 				if ( object.material.visible === false ) return;
-				//if ( object.frustumCulled === true && _frustum.intersectsSprite( object ) === false ) return;
+				if ( object.frustumCulled === true && _frustum.intersectsSprite( object ) === false ) return;
 
 				addObject( object );
 
