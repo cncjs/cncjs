@@ -152,8 +152,13 @@ class Visualizer extends React.Component {
         return shouldUpdate;
     }
     componentDidUpdate(prevProps, prevState) {
-        // The renderAnimationLoop will check the state of activeState and workflowState
-        requestAnimationFrame(::this.renderAnimationLoop);
+        if (Detector.webgl) {
+            // The renderAnimationLoop will check the state of activeState and workflowState
+            requestAnimationFrame(::this.renderAnimationLoop);
+        } else {
+            // No animation frame if WebGL is unavailable
+            this.updateScene();
+        }
     }
     subscribe() {
         { // port
