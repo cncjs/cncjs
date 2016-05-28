@@ -18,7 +18,7 @@
     "connect-multiparty": "~2.0.0",
     "connect-restreamer": "~1.0.3",
     "consolidate": "~0.14.1",
-    "cookie-parser": "~1.4.2",
+    "cookie-parser": "~1.4.3",
     "del": "~2.2.0",
     "errorhandler": "~1.4.3",
     "express": "~4.13.4",
