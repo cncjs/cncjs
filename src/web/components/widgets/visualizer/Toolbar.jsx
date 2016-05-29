@@ -1,8 +1,10 @@
 import _ from 'lodash';
-import i18n from '../../../lib/i18n';
+import { ButtonToolbar, ButtonGroup, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
+import store from '../../../store';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -19,7 +21,8 @@ class Toolbar extends React.Component {
     };
     state = {
         workflowState: WORKFLOW_STATE_IDLE,
-        gcodeFinished: false
+        gcodeFinished: false,
+        renderAnimation: store.get('widgets.visualizer.animation')
     };
     controllerEvents = {
         'gcode:statuschange': (data) => {
@@ -40,6 +43,10 @@ class Toolbar extends React.Component {
     }
     componentDidUpdate(prevProps, prevState) {
         this.props.setWorkflowState(this.state.workflowState);
+
+        if (store.get('widgets.visualizer.animation') !== this.state.renderAnimation) {
+            store.set('widgets.visualizer.animation', this.state.renderAnimation);
+        }
     }
     componentWillReceiveProps(nextProps) {
         const { port, activeState } = nextProps;
@@ -134,54 +141,79 @@ class Toolbar extends React.Component {
     }
     render() {
         const { port, ready } = this.props;
-        const { workflowState } = this.state;
+        const { workflowState, renderAnimation } = this.state;
         const canClick = !!port && ready;
         const canRun = canClick && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
         const canPause = canClick && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
         const canStop = canClick && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
         const canClose = canClick && _.includes([WORKFLOW_STATE_IDLE], workflowState);
+        const styles = {
+            closeIcon: {
+                fontSize: 14
+            },
+            menuIcon: {
+                fontSize: 14
+            }
+        };
 
         return (
-            <div className="btn-toolbar" role="toolbar">
-                <div className="btn-group btn-group-sm" role="group">
-                    <button
-                        type="button"
-                        className="btn btn-default"
+            <ButtonToolbar>
+                <ButtonGroup bsSize="sm">
+                    <Button
                         title={i18n._('Run')}
                         onClick={::this.handleRun}
                         disabled={!canRun}
                     >
                         <i className="fa fa-play"></i>
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    </Button>
+                    <Button
                         title={i18n._('Pause')}
                         onClick={::this.handlePause}
                         disabled={!canPause}
                     >
                         <i className="fa fa-pause"></i>
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    </Button>
+                    <Button
                         title={i18n._('Stop')}
                         onClick={::this.handleStop}
                         disabled={!canStop}
                     >
                         <i className="fa fa-stop"></i>
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    </Button>
+                    <Button
                         title={i18n._('Close')}
                         onClick={::this.handleClose}
                         disabled={!canClose}
                     >
-                        <i className="fa fa-times" style={{ fontSize: 14 }}></i>
-                    </button>
-                </div>
-            </div>
+                        <i className="fa fa-close" style={styles.closeIcon}></i>
+                    </Button>
+                </ButtonGroup>
+                <ButtonGroup bsSize="sm">
+                    <DropdownButton
+                        bsSize="sm"
+                        title={
+                            <i className="fa fa-cog"></i>
+                        }
+                        noCaret={true}
+                        id="visualizer-dropdown"
+                        disabled={!canClick}
+                    >
+                        <MenuItem header>{i18n._('Options')}</MenuItem>
+                        <MenuItem
+                            onClick={(event) => {
+                                this.setState({ renderAnimation: !renderAnimation });
+                            }}
+                        >
+                            {renderAnimation
+                                ? <i className="fa fa-toggle-on" style={styles.menuIcon}></i>
+                                : <i className="fa fa-toggle-off" style={styles.menuIcon}></i>
+                            }
+                            &nbsp;
+                            {i18n._('Toggle Toolhead Animation')}
+                        </MenuItem>
+                    </DropdownButton>
+                </ButtonGroup>
+            </ButtonToolbar>
         );
     }
 }
