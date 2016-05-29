@@ -1,4 +1,4 @@
-/* eslint no-console: 0, no-var: 0 */
+/* eslint no-console: 0, no-var: 0, prefer-arrow-callback: 0 */
 var root = this.parent || this;
 
 // Define global variables
@@ -7,7 +7,6 @@ root.app.config = root.app.config || {};
 root.app.window = this;
 root.app.version = root.app.version || (new Date()).getTime();
 root.app.webroot = root.app.webroot || '/';
-root.app.cdn = root.app.cdn || '/';
 
 window.root = root;
 
@@ -43,7 +42,7 @@ root.window.document.title = window.document.title;
     }
 }(this));
 
-// Parse data-version, data-webroot, and data-cdn attributes from the script tag
+// Parse data-version and data-webroot attributes from the script tag
 (function(global) {
     // Helper function for iterating over an array backwards. If the func
     // returns a true value, it will break out of the loop.
@@ -59,29 +58,13 @@ root.window.document.title = window.document.title;
     };
 
     var scripts = document.getElementsByTagName('script') || [];
-    eachReverse(scripts, (script) => {
+    eachReverse(scripts, function(script) {
         if (script.getAttribute('data-version')) {
             root.app.config.version = script.getAttribute('data-version') || root.app.config.version;
             root.app.config.webroot = script.getAttribute('data-webroot') || root.app.config.webroot;
-            root.app.config.cdn = script.getAttribute('data-cdn') || root.app.config.cdn;
             return true;
         }
 
         return false;
     });
-}(this));
-
-// Clears HTML5 Local Storage while rolling out a new version
-// Cache invalidation may affect with some modules while they are using HTML5 Local Storage for production.
-(function(global) {
-    if (window.Modernizr && window.Modernizr.localstorage) {
-        var version = root.app.config.version;
-
-        // localStorage is available
-        var localVersion = window.localStorage.getItem('version');
-        if (!localVersion || localVersion !== version) {
-            window.localStorage.clear(); // clear local
-            window.localStorage.setItem('version', version);
-        }
-    }
 }(this));
