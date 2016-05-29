@@ -5,6 +5,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { THREE, Detector } from '../../../lib/three';
 import controller from '../../../lib/controller';
+import store from '../../../store';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import FileUploader from './FileUploader';
@@ -55,7 +56,8 @@ class Visualizer extends React.Component {
                 y: 0,
                 z: 0
             }
-        }
+        },
+        renderAnimation: store.get('widgets.visualizer.animation')
     };
     controllerEvents = {
         'grbl:parserstate': (parserstate) => {
@@ -97,6 +99,18 @@ class Visualizer extends React.Component {
             this.gcodeVisualizer.setFrameIndex(frameIndex);
         }
     };
+    storeEventListener = () => {
+        let renderAnimation = store.get('widgets.visualizer.animation');
+
+        if (renderAnimation !== this.state.renderAnimation) {
+            this.setState({ renderAnimation: renderAnimation });
+
+            this.toolhead.visible = renderAnimation;
+
+            // Update the scene
+            this.updateScene();
+        }
+    };
     pubsubTokens = [];
 
     componentWillMount() {
@@ -115,6 +129,7 @@ class Visualizer extends React.Component {
         this.subscribe();
         this.addControllerEvents();
         this.addResizeEventListener();
+        store.on('change', this.storeEventListener);
 
         const el = ReactDOM.findDOMNode(this.refs.visualizer);
         this.createScene(el);
@@ -136,6 +151,7 @@ class Visualizer extends React.Component {
         });
     }
     componentWillUnmount() {
+        store.removeListener('change', this.storeEventListener);
         this.removeResizeEventListener();
         this.removeControllerEvents();
         this.unsubscribe();
@@ -152,13 +168,8 @@ class Visualizer extends React.Component {
         return shouldUpdate;
     }
     componentDidUpdate(prevProps, prevState) {
-        if (Detector.webgl) {
-            // The renderAnimationLoop will check the state of activeState and workflowState
-            requestAnimationFrame(::this.renderAnimationLoop);
-        } else {
-            // No animation frame if WebGL is unavailable
-            this.updateScene();
-        }
+        // The renderAnimationLoop will check the state of activeState and workflowState
+        requestAnimationFrame(::this.renderAnimationLoop);
     }
     subscribe() {
         { // port
@@ -389,6 +400,7 @@ class Visualizer extends React.Component {
             loadTexture(url, (err, texture) => {
                 this.toolhead = new ToolHead(color, texture);
                 this.toolhead.name = 'ToolHead';
+                this.toolhead.visible = this.state.renderAnimation;
                 this.group.add(this.toolhead);
 
                 // Update the scene
@@ -414,8 +426,10 @@ class Visualizer extends React.Component {
         this.updateScene();
     }
     renderAnimationLoop() {
-        const isAgitated = (this.state.activeState === ACTIVE_STATE_RUN) &&
-                         (this.state.workflowState === WORKFLOW_STATE_RUNNING);
+        const { renderAnimation, activeState, workflowState } = this.state;
+        const isAgitated = renderAnimation
+            && (activeState === ACTIVE_STATE_RUN)
+            && (workflowState === WORKFLOW_STATE_RUNNING);
 
         if (isAgitated) {
             // Call the render() function up to 60 times per second (i.e. 60fps)
@@ -428,6 +442,7 @@ class Visualizer extends React.Component {
             this.rotateToolHead(0);
         }
 
+        // Update the scene
         this.updateScene();
     }
     createRenderer(width, height) {

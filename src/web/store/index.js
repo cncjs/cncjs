@@ -70,6 +70,7 @@ const defaultState = {
         spindle: {
         },
         visualizer: {
+            animation: true
         },
         webcam: {
             disabled: false,
