@@ -5,7 +5,6 @@ console.assert(typeof root.app.config === 'object', 'root.app.config is not an o
 const settings = {
     version: root.app.config.version,
     webroot: root.app.config.webroot,
-    cdn: root.app.config.cdn,
     name: 'cnc',
     log: {
         level: 'warn', // trace, debug, info, warn, error
