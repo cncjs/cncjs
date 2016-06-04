@@ -66,7 +66,7 @@ build_script:
   - ps: echo "$env:COMMIT_LOG"
   - ps: |
       if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
-        npm run build:win32-x64
+        npm run build:win-x64
         Get-ChildItem output\win
         Copy-Item "output\win\${PACKAGE_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win32-x64.exe"
         Get-ChildItem releases

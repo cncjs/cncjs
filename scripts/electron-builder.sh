@@ -4,15 +4,19 @@ __dirname="$(CDPATH= cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 electron_version=$(electron --version)
 
 display_usage() {
-    echo
-    echo "Usage: "`basename $0`" [options]"
-    echo
-    echo "Options"
-    echo
-    echo "  -h, --help      output usage information"
-    echo "  -p, --platform  platform=linux|darwin|win32"
-    echo "  -a, --arch      arch=ia32|x64"
-    echo
+    echo 'Usage: '`basename $0`' [options]'
+    echo ''
+    echo 'Options:'
+    echo '  --version             Show version number  [boolean]'
+    echo '  --osx, -o             Build for OS X  [array]'
+    echo '  --linux, -l           Build for Linux  [array]'
+    echo '  --win, -w, --windows  Build for Windows  [array]'
+    echo '  --x64                 Build for x64  [boolean]'
+    echo '  --ia32                Build for ia32  [boolean]'
+    echo '  --publish, -p         Publish artifacts (to GitHub Releases), see https://goo.gl/WMlr4n  [choices: "onTag", "onTagOrDraft", "always", "never"]'
+    echo '  --help                Show help  [boolean]'
+    echo ''
+    echo 'Project home: https://github.com/electron-userland/electron-builder'
 }
 
 if [ $# -le 1 ]; then
@@ -23,25 +27,6 @@ fi
 if [[ ( $# == "--help") ||  $# == "-h" ]]; then
     display_usage
     exit 0
-fi
-
-for i in "$@"
-do
-case $i in
-    -p) platform="$2"; shift 2;;
-    -a) arch="$2"; shift 2;;
-
-    --platform=*) platform="${i#*=}"; shift 1;;
-    --arch=*) arch="${i#*=}"; shift 1;;
-
-    -*) echo "unknown option: $i" >&2; exit 1;;
-    *);;
-esac
-done
-
-if [[ -z "$platform" || -z "$arch" ]]; then
-    display_usage
-    exit 1
 fi
 
 pushd "$__dirname/../dist/cnc"
@@ -62,7 +47,4 @@ npm run electron-rebuild -- \
     --electron-prebuilt-dir=node_modules/electron-prebuilt/ \
     --which-module=serialport
 
-npm run electron-builder -- \
-    --dist \
-    --platform=${platform} \
-    --arch=${arch}
+npm run electron-builder -- "$@"
