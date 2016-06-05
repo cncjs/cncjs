@@ -9,14 +9,14 @@ const ControlPanel = (props) => {
     return (
         <div className="container-fluid control-panel">
             <div className="row no-gutter">
-                <div className="col-sm-6">
+                <div className="col-xs-6">
                     <JogPad
                         port={port}
                         unit={unit}
                         activeState={activeState}
                     />
                 </div>
-                <div className="col-sm-6">
+                <div className="col-xs-6">
                     <MotionControls
                         port={port}
                         unit={unit}
@@ -27,7 +27,7 @@ const ControlPanel = (props) => {
                 </div>
             </div>
             <div className="row no-gutter">
-                <div className="col-sm-12">
+                <div className="col-xs-12">
                     <JogDistance
                         unit={unit}
                     />

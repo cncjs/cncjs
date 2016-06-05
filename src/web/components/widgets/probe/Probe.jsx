@@ -321,7 +321,7 @@ class Probe extends React.Component {
                 </div>
                 <div className="container-fluid">
                     <div className="row no-gutter probe-options">
-                        <div className="col-sm-6">
+                        <div className="col-xs-6">
                             <div className="form-group">
                                 <label className="control-label">{i18n._('Probe Depth')}</label>
                                 <div className="input-group input-group-xs">
@@ -339,7 +339,7 @@ class Probe extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-sm-6">
+                        <div className="col-xs-6">
                             <div className="form-group">
                                 <label className="control-label">{i18n._('Probe Feedrate')}</label>
                                 <div className="input-group input-group-xs">
@@ -356,7 +356,7 @@ class Probe extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-sm-6">
+                        <div className="col-xs-6">
                             <div className="form-group">
                                 <label className="control-label">{i18n._('Touch Plate Thickness')}</label>
                                 <div className="input-group input-group-xs">
@@ -373,7 +373,7 @@ class Probe extends React.Component {
                                 </div>
                             </div>
                         </div>
-                        <div className="col-sm-6">
+                        <div className="col-xs-6">
                             <div className="form-group">
                                 <label className="control-label">{i18n._('Retraction Distance')}</label>
                                 <div className="input-group input-group-xs">
@@ -392,7 +392,7 @@ class Probe extends React.Component {
                         </div>
                     </div>
                     <div className="row no-gutter">
-                        <div className="col-sm-12">
+                        <div className="col-xs-12">
                             <div className="btn-toolbar">
                                 <div className="btn-group" role="group">
                                     <button
