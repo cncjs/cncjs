@@ -15,7 +15,7 @@ const ToolbarButton = ({ port, unit, activeState }) => {
             controller.writeln('G21'); // G21 specifies Metric unit
         }
     };
-    const handleSelect = (target, eventKey) => {
+    const handleSelect = (eventKey) => {
         const data = eventKey;
         if (data) {
             controller.writeln(data);

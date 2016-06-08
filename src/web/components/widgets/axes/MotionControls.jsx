@@ -7,12 +7,11 @@ import {
 } from './constants';
 
 const MotionControls = ({ port, unit, activeState, machinePos, workingPos }) => {
-    const send = (data) => {
-        controller.writeln(data);
-    };
-    const handleSelect = (target, eventKey) => {
+    const handleSelect = (eventKey) => {
         const data = eventKey;
-        send(data);
+        if (data) {
+            controller.writeln(data);
+        }
     };
 
     const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
@@ -54,7 +53,7 @@ const MotionControls = ({ port, unit, activeState, machinePos, workingPos }) => 
                             <button
                                 type="button"
                                 className="btn btn-sm btn-default"
-                                onClick={() => send('G0 X0 Y0 Z0')}
+                                onClick={() => controller.writeln('G0 X0 Y0 Z0')}
                                 disabled={!canClick}
                             >
                                 {i18n._('Go To Work Zero')}
@@ -66,7 +65,7 @@ const MotionControls = ({ port, unit, activeState, machinePos, workingPos }) => 
                             <button
                                 type="button"
                                 className="btn btn-sm btn-default"
-                                onClick={() => send('G53 G0 X0 Y0 Z0')}
+                                onClick={() => controller.writeln('G53 G0 X0 Y0 Z0')}
                                 disabled={!canClick}
                             >
                                 {i18n._('Go To Machine Zero')}

@@ -8,7 +8,7 @@ import {
 } from './constants';
 
 const DisplayPanel = ({ port, unit, activeState, machinePos, workingPos }) => {
-    const handleSelect = (target, eventKey) => {
+    const handleSelect = (eventKey) => {
         const data = eventKey;
         if (data) {
             controller.writeln(data);

@@ -7,7 +7,7 @@ import {
 } from './constants';
 
 const ToolbarButton = ({ port, activeState }) => {
-    const handleSelect = (target, eventKey) => {
+    const handleSelect = (eventKey) => {
         const data = eventKey;
         if (data) {
             controller.writeln(data);
