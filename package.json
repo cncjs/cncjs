@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "1.2.2",
+  "version": "1.2.3",
   "description": "A web-based CNC milling controller for the Arduino running GRBL",
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -162,7 +162,7 @@
     "stacktrace-js": "~1.2.0",
     "superagent": "~2.0.0",
     "three": "~0.77.1",
-    "webappengine": "~1.1.1",
+    "webappengine": "~1.1.2",
     "winston": "~2.2.0"
   },
   "devDependencies": {
