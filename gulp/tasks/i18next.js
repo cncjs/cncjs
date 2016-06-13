@@ -60,7 +60,7 @@ const webConfig = {
         sort: true,
         lngs: ['en', 'de', 'es', 'fr', 'it', 'ja', 'zh-cn', 'zh-tw'],
         defaultValue: (lng, ns, key) => {
-            if (lng === 'en'){
+            if (lng === 'en') {
                 return key; // Use key as value for base language
             }
             return ''; // Return empty string for other languages
