@@ -1,3 +1,7 @@
+import endsWith from 'lodash/endsWith';
+import mapKeys from 'lodash/mapKeys';
+import sha1 from 'sha1';
+
 const root = window.root;
 
 console.assert(typeof root.app.config === 'object', 'root.app.config is not an object');
@@ -85,6 +89,16 @@ const settings = {
             // your backend server supports multiloading
             // /locales/resources.json?lng=de+en&ns=ns1+ns2
             allowMultiLoading: false,
+
+            parse: function(data, url) {
+                if (endsWith(url, 'resource.json')) {
+                    data = mapKeys(data, (value, key) => {
+                        return sha1(key);
+                    });
+                }
+
+                return data;
+            },
 
             // allow cross domain requests
             crossDomain: false
