@@ -61,8 +61,10 @@ Go to https://github.com/yourusername/cnc and select your feature branch. Click 
 
 ## Localization (L10n)
 
-Find all resource strings stored in the <b>resource.json</b> file, which is located in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory.
+### Static Translations 
+Find all resource strings stored in the <b>resource.json</b> file, which is located in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory. You can create a pull request to submit your changes.
 
+### Runtime Translations
 Moreover, you can make translations during runtime by modifying <b>resource.json</b> from the installed directory. Note that your path may differ based on the Node installation path you have in place.
 ```bash
 $ cd $(dirname `which cnc`)
@@ -71,6 +73,17 @@ $ pwd
 $ cd ../lib/node_modules/cncjs/dist/cnc/web/i18n/
 ```
 
+To verify your changes during runtime, it's recommended that you open Developer Tools and disable browser cache. For example:
+
+##### Step 1: Open Developer Tools and click [Settings]
+![image](https://cloud.githubusercontent.com/assets/447801/16014196/cc4b730c-31c2-11e6-9f78-c84347d12190.png)
+
+##### Step 2: Disable cache
+![image](https://cloud.githubusercontent.com/assets/447801/16014264/1d32e872-31c3-11e6-9178-6cc06bd0f6b5.png)
+
+Now you can modify resource strings in the <b>dist/cnc/web/i18n</b> directory and refresh your browser to see the updates.
+
+<b>Note that you should not close DevTools to make sure your browser won't cache anything.</b>
 
 ## Running Local Development Server
 
