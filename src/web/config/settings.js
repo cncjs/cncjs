@@ -91,16 +91,15 @@ const settings = {
             // /locales/resources.json?lng=de+en&ns=ns1+ns2
             allowMultiLoading: false,
 
+            // parse data after it has been fetched
             parse: function(data, url) {
+                log.debug(`Loading resource: url="${url}"`);
+
                 if (endsWith(url, '/resource.json')) {
-                    const source = JSON.parse(data);
-                    const target = mapKeys(source, (value, key) => sha1(key));
-                    data = JSON.stringify(target, null, 2);
+                    return mapKeys(JSON.parse(data), (value, key) => sha1(key));
                 }
 
-                log.trace(`Loading resource: url="${url}"`);
-
-                return data;
+                return JSON.parse(data);
             },
 
             // allow cross domain requests
