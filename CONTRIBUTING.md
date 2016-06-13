@@ -61,7 +61,16 @@ Go to https://github.com/yourusername/cnc and select your feature branch. Click 
 
 ## Localization (L10n)
 
-You can find all resource strings stored in the <b>resource.json</b> file, which is located in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory.
+Find all resource strings stored in the <b>resource.json</b> file, which is located in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory.
+
+Moreover, you can make translations during runtime by modifying <b>resource.json</b> from the installed directory. Note that your path may differ based on the Node installation path you have in place.
+```bash
+$ cd $(dirname `which cnc`)
+$ pwd
+/Users/cheton/.nvm/versions/node/v4.4.3/bin
+$ cd ../lib/node_modules/cncjs/dist/cnc/web/i18n/
+```
+
 
 ## Running Local Development Server
 
