@@ -58,8 +58,13 @@ const webConfig = {
     options: {
         debug: false,
         sort: true,
-        lngs: ['en'],
-        defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
+        lngs: ['en', 'de', 'es', 'fr', 'it', 'ja', 'zh-cn', 'zh-tw'],
+        defaultValue: (lng, ns, key) => {
+            if (lng === 'en'){
+                return key; // Use key as value for base language
+            }
+            return ''; // Return empty string for other languages
+        },
         ns: [
             'locale', // language & timezone,
             'resource' // default
@@ -88,11 +93,12 @@ function customTransform(file, enc, done) {
 
     { // Using i18next-text
         parser.parseFuncFromString(content, { list: ['i18n._'] }, (key, options) => {
-            const defaultValue = key;
-            key = hash(defaultValue);
-            options.defaultValue = defaultValue;
-            parser.set(key, options);
-            tableData.push([key, defaultValue]);
+            parser.set(key, {
+                ...options,
+                nsSeparator: false,
+                keySeparator: false
+            });
+            tableData.push([key, key]);
         });
     }
 
