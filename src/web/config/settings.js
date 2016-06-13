@@ -1,6 +1,7 @@
 import endsWith from 'lodash/endsWith';
 import mapKeys from 'lodash/mapKeys';
 import sha1 from 'sha1';
+import log from '../lib/log';
 
 const root = window.root;
 
@@ -91,11 +92,13 @@ const settings = {
             allowMultiLoading: false,
 
             parse: function(data, url) {
-                if (endsWith(url, 'resource.json')) {
-                    data = mapKeys(data, (value, key) => {
-                        return sha1(key);
-                    });
+                if (endsWith(url, '/resource.json')) {
+                    const source = JSON.parse(data);
+                    const target = mapKeys(source, (value, key) => sha1(key));
+                    data = JSON.stringify(target, null, 2);
                 }
+
+                log.trace(`Loading resource: url="${url}"`);
 
                 return data;
             },
