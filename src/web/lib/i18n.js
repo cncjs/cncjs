@@ -13,7 +13,12 @@ const translateText = (...args) => {
 
     options.defaultValue = value;
 
-    return i18next.t(key, options) || i18next.t(key, { ...options, lng: 'en' });
+    let text = i18next.t(key, options);
+    if (typeof text !== 'string' || text.length === 0) {
+        text = i18next.t(key, { ...options, lng: 'en' });
+    }
+
+    return text;
 };
 
 export default {
