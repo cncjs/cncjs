@@ -1,5 +1,4 @@
-# cnc [![Travis CI Build Status](https://travis-ci.org/cheton/cnc.svg)](https://travis-ci.org/cheton/cnc) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/bf64c0brafpp4ucg?svg=true)](https://ci.appveyor.com/project/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/cheton/cnc/badge.svg)](https://coveralls.io/r/cheton/cnc)
-
+# cnc [![Travis CI Build Status](https://travis-ci.org/cheton/cnc.svg)](https://travis-ci.org/cheton/cnc) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/bf64c0brafpp4ucg?svg=true)](https://ci.appveyor.com/project/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/github/cheton/cnc/badge.svg?branch=master)](https://coveralls.io/github/cheton/cnc?branch=master)
 
 [![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://nodei.co/npm/cncjs/)
 ![cnc](https://raw.githubusercontent.com/cheton/cnc/master/media/banner.png)
