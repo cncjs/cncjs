@@ -59,7 +59,7 @@ $ git push origin my-feature-branch
 
 Go to https://github.com/yourusername/cnc and select your feature branch. Click the <kbd>Pull Request</kbd> button and fill out the form.
 
-## Localization (L10n)
+## Localization
 
 ### Static Translations 
 Find all resource strings stored in the <b>resource.json</b> file, which is located in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory. You can create a pull request to submit your changes.
