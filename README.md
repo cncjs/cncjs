@@ -86,9 +86,14 @@ If you don't have a CAM software, try using [jscut](http://jscut.org/) to create
 Check out a live demo at http://jscut.org/jscut.html.
 
 ## Contributions
+
 Use [GitHub issues](https://github.com/cheton/cnc/issues) for requests.
 
 Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
+
+## Localization
+
+You can help translate the [resource.json](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json) file from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started.
 
 ## Donate
 
