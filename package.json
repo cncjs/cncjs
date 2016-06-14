@@ -196,7 +196,7 @@
     "gulp": "~3.9.1",
     "gulp-babel": "~6.1.2",
     "gulp-util": "~3.0.7",
-    "i18next-scanner": "~1.4.0",
+    "i18next-scanner": "~1.4.1",
     "json-loader": "~0.5.4",
     "nib": "~1.1.0",
     "node-pre-gyp": "~0.6.28",
