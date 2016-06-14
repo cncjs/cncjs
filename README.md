@@ -95,6 +95,17 @@ Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
 
 You can help translate the [resource.json](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json) file from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started.
 
+Locale | Language
+------ | --------
+de     | [Deutsch](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)
+en     | [English (US)](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json)
+es     | [Español](https://github.com/cheton/cnc/tree/master/src/web/i18n/es/resource.json)
+fr     | [Français](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr/resource.json)
+it     | [Italiano](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/resource.json)
+ja     | [日本語](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)
+zh-cn  | [中文 (简体)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json)
+zh-tw  | [中文 (繁體)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json)
+
 ## Donate
 
 If you would like to support this project, you can make a donation using PayPal. Thank you!
