@@ -51,13 +51,7 @@ install:
   - npm --version
 
 build_script:
-  - ps: |
-      if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-        npm run build-latest
-      }
-      else {
-        npm run build
-      }
+  - ps: npm run build
   - ps: mkdir releases
   - ps: $PACKAGE_NAME = bash -c 'scripts/package-name.sh src/package.json'
   - ps: $PACKAGE_VERSION = bash -c 'scripts/package-version.sh src/package.json'
