@@ -118,7 +118,7 @@
     "express": "~4.13.4",
     "express-session": "~1.13.0",
     "font-awesome": "~4.6.3",
-    "fs-extra": "^0.30.0",
+    "fs-extra": "~0.30.0",
     "gcode-interpreter": "~0.9.3",
     "gcode-parser": "~0.8.2",
     "gcode-toolpath": "~0.6.2",
