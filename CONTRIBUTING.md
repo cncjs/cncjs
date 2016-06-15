@@ -67,10 +67,9 @@ Find all resource strings stored in the <b>resource.json</b> file, which is loca
 ### Runtime Translations
 Moreover, you can make translations during runtime by modifying <b>resource.json</b> from the installed directory. Note that your path may differ based on the Node installation path you have in place.
 ```bash
-$ cd $(dirname `which cnc`)
+$ cd $(dirname `which cnc`)/../lib/node_modules/cncjs/dist/web/i18n/
 $ pwd
-/Users/cheton/.nvm/versions/node/v4.4.3/bin
-$ cd ../lib/node_modules/cncjs/dist/cnc/web/i18n/
+/home/cheton/.nvm/versions/node/v4.4.3/lib/node_modules/cncjs/dist/web/i18n
 ```
 
 To verify your changes during runtime, it's recommended that you open Developer Tools and disable browser cache. For example:
