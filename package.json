@@ -8,6 +8,10 @@
   "bin": {
     "cnc": "./bin/cnc"
   },
+  "files": [
+    "bin",
+    "dist"
+  ],
   "repository": {
     "type": "git",
     "url": "git@github.com:cheton/cnc.git"
