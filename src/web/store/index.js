@@ -1,4 +1,3 @@
-import fs from 'fs';
 import path from 'path';
 import _ from 'lodash';
 import settings from '../config/settings';
@@ -87,6 +86,7 @@ try {
     let value;
 
     if (userData) {
+        const fs = window.require('fs'); // Use window.require to require fs module in Electron
         value = fs.readFileSync(userData.path, 'utf8');
     } else {
         value = localStorage.getItem('cnc');
@@ -134,6 +134,7 @@ store.on('change', (state) => {
     const value = JSON.stringify(cnc, null, 4);
 
     if (userData) {
+        const fs = window.require('fs'); // Use window.require to require fs module in Electron
         fs.writeFileSync(userData.path, value);
     }
 
