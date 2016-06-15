@@ -10,7 +10,8 @@
   },
   "files": [
     "bin",
-    "dist"
+    "dist",
+    "static"
   ],
   "repository": {
     "type": "git",
