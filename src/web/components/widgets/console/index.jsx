@@ -49,7 +49,7 @@ class ConsoleWidget extends React.Component {
                         </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content className={classes.widgetContent}>
-                        <Console />
+                        <Console fullscreen={isFullscreen} />
                     </Widget.Content>
                 </Widget>
             </div>
