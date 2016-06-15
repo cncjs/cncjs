@@ -23,6 +23,7 @@
     "errorhandler": "~1.4.3",
     "express": "~4.13.4",
     "express-session": "~1.13.0",
+    "fs-extra": "~0.30.0",
     "gcode-parser": "~0.8.2",
     "hogan.js": "~3.0.2",
     "i18next": "~3.1.0",

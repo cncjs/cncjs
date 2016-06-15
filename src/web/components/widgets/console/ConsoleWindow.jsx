@@ -1,7 +1,10 @@
 import _ from 'lodash';
+import delay from 'delay';
 import Infinite from 'react-infinite';
 import React from 'react';
 import ReactDOM from 'react-dom';
+
+const DEFAULT_CONTAINER_HEIGHT = 260;
 
 class ConsoleWindow extends React.Component {
     static propTypes = {
@@ -9,7 +12,7 @@ class ConsoleWindow extends React.Component {
         fullscreen: React.PropTypes.bool
     };
     state = {
-        containerHeight: 260,
+        containerHeight: DEFAULT_CONTAINER_HEIGHT,
         elementHeight: 20
     };
 
@@ -26,32 +29,32 @@ class ConsoleWindow extends React.Component {
             node.scrollTop = node.scrollHeight;
         }
 
+        delay(0)
+            .then(() => {
+                this.updateContainerHeight();
+            });
+    }
+    updateContainerHeight() {
+        let containerHeight = DEFAULT_CONTAINER_HEIGHT;
+
         // A workaround solution in fullscreen mode since the `containerHeight` is required
         // https://github.com/seatgeek/react-infinite/issues/62
         if (this.props.fullscreen) {
             // widgetEl = <div class="widget widget-fullscreen"></div>
-            const widgetEl = node.parentNode.parentNode.parentNode.parentNode;
-            const widgetHeaderEl = widgetEl.querySelector('.widget-header');
+            const widgetEl = document.querySelector('[data-widgetid="console"] > .widget');
+            const widgetContentEl = widgetEl.querySelector('.widget-content');
+            const consoleInputEl = widgetContentEl.querySelector('.console-input');
             const widgetContentPadding = 10;
             const consoleInputHeight = 40;
-            const containerHeight = widgetEl.clientHeight
-                                - widgetHeaderEl.offsetHeight
-                                - widgetContentPadding * 2
-                                - consoleInputHeight
-                                - 20; // extra padding
 
-            if (this.state.containerHeight !== containerHeight) {
-                setTimeout(() => {
-                    this.setState({ containerHeight });
-                }, 0);
-            }
-        } else {
-            const containerHeight = 260;
-            if (this.state.containerHeight !== containerHeight) {
-                setTimeout(() => {
-                    this.setState({ containerHeight });
-                }, 0);
-            }
+            containerHeight = widgetContentEl.offsetHeight
+                            - widgetContentPadding * 2
+                            - consoleInputEl.offsetHeight
+                            - 10; // extra padding
+        }
+
+        if (this.state.containerHeight !== containerHeight) {
+            this.setState({ containerHeight: containerHeight });
         }
     }
     buildElements(buffers) {

@@ -3,7 +3,6 @@ import fs from 'fs';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import i18nextScanner from 'i18next-scanner';
-import hash from 'sha1';
 import table from 'text-table';
 
 const appConfig = {
