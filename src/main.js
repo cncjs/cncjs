@@ -2,6 +2,7 @@
 import util from 'util';
 import { app } from 'electron';
 import { WindowManager, handleStartupEvent, setApplicationMenu } from './desktop';
+import fse from 'fs-extra';
 import cnc from './cnc';
 import pkg from './package.json';
 
@@ -32,6 +33,10 @@ const main = () => {
         app.quit();
         return;
     }
+
+    // Create the user data directory if it does not exist
+    const userData = app.getPath('userData');
+    fse.mkdirsSync(userData);
 
     app.on('ready', () => {
         cnc({ host: '127.0.0.1', port: 0 }, (err, server) => {
