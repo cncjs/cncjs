@@ -1,20 +1,22 @@
+import fs from 'fs';
+import path from 'path';
 import _ from 'lodash';
 import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
 import log from '../lib/log';
-import request from 'superagent';
 
-const migrate = () => { // schema change since v0.15.4
-    // Clear localStorage
-    localStorage.clear();
+let userData = null;
 
-    // Remove "workspace" from ~/.cncrc
-    request
-        .del('/api/config')
-        .query({ key: 'workspace' })
-        .end((err, res) => {
-        });
-};
+// Check if code is running in Electron renderer process
+const isRenderer = (window && window.process && window.process.type === 'renderer');
+
+if (isRenderer) {
+    const electron = window.require('electron');
+    const app = electron.remote.app;
+    userData = {
+        path: path.join(app.getPath('userData'), 'cnc.json')
+    };
+}
 
 const defaultState = {
     workspace: {
@@ -79,65 +81,63 @@ const defaultState = {
     }
 };
 
-let state;
+const cnc = {};
 
 try {
-    const cnc = JSON.parse(localStorage.getItem('cnc')) || {};
-    log.debug('cnc:', cnc);
+    let value;
 
-    if (!(cnc.version)) {
-        migrate();
+    if (userData) {
+        value = fs.readFileSync(userData.path, 'utf8');
+    } else {
+        value = localStorage.getItem('cnc');
     }
 
-    state = _.merge({}, defaultState, cnc.state);
-
-    { // Post-process the state after merging defaultState and cnc.state
-        let defaultList = _.get(defaultState, 'workspace.container.default.widgets'); // use defaultState for the default container
-        let primaryList = _.get(cnc.state, 'workspace.container.primary.widgets');
-        let secondaryList = _.get(cnc.state, 'workspace.container.secondary.widgets');
-
-        if (defaultList) {
-            _.set(state, 'workspace.container.default.widgets', defaultList);
-        }
-        if (primaryList) {
-            _.set(state, 'workspace.container.primary.widgets', primaryList);
-        }
-        if (secondaryList) {
-            _.set(state, 'workspace.container.secondary.widgets', secondaryList);
-        }
-    }
-
-    { // Remove duplicate ones
-        let defaultList = _.get(state, 'workspace.container.default.widgets');
-        let primaryList = _.get(state, 'workspace.container.primary.widgets');
-        let secondaryList = _.get(state, 'workspace.container.secondary.widgets');
-
-        primaryList = _(primaryList) // Keep the order of primaryList
-            .uniq()
-            .difference(defaultList) // exclude defaultList
-            .value();
-
-        secondaryList = _(secondaryList) // Keep the order of secondaryList
-            .uniq()
-            .difference(primaryList) // exclude primaryList
-            .difference(defaultList) // exclude defaultList
-            .value();
-
-        _.set(state, 'workspace.container.primary.widgets', primaryList);
-        _.set(state, 'workspace.container.secondary.widgets', secondaryList);
-    }
+    let json = JSON.parse(value) || {};
+    cnc.version = json.version;
+    cnc.state = json.state;
 } catch (err) {
-    state = _.merge({}, defaultState);
+    // Ignore errors
 }
 
-const store = new ImmutableStore(state);
+cnc.version = cnc.version || settings.version;
+cnc.state = _.merge({}, defaultState, cnc.state || {});
+
+log.debug('cnc:', cnc);
+
+{ // Remove duplicate widgets
+    let defaultList = _.get(defaultState, 'workspace.container.default.widgets');
+    let primaryList = _.get(cnc.state, 'workspace.container.primary.widgets');
+    let secondaryList = _.get(cnc.state, 'workspace.container.secondary.widgets');
+
+    primaryList = _(primaryList) // Keep the order of primaryList
+        .uniq()
+        .difference(defaultList) // exclude defaultList
+        .value();
+
+    secondaryList = _(secondaryList) // Keep the order of secondaryList
+        .uniq()
+        .difference(primaryList) // exclude primaryList
+        .difference(defaultList) // exclude defaultList
+        .value();
+
+    _.set(cnc.state, 'workspace.container.default.widgets', defaultList);
+    _.set(cnc.state, 'workspace.container.primary.widgets', primaryList);
+    _.set(cnc.state, 'workspace.container.secondary.widgets', secondaryList);
+}
+
+const store = new ImmutableStore(cnc.state);
 
 store.on('change', (state) => {
-    const cnc = {
-        version: settings.version,
-        state: state
-    };
-    localStorage.setItem('cnc', JSON.stringify(cnc));
+    cnc.version = settings.version;
+    cnc.state = state;
+
+    const value = JSON.stringify(cnc, null, 4);
+
+    if (userData) {
+        fs.writeFileSync(userData.path, value);
+    }
+
+    localStorage.setItem('cnc', value);
 });
 
 export default store;
