@@ -89,10 +89,8 @@ Now you can modify resource strings in the <b>dist/cnc/web/i18n</b> directory an
 Make sure you have Node.js 4 or later verions installed, and run `npm run dev` to start a local development server for development and testing. Every code changes will trigger webpack Hot Module Replacement (HMR) which will be really useful while developing in React.
 
 ```bash
-$ git clone https://github.com/cheton/cnc.git
-$ cd cnc
-$ npm install
-$ npm run dev  # it may take several minutes...
+$ npm install  # Ensure that packages are installed
+$ npm run dev  # It may take several minutes...
   :  :  :
 Server is listening on 0.0.0.0:8000
 ```
@@ -105,3 +103,50 @@ webpack: bundle is now VALID
 ```
 
 Now you're ready to go!
+
+## Running Production Build
+
+```bash
+$ npm install  # Ensure that packages are installed
+$ npm run prepublish
+$ ./bin/cnc -vv
+  :  :  :
+Server is listening on 0.0.0.0:8000
+```
+
+## Build Desktop Apps
+
+#### OS X
+```bash
+$ npm install  # Ensure that packages are installed
+$ npm run prepublish && npm run build:osx-x64
+$ ls -al output/osx/
+```
+
+#### Windows x86
+```bash
+$ npm install  # Ensure that packages are installed
+$ npm run prepublish && npm run build:win-ia32
+$ ls -al output/win-ia32/
+```
+
+#### Windows x64
+```bash
+$ npm install  # Ensure that packages are installed
+$ npm run prepublish && npm run build:win-x64
+$ ls -al output/win/
+```
+
+#### Linux x86
+```bash
+$ npm install  # Ensure that packages are installed
+$ npm run prepublish && npm run build:linux-ia32
+$ ls -al output/linux-ia32/
+```
+
+#### Linux x64
+```bash
+$ npm install  # Ensure that packages are installed
+$ npm run prepublish && npm run build:linux-x64
+$ ls -al output/linux/
+```
