@@ -4,6 +4,7 @@
 * [Code Contributions](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#code-contributions)
 * [Running Local Development Server](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#running-local-development-server)
 * [Running Production Build](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#running-production-build)
+* [Build Desktop Apps](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#build-desktop-apps)
 * [Localization](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#localization)
 
 ## Code Contributions
