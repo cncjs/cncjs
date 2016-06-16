@@ -30,6 +30,7 @@ $ git checkout -b my-feature-branch -t origin/master
 
 Run `npm install` to install the dependencies in the local node_modules folder:
 ```bash
+$ npm install -g npm  # Install npm v3
 $ npm install
 ```
 
