@@ -105,6 +105,7 @@
     "webappengine"
   ],
   "dependencies": {
+    "@cheton/is-electron": "~0.2.0",
     "async": "~2.0.0-rc.6",
     "body-parser": "~1.15.1",
     "bootstrap": "~3.3.6",

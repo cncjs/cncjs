@@ -3,13 +3,12 @@ import _ from 'lodash';
 import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
 import log from '../lib/log';
+import isElectron from '@cheton/is-electron';
 
 let userData = null;
 
 // Check if code is running in Electron renderer process
-const isRenderer = (window && window.process && window.process.type === 'renderer');
-
-if (isRenderer) {
+if (isElectron()) {
     const electron = window.require('electron');
     const app = electron.remote.app;
     userData = {
@@ -96,7 +95,7 @@ try {
     cnc.version = json.version;
     cnc.state = json.state;
 } catch (err) {
-    // Ignore errors
+    log.error(err);
 }
 
 cnc.version = cnc.version || settings.version;
@@ -128,17 +127,21 @@ log.debug('cnc:', cnc);
 const store = new ImmutableStore(cnc.state);
 
 store.on('change', (state) => {
-    cnc.version = settings.version;
-    cnc.state = state;
+    try {
+        const value = JSON.stringify({
+            version: settings.version,
+            state: state
+        }, null, 4);
 
-    const value = JSON.stringify(cnc, null, 4);
+        if (userData) {
+            const fs = window.require('fs'); // Use window.require to require fs module in Electron
+            fs.writeFileSync(userData.path, value);
+        }
 
-    if (userData) {
-        const fs = window.require('fs'); // Use window.require to require fs module in Electron
-        fs.writeFileSync(userData.path, value);
+        localStorage.setItem('cnc', value);
+    } catch (err) {
+        log.error(err);
     }
-
-    localStorage.setItem('cnc', value);
 });
 
 export default store;
