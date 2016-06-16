@@ -59,31 +59,6 @@ $ git push origin my-feature-branch
 
 Go to https://github.com/yourusername/cnc and select your feature branch. Click the <kbd>Pull Request</kbd> button and fill out the form.
 
-## Localization
-
-### Static Translations 
-Find all resource strings stored in the <b>resource.json</b> file, which is located in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory. You can create a pull request to submit your changes.
-
-### Runtime Translations
-Moreover, you can make translations during runtime by modifying <b>resource.json</b> from the installed directory. Note that your path may differ based on the Node installation path you have in place.
-```bash
-$ cd $(dirname `which cnc`)/../lib/node_modules/cncjs/dist/web/i18n/
-$ pwd
-/home/cheton/.nvm/versions/node/v4.4.3/lib/node_modules/cncjs/dist/web/i18n
-```
-
-To verify your changes during runtime, it's recommended that you open Developer Tools and disable browser cache. For example:
-
-##### Step 1: Open Developer Tools and click [Settings]
-![image](https://cloud.githubusercontent.com/assets/447801/16014196/cc4b730c-31c2-11e6-9f78-c84347d12190.png)
-
-##### Step 2: Disable cache
-![image](https://cloud.githubusercontent.com/assets/447801/16014264/1d32e872-31c3-11e6-9178-6cc06bd0f6b5.png)
-
-Now you can modify resource strings in the <b>dist/cnc/web/i18n</b> directory and refresh your browser to see the updates.
-
-<b>Note that you should not close DevTools to make sure your browser won't cache anything.</b>
-
 ## Running Local Development Server
 
 Make sure you have Node.js 4 or later verions installed, and run `npm run dev` to start a local development server for development and testing. Every code changes will trigger webpack Hot Module Replacement (HMR) which will be really useful while developing in React.
@@ -150,3 +125,28 @@ $ npm install  # Ensure that packages are installed
 $ npm run prepublish && npm run build:linux-x64
 $ ls -al output/linux/
 ```
+
+## Localization
+
+### Static Translations 
+Find all resource strings stored in the <b>resource.json</b> file, which is located in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory. You can create a pull request to submit your changes.
+
+### Runtime Translations
+Moreover, you can make translations during runtime by modifying <b>resource.json</b> from the installed directory. Note that your path may differ based on the Node installation path you have in place.
+```bash
+$ cd $(dirname `which cnc`)/../lib/node_modules/cncjs/dist/web/i18n/
+$ pwd
+/home/cheton/.nvm/versions/node/v4.4.3/lib/node_modules/cncjs/dist/web/i18n
+```
+
+To verify your changes during runtime, it's recommended that you open Developer Tools and disable browser cache. For example:
+
+##### Step 1: Open Developer Tools and click [Settings]
+![image](https://cloud.githubusercontent.com/assets/447801/16014196/cc4b730c-31c2-11e6-9f78-c84347d12190.png)
+
+##### Step 2: Disable cache
+![image](https://cloud.githubusercontent.com/assets/447801/16014264/1d32e872-31c3-11e6-9178-6cc06bd0f6b5.png)
+
+Now you can modify resource strings in the <b>dist/cnc/web/i18n</b> directory and refresh your browser to see the updates.
+
+<b>Note that you should not close DevTools to make sure your browser won't cache anything.</b>
