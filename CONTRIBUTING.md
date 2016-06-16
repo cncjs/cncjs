@@ -1,5 +1,11 @@
 # Contributing
 
+## Index
+* [Code Contributions](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#code-contributions)
+* [Running Local Development Server](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#running-local-development-server)
+* [Running Production Build](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#running-production-build)
+* [Localization](https://github.com/cheton/cnc/blob/dev/CONTRIBUTING.md#localization)
+
 ## Code Contributions
 
 ### Step 1: Fork
