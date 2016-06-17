@@ -97,14 +97,14 @@ You can help translate the [resource.json](https://github.com/cheton/cnc/tree/ma
 
 Locale | Language                                                                                  | Contributors
 ------ | ----------------------------------------------------------------------------------------- | ------------
-de     | [Deutsch](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)        |
+de     | [Deutsch](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)        | [Thorsten Godau] (https://github.com/dl9sec)
 en     | [English (US)](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json)   |
 es     | [Español](https://github.com/cheton/cnc/tree/master/src/web/i18n/es/resource.json)        |
 fr     | [Français](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr/resource.json)       |
 it     | [Italiano](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/resource.json)       |
 ja     | [にほんご](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)       |
 zh-cn  | [中文 (简体)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json) |
-zh-tw  | [中文 (繁體)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) |
+zh-tw  | [中文 (繁體)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | [Cheton Wu] (https://github.com/cheton)
 
 ## Donate
 
