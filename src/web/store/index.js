@@ -3,7 +3,7 @@ import _ from 'lodash';
 import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
 import log from '../lib/log';
-import isElectron from '@cheton/is-electron';
+import isElectron from 'is-electron';
 
 let userData = null;
 

@@ -193,10 +193,10 @@ class GCodeStats extends React.Component {
                         <table className="table-bordered" data-table="dimension">
                             <thead>
                                 <tr>
-                                    <th className="axis">{i18n._('Axis')}</th>
-                                    <th>{i18n._('Min')}</th>
-                                    <th>{i18n._('Max')}</th>
-                                    <th>{i18n._('Dimension')}</th>
+                                    <th className="axis nowrap">{i18n._('Axis')}</th>
+                                    <th className="nowrap">{i18n._('Min')}</th>
+                                    <th className="nowrap">{i18n._('Max')}</th>
+                                    <th className="nowrap">{i18n._('Dimension')}</th>
                                 </tr>
                             </thead>
                             <tbody>

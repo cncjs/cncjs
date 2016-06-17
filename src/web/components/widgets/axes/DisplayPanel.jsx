@@ -27,10 +27,10 @@ const DisplayPanel = ({ port, unit, activeState, machinePos, workingPos }) => {
                 <table className="table-bordered">
                     <thead>
                         <tr>
-                            <th>{i18n._('Axis')}</th>
-                            <th>{i18n._('Machine Position')}</th>
-                            <th>{i18n._('Working Position')}</th>
-                            <th>{i18n._('Action')}</th>
+                            <th className="nowrap">{i18n._('Axis')}</th>
+                            <th className="nowrap">{i18n._('Machine Position')}</th>
+                            <th className="nowrap">{i18n._('Working Position')}</th>
+                            <th className="nowrap">{i18n._('Action')}</th>
                         </tr>
                     </thead>
                     <tbody>
