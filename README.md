@@ -93,7 +93,7 @@ Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
 
 ## Localization
 
-You can help translate the [resource.json](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json) file from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started. Please let me know if you would like to help translate content to your language but not listed here.
+You can help translate the [resource.json](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json) file from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can send your translations to cheton@gmail.com.
 
 Locale | Language                                                                                  | Contributors
 ------ | ----------------------------------------------------------------------------------------- | ------------
@@ -104,6 +104,8 @@ it     | [Italiano](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/re
 ja     | [にほんご](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)       |
 zh-cn  | [中文 (简体)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json) |
 zh-tw  | [中文 (繁體)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | [Cheton Wu] (https://github.com/cheton)
+
+Please let me know if you would like to help translate content to your language but not listed here.
 
 ## Donate
 
