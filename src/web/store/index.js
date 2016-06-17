@@ -79,34 +79,26 @@ const defaultState = {
     }
 };
 
-const cnc = {};
+const normalizeState = (state) => {
+    // Keep default widgets unchanged
+    const defaultList = _.get(defaultState, 'workspace.container.default.widgets');
+    _.set(state, 'workspace.container.default.widgets', defaultList);
 
-try {
-    let value;
-
-    if (userData) {
-        const fs = window.require('fs'); // Use window.require to require fs module in Electron
-        value = fs.readFileSync(userData.path, 'utf8');
+    // Update primary widgets
+    let primaryList = _.get(cnc.state, 'workspace.container.primary.widgets');
+    if (primaryList) {
+        _.set(state, 'workspace.container.primary.widgets', primaryList);
     } else {
-        value = localStorage.getItem('cnc');
+        primaryList = _.get(state, 'workspace.container.primary.widgets');
     }
 
-    let json = JSON.parse(value) || {};
-    cnc.version = json.version;
-    cnc.state = json.state;
-} catch (err) {
-    log.error(err);
-}
-
-cnc.version = cnc.version || settings.version;
-cnc.state = _.merge({}, defaultState, cnc.state || {});
-
-log.debug('cnc:', cnc);
-
-{ // Remove duplicate widgets
-    let defaultList = _.get(defaultState, 'workspace.container.default.widgets');
-    let primaryList = _.get(cnc.state, 'workspace.container.primary.widgets');
+    // Update secondary widgets
     let secondaryList = _.get(cnc.state, 'workspace.container.secondary.widgets');
+    if (secondaryList) {
+        _.set(state, 'workspace.container.secondary.widgets', secondaryList);
+    } else {
+        secondaryList = _.get(state, 'workspace.container.secondary.widgets');
+    }
 
     primaryList = _(primaryList) // Keep the order of primaryList
         .uniq()
@@ -119,12 +111,42 @@ log.debug('cnc:', cnc);
         .difference(defaultList) // exclude defaultList
         .value();
 
-    _.set(cnc.state, 'workspace.container.default.widgets', defaultList);
-    _.set(cnc.state, 'workspace.container.primary.widgets', primaryList);
-    _.set(cnc.state, 'workspace.container.secondary.widgets', secondaryList);
-}
+    _.set(state, 'workspace.container.primary.widgets', primaryList);
+    _.set(state, 'workspace.container.secondary.widgets', secondaryList);
 
-const store = new ImmutableStore(cnc.state);
+    return state;
+};
+
+const getUserConfig = () => {
+    const cnc = {};
+
+    try {
+        let value;
+
+        if (userData) {
+            const fs = window.require('fs'); // Use window.require to require fs module in Electron
+            value = fs.readFileSync(userData.path, 'utf8');
+        } else {
+            value = localStorage.getItem('cnc');
+        }
+
+        let json = JSON.parse(value) || {};
+        cnc.version = json.version;
+        cnc.state = json.state;
+    } catch (err) {
+        log.error(err);
+    }
+
+    return cnc;
+};
+
+const cnc = getUserConfig();
+
+log.debug('cnc:', cnc);
+
+const state = normalizeState(_.merge({}, defaultState, cnc.state || {}));
+
+const store = new ImmutableStore(state);
 
 store.on('change', (state) => {
     try {
