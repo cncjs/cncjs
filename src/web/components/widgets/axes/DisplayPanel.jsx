@@ -227,7 +227,7 @@ const DisplayPanel = ({ port, unit, activeState, machinePos, workingPos }) => {
                                         onSelect={handleSelect}
                                         disabled={!canClick}
                                     >
-                                        {i18n._('Go To Machine Zero On X Axis (G53 G0 Z0)')}
+                                        {i18n._('Go To Machine Zero On Z Axis (G53 G0 Z0)')}
                                     </MenuItem>
                                 </DropdownButton>
                             </td>

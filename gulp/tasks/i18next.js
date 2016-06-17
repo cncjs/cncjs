@@ -57,6 +57,7 @@ const webConfig = {
     options: {
         debug: false,
         sort: true,
+        removeUnusedKeys: true,
         lngs: ['en', 'de', 'es', 'fr', 'it', 'ja', 'zh-cn', 'zh-tw'],
         defaultValue: (lng, ns, key) => {
             if (lng === 'en') {
@@ -65,7 +66,6 @@ const webConfig = {
             return ''; // Return empty string for other languages
         },
         ns: [
-            'locale', // language & timezone,
             'resource' // default
         ],
         defaultNs: 'resource',
