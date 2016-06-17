@@ -40,6 +40,7 @@ const settings = {
             'fr',
             'it',
             'ja',
+            'ru',
             'zh-cn',
             'zh-tw'
         ],

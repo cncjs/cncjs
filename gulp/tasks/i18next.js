@@ -58,7 +58,7 @@ const webConfig = {
         debug: false,
         sort: true,
         removeUnusedKeys: true,
-        lngs: ['en', 'de', 'es', 'fr', 'it', 'ja', 'zh-cn', 'zh-tw'],
+        lngs: ['en', 'de', 'es', 'fr', 'it', 'ja', 'ru', 'zh-cn', 'zh-tw'],
         defaultValue: (lng, ns, key) => {
             if (lng === 'en') {
                 return key; // Use key as value for base language
