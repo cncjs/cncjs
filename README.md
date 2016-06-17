@@ -98,7 +98,6 @@ You can help translate the [resource.json](https://github.com/cheton/cnc/tree/ma
 Locale | Language                                                                                  | Contributors
 ------ | ----------------------------------------------------------------------------------------- | ------------
 de     | [Deutsch](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)        | [Thorsten Godau] (https://github.com/dl9sec)
-en     | [English (US)](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json)   |
 es     | [Español](https://github.com/cheton/cnc/tree/master/src/web/i18n/es/resource.json)        |
 fr     | [Français](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr/resource.json)       |
 it     | [Italiano](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/resource.json)       |
