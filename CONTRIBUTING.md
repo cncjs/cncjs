@@ -11,7 +11,9 @@
 
 ### Step 1: Fork
 
-Fork the project [on GitHub](https://github.com/cheton/cnc) and check out your copy locally.
+Fork the project [on GitHub](https://github.com/cheton/cnc) and check out your copy locally. 
+
+![image](https://cloud.githubusercontent.com/assets/447801/16153930/28241308-34db-11e6-81b6-dd8222f044b4.png)
 
 ```bash
 $ git clone git@github.com:yourusername/cnc.git
@@ -65,7 +67,10 @@ $ npm run build
 $ git push origin my-feature-branch
 ```
 
-Go to https://github.com/yourusername/cnc and select your feature branch. Click the <kbd>Pull Request</kbd> button and fill out the form.
+Go to https://github.com/yourusername/cnc and select your feature branch. Click on the <kbd>New pull request</kbd> button and fill out the form.
+
+![image](https://cloud.githubusercontent.com/assets/447801/16153975/6a41541c-34db-11e6-997c-5781b8fa8f68.png)
+
 
 ## Running Local Development Server
 
