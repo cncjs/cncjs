@@ -56,7 +56,7 @@ const webConfig = {
     dest: './',
     options: {
         debug: false,
-        sort: true,
+        sort: false,
         removeUnusedKeys: true,
         lngs: [
             'en', // English (default)
