@@ -31,7 +31,7 @@ class WidgetManager extends React.Component {
         {
             id: 'grbl',
             caption: i18n._('Grbl Widget'),
-            details: i18n._('This widet shows the Grbl state and provides Grbl specific features.'),
+            details: i18n._('This widget shows the Grbl state and provides Grbl specific features.'),
             visible: true,
             disabled: false
         },
@@ -52,7 +52,7 @@ class WidgetManager extends React.Component {
         {
             id: 'gcode',
             caption: i18n._('G-code Widget'),
-            details: i18n._('This widgets shows the current status of G-code commands.'),
+            details: i18n._('This widget shows the current status of G-code commands.'),
             visible: true,
             disabled: false
         },
