@@ -48,6 +48,7 @@ const Header = (props) => {
                             <MenuItem href="?lang=fr" active={language === 'fr'}>Français</MenuItem>
                             <MenuItem href="?lang=it" active={language === 'it'}>Italiano</MenuItem>
                             <MenuItem href="?lang=ja" active={language === 'ja'}>日本語</MenuItem>
+                            <MenuItem href="?lang=ru" active={language === 'ru'}>ру́сский язы́к</MenuItem>
                             <MenuItem href="?lang=zh-cn" active={language === 'zh-cn'}>中文 (简体)</MenuItem>
                             <MenuItem href="?lang=zh-tw" active={language === 'zh-tw'}>中文 (繁體)</MenuItem>
                             <MenuItem divider />
