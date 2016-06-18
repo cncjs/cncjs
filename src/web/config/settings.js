@@ -34,15 +34,16 @@ const settings = {
         defaultNS: 'resource',
 
         whitelist: [
-            'en', // default language
-            'de',
-            'es',
-            'fr',
-            'it',
-            'ja',
-            'ru',
-            'zh-cn',
-            'zh-tw'
+            'en', // English (default)
+            'cs', // Czech
+            'de', // German
+            'es', // Spanish
+            'fr', // French
+            'it', // Italian
+            'ja', // Japanese
+            'ru', // Russian
+            'zh-cn', // Simplified Chinese
+            'zh-tw' // Traditional Chinese
         ],
 
         // array of languages to preload

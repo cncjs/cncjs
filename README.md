@@ -97,12 +97,13 @@ You can help translate the [resource.json](https://github.com/cheton/cnc/tree/ma
 
 Locale | Language | Status | Contributors 
 ------ | -------- | ------ | ------------
-[de](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)       | German (Deutsch) | :heavy_check_mark: | [Thorsten Godau] (https://github.com/dl9sec)
+[cs](https://github.com/cheton/cnc/tree/master/src/web/i18n/cs/resource.json)       | Czech (Čeština) | :heavy_check_mark: | [Miroslav Zuzelka](https://github.com/dronecz)
+[de](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)       | German (Deutsch) | :heavy_check_mark: | [Thorsten Godau](https://github.com/dl9sec)
 [es](https://github.com/cheton/cnc/tree/master/src/web/i18n/es/resource.json)       | Spanish (Español) | |
 [fr](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr/resource.json)       | French (Français) | |
 [it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/resource.json)       | Italian (Italiano) | |
 [ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)       | Japanese (にほんご) | |
-[ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru/resource.json)       | Russian (Ру́сский язы́к)  | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
+[ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru/resource.json)       | Russian (Ру́сский язы́к) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
 [zh-cn](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json) | Simplified Chinese (简体中文) | |
 [zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | Tranditional Chinese (繁體中文) | :heavy_check_mark: | [Cheton Wu] (https://github.com/cheton)
 
