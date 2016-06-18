@@ -102,6 +102,7 @@ es     | [Español](https://github.com/cheton/cnc/tree/master/src/web/i18n/es/re
 fr     | [Français](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr/resource.json)       |
 it     | [Italiano](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/resource.json)       |
 ja     | [にほんご](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)       |
+ru     | [ру́сский язы́к](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru/resource.json)   | [Denis Yusupov](https://github.com/minithc)
 zh-cn  | [中文 (简体)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json) |
 zh-tw  | [中文 (繁體)](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | [Cheton Wu] (https://github.com/cheton)
 
