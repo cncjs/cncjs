@@ -103,6 +103,7 @@ export default {
         'fr',
         'it',
         'ja',
+        'ru',
         'zh-cn',
         'zh-tw'
     ],
