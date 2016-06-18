@@ -93,21 +93,19 @@ Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
 
 ## Localization
 
-You can help translate the [resource.json](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json) file from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can send your translations to cheton@gmail.com.
+You can help translate [src/app/i18n/en/resource.json](https://github.com/cheton/cnc/tree/master/src/app/i18n/en/resource.json) and [src/web/i18n/en/resource.json](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json) files from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can [open an issue](https://github.com/cheton/cnc/issues) or send your translations to cheton@gmail.com.
 
 Locale | Language | Status | Contributors 
 ------ | -------- | ------ | ------------
-[cs](https://github.com/cheton/cnc/tree/master/src/web/i18n/cs/resource.json)       | Czech (Čeština) | :heavy_check_mark: | [Miroslav Zuzelka](https://github.com/dronecz)
-[de](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)       | German (Deutsch) | :heavy_check_mark: | [Thorsten Godau](https://github.com/dl9sec)
-[es](https://github.com/cheton/cnc/tree/master/src/web/i18n/es/resource.json)       | Spanish (Español) | |
-[fr](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr/resource.json)       | French (Français) | |
-[it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/resource.json)       | Italian (Italiano) | |
-[ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)       | Japanese (にほんご) | |
-[ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru/resource.json)       | Russian (Ру́сский язы́к) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
-[zh-cn](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json) | Simplified Chinese (简体中文) | |
-[zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | Tranditional Chinese (繁體中文) | :heavy_check_mark: | [Cheton Wu] (https://github.com/cheton)
-
-You can [open an issue](https://github.com/cheton/cnc/issues) on GitHub if you would like to help translate content to your language but not listed here.
+[cs](https://github.com/cheton/cnc/tree/master/src/web/i18n/cs/resource.json)       | Čeština (Czech) | :heavy_check_mark: | [Miroslav Zuzelka](https://github.com/dronecz)
+[de](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)       | Deutsch (German) | :heavy_check_mark: | [Thorsten Godau](https://github.com/dl9sec)
+[es](https://github.com/cheton/cnc/tree/master/src/web/i18n/es/resource.json)       | Español (Spanish) | |
+[fr](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr/resource.json)       | Français (French) | |
+[it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/resource.json)       | Italiano (Italian) | |
+[ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)       | にほんご (Japanese) | |
+[ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru/resource.json)       | Ру́сский язы́к (Russian) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
+[zh-cn](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json) | 简体中文 (Simplified Chinese) | |
+[zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | 繁體中文 (Traditional Chinese) | :heavy_check_mark: | [Cheton Wu] (https://github.com/cheton)
 
 ## Donate
 
