@@ -42,15 +42,16 @@ const Header = (props) => {
                         <NavItem href="#/workspace">{i18n._('Workspace')}</NavItem>
                         <NavDropdown title={i18n._('Settings')} id="nav-dropdown">
                             <MenuItem header>{i18n._('Language')}</MenuItem>
-                            <MenuItem href="?lang=de" active={language === 'de'}>Deutsch</MenuItem>
-                            <MenuItem href="?lang=en" active={language === 'en'}>English (US)</MenuItem>
-                            <MenuItem href="?lang=es" active={language === 'es'}>Español</MenuItem>
-                            <MenuItem href="?lang=fr" active={language === 'fr'}>Français</MenuItem>
-                            <MenuItem href="?lang=it" active={language === 'it'}>Italiano</MenuItem>
-                            <MenuItem href="?lang=ja" active={language === 'ja'}>日本語</MenuItem>
-                            <MenuItem href="?lang=ru" active={language === 'ru'}>ру́сский язы́к</MenuItem>
-                            <MenuItem href="?lang=zh-cn" active={language === 'zh-cn'}>中文 (简体)</MenuItem>
-                            <MenuItem href="?lang=zh-tw" active={language === 'zh-tw'}>中文 (繁體)</MenuItem>
+                            <MenuItem href="?lang=cs" active={language === 'cs'}>Čeština (Czech)</MenuItem>
+                            <MenuItem href="?lang=de" active={language === 'de'}>Deutsch (German)</MenuItem>
+                            <MenuItem href="?lang=en" active={language === 'en'}>English</MenuItem>
+                            <MenuItem href="?lang=es" active={language === 'es'}>Español (Spanish)</MenuItem>
+                            <MenuItem href="?lang=fr" active={language === 'fr'}>Français (French)</MenuItem>
+                            <MenuItem href="?lang=it" active={language === 'it'}>Italiano (Italian)</MenuItem>
+                            <MenuItem href="?lang=ja" active={language === 'ja'}>日本語 (Japanese)</MenuItem>
+                            <MenuItem href="?lang=ru" active={language === 'ru'}>ру́сский язы́к (Russian)</MenuItem>
+                            <MenuItem href="?lang=zh-cn" active={language === 'zh-cn'}>简体中文 (Simplified Chinese)</MenuItem>
+                            <MenuItem href="?lang=zh-tw" active={language === 'zh-tw'}>繁體中文 (Traditional Chinese)</MenuItem>
                             <MenuItem divider />
                             <MenuItem onSelect={handleRestoreDefaults}>
                                 {i18n._('Restore Defaults')}
