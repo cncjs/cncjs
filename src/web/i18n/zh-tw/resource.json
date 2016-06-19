@@ -194,7 +194,7 @@
     "Retraction Distance": "回縮距離",
     "Run Z-probe": "執行Ｚ軸探測",
     "More": "更多選項",
-    "Cancel Tool Length Offse (G49)": "刀具長度補償消除 (G49)",
+    "Cancel Tool Length Offset (G49)": "刀具長度補償消除 (G49)",
     "Start the spindle turning CW/CCW (M3/M4)": "主軸轉動 (M3/M4)",
     "Stop the spindle from turning (M5)": "主軸停止 (M5)",
     "Turn counterclockwise": "逆時針方向轉動",

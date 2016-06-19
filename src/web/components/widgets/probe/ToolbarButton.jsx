@@ -32,7 +32,7 @@ const ToolbarButton = ({ port, activeState }) => {
                         onSelect={handleSelect}
                         disabled={!canClick}
                     >
-                        {i18n._('Cancel Tool Length Offse (G49)')}
+                        {i18n._('Cancel Tool Length Offset (G49)')}
                     </MenuItem>
                 </DropdownButton>
             </div>

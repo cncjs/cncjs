@@ -194,7 +194,7 @@
     "Retraction Distance": "Rückzugsweg",
     "Run Z-probe": "Starte Z-Antastung",
     "More": "Mehr",
-    "Cancel Tool Length Offse (G49)": "Werkzeuglängenkorrektur abwählen (G49)",
+    "Cancel Tool Length Offset (G49)": "Werkzeuglängenkorrektur abwählen (G49)",
     "Start the spindle turning CW/CCW (M3/M4)": "Spindel einschalten im UZS/GUZS (M3/M4)",
     "Stop the spindle from turning (M5)": "Spindel anhalten (M5)",
     "Turn counterclockwise": "Drehen im Gegenuhrzeigersinn",
