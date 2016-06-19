@@ -1,5 +1,5 @@
+import delay from 'delay';
 import React from 'react';
-import Iframe from '../../common/Iframe';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
 import * as webcamSettings from './WebcamSettings';
@@ -12,15 +12,20 @@ class Webcam extends React.Component {
         url: store.get('widgets.webcam.url')
     };
 
-    onEdit() {
+    changeSettings() {
         webcamSettings.show(() => {
             this.setState({
                 url: store.get('widgets.webcam.url')
             });
         });
     }
-    onRefresh() {
-        this.refs.iframe.reload();
+    refresh() {
+        this.refs['webcam-viewport'].src = '';
+
+        delay(10) // delay 10ms
+            .then(() => {
+                this.refs['webcam-viewport'].src = this.state.url;
+            });
     }
     render() {
         const { disabled } = this.props;
@@ -30,7 +35,12 @@ class Webcam extends React.Component {
             <div>
             {!disabled &&
                 <div className="webcam-on-container">
-                    <Iframe url={url} ref="iframe" />
+                    <img
+                        src={url}
+                        className="webcam-viewport"
+                        ref="webcam-viewport"
+                        alt=""
+                    />
                 </div>
             }
             {disabled &&

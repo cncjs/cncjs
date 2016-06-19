@@ -53,7 +53,7 @@ class WebcamSettings extends React.Component {
                             <input
                                 type="url"
                                 className="form-control"
-                                placeholder="http://"
+                                placeholder="http://raspberrypi:8080/?action=stream"
                                 defaultValue={url}
                                 onChange={::this.handleChangeURL}
                             />
