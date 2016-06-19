@@ -105,7 +105,7 @@ Locale | Language | Status | Contributors
 [ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)       | にほんご (Japanese) | |
 [ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru/resource.json)       | Ру́сский язы́к (Russian) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
 [zh-cn](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json) | 简体中文 (Simplified Chinese) | |
-[zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | 繁體中文 (Traditional Chinese) | :heavy_check_mark: | [Cheton Wu] (https://github.com/cheton)
+[zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | 繁體中文 (Traditional Chinese) | :heavy_check_mark: | [Cheton Wu](https://github.com/cheton)
 
 ## Donate
 
