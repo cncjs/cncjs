@@ -203,6 +203,7 @@
     "glob": "~7.0.3",
     "gulp": "~3.9.1",
     "gulp-babel": "~6.1.2",
+    "gulp-sort": "~2.0.0",
     "gulp-util": "~3.0.7",
     "i18next-scanner": "~1.4.1",
     "json-loader": "~0.5.4",
