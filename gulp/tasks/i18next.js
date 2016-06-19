@@ -2,6 +2,7 @@ import _ from 'lodash';
 import fs from 'fs';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
+import sort from 'gulp-sort';
 import i18nextScanner from 'i18next-scanner';
 import table from 'text-table';
 
@@ -44,8 +45,6 @@ const appConfig = {
 
 const webConfig = {
     src: [
-        'src/web/**/*.html',
-        'src/web/**/*.hbs',
         'src/web/**/*.js',
         'src/web/**/*.jsx',
         // Use ! to filter out files or directories
@@ -130,6 +129,7 @@ export default (options) => {
     });
     gulp.task('i18next:web', () => {
         return gulp.src(webConfig.src)
+            .pipe(sort()) // Sort files in stream by path
             .pipe(i18nextScanner(webConfig.options, customTransform))
             .pipe(gulp.dest(webConfig.dest));
     });
