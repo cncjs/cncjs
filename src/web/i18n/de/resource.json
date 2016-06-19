@@ -49,7 +49,7 @@
     "Temporary Offsets (G92)": "Temporäre Offsets (G92)",
     "Zero Out Temporary X Axis (G92 X0)": "Temporären X-Nullpunkt setzen (G92 X0)",
     "Un-Zero Out Temporary X Axis (G92.1 X0)": "Temporären X-Nullpunkt entfernen (G92.1 X0)",
-    "Work Coordinate System (G54)": "",
+    "Work Coordinate System (G54)": "Werkstück-Koordinatensystem (G54)",
     "Go To Work Zero On X Axis (G0 X0)": "Zum Werkstück-Nullpunkt der X-Achse (G0 X0)",
     "Zero Out Work X Axis (G10 L20 P1 X0)": "Werkstück X-Nullpunkt setzen (G10 L20 P1 X0)",
     "Machine Coordinate System (G53)": "Maschinen-Koordinatensystem (G53)",
