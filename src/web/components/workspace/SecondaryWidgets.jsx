@@ -66,12 +66,15 @@ export default class SecondaryWidgets extends React.Component {
             <Sortable
                 {...this.props}
                 options={{
+                    animation: 150,
                     group: {
                         name: 'secondary',
                         pull: true,
                         put: ['primary']
                     },
                     handle: '.widget-header',
+                    chosenClass: 'sortable-chosen', // Class name for the chosen item
+                    ghostClass: 'sortable-ghost', // Class name for the drop placeholder
                     dataIdAttr: 'data-widgetid'
                 }}
                 onChange={(order) => {
