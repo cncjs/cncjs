@@ -19,8 +19,8 @@ const DisplayPanel = ({ port, unit, activeState, machinePos, workingPos }) => {
     const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
 
     return (
-        <div className="container-fluid display-panel">
-            <div className="row no-gutter">
+        <div className="display-panel">
+            <div className="row no-gutters">
                 <div className="active-state">
                     {i18n._('Active state: {{activeState}}', { activeState })}
                 </div>

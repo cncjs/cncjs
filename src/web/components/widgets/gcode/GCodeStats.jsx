@@ -187,8 +187,8 @@ class GCodeStats extends React.Component {
         }
 
         return (
-            <div className="container-fluid gcode-stats">
-                <div className="row">
+            <div className="gcode-stats">
+                <div className="row no-gutters">
                     <div className="col-xs-12">
                         <table className="table-bordered" data-table="dimension">
                             <thead>
@@ -222,19 +222,19 @@ class GCodeStats extends React.Component {
                         </table>
                     </div>
                 </div>
-                <div className="row">
+                <div className="row no-gutters">
                     <div className="col-xs-6">{i18n._('Sent')}</div>
                     <div className="col-xs-6">{i18n._('Total')}</div>
                 </div>
-                <div className="row">
+                <div className="row no-gutters">
                     <div className="col-xs-6">{sent}</div>
                     <div className="col-xs-6">{total}</div>
                 </div>
-                <div className="row">
+                <div className="row no-gutters">
                     <div className="col-xs-6">{i18n._('Start Time')}</div>
                     <div className="col-xs-6">{i18n._('Duration')}</div>
                 </div>
-                <div className="row">
+                <div className="row no-gutters">
                     <div className="col-xs-6">{startTime}</div>
                     <div className="col-xs-6">{duration}</div>
                 </div>

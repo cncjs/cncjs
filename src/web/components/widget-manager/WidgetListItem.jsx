@@ -47,21 +47,19 @@ class WidgetListItem extends React.Component {
                     <i className="fa fa-list-alt"></i>
                 </div>
                 <div className="panel-body">
-                    <div className="container-fluid">
-                        <div className="row no-gutter">
-                            <div className="col-sm-8 text-left">
-                                <span style={styles.caption}>{this.props.caption}</span>
-                            </div>
-                            <div className="col-sm-4 text-right">
-                                <Switch
-                                    className="noselect"
-                                    disabled={this.props.disabled}
-                                    defaultChecked={checked}
-                                    onChange={::this.handleChange}
-                                    checkedChildren={i18n._('ON')}
-                                    unCheckedChildren={i18n._('OFF')}
-                                />
-                            </div>
+                    <div className="row no-gutters">
+                        <div className="col-sm-8 text-left">
+                            <span style={styles.caption}>{this.props.caption}</span>
+                        </div>
+                        <div className="col-sm-4 text-right">
+                            <Switch
+                                className="noselect"
+                                disabled={this.props.disabled}
+                                defaultChecked={checked}
+                                onChange={::this.handleChange}
+                                checkedChildren={i18n._('ON')}
+                                unCheckedChildren={i18n._('OFF')}
+                            />
                         </div>
                     </div>
                     <div style={styles.details}>

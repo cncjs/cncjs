@@ -215,174 +215,172 @@ class JogPad extends React.Component {
 
         return (
             <div className="jog-pad">
-                <div className="container-fluid">
-                    <div className="row no-gutter">
-                        <div className="col-xs-3">
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-x-minus jog-y-plus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ X: -distance, Y: distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move X- Y+')}
-                            >
-                                <i className="fa fa-arrow-circle-up rotate--45deg"></i>
-                            </button>
-                        </div>
-                        <div className={classNames('col-xs-3', classes['jog-direction-y'])}>
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-y-plus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ Y: distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move Y+')}
-                            >
-                                <span className="jog-text">Y+</span>
-                            </button>
-                        </div>
-                        <div className="col-xs-3">
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-x-plus jog-y-plus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ X: distance, Y: distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move X+ Y+')}
-                            >
-                                <i className="fa fa-arrow-circle-up rotate-45deg"></i>
-                            </button>
-                        </div>
-                        <div className={classNames('col-xs-3', classes['jog-direction-z'])}>
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-z-plus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ Z: distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move Z+')}
-                            >
-                                <span className="jog-text">Z+</span>
-                            </button>
-                        </div>
+                <div className="row no-gutters">
+                    <div className="col-xs-3">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-x-minus jog-y-plus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ X: -distance, Y: distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move X- Y+')}
+                        >
+                            <i className="fa fa-arrow-circle-up rotate--45deg"></i>
+                        </button>
                     </div>
-                    <div className="row no-gutter">
-                        <div className={classNames('col-xs-3', classes['jog-direction-x'])}>
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-x-minus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ X: -distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move X-')}
-                            >
-                                <span className="jog-text">X-</span>
-                            </button>
-                        </div>
-                        <div className="col-xs-3">
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-xy-zero"
-                                onClick={() => this.move({ X: 0, Y: 0 })}
-                                disabled={!canClick}
-                                title={i18n._('Move To XY Zero (G0 X0 Y0)')}
-                            >
-                                <span className="jog-text">X/Y</span>
-                            </button>
-                        </div>
-                        <div className={classNames('col-xs-3', classes['jog-direction-x'])}>
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-x-plus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ X: distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move X+')}
-                            >
-                                <span className="jog-text">X+</span>
-                            </button>
-                        </div>
-                        <div className="col-xs-3">
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-z-zero"
-                                onClick={() => this.move({ Z: 0 })}
-                                disabled={!canClick}
-                                title={i18n._('Move To Z Zero (G0 Z0)')}
-                            >
-                                <span className="jog-text">Z</span>
-                            </button>
-                        </div>
+                    <div className={classNames('col-xs-3', classes['jog-direction-y'])}>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-y-plus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ Y: distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move Y+')}
+                        >
+                            <span className="jog-text">Y+</span>
+                        </button>
                     </div>
-                    <div className="row no-gutter">
-                        <div className="col-xs-3">
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-x-minus jog-y-minus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ X: -distance, Y: -distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move X- Y-')}
-                            >
-                                <i className="fa fa-arrow-circle-down rotate-45deg"></i>
-                            </button>
-                        </div>
-                        <div className={classNames('col-xs-3', classes['jog-direction-y'])}>
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-y-minus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ Y: -distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move Y-')}
-                            >
-                                <span className="jog-text">Y-</span>
-                            </button>
-                        </div>
-                        <div className="col-xs-3">
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-x-plus jog-y-minus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ X: distance, Y: -distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move X+ Y-')}
-                            >
-                                <i className="fa fa-arrow-circle-down rotate--45deg"></i>
-                            </button>
-                        </div>
-                        <div className={classNames('col-xs-3', classes['jog-direction-z'])}>
-                            <button
-                                type="button"
-                                className="btn btn-sm btn-default jog-z-minus"
-                                onClick={() => {
-                                    const distance = this.getJogDistance();
-                                    this.jog({ Z: -distance });
-                                }}
-                                disabled={!canClick}
-                                title={i18n._('Move Z-')}
-                            >
-                                <span className="jog-text">Z-</span>
-                            </button>
-                        </div>
+                    <div className="col-xs-3">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-x-plus jog-y-plus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ X: distance, Y: distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move X+ Y+')}
+                        >
+                            <i className="fa fa-arrow-circle-up rotate-45deg"></i>
+                        </button>
+                    </div>
+                    <div className={classNames('col-xs-3', classes['jog-direction-z'])}>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-z-plus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ Z: distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move Z+')}
+                        >
+                            <span className="jog-text">Z+</span>
+                        </button>
+                    </div>
+                </div>
+                <div className="row no-gutters">
+                    <div className={classNames('col-xs-3', classes['jog-direction-x'])}>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-x-minus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ X: -distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move X-')}
+                        >
+                            <span className="jog-text">X-</span>
+                        </button>
+                    </div>
+                    <div className="col-xs-3">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-xy-zero"
+                            onClick={() => this.move({ X: 0, Y: 0 })}
+                            disabled={!canClick}
+                            title={i18n._('Move To XY Zero (G0 X0 Y0)')}
+                        >
+                            <span className="jog-text">X/Y</span>
+                        </button>
+                    </div>
+                    <div className={classNames('col-xs-3', classes['jog-direction-x'])}>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-x-plus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ X: distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move X+')}
+                        >
+                            <span className="jog-text">X+</span>
+                        </button>
+                    </div>
+                    <div className="col-xs-3">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-z-zero"
+                            onClick={() => this.move({ Z: 0 })}
+                            disabled={!canClick}
+                            title={i18n._('Move To Z Zero (G0 Z0)')}
+                        >
+                            <span className="jog-text">Z</span>
+                        </button>
+                    </div>
+                </div>
+                <div className="row no-gutters">
+                    <div className="col-xs-3">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-x-minus jog-y-minus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ X: -distance, Y: -distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move X- Y-')}
+                        >
+                            <i className="fa fa-arrow-circle-down rotate-45deg"></i>
+                        </button>
+                    </div>
+                    <div className={classNames('col-xs-3', classes['jog-direction-y'])}>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-y-minus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ Y: -distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move Y-')}
+                        >
+                            <span className="jog-text">Y-</span>
+                        </button>
+                    </div>
+                    <div className="col-xs-3">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-x-plus jog-y-minus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ X: distance, Y: -distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move X+ Y-')}
+                        >
+                            <i className="fa fa-arrow-circle-down rotate--45deg"></i>
+                        </button>
+                    </div>
+                    <div className={classNames('col-xs-3', classes['jog-direction-z'])}>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default jog-z-minus"
+                            onClick={() => {
+                                const distance = this.getJogDistance();
+                                this.jog({ Z: -distance });
+                            }}
+                            disabled={!canClick}
+                            title={i18n._('Move Z-')}
+                        >
+                            <span className="jog-text">Z-</span>
+                        </button>
                     </div>
                 </div>
             </div>

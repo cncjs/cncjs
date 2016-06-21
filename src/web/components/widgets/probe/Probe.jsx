@@ -319,93 +319,91 @@ class Probe extends React.Component {
                     }
                     </p>
                 </div>
-                <div className="container-fluid">
-                    <div className="row no-gutter probe-options">
-                        <div className="col-xs-6">
-                            <div className="form-group">
-                                <label className="control-label">{i18n._('Probe Depth')}</label>
-                                <div className="input-group input-group-xs">
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={probeDepth}
-                                        placeholder="0.00"
-                                        min={0}
-                                        step={step}
-                                        onKeyDown={(e) => e.stopPropagation()}
-                                        onChange={::this.handleProbeDepthChange}
-                                    />
-                                    <div className="input-group-addon">{displayUnit}</div>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xs-6">
-                            <div className="form-group">
-                                <label className="control-label">{i18n._('Probe Feedrate')}</label>
-                                <div className="input-group input-group-xs">
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={probeFeedrate}
-                                        placeholder="0.00"
-                                        min={0}
-                                        step={step}
-                                        onChange={::this.handleProbeFeedrateChange}
-                                    />
-                                    <span className="input-group-addon">{feedrateUnit}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xs-6">
-                            <div className="form-group">
-                                <label className="control-label">{i18n._('Touch Plate Thickness')}</label>
-                                <div className="input-group input-group-xs">
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={tlo}
-                                        placeholder="0.00"
-                                        min={0}
-                                        step={step}
-                                        onChange={::this.handleTLOChange}
-                                    />
-                                    <span className="input-group-addon">{displayUnit}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-xs-6">
-                            <div className="form-group">
-                                <label className="control-label">{i18n._('Retraction Distance')}</label>
-                                <div className="input-group input-group-xs">
-                                    <input
-                                        type="number"
-                                        className="form-control"
-                                        value={retractionDistance}
-                                        placeholder="0.00"
-                                        min={0}
-                                        step={step}
-                                        onChange={::this.handleRetractionDistanceChange}
-                                    />
-                                    <span className="input-group-addon">{displayUnit}</span>
-                                </div>
+                <div className="row no-gutters probe-options">
+                    <div className="col-xs-6">
+                        <div className="form-group">
+                            <label className="control-label">{i18n._('Probe Depth')}</label>
+                            <div className="input-group input-group-xs">
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={probeDepth}
+                                    placeholder="0.00"
+                                    min={0}
+                                    step={step}
+                                    onKeyDown={(e) => e.stopPropagation()}
+                                    onChange={::this.handleProbeDepthChange}
+                                />
+                                <div className="input-group-addon">{displayUnit}</div>
                             </div>
                         </div>
                     </div>
-                    <div className="row no-gutter">
-                        <div className="col-xs-12">
-                            <div className="btn-toolbar">
-                                <div className="btn-group" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-sm btn-default"
-                                        onClick={::this.runZProbe}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Run Z-probe')}
-                                    </button>
-                                </div>
-                                <div className="btn-group" role="group"></div>
+                    <div className="col-xs-6">
+                        <div className="form-group">
+                            <label className="control-label">{i18n._('Probe Feedrate')}</label>
+                            <div className="input-group input-group-xs">
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={probeFeedrate}
+                                    placeholder="0.00"
+                                    min={0}
+                                    step={step}
+                                    onChange={::this.handleProbeFeedrateChange}
+                                />
+                                <span className="input-group-addon">{feedrateUnit}</span>
                             </div>
+                        </div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="form-group">
+                            <label className="control-label">{i18n._('Touch Plate Thickness')}</label>
+                            <div className="input-group input-group-xs">
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={tlo}
+                                    placeholder="0.00"
+                                    min={0}
+                                    step={step}
+                                    onChange={::this.handleTLOChange}
+                                />
+                                <span className="input-group-addon">{displayUnit}</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div className="form-group">
+                            <label className="control-label">{i18n._('Retraction Distance')}</label>
+                            <div className="input-group input-group-xs">
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    value={retractionDistance}
+                                    placeholder="0.00"
+                                    min={0}
+                                    step={step}
+                                    onChange={::this.handleRetractionDistanceChange}
+                                />
+                                <span className="input-group-addon">{displayUnit}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className="row no-gutters">
+                    <div className="col-xs-12">
+                        <div className="btn-toolbar">
+                            <div className="btn-group" role="group">
+                                <button
+                                    type="button"
+                                    className="btn btn-sm btn-default"
+                                    onClick={::this.runZProbe}
+                                    disabled={!canClick}
+                                >
+                                    {i18n._('Run Z-probe')}
+                                </button>
+                            </div>
+                            <div className="btn-group" role="group"></div>
                         </div>
                     </div>
                 </div>

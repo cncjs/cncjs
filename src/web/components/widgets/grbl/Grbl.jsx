@@ -151,13 +151,13 @@ class Grbl extends React.Component {
             <div>
                 <Toolbar port={port} />
 
-                <div className="container-fluid parser-state">
-                    <div className="row no-gutter">
+                <div className="parser-state">
+                    <div className="row no-gutters">
                         <div className="col col-xs-12">
                             <h6>{i18n._('Parser State')}</h6>
                         </div>
                     </div>
-                    <div className="row no-gutter">
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('State')}
                         </div>
@@ -165,7 +165,7 @@ class Grbl extends React.Component {
                             <div className="well well-xs">{activeState}</div>
                         </div>
                     </div>
-                    <div className="row no-gutter">
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Feed Rate')}
                         </div>
@@ -179,7 +179,7 @@ class Grbl extends React.Component {
                             <div className="well well-xs">{Number(parserstate.spindle) || 0}</div>
                         </div>
                     </div>
-                    <div className="row no-gutter">
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Tool Number')}
                         </div>
@@ -188,8 +188,8 @@ class Grbl extends React.Component {
                         </div>
                     </div>
                 </div>
-                <div className="container-fluid modal-groups">
-                    <div className="row no-gutter">
+                <div className="modal-groups">
+                    <div className="row no-gutters">
                         <div className="col col-xs-6">
                             <h6 className="modal-groups-header">
                                 {i18n._('Modal Groups')}
@@ -206,7 +206,7 @@ class Grbl extends React.Component {
                             </button>
                         </div>
                     </div>
-                    <div className="row no-gutter">
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Motion')}
                         </div>
@@ -220,7 +220,7 @@ class Grbl extends React.Component {
                             <div className="well well-xs">{modal.coordinate || none}</div>
                         </div>
                     </div>
-                    <div className="row no-gutter">
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Plane')}
                         </div>
@@ -234,7 +234,7 @@ class Grbl extends React.Component {
                             <div className="well well-xs">{modal.distance || none}</div>
                         </div>
                     </div>
-                    <div className="row no-gutter">
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Feed Rate')}
                         </div>
@@ -248,7 +248,7 @@ class Grbl extends React.Component {
                             <div className="well well-xs">{modal.units || none}</div>
                         </div>
                     </div>
-                    <div className="row no-gutter">
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Program')}
                         </div>
@@ -262,7 +262,7 @@ class Grbl extends React.Component {
                             <div className="well well-xs">{modal.spindle || none}</div>
                         </div>
                     </div>
-                    <div className="row no-gutter">
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Coolant')}
                         </div>
