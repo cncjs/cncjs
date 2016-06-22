@@ -60,7 +60,9 @@ before_install:
   # npm v3
   - npm install -g npm
 
-install: travis_wait npm install
+install:
+  - travis_wait npm install --production
+  - travis_wait npm install --development
 
 script:
   - |
