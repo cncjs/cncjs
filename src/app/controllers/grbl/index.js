@@ -279,7 +279,8 @@ class GrblController {
             }
 
             this.serialport.on('data', (data) => {
-                this.grbl.parse(data || '');
+                this.grbl.parse('' + data);
+                log.raw('silly', _.trimEnd('grbl> ' + data));
             });
 
             this.serialport.on('disconnect', (err) => {
@@ -412,6 +413,7 @@ class GrblController {
             this.connections[index].sentCommand = data;
         }
         this.serialport.write(data);
+        log.raw('silly', _.trimEnd('grbl> ' + data));
     }
     writeln(socket, data) {
         this.write(socket, data + '\n');

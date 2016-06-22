@@ -63,7 +63,7 @@ class Grbl extends events.EventEmitter {
         return activeState;
     }
     parse(data) {
-        data = data.replace(/\s+$/, '');
+        data = ('' + data).replace(/\s+$/, '');
         if (settings.debug) {
             // console.log('<<', data);
         }

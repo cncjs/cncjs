@@ -29,13 +29,18 @@ const createServer = ({ port = 0, host, backlog, config, verbosity, mount }, cal
     }
 
     { // settings
+        // https://github.com/winstonjs/winston#logging-levels
         if (verbosity === 1) {
-            _.set(settings, 'verbosity', 1);
+            _.set(settings, 'verbosity', verbosity);
             log.logger.level = 'verbose';
         }
         if (verbosity === 2) {
-            _.set(settings, 'verbosity', 2);
+            _.set(settings, 'verbosity', verbosity);
             log.logger.level = 'debug';
+        }
+        if (verbosity === 3) {
+            _.set(settings, 'verbosity', verbosity);
+            log.logger.level = 'silly';
         }
 
         const cncrc = path.resolve(config || settings.cncrc);

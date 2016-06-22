@@ -26,6 +26,7 @@ export default {
         maxWorkers: os.cpus().length || 1
     },
     winston: {
+        // https://github.com/winstonjs/winston#logging-levels
         level: 'debug'
     }
 };

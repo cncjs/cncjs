@@ -30,6 +30,14 @@ export default {
         let stackTrace = getStackTrace()[2];
         logger.log(level, util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
     },
+    raw: function(...args) {
+        let level = args.shift();
+        logger.log(level, prefix.concat(args).join(' '));
+    },
+    silly: function(...args) {
+        let stackTrace = getStackTrace()[2];
+        logger.silly(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
+    },
     debug: function(...args) {
         let stackTrace = getStackTrace()[2];
         logger.debug(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
