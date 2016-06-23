@@ -1,6 +1,6 @@
 # cnc [![Travis CI Build Status](https://travis-ci.org/cheton/cnc.svg)](https://travis-ci.org/cheton/cnc) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/bf64c0brafpp4ucg?svg=true)](https://ci.appveyor.com/project/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/github/cheton/cnc/badge.svg?branch=master)](https://coveralls.io/github/cheton/cnc?branch=master)
 
-[![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://nodei.co/npm/cncjs/)
+[![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://www.npmjs.com/package/cncjs)
 ![cnc](https://raw.githubusercontent.com/cheton/cnc/master/media/banner.png)
 
 A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) running [Grbl](https://github.com/grbl/grbl). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
