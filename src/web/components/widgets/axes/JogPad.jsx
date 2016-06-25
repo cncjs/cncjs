@@ -5,6 +5,7 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import combokeys from '../../../lib/combokeys';
 import controller from '../../../lib/controller';
+import { preventDefault } from '../../../lib/dom-events';
 import { mm2in } from '../../../lib/units';
 import store from '../../../store';
 import ShuttleControl from './ShuttleControl';
@@ -25,73 +26,44 @@ class JogPad extends React.Component {
         selectedAxis: '' // Defaults to empty
     };
     actionHandlers = {
-        X_AXIS: () => {
+        SELECT_AXIS: (event, { axis }) => {
             const { port, activeState } = this.props;
-            const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
 
-            if (canSelect) {
-                if (this.state.selectedAxis === 'x') {
-                    this.setState({ selectedAxis: '' });
-                } else {
-                    this.setState({ selectedAxis: 'x' });
-                }
+            const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
+            if (!canSelect) {
+                return;
+            }
+
+            if (this.state.selectedAxis === axis) {
+                this.setState({ selectedAxis: '' });
+            } else {
+                this.setState({ selectedAxis: axis });
             }
         },
-        Y_AXIS: () => {
+        JOG: (event, { axis = null, direction = 1, factor = 1 }) => {
             const { port, activeState } = this.props;
-            const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
 
-            if (canSelect) {
-                if (this.state.selectedAxis === 'y') {
-                    this.setState({ selectedAxis: '' });
-                } else {
-                    this.setState({ selectedAxis: 'y' });
-                }
-            }
-        },
-        Z_AXIS: () => {
-            const { port, activeState } = this.props;
-            const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
-
-            if (canSelect) {
-                if (this.state.selectedAxis === 'z') {
-                    this.setState({ selectedAxis: '' });
-                } else {
-                    this.setState({ selectedAxis: 'z' });
-                }
-            }
-        },
-        JOG_FORWARD: () => {
-            const { port, activeState } = this.props;
             const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
-
-            if (canJog) {
-                const distance = this.getJogDistance();
-                const jog = {
-                    x: () => this.jog({ X: distance }),
-                    y: () => this.jog({ Y: distance }),
-                    z: () => this.jog({ Z: distance })
-                }[this.state.selectedAxis];
-
-                jog && jog();
+            if (!canJog) {
+                return;
             }
-        },
-        JOG_BACKWARD: () => {
-            const { port, activeState } = this.props;
-            const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
 
-            if (canJog) {
-                const distance = this.getJogDistance();
-                const jog = {
-                    x: () => this.jog({ X: -distance }),
-                    y: () => this.jog({ Y: -distance }),
-                    z: () => this.jog({ Z: -distance })
-                }[this.state.selectedAxis];
+            // The keyboard events of arrow keys for X-axis/Y-axis and pageup/pagedown for Z-axis
+            // are not prevented by default. If a jog command will be executed, it needs to
+            // stop the default behavior of a keyboard combination in a browser.
+            preventDefault(event);
 
-                jog && jog();
-            }
+            axis = axis || this.state.selectedAxis;
+            const distance = this.getJogDistance();
+            const jog = {
+                x: () => this.jog({ X: direction * distance * factor }),
+                y: () => this.jog({ Y: direction * distance * factor }),
+                z: () => this.jog({ Z: direction * distance * factor })
+            }[axis];
+
+            jog && jog();
         },
-        SHUTTLE_ZONE: (value = 0) => {
+        SHUTTLE: (event, { value = 0 }) => {
             const { selectedAxis } = this.state;
 
             if (value === 0) {
@@ -166,12 +138,12 @@ class JogPad extends React.Component {
         this.pubsubTokens = [];
     }
     jog(params = {}) {
-        const s = _.map(params, (value, letter) => ('' + letter + value)).join(' ');
+        const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
         controller.writeln('G91 G0 ' + s); // relative distance
         controller.writeln('G90'); // absolute distance
     }
     move(params = {}) {
-        const s = _.map(params, (value, letter) => ('' + letter + value)).join(' ');
+        const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
         controller.writeln('G0 ' + s);
     }
     getJogDistance() {

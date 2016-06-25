@@ -6,20 +6,9 @@ import controller from '../../lib/controller';
 
 class QuickAccessToolbar extends React.Component {
     actionHandlers = {
-        'FEED_HOLD': () => {
-            controller.command('feedhold');
-        },
-        'RESUME': () => {
-            controller.command('cyclestart');
-        },
-        'HOMING': () => {
-            controller.command('homing');
-        },
-        'UNLOCK': () => {
-            controller.command('unlock');
-        },
-        'RESET': () => {
-            controller.command('reset');
+        CONTROLLER_COMMAND: (event, { command }) => {
+            // feedhold, cyclestart, homing, unlock, reset
+            controller.command(command);
         }
     };
 

@@ -24,7 +24,7 @@ class JogDistance extends React.Component {
     };
     unitDidChange = false;
     actionHandlers = {
-        JOG_LEVER_SWITCH: () => {
+        JOG_LEVER_SWITCH: (event) => {
             const { selectedDistance } = this.state;
             const distances = ['1', '0.1', '0.01', '0.001', ''];
             const currentIndex = distances.indexOf(selectedDistance);
