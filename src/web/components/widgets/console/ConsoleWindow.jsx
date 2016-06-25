@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import delay from 'delay';
 import Infinite from 'react-infinite';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -29,10 +28,9 @@ class ConsoleWindow extends React.Component {
             node.scrollTop = node.scrollHeight;
         }
 
-        delay(0)
-            .then(() => {
-                this.updateContainerHeight();
-            });
+        setTimeout(() => {
+            this.updateContainerHeight();
+        }, 0);
     }
     updateContainerHeight() {
         let containerHeight = DEFAULT_CONTAINER_HEIGHT;
