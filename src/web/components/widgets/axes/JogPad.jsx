@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import combokeys from '../../../lib/combokeys';
 import controller from '../../../lib/controller';
@@ -16,32 +16,42 @@ import {
     METRIC_UNIT
 } from './constants';
 
-class JogPad extends React.Component {
+const toUnitValue = (unit, val) => {
+    val = Number(val) || 0;
+    if (unit === IMPERIAL_UNIT) {
+        val = mm2in(val).toFixed(4) * 1;
+    }
+    if (unit === METRIC_UNIT) {
+        val = val.toFixed(3) * 1;
+    }
+
+    return val;
+};
+
+class JogPad extends Component {
     static propTypes = {
-        port: React.PropTypes.string,
-        unit: React.PropTypes.string,
-        activeState: React.PropTypes.string
-    };
-    state = {
-        selectedAxis: '' // Defaults to empty
+        state: PropTypes.object,
+        actions: PropTypes.object
     };
     actionHandlers = {
         SELECT_AXIS: (event, { axis }) => {
-            const { port, activeState } = this.props;
+            const { state, actions } = this.props;
+            const { port, activeState, selectedAxis } = state;
 
             const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
             if (!canSelect) {
                 return;
             }
 
-            if (this.state.selectedAxis === axis) {
-                this.setState({ selectedAxis: '' });
+            if (selectedAxis === axis) {
+                actions.selectAxis(); // deselect axis
             } else {
-                this.setState({ selectedAxis: axis });
+                actions.selectAxis(axis);
             }
         },
         JOG: (event, { axis = null, direction = 1, factor = 1 }) => {
-            const { port, activeState } = this.props;
+            const { state } = this.props;
+            const { port, activeState } = state;
 
             const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
             if (!canJog) {
@@ -53,7 +63,7 @@ class JogPad extends React.Component {
             // stop the default behavior of a keyboard combination in a browser.
             preventDefault(event);
 
-            axis = axis || this.state.selectedAxis;
+            axis = axis || state.selectedAxis;
             const distance = this.getJogDistance();
             const jog = {
                 x: () => this.jog({ X: direction * distance * factor }),
@@ -64,7 +74,8 @@ class JogPad extends React.Component {
             jog && jog();
         },
         SHUTTLE: (event, { value = 0 }) => {
-            const { selectedAxis } = this.state;
+            const { state } = this.props;
+            const { selectedAxis } = state;
 
             if (value === 0) {
                 // Clear accumulated result
@@ -115,18 +126,23 @@ class JogPad extends React.Component {
         this.shuttleControl.removeAllListeners('flush');
         this.shuttleControl = null;
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props);
+    }
     subscribe() {
         { // gcode:start
             const token = pubsub.subscribe('gcode:start', (msg) => {
+                const { actions } = this.props;
                 // unset the selected axis to prevent from accidental movement while running a G-code file
-                this.setState({ selectedAxis: '' });
+                actions.selectAxis(); // deselect axis
             });
             this.pubsubTokens.push(token);
         }
         { // gcode:resume
             const token = pubsub.subscribe('gcode:resume', (msg) => {
+                const { actions } = this.props;
                 // unset the selected axis to prevent from accidental movement while running a G-code file
-                this.setState({ selectedAxis: '' });
+                actions.selectAxis(); // deselect axis
             });
             this.pubsubTokens.push(token);
         }
@@ -147,28 +163,18 @@ class JogPad extends React.Component {
         controller.writeln('G0 ' + s);
     }
     getJogDistance() {
-        const { unit } = this.props;
+        const { state } = this.props;
+        const { unit } = state;
         const selectedDistance = store.get('widgets.axes.jog.selectedDistance');
         const customDistance = store.get('widgets.axes.jog.customDistance');
         if (selectedDistance) {
             return Number(selectedDistance) || 0;
         }
-        return this.toUnitValue(unit, customDistance);
-    }
-    toUnitValue(unit, val) {
-        val = Number(val) || 0;
-        if (unit === IMPERIAL_UNIT) {
-            val = mm2in(val).toFixed(4) * 1;
-        }
-        if (unit === METRIC_UNIT) {
-            val = val.toFixed(3) * 1;
-        }
-
-        return val;
+        return toUnitValue(unit, customDistance);
     }
     render() {
-        const { selectedAxis } = this.state;
-        const { port, activeState } = this.props;
+        const { state } = this.props;
+        const { port, activeState, selectedAxis } = state;
         const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
         const classes = {
             'jog-direction-x': classNames(

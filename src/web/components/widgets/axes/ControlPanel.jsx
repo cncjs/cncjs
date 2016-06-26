@@ -1,48 +1,40 @@
-import React from 'react';
+import { isEqual } from 'lodash';
+import React, { Component, PropTypes } from 'react';
 import JogPad from './JogPad';
 import JogDistance from './JogDistance';
 import MotionControls from './MotionControls';
 
-const ControlPanel = (props) => {
-    const { port, unit, activeState, machinePos, workingPos } = props;
+class ControlPanel extends Component {
+    static propTypes = {
+        state: PropTypes.object,
+        actions: PropTypes.object
+    };
 
-    return (
-        <div className="control-panel">
-            <div className="row no-gutters">
-                <div className="col-xs-6">
-                    <JogPad
-                        port={port}
-                        unit={unit}
-                        activeState={activeState}
-                    />
+    shouldComponentUpdate(nextProps, nextState) {
+        return !isEqual(nextProps, this.props);
+    }
+    render() {
+        const { state } = this.props;
+        const { port, unit, activeState, machinePos, workingPos } = state;
+
+        return (
+            <div className="control-panel">
+                <div className="row no-gutters">
+                    <div className="col-xs-6">
+                        <JogPad {...this.props} />
+                    </div>
+                    <div className="col-xs-6">
+                        <MotionControls {...this.props} />
+                    </div>
                 </div>
-                <div className="col-xs-6">
-                    <MotionControls
-                        port={port}
-                        unit={unit}
-                        activeState={activeState}
-                        machinePos={machinePos}
-                        workingPos={workingPos}
-                    />
+                <div className="row no-gutters">
+                    <div className="col-xs-12">
+                        <JogDistance {...this.props} />
+                    </div>
                 </div>
             </div>
-            <div className="row no-gutters">
-                <div className="col-xs-12">
-                    <JogDistance
-                        unit={unit}
-                    />
-                </div>
-            </div>
-        </div>
-    );
-};
-
-ControlPanel.propTypes = {
-    port: React.PropTypes.string,
-    unit: React.PropTypes.string,
-    activeState: React.PropTypes.string,
-    machinePos: React.PropTypes.object,
-    workingPos: React.PropTypes.object
-};
+        );
+    }
+}
 
 export default ControlPanel;
