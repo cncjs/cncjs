@@ -1,6 +1,7 @@
 import events from 'events';
 import Mousetrap from 'mousetrap';
 import log from './log';
+import { preventDefault } from './dom-events';
 
 const AXIS_X = 'x';
 const AXIS_Y = 'y';
@@ -422,9 +423,12 @@ class Combokeys extends events.EventEmitter {
             return;
         }
         commandKeys.forEach((o) => {
-            const { cmd, payload = {}, keys } = o;
+            const { keys, cmd, payload = {} } = o;
             const callback = (event) => {
-                log.debug(`combokeys: cmd=${cmd} payload=${JSON.stringify(payload)} keys=${keys}`);
+                log.debug(`combokeys: keys=${keys} cmd=${cmd} payload=${JSON.stringify(payload)}`);
+                if (!!o.preventDefault) {
+                    preventDefault(event);
+                }
                 this.emit(cmd, event, payload);
             };
             Mousetrap.bind(keys, callback);
