@@ -7,7 +7,7 @@ import store from '../../../store';
 import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
 import ControlPanel from './ControlPanel';
-import * as axesSettings from './AxesSettings';
+import { show as showSettings } from './Settings';
 import {
     ACTIVE_STATE_IDLE,
     IMPERIAL_UNIT,
@@ -159,7 +159,7 @@ class Axes extends React.Component {
         });
     }
     edit() {
-        axesSettings.show();
+        showSettings();
     }
     resetCurrentStatus() {
         this.setState({

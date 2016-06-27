@@ -6,7 +6,7 @@ import ShuttleSettings from './ShuttleSettings';
 
 const noop = () => {};
 
-class AxesSettings extends React.Component {
+class Settings extends React.Component {
     static propTypes = {
         onSave: React.PropTypes.func,
         onClose: React.PropTypes.func.isRequired
@@ -62,7 +62,7 @@ export const show = (callback = noop) => {
         }, 0);
     };
 
-    ReactDOM.render(<AxesSettings onSave={callback} onClose={handleClose} />, el);
+    ReactDOM.render(<Settings onSave={callback} onClose={handleClose} />, el);
 };
 
-export default AxesSettings;
+export default Settings;
