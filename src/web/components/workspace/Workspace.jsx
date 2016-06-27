@@ -172,7 +172,11 @@ class Workspace extends React.Component {
                 });
         };
 
-        reader.readAsText(file);
+        try {
+            reader.readAsText(file);
+        } catch (err) {
+            // Ignore error
+        }
     }
     updateWidgetsForPrimaryContainer() {
         widgetManager.show((activeWidgets, inactiveWidgets) => {
