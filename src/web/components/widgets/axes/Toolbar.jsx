@@ -55,7 +55,7 @@ class ToolbarButton extends Component {
                         onClick={actions.toggleDisplayUnit}
                         disabled={!canClick}
                     >
-                        {i18n._('Units')}
+                        {i18n._('in / mm')}
                     </button>
                     <DropdownButton
                         bsSize="xs"
