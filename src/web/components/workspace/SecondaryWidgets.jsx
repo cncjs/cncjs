@@ -7,7 +7,9 @@ import Widget from '../widgets';
 
 export default class SecondaryWidgets extends React.Component {
     static propTypes = {
-        onDelete: React.PropTypes.func.isRequired
+        onDelete: React.PropTypes.func.isRequired,
+        onSortStart: React.PropTypes.func.isRequired,
+        onSortEnd: React.PropTypes.func.isRequired
     };
     state = {
         widgets: store.get('workspace.container.secondary.widgets')
@@ -19,6 +21,9 @@ export default class SecondaryWidgets extends React.Component {
     }
     componentWillUnmount() {
         this.unsubscribe();
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate() {
         const { widgets } = this.state;
@@ -75,7 +80,13 @@ export default class SecondaryWidgets extends React.Component {
                     handle: '.widget-header',
                     chosenClass: 'sortable-chosen', // Class name for the chosen item
                     ghostClass: 'sortable-ghost', // Class name for the drop placeholder
-                    dataIdAttr: 'data-widgetid'
+                    dataIdAttr: 'data-widgetid',
+                    onStart: (event) => {
+                        this.props.onSortStart();
+                    },
+                    onEnd: (event) => {
+                        this.props.onSortEnd();
+                    }
                 }}
                 onChange={(order) => {
                     this.setState({ widgets: order });

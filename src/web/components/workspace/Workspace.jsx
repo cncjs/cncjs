@@ -17,7 +17,8 @@ class Workspace extends React.Component {
     state = {
         mounted: false,
         port: '',
-        isDragging: false,
+        isDraggingFile: false,
+        isDraggingWidget: false,
         isUploading: false,
         showPrimaryContainer: store.get('workspace.container.primary.show'),
         showSecondaryContainer: store.get('workspace.container.secondary.show'),
@@ -40,6 +41,9 @@ class Workspace extends React.Component {
     componentWillUnmount() {
         this.unsubscribe();
         this.removeResizeEventListener();
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate() {
         store.set('workspace.container.primary.show', this.state.showPrimaryContainer);
@@ -226,14 +230,29 @@ class Workspace extends React.Component {
         // Update inactive count
         this.setState({ inactiveCount: inactiveCount + 1 });
     }
+    handleSortStart() {
+        const { isDraggingWidget } = this.state;
+
+        if (!isDraggingWidget) {
+            this.setState({ isDraggingWidget: true });
+        }
+    }
+    handleSortEnd() {
+        const { isDraggingWidget } = this.state;
+
+        if (isDraggingWidget) {
+            this.setState({ isDraggingWidget: false });
+        }
+    }
     render() {
         const {
-            isDragging,
+            isDraggingFile,
+            isDraggingWidget,
             showPrimaryContainer,
             showSecondaryContainer,
             inactiveCount
         } = this.state;
-        const notDragging = !isDragging;
+        const notDraggingFile = !isDraggingFile;
         const hidePrimaryContainer = !showPrimaryContainer;
         const hideSecondaryContainer = !showSecondaryContainer;
         const classes = {
@@ -251,7 +270,7 @@ class Workspace extends React.Component {
             ),
             dropzoneOverlay: classNames(
                 'dropzone-overlay',
-                { 'hidden': notDragging }
+                { 'hidden': notDraggingFile }
             )
         };
 
@@ -264,14 +283,31 @@ class Workspace extends React.Component {
                         className="dropzone"
                         disableClick={true}
                         multiple={false}
-                        onDragEnter={() => {
-                            this.setState({ isDragging: true });
+                        onDragStart={(event) => {
                         }}
-                        onDragLeave={() => {
-                            this.setState({ isDragging: false });
+                        onDragEnter={(event) => {
+                            if (isDraggingWidget) {
+                                return;
+                            }
+                            if (!isDraggingFile) {
+                                this.setState({ isDraggingFile: true });
+                            }
+                        }}
+                        onDragLeave={(event) => {
+                            if (isDraggingWidget) {
+                                return;
+                            }
+                            if (isDraggingFile) {
+                                this.setState({ isDraggingFile: false });
+                            }
                         }}
                         onDrop={(files) => {
-                            this.setState({ isDragging: false });
+                            if (isDraggingWidget) {
+                                return;
+                            }
+                            if (isDraggingFile) {
+                                this.setState({ isDraggingFile: false });
+                            }
                             this.onDrop(files);
                         }}
                     >
@@ -302,6 +338,8 @@ class Workspace extends React.Component {
                                     <PrimaryWidgets
                                         className="widgets"
                                         onDelete={::this.handleDeleteWidget}
+                                        onSortStart={::this.handleSortStart}
+                                        onSortEnd={::this.handleSortEnd}
                                     />
                                 </div>
                             {hidePrimaryContainer &&
@@ -358,6 +396,8 @@ class Workspace extends React.Component {
                                     <SecondaryWidgets
                                         className="widgets"
                                         onDelete={::this.handleDeleteWidget}
+                                        onSortStart={::this.handleSortStart}
+                                        onSortEnd={::this.handleSortEnd}
                                     />
                                 </div>
                             </div>

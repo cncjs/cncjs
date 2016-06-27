@@ -9,6 +9,9 @@ class DefaultWidgets extends React.Component {
         widgets: store.get('workspace.container.default.widgets')
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     componentDidUpdate() {
         const { widgets } = this.state;
         store.set('workspace.container.default.widgets', widgets);
