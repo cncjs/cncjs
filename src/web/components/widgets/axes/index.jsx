@@ -1,8 +1,10 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import { in2mm, mm2in } from '../../../lib/units';
+import controller from '../../../lib/controller';
 import store from '../../../store';
 import Widget from '../../widget';
 import Axes from './Axes';
@@ -80,7 +82,41 @@ class AxesWidget extends React.Component {
         selectedDistance: store.get('widgets.axes.jog.selectedDistance'),
         customDistance: toUnitValue(METRIC_UNIT, store.get('widgets.axes.jog.customDistance'))
     };
+    controllerEvents = {
+        'grbl:status': (data) => {
+            const { activeState, machinePos, workingPos } = data;
 
+            this.updateStatus({ activeState, machinePos, workingPos });
+        },
+        'grbl:parserstate': (parserstate) => {
+            const { state, actions } = this.props;
+            let unit = state.unit;
+
+            // Imperial
+            if (parserstate.modal.units === 'G20') {
+                unit = IMPERIAL_UNIT;
+            }
+
+            // Metric
+            if (parserstate.modal.units === 'G21') {
+                unit = METRIC_UNIT;
+            }
+
+            if (unit !== state.unit) {
+                this.changeUnit(unit);
+            }
+        }
+    };
+    pubsubTokens = [];
+
+    componentDidMount() {
+        this.subscribe();
+        this.addControllerEvents();
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+        this.removeControllerEvents();
+    }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
@@ -104,6 +140,35 @@ class AxesWidget extends React.Component {
         if (prevState.keypadJogging !== this.state.keypadJogging) {
             store.set('widgets.axes.jog.keypad', this.state.keypadJogging);
         }
+    }
+    subscribe() {
+        { // port
+            const token = pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+                this.changePort(port);
+
+                if (!port) {
+                    this.resetStatus();
+                }
+            });
+            this.pubsubTokens.push(token);
+        }
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
+        });
     }
     resetStatus() {
         this.setState({
