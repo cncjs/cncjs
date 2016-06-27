@@ -2,7 +2,7 @@ import delay from 'delay';
 import React from 'react';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
-import * as webcamSettings from './WebcamSettings';
+import { show as showSettings } from './Settings';
 
 class Webcam extends React.Component {
     static propTypes = {
@@ -13,7 +13,7 @@ class Webcam extends React.Component {
     };
 
     changeSettings() {
-        webcamSettings.show(() => {
+        showSettings(() => {
             this.setState({
                 url: store.get('widgets.webcam.url')
             });

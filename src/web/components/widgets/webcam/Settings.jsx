@@ -6,7 +6,7 @@ import store from '../../../store';
 
 const noop = () => {};
 
-class WebcamSettings extends React.Component {
+class Settings extends React.Component {
     static propTypes = {
         onSave: React.PropTypes.func,
         onClose: React.PropTypes.func.isRequired
@@ -78,7 +78,7 @@ export const show = (callback = noop) => {
         }, 0);
     };
 
-    ReactDOM.render(<WebcamSettings onSave={callback} onClose={handleClose} />, el);
+    ReactDOM.render(<Settings onSave={callback} onClose={handleClose} />, el);
 };
 
-export default WebcamSettings;
+export default Settings;
