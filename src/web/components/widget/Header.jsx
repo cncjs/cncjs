@@ -2,9 +2,10 @@ import classNames from 'classnames';
 import React from 'react';
 
 const Header = (props) => {
-    const { children, className, ...others } = props;
+    const { children, className, fixed, ...others } = props;
     const headerClass = classNames(
         'widget-header',
+        { 'widget-header-fixed': !!fixed },
         'clearfix',
         className
     );
