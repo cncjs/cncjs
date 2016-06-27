@@ -8,6 +8,11 @@
         .widget-footer {
             border: none;
         }
+        .widget-header + .widget-content,
+        .widget-header + .widget-footer,
+        .widget-content + .widget-footer {
+            border-top: 1px solid #ccc;
+        }
     }
 
     &.widget-fullscreen {
@@ -85,6 +90,9 @@
             line-height: 32px;
             padding: 0;
             margin: 0;
+        }
+        i {
+            font-size: 14px;
         }
     }
 
