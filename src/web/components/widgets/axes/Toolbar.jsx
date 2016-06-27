@@ -18,16 +18,6 @@ class ToolbarButton extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !isEqual(nextProps, this.props);
     }
-    toggleDisplayUnit() {
-        const { state } = this.props;
-        const { unit } = state;
-
-        if (unit === METRIC_UNIT) {
-            controller.writeln('G20'); // G20 specifies Imperial unit
-        } else {
-            controller.writeln('G21'); // G21 specifies Metric unit
-        }
-    }
     handleSelect(eventKey) {
         const data = eventKey;
         if (data) {
@@ -40,12 +30,29 @@ class ToolbarButton extends Component {
         const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
-            <div>
-                <div className="toolbar-button btn-group">
+            <div className="toolbar-button clearfix">
+                <div className="btn-group pull-left">
+                    <button
+                        type="button"
+                        className={classNames(
+                            'btn',
+                            'btn-xs',
+                            'btn-default',
+                            { 'btn-select': keypadJogging }
+                        )}
+                        onClick={actions.toggleKeypadJogging}
+                        disabled={!canClick}
+                    >
+                        <i className="fa fa-keyboard-o" style={{ fontSize: 14 }} />
+                        &nbsp;
+                        {i18n._('Keypad')}
+                    </button>
+                </div>
+                <div className="btn-group pull-right">
                     <button
                         type="button"
                         className="btn btn-xs btn-default"
-                        onClick={::this.toggleDisplayUnit}
+                        onClick={actions.toggleDisplayUnit}
                         disabled={!canClick}
                     >
                         {i18n._('Units')}

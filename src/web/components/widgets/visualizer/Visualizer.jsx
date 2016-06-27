@@ -262,8 +262,11 @@ class Visualizer extends React.Component {
         }
 
         const el = ReactDOM.findDOMNode(this.refs.visualizer);
+        const navbarHeight = 50;
+        const widgetHeaderHeight = 32;
+        const borderWidth = 1;
         const width = el.offsetWidth;
-        const height = window.innerHeight - 50 - 1; // take off the navbar (50px) and an extra 1px space to disable scrollbar
+        const height = window.innerHeight - navbarHeight - widgetHeaderHeight - borderWidth;
 
         // Update the camera aspect ratio (width / height), and set a new size to the renderer.
         // Also see "Window on resize, and aspect ratio #69" at https://github.com/mrdoob/three.js/issues/69

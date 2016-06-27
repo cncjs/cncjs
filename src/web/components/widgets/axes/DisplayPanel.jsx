@@ -32,9 +32,6 @@ class DisplayPanel extends Component {
         return (
             <div className="display-panel">
                 <div className="row no-gutters">
-                    <div className="active-state">
-                        {i18n._('Active state: {{activeState}}', { activeState })}
-                    </div>
                     <table className="table-bordered">
                         <thead>
                             <tr>

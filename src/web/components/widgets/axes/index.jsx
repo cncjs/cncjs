@@ -89,8 +89,7 @@ class AxesWidget extends React.Component {
             this.updateStatus({ activeState, machinePos, workingPos });
         },
         'grbl:parserstate': (parserstate) => {
-            const { state, actions } = this.props;
-            let unit = state.unit;
+            let unit = this.state.unit;
 
             // Imperial
             if (parserstate.modal.units === 'G20') {
@@ -102,7 +101,7 @@ class AxesWidget extends React.Component {
                 unit = METRIC_UNIT;
             }
 
-            if (unit !== state.unit) {
+            if (unit !== this.state.unit) {
                 this.changeUnit(unit);
             }
         }
@@ -208,6 +207,15 @@ class AxesWidget extends React.Component {
             customDistance: customDistance
         });
     }
+    toggleDisplayUnit() {
+        const { unit } = this.state;
+
+        if (unit === METRIC_UNIT) {
+            controller.writeln('G20'); // G20 specifies Imperial unit
+        } else {
+            controller.writeln('G21'); // G21 specifies Metric unit
+        }
+    }
     toggleKeypadJogging() {
         this.setState({ keypadJogging: !this.state.keypadJogging });
     }
@@ -266,6 +274,7 @@ class AxesWidget extends React.Component {
             updateStatus: ::this.updateStatus,
             changePort: ::this.changePort,
             changeUnit: ::this.changeUnit,
+            toggleDisplayUnit: ::this.toggleDisplayUnit,
             toggleKeypadJogging: ::this.toggleKeypadJogging,
             selectAxis: ::this.selectAxis,
             selectDistance: ::this.selectDistance,
@@ -301,24 +310,6 @@ class AxesWidget extends React.Component {
                                 onClick={(event) => this.props.onDelete()}
                             />
                         </Widget.Controls>
-                        <Widget.Toolbar>
-                            <Widget.Button
-                                type="default"
-                                onClick={(event) => {
-                                    this.toggleKeypadJogging();
-                                }}
-                            >
-                                <i
-                                    className={classNames(
-                                        'fa',
-                                        { 'fa-toggle-on': keypadJogging },
-                                        { 'fa-toggle-off': !keypadJogging }
-                                    )}
-                                />
-                                &nbsp;
-                                {i18n._('Keypad')}
-                            </Widget.Button>
-                        </Widget.Toolbar>
                     </Widget.Header>
                     <Widget.Content className={classes.widgetContent}>
                         <Axes
