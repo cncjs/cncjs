@@ -51,10 +51,15 @@ class JogPad extends Component {
         },
         JOG: (event, { axis = null, direction = 1, factor = 1 }) => {
             const { state } = this.props;
-            const { port, activeState } = state;
+            const { port, activeState, keypadJogging, selectedAxis } = state;
 
             const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
             if (!canJog) {
+                return;
+            }
+
+            if (axis !== null && !keypadJogging) {
+                // keypad jogging is disabled
                 return;
             }
 
@@ -63,7 +68,7 @@ class JogPad extends Component {
             // stop the default behavior of a keyboard combination in a browser.
             preventDefault(event);
 
-            axis = axis || state.selectedAxis;
+            axis = axis || selectedAxis;
             const distance = this.getJogDistance();
             const jog = {
                 x: () => this.jog({ X: direction * distance * factor }),
@@ -174,20 +179,20 @@ class JogPad extends Component {
     }
     render() {
         const { state } = this.props;
-        const { port, activeState, selectedAxis } = state;
+        const { port, activeState, keypadJogging, selectedAxis } = state;
         const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
         const classes = {
             'jog-direction-x': classNames(
                 'jog-direction',
-                { 'jog-direction-highlight': selectedAxis === 'x' }
+                { 'jog-direction-highlight': keypadJogging || selectedAxis === 'x' }
             ),
             'jog-direction-y': classNames(
                 'jog-direction',
-                { 'jog-direction-highlight': selectedAxis === 'y' }
+                { 'jog-direction-highlight': keypadJogging || selectedAxis === 'y' }
             ),
             'jog-direction-z': classNames(
                 'jog-direction',
-                { 'jog-direction-highlight': selectedAxis === 'z' }
+                { 'jog-direction-highlight': keypadJogging || selectedAxis === 'z' }
             )
         };
 

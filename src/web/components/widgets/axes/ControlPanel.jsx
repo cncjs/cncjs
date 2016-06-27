@@ -14,9 +14,6 @@ class ControlPanel extends Component {
         return !isEqual(nextProps, this.props);
     }
     render() {
-        const { state } = this.props;
-        const { port, unit, activeState, machinePos, workingPos } = state;
-
         return (
             <div className="control-panel">
                 <div className="row no-gutters">

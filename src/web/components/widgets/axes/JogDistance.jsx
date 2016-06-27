@@ -15,6 +15,7 @@ class JogDistance extends Component {
         state: PropTypes.object,
         actions: PropTypes.object
     };
+
     actionHandlers = {
         JOG_LEVER_SWITCH: (event) => {
             const { state, actions } = this.props;

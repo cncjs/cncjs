@@ -36,7 +36,7 @@ class ToolbarButton extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { port, activeState, jogMode } = state;
+        const { port, activeState, keypadJogging } = state;
         const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
 
         return (
@@ -45,26 +45,10 @@ class ToolbarButton extends Component {
                     <button
                         type="button"
                         className="btn btn-xs btn-default"
-                        onClick={actions.toggleJogMode}
-                        disabled={!canClick}
-                    >
-                        <i
-                            className={classNames(
-                                'fa',
-                                { 'fa-toggle-on': !jogMode },
-                                { 'fa-toggle-off': jogMode }
-                            )}
-                        />
-                        &nbsp;
-                        {i18n._('Jog')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-xs btn-default"
                         onClick={::this.toggleDisplayUnit}
                         disabled={!canClick}
                     >
-                        {i18n._('in / mm')}
+                        {i18n._('Units')}
                     </button>
                     <DropdownButton
                         bsSize="xs"
