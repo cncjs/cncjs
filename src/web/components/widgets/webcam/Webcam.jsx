@@ -12,7 +12,7 @@ class Webcam extends React.Component {
         url: store.get('widgets.webcam.url')
     };
 
-    changeSettings() {
+    edit() {
         showSettings(() => {
             this.setState({
                 url: store.get('widgets.webcam.url')

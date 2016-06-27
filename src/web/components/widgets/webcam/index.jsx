@@ -44,7 +44,7 @@ class WebcamWidget extends React.Component {
                         <Widget.Controls>
                             <Widget.Button
                                 type="edit"
-                                onClick={(event) => this.refs.webcam.changeSettings()}
+                                onClick={(event) => this.refs.webcam.edit()}
                             />
                             <Widget.Button
                                 type="refresh"
