@@ -91,7 +91,7 @@ class GrblController {
             });
 
             this.connections.forEach((c) => {
-                c.socket.emit('grbl:status', res.status);
+                c.socket.emit('grbl:status', res);
 
                 if (c.sentCommand.indexOf('?') === 0) {
                     c.sentCommand = '';
@@ -110,7 +110,7 @@ class GrblController {
             });
 
             this.connections.forEach((c) => {
-                c.socket.emit('grbl:parserstate', res.parserstate);
+                c.socket.emit('grbl:parserstate', res);
 
                 if (c.sentCommand.indexOf('$G') === 0) {
                     c.sentCommand = '';
