@@ -67,12 +67,12 @@ class AxesWidget extends React.Component {
         port: '',
         unit: METRIC_UNIT,
         activeState: ACTIVE_STATE_IDLE,
-        machinePos: { // Machine position
+        machinePosition: { // Machine position
             x: '0.000',
             y: '0.000',
             z: '0.000'
         },
-        workingPos: { // Working position
+        workPosition: { // Work position
             x: '0.000',
             y: '0.000',
             z: '0.000'
@@ -84,9 +84,9 @@ class AxesWidget extends React.Component {
     };
     controllerEvents = {
         'grbl:status': (data) => {
-            const { activeState, machinePos, workingPos } = data;
+            const { activeState, machinePosition, workPosition } = data;
 
-            this.updateStatus({ activeState, machinePos, workingPos });
+            this.updateStatus({ activeState, machinePosition, workPosition });
         },
         'grbl:parserstate': (parserstate) => {
             let unit = this.state.unit;
@@ -172,20 +172,20 @@ class AxesWidget extends React.Component {
     resetStatus() {
         this.setState({
             activeState: ACTIVE_STATE_IDLE,
-            machinePos: { // Machine position
+            machinePosition: { // Machine position
                 x: '0.000',
                 y: '0.000',
                 z: '0.000'
             },
-            workingPos: { // Working position
+            workPosition: { // Working position
                 x: '0.000',
                 y: '0.000',
                 z: '0.000'
             }
         });
     }
-    updateStatus({ activeState, machinePos, workingPos }) {
-        this.setState({ activeState, machinePos, workingPos });
+    updateStatus({ activeState, machinePosition, workPosition }) {
+        this.setState({ activeState, machinePosition, workPosition });
     }
     changePort(port) {
         this.setState({ port });
@@ -253,7 +253,7 @@ class AxesWidget extends React.Component {
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
-        const { unit, machinePos, workingPos, keypadJogging } = this.state;
+        const { unit, machinePosition, workPosition, keypadJogging } = this.state;
         const classes = {
             widgetContent: classNames(
                 { hidden: isCollapsed }
@@ -262,10 +262,10 @@ class AxesWidget extends React.Component {
 
         const state = {
             ...this.state,
-            machinePos: _.mapValues(machinePos, (pos, axis) => {
+            machinePosition: _.mapValues(machinePosition, (pos, axis) => {
                 return toFixedUnitString(unit, pos);
             }),
-            workingPos: _.mapValues(workingPos, (pos, axis) => {
+            workPosition: _.mapValues(workPosition, (pos, axis) => {
                 return toFixedUnitString(unit, pos);
             })
         };

@@ -25,7 +25,7 @@ class DisplayPanel extends Component {
     }
     render() {
         const { state } = this.props;
-        const { port, unit, activeState, machinePos, workingPos } = state;
+        const { port, unit, activeState, machinePosition, workPosition } = state;
         const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
         const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
 
@@ -37,7 +37,7 @@ class DisplayPanel extends Component {
                             <tr>
                                 <th className="nowrap">{i18n._('Axis')}</th>
                                 <th className="nowrap">{i18n._('Machine Position')}</th>
-                                <th className="nowrap">{i18n._('Working Position')}</th>
+                                <th className="nowrap">{i18n._('Work Position')}</th>
                                 <th className="nowrap">{i18n._('Action')}</th>
                             </tr>
                         </thead>
@@ -45,15 +45,15 @@ class DisplayPanel extends Component {
                             <tr>
                                 <td className="axis-label">X</td>
                                 <td className="axis-position">
-                                    <span className="integer-part">{machinePos.x.split('.')[0]}</span>
+                                    <span className="integer-part">{machinePosition.x.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{machinePos.x.split('.')[1]}</span>
+                                    <span className="fractional-part">{machinePosition.x.split('.')[1]}</span>
                                     <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-position">
-                                    <span className="integer-part">{workingPos.x.split('.')[0]}</span>
+                                    <span className="integer-part">{workPosition.x.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{workingPos.x.split('.')[1]}</span>
+                                    <span className="fractional-part">{workPosition.x.split('.')[1]}</span>
                                     <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-control">
@@ -111,15 +111,15 @@ class DisplayPanel extends Component {
                             <tr>
                                 <td className="axis-label">Y</td>
                                 <td className="axis-position">
-                                    <span className="integer-part">{machinePos.y.split('.')[0]}</span>
+                                    <span className="integer-part">{machinePosition.y.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{machinePos.y.split('.')[1]}</span>
+                                    <span className="fractional-part">{machinePosition.y.split('.')[1]}</span>
                                     <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-position">
-                                    <span className="integer-part">{workingPos.y.split('.')[0]}</span>
+                                    <span className="integer-part">{workPosition.y.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{workingPos.y.split('.')[1]}</span>
+                                    <span className="fractional-part">{workPosition.y.split('.')[1]}</span>
                                     <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-control">
@@ -177,15 +177,15 @@ class DisplayPanel extends Component {
                             <tr>
                                 <td className="axis-label">Z</td>
                                 <td className="axis-position">
-                                    <span className="integer-part">{machinePos.z.split('.')[0]}</span>
+                                    <span className="integer-part">{machinePosition.z.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{machinePos.z.split('.')[1]}</span>
+                                    <span className="fractional-part">{machinePosition.z.split('.')[1]}</span>
                                     <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-position">
-                                    <span className="integer-part">{workingPos.z.split('.')[0]}</span>
+                                    <span className="integer-part">{workPosition.z.split('.')[0]}</span>
                                     <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{workingPos.z.split('.')[1]}</span>
+                                    <span className="fractional-part">{workPosition.z.split('.')[1]}</span>
                                     <span className="dimension-unit">{displayUnit}</span>
                                 </td>
                                 <td className="axis-control">

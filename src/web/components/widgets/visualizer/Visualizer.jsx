@@ -39,7 +39,7 @@ class Visualizer extends React.Component {
         port: '',
         ready: false,
         activeState: ACTIVE_STATE_IDLE,
-        workingPos: {
+        workPosition: {
             x: 0,
             y: 0,
             z: 0
@@ -64,19 +64,19 @@ class Visualizer extends React.Component {
             this.parserstate = parserstate;
         },
         'grbl:status': (data) => {
-            const { activeState, workingPos } = data;
+            const { activeState, workPosition } = data;
 
             if (this.state.activeState !== activeState) {
                 this.setState({ activeState });
             }
 
-            if (!(_.isEqual(this.state.workingPos, workingPos))) {
-                // Update workingPos
-                this.setState({ workingPos });
+            if (!(_.isEqual(this.state.workPosition, workPosition))) {
+                // Update workPosition
+                this.setState({ workPosition });
 
                 const pivotPoint = this.pivotPoint.get();
 
-                let { x, y, z } = workingPos;
+                let { x, y, z } = workPosition;
                 x = (Number(x) || 0) - pivotPoint.x;
                 y = (Number(y) || 0) - pivotPoint.y;
                 z = (Number(z) || 0) - pivotPoint.z;
