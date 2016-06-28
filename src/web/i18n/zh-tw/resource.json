@@ -42,7 +42,7 @@
     "in": "in",
     "Axis": "座標軸",
     "Machine Position": "機器位置",
-    "Working Position": "工作位置",
+    "Work Position": "工作位置",
     "Action": "動作",
     "Temporary Offsets (G92)": "程式原點 (G92)",
     "Zero Out Temporary X Axis (G92 X0)": "設定Ｘ軸程式原點",

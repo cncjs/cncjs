@@ -42,7 +42,7 @@
     "in": "in",
     "Axis": "Osa",
     "Machine Position": "Pozice nástroje",
-    "Working Position": "Pracovní pozice",
+    "Work Position": "Pracovní pozice",
     "Action": "Akce",
     "Temporary Offsets (G92)": "Dočasný offset (G92)",
     "Zero Out Temporary X Axis (G92 X0)": "Nulovat dočasnou osu X (G92 X0)",

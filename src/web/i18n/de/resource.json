@@ -42,7 +42,7 @@
     "in": "in",
     "Axis": "Achse",
     "Machine Position": "Maschinen-Position",
-    "Working Position": "Werkstück-Position",
+    "Work Position": "Werkstück-Position",
     "Action": "Aktion",
     "Temporary Offsets (G92)": "Temporäre Offsets (G92)",
     "Zero Out Temporary X Axis (G92 X0)": "Temporären X-Nullpunkt setzen (G92 X0)",

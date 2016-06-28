@@ -42,7 +42,7 @@
     "in": "дюймы",
     "Axis": "Ось",
     "Machine Position": "Машинная позиция",
-    "Working Position": "Рабочая позиция",
+    "Work Position": "Рабочая позиция",
     "Action": "Действие",
     "Temporary Offsets (G92)": "Временные смещения (G92)",
     "Zero Out Temporary X Axis (G92 X0)": "Обнулить временное смещение по оси X (G92 X0)",
