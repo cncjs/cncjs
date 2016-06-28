@@ -9,6 +9,7 @@ import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import log from './lib/log';
+import store from './store';
 import App from './containers/App';
 import Workspace from './components/workspace';
 import './styles/vendor.styl';
@@ -31,14 +32,6 @@ const queryparams = ((qs) => {
 
 async.series([
     (next) => {
-        i18next
-            .use(XHR)
-            .use(LanguageDetector)
-            .init(settings.i18next, (t) => {
-                next();
-            });
-    },
-    (next) => {
         const level = queryparams.log_level || settings.log.level;
         const logger = queryparams.log_logger || settings.log.logger;
         const prefix = queryparams.log_prefix || settings.log.prefix;
@@ -47,16 +40,19 @@ async.series([
         log.setLogger(logger);
         log.setPrefix(prefix);
 
-        let msg = [
-            'version=' + settings.version,
-            'webroot=' + settings.webroot,
-            'cdn=' + settings.cdn
-        ];
-        log.info(msg.join(','));
-
         next();
+    },
+    (next) => {
+        i18next
+            .use(XHR)
+            .use(LanguageDetector)
+            .init(settings.i18next, (t) => {
+                next();
+            });
     }
 ], (err, results) => {
+    log.info(`${settings.name} v${settings.version}`);
+
     { // Prevent browser from loading a drag-and-dropped file
       // http://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
         window.addEventListener('dragover', (e) => {
