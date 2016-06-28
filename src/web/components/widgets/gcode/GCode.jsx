@@ -31,30 +31,34 @@ class GCode extends React.Component {
     controllerEvents = {
         'gcode:statuschange': (data) => {
             const { remain, sent, total, createdTime, startedTime, finishedTime } = data;
-            const from = this.state.sent;
-            const to = sent;
 
-            const list = {};
+            let lines = this.state.lines;
+            if (this.state.lines.length > 0) {
+                const from = this.state.sent;
+                const to = sent;
+                let list = {};
 
-            // Reset obsolete queue items
-            for (let i = to; i < from; ++i) {
-                list[i] = {
-                    status: {
-                        $set: GCODE_STATUS.NOT_STARTED
-                    }
-                };
+                // Reset obsolete queue items
+                for (let i = to; i < from; ++i) {
+                    list[i] = {
+                        status: {
+                            $set: GCODE_STATUS.NOT_STARTED
+                        }
+                    };
+                }
+
+                // Update completed queue items
+                for (let i = from; i < to; ++i) {
+                    list[i] = {
+                        status: {
+                            $set: GCODE_STATUS.COMPLETED
+                        }
+                    };
+                }
+
+                lines = update(this.state.lines, list);
             }
 
-            // Update completed queue items
-            for (let i = from; i < to; ++i) {
-                list[i] = {
-                    status: {
-                        $set: GCODE_STATUS.COMPLETED
-                    }
-                };
-            }
-
-            const lines = update(this.state.lines, list);
             this.setState({
                 lines,
                 remain,
@@ -91,6 +95,9 @@ class GCode extends React.Component {
     componentWillUnmount() {
         this.removeControllerEvents();
         this.unsubscribe();
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     subscribe() {
         this.pubsubTokens = [];
