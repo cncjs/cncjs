@@ -39,11 +39,6 @@ class Visualizer extends React.Component {
         port: '',
         ready: false,
         activeState: ACTIVE_STATE_IDLE,
-        workPosition: {
-            x: 0,
-            y: 0,
-            z: 0
-        },
         workflowState: WORKFLOW_STATE_IDLE,
         boundingBox: {
             min: {
@@ -56,9 +51,14 @@ class Visualizer extends React.Component {
                 y: 0,
                 z: 0
             }
-        },
-        renderAnimation: store.get('widgets.visualizer.animation')
+        }
     };
+    workPosition = {
+        x: 0,
+        y: 0,
+        z: 0
+    };
+    renderAnimation = store.get('widgets.visualizer.animation');
     controllerEvents = {
         'grbl:parserstate': (parserstate) => {
             this.parserstate = parserstate;
@@ -70,9 +70,9 @@ class Visualizer extends React.Component {
                 this.setState({ activeState });
             }
 
-            if (!(_.isEqual(this.state.workPosition, workPosition))) {
+            if (!(_.isEqual(this.workPosition, workPosition))) {
                 // Update workPosition
-                this.setState({ workPosition });
+                this.workPosition = workPosition;
 
                 const pivotPoint = this.pivotPoint.get();
 
@@ -100,10 +100,9 @@ class Visualizer extends React.Component {
         }
     };
     storeEventListener = () => {
-        let renderAnimation = store.get('widgets.visualizer.animation');
-
-        if (renderAnimation !== this.state.renderAnimation) {
-            this.setState({ renderAnimation: renderAnimation });
+        const renderAnimation = store.get('widgets.visualizer.animation');
+        if (renderAnimation !== this.renderAnimation) {
+            this.renderAnimation = renderAnimation;
 
             this.toolhead.visible = renderAnimation;
 
@@ -158,7 +157,13 @@ class Visualizer extends React.Component {
         this.clearScene();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        const shouldUpdate =
+            (nextState.port !== this.state.port) ||
+            (nextState.ready !== this.state.ready) ||
+            (nextState.activeState !== this.state.activeState) ||
+            (nextState.workflowState !== this.state.workflowState) ||
+            !_.isEqual(nextState.boundingBox, this.state.boundingBox);
+        return shouldUpdate;
     }
     componentDidUpdate(prevProps, prevState) {
         // The renderAnimationLoop will check the state of activeState and workflowState
