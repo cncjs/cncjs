@@ -142,11 +142,7 @@ const getUserConfig = () => {
 };
 
 const cnc = getUserConfig();
-
-log.debug('cnc:', cnc);
-
 const state = normalizeState(_.merge({}, defaultState, cnc.state || {}));
-
 const store = new ImmutableStore(state);
 
 store.on('change', (state) => {
