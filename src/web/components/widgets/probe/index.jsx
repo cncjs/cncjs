@@ -1,13 +1,14 @@
+import _ from 'lodash';
 import classNames from 'classnames';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Probe from './Probe';
 import './index.styl';
 
-class ProbeWidget extends React.Component {
+class ProbeWidget extends Component {
     static propTypes = {
-        onDelete: React.PropTypes.func
+        onDelete: PropTypes.func
     };
     static defaultProps = {
         onDelete: () => {}
@@ -18,6 +19,9 @@ class ProbeWidget extends React.Component {
         isFullscreen: false
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
         const classes = {

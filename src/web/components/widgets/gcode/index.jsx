@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import classNames from 'classnames';
 import React from 'react';
 import i18n from '../../../lib/i18n';
@@ -18,6 +19,9 @@ class GCodeWidget extends React.Component {
         isFullscreen: false
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
         const classes = {

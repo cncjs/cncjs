@@ -41,6 +41,9 @@ class Console extends React.Component {
         this.unsubscribe();
         this.removeControllerEvents();
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     subscribe() {
         this.pubsubTokens = [];
 

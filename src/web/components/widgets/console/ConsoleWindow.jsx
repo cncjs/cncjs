@@ -15,6 +15,9 @@ class ConsoleWindow extends React.Component {
         elementHeight: 20
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     // Scroll Position with React
     // http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
     componentWillUpdate(nextProps, nextState) {

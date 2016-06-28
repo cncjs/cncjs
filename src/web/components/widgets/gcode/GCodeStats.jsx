@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import {
     METRIC_UNIT,
@@ -20,15 +20,15 @@ const toFixedUnitValue = (unit, val) => {
     return val;
 };
 
-class GCodeStats extends React.Component {
+class GCodeStats extends Component {
     static propTypes = {
-        unit: React.PropTypes.string,
-        remain: React.PropTypes.number,
-        sent: React.PropTypes.number,
-        total: React.PropTypes.number,
-        createdTime: React.PropTypes.number,
-        startedTime: React.PropTypes.number,
-        finishedTime: React.PropTypes.number
+        unit: PropTypes.string,
+        remain: PropTypes.number,
+        sent: PropTypes.number,
+        total: PropTypes.number,
+        createdTime: PropTypes.number,
+        startedTime: PropTypes.number,
+        finishedTime: PropTypes.number
     };
 
     state = {
@@ -60,6 +60,9 @@ class GCodeStats extends React.Component {
     componentWillUnmount() {
         this.clearTimer();
         this.unsubscribe();
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     subscribe() {
         this.pubsubTokens = [];

@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component } from 'react';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 
-class Spindle extends React.Component {
+class Spindle extends Component {
     state = {
         port: '',
         isCCWChecked: false,
@@ -16,6 +16,9 @@ class Spindle extends React.Component {
     }
     componentWillUnmount() {
         this.unsubscribe();
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     subscribe() {
         this.pubsubTokens = [];

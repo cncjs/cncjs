@@ -1,16 +1,20 @@
+import _ from 'lodash';
 import classNames from 'classnames';
-import React from 'react';
+import React, { Component } from 'react';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Connection from './Connection';
 import './index.styl';
 
-class ConnectionWidget extends React.Component {
+class ConnectionWidget extends Component {
     state = {
         isCollapsed: false,
         isFullscreen: false
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
         const classes = {

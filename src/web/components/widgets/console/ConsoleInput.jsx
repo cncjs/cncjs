@@ -14,6 +14,9 @@ class ConsoleInput extends React.Component {
         onClear: React.PropTypes.func
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     handleKeyDown(e) {
         const ENTER = 13;
         if (e.keyCode === ENTER) {

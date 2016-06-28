@@ -124,6 +124,9 @@ class Connection extends React.Component {
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     addControllerEvents() {
         _.each(this.controllerEvents, (callback, eventName) => {
             controller.on(eventName, callback);

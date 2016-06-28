@@ -1,14 +1,15 @@
+import _ from 'lodash';
 import classNames from 'classnames';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
 import Widget from '../../widget';
 import Webcam from './Webcam';
 import './index.styl';
 
-class WebcamWidget extends React.Component {
+class WebcamWidget extends Component {
     static propTypes = {
-        onDelete: React.PropTypes.func
+        onDelete: PropTypes.func
     };
     static defaultProps = {
         onDelete: () => {}
@@ -20,6 +21,9 @@ class WebcamWidget extends React.Component {
         isFullscreen: false
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     componentDidUpdate(prevProps, prevState) {
         store.set('widgets.webcam.disabled', this.state.disabled);
     }

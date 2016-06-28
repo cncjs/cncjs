@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import { in2mm, mm2in } from '../../../lib/units';
 import controller from '../../../lib/controller';
@@ -53,9 +53,9 @@ const normalizeToRange = (n, min, max) => {
     return n;
 };
 
-class AxesWidget extends React.Component {
+class AxesWidget extends Component {
     static propTypes = {
-        onDelete: React.PropTypes.func
+        onDelete: PropTypes.func
     };
     static defaultProps = {
         onDelete: () => {}

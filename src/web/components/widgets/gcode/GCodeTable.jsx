@@ -1,19 +1,23 @@
+import _ from 'lodash';
 import classNames from 'classnames';
 import colornames from 'colornames';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import { FlexTable, FlexColumn } from 'react-virtualized';
 import { GCODE_STATUS } from './constants';
 
-class GCodeTable extends React.Component {
+class GCodeTable extends Component {
     static propTypes = {
-        rows: React.PropTypes.array,
-        scrollToRow: React.PropTypes.number
+        rows: PropTypes.array,
+        scrollToRow: PropTypes.number
     };
     static defaultProps = {
         rows: [],
         scrollToRow: 0
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     render() {
         const rows = this.props.rows;
         const headerHeight = 32;

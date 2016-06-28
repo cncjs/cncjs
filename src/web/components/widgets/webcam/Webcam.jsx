@@ -1,17 +1,21 @@
+import _ from 'lodash';
 import delay from 'delay';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
 import { show as showSettings } from './Settings';
 
-class Webcam extends React.Component {
+class Webcam extends Component {
     static propTypes = {
-        disabled: React.PropTypes.bool.isRequired
+        disabled: PropTypes.bool.isRequired
     };
     state = {
         url: store.get('widgets.webcam.url')
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
     edit() {
         showSettings(() => {
             this.setState({
