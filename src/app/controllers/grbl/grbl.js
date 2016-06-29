@@ -19,27 +19,22 @@ class GrblLineParser {
         for (let parser of parsers) {
             const result = parser.parse(line);
             if (result) {
+                _.set(result, 'payload.raw', line);
                 return result;
             }
         }
 
-        return null;
+        return {
+            type: null,
+            payload: {
+                raw: line
+            }
+        };
     }
 }
 
-class GrblLineParserResult {
-    raw = '';
-
-    constructor(raw) {
-        this.raw = raw;
-    }
-    toObject() {
-        const ret = { ...this };
-        return ret;
-    }
-}
-
-class GrblLineParserResultStatus extends GrblLineParserResult {
+//https://github.com/grbl/grbl/blob/master/grbl/report.c
+class GrblLineParserResultStatus {
     // <Idle>
     // <Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>
     // <Idle,MPos:5.529,0.560,7.000,0.000,WPos:1.529,-5.440,-0.000,0.000>
@@ -51,14 +46,13 @@ class GrblLineParserResultStatus extends GrblLineParserResult {
             return null;
         }
 
-        // See https://github.com/grbl/grbl/blob/master/grbl/report.c
-        const ret = new GrblLineParserResultStatus(line);
+        const payload = {};
         const pattern = /[a-zA-Z]+(:([0-9\.\-]+(,[0-9\.\-]+){1,5})|:([0-9\.\-]+))?/g;
         let params = r[1].match(pattern);
         let result = {};
 
         // Active State
-        ret.activeState = params.shift();
+        payload.activeState = params.shift();
 
         for (let param of params) {
             const nv = param.match(/^(.+):(.+)/);
@@ -72,88 +66,100 @@ class GrblLineParserResultStatus extends GrblLineParserResult {
         { // Machine Position
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const mPos = _.get(result, 'MPos') || ['0.000', '0.000', '0.000']; // Defaults to [x, y, z]
-            ret.machinePosition = {};
+            payload.machinePosition = {};
             for (let i = 0; i < mPos.length; ++i) {
-                ret.machinePosition[axes[i]] = mPos[i];
+                payload.machinePosition[axes[i]] = mPos[i];
             }
         }
 
         { // Work Position
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const wPos = _.get(result, 'WPos') || ['0.000', '0.000', '0.000']; // Defaults to [x, y, z]
-            ret.workPosition = {};
+            payload.workPosition = {};
             for (let i = 0; i < wPos.length; ++i) {
-                ret.workPosition[axes[i]] = wPos[i];
+                payload.workPosition[axes[i]] = wPos[i];
             }
         }
 
         { // Planner Buffer
             if (result.hasOwnProperty('Buf')) {
-                ret.plannerBuffer = _.get(result, 'Buf[0]');
+                payload.plannerBuffer = _.get(result, 'Buf[0]');
             }
         }
 
         { // RX Buffer
             if (result.hasOwnProperty('RX')) {
-                ret.rxBuffer = _.get(result, 'RX[0]');
+                payload.rxBuffer = _.get(result, 'RX[0]');
             }
         }
 
         { // Line Number
             if (result.hasOwnProperty('Ln')) {
-                ret.lineNumber = _.get(result, 'Ln[0]');
+                payload.lineNumber = _.get(result, 'Ln[0]');
             }
         }
 
         { // Realtime Rate
             if (result.hasOwnProperty('F')) {
-                ret.realtimeRate = _.get(result, 'F[0]');
+                payload.realtimeRate = _.get(result, 'F[0]');
             }
         }
 
         { // Limit Pins
             if (result.hasOwnProperty('Lim')) {
-                ret.limitPins = _.get(result, 'Lim[0]');
+                payload.limitPins = _.get(result, 'Lim[0]');
             }
         }
 
-        return ret;
+        return {
+            type: GrblLineParserResultStatus,
+            payload: payload
+        };
     }
 }
 
-class GrblLineParserResultOk extends GrblLineParserResult {
+class GrblLineParserResultOk {
     static parse(line) {
         const r = line.match(/^ok$/);
         if (!r) {
             return null;
         }
 
-        const ret = new GrblLineParserResultOk(line);
-        return ret;
+        const payload = {};
+
+        return {
+            type: GrblLineParserResultOk,
+            payload: payload
+        };
     }
 }
 
-class GrblLineParserResultError extends GrblLineParserResult {
+class GrblLineParserResultError {
     static parse(line) {
         const r = line.match(/^error:\s*(.+)$/);
         if (!r) {
             return null;
         }
 
-        const ret = new GrblLineParserResultError(line);
-        ret.message = r[1];
-        return ret;
+        const payload = {
+            message: r[1]
+        };
+
+        return {
+            type: GrblLineParserResultError,
+            payload: payload
+        };
     }
 }
 
-class GrblLineParserResultGCodeModes extends GrblLineParserResult {
+class GrblLineParserResultGCodeModes {
     static parse(line) {
         const r = line.match(/^\[(.+)\]$/);
         if (!r) {
             return null;
         }
 
-        const ret = new GrblLineParserResultGCodeModes(line);
+        const payload = {};
         const words = _(r[1].split(' '))
             .compact()
             .map((word) => {
@@ -169,31 +175,34 @@ class GrblLineParserResultGCodeModes extends GrblLineParserResult {
                 });
 
                 if (r) {
-                    _.set(ret, 'modal.' + r.group, word);
+                    _.set(payload, 'modal.' + r.group, word);
                 }
             }
 
             // T: tool number
             if (word.indexOf('T') === 0) {
-                _.set(ret, 'tool', word.substring(1));
+                _.set(payload, 'tool', word.substring(1));
             }
 
             // F: feed rate
             if (word.indexOf('F') === 0) {
-                _.set(ret, 'feedrate', word.substring(1));
+                _.set(payload, 'feedrate', word.substring(1));
             }
 
             // S: spindle speed
             if (word.indexOf('S') === 0) {
-                _.set(ret, 'spindle', word.substring(1));
+                _.set(payload, 'spindle', word.substring(1));
             }
         });
 
-        return ret;
+        return {
+            type: GrblLineParserResultGCodeModes,
+            payload: payload
+        };
     }
 }
 
-class GrblLineParserResultStartup extends GrblLineParserResult {
+class GrblLineParserResultStartup {
     // Grbl 0.9j ['$' for help]
     static parse(line) {
         const r = line.match(/^Grbl\s*(\d+\.\d+[a-zA-Z]?)/);
@@ -201,9 +210,14 @@ class GrblLineParserResultStartup extends GrblLineParserResult {
             return null;
         }
 
-        const ret = new GrblLineParserResultStartup(line);
-        ret.version = r[1];
-        return ret;
+        const payload = {
+            version: r[1]
+        };
+
+        return {
+            type: GrblLineParserResultStartup,
+            payload: payload
+        };
     }
 }
 
@@ -246,38 +260,39 @@ class Grbl extends events.EventEmitter {
 
         this.emit('raw', data);
 
-        const result = this.parser.parse(data);
+        const result = this.parser.parse(data) || {};
+        const { type, payload } = result;
 
-        if (result instanceof GrblLineParserResultStatus) {
-            if (!_.isEqual(this.status, result)) {
-                this.emit('statuschange', result);
+        if (type === GrblLineParserResultStatus) {
+            if (!_.isEqual(this.status, payload)) {
+                this.emit('statuschange', payload);
             }
-            this.status = result;
-            this.emit('status', result);
+            this.status = payload;
+            this.emit('status', payload);
             return;
         }
-        if (result instanceof GrblLineParserResultOk) {
-            this.emit('ok', result);
+        if (type === GrblLineParserResultOk) {
+            this.emit('ok', payload);
             return;
         }
-        if (result instanceof GrblLineParserResultError) {
-            this.emit('error', result);
+        if (type === GrblLineParserResultError) {
+            this.emit('error', payload);
             return;
         }
-        if (result instanceof GrblLineParserResultGCodeModes) {
-            if (!_.isEqual(this.parserstate, result)) {
-                this.emit('parserstatechange', result);
+        if (type === GrblLineParserResultGCodeModes) {
+            if (!_.isEqual(this.parserstate, payload)) {
+                this.emit('parserstatechange', payload);
             }
-            this.parserstate = result;
-            this.emit('parserstate', result);
+            this.parserstate = payload;
+            this.emit('parserstate', payload);
             return;
         }
-        if (result instanceof GrblLineParserResultStartup) {
-            this.emit('startup', result);
+        if (type === GrblLineParserResultStartup) {
+            this.emit('startup', payload);
             return;
         }
         if (data.length > 0) {
-            this.emit('others', { raw: data });
+            this.emit('others', payload);
             return;
         }
     }
@@ -286,6 +301,9 @@ class Grbl extends events.EventEmitter {
 export {
     Grbl,
     GrblLineParser,
-    GrblLineParserResult,
+    GrblLineParserResultStatus,
+    GrblLineParserResultOk,
+    GrblLineParserResultError,
+    GrblLineParserResultGCodeModes,
     GrblLineParserResultStartup
 };
