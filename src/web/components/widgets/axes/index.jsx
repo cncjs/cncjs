@@ -11,8 +11,7 @@ import Axes from './Axes';
 import { show as showSettings } from './Settings';
 import {
     ACTIVE_STATE_IDLE,
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_PAUSED,
+    ACTIVE_STATE_RUN,
     WORKFLOW_STATE_IDLE,
     IMPERIAL_UNIT,
     METRIC_UNIT,
@@ -71,6 +70,7 @@ class AxesWidget extends Component {
         unit: METRIC_UNIT,
         activeState: ACTIVE_STATE_IDLE,
         workflowState: WORKFLOW_STATE_IDLE,
+        canClick: true, // DO NOT CHANGE THIS VALUE
         machinePosition: { // Machine position
             x: '0.000',
             y: '0.000',
@@ -90,7 +90,11 @@ class AxesWidget extends Component {
         'grbl:status': (data) => {
             const { activeState, machinePosition, workPosition } = data;
 
-            this.updateStatus({ activeState, machinePosition, workPosition });
+            this.updateStatus({
+                activeState: activeState,
+                machinePosition: machinePosition,
+                workPosition: workPosition
+            });
         },
         'grbl:parserstate': (parserstate) => {
             let unit = this.state.unit;
@@ -186,6 +190,21 @@ class AxesWidget extends Component {
             controller.off(eventName, callback);
         });
     }
+    canClick() {
+        const { port, activeState, workflowState } = this.state;
+
+        if (!port) {
+            return false;
+        }
+        if (!_.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState)) {
+            return false;
+        }
+        if (workflowState !== WORKFLOW_STATE_IDLE) {
+            return false;
+        }
+
+        return true;
+    }
     resetStatus() {
         this.setState({
             activeState: ACTIVE_STATE_IDLE,
@@ -279,9 +298,13 @@ class AxesWidget extends Component {
 
         const state = {
             ...this.state,
+            // Determine if the motion button is clickable
+            canClick: this.canClick(),
+            // Output machine position with the display unit
             machinePosition: _.mapValues(machinePosition, (pos, axis) => {
                 return toFixedUnitString(unit, pos);
             }),
+            // Output work position with the display unit
             workPosition: _.mapValues(workPosition, (pos, axis) => {
                 return toFixedUnitString(unit, pos);
             })

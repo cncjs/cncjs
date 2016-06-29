@@ -25,8 +25,7 @@ class DisplayPanel extends Component {
     }
     render() {
         const { state } = this.props;
-        const { port, unit, activeState, machinePosition, workPosition } = state;
-        const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        const { unit, canClick, machinePosition, workPosition } = state;
         const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
 
         return (

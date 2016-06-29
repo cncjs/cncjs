@@ -3,9 +3,6 @@ import React, { Component, PropTypes } from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
-import {
-    ACTIVE_STATE_IDLE
-} from './constants';
 
 class MotionControls extends Component {
     static propTypes = {
@@ -24,8 +21,7 @@ class MotionControls extends Component {
     }
     render() {
         const { state } = this.props;
-        const { port, activeState } = state;
-        const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        const { canClick } = state;
 
         return (
             <div className="motion-controls">

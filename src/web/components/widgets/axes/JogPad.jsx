@@ -9,9 +9,6 @@ import { mm2in } from '../../../lib/units';
 import store from '../../../store';
 import ShuttleControl from './ShuttleControl';
 import {
-    ACTIVE_STATE_IDLE,
-    ACTIVE_STATE_RUN,
-    WORKFLOW_STATE_IDLE,
     IMPERIAL_UNIT,
     METRIC_UNIT
 } from './constants';
@@ -36,15 +33,9 @@ class JogPad extends Component {
     actionHandlers = {
         SELECT_AXIS: (event, { axis }) => {
             const { state, actions } = this.props;
-            const { port, activeState, workflowState, selectedAxis } = state;
+            const { canClick, selectedAxis } = state;
 
-            if (!port) {
-                return;
-            }
-            if (!_.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState)) {
-                return;
-            }
-            if (workflowState !== WORKFLOW_STATE_IDLE) {
+            if (!canClick) {
                 return;
             }
 
@@ -56,15 +47,9 @@ class JogPad extends Component {
         },
         JOG: (event, { axis = null, direction = 1, factor = 1 }) => {
             const { state } = this.props;
-            const { port, activeState, workflowState, keypadJogging, selectedAxis } = state;
+            const { canClick, keypadJogging, selectedAxis } = state;
 
-            if (!port) {
-                return;
-            }
-            if (!_.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState)) {
-                return;
-            }
-            if (workflowState !== WORKFLOW_STATE_IDLE) {
+            if (!canClick) {
                 return;
             }
 
@@ -90,15 +75,9 @@ class JogPad extends Component {
         },
         SHUTTLE: (event, { value = 0 }) => {
             const { state } = this.props;
-            const { port, activeState, workflowState, selectedAxis } = state;
+            const { canClick, selectedAxis } = state;
 
-            if (!port) {
-                return;
-            }
-            if (!_.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState)) {
-                return;
-            }
-            if (workflowState !== WORKFLOW_STATE_IDLE) {
+            if (!canClick) {
                 return;
             }
 
@@ -170,8 +149,7 @@ class JogPad extends Component {
     }
     render() {
         const { state } = this.props;
-        const { port, activeState, keypadJogging, selectedAxis } = state;
-        const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        const { canClick, keypadJogging, selectedAxis } = state;
         const classes = {
             'jog-direction-x': classNames(
                 'jog-direction',

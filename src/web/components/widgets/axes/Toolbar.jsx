@@ -4,10 +4,6 @@ import React, { Component, PropTypes } from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
-import {
-    ACTIVE_STATE_IDLE,
-    METRIC_UNIT
-} from './constants';
 
 class ToolbarButton extends Component {
     static propTypes = {
@@ -26,8 +22,7 @@ class ToolbarButton extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { port, activeState, keypadJogging } = state;
-        const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        const { canClick, keypadJogging } = state;
 
         return (
             <div className="toolbar-button clearfix">
