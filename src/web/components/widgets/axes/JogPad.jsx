@@ -11,6 +11,7 @@ import ShuttleControl from './ShuttleControl';
 import {
     ACTIVE_STATE_IDLE,
     ACTIVE_STATE_RUN,
+    WORKFLOW_STATE_IDLE,
     IMPERIAL_UNIT,
     METRIC_UNIT
 } from './constants';
@@ -35,10 +36,15 @@ class JogPad extends Component {
     actionHandlers = {
         SELECT_AXIS: (event, { axis }) => {
             const { state, actions } = this.props;
-            const { port, activeState, selectedAxis } = state;
+            const { port, activeState, workflowState, selectedAxis } = state;
 
-            const canSelect = (!!port && activeState === ACTIVE_STATE_IDLE);
-            if (!canSelect) {
+            if (!port) {
+                return;
+            }
+            if (!_.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState)) {
+                return;
+            }
+            if (workflowState !== WORKFLOW_STATE_IDLE) {
                 return;
             }
 
@@ -50,10 +56,15 @@ class JogPad extends Component {
         },
         JOG: (event, { axis = null, direction = 1, factor = 1 }) => {
             const { state } = this.props;
-            const { port, activeState, keypadJogging, selectedAxis } = state;
+            const { port, activeState, workflowState, keypadJogging, selectedAxis } = state;
 
-            const canJog = (!!port && _.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState));
-            if (!canJog) {
+            if (!port) {
+                return;
+            }
+            if (!_.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState)) {
+                return;
+            }
+            if (workflowState !== WORKFLOW_STATE_IDLE) {
                 return;
             }
 
@@ -79,7 +90,17 @@ class JogPad extends Component {
         },
         SHUTTLE: (event, { value = 0 }) => {
             const { state } = this.props;
-            const { selectedAxis } = state;
+            const { port, activeState, workflowState, selectedAxis } = state;
+
+            if (!port) {
+                return;
+            }
+            if (!_.includes([ACTIVE_STATE_IDLE, ACTIVE_STATE_RUN], activeState)) {
+                return;
+            }
+            if (workflowState !== WORKFLOW_STATE_IDLE) {
+                return;
+            }
 
             if (value === 0) {
                 // Clear accumulated result
