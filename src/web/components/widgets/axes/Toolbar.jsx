@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import { isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import ReactTooltip from 'react-tooltip';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
@@ -37,11 +38,33 @@ class ToolbarButton extends Component {
                         )}
                         onClick={actions.toggleKeypadJogging}
                         disabled={!canClick}
+                        data-tip
+                        data-for="keypad"
                     >
                         <i className="fa fa-keyboard-o" style={{ fontSize: 14 }} />
                         &nbsp;
                         {i18n._('Keypad')}
                     </button>
+                    <ReactTooltip
+                        border={true}
+                        id="keypad"
+                        place="top"
+                        type="dark"
+                        effect="solid"
+                        delayShow={250}
+                    >
+                        <div className="keypad-tooltip">
+                            <div>X+: <i className="fa fa-toggle-right" /> {i18n._('Right Arrow')}</div>
+                            <div>X-: <i className="fa fa-toggle-left" /> {i18n._('Left Arrow')}</div>
+                            <div>Y+: <i className="fa fa-toggle-up" /> {i18n._('Up Arrow')}</div>
+                            <div>Y-: <i className="fa fa-toggle-down" /> {i18n._('Down Arrow')}</div>
+                            <div>Z+: <i className="fa fa-arrow-circle-up" /> {i18n._('Page Up')}</div>
+                            <div>Z-: <i className="fa fa-arrow-circle-down" /> {i18n._('Page Down')}</div>
+                            <div className="divider"></div>
+                            <div>Alt: {i18n._('0.1x Move')}</div>
+                            <div>Shift: {i18n._('10x Move')}</div>
+                        </div>
+                    </ReactTooltip>
                 </div>
                 <div className="btn-group pull-right">
                     <button
