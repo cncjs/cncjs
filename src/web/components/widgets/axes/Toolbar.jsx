@@ -64,12 +64,12 @@ class ToolbarButton extends Component {
                             <table>
                                 <tbody>
                                     <tr>
+                                        <td className="nowrap">{i18n._('0.1x Move')}</td>
                                         <td><kbd className="nowrap">{i18n._('Alt')}</kbd></td>
-                                        <td className="text-right nowrap">{i18n._('0.1x Move')}</td>
                                     </tr>
                                     <tr>
+                                        <td className="nowrap">{i18n._('10x Move')}</td>
                                         <td><kbd className="nowrap">{i18n._('⇧ Shift')}</kbd></td>
-                                        <td className="text-right nowrap">{i18n._('10x Move')}</td>
                                     </tr>
                                 </tbody>
                             </table>
