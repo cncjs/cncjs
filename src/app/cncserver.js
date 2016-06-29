@@ -139,8 +139,10 @@ class CNCServer {
                         return;
                     }
 
-                    // It should default to an undefined value
-                    console.assert(_.isUndefined(this.controllers[port]));
+                    if (this.controllers[port]) {
+                        log.error('[cncserver] Serialport port "%s" was not properly closed', port);
+                    }
+
                     store.set('controllers["' + port + '"]', controller);
 
                     controller.addConnection(socket);
