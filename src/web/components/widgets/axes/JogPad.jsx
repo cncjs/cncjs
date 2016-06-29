@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import combokeys from '../../../lib/combokeys';
@@ -101,12 +100,9 @@ class JogPad extends Component {
             this.shuttleControl.accumulate(selectedAxis, value, distance);
         }
     };
-    pubsubTokens = [];
     shuttleControl = null;
 
     componentDidMount() {
-        this.subscribe();
-
         _.each(this.actionHandlers, (callback, eventName) => {
             combokeys.on(eventName, callback);
         });
@@ -122,8 +118,6 @@ class JogPad extends Component {
         });
     }
     componentWillUnmount() {
-        this.unsubscribe();
-
         _.each(this.actionHandlers, (callback, eventName) => {
             combokeys.removeListener(eventName, callback);
         });
@@ -133,30 +127,6 @@ class JogPad extends Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props);
-    }
-    subscribe() {
-        { // gcode:start
-            const token = pubsub.subscribe('gcode:start', (msg) => {
-                const { actions } = this.props;
-                // unset the selected axis to prevent from accidental movement while running a G-code file
-                actions.selectAxis(); // deselect axis
-            });
-            this.pubsubTokens.push(token);
-        }
-        { // gcode:resume
-            const token = pubsub.subscribe('gcode:resume', (msg) => {
-                const { actions } = this.props;
-                // unset the selected axis to prevent from accidental movement while running a G-code file
-                actions.selectAxis(); // deselect axis
-            });
-            this.pubsubTokens.push(token);
-        }
-    }
-    unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     jog(params = {}) {
         const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');

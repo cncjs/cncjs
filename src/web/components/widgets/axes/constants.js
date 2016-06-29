@@ -14,3 +14,8 @@ export const ACTIVE_STATE_DOOR = 'Door';
 export const ACTIVE_STATE_HOME = 'Home';
 export const ACTIVE_STATE_ALARM = 'Alarm';
 export const ACTIVE_STATE_CHECK = 'Check';
+
+// Workflow State
+export const WORKFLOW_STATE_RUNNING = 'running';
+export const WORKFLOW_STATE_PAUSED = 'paused';
+export const WORKFLOW_STATE_IDLE = 'idle';

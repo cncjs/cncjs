@@ -11,6 +11,9 @@ import Axes from './Axes';
 import { show as showSettings } from './Settings';
 import {
     ACTIVE_STATE_IDLE,
+    WORKFLOW_STATE_RUNNING,
+    WORKFLOW_STATE_PAUSED,
+    WORKFLOW_STATE_IDLE,
     IMPERIAL_UNIT,
     METRIC_UNIT,
     DISTANCE_MIN,
@@ -67,6 +70,7 @@ class AxesWidget extends Component {
         port: '',
         unit: METRIC_UNIT,
         activeState: ACTIVE_STATE_IDLE,
+        workflowState: WORKFLOW_STATE_IDLE,
         machinePosition: { // Machine position
             x: '0.000',
             y: '0.000',
@@ -141,17 +145,30 @@ class AxesWidget extends Component {
         }
     }
     subscribe() {
-        { // port
-            const token = pubsub.subscribe('port', (msg, port) => {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
                 this.changePort(port);
 
                 if (!port) {
                     this.resetStatus();
                 }
-            });
-            this.pubsubTokens.push(token);
-        }
+            }),
+            pubsub.subscribe('workflowState', (msg, workflowState) => {
+                if (this.state.workflowState !== workflowState) {
+                    const { keypadJogging, selectedAxis } = this.state;
+
+                    // Disable keypad jogging and shuttle wheel when the workflow is not in the idle state.
+                    // This prevents accidental movement while sending G-code commands.
+                    this.setState({
+                        keypadJogging: (workflowState === WORKFLOW_STATE_IDLE) ? keypadJogging : false,
+                        selectedAxis: (workflowState === WORKFLOW_STATE_IDLE) ? selectedAxis : '',
+                        workflowState: workflowState
+                    });
+                }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {
@@ -188,7 +205,7 @@ class AxesWidget extends Component {
         this.setState({ activeState, machinePosition, workPosition });
     }
     changePort(port) {
-        this.setState({ port });
+        this.setState({ port: port });
     }
     changeUnit(unit) {
         console.assert(unit === METRIC_UNIT || unit === IMPERIAL_UNIT);
