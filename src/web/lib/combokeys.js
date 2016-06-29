@@ -8,8 +8,8 @@ const AXIS_Y = 'y';
 const AXIS_Z = 'z';
 const FORWARD = 1;
 const BACKWARD = -1;
-const OVERSHOOT_FACTOR = 5; // 1x5=5, 0.1x5=0.5, 0.01x5=0.05
-const UNDERSHOOT_FACTOR = 0.5; // 1/2=0.5, 0.1/2=0.05, 0.01/2=0.005
+const OVERSHOOT_FACTOR = 10; // 10x
+const UNDERSHOOT_FACTOR = 0.1; // 0.1x
 
 const commandKeys = [
     { // Feed Hold
