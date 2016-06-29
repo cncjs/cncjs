@@ -30,8 +30,8 @@ class Console extends React.Component {
             this.append(data);
         }
     };
-
     buffers = [];
+    pubsubTokens = [];
 
     componentDidMount() {
         this.subscribe();
@@ -45,19 +45,17 @@ class Console extends React.Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     subscribe() {
-        this.pubsubTokens = [];
-
-        { // port
-            const token = pubsub.subscribe('port', (msg, port) => {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port });
+                this.setState({ port: port });
 
                 if (!port) {
                     this.clear();
                 }
-            });
-            this.pubsubTokens.push(token);
-        }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {

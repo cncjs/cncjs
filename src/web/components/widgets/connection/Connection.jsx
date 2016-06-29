@@ -44,7 +44,10 @@ class Connection extends React.Component {
             const port = store.get('widgets.connection.port') || '';
 
             if (_.includes(_.map(ports, 'port'), port)) {
-                this.setState({ port, ports });
+                this.setState({
+                    port: port,
+                    ports: ports
+                });
 
                 const { autoReconnect, hasReconnected } = this.state;
 
@@ -53,7 +56,7 @@ class Connection extends React.Component {
                     this.openPort(port);
                 }
             } else {
-                this.setState({ ports });
+                this.setState({ ports: ports });
             }
         },
         'serialport:open': (options) => {
@@ -200,7 +203,7 @@ class Connection extends React.Component {
 
                 // TODO: Check paused and idle state as well
                 if (isRunning) {
-                    pubsub.publish('setWorkflowState', WORKFLOW_STATE_RUNNING);
+                    pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
                 }
             });
     }

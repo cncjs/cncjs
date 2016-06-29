@@ -14,6 +14,8 @@ export const CAMERA_FAR = 10000;
 export const CAMERA_POSITION_X = 0;
 export const CAMERA_POSITION_Y = 0;
 export const CAMERA_POSITION_Z = 200; // Move the camera out a bit from the origin (0, 0, 0)
+
+// Workflow State
 export const WORKFLOW_STATE_RUNNING = 'running';
 export const WORKFLOW_STATE_PAUSED = 'paused';
 export const WORKFLOW_STATE_IDLE = 'idle';

@@ -16,8 +16,7 @@ class Toolbar extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
         ready: React.PropTypes.bool,
-        activeState: React.PropTypes.string,
-        setWorkflowState: React.PropTypes.func
+        activeState: React.PropTypes.string
     };
     state = {
         workflowState: WORKFLOW_STATE_IDLE,
@@ -42,9 +41,7 @@ class Toolbar extends React.Component {
         this.unsubscribe();
     }
     componentDidUpdate(prevProps, prevState) {
-        this.props.setWorkflowState(this.state.workflowState);
-
-        if (store.get('widgets.visualizer.animation') !== this.state.renderAnimation) {
+        if (prevState.renderAnimation !== this.state.renderAnimation) {
             store.set('widgets.visualizer.animation', this.state.renderAnimation);
         }
     }
@@ -58,7 +55,7 @@ class Toolbar extends React.Component {
 
         if ((this.state.gcodeFinished) && (activeState === ACTIVE_STATE_IDLE)) {
             controller.command('stop');
-            pubsub.publish('gcode:stop');
+            pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             this.setState({
                 workflowState: WORKFLOW_STATE_IDLE,
                 gcodeFinished: false
@@ -66,12 +63,14 @@ class Toolbar extends React.Component {
         }
     }
     subscribe() {
-        { // setWorkflowState
-            const token = pubsub.subscribe('setWorkflowState', (msg, workflowState) => {
-                this.setState({ workflowState });
-            });
-            this.pubsubTokens.push(token);
-        }
+        const tokens = [
+            pubsub.subscribe('workflowState', (msg, workflowState) => {
+                if (this.state.workflowState !== workflowState) {
+                    this.setState({ workflowState: workflowState });
+                }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {
@@ -95,26 +94,19 @@ class Toolbar extends React.Component {
 
         if (workflowState === WORKFLOW_STATE_PAUSED) {
             controller.command('resume');
-            pubsub.publish('gcode:resume');
         } else {
             controller.command('start');
-            pubsub.publish('gcode:start');
         }
-
-        this.setState({
-            workflowState: WORKFLOW_STATE_RUNNING
-        });
+        pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
+        this.setState({ workflowState: WORKFLOW_STATE_RUNNING });
     }
     handlePause() {
         const { workflowState } = this.state;
         console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
 
         controller.command('pause');
-        pubsub.publish('gcode:pause');
-
-        this.setState({
-            workflowState: WORKFLOW_STATE_PAUSED
-        });
+        pubsub.publish('workflowState', WORKFLOW_STATE_PAUSED);
+        this.setState({ workflowState: WORKFLOW_STATE_PAUSED });
     }
     handleStop() {
         const { workflowState } = this.state;
@@ -122,11 +114,8 @@ class Toolbar extends React.Component {
 
         controller.command('stop');
         controller.command('reset');
-        pubsub.publish('gcode:stop');
-
-        this.setState({
-            workflowState: WORKFLOW_STATE_IDLE
-        });
+        pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
+        this.setState({ workflowState: WORKFLOW_STATE_IDLE });
     }
     handleClose() {
         const { workflowState } = this.state;
@@ -134,10 +123,7 @@ class Toolbar extends React.Component {
 
         controller.command('unload');
         pubsub.publish('gcode:unload'); // Unload the G-code
-
-        this.setState({
-            workflowState: WORKFLOW_STATE_IDLE
-        });
+        this.setState({ workflowState: WORKFLOW_STATE_IDLE });
     }
     render() {
         const { port, ready } = this.props;

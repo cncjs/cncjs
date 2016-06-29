@@ -165,22 +165,23 @@ class Visualizer extends React.Component {
         requestAnimationFrame(::this.renderAnimationLoop);
     }
     subscribe() {
-        { // port
-            const token = pubsub.subscribe('port', (msg, port) => {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
 
                 if (!port) {
                     pubsub.publish('gcode:unload');
                     this.setState({ port: '' });
                 } else {
-                    this.setState({ port });
+                    this.setState({ port: port });
                 }
-            });
-            this.pubsubTokens.push(token);
-        }
-
-        { // gcode:load
-            const token = pubsub.subscribe('gcode:load', (msg, gcode) => {
+            }),
+            pubsub.subscribe('workflowState', (msg, workflowState) => {
+                if (this.state.workflowState !== workflowState) {
+                    this.setState({ workflowState: workflowState });
+                }
+            }),
+            pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
 
                 this.startWaiting();
@@ -195,24 +196,16 @@ class Visualizer extends React.Component {
 
                     this.stopWaiting();
                 });
-            });
-            this.pubsubTokens.push(token);
-        }
-
-        { // gcode:unload
-            const token = pubsub.subscribe('gcode:unload', (msg) => {
+            }),
+            pubsub.subscribe('gcode:unload', (msg) => {
                 this.unloadGCode();
                 this.setState({ ready: false });
-            });
-            this.pubsubTokens.push(token);
-        }
-
-        { // resize
-            const token = pubsub.subscribe('resize', (msg) => {
+            }),
+            pubsub.subscribe('resize', (msg) => {
                 this.resizeRenderer();
-            });
-            this.pubsubTokens.push(token);
-        }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {
@@ -592,9 +585,6 @@ class Visualizer extends React.Component {
         // Update the scene
         this.updateScene();
     }
-    setWorkflowState(workflowState) {
-        this.setState({ workflowState });
-    }
 	// deltaX and deltaY are in pixels; right and down are positive
     pan(deltaX, deltaY) {
         const eye = new THREE.Vector3();
@@ -662,7 +652,6 @@ class Visualizer extends React.Component {
                 <Toolbar
                     port={port}
                     ready={ready}
-                    setWorkflowState={::this.setWorkflowState}
                     activeState={activeState}
                 />
                 <Joystick

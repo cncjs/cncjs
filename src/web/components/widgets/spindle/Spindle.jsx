@@ -10,6 +10,7 @@ class Spindle extends Component {
         isCCWChecked: false,
         spindleSpeed: 0
     };
+    pubsubTokens = [];
 
     componentDidMount() {
         this.subscribe();
@@ -21,15 +22,13 @@ class Spindle extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     subscribe() {
-        this.pubsubTokens = [];
-
-        { // port
-            const token = pubsub.subscribe('port', (msg, port) => {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port });
-            });
-            this.pubsubTokens.push(token);
-        }
+                this.setState({ port: port });
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {

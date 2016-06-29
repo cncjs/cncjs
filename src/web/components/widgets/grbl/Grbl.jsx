@@ -89,6 +89,7 @@ class Grbl extends React.Component {
             log.trace(parserstate);
         }
     };
+    pubsubTokens = [];
 
     componentDidMount() {
         this.subscribe();
@@ -102,20 +103,17 @@ class Grbl extends React.Component {
         return ! _.isEqual(nextState, this.state);
     }
     subscribe() {
-        this.pubsubTokens = [];
-
-        { // port
-            const token = pubsub.subscribe('port', (msg, port) => {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port });
+                this.setState({ port: port });
 
                 if (!port) {
-                    const parserstate = {};
-                    this.setState({ parserstate });
+                    this.setState({ parserstate: {} });
                 }
-            });
-            this.pubsubTokens.push(token);
-        }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {

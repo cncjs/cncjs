@@ -87,6 +87,7 @@ class GCode extends React.Component {
             }
         }
     };
+    pubsubTokens = [];
 
     componentDidMount() {
         this.subscribe();
@@ -100,18 +101,12 @@ class GCode extends React.Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     subscribe() {
-        this.pubsubTokens = [];
-
-        { // port
-            const token = pubsub.subscribe('port', (msg, port) => {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port });
-            });
-            this.pubsubTokens.push(token);
-        }
-
-        { // gcode:load
-            const token = pubsub.subscribe('gcode:load', (msg, gcode) => {
+                this.setState({ port: port });
+            }),
+            pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
 
                 parseString(gcode, (err, data) => {
@@ -130,16 +125,12 @@ class GCode extends React.Component {
 
                     this.setState({ lines });
                 });
-            });
-            this.pubsubTokens.push(token);
-        }
-
-        { // gcode:unload
-            const token = pubsub.subscribe('gcode:unload', (msg) => {
+            }),
+            pubsub.subscribe('gcode:unload', (msg) => {
                 this.setState({ lines: [] });
-            });
-            this.pubsubTokens.push(token);
-        }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {

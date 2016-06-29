@@ -5,7 +5,9 @@ import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import {
     METRIC_UNIT,
-    IMPERIAL_UNIT
+    IMPERIAL_UNIT,
+    WORKFLOW_STATE_IDLE,
+    WORKFLOW_STATE_RUNNING
 } from './constants';
 
 const toFixedUnitValue = (unit, val) => {
@@ -34,7 +36,7 @@ class GCodeStats extends Component {
     state = {
         startTime: 0,
         duration: 0,
-        box: { // bounding box
+        bbox: { // bounding box
             min: {
                 x: 0,
                 y: 0,
@@ -52,6 +54,7 @@ class GCodeStats extends Component {
             }
         }
     };
+    pubsubTokens = [];
 
     componentDidMount() {
         this.subscribe();
@@ -65,25 +68,40 @@ class GCodeStats extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     subscribe() {
-        this.pubsubTokens = [];
+        const tokens = [
+            pubsub.subscribe('workflowState', (msg, workflowState) => {
+                if (workflowState === WORKFLOW_STATE_RUNNING) {
+                    const now = moment().unix();
+                    const startTime = this.state.startTime || now; // use startTime or current time
+                    const duration = (startTime !== now) ? this.state.duration : 0;
+                    this.setState({ startTime, duration });
+                    return;
+                }
 
-        { // gcode:boundingBox
-            const token = pubsub.subscribe('gcode:boundingBox', (msg, box) => {
-                const dX = box.max.x - box.min.x;
-                const dY = box.max.y - box.min.y;
-                const dZ = box.max.z - box.min.z;
+                if (workflowState === WORKFLOW_STATE_IDLE) {
+                    this.setState({
+                        startTime: 0,
+                        duration: 0
+                    });
+                    return;
+                }
+            }),
+            pubsub.subscribe('gcode:boundingBox', (msg, bbox) => {
+                const dX = bbox.max.x - bbox.min.x;
+                const dY = bbox.max.y - bbox.min.y;
+                const dZ = bbox.max.z - bbox.min.z;
 
                 this.setState({
-                    box: {
+                    bbox: {
                         min: {
-                            x: box.min.x,
-                            y: box.min.y,
-                            z: box.min.z
+                            x: bbox.min.x,
+                            y: bbox.min.y,
+                            z: bbox.min.z
                         },
                         max: {
-                            x: box.max.x,
-                            y: box.max.y,
-                            z: box.max.z
+                            x: bbox.max.x,
+                            y: bbox.max.y,
+                            z: bbox.max.z
                         },
                         delta: {
                             x: dX,
@@ -92,32 +110,8 @@ class GCodeStats extends Component {
                         }
                     }
                 });
-            });
-            this.pubsubTokens.push(token);
-        }
-
-        { // gcode:start
-            const token = pubsub.subscribe('gcode:start', (msg) => {
-                const now = moment().unix();
-                const startTime = this.state.startTime || now; // use startTime or current time
-                const duration = (startTime !== now) ? this.state.duration : 0;
-                this.setState({ startTime, duration });
-            });
-            this.pubsubTokens.push(token);
-        }
-
-        { // gcode:stop
-            const token = pubsub.subscribe('gcode:stop', (msg) => {
-                this.setState({
-                    startTime: 0,
-                    duration: 0
-                });
-            });
-            this.pubsubTokens.push(token);
-        }
-
-        { // gcode:unload
-            const token = pubsub.subscribe('gcode:unload', (msg) => {
+            }),
+            pubsub.subscribe('gcode:unload', (msg) => {
                 this.setState({
                     startTime: 0,
                     duration: 0,
@@ -139,9 +133,9 @@ class GCodeStats extends Component {
                         }
                     }
                 });
-            });
-            this.pubsubTokens.push(token);
-        }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {
@@ -169,7 +163,7 @@ class GCodeStats extends Component {
     }
     render() {
         const { unit, total, sent } = this.props;
-        const box = _.mapValues(this.state.box, (position) => {
+        const bbox = _.mapValues(this.state.bbox, (position) => {
             const obj = _.mapValues(position, (val, axis) => toFixedUnitValue(unit, val));
             return obj;
         });
@@ -205,21 +199,21 @@ class GCodeStats extends Component {
                             <tbody>
                                 <tr>
                                     <td className="axis">X</td>
-                                    <td>{box.min.x} {displayUnit}</td>
-                                    <td>{box.max.x} {displayUnit}</td>
-                                    <td>{box.delta.x} {displayUnit}</td>
+                                    <td>{bbox.min.x} {displayUnit}</td>
+                                    <td>{bbox.max.x} {displayUnit}</td>
+                                    <td>{bbox.delta.x} {displayUnit}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Y</td>
-                                    <td>{box.min.y} {displayUnit}</td>
-                                    <td>{box.max.y} {displayUnit}</td>
-                                    <td>{box.delta.y} {displayUnit}</td>
+                                    <td>{bbox.min.y} {displayUnit}</td>
+                                    <td>{bbox.max.y} {displayUnit}</td>
+                                    <td>{bbox.delta.y} {displayUnit}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Z</td>
-                                    <td>{box.min.z} {displayUnit}</td>
-                                    <td>{box.max.z} {displayUnit}</td>
-                                    <td>{box.delta.z} {displayUnit}</td>
+                                    <td>{bbox.min.z} {displayUnit}</td>
+                                    <td>{bbox.max.z} {displayUnit}</td>
+                                    <td>{bbox.delta.z} {displayUnit}</td>
                                 </tr>
                             </tbody>
                         </table>

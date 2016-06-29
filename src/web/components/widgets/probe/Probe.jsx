@@ -85,6 +85,7 @@ class Probe extends React.Component {
         }
     };
     unitDidChange = false;
+    pubsubTokens = [];
 
     componentDidMount() {
         this.subscribe();
@@ -127,15 +128,13 @@ class Probe extends React.Component {
         store.set('widgets.probe.retractionDistance', Number(retractionDistance));
     }
     subscribe() {
-        this.pubsubTokens = [];
-
-        { // port
-            const token = pubsub.subscribe('port', (msg, port) => {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port });
-            });
-            this.pubsubTokens.push(token);
-        }
+                this.setState({ port: port });
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
         _.each(this.pubsubTokens, (token) => {
