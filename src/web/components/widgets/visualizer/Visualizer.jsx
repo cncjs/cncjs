@@ -157,13 +157,8 @@ class Visualizer extends React.Component {
         this.clearScene();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        const shouldUpdate =
-            (nextState.port !== this.state.port) ||
-            (nextState.ready !== this.state.ready) ||
-            (nextState.activeState !== this.state.activeState) ||
-            (nextState.workflowState !== this.state.workflowState) ||
-            !_.isEqual(nextState.boundingBox, this.state.boundingBox);
-        return shouldUpdate;
+        const props = ['port', 'ready', 'activeState', 'workflowState', 'boundingBox'];
+        return !_.isEqual(_.pick(nextState, props), _.pick(this.state, props));
     }
     componentDidUpdate(prevProps, prevState) {
         // The renderAnimationLoop will check the state of activeState and workflowState
