@@ -54,15 +54,25 @@ class ToolbarButton extends Component {
                         delayShow={250}
                     >
                         <div className="keypad-tooltip">
-                            <div>X+: <i className="fa fa-toggle-right" /> {i18n._('Right Arrow')}</div>
-                            <div>X-: <i className="fa fa-toggle-left" /> {i18n._('Left Arrow')}</div>
-                            <div>Y+: <i className="fa fa-toggle-up" /> {i18n._('Up Arrow')}</div>
-                            <div>Y-: <i className="fa fa-toggle-down" /> {i18n._('Down Arrow')}</div>
-                            <div>Z+: <i className="fa fa-arrow-circle-up" /> {i18n._('Page Up')}</div>
-                            <div>Z-: <i className="fa fa-arrow-circle-down" /> {i18n._('Page Down')}</div>
+                            <div><span className="axis-direction">X+</span><kbd><i className="fa fa-angle-right" /></kbd>&nbsp;{i18n._('Right')}</div>
+                            <div><span className="axis-direction">X-</span><kbd><i className="fa fa-angle-left" /></kbd>&nbsp;{i18n._('Left')}</div>
+                            <div><span className="axis-direction">Y+</span><kbd><i className="fa fa-angle-up" /></kbd>&nbsp;{i18n._('Up')}</div>
+                            <div><span className="axis-direction">Y-</span><kbd><i className="fa fa-angle-down" /></kbd>&nbsp;{i18n._('Down')}</div>
+                            <div><span className="axis-direction">Z+</span><kbd><i className="fa fa-long-arrow-up" /></kbd>&nbsp;{i18n._('Page Up')}</div>
+                            <div><span className="axis-direction">Z-</span><kbd><i className="fa fa-long-arrow-down" /></kbd>&nbsp;{i18n._('Page Down')}</div>
                             <div className="divider"></div>
-                            <div>Alt: {i18n._('0.1x Move')}</div>
-                            <div>Shift: {i18n._('10x Move')}</div>
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td><kbd className="nowrap">{i18n._('Alt')}</kbd></td>
+                                        <td className="text-right nowrap">{i18n._('0.1x Move')}</td>
+                                    </tr>
+                                    <tr>
+                                        <td><kbd className="nowrap">{i18n._('⇧ Shift')}</kbd></td>
+                                        <td className="text-right nowrap">{i18n._('10x Move')}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
                     </ReactTooltip>
                 </div>
