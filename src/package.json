@@ -26,7 +26,7 @@
     "fs-extra": "~0.30.0",
     "gcode-parser": "~0.8.2",
     "hogan.js": "~3.0.2",
-    "i18next": "~3.3.0",
+    "i18next": "~3.3.1",
     "i18next-express-middleware": "~1.0.1",
     "i18next-node-fs-backend": "~0.1.2",
     "lodash": "~4.13.1",
@@ -38,7 +38,7 @@
     "serve-favicon": "~2.3.0",
     "serve-static": "~1.11.1",
     "session-file-store": "~0.2.0",
-    "socket.io": "~1.4.6",
+    "socket.io": "~1.4.8",
     "webappengine": "~1.1.2",
     "winston": "~2.2.0"
   }
