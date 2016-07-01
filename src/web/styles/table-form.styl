@@ -1,0 +1,37 @@
+.table-form {
+    display: table;
+
+    .table-form-row {
+        display: table-row;
+    }
+    .table-form-row:last-child,
+    .table-form-row.last {
+        .table-form-col-control {
+            padding-bottom: 0;
+        }
+    }
+    .table-form-col {
+        display: table-cell;
+        line-height: 24px;
+    }
+    .table-form-col-label {
+        cursor: default;
+        padding: 0 10px 0 0;
+        width: 1%;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: top;
+
+        &.top {
+            vertical-align: top;
+        }
+        &.middle {
+            vertical-align: middle;
+        }
+        &.bottom {
+            vertical-align: bottom;
+        }
+    }
+}
