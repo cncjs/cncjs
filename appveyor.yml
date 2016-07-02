@@ -47,10 +47,10 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install -g npm
   - ps: |
-    pushd "C:\Users\appveyor\AppData\Roaming\npm\node_modules\npm"
-    npm remove node-gyp
-    npm install node-gyp
-    popd
+      pushd "C:\Users\appveyor\AppData\Roaming\npm\node_modules\npm"
+      npm remove node-gyp
+      npm install node-gyp
+      popd
   - npm install
   - node --version
   - npm --version
