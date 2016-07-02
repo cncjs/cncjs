@@ -44,9 +44,8 @@ class ConsoleWindow extends React.Component {
             // widgetEl = <div class="widget widget-fullscreen"></div>
             const widgetEl = document.querySelector('[data-widgetid="console"] > .widget');
             const widgetContentEl = widgetEl.querySelector('.widget-content');
-            const consoleInputEl = widgetContentEl.querySelector('.console-input');
             const widgetContentPadding = 10;
-            const consoleInputHeight = 40;
+            const consoleInputEl = widgetContentEl.querySelector('.console-input');
 
             containerHeight = widgetContentEl.offsetHeight
                             - widgetContentPadding * 2
