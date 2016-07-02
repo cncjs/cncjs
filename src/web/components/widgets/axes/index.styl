@@ -35,17 +35,19 @@
         .display-panel {
             margin-bottom: 10px;
 
-            .axis-label {
+            .coordinate {
                 text-align: center;
                 font-size: 24px;
-                padding: 0 10px;
+                padding: 0;
                 width: 1%;
             }
-            .axis-position {
+            .machine-position,
+            .work-position {
                 padding: 0 5px 10px 5px;
                 text-align: right;
                 white-space: nowrap;
                 position: relative;
+                width: 48%;
 
                 .integer-part,
                 .decimal-point,
@@ -63,7 +65,7 @@
                     bottom: 0;
                 }
             }
-            .axis-control {
+            .action {
                 width: 1%;
                 padding: 0 4px;
                 text-align: center;
