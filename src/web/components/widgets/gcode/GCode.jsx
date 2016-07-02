@@ -15,7 +15,7 @@ import {
 
 class GCode extends React.Component {
     state = {
-        port: '',
+        port: controller.port,
         unit: METRIC_UNIT,
         lines: [], // List of G-code lines
         alertMessage: '',

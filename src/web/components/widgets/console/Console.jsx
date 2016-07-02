@@ -14,7 +14,7 @@ class Console extends React.Component {
     };
 
     state = {
-        port: '',
+        port: controller.port,
         buffers: []
     };
     controllerEvents = {

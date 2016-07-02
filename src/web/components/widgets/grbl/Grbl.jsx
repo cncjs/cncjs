@@ -73,7 +73,7 @@ const lookupGCodeDefinition = (word) => {
 
 class Grbl extends React.Component {
     state = {
-        port: '',
+        port: controller.port,
         activeState: ACTIVE_STATE_IDLE,
         parserstate: {},
         showGCode: false

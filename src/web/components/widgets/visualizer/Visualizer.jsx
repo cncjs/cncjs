@@ -36,7 +36,7 @@ import {
 
 class Visualizer extends React.Component {
     state = {
-        port: '',
+        port: controller.port,
         ready: false,
         activeState: ACTIVE_STATE_IDLE,
         workflowState: WORKFLOW_STATE_IDLE,
@@ -171,10 +171,9 @@ class Visualizer extends React.Component {
 
                 if (!port) {
                     pubsub.publish('gcode:unload');
-                    this.setState({ port: '' });
-                } else {
-                    this.setState({ port: port });
                 }
+
+                this.setState({ port: port });
             }),
             pubsub.subscribe('workflowState', (msg, workflowState) => {
                 if (this.state.workflowState !== workflowState) {

@@ -27,7 +27,7 @@ class Connection extends React.Component {
             4800,
             2400
         ],
-        port: '',
+        port: controller.port,
         baudrate: store.get('widgets.connection.baudrate'),
         autoReconnect: store.get('widgets.connection.autoReconnect'),
         hasReconnected: false,

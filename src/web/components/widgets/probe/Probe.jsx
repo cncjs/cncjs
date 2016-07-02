@@ -15,7 +15,7 @@ import {
 
 class Probe extends React.Component {
     state = {
-        port: '',
+        port: controller.port,
         unit: METRIC_UNIT,
         activeState: ACTIVE_STATE_IDLE,
         probeCommand: store.get('widgets.probe.probeCommand'),

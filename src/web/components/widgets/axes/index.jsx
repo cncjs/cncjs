@@ -66,7 +66,7 @@ class AxesWidget extends Component {
     state = {
         isCollapsed: false,
         isFullscreen: false,
-        port: '',
+        port: controller.port,
         unit: METRIC_UNIT,
         activeState: ACTIVE_STATE_IDLE,
         workflowState: WORKFLOW_STATE_IDLE,

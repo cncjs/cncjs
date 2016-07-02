@@ -6,7 +6,7 @@ import controller from '../../../lib/controller';
 
 class Spindle extends Component {
     state = {
-        port: '',
+        port: controller.port,
         isCCWChecked: false,
         spindleSpeed: 0
     };
