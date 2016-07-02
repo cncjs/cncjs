@@ -37,7 +37,10 @@ const keypadTooltip = () => {
     };
 
     return (
-        <Tooltip id="widget-axes-keypad-tooltip" style={styles.tooltip}>
+        <Tooltip
+            id="widget-axes-keypad-tooltip"
+            style={styles.tooltip}
+        >
             <div style={styles.container}>
                 <div className="row no-gutters text-left">
                     <div className="col-xs-12">
@@ -134,6 +137,7 @@ class ToolbarButton extends Component {
                     <OverlayTrigger
                         overlay={keypadTooltip()}
                         placement="bottom"
+                        delayShow={250}
                     >
                         <button
                             type="button"
