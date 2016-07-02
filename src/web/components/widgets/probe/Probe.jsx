@@ -180,9 +180,6 @@ class Probe extends React.Component {
         const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
         const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
 
-        // Cancel Tool Length Offset (TLO)
-        this.sendGCode('G49');
-
         // Set relative distance mode
         this.sendGCode('G91');
 
@@ -199,12 +196,7 @@ class Probe extends React.Component {
         this.sendGCode('G10', {
             L: 20,
             P: 1,
-            Z: 0
-        });
-
-        // Set TLO to the height of touch plate
-        this.sendGCode('G43.1', {
-            Z: -tlo
+            Z: tlo
         });
 
         // Set relative distance mode
