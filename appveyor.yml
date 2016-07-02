@@ -49,7 +49,7 @@ install:
   - ps: |
       pushd "C:\Users\appveyor\AppData\Roaming\npm\node_modules\npm"
       npm remove node-gyp
-      npm install node-gyp
+      npm install node-gyp@3.4.0
       popd
   - npm install
   - node --version
