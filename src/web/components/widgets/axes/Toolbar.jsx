@@ -1,10 +1,113 @@
 import classNames from 'classnames';
 import { isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import ReactTooltip from 'react-tooltip';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
+import { DropdownButton, MenuItem, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
+
+const keypadTooltip = () => {
+    const styles = {
+        tooltip: {
+            fontFamily: 'Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif',
+            fontSize: 14,
+            padding: 5
+        },
+        container: {
+            padding: 5
+        },
+        axisDirection: {
+            marginRight: 10
+        },
+        divider: {
+            borderTop: '1px solid #ccc',
+            marginTop: 5,
+            paddingTop: 5
+        },
+        kbd: {
+            border: '1px solid #aaa',
+            padding: '1px 4px',
+            fontSize: 12,
+            fontFamily: 'sans-serif',
+            whiteSpace: 'nowrap'
+        },
+        icon: {
+            minWidth: 10,
+            textAlign: 'center'
+        }
+    };
+
+    return (
+        <Tooltip id="widget-axes-keypad-tooltip" style={styles.tooltip}>
+            <div style={styles.container}>
+                <div className="row no-gutters text-left">
+                    <div className="col-xs-12">
+                        <span style={styles.axisDirection}>X+</span>
+                        <kbd style={styles.kbd}>
+                            <i className="fa fa-angle-right" style={styles.icon} />
+                        </kbd>
+                        &nbsp;{i18n._('Right')}
+                    </div>
+                    <div className="col-xs-12">
+                        <span style={styles.axisDirection}>X-</span>
+                        <kbd style={styles.kbd}>
+                            <i className="fa fa-angle-left" style={styles.icon} />
+                        </kbd>
+                        &nbsp;{i18n._('Left')}
+                    </div>
+                    <div className="col-xs-12">
+                        <span style={styles.axisDirection}>Y+</span>
+                        <kbd style={styles.kbd}>
+                            <i className="fa fa-angle-up" style={styles.icon} />
+                        </kbd>
+                        &nbsp;{i18n._('Up')}
+                    </div>
+                    <div className="col-xs-12">
+                        <span style={styles.axisDirection}>Y-</span>
+                        <kbd style={styles.kbd}>
+                            <i className="fa fa-angle-down" style={styles.icon} />
+                        </kbd>
+                        &nbsp;{i18n._('Down')}
+                    </div>
+                    <div className="col-xs-12">
+                        <span style={styles.axisDirection}>Z+</span>
+                        <kbd style={styles.kbd}>
+                            <i className="fa fa-long-arrow-up" style={styles.icon} />
+                        </kbd>
+                        &nbsp;{i18n._('Page Up')}
+                    </div>
+                    <div className="col-xs-12">
+                        <span style={styles.axisDirection}>Z-</span>
+                        <kbd style={styles.kbd}>
+                            <i className="fa fa-long-arrow-down" style={styles.icon} />
+                        </kbd>
+                        &nbsp;{i18n._('Page Down')}
+                    </div>
+                </div>
+                <div className="row no-gutters">
+                    <div style={styles.divider} />
+                </div>
+                <div className="row no-gutters">
+                    <div className="col-xs-12">
+                        <div className="table-form">
+                            <div className="table-form-row">
+                                <div className="table-form-col table-form-col-label">{i18n._('0.1x Move')}</div>
+                                <div className="table-form-col">
+                                    <kbd style={styles.kbd}>{i18n._('Alt')}</kbd>
+                                </div>
+                            </div>
+                            <div className="table-form-row">
+                                <div className="table-form-col table-form-col-label">{i18n._('10x Move')}</div>
+                                <div className="table-form-col">
+                                    <kbd style={styles.kbd}>{i18n._('⇧ Shift')}</kbd>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </Tooltip>
+    );
+};
 
 class ToolbarButton extends Component {
     static propTypes = {
@@ -28,53 +131,26 @@ class ToolbarButton extends Component {
         return (
             <div className="toolbar-button clearfix">
                 <div className="btn-group pull-left">
-                    <button
-                        type="button"
-                        className={classNames(
-                            'btn',
-                            'btn-xs',
-                            'btn-default',
-                            { 'btn-select': keypadJogging }
-                        )}
-                        onClick={actions.toggleKeypadJogging}
-                        disabled={!canClick}
-                        data-tip
-                        data-for="keypad"
+                    <OverlayTrigger
+                        overlay={keypadTooltip()}
+                        placement="bottom"
                     >
-                        <i className="fa fa-keyboard-o" style={{ fontSize: 14 }} />
-                        &nbsp;
-                        {i18n._('Keypad')}
-                    </button>
-                    <ReactTooltip
-                        border={true}
-                        id="keypad"
-                        place="top"
-                        type="dark"
-                        effect="solid"
-                        delayShow={250}
-                    >
-                        <div className="keypad-tooltip">
-                            <div><span className="axis-direction">X+</span><kbd><i className="fa fa-angle-right" /></kbd>&nbsp;{i18n._('Right')}</div>
-                            <div><span className="axis-direction">X-</span><kbd><i className="fa fa-angle-left" /></kbd>&nbsp;{i18n._('Left')}</div>
-                            <div><span className="axis-direction">Y+</span><kbd><i className="fa fa-angle-up" /></kbd>&nbsp;{i18n._('Up')}</div>
-                            <div><span className="axis-direction">Y-</span><kbd><i className="fa fa-angle-down" /></kbd>&nbsp;{i18n._('Down')}</div>
-                            <div><span className="axis-direction">Z+</span><kbd><i className="fa fa-long-arrow-up" /></kbd>&nbsp;{i18n._('Page Up')}</div>
-                            <div><span className="axis-direction">Z-</span><kbd><i className="fa fa-long-arrow-down" /></kbd>&nbsp;{i18n._('Page Down')}</div>
-                            <div className="divider"></div>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td className="nowrap">{i18n._('0.1x Move')}</td>
-                                        <td><kbd className="nowrap">{i18n._('Alt')}</kbd></td>
-                                    </tr>
-                                    <tr>
-                                        <td className="nowrap">{i18n._('10x Move')}</td>
-                                        <td><kbd className="nowrap">{i18n._('⇧ Shift')}</kbd></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </ReactTooltip>
+                        <button
+                            type="button"
+                            className={classNames(
+                                'btn',
+                                'btn-xs',
+                                'btn-default',
+                                { 'btn-select': keypadJogging }
+                            )}
+                            onClick={actions.toggleKeypadJogging}
+                            disabled={!canClick}
+                        >
+                            <i className="fa fa-keyboard-o" style={{ fontSize: 14 }} />
+                            &nbsp;
+                            {i18n._('Keypad')}
+                        </button>
+                    </OverlayTrigger>
                 </div>
                 <div className="btn-group pull-right">
                     <button
