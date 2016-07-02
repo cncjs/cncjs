@@ -3,7 +3,6 @@
 version: "{build}-{branch}"
 
 cache:
-  - '%APPDATA%\npm-cache'
   - '%USERPROFILE%\.electron'
 
 init:
