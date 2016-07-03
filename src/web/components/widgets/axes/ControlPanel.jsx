@@ -2,7 +2,7 @@ import { isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import JogPad from './JogPad';
 import JogDistance from './JogDistance';
-import MotionControls from './MotionControls';
+import MotionButtonGroup from './MotionButtonGroup';
 
 class ControlPanel extends Component {
     static propTypes = {
@@ -21,7 +21,7 @@ class ControlPanel extends Component {
                         <JogPad {...this.props} />
                     </div>
                     <div className="col-xs-6">
-                        <MotionControls {...this.props} />
+                        <MotionButtonGroup {...this.props} />
                     </div>
                 </div>
                 <div className="row no-gutters">

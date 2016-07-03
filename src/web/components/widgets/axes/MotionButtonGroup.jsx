@@ -4,7 +4,7 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 
-class MotionControls extends Component {
+class MotionButtonGroup extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -82,4 +82,4 @@ class MotionControls extends Component {
     }
 }
 
-export default MotionControls;
+export default MotionButtonGroup;
