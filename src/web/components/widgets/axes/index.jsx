@@ -24,7 +24,7 @@ import './index.styl';
 const toFixedUnitString = (unit, val) => {
     val = Number(val) || 0;
     if (unit === IMPERIAL_UNIT) {
-        val = (val / 25.4).toFixed(4);
+        val = mm2in(val).toFixed(4);
     }
     if (unit === METRIC_UNIT) {
         val = val.toFixed(3);
