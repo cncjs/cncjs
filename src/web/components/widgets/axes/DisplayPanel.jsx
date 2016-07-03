@@ -74,10 +74,12 @@ class DisplayPanel extends Component {
                             }
                             {!this.state.showXPositionInput &&
                                 <div
-                                    style={{ cursor: 'pointer' }}
+                                    style={{ cursor: canClick ? 'pointer' : 'auto' }}
                                     title={i18n._('Edit')}
                                     onClick={() => {
-                                        this.setState({ showXPositionInput: true });
+                                        if (canClick) {
+                                            this.setState({ showXPositionInput: true });
+                                        }
                                     }}
                                 >
                                     <span className="integer-part">{workPosition.x.split('.')[0]}</span>
@@ -164,10 +166,12 @@ class DisplayPanel extends Component {
                             }
                             {!this.state.showYPositionInput &&
                                 <div
-                                    style={{ cursor: 'pointer' }}
+                                    style={{ cursor: canClick ? 'pointer' : 'auto' }}
                                     title={i18n._('Edit')}
                                     onClick={() => {
-                                        this.setState({ showYPositionInput: true });
+                                        if (canClick) {
+                                            this.setState({ showYPositionInput: true });
+                                        }
                                     }}
                                 >
                                     <span className="integer-part">{workPosition.y.split('.')[0]}</span>
@@ -254,10 +258,12 @@ class DisplayPanel extends Component {
                             }
                             {!this.state.showZPositionInput &&
                                 <div
-                                    style={{ cursor: 'pointer' }}
+                                    style={{ cursor: canClick ? 'pointer' : 'auto' }}
                                     title={i18n._('Edit')}
                                     onClick={() => {
-                                        this.setState({ showZPositionInput: true });
+                                        if (canClick) {
+                                            this.setState({ showZPositionInput: true });
+                                        }
                                     }}
                                 >
                                     <span className="integer-part">{workPosition.z.split('.')[0]}</span>
