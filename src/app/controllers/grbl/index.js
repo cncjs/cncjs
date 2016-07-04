@@ -231,7 +231,7 @@ class GrblController {
     }
     getData() {
         return {
-            type: GrblController.type,
+            type: 'Grbl',
             port: this.options.port,
             baudrate: this.options.baudrate,
             connections: _.size(this.connections),
