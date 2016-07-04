@@ -5,6 +5,8 @@ import log from '../../lib/log';
 import { GCode } from './gcode';
 import { Grbl } from './grbl';
 
+const PREFIX = '[grbl]';
+
 const noop = () => {};
 
 class Connection {
@@ -17,8 +19,6 @@ class Connection {
 }
 
 class GrblController {
-    static type = 'Grbl';
-
     options = {
         port: '',
         baudrate: 9600
@@ -53,7 +53,7 @@ class GrblController {
             let { gcode } = res;
 
             if (this.isClose()) {
-                log.error('[grbl] Serial port "%s" not accessible', this.options.port);
+                log.error(`${PREFIX} Serial port "${this.options.port}" not accessible`);
                 return;
             }
 
@@ -284,16 +284,16 @@ class GrblController {
             });
 
             this.serialport.on('disconnect', (err) => {
-                log.warn('[grbl] Disconnected from serial port "%s":', port, err);
+                log.warn(`${PREFIX} Disconnected from serial port "${port}": err=${JSON.stringify(err)}`);
                 this.destroy();
             });
 
             this.serialport.on('error', (err) => {
-                log.error('[grbl] Unexpected error while reading/writing serial port "%s":', port, err);
+                log.error(`${PREFIX} Unexpected error while reading/writing serial port "${port}": err=${JSON.stringify(err)}`);
                 this.destroy();
             });
 
-            log.debug('[grbl] Connected to serial port "%s"', port);
+            log.debug(`${PREFIX} Connected to serial port "${port}"`);
 
             // Clear state
             this.clearState();
@@ -350,15 +350,14 @@ class GrblController {
                         return;
                     }
 
-                    log.debug('[grbl] Load G-code: name="%s", size=%d, total=%d',
-                        this.gcode.name, this.gcode.gcode.length, this.gcode.total);
+                    log.debug(`${PREFIX} Load G-code: name="${this.gcode.name}", size=${this.gcode.gcode.length}, total=${this.gcode.total}`);
 
                     this.setState({ isRunning: false });
                     callback();
                 });
             },
             'unload': () => {
-                log.debug('[grbl] Unload G-code: name="%s"', this.gcode.name);
+                log.debug(`${PREFIX} Unload G-code: name="${this.gcode.name}"`);
 
                 this.setState({ isRunning: false });
                 this.gcode.unload();
@@ -398,7 +397,7 @@ class GrblController {
         }[cmd];
 
         if (!handler) {
-            log.error('[grbl] Unknown command:', cmd);
+            log.error(`${PREFIX} Unknown command: ${cmd}`);
             return;
         }
 

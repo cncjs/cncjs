@@ -7,6 +7,7 @@ import log from './lib/log';
 import settings from './config/settings';
 import GrblController from './controllers/grbl';
 
+const PREFIX = '[cncserver]';
 const ALLOWED_IP_RANGES = [
     // IPv4 reserved space
     '10.0.0.0/8', // Used for local communications within a private network
@@ -51,7 +52,7 @@ class CNCServer {
             });
 
             if (!allowed) {
-                log.warn('[cncserver] Reject connection from %s', address);
+                log.warn(`${PREFIX} Reject connection from ${address}`);
                 next(new Error('You are not allowed on this server!'));
                 return;
             }
@@ -61,13 +62,13 @@ class CNCServer {
 
         io.on('connection', (socket) => {
             let address = socket.handshake.address;
-            log.debug('[cncserver] New connection from %s:', address, { id: socket.id });
+            log.debug(`${PREFIX} New connection from ${address}: id=${socket.id}`);
 
             // Add to the socket pool
             this.sockets.push(socket);
 
             socket.on('disconnect', () => {
-                log.debug('[cncserver] socket.disconnect():', { id: socket.id });
+                log.debug(`${PREFIX} socket.disconnect(): id=${socket.id}`);
 
                 _.each(this.controllers, (controller, port) => {
                     if (!controller) {
@@ -82,7 +83,7 @@ class CNCServer {
 
             // Show available serial ports
             socket.on('list', () => {
-                log.debug('[cncserver] socket.list():', { id: socket.id });
+                log.debug(`${PREFIX} socket.list(): id=${socket.id}`);
 
                 serialport.list((err, ports) => {
                     if (err) {
@@ -115,7 +116,7 @@ class CNCServer {
 
             // Open serial port
             socket.on('open', (port, baudrate) => {
-                log.debug('[cncserver] socket.open("%s", %d):', port, baudrate, { id: socket.id });
+                log.debug(`${PREFIX} socket.open("${port}", ${baudrate}): id=${socket.id}`);
 
                 let controller = this.controllers[port];
                 if (!controller) {
@@ -134,13 +135,13 @@ class CNCServer {
 
                 controller.open((err) => {
                     if (err) {
-                        log.error('[cncserver] Error opening serial port "%s":', port, err);
+                        log.error(`${PREFIX} Error opening serial port "${port}": err=${JSON.stringify(err)}`);
                         socket.emit('serialport:error', { port: port });
                         return;
                     }
 
                     if (this.controllers[port]) {
-                        log.error('[cncserver] Serialport port "%s" was not properly closed', port);
+                        log.error(`${PREFIX} Serialport port "${port}" was not properly closed`);
                     }
 
                     store.set('controllers["' + port + '"]', controller);
@@ -156,17 +157,17 @@ class CNCServer {
 
             // Close serial port
             socket.on('close', (port) => {
-                log.debug('[cncserver] socket.close("%s"):', port, { id: socket.id });
+                log.debug(`${PREFIX} socket.close("${port}"): id=${socket.id}`);
 
                 let controller = this.controllers[port];
                 if (!controller) {
-                    log.error('[cncserver] Serial port "%s" not accessible', port);
+                    log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
                 }
 
                 controller.close((err) => {
                     if (err) {
-                        log.error('[cncserver] Error closing serial port "%s":', port, err);
+                        log.error(`${PREFIX} Error closing serial port "${port}": err=${JSON.stringify(err)}`);
                     }
                     store.unset('controllers["' + port + '"]');
 
@@ -178,11 +179,11 @@ class CNCServer {
             });
 
             socket.on('command', (port, cmd, ...args) => {
-                log.debug('[cncserver] socket.command("%s", "%s"):', port, cmd, { id: socket.id, args: args });
+                log.debug(`${PREFIX} socket.command("${port}", "${cmd}"): id=${socket.id}, args=${JSON.stringify(args)}`);
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
-                    log.error('[cncserver] Serial port "%s" not accessible', port);
+                    log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
                 }
 
@@ -190,11 +191,11 @@ class CNCServer {
             });
 
             socket.on('write', (port, data) => {
-                log.debug('[cncserver] socket.write("%s", "%s"):', port, data, { id: socket.id });
+                log.debug(`${PREFIX} socket.write("${port}", "${data}"): id=${socket.id}`);
 
                 let controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
-                    log.error('[cncserver] Serial port "%s" not accessible', port);
+                    log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
                 }
 
