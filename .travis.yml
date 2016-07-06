@@ -58,6 +58,7 @@ before_install:
     fi
   # npm v3
   - npm install -g npm
+  - npm --version
 
 install: travis_wait 40 npm install
 
