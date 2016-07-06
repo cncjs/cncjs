@@ -45,17 +45,8 @@ install:
       Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
   - ps: Install-Product node $env:nodejs_version $env:platform
   - ps: |
-      npm install -g npm
-      pushd "C:\Users\appveyor\AppData\Roaming\npm\node_modules\npm"
-      npm remove node-gyp
-      npm install node-gyp@3.4.0
-      popd
-  - ps: |
-      npm install
-      npm remove node-gyp
-      npm install node-gyp@3.4.0
-  - node --version
-  - npm --version
+      npm install -g npm@3.10.5
+      npm --version
 
 build_script:
   - ps: |
