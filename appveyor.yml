@@ -47,6 +47,7 @@ install:
   - ps: |
       npm install -g npm@3.10.5
       npm --version
+  - npm install
 
 build_script:
   - ps: |
