@@ -44,9 +44,8 @@ install:
       Write-Host "Commit timestamp: " -NoNewLine
       Write-Host $env:APPVEYOR_REPO_COMMIT_TIMESTAMP -ForegroundColor "Green"
   - ps: Install-Product node $env:nodejs_version $env:platform
-  - ps: |
-      npm install -g npm@3.10.5
-      npm --version
+  - npm install -g npm
+  - npm --version
   - npm install
 
 build_script:
