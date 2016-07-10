@@ -160,7 +160,7 @@
     "react-sortablejs": "~1.0.1",
     "react-virtualized": "~7.11.7",
     "redux": "~3.5.2",
-    "serialport": "~3.1.2",
+    "serialport": "~4.0.0",
     "serve-favicon": "~2.3.0",
     "serve-static": "~1.11.1",
     "session-file-store": "~0.2.0",
