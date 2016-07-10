@@ -2,7 +2,7 @@ import _ from 'lodash';
 import events from 'events';
 import * as parser from 'gcode-parser';
 
-class GCode extends events.EventEmitter {
+class GCodeSender extends events.EventEmitter {
     name = '';
     gcode = '';
     remain = [];
@@ -11,14 +11,13 @@ class GCode extends events.EventEmitter {
     createdTime = 0;
     startedTime = 0;
     finishedTime = 0;
-
-    _changed = false;
+    changed = false;
 
     constructor() {
         super();
 
-        this.on('statuschange', () => {
-            this._changed = true;
+        this.on('change', () => {
+            this.changed = true;
         });
     }
     load(name, gcode, callback) {
@@ -43,7 +42,7 @@ class GCode extends events.EventEmitter {
             this.finishedTime = 0;
 
             this.emit('load', { name: name, gcode: gcode });
-            this.emit('statuschange');
+            this.emit('change');
 
             callback();
         });
@@ -59,7 +58,7 @@ class GCode extends events.EventEmitter {
         this.finishedTime = 0;
 
         this.emit('unload');
-        this.emit('statuschange');
+        this.emit('change');
     }
     next() {
         let remainLength = this.remain.length;
@@ -71,18 +70,18 @@ class GCode extends events.EventEmitter {
         if (remainLength === 0) {
             this.finishedTime = new Date().getTime();
             this.emit('done', { time: this.finishedTime });
-            this.emit('statuschange');
+            this.emit('change');
             return false;
         }
         if (sentLength === 0) {
             this.startedTime = new Date().getTime();
             this.emit('start', { time: this.startedTime });
-            this.emit('statuschange');
+            this.emit('change');
         }
 
         let gcode = this.remain.shift();
         this.sent.push(gcode);
-        this.emit('statuschange');
+        this.emit('change');
         this.emit('progress', { gcode: gcode });
 
         // Continue to the next line if empty
@@ -97,14 +96,14 @@ class GCode extends events.EventEmitter {
         this.sent = [];
         this.startedTime = 0;
         this.finishedTime = 0;
-        this.emit('statuschange');
+        this.emit('change');
     }
     // Returns true if any state have changes
     peek() {
-        let changed = this._changed;
-        this._changed = false;
+        const changed = this.changed;
+        this.changed = false;
         return changed;
     }
 }
 
-export { GCode };
+export default GCodeSender;

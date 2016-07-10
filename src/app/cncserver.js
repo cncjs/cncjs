@@ -169,12 +169,11 @@ class CNCServer {
                     if (err) {
                         log.error(`${PREFIX} Error closing serial port "${port}": err=${JSON.stringify(err)}`);
                     }
-                    store.unset('controllers["' + port + '"]');
-
                     socket.emit('serialport:close', {
                         port: port,
                         inuse: false
                     });
+                    store.unset('controllers["' + port + '"]');
                 });
             });
 

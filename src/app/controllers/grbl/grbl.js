@@ -1,8 +1,7 @@
 import _ from 'lodash';
 import events from 'events';
-import settings from '../../config/settings';
 import {
-    GRBL_ACTIVE_STATES,
+    GRBL_ACTIVE_STATE_UNKNOWN,
     GRBL_MODAL_GROUPS
 } from './constants';
 
@@ -222,52 +221,58 @@ class GrblLineParserResultStartup {
 }
 
 class Grbl extends events.EventEmitter {
-    status = {};
-    parserstate = {
-        modal: {
-            motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
-            coordinate: 'G54', // G54, G55, G56, G57, G58, G59
-            plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
-            units: 'G21', // G20: Inches, G21: Millimeters
-            distance: 'G90', // G90: Absolute, G91: Relative
-            feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
-            program: 'M0',
-            spindle: 'M5',
-            coolant: 'M9'
+    state = {
+        status: {
+            activeState: GRBL_ACTIVE_STATE_UNKNOWN,
+            machinePosition: {
+                x: '0.000',
+                y: '0.000',
+                z: '0.000'
+            },
+            workPosition: {
+                x: '0.000',
+                y: '0.000',
+                z: '0.000'
+            }
         },
-        tool: '',
-        feedrate: '',
-        spindle: ''
+        parserstate: {
+            modal: {
+                motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+                coordinate: 'G54', // G54, G55, G56, G57, G58, G59
+                plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
+                units: 'G21', // G20: Inches, G21: Millimeters
+                distance: 'G90', // G90: Absolute, G91: Relative
+                feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
+                program: 'M0',
+                spindle: 'M5',
+                coolant: 'M9'
+            },
+            tool: '',
+            feedrate: '',
+            spindle: ''
+        }
     };
     parser = new GrblLineParser();
 
-    getActiveState() {
-        const { activeState } = this.status;
-
-        // Idle, Run, Hold, Door, Home, Alarm, Check
-        console.assert(_.includes(GRBL_ACTIVE_STATES, activeState), activeState);
-
-        return activeState;
-    }
     parse(data) {
         data = ('' + data).replace(/\s+$/, '');
-        if (settings.debug) {
-            // console.log('<<', data);
-        }
         if (!data) {
             return;
         }
 
-        this.emit('raw', data);
+        this.emit('raw', { raw: data });
 
         const result = this.parser.parse(data) || {};
         const { type, payload } = result;
 
         if (type === GrblLineParserResultStatus) {
-            if (!_.isEqual(this.status, payload)) {
+            if (!_.isEqual(this.state.status, payload)) {
                 this.emit('statuschange', payload);
+                this.state = {
+                    ...this.state,
+                    status: payload
+                };
             }
-            this.status = payload;
             this.emit('status', payload);
             return;
         }
@@ -280,10 +285,13 @@ class Grbl extends events.EventEmitter {
             return;
         }
         if (type === GrblLineParserResultGCodeModes) {
-            if (!_.isEqual(this.parserstate, payload)) {
+            if (!_.isEqual(this.state.parserstate, payload)) {
                 this.emit('parserstatechange', payload);
+                this.state = {
+                    ...this.state,
+                    parserstate: payload
+                };
             }
-            this.parserstate = payload;
             this.emit('parserstate', payload);
             return;
         }
@@ -299,7 +307,6 @@ class Grbl extends events.EventEmitter {
 }
 
 export {
-    Grbl,
     GrblLineParser,
     GrblLineParserResultStatus,
     GrblLineParserResultOk,
@@ -307,3 +314,4 @@ export {
     GrblLineParserResultGCodeModes,
     GrblLineParserResultStartup
 };
+export default Grbl;

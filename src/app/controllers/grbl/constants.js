@@ -1,4 +1,9 @@
-// Grbl Active States
+// Workflow State
+export const WORKFLOW_STATE_RUNNING = 'running';
+export const WORKFLOW_STATE_PAUSED = 'paused';
+export const WORKFLOW_STATE_IDLE = 'idle';
+
+// Grbl Active State
 export const GRBL_ACTIVE_STATE_UNKNOWN = 'Unknown'; // Custom state
 export const GRBL_ACTIVE_STATE_IDLE = 'Idle';
 export const GRBL_ACTIVE_STATE_RUN = 'Run';

@@ -7,8 +7,7 @@ export const getActiveControllers = (req, res) => {
     Object.keys(controllers).forEach((port) => {
         const controller = controllers[port];
         if (controller) {
-            const data = controller.getData();
-            list.push(data);
+            list.push(controller.status);
         }
     });
 
