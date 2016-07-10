@@ -9,7 +9,6 @@ import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import log from './lib/log';
-import store from './store';
 import App from './containers/App';
 import Workspace from './components/workspace';
 import './styles/vendor.styl';
