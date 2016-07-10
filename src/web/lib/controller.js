@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import pubsub from 'pubsub-js';
+import { WORKFLOW_STATE_UNKNOWN } from '../constants';
 import socket from './socket';
 import log from './log';
 
@@ -12,10 +12,15 @@ class CNCController {
         'serialport:error': [],
         'serialport:read': [],
         'serialport:write': [],
-        'grbl:status': [],
-        'grbl:parserstate': [],
-        'gcode:statuschange': []
+        'gcode:statuschange': [],
+        'grbl:state': [],
+        'tinyg:state': []
     };
+    controller = {
+        type: 'Grbl',
+        state: {} // FIXME: Grbl or TinyG defaults
+    };
+    workflowState = WORKFLOW_STATE_UNKNOWN; // FIXME
 
     constructor() {
         pubsub.subscribe('port', (msg, port) => {
@@ -24,6 +29,15 @@ class CNCController {
 
         Object.keys(this.callbacks).forEach((eventName) => {
             socket.on(eventName, (...args) => {
+                if (eventName === 'grbl:state') {
+                    this.controller.type = 'Grbl';
+                    this.controller.state = args[0];
+                }
+                if (eventName === 'tinyg:state') {
+                    this.controller.type = 'TinyG';
+                    this.controller.state = args[0];
+                }
+
                 this.callbacks[eventName].forEach((callback) => {
                     callback.apply(callback, args);
                 });
@@ -36,7 +50,7 @@ class CNCController {
             log.error('Undefined event name:', eventName);
             return;
         }
-        if (_.isFunction(callback)) {
+        if (typeof callback === 'function') {
             callbacks.push(callback);
         }
     }
@@ -46,7 +60,7 @@ class CNCController {
             log.error('Undefined event name:', eventName);
             return;
         }
-        if (_.isFunction(callback)) {
+        if (typeof callback === 'function') {
             callbacks.splice(callbacks.indexOf(callback), 1);
         }
     }
