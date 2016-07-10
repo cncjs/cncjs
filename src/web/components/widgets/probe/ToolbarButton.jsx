@@ -3,8 +3,8 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 import {
-    ACTIVE_STATE_IDLE
-} from './constants';
+    GRBL_ACTIVE_STATE_IDLE
+} from '../../../constants';
 
 const ToolbarButton = ({ port, activeState }) => {
     const handleSelect = (eventKey) => {
@@ -14,7 +14,7 @@ const ToolbarButton = ({ port, activeState }) => {
         }
     };
 
-    const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+    const canClick = (!!port && (activeState === GRBL_ACTIVE_STATE_IDLE));
 
     return (
         <div>

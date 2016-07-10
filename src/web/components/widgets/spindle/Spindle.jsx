@@ -5,13 +5,12 @@ import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 
 class Spindle extends Component {
-    state = {
-        port: controller.port,
-        isCCWChecked: false,
-        spindleSpeed: 0
-    };
     pubsubTokens = [];
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     componentDidMount() {
         this.subscribe();
     }
@@ -21,11 +20,27 @@ class Spindle extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    getDefaultState() {
+        return {
+            port: controller.port,
+            isCCWChecked: false,
+            spindleSpeed: 0
+        };
+    }
     subscribe() {
         const tokens = [
             pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
+                }
             })
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);

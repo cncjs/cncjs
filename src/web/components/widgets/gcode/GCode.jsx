@@ -3,31 +3,22 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import update from 'react-addons-update';
 import { parseString } from 'gcode-parser';
-import GCodeStats from './GCodeStats';
-import GCodeTable from './GCodeTable';
 import controller from '../../../lib/controller';
 import log from '../../../lib/log';
+import GCodeStats from './GCodeStats';
+import GCodeTable from './GCodeTable';
 import {
     IMPERIAL_UNIT,
-    METRIC_UNIT,
-    GCODE_STATUS
+    METRIC_UNIT
+} from '../../../constants';
+import {
+    GCODE_STATUS_ERROR,
+    GCODE_STATUS_NOT_STARTED,
+    GCODE_STATUS_IN_PROGRESS,
+    GCODE_STATUS_COMPLETED
 } from './constants';
 
 class GCode extends React.Component {
-    state = {
-        port: controller.port,
-        unit: METRIC_UNIT,
-        lines: [], // List of G-code lines
-        alertMessage: '',
-
-        // G-code Status
-        remain: 0,
-        sent: 0,
-        total: 0,
-        createdTime: 0,
-        startedTime: 0,
-        finishedTime: 0
-    };
     controllerEvents = {
         'gcode:statuschange': (data) => {
             const { remain, sent, total, createdTime, startedTime, finishedTime } = data;
@@ -42,7 +33,7 @@ class GCode extends React.Component {
                 for (let i = to; i < from; ++i) {
                     list[i] = {
                         status: {
-                            $set: GCODE_STATUS.NOT_STARTED
+                            $set: GCODE_STATUS_NOT_STARTED
                         }
                     };
                 }
@@ -51,7 +42,7 @@ class GCode extends React.Component {
                 for (let i = from; i < to; ++i) {
                     list[i] = {
                         status: {
-                            $set: GCODE_STATUS.COMPLETED
+                            $set: GCODE_STATUS_COMPLETED
                         }
                     };
                 }
@@ -69,7 +60,8 @@ class GCode extends React.Component {
                 finishedTime
             });
         },
-        'grbl:parserstate': (parserstate) => {
+        'grbl:state': (state) => {
+            const { parserstate } = { ...state };
             let unit = this.state.unit;
 
             // Imperial
@@ -83,12 +75,16 @@ class GCode extends React.Component {
             }
 
             if (this.state.unit !== unit) {
-                this.setState({ unit });
+                this.setState({ unit: unit });
             }
         }
     };
     pubsubTokens = [];
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
@@ -100,11 +96,36 @@ class GCode extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    getDefaultState() {
+        return {
+            port: controller.port,
+            unit: METRIC_UNIT,
+            lines: [], // List of G-code lines
+            alertMessage: '',
+
+            // G-code Status
+            remain: 0,
+            sent: 0,
+            total: 0,
+            createdTime: 0,
+            startedTime: 0,
+            finishedTime: 0
+        };
+    }
     subscribe() {
         const tokens = [
             pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
+                }
             }),
             pubsub.subscribe('gcode:load', (msg, gcode) => {
                 gcode = gcode || '';
@@ -118,7 +139,7 @@ class GCode extends React.Component {
                     const lines = _(data)
                         .map((o, index) => ({
                             id: index,
-                            status: GCODE_STATUS.NOT_STARTED,
+                            status: GCODE_STATUS_NOT_STARTED,
                             cmd: o.line
                         }))
                         .value();

@@ -2,15 +2,15 @@ import _ from 'lodash';
 import { ButtonToolbar, ButtonGroup, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import i18n from '../../../lib/i18n';
-import controller from '../../../lib/controller';
-import store from '../../../store';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE,
-    ACTIVE_STATE_IDLE
-} from './constants';
+    GRBL_ACTIVE_STATE_IDLE
+} from '../../../constants';
+import i18n from '../../../lib/i18n';
+import controller from '../../../lib/controller';
+import store from '../../../store';
 
 class Toolbar extends React.Component {
     static propTypes = {
@@ -53,7 +53,7 @@ class Toolbar extends React.Component {
             return;
         }
 
-        if ((this.state.gcodeFinished) && (activeState === ACTIVE_STATE_IDLE)) {
+        if ((this.state.gcodeFinished) && (activeState === GRBL_ACTIVE_STATE_IDLE)) {
             controller.command('stop');
             pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             this.setState({

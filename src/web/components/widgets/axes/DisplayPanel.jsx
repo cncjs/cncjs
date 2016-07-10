@@ -8,7 +8,7 @@ import PositionInput from './PositionInput';
 import {
     IMPERIAL_UNIT,
     METRIC_UNIT
-} from './constants';
+} from '../../../constants';
 
 class DisplayPanel extends Component {
     static propTypes = {

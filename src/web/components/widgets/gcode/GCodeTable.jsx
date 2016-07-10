@@ -3,7 +3,12 @@ import classNames from 'classnames';
 import colornames from 'colornames';
 import React, { Component, PropTypes } from 'react';
 import { FlexTable, FlexColumn } from 'react-virtualized';
-import { GCODE_STATUS } from './constants';
+import {
+    GCODE_STATUS_ERROR,
+    GCODE_STATUS_NOT_STARTED,
+    GCODE_STATUS_IN_PROGRESS,
+    GCODE_STATUS_COMPLETED
+} from './constants';
 
 class GCodeTable extends Component {
     static propTypes = {
@@ -49,18 +54,18 @@ class GCodeTable extends Component {
                             const classes = {
                                 icon: classNames(
                                     'fa',
-                                    { 'fa-check': value !== GCODE_STATUS.ERROR },
-                                    { 'fa-ban': value === GCODE_STATUS.ERROR }
+                                    { 'fa-check': value !== GCODE_STATUS_ERROR },
+                                    { 'fa-ban': value === GCODE_STATUS_ERROR }
                                 )
                             };
                             const styles = {
                                 icon: {
                                     color: (() => {
                                         const color = {};
-                                        color[GCODE_STATUS.ERROR] = colornames('indian red');
-                                        color[GCODE_STATUS.NOT_STARTED] = colornames('gray 80');
-                                        color[GCODE_STATUS.IN_PROGRESS] = colornames('gray 80');
-                                        color[GCODE_STATUS.COMPLETED] = colornames('gray 20');
+                                        color[GCODE_STATUS_ERROR] = colornames('indian red');
+                                        color[GCODE_STATUS_NOT_STARTED] = colornames('gray 80');
+                                        color[GCODE_STATUS_IN_PROGRESS] = colornames('gray 80');
+                                        color[GCODE_STATUS_COMPLETED] = colornames('gray 20');
                                         return color[value] || colornames('gray 80');
                                     })()
                                 }

@@ -13,10 +13,6 @@ class Console extends React.Component {
         fullscreen: React.PropTypes.bool
     };
 
-    state = {
-        port: controller.port,
-        buffers: []
-    };
     controllerEvents = {
         'serialport:write': (data) => {
             const lines = data.split('\n');
@@ -30,9 +26,12 @@ class Console extends React.Component {
             this.append(data);
         }
     };
-    buffers = [];
     pubsubTokens = [];
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
@@ -44,14 +43,25 @@ class Console extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    getDefaultState() {
+        return {
+            port: controller.port,
+            buffers: []
+        };
+    }
     subscribe() {
         const tokens = [
             pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
 
-                if (!port) {
-                    this.clear();
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
                 }
             })
         ];
@@ -74,15 +84,14 @@ class Console extends React.Component {
         });
     }
     append(buffer) {
-        this.buffers = _(this.buffers)
+        const buffers = _(this.state.buffers)
             .concat(buffer)
             .slice(0, SCROLL_BUFFER_SIZE)
             .value();
-        this.setState({ buffers: this.buffers });
+        this.setState({ buffers: buffers });
     }
     clear() {
-        this.buffers = [];
-        this.setState({ buffers: this.buffers });
+        this.setState({ buffers: [] });
     }
     render() {
         return (

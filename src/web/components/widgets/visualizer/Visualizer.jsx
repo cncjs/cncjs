@@ -17,42 +17,25 @@ import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
 import {
-    AXIS_LENGTH,
-    GRID_X_LENGTH,
-    GRID_Y_LENGTH,
-    GRID_X_SPACING,
-    GRID_Y_SPACING,
-    ACTIVE_STATE_IDLE,
-    ACTIVE_STATE_RUN,
+    GRBL_ACTIVE_STATE_UNKNOWN,
+    GRBL_ACTIVE_STATE_RUN,
     WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_IDLE,
-    CAMERA_FOV,
-    CAMERA_NEAR,
-    CAMERA_FAR,
-    CAMERA_POSITION_X,
-    CAMERA_POSITION_Y,
-    CAMERA_POSITION_Z
-} from './constants';
+    WORKFLOW_STATE_IDLE
+} from '../../../constants';
+
+const AXIS_LENGTH = 300;
+const GRID_X_LENGTH = 600;
+const GRID_Y_LENGTH = 600;
+const GRID_X_SPACING = 10;
+const GRID_Y_SPACING = 10;
+const CAMERA_FOV = 70;
+const CAMERA_NEAR = 0.001;
+const CAMERA_FAR = 10000;
+const CAMERA_POSITION_X = 0;
+const CAMERA_POSITION_Y = 0;
+const CAMERA_POSITION_Z = 200; // Move the camera out a bit from the origin (0, 0, 0)
 
 class Visualizer extends React.Component {
-    state = {
-        port: controller.port,
-        ready: false,
-        activeState: ACTIVE_STATE_IDLE,
-        workflowState: WORKFLOW_STATE_IDLE,
-        boundingBox: {
-            min: {
-                x: 0,
-                y: 0,
-                z: 0
-            },
-            max: {
-                x: 0,
-                y: 0,
-                z: 0
-            }
-        }
-    };
     workPosition = {
         x: 0,
         y: 0,
@@ -60,36 +43,6 @@ class Visualizer extends React.Component {
     };
     renderAnimation = store.get('widgets.visualizer.animation');
     controllerEvents = {
-        'grbl:parserstate': (parserstate) => {
-            this.parserstate = parserstate;
-        },
-        'grbl:status': (data) => {
-            const { activeState, workPosition } = data;
-
-            if (this.state.activeState !== activeState) {
-                this.setState({ activeState });
-            }
-
-            if (!(_.isEqual(this.workPosition, workPosition))) {
-                // Update workPosition
-                this.workPosition = workPosition;
-
-                const pivotPoint = this.pivotPoint.get();
-
-                let { x, y, z } = workPosition;
-                x = (Number(x) || 0) - pivotPoint.x;
-                y = (Number(y) || 0) - pivotPoint.y;
-                z = (Number(z) || 0) - pivotPoint.z;
-
-                if (this.toolhead) {
-                    // Set tool head position
-                    this.toolhead.position.set(x, y, z);
-                }
-
-                // Update the scene
-                this.updateScene();
-            }
-        },
         'gcode:statuschange': (data) => {
             if (!(this.gcodeVisualizer)) {
                 return;
@@ -97,6 +50,38 @@ class Visualizer extends React.Component {
 
             const frameIndex = data.sent;
             this.gcodeVisualizer.setFrameIndex(frameIndex);
+        },
+        'grbl:state': (state) => {
+            const { status, parserstate } = { ...state };
+            const { activeState, workPosition } = status;
+
+            this.parserstate = parserstate;
+
+            if (this.state.activeState !== activeState) {
+                this.setState({ activeState: activeState });
+            }
+
+            if (_.isEqual(this.workPosition, workPosition)) {
+                return;
+            }
+
+            // Update workPosition
+            this.workPosition = workPosition;
+
+            const pivotPoint = this.pivotPoint.get();
+
+            let { x, y, z } = workPosition;
+            x = (Number(x) || 0) - pivotPoint.x;
+            y = (Number(y) || 0) - pivotPoint.y;
+            z = (Number(z) || 0) - pivotPoint.z;
+
+            if (this.toolhead) {
+                // Set tool head position
+                this.toolhead.position.set(x, y, z);
+            }
+
+            // Update the scene
+            this.updateScene();
         }
     };
     storeEventListener = () => {
@@ -112,6 +97,10 @@ class Visualizer extends React.Component {
     };
     pubsubTokens = [];
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     componentWillMount() {
         // Grbl
         this.parserstate = {};
@@ -164,16 +153,42 @@ class Visualizer extends React.Component {
         // The renderAnimationLoop will check the state of activeState and workflowState
         requestAnimationFrame(::this.renderAnimationLoop);
     }
+    getDefaultState() {
+        return {
+            port: controller.port,
+            ready: false,
+            activeState: GRBL_ACTIVE_STATE_UNKNOWN,
+            workflowState: WORKFLOW_STATE_IDLE,
+            boundingBox: {
+                min: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                },
+                max: {
+                    x: 0,
+                    y: 0,
+                    z: 0
+                }
+            }
+        };
+    }
     subscribe() {
         const tokens = [
             pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
 
-                if (!port) {
+                if (port) {
+                    this.setState({ port: port });
+                } else {
                     pubsub.publish('gcode:unload');
-                }
 
-                this.setState({ port: port });
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
+                }
             }),
             pubsub.subscribe('workflowState', (msg, workflowState) => {
                 if (this.state.workflowState !== workflowState) {
@@ -416,7 +431,7 @@ class Visualizer extends React.Component {
     renderAnimationLoop() {
         const { renderAnimation, activeState, workflowState } = this.state;
         const isAgitated = renderAnimation
-            && (activeState === ACTIVE_STATE_RUN)
+            && (activeState === GRBL_ACTIVE_STATE_RUN)
             && (workflowState === WORKFLOW_STATE_RUNNING);
 
         if (isAgitated) {

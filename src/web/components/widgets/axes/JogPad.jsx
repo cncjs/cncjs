@@ -11,7 +11,7 @@ import ShuttleControl from './ShuttleControl';
 import {
     IMPERIAL_UNIT,
     METRIC_UNIT
-} from './constants';
+} from '../../../constants';
 
 const toUnitValue = (unit, val) => {
     val = Number(val) || 0;

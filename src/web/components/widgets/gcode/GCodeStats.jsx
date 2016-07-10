@@ -8,7 +8,7 @@ import {
     IMPERIAL_UNIT,
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_RUNNING
-} from './constants';
+} from '../../../constants';
 
 const toFixedUnitValue = (unit, val) => {
     val = Number(val) || 0;

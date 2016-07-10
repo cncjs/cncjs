@@ -10,51 +10,16 @@ import store from '../../../store';
 import {
     IMPERIAL_UNIT,
     METRIC_UNIT,
-    ACTIVE_STATE_IDLE
-} from './constants';
+    GRBL_ACTIVE_STATE_UNKNOWN,
+    GRBL_ACTIVE_STATE_IDLE
+} from '../../../constants';
 
 class Probe extends React.Component {
-    state = {
-        port: controller.port,
-        unit: METRIC_UNIT,
-        activeState: ACTIVE_STATE_IDLE,
-        probeCommand: store.get('widgets.probe.probeCommand'),
-        probeDepth: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.probeDepth')),
-        probeFeedrate: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.probeFeedrate')),
-        tlo: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.tlo')),
-        retractionDistance: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.retractionDistance'))
-    };
     controllerEvents = {
-        'grbl:status': (data) => {
-            if (data.activeState === this.state.activeState) {
-                return;
-            }
-
-            this.setState({
-                activeState: data.activeState
-            });
-        },
-        'grbl:parserstate': (parserstate) => {
-            const { unit } = this.state;
-            let nextUnit = unit;
-
-            // Imperial
-            if (parserstate.modal.units === 'G20') {
-                nextUnit = IMPERIAL_UNIT;
-            }
-
-            // Metric
-            if (parserstate.modal.units === 'G21') {
-                nextUnit = METRIC_UNIT;
-            }
-
-            if (nextUnit === unit) {
-                return;
-            }
-
-            // Set `this.unitDidChange` to true if the unit has changed
-            this.unitDidChange = true;
-
+        'grbl:state': (state) => {
+            const { status, parserstate } = { ...state };
+            const { activeState } = status;
+            let unit = this.state.unit;
             let {
                 probeDepth,
                 probeFeedrate,
@@ -62,31 +27,46 @@ class Probe extends React.Component {
                 retractionDistance
             } = store.get('widgets.probe');
 
-            // unit conversion
-            if (nextUnit === IMPERIAL_UNIT) {
+            // Imperial
+            if (parserstate.modal.units === 'G20') {
+                unit = IMPERIAL_UNIT;
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
                 tlo = mm2in(tlo).toFixed(4) * 1;
                 retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
             }
-            if (nextUnit === METRIC_UNIT) {
+
+            // Metric
+            if (parserstate.modal.units === 'G21') {
+                unit = METRIC_UNIT;
                 probeDepth = Number(probeDepth).toFixed(3) * 1;
                 probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
                 tlo = Number(tlo).toFixed(3) * 1;
                 retractionDistance = Number(retractionDistance).toFixed(3) * 1;
             }
+
+            if (this.state.unit !== unit) {
+                // Set `this.unitDidChange` to true if the unit has changed
+                this.unitDidChange = true;
+            }
+
             this.setState({
-                unit: nextUnit,
-                probeDepth,
-                probeFeedrate,
-                tlo,
-                retractionDistance
+                unit: unit,
+                activeState: activeState,
+                probeDepth: probeDepth,
+                probeFeedrate: probeFeedrate,
+                tlo: tlo,
+                retractionDistance: retractionDistance
             });
         }
     };
     unitDidChange = false;
     pubsubTokens = [];
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
@@ -127,11 +107,32 @@ class Probe extends React.Component {
         store.set('widgets.probe.tlo', Number(tlo));
         store.set('widgets.probe.retractionDistance', Number(retractionDistance));
     }
+    getDefaultState() {
+        return {
+            port: controller.port,
+            unit: METRIC_UNIT,
+            activeState: GRBL_ACTIVE_STATE_UNKNOWN,
+            probeCommand: store.get('widgets.probe.probeCommand'),
+            probeDepth: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.probeDepth')),
+            probeFeedrate: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.probeFeedrate')),
+            tlo: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.tlo')),
+            retractionDistance: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.retractionDistance'))
+        };
+    }
     subscribe() {
         const tokens = [
             pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
+
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
+                }
             })
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
@@ -227,7 +228,7 @@ class Probe extends React.Component {
         const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
         const feedrateUnit = (unit === METRIC_UNIT) ? i18n._('mm/min') : i18n._('in/mm');
         const step = (unit === METRIC_UNIT) ? 1 : 0.1;
-        const canClick = (!!port && (activeState === ACTIVE_STATE_IDLE));
+        const canClick = (!!port && (activeState === GRBL_ACTIVE_STATE_IDLE));
         const classes = {
             'G38.2': classNames(
                 'btn',

@@ -1,36 +1,72 @@
 import _ from 'lodash';
+import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import Visualizer from './Visualizer';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import {
-    ACTIVE_STATE_IDLE
-} from './constants';
+    GRBL_ACTIVE_STATE_UNKNOWN
+} from '../../../constants';
 import './index.styl';
 
 class VisualizerWidget extends Component {
-    state = {
-        activeState: ACTIVE_STATE_IDLE
-    };
     controllerEvents = {
-        'grbl:status': (data) => {
-            const { activeState } = data;
+        'grbl:state': (state) => {
+            const { status } = { ...state };
+            const { activeState } = status;
 
             if (this.state.activeState !== activeState) {
                 this.setState({ activeState: activeState });
             }
         }
     };
+    pubsubTokens = [];
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     componentDidMount() {
+        this.subscribe();
         this.addControllerEvents();
     }
     componentWillUnmount() {
+        this.unsubscribe();
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
+    getDefaultState() {
+        return {
+            port: controller.port,
+            activeState: GRBL_ACTIVE_STATE_UNKNOWN
+        };
+    }
+    subscribe() {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
+                }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     addControllerEvents() {
         _.each(this.controllerEvents, (callback, eventName) => {

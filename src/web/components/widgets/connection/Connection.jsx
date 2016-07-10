@@ -10,7 +10,7 @@ import controller from '../../../lib/controller';
 import store from '../../../store';
 import {
     WORKFLOW_STATE_RUNNING
-} from './constants';
+} from '../../../constants';
 
 class Connection extends React.Component {
     state = {

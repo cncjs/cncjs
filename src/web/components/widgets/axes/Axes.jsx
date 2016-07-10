@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
 import ControlPanel from './ControlPanel';

@@ -2,12 +2,11 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import i18n from '../../../lib/i18n';
-import log from '../../../lib/log';
 import controller from '../../../lib/controller';
 import Toolbar from './Toolbar';
 import {
-    ACTIVE_STATE_IDLE
-} from './constants';
+    GRBL_ACTIVE_STATE_UNKNOWN
+} from '../../../constants';
 
 const lookupGCodeDefinition = (word) => {
     const wordText = {
@@ -72,25 +71,23 @@ const lookupGCodeDefinition = (word) => {
 };
 
 class Grbl extends React.Component {
-    state = {
-        port: controller.port,
-        activeState: ACTIVE_STATE_IDLE,
-        parserstate: {},
-        showGCode: false
-    };
     controllerEvents = {
-        'grbl:status': (data) => {
+        'grbl:state': (state) => {
+            const { status, parserstate } = { ...state };
+            const { activeState } = status;
+
             this.setState({
-                activeState: data.activeState
+                activeState: activeState,
+                parserstate: parserstate
             });
-        },
-        'grbl:parserstate': (parserstate) => {
-            this.setState({ parserstate });
-            log.trace(parserstate);
         }
     };
     pubsubTokens = [];
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
@@ -102,14 +99,27 @@ class Grbl extends React.Component {
     shouldComponentUpdate(nextProps, nextState) {
         return ! _.isEqual(nextState, this.state);
     }
+    getDefaultState() {
+        return {
+            port: controller.port,
+            activeState: GRBL_ACTIVE_STATE_UNKNOWN,
+            parserstate: {},
+            showGCode: false
+        };
+    }
     subscribe() {
         const tokens = [
             pubsub.subscribe('port', (msg, port) => {
                 port = port || '';
-                this.setState({ port: port });
 
-                if (!port) {
-                    this.setState({ parserstate: {} });
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
                 }
             })
         ];
