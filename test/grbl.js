@@ -1,5 +1,6 @@
 import { test } from 'tap';
-import { Grbl } from '../src/app/controllers/grbl/grbl';
+import trim from 'lodash/trim';
+import Grbl from '../src/app/controllers/grbl/grbl';
 
 // $10 - Status report mask:binary
 // Report Type      | Value
@@ -8,7 +9,6 @@ import { Grbl } from '../src/app/controllers/grbl/grbl';
 // Planner Buffer   | 4
 // RX Buffer        | 8
 // Limit Pins       | 16
-
 test('GrblLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
     const grbl = new Grbl();
     grbl.on('status', ({ raw, ...status }) => {
@@ -137,7 +137,19 @@ test('GrblLineParserResultError', (t) => {
     grbl.parse(line);
 });
 
-test('GrblLineParserResultGCodeModes', (t) => {
+test('GrblLineParserResultAlarm', (t) => {
+    const grbl = new Grbl();
+    grbl.on('alarm', ({ raw, message }) => {
+        t.equal(raw, 'ALARM: Probe fail');
+        t.equal(message, 'Probe fail');
+        t.end();
+    });
+
+    const line = 'ALARM: Probe fail';
+    grbl.parse(line);
+});
+
+test('GrblLineParserResultParserState', (t) => {
     const grbl = new Grbl();
     grbl.on('parserstate', ({ raw, ...parserstate }) => {
         t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]');
@@ -162,6 +174,113 @@ test('GrblLineParserResultGCodeModes', (t) => {
 
     const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]';
     grbl.parse(line);
+});
+
+test('GrblLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) => {
+    const lines = [
+        '[G54:0.000,0.000,0.000]',
+        '[G55:0.000,0.000,0.000]',
+        '[G56:0.000,0.000,0.000]',
+        '[G57:0.000,0.000,0.000]',
+        '[G58:0.000,0.000,0.000]',
+        '[G59:0.000,0.000,0.000]',
+        '[G28:0.000,0.000,0.000]',
+        '[G30:0.000,0.000,0.000]',
+        '[G92:0.000,0.000,0.000]'
+    ];
+    const grbl = new Grbl();
+    let i = 0;
+    grbl.on('parameters', ({ raw, ...full }) => {
+        if (i < lines.length) {
+            t.equal(raw, lines[i]);
+        }
+        if (full.G54) {
+            t.same(full.G54, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+        if (full.G55) {
+            t.same(full.G55, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+        if (full.G56) {
+            t.same(full.G56, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+        if (full.G57) {
+            t.same(full.G57, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+        if (full.G58) {
+            t.same(full.G58, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+        if (full.G59) {
+            t.same(full.G59, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+        if (full.G28) {
+            t.same(full.G28, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+        if (full.G30) {
+            t.same(full.G30, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+        if (full.G92) {
+            t.same(full.G92, { x: '0.000', y: '0.000', z: '0.000' });
+        }
+
+        ++i;
+        if (i >= lines.length) {
+            t.end();
+        }
+    });
+
+    lines.forEach(line => {
+        grbl.parse(line);
+    });
+});
+
+test('GrblLineParserResultParameters:TLO', (t) => {
+    const grbl = new Grbl();
+    grbl.on('parameters', ({ TLO, raw }) => {
+        t.equal(raw, '[TLO:0.000]');
+        t.same(TLO, { value: '0.000' });
+        t.end();
+    });
+
+    grbl.parse('[TLO:0.000]');
+});
+
+test('GrblLineParserResultParameters:PRB', (t) => {
+    const grbl = new Grbl();
+    grbl.on('parameters', ({ PRB, raw }) => {
+        t.equal(raw, '[PRB:0.000,0.000,1.492:1]');
+        t.same(PRB, {
+            result: 1,
+            x: '0.000',
+            y: '0.000',
+            z: '1.492'
+        });
+        t.end();
+    });
+
+    grbl.parse('[PRB:0.000,0.000,1.492:1]');
+});
+
+test('GrblLineParserResultFeedback', (t) => {
+    const lines = [
+        '[Reset to continue]'
+        //'[\'$H\'|\'$X\' to unlock]'
+    ];
+    const grbl = new Grbl();
+    let i = 0;
+    grbl.on('feedback', ({ raw, ...full }) => {
+        if (i < lines.length) {
+            t.equal(raw, lines[i]);
+        }
+
+        ++i;
+        if (i >= lines.length) {
+            t.end();
+        }
+    });
+
+    lines.forEach(line => {
+        grbl.parse(line);
+    });
 });
 
 test('GrblLineParserResultStartup', (t) => {

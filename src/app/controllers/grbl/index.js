@@ -80,17 +80,6 @@ class GrblController {
 
         this.grbl.on('raw', (res) => {});
 
-        this.grbl.on('startup', (res) => {
-            this.ready = true;
-            this.queryResponse.status = false;
-            this.queryResponse.parserstate = false;
-            this.queryResponse.parserstateEnd = false;
-
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
-        });
-
         this.grbl.on('status', (res) => {
             this.queryResponse.status = false;
 
@@ -103,21 +92,6 @@ class GrblController {
                 }
             });
         });
-        this.grbl.on('statuschange', (res) => {});
-
-        this.grbl.on('parserstate', (res) => {
-            this.queryResponse.parserstate = false;
-            this.queryResponse.parserstateEnd = true; // wait for ok response
-
-            this.connections.forEach((c) => {
-                c.socket.emit('grbl:parserstate', res);
-
-                if (c.sentCommand.indexOf('$G') === 0) {
-                    c.socket.emit('serialport:read', res.raw);
-                }
-            });
-        });
-        this.grbl.on('parserstatechange', (res) => {});
 
         this.grbl.on('ok', (res) => {
             if (this.queryResponse.parserstateEnd) {
@@ -154,6 +128,48 @@ class GrblController {
 
                 this.sender.next();
             }
+
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('alarm', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('parserstate', (res) => {
+            this.queryResponse.parserstate = false;
+            this.queryResponse.parserstateEnd = true; // wait for ok response
+
+            this.connections.forEach((c) => {
+                c.socket.emit('grbl:parserstate', res);
+
+                if (c.sentCommand.indexOf('$G') === 0) {
+                    c.socket.emit('serialport:read', res.raw);
+                }
+            });
+        });
+
+        this.grbl.on('parameters', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('feedback', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('startup', (res) => {
+            this.ready = true;
+            this.queryResponse.status = false;
+            this.queryResponse.parserstate = false;
+            this.queryResponse.parserstateEnd = false;
 
             this.connections.forEach((c) => {
                 c.socket.emit('serialport:read', res.raw);

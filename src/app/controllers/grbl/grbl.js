@@ -11,7 +11,10 @@ class GrblLineParser {
             GrblLineParserResultStatus,
             GrblLineParserResultOk,
             GrblLineParserResultError,
-            GrblLineParserResultGCodeModes,
+            GrblLineParserResultAlarm,
+            GrblLineParserResultParserState,
+            GrblLineParserResultParameters,
+            GrblLineParserResultFeedback,
             GrblLineParserResultStartup
         ];
 
@@ -46,7 +49,7 @@ class GrblLineParserResultStatus {
         }
 
         const payload = {};
-        const pattern = /[a-zA-Z]+(:([0-9\.\-]+(,[0-9\.\-]+){1,5})|:([0-9\.\-]+))?/g;
+        const pattern = /[a-zA-Z]+(:[0-9\.\-]+(,[0-9\.\-]+){0,5})?/g;
         let params = r[1].match(pattern);
         let result = {};
 
@@ -151,9 +154,28 @@ class GrblLineParserResultError {
     }
 }
 
-class GrblLineParserResultGCodeModes {
+class GrblLineParserResultAlarm {
     static parse(line) {
-        const r = line.match(/^\[(.+)\]$/);
+        const r = line.match(/^ALARM:\s*(.+)$/);
+        if (!r) {
+            return null;
+        }
+
+        const payload = {
+            message: r[1]
+        };
+
+        return {
+            type: GrblLineParserResultAlarm,
+            payload: payload
+        };
+    }
+}
+
+class GrblLineParserResultParserState {
+    static parse(line) {
+        // [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
+        const r = line.match(/^\[((?:[a-zA-Z][0-9]+(?:\.[0-9]*)?\s*)+)\]$/);
         if (!r) {
             return null;
         }
@@ -195,7 +217,69 @@ class GrblLineParserResultGCodeModes {
         });
 
         return {
-            type: GrblLineParserResultGCodeModes,
+            type: GrblLineParserResultParserState,
+            payload: payload
+        };
+    }
+}
+
+class GrblLineParserResultParameters {
+    static parse(line) {
+        const r = line.match(/^\[(G54|G55|G56|G57|G58|G59|G28|G30|G92|TLO|PRB):(.+)\]$/);
+        if (!r) {
+            return null;
+        }
+
+        const [full, key, value] = r;
+        const payload = {
+            [key]: {}
+        };
+
+        if (_.includes(['G54', 'G55', 'G56', 'G57', 'G58', 'G59', 'G28', 'G30', 'G92'], key)) {
+            const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
+            const list = value.split(',');
+            for (let i = 0; i < list.length; ++i) {
+                payload[key][axes[i]] = list[i];
+            }
+        }
+
+        // [TLO:0.000]
+        if (key === 'TLO') {
+            payload[key].value = value;
+        }
+
+        // [PRB:0.000,0.000,1.492:1]
+        if (key === 'PRB') {
+            const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
+            const [str, result] = value.split(':');
+            const list = str.split(',');
+            payload[key].result = Number(result);
+            for (let i = 0; i < list.length; ++i) {
+                payload[key][axes[i]] = list[i];
+            }
+        }
+
+        return {
+            type: GrblLineParserResultParameters,
+            payload: payload
+        };
+    }
+}
+
+// https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl#feedback-messages
+class GrblLineParserResultFeedback {
+    static parse(line) {
+        const r = line.match(/^\[(.+)\]$/);
+        if (!r) {
+            return null;
+        }
+
+        const payload = {
+            message: r[1]
+        };
+
+        return {
+            type: GrblLineParserResultFeedback,
             payload: payload
         };
     }
@@ -270,7 +354,10 @@ class Grbl extends events.EventEmitter {
                 this.emit('statuschange', payload);
                 this.state = {
                     ...this.state,
-                    status: payload
+                    status: {
+                        ...this.state.status,
+                        ...payload
+                    }
                 };
             }
             this.emit('status', payload);
@@ -284,15 +371,30 @@ class Grbl extends events.EventEmitter {
             this.emit('error', payload);
             return;
         }
-        if (type === GrblLineParserResultGCodeModes) {
+        if (type === GrblLineParserResultAlarm) {
+            this.emit('alarm', payload);
+            return;
+        }
+        if (type === GrblLineParserResultParserState) {
             if (!_.isEqual(this.state.parserstate, payload)) {
                 this.emit('parserstatechange', payload);
                 this.state = {
                     ...this.state,
-                    parserstate: payload
+                    parserstate: {
+                        ...this.state.parserstate,
+                        ...payload
+                    }
                 };
             }
             this.emit('parserstate', payload);
+            return;
+        }
+        if (type === GrblLineParserResultParameters) {
+            this.emit('parameters', payload);
+            return;
+        }
+        if (type === GrblLineParserResultFeedback) {
+            this.emit('feedback', payload);
             return;
         }
         if (type === GrblLineParserResultStartup) {
@@ -311,7 +413,10 @@ export {
     GrblLineParserResultStatus,
     GrblLineParserResultOk,
     GrblLineParserResultError,
-    GrblLineParserResultGCodeModes,
+    GrblLineParserResultAlarm,
+    GrblLineParserResultParserState,
+    GrblLineParserResultParameters,
+    GrblLineParserResultFeedback,
     GrblLineParserResultStartup
 };
 export default Grbl;
