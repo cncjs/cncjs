@@ -10,8 +10,8 @@ import Widget from '../../widget';
 import Axes from './Axes';
 import { show as showSettings } from './Settings';
 import {
-    IMPERIAL_UNIT,
-    METRIC_UNIT,
+    IMPERIAL_UNITS,
+    METRIC_UNITS,
     GRBL_ACTIVE_STATE_UNKNOWN,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
@@ -24,24 +24,24 @@ import {
 } from './constants';
 import './index.styl';
 
-const toFixedUnitString = (unit, val) => {
+const toFixedUnits = (units, val) => {
     val = Number(val) || 0;
-    if (unit === IMPERIAL_UNIT) {
+    if (units === IMPERIAL_UNITS) {
         val = mm2in(val).toFixed(4);
     }
-    if (unit === METRIC_UNIT) {
+    if (units === METRIC_UNITS) {
         val = val.toFixed(3);
     }
 
-    return String(val);
+    return val;
 };
 
-const toUnitValue = (unit, val) => {
+const toUnits = (units, val) => {
     val = Number(val) || 0;
-    if (unit === IMPERIAL_UNIT) {
+    if (units === IMPERIAL_UNITS) {
         val = mm2in(val).toFixed(4) * 1;
     }
-    if (unit === METRIC_UNIT) {
+    if (units === METRIC_UNITS) {
         val = val.toFixed(3) * 1;
     }
 
@@ -70,23 +70,23 @@ class AxesWidget extends Component {
         'grbl:state': (state) => {
             const { status, parserstate } = { ...state };
             const { activeState, machinePosition, workPosition } = status;
-            let unit = this.state.unit;
+            let units = this.state.units;
             let customDistance = store.get('widgets.axes.jog.customDistance');
 
             // Imperial
             if (parserstate.modal.units === 'G20') {
-                unit = IMPERIAL_UNIT;
+                units = IMPERIAL_UNITS;
                 customDistance = mm2in(customDistance).toFixed(4) * 1;
             }
 
             // Metric
             if (parserstate.modal.units === 'G21') {
-                unit = METRIC_UNIT;
+                units = METRIC_UNITS;
                 customDistance = Number(customDistance).toFixed(3) * 1;
             }
 
             this.setState({
-                unit: unit,
+                units: units,
                 activeState: activeState,
                 machinePosition: machinePosition,
                 workPosition: workPosition,
@@ -114,9 +114,9 @@ class AxesWidget extends Component {
     componentDidUpdate(prevProps, prevState) {
         // The custom distance will not persist to store while toggling between in and mm
         if ((prevState.customDistance !== this.state.customDistance) &&
-            (prevState.unit === this.state.unit)) {
+            (prevState.units === this.state.units)) {
             let customDistance = this.state.customDistance;
-            if (this.state.unit === IMPERIAL_UNIT) {
+            if (this.state.units === IMPERIAL_UNITS) {
                 customDistance = in2mm(customDistance);
             }
             // To save in mm
@@ -137,7 +137,7 @@ class AxesWidget extends Component {
             isCollapsed: false,
             isFullscreen: false,
             port: controller.port,
-            unit: METRIC_UNIT,
+            units: METRIC_UNITS,
             activeState: GRBL_ACTIVE_STATE_UNKNOWN,
             workflowState: WORKFLOW_STATE_IDLE,
             machinePosition: { // Machine position
@@ -154,7 +154,7 @@ class AxesWidget extends Component {
             keypadJogging: store.get('widgets.axes.jog.keypad'),
             selectedAxis: '', // Defaults to empty
             selectedDistance: store.get('widgets.axes.jog.selectedDistance'),
-            customDistance: toUnitValue(METRIC_UNIT, store.get('widgets.axes.jog.customDistance'))
+            customDistance: toUnits(METRIC_UNITS, store.get('widgets.axes.jog.customDistance'))
         };
     }
     subscribe() {
@@ -219,13 +219,13 @@ class AxesWidget extends Component {
 
         return true;
     }
-    toggleDisplayUnit() {
-        const { unit } = this.state;
+    toggleDisplayUnits() {
+        const { units } = this.state;
 
-        if (unit === METRIC_UNIT) {
-            controller.writeln('G20'); // G20 specifies Imperial unit
+        if (units === METRIC_UNITS) {
+            controller.writeln('G20'); // G20 specifies Imperial units
         } else {
-            controller.writeln('G21'); // G21 specifies Metric unit
+            controller.writeln('G21'); // G21 specifies Metric units
         }
     }
     toggleKeypadJogging() {
@@ -242,30 +242,30 @@ class AxesWidget extends Component {
         this.setState({ customDistance: customDistance });
     }
     increaseCustomDistance() {
-        const { unit, customDistance } = this.state;
+        const { units, customDistance } = this.state;
         let distance = Math.min(Number(customDistance) + DISTANCE_STEP, DISTANCE_MAX);
-        if (unit === IMPERIAL_UNIT) {
+        if (units === IMPERIAL_UNITS) {
             distance = distance.toFixed(4) * 1;
         }
-        if (unit === METRIC_UNIT) {
+        if (units === METRIC_UNITS) {
             distance = distance.toFixed(3) * 1;
         }
         this.setState({ customDistance: distance });
     }
     decreaseCustomDistance() {
-        const { unit, customDistance } = this.state;
+        const { units, customDistance } = this.state;
         let distance = Math.max(Number(customDistance) - DISTANCE_STEP, DISTANCE_MIN);
-        if (unit === IMPERIAL_UNIT) {
+        if (units === IMPERIAL_UNITS) {
             distance = distance.toFixed(4) * 1;
         }
-        if (unit === METRIC_UNIT) {
+        if (units === METRIC_UNITS) {
             distance = distance.toFixed(3) * 1;
         }
         this.setState({ customDistance: distance });
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
-        const { unit, machinePosition, workPosition } = this.state;
+        const { units, machinePosition, workPosition } = this.state;
         const classes = {
             widgetContent: classNames(
                 { hidden: isCollapsed }
@@ -276,17 +276,17 @@ class AxesWidget extends Component {
             ...this.state,
             // Determine if the motion button is clickable
             canClick: this.canClick(),
-            // Output machine position with the display unit
+            // Output machine position with the display units
             machinePosition: _.mapValues(machinePosition, (pos, axis) => {
-                return toFixedUnitString(unit, pos);
+                return String(toFixedUnits(units, pos));
             }),
-            // Output work position with the display unit
+            // Output work position with the display units
             workPosition: _.mapValues(workPosition, (pos, axis) => {
-                return toFixedUnitString(unit, pos);
+                return String(toFixedUnits(units, pos));
             })
         };
         const actions = {
-            toggleDisplayUnit: ::this.toggleDisplayUnit,
+            toggleDisplayUnits: ::this.toggleDisplayUnits,
             toggleKeypadJogging: ::this.toggleKeypadJogging,
             selectAxis: ::this.selectAxis,
             selectDistance: ::this.selectDistance,

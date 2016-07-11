@@ -3,20 +3,21 @@ import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
+import { mm2in } from '../../../lib/units';
 import {
-    METRIC_UNIT,
-    IMPERIAL_UNIT,
+    METRIC_UNITS,
+    IMPERIAL_UNITS,
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_RUNNING
 } from '../../../constants';
 
-const toFixedUnitValue = (unit, val) => {
+const toFixedUnits = (units, val) => {
     val = Number(val) || 0;
-    if (unit === METRIC_UNIT) {
-        val = (val / 1).toFixed(3);
+    if (units === IMPERIAL_UNITS) {
+        val = mm2in(val).toFixed(4);
     }
-    if (unit === IMPERIAL_UNIT) {
-        val = (val / 25.4).toFixed(4);
+    if (units === METRIC_UNITS) {
+        val = val.toFixed(3);
     }
 
     return val;
@@ -24,7 +25,7 @@ const toFixedUnitValue = (unit, val) => {
 
 class GCodeStats extends Component {
     static propTypes = {
-        unit: PropTypes.string,
+        units: PropTypes.string,
         remain: PropTypes.number,
         sent: PropTypes.number,
         total: PropTypes.number,
@@ -162,12 +163,12 @@ class GCodeStats extends Component {
         }
     }
     render() {
-        const { unit, total, sent } = this.props;
+        const { units, total, sent } = this.props;
         const bbox = _.mapValues(this.state.bbox, (position) => {
-            const obj = _.mapValues(position, (val, axis) => toFixedUnitValue(unit, val));
-            return obj;
+            position = _.mapValues(position, (val, axis) => toFixedUnits(units, val));
+            return position;
         });
-        const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
+        const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         let startTime = '–';
         let duration = '–';
 
@@ -199,21 +200,21 @@ class GCodeStats extends Component {
                             <tbody>
                                 <tr>
                                     <td className="axis">X</td>
-                                    <td>{bbox.min.x} {displayUnit}</td>
-                                    <td>{bbox.max.x} {displayUnit}</td>
-                                    <td>{bbox.delta.x} {displayUnit}</td>
+                                    <td>{bbox.min.x} {displayUnits}</td>
+                                    <td>{bbox.max.x} {displayUnits}</td>
+                                    <td>{bbox.delta.x} {displayUnits}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Y</td>
-                                    <td>{bbox.min.y} {displayUnit}</td>
-                                    <td>{bbox.max.y} {displayUnit}</td>
-                                    <td>{bbox.delta.y} {displayUnit}</td>
+                                    <td>{bbox.min.y} {displayUnits}</td>
+                                    <td>{bbox.max.y} {displayUnits}</td>
+                                    <td>{bbox.delta.y} {displayUnits}</td>
                                 </tr>
                                 <tr>
                                     <td className="axis">Z</td>
-                                    <td>{bbox.min.z} {displayUnit}</td>
-                                    <td>{bbox.max.z} {displayUnit}</td>
-                                    <td>{bbox.delta.z} {displayUnit}</td>
+                                    <td>{bbox.min.z} {displayUnits}</td>
+                                    <td>{bbox.max.z} {displayUnits}</td>
+                                    <td>{bbox.delta.z} {displayUnits}</td>
                                 </tr>
                             </tbody>
                         </table>

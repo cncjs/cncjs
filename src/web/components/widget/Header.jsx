@@ -1,24 +1,29 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
-const Header = (props) => {
-    const { children, className, fixed, ...others } = props;
-    const headerClass = classNames(
-        'widget-header',
-        { 'widget-header-fixed': !!fixed },
-        'clearfix',
-        className
-    );
+class Header extends Component {
+    static propTypes = {
+        fixed: PropTypes.bool
+    };
+    static defaultProps = {
+        fixed: false
+    };
 
-    return (
-        <div {...others} className={headerClass}>
-            {children}
-        </div>
-    );
-};
+    render() {
+        const { children, className, fixed, ...others } = this.props;
+        const headerClass = classNames(
+            'widget-header',
+            { 'widget-header-fixed': !!fixed },
+            'clearfix',
+            className
+        );
 
-Header.propTypes = {
-    children: React.PropTypes.node
-};
+        return (
+            <div {...others} className={headerClass}>
+                {children}
+            </div>
+        );
+    }
+}
 
 export default Header;

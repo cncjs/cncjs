@@ -9,16 +9,16 @@ import { mm2in } from '../../../lib/units';
 import store from '../../../store';
 import ShuttleControl from './ShuttleControl';
 import {
-    IMPERIAL_UNIT,
-    METRIC_UNIT
+    IMPERIAL_UNITS,
+    METRIC_UNITS
 } from '../../../constants';
 
-const toUnitValue = (unit, val) => {
+const toUnits = (units, val) => {
     val = Number(val) || 0;
-    if (unit === IMPERIAL_UNIT) {
+    if (units === IMPERIAL_UNITS) {
         val = mm2in(val).toFixed(4) * 1;
     }
-    if (unit === METRIC_UNIT) {
+    if (units === METRIC_UNITS) {
         val = val.toFixed(3) * 1;
     }
 
@@ -139,13 +139,13 @@ class JogPad extends Component {
     }
     getJogDistance() {
         const { state } = this.props;
-        const { unit } = state;
+        const { units } = state;
         const selectedDistance = store.get('widgets.axes.jog.selectedDistance');
         const customDistance = store.get('widgets.axes.jog.customDistance');
         if (selectedDistance) {
             return Number(selectedDistance) || 0;
         }
-        return toUnitValue(unit, customDistance);
+        return toUnits(units, customDistance);
     }
     render() {
         const { state } = this.props;

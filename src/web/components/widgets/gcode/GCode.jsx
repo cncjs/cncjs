@@ -8,13 +8,11 @@ import log from '../../../lib/log';
 import GCodeStats from './GCodeStats';
 import GCodeTable from './GCodeTable';
 import {
-    IMPERIAL_UNIT,
-    METRIC_UNIT
+    IMPERIAL_UNITS,
+    METRIC_UNITS
 } from '../../../constants';
 import {
-    GCODE_STATUS_ERROR,
     GCODE_STATUS_NOT_STARTED,
-    GCODE_STATUS_IN_PROGRESS,
     GCODE_STATUS_COMPLETED
 } from './constants';
 
@@ -62,20 +60,20 @@ class GCode extends React.Component {
         },
         'grbl:state': (state) => {
             const { parserstate } = { ...state };
-            let unit = this.state.unit;
+            let units = this.state.units;
 
             // Imperial
             if (parserstate.modal.units === 'G20') {
-                unit = IMPERIAL_UNIT;
+                units = IMPERIAL_UNITS;
             }
 
             // Metric
             if (parserstate.modal.units === 'G21') {
-                unit = METRIC_UNIT;
+                units = METRIC_UNITS;
             }
 
-            if (this.state.unit !== unit) {
-                this.setState({ unit: unit });
+            if (this.state.units !== units) {
+                this.setState({ units: units });
             }
         }
     };
@@ -99,7 +97,7 @@ class GCode extends React.Component {
     getDefaultState() {
         return {
             port: controller.port,
-            unit: METRIC_UNIT,
+            units: METRIC_UNITS,
             lines: [], // List of G-code lines
             alertMessage: '',
 
@@ -170,7 +168,7 @@ class GCode extends React.Component {
         });
     }
     render() {
-        const { unit, lines } = this.state;
+        const { units, lines } = this.state;
         const { remain, sent, total, createdTime, startedTime, finishedTime } = this.state;
         const isLoaded = (_.size(lines) > 0);
         const scrollToRow = sent;
@@ -178,7 +176,7 @@ class GCode extends React.Component {
         return (
             <div>
                 <GCodeStats
-                    unit={unit}
+                    units={units}
                     remain={remain}
                     sent={sent}
                     total={total}

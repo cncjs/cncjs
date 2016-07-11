@@ -6,8 +6,8 @@ import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 import PositionInput from './PositionInput';
 import {
-    IMPERIAL_UNIT,
-    METRIC_UNIT
+    IMPERIAL_UNITS,
+    METRIC_UNITS
 } from '../../../constants';
 
 class DisplayPanel extends Component {
@@ -33,8 +33,8 @@ class DisplayPanel extends Component {
     }
     render() {
         const { state } = this.props;
-        const { unit, canClick, machinePosition, workPosition } = state;
-        const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
+        const { units, canClick, machinePosition, workPosition } = state;
+        const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
 
         return (
             <div className="display-panel">
@@ -54,14 +54,14 @@ class DisplayPanel extends Component {
                                 <span className="integer-part">{machinePosition.x.split('.')[0]}</span>
                                 <span className="decimal-point">.</span>
                                 <span className="fractional-part">{machinePosition.x.split('.')[1]}</span>
-                                <span className="dimension-unit">{displayUnit}</span>
+                                <span className="dimension-units">{displayUnits}</span>
                             </td>
                             <td className="work-position">
-                                <span className="dimension-unit">{displayUnit}</span>
+                                <span className="dimension-units">{displayUnits}</span>
                             {this.state.showXPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
-                                        if (unit === IMPERIAL_UNIT) {
+                                        if (units === IMPERIAL_UNITS) {
                                             value = in2mm(value);
                                         }
                                         controller.writeln('G10 L20 P1 X' + value);
@@ -146,14 +146,14 @@ class DisplayPanel extends Component {
                                 <span className="integer-part">{machinePosition.y.split('.')[0]}</span>
                                 <span className="decimal-point">.</span>
                                 <span className="fractional-part">{machinePosition.y.split('.')[1]}</span>
-                                <span className="dimension-unit">{displayUnit}</span>
+                                <span className="dimension-units">{displayUnits}</span>
                             </td>
                             <td className="work-position">
-                                <span className="dimension-unit">{displayUnit}</span>
+                                <span className="dimension-units">{displayUnits}</span>
                             {this.state.showYPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
-                                        if (unit === IMPERIAL_UNIT) {
+                                        if (units === IMPERIAL_UNITS) {
                                             value = in2mm(value);
                                         }
                                         controller.writeln('G10 L20 P1 Y' + value);
@@ -238,14 +238,14 @@ class DisplayPanel extends Component {
                                 <span className="integer-part">{machinePosition.z.split('.')[0]}</span>
                                 <span className="decimal-point">.</span>
                                 <span className="fractional-part">{machinePosition.z.split('.')[1]}</span>
-                                <span className="dimension-unit">{displayUnit}</span>
+                                <span className="dimension-units">{displayUnits}</span>
                             </td>
                             <td className="work-position">
-                                <span className="dimension-unit">{displayUnit}</span>
+                                <span className="dimension-units">{displayUnits}</span>
                             {this.state.showZPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
-                                        if (unit === IMPERIAL_UNIT) {
+                                        if (units === IMPERIAL_UNITS) {
                                             value = in2mm(value);
                                         }
                                         controller.writeln('G10 L20 P1 Z' + value);

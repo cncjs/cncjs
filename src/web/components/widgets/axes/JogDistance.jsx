@@ -42,7 +42,7 @@ class JogDistance extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { unit, selectedDistance, customDistance } = state;
+        const { units, selectedDistance, customDistance } = state;
         const distance = String(selectedDistance); // force convert to string
         const isCustomDistanceSelected = !(_.includes(['1', '0.1', '0.01', '0.001'], distance));
         const classes = {
@@ -81,7 +81,7 @@ class JogDistance extends Component {
                         <button
                             type="button"
                             className={classes['1']}
-                            title={'1 ' + unit}
+                            title={'1 ' + units}
                             onClick={() => actions.selectDistance('1')}
                         >
                             1
@@ -89,7 +89,7 @@ class JogDistance extends Component {
                         <button
                             type="button"
                             className={classes['0.1']}
-                            title={'0.1 ' + unit}
+                            title={'0.1 ' + units}
                             onClick={() => actions.selectDistance('0.1')}
                         >
                             0.1
@@ -97,7 +97,7 @@ class JogDistance extends Component {
                         <button
                             type="button"
                             className={classes['0.01']}
-                            title={'0.01 ' + unit}
+                            title={'0.01 ' + units}
                             onClick={() => actions.selectDistance('0.01')}
                         >
                             0.01
@@ -105,7 +105,7 @@ class JogDistance extends Component {
                         <button
                             type="button"
                             className={classes['0.001']}
-                            title={'0.001 ' + unit}
+                            title={'0.001 ' + units}
                             onClick={() => actions.selectDistance('0.001')}
                         >
                             0.001

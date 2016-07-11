@@ -160,7 +160,7 @@ class ToolbarButton extends Component {
                     <button
                         type="button"
                         className="btn btn-xs btn-default"
-                        onClick={actions.toggleDisplayUnit}
+                        onClick={actions.toggleDisplayUnits}
                         disabled={!canClick}
                     >
                         {i18n._('in / mm')}

@@ -8,8 +8,8 @@ import { in2mm, mm2in } from '../../../lib/units';
 import ToolbarButton from './ToolbarButton';
 import store from '../../../store';
 import {
-    IMPERIAL_UNIT,
-    METRIC_UNIT,
+    IMPERIAL_UNITS,
+    METRIC_UNITS,
     GRBL_ACTIVE_STATE_UNKNOWN,
     GRBL_ACTIVE_STATE_IDLE
 } from '../../../constants';
@@ -19,7 +19,7 @@ class Probe extends React.Component {
         'grbl:state': (state) => {
             const { status, parserstate } = { ...state };
             const { activeState } = status;
-            let unit = this.state.unit;
+            let units = this.state.units;
             let {
                 probeDepth,
                 probeFeedrate,
@@ -29,7 +29,7 @@ class Probe extends React.Component {
 
             // Imperial
             if (parserstate.modal.units === 'G20') {
-                unit = IMPERIAL_UNIT;
+                units = IMPERIAL_UNITS;
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
                 tlo = mm2in(tlo).toFixed(4) * 1;
@@ -38,20 +38,20 @@ class Probe extends React.Component {
 
             // Metric
             if (parserstate.modal.units === 'G21') {
-                unit = METRIC_UNIT;
+                units = METRIC_UNITS;
                 probeDepth = Number(probeDepth).toFixed(3) * 1;
                 probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
                 tlo = Number(tlo).toFixed(3) * 1;
                 retractionDistance = Number(retractionDistance).toFixed(3) * 1;
             }
 
-            if (this.state.unit !== unit) {
-                // Set `this.unitDidChange` to true if the unit has changed
-                this.unitDidChange = true;
+            if (this.state.units !== units) {
+                // Set `this.unitsDidChange` to true if the unit has changed
+                this.unitsDidChange = true;
             }
 
             this.setState({
-                unit: unit,
+                units: units,
                 activeState: activeState,
                 probeDepth: probeDepth,
                 probeFeedrate: probeFeedrate,
@@ -60,7 +60,7 @@ class Probe extends React.Component {
             });
         }
     };
-    unitDidChange = false;
+    unitsDidChange = false;
     pubsubTokens = [];
 
     constructor() {
@@ -79,13 +79,13 @@ class Probe extends React.Component {
         return ! _.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
-        // Do not save to store if the unit did change between in and mm
-        if (this.unitDidChange) {
-            this.unitDidChange = false;
+        // Do not save to store if the units did change between in and mm
+        if (this.unitsDidChange) {
+            this.unitsDidChange = false;
             return;
         }
 
-        const { unit, probeCommand } = this.state;
+        const { units, probeCommand } = this.state;
         let {
             probeDepth,
             probeFeedrate,
@@ -93,7 +93,7 @@ class Probe extends React.Component {
             retractionDistance
         } = this.state;
 
-        if (unit === IMPERIAL_UNIT) {
+        if (units === IMPERIAL_UNITS) {
             probeDepth = in2mm(probeDepth);
             probeFeedrate = in2mm(probeFeedrate);
             tlo = in2mm(tlo);
@@ -110,13 +110,13 @@ class Probe extends React.Component {
     getDefaultState() {
         return {
             port: controller.port,
-            unit: METRIC_UNIT,
+            units: METRIC_UNITS,
             activeState: GRBL_ACTIVE_STATE_UNKNOWN,
             probeCommand: store.get('widgets.probe.probeCommand'),
-            probeDepth: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.probeDepth')),
-            probeFeedrate: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.probeFeedrate')),
-            tlo: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.tlo')),
-            retractionDistance: this.toUnitValue(METRIC_UNIT, store.get('widgets.probe.retractionDistance'))
+            probeDepth: this.toUnits(METRIC_UNITS, store.get('widgets.probe.probeDepth')),
+            probeFeedrate: this.toUnits(METRIC_UNITS, store.get('widgets.probe.probeFeedrate')),
+            tlo: this.toUnits(METRIC_UNITS, store.get('widgets.probe.tlo')),
+            retractionDistance: this.toUnits(METRIC_UNITS, store.get('widgets.probe.retractionDistance'))
         };
     }
     subscribe() {
@@ -211,23 +211,23 @@ class Probe extends React.Component {
         // Set back to asolute distance mode
         this.sendGCode('G90');
     }
-    toUnitValue(unit, val) {
+    toUnits(units, val) {
         val = Number(val) || 0;
-        if (unit === IMPERIAL_UNIT) {
+        if (units === IMPERIAL_UNITS) {
             val = mm2in(val).toFixed(4) * 1;
         }
-        if (unit === METRIC_UNIT) {
+        if (units === METRIC_UNITS) {
             val = val.toFixed(3) * 1;
         }
 
         return val;
     }
     render() {
-        const { port, unit, activeState } = this.state;
+        const { port, units, activeState } = this.state;
         const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
-        const displayUnit = (unit === METRIC_UNIT) ? i18n._('mm') : i18n._('in');
-        const feedrateUnit = (unit === METRIC_UNIT) ? i18n._('mm/min') : i18n._('in/mm');
-        const step = (unit === METRIC_UNIT) ? 1 : 0.1;
+        const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
+        const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/mm');
+        const step = (units === METRIC_UNITS) ? 1 : 0.1;
         const canClick = (!!port && (activeState === GRBL_ACTIVE_STATE_IDLE));
         const classes = {
             'G38.2': classNames(
@@ -326,7 +326,7 @@ class Probe extends React.Component {
                                     onKeyDown={(e) => e.stopPropagation()}
                                     onChange={::this.handleProbeDepthChange}
                                 />
-                                <div className="input-group-addon">{displayUnit}</div>
+                                <div className="input-group-addon">{displayUnits}</div>
                             </div>
                         </div>
                     </div>
@@ -343,7 +343,7 @@ class Probe extends React.Component {
                                     step={step}
                                     onChange={::this.handleProbeFeedrateChange}
                                 />
-                                <span className="input-group-addon">{feedrateUnit}</span>
+                                <span className="input-group-addon">{feedrateUnits}</span>
                             </div>
                         </div>
                     </div>
@@ -360,7 +360,7 @@ class Probe extends React.Component {
                                     step={step}
                                     onChange={::this.handleTLOChange}
                                 />
-                                <span className="input-group-addon">{displayUnit}</span>
+                                <span className="input-group-addon">{displayUnits}</span>
                             </div>
                         </div>
                     </div>
@@ -377,7 +377,7 @@ class Probe extends React.Component {
                                     step={step}
                                     onChange={::this.handleRetractionDistanceChange}
                                 />
-                                <span className="input-group-addon">{displayUnit}</span>
+                                <span className="input-group-addon">{displayUnits}</span>
                             </div>
                         </div>
                     </div>
