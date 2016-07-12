@@ -15,6 +15,7 @@ class GrblLineParser {
             GrblLineParserResultParserState,
             GrblLineParserResultParameters,
             GrblLineParserResultFeedback,
+            GrblLineParserResultSettings,
             GrblLineParserResultStartup
         ];
 
@@ -136,6 +137,7 @@ class GrblLineParserResultOk {
     }
 }
 
+// https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl#grbl-response-meanings
 class GrblLineParserResultError {
     static parse(line) {
         const r = line.match(/^error:\s*(.+)$/);
@@ -154,6 +156,7 @@ class GrblLineParserResultError {
     }
 }
 
+// https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl#alarms
 class GrblLineParserResultAlarm {
     static parse(line) {
         const r = line.match(/^ALARM:\s*(.+)$/);
@@ -285,6 +288,26 @@ class GrblLineParserResultFeedback {
     }
 }
 
+class GrblLineParserResultSettings {
+    static parse(line) {
+        const r = line.match(/^(\$[^=]+)=([^ ]*)\s*(.*)/);
+        if (!r) {
+            return null;
+        }
+
+        const payload = {
+            name: r[1],
+            value: r[2],
+            message: _.trim(r[3], '()')
+        };
+
+        return {
+            type: GrblLineParserResultSettings,
+            payload: payload
+        };
+    }
+}
+
 class GrblLineParserResultStartup {
     // Grbl 0.9j ['$' for help]
     static parse(line) {
@@ -397,6 +420,10 @@ class Grbl extends events.EventEmitter {
             this.emit('feedback', payload);
             return;
         }
+        if (type === GrblLineParserResultSettings) {
+            this.emit('settings', payload);
+            return;
+        }
         if (type === GrblLineParserResultStartup) {
             this.emit('startup', payload);
             return;
@@ -417,6 +444,7 @@ export {
     GrblLineParserResultParserState,
     GrblLineParserResultParameters,
     GrblLineParserResultFeedback,
+    GrblLineParserResultSettings,
     GrblLineParserResultStartup
 };
 export default Grbl;
