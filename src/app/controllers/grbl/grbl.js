@@ -233,7 +233,8 @@ class GrblLineParserResultParameters {
             return null;
         }
 
-        const [full, key, value] = r;
+        const key = r[1];
+        const value = r[2];
         const payload = {
             [key]: {}
         };
