@@ -262,14 +262,26 @@ test('GrblLineParserResultParameters:PRB', (t) => {
 
 test('GrblLineParserResultFeedback', (t) => {
     const lines = [
-        '[Reset to continue]'
-        //'[\'$H\'|\'$X\' to unlock]'
+        // $I - View build info
+        '[0.9j.20160303:]',
+        // Sent after an alarm message to tell the user to reset Grbl as an acknowledgement that an alarm has happened.
+        '[Reset to continue]',
+        // After an alarm and the user has sent a reset,
+        '[\'$H\'|\'$X\' to unlock]',
+        // This feedback message is sent when the user overrides the alarm.
+        '[Caution: Unlocked]',
+        // $C - Check gcode mode
+        '[Enabled]',
+        '[Disabled]'
     ];
     const grbl = new Grbl();
     let i = 0;
     grbl.on('feedback', ({ raw, ...full }) => {
+        const message = trim(lines[i], '[]');
+
         if (i < lines.length) {
             t.equal(raw, lines[i]);
+            t.equal(full.message, message);
         }
 
         ++i;
