@@ -165,6 +165,12 @@ class GrblController {
             });
         });
 
+        this.grbl.on('settings', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
         this.grbl.on('startup', (res) => {
             this.ready = true;
             this.queryResponse.status = false;
