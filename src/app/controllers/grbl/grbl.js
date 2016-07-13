@@ -233,33 +233,36 @@ class GrblLineParserResultParameters {
             return null;
         }
 
-        const key = r[1];
+        const name = r[1];
         const value = r[2];
         const payload = {
-            [key]: {}
+            name: name,
+            value: ''
         };
 
-        if (_.includes(['G54', 'G55', 'G56', 'G57', 'G58', 'G59', 'G28', 'G30', 'G92'], key)) {
+        if (_.includes(['G54', 'G55', 'G56', 'G57', 'G58', 'G59', 'G28', 'G30', 'G92'], name)) {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const list = value.split(',');
+            payload.value = {};
             for (let i = 0; i < list.length; ++i) {
-                payload[key][axes[i]] = list[i];
+                payload.value[axes[i]] = list[i];
             }
         }
 
         // [TLO:0.000]
-        if (key === 'TLO') {
-            payload[key].value = value;
+        if (name === 'TLO') {
+            payload.value = value;
         }
 
         // [PRB:0.000,0.000,1.492:1]
-        if (key === 'PRB') {
+        if (name === 'PRB') {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const [str, result] = value.split(':');
             const list = str.split(',');
-            payload[key].result = Number(result);
+            payload.value = {};
+            payload.value.result = Number(result);
             for (let i = 0; i < list.length; ++i) {
-                payload[key][axes[i]] = list[i];
+                payload.value[axes[i]] = list[i];
             }
         }
 
@@ -358,6 +361,10 @@ class Grbl extends events.EventEmitter {
             tool: '',
             feedrate: '',
             spindle: ''
+        },
+        parameters: {
+        },
+        settings: {
         }
     };
     parser = new GrblLineParser();
@@ -415,6 +422,8 @@ class Grbl extends events.EventEmitter {
         }
         if (type === GrblLineParserResultParameters) {
             this.emit('parameters', payload);
+            const { name, value } = payload;
+            this.state.parameters[name] = value;
             return;
         }
         if (type === GrblLineParserResultFeedback) {
@@ -423,6 +432,8 @@ class Grbl extends events.EventEmitter {
         }
         if (type === GrblLineParserResultSettings) {
             this.emit('settings', payload);
+            const { name, value } = payload;
+            this.state.settings[name] = value;
             return;
         }
         if (type === GrblLineParserResultStartup) {
