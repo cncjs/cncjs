@@ -264,7 +264,6 @@ class GrblController {
             workflowState: this.workflowState,
             gcode: {
                 name: this.sender.name,
-                data: this.sender.gcode, // The G-code data will be loaded by the Connection widget
                 size: this.sender.gcode.length,
                 remain: this.sender.remain.length,
                 sent: this.sender.sent.length,

@@ -56,14 +56,14 @@ class FileUploader extends React.Component {
 
             const gcode = result;
             request
-                .post('/api/gcode/upload')
+                .put('/api/gcode')
                 .send({
-                    port,
+                    port: port,
                     meta: {
                         name: file.name,
                         size: file.size
                     },
-                    gcode
+                    gcode: gcode
                 })
                 .end((err, res) => {
                     this.stopWaiting();

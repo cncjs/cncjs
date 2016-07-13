@@ -22,7 +22,8 @@ const api = {
         app.delete(urljoin(settings.route, 'api/config'), api.config.unset);
 
         // gcode
-        app.post(urljoin(settings.route, 'api/gcode/upload'), api.gcode.upload);
+        app.put(urljoin(settings.route, 'api/gcode'), api.gcode.upload);
+        app.get(urljoin(settings.route, 'api/gcode'), api.gcode.download);
 
         // controllers
         app.get(urljoin(settings.route, 'api/controllers'), api.controllers.getActiveControllers);

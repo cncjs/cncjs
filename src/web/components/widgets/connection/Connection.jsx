@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import series from 'async/series';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import request from 'superagent';
@@ -177,30 +178,46 @@ class Connection extends React.Component {
         });
         controller.openPort(port, baudrate);
 
-        request
-            .get('/api/controllers')
-            .end((err, res) => {
-                if (err || !res.ok) {
-                    return;
-                }
+        series([
+            (next) => {
+                request
+                    .get('/api/gcode')
+                    .query({ port: port })
+                    .end((err, res) => {
+                        if (err || !res.ok) {
+                            next();
+                            return;
+                        }
 
-                const portData = _.find(res.body, { port });
-                if (!portData) {
-                    return;
-                }
+                        const { gcode } = res.body;
+                        if (gcode) {
+                            pubsub.publish('gcode:load', gcode);
+                        }
 
-                log.debug(portData);
+                        next();
+                    });
+            },
+            (next) => {
+                request
+                    .get('/api/controllers')
+                    .end((err, res) => {
+                        if (err || !res.ok) {
+                            next();
+                            return;
+                        }
 
-                const gcode = _.get(portData, 'gcode.data');
-                if (gcode) {
-                    pubsub.publish('gcode:load', gcode);
-                }
+                        const data = _.find(res.body, { port });
+                        if (data) {
+                            const workflowState = _.get(data, 'workflowState');
+                            if (workflowState) {
+                                pubsub.publish('workflowState', workflowState);
+                            }
+                        }
 
-                const workflowState = _.get(portData, 'workflowState');
-                if (workflowState) {
-                    pubsub.publish('workflowState', workflowState);
-                }
-            });
+                        next();
+                    });
+            }
+        ]);
     }
     closePort(port = this.state.port) {
         // Close port
