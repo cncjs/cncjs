@@ -17,8 +17,10 @@ class CNCController {
         'tinyg:state': []
     };
     controller = {
-        type: 'Grbl',
-        state: {} // FIXME: Grbl or TinyG defaults
+        grbl: {
+        },
+        tinyg: {
+        }
     };
     workflowState = WORKFLOW_STATE_UNKNOWN; // FIXME
 
@@ -30,12 +32,10 @@ class CNCController {
         Object.keys(this.callbacks).forEach((eventName) => {
             socket.on(eventName, (...args) => {
                 if (eventName === 'grbl:state') {
-                    this.controller.type = 'Grbl';
-                    this.controller.state = args[0];
+                    this.controller.grbl = args[0];
                 }
                 if (eventName === 'tinyg:state') {
-                    this.controller.type = 'TinyG';
-                    this.controller.state = args[0];
+                    this.controller.tinyg = args[0];
                 }
 
                 this.callbacks[eventName].forEach((callback) => {
