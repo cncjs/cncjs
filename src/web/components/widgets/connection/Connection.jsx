@@ -8,9 +8,6 @@ import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import controller from '../../../lib/controller';
 import store from '../../../store';
-import {
-    WORKFLOW_STATE_RUNNING
-} from '../../../constants';
 
 class Connection extends React.Component {
     state = {
@@ -194,16 +191,14 @@ class Connection extends React.Component {
 
                 log.debug(portData);
 
-                const isRunning = _.get(portData, 'state.isRunning');
-                const gcode = _.get(portData, 'gcode.gcode');
-
+                const gcode = _.get(portData, 'gcode.data');
                 if (gcode) {
                     pubsub.publish('gcode:load', gcode);
                 }
 
-                // TODO: Check paused and idle state as well
-                if (isRunning) {
-                    pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
+                const workflowState = _.get(portData, 'workflowState');
+                if (workflowState) {
+                    pubsub.publish('workflowState', workflowState);
                 }
             });
     }
