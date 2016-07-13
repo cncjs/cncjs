@@ -383,7 +383,7 @@ class Grbl extends events.EventEmitter {
         if (type === GrblLineParserResultStatus) {
             if (!_.isEqual(this.state.status, payload)) {
                 this.emit('statuschange', payload);
-                this.state = {
+                this.state = { // enforce state change
                     ...this.state,
                     status: {
                         ...this.state.status,
@@ -409,7 +409,7 @@ class Grbl extends events.EventEmitter {
         if (type === GrblLineParserResultParserState) {
             if (!_.isEqual(this.state.parserstate, payload)) {
                 this.emit('parserstatechange', payload);
-                this.state = {
+                this.state = { // enforce state change
                     ...this.state,
                     parserstate: {
                         ...this.state.parserstate,
@@ -423,7 +423,12 @@ class Grbl extends events.EventEmitter {
         if (type === GrblLineParserResultParameters) {
             this.emit('parameters', payload);
             const { name, value } = payload;
-            this.state.parameters[name] = value;
+            const { parameters } = this.state;
+            parameters[name] = value;
+            this.state = { // enforce state change
+                ...this.state,
+                parameters: parameters
+            };
             return;
         }
         if (type === GrblLineParserResultFeedback) {
@@ -433,7 +438,12 @@ class Grbl extends events.EventEmitter {
         if (type === GrblLineParserResultSettings) {
             this.emit('settings', payload);
             const { name, value } = payload;
-            this.state.settings[name] = value;
+            const { settings } = this.state;
+            settings[name] = value;
+            this.state = { // enforce state change
+                ...this.state,
+                settings: settings
+            };
             return;
         }
         if (type === GrblLineParserResultStartup) {
