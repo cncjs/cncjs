@@ -116,7 +116,7 @@ class GCodeStats extends Component {
                 this.setState({
                     startTime: 0,
                     duration: 0,
-                    box: {
+                    bbox: {
                         min: {
                             x: 0,
                             y: 0,
