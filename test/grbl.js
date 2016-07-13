@@ -190,36 +190,36 @@ test('GrblLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) =
     ];
     const grbl = new Grbl();
     let i = 0;
-    grbl.on('parameters', ({ raw, ...full }) => {
+    grbl.on('parameters', ({ name, value, raw }) => {
         if (i < lines.length) {
             t.equal(raw, lines[i]);
         }
-        if (full.G54) {
-            t.same(full.G54, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G54') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
-        if (full.G55) {
-            t.same(full.G55, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G55') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
-        if (full.G56) {
-            t.same(full.G56, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G56') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
-        if (full.G57) {
-            t.same(full.G57, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G57') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
-        if (full.G58) {
-            t.same(full.G58, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G58') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
-        if (full.G59) {
-            t.same(full.G59, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G59') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
-        if (full.G28) {
-            t.same(full.G28, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G28') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
-        if (full.G30) {
-            t.same(full.G30, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G30') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
-        if (full.G92) {
-            t.same(full.G92, { x: '0.000', y: '0.000', z: '0.000' });
+        if (name === 'G92') {
+            t.same(value, { x: '0.000', y: '0.000', z: '0.000' });
         }
 
         ++i;
@@ -235,9 +235,10 @@ test('GrblLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) =
 
 test('GrblLineParserResultParameters:TLO', (t) => {
     const grbl = new Grbl();
-    grbl.on('parameters', ({ TLO, raw }) => {
+    grbl.on('parameters', ({ name, value, raw }) => {
         t.equal(raw, '[TLO:0.000]');
-        t.same(TLO, { value: '0.000' });
+        t.equal(name, 'TLO');
+        t.equal(value, '0.000');
         t.end();
     });
 
@@ -246,9 +247,10 @@ test('GrblLineParserResultParameters:TLO', (t) => {
 
 test('GrblLineParserResultParameters:PRB', (t) => {
     const grbl = new Grbl();
-    grbl.on('parameters', ({ PRB, raw }) => {
+    grbl.on('parameters', ({ name, value, raw }) => {
         t.equal(raw, '[PRB:0.000,0.000,1.492:1]');
-        t.same(PRB, {
+        t.equal(name, 'PRB');
+        t.same(value, {
             result: 1,
             x: '0.000',
             y: '0.000',
