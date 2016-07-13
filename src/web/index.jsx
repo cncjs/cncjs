@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import async from 'async';
+import series from 'async/series';
 import Uri from 'jsuri';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -29,7 +29,7 @@ const queryparams = ((qs) => {
     return obj;
 })(window.root.location.search) || {};
 
-async.series([
+series([
     (next) => {
         const level = queryparams.log_level || settings.log.level;
         const logger = queryparams.log_logger || settings.log.logger;
