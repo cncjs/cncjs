@@ -47,7 +47,7 @@ class GrblController {
     // G-code sender
     sender = null;
 
-    // Workflow
+    // Workflow state
     workflowState = WORKFLOW_STATE_IDLE;
 
     constructor(port, baudrate) {
@@ -348,6 +348,11 @@ class GrblController {
     }
     addConnection(socket) {
         this.connections.push(new Connection(socket));
+
+        if (!_.isEmpty(this.state)) {
+            // Send current state to the connected client
+            socket.emit('grbl:state', this.state);
+        }
     }
     removeConnection(socket) {
         const index = _.findIndex(this.connections, (c) => {

@@ -56,5 +56,15 @@ export const download = (req, res) => {
         return;
     }
 
-    res.send({ gcode: controller.sender.gcode });
+    res.send({
+        name: controller.sender.name,
+        data: controller.sender.gcode,
+        size: controller.sender.gcode.length,
+        remain: controller.sender.remain.length,
+        sent: controller.sender.sent.length,
+        total: controller.sender.total,
+        createdTime: controller.sender.createdTime,
+        startedTime: controller.sender.startedTime,
+        finishedTime: controller.sender.finishedTime
+    });
 };

@@ -178,46 +178,57 @@ class Connection extends React.Component {
         });
         controller.openPort(port, baudrate);
 
+        let isReady = false;
+        let workflowState = '';
+        let gcode = '';
+
         series([
-            (next) => {
-                request
-                    .get('/api/gcode')
-                    .query({ port: port })
-                    .end((err, res) => {
-                        if (err || !res.ok) {
-                            next();
-                            return;
-                        }
-
-                        const { gcode } = res.body;
-                        if (gcode) {
-                            pubsub.publish('gcode:load', gcode);
-                        }
-
-                        next();
-                    });
-            },
             (next) => {
                 request
                     .get('/api/controllers')
                     .end((err, res) => {
-                        if (err || !res.ok) {
+                        if (err || res.err) {
                             next();
                             return;
                         }
 
                         const data = _.find(res.body, { port });
                         if (data) {
-                            const workflowState = _.get(data, 'workflowState');
-                            if (workflowState) {
-                                pubsub.publish('workflowState', workflowState);
-                            }
+                            isReady = data.ready;
+                            workflowState = _.get(data, 'workflowState');
                         }
 
                         next();
                     });
+            },
+            (next) => {
+                if (!isReady) {
+                    next();
+                    return;
+                }
+
+                request
+                    .get('/api/gcode')
+                    .query({ port: port })
+                    .end((err, res) => {
+                        if (err || res.err) {
+                            next();
+                            return;
+                        }
+
+                        gcode = res.body.data || '';
+
+                        next();
+                    });
             }
-        ]);
+        ], (err, results) => {
+            if (workflowState) {
+                pubsub.publish('workflowState', workflowState);
+            }
+            if (gcode) {
+                pubsub.publish('gcode:load', gcode);
+            }
+        });
     }
     closePort(port = this.state.port) {
         // Close port

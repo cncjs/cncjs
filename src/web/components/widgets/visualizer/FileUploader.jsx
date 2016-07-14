@@ -68,7 +68,7 @@ class FileUploader extends React.Component {
                 .end((err, res) => {
                     this.stopWaiting();
 
-                    if (err || !res.ok) {
+                    if (err || res.err) {
                         this.setState({ isUploading: false });
                         log.error('Failed to upload file', err, res);
                         return;
