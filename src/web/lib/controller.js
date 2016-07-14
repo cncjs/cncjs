@@ -31,6 +31,8 @@ class CNCController {
 
         Object.keys(this.callbacks).forEach((eventName) => {
             socket.on(eventName, (...args) => {
+                log.debug('socket.on("' + eventName + '"):', args);
+
                 if (eventName === 'grbl:state') {
                     this.controller.grbl = args[0];
                 }
