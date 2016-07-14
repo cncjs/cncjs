@@ -3,21 +3,21 @@
 /* eslint max-len: 0 */
 import path from 'path';
 import _ from 'lodash';
-import GitHub from 'github';
+import GitHubApi from 'github';
 import program from 'commander';
 import pkg from './package.json';
 
 program
     .version(pkg.version)
     .option('-T, --token <token>', 'OAuth2 token')
-    .option('-o, --owner <owner>', 'owner')
+    .option('-u, --user <user>', 'user')
     .option('-r, --repo <repo>', 'repo')
     .option('-t, --tag <tag>', 'tag')
     .option('-n, --name <name>', 'name')
     .option('-b, --body <body>', 'body', false)
     .parse(process.argv);
 
-const github = new GitHub({
+const github = new GitHubApi({
     version: '3.0.0',
     timeout: 5000,
     headers: {
@@ -31,9 +31,9 @@ github.authenticate({
     token: program.token || process.env.GITHUB_TOKEN
 });
 
-const listReleases = (options) => {
+const getReleaseByTag = (options) => {
     return new Promise((resolve, reject) => {
-        github.releases.listReleases(options, (err, res) => {
+        github.repos.getReleaseByTag(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
@@ -41,7 +41,7 @@ const listReleases = (options) => {
 
 const createRelease = (options) => {
     return new Promise((resolve, reject) => {
-        github.releases.createRelease(options, (err, res) => {
+        github.repos.createRelease(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
@@ -49,7 +49,7 @@ const createRelease = (options) => {
 
 const editRelease = (options) => {
     return new Promise((resolve, reject) => {
-        github.releases.editRelease(options, (err, res) => {
+        github.repos.editRelease(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
@@ -57,7 +57,7 @@ const editRelease = (options) => {
 
 const listAssets = (options) => {
     return new Promise((resolve, reject) => {
-        github.releases.listAssets(options, (err, res) => {
+        github.repos.listAssets(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
@@ -65,7 +65,7 @@ const listAssets = (options) => {
 
 const deleteAsset = (options) => {
     return new Promise((resolve, reject) => {
-        github.releases.deleteAsset(options, (err, res) => {
+        github.repos.deleteAsset(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
@@ -73,28 +73,26 @@ const deleteAsset = (options) => {
 
 const uploadAsset = (options) => {
     return new Promise((resolve, reject) => {
-        github.releases.uploadAsset(options, (err, res) => {
+        github.repos.uploadAsset(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
 };
 
 const main = async () => {
-    const { owner, repo, tag, name, body } = program;
+    const { user, repo, tag, name, body } = program;
 
     try {
-        console.log('> releases#listReleases');
-        let releases = await listReleases({
-            owner: owner,
-            repo: repo
+        console.log('> releases#getReleaseByTag');
+        let release = await getReleaseByTag({
+            user: user,
+            repo: repo,
+            tag: tag
         });
-        console.log('releases=%d', releases.length);
-
-        let release = _.find(releases, { tag_name: tag });
         if (!release) {
             console.log('> releases#createRelease');
             release = await createRelease({
-                owner: owner,
+                user: user,
                 repo: repo,
                 tag_name: tag,
                 name: name || tag,
@@ -104,7 +102,7 @@ const main = async () => {
         } else if (release.body !== body) {
             console.log('> releases#editRelease');
             let releaseOptions = {
-                owner: owner,
+                user: user,
                 repo: repo,
                 id: release.id,
                 tag_name: tag,
@@ -119,7 +117,7 @@ const main = async () => {
 
         console.log('> releases#listAssets');
         let assets = await listAssets({
-            owner: owner,
+            user: user,
             repo: repo,
             id: release.id
         });
@@ -170,7 +168,7 @@ const main = async () => {
                     updated_at: asset.updated_at
                 });
                 await deleteAsset({
-                    owner: owner,
+                    user: user,
                     repo: repo,
                     id: asset.id
                 });
@@ -183,11 +181,11 @@ const main = async () => {
                 const file = files[i];
                 console.log('#%d name="%s" filePath="%s"', i + 1, path.basename(file), file);
                 await uploadAsset({
-                    owner: owner,
+                    user: user,
                     repo: repo,
                     id: release.id,
-                    name: path.basename(file),
-                    filePath: file
+                    filePath: file,
+                    name: path.basename(file)
                 });
             }
         }
