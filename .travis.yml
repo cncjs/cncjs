@@ -88,7 +88,7 @@ after_success:
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- \
-          --owner=cheton \
+          --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
@@ -110,7 +110,7 @@ after_success:
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- \
-          --owner=cheton \
+          --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
@@ -132,7 +132,7 @@ after_success:
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- \
-          --owner=cheton \
+          --user=cheton \
           --repo=cnc \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
