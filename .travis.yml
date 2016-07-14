@@ -77,14 +77,14 @@ after_success:
   - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
-    # build:osx-x64
+    # build:mac-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       # https://github.com/electron-userland/electron-builder/issues/398
       security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign;
-      npm run build:osx-x64;
+      npm run build:mac-x64;
       ls -al output output/*;
-      cp -af "output/osx/${RELEASE}.dmg" "releases/${RELEASE}-osx-x64.dmg";
-      cp -af "output/osx/${RELEASE}-mac.zip" "releases/${RELEASE}-osx-x64.zip";
+      cp -af "output/mac/${RELEASE}.dmg" "releases/${RELEASE}-mac-x64.dmg";
+      cp -af "output/mac/${RELEASE}-mac.zip" "releases/${RELEASE}-mac-x64.zip";
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- \
@@ -93,7 +93,7 @@ after_success:
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
-          "releases/${RELEASE}-osx-x64.dmg" "releases/${RELEASE}-osx-x64.zip";
+          "releases/${RELEASE}-mac-x64.dmg" "releases/${RELEASE}-mac-x64.zip";
       fi
     fi
   - |
