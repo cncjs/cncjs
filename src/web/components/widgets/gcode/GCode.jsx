@@ -58,7 +58,7 @@ class GCode extends React.Component {
                 finishedTime
             });
         },
-        'grbl:state': (state) => {
+        'Grbl:state': (state) => {
             const { parserstate } = { ...state };
             let units = this.state.units;
 
@@ -75,6 +75,8 @@ class GCode extends React.Component {
             if (this.state.units !== units) {
                 this.setState({ units: units });
             }
+        },
+        'TinyG2:state': (state) => { // TODO
         }
     };
     pubsubTokens = [];

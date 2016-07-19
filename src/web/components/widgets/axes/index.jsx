@@ -67,7 +67,7 @@ class AxesWidget extends Component {
     };
 
     controllerEvents = {
-        'grbl:state': (state) => {
+        'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
             const { activeState, machinePosition, workPosition } = status;
             let units = this.state.units;
@@ -92,6 +92,8 @@ class AxesWidget extends Component {
                 workPosition: workPosition,
                 customDistance: customDistance
             });
+        },
+        'TinyG2:state': (state) => { // TODO
         }
     };
     pubsubTokens = [];

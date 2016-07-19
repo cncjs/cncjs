@@ -2,14 +2,14 @@ import _ from 'lodash';
 import SerialPort from 'serialport';
 import log from '../../lib/log';
 import GCodeSender from '../../lib/gcode-sender';
-import TinyG from './tinyg';
+import Grbl from './Grbl';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from './constants';
 
-const PREFIX = '[TinyG]';
+const PREFIX = '[Grbl]';
 
 const noop = () => {};
 
@@ -22,7 +22,9 @@ class Connection {
     }
 }
 
-class TinyGController {
+class GrblController {
+    name = 'Grbl';
+
     // Connections
     connections = [];
 
@@ -33,10 +35,16 @@ class TinyGController {
     };
     serialport = null;
 
-    // TinyG
+    // Grbl
+    grbl = null;
     ready = false;
-    tinyg = null;
     state = {};
+    queryTimer = null;
+    queryResponse = {
+        status: false,
+        parserstate: false,
+        parserstateEnd: false
+    };
 
     // G-code sender
     sender = null;
@@ -44,8 +52,14 @@ class TinyGController {
     // Workflow state
     workflowState = WORKFLOW_STATE_IDLE;
 
-    constructor(port, baudrate) {
-        this.options = _.merge({}, this.options, { port: port, baudrate: baudrate });
+    constructor(port, options) {
+        const { baudrate } = { ...options };
+
+        this.options = {
+            ...this.options,
+            port: port,
+            baudrate: baudrate
+        };
 
         // SerialPort
         this.serialport = new SerialPort(this.options.port, {
@@ -65,84 +79,185 @@ class TinyGController {
             let { gcode = '' } = { ...res };
             gcode = ('' + gcode).trim();
             if (gcode.length > 0) {
-                this.serialport.write(JSON.stringify({ gc: gcode }) + '\n');
+                this.serialport.write(gcode + '\n');
             }
         });
 
-        // TinyG
-        this.tinyg = new TinyG(this.serialport);
+        // Grbl
+        this.grbl = new Grbl(this.serialport);
 
-        this.tinyg.on('sr', (res) => {
+        this.grbl.on('raw', (res) => {});
+
+        this.grbl.on('status', (res) => {
+            this.queryResponse.status = false;
+
             this.connections.forEach((c) => {
-                c.socket.emit('tinyg:sr', res);
+                c.socket.emit('Grbl:status', res);
+
+                if (c.sentCommand.indexOf('?') === 0) {
+                    c.sentCommand = '';
+                    c.socket.emit('serialport:read', res.raw);
+                }
             });
         });
-        this.tinyg.on('srchange', (res) => {});
 
-        this.tinyg.on('raw', (res) => {
+        this.grbl.on('ok', (res) => {
+            if (this.queryResponse.parserstateEnd) {
+                this.connections.forEach((c) => {
+                    if (c.sentCommand.indexOf('$G') === 0) {
+                        c.sentCommand = '';
+                        c.socket.emit('serialport:read', res.raw);
+                    }
+                });
+                this.queryResponse.parserstateEnd = false;
+                return;
+            }
+
+            if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                this.sender.next();
+                return;
+            }
+
             this.connections.forEach((c) => {
                 c.socket.emit('serialport:read', res.raw);
             });
         });
+
+        this.grbl.on('error', (res) => {
+            if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                const length = this.sender.sent.length;
+                if (length > 0) {
+                    const lastDataSent = this.sender.sent[length - 1];
+                    const msg = '> (' + length + ') ' + lastDataSent;
+                    this.connections.forEach((c) => {
+                        c.socket.emit('serialport:read', msg);
+                    });
+                }
+
+                this.sender.next();
+            }
+
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('alarm', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('parserstate', (res) => {
+            this.queryResponse.parserstate = false;
+            this.queryResponse.parserstateEnd = true; // wait for ok response
+
+            this.connections.forEach((c) => {
+                c.socket.emit('Grbl:parserstate', res);
+
+                if (c.sentCommand.indexOf('$G') === 0) {
+                    c.socket.emit('serialport:read', res.raw);
+                }
+            });
+        });
+
+        this.grbl.on('parameters', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('feedback', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('settings', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('startup', (res) => {
+            this.ready = true;
+            this.queryResponse.status = false;
+            this.queryResponse.parserstate = false;
+            this.queryResponse.parserstateEnd = false;
+
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.grbl.on('others', (res) => {
+            this.connections.forEach((c) => {
+                c.socket.emit('serialport:read', res.raw);
+            });
+        });
+
+        this.queryTimer = setInterval(() => {
+            if (this.isClose()) {
+                // Serial port is closed
+                return;
+            }
+
+            if (!(this.ready)) {
+                // The Grbl is not ready yet
+                return;
+            }
+
+            if (this.state !== this.grbl.state) {
+                this.state = this.grbl.state;
+                this.connections.forEach((c) => {
+                    c.socket.emit('Grbl:state', this.state);
+                });
+            }
+
+            // ? - Current Status
+            if (!(this.queryResponse.status)) {
+                this.queryResponse.status = true;
+                this.serialport.write('?');
+            }
+
+            // $G - Parser State
+            if (!(this.queryResponse.parserstate) && !(this.queryResponse.parserstateEnd)) {
+                this.queryResponse.parserstate = true;
+                this.queryResponse.parserstateEnd = false;
+                this.serialport.write('$G\n');
+            }
+
+            // Detect for any G-code status changes
+            if (this.sender.peek()) {
+                this.connections.forEach((c) => {
+                    c.socket.emit('gcode:statuschange', {
+                        'remain': this.sender.remain.length,
+                        'sent': this.sender.sent.length,
+                        'total': this.sender.total,
+                        'createdTime': this.sender.createdTime,
+                        'startedTime': this.sender.startedTime,
+                        'finishedTime': this.sender.finishedTime
+                    });
+                });
+            }
+        }, 250);
     }
     destroy() {
-        if (this.tinyg) {
-            this.tinyg.removeAllListeners();
-            this.tinyg = null;
+        if (this.queryTimer) {
+            clearInterval(this.queryTimer);
+            this.queryTimer = null;
+        }
+
+        if (this.grbl) {
+            this.grbl.removeAllListeners();
+            this.grbl = null;
         }
     }
     init(callback = noop) {
-        const cmds = [
-            { cmd: '?', pauseAfter: 150 },
-            { cmd: '{"js":1}', pauseAfter: 150 },
-            { cmd: '{"sr":null}' },
-            { cmd: '{"sv":1}', pauseAfter: 50 },
-            { cmd: '{"si":250}', pauseAfter: 50 },
-            { cmd: '{"qr":null}' },
-            { cmd: '{"qv":1}', pauseAfter: 50 },
-            { cmd: '{"ec":0}', pauseAfter: 50 },
-            { cmd: '{"jv":4}', pauseAfter: 50 },
-            { cmd: '{"hp":null}' },
-            { cmd: '{"fb":null}' },
-            { cmd: '{"mt":n}' },
-            {
-                cmd: JSON.stringify({
-                    sr: {
-                        line: true,
-                        posx: true,
-                        posy: true,
-                        posz: true,
-                        vel: true,
-                        unit: true,
-                        stat: true,
-                        feed: true,
-                        coor: true,
-                        momo: true,
-                        plan: true,
-                        path: true,
-                        dist: true,
-                        mpox: true,
-                        mpoy: true,
-                        mpoz: true
-                    }
-                }),
-                pauseAfter: 250
-            }
-        ];
+        // Reset Grbl while opening serial port
+        this.command(null, 'reset');
 
-        const sendInitCommands = (i = 0) => {
-            if (i >= cmds.length) {
-                this.ready = true;
-                callback();
-                return;
-            }
-            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
-            this.serialport.write(cmd + '\n');
-            setTimeout(() => {
-                sendInitCommands(i + 1);
-            }, pauseAfter);
-        };
-        sendInitCommands();
+        callback();
     }
     get status() {
         return {
@@ -151,7 +266,7 @@ class TinyGController {
             connections: _.size(this.connections),
             ready: this.ready,
             controller: {
-                type: 'TinyG',
+                name: this.name,
                 state: this.state
             },
             workflowState: this.workflowState,
@@ -170,6 +285,9 @@ class TinyGController {
     reset() {
         this.ready = false;
         this.workflowState = WORKFLOW_STATE_IDLE;
+        this.queryResponse.status = false;
+        this.queryResponse.parserstate = false;
+        this.queryResponse.parserstateEnd = false;
     }
     open(callback = noop) {
         const { port } = this.options;
@@ -187,8 +305,8 @@ class TinyGController {
             }
 
             this.serialport.on('data', (data) => {
-                this.tinyg.parse('' + data);
-                log.raw('silly', _.trimEnd('TinyG> ' + data));
+                this.grbl.parse('' + data);
+                log.raw('silly', _.trimEnd('Grbl> ' + data));
             });
 
             this.serialport.on('disconnect', (err) => {
@@ -222,7 +340,7 @@ class TinyGController {
             return;
         }
 
-        // Reset TinyG while closing serial port
+        // Reset Grbl while closing serial port
         this.command(null, 'reset');
 
         this.serialport.close((err) => {
@@ -241,7 +359,7 @@ class TinyGController {
 
         if (!_.isEmpty(this.state)) {
             // Send current state to the connected client
-            socket.emit('tinyg:state', this.state);
+            socket.emit('Grbl:state', this.state);
         }
     }
     removeConnection(socket) {
@@ -268,8 +386,6 @@ class TinyGController {
                 });
             },
             'unload': () => {
-                log.debug(`${PREFIX} Unload G-code: name="${this.sender.name}"`);
-
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 this.sender.unload();
             },
@@ -300,7 +416,10 @@ class TinyGController {
                 this.write(socket, '\x18');
             },
             'homing': () => {
-                this.writeln(socket, 'G28.2 X0 Y0 Z0 A0');
+                this.writeln(socket, '$H');
+            },
+            'unlock': () => {
+                this.writeln(socket, '$X');
             }
         }[cmd];
 
@@ -320,11 +439,11 @@ class TinyGController {
             this.connections[index].sentCommand = data;
         }
         this.serialport.write(data);
-        log.raw('silly', _.trimEnd('TinyG> ' + data));
+        log.raw('silly', _.trimEnd('Grbl> ' + data));
     }
     writeln(socket, data) {
         this.write(socket, data + '\n');
     }
 }
 
-export default TinyGController;
+export default GrblController;

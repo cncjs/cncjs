@@ -5,7 +5,7 @@ import socketIO from 'socket.io';
 import store from './store';
 import log from './lib/log';
 import settings from './config/settings';
-import GrblController from './controllers/grbl';
+import { GrblController, TinyG2Controller } from './controllers';
 
 const PREFIX = '[cncserver]';
 const ALLOWED_IP_RANGES = [
@@ -115,19 +115,29 @@ class CNCServer {
             });
 
             // Open serial port
-            socket.on('open', (port, baudrate) => {
-                log.debug(`${PREFIX} socket.open("${port}", ${baudrate}): id=${socket.id}`);
+            socket.on('open', (port, options) => {
+                log.debug(`${PREFIX} socket.open("${port}", ${JSON.stringify(options)}): id=${socket.id}`);
 
                 let controller = this.controllers[port];
                 if (!controller) {
-                    controller = new GrblController(port, baudrate);
+                    const { baudrate } = { ...options };
+
+                    if (options.controller === 'Grbl') {
+                        controller = new GrblController(port, { baudrate });
+                    } else if (options.controller === 'TinyG2') {
+                        controller = new TinyG2Controller(port, { baudrate });
+                    } else {
+                        throw new Error('Controller not found: ' + options.controller);
+                    }
                 }
 
+                controller.addConnection(socket);
+
                 if (controller.isOpen()) {
-                    controller.addConnection(socket);
                     socket.emit('serialport:open', {
                         port: port,
-                        baudrate: baudrate,
+                        baudrate: controller.options.baudrate,
+                        controller: controller.name,
                         inuse: true
                     });
                     return;
@@ -146,10 +156,10 @@ class CNCServer {
 
                     store.set('controllers["' + port + '"]', controller);
 
-                    controller.addConnection(socket);
                     socket.emit('serialport:open', {
                         port: port,
-                        baudrate: baudrate,
+                        baudrate: controller.options.baudrate,
+                        controller: controller.name,
                         inuse: true
                     });
                 });

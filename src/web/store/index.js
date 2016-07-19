@@ -51,6 +51,7 @@ const defaultState = {
             }
         },
         connection: {
+            controller: 'Grbl', // Grbl or TinyG2
             port: '',
             baudrate: 115200,
             autoReconnect: true

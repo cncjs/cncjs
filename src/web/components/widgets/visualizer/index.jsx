@@ -12,13 +12,15 @@ import './index.styl';
 
 class VisualizerWidget extends Component {
     controllerEvents = {
-        'grbl:state': (state) => {
+        'Grbl:state': (state) => {
             const { status } = { ...state };
             const { activeState } = status;
 
             if (this.state.activeState !== activeState) {
                 this.setState({ activeState: activeState });
             }
+        },
+        'TinyG2:state': (state) => { // TODO
         }
     };
     pubsubTokens = [];

@@ -72,7 +72,7 @@ const lookupGCodeDefinition = (word) => {
 
 class Grbl extends React.Component {
     controllerEvents = {
-        'grbl:state': (state) => {
+        'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
             const { activeState } = status;
 
@@ -80,6 +80,8 @@ class Grbl extends React.Component {
                 activeState: activeState,
                 parserstate: parserstate
             });
+        },
+        'TinyG2:state': (state) => { // TODO
         }
     };
     pubsubTokens = [];

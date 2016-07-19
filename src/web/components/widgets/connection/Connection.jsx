@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import series from 'async/series';
 import pubsub from 'pubsub-js';
 import React from 'react';
@@ -25,6 +26,7 @@ class Connection extends React.Component {
             4800,
             2400
         ],
+        controller: store.get('widgets.connection.controller'),
         port: controller.port,
         baudrate: store.get('widgets.connection.baudrate'),
         autoReconnect: store.get('widgets.connection.autoReconnect'),
@@ -50,15 +52,19 @@ class Connection extends React.Component {
                 const { autoReconnect, hasReconnected } = this.state;
 
                 if (autoReconnect && !hasReconnected) {
+                    const { baudrate } = this.state;
+
                     this.setState({ hasReconnected: true });
-                    this.openPort(port);
+                    this.openPort(port, {
+                        baudrate: baudrate
+                    });
                 }
             } else {
                 this.setState({ ports: ports });
             }
         },
         'serialport:open': (options) => {
-            const { port, baudrate, inuse } = options;
+            const { controller, port, baudrate, inuse } = options;
             const ports = _.map(this.state.ports, (o) => {
                 if (o.port !== port) {
                     return o;
@@ -69,17 +75,18 @@ class Connection extends React.Component {
 
             this.clearAlert();
 
-            pubsub.publish('port', port);
-
             // save the port
             store.set('widgets.connection.port', port);
+
+            pubsub.publish('port', port);
 
             this.setState({
                 connecting: false,
                 connected: true,
-                port,
-                baudrate,
-                ports
+                controller: controller, // Grbl or TinyG2
+                port: port,
+                baudrate: baudrate,
+                ports: ports
             });
 
             log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
@@ -172,11 +179,17 @@ class Connection extends React.Component {
         controller.listAllPorts();
         this.startLoading();
     }
-    openPort(port = this.state.port, baudrate = this.state.baudrate) {
+    openPort(port, options) {
+        const { baudrate } = { ...options };
+
         this.setState({
             connecting: true
         });
-        controller.openPort(port, baudrate);
+
+        controller.openPort(port, {
+            controller: this.state.controller,
+            baudrate: baudrate
+        });
 
         let isReady = false;
         let workflowState = '';
@@ -242,6 +255,10 @@ class Connection extends React.Component {
 
         // Refresh ports
         controller.listAllPorts();
+    }
+    changeController(controller) {
+        this.setState({ controller: controller });
+        store.set('widgets.connection.controller', controller);
     }
     changePortOption(option) {
         this.setState({
@@ -332,6 +349,7 @@ class Connection extends React.Component {
         const notConnecting = !connecting;
         const notConnected = !connected;
         const canRefresh = notLoading && notConnected;
+        const canChangeController = notLoading && notConnected;
         const canChangePort = notLoading && notConnected;
         const canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(port)));
         const canOpenPort = port && baudrate && notConnecting && notConnected;
@@ -340,6 +358,40 @@ class Connection extends React.Component {
         return (
             <div>
                 <Alert msg={alertMessage} dismiss={::this.clearAlert} />
+                <div className="form-group">
+                    <div className="input-group input-group-xs">
+                        <div className="input-group-btn">
+                            <button
+                                type="button"
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': this.state.controller === 'Grbl' }
+                                )}
+                                disabled={!canChangeController}
+                                onClick={() => {
+                                    this.changeController('Grbl');
+                                }}
+                            >
+                                &nbsp;Grbl&nbsp;
+                            </button>
+                            <button
+                                type="button"
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': this.state.controller === 'TinyG2' }
+                                )}
+                                disabled={!canChangeController}
+                                onClick={() => {
+                                    this.changeController('TinyG2');
+                                }}
+                            >
+                                &nbsp;TinyG2&nbsp;
+                            </button>
+                        </div>
+                    </div>
+                </div>
                 <div className="form-group">
                     <label className="control-label">{i18n._('Port')}</label>
                     <div className="input-group input-group-sm">
@@ -412,7 +464,9 @@ class Connection extends React.Component {
                             className="btn btn-primary"
                             disabled={!canOpenPort}
                             onClick={() => {
-                                this.openPort(port, baudrate);
+                                this.openPort(port, {
+                                    baudrate: baudrate
+                                });
                             }}
                         >
                             <i className="fa fa-toggle-off"></i>&nbsp;{i18n._('Open')}

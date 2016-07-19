@@ -13,16 +13,21 @@ class CNCController {
         'serialport:read': [],
         'serialport:write': [],
         'gcode:statuschange': [],
-        'grbl:state': [],
-        'tinyg:state': []
+        'Grbl:state': [],
+        'TinyG2:state': []
     };
-    controller = {
-        grbl: {
-        },
-        tinyg: {
-        }
-    };
+
     workflowState = WORKFLOW_STATE_UNKNOWN; // FIXME
+
+    // Grbl
+    Grbl = {
+        state: {}
+    };
+
+    // TinyG2
+    TinyG2 = {
+        state: {}
+    };
 
     constructor() {
         pubsub.subscribe('port', (msg, port) => {
@@ -33,11 +38,11 @@ class CNCController {
             socket.on(eventName, (...args) => {
                 log.debug('socket.on("' + eventName + '"):', args);
 
-                if (eventName === 'grbl:state') {
-                    this.controller.grbl = args[0];
+                if (eventName === 'Grbl:state') {
+                    this.Grbl.state = args[0];
                 }
-                if (eventName === 'tinyg:state') {
-                    this.controller.tinyg = args[0];
+                if (eventName === 'TinyG2:state') {
+                    this.TinyG2.state = args[0];
                 }
 
                 this.callbacks[eventName].forEach((callback) => {
@@ -66,8 +71,8 @@ class CNCController {
             callbacks.splice(callbacks.indexOf(callback), 1);
         }
     }
-    openPort(port, baudrate) {
-        socket.emit('open', port, baudrate);
+    openPort(port, options) {
+        socket.emit('open', port, options);
     }
     closePort(port) {
         socket.emit('close', port);

@@ -51,7 +51,7 @@ class Visualizer extends React.Component {
             const frameIndex = data.sent;
             this.gcodeVisualizer.setFrameIndex(frameIndex);
         },
-        'grbl:state': (state) => {
+        'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
             const { activeState, workPosition } = status;
 
@@ -82,6 +82,8 @@ class Visualizer extends React.Component {
 
             // Update the scene
             this.updateScene();
+        },
+        'TinyG2:state': (state) => { // TODO
         }
     };
     storeEventListener = () => {

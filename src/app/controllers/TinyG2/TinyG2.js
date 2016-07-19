@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import events from 'events';
 
-class TinyGParser {
+class TinyG2Parser {
     parse(data) {
         const parsers = [
-            TinyGParserResultStatusReports
+            TinyG2ParserResultStatusReports
         ];
 
         for (let parser of parsers) {
@@ -24,7 +24,7 @@ class TinyGParser {
     }
 }
 
-class TinyGParserResultStatusReports {
+class TinyG2ParserResultStatusReports {
     static parse(data) {
         const sr = _.get(data, 'r.sr') || _.get(data, 'sr');
         if (!sr) {
@@ -47,17 +47,17 @@ class TinyGParserResultStatusReports {
         };
 
         return {
-            type: TinyGParserResultStatusReports,
+            type: TinyG2ParserResultStatusReports,
             payload: payload
         };
     }
 }
 
-class TinyG extends events.EventEmitter {
+class TinyG2 extends events.EventEmitter {
     state = {
         sr: {}
     };
-    parser = new TinyGParser();
+    parser = new TinyG2Parser();
 
     parse(data) {
         data = ('' + data).replace(/\s+$/, '');
@@ -77,7 +77,7 @@ class TinyG extends events.EventEmitter {
             const result = this.parser.parse(data) || {};
             const { type, payload } = result;
 
-            if (type === TinyGParserResultStatusReports) {
+            if (type === TinyG2ParserResultStatusReports) {
                 if (!_.isEqual(this.state.sr, payload)) {
                     this.emit('srchange', payload);
                     this.state = {
@@ -93,6 +93,6 @@ class TinyG extends events.EventEmitter {
 }
 
 export {
-    TinyGParser
+    TinyG2Parser
 };
-export default TinyG;
+export default TinyG2;

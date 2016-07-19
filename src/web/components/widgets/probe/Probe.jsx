@@ -16,7 +16,7 @@ import {
 
 class Probe extends React.Component {
     controllerEvents = {
-        'grbl:state': (state) => {
+        'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
             const { activeState } = status;
             let units = this.state.units;
@@ -58,6 +58,8 @@ class Probe extends React.Component {
                 tlo: tlo,
                 retractionDistance: retractionDistance
             });
+        },
+        'TinyG2:state': (state) => { // TODO
         }
     };
     unitsDidChange = false;
