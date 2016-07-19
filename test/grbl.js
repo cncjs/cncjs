@@ -1,6 +1,6 @@
 import { test } from 'tap';
 import trim from 'lodash/trim';
-import Grbl from '../src/app/controllers/grbl/grbl';
+import Grbl from '../src/app/controllers/Grbl/Grbl';
 
 // $10 - Status report mask:binary
 // Report Type      | Value
