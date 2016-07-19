@@ -23,6 +23,14 @@ export const GRBL_ACTIVE_STATES = [
     GRBL_ACTIVE_STATE_CHECK
 ];
 
+// Grbl Real-time Commands: ~, !, ?, and Ctrl-x
+export const GRBL_REALTIME_COMMANDS = [
+    '~', // Cycle Start
+    '!', // Feed Hold
+    '?', // Current Status
+    '\x18' // Reset Grbl (Ctrl-X)
+];
+
 // https://github.com/grbl/grbl/wiki/Configuring-Grbl-v0.9
 // http://linuxcnc.org/docs/html/gcode/overview.html#cap:modal-groups
 export const GRBL_MODAL_GROUPS = [

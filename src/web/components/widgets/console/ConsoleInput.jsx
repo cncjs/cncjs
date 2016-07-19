@@ -30,11 +30,7 @@ class ConsoleInput extends React.Component {
             return;
         }
 
-        if (_.includes(GRBL_REALTIME_COMMANDS, el.value)) {
-            controller.write(el.value);
-        } else {
-            controller.writeln(el.value);
-        }
+        controller.writeln(el.value);
 
         el.value = '';
     }

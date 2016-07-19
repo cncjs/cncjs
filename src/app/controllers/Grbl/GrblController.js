@@ -6,7 +6,8 @@ import Grbl from './Grbl';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
+    WORKFLOW_STATE_IDLE,
+    GRBL_REALTIME_COMMANDS
 } from './constants';
 
 const PREFIX = '[Grbl]';
@@ -442,7 +443,11 @@ class GrblController {
         log.raw('silly', _.trimEnd('Grbl> ' + data));
     }
     writeln(socket, data) {
-        this.write(socket, data + '\n');
+        if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
+            this.write(socket, data);
+        } else {
+            this.write(socket, data + '\n');
+        }
     }
 }
 
