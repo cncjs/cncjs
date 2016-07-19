@@ -27,6 +27,16 @@ A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) ru
 * Z-Probing
 
 ## Installation
+
+Node.js v4 or higher is recommended. You can install [nvm](https://github.com/creationix/nvm) to manage multiple Node.js versions.
+
+If you're using Node.js v4 or earlier versions, it's recommended that you use npm v3 to install packages. To upgrade, run:
+```bash
+npm install npm@latest -g
+```
+
+### Getting Started
+
 First, ensure you have `prefix=~/.npm` in  `~/.npmrc`. For example:
 ```bash
 $ echo "prefix=~/.npm" >> ~/.npmrc
@@ -39,7 +49,7 @@ Then, install `cncjs` without `sudo`, or the `serialport` module may not install
 $ npm install -g cncjs
 ```
 
-If you want to run it on Raspberry Pi with Raspbian Wheezy, be sure to [install gcc/g++ 4.8](https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/) before npm install.
+It's recommended that you run [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) on the RPi2 or RPi3. For Raspbian Wheezy, be sure to [install gcc/g++ 4.8](https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/) before npm install.
 
 Check out [wiki](https://github.com/cheton/cnc/wiki/Installation) for other installation methods.
 
