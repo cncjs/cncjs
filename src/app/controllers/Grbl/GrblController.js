@@ -8,7 +8,7 @@ import {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE,
     GRBL_REALTIME_COMMANDS
-} from './constants';
+} from '../../constants';
 
 const PREFIX = '[Grbl]';
 
@@ -24,7 +24,7 @@ class Connection {
 }
 
 class GrblController {
-    name = 'Grbl';
+    type = 'Grbl';
 
     // Connections
     connections = [];
@@ -93,8 +93,6 @@ class GrblController {
             this.queryResponse.status = false;
 
             this.connections.forEach((c) => {
-                c.socket.emit('Grbl:status', res);
-
                 if (c.sentCommand.indexOf('?') === 0) {
                     c.sentCommand = '';
                     c.socket.emit('serialport:read', res.raw);
@@ -154,8 +152,6 @@ class GrblController {
             this.queryResponse.parserstateEnd = true; // wait for ok response
 
             this.connections.forEach((c) => {
-                c.socket.emit('Grbl:parserstate', res);
-
                 if (c.sentCommand.indexOf('$G') === 0) {
                     c.socket.emit('serialport:read', res.raw);
                 }
@@ -204,7 +200,7 @@ class GrblController {
             }
 
             if (!(this.ready)) {
-                // The Grbl is not ready yet
+                // Not ready yet
                 return;
             }
 
@@ -267,7 +263,7 @@ class GrblController {
             connections: _.size(this.connections),
             ready: this.ready,
             controller: {
-                name: this.name,
+                type: this.type,
                 state: this.state
             },
             workflowState: this.workflowState,
@@ -421,6 +417,10 @@ class GrblController {
             },
             'unlock': () => {
                 this.writeln(socket, '$X');
+            },
+            'gcode': () => {
+                const gcode = args.join(' ');
+                this.writeln(socket, gcode);
             }
         }[cmd];
 

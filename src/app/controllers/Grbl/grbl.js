@@ -1,9 +1,8 @@
 import _ from 'lodash';
 import events from 'events';
 import {
-    GRBL_ACTIVE_STATE_UNKNOWN,
     GRBL_MODAL_GROUPS
-} from './constants';
+} from '../../constants';
 
 class GrblLineParser {
     parse(line) {
@@ -334,7 +333,7 @@ class GrblLineParserResultStartup {
 class Grbl extends events.EventEmitter {
     state = {
         status: {
-            activeState: GRBL_ACTIVE_STATE_UNKNOWN,
+            activeState: '',
             machinePosition: {
                 x: '0.000',
                 y: '0.000',
@@ -382,7 +381,6 @@ class Grbl extends events.EventEmitter {
 
         if (type === GrblLineParserResultStatus) {
             if (!_.isEqual(this.state.status, payload)) {
-                this.emit('statuschange', payload);
                 this.state = { // enforce state change
                     ...this.state,
                     status: {
@@ -408,7 +406,6 @@ class Grbl extends events.EventEmitter {
         }
         if (type === GrblLineParserResultParserState) {
             if (!_.isEqual(this.state.parserstate, payload)) {
-                this.emit('parserstatechange', payload);
                 this.state = { // enforce state change
                     ...this.state,
                     parserstate: {
