@@ -1,9 +1,14 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
+import controller from '../../../lib/controller';
 import Widget from '../../widget';
 import Grbl from './Grbl';
+import {
+    GRBL
+} from '../../../constants';
 import './index.styl';
 
 class GrblWidget extends Component {
@@ -14,13 +19,101 @@ class GrblWidget extends Component {
         onDelete: () => {}
     };
 
-    state = {
-        isCollapsed: false,
-        isFullscreen: false
-    };
+    controllerEvents = {
+        'Grbl:state': (state) => {
+            const { status, parserstate } = { ...state };
+            const { activeState } = status;
 
+            this.setState({
+                controller: {
+                    type: GRBL,
+                    activeState: activeState,
+                    parserstate: parserstate
+                }
+            });
+        }
+    };
+    pubsubTokens = [];
+
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
+    componentDidMount() {
+        this.subscribe();
+        this.addControllerEvents();
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+        this.removeControllerEvents();
+    }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
+    getDefaultState() {
+        return {
+            isCollapsed: false,
+            isFullscreen: false,
+            canClick: true, // Defaults to true
+            port: controller.port,
+            controller: {
+                type: controller.type,
+                activeState: '',
+                parserstate: {}
+            },
+            showGCode: false
+        };
+    }
+    subscribe() {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
+                }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
+        });
+    }
+    canClick() {
+        const { port } = this.state;
+        const { type } = this.state.controller;
+
+        if (!port) {
+            return false;
+        }
+        if (type !== GRBL) {
+            return false;
+        }
+
+        return true;
+    }
+    toggleDisplay() {
+        const { showGCode } = this.state;
+        this.setState({ showGCode: !showGCode });
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
@@ -28,6 +121,15 @@ class GrblWidget extends Component {
             widgetContent: classNames(
                 { hidden: isCollapsed }
             )
+        };
+
+        const state = {
+            ...this.state,
+            // Determine if the button is clickable
+            canClick: this.canClick()
+        };
+        const actions = {
+            toggleDisplay: ::this.toggleDisplay
         };
 
         return (
@@ -53,7 +155,10 @@ class GrblWidget extends Component {
                         </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content className={classes.widgetContent}>
-                        <Grbl />
+                        <Grbl
+                            state={state}
+                            actions={actions}
+                        />
                     </Widget.Content>
                 </Widget>
             </div>

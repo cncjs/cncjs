@@ -1,8 +1,6 @@
 import _ from 'lodash';
-import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
-import controller from '../../../lib/controller';
 import Toolbar from './Toolbar';
 
 const lookupGCodeDefinition = (word) => {
@@ -67,85 +65,20 @@ const lookupGCodeDefinition = (word) => {
     return (wordText[word] || word);
 };
 
-class Grbl extends React.Component {
-    controllerEvents = {
-        'Grbl:state': (state) => {
-            const { status, parserstate } = { ...state };
-            const { activeState } = status;
-
-            this.setState({
-                activeState: activeState,
-                parserstate: parserstate
-            });
-        }
+class Grbl extends Component {
+    static propTypes = {
+        state: PropTypes.object,
+        actions: PropTypes.object
     };
-    pubsubTokens = [];
 
-    constructor() {
-        super();
-        this.state = this.getDefaultState();
-    }
-    componentDidMount() {
-        this.subscribe();
-        this.addControllerEvents();
-    }
-    componentWillUnmount() {
-        this.unsubscribe();
-        this.removeControllerEvents();
-    }
     shouldComponentUpdate(nextProps, nextState) {
-        return ! _.isEqual(nextState, this.state);
-    }
-    getDefaultState() {
-        return {
-            port: controller.port,
-            activeState: '',
-            parserstate: {},
-            showGCode: false
-        };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    const defaultState = this.getDefaultState();
-                    this.setState({
-                        ...defaultState,
-                        port: ''
-                    });
-                }
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
-    addControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
-            controller.on(eventName, callback);
-        });
-    }
-    removeControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
-            controller.off(eventName, callback);
-        });
-    }
-    toggleDisplay() {
-        const { showGCode } = this.state;
-        this.setState({ showGCode: !showGCode });
+        return !_.isEqual(nextProps, this.props);
     }
     render() {
-        const { port, activeState, parserstate = {}, showGCode } = this.state;
+        const { state, actions } = this.props;
+        const { canClick, showGCode } = state;
+        const { type, activeState, parserstate = {} } = state.controller;
         const none = '–';
-        const canClick = !!port;
         let modal = parserstate.modal || {};
 
         if (!showGCode) {
@@ -154,8 +87,7 @@ class Grbl extends React.Component {
 
         return (
             <div>
-                <Toolbar port={port} />
-
+                <Toolbar {...this.props} />
                 <div className="parser-state">
                     <div className="row no-gutters">
                         <div className="col col-xs-12">
@@ -204,7 +136,7 @@ class Grbl extends React.Component {
                             <button
                                 type="button"
                                 className="btn btn-xs btn-default btn-toggle-display"
-                                onClick={::this.toggleDisplay}
+                                onClick={actions.toggleDisplay}
                                 disabled={!canClick}
                             >
                                 {i18n._('Toggle Display')}
