@@ -21,17 +21,17 @@ class GCodeTable extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return !_.isEqual(nextProps, this.props);
     }
     render() {
-        const rows = this.props.rows;
+        const { rows, scrollToRow } = this.props;
         const headerHeight = 32;
         const rowHeight = 30;
         const visibleRows = 6;
         const height = headerHeight + rowHeight * visibleRows;
         const width = 320;
         const offset = (visibleRows % 2 === 0) ? 0 : 1;
-        const scrollToIndex = Math.max(0, (this.props.scrollToRow - 1) + (Math.ceil(visibleRows / 2) - offset));
+        const scrollToIndex = Math.max(0, (scrollToRow - 1) + (Math.ceil(visibleRows / 2) - offset));
 
         return (
             <div className="gcode-table">
