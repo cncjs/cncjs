@@ -16,7 +16,7 @@ class MotionButtonGroup extends Component {
     handleSelect(eventKey) {
         const data = eventKey;
         if (data) {
-            controller.writeln(data);
+            controller.command('gcode', data);
         }
     }
     render() {
@@ -58,7 +58,7 @@ class MotionButtonGroup extends Component {
                         <button
                             type="button"
                             className="btn btn-sm btn-default"
-                            onClick={() => controller.writeln('G0 X0 Y0 Z0')}
+                            onClick={() => controller.command('gcode', 'G0 X0 Y0 Z0')}
                             disabled={!canClick}
                         >
                             {i18n._('Go To Work Zero')}
@@ -70,7 +70,7 @@ class MotionButtonGroup extends Component {
                         <button
                             type="button"
                             className="btn btn-sm btn-default"
-                            onClick={() => controller.writeln('G53 G0 X0 Y0 Z0')}
+                            onClick={() => controller.command('gcode', 'G53 G0 X0 Y0 Z0')}
                             disabled={!canClick}
                         >
                             {i18n._('Go To Machine Zero')}

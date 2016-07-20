@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _, { includes } from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
@@ -12,9 +12,12 @@ import { show as showSettings } from './Settings';
 import {
     IMPERIAL_UNITS,
     METRIC_UNITS,
-    GRBL_ACTIVE_STATE_UNKNOWN,
+    GRBL,
+    TINYG2,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    TINYG2_MACHINE_STATE_STOP,
+    TINYG2_MACHINE_STATE_RUN,
     WORKFLOW_STATE_IDLE
 } from '../../../constants';
 import {
@@ -87,13 +90,43 @@ class AxesWidget extends Component {
 
             this.setState({
                 units: units,
-                activeState: activeState,
+                controller: {
+                    type: GRBL,
+                    activeState: activeState
+                },
                 machinePosition: machinePosition,
                 workPosition: workPosition,
                 customDistance: customDistance
             });
         },
-        'TinyG2:state': (state) => { // TODO
+        'TinyG2:state': (state) => {
+            const { statusReports } = { ...state };
+            const { machineState, machinePosition, workPosition, modal = {} } = statusReports;
+            let units = this.state.units;
+            let customDistance = store.get('widgets.axes.jog.customDistance');
+
+            // Imperial
+            if (modal.units === 'G20') {
+                units = IMPERIAL_UNITS;
+                customDistance = mm2in(customDistance).toFixed(4) * 1;
+            }
+
+            // Metric
+            if (modal.units === 'G21') {
+                units = METRIC_UNITS;
+                customDistance = Number(customDistance).toFixed(3) * 1;
+            }
+
+            this.setState({
+                units: units,
+                controller: {
+                    type: TINYG2,
+                    activeState: machineState
+                },
+                machinePosition: machinePosition,
+                workPosition: workPosition,
+                customDistance: customDistance
+            });
         }
     };
     pubsubTokens = [];
@@ -138,10 +171,14 @@ class AxesWidget extends Component {
         return {
             isCollapsed: false,
             isFullscreen: false,
+            canClick: true, // Defaults to true
             port: controller.port,
             units: METRIC_UNITS,
-            activeState: GRBL_ACTIVE_STATE_UNKNOWN,
-            workflowState: WORKFLOW_STATE_IDLE,
+            controller: {
+                type: controller.type,
+                activeState: ''
+            },
+            workflowState: WORKFLOW_STATE_IDLE, // TODO: controller.workflowState
             machinePosition: { // Machine position
                 x: '0.000',
                 y: '0.000',
@@ -152,7 +189,6 @@ class AxesWidget extends Component {
                 y: '0.000',
                 z: '0.000'
             },
-            canClick: true, // Defaults to true
             keypadJogging: store.get('widgets.axes.jog.keypad'),
             selectedAxis: '', // Defaults to empty
             selectedDistance: store.get('widgets.axes.jog.selectedDistance'),
@@ -207,16 +243,27 @@ class AxesWidget extends Component {
         });
     }
     canClick() {
-        const { port, activeState, workflowState } = this.state;
+        const { port, workflowState } = this.state;
+        const { type, activeState } = this.state.controller;
 
         if (!port) {
             return false;
         }
-        if (!_.includes([GRBL_ACTIVE_STATE_IDLE, GRBL_ACTIVE_STATE_RUN], activeState)) {
-            return false;
-        }
         if (workflowState !== WORKFLOW_STATE_IDLE) {
             return false;
+        }
+        if (!includes([GRBL, TINYG2], type)) {
+            return false;
+        }
+        if (type === GRBL) {
+            if (!includes([GRBL_ACTIVE_STATE_IDLE, GRBL_ACTIVE_STATE_RUN], activeState)) {
+                return false;
+            }
+        }
+        if (type === TINYG2) {
+            if (!includes([TINYG2_MACHINE_STATE_STOP, TINYG2_MACHINE_STATE_RUN], activeState)) {
+                return false;
+            }
         }
 
         return true;
@@ -225,9 +272,9 @@ class AxesWidget extends Component {
         const { units } = this.state;
 
         if (units === METRIC_UNITS) {
-            controller.writeln('G20'); // G20 specifies Imperial units
+            controller.command('gcode', 'G20'); // G20 specifies Imperial units
         } else {
-            controller.writeln('G21'); // G21 specifies Metric units
+            controller.command('gcode', 'G21'); // G21 specifies Metric units
         }
     }
     toggleKeypadJogging() {
@@ -327,7 +374,6 @@ class AxesWidget extends Component {
                     </Widget.Header>
                     <Widget.Content className={classes.widgetContent}>
                         <Axes
-                            ref="axes"
                             state={state}
                             actions={actions}
                         />

@@ -5,9 +5,6 @@ import Visualizer from './Visualizer';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
-import {
-    GRBL_ACTIVE_STATE_UNKNOWN
-} from '../../../constants';
 import './index.styl';
 
 class VisualizerWidget extends Component {
@@ -43,7 +40,7 @@ class VisualizerWidget extends Component {
     getDefaultState() {
         return {
             port: controller.port,
-            activeState: GRBL_ACTIVE_STATE_UNKNOWN
+            activeState: ''
         };
     }
     subscribe() {

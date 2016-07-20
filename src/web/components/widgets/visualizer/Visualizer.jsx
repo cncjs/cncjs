@@ -17,7 +17,6 @@ import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
 import {
-    GRBL_ACTIVE_STATE_UNKNOWN,
     GRBL_ACTIVE_STATE_RUN,
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_IDLE
@@ -159,7 +158,7 @@ class Visualizer extends React.Component {
         return {
             port: controller.port,
             ready: false,
-            activeState: GRBL_ACTIVE_STATE_UNKNOWN,
+            activeState: '',
             workflowState: WORKFLOW_STATE_IDLE,
             boundingBox: {
                 min: {

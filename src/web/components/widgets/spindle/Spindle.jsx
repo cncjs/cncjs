@@ -70,9 +70,9 @@ class Spindle extends Component {
                             className="btn btn-default"
                             onClick={() => {
                                 if (spindleSpeed > 0) {
-                                    controller.writeln(cmd + ' S' + spindleSpeed);
+                                    controller.command('gcode', cmd + ' S' + spindleSpeed);
                                 } else {
-                                    controller.writeln(cmd);
+                                    controller.command('gcode', cmd);
                                 }
                             }}
                             title={i18n._('Start the spindle turning CW/CCW (M3/M4)')}
@@ -83,7 +83,7 @@ class Spindle extends Component {
                         <button
                             type="button"
                             className="btn btn-default"
-                            onClick={() => controller.writeln('M5')}
+                            onClick={() => controller.command('gcode', 'M5')}
                             title={i18n._('Stop the spindle from turning (M5)')}
                             disabled={!canClick}
                         >

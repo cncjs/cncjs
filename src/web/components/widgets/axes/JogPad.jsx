@@ -86,7 +86,7 @@ class JogPad extends Component {
                 this.shuttleControl.clear();
 
                 if (selectedAxis) {
-                    controller.writeln('G90');
+                    controller.command('gcode', 'G90');
                 }
                 return;
             }
@@ -113,8 +113,8 @@ class JogPad extends Component {
             feedrate = feedrate.toFixed(3) * 1;
             relativeDistance = relativeDistance.toFixed(4) * 1;
 
-            controller.writeln('G91 G1 F' + feedrate + ' ' + axis + relativeDistance);
-            controller.writeln('G90');
+            controller.command('gcode', 'G91 G1 F' + feedrate + ' ' + axis + relativeDistance);
+            controller.command('gcode', 'G90');
         });
     }
     componentWillUnmount() {
@@ -130,12 +130,12 @@ class JogPad extends Component {
     }
     jog(params = {}) {
         const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
-        controller.writeln('G91 G0 ' + s); // relative distance
-        controller.writeln('G90'); // absolute distance
+        controller.command('gcode', 'G91 G0 ' + s); // relative distance
+        controller.command('gcode', 'G90'); // absolute distance
     }
     move(params = {}) {
         const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
-        controller.writeln('G0 ' + s);
+        controller.command('gcode', 'G0 ' + s);
     }
     getJogDistance() {
         const { state } = this.props;

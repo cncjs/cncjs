@@ -124,7 +124,7 @@ class ToolbarButton extends Component {
     handleSelect(eventKey) {
         const data = eventKey;
         if (data) {
-            controller.writeln(data);
+            controller.command('gcode', data);
         }
     }
     render() {

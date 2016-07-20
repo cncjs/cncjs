@@ -76,7 +76,24 @@ class GCode extends React.Component {
                 this.setState({ units: units });
             }
         },
-        'TinyG2:state': (state) => { // TODO
+        'TinyG2:state': (state) => {
+            const { statusReports } = { ...state };
+            const { modal = {} } = statusReports;
+            let units = this.state.units;
+
+            // Imperial
+            if (modal.units === 'G20') {
+                units = IMPERIAL_UNITS;
+            }
+
+            // Metric
+            if (modal.units === 'G21') {
+                units = METRIC_UNITS;
+            }
+
+            if (this.state.units !== units) {
+                this.setState({ units: units });
+            }
         }
     };
     pubsubTokens = [];

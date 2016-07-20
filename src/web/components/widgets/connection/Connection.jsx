@@ -26,7 +26,7 @@ class Connection extends React.Component {
             4800,
             2400
         ],
-        controller: store.get('widgets.connection.controller'),
+        controllerType: store.get('widgets.connection.controller.type'),
         port: controller.port,
         baudrate: store.get('widgets.connection.baudrate'),
         autoReconnect: store.get('widgets.connection.autoReconnect'),
@@ -64,7 +64,7 @@ class Connection extends React.Component {
             }
         },
         'serialport:open': (options) => {
-            const { controller, port, baudrate, inuse } = options;
+            const { controllerType, port, baudrate, inuse } = options;
             const ports = _.map(this.state.ports, (o) => {
                 if (o.port !== port) {
                     return o;
@@ -75,15 +75,15 @@ class Connection extends React.Component {
 
             this.clearAlert();
 
-            // save the port
-            store.set('widgets.connection.port', port);
+            // update controller type
+            controller.type = controllerType;
 
             pubsub.publish('port', port);
 
             this.setState({
                 connecting: false,
                 connected: true,
-                controller: controller, // Grbl or TinyG2
+                controllerType: controllerType, // Grbl or TinyG2
                 port: port,
                 baudrate: baudrate,
                 ports: ports
@@ -134,6 +134,20 @@ class Connection extends React.Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
+    componentDidUpdate(prevProps, prevState) {
+        const { controllerType, port, baudrate, autoReconnect } = this.state;
+
+        if (controllerType) {
+            store.set('widgets.connection.controller.type', controllerType);
+        }
+        if (port) {
+            store.set('widgets.connection.port', port);
+        }
+        if (baudrate) {
+            store.set('widgets.connection.baudrate', baudrate);
+        }
+        store.set('widgets.connection.autoReconnect', autoReconnect);
     }
     addControllerEvents() {
         _.each(this.controllerEvents, (callback, eventName) => {
@@ -187,7 +201,7 @@ class Connection extends React.Component {
         });
 
         controller.openPort(port, {
-            controller: this.state.controller,
+            controllerType: this.state.controllerType,
             baudrate: baudrate
         });
 
@@ -256,9 +270,8 @@ class Connection extends React.Component {
         // Refresh ports
         controller.listAllPorts();
     }
-    changeController(controller) {
-        this.setState({ controller: controller });
-        store.set('widgets.connection.controller', controller);
+    changeController(controllerType) {
+        this.setState({ controllerType: controllerType });
     }
     changePortOption(option) {
         this.setState({
@@ -271,11 +284,12 @@ class Connection extends React.Component {
             alertMessage: '',
             baudrate: option.value
         });
-        store.set('widgets.connection.baudrate', option.value);
     }
     handleAutoReconnect(event) {
         const checked = event.target.checked;
-        store.set('widgets.connection.autoReconnect', checked);
+        this.setState({
+            autoReconnect: checked
+        });
     }
     renderPortOption(option) {
         const { label, inuse, manufacturer } = option;
@@ -340,6 +354,7 @@ class Connection extends React.Component {
     render() {
         const {
             loading, connecting, connected,
+            controllerType,
             ports, baudrates,
             port, baudrate,
             autoReconnect,
@@ -366,7 +381,7 @@ class Connection extends React.Component {
                                 className={classNames(
                                     'btn',
                                     'btn-default',
-                                    { 'btn-select': this.state.controller === 'Grbl' }
+                                    { 'btn-select': controllerType === 'Grbl' }
                                 )}
                                 disabled={!canChangeController}
                                 onClick={() => {
@@ -380,7 +395,7 @@ class Connection extends React.Component {
                                 className={classNames(
                                     'btn',
                                     'btn-default',
-                                    { 'btn-select': this.state.controller === 'TinyG2' }
+                                    { 'btn-select': controllerType === 'TinyG2' }
                                 )}
                                 disabled={!canChangeController}
                                 onClick={() => {

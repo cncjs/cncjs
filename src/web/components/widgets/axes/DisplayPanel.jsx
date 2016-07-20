@@ -28,7 +28,7 @@ class DisplayPanel extends Component {
     handleSelect(eventKey) {
         const data = eventKey;
         if (data) {
-            controller.writeln(data);
+            controller.command('gcode', data);
         }
     }
     render() {
@@ -64,7 +64,7 @@ class DisplayPanel extends Component {
                                         if (units === IMPERIAL_UNITS) {
                                             value = in2mm(value);
                                         }
-                                        controller.writeln('G10 L20 P1 X' + value);
+                                        controller.command('gcode', 'G10 L20 P1 X' + value);
                                         this.setState({ showXPositionInput: false });
                                     }}
                                     onCancel={() => {
@@ -156,7 +156,7 @@ class DisplayPanel extends Component {
                                         if (units === IMPERIAL_UNITS) {
                                             value = in2mm(value);
                                         }
-                                        controller.writeln('G10 L20 P1 Y' + value);
+                                        controller.command('gcode', 'G10 L20 P1 Y' + value);
                                         this.setState({ showYPositionInput: false });
                                     }}
                                     onCancel={() => {
@@ -248,7 +248,7 @@ class DisplayPanel extends Component {
                                         if (units === IMPERIAL_UNITS) {
                                             value = in2mm(value);
                                         }
-                                        controller.writeln('G10 L20 P1 Z' + value);
+                                        controller.command('gcode', 'G10 L20 P1 Z' + value);
                                         this.setState({ showZPositionInput: false });
                                     }}
                                     onCancel={() => {

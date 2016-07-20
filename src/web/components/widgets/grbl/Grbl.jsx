@@ -4,9 +4,6 @@ import React from 'react';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 import Toolbar from './Toolbar';
-import {
-    GRBL_ACTIVE_STATE_UNKNOWN
-} from '../../../constants';
 
 const lookupGCodeDefinition = (word) => {
     const wordText = {
@@ -80,8 +77,6 @@ class Grbl extends React.Component {
                 activeState: activeState,
                 parserstate: parserstate
             });
-        },
-        'TinyG2:state': (state) => { // TODO
         }
     };
     pubsubTokens = [];
@@ -104,7 +99,7 @@ class Grbl extends React.Component {
     getDefaultState() {
         return {
             port: controller.port,
-            activeState: GRBL_ACTIVE_STATE_UNKNOWN,
+            activeState: '',
             parserstate: {},
             showGCode: false
         };
