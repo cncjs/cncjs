@@ -282,10 +282,10 @@ class ProbeWidget extends Component {
         const retractionDistance = event.target.value;
         this.setState({ retractionDistance });
     }
-    sendCommand(gcode, params) {
+    sendCommand(cmd, params) {
         const s = _.map(params, (value, letter) => String(letter + value)).join(' ');
-        const msg = (s.length > 0) ? (gcode + ' ' + s) : gcode;
-        controller.command('gcode', msg);
+        const gcode = (s.length > 0) ? (cmd + ' ' + s) : cmd;
+        controller.command('gcode', gcode);
     }
     runZProbe() {
         const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
