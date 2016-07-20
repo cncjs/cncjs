@@ -7,7 +7,7 @@ import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
-} from './constants';
+} from '../../constants';
 
 const PREFIX = '[TinyG2]';
 
@@ -23,7 +23,7 @@ class Connection {
 }
 
 class TinyG2Controller {
-    name = 'TinyG2';
+    type = 'TinyG2';
 
     // Connections
     connections = [];
@@ -80,12 +80,15 @@ class TinyG2Controller {
         // TinyG2
         this.tinyG2 = new TinyG2(this.serialport);
 
-        this.tinyG2.on('sr', (res) => {
+        this.tinyG2.on('statusReports', (res) => {
+            if (this.state !== this.tinyG2.state) {
+                this.state = this.tinyG2.state;
+            }
+
             this.connections.forEach((c) => {
-                c.socket.emit('TinyG2:sr', res);
+                c.socket.emit('TinyG2:state', this.state);
             });
         });
-        this.tinyG2.on('srchange', (res) => {});
 
         this.tinyG2.on('raw', (res) => {
             this.connections.forEach((c) => {
@@ -166,7 +169,7 @@ class TinyG2Controller {
             connections: _.size(this.connections),
             ready: this.ready,
             controller: {
-                name: this.name,
+                type: this.type,
                 state: this.state
             },
             workflowState: this.workflowState,
@@ -298,24 +301,28 @@ class TinyG2Controller {
             },
             'pause': () => {
                 this.workflowState = WORKFLOW_STATE_PAUSED;
-                this.write(socket, '!');
+                this.writeln(socket, '!');
             },
             'resume': () => {
-                this.write(socket, '~');
+                this.writeln(socket, '~');
                 this.workflowState = WORKFLOW_STATE_RUNNING;
                 this.sender.next();
             },
             'feedhold': () => {
-                this.write(socket, '!');
+                this.writeln(socket, '!');
             },
             'cyclestart': () => {
-                this.write(socket, '~');
+                this.writeln(socket, '~');
             },
             'reset': () => {
-                this.write(socket, '\x18');
+                this.writeln(socket, '\x18');
             },
             'homing': () => {
                 this.writeln(socket, 'G28.2 X0 Y0 Z0 A0');
+            },
+            'gcode': () => {
+                const gcode = args.join(' ');
+                this.writeln(socket, JSON.stringify({ gc: gcode }));
             }
         }[cmd];
 

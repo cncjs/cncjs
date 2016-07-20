@@ -31,20 +31,7 @@ class TinyG2ParserResultStatusReports {
             return null;
         }
 
-        const payload = {
-            workPosition: {
-                x: _.get(sr, 'posx', null),
-                y: _.get(sr, 'posy', null),
-                z: _.get(sr, 'posz', null),
-                a: _.get(sr, 'posa', null)
-            },
-            machinePosition: {
-                x: _.get(sr, 'mpox', null),
-                y: _.get(sr, 'mpoy', null),
-                z: _.get(sr, 'mpoz', null),
-                a: _.get(sr, 'mpoa', null)
-            }
-        };
+        const payload = { ...sr };
 
         return {
             type: TinyG2ParserResultStatusReports,
@@ -55,7 +42,19 @@ class TinyG2ParserResultStatusReports {
 
 class TinyG2 extends events.EventEmitter {
     state = {
-        sr: {}
+        statusReports: {
+            activeState: '',
+            machinePosition: {
+                x: '0.000',
+                y: '0.000',
+                z: '0.000'
+            },
+            workPosition: {
+                x: '0.000',
+                y: '0.000',
+                z: '0.000'
+            }
+        }
     };
     parser = new TinyG2Parser();
 
@@ -78,14 +77,110 @@ class TinyG2 extends events.EventEmitter {
             const { type, payload } = result;
 
             if (type === TinyG2ParserResultStatusReports) {
-                if (!_.isEqual(this.state.sr, payload)) {
-                    this.emit('srchange', payload);
+                const keymaps = {
+                    'n': 'n',
+                    'vel': 'velocity',
+                    'feed': 'feedrate',
+                    'stat': (target, val) => {
+                        const machineState = {
+                            1: 'Reset',
+                            2: 'Alarm',
+                            3: 'Stop',
+                            4: 'End',
+                            5: 'Run',
+                            6: 'Hold',
+                            7: 'Probe',
+                            9: 'Homing'
+                        }[val] || '';
+                        _.set(target, 'machineState', machineState);
+                    },
+                    'momo': (target, val) => {
+                        const gcode = {
+                            0: 'G0', // traverse
+                            1: 'G1', // straight feed
+                            2: 'G2', // cw arc
+                            3: 'G3' // ccw arc
+                        }[val] || '';
+                        _.set(target, 'modal.motion', gcode);
+                    },
+                    'coor': (target, val) => {
+                        const gcode = {
+                            0: 'G53',
+                            1: 'G54',
+                            2: 'G55',
+                            3: 'G56',
+                            4: 'G57',
+                            5: 'G58',
+                            6: 'G59'
+                        }[val] || '';
+                        _.set(target, 'modal.coordinate', gcode);
+                    },
+                    'plan': (target, val) => {
+                        const gcode = {
+                            0: 'G17', // XY-plane
+                            1: 'G18', // XZ-plane
+                            2: 'G19'  // YZ-plane
+                        }[val] || '';
+                        _.set(target, 'modal.plane', gcode);
+                    },
+                    'unit': (target, val) => {
+                        const gcode = {
+                            0: 'G20', // Inches
+                            1: 'G21'  // Millimeters
+                        }[val] || '';
+                        _.set(target, 'modal.units', gcode);
+                    },
+                    'dist': (target, val) => {
+                        const gcode = {
+                            0: 'G90', // Absolute
+                            1: 'G91'  // Relative
+                        }[val] || '';
+                        _.set(target, 'modal.distance', gcode);
+                    },
+                    'frmo': (target, val) => {
+                        const gcode = {
+                            0: 'G94', // Units Per Minute Mode
+                            1: 'G93'  // Inverse Time Mode
+                        }[val] || '';
+                        _.set(target, 'modal.feedrate', gcode);
+                    },
+                    'posx': 'workPosition.x',
+                    'posy': 'workPosition.y',
+                    'posz': 'workPosition.z',
+                    'posa': 'workPosition.a',
+                    'posb': 'workPosition.b',
+                    'posc': 'workPosition.c',
+                    'mpox': 'machinePosition.x',
+                    'mpoy': 'machinePosition.y',
+                    'mpoz': 'machinePosition.z',
+                    'mpoa': 'machinePosition.a',
+                    'mpob': 'machinePosition.b',
+                    'mpoc': 'machinePosition.c'
+                };
+                const statusReports = { ...this.state.statusReports };
+                _.each(keymaps, (target, key) => {
+                    if (typeof target === 'string') {
+                        const val = _.get(payload, key);
+                        if (val !== undefined) {
+                            _.set(statusReports, target, val);
+                        }
+                    }
+                    if (typeof target === 'function') {
+                        const val = _.get(payload, key);
+                        if (val !== undefined) {
+                            target(statusReports, val);
+                        }
+                    }
+                });
+
+                if (!_.isEqual(this.state.statusReports, statusReports)) {
+                    this.emit('statusReportsChange', statusReports);
                     this.state = {
                         ...this.state,
-                        sr: payload
+                        statusReports: statusReports
                     };
                 }
-                this.emit('sr', payload);
+                this.emit('statusReports', statusReports);
                 return;
             }
         }
