@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Spindle from './Spindle';
@@ -14,13 +16,68 @@ class SpindleWidget extends Component {
         onDelete: () => {}
     };
 
-    state = {
-        isCollapsed: false,
-        isFullscreen: false
-    };
+    pubsubTokens = [];
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
+    componentDidMount() {
+        this.subscribe();
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
+    getDefaultState() {
+        return {
+            isCollapsed: false,
+            isFullscreen: false,
+            canClick: true, // Defaults to true
+            port: controller.port,
+            isCCWChecked: false,
+            spindleSpeed: 0
+        };
+    }
+    subscribe() {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    const defaultState = this.getDefaultState();
+                    this.setState({
+                        ...defaultState,
+                        port: ''
+                    });
+                }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    canClick() {
+        const { port } = this.state;
+
+        if (!port) {
+            return false;
+        }
+
+        return true;
+    }
+    handleCCWChange() {
+        this.setState({
+            isCCWChecked: !(this.state.isCCWChecked)
+        });
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
@@ -28,6 +85,14 @@ class SpindleWidget extends Component {
             widgetContent: classNames(
                 { hidden: isCollapsed }
             )
+        };
+
+        const state = {
+            ...this.state,
+            canClick: this.canClick()
+        };
+        const actions = {
+            handleCCWChange: ::this.handleCCWChange
         };
 
         return (
@@ -53,7 +118,10 @@ class SpindleWidget extends Component {
                         </Widget.Controls>
                     </Widget.Header>
                     <Widget.Content className={classes.widgetContent}>
-                        <Spindle />
+                        <Spindle
+                            state={state}
+                            actions={actions}
+                        />
                     </Widget.Content>
                 </Widget>
             </div>

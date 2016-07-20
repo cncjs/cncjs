@@ -1,65 +1,21 @@
 import _ from 'lodash';
-import pubsub from 'pubsub-js';
-import React, { Component } from 'react';
-import i18n from '../../../lib/i18n';
+import React, { Component, PropTypes } from 'react';
 import controller from '../../../lib/controller';
+import i18n from '../../../lib/i18n';
 
 class Spindle extends Component {
-    pubsubTokens = [];
+    static propTypes = {
+        state: PropTypes.object,
+        actions: PropTypes.object
+    };
 
-    constructor() {
-        super();
-        this.state = this.getDefaultState();
-    }
-    componentDidMount() {
-        this.subscribe();
-    }
-    componentWillUnmount() {
-        this.unsubscribe();
-    }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
-    }
-    getDefaultState() {
-        return {
-            port: controller.port,
-            isCCWChecked: false,
-            spindleSpeed: 0
-        };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    const defaultState = this.getDefaultState();
-                    this.setState({
-                        ...defaultState,
-                        port: ''
-                    });
-                }
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
-    handleCCWChange() {
-        this.setState({
-            isCCWChecked: !(this.state.isCCWChecked)
-        });
+        return !_.isEqual(nextProps, this.props);
     }
     render() {
-        const canClick = !!this.state.port;
-        const cmd = this.state.isCCWChecked ? 'M4' : 'M3';
-        const spindleSpeed = this.state.spindleSpeed;
+        const { state, actions } = this.props;
+        const { canClick, isCCWChecked, spindleSpeed } = state;
+        const cmd = isCCWChecked ? 'M4' : 'M3';
 
         return (
             <div>
@@ -95,8 +51,8 @@ class Spindle extends Component {
                     <label>
                         <input
                             type="checkbox"
-                            checked={this.state.isCCWChecked}
-                            onChange={::this.handleCCWChange}
+                            checked={isCCWChecked}
+                            onChange={actions.handleCCWChange}
                             disabled={!canClick}
                         />
                         &nbsp;{i18n._('Turn counterclockwise')}
