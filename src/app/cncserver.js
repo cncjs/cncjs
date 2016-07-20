@@ -120,14 +120,14 @@ class CNCServer {
 
                 let controller = this.controllers[port];
                 if (!controller) {
-                    const { baudrate } = { ...options };
+                    const { controllerType = 'Grbl', baudrate } = { ...options };
 
-                    if (options.controller === 'Grbl') {
+                    if (controllerType === 'Grbl') {
                         controller = new GrblController(port, { baudrate });
-                    } else if (options.controller === 'TinyG2') {
+                    } else if (controllerType === 'TinyG2') {
                         controller = new TinyG2Controller(port, { baudrate });
                     } else {
-                        throw new Error('Controller not found: ' + options.controller);
+                        throw new Error('Not supported controller: ' + controllerType);
                     }
                 }
 
@@ -137,7 +137,7 @@ class CNCServer {
                     socket.emit('serialport:open', {
                         port: port,
                         baudrate: controller.options.baudrate,
-                        controller: controller.name,
+                        controllerType: controller.type,
                         inuse: true
                     });
                     return;
@@ -159,7 +159,7 @@ class CNCServer {
                     socket.emit('serialport:open', {
                         port: port,
                         baudrate: controller.options.baudrate,
-                        controller: controller.name,
+                        controllerType: controller.type,
                         inuse: true
                     });
                 });
