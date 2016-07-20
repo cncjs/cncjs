@@ -282,7 +282,7 @@ class ProbeWidget extends Component {
         const retractionDistance = event.target.value;
         this.setState({ retractionDistance });
     }
-    sendGCode(gcode, params) {
+    sendCommand(gcode, params) {
         const s = _.map(params, (value, letter) => String(letter + value)).join(' ');
         const msg = (s.length > 0) ? (gcode + ' ' + s) : gcode;
         controller.command('gcode', msg);
@@ -292,34 +292,34 @@ class ProbeWidget extends Component {
         const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
 
         // Set relative distance mode
-        this.sendGCode('G91');
+        this.sendCommand('G91');
 
         // Start Z-probing
-        this.sendGCode(probeCommand, {
+        this.sendCommand(probeCommand, {
             Z: towardWorkpiece ? -probeDepth : probeDepth,
             F: probeFeedrate
         });
 
         // Set back to asolute distance mode
-        this.sendGCode('G90');
+        this.sendCommand('G90');
 
         // Zero out work z axis
-        this.sendGCode('G10', {
+        this.sendCommand('G10', {
             L: 20,
             P: 1,
             Z: tlo
         });
 
         // Set relative distance mode
-        this.sendGCode('G91');
+        this.sendCommand('G91');
 
         // Retract slightly from the touch plate
-        this.sendGCode('G0', {
+        this.sendCommand('G0', {
             Z: retractionDistance
         });
 
         // Set back to asolute distance mode
-        this.sendGCode('G90');
+        this.sendCommand('G90');
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
