@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { Button, Modal } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
@@ -6,14 +6,16 @@ import store from '../../../store';
 
 const noop = () => {};
 
-class Settings extends React.Component {
+class Settings extends Component {
     static propTypes = {
-        onSave: React.PropTypes.func,
-        onClose: React.PropTypes.func.isRequired
+        url: PropTypes.string,
+        onSave: PropTypes.func,
+        onClose: PropTypes.func.isRequired
     };
+
     state = {
         show: true,
-        url: store.get('widgets.webcam.url')
+        url: this.props.url
     };
 
     componentDidUpdate(prevProps, prevState) {
@@ -26,9 +28,8 @@ class Settings extends React.Component {
         this.setState({ url });
     }
     handleSave() {
-        store.set('widgets.webcam.url', this.state.url);
         this.setState({ show: false });
-        this.props.onSave();
+        this.props.onSave({ url: this.state.url });
     }
     handleCancel() {
         this.setState({ show: false });
@@ -69,7 +70,8 @@ class Settings extends React.Component {
     }
 }
 
-export const show = (callback = noop) => {
+export const show = (options, callback = noop) => {
+    const { url } = { ...options };
     const el = document.body.appendChild(document.createElement('div'));
     const handleClose = (e) => {
         ReactDOM.unmountComponentAtNode(el);
@@ -78,7 +80,7 @@ export const show = (callback = noop) => {
         }, 0);
     };
 
-    ReactDOM.render(<Settings onSave={callback} onClose={handleClose} />, el);
+    ReactDOM.render(<Settings url={url} onSave={callback} onClose={handleClose} />, el);
 };
 
 export default Settings;

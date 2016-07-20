@@ -5,6 +5,7 @@ import i18n from '../../../lib/i18n';
 import store from '../../../store';
 import Widget from '../../widget';
 import Webcam from './Webcam';
+import { show as editSettings } from './Settings';
 import './index.styl';
 
 class WebcamWidget extends Component {
@@ -15,17 +16,26 @@ class WebcamWidget extends Component {
         onDelete: () => {}
     };
 
-    state = {
-        disabled: store.get('widgets.webcam.disabled'),
-        isCollapsed: false,
-        isFullscreen: false
-    };
-
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
-        store.set('widgets.webcam.disabled', this.state.disabled);
+        const { disabled, url } = this.state;
+
+        store.set('widgets.webcam.disabled', disabled);
+        store.set('widgets.webcam.url', url);
+    }
+    getDefaultState() {
+        return {
+            isCollapsed: false,
+            isFullscreen: false,
+            disabled: store.get('widgets.webcam.disabled'),
+            url: store.get('widgets.webcam.url')
+        };
     }
     render() {
         const { disabled, isCollapsed, isFullscreen } = this.state;
@@ -40,6 +50,12 @@ class WebcamWidget extends Component {
             )
         };
 
+        const state = {
+            ...this.state
+        };
+        const actions = {
+        };
+
         return (
             <div {...this.props} data-ns="widgets/webcam">
                 <Widget fullscreen={isFullscreen}>
@@ -48,7 +64,12 @@ class WebcamWidget extends Component {
                         <Widget.Controls>
                             <Widget.Button
                                 type="edit"
-                                onClick={(event) => this.refs.webcam.edit()}
+                                onClick={(event) => {
+                                    const { url } = this.state;
+                                    editSettings({ url }, ({ url }) => {
+                                        this.setState({ url: url });
+                                    });
+                                }}
                             />
                             <Widget.Button
                                 type="refresh"
@@ -79,7 +100,11 @@ class WebcamWidget extends Component {
                         </Widget.Toolbar>
                     </Widget.Header>
                     <Widget.Content className={classes.widgetContent}>
-                        <Webcam ref="webcam" disabled={disabled} />
+                        <Webcam
+                            ref="webcam"
+                            state={state}
+                            actions={actions}
+                        />
                     </Widget.Content>
                 </Widget>
             </div>
