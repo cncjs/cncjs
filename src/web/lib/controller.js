@@ -1,10 +1,11 @@
 import pubsub from 'pubsub-js';
-import { WORKFLOW_STATE_UNKNOWN } from '../constants';
+import {
+    WORKFLOW_STATE_IDLE
+} from '../constants';
 import socket from './socket';
 import log from './log';
 
 class CNCController {
-    port = '';
     callbacks = {
         'serialport:list': [],
         'serialport:open': [],
@@ -17,17 +18,10 @@ class CNCController {
         'TinyG2:state': []
     };
 
-    workflowState = WORKFLOW_STATE_UNKNOWN; // FIXME
-
-    // Grbl
-    Grbl = {
-        state: {}
-    };
-
-    // TinyG2
-    TinyG2 = {
-        state: {}
-    };
+    port = '';
+    workflowState = WORKFLOW_STATE_IDLE;
+    type = '';
+    state = {};
 
     constructor() {
         pubsub.subscribe('port', (msg, port) => {
@@ -39,10 +33,12 @@ class CNCController {
                 log.debug('socket.on("' + eventName + '"):', args);
 
                 if (eventName === 'Grbl:state') {
-                    this.Grbl.state = args[0];
+                    this.type = 'Grbl';
+                    this.state = { ...args[0] };
                 }
                 if (eventName === 'TinyG2:state') {
-                    this.TinyG2.state = args[0];
+                    this.type = 'TinyG2';
+                    this.state = { ...args[0] };
                 }
 
                 this.callbacks[eventName].forEach((callback) => {
@@ -104,6 +100,8 @@ class CNCController {
     //   controller.command('homing')
     // - Unlock
     //   controller.command('unlock')
+    // - G-code
+    //   controller.command('gcode', 'G0X0Y0')
     command(cmd, ...args) {
         const { port } = this;
         if (!port) {
