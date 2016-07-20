@@ -125,7 +125,6 @@ class GrblWidget extends Component {
 
         const state = {
             ...this.state,
-            // Determine if the button is clickable
             canClick: this.canClick()
         };
         const actions = {
