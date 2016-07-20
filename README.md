@@ -28,23 +28,39 @@ A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) ru
 
 ## Installation
 
-Node.js v4 or higher is recommended. You can use Git to install [nvm](https://github.com/creationix/nvm#manual-install) to manage multiple Node.js versions.
+### Node.js Installation
+
+Node.js v4 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+```bash
+$ git clone https://github.com/creationix/nvm.git ~/.nvm
+$ cd ~/.nvm
+$ git checkout `git describe --abbrev=0 --tags`
+$ cd ..
+$ . ~/.nvm/nvm.sh
+$ nvm install 4
+```
+
+Add these lines to your `~/.bash_profile`, `~/.bashrc`, or `~/.profile` file to have it automatically sourced upon login: 
+```bash
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh" # This loads nvm
+```
 
 If you're using Node.js v4 or earlier versions, it's recommended that you use npm v3 to install packages. To upgrade, run:
 ```bash
 npm install npm@latest -g
 ```
 
-### Getting Started
-
-First, ensure you have `prefix=~/.npm` in  `~/.npmrc`. For example:
+If you're not using [Node Version Manager](https://github.com/creationix/nvm), make sure you have `prefix=~/.npm` in  `~/.npmrc` to install global packages without `sudo`. For example:
 ```bash
 $ echo "prefix=~/.npm" >> ~/.npmrc
 $ cat ~/.npmrc
 prefix=~/.npm
 ```
 
-Then, install `cncjs` without `sudo`, or the `serialport` module may not install correctly on some platforms like Raspberry Pi.
+### Getting Started
+
+Install `cncjs` without `sudo`, or the `serialport` module may not install correctly on some platforms like Raspberry Pi.
 ```bash
 $ npm install -g cncjs
 ```
