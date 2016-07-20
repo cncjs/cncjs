@@ -28,7 +28,7 @@ A web-based CNC milling controller for the [Arduino](https://www.arduino.cc/) ru
 
 ## Installation
 
-Node.js v4 or higher is recommended. You can install [nvm](https://github.com/creationix/nvm) to manage multiple Node.js versions.
+Node.js v4 or higher is recommended. You can use Git to install [nvm](https://github.com/creationix/nvm#manual-install) to manage multiple Node.js versions.
 
 If you're using Node.js v4 or earlier versions, it's recommended that you use npm v3 to install packages. To upgrade, run:
 ```bash
