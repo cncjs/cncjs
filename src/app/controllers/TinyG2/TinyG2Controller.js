@@ -80,14 +80,16 @@ class TinyG2Controller {
         // TinyG2
         this.tinyG2 = new TinyG2(this.serialport);
 
-        this.tinyG2.on('statusReports', (res) => {
-            if (this.state !== this.tinyG2.state) {
-                this.state = this.tinyG2.state;
-            }
+        this.tinyG2.on('sr', (res) => {
+            this.updateState();
+        });
 
-            this.connections.forEach((c) => {
-                c.socket.emit('TinyG2:state', this.state);
-            });
+        this.tinyG2.on('fb', (res) => {
+            this.updateState();
+        });
+
+        this.tinyG2.on('hp', (res) => {
+            this.updateState();
         });
 
         this.tinyG2.on('raw', (res) => {
@@ -102,9 +104,20 @@ class TinyG2Controller {
             this.tinyG2 = null;
         }
     }
+    updateState() {
+        if (this.state === this.tinyG2.state) {
+            return;
+        }
+
+        this.state = this.tinyG2.state;
+        this.connections.forEach((c) => {
+            c.socket.emit('TinyG2:state', this.state);
+        });
+    }
     init(callback = noop) {
         const cmds = [
             { pauseAfter: 500 },
+            { cmd: '{"clear":null}', pauseAfter: 250 }, // Reset TinyG2
             { cmd: '?', pauseAfter: 150 },
             { cmd: '{"js":1}', pauseAfter: 150 },
             { cmd: '{"sr":null}' },
@@ -302,20 +315,28 @@ class TinyG2Controller {
             'pause': () => {
                 this.workflowState = WORKFLOW_STATE_PAUSED;
                 this.writeln(socket, '!');
+                this.writeln(socket, '{"qr":""}');
             },
             'resume': () => {
                 this.writeln(socket, '~');
+                this.writeln(socket, '{"qr":""}');
                 this.workflowState = WORKFLOW_STATE_RUNNING;
                 this.sender.next();
             },
             'feedhold': () => {
                 this.writeln(socket, '!');
+                this.writeln(socket, '{"qr":""}');
             },
             'cyclestart': () => {
                 this.writeln(socket, '~');
+                this.writeln(socket, '{"qr":""}');
+            },
+            'queueflush': () => {
+                this.writeln(socket, '%');
+                this.writeln(socket, '{"qr":""}');
             },
             'reset': () => {
-                this.writeln(socket, '\x18');
+                this.writeln(socket, '{"clear":null}');
             },
             'homing': () => {
                 this.writeln(socket, 'G28.2 X0 Y0 Z0 A0');
