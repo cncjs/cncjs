@@ -251,7 +251,7 @@ class GrblController {
         }
     }
     init(callback = noop) {
-        // Reset Grbl while opening serial port
+        // Reset Grbl
         this.command(null, 'reset');
 
         callback();
