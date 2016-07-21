@@ -16,7 +16,9 @@ import {
     TINYG2,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    TINYG2_MACHINE_STATE_READY,
     TINYG2_MACHINE_STATE_STOP,
+    TINYG2_MACHINE_STATE_END,
     TINYG2_MACHINE_STATE_RUN,
     WORKFLOW_STATE_IDLE
 } from '../../../constants';
@@ -72,18 +74,19 @@ class AxesWidget extends Component {
     controllerEvents = {
         'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
-            const { activeState, machinePosition, workPosition } = status;
+            const { machinePosition, workPosition } = status;
+            const { modal = {} } = { ...parserstate };
             let units = this.state.units;
             let customDistance = store.get('widgets.axes.jog.customDistance');
 
             // Imperial
-            if (parserstate.modal.units === 'G20') {
+            if (modal.units === 'G20') {
                 units = IMPERIAL_UNITS;
                 customDistance = mm2in(customDistance).toFixed(4) * 1;
             }
 
             // Metric
-            if (parserstate.modal.units === 'G21') {
+            if (modal.units === 'G21') {
                 units = METRIC_UNITS;
                 customDistance = Number(customDistance).toFixed(3) * 1;
             }
@@ -92,7 +95,7 @@ class AxesWidget extends Component {
                 units: units,
                 controller: {
                     type: GRBL,
-                    activeState: activeState
+                    state: state
                 },
                 machinePosition: machinePosition,
                 workPosition: workPosition,
@@ -100,8 +103,8 @@ class AxesWidget extends Component {
             });
         },
         'TinyG2:state': (state) => {
-            const { statusReports } = { ...state };
-            const { machineState, machinePosition, workPosition, modal = {} } = statusReports;
+            const { sr } = { ...state };
+            const { machineState, machinePosition, workPosition, modal = {} } = sr;
             let units = this.state.units;
             let customDistance = store.get('widgets.axes.jog.customDistance');
 
@@ -121,7 +124,7 @@ class AxesWidget extends Component {
                 units: units,
                 controller: {
                     type: TINYG2,
-                    activeState: machineState
+                    state: state
                 },
                 machinePosition: machinePosition,
                 workPosition: workPosition,
@@ -176,7 +179,7 @@ class AxesWidget extends Component {
             units: METRIC_UNITS,
             controller: {
                 type: controller.type,
-                activeState: ''
+                state: controller.state
             },
             workflowState: WORKFLOW_STATE_IDLE, // TODO: controller.workflowState
             machinePosition: { // Machine position
@@ -244,7 +247,8 @@ class AxesWidget extends Component {
     }
     canClick() {
         const { port, workflowState } = this.state;
-        const { type, activeState } = this.state.controller;
+        const controllerType = this.state.controller.type;
+        const controllerState = this.state.controller.state;
 
         if (!port) {
             return false;
@@ -252,16 +256,28 @@ class AxesWidget extends Component {
         if (workflowState !== WORKFLOW_STATE_IDLE) {
             return false;
         }
-        if (!includes([GRBL, TINYG2], type)) {
+        if (!includes([GRBL, TINYG2], controllerType)) {
             return false;
         }
-        if (type === GRBL) {
-            if (!includes([GRBL_ACTIVE_STATE_IDLE, GRBL_ACTIVE_STATE_RUN], activeState)) {
+        if (controllerType === GRBL) {
+            const activeState = _.get(controllerState, 'status.activeState');
+            const states = [
+                GRBL_ACTIVE_STATE_IDLE,
+                GRBL_ACTIVE_STATE_RUN
+            ];
+            if (!includes(states, activeState)) {
                 return false;
             }
         }
-        if (type === TINYG2) {
-            if (!includes([TINYG2_MACHINE_STATE_STOP, TINYG2_MACHINE_STATE_RUN], activeState)) {
+        if (controllerType === TINYG2) {
+            const machineState = _.get(controllerState, 'sr.machineState');
+            const states = [
+                TINYG2_MACHINE_STATE_READY,
+                TINYG2_MACHINE_STATE_STOP,
+                TINYG2_MACHINE_STATE_END,
+                TINYG2_MACHINE_STATE_RUN
+            ];
+            if (!includes(states, machineState)) {
                 return false;
             }
         }

@@ -1,9 +1,11 @@
 import pubsub from 'pubsub-js';
-import {
-    WORKFLOW_STATE_IDLE
-} from '../constants';
 import socket from './socket';
 import log from './log';
+import {
+    GRBL,
+    TINYG2,
+    WORKFLOW_STATE_IDLE
+} from '../constants';
 
 class CNCController {
     callbacks = {
@@ -25,7 +27,12 @@ class CNCController {
 
     constructor() {
         pubsub.subscribe('port', (msg, port) => {
-            this.port = port || this.port;
+            this.port = port;
+            if (!this.port) {
+                this.workflowState = WORKFLOW_STATE_IDLE;
+                this.type = '';
+                this.state = {};
+            }
         });
 
         Object.keys(this.callbacks).forEach((eventName) => {
@@ -33,11 +40,11 @@ class CNCController {
                 log.debug('socket.on("' + eventName + '"):', args);
 
                 if (eventName === 'Grbl:state') {
-                    this.type = 'Grbl';
+                    this.type = GRBL;
                     this.state = { ...args[0] };
                 }
                 if (eventName === 'TinyG2:state') {
-                    this.type = 'TinyG2';
+                    this.type = TINYG2;
                     this.state = { ...args[0] };
                 }
 

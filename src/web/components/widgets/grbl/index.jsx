@@ -21,14 +21,10 @@ class GrblWidget extends Component {
 
     controllerEvents = {
         'Grbl:state': (state) => {
-            const { status, parserstate } = { ...state };
-            const { activeState } = status;
-
             this.setState({
                 controller: {
                     type: GRBL,
-                    activeState: activeState,
-                    parserstate: parserstate
+                    state: state
                 }
             });
         }
@@ -58,8 +54,7 @@ class GrblWidget extends Component {
             port: controller.port,
             controller: {
                 type: controller.type,
-                activeState: '',
-                parserstate: {}
+                state: controller.state
             },
             showGCode: false
         };

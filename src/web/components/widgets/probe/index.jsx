@@ -15,7 +15,9 @@ import {
     TINYG2,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    TINYG2_MACHINE_STATE_READY,
     TINYG2_MACHINE_STATE_STOP,
+    TINYG2_MACHINE_STATE_END,
     TINYG2_MACHINE_STATE_RUN,
     WORKFLOW_STATE_IDLE
 } from '../../../constants';
@@ -43,8 +45,8 @@ class ProbeWidget extends Component {
 
     controllerEvents = {
         'Grbl:state': (state) => {
-            const { status, parserstate } = { ...state };
-            const { activeState } = status;
+            const { parserstate } = { ...state };
+            const { modal = {} } = { ...parserstate };
             let units = this.state.units;
             let {
                 probeDepth,
@@ -54,7 +56,7 @@ class ProbeWidget extends Component {
             } = store.get('widgets.probe');
 
             // Imperial
-            if (parserstate.modal.units === 'G20') {
+            if (modal.units === 'G20') {
                 units = IMPERIAL_UNITS;
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
@@ -63,7 +65,7 @@ class ProbeWidget extends Component {
             }
 
             // Metric
-            if (parserstate.modal.units === 'G21') {
+            if (modal.units === 'G21') {
                 units = METRIC_UNITS;
                 probeDepth = Number(probeDepth).toFixed(3) * 1;
                 probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
@@ -80,7 +82,7 @@ class ProbeWidget extends Component {
                 units: units,
                 controller: {
                     type: GRBL,
-                    activeState: activeState
+                    state: state
                 },
                 probeDepth: probeDepth,
                 probeFeedrate: probeFeedrate,
@@ -89,8 +91,8 @@ class ProbeWidget extends Component {
             });
         },
         'TinyG2:state': (state) => {
-            const { statusReports } = { ...state };
-            const { machineState, modal = {} } = statusReports;
+            const { sr } = { ...state };
+            const { modal = {} } = sr;
             let units = this.state.units;
             let {
                 probeDepth,
@@ -126,7 +128,7 @@ class ProbeWidget extends Component {
                 units: units,
                 controller: {
                     type: TINYG2,
-                    activeState: machineState
+                    state: state
                 },
                 probeDepth: probeDepth,
                 probeFeedrate: probeFeedrate,
@@ -191,7 +193,7 @@ class ProbeWidget extends Component {
             units: METRIC_UNITS,
             controller: {
                 type: controller.type,
-                activeState: ''
+                state: controller.state
             },
             workflowState: WORKFLOW_STATE_IDLE, // TODO: controller.workflowState
             probeCommand: store.get('widgets.probe.probeCommand'),
@@ -242,7 +244,8 @@ class ProbeWidget extends Component {
     }
     canClick() {
         const { port, workflowState } = this.state;
-        const { type, activeState } = this.state.controller;
+        const controllerType = this.state.controller.type;
+        const controllerState = this.state.controller.state;
 
         if (!port) {
             return false;
@@ -250,13 +253,25 @@ class ProbeWidget extends Component {
         if (workflowState !== WORKFLOW_STATE_IDLE) {
             return false;
         }
-        if (type === GRBL) {
-            if (!includes([GRBL_ACTIVE_STATE_IDLE, GRBL_ACTIVE_STATE_RUN], activeState)) {
+        if (controllerType === GRBL) {
+            const activeState = _.get(controllerState, 'status.activeState');
+            const states = [
+                GRBL_ACTIVE_STATE_IDLE,
+                GRBL_ACTIVE_STATE_RUN
+            ];
+            if (!includes(states, activeState)) {
                 return false;
             }
         }
-        if (type === TINYG2) {
-            if (!includes([TINYG2_MACHINE_STATE_STOP, TINYG2_MACHINE_STATE_RUN], activeState)) {
+        if (controllerType === TINYG2) {
+            const machineState = _.get(controllerState, 'sr.machineState');
+            const states = [
+                TINYG2_MACHINE_STATE_READY,
+                TINYG2_MACHINE_STATE_STOP,
+                TINYG2_MACHINE_STATE_END,
+                TINYG2_MACHINE_STATE_RUN
+            ];
+            if (!includes(states, machineState)) {
                 return false;
             }
         }

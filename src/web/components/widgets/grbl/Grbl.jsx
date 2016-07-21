@@ -77,7 +77,9 @@ class Grbl extends Component {
     render() {
         const { state, actions } = this.props;
         const { canClick, showGCode } = state;
-        const { type, activeState, parserstate = {} } = state.controller;
+        const controllerState = state.controller.state;
+        const activeState = _.get(controllerState, 'status.activeState');
+        const parserstate = _.get(controllerState, 'parserstate', {});
         const none = '–';
         let modal = parserstate.modal || {};
 

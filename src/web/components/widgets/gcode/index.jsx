@@ -102,8 +102,8 @@ class GCodeWidget extends React.Component {
             }
         },
         'TinyG2:state': (state) => {
-            const { statusReports } = { ...state };
-            const { modal = {} } = statusReports;
+            const { sr } = { ...state };
+            const { modal = {} } = sr;
             let units = this.state.units;
 
             // Imperial
@@ -195,16 +195,14 @@ class GCodeWidget extends React.Component {
                     });
                 }
             }),
-            pubsub.subscribe('gcode:load', (msg, gcode) => {
-                gcode = gcode || '';
-
-                parseString(gcode, (err, data) => {
+            pubsub.subscribe('gcode:load', (msg, data = '') => {
+                parseString(data, (err, lines) => {
                     if (err) {
                         log.error(err);
                         return;
                     }
 
-                    const lines = _(data)
+                    lines = _(lines)
                         .map((o, index) => ({
                             id: index,
                             status: GCODE_STATUS_NOT_STARTED,
@@ -212,7 +210,7 @@ class GCodeWidget extends React.Component {
                         }))
                         .value();
 
-                    this.setState({ lines });
+                    this.setState({ lines: lines });
                 });
             }),
             pubsub.subscribe('gcode:unload', (msg) => {
@@ -257,7 +255,7 @@ class GCodeWidget extends React.Component {
                     });
                 }
             }),
-            pubsub.subscribe('gcode:boundingBox', (msg, bbox) => {
+            pubsub.subscribe('gcode:bbox', (msg, bbox) => {
                 const dX = bbox.max.x - bbox.min.x;
                 const dY = bbox.max.y - bbox.min.y;
                 const dZ = bbox.max.z - bbox.min.z;
