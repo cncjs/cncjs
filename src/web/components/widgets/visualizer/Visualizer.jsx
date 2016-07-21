@@ -1,11 +1,9 @@
 import _ from 'lodash';
 import colornames from 'colornames';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import { THREE, Detector } from '../../../lib/three';
-import controller from '../../../lib/controller';
-import store from '../../../store';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import FileUploader from './FileUploader';
@@ -16,11 +14,6 @@ import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
-import {
-    GRBL_ACTIVE_STATE_RUN,
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_IDLE
-} from '../../../constants';
 
 const AXIS_LENGTH = 300;
 const GRID_X_LENGTH = 600;
@@ -34,188 +27,105 @@ const CAMERA_POSITION_X = 0;
 const CAMERA_POSITION_Y = 0;
 const CAMERA_POSITION_Z = 200; // Move the camera out a bit from the origin (0, 0, 0)
 
-class Visualizer extends React.Component {
+class Visualizer extends Component {
+    static propTypes = {
+        state: PropTypes.object
+    };
+
+    pubsubTokens = [];
     workPosition = {
         x: 0,
         y: 0,
         z: 0
     };
-    renderAnimation = store.get('widgets.visualizer.animation');
-    controllerEvents = {
-        'gcode:statuschange': (data) => {
-            if (!(this.gcodeVisualizer)) {
-                return;
-            }
+    group = new THREE.Group();
+    pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
+        _.each(this.group.children, (o) => {
+            o.translateX(x);
+            o.translateY(y);
+            o.translateZ(z);
+        });
 
-            const frameIndex = data.sent;
-            this.gcodeVisualizer.setFrameIndex(frameIndex);
-        },
-        'Grbl:state': (state) => {
-            const { status, parserstate } = { ...state };
-            const { activeState, workPosition } = status;
+        // Update the scene
+        this.updateScene();
+    });
 
-            this.parserstate = parserstate;
-
-            if (this.state.activeState !== activeState) {
-                this.setState({ activeState: activeState });
-            }
-
-            if (_.isEqual(this.workPosition, workPosition)) {
-                return;
-            }
-
-            // Update workPosition
-            this.workPosition = workPosition;
-
-            const pivotPoint = this.pivotPoint.get();
-
-            let { x, y, z } = workPosition;
-            x = (Number(x) || 0) - pivotPoint.x;
-            y = (Number(y) || 0) - pivotPoint.y;
-            z = (Number(z) || 0) - pivotPoint.z;
-
-            if (this.toolhead) {
-                // Set tool head position
-                this.toolhead.position.set(x, y, z);
-            }
-
-            // Update the scene
-            this.updateScene();
-        },
-        'TinyG2:state': (state) => { // TODO
-        }
-    };
-    storeEventListener = () => {
-        const renderAnimation = store.get('widgets.visualizer.animation');
-        if (renderAnimation !== this.renderAnimation) {
-            this.renderAnimation = renderAnimation;
-
-            this.toolhead.visible = renderAnimation;
-
-            // Update the scene
-            this.updateScene();
-        }
-    };
-    pubsubTokens = [];
-
-    constructor() {
-        super();
-        this.state = this.getDefaultState();
-    }
     componentWillMount() {
-        // Grbl
-        this.parserstate = {};
-        this.gcodeVisualizer = null;
         // Three.js
         this.renderer = null;
         this.scene = null;
         this.camera = null;
         this.controls = null;
         this.toolhead = null;
-        this.group = new THREE.Group();
+        this.visualizer = null;
     }
     componentDidMount() {
         this.subscribe();
-        this.addControllerEvents();
         this.addResizeEventListener();
-        store.on('change', this.storeEventListener);
 
-        const el = ReactDOM.findDOMNode(this.refs.visualizer);
+        const el = ReactDOM.findDOMNode(this.refs.renderer);
         this.createScene(el);
         this.resizeRenderer();
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+        this.removeResizeEventListener();
+        this.clearScene();
+    }
+    componentWillReceiveProps(nextProps) {
+        const { state } = nextProps;
+        const { gcode, workPosition, renderAnimation } = state;
 
-        this.pivotPoint = new PivotPoint3({
-            x: 0,
-            y: 0,
-            z: 0
-        }, (x, y, z) => { // The relative xyz position
-            _.each(this.group.children, (o) => {
-                o.translateX(x);
-                o.translateY(y);
-                o.translateZ(z);
-            });
+        // Update visualizer's frame index
+        if (this.visualizer) {
+            const frameIndex = gcode.sent;
+            this.visualizer.setFrameIndex(frameIndex);
+        }
+
+        // Update work position
+        if (!_.isEqual(this.workPosition, workPosition)) {
+            this.workPosition = {
+                ...this.workPosition,
+                ...workPosition
+            };
+
+            this.updateWorkPosition(this.workPosition);
+        }
+
+        // Toggle toolhead visibility
+        if (this.toolhead.visible !== renderAnimation) {
+            this.toolhead.visible = renderAnimation;
 
             // Update the scene
             this.updateScene();
-        });
-    }
-    componentWillUnmount() {
-        store.removeListener('change', this.storeEventListener);
-        this.removeResizeEventListener();
-        this.removeControllerEvents();
-        this.unsubscribe();
-        this.clearScene();
+        }
     }
     shouldComponentUpdate(nextProps, nextState) {
-        const props = ['port', 'ready', 'activeState', 'workflowState', 'boundingBox'];
-        return !_.isEqual(_.pick(nextState, props), _.pick(this.state, props));
+        if (nextProps.state.port !== this.props.state.port) {
+            return true;
+        }
+        if (nextProps.state.workflowState !== this.props.state.workflowState) {
+            return true;
+        }
+        /*
+        if (!_.isEqual(nextProps.state.controller, this.props.state.controller)) {
+            return true;
+        }
+        */
+        if (!_.isEqual(
+            _.pick(nextProps.state.gcode, ['loading', 'ready']),
+            _.pick(this.props.state.gcode, ['loading', 'ready']))) {
+            return true;
+        }
+
+        return false;
     }
     componentDidUpdate(prevProps, prevState) {
         // The renderAnimationLoop will check the state of activeState and workflowState
         requestAnimationFrame(::this.renderAnimationLoop);
     }
-    getDefaultState() {
-        return {
-            port: controller.port,
-            ready: false,
-            activeState: '',
-            workflowState: WORKFLOW_STATE_IDLE,
-            boundingBox: {
-                min: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                max: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                }
-            }
-        };
-    }
     subscribe() {
         const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    pubsub.publish('gcode:unload');
-
-                    const defaultState = this.getDefaultState();
-                    this.setState({
-                        ...defaultState,
-                        port: ''
-                    });
-                }
-            }),
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                if (this.state.workflowState !== workflowState) {
-                    this.setState({ workflowState: workflowState });
-                }
-            }),
-            pubsub.subscribe('gcode:load', (msg, gcode) => {
-                gcode = gcode || '';
-
-                this.startWaiting();
-
-                this.loadGCode(gcode, (options) => {
-                    pubsub.publish('gcode:boundingBox', options.boundingBox);
-
-                    this.setState({
-                        ready: true,
-                        boundingBox: options.boundingBox
-                    });
-
-                    this.stopWaiting();
-                });
-            }),
-            pubsub.subscribe('gcode:unload', (msg) => {
-                this.unloadGCode();
-                this.setState({ ready: false });
-            }),
             pubsub.subscribe('resize', (msg) => {
                 this.resizeRenderer();
             })
@@ -227,26 +137,6 @@ class Visualizer extends React.Component {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
-    }
-    addControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
-            controller.on(eventName, callback);
-        });
-    }
-    removeControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
-            controller.off(eventName, callback);
-        });
-    }
-    startWaiting() {
-        // Adds the 'wait' class to <html>
-        const root = document.documentElement;
-        root.classList.add('wait');
-    }
-    stopWaiting() {
-        // Adds the 'wait' class to <html>
-        const root = document.documentElement;
-        root.classList.remove('wait');
     }
     addResizeEventListener() {
         // handle resize event
@@ -269,7 +159,7 @@ class Visualizer extends React.Component {
             return;
         }
 
-        const el = ReactDOM.findDOMNode(this.refs.visualizer);
+        const el = ReactDOM.findDOMNode(this.refs.renderer);
         const navbarHeight = 50;
         const widgetHeaderHeight = 32;
         const borderWidth = 1;
@@ -399,12 +289,14 @@ class Visualizer extends React.Component {
         }
 
         { // Tool Head
+            const { state } = this.props;
+            const { renderAnimation } = state;
             const color = colornames('silver');
             const url = 'textures/brushed-steel-texture.jpg';
             loadTexture(url, (err, texture) => {
                 this.toolhead = new ToolHead(color, texture);
                 this.toolhead.name = 'ToolHead';
-                this.toolhead.visible = this.state.renderAnimation;
+                this.toolhead.visible = renderAnimation;
                 this.group.add(this.toolhead);
 
                 // Update the scene
@@ -417,7 +309,9 @@ class Visualizer extends React.Component {
         return this.scene;
     }
     updateScene() {
-        this.renderer.render(this.scene, this.camera);
+        if (this.renderer) {
+            this.renderer.render(this.scene, this.camera);
+        }
     }
     clearScene() {
         // to iterrate over all children (except the first) in a scene
@@ -430,10 +324,8 @@ class Visualizer extends React.Component {
         this.updateScene();
     }
     renderAnimationLoop() {
-        const { renderAnimation, activeState, workflowState } = this.state;
-        const isAgitated = renderAnimation
-            && (activeState === GRBL_ACTIVE_STATE_RUN)
-            && (workflowState === WORKFLOW_STATE_RUNNING);
+        const { state } = this.props;
+        const { isAgitated } = state;
 
         if (isAgitated) {
             // Call the render() function up to 60 times per second (i.e. 60fps)
@@ -529,6 +421,23 @@ class Visualizer extends React.Component {
         const degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
+    // Update work position
+    updateWorkPosition(workPosition) {
+        const pivotPoint = this.pivotPoint.get();
+
+        let { x = 0, y = 0, z = 0 } = { ...workPosition };
+        x = (Number(x) || 0) - pivotPoint.x;
+        y = (Number(y) || 0) - pivotPoint.y;
+        z = (Number(z) || 0) - pivotPoint.z;
+
+        if (this.toolhead) {
+            // Set tool head position
+            this.toolhead.position.set(x, y, z);
+        }
+
+        // Update the scene
+        this.updateScene();
+    }
     // Make the controls look at the specified position
     lookAt(x, y, z) {
         this.controls.target.x = x;
@@ -540,22 +449,19 @@ class Visualizer extends React.Component {
     lookAtCenter() {
         this.controls.reset();
     }
-    loadGCode(gcode, callback) {
+    load(data, callback) {
         // Remove previous G-code object
-        this.unloadGCode();
+        this.unload();
 
-        const el = ReactDOM.findDOMNode(this.refs.visualizer);
+        const el = ReactDOM.findDOMNode(this.refs.renderer);
 
-        this.gcodeVisualizer = new GCodeVisualizer({
-            modalState: this.parserstate.modal
-        });
-
-        this.gcodeVisualizer.render({
-            gcode: gcode,
+        this.visualizer = new GCodeVisualizer();
+        this.visualizer.render({
+            gcode: data,
             width: el.clientWidth,
             height: el.clientHeight
         }, (obj) => {
-            obj.name = 'GCodeVisualizer';
+            obj.name = 'Visualizer';
             this.group.add(obj);
 
             const bbox = getBoundingBox(obj);
@@ -582,13 +488,13 @@ class Visualizer extends React.Component {
             // Update the scene
             this.updateScene();
 
-            (typeof callback === 'function') && callback({ boundingBox: bbox });
+            (typeof callback === 'function') && callback({ bbox: bbox });
         });
     }
-    unloadGCode() {
-        const gcodeVisualizerObject = this.group.getObjectByName('GCodeVisualizer');
-        if (gcodeVisualizerObject) {
-            this.group.remove(gcodeVisualizerObject);
+    unload() {
+        const visualizerObject = this.group.getObjectByName('Visualizer');
+        if (visualizerObject) {
+            this.group.remove(visualizerObject);
         }
 
         // Sets the pivot point to the origin point (0, 0, 0)
@@ -618,69 +524,68 @@ class Visualizer extends React.Component {
     }
     // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
     panUp() {
-        const { ready } = this.state;
+        const { state } = this.props;
+        const { canClick } = state;
         const { noPan, panSpeed } = this.controls;
 
-        if (!ready || noPan) {
+        if (!canClick || noPan) {
             return;
         }
 
         this.pan(0, 1 * panSpeed);
     }
     panDown() {
-        const { ready } = this.state;
+        const { state } = this.props;
+        const { canClick } = state;
         const { noPan, panSpeed } = this.controls;
 
-        if (!ready || noPan) {
+        if (!canClick || noPan) {
             return;
         }
 
         this.pan(0, -1 * panSpeed);
     }
     panLeft() {
-        const { ready } = this.state;
+        const { state } = this.props;
+        const { canClick } = state;
         const { noPan, panSpeed } = this.controls;
 
-        if (!ready || noPan) {
+        if (!canClick || noPan) {
             return;
         }
 
         this.pan(1 * panSpeed, 0);
     }
     panRight() {
-        const { ready } = this.state;
+        const { state } = this.props;
+        const { canClick } = state;
         const { noPan, panSpeed } = this.controls;
 
-        if (!ready || noPan) {
+        if (!canClick || noPan) {
             return;
         }
 
         this.pan(-1 * panSpeed, 0);
     }
     render() {
-        const { port, ready, activeState } = this.state;
-        const hasLoaded = !!port && ready;
-        const notLoaded = !hasLoaded;
+        const { state } = this.props;
+        const { gcode } = state;
 
         return (
             <div>
-                <Toolbar
-                    port={port}
-                    ready={ready}
-                    activeState={activeState}
-                />
+                <Toolbar {...this.props} />
                 <Joystick
-                    ready={ready}
+                    {...this.props}
                     up={::this.panUp}
                     down={::this.panDown}
                     left={::this.panLeft}
                     right={::this.panRight}
                     center={::this.lookAtCenter}
                 />
-                {notLoaded &&
-                    <FileUploader port={port} />
+                {!gcode.ready &&
+                    <FileUploader {...this.props} />
                 }
-                <div ref="visualizer" className="visualizer" />
+                <div ref="renderer" className="renderer" />
             </div>
         );
     }

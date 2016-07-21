@@ -15,11 +15,7 @@ const motionColor = {
 };
 
 class GCodeVisualizer {
-    constructor(options) {
-        options = options || {};
-
-        this.options = options;
-
+    constructor() {
         this.group = new THREE.Object3D();
         this.geometry = new THREE.Geometry();
 
@@ -92,9 +88,8 @@ class GCodeVisualizer {
         this.geometry.vertices = this.geometry.vertices.concat(vertices);
         this.geometry.colors = this.geometry.colors.concat(colors);
     }
-    render(options = {}, callback = noop) {
+    render({ gcode }, callback = noop) {
         const toolpath = new GCodeToolpath({
-            modalState: this.options.modalState,
             addLine: (modalState, v1, v2) => {
                 this.addLine(modalState, v1, v2);
             },
@@ -104,7 +99,7 @@ class GCodeVisualizer {
         });
 
         toolpath
-            .loadFromString(options.gcode, (err, results) => {
+            .loadFromString(gcode, (err, results) => {
                 this.update();
 
                 log.debug({

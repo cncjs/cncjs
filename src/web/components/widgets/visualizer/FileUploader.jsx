@@ -1,36 +1,17 @@
 import _ from 'lodash';
-import pubsub from 'pubsub-js';
-import React from 'react';
-import request from 'superagent';
+import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 
-class FileUploader extends React.Component {
+class FileUploader extends Component {
     static propTypes = {
-        port: React.PropTypes.string
-    };
-    state = {
-        isUploading: false
+        state: PropTypes.object,
+        actions: PropTypes.object
     };
 
-    startWaiting() {
-        // Adds the 'wait' class to <html>
-        const root = document.documentElement;
-        root.classList.add('wait');
-    }
-    stopWaiting() {
-        // Adds the 'wait' class to <html>
-        const root = document.documentElement;
-        root.classList.remove('wait');
-    }
     onChangeFile(event) {
+        const { actions } = this.props;
         const files = event.target.files;
-        const { port } = this.props;
-
-        if (!port) {
-            return;
-        }
-
         const file = files[0];
         const reader = new FileReader();
 
@@ -51,31 +32,11 @@ class FileUploader extends React.Component {
                 'type'
             ]));
 
-            this.startWaiting();
-            this.setState({ isUploading: true });
-
-            const gcode = result;
-            request
-                .put('/api/gcode')
-                .send({
-                    port: port,
-                    meta: {
-                        name: file.name,
-                        size: file.size
-                    },
-                    gcode: gcode
-                })
-                .end((err, res) => {
-                    this.stopWaiting();
-
-                    if (err || res.err) {
-                        this.setState({ isUploading: false });
-                        log.error('Failed to upload file', err, res);
-                        return;
-                    }
-
-                    pubsub.publish('gcode:load', gcode);
-                });
+            const meta = {
+                name: file.name,
+                size: file.size
+            };
+            actions.uploadFile(result, meta);
         };
 
         try {
@@ -89,10 +50,10 @@ class FileUploader extends React.Component {
         this.fileInputEl.click();
     }
     render() {
-        const { port } = this.props;
-        const { isUploading } = this.state;
-        const notUploading = !isUploading;
-        const canClick = !!port && notUploading;
+        const { state } = this.props;
+        const { port, gcode } = state;
+        const disabled = !port || gcode.loading;
+
         const inputAttributes = {
             type: 'file',
             style: { display: 'none' },
@@ -109,7 +70,7 @@ class FileUploader extends React.Component {
         return (
             <div className="file-uploader-block">
                 <div className="file-uploader-box" ref="file-uploader-box">
-                    <div className="file-uploader-content" disabled={!canClick}>
+                    <div className="file-uploader-content" disabled={disabled}>
                         <i style={{ fontSize: 48 }} className="fa fa-arrow-circle-o-up"></i>
                         <p className="file-uploader-tips">{i18n._('Drop G-code file here or click below to upload.')}</p>
                         <br />
@@ -117,7 +78,7 @@ class FileUploader extends React.Component {
                             type="button"
                             className="btn btn-primary"
                             onClick={::this.onClickToUpload}
-                            disabled={!canClick}
+                            disabled={disabled}
                         >
                             {i18n._('Upload G-code')}
                         </button>
