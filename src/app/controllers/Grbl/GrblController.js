@@ -6,9 +6,12 @@ import Grbl from './Grbl';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE,
-    GRBL_REALTIME_COMMANDS
+    WORKFLOW_STATE_IDLE
 } from '../../constants';
+import {
+    GRBL,
+    GRBL_REALTIME_COMMANDS
+} from './constants';
 
 const PREFIX = '[Grbl]';
 
@@ -24,7 +27,7 @@ class Connection {
 }
 
 class GrblController {
-    type = 'Grbl';
+    type = GRBL;
 
     // Connections
     connections = [];
