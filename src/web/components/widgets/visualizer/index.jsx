@@ -9,8 +9,8 @@ import log from '../../../lib/log';
 import store from '../../../store';
 import Widget from '../../widget';
 import {
+    // Grbl
     GRBL,
-    TINYG2,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
     GRBL_ACTIVE_STATE_HOLD,
@@ -18,6 +18,9 @@ import {
     GRBL_ACTIVE_STATE_HOME,
     GRBL_ACTIVE_STATE_ALARM,
     GRBL_ACTIVE_STATE_CHECK,
+
+    // TinyG2
+    TINYG2,
     TINYG2_MACHINE_STATE_INIT,
     TINYG2_MACHINE_STATE_READY,
     TINYG2_MACHINE_STATE_ALARM,
@@ -30,6 +33,8 @@ import {
     TINYG2_MACHINE_STATE_HOMING,
     TINYG2_MACHINE_STATE_JOGGING,
     TINYG2_MACHINE_STATE_SHUTDOWN,
+
+    // Workflow
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
@@ -395,47 +400,62 @@ class VisualizerWidget extends Component {
     toggleRenderAnimation() {
         this.setState({ renderAnimation: !this.state.renderAnimation });
     }
-    getStateText() {
+    getControllerState() {
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
 
         if (controllerType === GRBL) {
             const activeState = _.get(controllerState, 'status.activeState');
             const stateText = {
-                [GRBL_ACTIVE_STATE_IDLE]: i18n._('Active state: Idle'),
-                [GRBL_ACTIVE_STATE_RUN]: i18n._('Active state: Run'),
-                [GRBL_ACTIVE_STATE_HOLD]: i18n._('Active state: Hold'),
-                [GRBL_ACTIVE_STATE_DOOR]: i18n._('Active state: Door'),
-                [GRBL_ACTIVE_STATE_HOME]: i18n._('Active state: Home'),
-                [GRBL_ACTIVE_STATE_ALARM]: i18n._('Active state: Alarm'),
-                [GRBL_ACTIVE_STATE_CHECK]: i18n._('Active state: Check')
-            }[activeState];
-            return stateText || i18n._('Active state: None');
+                [GRBL_ACTIVE_STATE_IDLE]: i18n._('Idle'),
+                [GRBL_ACTIVE_STATE_RUN]: i18n._('Run'),
+                [GRBL_ACTIVE_STATE_HOLD]: i18n._('Hold'),
+                [GRBL_ACTIVE_STATE_DOOR]: i18n._('Door'),
+                [GRBL_ACTIVE_STATE_HOME]: i18n._('Home'),
+                [GRBL_ACTIVE_STATE_ALARM]: i18n._('Alarm'),
+                [GRBL_ACTIVE_STATE_CHECK]: i18n._('Check')
+            }[activeState] || i18n._('None');
+
+            return (
+                <div>
+                    <strong style={{ marginRight: 10 }}>{controllerType}</strong>
+                    <span className="well well-xs">
+                        {stateText}
+                    </span>
+                </div>
+            );
         }
 
         if (controllerType === TINYG2) {
             const machineState = _.get(controllerState, 'sr.machineState');
             const stateText = {
-                [TINYG2_MACHINE_STATE_INIT]: i18n._('Machine state: Init (0)'),
-                [TINYG2_MACHINE_STATE_READY]: i18n._('Machine state: Ready (1)'),
-                [TINYG2_MACHINE_STATE_ALARM]: i18n._('Machine state: Alarm (2)'),
-                [TINYG2_MACHINE_STATE_STOP]: i18n._('Machine state: Stop (3)'),
-                [TINYG2_MACHINE_STATE_END]: i18n._('Machine state: End (4)'),
-                [TINYG2_MACHINE_STATE_RUN]: i18n._('Machine state: Run (5)'),
-                [TINYG2_MACHINE_STATE_HOLD]: i18n._('Machine state: Hold (6)'),
-                [TINYG2_MACHINE_STATE_PROBE]: i18n._('Machine state: Probe (7)'),
-                [TINYG2_MACHINE_STATE_CYCLING]: i18n._('Machine state: Cycle (8)'),
-                [TINYG2_MACHINE_STATE_HOMING]: i18n._('Machine state: Home (9)'),
-                [TINYG2_MACHINE_STATE_JOGGING]: i18n._('Machine state: Jogging (10)'),
-                [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n._('Machine state: Shutdown (11)')
-            }[machineState];
-            return stateText || i18n._('Machine state: None');
+                [TINYG2_MACHINE_STATE_INIT]: i18n._('Init'),
+                [TINYG2_MACHINE_STATE_READY]: i18n._('Ready'),
+                [TINYG2_MACHINE_STATE_ALARM]: i18n._('Alarm'),
+                [TINYG2_MACHINE_STATE_STOP]: i18n._('Stop'),
+                [TINYG2_MACHINE_STATE_END]: i18n._('End'),
+                [TINYG2_MACHINE_STATE_RUN]: i18n._('Run'),
+                [TINYG2_MACHINE_STATE_HOLD]: i18n._('Hold'),
+                [TINYG2_MACHINE_STATE_PROBE]: i18n._('Probe'),
+                [TINYG2_MACHINE_STATE_CYCLING]: i18n._('Cycling'),
+                [TINYG2_MACHINE_STATE_HOMING]: i18n._('Homing'),
+                [TINYG2_MACHINE_STATE_JOGGING]: i18n._('Jogging'),
+                [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n._('Shutdown')
+            }[machineState] || i18n._('None');
+
+            return (
+                <div>
+                    <strong style={{ marginRight: 10 }}>{controllerType}</strong>
+                    <span className="well well-xs">
+                        {stateText}
+                    </span>
+                </div>
+            );
         }
 
-        return i18n._('Disconnected');
+        return null;
     }
     render() {
-        const stateText = this.getStateText();
         const state = {
             ...this.state,
             canClick: this.canClick(),
@@ -457,7 +477,9 @@ class VisualizerWidget extends Component {
             <div {...this.props} data-ns="widgets/visualizer">
                 <Widget borderless={true}>
                     <Widget.Header fixed>
-                        <Widget.Title>{stateText}</Widget.Title>
+                        <Widget.Title>
+                            {this.getControllerState()}
+                        </Widget.Title>
                     </Widget.Header>
                     <Widget.Content>
                         <Visualizer
