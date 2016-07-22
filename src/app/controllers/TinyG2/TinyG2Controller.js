@@ -158,7 +158,8 @@ class TinyG2Controller {
 
             // Setting Status Report Fields
             // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports#setting-status-report-fields
-            { cmd: JSON.stringify({
+            {
+                cmd: JSON.stringify({
                     sr: {
                         line: true,
                         vel: true,
