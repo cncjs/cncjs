@@ -2,7 +2,7 @@ import _ from 'lodash';
 import events from 'events';
 import {
     GRBL_MODAL_GROUPS
-} from '../../constants';
+} from './constants';
 
 class GrblLineParser {
     parse(line) {
