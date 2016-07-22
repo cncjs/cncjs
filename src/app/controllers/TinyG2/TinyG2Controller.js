@@ -8,6 +8,9 @@ import {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from '../../constants';
+import {
+    TINYG2
+} from './constants';
 
 const PREFIX = '[TinyG2]';
 
@@ -23,7 +26,7 @@ class Connection {
 }
 
 class TinyG2Controller {
-    type = 'TinyG2';
+    type = TINYG2;
 
     // Connections
     connections = [];
@@ -114,45 +117,90 @@ class TinyG2Controller {
             c.socket.emit('TinyG2:state', this.state);
         });
     }
+    // https://github.com/synthetos/TinyG/wiki/TinyG-Configuration-for-Firmware-Version-0.97
     init(callback = noop) {
         const cmds = [
             { pauseAfter: 500 },
-            { cmd: '{"clear":null}', pauseAfter: 250 }, // Reset TinyG2
+
+            // Reset TinyG2
+            { cmd: '{"clear":null}', pauseAfter: 250 },
+
+            // Help
             { cmd: '?', pauseAfter: 150 },
-            { cmd: '{"js":1}', pauseAfter: 150 },
-            { cmd: '{"sr":null}' },
-            { cmd: '{"sv":1}', pauseAfter: 50 },
-            { cmd: '{"si":250}', pauseAfter: 50 },
-            { cmd: '{"qr":null}' },
-            { cmd: '{"qv":1}', pauseAfter: 50 },
-            { cmd: '{"ec":0}', pauseAfter: 50 },
+
+            // Enable JSON mode
+            // 0=text mode, 1=JSON mode
+            { cmd: '{"ej":1}', pauseAfter: 50 },
+
+            // JSON verbosity
+            // 0=silent, 1=footer, 2=messages, 3=configs, 4=linenum, 5=verbose
             { cmd: '{"jv":4}', pauseAfter: 50 },
-            { cmd: '{"hp":null}' },
-            { cmd: '{"fb":null}' },
-            { cmd: '{"mt":n}' },
-            {
-                cmd: JSON.stringify({
+
+            // JSON syntax
+            // 0=relaxed, 1=strict
+            { cmd: '{"js":1}', pauseAfter: 50 },
+
+            // Enable CR on TX
+            // 0=send LF line termination on TX, 1=send both LF and CR termination
+            { cmd: '{"ec":0}', pauseAfter: 50 },
+
+            // Queue report verbosity
+            // 0=off, 1=filtered, 2=verbose
+            { cmd: '{"qv":1}', pauseAfter: 50 },
+
+            // Status report verbosity
+            // 0=off, 1=filtered, 2=verbose
+            { cmd: '{"sv":1}', pauseAfter: 50 },
+
+            // Status report interval
+            // in milliseconds (50ms minimum interval)
+            { cmd: '{"si":250}', pauseAfter: 50 },
+
+            // Setting Status Report Fields
+            // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports#setting-status-report-fields
+            { cmd: JSON.stringify({
                     sr: {
                         line: true,
+                        vel: true,
+                        feed: true,
+                        stat: true,
+                        cycs: true,
+                        mots: true,
+                        hold: true,
+                        momo: true,
+                        coor: true,
+                        plan: true,
+                        unit: true,
+                        dist: true,
+                        frmo: true,
+                        path: true,
                         posx: true,
                         posy: true,
                         posz: true,
-                        vel: true,
-                        unit: true,
-                        stat: true,
-                        feed: true,
-                        coor: true,
-                        momo: true,
-                        plan: true,
-                        path: true,
-                        dist: true,
                         mpox: true,
                         mpoy: true,
                         mpoz: true
                     }
                 }),
-                pauseAfter: 250
-            }
+                pauseAfter: 50
+            },
+
+            // Hardware Platform
+            { cmd: '{"hp":null}' },
+
+            // Firmware Build
+            { cmd: '{"fb":null}' },
+
+            // Motor Timeout
+            { cmd: '{"mt":null}' },
+
+            // Request queue report
+            { cmd: '{"qr":null}' },
+
+            // Request status report
+            { cmd: '{"sr":null}' },
+
+            { pauseAfter: 250 }
         ];
 
         const sendInitCommands = (i = 0) => {
@@ -315,27 +363,31 @@ class TinyG2Controller {
             'pause': () => {
                 this.workflowState = WORKFLOW_STATE_PAUSED;
                 this.writeln(socket, '!');
+                // Request queue report
                 this.writeln(socket, '{"qr":""}');
             },
             'resume': () => {
                 this.writeln(socket, '~');
+                // Request queue report
                 this.writeln(socket, '{"qr":""}');
                 this.workflowState = WORKFLOW_STATE_RUNNING;
                 this.sender.next();
             },
             'feedhold': () => {
                 this.writeln(socket, '!');
-                this.writeln(socket, '{"qr":""}');
             },
             'cyclestart': () => {
                 this.writeln(socket, '~');
+                // Request queue report
                 this.writeln(socket, '{"qr":""}');
             },
             'queueflush': () => {
                 this.writeln(socket, '%');
+                // Request queue report
                 this.writeln(socket, '{"qr":""}');
             },
             'reset': () => {
+                // TODO: ^x or {"clear": null}
                 this.writeln(socket, '{"clear":null}');
             },
             'homing': () => {
