@@ -216,61 +216,61 @@ class TinyG2 extends events.EventEmitter {
                     'hold': 'feedholdState',
                     'momo': (target, val) => {
                         const gcode = {
-                            TINYG2_GCODE_MOTION_G0: 'G0', // Straight (linear) traverse
-                            TINYG2_GCODE_MOTION_G1: 'G1', // Straight (linear) feed
-                            TINYG2_GCODE_MOTION_G2: 'G2', // CW arc traverse
-                            TINYG2_GCODE_MOTION_G3: 'G3', // CCW arc traverse
-                            TINYG2_GCODE_MOTION_G80: 'G80' // Cancel motion mode
+                            [TINYG2_GCODE_MOTION_G0]: 'G0', // Straight (linear) traverse
+                            [TINYG2_GCODE_MOTION_G1]: 'G1', // Straight (linear) feed
+                            [TINYG2_GCODE_MOTION_G2]: 'G2', // CW arc traverse
+                            [TINYG2_GCODE_MOTION_G3]: 'G3', // CCW arc traverse
+                            [TINYG2_GCODE_MOTION_G80]: 'G80' // Cancel motion mode
                         }[val] || '';
                         _.set(target, 'modal.motion', gcode);
                     },
                     'coor': (target, val) => {
                         const gcode = {
-                            TINYG2_GCODE_COORDINATE_G53: 'G53', // Machine coordinate system
-                            TINYG2_GCODE_COORDINATE_G54: 'G54', // Coordinate system 1
-                            TINYG2_GCODE_COORDINATE_G55: 'G55', // Coordinate system 2
-                            TINYG2_GCODE_COORDINATE_G56: 'G56', // Coordinate system 3
-                            TINYG2_GCODE_COORDINATE_G57: 'G57', // Coordinate system 4
-                            TINYG2_GCODE_COORDINATE_G58: 'G58', // Coordinate system 5
-                            TINYG2_GCODE_COORDINATE_G59: 'G59' // Coordinate system 6
+                            [TINYG2_GCODE_COORDINATE_G53]: 'G53', // Machine coordinate system
+                            [TINYG2_GCODE_COORDINATE_G54]: 'G54', // Coordinate system 1
+                            [TINYG2_GCODE_COORDINATE_G55]: 'G55', // Coordinate system 2
+                            [TINYG2_GCODE_COORDINATE_G56]: 'G56', // Coordinate system 3
+                            [TINYG2_GCODE_COORDINATE_G57]: 'G57', // Coordinate system 4
+                            [TINYG2_GCODE_COORDINATE_G58]: 'G58', // Coordinate system 5
+                            [TINYG2_GCODE_COORDINATE_G59]: 'G59' // Coordinate system 6
                         }[val] || '';
                         _.set(target, 'modal.coordinate', gcode);
                     },
                     'plan': (target, val) => {
                         const gcode = {
-                            TINYG2_GCODE_PLANE_G17: 'G17', // XY plane
-                            TINYG2_GCODE_PLANE_G18: 'G18', // XZ plane
-                            TINYG2_GCODE_PLANE_G19: 'G19' // YZ plane
+                            [TINYG2_GCODE_PLANE_G17]: 'G17', // XY plane
+                            [TINYG2_GCODE_PLANE_G18]: 'G18', // XZ plane
+                            [TINYG2_GCODE_PLANE_G19]: 'G19' // YZ plane
                         }[val] || '';
                         _.set(target, 'modal.plane', gcode);
                     },
                     'unit': (target, val) => {
                         const gcode = {
-                            TINYG2_GCODE_UNITS_G20: 'G20', // Inches mode
-                            TINYG2_GCODE_UNITS_G21: 'G21' // Millimeters mode
+                            [TINYG2_GCODE_UNITS_G20]: 'G20', // Inches mode
+                            [TINYG2_GCODE_UNITS_G21]: 'G21' // Millimeters mode
                         }[val] || '';
                         _.set(target, 'modal.units', gcode);
                     },
                     'dist': (target, val) => {
                         const gcode = {
-                            TINYG2_GCODE_DISTANCE_G90: 'G90', // Absolute distance
-                            TINYG2_GCODE_DISTANCE_G91: 'G91' // Incremental distance
+                            [TINYG2_GCODE_DISTANCE_G90]: 'G90', // Absolute distance
+                            [TINYG2_GCODE_DISTANCE_G91]: 'G91' // Incremental distance
                         }[val] || '';
                         _.set(target, 'modal.distance', gcode);
                     },
                     'frmo': (target, val) => {
                         const gcode = {
-                            TINYG2_GCODE_FEEDRATE_G93: 'G93', // Inverse time mode
-                            TINYG2_GCODE_FEEDRATE_G94: 'G94', // Units-per-minute mode
-                            TINYG2_GCODE_FEEDRATE_G95: 'G95' // Units-per-revolution mode
+                            [TINYG2_GCODE_FEEDRATE_G93]: 'G93', // Inverse time mode
+                            [TINYG2_GCODE_FEEDRATE_G94]: 'G94', // Units-per-minute mode
+                            [TINYG2_GCODE_FEEDRATE_G95]: 'G95' // Units-per-revolution mode
                         }[val] || '';
                         _.set(target, 'modal.feedrate', gcode);
                     },
                     'path': (target, val) => {
                         const gcode = {
-                            TINYG2_GCODE_PATH_G61: 'G61', // Exact path mode
-                            TINYG2_GCODE_PATH_G61_1: 'G61.1', // Exact stop mode
-                            TINYG2_GCODE_PATH_G64: 'G64' // Continuous mode
+                            [TINYG2_GCODE_PATH_G61]: 'G61', // Exact path mode
+                            [TINYG2_GCODE_PATH_G61_1]: 'G61.1', // Exact stop mode
+                            [TINYG2_GCODE_PATH_G64]: 'G64' // Continuous mode
                         }[val] || '';
                         _.set(target, 'modal.path', gcode);
                     },
