@@ -143,26 +143,7 @@ class CNCServer {
                     return;
                 }
 
-                controller.open((err) => {
-                    if (err) {
-                        log.error(`${PREFIX} Error opening serial port "${port}": err=${JSON.stringify(err)}`);
-                        socket.emit('serialport:error', { port: port });
-                        return;
-                    }
-
-                    if (this.controllers[port]) {
-                        log.error(`${PREFIX} Serialport port "${port}" was not properly closed`);
-                    }
-
-                    store.set('controllers["' + port + '"]', controller);
-
-                    socket.emit('serialport:open', {
-                        port: port,
-                        baudrate: controller.options.baudrate,
-                        controllerType: controller.type,
-                        inuse: true
-                    });
-                });
+                controller.open();
             });
 
             // Close serial port
@@ -175,16 +156,7 @@ class CNCServer {
                     return;
                 }
 
-                controller.close((err) => {
-                    if (err) {
-                        log.error(`${PREFIX} Error closing serial port "${port}": err=${JSON.stringify(err)}`);
-                    }
-                    socket.emit('serialport:close', {
-                        port: port,
-                        inuse: false
-                    });
-                    store.unset('controllers["' + port + '"]');
-                });
+                controller.close();
             });
 
             socket.on('command', (port, cmd, ...args) => {
