@@ -2,6 +2,7 @@ import _ from 'lodash';
 import SerialPort from 'serialport';
 import log from '../../lib/log';
 import GCodeSender from '../../lib/gcode-sender';
+import store from '../../store';
 import Grbl from './Grbl';
 import {
     WORKFLOW_STATE_RUNNING,
@@ -13,9 +14,9 @@ import {
     GRBL_REALTIME_COMMANDS
 } from './constants';
 
-const PREFIX = '[Grbl]';
-
-const noop = () => {};
+const dbg = (...args) => {
+    log.raw.apply('silly', [].concat(args));
+};
 
 class Connection {
     socket = null;
@@ -65,18 +66,11 @@ class GrblController {
             baudrate: baudrate
         };
 
-        // SerialPort
-        this.serialport = new SerialPort(this.options.port, {
-            autoOpen: false,
-            baudrate: this.options.baudrate,
-            parser: SerialPort.parsers.readline('\n')
-        });
-
         // GCodeSender
         this.sender = new GCodeSender();
         this.sender.on('progress', (res) => {
             if (this.isClose()) {
-                log.error(`${PREFIX} Serial port "${this.options.port}" not accessible`);
+                log.error(`[Grbl] The serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
@@ -120,9 +114,7 @@ class GrblController {
                 return;
             }
 
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
+            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('error', (res) => {
@@ -131,23 +123,17 @@ class GrblController {
                 if (length > 0) {
                     const lastDataSent = this.sender.sent[length - 1];
                     const msg = '> (' + length + ') ' + lastDataSent;
-                    this.connections.forEach((c) => {
-                        c.socket.emit('serialport:read', msg);
-                    });
+                    this.emitAll('serialport:read', msg);
                 }
 
                 this.sender.next();
             }
 
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
+            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('alarm', (res) => {
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
+            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('parserstate', (res) => {
@@ -162,21 +148,15 @@ class GrblController {
         });
 
         this.grbl.on('parameters', (res) => {
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
+            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('feedback', (res) => {
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
+            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('settings', (res) => {
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
+            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('startup', (res) => {
@@ -185,17 +165,40 @@ class GrblController {
             this.queryResponse.parserstate = false;
             this.queryResponse.parserstateEnd = false;
 
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
+            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('others', (res) => {
-            this.connections.forEach((c) => {
-                c.socket.emit('serialport:read', res.raw);
-            });
+            this.emitAll('serialport:read', res.raw);
         });
 
+        // SerialPort
+        this.serialport = new SerialPort(this.options.port, {
+            autoOpen: false,
+            baudrate: this.options.baudrate,
+            parser: SerialPort.parsers.readline('\n')
+        });
+
+        this.serialport.on('data', (data) => {
+            this.grbl.parse('' + data);
+            dbg(`[Grbl] < ${data}`);
+        });
+
+        this.serialport.on('disconnect', (err) => {
+            if (err) {
+                log.warn(`[Grbl] Disconnected from serial port "${port}":`, err);
+            }
+
+            this.close();
+        });
+
+        this.serialport.on('error', (err) => {
+            if (err) {
+                log.error(`[Grbl] Unexpected error while reading/writing serial port "${port}":`, err);
+            }
+        });
+
+        // Timer
         this.queryTimer = setInterval(() => {
             if (this.isClose()) {
                 // Serial port is closed
@@ -209,9 +212,7 @@ class GrblController {
 
             if (this.state !== this.grbl.state) {
                 this.state = this.grbl.state;
-                this.connections.forEach((c) => {
-                    c.socket.emit('Grbl:state', this.state);
-                });
+                this.emitAll('Grbl:state', this.state);
             }
 
             // ? - Current Status
@@ -229,15 +230,13 @@ class GrblController {
 
             // Detect for any G-code status changes
             if (this.sender.peek()) {
-                this.connections.forEach((c) => {
-                    c.socket.emit('gcode:statuschange', {
-                        'remain': this.sender.remain.length,
-                        'sent': this.sender.sent.length,
-                        'total': this.sender.total,
-                        'createdTime': this.sender.createdTime,
-                        'startedTime': this.sender.startedTime,
-                        'finishedTime': this.sender.finishedTime
-                    });
+                this.emitAll('gcode:statuschange', {
+                    'remain': this.sender.remain.length,
+                    'sent': this.sender.sent.length,
+                    'total': this.sender.total,
+                    'createdTime': this.sender.createdTime,
+                    'startedTime': this.sender.startedTime,
+                    'finishedTime': this.sender.finishedTime
                 });
             }
         }, 250);
@@ -253,11 +252,9 @@ class GrblController {
             this.grbl = null;
         }
     }
-    init(callback = noop) {
+    initController() {
         // Reset Grbl
         this.command(null, 'reset');
-
-        callback();
     }
     get status() {
         return {
@@ -289,8 +286,8 @@ class GrblController {
         this.queryResponse.parserstate = false;
         this.queryResponse.parserstateEnd = false;
     }
-    open(callback = noop) {
-        const { port } = this.options;
+    open() {
+        const { port, baudrate } = this.options;
 
         // Assertion check
         if (this.isOpen()) {
@@ -304,22 +301,20 @@ class GrblController {
                 return;
             }
 
-            this.serialport.on('data', (data) => {
-                this.grbl.parse('' + data);
-                log.raw('silly', _.trimEnd('Grbl> ' + data));
+            if (store.get('controllers["' + port + '"]')) {
+                log.error(`[Grbl] Serial port "${port}" was not properly closed`);
+            }
+
+            store.set('controllers["' + port + '"]', this);
+
+            this.emitAll('serialport:open', {
+                port: port,
+                baudrate: baudrate,
+                controllerType: this.type,
+                inuse: true
             });
 
-            this.serialport.on('disconnect', (err) => {
-                log.warn(`${PREFIX} Disconnected from serial port "${port}": err=${JSON.stringify(err)}`);
-                this.destroy();
-            });
-
-            this.serialport.on('error', (err) => {
-                log.error(`${PREFIX} Unexpected error while reading/writing serial port "${port}": err=${JSON.stringify(err)}`);
-                this.destroy();
-            });
-
-            log.debug(`${PREFIX} Connected to serial port "${port}"`);
+            log.debug(`[Grbl] Connected to serial port "${port}"`);
 
             // Reset
             this.reset();
@@ -327,25 +322,31 @@ class GrblController {
             // Unload G-code
             this.command(null, 'unload');
 
-            // Initialize the controller
-            this.init(callback);
+            // Initialize Grbl controller
+            this.initController();
         });
     }
-    close(callback = noop) {
+    close() {
         const { port } = this.options;
 
         // Assertion check
         if (this.isClose()) {
-            callback(new Error('Cannot close serial port ' + port));
+            log.error(`[Grbl] The serial port "${port}" was already closed`);
             return;
         }
 
-        // Reset Grbl while closing serial port
-        this.command(null, 'reset');
+        this.emitAll('serialport:close', {
+            port: port,
+            inuse: false
+        });
+        store.unset('controllers["' + port + '"]');
+
+        this.destroy();
 
         this.serialport.close((err) => {
-            this.destroy();
-            callback(err);
+            if (err) {
+                log.error(`[Grbl] Error closing serial port "${port}":`, err);
+            }
         });
     }
     isOpen() {
@@ -368,6 +369,11 @@ class GrblController {
         });
         this.connections.splice(index, 1);
     }
+    emitAll(eventName, ...args) {
+        this.connections.forEach((c) => {
+            c.socket.emit.apply(c.socket, [eventName].concat(args));
+        });
+    }
     command(socket, cmd, ...args) {
         const handler = {
             'load': () => {
@@ -379,7 +385,7 @@ class GrblController {
                         return;
                     }
 
-                    log.debug(`${PREFIX} Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
+                    log.debug(`[Grbl] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
 
                     this.workflowState = WORKFLOW_STATE_IDLE;
                     callback();
@@ -428,7 +434,7 @@ class GrblController {
         }[cmd];
 
         if (!handler) {
-            log.error(`${PREFIX} Unknown command: ${cmd}`);
+            log.error(`[Grbl] Unknown command: ${cmd}`);
             return;
         }
 
@@ -443,7 +449,8 @@ class GrblController {
             this.connections[index].sentCommand = data;
         }
         this.serialport.write(data);
-        log.raw('silly', _.trimEnd('Grbl> ' + data));
+
+        dbg(`[Grbl] > ${data}`);
     }
     writeln(socket, data) {
         if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
