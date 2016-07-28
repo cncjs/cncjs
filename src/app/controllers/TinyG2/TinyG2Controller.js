@@ -366,7 +366,7 @@ class TinyG2Controller {
             // Unload G-code
             this.command(null, 'unload');
 
-            // Initialize TinyG2 controller
+            // Initialize controller
             this.initController();
         });
     }
