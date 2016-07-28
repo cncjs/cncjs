@@ -291,13 +291,14 @@ class GrblController {
 
         // Assertion check
         if (this.isOpen()) {
-            callback(new Error('Cannot open serial port ' + port));
+            log.error(`[Grbl] Cannot open serial port "${port}"`);
             return;
         }
 
         this.serialport.open((err) => {
             if (err) {
-                callback(err);
+                log.error(`[Grbl] Error opening serial port "${port}":`, err);
+                this.emitAll('serialport:error', { port: port });
                 return;
             }
 
@@ -322,7 +323,7 @@ class GrblController {
             // Unload G-code
             this.command(null, 'unload');
 
-            // Initialize Grbl controller
+            // Initialize controller
             this.initController();
         });
     }
