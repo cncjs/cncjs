@@ -107,11 +107,6 @@ class Visualizer extends Component {
         if (nextProps.state.workflowState !== this.props.state.workflowState) {
             return true;
         }
-        /*
-        if (!_.isEqual(nextProps.state.controller, this.props.state.controller)) {
-            return true;
-        }
-        */
         if (!_.isEqual(
             _.pick(nextProps.state.gcode, ['loading', 'ready']),
             _.pick(this.props.state.gcode, ['loading', 'ready']))) {
