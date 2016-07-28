@@ -56,6 +56,7 @@ class TinyG2Parser {
             const result = parser.parse(data);
             if (result) {
                 _.set(result, 'payload.raw', data);
+                _.set(result, 'payload.f', data.f || []); // footer
                 return result;
             }
         }
@@ -63,7 +64,8 @@ class TinyG2Parser {
         return {
             type: null,
             payload: {
-                raw: data
+                raw: data,
+                f: data.f || [] // footer
             }
         };
     }
@@ -72,12 +74,17 @@ class TinyG2Parser {
 class TinyG2ParserResultQueueReports {
     static parse(data) {
         const qr = _.get(data, 'r.qr') || _.get(data, 'qr');
+        const qi = _.get(data, 'r.qi') || _.get(data, 'qi');
+        const qo = _.get(data, 'r.qo') || _.get(data, 'qo');
+
         if (!qr) {
             return null;
         }
 
         const payload = {
-            qr: qr
+            qr: qr,
+            qi: qi,
+            qo: qo
         };
 
         return {
@@ -144,8 +151,9 @@ class TinyG2ParserResultHardwarePlatform {
 class TinyG2 extends events.EventEmitter {
     state = {
         // Queue Reports
-        qr: {
-        },
+        qr: 0,
+        qi: 0,
+        qo: 0,
         // Status Reports
         sr: {
             machineState: '',
@@ -173,6 +181,11 @@ class TinyG2 extends events.EventEmitter {
         // Firmware Build
         fb: 0
     };
+    footer = {
+        revision: 0,
+        statusCode: 0,
+        rxBufferInfo: 0
+    };
     parser = new TinyG2Parser();
 
     parse(data) {
@@ -194,17 +207,19 @@ class TinyG2 extends events.EventEmitter {
             const { type, payload } = result;
 
             if (type === TinyG2ParserResultQueueReports) {
-                if (!_.isEqual(this.state.qr, payload.qr)) {
+                const { qr, qi, qo } = payload;
+                if (this.state.qr !== qr ||
+                    this.state.qi !== qi ||
+                    this.state.qo !== qo) {
                     this.state = { // enforce state change
                         ...this.state,
-                        qr: payload.qr
+                        qr,
+                        qi,
+                        qo
                     };
                 }
-                this.emit('qr', payload);
-                return;
-            }
-
-            if (type === TinyG2ParserResultStatusReports) {
+                this.emit('qr', { qr, qi, qo });
+            } else if (type === TinyG2ParserResultStatusReports) {
                 // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
                 const keymaps = {
                     'line': 'line',
@@ -287,7 +302,18 @@ class TinyG2 extends events.EventEmitter {
                     'mpob': 'machinePosition.b',
                     'mpoc': 'machinePosition.c'
                 };
-                const sr = { ...this.state.sr };
+                const sr = {
+                    ...this.state.sr,
+                    modal: {
+                        ...this.state.sr.modal
+                    },
+                    workPosition: {
+                        ...this.state.sr.workPosition
+                    },
+                    machinePosition: {
+                        ...this.state.sr.machinePosition
+                    }
+                };
                 _.each(keymaps, (target, key) => {
                     if (typeof target === 'string') {
                         const val = _.get(payload.sr, key);
@@ -309,28 +335,30 @@ class TinyG2 extends events.EventEmitter {
                         sr: sr
                     };
                 }
-                this.emit('sr', sr);
-                return;
-            }
-            if (type === TinyG2ParserResultFirmwareBuild) {
+                this.emit('sr', payload.sr);
+            } else if (type === TinyG2ParserResultFirmwareBuild) {
                 if (!_.isEqual(this.state.fb, payload.fb)) {
                     this.state = { // enforce state change
                         ...this.state,
                         fb: payload.fb
                     };
                 }
-                this.emit('fb', payload);
-                return;
-            }
-            if (type === TinyG2ParserResultHardwarePlatform) {
+                this.emit('fb', payload.fb);
+            } else if (type === TinyG2ParserResultHardwarePlatform) {
                 if (!_.isEqual(this.state.hp, payload.hp)) {
                     this.state = { // enforce state change
                         ...this.state,
                         hp: payload.hp
                     };
                 }
-                this.emit('hp', payload);
-                return;
+                this.emit('hp', payload.hp);
+            }
+
+            if (payload.f && payload.f.length > 0) {
+                this.footer.revision = payload.f[0];
+                this.footer.statusCode = payload.f[1];
+                this.footer.rxBufferInfo = payload.f[2];
+                this.emit('f', payload.f);
             }
         }
     }
