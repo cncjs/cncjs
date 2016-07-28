@@ -71,7 +71,7 @@ class VisualizerWidget extends Component {
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
 
-            if (sent >= total && workflowState !== WORKFLOW_STATE_IDLE) {
+            if (total > 0 && sent >= total && workflowState !== WORKFLOW_STATE_IDLE) {
                 const states = [
                     GRBL_ACTIVE_STATE_IDLE
                 ];
@@ -95,7 +95,7 @@ class VisualizerWidget extends Component {
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
 
-            if (sent >= total && workflowState !== WORKFLOW_STATE_IDLE) {
+            if (total > 0 && sent >= total && workflowState !== WORKFLOW_STATE_IDLE) {
                 const states = [
                     TINYG2_MACHINE_STATE_READY,
                     TINYG2_MACHINE_STATE_STOP,
