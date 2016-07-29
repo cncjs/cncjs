@@ -1,7 +1,11 @@
 import i18next from 'i18next';
 import sha1 from 'sha1';
 
-const translateText = (...args) => {
+const t = (...args) => {
+    return i18next.t.apply(i18next, args);
+};
+
+const _ = (...args) => {
     if ((args.length === 0) || (typeof args[0] === 'undefined')) {
         return i18next.t.apply(i18next, args);
     }
@@ -22,6 +26,6 @@ const translateText = (...args) => {
 };
 
 export default {
-    _: translateText,
-    t: i18next.t
+    t,
+    _
 };
