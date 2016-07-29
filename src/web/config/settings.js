@@ -27,6 +27,7 @@ const settings = {
 
         // string or array of namespaces
         ns: [
+            'controller', // Grbl, TinyG2
             'locale', // locale: language, timezone, ...
             'resource' // default
         ],

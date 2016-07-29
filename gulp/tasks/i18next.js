@@ -76,6 +76,7 @@ const webConfig = {
             return ''; // Return empty string for other languages
         },
         ns: [
+            'controller', // Grbl, TinyG2
             'resource' // default
         ],
         defaultNs: 'resource',
