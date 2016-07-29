@@ -22,5 +22,6 @@ const translateText = (...args) => {
 };
 
 export default {
-    _: translateText
+    _: translateText,
+    t: i18next.t
 };
