@@ -210,7 +210,7 @@
     "Turn counterclockwise": "Turn counterclockwise",
     "Drop G-code file here or click below to upload.": "Drop G-code file here or click below to upload.",
     "Upload G-code": "Upload G-code",
-    "Active state: {{activeState}}": "Active state: {{activeState}}",
+    "None": "None",
     "Move Up": "Move Up",
     "Move Left": "Move Left",
     "Reset Position": "Reset Position",

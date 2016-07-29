@@ -210,7 +210,7 @@
     "Turn counterclockwise": "逆時針方向轉動",
     "Drop G-code file here or click below to upload.": "拖曳或按下方按鈕上傳G-code檔案",
     "Upload G-code": "上傳G-code檔案",
-    "Active state: {{activeState}}": "運行狀態：{{activeState}}",
+    "None": "",
     "Move Up": "向上移動",
     "Move Left": "向左移動",
     "Reset Position": "重置位置",

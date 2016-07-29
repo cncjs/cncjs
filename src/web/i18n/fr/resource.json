@@ -210,7 +210,7 @@
     "Turn counterclockwise": "Tourner dans le sens Horraire",
     "Drop G-code file here or click below to upload.": "Déposez un fichier G-code ou cliquez ci-dessous pour en charger un.",
     "Upload G-code": "Charger un fichier G-Code",
-    "Active state: {{activeState}}": "État courant: {{activeState}}",
+    "None": "",
     "Move Up": "Déplacer vers le haut",
     "Move Left": "Déplacer vers la gauche",
     "Reset Position": "Réinitialiser la position",
