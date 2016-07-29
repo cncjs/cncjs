@@ -4,6 +4,7 @@ import React, { Component } from 'react';
 import request from 'superagent';
 import Visualizer from './Visualizer';
 import controller from '../../../lib/controller';
+import i18next from 'i18next'; // FIXME
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import store from '../../../store';
@@ -407,21 +408,21 @@ class VisualizerWidget extends Component {
         if (controllerType === GRBL) {
             const activeState = _.get(controllerState, 'status.activeState');
             const stateText = {
-                [GRBL_ACTIVE_STATE_IDLE]: i18n._('Idle'),
-                [GRBL_ACTIVE_STATE_RUN]: i18n._('Run'),
-                [GRBL_ACTIVE_STATE_HOLD]: i18n._('Hold'),
-                [GRBL_ACTIVE_STATE_DOOR]: i18n._('Door'),
-                [GRBL_ACTIVE_STATE_HOME]: i18n._('Home'),
-                [GRBL_ACTIVE_STATE_ALARM]: i18n._('Alarm'),
-                [GRBL_ACTIVE_STATE_CHECK]: i18n._('Check')
-            }[activeState] || i18n._('None');
+                [GRBL_ACTIVE_STATE_IDLE]: i18n.t('controller:Grbl.activeState.idle'),
+                [GRBL_ACTIVE_STATE_RUN]: i18n.t('controller:Grbl.activeState.run'),
+                [GRBL_ACTIVE_STATE_HOLD]: i18n.t('controller:Grbl.activeState.hold'),
+                [GRBL_ACTIVE_STATE_DOOR]: i18n.t('controller:Grbl.activeState.door'),
+                [GRBL_ACTIVE_STATE_HOME]: i18n.t('controller:Grbl.activeState.home'),
+                [GRBL_ACTIVE_STATE_ALARM]: i18n.t('controller:Grbl.activeState.alarm'),
+                [GRBL_ACTIVE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
+            }[activeState];
 
             return (
                 <div>
-                    <strong style={{ marginRight: 10 }}>{controllerType}</strong>
-                    <span className="well well-xs">
-                        {stateText}
-                    </span>
+                    <div className="controller-type">{controllerType}</div>
+                {stateText &&
+                    <div className="controller-state">{stateText}</div>
+                }
                 </div>
             );
         }
@@ -429,26 +430,26 @@ class VisualizerWidget extends Component {
         if (controllerType === TINYG2) {
             const machineState = _.get(controllerState, 'sr.machineState');
             const stateText = {
-                [TINYG2_MACHINE_STATE_INIT]: i18n._('Init'),
-                [TINYG2_MACHINE_STATE_READY]: i18n._('Ready'),
-                [TINYG2_MACHINE_STATE_ALARM]: i18n._('Alarm'),
-                [TINYG2_MACHINE_STATE_STOP]: i18n._('Stop'),
-                [TINYG2_MACHINE_STATE_END]: i18n._('End'),
-                [TINYG2_MACHINE_STATE_RUN]: i18n._('Run'),
-                [TINYG2_MACHINE_STATE_HOLD]: i18n._('Hold'),
-                [TINYG2_MACHINE_STATE_PROBE]: i18n._('Probe'),
-                [TINYG2_MACHINE_STATE_CYCLING]: i18n._('Cycling'),
-                [TINYG2_MACHINE_STATE_HOMING]: i18n._('Homing'),
-                [TINYG2_MACHINE_STATE_JOGGING]: i18n._('Jogging'),
-                [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n._('Shutdown')
-            }[machineState] || i18n._('None');
+                [TINYG2_MACHINE_STATE_INIT]: i18n.t('controller:TinyG2.machineState.init'),
+                [TINYG2_MACHINE_STATE_READY]: i18n.t('controller:TinyG2.machineState.ready'),
+                [TINYG2_MACHINE_STATE_ALARM]: i18n.t('controller:TinyG2.machineState.alarm'),
+                [TINYG2_MACHINE_STATE_STOP]: i18n.t('controller:TinyG2.machineState.stop'),
+                [TINYG2_MACHINE_STATE_END]: i18n.t('controller:TinyG2.machineState.end'),
+                [TINYG2_MACHINE_STATE_RUN]: i18n.t('controller:TinyG2.machineState.run'),
+                [TINYG2_MACHINE_STATE_HOLD]: i18n.t('controller:TinyG2.machineState.hold'),
+                [TINYG2_MACHINE_STATE_PROBE]: i18n.t('controller:TinyG2.machineState.probe'),
+                [TINYG2_MACHINE_STATE_CYCLING]: i18n.t('controller:TinyG2.machineState.cycling'),
+                [TINYG2_MACHINE_STATE_HOMING]: i18n.t('controller:TinyG2.machineState.homing'),
+                [TINYG2_MACHINE_STATE_JOGGING]: i18n.t('controller:TinyG2.machineState.jogging'),
+                [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG2.machineState.shutdown')
+            }[machineState];
 
             return (
                 <div>
-                    <strong style={{ marginRight: 10 }}>{controllerType}</strong>
-                    <span className="well well-xs">
-                        {stateText}
-                    </span>
+                    <div className="controller-type">{controllerType}</div>
+                {stateText &&
+                    <div className="controller-state">{stateText}</div>
+                }
                 </div>
             );
         }
