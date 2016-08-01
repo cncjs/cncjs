@@ -35,6 +35,10 @@ class CNCController {
             }
         });
 
+        pubsub.subscribe('workflowState', (msg, workflowState) => {
+            this.workflowState = workflowState;
+        });
+
         Object.keys(this.callbacks).forEach((eventName) => {
             socket.on(eventName, (...args) => {
                 log.debug('socket.on("' + eventName + '"):', args);
