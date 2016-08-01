@@ -448,32 +448,47 @@ class TinyG2Controller {
             'stop': () => {
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 this.sender.rewind();
+
+                this.writeln(socket, '!%'); // feedhold and queue flush
+                this.writeln(socket, '{"qr":""}'); // queue report
             },
             'pause': () => {
-                this.workflowState = WORKFLOW_STATE_PAUSED;
-                this.writeln(socket, '!');
-                // Request queue report
-                this.writeln(socket, '{"qr":""}');
+                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.workflowState = WORKFLOW_STATE_PAUSED;
+                }
+
+                this.writeln(socket, '!'); // feedhold
+                this.writeln(socket, '{"qr":""}'); // queue report
             },
             'resume': () => {
-                this.writeln(socket, '~');
-                // Request queue report
-                this.writeln(socket, '{"qr":""}');
-                this.workflowState = WORKFLOW_STATE_RUNNING;
-                this.sender.next();
+                this.writeln(socket, '~'); // cycle start
+                this.writeln(socket, '{"qr":""}'); // queue report
+
+                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
+                    this.workflowState = WORKFLOW_STATE_RUNNING;
+                    this.sender.next();
+                }
             },
             'feedhold': () => {
-                this.writeln(socket, '!');
+                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.workflowState = WORKFLOW_STATE_PAUSED;
+                }
+
+                this.writeln(socket, '!'); // feedhold
+                this.writeln(socket, '{"qr":""}'); // queue report
             },
             'cyclestart': () => {
-                this.writeln(socket, '~');
-                // Request queue report
-                this.writeln(socket, '{"qr":""}');
+                this.writeln(socket, '~'); // cycle start
+                this.writeln(socket, '{"qr":""}'); // queue report
+
+                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
+                    this.workflowState = WORKFLOW_STATE_RUNNING;
+                    this.sender.next();
+                }
             },
             'queueflush': () => {
-                this.writeln(socket, '%');
-                // Request queue report
-                this.writeln(socket, '{"qr":""}');
+                this.writeln(socket, '%'); // queue flush
+                this.writeln(socket, '{"qr":""}'); // queue report
             },
             'reset': () => {
                 // TODO: ^x or {"clear": null}
