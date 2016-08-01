@@ -1,8 +1,13 @@
 import _ from 'lodash';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import combokeys from '../../lib/combokeys';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
+import {
+    WORKFLOW_STATE_RUNNING,
+    WORKFLOW_STATE_PAUSED
+} from '../../constants';
 
 class QuickAccessToolbar extends React.Component {
     actionHandlers = {
@@ -11,21 +16,45 @@ class QuickAccessToolbar extends React.Component {
             controller.command(command);
         }
     };
+    workflowState = controller.workflowState;
+    pubsubTokens = [];
 
     componentDidMount() {
         _.each(this.actionHandlers, (callback, eventName) => {
             combokeys.on(eventName, callback);
         });
+        this.subscribe();
     }
     componentWillUnmount() {
+        this.unsubscribe();
         _.each(this.actionHandlers, (callback, eventName) => {
             combokeys.removeListener(eventName, callback);
         });
     }
+    subscribe() {
+        const tokens = [
+            pubsub.subscribe('workflowState', (msg, workflowState) => {
+                this.workflowState = workflowState;
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
     handleCycleStart() {
+        if (this.workflowState === WORKFLOW_STATE_PAUSED) {
+            pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
+        }
         controller.command('cyclestart');
     }
     handleFeedHold() {
+        if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+            pubsub.publish('workflowState', WORKFLOW_STATE_PAUSED);
+        }
         controller.command('feedhold');
     }
     handleReset() {
