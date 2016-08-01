@@ -181,7 +181,7 @@ class AxesWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
-            workflowState: WORKFLOW_STATE_IDLE, // TODO: controller.workflowState
+            workflowState: controller.workflowState,
             machinePosition: { // Machine position
                 x: '0.000',
                 y: '0.000',

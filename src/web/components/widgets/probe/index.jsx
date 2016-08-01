@@ -195,7 +195,7 @@ class ProbeWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
-            workflowState: WORKFLOW_STATE_IDLE, // TODO: controller.workflowState
+            workflowState: controller.workflowState,
             probeCommand: store.get('widgets.probe.probeCommand'),
             probeDepth: toUnits(METRIC_UNITS, store.get('widgets.probe.probeDepth')),
             probeFeedrate: toUnits(METRIC_UNITS, store.get('widgets.probe.probeFeedrate')),

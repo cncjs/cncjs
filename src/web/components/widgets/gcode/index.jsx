@@ -147,7 +147,7 @@ class GCodeWidget extends React.Component {
 
             port: controller.port,
             units: METRIC_UNITS,
-            workflowState: WORKFLOW_STATE_IDLE, // TODO: controller.workflowState
+            workflowState: controller.workflowState,
             lines: [], // List of G-code lines
 
             // G-code Status (from server)
