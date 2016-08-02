@@ -51,7 +51,8 @@ class Toolbar extends Component {
                     disabled={!canClick}
                 >
                     <MenuItem onSelect={() => controller.writeln('h')} disabled={!canClick}>{i18n._('Help')}</MenuItem>
-                    <MenuItem onSelect={() => controller.writeln('$')} disabled={!canClick}>{i18n._('Show Settings')}</MenuItem>
+                    <MenuItem onSelect={() => controller.writeln('$sys')} disabled={!canClick}>{i18n._('Show System Settings')}</MenuItem>
+                    <MenuItem onSelect={() => controller.writeln('$$')} disabled={!canClick}>{i18n._('Show All Settings')}</MenuItem>
                     <MenuItem onSelect={() => controller.writeln('?')} disabled={!canClick}>{i18n._('Status Reports')}</MenuItem>
                     <MenuItem onSelect={() => controller.writeln('$test')} disabled={!canClick}>{i18n._('List Self Tests')}</MenuItem>
 
