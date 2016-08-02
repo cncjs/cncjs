@@ -405,19 +405,34 @@ class GrblController {
                 this.sender.rewind();
             },
             'pause': () => {
-                this.workflowState = WORKFLOW_STATE_PAUSED;
+                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.workflowState = WORKFLOW_STATE_PAUSED;
+                }
+
                 this.write(socket, '!');
             },
             'resume': () => {
                 this.write(socket, '~');
-                this.workflowState = WORKFLOW_STATE_RUNNING;
-                this.sender.next();
+
+                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
+                    this.workflowState = WORKFLOW_STATE_RUNNING;
+                    this.sender.next();
+                }
             },
             'feedhold': () => {
+                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.workflowState = WORKFLOW_STATE_PAUSED;
+                }
+
                 this.write(socket, '!');
             },
             'cyclestart': () => {
                 this.write(socket, '~');
+
+                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
+                    this.workflowState = WORKFLOW_STATE_RUNNING;
+                    this.sender.next();
+                }
             },
             'reset': () => {
                 this.write(socket, '\x18');
