@@ -29,6 +29,13 @@ class WidgetManager extends React.Component {
             disabled: true
         },
         {
+            id: 'console',
+            caption: i18n._('Console Widget'),
+            details: i18n._('This widget lets you read and write data to the CNC controller connected to a serial port.'),
+            visible: true,
+            disabled: false
+        },
+        {
             id: 'grbl',
             caption: i18n._('Grbl Widget'),
             details: i18n._('This widget shows the Grbl state and provides Grbl specific features.'),
@@ -36,9 +43,9 @@ class WidgetManager extends React.Component {
             disabled: false
         },
         {
-            id: 'console',
-            caption: i18n._('Console Widget'),
-            details: i18n._('This widget lets you read and write data to the CNC controller connected to a serial port.'),
+            id: 'tinyg2',
+            caption: i18n._('TinyG2 Widget'),
+            details: i18n._('This widget shows the TinyG2 state and provides TinyG2 specific features.'),
             visible: true,
             disabled: false
         },

@@ -6,6 +6,7 @@ import GCodeWidget from './gcode';
 import GrblWidget from './grbl';
 import ProbeWidget from './probe';
 import SpindleWidget from './spindle';
+import TinyG2Widget from './tinyg2';
 import VisualizerWidget from './visualizer';
 import WebcamWidget from './webcam';
 
@@ -19,6 +20,7 @@ const Widget = (props) => {
         'grbl': () => <GrblWidget data-widgetid={widgetid} {...others} />,
         'probe': () => <ProbeWidget data-widgetid={widgetid} {...others} />,
         'spindle': () => <SpindleWidget data-widgetid={widgetid} {...others} />,
+        'tinyg2': () => <TinyG2Widget data-widgetid={widgetid} {...others} />,
         'visualizer': () => <VisualizerWidget data-widgetid={widgetid} {...others} />,
         'webcam': () => <WebcamWidget data-widgetid={widgetid} {...others} />
     }[widgetid];
