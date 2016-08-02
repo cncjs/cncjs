@@ -100,25 +100,23 @@ class Grbl extends Component {
                         <div className="col col-xs-3">
                             {i18n._('State')}
                         </div>
-                        <div className="col col-xs-9">
+                        <div className="col col-xs-3">
                             <div className="well well-xs">{activeState}</div>
                         </div>
-                    </div>
-                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Feed Rate')}
                         </div>
                         <div className="col col-xs-3">
                             <div className="well well-xs">{Number(parserstate.feedrate) || 0}</div>
                         </div>
+                    </div>
+                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Spindle')}
                         </div>
                         <div className="col col-xs-3">
                             <div className="well well-xs">{Number(parserstate.spindle) || 0}</div>
                         </div>
-                    </div>
-                    <div className="row no-gutters">
                         <div className="col col-xs-3">
                             {i18n._('Tool Number')}
                         </div>
@@ -153,7 +151,7 @@ class Grbl extends Component {
                             <div className="well well-xs">{modal.motion || none}</div>
                         </div>
                         <div className="col col-xs-3">
-                            {i18n._('WCS')}
+                            {i18n._('Coordinate')}
                         </div>
                         <div className="col col-xs-3">
                             <div className="well well-xs">{modal.coordinate || none}</div>

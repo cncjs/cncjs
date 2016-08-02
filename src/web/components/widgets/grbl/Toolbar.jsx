@@ -22,26 +22,26 @@ class Toolbar extends Component {
                 <button
                     type="button"
                     className="btn btn-default"
-                    onClick={() => controller.write('~')}
+                    onClick={() => controller.command('cyclestart')}
                     disabled={!canClick}
                 >
-                    {i18n._('Cycle Start')}
+                    <i className="fa fa-play" /> {i18n._('Cycle Start')}
                 </button>
                 <button
                     type="button"
                     className="btn btn-default"
-                    onClick={() => controller.write('!')}
+                    onClick={() => controller.command('feedhold')}
                     disabled={!canClick}
                 >
-                    {i18n._('Feed Hold')}
+                    <i className="fa fa-pause" /> {i18n._('Feed Hold')}
                 </button>
                 <button
                     type="button"
                     className="btn btn-default"
-                    onClick={() => controller.write('\x18')}
+                    onClick={() => controller.command('reset')}
                     disabled={!canClick}
                 >
-                    {i18n._('Reset Grbl')}
+                    <i className="fa fa-undo" /> {i18n._('Reset')}
                 </button>
                 <DropdownButton
                     bsSize="xs"
@@ -50,8 +50,8 @@ class Toolbar extends Component {
                     id="grbl-dropdown"
                     disabled={!canClick}
                 >
-                    <MenuItem onSelect={() => controller.writeln('$')} disabled={!canClick}>{i18n._('Grbl Help ($)')}</MenuItem>
-                    <MenuItem onSelect={() => controller.writeln('$$')} disabled={!canClick}>{i18n._('Grbl Settings ($$)')}</MenuItem>
+                    <MenuItem onSelect={() => controller.writeln('$')} disabled={!canClick}>{i18n._('Help ($)')}</MenuItem>
+                    <MenuItem onSelect={() => controller.writeln('$$')} disabled={!canClick}>{i18n._('Settings ($$)')}</MenuItem>
                     <MenuItem onSelect={() => controller.writeln('$#')} disabled={!canClick}>{i18n._('View G-code Parameters ($#)')}</MenuItem>
                     <MenuItem onSelect={() => controller.writeln('$G')} disabled={!canClick}>{i18n._('View G-code Parser State ($G)')}</MenuItem>
                     <MenuItem onSelect={() => controller.writeln('$I')} disabled={!canClick}>{i18n._('View Build Info ($I)')}</MenuItem>
