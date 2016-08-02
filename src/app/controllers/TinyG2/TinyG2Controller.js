@@ -495,7 +495,7 @@ class TinyG2Controller {
                 this.writeln(socket, '{"clear":null}');
             },
             'homing': () => {
-                this.writeln(socket, 'G28.2 X0 Y0 Z0 A0');
+                this.writeln(socket, '$home=1');
             },
             'gcode': () => {
                 const gcode = args.join(' ');
