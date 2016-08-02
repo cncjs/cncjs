@@ -25,7 +25,7 @@ const defaultState = {
             primary: {
                 show: true,
                 widgets: [
-                    'connection', 'grbl', 'console', 'webcam'
+                    'connection', 'console', 'grbl', 'tinyg2', 'webcam'
                 ]
             },
             secondary: {
@@ -72,6 +72,8 @@ const defaultState = {
             retractionDistance: 4
         },
         spindle: {
+        },
+        tinyg2: {
         },
         visualizer: {
             animation: true
