@@ -494,7 +494,7 @@ class TinyG2Controller {
                 }
             },
             'queueflush': () => {
-                this.writeln(socket, '%'); // queue flush
+                this.writeln(socket, '!%'); // queue flush
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'killjob': () => {
@@ -504,10 +504,10 @@ class TinyG2Controller {
                 this.writeln(socket, '\x18'); // ^x
             },
             'unlock': () => {
-                this.writeln(socket, '{"clear":null}');
+                this.writeln(socket, '{clear:null}');
             },
             'homing': () => {
-                this.writeln(socket, '$home=1');
+                this.writeln(socket, '{home:1}');
             },
             'gcode': () => {
                 const gcode = args.join(' ');
