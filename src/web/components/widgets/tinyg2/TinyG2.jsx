@@ -118,6 +118,7 @@ class TinyG2 extends Component {
         const velocity = _.get(controllerState, 'sr.velocity');
         const line = _.get(controllerState, 'sr.line');
         let modal = _.get(controllerState, 'sr.modal', {});
+        let plannerBufferStyle = 'default';
 
         if (!showGCode) {
             modal = _.mapValues(modal, (word, group) => lookupGCodeDefinition(word));
@@ -125,6 +126,9 @@ class TinyG2 extends Component {
 
         this.plannerBufferMin = Math.min(this.plannerBufferMin, plannerBuffer);
         this.plannerBufferMax = Math.max(this.plannerBufferMax, plannerBuffer);
+        if (plannerBuffer > 0 && plannerBuffer === this.plannerBufferMin) {
+            plannerBufferStyle = 'warning';
+        }
 
         return (
             <div>
@@ -145,7 +149,7 @@ class TinyG2 extends Component {
                     <div className="col col-xs-6">
                         <ProgressBar
                             style={{ marginBottom: 0 }}
-                            bsStyle={plannerBuffer === this.plannerBufferMin ? 'warning' : 'default' }
+                            bsStyle={plannerBufferStyle}
                             min={this.plannerBufferMin}
                             max={this.plannerBufferMax}
                             now={plannerBuffer}
@@ -206,13 +210,17 @@ class TinyG2 extends Component {
                         {i18n._('Motion')}
                     </div>
                     <div className="col col-xs-3">
-                        <div className="well well-xs">{modal.motion || none}</div>
+                        <div className="well well-xs" title={modal.motion}>
+                            {modal.motion || none}
+                        </div>
                     </div>
                     <div className="col col-xs-3">
                         {i18n._('Coordinate')}
                     </div>
                     <div className="col col-xs-3">
-                        <div className="well well-xs">{modal.coordinate || none}</div>
+                        <div className="well well-xs" title={modal.coordinate}>
+                            {modal.coordinate || none}
+                        </div>
                     </div>
                 </div>
                 <div className="row no-gutters">
@@ -220,13 +228,17 @@ class TinyG2 extends Component {
                         {i18n._('Plane')}
                     </div>
                     <div className="col col-xs-3">
-                        <div className="well well-xs">{modal.plane || none}</div>
+                        <div className="well well-xs" title={modal.plane}>
+                            {modal.plane || none}
+                        </div>
                     </div>
                     <div className="col col-xs-3">
                         {i18n._('Distance')}
                     </div>
                     <div className="col col-xs-3">
-                        <div className="well well-xs">{modal.distance || none}</div>
+                        <div className="well well-xs" title={modal.distance}>
+                            {modal.distance || none}
+                        </div>
                     </div>
                 </div>
                 <div className="row no-gutters">
@@ -234,13 +246,17 @@ class TinyG2 extends Component {
                         {i18n._('Feed Rate')}
                     </div>
                     <div className="col col-xs-3">
-                        <div className="well well-xs">{modal.feedrate || none}</div>
+                        <div className="well well-xs" title={modal.feedrate}>
+                            {modal.feedrate || none}
+                        </div>
                     </div>
                     <div className="col col-xs-3">
                         {i18n._('Units')}
                     </div>
                     <div className="col col-xs-3">
-                        <div className="well well-xs">{modal.units || none}</div>
+                        <div className="well well-xs" title={modal.units}>
+                            {modal.units || none}
+                        </div>
                     </div>
                 </div>
                 <div className="row no-gutters">
@@ -248,7 +264,9 @@ class TinyG2 extends Component {
                         {i18n._('Path')}
                     </div>
                     <div className="col col-xs-3">
-                        <div className="well well-xs">{modal.path || none}</div>
+                        <div className="well well-xs" title={modal.path}>
+                            {modal.path || none}
+                        </div>
                     </div>
                 </div>
             </div>
