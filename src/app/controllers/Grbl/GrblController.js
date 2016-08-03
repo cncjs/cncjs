@@ -435,13 +435,16 @@ class GrblController {
                 }
             },
             'reset': () => {
-                this.write(socket, '\x18');
+                this.write(socket, '\x18'); // ^x
+            },
+            'unlock': () => {
+                this.writeln(socket, '$X');
             },
             'homing': () => {
                 this.writeln(socket, '$H');
             },
-            'unlock': () => {
-                this.writeln(socket, '$X');
+            'check': () => {
+                this.writeln(socket, '$C');
             },
             'gcode': () => {
                 const gcode = args.join(' ');
