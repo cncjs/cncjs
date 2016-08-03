@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { ProgressBar } from 'react-bootstrap';
+import { mapGCodeToText } from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import Toolbar from './Toolbar';
 import {
@@ -17,68 +18,6 @@ import {
     TINYG2_MACHINE_STATE_JOGGING,
     TINYG2_MACHINE_STATE_SHUTDOWN
 } from '../../../constants';
-
-const lookupGCodeDefinition = (word) => {
-    const wordText = {
-        // Motion
-        'G0': i18n._('Rapid Move'),
-        'G1': i18n._('Linear Move'),
-        'G2': i18n._('CW Arc'),
-        'G3': i18n._('CCW Arc'),
-        'G38.2': i18n._('Probing'),
-        'G38.3': i18n._('Probing'),
-        'G38.4': i18n._('Probing'),
-        'G38.5': i18n._('Probing'),
-        'G80': i18n._('Cancel Mode'),
-
-        // Work Coordinate System
-        'G54': 'G54 (P1)',
-        'G55': 'G55 (P2)',
-        'G56': 'G56 (P3)',
-        'G57': 'G57 (P4)',
-        'G58': 'G58 (P5)',
-        'G59': 'G59 (P6)',
-
-        // Plane
-        'G17': i18n._('XY Plane'),
-        'G18': i18n._('XZ Plane'),
-        'G19': i18n._('YZ Plane'),
-
-        // Units
-        'G20': i18n._('Inches'),
-        'G21': i18n._('Millimeters'),
-
-        // Distance
-        'G90': i18n._('Absolute'),
-        'G91': i18n._('Relative'),
-
-        // Feed Rate
-        'G93': i18n._('Inverse Time'),
-        'G94': i18n._('Units/Min'),
-
-        // Tool Length Offset
-        'G43.1': i18n._('Active Tool Offset'),
-        'G49': i18n._('No Tool Offset'),
-
-        // Program
-        'M0': i18n._('Stop'),
-        'M1': i18n._('Stop'),
-        'M2': i18n._('End'),
-        'M30': i18n._('End'),
-
-        // Spindle
-        'M3': i18n._('On (CW)'),
-        'M4': i18n._('On (CCW)'),
-        'M5': i18n._('Off'),
-
-        // Coolant
-        'M7': i18n._('Mist'),
-        'M8': i18n._('Flood'),
-        'M9': i18n._('Off')
-    };
-
-    return (wordText[word] || word);
-};
 
 class TinyG2 extends Component {
     static propTypes = {
@@ -121,7 +60,7 @@ class TinyG2 extends Component {
         let plannerBufferStyle = 'default';
 
         if (!showGCode) {
-            modal = _.mapValues(modal, (word, group) => lookupGCodeDefinition(word));
+            modal = _.mapValues(modal, (word, group) => mapGCodeToText(word));
         }
 
         this.plannerBufferMin = Math.min(this.plannerBufferMin, plannerBuffer);
