@@ -457,7 +457,11 @@ class TinyG2Controller {
                 this.sender.rewind();
 
                 this.writeln(socket, '!%'); // feedhold and queue flush
-                this.writeln(socket, '{"qr":""}'); // queue report
+
+                setTimeout(() => {
+                    this.writeln(socket, '{clear:null}');
+                    this.writeln(socket, '{"qr":""}'); // queue report
+                }, 250); // delay 250ms
             },
             'pause': () => {
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
