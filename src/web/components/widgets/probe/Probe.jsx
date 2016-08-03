@@ -2,7 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
-import ToolbarButton from './ToolbarButton';
+import Toolbar from './Toolbar';
 import {
     METRIC_UNITS
 } from '../../../constants';
@@ -47,10 +47,10 @@ class Probe extends Component {
 
         return (
             <div>
-                <ToolbarButton {...this.props} />
+                <Toolbar {...this.props} />
                 <div className="form-group">
                     <label className="control-label">{i18n._('Probe Command')}</label>
-                    <div className="btn-toolbar" role="toolbar">
+                    <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>
                         <div className="btn-group btn-group-xs">
                             <button
                                 type="button"

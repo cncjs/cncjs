@@ -4,7 +4,7 @@ import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 
-class ToolbarButton extends Component {
+class Toolbar extends Component {
     static propTypes = {
         state: PropTypes.object
     };
@@ -21,9 +21,16 @@ class ToolbarButton extends Component {
     render() {
         const { state } = this.props;
         const { canClick } = state;
+        const styles = {
+            toolbar: {
+                position: 'absolute',
+                top: 10,
+                right: 10
+            }
+        };
 
         return (
-            <div className="toolbar-button btn-group">
+            <div className="btn-group" style={styles.toolbar}>
                 <DropdownButton
                     bsSize="xs"
                     bsStyle="default"
@@ -45,4 +52,4 @@ class ToolbarButton extends Component {
     }
 }
 
-export default ToolbarButton;
+export default Toolbar;
