@@ -20,13 +20,15 @@ class Console extends React.Component {
                 .compact()
                 .map((line) => ('> ' + line))
                 .value();
-            this.append(values);
+            this.appendLine(values);
         },
         'serialport:read': (data) => {
-            this.append(data);
+            this.appendLine(data);
         }
     };
     pubsubTokens = [];
+    lineBuffers = [];
+    throttledTimer = null;
 
     constructor() {
         super();
@@ -35,8 +37,18 @@ class Console extends React.Component {
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
+
+        this.throttledTimer = setInterval(() => {
+            if (this.state.lines !== this.lineBuffers) {
+                this.setState({ lines: this.lineBuffers });
+            }
+        }, 500);
     }
     componentWillUnmount() {
+        if (this.throttledTimer) {
+            clearInterval(this.throttledTimer);
+            this.timer = null;
+        }
         this.unsubscribe();
         this.removeControllerEvents();
     }
@@ -46,7 +58,7 @@ class Console extends React.Component {
     getDefaultState() {
         return {
             port: controller.port,
-            buffers: []
+            lines: []
         };
     }
     subscribe() {
@@ -83,25 +95,24 @@ class Console extends React.Component {
             controller.off(eventName, eventHandler);
         });
     }
-    append(buffer) {
-        const buffers = _(this.state.buffers)
-            .concat(buffer)
+    appendLine(line) {
+        this.lineBuffers = _(this.lineBuffers)
+            .concat(line)
             .slice(0, SCROLL_BUFFER_SIZE)
             .value();
-        this.setState({ buffers: buffers });
     }
-    clear() {
-        this.setState({ buffers: [] });
+    clearAll() {
+        this.lineBuffers = [];
     }
     render() {
         return (
             <div>
                 <ConsoleInput
                     port={this.state.port}
-                    onClear={::this.clear}
+                    onClear={::this.clearAll}
                 />
                 <ConsoleWindow
-                    buffers={this.state.buffers}
+                    lines={this.state.lines}
                     fullscreen={this.props.fullscreen}
                 />
             </div>

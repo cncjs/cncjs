@@ -63,9 +63,9 @@ class ConsoleWindow extends React.Component {
         ));
     }
     render() {
-        const { buffers } = this.props;
+        const { lines } = this.props;
         const { containerHeight, elementHeight } = this.state;
-        const elements = this.buildElements(buffers);
+        const elements = this.buildElements(lines);
 
         return (
             <div className="console-window">
