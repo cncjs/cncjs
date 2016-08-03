@@ -82,9 +82,9 @@ class QuickAccessToolbar extends React.Component {
                         type="button"
                         className="btn btn-default"
                         onClick={::this.handleFeedHold}
-                        title={i18n._('Feed Hold')}
+                        title={i18n._('Feedhold')}
                     >
-                        <i className="fa fa-pause"></i>&nbsp;{i18n._('Feed Hold')}
+                        <i className="fa fa-pause"></i>&nbsp;{i18n._('Feedhold')}
                     </button>
                 </li>
                 <li className="btn-group btn-group-sm" role="group">
