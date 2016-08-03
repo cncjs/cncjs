@@ -1,15 +1,4 @@
 {
-    "Grbl": {
-        "activeState": {
-            "idle": "Idle",
-            "run": "Run",
-            "hold": "Hold",
-            "door": "Door",
-            "home": "Home",
-            "alarm": "Alarm",
-            "check": "Check"
-        }
-    },
     "TinyG2": {
         "machineState": {
             "init": "Init",
@@ -24,6 +13,17 @@
             "homing": "Homing",
             "jogging": "Jogging",
             "shutdown": "Shutdown"
+        }
+    },
+    "Grbl": {
+        "activeState": {
+            "idle": "Idle",
+            "run": "Run",
+            "hold": "Hold",
+            "door": "Door",
+            "home": "Home",
+            "alarm": "Alarm",
+            "check": "Check"
         }
     }
 }
