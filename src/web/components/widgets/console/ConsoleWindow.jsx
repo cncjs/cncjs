@@ -7,7 +7,7 @@ const DEFAULT_CONTAINER_HEIGHT = 260;
 
 class ConsoleWindow extends React.Component {
     static propTypes = {
-        buffers: React.PropTypes.array,
+        lines: React.PropTypes.array,
         fullscreen: React.PropTypes.bool
     };
     state = {
@@ -57,9 +57,9 @@ class ConsoleWindow extends React.Component {
             this.setState({ containerHeight: containerHeight });
         }
     }
-    buildElements(buffers) {
-        return _.map(buffers, (msg, index) => (
-            <div key={index} className="infinite-list-item" title={msg}>{msg}</div>
+    buildElements(lines) {
+        return _.map(lines, (line, index) => (
+            <div key={index} className="infinite-list-item" title={line}>{line}</div>
         ));
     }
     render() {

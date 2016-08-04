@@ -104,7 +104,7 @@ class AxesWidget extends Component {
         },
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
-            const { machineState, machinePosition, workPosition, modal = {} } = sr;
+            const { machinePosition, workPosition, modal = {} } = sr;
             let units = this.state.units;
             let customDistance = store.get('widgets.axes.jog.customDistance');
 

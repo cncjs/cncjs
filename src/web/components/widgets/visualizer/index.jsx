@@ -4,7 +4,6 @@ import React, { Component } from 'react';
 import request from 'superagent';
 import Visualizer from './Visualizer';
 import controller from '../../../lib/controller';
-import i18next from 'i18next'; // FIXME
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import store from '../../../store';

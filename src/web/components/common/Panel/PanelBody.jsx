@@ -1,18 +1,15 @@
-import React, { Component, PropTypes } from 'react';
+import React from 'react';
 import CSSModules from 'react-css-modules';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
-class Panel extends Component {
-    render() {
-        const { children, ...others } = this.props;
+const PanelBody = (props) => {
+    const { children, ...others } = props;
 
-        return (
-            <div {...others} styleName="panel-body">
-                {children}
-            </div>
-        );
-    }
-}
+    return (
+        <div {...others} styleName="panel-body">
+            {children}
+        </div>
+    );
+};
 
-export default Panel;
+export default CSSModules(PanelBody, styles);

@@ -4,9 +4,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import controller from '../../../lib/controller';
-import {
-    GRBL_REALTIME_COMMANDS
-} from './constants';
 
 class ConsoleInput extends React.Component {
     static propTypes = {
