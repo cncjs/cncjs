@@ -47,20 +47,20 @@ const wordText = {
     'G49': i18n._('No Tool Offset (G49)', { ns: 'gcode' }),
 
     // Program
-    'M0': i18n._('Stop (M0)', { ns: 'gcode' }),
-    'M1': i18n._('Stop (M1)', { ns: 'gcode' }),
-    'M2': i18n._('End (M2)', { ns: 'gcode' }),
-    'M30': i18n._('End (M30)', { ns: 'gcode' }),
+    'M0': i18n._('Program Stop (M0)', { ns: 'gcode' }),
+    'M1': i18n._('Optional Program Stop (M1)', { ns: 'gcode' }),
+    'M2': i18n._('Program End (M2)', { ns: 'gcode' }),
+    'M30': i18n._('Program End and Rewind (M30)', { ns: 'gcode' }),
 
     // Spindle
-    'M3': i18n._('CW (M3)', { ns: 'gcode' }),
-    'M4': i18n._('CCW (M4)', { ns: 'gcode' }),
-    'M5': i18n._('Off (M5)', { ns: 'gcode' }),
+    'M3': i18n._('Spindle On, CW (M3)', { ns: 'gcode' }),
+    'M4': i18n._('Spindle On, CCW (M4)', { ns: 'gcode' }),
+    'M5': i18n._('Spindle Off (M5)', { ns: 'gcode' }),
 
     // Coolant
-    'M7': i18n._('Mist (M7)', { ns: 'gcode' }),
-    'M8': i18n._('Flood (M8)', { ns: 'gcode' }),
-    'M9': i18n._('Off (M9)', { ns: 'gcode' })
+    'M7': i18n._('Mist Coolant On (M7)', { ns: 'gcode' }),
+    'M8': i18n._('Flood Coolant On (M8)', { ns: 'gcode' }),
+    'M9': i18n._('Coolant Off (M9)', { ns: 'gcode' })
 };
 
 export default (word) => {
