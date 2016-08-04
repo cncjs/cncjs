@@ -77,6 +77,7 @@ const webConfig = {
         },
         ns: [
             'controller', // Grbl, TinyG2
+            'gcode', // G-code
             'resource' // default
         ],
         defaultNs: 'resource',
