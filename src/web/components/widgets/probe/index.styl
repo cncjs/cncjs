@@ -1,19 +1,21 @@
-[data-ns="widgets/probe"] {
-    .widget-content {
-        position: relative;
-        padding: 10px;
+:global {
+    [data-ns="widgets/probe"] {
+        .widget-content {
+            position: relative;
+            padding: 10px;
 
-        .probe-command-description {
-            height: 30px;
-        }
-        .row.probe-options {
-            [class*="col-"]:nth-child(odd) {
-                padding-right: 10px;
+            .probe-command-description {
+                height: 30px;
             }
-            [class*="col-"]:nth-child(even) {
-                padding-left: 10px;
+            .row.probe-options {
+                [class*="col-"]:nth-child(odd) {
+                    padding-right: 10px;
+                }
+                [class*="col-"]:nth-child(even) {
+                    padding-left: 10px;
+                }
             }
-        }
 
+        }
     }
 }

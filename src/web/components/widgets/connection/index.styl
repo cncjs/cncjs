@@ -1,32 +1,34 @@
-[data-ns="widgets/connection"] {
-    .widget-content {
-        position: relative;
-        padding: 10px;
+:global {
+    [data-ns="widgets/connection"] {
+        .widget-content {
+            position: relative;
+            padding: 10px;
 
-        .Select.sm {
-            .Select-control {
-                height: 30px;
-                border-radius: 3px;
+            .Select.sm {
+                .Select-control {
+                    height: 30px;
+                    border-radius: 3px;
 
-                .Select-value {
+                    .Select-value {
+                        line-height: 28px;
+                    }
+                }
+                .Select-placeholder {
                     line-height: 28px;
                 }
+                .Select-input {
+                    height: 28px;
+                }
             }
-            .Select-placeholder {
-                line-height: 28px;
+            
+            .input-group > .Select:not(:last-child) .Select-control {
+                border-top-right-radius: 0;
+                border-bottom-right-radius: 0;
             }
-            .Select-input {
-                height: 28px;
+            .input-group > .Select:not(:first-child) .Select-control {
+                border-top-left-radius: 0;
+                border-bottom-left-radius: 0;
             }
-        }
-        
-        .input-group > .Select:not(:last-child) .Select-control {
-            border-top-right-radius: 0;
-            border-bottom-right-radius: 0;
-        }
-        .input-group > .Select:not(:first-child) .Select-control {
-            border-top-left-radius: 0;
-            border-bottom-left-radius: 0;
         }
     }
 }

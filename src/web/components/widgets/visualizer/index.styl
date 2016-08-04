@@ -1,119 +1,121 @@
-[data-ns="widgets/visualizer"] {
-    .widget-header {
-        min-height: 32px;
+:global {
+    [data-ns="widgets/visualizer"] {
+        .widget-header {
+            min-height: 32px;
 
-        .controller-type {
-            display: inline-block;
-            font-weight: bold;
-            margin-right: 10px;
-        }
-        .controller-state { 
-            background-color: #fff;
-            border: 1px solid #e3e3e3;
-            border-radius: 3px;
-            display: inline-block;
-            line-height: 24px;
-            min-width: 50px;
-            padding: 0 10px;
-            text-align: center;
-        }
-    }
-    .widget-content {
-        position: relative;
-
-        .btn-toolbar {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-
-            .btn-group {
-                background-color: #fff;
+            .controller-type {
+                display: inline-block;
+                font-weight: bold;
+                margin-right: 10px;
             }
-        }
-
-        .joystick {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-
-            .joystick-button {
-                font-size: 14px;
-                color: #777;
+            .controller-state { 
+                background-color: #fff;
+                border: 1px solid #e3e3e3;
+                border-radius: 3px;
+                display: inline-block;
+                line-height: 24px;
+                min-width: 50px;
+                padding: 0 10px;
                 text-align: center;
-                width: 16px;
+            }
+        }
+        .widget-content {
+            position: relative;
 
-                &:hover,
-                &:focus {
-                    cursor: pointer;
-                    color: #333;
+            .btn-toolbar {
+                position: absolute;
+                top: 10px;
+                left: 10px;
+
+                .btn-group {
+                    background-color: #fff;
                 }
-                &:active {
-                    color: #333;
-                    text-shadow: 0 1px #ccc;
+            }
+
+            .joystick {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+
+                .joystick-button {
+                    font-size: 14px;
+                    color: #777;
+                    text-align: center;
+                    width: 16px;
+
+                    &:hover,
+                    &:focus {
+                        cursor: pointer;
+                        color: #333;
+                    }
+                    &:active {
+                        color: #333;
+                        text-shadow: 0 1px #ccc;
+                    }
+                }
+                .joystick-button[disabled] {
+                    cursor: not-allowed;
+                    color: #777;
                 }
             }
-            .joystick-button[disabled] {
-                cursor: not-allowed;
-                color: #777;
+
+            .file-uploader-block {
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+
+                // Centering in the Unknown
+                // https://css-tricks.com/centering-in-the-unknown/
+                text-align: center;
+                // May want to do this if there is risk the container may be narrower than the element inside
+                white-space: nowrap;
+
+                // The ghost, nudged to maintain perfect centering
+                &:before {
+                    content: '';
+                    display: inline-block;
+                    height: 100%;
+                    vertical-align: middle;
+                    margin-right: -.25em; // Adjusts for spacing
+                }
+
+                .file-uploader-box {
+                    display: inline-block;
+                    vertical-align: middle;
+                    background-color: #fff;
+                    border-width: 1px;
+                    border-color: #d0d0d0;
+                    border-style: solid;
+                    border-radius: 4px;
+                    margin: 0 auto;
+                    min-width: 180px;
+                    max-width: 480px;
+                    padding: 20px;
+                }
+
+                .file-uploader-content {
+                    white-space: normal;
+                }
+                .file-uploader-content[disabled] {
+                    cursor: not-allowed;
+                    box-shadow: none;
+                    opacity: .65;
+                }
             }
+            .file-uploader-tips {
+                font-size: 18px;
+
+                @media (max-width: 991px) {
+                    font-size: 14px;
+                }
+            }
+
+            .renderer {
+                cursor: move;
+            }
+
         }
-
-        .file-uploader-block {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            right: 0;
-
-            // Centering in the Unknown
-            // https://css-tricks.com/centering-in-the-unknown/
-            text-align: center;
-            // May want to do this if there is risk the container may be narrower than the element inside
-            white-space: nowrap;
-
-            // The ghost, nudged to maintain perfect centering
-            &:before {
-                content: '';
-                display: inline-block;
-                height: 100%;
-                vertical-align: middle;
-                margin-right: -.25em; // Adjusts for spacing
-            }
-
-            .file-uploader-box {
-                display: inline-block;
-                vertical-align: middle;
-                background-color: #fff;
-                border-width: 1px;
-                border-color: #d0d0d0;
-                border-style: solid;
-                border-radius: 4px;
-                margin: 0 auto;
-                min-width: 180px;
-                max-width: 480px;
-                padding: 20px;
-            }
-
-            .file-uploader-content {
-                white-space: normal;
-            }
-            .file-uploader-content[disabled] {
-                cursor: not-allowed;
-                box-shadow: none;
-                opacity: .65;
-            }
-        }
-        .file-uploader-tips {
-            font-size: 18px;
-
-            @media (max-width: 991px) {
-                font-size: 14px;
-            }
-        }
-
-        .renderer {
-            cursor: move;
-        }
-
     }
 }

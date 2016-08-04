@@ -1,41 +1,43 @@
-[data-ns="widgets/gcode"] {
-    .widget-content {
-        position: relative;
-        padding: 10px;
+:global {
+    [data-ns="widgets/gcode"] {
+        .widget-content {
+            position: relative;
+            padding: 10px;
 
-        .gcode-stats {
-            table[data-table="dimension"] {
-                width: 100%;
+            .gcode-stats {
+                table[data-table="dimension"] {
+                    width: 100%;
 
-                thead > tr > th.axis,
-                tbody > tr > td.axis {
-                    width: 1%;
-                }
-                tbody > tr > td {
-                    text-align: right;
-                    &.axis {
-                        text-align: center;
+                    thead > tr > th.axis,
+                    tbody > tr > td.axis {
+                        width: 1%;
+                    }
+                    tbody > tr > td {
+                        text-align: right;
+                        &.axis {
+                            text-align: center;
+                        }
                     }
                 }
+
+                .row:nth-child(odd) {
+                    margin-bottom: 10px;
+                }
+                .row:last-child {
+                    margin-bottom: 0;
+                }
             }
 
-            .row:nth-child(odd) {
-                margin-bottom: 10px;
-            }
-            .row:last-child {
-                margin-bottom: 0;
-            }
-        }
+            .gcode-table {
+                border: 1px solid #ccc;
 
-        .gcode-table {
-            border: 1px solid #ccc;
-
-            .gcode-table-cell-status {
-                border-right: 1px solid #ddd;
-                margin-left: 0;
-                text-align: center;
-            }
-            .gcode-table-cell-command {
+                .gcode-table-cell-status {
+                    border-right: 1px solid #ddd;
+                    margin-left: 0;
+                    text-align: center;
+                }
+                .gcode-table-cell-command {
+                }
             }
         }
     }

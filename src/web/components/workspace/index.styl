@@ -1,105 +1,107 @@
-.workspace[data-ns="workspace"] {
-    .dropzone-overlay {
-        position: fixed;
-        top: 50px;
-        bottom: 0;
-        left: 0;
-        right: 0;
-        z-index: 100;
-        background-color: rgba(255, 255, 255, 0.5);
-        font-size: 20px;
-        padding: 100px;
-        border: 4px dashed #286090;
-        text-align: center;
-        pointer-events: none;
-    }
-    .dropzone {
-        height: 100%;
-    }
-
-    .workspace-container {
-        position: absolute;
-        top: 50px;
-        bottom: 0;
-        right: 0;
-        left: 0;
-    }
-
-    .workspace-table {
-        display: table;
-        width: 100%;
-        height: 100%;
-    }
-    .workspace-table-row {
-        display: table-row;
-    }
-
-    .primary-container,
-    .secondary-container,
-    .primary-toggler,
-    .secondary-toggler,
-    .default-container {
-        display: table-cell;
-        position: relative;
-    }
-    .primary-container {
-        border-right: 1px solid #ccc;
-    }
-    .secondary-container {
-        border-left: 1px solid #ccc;
-    }
-    .primary-container,
-    .secondary-container {
-        vertical-align: top;
-        background-color: #f6f7f8;
-        width: 360px;
-        max-width: 360px;
-        min-width: 360px;
-        padding: 0 10px;
-
-        > .btn-toolbar {
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
-        .widgets {
-            min-height: 240px; // Keep a minimum space for dropping widgets
-
-            // Class name for the chosen item
-            > .sortable-chosen {
-                > .widget {
-                    opacity: .8;
-                }
-            }
-            // Class name for the drop placeholder
-            > .sortable-ghost {
-                > .widget {
-                    opacity: .4;
-                }
-            }
-        }
-    }
-    .primary-toggler,
-    .secondary-toggler {
-        background-color: #f6f7f8;
-        padding-top: 5px;
-        text-align: center;
-        width: 32px;
-    }
-    .primary-toggler {
-        border-right: 1px solid #ccc;
-    }
-    .secondary-toggler {
-        border-left: 1px solid #ccc;
-    }
-    .default-container {
-        min-width: 250px;
-
-        &.fixed {
+:global {
+    .workspace[data-ns="workspace"] {
+        .dropzone-overlay {
             position: fixed;
-            left: (360 + 10)px;
-            right: (360 + 10)px;
             top: 50px;
             bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            background-color: rgba(255, 255, 255, 0.5);
+            font-size: 20px;
+            padding: 100px;
+            border: 4px dashed #286090;
+            text-align: center;
+            pointer-events: none;
+        }
+        .dropzone {
+            height: 100%;
+        }
+
+        .workspace-container {
+            position: absolute;
+            top: 50px;
+            bottom: 0;
+            right: 0;
+            left: 0;
+        }
+
+        .workspace-table {
+            display: table;
+            width: 100%;
+            height: 100%;
+        }
+        .workspace-table-row {
+            display: table-row;
+        }
+
+        .primary-container,
+        .secondary-container,
+        .primary-toggler,
+        .secondary-toggler,
+        .default-container {
+            display: table-cell;
+            position: relative;
+        }
+        .primary-container {
+            border-right: 1px solid #ccc;
+        }
+        .secondary-container {
+            border-left: 1px solid #ccc;
+        }
+        .primary-container,
+        .secondary-container {
+            vertical-align: top;
+            background-color: #f6f7f8;
+            width: 360px;
+            max-width: 360px;
+            min-width: 360px;
+            padding: 0 10px;
+
+            > .btn-toolbar {
+                margin-top: 5px;
+                margin-bottom: 5px;
+            }
+            .widgets {
+                min-height: 240px; // Keep a minimum space for dropping widgets
+
+                // Class name for the chosen item
+                > .sortable-chosen {
+                    > .widget {
+                        opacity: .8;
+                    }
+                }
+                // Class name for the drop placeholder
+                > .sortable-ghost {
+                    > .widget {
+                        opacity: .4;
+                    }
+                }
+            }
+        }
+        .primary-toggler,
+        .secondary-toggler {
+            background-color: #f6f7f8;
+            padding-top: 5px;
+            text-align: center;
+            width: 32px;
+        }
+        .primary-toggler {
+            border-right: 1px solid #ccc;
+        }
+        .secondary-toggler {
+            border-left: 1px solid #ccc;
+        }
+        .default-container {
+            min-width: 250px;
+
+            &.fixed {
+                position: fixed;
+                left: (360 + 10)px;
+                right: (360 + 10)px;
+                top: 50px;
+                bottom: 0;
+            }
         }
     }
 }

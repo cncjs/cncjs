@@ -52,7 +52,25 @@ module.exports = {
             },
             {
                 test: /\.styl$/,
-                loader: 'style!css!stylus'
+                loaders: [
+                    'style',
+                    'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
+                    'stylus'
+                ],
+                exclude: [
+                    path.resolve(__dirname, 'src/web/styles')
+                ]
+            },
+            {
+                test: /\.styl$/,
+                loaders: [
+                    'style',
+                    'css',
+                    'stylus'
+                ],
+                include: [
+                    path.resolve(__dirname, 'src/web/styles')
+                ]
             },
             {
                 test: /\.css$/,

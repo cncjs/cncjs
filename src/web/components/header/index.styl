@@ -1,42 +1,43 @@
-.header[data-ns="header"] {
-
-    .navbar-fixed-top {
-        border-width: 0;
-    }
-
-    .quick-access-toolbar {
-        @media (min-width: 768px) {
-            float: right;
+:global {
+    .header[data-ns="header"] {
+        .navbar-fixed-top {
+            border-width: 0;
         }
 
-        margin: 10px 0;
-
-        [class^="ion-"],
-        [class*=" ion-"] {
-            &:before {
-                font-size: 16px;
-                margin-right: 4px;
+        .quick-access-toolbar {
+            @media (min-width: 768px) {
+                float: right;
             }
-            &.mirror:before {
-                transform: scaleX(-1);
+
+            margin: 10px 0;
+
+            [class^="ion-"],
+            [class*=" ion-"] {
+                &:before {
+                    font-size: 16px;
+                    margin-right: 4px;
+                }
+                &.mirror:before {
+                    transform: scaleX(-1);
+                }
             }
-        }
 
-        .btn-group {
-            float: left;
-            margin-right: 15px;
+            .btn-group {
+                float: left;
+                margin-right: 15px;
 
-            &:last-child {
-                margin-right: 0;
+                &:last-child {
+                    margin-right: 0;
+                }
             }
-        }
-        .btn {
-            height: 30px;
-        }
+            .btn {
+                height: 30px;
+            }
 
-        // Remove the outline on buttons
-        button:focus {
-            outline: 0;
+            // Remove the outline on buttons
+            button:focus {
+                outline: 0;
+            }
         }
     }
 }

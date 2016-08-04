@@ -1,149 +1,151 @@
-[data-ns="widgets/axes"] {
-    .widget-content {
-        position: relative;
-        padding: 10px;
+:global {
+    [data-ns="widgets/axes"] {
+        .widget-content {
+            position: relative;
+            padding: 10px;
 
-        .toolbar-button {
-            margin-bottom: 10px;
-        }
+            .toolbar-button {
+                margin-bottom: 10px;
+            }
 
-        .rotate-45deg {
-            transform: rotate(45deg);
-            &:before {
+            .rotate-45deg {
                 transform: rotate(45deg);
+                &:before {
+                    transform: rotate(45deg);
+                }
             }
-        }
-        .rotate--45deg {
-            transform: rotate(-45deg);
-            &:before {
+            .rotate--45deg {
                 transform: rotate(-45deg);
+                &:before {
+                    transform: rotate(-45deg);
+                }
             }
-        }
-        .rotate-90deg {
-            transform: rotate(90deg);
-            &:before {
+            .rotate-90deg {
                 transform: rotate(90deg);
+                &:before {
+                    transform: rotate(90deg);
+                }
             }
-        }
-        .rotate--90deg {
-            transform: rotate(-90deg);
-            &:before {
+            .rotate--90deg {
                 transform: rotate(-90deg);
+                &:before {
+                    transform: rotate(-90deg);
+                }
             }
-        }
 
-        .display-panel {
-            margin-bottom: 10px;
+            .display-panel {
+                margin-bottom: 10px;
 
-            .coordinate {
-                text-align: center;
-                font-size: 24px;
-                padding: 0;
-                width: 1%;
-            }
-            .machine-position,
-            .work-position {
-                padding: 0 5px 10px 5px;
-                text-align: right;
-                white-space: nowrap;
-                position: relative;
-                width: 48%;
-
-                .integer-part,
-                .decimal-point,
-                .fractional-part {
+                .coordinate {
+                    text-align: center;
                     font-size: 24px;
+                    padding: 0;
+                    width: 1%;
                 }
-                .integer-part {
-                    width: 90px;
+                .machine-position,
+                .work-position {
+                    padding: 0 5px 10px 5px;
                     text-align: right;
-                }
-                .dimension-units {
-                    font-size: 12px;
-                    position: absolute;
-                    right: 5px;
-                    bottom: 0;
-                }
-            }
-            .action {
-                width: 1%;
-                padding: 0 4px;
-                text-align: center;
+                    white-space: nowrap;
+                    position: relative;
+                    width: 48%;
 
-                .icon {
-                    font-size: 12px;
+                    .integer-part,
+                    .decimal-point,
+                    .fractional-part {
+                        font-size: 24px;
+                    }
+                    .integer-part {
+                        width: 90px;
+                        text-align: right;
+                    }
+                    .dimension-units {
+                        font-size: 12px;
+                        position: absolute;
+                        right: 5px;
+                        bottom: 0;
+                    }
                 }
-            }
-        }
+                .action {
+                    width: 1%;
+                    padding: 0 4px;
+                    text-align: center;
 
-        .control-panel {
-            table {
-                tbody > tr > td {
-                    padding: 0 5px 5px 0;
-                }
-                tbody > tr > td:last-child {
-                    padding-right: 0;
-                }
-                tbody > tr:last-child > td {
-                    padding-bottom: 0;
+                    .icon {
+                        font-size: 12px;
+                    }
                 }
             }
-        }
 
-        .jog-pad {
-            .row {
-                margin-bottom: 5px;
-            }
-            .row > * {
-                padding-right: 5px;
-            }
-            button[class^="jog-"],
-            button[class*=" jog-"] {
-                font-size: 16px;
-                padding: 0;
-                min-width: 35px;
-                width: 100%;
-                height: 30px;
-                text-align: center;
-                vertical-align: middle;
-
-                .glyphicon {
-                    font-size: 14px;
+            .control-panel {
+                table {
+                    tbody > tr > td {
+                        padding: 0 5px 5px 0;
+                    }
+                    tbody > tr > td:last-child {
+                        padding-right: 0;
+                    }
+                    tbody > tr:last-child > td {
+                        padding-bottom: 0;
+                    }
                 }
             }
-            .jog-direction-highlight {
+
+            .jog-pad {
+                .row {
+                    margin-bottom: 5px;
+                }
+                .row > * {
+                    padding-right: 5px;
+                }
                 button[class^="jog-"],
                 button[class*=" jog-"] {
-                    background-color: rgba(240, 240, 240, 0.8);
-                    border-color: rgba(0, 0, 0, .3);
-                }
-                .jog-text {
-                    font-weight: 500;
-                }
-            }
-        }
+                    font-size: 16px;
+                    padding: 0;
+                    min-width: 35px;
+                    width: 100%;
+                    height: 30px;
+                    text-align: center;
+                    vertical-align: middle;
 
-        .motion-controls {
-            .row {
-                margin-bottom: 5px;
-            }
-            .row > * {
-                padding-left: 5px;
-            }
-            .btn, .btn-group {
-                width: 100%;
-            }
-        }
-
-        .jog-distance-control {
-            .input-group {
-                .input-group-btn:not(:first-child):not(:last-child) {
-                    .btn {
-                        border-radius: 0;
+                    .glyphicon {
+                        font-size: 14px;
                     }
-                    .btn:last-child {
-                        border-right: none;
-                        margin-right: -1px;
+                }
+                .jog-direction-highlight {
+                    button[class^="jog-"],
+                    button[class*=" jog-"] {
+                        background-color: rgba(240, 240, 240, 0.8);
+                        border-color: rgba(0, 0, 0, .3);
+                    }
+                    .jog-text {
+                        font-weight: 500;
+                    }
+                }
+            }
+
+            .motion-controls {
+                .row {
+                    margin-bottom: 5px;
+                }
+                .row > * {
+                    padding-left: 5px;
+                }
+                .btn, .btn-group {
+                    width: 100%;
+                }
+            }
+
+            .jog-distance-control {
+                .input-group {
+                    .input-group-btn:not(:first-child):not(:last-child) {
+                        .btn {
+                            border-radius: 0;
+                        }
+                        .btn:last-child {
+                            border-right: none;
+                            margin-right: -1px;
+                        }
                     }
                 }
             }
