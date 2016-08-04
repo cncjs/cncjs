@@ -28,7 +28,7 @@ const settings = {
         // string or array of namespaces
         ns: [
             'controller', // Grbl, TinyG2
-            'locale', // locale: language, timezone, ...
+            'gcode', // G-code
             'resource' // default
         ],
         // default namespace used if not passed to translation function
