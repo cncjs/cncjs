@@ -27,5 +27,15 @@
     "Inverse Time (G93)": "Inverse Time (G93)",
     "Units/Min (G94)": "Units/Min (G94)",
     "Active Tool Offset (G43.1)": "Active Tool Offset (G43.1)",
-    "No Tool Offset (G49)": "No Tool Offset (G49)"
+    "No Tool Offset (G49)": "No Tool Offset (G49)",
+    "Program Stop (M0)": "Program Stop (M0)",
+    "Optional Program Stop (M1)": "Optional Program Stop (M1)",
+    "Program End (M2)": "Program End (M2)",
+    "Program End and Rewind (M30)": "Program End and Rewind (M30)",
+    "Spindle On, CW (M3)": "Spindle On, CW (M3)",
+    "Spindle On, CCW (M4)": "Spindle On, CCW (M4)",
+    "Spindle Off (M5)": "Spindle Off (M5)",
+    "Mist Coolant On (M7)": "Mist Coolant On (M7)",
+    "Flood Coolant On (M8)": "Flood Coolant On (M8)",
+    "Coolant Off (M9)": "Coolant Off (M9)"
 }
