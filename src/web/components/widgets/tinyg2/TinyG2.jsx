@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { ProgressBar } from 'react-bootstrap';
-import { mapGCodeToText } from '../../../lib/controller';
+import mapGCodeToText from '../../../lib/gcode-text';
 import i18n from '../../../lib/i18n';
 import Toolbar from './Toolbar';
 import {
