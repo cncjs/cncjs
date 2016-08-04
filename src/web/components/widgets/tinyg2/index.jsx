@@ -4,6 +4,7 @@ import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
+import store from '../../../store';
 import Widget from '../../widget';
 import TinyG2 from './TinyG2';
 import {
@@ -46,6 +47,17 @@ class TinyG2Widget extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.panel.queueReports.expanded !== this.state.panel.queueReports.expanded) {
+            store.set('widgets.tinyg2.panel.queueReports.expanded', this.state.panel.queueReports.expanded);
+        }
+        if (prevState.panel.statusReports.expanded !== this.state.panel.statusReports.expanded) {
+            store.set('widgets.tinyg2.panel.statusReports.expanded', this.state.panel.statusReports.expanded);
+        }
+        if (prevState.panel.modalGroups.expanded !== this.state.panel.modalGroups.expanded) {
+            store.set('widgets.tinyg2.panel.modalGroups.expanded', this.state.panel.modalGroups.expanded);
+        }
+    }
     getDefaultState() {
         return {
             isCollapsed: false,
@@ -56,7 +68,17 @@ class TinyG2Widget extends Component {
                 type: controller.type,
                 state: controller.state
             },
-            showGCode: false
+            panel: {
+                queueReports: {
+                    expanded: store.get('widgets.tinyg2.panel.queueReports.expanded')
+                },
+                statusReports: {
+                    expanded: store.get('widgets.tinyg2.panel.statusReports.expanded')
+                },
+                modalGroups: {
+                    expanded: store.get('widgets.tinyg2.panel.modalGroups.expanded')
+                }
+            }
         };
     }
     subscribe() {
@@ -106,9 +128,44 @@ class TinyG2Widget extends Component {
 
         return true;
     }
-    toggleDisplay() {
-        const { showGCode } = this.state;
-        this.setState({ showGCode: !showGCode });
+    toggleQueueReports() {
+        const expanded = this.state.panel.queueReports.expanded;
+
+        this.setState({
+            panel: {
+                ...this.state.panel,
+                queueReports: {
+                    ...this.state.panel.queueReports,
+                    expanded: !expanded
+                }
+            }
+        });
+    }
+    toggleStatusReports() {
+        const expanded = this.state.panel.statusReports.expanded;
+
+        this.setState({
+            panel: {
+                ...this.state.panel,
+                statusReports: {
+                    ...this.state.panel.statusReports,
+                    expanded: !expanded
+                }
+            }
+        });
+    }
+    toggleModalGroups() {
+        const expanded = this.state.panel.modalGroups.expanded;
+
+        this.setState({
+            panel: {
+                ...this.state.panel,
+                modalGroups: {
+                    ...this.state.panel.modalGroups,
+                    expanded: !expanded
+                }
+            }
+        });
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
@@ -123,7 +180,9 @@ class TinyG2Widget extends Component {
             canClick: this.canClick()
         };
         const actions = {
-            toggleDisplay: ::this.toggleDisplay
+            toggleQueueReports: ::this.toggleQueueReports,
+            toggleStatusReports: ::this.toggleStatusReports,
+            toggleModalGroups: ::this.toggleModalGroups
         };
 
         return (

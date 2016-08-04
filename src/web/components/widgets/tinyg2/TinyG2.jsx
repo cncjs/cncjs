@@ -1,8 +1,11 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import { ProgressBar } from 'react-bootstrap';
 import mapGCodeToText from '../../../lib/gcode-text';
 import i18n from '../../../lib/i18n';
+import Panel from '../../common/Panel';
+import Toggler from '../../common/Toggler';
 import Toolbar from './Toolbar';
 import {
     TINYG2_MACHINE_STATE_INIT,
@@ -18,7 +21,9 @@ import {
     TINYG2_MACHINE_STATE_JOGGING,
     TINYG2_MACHINE_STATE_SHUTDOWN
 } from '../../../constants';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class TinyG2 extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -34,7 +39,6 @@ class TinyG2 extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { canClick, showGCode } = state;
         const none = '–';
         const controllerState = state.controller.state;
         const machineState = _.get(controllerState, 'sr.machineState');
@@ -56,13 +60,10 @@ class TinyG2 extends Component {
         const feedrate = _.get(controllerState, 'sr.feedrate');
         const velocity = _.get(controllerState, 'sr.velocity');
         const line = _.get(controllerState, 'sr.line');
-        let modal = _.get(controllerState, 'sr.modal', {});
+        const modal = _.mapValues(_.get(controllerState, 'sr.modal', {}), (word, group) => mapGCodeToText(word));
+        const panel = state.panel;
+
         let plannerBufferStyle = 'default';
-
-        if (!showGCode) {
-            modal = _.mapValues(modal, (word, group) => mapGCodeToText(word));
-        }
-
         this.plannerBufferMin = Math.min(this.plannerBufferMin, plannerBuffer);
         this.plannerBufferMax = Math.max(this.plannerBufferMax, plannerBuffer);
         if (plannerBuffer > 0 && plannerBuffer === this.plannerBufferMin) {
@@ -71,143 +72,172 @@ class TinyG2 extends Component {
 
         return (
             <div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-12">
-                        <Toolbar {...this.props} className="pull-right" />
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-12">
-                        <h6>{i18n._('Queue Reports')}</h6>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-6">
-                        {i18n._('Planner Buffer')}
-                    </div>
-                    <div className="col col-xs-6">
-                        <ProgressBar
-                            style={{ marginBottom: 0 }}
-                            bsStyle={plannerBufferStyle}
-                            min={this.plannerBufferMin}
-                            max={this.plannerBufferMax}
-                            now={plannerBuffer}
-                            label={plannerBuffer}
+                <Toolbar {...this.props} styleName="toolbar" />
+                <Panel styleName="panel">
+                    <Panel.Heading>
+                        <strong>{i18n._('Queue Reports')}</strong>
+                        <Toggler
+                            className="pull-right"
+                            expanded={panel.queueReports.expanded}
+                            onToggle={() => {
+                                actions.toggleQueueReports();
+                            }}
                         />
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-12">
-                        <h6>{i18n._('Status Reports')}</h6>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-3">
-                        {i18n._('State')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs">{machineStateText || none}</div>
-                    </div>
-                    <div className="col col-xs-3">
-                        {i18n._('Feed Rate')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs">{Number(feedrate) || 0}</div>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-3">
-                        {i18n._('Velocity')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs">{Number(velocity) || 0}</div>
-                    </div>
-                    <div className="col col-xs-3">
-                        {i18n._('Line')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs">{Number(line) || 0}</div>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-6">
-                        <h6>{i18n._('Modal Groups')}</h6>
-                    </div>
-                    <div className="col col-xs-6 text-right">
-                        <button
-                            type="button"
-                            className="btn btn-xs btn-default btn-toggle-display"
-                            onClick={actions.toggleDisplay}
-                            disabled={!canClick}
-                        >
-                            {i18n._('Toggle Display')}
-                        </button>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-3">
-                        {i18n._('Motion')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs" title={modal.motion}>
-                            {modal.motion || none}
+                    </Panel.Heading>
+                {panel.queueReports.expanded &&
+                    <Panel.Body>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Planner Buffer')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <ProgressBar
+                                    style={{ marginBottom: 0 }}
+                                    bsStyle={plannerBufferStyle}
+                                    min={this.plannerBufferMin}
+                                    max={this.plannerBufferMax}
+                                    now={plannerBuffer}
+                                    label={plannerBuffer > 0 ? plannerBuffer : ''}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div className="col col-xs-3">
-                        {i18n._('Coordinate')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs" title={modal.coordinate}>
-                            {modal.coordinate || none}
+                    </Panel.Body>
+                }
+                </Panel>
+                <Panel styleName="panel">
+                    <Panel.Heading>
+                        <strong>{i18n._('Status Reports')}</strong>
+                        <Toggler
+                            className="pull-right"
+                            expanded={panel.statusReports.expanded}
+                            onToggle={() => {
+                                actions.toggleStatusReports();
+                            }}
+                        />
+                    </Panel.Heading>
+                {panel.statusReports.expanded &&
+                    <Panel.Body>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('State')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs">{machineStateText || none}</div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-3">
-                        {i18n._('Plane')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs" title={modal.plane}>
-                            {modal.plane || none}
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Feed Rate')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs">{Number(feedrate) || 0}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col col-xs-3">
-                        {i18n._('Distance')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs" title={modal.distance}>
-                            {modal.distance || none}
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Velocity')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs">{Number(velocity) || 0}</div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-3">
-                        {i18n._('Feed Rate')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs" title={modal.feedrate}>
-                            {modal.feedrate || none}
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Line')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs">{Number(line) || 0}</div>
+                            </div>
                         </div>
-                    </div>
-                    <div className="col col-xs-3">
-                        {i18n._('Units')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs" title={modal.units}>
-                            {modal.units || none}
+                    </Panel.Body>
+                }
+                </Panel>
+                <Panel styleName="panel last">
+                    <Panel.Heading>
+                        <strong>{i18n._('Modal Groups')}</strong>
+                        <Toggler
+                            className="pull-right"
+                            expanded={panel.modalGroups.expanded}
+                            onToggle={() => {
+                                actions.toggleModalGroups();
+                            }}
+                        />
+                    </Panel.Heading>
+                {panel.modalGroups.expanded &&
+                    <Panel.Body>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Motion')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs" title={modal.motion}>
+                                    {modal.motion || none}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col col-xs-3">
-                        {i18n._('Path')}
-                    </div>
-                    <div className="col col-xs-3">
-                        <div className="well well-xs" title={modal.path}>
-                            {modal.path || none}
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Coordinate')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs" title={modal.coordinate}>
+                                    {modal.coordinate || none}
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Plane')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs" title={modal.plane}>
+                                    {modal.plane || none}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Distance')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs" title={modal.distance}>
+                                    {modal.distance || none}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Feed Rate')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs" title={modal.feedrate}>
+                                    {modal.feedrate || none}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Units')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs" title={modal.units}>
+                                    {modal.units || none}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row no-gutters" styleName="last">
+                            <div className="col col-xs-4">
+                                {i18n._('Path')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className="well well-xs" title={modal.path}>
+                                    {modal.path || none}
+                                </div>
+                            </div>
+                        </div>
+                    </Panel.Body>
+                }
+                </Panel>
             </div>
         );
     }
