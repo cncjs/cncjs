@@ -214,7 +214,7 @@
     "gulp-babel": "~6.1.2",
     "gulp-sort": "~2.0.0",
     "gulp-util": "~3.0.7",
-    "i18next-scanner": "~1.4.1",
+    "i18next-scanner": "~1.5.0",
     "json-loader": "~0.5.4",
     "nib": "~1.1.0",
     "redux-devtools": "~3.3.1",
