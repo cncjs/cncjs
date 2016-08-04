@@ -63,6 +63,14 @@ const defaultState = {
         gcode: {
         },
         grbl: {
+            panel: {
+                parserState: {
+                    expanded: true
+                },
+                modalGroups: {
+                    expanded: true
+                }
+            }
         },
         probe: {
             probeCommand: 'G38.2',
@@ -74,6 +82,17 @@ const defaultState = {
         spindle: {
         },
         tinyg2: {
+            panel: {
+                queueReports: {
+                    expanded: true
+                },
+                statusReports: {
+                    expanded: true
+                },
+                modalGroups: {
+                    expanded: true
+                }
+            }
         },
         visualizer: {
             animation: true
