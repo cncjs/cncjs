@@ -69,6 +69,8 @@ class Console extends React.Component {
                 if (port) {
                     this.setState({ port: port });
                 } else {
+                    this.clearAll();
+
                     const defaultState = this.getDefaultState();
                     this.setState({
                         ...defaultState,
