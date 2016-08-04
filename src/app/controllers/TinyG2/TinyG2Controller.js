@@ -192,10 +192,7 @@ class TinyG2Controller {
     // https://github.com/synthetos/TinyG/wiki/TinyG-Configuration-for-Firmware-Version-0.97
     initController() {
         const cmds = [
-            { pauseAfter: 500 },
-
-            // Help
-            { cmd: '?', pauseAfter: 150 },
+            { pauseAfter: 1000 },
 
             // Enable JSON mode
             // 0=text mode, 1=JSON mode
@@ -270,7 +267,8 @@ class TinyG2Controller {
             // Request status report
             { cmd: '{"sr":null}' },
 
-            { pauseAfter: 250 }
+            // Help
+            { cmd: '?', pauseAfter: 250 }
         ];
 
         const sendInitCommands = (i = 0) => {
@@ -443,8 +441,6 @@ class TinyG2Controller {
                 });
             },
             'unload': () => {
-                log.debug(`[TinyG2] Unload G-code: name="${this.sender.name}"`);
-
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 this.sender.unload();
             },
