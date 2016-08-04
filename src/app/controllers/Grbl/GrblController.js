@@ -15,7 +15,7 @@ import {
 } from './constants';
 
 const dbg = (...args) => {
-    log.raw.apply(log, 'silly', [].concat(args));
+    log.raw.apply(log, ['silly'].concat(args));
 };
 
 class Connection {
