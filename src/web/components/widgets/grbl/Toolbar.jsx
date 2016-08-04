@@ -84,6 +84,7 @@ class Toolbar extends Component {
                         bsStyle="default"
                         title={i18n._('More')}
                         id="grbl-dropdown"
+                        pullRight
                         disabled={!canClick}
                     >
                         <MenuItem onSelect={() => controller.writeln('$')} disabled={!canClick}>{i18n._('Help ($)')}</MenuItem>

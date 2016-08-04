@@ -94,6 +94,7 @@ class Toolbar extends Component {
                         bsStyle="default"
                         title={i18n._('More')}
                         id="tinyg2-dropdown"
+                        pullRight
                         disabled={!canClick}
                     >
                         <MenuItem onSelect={() => controller.writeln('h')} disabled={!canClick}>{i18n._('Help')}</MenuItem>
