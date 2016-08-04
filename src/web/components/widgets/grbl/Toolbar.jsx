@@ -14,7 +14,7 @@ class Toolbar extends Component {
         return !_.isEqual(nextProps, this.props);
     }
     render() {
-        const { state } = this.props;
+        const { state, ...others } = this.props;
         const { canClick } = state;
         const styles = {
             button: {
@@ -23,7 +23,7 @@ class Toolbar extends Component {
         };
 
         return (
-            <div>
+            <div {...others}>
                 <div className="btn-group btn-group-xs">
                     <button
                         type="button"

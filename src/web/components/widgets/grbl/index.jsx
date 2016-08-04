@@ -4,6 +4,7 @@ import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
+import store from '../../../store';
 import Widget from '../../widget';
 import Grbl from './Grbl';
 import {
@@ -46,6 +47,14 @@ class GrblWidget extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    componentDidUpdate(prevProps, prevState) {
+        if (prevState.panel.parserState.expanded !== this.state.panel.parserState.expanded) {
+            store.set('widgets.grbl.panel.parserState.expanded', this.state.panel.parserState.expanded);
+        }
+        if (prevState.panel.modalGroups.expanded !== this.state.panel.modalGroups.expanded) {
+            store.set('widgets.grbl.panel.modalGroups.expanded', this.state.panel.modalGroups.expanded);
+        }
+    }
     getDefaultState() {
         return {
             isCollapsed: false,
@@ -56,7 +65,14 @@ class GrblWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
-            showGCode: false
+            panel: {
+                parserState: {
+                    expanded: store.get('widgets.grbl.panel.parserState.expanded')
+                },
+                modalGroups: {
+                    expanded: store.get('widgets.grbl.panel.modalGroups.expanded')
+                }
+            }
         };
     }
     subscribe() {
@@ -106,9 +122,31 @@ class GrblWidget extends Component {
 
         return true;
     }
-    toggleDisplay() {
-        const { showGCode } = this.state;
-        this.setState({ showGCode: !showGCode });
+    toggleParserState() {
+        const expanded = this.state.panel.parserState.expanded;
+
+        this.setState({
+            panel: {
+                ...this.state.panel,
+                parserState: {
+                    ...this.state.panel.parserState,
+                    expanded: !expanded
+                }
+            }
+        });
+    }
+    toggleModalGroups() {
+        const expanded = this.state.panel.modalGroups.expanded;
+
+        this.setState({
+            panel: {
+                ...this.state.panel,
+                modalGroups: {
+                    ...this.state.panel.modalGroups,
+                    expanded: !expanded
+                }
+            }
+        });
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
@@ -123,7 +161,8 @@ class GrblWidget extends Component {
             canClick: this.canClick()
         };
         const actions = {
-            toggleDisplay: ::this.toggleDisplay
+            toggleParserState: ::this.toggleParserState,
+            toggleModalGroups: ::this.toggleModalGroups
         };
 
         return (

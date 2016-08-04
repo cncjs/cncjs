@@ -1,39 +1,37 @@
-[data-ns="widgets/grbl"] {
-    .widget-content {
-        position: relative;
-        padding: 10px;
+:global {
+    [data-ns="widgets/grbl"] {
+        .widget-content {
+            position: relative;
+            padding: 10px;
 
-        button:hover {
-            .code {
-                background-color: #ccc;
+            .row {
+                margin-bottom: 5px;
+            }
+            .row:last-child {
+                margin-bottom: 0;
+            }
+
+            .well {
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+            .well-xs {
+                 padding: 0 5px;
+                 border-radius: 3px;
+                 margin-bottom: 0;
+                 line-height: 18px;
             }
         }
+    }
+}
 
-        .row {
-            margin-bottom: 5px;
-        }
-
-        [class*="col-"]:nth-child(odd) {
-            padding-left: 10px;
-        }
-        [class*="col-"]:first-child {
-            padding-left: 0;
-        }
-
-        .well {
-            text-overflow: ellipsis;
-            overflow: hidden;
-            white-space: nowrap;
-        }
-        .well-xs {
-             padding: 0 5px;
-             border-radius: 3px;
-             margin-bottom: 0;
-             line-height: 18px;
-        }
-
-        .btn-toggle-display {
-            margin-top: 8px;
-        }
+.toolbar {
+    margin-bottom: 10px;
+}
+.panel {
+    margin-bottom: 10px;
+    &.last {
+        margin-bottom: 0;
     }
 }
