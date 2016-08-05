@@ -11,7 +11,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 ## Key Features
 * Supported CNC controllers
   * Grbl v0.9 or later
-  * TinyG2
+  * TinyG2 v0.97 or later
 * [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cheton/cnc/wiki/Desktop-App)
 * 3D Visualizer
 * Allows multiple HTTP connections at the same serial port
