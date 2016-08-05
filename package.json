@@ -104,14 +104,16 @@
     "app": "dist/cnc"
   },
   "keywords": [
+    "arduino",
     "cnc",
     "gcode",
     "grbl",
-    "arduino",
-    "raspberry-pi",
+    "pi",
+    "raspberry",
     "react",
     "socket.io",
-    "webappengine"
+    "tinyg",
+    "tinyg2"
   ],
   "dependencies": {
     "async": "~2.0.0",
