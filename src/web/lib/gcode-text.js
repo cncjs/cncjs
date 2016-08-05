@@ -31,8 +31,8 @@ export default (word) => {
         'G21': i18n._('Millimeters (G21)', { ns: 'gcode' }),
 
         // Path
-        'G61': i18n._('Exact Stop (G61)', { ns: 'gcode' }),
-        'G61.1': i18n._('Exact Path (G61.1)', { ns: 'gcode' }),
+        'G61': i18n._('Exact Path (G61)', { ns: 'gcode' }),
+        'G61.1': i18n._('Exact Stop (G61.1)', { ns: 'gcode' }),
         'G64': i18n._('Continuous (G64)', { ns: 'gcode' }),
 
         // Distance
