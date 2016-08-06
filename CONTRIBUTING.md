@@ -142,10 +142,10 @@ $ ls -al output/linux/
 ## Localization
 
 ### Static Translations 
-Find all resource strings stored in the <b>resource.json</b> file, which is located in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory. You can create a pull request to submit your changes.
+Find all resource files in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory. You can create a pull request to submit your changes.
 
 ### Runtime Translations
-Moreover, you can make translations during runtime by modifying <b>resource.json</b> from the installed directory. Note that your path may differ based on the Node installation path you have in place.
+Moreover, you can make translations during runtime by modifying resource files from the installed directory. Note that your path may differ based on the Node installation path you have in place.
 ```bash
 $ cd $(dirname `which cnc`)/../lib/node_modules/cncjs/dist/web/i18n/
 $ pwd
