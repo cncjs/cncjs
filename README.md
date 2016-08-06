@@ -119,7 +119,7 @@ Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
 
 ## Localization
 
-You can help translate [src/app/i18n/en/resource.json](https://github.com/cheton/cnc/tree/master/src/app/i18n/en/resource.json) and [src/web/i18n/en/resource.json](https://github.com/cheton/cnc/tree/master/src/web/i18n/en/resource.json) files from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can [open an issue](https://github.com/cheton/cnc/issues) or send your translations to cheton@gmail.com.
+You can help translate resource files in [src/app/i18n](https://github.com/cheton/cnc/tree/master/src/app/i18n) and [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directories from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can [open an issue](https://github.com/cheton/cnc/issues) or send your translations to cheton@gmail.com.
 
 Locale | Language | Status | Contributors 
 ------ | -------- | ------ | ------------
