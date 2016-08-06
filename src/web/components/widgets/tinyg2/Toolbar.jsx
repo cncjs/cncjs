@@ -28,7 +28,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Feedhold')}
+                        title={i18n._('Feedhold (!)')}
                         style={styles.button}
                         onClick={() => controller.command('feedhold')}
                         disabled={!canClick}
@@ -38,7 +38,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Cycle Start')}
+                        title={i18n._('Cycle Start (~)')}
                         style={styles.button}
                         onClick={() => controller.command('cyclestart')}
                         disabled={!canClick}
@@ -48,7 +48,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Queue Flush')}
+                        title={i18n._('Queue Flush (%)')}
                         style={styles.button}
                         onClick={() => controller.command('queueflush')}
                         disabled={!canClick}
@@ -60,7 +60,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Kill Job')}
+                        title={i18n._('Kill Job (^d)')}
                         style={styles.button}
                         onClick={() => controller.command('killjob')}
                         disabled={!canClick}
@@ -70,7 +70,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Clear Alarm')}
+                        title={i18n._('Clear Alarm ($clear)')}
                         style={styles.button}
                         onClick={() => controller.command('unlock')}
                         disabled={!canClick}
@@ -80,7 +80,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Reset')}
+                        title={i18n._('Reset (^x)')}
                         style={styles.button}
                         onClick={() => controller.command('reset')}
                         disabled={!canClick}

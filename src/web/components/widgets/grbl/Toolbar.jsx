@@ -28,7 +28,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Feedhold')}
+                        title={i18n._('Feedhold (!)')}
                         style={styles.button}
                         onClick={() => controller.command('feedhold')}
                         disabled={!canClick}
@@ -38,7 +38,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Cycle Start')}
+                        title={i18n._('Cycle Start (~)')}
                         style={styles.button}
                         onClick={() => controller.command('cyclestart')}
                         disabled={!canClick}
@@ -50,7 +50,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Kill Alarm Lock')}
+                        title={i18n._('Kill Alarm Lock ($X)')}
                         style={styles.button}
                         onClick={() => controller.command('unlock')}
                         disabled={!canClick}
@@ -60,7 +60,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Check G-code Mode')}
+                        title={i18n._('Check G-code Mode ($C)')}
                         style={styles.button}
                         onClick={() => controller.command('check')}
                         disabled={!canClick}
@@ -70,7 +70,7 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Reset')}
+                        title={i18n._('Reset (^x)')}
                         style={styles.button}
                         onClick={() => controller.command('reset')}
                         disabled={!canClick}
