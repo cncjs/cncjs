@@ -98,7 +98,9 @@ const settings = {
             parse: function(data, url) {
                 log.debug(`Loading resource: url="${url}"`);
 
-                if (endsWith(url, '/resource.json')) {
+                // gcode.json
+                // resource.json
+                if (endsWith(url, '/gcode.json') || endsWith(url, '/resource.json')) {
                     return mapKeys(JSON.parse(data), (value, key) => sha1(key));
                 }
 
