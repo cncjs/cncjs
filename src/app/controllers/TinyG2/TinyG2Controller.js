@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import SerialPort from 'serialport';
 import log from '../../lib/log';
+import Feeder from '../../lib/feeder';
 import GCodeSender from '../../lib/gcode-sender';
 import store from '../../store';
 import TinyG2 from './TinyG2';
@@ -50,7 +51,10 @@ class TinyG2Controller {
     state = {};
     queryTimer = null;
 
-    // G-code sender
+    // Feeder
+    feeder = null;
+
+    // Sender
     sender = null;
 
     // Workflow state
@@ -66,7 +70,34 @@ class TinyG2Controller {
             baudrate: baudrate
         };
 
-        // GCodeSender
+        // Feeder
+        this.feeder = new Feeder();
+        this.feeder.on('data', ({ socket, line }) => {
+            if (this.isClose()) {
+                log.error(`[TinyG2] The serial port "${this.options.port}" is not accessible`);
+                return;
+            }
+
+            line = ('' + line).trim();
+            if (line.length === 0) {
+                return;
+            }
+
+            socket && socket.emit('serialport:write', line);
+            const index = _.findIndex(this.connections, (c) => {
+                return c.socket === socket;
+            });
+            if (index >= 0) {
+                this.connections[index].sentCommand = line;
+            }
+
+            const data = JSON.stringify({ gc: line }) + '\n';
+            this.serialport.write(data);
+
+            dbg(`[TinyG2] > ${line}`);
+        });
+
+        // Sender
         this.sender = new GCodeSender();
         this.sender.on('progress', (res) => {
             if (this.isClose()) {
@@ -103,15 +134,20 @@ class TinyG2Controller {
                 return;
             }
 
-            if (this.workflowState === WORKFLOW_STATE_RUNNING &&
-                prevPlannerQueueStatus === TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
-                this.sender.next();
-            }
-
             if (qr >= TINYG2_PLANNER_BUFFER_POOL_SIZE) {
                 this.plannerQueueStatus = TINYG2_PLANNER_QUEUE_STATUS_READY;
             } else {
                 this.plannerQueueStatus = TINYG2_PLANNER_QUEUE_STATUS_RUNNING;
+            }
+
+            if (prevPlannerQueueStatus === TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
+                // Feeder
+                this.feeder.next();
+
+                // Sender
+                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.sender.next();
+                }
             }
         });
 
@@ -127,9 +163,14 @@ class TinyG2Controller {
         this.tinyG2.on('f', (f) => {
             const prevPlannerQueueStatus = this.plannerQueueStatus;
 
-            if (this.workflowState === WORKFLOW_STATE_RUNNING &&
-                prevPlannerQueueStatus !== TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
-                this.sender.next();
+            if (prevPlannerQueueStatus !== TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
+                // Feeder
+                this.feeder.next();
+
+                // Sender
+                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.sender.next();
+                }
             }
         });
 
@@ -289,6 +330,14 @@ class TinyG2Controller {
         sendInitCommands();
     }
     destroy() {
+        if (this.feeder) {
+            this.feeder = null;
+        }
+
+        if (this.sender) {
+            this.sender = null;
+        }
+
         if (this.queryTimer) {
             clearInterval(this.queryTimer);
             this.queryTimer = null;
@@ -445,6 +494,10 @@ class TinyG2Controller {
                 this.sender.unload();
             },
             'start': () => {
+                // Feeder
+                this.feeder.clear(); // make sure feeder queue is empty
+
+                // Sender
                 this.workflowState = WORKFLOW_STATE_RUNNING;
                 this.sender.next();
             },
@@ -488,6 +541,10 @@ class TinyG2Controller {
                 this.writeln(socket, '~'); // cycle start
                 this.writeln(socket, '{"qr":""}'); // queue report
 
+                // Feeder
+                this.feeder.next();
+
+                // Sender
                 if (this.workflowState === WORKFLOW_STATE_PAUSED) {
                     this.workflowState = WORKFLOW_STATE_RUNNING;
                     this.sender.next();
@@ -510,8 +567,16 @@ class TinyG2Controller {
                 this.writeln(socket, '{home:1}');
             },
             'gcode': () => {
-                const gcode = args.join(' ');
-                this.writeln(socket, JSON.stringify({ gc: gcode }));
+                const line = args.join(' ');
+
+                this.feeder.feed({
+                    socket: socket,
+                    line: line
+                });
+
+                if (!this.feeder.isPending()) {
+                    this.feeder.next();
+                }
             }
         }[cmd];
 

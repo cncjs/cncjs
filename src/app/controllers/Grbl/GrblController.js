@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import SerialPort from 'serialport';
 import log from '../../lib/log';
+import Feeder from '../../lib/feeder';
 import GCodeSender from '../../lib/gcode-sender';
 import store from '../../store';
 import Grbl from './Grbl';
@@ -51,7 +52,10 @@ class GrblController {
         parserstateEnd: false
     };
 
-    // G-code sender
+    // Feeder
+    feeder = null;
+
+    // Sender
     sender = null;
 
     // Workflow state
@@ -66,7 +70,34 @@ class GrblController {
             baudrate: baudrate
         };
 
-        // GCodeSender
+        // Feeder
+        this.feeder = new Feeder();
+        this.feeder.on('data', ({ socket, line }) => {
+            if (this.isClose()) {
+                log.error(`[Grbl] The serial port "${this.options.port}" is not accessible`);
+                return;
+            }
+
+            line = ('' + line).trim();
+            if (line.length === 0) {
+                return;
+            }
+
+            socket && socket.emit('serialport:write', line);
+            const index = _.findIndex(this.connections, (c) => {
+                return c.socket === socket;
+            });
+            if (index >= 0) {
+                this.connections[index].sentCommand = line;
+            }
+
+            const data = line + '\n';
+            this.serialport.write(data);
+
+            dbg(`[Grbl] > ${line}`);
+        });
+
+        // Sender
         this.sender = new GCodeSender();
         this.sender.on('progress', (res) => {
             if (this.isClose()) {
@@ -109,6 +140,10 @@ class GrblController {
                 return;
             }
 
+            // Feeder
+            this.feeder.next();
+
+            // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                 this.sender.next();
                 return;
@@ -118,6 +153,10 @@ class GrblController {
         });
 
         this.grbl.on('error', (res) => {
+            // Feeder
+            this.feeder.next();
+
+            // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                 const length = this.sender.sent.length;
                 if (length > 0) {
@@ -242,6 +281,14 @@ class GrblController {
         }, 250);
     }
     destroy() {
+        if (this.feeder) {
+            this.feeder = null;
+        }
+
+        if (this.sender) {
+            this.sender = null;
+        }
+
         if (this.queryTimer) {
             clearInterval(this.queryTimer);
             this.queryTimer = null;
@@ -397,6 +444,10 @@ class GrblController {
                 this.sender.unload();
             },
             'start': () => {
+                // Feeder
+                this.feeder.clear(); // make sure feeder queue is empty
+
+                // Sender
                 this.workflowState = WORKFLOW_STATE_RUNNING;
                 this.sender.next();
             },
@@ -447,8 +498,16 @@ class GrblController {
                 this.writeln(socket, '$C');
             },
             'gcode': () => {
-                const gcode = args.join(' ');
-                this.writeln(socket, gcode);
+                const line = args.join(' ');
+
+                this.feeder.feed({
+                    socket: socket,
+                    line: line
+                });
+
+                if (!this.feeder.isPending()) {
+                    this.feeder.next();
+                }
             }
         }[cmd];
 
@@ -468,7 +527,6 @@ class GrblController {
             this.connections[index].sentCommand = data;
         }
         this.serialport.write(data);
-
         dbg(`[Grbl] > ${data}`);
     }
     writeln(socket, data) {
