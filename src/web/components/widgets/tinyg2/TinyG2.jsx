@@ -75,14 +75,18 @@ class TinyG2 extends Component {
                 <Toolbar {...this.props} styleName="toolbar" />
                 <Panel styleName="panel">
                     <Panel.Heading>
-                        <strong>{i18n._('Queue Reports')}</strong>
                         <Toggler
-                            className="pull-right"
-                            expanded={panel.queueReports.expanded}
+                            className="clearfix"
                             onToggle={() => {
                                 actions.toggleQueueReports();
                             }}
-                        />
+                        >
+                            <div className="pull-left">{i18n._('Queue Reports')}</div>
+                            <Toggler.Icon
+                                className="pull-right"
+                                expanded={panel.queueReports.expanded}
+                            />
+                        </Toggler>
                     </Panel.Heading>
                 {panel.queueReports.expanded &&
                     <Panel.Body>
@@ -106,14 +110,18 @@ class TinyG2 extends Component {
                 </Panel>
                 <Panel styleName="panel">
                     <Panel.Heading>
-                        <strong>{i18n._('Status Reports')}</strong>
                         <Toggler
-                            className="pull-right"
-                            expanded={panel.statusReports.expanded}
+                            className="clearfix"
                             onToggle={() => {
                                 actions.toggleStatusReports();
                             }}
-                        />
+                        >
+                            <div className="pull-left">{i18n._('Status Reports')}</div>
+                            <Toggler.Icon
+                                className="pull-right"
+                                expanded={panel.statusReports.expanded}
+                            />
+                        </Toggler>
                     </Panel.Heading>
                 {panel.statusReports.expanded &&
                     <Panel.Body>
@@ -154,14 +162,18 @@ class TinyG2 extends Component {
                 </Panel>
                 <Panel styleName="panel last">
                     <Panel.Heading>
-                        <strong>{i18n._('Modal Groups')}</strong>
                         <Toggler
-                            className="pull-right"
-                            expanded={panel.modalGroups.expanded}
+                            className="clearfix"
                             onToggle={() => {
                                 actions.toggleModalGroups();
                             }}
-                        />
+                        >
+                            <div className="pull-left">{i18n._('Modal Groups')}</div>
+                            <Toggler.Icon
+                                className="pull-right"
+                                expanded={panel.modalGroups.expanded}
+                            />
+                        </Toggler>
                     </Panel.Heading>
                 {panel.modalGroups.expanded &&
                     <Panel.Body>

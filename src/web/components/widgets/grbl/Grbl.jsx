@@ -32,14 +32,18 @@ class Grbl extends Component {
                 <Toolbar {...this.props} styleName="toolbar" />
                 <Panel styleName="panel">
                     <Panel.Heading>
-                        <strong>{i18n._('Parser State')}</strong>
                         <Toggler
-                            className="pull-right"
-                            expanded={panel.parserState.expanded}
+                            className="clearfix"
                             onToggle={() => {
                                 actions.toggleParserState();
                             }}
-                        />
+                        >
+                            <div className="pull-left">{i18n._('Parser State')}</div>
+                            <Toggler.Icon
+                                className="pull-right"
+                                expanded={panel.parserState.expanded}
+                            />
+                        </Toggler>
                     </Panel.Heading>
                 {panel.parserState.expanded &&
                     <Panel.Body>
@@ -88,14 +92,18 @@ class Grbl extends Component {
                 </Panel>
                 <Panel styleName="panel last">
                     <Panel.Heading>
-                        <strong>{i18n._('Modal Groups')}</strong>
                         <Toggler
-                            className="pull-right"
-                            expanded={panel.modalGroups.expanded}
+                            className="clearfix"
                             onToggle={() => {
                                 actions.toggleModalGroups();
                             }}
-                        />
+                        >
+                            <div className="pull-left">{i18n._('Modal Groups')}</div>
+                            <Toggler.Icon
+                                className="pull-right"
+                                expanded={panel.modalGroups.expanded}
+                            />
+                        </Toggler>
                     </Panel.Heading>
                 {panel.modalGroups.expanded &&
                     <Panel.Body>
