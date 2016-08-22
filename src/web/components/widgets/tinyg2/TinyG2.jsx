@@ -74,7 +74,7 @@ class TinyG2 extends Component {
             <div>
                 <Toolbar {...this.props} styleName="toolbar" />
                 <Panel styleName="panel">
-                    <Panel.Heading>
+                    <Panel.Heading styleName="panel-heading">
                         <Toggler
                             className="clearfix"
                             onToggle={() => {
@@ -109,7 +109,7 @@ class TinyG2 extends Component {
                 }
                 </Panel>
                 <Panel styleName="panel">
-                    <Panel.Heading>
+                    <Panel.Heading styleName="panel-heading">
                         <Toggler
                             className="clearfix"
                             onToggle={() => {
@@ -161,7 +161,7 @@ class TinyG2 extends Component {
                 }
                 </Panel>
                 <Panel styleName="panel last">
-                    <Panel.Heading>
+                    <Panel.Heading styleName="panel-heading">
                         <Toggler
                             className="clearfix"
                             onToggle={() => {
