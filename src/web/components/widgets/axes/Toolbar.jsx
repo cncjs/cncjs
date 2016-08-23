@@ -130,6 +130,7 @@ class ToolbarButton extends Component {
     render() {
         const { state, actions } = this.props;
         const { canClick, keypadJogging } = state;
+        const wcs = actions.getWorkCoordinateSystem();
 
         return (
             <div className="toolbar-button clearfix">
@@ -189,7 +190,24 @@ class ToolbarButton extends Component {
                             {i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}
                         </MenuItem>
                         <MenuItem divider />
+                    {wcs === 'G54' &&
                         <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
+                    }
+                    {wcs === 'G55' &&
+                        <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
+                    }
+                    {wcs === 'G56' &&
+                        <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
+                    }
+                    {wcs === 'G57' &&
+                        <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
+                    }
+                    {wcs === 'G58' &&
+                        <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
+                    }
+                    {wcs === 'G59' &&
+                        <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
+                    }
                         <MenuItem
                             eventKey="G0 X0 Y0 Z0"
                             onSelect={::this.handleSelect}
@@ -197,6 +215,7 @@ class ToolbarButton extends Component {
                         >
                             {i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}
                         </MenuItem>
+                    {wcs === 'G54' &&
                         <MenuItem
                             eventKey="G10 L20 P1 X0 Y0 Z0"
                             onSelect={::this.handleSelect}
@@ -204,6 +223,52 @@ class ToolbarButton extends Component {
                         >
                             {i18n._('Zero Out Work Offsets (G10 L20 P1 X0 Y0 Z0)')}
                         </MenuItem>
+                    }
+                    {wcs === 'G55' &&
+                        <MenuItem
+                            eventKey="G10 L20 P2 X0 Y0 Z0"
+                            onSelect={::this.handleSelect}
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P2 X0 Y0 Z0)')}
+                        </MenuItem>
+                    }
+                    {wcs === 'G56' &&
+                        <MenuItem
+                            eventKey="G10 L20 P3 X0 Y0 Z0"
+                            onSelect={::this.handleSelect}
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P3 X0 Y0 Z0)')}
+                        </MenuItem>
+                    }
+                    {wcs === 'G57' &&
+                        <MenuItem
+                            eventKey="G10 L20 P4 X0 Y0 Z0"
+                            onSelect={::this.handleSelect}
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P4 X0 Y0 Z0)')}
+                        </MenuItem>
+                    }
+                    {wcs === 'G58' &&
+                        <MenuItem
+                            eventKey="G10 L20 P5 X0 Y0 Z0"
+                            onSelect={::this.handleSelect}
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)')}
+                        </MenuItem>
+                    }
+                    {wcs === 'G59' &&
+                        <MenuItem
+                            eventKey="G10 L20 P6 X0 Y0 Z0"
+                            onSelect={::this.handleSelect}
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)')}
+                        </MenuItem>
+                    }
                         <MenuItem divider />
                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                         <MenuItem

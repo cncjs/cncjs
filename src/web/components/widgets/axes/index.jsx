@@ -328,6 +328,21 @@ class AxesWidget extends Component {
         }
         this.setState({ customDistance: distance });
     }
+    getWorkCoordinateSystem() {
+        const controllerType = this.state.controller.type;
+        const controllerState = this.state.controller.state;
+        const defaultWCS = 'G54';
+
+        if (controllerType === GRBL) {
+            return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+        }
+
+        if (controllerType === TINYG2) {
+            return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
+        }
+
+        return defaultWCS;
+    }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
         const { units, machinePosition, workPosition } = this.state;
@@ -351,6 +366,7 @@ class AxesWidget extends Component {
             })
         };
         const actions = {
+            getWorkCoordinateSystem: ::this.getWorkCoordinateSystem,
             toggleDisplayUnits: ::this.toggleDisplayUnits,
             toggleKeypadJogging: ::this.toggleKeypadJogging,
             selectAxis: ::this.selectAxis,
