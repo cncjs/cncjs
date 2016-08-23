@@ -1,4 +1,3 @@
-import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import styles from './index.styl';
