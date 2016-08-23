@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 import request from 'superagent';
 import Visualizer from './Visualizer';
 import controller from '../../../lib/controller';
@@ -239,6 +240,21 @@ class VisualizerWidget extends Component {
 
         return true;
     }
+    canSendCommand() {
+        const { port, controller, workflowState } = this.state;
+
+        if (!port) {
+            return false;
+        }
+        if (!controller.type || !controller.state) {
+            return false;
+        }
+        if (workflowState !== WORKFLOW_STATE_IDLE) {
+            return false;
+        }
+
+        return true;
+    }
     isAgitated() {
         const { workflowState, renderAnimation } = this.state;
         const controllerType = this.state.controller.type;
@@ -416,14 +432,7 @@ class VisualizerWidget extends Component {
                 [GRBL_ACTIVE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
             }[activeState];
 
-            return (
-                <div>
-                    <div className="controller-type">{controllerType}</div>
-                {stateText &&
-                    <div className="controller-state">{stateText}</div>
-                }
-                </div>
-            );
+            return stateText;
         }
 
         if (controllerType === TINYG2) {
@@ -443,17 +452,25 @@ class VisualizerWidget extends Component {
                 [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG2.machineState.shutdown')
             }[machineState];
 
-            return (
-                <div>
-                    <div className="controller-type">{controllerType}</div>
-                {stateText &&
-                    <div className="controller-state">{stateText}</div>
-                }
-                </div>
-            );
+            return stateText;
         }
 
-        return null;
+        return '';
+    }
+    getWorkCoordinateSystem() {
+        const controllerType = this.state.controller.type;
+        const controllerState = this.state.controller.state;
+        const defaultWCS = 'G54';
+
+        if (controllerType === GRBL) {
+            return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+        }
+
+        if (controllerType === TINYG2) {
+            return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
+        }
+
+        return defaultWCS;
     }
     render() {
         const state = {
@@ -472,13 +489,87 @@ class VisualizerWidget extends Component {
             setBoundingBox: ::this.setBoundingBox,
             toggleRenderAnimation: ::this.toggleRenderAnimation
         };
+        const controllerType = this.state.controller.type;
+        const controllerState = this.getControllerState();
+        const canSendCommand = this.canSendCommand();
+        const wcs = this.getWorkCoordinateSystem();
 
         return (
             <div {...this.props} data-ns="widgets/visualizer">
                 <Widget borderless={true}>
                     <Widget.Header fixed>
-                        <Widget.Title>
-                            {this.getControllerState()}
+                        <Widget.Title style={{ width: '100%' }}>
+                        {controllerType &&
+                            <div className="controller-type">{controllerType}</div>
+                        }
+                        {controllerState &&
+                            <div className="controller-state">{controllerState}</div>
+                        }
+                            <div className="wcs">
+                                <Dropdown
+                                    style={{ marginBottom: 2 }}
+                                    bsSize="xs"
+                                    id="wcs-dropdown"
+                                    pullRight
+                                >
+                                    <Dropdown.Toggle
+                                        disabled={!canSendCommand}
+                                    >
+                                        {wcs}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <MenuItem header>{i18n._('Work Coordinate System')}</MenuItem>
+                                        <MenuItem
+                                            active={wcs === 'G54'}
+                                            onClick={() => {
+                                                controller.command('gcode', 'G54');
+                                            }}
+                                        >
+                                            G54 (P1)
+                                        </MenuItem>
+                                        <MenuItem
+                                            active={wcs === 'G55'}
+                                            onClick={() => {
+                                                controller.command('gcode', 'G55');
+                                            }}
+                                        >
+                                            G55 (P2)
+                                        </MenuItem>
+                                        <MenuItem
+                                            active={wcs === 'G56'}
+                                            onClick={() => {
+                                                controller.command('gcode', 'G56');
+                                            }}
+                                        >
+                                            G56 (P3)
+                                        </MenuItem>
+                                        <MenuItem
+                                            active={wcs === 'G57'}
+                                            onClick={() => {
+                                                controller.command('gcode', 'G57');
+                                            }}
+                                        >
+                                            G57 (P4)
+                                        </MenuItem>
+                                        <MenuItem
+                                            active={wcs === 'G58'}
+                                            onClick={() => {
+                                                controller.command('gcode', 'G58');
+                                            }}
+                                        >
+                                            G58 (P5)
+                                        </MenuItem>
+                                        <MenuItem
+                                            active={wcs === 'G59'}
+                                            onClick={() => {
+                                                controller.command('gcode', 'G59');
+                                            }}
+                                        >
+                                            G59 (P6)
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
                         </Widget.Title>
                     </Widget.Header>
                     <Widget.Content>
