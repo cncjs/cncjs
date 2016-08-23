@@ -227,6 +227,7 @@
     "List Self Tests": "列出自检测试",
     "Drop G-code file here or click below to upload.": "拖拽或按下方按钮上传 G-code 文档。",
     "Upload G-code": "上传 G-code 文档",
+    "Work Coordinate System": "工作坐标系统",
     "Move Up": "向上移动",
     "Move Left": "向左移动",
     "Reset Position": "重置位置",

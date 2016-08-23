@@ -227,6 +227,7 @@
     "List Self Tests": "",
     "Drop G-code file here or click below to upload.": "G-Code-Datei hier ablegen oder unten klicken zum Hochladen",
     "Upload G-code": "G-Code hochladen",
+    "Work Coordinate System": "Werkstück-Koordinatensystem",
     "Move Up": "Nach oben",
     "Move Left": "Nach links",
     "Reset Position": "Position zurücksetzen",
