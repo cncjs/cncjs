@@ -6,7 +6,6 @@ import store from '../../../store';
 import Widget from '../../widget';
 import Webcam from './Webcam';
 import { show as editSettings } from './Settings';
-import './index.styl';
 
 class WebcamWidget extends Component {
     static propTypes = {

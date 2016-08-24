@@ -1,8 +1,13 @@
 import _ from 'lodash';
 import delay from 'delay';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
+import Line from './Line';
+import Circle from './Circle';
 import i18n from '../../../lib/i18n';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class Webcam extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -30,11 +35,28 @@ class Webcam extends Component {
         return (
             <div>
             {!disabled &&
-                <div className="webcam-on-container">
+                <div styleName="webcam-on-container">
+                    <Line
+                        styleName="center"
+                        length="100%"
+                    />
+                    <Line
+                        styleName="center"
+                        length="100%"
+                        vertical
+                    />
+                    <Circle
+                        styleName="center"
+                        diameter={20}
+                    />
+                    <Circle
+                        styleName="center"
+                        diameter={40}
+                    />
                 {url &&
                     <img
                         src={url}
-                        className="webcam-viewport"
+                        styleName="webcam-viewport"
                         ref="webcam-viewport"
                         alt=""
                     />
@@ -42,8 +64,8 @@ class Webcam extends Component {
                 </div>
             }
             {disabled &&
-                <div className="webcam-off-container">
-                    <h4><i className="icon-webcam"></i></h4>
+                <div styleName="webcam-off-container">
+                    <h4><i styleName="icon-webcam"></i></h4>
                     <h5>{i18n._('Webcam is off')}</h5>
                 </div>
             }
