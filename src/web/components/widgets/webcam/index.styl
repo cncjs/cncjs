@@ -1,28 +1,28 @@
-:global {
-    [data-ns="widgets/webcam"] {
-        .widget-content {
-            position: relative;
+.center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
 
-            .webcam-on-container {
-                min-height: 240px;
-                text-align: center;
+.webcam-on-container {
+    min-height: 240px;
+    text-align: center;
 
-                .webcam-viewport {
-                    width: 100%;
-                    height: auto;
-                }
-            }
-            .webcam-off-container {
-                padding: 10px;
-                text-align: center;
+    .webcam-viewport {
+        width: 100%;
+        height: auto;
+    }
+}
 
-                .icon-webcam {
-                    display: inline-block;
-                    height: 64px;
-                    width: 64px;
-                    background: url("images/64x64/webcam.png") no-repeat 0 0;
-                }
-            }
-        }
+.webcam-off-container {
+    padding: 10px;
+    text-align: center;
+
+    .icon-webcam {
+        display: inline-block;
+        height: 64px;
+        width: 64px;
+        background: url("./images/64x64/webcam.png") no-repeat 0 0;
     }
 }
