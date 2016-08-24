@@ -123,15 +123,16 @@ You can help translate resource files in both of [app](https://github.com/cheton
 
 Locale | Language | Status | Contributors 
 ------ | -------- | ------ | ------------
-[cs](https://github.com/cheton/cnc/tree/master/src/web/i18n/cs/resource.json)       | Čeština (Czech) | :heavy_check_mark: | [Miroslav Zuzelka](https://github.com/dronecz)
-[de](https://github.com/cheton/cnc/tree/master/src/web/i18n/de/resource.json)       | Deutsch (German) | :heavy_check_mark: | [Thorsten Godau](https://github.com/dl9sec)
-[es](https://github.com/cheton/cnc/tree/master/src/web/i18n/es/resource.json)       | Español (Spanish) | |
-[fr](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr/resource.json)       | Français (French) | :heavy_check_mark: | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
-[it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it/resource.json)       | Italiano (Italian) | |
-[ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja/resource.json)       | にほんご (Japanese) | |
-[ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru/resource.json)       | Ру́сский язы́к (Russian) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
-[zh-cn](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn/resource.json) | 简体中文 (Simplified Chinese) | :heavy_check_mark: | [Mandy Chien](https://github.com/MandyChien), [Terry Lee](https://github.com/TerryShampoo)
-[zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw/resource.json) | 繁體中文 (Traditional Chinese) | :heavy_check_mark: | [Cheton Wu](https://github.com/cheton)
+[cs](https://github.com/cheton/cnc/tree/master/src/web/i18n/cs) | Čeština (Czech) | :heavy_check_mark: | [Miroslav Zuzelka](https://github.com/dronecz)
+[de](https://github.com/cheton/cnc/tree/master/src/web/i18n/de) | Deutsch (German) | :heavy_check_mark: | [Thorsten Godau](https://github.com/dl9sec)
+[es](https://github.com/cheton/cnc/tree/master/src/web/i18n/es) | Español (Spanish) | |
+[fr](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr) | Français (French) | :heavy_check_mark: | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
+[it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it) | Italiano (Italian) | |
+[ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja) | にほんご (Japanese) | |
+[pt-br](https://github.com/cheton/cnc/tree/master/src/web/i18n/pt-br) | Português (Brazil) | :heavy_check_mark: | [cmsteinBR](https://github.com/cmsteinBR)
+[ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru) | Ру́сский язы́к (Russian) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
+[zh-cn](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn) | 简体中文 (Simplified Chinese) | :heavy_check_mark: | [Mandy Chien](https://github.com/MandyChien), [Terry Lee](https://github.com/TerryShampoo)
+[zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw) | 繁體中文 (Traditional Chinese) | :heavy_check_mark: | [Cheton Wu](https://github.com/cheton)
 
 ## Donate
 
