@@ -129,7 +129,7 @@ Locale | Language | Status | Contributors
 [fr](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr) | Français (French) | :heavy_check_mark: | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
 [it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it) | Italiano (Italian) | |
 [ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja) | にほんご (Japanese) | |
-[pt-br](https://github.com/cheton/cnc/tree/master/src/web/i18n/pt-br) | Português (Brazil) | :heavy_check_mark: | [cmsteinBR](https://github.com/cmsteinBR)
+[pt-br](https://github.com/cheton/cnc/tree/master/src/web/i18n/pt-br) | Português (Brasil) | :heavy_check_mark: | [cmsteinBR](https://github.com/cmsteinBR)
 [ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru) | Ру́сский язы́к (Russian) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
 [zh-cn](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn) | 简体中文 (Simplified Chinese) | :heavy_check_mark: | [Mandy Chien](https://github.com/MandyChien), [Terry Lee](https://github.com/TerryShampoo)
 [zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw) | 繁體中文 (Traditional Chinese) | :heavy_check_mark: | [Cheton Wu](https://github.com/cheton)
