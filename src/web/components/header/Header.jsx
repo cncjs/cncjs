@@ -92,11 +92,11 @@ const Header = (props) => {
                                 日本語
                             </MenuItem>
                             <MenuItem
-                                href="?lang=pt"
-                                active={language === 'pt'}
-                                title="Portuguese"
+                                href="?lang=pt-br"
+                                active={language === 'pt-br'}
+                                title="Portuguese (Brazil)"
                             >
-                                Portuguese
+                                Português (Brasil)
                             </MenuItem>
                             <MenuItem
                                 href="?lang=ru"
