@@ -42,6 +42,7 @@ const settings = {
             'fr', // French
             'it', // Italian
             'ja', // Japanese
+            'pt', // Portuguese
             'ru', // Russian
             'zh-cn', // Simplified Chinese
             'zh-tw' // Traditional Chinese

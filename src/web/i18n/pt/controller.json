@@ -1,0 +1,29 @@
+{
+    "TinyG2": {
+        "machineState": {
+            "init": "Iniciar",
+            "ready": "Pronto",
+            "alarm": "Alarme",
+            "stop": "Parar",
+            "end": "Fim",
+            "run": "Rodar",
+            "hold": "Manter",
+            "probe": "Sonda",
+            "cycling": "",
+            "homing": "",
+            "jogging": "",
+            "shutdown": "Desligar"
+        }
+    },
+    "Grbl": {
+        "activeState": {
+            "idle": "Inativo",
+            "run": "Rodar",
+            "hold": "Manter",
+            "door": "Porta",
+            "home": "Casa",
+            "alarm": "Alarme",
+            "check": "Checar"
+        }
+    }
+}
