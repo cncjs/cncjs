@@ -5,6 +5,7 @@ import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import update from 'react-addons-update';
+import CSSModules from 'react-css-modules';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
@@ -20,7 +21,7 @@ import {
     GCODE_STATUS_NOT_STARTED,
     GCODE_STATUS_COMPLETED
 } from './constants';
-import './index.styl';
+import styles from './index.styl';
 
 const toFixedUnits = (units, val) => {
     val = Number(val) || 0;
@@ -34,6 +35,7 @@ const toFixedUnits = (units, val) => {
     return val;
 };
 
+@CSSModules(styles, { allowMultiple: true })
 class GCodeWidget extends React.Component {
     static propTypes = {
         onDelete: React.PropTypes.func
@@ -320,12 +322,6 @@ class GCodeWidget extends React.Component {
     render() {
         const { isCollapsed, isFullscreen } = this.state;
         const { units, bbox } = this.state;
-        const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            )
-        };
-
         const state = {
             ...this.state,
             bbox: _.mapValues(bbox, (position) => {
@@ -358,7 +354,12 @@ class GCodeWidget extends React.Component {
                             />
                         </Widget.Controls>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <GCode
                             state={state}
                             actions={actions}

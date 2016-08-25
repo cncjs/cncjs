@@ -1,21 +1,21 @@
-:global {
-    [data-ns="widgets/probe"] {
-        .widget-content {
-            position: relative;
-            padding: 10px;
+.widget-content {
+    position: relative;
+    padding: 10px;
 
-            .probe-command-description {
-                height: 30px;
-            }
-            .row.probe-options {
-                [class*="col-"]:nth-child(odd) {
-                    padding-right: 10px;
-                }
-                [class*="col-"]:nth-child(even) {
-                    padding-left: 10px;
-                }
-            }
+    &.hidden {
+        display: none;
+    }
+}
 
-        }
+.probe-command-description {
+    height: 30px;
+}
+
+.probe-options-row {
+    .probe-options-col:nth-child(odd) {
+        padding-right: 10px;
+    }
+    .probe-options-col:nth-child(even) {
+        padding-left: 10px;
     }
 }

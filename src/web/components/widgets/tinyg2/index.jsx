@@ -2,6 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 import store from '../../../store';
@@ -10,8 +11,9 @@ import TinyG2 from './TinyG2';
 import {
     TINYG2
 } from '../../../constants';
-import './index.styl';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class TinyG2Widget extends Component {
     static propTypes = {
         onDelete: PropTypes.func
@@ -169,12 +171,6 @@ class TinyG2Widget extends Component {
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
-        const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            )
-        };
-
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -207,7 +203,12 @@ class TinyG2Widget extends Component {
                             />
                         </Widget.Controls>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <TinyG2
                             state={state}
                             actions={actions}

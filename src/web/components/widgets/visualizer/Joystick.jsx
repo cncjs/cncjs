@@ -1,8 +1,11 @@
 import _ from 'lodash';
 import i18n from '../../../lib/i18n';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import PressAndHold from '../../common/PressAndHold';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class Joystick extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -22,12 +25,12 @@ class Joystick extends Component {
         const disabled = !canClick;
 
         return (
-            <div className="joystick">
+            <div styleName="joystick">
                 <div className="row no-gutters">
                     <div className="col-xs-4"></div>
                     <div className="col-xs-4">
                         <PressAndHold
-                            className="joystick-button"
+                            styleName="joystick-button"
                             onClick={up}
                             title={i18n._('Move Up')}
                             disabled={disabled}
@@ -40,7 +43,7 @@ class Joystick extends Component {
                 <div className="row no-gutters">
                     <div className="col-xs-4 texe-center">
                         <PressAndHold
-                            className="joystick-button"
+                            styleName="joystick-button"
                             onClick={left}
                             title={i18n._('Move Left')}
                             disabled={disabled}
@@ -50,7 +53,7 @@ class Joystick extends Component {
                     </div>
                     <div className="col-xs-4">
                         <PressAndHold
-                            className="joystick-button"
+                            styleName="joystick-button"
                             onClick={center}
                             title={i18n._('Reset Position')}
                             disabled={disabled}
@@ -60,7 +63,7 @@ class Joystick extends Component {
                     </div>
                     <div className="col-xs-4">
                         <PressAndHold
-                            className="joystick-button"
+                            styleName="joystick-button"
                             onClick={right}
                             title={i18n._('Move Right')}
                             disabled={disabled}
@@ -73,7 +76,7 @@ class Joystick extends Component {
                     <div className="col-xs-4"></div>
                     <div className="col-xs-4">
                         <PressAndHold
-                            className="joystick-button"
+                            styleName="joystick-button"
                             onClick={down}
                             title={i18n._('Move Down')}
                             disabled={disabled}

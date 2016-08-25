@@ -580,7 +580,7 @@ class Visualizer extends Component {
                 {!gcode.ready &&
                     <FileUploader {...this.props} />
                 }
-                <div ref="renderer" className="renderer" />
+                <div ref="renderer" styleName="renderer" />
             </div>
         );
     }

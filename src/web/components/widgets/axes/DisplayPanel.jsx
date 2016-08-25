@@ -1,6 +1,7 @@
 import { isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
+import CSSModules from 'react-css-modules';
 import { in2mm } from '../../../lib/units';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
@@ -9,7 +10,9 @@ import {
     IMPERIAL_UNITS,
     METRIC_UNITS
 } from '../../../constants';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class DisplayPanel extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -38,7 +41,7 @@ class DisplayPanel extends Component {
         const wcs = actions.getWorkCoordinateSystem();
 
         return (
-            <div className="display-panel">
+            <div styleName="display-panel">
                 <table className="table-bordered">
                     <thead>
                         <tr>
@@ -50,15 +53,15 @@ class DisplayPanel extends Component {
                     </thead>
                     <tbody>
                         <tr>
-                            <td className="coordinate">X</td>
-                            <td className="machine-position">
-                                <span className="integer-part">{machinePosition.x.split('.')[0]}</span>
-                                <span className="decimal-point">.</span>
-                                <span className="fractional-part">{machinePosition.x.split('.')[1]}</span>
-                                <span className="dimension-units">{displayUnits}</span>
+                            <td styleName="coordinate">X</td>
+                            <td styleName="machine-position">
+                                <span styleName="integer-part">{machinePosition.x.split('.')[0]}</span>
+                                <span styleName="decimal-point">.</span>
+                                <span styleName="fractional-part">{machinePosition.x.split('.')[1]}</span>
+                                <span styleName="dimension-units">{displayUnits}</span>
                             </td>
-                            <td className="work-position">
-                                <span className="dimension-units">{displayUnits}</span>
+                            <td styleName="work-position">
+                                <span styleName="dimension-units">{displayUnits}</span>
                             {this.state.showXPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
@@ -83,13 +86,13 @@ class DisplayPanel extends Component {
                                         }
                                     }}
                                 >
-                                    <span className="integer-part">{workPosition.x.split('.')[0]}</span>
-                                    <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{workPosition.x.split('.')[1]}</span>
+                                    <span styleName="integer-part">{workPosition.x.split('.')[0]}</span>
+                                    <span styleName="decimal-point">.</span>
+                                    <span styleName="fractional-part">{workPosition.x.split('.')[1]}</span>
                                 </div>
                             }
                             </td>
-                            <td className="action">
+                            <td styleName="action">
                                 <DropdownButton
                                     bsSize="xs"
                                     bsStyle="default"
@@ -206,15 +209,15 @@ class DisplayPanel extends Component {
                             </td>
                         </tr>
                         <tr>
-                            <td className="coordinate">Y</td>
-                            <td className="machine-position">
-                                <span className="integer-part">{machinePosition.y.split('.')[0]}</span>
-                                <span className="decimal-point">.</span>
-                                <span className="fractional-part">{machinePosition.y.split('.')[1]}</span>
-                                <span className="dimension-units">{displayUnits}</span>
+                            <td styleName="coordinate">Y</td>
+                            <td styleName="machine-position">
+                                <span styleName="integer-part">{machinePosition.y.split('.')[0]}</span>
+                                <span styleName="decimal-point">.</span>
+                                <span styleName="fractional-part">{machinePosition.y.split('.')[1]}</span>
+                                <span styleName="dimension-units">{displayUnits}</span>
                             </td>
-                            <td className="work-position">
-                                <span className="dimension-units">{displayUnits}</span>
+                            <td styleName="work-position">
+                                <span styleName="dimension-units">{displayUnits}</span>
                             {this.state.showYPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
@@ -239,13 +242,13 @@ class DisplayPanel extends Component {
                                         }
                                     }}
                                 >
-                                    <span className="integer-part">{workPosition.y.split('.')[0]}</span>
-                                    <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{workPosition.y.split('.')[1]}</span>
+                                    <span styleName="integer-part">{workPosition.y.split('.')[0]}</span>
+                                    <span styleName="decimal-point">.</span>
+                                    <span styleName="fractional-part">{workPosition.y.split('.')[1]}</span>
                                 </div>
                             }
                             </td>
-                            <td className="action">
+                            <td styleName="action">
                                 <DropdownButton
                                     bsSize="xs"
                                     bsStyle="default"
@@ -362,15 +365,15 @@ class DisplayPanel extends Component {
                             </td>
                         </tr>
                         <tr>
-                            <td className="coordinate">Z</td>
-                            <td className="machine-position">
-                                <span className="integer-part">{machinePosition.z.split('.')[0]}</span>
-                                <span className="decimal-point">.</span>
-                                <span className="fractional-part">{machinePosition.z.split('.')[1]}</span>
-                                <span className="dimension-units">{displayUnits}</span>
+                            <td styleName="coordinate">Z</td>
+                            <td styleName="machine-position">
+                                <span styleName="integer-part">{machinePosition.z.split('.')[0]}</span>
+                                <span styleName="decimal-point">.</span>
+                                <span styleName="fractional-part">{machinePosition.z.split('.')[1]}</span>
+                                <span styleName="dimension-units">{displayUnits}</span>
                             </td>
-                            <td className="work-position">
-                                <span className="dimension-units">{displayUnits}</span>
+                            <td styleName="work-position">
+                                <span styleName="dimension-units">{displayUnits}</span>
                             {this.state.showZPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
@@ -395,13 +398,13 @@ class DisplayPanel extends Component {
                                         }
                                     }}
                                 >
-                                    <span className="integer-part">{workPosition.z.split('.')[0]}</span>
-                                    <span className="decimal-point">.</span>
-                                    <span className="fractional-part">{workPosition.z.split('.')[1]}</span>
+                                    <span styleName="integer-part">{workPosition.z.split('.')[0]}</span>
+                                    <span styleName="decimal-point">.</span>
+                                    <span styleName="fractional-part">{workPosition.z.split('.')[1]}</span>
                                 </div>
                             }
                             </td>
-                            <td className="action">
+                            <td styleName="action">
                                 <DropdownButton
                                     bsSize="xs"
                                     bsStyle="default"

@@ -1,10 +1,13 @@
 import _ from 'lodash';
 import Infinite from 'react-infinite';
 import React from 'react';
+import CSSModules from 'react-css-modules';
 import ReactDOM from 'react-dom';
+import styles from './index.styl';
 
 const DEFAULT_CONTAINER_HEIGHT = 260;
 
+@CSSModules(styles)
 class ConsoleWindow extends React.Component {
     static propTypes = {
         lines: React.PropTypes.array,
@@ -68,7 +71,7 @@ class ConsoleWindow extends React.Component {
         const elements = this.buildElements(lines);
 
         return (
-            <div className="console-window">
+            <div styleName="console-window">
                 <Infinite
                     containerHeight={containerHeight}
                     elementHeight={elementHeight}

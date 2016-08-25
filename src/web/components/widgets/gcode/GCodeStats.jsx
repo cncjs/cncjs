@@ -1,11 +1,14 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import {
     METRIC_UNITS
 } from '../../../constants';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class GCodeStats extends Component {
     static propTypes = {
         state: PropTypes.object
@@ -35,7 +38,7 @@ class GCodeStats extends Component {
         }
 
         return (
-            <div className="gcode-stats">
+            <div styleName="gcode-stats">
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <table className="table-bordered" data-table="dimension">

@@ -1,10 +1,13 @@
 import _ from 'lodash';
 import i18n from '../../../lib/i18n';
 import React from 'react';
+import CSSModules from 'react-css-modules';
 import ReactDOM from 'react-dom';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import controller from '../../../lib/controller';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class ConsoleInput extends React.Component {
     static propTypes = {
         port: React.PropTypes.string,
@@ -41,7 +44,7 @@ class ConsoleInput extends React.Component {
         const canClearAll = canInput;
 
         return (
-            <div className="console-input">
+            <div styleName="console-input">
                 <div className="input-group input-group-sm">
                     <input
                         type="text"

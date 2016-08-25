@@ -2,6 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import colornames from 'colornames';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import { FlexTable, FlexColumn } from 'react-virtualized';
 import {
     GCODE_STATUS_ERROR,
@@ -9,7 +10,9 @@ import {
     GCODE_STATUS_IN_PROGRESS,
     GCODE_STATUS_COMPLETED
 } from './constants';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class GCodeTable extends Component {
     static propTypes = {
         rows: PropTypes.array,
@@ -34,7 +37,7 @@ class GCodeTable extends Component {
         const scrollToIndex = Math.max(0, (scrollToRow - 1) + (Math.ceil(visibleRows / 2) - offset));
 
         return (
-            <div className="gcode-table">
+            <div styleName="gcode-table">
                 <FlexTable
                     disableHeader={true}
                     headerHeight={headerHeight}
@@ -48,7 +51,7 @@ class GCodeTable extends Component {
                     width={width}
                 >
                     <FlexColumn
-                        className="gcode-table-cell-status"
+                        styleName="gcode-table-cell-status"
                         cellRenderer={({ cellData, columnData, dataKey, rowData, rowIndex }) => {
                             const value = rowData.status;
                             const classes = {
@@ -79,7 +82,7 @@ class GCodeTable extends Component {
                         width={30}
                     />
                     <FlexColumn
-                        className="gcode-table-cell-command"
+                        styleName="gcode-table-cell-command"
                         cellRenderer={({ cellData, columnData, dataKey, rowData, rowIndex }) => {
                             const value = rowData.cmd;
                             const style = {

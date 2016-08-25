@@ -1,13 +1,16 @@
 import _ from 'lodash';
 import { ButtonToolbar, ButtonGroup, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from '../../../constants';
 import i18n from '../../../lib/i18n';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class Toolbar extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -34,8 +37,8 @@ class Toolbar extends Component {
         };
 
         return (
-            <ButtonToolbar>
-                <ButtonGroup bsSize="sm">
+            <ButtonToolbar styleName="toolbar">
+                <ButtonGroup bsSize="sm" styleName="btn-group">
                     <Button
                         title={i18n._('Run')}
                         onClick={actions.handleRun}

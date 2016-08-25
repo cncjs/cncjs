@@ -52,7 +52,7 @@ class Grbl extends Component {
                                 {i18n._('State')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs">
+                                <div styleName="well">
                                     {activeState || none}
                                 </div>
                             </div>
@@ -62,7 +62,7 @@ class Grbl extends Component {
                                 {i18n._('Feed Rate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs">
+                                <div styleName="well">
                                     {Number(parserstate.feedrate) || 0}
                                 </div>
                             </div>
@@ -72,7 +72,7 @@ class Grbl extends Component {
                                 {i18n._('Spindle')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs">
+                                <div styleName="well">
                                     {Number(parserstate.spindle) || 0}
                                 </div>
                             </div>
@@ -82,7 +82,7 @@ class Grbl extends Component {
                                 {i18n._('Tool Number')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs">
+                                <div styleName="well">
                                     {parserstate.tool || none}
                                 </div>
                             </div>
@@ -112,7 +112,7 @@ class Grbl extends Component {
                                 {i18n._('Motion')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.motion}>
+                                <div styleName="well" title={modal.motion}>
                                     {modal.motion || none}
                                 </div>
                             </div>
@@ -122,7 +122,7 @@ class Grbl extends Component {
                                 {i18n._('Coordinate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.coordinate}>
+                                <div styleName="well" title={modal.coordinate}>
                                     {modal.coordinate || none}
                                 </div>
                             </div>
@@ -132,7 +132,7 @@ class Grbl extends Component {
                                 {i18n._('Plane')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.plane}>
+                                <div styleName="well" title={modal.plane}>
                                     {modal.plane || none}
                                 </div>
                             </div>
@@ -142,7 +142,7 @@ class Grbl extends Component {
                                 {i18n._('Distance')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.distance}>
+                                <div styleName="well" title={modal.distance}>
                                     {modal.distance || none}
                                 </div>
                             </div>
@@ -152,7 +152,7 @@ class Grbl extends Component {
                                 {i18n._('Feed Rate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.feedrate}>
+                                <div styleName="well" title={modal.feedrate}>
                                     {modal.feedrate || none}
                                 </div>
                             </div>
@@ -162,7 +162,7 @@ class Grbl extends Component {
                                 {i18n._('Units')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.units}>
+                                <div styleName="well" title={modal.units}>
                                     {modal.units || none}
                                 </div>
                             </div>
@@ -172,7 +172,7 @@ class Grbl extends Component {
                                 {i18n._('Program')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.program}>
+                                <div styleName="well" title={modal.program}>
                                     {modal.program || none}
                                 </div>
                             </div>
@@ -182,7 +182,7 @@ class Grbl extends Component {
                                 {i18n._('Spindle')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.spindle}>
+                                <div styleName="well" title={modal.spindle}>
                                     {modal.spindle || none}
                                 </div>
                             </div>
@@ -192,7 +192,7 @@ class Grbl extends Component {
                                 {i18n._('Coolant')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.coolant}>
+                                <div styleName="well" title={modal.coolant}>
                                     {modal.coolant || none}
                                 </div>
                             </div>

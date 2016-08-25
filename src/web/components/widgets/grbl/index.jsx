@@ -2,6 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
 import store from '../../../store';
@@ -10,8 +11,9 @@ import Grbl from './Grbl';
 import {
     GRBL
 } from '../../../constants';
-import './index.styl';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class GrblWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func
@@ -150,12 +152,6 @@ class GrblWidget extends Component {
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
-        const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            )
-        };
-
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -187,7 +183,12 @@ class GrblWidget extends Component {
                             />
                         </Widget.Controls>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <Grbl
                             state={state}
                             actions={actions}

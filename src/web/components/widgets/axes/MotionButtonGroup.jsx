@@ -1,9 +1,12 @@
 import { isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class MotionButtonGroup extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -24,7 +27,7 @@ class MotionButtonGroup extends Component {
         const { canClick } = state;
 
         return (
-            <div className="motion-controls">
+            <div styleName="motion-controls">
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <DropdownButton
@@ -53,6 +56,7 @@ class MotionButtonGroup extends Component {
                         </DropdownButton>
                     </div>
                 </div>
+                <div styleName="row-space" />
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <button
@@ -65,6 +69,7 @@ class MotionButtonGroup extends Component {
                         </button>
                     </div>
                 </div>
+                <div styleName="row-space" />
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <button
@@ -77,6 +82,7 @@ class MotionButtonGroup extends Component {
                         </button>
                     </div>
                 </div>
+                <div styleName="row-space" />
             </div>
         );
     }

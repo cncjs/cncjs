@@ -2,6 +2,7 @@ import _, { includes } from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import { in2mm, mm2in } from '../../../lib/units';
 import controller from '../../../lib/controller';
@@ -27,7 +28,7 @@ import {
     DISTANCE_MAX,
     DISTANCE_STEP
 } from './constants';
-import './index.styl';
+import styles from './index.styl';
 
 const toFixedUnits = (units, val) => {
     val = Number(val) || 0;
@@ -63,6 +64,7 @@ const normalizeToRange = (n, min, max) => {
     return n;
 };
 
+@CSSModules(styles, { allowMultiple: true })
 class AxesWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func
@@ -346,12 +348,6 @@ class AxesWidget extends Component {
     render() {
         const { isCollapsed, isFullscreen } = this.state;
         const { units, machinePosition, workPosition } = this.state;
-        const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            )
-        };
-
         const state = {
             ...this.state,
             // Determine if the motion button is clickable
@@ -404,7 +400,12 @@ class AxesWidget extends Component {
                             />
                         </Widget.Controls>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <Axes
                             state={state}
                             actions={actions}

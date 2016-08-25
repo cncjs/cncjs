@@ -1,44 +1,47 @@
-:global {
-    [data-ns="widgets/gcode"] {
-        .widget-content {
-            position: relative;
-            padding: 10px;
+.widget-content {
+    position: relative;
+    padding: 10px;
 
-            .gcode-stats {
-                table[data-table="dimension"] {
-                    width: 100%;
+    &.hidden {
+        display: none;
+    }
+}
 
-                    thead > tr > th.axis,
-                    tbody > tr > td.axis {
-                        width: 1%;
-                    }
-                    tbody > tr > td {
-                        text-align: right;
-                        &.axis {
-                            text-align: center;
-                        }
-                    }
-                }
+.gcode-stats {
+    table[data-table="dimension"] {
+        width: 100%;
 
-                .row:nth-child(odd) {
-                    margin-bottom: 10px;
-                }
-                .row:last-child {
-                    margin-bottom: 0;
-                }
-            }
-
-            .gcode-table {
-                border: 1px solid #ccc;
-
-                .gcode-table-cell-status {
-                    border-right: 1px solid #ddd;
-                    margin-left: 0;
-                    text-align: center;
-                }
-                .gcode-table-cell-command {
-                }
+        thead > tr > th.axis,
+        tbody > tr > td.axis {
+            width: 1%;
+        }
+        tbody > tr > td {
+            text-align: right;
+            &.axis {
+                text-align: center;
             }
         }
+    }
+
+    :global {
+        .row:nth-child(odd) {
+            margin-bottom: 10px;
+        }
+        .row:last-child {
+            margin-bottom: 0;
+        }
+    }
+}
+
+.gcode-table {
+    border: 1px solid #ccc;
+
+    .gcode-table-cell-status {
+        border-right: 1px solid #ddd;
+        margin-left: 0;
+        text-align: center;
+    }
+    .gcode-table-cell-command {
+        margin-left: 0;
     }
 }

@@ -1,34 +1,27 @@
-:global {
-    [data-ns="widgets/console"] {
-        .widget-content {
-            position: relative;
-            padding: 10px;
+.widget-content {
+    position: relative;
+    padding: 10px;
 
-            .console-input {
-                margin-bottom: 10px;
+    &.hidden {
+        display: none;
+    }
+}
 
-                button.dropdown-toggle {
-                    height: 30px; // hack for react-bootstrap
-                }
-            }
+.console-input {
+    margin-bottom: 10px;
+}
 
-            .console-window {
-                font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
-                //overflow: auto;
-                //height: 250px;
-                //min-height: 250px;
-                //max-height: 400px;
-                background-color: #000;
-                color: #FFF;
-                //padding: 5px 10px;
+.console-window {
+    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+    background-color: #000;
+    color: #FFF;
 
-                .infinite-list-item {
-                    white-space: nowrap;
-                    height: 20px;
-                    text-overflow: ellipsis;
-                    overflow-x: hidden;
-                }
-            }
+    :global {
+        .infinite-list-item {
+            white-space: nowrap;
+            height: 20px;
+            text-overflow: ellipsis;
+            overflow-x: hidden;
         }
     }
 }

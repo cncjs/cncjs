@@ -1,8 +1,11 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class FileUploader extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -68,11 +71,11 @@ class FileUploader extends Component {
         };
 
         return (
-            <div className="file-uploader-block">
-                <div className="file-uploader-box" ref="file-uploader-box">
-                    <div className="file-uploader-content" disabled={disabled}>
+            <div styleName="file-uploader-block">
+                <div styleName="file-uploader-box" ref="file-uploader-box">
+                    <div styleName="file-uploader-content" disabled={disabled}>
                         <i style={{ fontSize: 48 }} className="fa fa-arrow-circle-o-up"></i>
-                        <p className="file-uploader-tips">{i18n._('Drop G-code file here or click below to upload.')}</p>
+                        <p styleName="file-uploader-tips">{i18n._('Drop G-code file here or click below to upload.')}</p>
                         <br />
                         <button
                             type="button"

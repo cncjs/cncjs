@@ -500,15 +500,15 @@ class VisualizerWidget extends Component {
         return (
             <div {...this.props} data-ns="widgets/visualizer">
                 <Widget borderless={true}>
-                    <Widget.Header fixed>
+                    <Widget.Header fixed styleName="widget-header">
                         <Widget.Title style={{ width: '100%' }}>
                         {controllerType &&
-                            <div className="controller-type">{controllerType}</div>
+                            <div styleName="controller-type">{controllerType}</div>
                         }
                         {controllerState &&
-                            <div className="controller-state">{controllerState}</div>
+                            <div styleName="controller-state">{controllerState}</div>
                         }
-                            <div className="wcs">
+                            <div styleName="wcs">
                                 <Dropdown
                                     style={{ marginBottom: 2 }}
                                     bsSize="xs"
@@ -575,7 +575,7 @@ class VisualizerWidget extends Component {
                             </div>
                         </Widget.Title>
                     </Widget.Header>
-                    <Widget.Content>
+                    <Widget.Content styleName="widget-content">
                         <Visualizer
                             ref="visualizer"
                             state={state}

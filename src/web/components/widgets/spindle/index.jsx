@@ -2,12 +2,14 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Spindle from './Spindle';
-import './index.styl';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class SpindleWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func
@@ -81,12 +83,6 @@ class SpindleWidget extends Component {
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
-        const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            )
-        };
-
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -117,7 +113,12 @@ class SpindleWidget extends Component {
                             />
                         </Widget.Controls>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <Spindle
                             state={state}
                             actions={actions}

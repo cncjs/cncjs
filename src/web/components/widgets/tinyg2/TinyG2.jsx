@@ -130,7 +130,7 @@ class TinyG2 extends Component {
                                 {i18n._('State')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs">{machineStateText || none}</div>
+                                <div styleName="well">{machineStateText || none}</div>
                             </div>
                         </div>
                         <div className="row no-gutters">
@@ -138,7 +138,7 @@ class TinyG2 extends Component {
                                 {i18n._('Feed Rate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs">{Number(feedrate) || 0}</div>
+                                <div styleName="well">{Number(feedrate) || 0}</div>
                             </div>
                         </div>
                         <div className="row no-gutters">
@@ -146,7 +146,7 @@ class TinyG2 extends Component {
                                 {i18n._('Velocity')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs">{Number(velocity) || 0}</div>
+                                <div styleName="well">{Number(velocity) || 0}</div>
                             </div>
                         </div>
                         <div className="row no-gutters">
@@ -154,7 +154,7 @@ class TinyG2 extends Component {
                                 {i18n._('Line')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs">{Number(line) || 0}</div>
+                                <div styleName="well">{Number(line) || 0}</div>
                             </div>
                         </div>
                     </Panel.Body>
@@ -182,7 +182,7 @@ class TinyG2 extends Component {
                                 {i18n._('Motion')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.motion}>
+                                <div styleName="well" title={modal.motion}>
                                     {modal.motion || none}
                                 </div>
                             </div>
@@ -192,7 +192,7 @@ class TinyG2 extends Component {
                                 {i18n._('Coordinate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.coordinate}>
+                                <div styleName="well" title={modal.coordinate}>
                                     {modal.coordinate || none}
                                 </div>
                             </div>
@@ -202,7 +202,7 @@ class TinyG2 extends Component {
                                 {i18n._('Plane')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.plane}>
+                                <div styleName="well" title={modal.plane}>
                                     {modal.plane || none}
                                 </div>
                             </div>
@@ -212,7 +212,7 @@ class TinyG2 extends Component {
                                 {i18n._('Distance')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.distance}>
+                                <div styleName="well" title={modal.distance}>
                                     {modal.distance || none}
                                 </div>
                             </div>
@@ -222,7 +222,7 @@ class TinyG2 extends Component {
                                 {i18n._('Feed Rate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.feedrate}>
+                                <div styleName="well" title={modal.feedrate}>
                                     {modal.feedrate || none}
                                 </div>
                             </div>
@@ -232,7 +232,7 @@ class TinyG2 extends Component {
                                 {i18n._('Units')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.units}>
+                                <div styleName="well" title={modal.units}>
                                     {modal.units || none}
                                 </div>
                             </div>
@@ -242,7 +242,7 @@ class TinyG2 extends Component {
                                 {i18n._('Path')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className="well well-xs" title={modal.path}>
+                                <div styleName="well" title={modal.path}>
                                     {modal.path || none}
                                 </div>
                             </div>

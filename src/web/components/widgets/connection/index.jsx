@@ -1,11 +1,13 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Connection from './Connection';
-import './index.styl';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class ConnectionWidget extends Component {
     state = {
         isCollapsed: false,
@@ -17,11 +19,6 @@ class ConnectionWidget extends Component {
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
-        const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            )
-        };
 
         return (
             <div {...this.props} data-ns="widgets/connection">
@@ -41,7 +38,12 @@ class ConnectionWidget extends Component {
                             />
                         </Widget.Controls>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <Connection />
                     </Widget.Content>
                 </Widget>

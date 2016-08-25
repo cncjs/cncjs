@@ -1,11 +1,13 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Console from './Console';
-import './index.styl';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class ConsoleWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func
@@ -24,11 +26,6 @@ class ConsoleWidget extends Component {
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
-        const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            )
-        };
 
         return (
             <div {...this.props} data-ns="widgets/console">
@@ -52,7 +49,12 @@ class ConsoleWidget extends Component {
                             />
                         </Widget.Controls>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <Console fullscreen={isFullscreen} />
                     </Widget.Content>
                 </Widget>

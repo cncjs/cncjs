@@ -1,9 +1,11 @@
 import classNames from 'classnames';
 import { isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import { DropdownButton, MenuItem, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import i18n from '../../../lib/i18n';
 import controller from '../../../lib/controller';
+import styles from './index.styl';
 
 const keypadTooltip = () => {
     const styles = {
@@ -112,6 +114,7 @@ const keypadTooltip = () => {
     );
 };
 
+@CSSModules(styles)
 class ToolbarButton extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -133,7 +136,7 @@ class ToolbarButton extends Component {
         const wcs = actions.getWorkCoordinateSystem();
 
         return (
-            <div className="toolbar-button clearfix">
+            <div className="clearfix" styleName="toolbar-button">
                 <div className="btn-group pull-left">
                     <OverlayTrigger
                         overlay={keypadTooltip()}

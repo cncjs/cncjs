@@ -1,12 +1,8 @@
-:global {
-    [data-ns="widgets/spindle"] {
-        .widget-content {
-            position: relative;
-            padding: 10px;
+.widget-content {
+    position: relative;
+    padding: 10px;
 
-            .horizontal-mirror {
-                transform: scale(-1, 1);
-            }
-        }
+    &.hidden {
+        display: none;
     }
 }

@@ -2,6 +2,7 @@ import _, { includes } from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import { in2mm, mm2in } from '../../../lib/units';
 import controller from '../../../lib/controller';
@@ -21,7 +22,7 @@ import {
     TINYG2_MACHINE_STATE_RUN,
     WORKFLOW_STATE_IDLE
 } from '../../../constants';
-import './index.styl';
+import styles from './index.styl';
 
 const toUnits = (units, val) => {
     val = Number(val) || 0;
@@ -35,6 +36,7 @@ const toUnits = (units, val) => {
     return val;
 };
 
+@CSSModules(styles, { allowMultiple: true })
 class ProbeWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func
@@ -338,12 +340,6 @@ class ProbeWidget extends Component {
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
-        const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            )
-        };
-
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -379,7 +375,12 @@ class ProbeWidget extends Component {
                             />
                         </Widget.Controls>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <Probe
                             state={state}
                             actions={actions}

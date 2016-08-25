@@ -1,12 +1,15 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import Toolbar from './Toolbar';
 import {
     METRIC_UNITS
 } from '../../../constants';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class Probe extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -86,7 +89,7 @@ class Probe extends Component {
                             </button>
                         </div>
                     </div>
-                    <p className="probe-command-description">
+                    <p styleName="probe-command-description">
                     {probeCommand === 'G38.2' &&
                         <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
                     }
@@ -101,8 +104,8 @@ class Probe extends Component {
                     }
                     </p>
                 </div>
-                <div className="row no-gutters probe-options">
-                    <div className="col-xs-6">
+                <div className="row no-gutters" styleName="probe-options-row">
+                    <div className="col-xs-6" styleName="probe-options-col">
                         <div className="form-group">
                             <label className="control-label">{i18n._('Probe Depth')}</label>
                             <div className="input-group input-group-xs">
@@ -119,7 +122,7 @@ class Probe extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-6" styleName="probe-options-col">
                         <div className="form-group">
                             <label className="control-label">{i18n._('Probe Feedrate')}</label>
                             <div className="input-group input-group-xs">
@@ -136,7 +139,7 @@ class Probe extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-6" styleName="probe-options-col">
                         <div className="form-group">
                             <label className="control-label">{i18n._('Touch Plate Thickness')}</label>
                             <div className="input-group input-group-xs">
@@ -153,7 +156,7 @@ class Probe extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6">
+                    <div className="col-xs-6" styleName="probe-options-col">
                         <div className="form-group">
                             <label className="control-label">{i18n._('Retraction Distance')}</label>
                             <div className="input-group input-group-xs">
