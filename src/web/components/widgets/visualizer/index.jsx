@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
+import CSSModules from 'react-css-modules';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import request from 'superagent';
 import Visualizer from './Visualizer';
@@ -40,7 +41,7 @@ import {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from '../../../constants';
-import './index.styl';
+import styles from './index.styl';
 
 const noop = () => {};
 const startWaiting = () => {
@@ -54,6 +55,7 @@ const stopWaiting = () => {
     root.classList.remove('wait');
 };
 
+@CSSModules(styles, { allowMultiple: true })
 class VisualizerWidget extends Component {
     controllerEvents = {
         'gcode:statuschange': (data) => {
@@ -281,7 +283,7 @@ class VisualizerWidget extends Component {
 
         return true;
     }
-    uploadFile(data, { name, size }) {
+    uploadFile(gcode, { name, size }) {
         const { port } = this.state;
 
         // Start waiting
@@ -303,7 +305,7 @@ class VisualizerWidget extends Component {
                     name: name,
                     size: size
                 },
-                gcode: data
+                gcode: gcode
             })
             .end((err, res) => {
                 if (err || res.err) {
@@ -321,16 +323,17 @@ class VisualizerWidget extends Component {
                     return;
                 }
 
-                this.loadGCode(data, () => {
-                    // Stop waiting
-                    stopWaiting();
-                });
+                if (gcode) {
+                    pubsub.publish('gcode:load', gcode);
+                }
             });
     }
-    loadGCode(data, callback = noop) {
+    loadGCode(gcode, callback = noop) {
         const visualizer = this.refs.visualizer;
-        visualizer.load(data, ({ bbox }) => {
+        visualizer.load(gcode, ({ bbox }) => {
+            // bounding box
             pubsub.publish('gcode:bbox', bbox);
+
             this.setState({
                 gcode: {
                     ...this.state.gcode,
