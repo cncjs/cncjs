@@ -2,6 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import i18n from '../../../lib/i18n';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import combokeys from '../../../lib/combokeys';
 import PressAndHold from '../../common/PressAndHold';
 import {
@@ -9,7 +10,9 @@ import {
     DISTANCE_MAX,
     DISTANCE_STEP
 } from './constants';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class JogDistance extends Component {
     static propTypes = {
         state: PropTypes.object,
