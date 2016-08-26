@@ -2,10 +2,12 @@ import React, { Component, PropTypes } from 'react';
 
 class Image extends Component {
     static propTypes = {
-        src: PropTypes.string
+        src: PropTypes.string,
+        style: PropTypes.object
     };
     static defaultProps = {
-        src: ''
+        src: '',
+        style: {}
     };
 
     render() {
