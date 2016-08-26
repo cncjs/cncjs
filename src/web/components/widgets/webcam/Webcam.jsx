@@ -2,6 +2,7 @@ import _ from 'lodash';
 import delay from 'delay';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
+import Image from './Image';
 import Line from './Line';
 import Circle from './Circle';
 import i18n from '../../../lib/i18n';
@@ -36,6 +37,13 @@ class Webcam extends Component {
             <div>
             {!disabled &&
                 <div styleName="webcam-on-container">
+                {url &&
+                    <Image
+                        scale={1.0}
+                        src={url}
+                        ref="webcam-viewport"
+                    />
+                }
                     <Line
                         styleName="center"
                         length="100%"
@@ -53,14 +61,6 @@ class Webcam extends Component {
                         styleName="center"
                         diameter={40}
                     />
-                {url &&
-                    <img
-                        src={url}
-                        styleName="webcam-viewport"
-                        ref="webcam-viewport"
-                        alt=""
-                    />
-                }
                 </div>
             }
             {disabled &&

@@ -64,6 +64,13 @@ class WidgetManager extends React.Component {
             disabled: false
         },
         {
+            id: 'macro',
+            caption: i18n._('Macro Widget'),
+            details: i18n._('This widget lets you use macros to automate frequently used tasks.'),
+            visible: true,
+            disabled: false
+        },
+        {
             id: 'probe',
             caption: i18n._('Probe Widget'),
             details: i18n._('This widget helps you use a touch plate to set your Z zero offset.'),

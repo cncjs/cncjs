@@ -31,7 +31,7 @@ const defaultState = {
             secondary: {
                 show: true,
                 widgets: [
-                    'axes', 'gcode', 'probe', 'spindle'
+                    'axes', 'gcode', 'macro', 'probe', 'spindle'
                 ]
             }
         }
@@ -71,6 +71,8 @@ const defaultState = {
                     expanded: true
                 }
             }
+        },
+        macro: {
         },
         probe: {
             probeCommand: 'G38.2',

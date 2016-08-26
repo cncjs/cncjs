@@ -4,6 +4,7 @@ import ConnectionWidget from './connection';
 import ConsoleWidget from './console';
 import GCodeWidget from './gcode';
 import GrblWidget from './grbl';
+import MacroWidget from './macro';
 import ProbeWidget from './probe';
 import SpindleWidget from './spindle';
 import TinyG2Widget from './tinyg2';
@@ -18,6 +19,7 @@ const Widget = (props) => {
         'console': () => <ConsoleWidget data-widgetid={widgetid} {...others} />,
         'gcode': () => <GCodeWidget data-widgetid={widgetid} {...others} />,
         'grbl': () => <GrblWidget data-widgetid={widgetid} {...others} />,
+        'macro': () => <MacroWidget data-widgetid={widgetid} {...others} />,
         'probe': () => <ProbeWidget data-widgetid={widgetid} {...others} />,
         'spindle': () => <SpindleWidget data-widgetid={widgetid} {...others} />,
         'tinyg2': () => <TinyG2Widget data-widgetid={widgetid} {...others} />,

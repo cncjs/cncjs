@@ -1,12 +1,15 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
 import Widget from '../../widget';
 import Webcam from './Webcam';
 import { show as editSettings } from './Settings';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class WebcamWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func
@@ -39,9 +42,6 @@ class WebcamWidget extends Component {
     render() {
         const { disabled, isCollapsed, isFullscreen } = this.state;
         const classes = {
-            widgetContent: classNames(
-                { hidden: isCollapsed }
-            ),
             webcamOnOff: classNames(
                 'fa',
                 { 'fa-toggle-on': !disabled },
@@ -98,7 +98,12 @@ class WebcamWidget extends Component {
                             </Widget.Button>
                         </Widget.Toolbar>
                     </Widget.Header>
-                    <Widget.Content className={classes.widgetContent}>
+                    <Widget.Content
+                        styleName={classNames(
+                            'widget-content',
+                            { 'hidden': isCollapsed }
+                        )}
+                    >
                         <Webcam
                             ref="webcam"
                             state={state}
