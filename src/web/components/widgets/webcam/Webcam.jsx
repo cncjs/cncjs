@@ -32,43 +32,48 @@ class Webcam extends Component {
     render() {
         const { state } = this.props;
         const { disabled, url } = state;
+        const scale = 1.0;
 
-        return (
-            <div>
-            {!disabled &&
-                <div styleName="webcam-on-container">
-                {url &&
-                    <Image
-                        scale={1.0}
-                        src={url}
-                        ref="webcam-viewport"
-                    />
-                }
-                    <Line
-                        styleName="center"
-                        length="100%"
-                    />
-                    <Line
-                        styleName="center"
-                        length="100%"
-                        vertical
-                    />
-                    <Circle
-                        styleName="center"
-                        diameter={20}
-                    />
-                    <Circle
-                        styleName="center"
-                        diameter={40}
-                    />
-                </div>
-            }
-            {disabled &&
+        if (disabled) {
+            return (
                 <div styleName="webcam-off-container">
                     <h4><i styleName="icon-webcam"></i></h4>
                     <h5>{i18n._('Webcam is off')}</h5>
                 </div>
+            );
+        }
+
+        return (
+            <div styleName="webcam-on-container">
+            {url &&
+                <Image
+                    src={url}
+                    ref="webcam-viewport"
+                    style={{
+                        position: 'absolute',
+                        width: (100 * scale).toFixed(0) + '%',
+                        top: ((1 - scale) / 2 * 100).toFixed(0) + '%',
+                        left: ((1 - scale) / 2 * 100).toFixed(0) + '%'
+                    }}
+                />
             }
+                <Line
+                    styleName="center"
+                    length="100%"
+                />
+                <Line
+                    styleName="center"
+                    length="100%"
+                    vertical
+                />
+                <Circle
+                    styleName="center"
+                    diameter={20}
+                />
+                <Circle
+                    styleName="center"
+                    diameter={40}
+                />
             </div>
         );
     }

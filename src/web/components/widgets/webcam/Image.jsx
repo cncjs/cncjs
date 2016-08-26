@@ -2,22 +2,26 @@ import React, { Component, PropTypes } from 'react';
 
 class Image extends Component {
     static propTypes = {
-        src: PropTypes.string,
-        scale: PropTypes.number
+        src: PropTypes.string
     };
     static defaultProps = {
-        src: '',
-        scale: 1.0
+        src: ''
     };
 
     render() {
-        const { src, scale, ...props } = this.props;
-        const style = {
-            width: (100 * scale).toFixed(0) + '%',
-            height: 'auto'
-        };
+        const { src, style, ...props } = this.props;
+
         return (
-            <img {...props} style={style} src={src} alt="" />
+            <img
+                {...props}
+                role="presentation"
+                src={src}
+                style={{
+                    width: '100%',
+                    height: 'auto',
+                    ...style
+                }}
+            />
         );
     }
 }

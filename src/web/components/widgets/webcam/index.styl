@@ -1,3 +1,13 @@
+:global {
+    .widget-fullscreen {
+        :local {
+            .webcam-on-container {
+                min-height: 100%;
+            }
+        }
+    }
+}
+
 .widget-content {
     position: relative;
     padding: 0;
@@ -17,6 +27,8 @@
 .webcam-on-container {
     min-height: 240px;
     text-align: center;
+    overflow: hidden;
+    position: relative;
 }
 
 .webcam-off-container {
