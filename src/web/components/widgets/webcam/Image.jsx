@@ -2,27 +2,20 @@ import React, { Component, PropTypes } from 'react';
 
 class Image extends Component {
     static propTypes = {
-        src: PropTypes.string,
-        style: PropTypes.object
+        src: PropTypes.string
     };
     static defaultProps = {
-        src: '',
-        style: {}
+        src: ''
     };
 
     render() {
-        const { src, style, ...props } = this.props;
+        const { src, ...props } = this.props;
 
         return (
             <img
                 {...props}
                 role="presentation"
                 src={src}
-                style={{
-                    width: '100%',
-                    height: 'auto',
-                    ...style
-                }}
             />
         );
     }

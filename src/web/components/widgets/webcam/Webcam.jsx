@@ -50,10 +50,11 @@ class Webcam extends Component {
                     src={url}
                     ref="webcam-viewport"
                     style={{
+                        maxWidth: (100 * scale).toFixed(0) + '%',
                         position: 'absolute',
-                        width: (100 * scale).toFixed(0) + '%',
-                        top: ((1 - scale) / 2 * 100).toFixed(0) + '%',
-                        left: ((1 - scale) / 2 * 100).toFixed(0) + '%'
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)'
                     }}
                 />
             }
