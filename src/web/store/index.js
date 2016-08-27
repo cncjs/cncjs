@@ -101,7 +101,9 @@ const defaultState = {
         },
         webcam: {
             disabled: false,
-            url: ''
+            url: '',
+            crosshair: false,
+            scale: 1.0
         }
     }
 };
