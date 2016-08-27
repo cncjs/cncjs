@@ -27,6 +27,8 @@
     "This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.": "Este Módulo mostra a posição XYZ. Ele inclui controles de movimento, homing e zeragem de eixo.",
     "G-code Widget": "Módulo G-code",
     "This widget shows the current status of G-code commands.": "Este Módulo mostra o estado atual dos comandos G-code.",
+    "Macro Widget": "Módulo Macro",
+    "This widget can use macros to automate routine tasks.": "Este Módulo pode usar macros para automatizar tarefas de rotina.",
     "Probe Widget": "Módulo Sonda",
     "This widget helps you use a touch plate to set your Z zero offset.": "Este Módulo ajuda a usar uma placa de toque para definir o offset para zerar o Z.",
     "Spindle Widget": "Módulo Spindle",
@@ -194,6 +196,7 @@
     "View G-code Parser State ($G)": "Ver o estado do Analisador G-code ($G)",
     "View Build Info ($I)": "Ver Informações de Compilação ($I)",
     "View Startup Blocks ($N)": "Ver Blocos de Inicialização ($N)",
+    "Macro": "Macro",
     "Probe": "Sonda",
     "mm/min": "mm/min",
     "in/mm": "in/mm",
@@ -242,5 +245,6 @@
     "Webcam Settings": "Configurações da Webcam",
     "URL": "URL",
     "Webcam is off": "Webcam desligada",
+    "Crosshair": "",
     "Manage Widgets ({{inactiveCount}})": "Gerenciar Módulos ({{inactiveCount}})"
 }
