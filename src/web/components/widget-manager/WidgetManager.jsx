@@ -66,7 +66,7 @@ class WidgetManager extends React.Component {
         {
             id: 'macro',
             caption: i18n._('Macro Widget'),
-            details: i18n._('This widget lets you use macros to automate frequently used tasks.'),
+            details: i18n._('This widget can use macros to automate routine tasks.'),
             visible: true,
             disabled: false
         },
