@@ -4,6 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
+import Macro from './Macro';
 import styles from './index.styl';
 
 @CSSModules(styles, { allowMultiple: true })
@@ -25,6 +26,11 @@ class MacroWidget extends Component {
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
+        const state = {
+            ...this.state
+        };
+        const actions = {
+        };
 
         return (
             <Widget {...this.props} fullscreen={isFullscreen}>
@@ -53,6 +59,10 @@ class MacroWidget extends Component {
                         { 'hidden': isCollapsed }
                     )}
                 >
+                    <Macro
+                        state={state}
+                        actions={actions}
+                    />
                 </Widget.Content>
             </Widget>
         );

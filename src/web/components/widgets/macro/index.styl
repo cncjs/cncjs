@@ -1,8 +1,65 @@
 .widget-content {
     position: relative;
-    padding: 10px;
 
     &.hidden {
         display: none;
     }
+}
+
+.toolbar {
+    display: block;
+    margin: 0;
+    padding: 8px 10px;
+    background: #fafafa;
+    border-bottom: 1px solid #ccc;
+}
+
+.table-container {
+    min-height: 120px;
+    max-height: 240px;
+    overflow-x: auto;
+    overflow-y: scroll;
+}
+
+.table {
+    width: 100%;
+    max-width: 100%;
+
+    th {
+        font-weight: bold;
+    }
+
+    > thead > tr > th,
+    > tbody > tr > td,
+    > tfoot > tr > td {
+        padding: 4px 8px;
+    }
+
+    > thead > tr {
+        background-color: #eee;
+    }
+
+    > thead > tr > th,
+    > tbody > tr > td {
+        border: 1px solid #ddd;
+
+        &:first-child {
+            border-left-width: 0;
+        }
+        &:last-child {
+            border-right-width: 0;
+        }
+    }
+
+    > thead > tr:first-child > th {
+        border-top-width: 0;
+    }
+
+    > tbody > tr:last-child > td {
+        border-bottom-width: 0;
+    }
+}
+
+.table-bordered {
+    border: 1px solid #ddd;
 }
