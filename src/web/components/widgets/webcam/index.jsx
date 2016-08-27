@@ -26,18 +26,34 @@ class WebcamWidget extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
-        const { disabled, url } = this.state;
+        const {
+            disabled,
+            url,
+            crosshair,
+            scale
+        } = this.state;
 
         store.set('widgets.webcam.disabled', disabled);
         store.set('widgets.webcam.url', url);
+        store.set('widgets.webcam.crosshair', crosshair);
+        store.set('widgets.webcam.scale', scale);
     }
     getDefaultState() {
         return {
             isCollapsed: false,
             isFullscreen: false,
             disabled: store.get('widgets.webcam.disabled'),
-            url: store.get('widgets.webcam.url')
+            url: store.get('widgets.webcam.url'),
+            crosshair: store.get('widgets.webcam.crosshair'),
+            scale: store.get('widgets.webcam.scale')
         };
+    }
+    changeImageScale(value) {
+        this.setState({ scale: value });
+    }
+    toggleCrosshair() {
+        const { crosshair } = this.state;
+        this.setState({ crosshair: !crosshair });
     }
     render() {
         const { disabled, isCollapsed, isFullscreen } = this.state;
@@ -53,6 +69,8 @@ class WebcamWidget extends Component {
             ...this.state
         };
         const actions = {
+            changeImageScale: ::this.changeImageScale,
+            toggleCrosshair: ::this.toggleCrosshair
         };
 
         return (

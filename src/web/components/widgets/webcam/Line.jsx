@@ -19,6 +19,7 @@ class Line extends Component {
     render() {
         const { vertical, color, opacity, length, width, ...props } = this.props;
         const style = {
+            ...this.props.style,
             opacity: opacity
         };
 

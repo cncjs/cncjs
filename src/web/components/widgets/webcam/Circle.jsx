@@ -17,6 +17,7 @@ class Circle extends Component {
     render() {
         const { color, opacity, diameter, width, ...props } = this.props;
         const style = {
+            ...this.props.style,
             backgroundClip: 'padding-box',
             borderRadius: '50%',
             borderColor: color,

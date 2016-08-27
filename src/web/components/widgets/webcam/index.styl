@@ -25,10 +25,62 @@
 }
 
 .webcam-on-container {
+    background-color: #fafafa;
     min-height: 240px;
     text-align: center;
     overflow: hidden;
     position: relative;
+
+    .line-shadow {
+        box-shadow: 0 0 2px #333;
+    }
+
+    .toolbar,
+    .image-scale-slider {
+        opacity: 0;
+        transition: all 200ms ease-in; // use "ease-in" when things are moving out
+    }
+
+    &:hover {
+        .toolbar,
+        .image-scale-slider {
+            opacity: 1;
+            transition: all 250ms ease-out; // use "ease-out" when things are moving in
+        }
+    }
+
+    .toolbar {
+        position: absolute;
+        bottom: 5px;
+        left: 25px;
+        right: 25px;
+        line-height: 18px;
+
+        .scale-text {
+            float: left;
+            color: #f5f5f5;
+            font-size: 13px;
+            text-shadow: 0 0 5px #333;
+        }
+
+        .btn-crosshair {
+            float: right;
+            color: #f5f5f5;
+            font-size: 18px;
+            text-shadow: 0 0 5px #333;
+
+            &:hover {
+                color: #fff;
+            }
+        }
+    }
+
+    .image-scale-slider {
+        position: absolute;
+        bottom: 30px;
+        left: 15px;
+        right: 15px;
+    }
 }
 
 .webcam-off-container {
