@@ -27,6 +27,8 @@
     "This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.": "This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.",
     "G-code Widget": "G-code Widget",
     "This widget shows the current status of G-code commands.": "This widget shows the current status of G-code commands.",
+    "Macro Widget": "Macro Widget",
+    "This widget can use macros to automate routine tasks.": "This widget can use macros to automate routine tasks.",
     "Probe Widget": "Probe Widget",
     "This widget helps you use a touch plate to set your Z zero offset.": "This widget helps you use a touch plate to set your Z zero offset.",
     "Spindle Widget": "Spindle Widget",
@@ -194,6 +196,7 @@
     "View G-code Parser State ($G)": "View G-code Parser State ($G)",
     "View Build Info ($I)": "View Build Info ($I)",
     "View Startup Blocks ($N)": "View Startup Blocks ($N)",
+    "Macro": "Macro",
     "Probe": "Probe",
     "mm/min": "mm/min",
     "in/mm": "in/mm",
@@ -242,5 +245,6 @@
     "Webcam Settings": "Webcam Settings",
     "URL": "URL",
     "Webcam is off": "Webcam is off",
+    "Crosshair": "Crosshair",
     "Manage Widgets ({{inactiveCount}})": "Manage Widgets ({{inactiveCount}})"
 }

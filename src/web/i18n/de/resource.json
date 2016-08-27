@@ -27,6 +27,8 @@
     "This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.": "Dieses Widget zeigt die XYZ-Position. Es beinhaltet eine Verfahrsteuerung, Nullpunktfahrt und Achsen-Nullung.",
     "G-code Widget": "G-Code-Widget",
     "This widget shows the current status of G-code commands.": "Dieses Widget zeigt den aktuellen Status der G-Code-Kommandos.",
+    "Macro Widget": "Makro-Widget",
+    "This widget can use macros to automate routine tasks.": "Dieses Widget können Makros verwenden, um Routineaufgaben zu automatisieren.",
     "Probe Widget": "Antaster-Widget",
     "This widget helps you use a touch plate to set your Z zero offset.": "Dieses Widget hilft bei der Verwendung einer Antastplatte zur Festlegung des Z-Nullpunktes.",
     "Spindle Widget": "Spindel-Widget",
@@ -194,6 +196,7 @@
     "View G-code Parser State ($G)": "Zustand G-Code-Parser anzeigen ($G)",
     "View Build Info ($I)": "Build-Information anzeigen ($I)",
     "View Startup Blocks ($N)": "Startup-Blöcke anzeigen ($N)",
+    "Macro": "Makro",
     "Probe": "Antaster",
     "mm/min": "mm/min",
     "in/mm": "in/mm",
@@ -242,5 +245,6 @@
     "Webcam Settings": "Webcam-Einstellungen",
     "URL": "URL",
     "Webcam is off": "Webcam ist aus",
+    "Crosshair": "Fadenkreuz",
     "Manage Widgets ({{inactiveCount}})": "Widgets verwalten ({{inactiveCount}})"
 }

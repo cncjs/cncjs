@@ -27,6 +27,8 @@
     "This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.": "這個元件可顯示ＸＹＺ位置，同時也包含了點動控制、原點復歸和設定原點等功能。",
     "G-code Widget": "G-code元件",
     "This widget shows the current status of G-code commands.": "這個元件可顯示當前G-code的執行狀態。",
+    "Macro Widget": "巨集元件",
+    "This widget can use macros to automate routine tasks.": "這個元件可使用巨集來自動執行例行工作。",
     "Probe Widget": "探測元件",
     "This widget helps you use a touch plate to set your Z zero offset.": "這個元件可協助使用對刀儀去設定Ｚ軸原點。",
     "Spindle Widget": "主軸元件",
@@ -194,6 +196,7 @@
     "View G-code Parser State ($G)": "檢視G-code解析器狀態 ($G)",
     "View Build Info ($I)": "檢視版本資訊 ($I)",
     "View Startup Blocks ($N)": "檢視啟動區塊 ($N)",
+    "Macro": "巨集",
     "Probe": "探測",
     "mm/min": "mm/min",
     "in/mm": "in/mm",
@@ -242,5 +245,6 @@
     "Webcam Settings": "網路攝影機設定",
     "URL": "網址",
     "Webcam is off": "網路攝影機未開啟",
+    "Crosshair": "十字",
     "Manage Widgets ({{inactiveCount}})": "管理元件 ({{inactiveCount}})"
 }

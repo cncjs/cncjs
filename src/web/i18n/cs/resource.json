@@ -27,6 +27,8 @@
     "This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.": "Tento widget zobrazuje pozici XYZ. Obsahuje kontrolu posuvu, homování a nulování os.",
     "G-code Widget": "Widget G-code",
     "This widget shows the current status of G-code commands.": "Tento widget zobrazuje aktuální stav G-code příkazů.",
+    "Macro Widget": "Widget Makro",
+    "This widget can use macros to automate routine tasks.": "Tento widget může používat makra k automatizaci rutinních úloh.",
     "Probe Widget": "Widget Sondy",
     "This widget helps you use a touch plate to set your Z zero offset.": "Tento widget umožňuje použití dotykové desky k nastavení offsetu osy Z.",
     "Spindle Widget": "Widget motoru nástroje",
@@ -194,6 +196,7 @@
     "View G-code Parser State ($G)": "Náhled stavu G-code Parseru ($G)",
     "View Build Info ($I)": "Zobrazit info sestavení ($I)",
     "View Startup Blocks ($N)": "Náhled startovních bloků ($N)",
+    "Macro": "Makro",
     "Probe": "Sonda",
     "mm/min": "mm/min",
     "in/mm": "in/mm",
@@ -242,5 +245,6 @@
     "Webcam Settings": "Nastavení Webkamery",
     "URL": "URL",
     "Webcam is off": "Webkamera je vypnuta",
+    "Crosshair": "Crosshair",
     "Manage Widgets ({{inactiveCount}})": "Spravovat Widgety ({{inactiveCount}})"
 }

@@ -27,6 +27,8 @@
     "This widget shows the XYZ position. It includes jog controls, homing, and axis zeroing.": "此组件可显示XYZ坐标位置。包括点动控制，原点复位和设置原点等功能。",
     "G-code Widget": "G-code 组件",
     "This widget shows the current status of G-code commands.": "此组件可显示当前 G-code 的执行状态。",
+    "Macro Widget": "巨集组件",
+    "This widget can use macros to automate routine tasks.": "此组件可使用巨集来自动执行日常任务。",
     "Probe Widget": "探针组件",
     "This widget helps you use a touch plate to set your Z zero offset.": "此组件可协助您使用对刀仪去设置 Z 轴原点。",
     "Spindle Widget": "主轴组件",
@@ -194,6 +196,7 @@
     "View G-code Parser State ($G)": "查看 G-code 解析器状态（$G）",
     "View Build Info ($I)": "查看版本信息（$I）",
     "View Startup Blocks ($N)": "查看启动区块（$N）",
+    "Macro": "巨集",
     "Probe": "探针",
     "mm/min": "mm/min",
     "in/mm": "in/mm",
@@ -242,5 +245,6 @@
     "Webcam Settings": "网络摄像机设置",
     "URL": "网址",
     "Webcam is off": "网络摄像机未开启",
+    "Crosshair": "十字",
     "Manage Widgets ({{inactiveCount}})": "管理组件（{{inactiveCount}}）"
 }
