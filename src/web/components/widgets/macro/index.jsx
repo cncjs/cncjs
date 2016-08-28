@@ -5,6 +5,9 @@ import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Macro from './Macro';
+import {
+    MODAL_STATE_NONE
+} from './constants';
 import styles from './index.styl';
 
 @CSSModules(styles, { allowMultiple: true })
@@ -16,13 +19,53 @@ class MacroWidget extends Component {
         onDelete: () => {}
     };
 
-    state = {
-        isCollapsed: false,
-        isFullscreen: false
-    };
-
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+    }
+    getDefaultState() {
+        return {
+            isCollapsed: false,
+            isFullscreen: false,
+            macros: [],
+            modalState: MODAL_STATE_NONE,
+            modalParams: {}
+        };
+    }
+    openModal(modalState = MODAL_STATE_NONE, modalParams = {}) {
+        this.setState({
+            modalState: modalState,
+            modalParams: modalParams
+        });
+    }
+    closeModal() {
+        this.setState({
+            modalState: MODAL_STATE_NONE,
+            modalParams: {}
+        });
+    }
+    addMacro() {
+        const macros = this.state.macros;
+
+        this.setState({
+            macros: macros.concat([
+                {
+                    name: new Date().getTime()
+                }
+            ])
+        });
+    }
+    removeMacro(id) {
+        const macros = this.state.macros;
+
+        this.setState({
+            macros: macros.filter((macro, index) => {
+                return (index !== id);
+            })
+        });
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
@@ -30,6 +73,10 @@ class MacroWidget extends Component {
             ...this.state
         };
         const actions = {
+            openModal: ::this.openModal,
+            closeModal: ::this.closeModal,
+            addMacro: ::this.addMacro,
+            removeMacro: ::this.removeMacro
         };
 
         return (

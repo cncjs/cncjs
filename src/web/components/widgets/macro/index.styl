@@ -15,8 +15,7 @@
 }
 
 .table-container {
-    min-height: 120px;
-    max-height: 240px;
+    max-height: 180px;
     overflow-x: auto;
     overflow-y: scroll;
 }
@@ -26,7 +25,7 @@
     max-width: 100%;
 
     th {
-        font-weight: bold;
+        font-weight: normal;
     }
 
     > thead > tr > th,
@@ -41,7 +40,8 @@
 
     > thead > tr > th,
     > tbody > tr > td {
-        border: 1px solid #ddd;
+        border-top: 1px solid #ddd;
+        border-bottom: 1px solid #ddd;
 
         &:first-child {
             border-left-width: 0;
@@ -57,6 +57,11 @@
 
     > tbody > tr:last-child > td {
         border-bottom-width: 0;
+    }
+
+    .empty-result {
+        padding: 20px 30px;
+        text-align: center;
     }
 }
 
