@@ -151,6 +151,7 @@
     "moment": "~2.14.1",
     "morgan": "~1.7.0",
     "mousetrap": "~1.6.0",
+    "namespace-constants": "~0.1.1",
     "normalize.css": "~4.2.0",
     "pubsub-js": "~1.5.3",
     "range_check": "~1.2.0",
