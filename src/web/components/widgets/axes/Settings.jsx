@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Button, Modal } from 'react-bootstrap';
+import Modal from '../../common/Modal';
 import i18n from '../../../lib/i18n';
 import ShuttleSettings from './ShuttleSettings';
 
@@ -34,7 +34,6 @@ class Settings extends React.Component {
         return (
             <Modal
                 backdrop="static"
-                dialogClassName="modal-vertical-center"
                 onHide={::this.handleCancel}
                 show={show}
             >
@@ -45,8 +44,20 @@ class Settings extends React.Component {
                     <ShuttleSettings ref="shuttleSettings" />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={::this.handleSave}>{i18n._('Save')}</Button>
-                    <Button onClick={::this.handleCancel}>{i18n._('Cancel')}</Button>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={::this.handleSave}
+                    >
+                        {i18n._('Save')}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={::this.handleCancel}
+                    >
+                        {i18n._('Cancel')}
+                    </button>
                 </Modal.Footer>
             </Modal>
         );

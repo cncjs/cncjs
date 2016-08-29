@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import Modal from '../common/Modal';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import WidgetList from './WidgetList';
@@ -143,19 +143,30 @@ class WidgetManager extends React.Component {
             <Modal
                 backdrop="static"
                 bsSize="large"
-                dialogClassName="modal-vertical-center"
                 onHide={::this.handleCancel}
                 show={this.state.show}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{i18n._('Widgets')}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body className="nopadding">
+                <Modal.Body style={{ padding: 0 }}>
                     <WidgetList list={this.widgetList} onChange={::this.handleChange} />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button onClick={::this.handleSave}>{i18n._('Save')}</Button>
-                    <Button onClick={::this.handleCancel}>{i18n._('Cancel')}</Button>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={::this.handleSave}
+                    >
+                        {i18n._('Save')}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={::this.handleCancel}
+                    >
+                        {i18n._('Cancel')}
+                    </button>
                 </Modal.Footer>
             </Modal>
         );

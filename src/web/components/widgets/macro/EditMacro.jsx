@@ -28,6 +28,24 @@ class EditMacro extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <form>
+                        <div className="form-group">
+                            <label>{i18n._('Name')}</label>
+                            <input
+                                type="text"
+                                className="form-control"
+                                placeholder={i18n._('Name')}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>{i18n._('G-code')}</label>
+                            <textarea
+                                className="form-control"
+                                rows="10"
+                                placeholder={i18n._('G-code')}
+                            />
+                        </div>
+                    </form>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
@@ -42,21 +60,21 @@ class EditMacro extends Component {
                     </button>
                     <button
                         type="button"
-                        className="btn btn-default"
-                        onClick={() => {
-                            actions.closeModal();
-                        }}
-                    >
-                        {i18n._('Close')}
-                    </button>
-                    <button
-                        type="button"
                         className="btn btn-primary"
                         onClick={() => {
                             actions.closeModal();
                         }}
                     >
                         {i18n._('Save')}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={() => {
+                            actions.closeModal();
+                        }}
+                    >
+                        {i18n._('Cancel')}
                     </button>
                 </Modal.Footer>
             </Modal>

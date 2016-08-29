@@ -24,8 +24,9 @@ class WidgetListItem extends React.Component {
         const styles = {
             thumbnail: {
                 fontSize: 100,
-                backgroundColor: checked ? '#4e69a2' : '#f5f6f7',
-                color: checked ? '#fff' : '#ccc'
+                backgroundColor: '#f5f6f7',
+                color: checked ? 'rgba(64, 64, 64, 0.8)' : '#ccc',
+                textShadow: '2px 2px 2px #a0a0a0'
             },
             caption: {
                 color: '#333',

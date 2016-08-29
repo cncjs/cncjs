@@ -7,7 +7,7 @@ const WidgetList = (props) => {
     const { list, onChange } = props;
     const style = {
         maxHeight: Math.max(window.innerHeight / 2, 200),
-        minWidth: 400,
+        maxWidth: Math.max(window.innerWidth * 0.8, 600),
         overflowY: 'scroll',
         padding: 15
     };

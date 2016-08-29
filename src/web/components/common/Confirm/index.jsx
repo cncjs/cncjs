@@ -1,5 +1,5 @@
 import React from 'react';
-import { Button, Modal } from 'react-bootstrap';
+import Modal from '../Modal';
 import i18n from '../../../lib/i18n';
 
 class Confirm extends React.Component {
@@ -33,14 +33,13 @@ class Confirm extends React.Component {
         const {
             message,
             description,
-            confirmLabel = i18n._('OK'),
+            confirmLabel = i18n._('Restore Defaults'),
             cancelLabel = i18n._('Cancel')
         } = this.props;
 
         return (
             <Modal
                 backdrop="static"
-                dialogClassName="modal-vertical-center"
                 show={this.state.show}
                 onHide={::this.handleCancel}
             >
@@ -51,16 +50,26 @@ class Confirm extends React.Component {
                 </Modal.Header>
             {description &&
                 <Modal.Body>
-                    {description}
+                    <div style={{ lineHeight: '40px' }}>
+                        {description}
+                    </div>
                 </Modal.Body>
             }
                 <Modal.Footer>
-                    <Button bsStyle="default" onClick={::this.handleCancel}>
-                        {cancelLabel}
-                    </Button>
-                    <Button bsStyle="primary" onClick={::this.handleConfirm}>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={::this.handleConfirm}
+                    >
                         {confirmLabel}
-                    </Button>
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        onClick={::this.handleCancel}
+                    >
+                        {cancelLabel}
+                    </button>
                 </Modal.Footer>
             </Modal>
         );
