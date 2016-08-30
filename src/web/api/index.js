@@ -3,7 +3,7 @@ import request from 'superagent';
 
 const API = {};
 
-{ // getAllMacros
+{ // listMacros
     const fn = () => new Promise((resolve, reject) => {
         request
             .get('/api/macro')
@@ -15,7 +15,24 @@ const API = {};
                 }
             });
     });
-    set(API, 'getAllMacros', fn);
+    set(API, 'listMacros', fn);
+}
+
+{ // getMacro
+    const fn = (options) => new Promise((resolve, reject) => {
+        const { id } = { ...options };
+
+        request
+            .get('/api/macro/' + id)
+            .end((err, res) => {
+                if (err || res.err) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
+    });
+    set(API, 'getMacro', fn);
 }
 
 { // addMacro

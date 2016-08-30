@@ -31,10 +31,11 @@ const api = {
         app.get(urljoin(settings.route, 'api/controllers'), api.controllers.getActiveControllers);
 
         // Macro
-        app.get(urljoin(settings.route, 'api/macro'), api.macro.list);
-        app.post(urljoin(settings.route, 'api/macro'), api.macro.add);
-        app.put(urljoin(settings.route, 'api/macro/:id'), api.macro.update);
-        app.delete(urljoin(settings.route, 'api/macro/:id'), api.macro.remove);
+        app.get(urljoin(settings.route, 'api/macro'), api.macro.listMacros);
+        app.get(urljoin(settings.route, 'api/macro/:id'), api.macro.getMacro);
+        app.post(urljoin(settings.route, 'api/macro'), api.macro.addMacro);
+        app.put(urljoin(settings.route, 'api/macro/:id'), api.macro.updateMacro);
+        app.delete(urljoin(settings.route, 'api/macro/:id'), api.macro.deleteMacro);
 
         // I18n
         app.get(urljoin(settings.route, 'api/i18n/acceptedLng'), api.i18n.getAcceptedLanguage);

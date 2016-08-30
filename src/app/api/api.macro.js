@@ -14,14 +14,39 @@ const loadConfigFile = (file) => {
     return config;
 };
 
-export const list = (req, res) => {
+export const listMacros = (req, res) => {
     const config = loadConfigFile(settings.cncrc);
-    const { macros = [] } = config;
+    const macros = _.map(config.macros, (macro) => {
+        const { id, name, content } = macro;
+
+        return {
+            id: id,
+            name: name,
+            size: _.size(content)
+        };
+    });
 
     res.send(macros);
 };
 
-export const add = (req, res) => {
+export const getMacro = (req, res) => {
+    const id = req.params.id;
+    const config = loadConfigFile(settings.cncrc);
+    const macro = _.find(config.macros, { id: id });
+
+    if (!macro) {
+        res.status(404);
+        return;
+    }
+
+    res.send({
+        id: macro.id,
+        name: macro.name,
+        content: macro.content
+    });
+};
+
+export const addMacro = (req, res) => {
     const config = loadConfigFile(settings.cncrc);
     const { name, content } = { ...req.body };
 
@@ -47,7 +72,7 @@ export const add = (req, res) => {
     }
 };
 
-export const update = (req, res) => {
+export const updateMacro = (req, res) => {
     const id = req.params.id;
     const { name, content } = { ...req.body };
     const config = loadConfigFile(settings.cncrc);
@@ -71,7 +96,7 @@ export const update = (req, res) => {
     }
 };
 
-export const remove = (req, res) => {
+export const deleteMacro = (req, res) => {
     const id = req.params.id;
     const config = loadConfigFile(settings.cncrc);
 
