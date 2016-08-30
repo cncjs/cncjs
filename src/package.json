@@ -32,6 +32,7 @@
     "lodash": "~4.13.1",
     "method-override": "~2.3.6",
     "morgan": "~1.7.0",
+    "node-uuid": "~1.4.7",
     "range_check": "~1.2.0",
     "serialport": "~4.0.1",
     "serve-favicon": "~2.3.0",
