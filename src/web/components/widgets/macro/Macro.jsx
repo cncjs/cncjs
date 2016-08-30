@@ -1,10 +1,9 @@
-import { parseString } from 'gcode-parser';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
+import api from '../../../api';
 import confirm from '../../../lib/confirm';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
-import log from '../../../lib/log';
 import AddMacro from './AddMacro';
 import EditMacro from './EditMacro';
 import {
@@ -12,19 +11,6 @@ import {
     MODAL_STATE_EDIT_MACRO
 } from './constants';
 import styles from './index.styl';
-
-const runMacro = (content) => {
-    parseString(content, (err, lines) => {
-        if (err) {
-            log.error(err);
-            return;
-        }
-
-        lines.forEach(({ line }) => {
-            controller.command('gcode', line);
-        });
-    });
-};
 
 @CSSModules(styles, { allowMultiple: true })
 class Macro extends Component {
@@ -55,6 +41,8 @@ class Macro extends Component {
                                 className="btn btn-xs btn-danger"
                                 disabled={!canStop}
                             >
+                                <i className="fa fa-exclamation-triangle" />
+                                &nbsp;
                                 {i18n._('Emergency Stop')}
                             </button>
                         </div>
@@ -119,7 +107,7 @@ class Macro extends Component {
                                                     txtOK: i18n._('Run'),
                                                     txtCancel: i18n._('Cancel')
                                                 }, () => {
-                                                    runMacro(macro.content);
+                                                    controller.command('macro', macro.id);
                                                 });
                                             }}
                                         >
@@ -133,9 +121,12 @@ class Macro extends Component {
                                                 type="button"
                                                 className="btn btn-xs btn-default"
                                                 onClick={() => {
-                                                    actions.openModal(MODAL_STATE_EDIT_MACRO, {
-                                                        id: macro.id
-                                                    });
+                                                    api.getMacro({ id: macro.id })
+                                                        .then((res) => {
+                                                            const macro = res.body;
+                                                            const { id, name, content } = macro;
+                                                            actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
+                                                        });
                                                 }}
                                             >
                                                 <i className="fa fa-edit" />

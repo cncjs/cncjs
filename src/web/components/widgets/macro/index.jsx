@@ -3,11 +3,11 @@ import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
+import api from '../../../api';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Macro from './Macro';
-import api from '../../../api';
 import {
     MODAL_STATE_NONE
 } from './constants';
@@ -30,8 +30,8 @@ class MacroWidget extends Component {
     componentDidMount() {
         this.subscribe();
 
-        // Fetch all macros
-        this.getAllMacros();
+        // Fetch the list of macros
+        this.listMacros();
     }
     componentWillUnmount() {
         this.unsubscribe();
@@ -81,10 +81,10 @@ class MacroWidget extends Component {
             modalParams: {}
         });
     }
-    async getAllMacros() {
+    async listMacros() {
         try {
             let res;
-            res = await api.getAllMacros();
+            res = await api.listMacros();
             const macros = res.body;
             this.setState({ macros: macros });
         } catch (err) {
@@ -95,36 +95,33 @@ class MacroWidget extends Component {
         try {
             let res;
             res = await api.addMacro({ name, content });
-            res = await api.getAllMacros();
+            res = await api.listMacros();
             const macros = res.body;
             this.setState({ macros: macros });
         } catch (err) {
             // FIXME
-            console.log(err);
         }
     }
     async deleteMacro({ id }) {
         try {
             let res;
             res = await api.deleteMacro({ id });
-            res = await api.getAllMacros();
+            res = await api.listMacros();
             const macros = res.body;
             this.setState({ macros: macros });
         } catch (err) {
             // FIXME
-            console.log(err);
         }
     }
     async updateMacro({ id, name, content }) {
         try {
             let res;
             res = await api.updateMacro({ id, name, content });
-            res = await api.getAllMacros();
+            res = await api.listMacros();
             const macros = res.body;
             this.setState({ macros: macros });
         } catch (err) {
             // FIXME
-            console.log(err);
         }
     }
     render() {

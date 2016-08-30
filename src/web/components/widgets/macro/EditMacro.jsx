@@ -17,9 +17,8 @@ class EditMacro extends Component {
     render() {
         const sample = `G0 X1 Y1\nG1 Y2 F100\nG1 X2 F100\nG1 Y1 F100\nG1 X1 F100`;
         const { state, actions } = this.props;
-        const { macros, modalParams } = state;
-        const { id } = { ...modalParams };
-        const macro = _.find(macros, { id: id });
+        const { modalParams } = state;
+        const { id, name, content } = { ...modalParams };
 
         return (
             <Modal
@@ -50,7 +49,7 @@ class EditMacro extends Component {
                                 type="text"
                                 className="form-control"
                                 name="name"
-                                value={macro.name}
+                                value={name}
                                 placeholder={i18n._('Macro Name')}
                                 validations={['required']}
                             />
@@ -62,7 +61,7 @@ class EditMacro extends Component {
                                 rows="10"
                                 className="form-control"
                                 name="content"
-                                value={macro.content}
+                                value={content}
                                 placeholder={sample}
                                 validations={['required']}
                             />
