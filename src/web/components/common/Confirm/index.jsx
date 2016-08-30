@@ -1,74 +1,91 @@
-import React from 'react';
+/* eslint react/no-set-state: 0 */
+import classNames from 'classnames';
+import React, { Component, PropTypes } from 'react';
 import Modal from '../Modal';
-import i18n from '../../../lib/i18n';
 
-class Confirm extends React.Component {
+const noop = () => {};
+
+class Confirm extends Component {
     static propTypes = {
-        message: React.PropTypes.string,
-        description: React.PropTypes.string,
-        confirmLabel: React.PropTypes.string,
-        cancelLabel: React.PropTypes.string,
-        onConfirm: React.PropTypes.func.isRequired,
-        onCancel: React.PropTypes.func.isRequired,
-        onClose: React.PropTypes.func.isRequired
+        show: PropTypes.bool,
+        header: PropTypes.oneOfType([
+            PropTypes.element,
+            PropTypes.string
+        ]),
+        body: PropTypes.oneOfType([
+            PropTypes.element,
+            PropTypes.string
+        ]),
+        txtOK: PropTypes.string,
+        txtCancel: PropTypes.string,
+        btnOKClass: PropTypes.string,
+        btnCancelClass: PropTypes.string,
+        onOK: PropTypes.func,
+        onCancel: PropTypes.func
     };
-    state = {
-        show: true
+    static defaultProps = {
+        show: true,
+        txtOK: 'OK',
+        txtCancel: 'Cancel',
+        btnOKClass: 'btn-default',
+        btnCancelClass: 'btn-default',
+        onOK: noop,
+        onCancel: noop
     };
 
-    componentDidUpdate() {
-        if (!(this.state.show)) {
-            this.props.onClose();
-        }
-    }
-    handleConfirm() {
-        this.props.onConfirm();
-        this.setState({ show: false });
+    handleOK() {
+        const { onOK = noop } = this.props;
+        onOK();
     }
     handleCancel() {
-        this.props.onCancel();
-        this.setState({ show: false });
+        const { onCancel = noop } = this.props;
+        onCancel();
     }
     render() {
         const {
-            message,
-            description,
-            confirmLabel = i18n._('Restore Defaults'),
-            cancelLabel = i18n._('Cancel')
+            show,
+            header,
+            body,
+            txtOK,
+            txtCancel,
+            btnOKClass,
+            btnCancelClass
         } = this.props;
 
         return (
             <Modal
                 backdrop="static"
-                show={this.state.show}
+                show={show}
                 onHide={::this.handleCancel}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        {message}
+                        {header}
                     </Modal.Title>
                 </Modal.Header>
-            {description &&
                 <Modal.Body>
-                    <div style={{ lineHeight: '40px' }}>
-                        {description}
-                    </div>
+                    {body}
                 </Modal.Body>
-            }
                 <Modal.Footer>
                     <button
                         type="button"
-                        className="btn btn-primary"
-                        onClick={::this.handleConfirm}
+                        className={classNames(
+                            'btn',
+                            btnOKClass
+                        )}
+                        onClick={::this.handleOK}
                     >
-                        {confirmLabel}
+                        {txtOK}
                     </button>
                     <button
                         type="button"
-                        className="btn btn-default"
+                        className={classNames(
+                            'btn',
+                            btnCancelClass
+                        )}
                         onClick={::this.handleCancel}
                     >
-                        {cancelLabel}
+                        {txtCancel}
                     </button>
                 </Modal.Footer>
             </Modal>
