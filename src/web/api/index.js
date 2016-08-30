@@ -54,7 +54,7 @@ const API = {};
     set(API, 'updateMacro', fn);
 }
 
-{ // removeMacro
+{ // deleteMacro
     const fn = (options) => new Promise((resolve, reject) => {
         const { id } = { ...options };
 
@@ -68,7 +68,7 @@ const API = {};
                 }
             });
     });
-    set(API, 'removeMacro', fn);
+    set(API, 'deleteMacro', fn);
 }
 
 export default API;
