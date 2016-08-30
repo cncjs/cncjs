@@ -40,10 +40,14 @@ class Macro extends Component {
                                 type="button"
                                 className="btn btn-xs btn-danger"
                                 disabled={!canStop}
+                                onClick={() => {
+                                    // Stop all running macros
+                                    controller.command('macro:stop');
+                                }}
                             >
                                 <i className="fa fa-exclamation-triangle" />
                                 &nbsp;
-                                {i18n._('Emergency Stop')}
+                                {i18n._('Stop')}
                             </button>
                         </div>
                         <div className="col-xs-7 text-right">
@@ -107,7 +111,7 @@ class Macro extends Component {
                                                     txtOK: i18n._('Run'),
                                                     txtCancel: i18n._('Cancel')
                                                 }, () => {
-                                                    controller.command('macro', macro.id);
+                                                    controller.command('macro:start', macro.id);
                                                 });
                                             }}
                                         >
