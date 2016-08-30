@@ -2,6 +2,7 @@ import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import Validation from 'react-validation';
+import confirm from '../../../lib/confirm';
 import i18n from '../../../lib/i18n';
 import Modal from '../../common/Modal';
 import styles from './index.styl';
@@ -14,6 +15,7 @@ class EditMacro extends Component {
     };
 
     render() {
+        const sample = `G0 X1 Y1\nG1 Y2 F100\nG1 X2 F100\nG1 Y1 F100\nG1 X1 F100`;
         const { state, actions } = this.props;
         const { macros, modalParams } = state;
         const { id } = { ...modalParams };
@@ -25,6 +27,7 @@ class EditMacro extends Component {
                 onHide={() => {
                     actions.closeModal();
                 }}
+                style={{ minWidth: 640 }}
             >
                 <Modal.Header
                     closeButton
@@ -47,7 +50,7 @@ class EditMacro extends Component {
                                 type="text"
                                 className="form-control"
                                 name="name"
-                                defaultValue={macro.name}
+                                value={macro.name}
                                 placeholder={i18n._('Name')}
                                 validations={['required']}
                             />
@@ -59,8 +62,8 @@ class EditMacro extends Component {
                                 rows="10"
                                 className="form-control"
                                 name="content"
-                                defaultValue={macro.content}
-                                placeholder={i18n._('G-code')}
+                                value={macro.content}
+                                placeholder={sample}
                                 validations={['required']}
                             />
                         </div>
@@ -71,8 +74,17 @@ class EditMacro extends Component {
                         type="button"
                         className="btn btn-danger pull-left"
                         onClick={() => {
-                            actions.removeMacro({ id });
-                            actions.closeModal();
+                            confirm({
+                                header: i18n._('Delete Macro'),
+                                body: i18n._('Are you sure you want to delete this macro?'),
+                                btnOKClass: 'btn-danger',
+                                btnCancelClass: 'btn-default',
+                                txtOK: i18n._('Delete'),
+                                txtCancel: i18n._('Cancel')
+                            }, () => {
+                                actions.deleteMacro({ id });
+                                actions.closeModal();
+                            });
                         }}
                     >
                         {i18n._('Delete')}
@@ -82,6 +94,10 @@ class EditMacro extends Component {
                         className="btn btn-primary"
                         onClick={() => {
                             const form = this.refs.form;
+
+                            if (_.size(form.state.errors) > 0) {
+                                return;
+                            }
 
                             form.validateAll();
 

@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
+import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Macro from './Macro';
@@ -19,13 +21,20 @@ class MacroWidget extends Component {
     static defaultProps = {
         onDelete: () => {}
     };
+    pubsubTokens = [];
 
     constructor() {
         super();
         this.state = this.getDefaultState();
     }
     componentDidMount() {
+        this.subscribe();
+
+        // Fetch all macros
         this.getAllMacros();
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
@@ -34,10 +43,31 @@ class MacroWidget extends Component {
         return {
             isCollapsed: false,
             isFullscreen: false,
+            port: controller.port,
             macros: [],
             modalState: MODAL_STATE_NONE,
             modalParams: {}
         };
+    }
+    subscribe() {
+        const tokens = [
+            pubsub.subscribe('port', (msg, port) => {
+                port = port || '';
+
+                if (port) {
+                    this.setState({ port: port });
+                } else {
+                    this.setState({ port: '' });
+                }
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
+    }
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     openModal(modalState = MODAL_STATE_NONE, modalParams = {}) {
         this.setState({
@@ -73,10 +103,10 @@ class MacroWidget extends Component {
             console.log(err);
         }
     }
-    async removeMacro({ id }) {
+    async deleteMacro({ id }) {
         try {
             let res;
-            res = await api.removeMacro({ id });
+            res = await api.deleteMacro({ id });
             res = await api.getAllMacros();
             const macros = res.body;
             this.setState({ macros: macros });
@@ -107,7 +137,7 @@ class MacroWidget extends Component {
             closeModal: ::this.closeModal,
             addMacro: ::this.addMacro,
             updateMacro: ::this.updateMacro,
-            removeMacro: ::this.removeMacro
+            deleteMacro: ::this.deleteMacro
         };
 
         return (

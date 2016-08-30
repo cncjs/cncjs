@@ -1,7 +1,10 @@
-import classNames from 'classnames';
+import { parseString } from 'gcode-parser';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
+import confirm from '../../../lib/confirm';
+import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
+import log from '../../../lib/log';
 import AddMacro from './AddMacro';
 import EditMacro from './EditMacro';
 import {
@@ -9,6 +12,19 @@ import {
     MODAL_STATE_EDIT_MACRO
 } from './constants';
 import styles from './index.styl';
+
+const runMacro = (content) => {
+    parseString(content, (err, lines) => {
+        if (err) {
+            log.error(err);
+            return;
+        }
+
+        lines.forEach(({ line }) => {
+            controller.command('gcode', line);
+        });
+    });
+};
 
 @CSSModules(styles, { allowMultiple: true })
 class Macro extends Component {
@@ -20,6 +36,8 @@ class Macro extends Component {
     render() {
         const { state, actions } = this.props;
         const { macros = [], modalState } = state;
+        const canRun = state.port;
+        const canStop = state.port;
 
         return (
             <div>
@@ -35,6 +53,7 @@ class Macro extends Component {
                             <button
                                 type="button"
                                 className="btn btn-xs btn-danger"
+                                disabled={!canStop}
                             >
                                 {i18n._('Emergency Stop')}
                             </button>
@@ -85,6 +104,24 @@ class Macro extends Component {
                                             type="button"
                                             className="btn btn-xs btn-default"
                                             style={{ marginRight: 10 }}
+                                            disabled={!canRun}
+                                            onClick={() => {
+                                                confirm({
+                                                    header: i18n._('Run Macro'),
+                                                    body: (
+                                                        <div className={styles['macro-run']}>
+                                                            <p>{i18n._('Are you sure you want to run this macro?')}</p>
+                                                            <p>{macro.name}</p>
+                                                        </div>
+                                                    ),
+                                                    btnOKClass: 'btn-primary',
+                                                    btnCancelClass: 'btn-default',
+                                                    txtOK: i18n._('Run'),
+                                                    txtCancel: i18n._('Cancel')
+                                                }, () => {
+                                                    runMacro(macro.content);
+                                                });
+                                            }}
                                         >
                                             <i className="fa fa-play" />
                                         </button>

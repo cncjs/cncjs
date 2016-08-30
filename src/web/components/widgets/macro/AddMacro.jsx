@@ -19,7 +19,7 @@ const HelpBlock = (props) => {
 
 Object.assign(Validation.rules, {
     required: {
-        rule: (value) => {
+        rule: (value = '') => {
             return value.trim();
         },
         hint: (value) => {
@@ -38,12 +38,14 @@ class AddMacro extends Component {
     };
 
     render() {
+        const sample = `G0 X1 Y1\nG1 Y2 F100\nG1 X2 F100\nG1 Y1 F100\nG1 X1 F100`;
         const { actions } = this.props;
 
         return (
             <Modal
                 backdrop
                 onHide={actions.closeModal}
+                style={{ minWidth: 640 }}
             >
                 <Modal.Header
                     closeButton
@@ -79,7 +81,7 @@ class AddMacro extends Component {
                                 className="form-control"
                                 name="content"
                                 value=""
-                                placeholder={i18n._('G-code')}
+                                placeholder={sample}
                                 validations={['required']}
                             />
                         </div>
