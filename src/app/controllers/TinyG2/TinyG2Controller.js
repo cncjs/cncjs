@@ -1,5 +1,8 @@
+import fs from 'fs';
+import * as parser from 'gcode-parser';
 import _ from 'lodash';
 import SerialPort from 'serialport';
+import settings from '../../config/settings';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
 import GCodeSender from '../../lib/gcode-sender';
@@ -21,6 +24,17 @@ import {
 
 const dbg = (...args) => {
     log.raw.apply(log, ['silly'].concat(args));
+};
+
+const loadConfigFile = (file) => {
+    let config;
+    try {
+        config = JSON.parse(fs.readFileSync(file, 'utf8'));
+    } catch (err) {
+        log.error(`[TinyG2] Failed to load "${file}": err=${err}`);
+        config = {};
+    }
+    return config;
 };
 
 class Connection {
@@ -577,6 +591,46 @@ class TinyG2Controller {
                 if (!this.feeder.isPending()) {
                     this.feeder.next();
                 }
+            },
+            'macro:start': () => {
+                const config = loadConfigFile(settings.cncrc);
+                const [id] = args;
+                const macro = _.find(config.macros, { id: id });
+
+                if (!macro) {
+                    log.error(`[TinyG2] Cannot find the macro: id=${id}`);
+                    return;
+                }
+
+                parser.parseString(macro.content, (err, lines) => {
+                    if (err) {
+                        log.error(`[TinyG2] Cannot parse macro: id=${id}, err=${err}`);
+                        return;
+                    }
+
+                    const data = lines.map(({ line }) => {
+                        return {
+                            socket: socket,
+                            line: line
+                        };
+                    });
+
+                    this.feeder.feed(data);
+
+                    if (!this.feeder.isPending()) {
+                        this.feeder.next();
+                    }
+                });
+            },
+            'macro:stop': () => {
+                const [id] = args;
+
+                if (!id) {
+                    this.feeder.clear();
+                    return;
+                }
+
+                // TODO: filter out specific macro id
             }
         }[cmd];
 
