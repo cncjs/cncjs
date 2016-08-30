@@ -5,6 +5,7 @@ import * as configAPI from './api.config';
 import * as gcodeAPI from './api.gcode';
 import * as i18nAPI from './api.i18n';
 import * as controllersAPI from './api.controllers';
+import * as macroAPI from './api.macro';
 
 const api = {
     status: statusAPI,
@@ -12,23 +13,30 @@ const api = {
     gcode: gcodeAPI,
     i18n: i18nAPI,
     controllers: controllersAPI,
+    macro: macroAPI,
     addRoutes: (app) => {
-        // status
+        // Status
         app.get(urljoin(settings.route, 'api/status'), api.status.currentStatus);
 
-        // config
+        // Config
         app.get(urljoin(settings.route, 'api/config'), api.config.get);
         app.put(urljoin(settings.route, 'api/config'), api.config.set);
         app.delete(urljoin(settings.route, 'api/config'), api.config.unset);
 
-        // gcode
+        // G-code
         app.put(urljoin(settings.route, 'api/gcode'), api.gcode.upload);
         app.get(urljoin(settings.route, 'api/gcode'), api.gcode.download);
 
-        // controllers
+        // Controllers
         app.get(urljoin(settings.route, 'api/controllers'), api.controllers.getActiveControllers);
 
-        // i18n
+        // Macro
+        app.get(urljoin(settings.route, 'api/macro'), api.macro.list);
+        app.post(urljoin(settings.route, 'api/macro'), api.macro.add);
+        app.put(urljoin(settings.route, 'api/macro/:id'), api.macro.update);
+        app.delete(urljoin(settings.route, 'api/macro/:id'), api.macro.remove);
+
+        // I18n
         app.get(urljoin(settings.route, 'api/i18n/acceptedLng'), api.i18n.getAcceptedLanguage);
         app.post(urljoin(settings.route, 'api/i18n/sendMissing/:__lng__/:__ns__'), api.i18n.saveMissing);
     }
