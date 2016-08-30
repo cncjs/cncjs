@@ -44,14 +44,14 @@ class EditMacro extends Component {
                         }}
                     >
                         <div className="form-group">
-                            <label>{i18n._('Name')}</label>
+                            <label>{i18n._('Macro Name')}</label>
                             <Validation.components.Input
                                 ref="name"
                                 type="text"
                                 className="form-control"
                                 name="name"
                                 value={macro.name}
-                                placeholder={i18n._('Name')}
+                                placeholder={i18n._('Macro Name')}
                                 validations={['required']}
                             />
                         </div>
