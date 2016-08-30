@@ -5,6 +5,7 @@ import CSSModules from 'react-css-modules';
 import i18n from '../../../lib/i18n';
 import Widget from '../../widget';
 import Macro from './Macro';
+import api from '../../../api';
 import {
     MODAL_STATE_NONE
 } from './constants';
@@ -22,6 +23,9 @@ class MacroWidget extends Component {
     constructor() {
         super();
         this.state = this.getDefaultState();
+    }
+    componentDidMount() {
+        this.getAllMacros();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
@@ -47,25 +51,51 @@ class MacroWidget extends Component {
             modalParams: {}
         });
     }
-    addMacro() {
-        const macros = this.state.macros;
-
-        this.setState({
-            macros: macros.concat([
-                {
-                    name: new Date().getTime()
-                }
-            ])
-        });
+    async getAllMacros() {
+        try {
+            let res;
+            res = await api.getAllMacros();
+            const macros = res.body;
+            this.setState({ macros: macros });
+        } catch (err) {
+            // FIXME
+        }
     }
-    removeMacro(id) {
-        const macros = this.state.macros;
-
-        this.setState({
-            macros: macros.filter((macro, index) => {
-                return (index !== id);
-            })
-        });
+    async addMacro({ name, content }) {
+        try {
+            let res;
+            res = await api.addMacro({ name, content });
+            res = await api.getAllMacros();
+            const macros = res.body;
+            this.setState({ macros: macros });
+        } catch (err) {
+            // FIXME
+            console.log(err);
+        }
+    }
+    async removeMacro({ id }) {
+        try {
+            let res;
+            res = await api.removeMacro({ id });
+            res = await api.getAllMacros();
+            const macros = res.body;
+            this.setState({ macros: macros });
+        } catch (err) {
+            // FIXME
+            console.log(err);
+        }
+    }
+    async updateMacro({ id, name, content }) {
+        try {
+            let res;
+            res = await api.updateMacro({ id, name, content });
+            res = await api.getAllMacros();
+            const macros = res.body;
+            this.setState({ macros: macros });
+        } catch (err) {
+            // FIXME
+            console.log(err);
+        }
     }
     render() {
         const { isCollapsed, isFullscreen } = this.state;
@@ -76,6 +106,7 @@ class MacroWidget extends Component {
             openModal: ::this.openModal,
             closeModal: ::this.closeModal,
             addMacro: ::this.addMacro,
+            updateMacro: ::this.updateMacro,
             removeMacro: ::this.removeMacro
         };
 

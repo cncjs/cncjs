@@ -1,7 +1,36 @@
+import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
+import Validation from 'react-validation';
 import i18n from '../../../lib/i18n';
 import Modal from '../../common/Modal';
+import styles from './index.styl';
 
+// TODO
+const HelpBlock = (props) => {
+    const style = {
+        color: '#A94442'
+    };
+
+    return (
+        <div {...props} className="help-block" style={style} />
+    );
+};
+
+Object.assign(Validation.rules, {
+    required: {
+        rule: (value) => {
+            return value.trim();
+        },
+        hint: (value) => {
+            return (
+                <HelpBlock>{i18n._('This field cannot be blank')}</HelpBlock>
+            );
+        }
+    }
+});
+
+@CSSModules(styles)
 class AddMacro extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -24,31 +53,55 @@ class AddMacro extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form>
+                    <Validation.components.Form
+                        ref="form"
+                        onSubmit={(event) => {
+                            event.preventDefault();
+                        }}
+                    >
                         <div className="form-group">
                             <label>{i18n._('Name')}</label>
-                            <input
+                            <Validation.components.Input
+                                ref="name"
                                 type="text"
                                 className="form-control"
+                                name="name"
+                                value=""
                                 placeholder={i18n._('Name')}
+                                validations={['required']}
                             />
                         </div>
                         <div className="form-group">
                             <label>{i18n._('G-code')}</label>
-                            <textarea
-                                className="form-control"
+                            <Validation.components.Textarea
+                                ref="content"
                                 rows="10"
+                                className="form-control"
+                                name="content"
+                                value=""
                                 placeholder={i18n._('G-code')}
+                                validations={['required']}
                             />
                         </div>
-                    </form>
+                    </Validation.components.Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
                         type="button"
                         className="btn btn-primary"
                         onClick={() => {
-                            actions.addMacro();
+                            const form = this.refs.form;
+
+                            form.validateAll();
+
+                            if (_.size(form.state.errors) > 0) {
+                                return;
+                            }
+
+                            const name = _.get(form.state, 'states.name.value');
+                            const content = _.get(form.state, 'states.content.value');
+
+                            actions.addMacro({ name, content });
                             actions.closeModal();
                         }}
                     >

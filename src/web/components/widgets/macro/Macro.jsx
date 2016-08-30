@@ -79,7 +79,7 @@ class Macro extends Component {
                                 </tr>
                             }
                             {macros.length > 0 && macros.map((macro, index) => (
-                                <tr>
+                                <tr key={macro.id}>
                                     <td>
                                         <button
                                             type="button"
@@ -97,7 +97,7 @@ class Macro extends Component {
                                                 className="btn btn-xs btn-default"
                                                 onClick={() => {
                                                     actions.openModal(MODAL_STATE_EDIT_MACRO, {
-                                                        id: index
+                                                        id: macro.id
                                                     });
                                                 }}
                                             >
