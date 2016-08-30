@@ -113,6 +113,9 @@ class CNCController {
     //   controller.command('unlock')
     // - G-code
     //   controller.command('gcode', 'G0X0Y0')
+    // - Macro
+    //   controller.command('macro:start', '<macro-id>')
+    //   controller.command('macro:stop', '<macro-id>')
     command(cmd, ...args) {
         const { port } = this;
         if (!port) {
