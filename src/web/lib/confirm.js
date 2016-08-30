@@ -1,35 +1,44 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import Confirm from '../components/common/Confirm';
+import i18n from './i18n';
+
+const noop = () => {};
 
 // @param {object} options The options object
-// @param {string} [options.message] The message string
-// @param {string} [options.description] The description string
-// @param {string} [options.confirmLabel] The text for the OK button
-// @param {string} [options.cancelLabel] The text for the Cancel button
-// @param {function} [confirmCallback] The confirm callback
-// @param {function} [cancelCallback] The cancel callback
-const confirm = (options = {}, confirmCallback, cancelCallback) => {
-    const el = document.body.appendChild(document.createElement('div'));
-    const handleClose = (e) => {
-        ReactDOM.unmountComponentAtNode(el);
-        setTimeout(() => {
-            el.remove();
-        }, 0);
-    };
-    const handleConfirm = (e) => {
-        confirmCallback && confirmCallback();
-    };
-    const handleCancel = (e) => {
-        cancelCallback && cancelCallback();
-    };
+// @param {function} [ok] The callback for handling the [OK] button
+// @param {function} [cancel] The callback for handling the [Cancel] button
+const confirm = (options, ok = noop, cancel = noop) => {
+    const {
+        txtOK = i18n._('OK'),
+        txtCancel = i18n._('Cancel'),
+        ...props
+    } = { ...options };
 
+    //const el = document.body.appendChild(document.createElement('div'));
+    const el = document.createElement('div');
     ReactDOM.render(
         <Confirm
-            {...options}
-            onClose={handleClose}
-            onConfirm={handleConfirm}
-            onCancel={handleCancel}
+            txtOK={txtOK}
+            txtCancel={txtCancel}
+            {...props}
+            show={true}
+            onOK={(event) => {
+                ok(event);
+
+                ReactDOM.unmountComponentAtNode(el);
+                setTimeout(() => {
+                    el.remove();
+                }, 0);
+            }}
+            onCancel={(event) => {
+                cancel(event);
+
+                ReactDOM.unmountComponentAtNode(el);
+                setTimeout(() => {
+                    el.remove();
+                }, 0);
+            }}
         />,
         el
     );
