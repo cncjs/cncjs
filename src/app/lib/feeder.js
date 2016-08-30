@@ -5,7 +5,7 @@ class Feeder extends events.EventEmitter {
     pending = false;
 
     feed(data) {
-        this.queue.push(data);
+        this.queue = this.queue.concat(data);
     }
     clear() {
         this.queue = [];
