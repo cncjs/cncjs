@@ -1,5 +1,4 @@
 import fs from 'fs';
-import * as parser from 'gcode-parser';
 import _ from 'lodash';
 import SerialPort from 'serialport';
 import settings from '../../config/settings';
@@ -11,9 +10,7 @@ import Grbl from './Grbl';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE,
-    MACRO_ACTION_START,
-    MACRO_ACTION_STOP
+    WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
     GRBL,
