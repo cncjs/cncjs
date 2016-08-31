@@ -142,9 +142,9 @@ class WidgetManager extends React.Component {
         return (
             <Modal
                 backdrop="static"
-                bsSize="large"
                 onHide={::this.handleCancel}
                 show={this.state.show}
+                style={{ minWidth: 720 }}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{i18n._('Widgets')}</Modal.Title>
