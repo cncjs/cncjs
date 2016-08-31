@@ -10,6 +10,9 @@ import {
     MODAL_STATE_ADD_MACRO,
     MODAL_STATE_EDIT_MACRO
 } from './constants';
+import {
+    WORKFLOW_STATE_IDLE
+} from '../../../constants';
 import styles from './index.styl';
 
 @CSSModules(styles, { allowMultiple: true })
@@ -19,11 +22,46 @@ class Macro extends Component {
         actions: PropTypes.object
     };
 
+    confirmStartMacro({ name }) {
+        return confirm({
+            header: i18n._('Run Macro'),
+            body: (
+                <div className={styles['macro-run']}>
+                    <p>{i18n._('Are you sure you want to run this macro?')}</p>
+                    <p>{name}</p>
+                </div>
+            ),
+            btnOKClass: 'btn-primary',
+            btnCancelClass: 'btn-default',
+            txtOK: i18n._('OK'),
+            txtCancel: i18n._('Cancel')
+        });
+    }
+    handleStartMacro(id) {
+        controller.command('macro', {
+            action: 'start',
+            id: id
+        });
+    }
+    handleStopMacro() {
+        controller.command('macro', {
+            action: 'stop'
+        });
+    }
+    handleEditMacro(id) {
+        const { actions } = this.props;
+
+        api.getMacro({ id: id })
+            .then((res) => {
+                const { id, name, content } = res.body;
+                actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
+            });
+    }
     render() {
         const { state, actions } = this.props;
-        const { macros = [], modalState } = state;
-        const canRun = state.port;
-        const canStop = state.port;
+        const { port, workflowState, macros = [], modalState } = state;
+        const canStartMacro = port && workflowState === WORKFLOW_STATE_IDLE;
+        const canStopMacro = port && workflowState === WORKFLOW_STATE_IDLE;
 
         return (
             <div>
@@ -39,15 +77,14 @@ class Macro extends Component {
                             <button
                                 type="button"
                                 className="btn btn-xs btn-danger"
-                                disabled={!canStop}
+                                disabled={!canStopMacro}
                                 onClick={() => {
-                                    // Emergency Stop
-                                    controller.command('emergency-stop');
+                                    this.handleStopMacro();
                                 }}
                             >
                                 <i className="fa fa-exclamation-triangle" />
                                 &nbsp;
-                                {i18n._('Emergency Stop')}
+                                {i18n._('Stop')}
                             </button>
                         </div>
                         <div className="col-xs-7 text-right">
@@ -96,23 +133,12 @@ class Macro extends Component {
                                             type="button"
                                             className="btn btn-xs btn-default"
                                             style={{ marginRight: 10 }}
-                                            disabled={!canRun}
+                                            disabled={!canStartMacro}
                                             onClick={() => {
-                                                confirm({
-                                                    header: i18n._('Run Macro'),
-                                                    body: (
-                                                        <div className={styles['macro-run']}>
-                                                            <p>{i18n._('Are you sure you want to run this macro?')}</p>
-                                                            <p>{macro.name}</p>
-                                                        </div>
-                                                    ),
-                                                    btnOKClass: 'btn-primary',
-                                                    btnCancelClass: 'btn-default',
-                                                    txtOK: i18n._('OK'),
-                                                    txtCancel: i18n._('Cancel')
-                                                }, () => {
-                                                    controller.command('macro', macro.id);
-                                                });
+                                                this.confirmStartMacro({ name: macro.name })
+                                                    .then(() => {
+                                                        this.handleStartMacro(macro.id);
+                                                    });
                                             }}
                                         >
                                             <i className="fa fa-play" />
@@ -125,12 +151,7 @@ class Macro extends Component {
                                                 type="button"
                                                 className="btn btn-xs btn-default"
                                                 onClick={() => {
-                                                    api.getMacro({ id: macro.id })
-                                                        .then((res) => {
-                                                            const macro = res.body;
-                                                            const { id, name, content } = macro;
-                                                            actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
-                                                        });
+                                                    this.handleEditMacro(macro.id);
                                                 }}
                                             >
                                                 <i className="fa fa-edit" />

@@ -21,6 +21,12 @@ class MacroWidget extends Component {
     static defaultProps = {
         onDelete: () => {}
     };
+
+    controllerEvents = {
+        'feeder:status': (data) => {
+            console.log('## feeder:', data);
+        }
+    };
     pubsubTokens = [];
 
     constructor() {
@@ -29,11 +35,13 @@ class MacroWidget extends Component {
     }
     componentDidMount() {
         this.subscribe();
+        this.addControllerEvents();
 
         // Fetch the list of macros
         this.listMacros();
     }
     componentWillUnmount() {
+        this.removeControllerEvents();
         this.unsubscribe();
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -44,6 +52,7 @@ class MacroWidget extends Component {
             isCollapsed: false,
             isFullscreen: false,
             port: controller.port,
+            workflowState: controller.workflowState,
             macros: [],
             modalState: MODAL_STATE_NONE,
             modalParams: {}
@@ -59,6 +68,9 @@ class MacroWidget extends Component {
                 } else {
                     this.setState({ port: '' });
                 }
+            }),
+            pubsub.subscribe('workflowState', (msg, workflowState) => {
+                this.setState({ workflowState: workflowState });
             })
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
@@ -68,6 +80,16 @@ class MacroWidget extends Component {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
+    }
+    addControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.on(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        _.each(this.controllerEvents, (callback, eventName) => {
+            controller.off(eventName, callback);
+        });
     }
     openModal(modalState = MODAL_STATE_NONE, modalParams = {}) {
         this.setState({

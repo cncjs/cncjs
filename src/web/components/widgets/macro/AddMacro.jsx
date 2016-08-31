@@ -51,7 +51,7 @@ class AddMacro extends Component {
                     closeButton
                 >
                     <Modal.Title>
-                        {i18n._('Add Macro')}
+                        {i18n._('Create a New Macro')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -114,7 +114,7 @@ class AddMacro extends Component {
                             actions.closeModal();
                         }}
                     >
-                        {i18n._('Add')}
+                        {i18n._('OK')}
                     </button>
                 </Modal.Footer>
             </Modal>
