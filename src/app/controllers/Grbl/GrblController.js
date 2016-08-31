@@ -11,7 +11,9 @@ import Grbl from './Grbl';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
+    WORKFLOW_STATE_IDLE,
+    MACRO_ACTION_START,
+    MACRO_ACTION_STOP
 } from '../../constants';
 import {
     GRBL,
@@ -68,7 +70,6 @@ class GrblController {
 
     // Feeder
     feeder = null;
-    feederQueueSize = 0;
 
     // Sender
     sender = null;
@@ -264,13 +265,6 @@ class GrblController {
                 return;
             }
 
-            if (this.feederQueueSize !== this.feeder.queue.length) {
-                this.feederQueueSize = this.feeder.queue.length;
-                this.emitAll('Feeder:state', {
-                    queueSize: this.feederQueueSize;
-                });
-            }
-
             if (this.state !== this.grbl.state) {
                 this.state = this.grbl.state;
                 this.emitAll('Grbl:state', this.state);
@@ -289,9 +283,16 @@ class GrblController {
                 this.serialport.write('$G\n');
             }
 
-            // Detect for any G-code status changes
+            // Feeder
+            if (this.feeder.peek()) {
+                this.emitAll('feeder:status', {
+                    'size': this.feeder.queue.length
+                });
+            }
+
+            // Sender
             if (this.sender.peek()) {
-                this.emitAll('gcode:statuschange', {
+                this.emitAll('sender:status', {
                     'remain': this.sender.remain.length,
                     'sent': this.sender.sent.length,
                     'total': this.sender.total,
@@ -536,37 +537,43 @@ class GrblController {
             },
             'macro': () => {
                 const config = loadConfigFile(settings.cncrc);
-                const [id] = args;
-                const macro = _.find(config.macros, { id: id });
+                const options = args[0];
+                const { action } = options;
 
-                if (!macro) {
-                    log.error(`[Grbl] Cannot find the macro: id=${id}`);
+                if (action === MACRO_ACTION_STOP) {
+                    this.feeder.clear();
                     return;
                 }
 
-                parser.parseString(macro.content, (err, lines) => {
-                    if (err) {
-                        log.error(`[Grbl] Cannot parse macro content: id=${id}, err=${err}`);
+                if (action === MACRO_ACTION_START) {
+                    const { id } = options;
+                    const macro = _.find(config.macros, { id: id });
+
+                    if (!macro) {
+                        log.error(`[Grbl] Cannot find the macro: id=${id}`);
                         return;
                     }
 
-                    const data = lines.map(({ line }) => {
-                        return {
-                            socket: socket,
-                            line: line
-                        };
+                    parser.parseString(macro.content, (err, lines) => {
+                        if (err) {
+                            log.error(`[Grbl] Cannot parse macro content: id=${id}, err=${err}`);
+                            return;
+                        }
+
+                        const data = lines.map(({ line }) => {
+                            return {
+                                socket: socket,
+                                line: line
+                            };
+                        });
+
+                        this.feeder.feed(data);
+
+                        if (!this.feeder.isPending()) {
+                            this.feeder.next();
+                        }
                     });
-
-                    this.feeder.feed(data);
-
-                    if (!this.feeder.isPending()) {
-                        this.feeder.next();
-                    }
-                });
-            },
-            'emergency-stop': () => {
-                this.feeder.clear();
-                this.command(socket, 'stop');
+                }
             }
         }[cmd];
 
