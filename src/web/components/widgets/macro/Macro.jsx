@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import api from '../../../api';
@@ -22,6 +23,9 @@ class Macro extends Component {
         actions: PropTypes.object
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props);
+    }
     confirmStartMacro({ name }) {
         return confirm({
             header: i18n._('Run Macro'),

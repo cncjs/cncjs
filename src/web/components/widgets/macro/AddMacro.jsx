@@ -37,6 +37,9 @@ class AddMacro extends Component {
         actions: PropTypes.object
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props);
+    }
     render() {
         const sample = `G21  ; Set units to mm\nG90  ; Absolute positioning\nG1 Z1 F500  ; Move to clearance level`;
         const { actions } = this.props;
