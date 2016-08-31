@@ -15,7 +15,8 @@ class CNCController {
         'serialport:error': [],
         'serialport:read': [],
         'serialport:write': [],
-        'gcode:statuschange': [],
+        'feeder:status': [],
+        'sender:status': [],
         'Grbl:state': [],
         'TinyG2:state': []
     };
@@ -114,9 +115,8 @@ class CNCController {
     // - G-code
     //   controller.command('gcode', 'G0X0Y0')
     // - Macro
-    //   controller.command('macro', '<macro-id>')
-    // - Emergency Stop
-    //   controller.command('emergency-stop')
+    //   controller.command('macro', { action: 'start', id: '<macro-id>' })
+    //   controller.command('macro', { action: 'stop' })
     command(cmd, ...args) {
         const { port } = this;
         if (!port) {
