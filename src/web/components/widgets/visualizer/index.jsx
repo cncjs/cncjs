@@ -58,7 +58,7 @@ const stopWaiting = () => {
 @CSSModules(styles, { allowMultiple: true })
 class VisualizerWidget extends Component {
     controllerEvents = {
-        'gcode:statuschange': (data) => {
+        'sender:status': (data) => {
             const { sent = 0, total = 0 } = data;
             this.setState({
                 gcode: {
