@@ -157,13 +157,14 @@ class TinyG2Controller {
             }
 
             if (prevPlannerQueueStatus === TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
-                // Feeder
-                this.feeder.next();
-
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                     this.sender.next();
+                    return;
                 }
+
+                // Feeder
+                this.feeder.next();
             }
         });
 
@@ -180,13 +181,14 @@ class TinyG2Controller {
             const prevPlannerQueueStatus = this.plannerQueueStatus;
 
             if (prevPlannerQueueStatus !== TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
-                // Feeder
-                this.feeder.next();
-
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                     this.sender.next();
+                    return;
                 }
+
+                // Feeder
+                this.feeder.next();
             }
         });
 
@@ -501,7 +503,7 @@ class TinyG2Controller {
     command(socket, cmd, ...args) {
         const handler = {
             'load': () => {
-                const [name, gcode, callback] = args;
+                const [name, gcode, callback = noop] = args;
 
                 this.sender.load(name, gcode, (err) => {
                     if (err) {
@@ -567,14 +569,15 @@ class TinyG2Controller {
                 this.writeln(socket, '~'); // cycle start
                 this.writeln(socket, '{"qr":""}'); // queue report
 
-                // Feeder
-                this.feeder.next();
-
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_PAUSED) {
                     this.workflowState = WORKFLOW_STATE_RUNNING;
                     this.sender.next();
+                    return;
                 }
+
+                // Feeder
+                this.feeder.next();
             },
             'queueflush': () => {
                 this.writeln(socket, '!%'); // queue flush
@@ -606,43 +609,15 @@ class TinyG2Controller {
             },
             'macro': () => {
                 const config = loadConfigFile(settings.cncrc);
-                const options = args[0];
-                const { action } = options;
+                const [id, callback = noop] = args;
+                const macro = _.find(config.macros, { id: id });
 
-                if (action === MACRO_ACTION_STOP) {
-                    this.feeder.clear();
+                if (!macro) {
+                    log.error(`[TinyG2] Cannot find the macro: id=${id}`);
                     return;
                 }
-                if (action === MACRO_ACTION_START) {
-                    const { id } = options;
-                    const macro = _.find(config.macros, { id: id });
 
-                    if (!macro) {
-                        log.error(`[TinyG2] Cannot find the macro: id=${id}`);
-                        return;
-                    }
-
-                    parser.parseString(macro.content, (err, lines) => {
-                        if (err) {
-                            log.error(`[TinyG2] Cannot parse macro: id=${id}, err=${err}`);
-                            return;
-                        }
-
-                        const data = lines.map(({ line }) => {
-                            return {
-                                socket: null, // do not send the line to the web interface
-                                line: line
-                            };
-                        });
-
-                        this.feeder.feed(data);
-
-                        if (!this.feeder.isPending()) {
-                            this.feeder.next();
-                        }
-                    });
-                    return;
-                }
+                this.command(null, 'load', macro.name, macro.content, callback);
             }
         }[cmd];
 
