@@ -115,8 +115,7 @@ class CNCController {
     // - G-code
     //   controller.command('gcode', 'G0X0Y0')
     // - Macro
-    //   controller.command('macro', { action: 'start', id: '<macro-id>' })
-    //   controller.command('macro', { action: 'stop' })
+    //   controller.command('macro', '<macro-id>', callback)
     command(cmd, ...args) {
         const { port } = this;
         if (!port) {
