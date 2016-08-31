@@ -88,7 +88,7 @@ class GrblController {
 
         // Feeder
         this.feeder = new Feeder();
-        this.feeder.on('data', ({ socket, line }) => {
+        this.feeder.on('data', ({ socket = null, line }) => {
             if (this.isClose()) {
                 log.error(`[Grbl] The serial port "${this.options.port}" is not accessible`);
                 return;
@@ -338,7 +338,7 @@ class GrblController {
             },
             workflowState: this.workflowState,
             feeder: {
-                size: this.feeder.size(),
+                size: this.feeder.size()
             },
             gcode: {
                 name: this.sender.name,
@@ -544,7 +544,6 @@ class GrblController {
                     this.feeder.clear();
                     return;
                 }
-
                 if (action === MACRO_ACTION_START) {
                     const { id } = options;
                     const macro = _.find(config.macros, { id: id });
@@ -562,7 +561,7 @@ class GrblController {
 
                         const data = lines.map(({ line }) => {
                             return {
-                                socket: socket,
+                                socket: null, // do not send the line to the web interface
                                 line: line
                             };
                         });
@@ -573,6 +572,7 @@ class GrblController {
                             this.feeder.next();
                         }
                     });
+                    return;
                 }
             }
         }[cmd];

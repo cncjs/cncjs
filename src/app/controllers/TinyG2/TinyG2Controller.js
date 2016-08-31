@@ -88,7 +88,7 @@ class TinyG2Controller {
 
         // Feeder
         this.feeder = new Feeder();
-        this.feeder.on('data', ({ socket, line }) => {
+        this.feeder.on('data', ({ socket = null, line }) => {
             if (this.isClose()) {
                 log.error(`[TinyG2] The serial port "${this.options.port}" is not accessible`);
                 return;
@@ -384,7 +384,7 @@ class TinyG2Controller {
             },
             workflowState: this.workflowState,
             feeder: {
-                size: this.feeder.size(),
+                size: this.feeder.size()
             },
             gcode: {
                 name: this.sender.name,
@@ -613,7 +613,6 @@ class TinyG2Controller {
                     this.feeder.clear();
                     return;
                 }
-                
                 if (action === MACRO_ACTION_START) {
                     const { id } = options;
                     const macro = _.find(config.macros, { id: id });
@@ -631,7 +630,7 @@ class TinyG2Controller {
 
                         const data = lines.map(({ line }) => {
                             return {
-                                socket: socket,
+                                socket: null, // do not send the line to the web interface
                                 line: line
                             };
                         });
@@ -642,6 +641,7 @@ class TinyG2Controller {
                             this.feeder.next();
                         }
                     });
+                    return;
                 }
             }
         }[cmd];
