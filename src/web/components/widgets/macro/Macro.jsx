@@ -41,14 +41,13 @@ class Macro extends Component {
                                 className="btn btn-xs btn-danger"
                                 disabled={!canStop}
                                 onClick={() => {
-                                    // Stop all running macros
-                                    controller.command('macro:stop');
+                                    // Emergency Stop
+                                    controller.command('emergency-stop');
                                 }}
-                                title={i18n._('Stop')}
                             >
                                 <i className="fa fa-exclamation-triangle" />
                                 &nbsp;
-                                {i18n._('Stop')}
+                                {i18n._('Emergency Stop')}
                             </button>
                         </div>
                         <div className="col-xs-7 text-right">
@@ -58,7 +57,6 @@ class Macro extends Component {
                                 onClick={() => {
                                     actions.openModal(MODAL_STATE_ADD_MACRO);
                                 }}
-                                title={i18n._('Add')}
                             >
                                 <i className="fa fa-plus" />
                                 &nbsp;
@@ -110,13 +108,12 @@ class Macro extends Component {
                                                     ),
                                                     btnOKClass: 'btn-primary',
                                                     btnCancelClass: 'btn-default',
-                                                    txtOK: i18n._('Run'),
+                                                    txtOK: i18n._('OK'),
                                                     txtCancel: i18n._('Cancel')
                                                 }, () => {
-                                                    controller.command('macro:start', macro.id);
+                                                    controller.command('macro', macro.id);
                                                 });
                                             }}
-                                            title={i18n._('Run')}
                                         >
                                             <i className="fa fa-play" />
                                         </button>
@@ -135,7 +132,6 @@ class Macro extends Component {
                                                             actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
                                                         });
                                                 }}
-                                                title={i18n._('Edit')}
                                             >
                                                 <i className="fa fa-edit" />
                                             </button>
