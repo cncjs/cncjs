@@ -36,6 +36,7 @@ class Settings extends React.Component {
                 backdrop="static"
                 onHide={::this.handleCancel}
                 show={show}
+                style={{ minWidth: 480 }}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{i18n._('Axes Settings')}</Modal.Title>
@@ -46,17 +47,17 @@ class Settings extends React.Component {
                 <Modal.Footer>
                     <button
                         type="button"
-                        className="btn btn-primary"
-                        onClick={::this.handleSave}
-                    >
-                        {i18n._('Save')}
-                    </button>
-                    <button
-                        type="button"
                         className="btn btn-default"
                         onClick={::this.handleCancel}
                     >
                         {i18n._('Cancel')}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={::this.handleSave}
+                    >
+                        {i18n._('Save Changes')}
                     </button>
                 </Modal.Footer>
             </Modal>

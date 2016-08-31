@@ -71,21 +71,21 @@ class Confirm extends Component {
                         type="button"
                         className={classNames(
                             'btn',
-                            btnOKClass
-                        )}
-                        onClick={::this.handleOK}
-                    >
-                        {txtOK}
-                    </button>
-                    <button
-                        type="button"
-                        className={classNames(
-                            'btn',
                             btnCancelClass
                         )}
                         onClick={::this.handleCancel}
                     >
                         {txtCancel}
+                    </button>
+                    <button
+                        type="button"
+                        className={classNames(
+                            'btn',
+                            btnOKClass
+                        )}
+                        onClick={::this.handleOK}
+                    >
+                        {txtOK}
                     </button>
                 </Modal.Footer>
             </Modal>
