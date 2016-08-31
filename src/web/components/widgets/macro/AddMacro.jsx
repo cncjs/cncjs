@@ -38,7 +38,7 @@ class AddMacro extends Component {
     };
 
     render() {
-        const sample = `G0 X1 Y1\nG1 Y2 F100\nG1 X2 F100\nG1 Y1 F100\nG1 X1 F100`;
+        const sample = `G21  ; Set units to mm\nG90  ; Absolute positioning\nG1 Z1 F500  ; Move to clearance level`;
         const { actions } = this.props;
 
         return (
@@ -90,6 +90,13 @@ class AddMacro extends Component {
                 <Modal.Footer>
                     <button
                         type="button"
+                        className="btn btn-default"
+                        onClick={actions.closeModal}
+                    >
+                        {i18n._('Cancel')}
+                    </button>
+                    <button
+                        type="button"
                         className="btn btn-primary"
                         onClick={() => {
                             const form = this.refs.form;
@@ -108,13 +115,6 @@ class AddMacro extends Component {
                         }}
                     >
                         {i18n._('Add')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={actions.closeModal}
-                    >
-                        {i18n._('Cancel')}
                     </button>
                 </Modal.Footer>
             </Modal>

@@ -15,7 +15,7 @@ class EditMacro extends Component {
     };
 
     render() {
-        const sample = `G0 X1 Y1\nG1 Y2 F100\nG1 X2 F100\nG1 Y1 F100\nG1 X1 F100`;
+        const sample = `G21  ; Set units to mm\nG90  ; Absolute positioning\nG1 Z1 F500  ; Move to clearance level`;
         const { state, actions } = this.props;
         const { modalParams } = state;
         const { id, name, content } = { ...modalParams };
@@ -90,6 +90,15 @@ class EditMacro extends Component {
                     </button>
                     <button
                         type="button"
+                        className="btn btn-default"
+                        onClick={() => {
+                            actions.closeModal();
+                        }}
+                    >
+                        {i18n._('Cancel')}
+                    </button>
+                    <button
+                        type="button"
                         className="btn btn-primary"
                         onClick={() => {
                             const form = this.refs.form;
@@ -111,16 +120,7 @@ class EditMacro extends Component {
                             actions.closeModal();
                         }}
                     >
-                        {i18n._('Save')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={() => {
-                            actions.closeModal();
-                        }}
-                    >
-                        {i18n._('Cancel')}
+                        {i18n._('Save Changes')}
                     </button>
                 </Modal.Footer>
             </Modal>
