@@ -11,6 +11,9 @@ class Feeder extends events.EventEmitter {
         this.queue = [];
         this.pending = false;
     }
+    size() {
+        return this.queue.length;
+    }
     next() {
         if (this.queue.length === 0) {
             this.pending = false;
