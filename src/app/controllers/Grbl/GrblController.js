@@ -68,6 +68,7 @@ class GrblController {
 
     // Feeder
     feeder = null;
+    feederQueueSize = 0;
 
     // Sender
     sender = null;
@@ -263,6 +264,13 @@ class GrblController {
                 return;
             }
 
+            if (this.feederQueueSize !== this.feeder.queue.length) {
+                this.feederQueueSize = this.feeder.queue.length;
+                this.emitAll('Feeder:state', {
+                    queueSize: this.feederQueueSize;
+                });
+            }
+
             if (this.state !== this.grbl.state) {
                 this.state = this.grbl.state;
                 this.emitAll('Grbl:state', this.state);
@@ -328,6 +336,9 @@ class GrblController {
                 state: this.state
             },
             workflowState: this.workflowState,
+            feeder: {
+                size: this.feeder.size(),
+            },
             gcode: {
                 name: this.sender.name,
                 size: this.sender.gcode.length,
@@ -523,7 +534,7 @@ class GrblController {
                     this.feeder.next();
                 }
             },
-            'macro:start': () => {
+            'macro': () => {
                 const config = loadConfigFile(settings.cncrc);
                 const [id] = args;
                 const macro = _.find(config.macros, { id: id });
@@ -553,15 +564,9 @@ class GrblController {
                     }
                 });
             },
-            'macro:stop': () => {
-                const [id] = args;
-
-                if (!id) {
-                    this.feeder.clear();
-                    return;
-                }
-
-                // TODO: filter out specific macro id
+            'emergency-stop': () => {
+                this.feeder.clear();
+                this.command(socket, 'stop');
             }
         }[cmd];
 

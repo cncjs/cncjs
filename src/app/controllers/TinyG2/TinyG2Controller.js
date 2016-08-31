@@ -67,6 +67,7 @@ class TinyG2Controller {
 
     // Feeder
     feeder = null;
+    feederQueueSize = 0;
 
     // Sender
     sender = null;
@@ -226,6 +227,13 @@ class TinyG2Controller {
                 return;
             }
 
+            if (this.feederQueueSize !== this.feeder.queue.length) {
+                this.feederQueueSize = this.feeder.queue.length;
+                this.emitAll('Feeder:state', {
+                    queueSize: this.feederQueueSize;
+                });
+            }
+
             if (this.state !== this.tinyG2.state) {
                 this.state = this.tinyG2.state;
                 this.emitAll('TinyG2:state', this.state);
@@ -374,6 +382,9 @@ class TinyG2Controller {
                 footer: this.tinyG2.footer
             },
             workflowState: this.workflowState,
+            feeder: {
+                size: this.feeder.size(),
+            },
             gcode: {
                 name: this.sender.name,
                 size: this.sender.gcode.length,
@@ -592,7 +603,7 @@ class TinyG2Controller {
                     this.feeder.next();
                 }
             },
-            'macro:start': () => {
+            'macro': () => {
                 const config = loadConfigFile(settings.cncrc);
                 const [id] = args;
                 const macro = _.find(config.macros, { id: id });
@@ -622,15 +633,9 @@ class TinyG2Controller {
                     }
                 });
             },
-            'macro:stop': () => {
-                const [id] = args;
-
-                if (!id) {
-                    this.feeder.clear();
-                    return;
-                }
-
-                // TODO: filter out specific macro id
+            'emergency-stop': () => {
+                this.feeder.clear();
+                this.command(socket, 'stop');
             }
         }[cmd];
 
