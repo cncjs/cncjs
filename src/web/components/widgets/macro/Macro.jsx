@@ -1,10 +1,12 @@
 import _ from 'lodash';
+import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import api from '../../../api';
 import confirm from '../../../lib/confirm';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
+import log from '../../../lib/log';
 import AddMacro from './AddMacro';
 import EditMacro from './EditMacro';
 import {
@@ -26,12 +28,12 @@ class Macro extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props);
     }
-    confirmStartMacro({ name }) {
+    confirmLoadMacro({ name }) {
         return confirm({
-            header: i18n._('Run Macro'),
+            header: i18n._('Load Macro'),
             body: (
-                <div className={styles['macro-run']}>
-                    <p>{i18n._('Are you sure you want to run this macro?')}</p>
+                <div className={styles['macro-load']}>
+                    <p>{i18n._('Are you sure you want to load this macro?')}</p>
                     <p>{name}</p>
                 </div>
             ),
@@ -41,18 +43,18 @@ class Macro extends Component {
             txtCancel: i18n._('Cancel')
         });
     }
-    handleStartMacro(id) {
-        controller.command('macro', {
-            action: 'start',
-            id: id
+    handleLoadMacro({ id, name, content }) {
+        controller.command('macro', id, (err) => {
+            if (err) {
+                log.error('Failed to load the macro: id=${id}, name="${name}"');
+                return;
+            }
+
+            const gcode = content;
+            pubsub.publish('gcode:load', gcode);
         });
     }
-    handleStopMacro() {
-        controller.command('macro', {
-            action: 'stop'
-        });
-    }
-    handleEditMacro(id) {
+    handleEditMacro({ id }) {
         const { actions } = this.props;
 
         api.getMacro({ id: id })
@@ -64,8 +66,7 @@ class Macro extends Component {
     render() {
         const { state, actions } = this.props;
         const { port, workflowState, macros = [], modalState } = state;
-        const canStartMacro = port && workflowState === WORKFLOW_STATE_IDLE;
-        const canStopMacro = port && workflowState === WORKFLOW_STATE_IDLE;
+        const canLoadMacro = port && workflowState === WORKFLOW_STATE_IDLE;
 
         return (
             <div>
@@ -77,21 +78,7 @@ class Macro extends Component {
             }
                 <div styleName="toolbar">
                     <div className="row no-gutters">
-                        <div className="col-xs-5">
-                            <button
-                                type="button"
-                                className="btn btn-xs btn-danger"
-                                disabled={!canStopMacro}
-                                onClick={() => {
-                                    this.handleStopMacro();
-                                }}
-                            >
-                                <i className="fa fa-exclamation-triangle" />
-                                &nbsp;
-                                {i18n._('Stop')}
-                            </button>
-                        </div>
-                        <div className="col-xs-7 text-right">
+                        <div className="col-xs-12 text-right">
                             <button
                                 type="button"
                                 className="btn btn-xs btn-default"
@@ -101,7 +88,7 @@ class Macro extends Component {
                             >
                                 <i className="fa fa-plus" />
                                 &nbsp;
-                                {i18n._('Add')}
+                                {i18n._('Add New Macro')}
                             </button>
                         </div>
                     </div>
@@ -114,7 +101,7 @@ class Macro extends Component {
                         <thead>
                             <tr>
                                 <th>
-                                    {i18n._('Macro')}
+                                    {i18n._('Total:')}&nbsp;{macros.length}
                                 </th>
                                 <th style={{ width: '1%' }}>
                                 </th>
@@ -137,15 +124,20 @@ class Macro extends Component {
                                             type="button"
                                             className="btn btn-xs btn-default"
                                             style={{ marginRight: 10 }}
-                                            disabled={!canStartMacro}
+                                            disabled={!canLoadMacro}
                                             onClick={() => {
-                                                this.confirmStartMacro({ name: macro.name })
+                                                this.confirmLoadMacro({ name: macro.name })
                                                     .then(() => {
-                                                        this.handleStartMacro(macro.id);
+                                                        return api.getMacro({ id: macro.id });
+                                                    })
+                                                    .then((res) => {
+                                                        const { id, name, content } = res.body;
+                                                        this.handleLoadMacro({ id, name, content });
                                                     });
                                             }}
+                                            title={i18n._('Load Macro')}
                                         >
-                                            <i className="fa fa-play" />
+                                            <i className="fa fa-upload" />
                                         </button>
                                         {macro.name}
                                     </td>
@@ -155,7 +147,7 @@ class Macro extends Component {
                                                 type="button"
                                                 className="btn btn-xs btn-default"
                                                 onClick={() => {
-                                                    this.handleEditMacro(macro.id);
+                                                    this.handleEditMacro({ id: macro.id });
                                                 }}
                                             >
                                                 <i className="fa fa-edit" />
