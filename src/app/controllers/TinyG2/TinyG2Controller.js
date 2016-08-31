@@ -11,7 +11,9 @@ import TinyG2 from './TinyG2';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
+    WORKFLOW_STATE_IDLE,
+    MACRO_ACTION_START,
+    MACRO_ACTION_STOP
 } from '../../constants';
 import {
     TINYG2,
@@ -67,7 +69,6 @@ class TinyG2Controller {
 
     // Feeder
     feeder = null;
-    feederQueueSize = 0;
 
     // Sender
     sender = null;
@@ -227,21 +228,21 @@ class TinyG2Controller {
                 return;
             }
 
-            if (this.feederQueueSize !== this.feeder.queue.length) {
-                this.feederQueueSize = this.feeder.queue.length;
-                this.emitAll('Feeder:state', {
-                    queueSize: this.feederQueueSize;
-                });
-            }
-
             if (this.state !== this.tinyG2.state) {
                 this.state = this.tinyG2.state;
                 this.emitAll('TinyG2:state', this.state);
             }
 
-            // Detect for any G-code status changes
+            // Feeder
+            if (this.feeder.peek()) {
+                this.emitAll('feeder:status', {
+                    'size': this.feeder.queue.length
+                });
+            }
+
+            // Sender
             if (this.sender.peek()) {
-                this.emitAll('gcode:statuschange', {
+                this.emitAll('sender:status', {
                     'remain': this.sender.remain.length,
                     'sent': this.sender.sent.length,
                     'total': this.sender.total,
@@ -605,37 +606,43 @@ class TinyG2Controller {
             },
             'macro': () => {
                 const config = loadConfigFile(settings.cncrc);
-                const [id] = args;
-                const macro = _.find(config.macros, { id: id });
+                const options = args[0];
+                const { action } = options;
 
-                if (!macro) {
-                    log.error(`[TinyG2] Cannot find the macro: id=${id}`);
+                if (action === MACRO_ACTION_STOP) {
+                    this.feeder.clear();
                     return;
                 }
+                
+                if (action === MACRO_ACTION_START) {
+                    const { id } = options;
+                    const macro = _.find(config.macros, { id: id });
 
-                parser.parseString(macro.content, (err, lines) => {
-                    if (err) {
-                        log.error(`[TinyG2] Cannot parse macro: id=${id}, err=${err}`);
+                    if (!macro) {
+                        log.error(`[TinyG2] Cannot find the macro: id=${id}`);
                         return;
                     }
 
-                    const data = lines.map(({ line }) => {
-                        return {
-                            socket: socket,
-                            line: line
-                        };
+                    parser.parseString(macro.content, (err, lines) => {
+                        if (err) {
+                            log.error(`[TinyG2] Cannot parse macro: id=${id}, err=${err}`);
+                            return;
+                        }
+
+                        const data = lines.map(({ line }) => {
+                            return {
+                                socket: socket,
+                                line: line
+                            };
+                        });
+
+                        this.feeder.feed(data);
+
+                        if (!this.feeder.isPending()) {
+                            this.feeder.next();
+                        }
                     });
-
-                    this.feeder.feed(data);
-
-                    if (!this.feeder.isPending()) {
-                        this.feeder.next();
-                    }
-                });
-            },
-            'emergency-stop': () => {
-                this.feeder.clear();
-                this.command(socket, 'stop');
+                }
             }
         }[cmd];
 
