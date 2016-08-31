@@ -8,7 +8,7 @@ const noop = () => {};
 // @param {object} options The options object
 // @param {function} [ok] The callback for handling the [OK] button
 // @param {function} [cancel] The callback for handling the [Cancel] button
-const confirm = (options, ok = noop, cancel = noop) => {
+const confirm = (options, ok = noop, cancel = noop) => new Promise((resolve, reject) => {
     const {
         txtOK = i18n._('OK'),
         txtCancel = i18n._('Cancel'),
@@ -25,6 +25,7 @@ const confirm = (options, ok = noop, cancel = noop) => {
             show={true}
             onOK={(event) => {
                 ok(event);
+                resolve(event);
 
                 ReactDOM.unmountComponentAtNode(el);
                 setTimeout(() => {
@@ -33,6 +34,7 @@ const confirm = (options, ok = noop, cancel = noop) => {
             }}
             onCancel={(event) => {
                 cancel(event);
+                reject(event);
 
                 ReactDOM.unmountComponentAtNode(el);
                 setTimeout(() => {
@@ -42,6 +44,6 @@ const confirm = (options, ok = noop, cancel = noop) => {
         />,
         el
     );
-};
+});
 
 export default confirm;
