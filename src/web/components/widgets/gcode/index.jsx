@@ -45,7 +45,7 @@ class GCodeWidget extends React.Component {
     };
 
     controllerEvents = {
-        'gcode:statuschange': (data) => {
+        'sender:status': (data) => {
             const { remain, sent, total, createdTime, startedTime, finishedTime } = data;
 
             let lines = this.state.lines;
