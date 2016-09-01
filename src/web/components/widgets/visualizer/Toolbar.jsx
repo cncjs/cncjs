@@ -57,7 +57,7 @@ class Toolbar extends Component {
                         onClick={actions.handleClose}
                         disabled={!canClose}
                     >
-                        <i className="fa fa-close" />
+                        <i className="fa fa-close" style={{ fontSize: 14 }} />
                     </Button>
                 </ButtonGroup>
                 <ButtonGroup bsSize="sm">
