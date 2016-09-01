@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
-import styleMaps, { Sizes, State } from '../styleMaps';
+import { State } from '../styleMaps';
 import styles from './index.styl';
 import Anchor from '../Anchor';
 

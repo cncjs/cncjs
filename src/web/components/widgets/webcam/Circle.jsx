@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 class Circle extends Component {
     static propTypes = {
+        style: PropTypes.object,
         color: PropTypes.string,
         opacity: PropTypes.number,
         diameter: PropTypes.number,
@@ -15,9 +16,9 @@ class Circle extends Component {
     };
 
     render() {
-        const { color, opacity, diameter, width, ...props } = this.props;
-        const style = {
-            ...this.props.style,
+        const { style, color, opacity, diameter, width, ...props } = this.props;
+        const componentStyle = {
+            ...style,
             backgroundClip: 'padding-box',
             borderRadius: '50%',
             borderColor: color,
@@ -28,7 +29,7 @@ class Circle extends Component {
             height: diameter
         };
         return (
-            <div {...props} style={style} />
+            <div {...props} style={componentStyle} />
         );
     }
 }

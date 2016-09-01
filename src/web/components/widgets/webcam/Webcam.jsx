@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import delay from 'delay';
 import React, { Component, PropTypes } from 'react';
-import { ButtonToolbar, ButtonGroup, Button, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import Anchor from '../../common/Anchor';
 import i18n from '../../../lib/i18n';

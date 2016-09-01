@@ -304,9 +304,9 @@ class Connection extends React.Component {
         return (
             <div style={styles.option} title={label}>
                 <div>
-            {inuse &&
+                {inuse &&
                     <span><i className="fa fa-lock"></i>&nbsp;</span>
-            }
+                }
                     {label}
                 </div>
             {manufacturer &&

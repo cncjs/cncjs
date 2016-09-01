@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 
 class Line extends Component {
     static propTypes = {
+        style: PropTypes.object,
         vertical: PropTypes.bool,
         color: PropTypes.string,
         opacity: PropTypes.number,
@@ -17,26 +18,26 @@ class Line extends Component {
     };
 
     render() {
-        const { vertical, color, opacity, length, width, ...props } = this.props;
-        const style = {
-            ...this.props.style,
+        const { style, vertical, color, opacity, length, width, ...props } = this.props;
+        const componentStyle = {
+            ...style,
             opacity: opacity
         };
 
         if (vertical) {
-            style.borderLeftColor = color;
-            style.borderLeftStyle = 'solid';
-            style.borderLeftWidth = width;
-            style.height = length;
+            componentStyle.borderLeftColor = color;
+            componentStyle.borderLeftStyle = 'solid';
+            componentStyle.borderLeftWidth = width;
+            componentStyle.height = length;
         } else {
-            style.borderTopColor = color;
-            style.borderTopStyle = 'solid';
-            style.borderTopWidth = width;
-            style.width = length;
+            componentStyle.borderTopColor = color;
+            componentStyle.borderTopStyle = 'solid';
+            componentStyle.borderTopWidth = width;
+            componentStyle.width = length;
         }
 
         return (
-            <div {...props} style={style} />
+            <div {...props} style={componentStyle} />
         );
     }
 }
