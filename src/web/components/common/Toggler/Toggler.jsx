@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import styles from './index.styl';
@@ -8,6 +9,9 @@ class Toggler extends Component {
         onToggle: PropTypes.func.isRequired
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return !_.isEqual(nextProps, this.props);
+    }
     render() {
         const { onToggle, ...props } = this.props;
 
