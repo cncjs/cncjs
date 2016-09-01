@@ -1,4 +1,9 @@
 {
+    "Delete": "Delete",
+    "Edit": "Edit",
+    "Fullscreen": "Fullscreen",
+    "Refresh": "Refresh",
+    "Expand/Collapse": "Expand/Collapse",
     "Restore Defaults": "Restore Defaults",
     "Are you sure you want to restore the default settings?": "Are you sure you want to restore the default settings?",
     "OK": "OK",
@@ -36,12 +41,8 @@
     "Webcam Widget": "Webcam Widget",
     "This widget lets you monitor a webcam.": "This widget lets you monitor a webcam.",
     "Widgets": "Widgets",
-    "Save": "Save",
-    "Delete": "Delete",
-    "Edit": "Edit",
-    "Fullscreen": "Fullscreen",
-    "Refresh": "Refresh",
-    "Expand/Collapse": "Expand/Collapse",
+    "Save Changes": "Save Changes",
+    "Manage Widgets ({{inactiveCount}})": "Manage Widgets ({{inactiveCount}})",
     "mm": "mm",
     "in": "in",
     "Axis": "Axis",
@@ -112,7 +113,6 @@
     "Go To Work Zero": "Go To Work Zero",
     "Go To Machine Zero": "Go To Machine Zero",
     "Axes Settings": "Axes Settings",
-    "Save Changes": "Save Changes",
     "Shuttle Settings": "Shuttle Settings",
     "Feed Rate Range:": "Feed Rate Range:",
     "{{min}} - {{max}} mm/min": "{{min}} - {{max}} mm/min",
@@ -256,6 +256,5 @@
     "Webcam Settings": "Webcam Settings",
     "URL": "URL",
     "Webcam is off": "Webcam is off",
-    "Crosshair": "Crosshair",
-    "Manage Widgets ({{inactiveCount}})": "Manage Widgets ({{inactiveCount}})"
+    "Crosshair": "Crosshair"
 }

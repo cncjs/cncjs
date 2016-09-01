@@ -1,4 +1,9 @@
 {
+    "Delete": "Vymazat",
+    "Edit": "Upravit",
+    "Fullscreen": "Fullscreen",
+    "Refresh": "Obnovit",
+    "Expand/Collapse": "Rozložit/Složit",
     "Restore Defaults": "Obnovit základ",
     "Are you sure you want to restore the default settings?": "Opravdu chcete obnovit základní nastavení?",
     "OK": "OK",
@@ -36,12 +41,8 @@
     "Webcam Widget": "Widget Webkamery",
     "This widget lets you monitor a webcam.": "Tento widget umožňuje náhled webové kamery.",
     "Widgets": "Widgets",
-    "Save": "Uložit",
-    "Delete": "Vymazat",
-    "Edit": "Upravit",
-    "Fullscreen": "Fullscreen",
-    "Refresh": "Obnovit",
-    "Expand/Collapse": "Rozložit/Složit",
+    "Save Changes": "Uložit změny",
+    "Manage Widgets ({{inactiveCount}})": "Spravovat Widgety ({{inactiveCount}})",
     "mm": "mm",
     "in": "in",
     "Axis": "Osa",
@@ -112,7 +113,6 @@
     "Go To Work Zero": "Jed na pracovní nulu",
     "Go To Machine Zero": "Jed na nulu stroje",
     "Axes Settings": "Nastavení os",
-    "Save Changes": "Uložit změny",
     "Shuttle Settings": "Shuttle Settings",
     "Feed Rate Range:": "Feed Rate Range:",
     "{{min}} - {{max}} mm/min": "{{min}} - {{max}} mm/min",
@@ -256,6 +256,5 @@
     "Webcam Settings": "Nastavení Webkamery",
     "URL": "URL",
     "Webcam is off": "Webkamera je vypnuta",
-    "Crosshair": "Crosshair",
-    "Manage Widgets ({{inactiveCount}})": "Spravovat Widgety ({{inactiveCount}})"
+    "Crosshair": "Crosshair"
 }

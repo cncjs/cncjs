@@ -1,4 +1,9 @@
 {
+    "Delete": "刪除",
+    "Edit": "編輯",
+    "Fullscreen": "全螢幕",
+    "Refresh": "刷新",
+    "Expand/Collapse": "展開/折疊",
     "Restore Defaults": "還原預設值",
     "Are you sure you want to restore the default settings?": "您確定要還原預設值？",
     "OK": "確認",
@@ -36,12 +41,8 @@
     "Webcam Widget": "網路攝影機元件",
     "This widget lets you monitor a webcam.": "這個元件可用來遠端監控網路攝影機。",
     "Widgets": "元件",
-    "Save": "儲存",
-    "Delete": "刪除",
-    "Edit": "編輯",
-    "Fullscreen": "全螢幕",
-    "Refresh": "刷新",
-    "Expand/Collapse": "展開/折疊",
+    "Save Changes": "儲存變更",
+    "Manage Widgets ({{inactiveCount}})": "管理元件 ({{inactiveCount}})",
     "mm": "mm",
     "in": "in",
     "Axis": "座標軸",
@@ -112,7 +113,6 @@
     "Go To Work Zero": "返回工作原點",
     "Go To Machine Zero": "返回機器原點",
     "Axes Settings": "座標軸設定",
-    "Save Changes": "儲存變更",
     "Shuttle Settings": "飛梭設定",
     "Feed Rate Range:": "進給率範圍：",
     "{{min}} - {{max}} mm/min": "{{min}} - {{max}} mm/min",
@@ -256,6 +256,5 @@
     "Webcam Settings": "網路攝影機設定",
     "URL": "網址",
     "Webcam is off": "網路攝影機未開啟",
-    "Crosshair": "十字",
-    "Manage Widgets ({{inactiveCount}})": "管理元件 ({{inactiveCount}})"
+    "Crosshair": "十字"
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import Confirm from '../components/common/Confirm';
+import Confirm from '../components/Confirm';
 import i18n from './i18n';
 
 const noop = () => {};

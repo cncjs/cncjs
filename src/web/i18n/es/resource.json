@@ -1,4 +1,9 @@
 {
+    "Delete": "",
+    "Edit": "",
+    "Fullscreen": "",
+    "Refresh": "",
+    "Expand/Collapse": "",
     "Restore Defaults": "",
     "Are you sure you want to restore the default settings?": "",
     "OK": "",
@@ -36,12 +41,8 @@
     "Webcam Widget": "",
     "This widget lets you monitor a webcam.": "",
     "Widgets": "",
-    "Save": "",
-    "Delete": "",
-    "Edit": "",
-    "Fullscreen": "",
-    "Refresh": "",
-    "Expand/Collapse": "",
+    "Save Changes": "",
+    "Manage Widgets ({{inactiveCount}})": "",
     "mm": "",
     "in": "",
     "Axis": "",
@@ -112,7 +113,6 @@
     "Go To Work Zero": "",
     "Go To Machine Zero": "",
     "Axes Settings": "",
-    "Save Changes": "",
     "Shuttle Settings": "",
     "Feed Rate Range:": "",
     "{{min}} - {{max}} mm/min": "",
@@ -256,6 +256,5 @@
     "Webcam Settings": "",
     "URL": "",
     "Webcam is off": "",
-    "Crosshair": "",
-    "Manage Widgets ({{inactiveCount}})": ""
+    "Crosshair": ""
 }

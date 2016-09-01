@@ -1,4 +1,9 @@
 {
+    "Delete": "删除",
+    "Edit": "编辑",
+    "Fullscreen": "全屏",
+    "Refresh": "刷新",
+    "Expand/Collapse": "展开/折叠",
     "Restore Defaults": "恢复默认值",
     "Are you sure you want to restore the default settings?": "您确定要恢复默认值吗？",
     "OK": "确认",
@@ -36,12 +41,8 @@
     "Webcam Widget": "网络摄像机组件",
     "This widget lets you monitor a webcam.": "此组件可用来监控一台网络摄像机。",
     "Widgets": "组件",
-    "Save": "保存",
-    "Delete": "删除",
-    "Edit": "编辑",
-    "Fullscreen": "全屏",
-    "Refresh": "刷新",
-    "Expand/Collapse": "展开/折叠",
+    "Save Changes": "保存更改",
+    "Manage Widgets ({{inactiveCount}})": "管理组件（{{inactiveCount}}）",
     "mm": "mm",
     "in": "in",
     "Axis": "坐标轴",
@@ -112,7 +113,6 @@
     "Go To Work Zero": "前往工作原点",
     "Go To Machine Zero": "前往机器原点",
     "Axes Settings": "坐标轴设置",
-    "Save Changes": "保存更改",
     "Shuttle Settings": "飞梭设置",
     "Feed Rate Range:": "供给率范围：",
     "{{min}} - {{max}} mm/min": "{{min}} - {{max}} mm/min",
@@ -256,6 +256,5 @@
     "Webcam Settings": "网络摄像机设置",
     "URL": "网址",
     "Webcam is off": "网络摄像机未开启",
-    "Crosshair": "十字",
-    "Manage Widgets ({{inactiveCount}})": "管理组件（{{inactiveCount}}）"
+    "Crosshair": "十字"
 }

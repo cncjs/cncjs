@@ -1,4 +1,9 @@
 {
+    "Delete": "Entfernen",
+    "Edit": "Bearbeiten",
+    "Fullscreen": "Vollbild",
+    "Refresh": "Aktualisieren",
+    "Expand/Collapse": "Auf-/Zuklappen",
     "Restore Defaults": "Standard wiederherstellen",
     "Are you sure you want to restore the default settings?": "Sind Sie sicher, dass Sie die Standardeinstellungen wieder herstellen möchten?",
     "OK": "OK",
@@ -36,12 +41,8 @@
     "Webcam Widget": "Webcam-Widget",
     "This widget lets you monitor a webcam.": "Dieses Widget ermöglicht die Überwachung mit einer Webcam.",
     "Widgets": "Widgets",
-    "Save": "Speichern",
-    "Delete": "Entfernen",
-    "Edit": "Bearbeiten",
-    "Fullscreen": "Vollbild",
-    "Refresh": "Aktualisieren",
-    "Expand/Collapse": "Auf-/Zuklappen",
+    "Save Changes": "Änderungen speichern",
+    "Manage Widgets ({{inactiveCount}})": "Widgets verwalten ({{inactiveCount}})",
     "mm": "mm",
     "in": "in",
     "Axis": "Achse",
@@ -112,7 +113,6 @@
     "Go To Work Zero": "Zum Werkstück-Nullp.",
     "Go To Machine Zero": "Zum Maschinen-Nullp.",
     "Axes Settings": "Achsen-Einstellungen",
-    "Save Changes": "Änderungen speichern",
     "Shuttle Settings": "Shuttle-Einstellungen",
     "Feed Rate Range:": "Vorschubbereich",
     "{{min}} - {{max}} mm/min": "{{min}} - {{max}} mm/min",
@@ -256,6 +256,5 @@
     "Webcam Settings": "Webcam-Einstellungen",
     "URL": "URL",
     "Webcam is off": "Webcam ist aus",
-    "Crosshair": "Fadenkreuz",
-    "Manage Widgets ({{inactiveCount}})": "Widgets verwalten ({{inactiveCount}})"
+    "Crosshair": "Fadenkreuz"
 }

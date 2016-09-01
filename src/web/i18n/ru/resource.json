@@ -1,4 +1,9 @@
 {
+    "Delete": "Удалить",
+    "Edit": "Редактировать",
+    "Fullscreen": "Развернуть на полный экран",
+    "Refresh": "Обновить",
+    "Expand/Collapse": "Развернуть/Свернуть",
     "Restore Defaults": "Вернуть настройки",
     "Are you sure you want to restore the default settings?": "",
     "OK": "",
@@ -36,12 +41,8 @@
     "Webcam Widget": "Виджет камеры",
     "This widget lets you monitor a webcam.": "Этот виджет позволяет вам следить за камерой.",
     "Widgets": "Виджеты",
-    "Save": "Сохранить",
-    "Delete": "Удалить",
-    "Edit": "Редактировать",
-    "Fullscreen": "Развернуть на полный экран",
-    "Refresh": "Обновить",
-    "Expand/Collapse": "Развернуть/Свернуть",
+    "Save Changes": "Сохранить изменения",
+    "Manage Widgets ({{inactiveCount}})": "Управление виджетами ({{inactiveCount}})",
     "mm": "мм",
     "in": "дюймы",
     "Axis": "Ось",
@@ -112,7 +113,6 @@
     "Go To Work Zero": "В рабочий ноль",
     "Go To Machine Zero": "В машинный ноль",
     "Axes Settings": "Настройки осей",
-    "Save Changes": "Сохранить изменения",
     "Shuttle Settings": "Настройки управления",
     "Feed Rate Range:": "Диапазон подачи",
     "{{min}} - {{max}} mm/min": "{{min}} - {{max}} мм/мин",
@@ -256,6 +256,5 @@
     "Webcam Settings": "Настройки камеры",
     "URL": "URL",
     "Webcam is off": "Камера выключена",
-    "Crosshair": "",
-    "Manage Widgets ({{inactiveCount}})": "Управление виджетами ({{inactiveCount}})"
+    "Crosshair": ""
 }
