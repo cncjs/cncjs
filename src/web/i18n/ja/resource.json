@@ -197,7 +197,7 @@
     "View G-code Parser State ($G)": "",
     "View Build Info ($I)": "",
     "View Startup Blocks ($N)": "",
-    "This field cannot be blank": "",
+    "This field is required.": "",
     "Add New Macro": "",
     "Macro Name": "",
     "Edit Macro": "",
