@@ -88,7 +88,7 @@ class Macro extends Component {
                             >
                                 <i className="fa fa-plus" />
                                 &nbsp;
-                                {i18n._('Add New Macro')}
+                                {i18n._('Create Macro')}
                             </button>
                         </div>
                     </div>
