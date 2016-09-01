@@ -101,7 +101,7 @@ class Macro extends Component {
                         <thead>
                             <tr>
                                 <th>
-                                    {i18n._('Total:')}&nbsp;{macros.length}
+                                    {i18n._('Total: {{total}}', { total: macros.length })}
                                 </th>
                                 <th style={{ width: '1%' }}>
                                 </th>
