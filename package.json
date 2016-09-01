@@ -55,7 +55,7 @@
     "dev": "npm run build-dev && NODE_ENV=development ./bin/cnc -vv -p 8000",
     "prod": "npm run build-prod && NODE_ENV=production ./bin/cnc",
     "lint": "npm run eslint && npm run stylint",
-    "eslint": "eslint *.js src bin gulp test",
+    "eslint": "eslint --ext .js --ext .jsx *.js src bin gulp test",
     "stylint": "stylint src/web",
     "test": "node babel-tap --coverage test/*.js",
     "coveralls": "node babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
