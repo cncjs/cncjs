@@ -24,7 +24,7 @@ Object.assign(Validation.rules, {
         },
         hint: (value) => {
             return (
-                <HelpBlock>{i18n._('This field cannot be blank')}</HelpBlock>
+                <HelpBlock>{i18n._('This field is required.')}</HelpBlock>
             );
         }
     }
@@ -54,7 +54,7 @@ class AddMacro extends Component {
                     closeButton
                 >
                     <Modal.Title>
-                        {i18n._('Add New Macro')}
+                        {i18n._('Create Macro')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
