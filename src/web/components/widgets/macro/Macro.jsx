@@ -30,7 +30,7 @@ class Macro extends Component {
     }
     confirmLoadMacro({ name }) {
         return confirm({
-            header: i18n._('Load Macro'),
+            header: i18n._('Macro'),
             body: (
                 <div className={styles['macro-load']}>
                     <p>{i18n._('Are you sure you want to load this macro?')}</p>
@@ -112,7 +112,7 @@ class Macro extends Component {
                                 <tr>
                                     <td colSpan="2">
                                         <div styleName="empty-result">
-                                            {i18n._('No macros available')}
+                                            {i18n._('No macros')}
                                         </div>
                                     </td>
                                 </tr>
@@ -135,7 +135,7 @@ class Macro extends Component {
                                                         this.handleLoadMacro({ id, name, content });
                                                     });
                                             }}
-                                            title={i18n._('Load Macro')}
+                                            title={i18n._('Run Macro')}
                                         >
                                             <i className="fa fa-arrow-circle-o-up" />
                                         </button>
