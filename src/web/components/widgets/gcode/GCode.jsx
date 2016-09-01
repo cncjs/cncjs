@@ -20,7 +20,7 @@ class GCode extends Component {
             <div>
                 <GCodeStats {...this.props} />
             {_.size(lines) > 0 &&
-                <GCodeTable rows={lines} scrollToRows={sent} />
+                <GCodeTable rows={lines} scrollToRow={sent} />
             }
             </div>
         );
