@@ -155,17 +155,17 @@ class WidgetManager extends React.Component {
                 <Modal.Footer>
                     <button
                         type="button"
-                        className="btn btn-primary"
-                        onClick={::this.handleSave}
-                    >
-                        {i18n._('Save')}
-                    </button>
-                    <button
-                        type="button"
                         className="btn btn-default"
                         onClick={::this.handleCancel}
                     >
                         {i18n._('Cancel')}
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        onClick={::this.handleSave}
+                    >
+                        {i18n._('Save Changes')}
                     </button>
                 </Modal.Footer>
             </Modal>
