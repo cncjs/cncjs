@@ -5,7 +5,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import request from 'superagent';
 import Select from 'react-select';
-import Alert from './Alert';
+import Alert from '../../common/Alert';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import controller from '../../../lib/controller';
@@ -298,25 +298,20 @@ class Connection extends React.Component {
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis',
                 overflow: 'hidden'
-            },
-            note: {
-                fontSize: '12px'
             }
         };
 
         return (
             <div style={styles.option} title={label}>
                 <div>
-                {inuse &&
+            {inuse &&
                     <span><i className="fa fa-lock"></i>&nbsp;</span>
-                }
-                {label}
+            }
+                    {label}
                 </div>
-                {manufacturer &&
-                    <note style={styles.note}>
-                        {i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}
-                    </note>
-                }
+            {manufacturer &&
+                <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>
+            }
             </div>
         );
     }
@@ -372,7 +367,11 @@ class Connection extends React.Component {
 
         return (
             <div>
-                <Alert msg={alertMessage} dismiss={::this.clearAlert} />
+            {alertMessage &&
+                <Alert bsStyle="warning" onDismiss={::this.clearAlert}>
+                    {alertMessage}
+                </Alert>
+            }
                 <div className="form-group">
                     <div className="input-group input-group-xs">
                         <div className="input-group-btn">
