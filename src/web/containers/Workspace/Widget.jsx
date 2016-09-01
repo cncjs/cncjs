@@ -1,15 +1,15 @@
 import React from 'react';
-import AxesWidget from '../../widgets/axes';
-import ConnectionWidget from '../../widgets/connection';
-import ConsoleWidget from '../../widgets/console';
-import GCodeWidget from '../../widgets/gcode';
-import GrblWidget from '../../widgets/grbl';
-import MacroWidget from '../../widgets/macro';
-import ProbeWidget from '../../widgets/probe';
-import SpindleWidget from '../../widgets/spindle';
-import TinyG2Widget from '../../widgets/tinyg2';
-import VisualizerWidget from '../../widgets/visualizer';
-import WebcamWidget from '../../widgets/webcam';
+import AxesWidget from '../../widgets/Axes';
+import ConnectionWidget from '../../widgets/Connection';
+import ConsoleWidget from '../../widgets/Console';
+import GCodeWidget from '../../widgets/GCode';
+import GrblWidget from '../../widgets/Grbl';
+import MacroWidget from '../../widgets/Macro';
+import ProbeWidget from '../../widgets/Probe';
+import SpindleWidget from '../../widgets/Spindle';
+import TinyG2Widget from '../../widgets/TinyG2';
+import VisualizerWidget from '../../widgets/Visualizer';
+import WebcamWidget from '../../widgets/Webcam';
 
 const Widget = (props) => {
     const { widgetid, ...others } = props;
