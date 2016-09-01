@@ -137,7 +137,7 @@ class Macro extends Component {
                                             }}
                                             title={i18n._('Load Macro')}
                                         >
-                                            <i className="fa fa-arrow-circle-o-up" />
+                                            <i className="fa fa-arrow-circle-o-up" style={{ fontSize: 14 }} />
                                         </button>
                                         {macro.name}
                                     </td>
