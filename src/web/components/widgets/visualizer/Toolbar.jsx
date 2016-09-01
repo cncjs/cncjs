@@ -27,14 +27,6 @@ class Toolbar extends Component {
         const canPause = canClick && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
         const canStop = canClick && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
         const canClose = canClick && _.includes([WORKFLOW_STATE_IDLE], workflowState);
-        const styles = {
-            closeIcon: {
-                fontSize: 14
-            },
-            menuIcon: {
-                fontSize: 14
-            }
-        };
 
         return (
             <ButtonToolbar styleName="toolbar">
@@ -65,7 +57,7 @@ class Toolbar extends Component {
                         onClick={actions.handleClose}
                         disabled={!canClose}
                     >
-                        <i className="fa fa-close" style={styles.closeIcon}></i>
+                        <i className="fa fa-close" />
                     </Button>
                 </ButtonGroup>
                 <ButtonGroup bsSize="sm">
@@ -85,8 +77,8 @@ class Toolbar extends Component {
                             }}
                         >
                             {renderAnimation
-                                ? <i className="fa fa-toggle-on" style={styles.menuIcon}></i>
-                                : <i className="fa fa-toggle-off" style={styles.menuIcon}></i>
+                                ? <i className="fa fa-toggle-on" />
+                                : <i className="fa fa-toggle-off" />
                             }
                             &nbsp;
                             {i18n._('Toggle Toolhead Animation')}

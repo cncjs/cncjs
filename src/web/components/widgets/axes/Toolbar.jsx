@@ -11,7 +11,6 @@ const keypadTooltip = () => {
     const styles = {
         tooltip: {
             fontFamily: 'Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif',
-            fontSize: 14,
             padding: 5
         },
         container: {
@@ -28,7 +27,6 @@ const keypadTooltip = () => {
         kbd: {
             border: '1px solid #aaa',
             padding: '1px 4px',
-            fontSize: 12,
             fontFamily: 'sans-serif',
             whiteSpace: 'nowrap'
         },
@@ -154,7 +152,7 @@ class ToolbarButton extends Component {
                             onClick={actions.toggleKeypadJogging}
                             disabled={!canClick}
                         >
-                            <i className="fa fa-keyboard-o" style={{ fontSize: 14 }} />
+                            <i className="fa fa-keyboard-o" />
                             &nbsp;
                             {i18n._('Keypad')}
                         </button>
