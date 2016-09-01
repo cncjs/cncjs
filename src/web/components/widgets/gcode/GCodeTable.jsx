@@ -15,7 +15,7 @@ import styles from './index.styl';
 @CSSModules(styles)
 class GCodeTable extends Component {
     static propTypes = {
-        rows: PropTypes.array,
+        rows: PropTypes.array.isRequired,
         scrollToRow: PropTypes.number
     };
     static defaultProps = {
