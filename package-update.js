@@ -14,7 +14,9 @@ const files = [
     'src/*.js',
     'src/app/**/*.{js,jsx}'
 ];
-const deps = findImports(files, { flatten: true }).sort();
+const deps = [
+    'babel-runtime' // 'babel-runtime' is required for an Electron app
+].concat(findImports(files, { flatten: true })).sort();
 
 // Development:
 //   package.json
