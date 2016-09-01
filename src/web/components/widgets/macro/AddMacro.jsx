@@ -24,7 +24,7 @@ Object.assign(Validation.rules, {
         },
         hint: (value) => {
             return (
-                <HelpBlock>{i18n._('This field cannot be blank')}</HelpBlock>
+                <HelpBlock>{i18n._('This field is required.')}</HelpBlock>
             );
         }
     }
