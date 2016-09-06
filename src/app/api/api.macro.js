@@ -56,6 +56,10 @@ export const addMacro = (req, res) => {
             name: name,
             content: content
         };
+
+        if (!_.isArray(config.macros)) {
+            config.macros = [];
+        }
         config.macros.push(macro);
 
         const text = JSON.stringify(config, null, 4);
@@ -105,7 +109,7 @@ export const deleteMacro = (req, res) => {
             return macro.id !== id;
         });
 
-        config.macros = macros;
+        config.macros = macros || [];
 
         const text = JSON.stringify(config, null, 4);
         fs.writeFile(settings.cncrc, text, (err) => {
