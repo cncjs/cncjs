@@ -1,27 +1,27 @@
 {
     "TinyG2": {
         "machineState": {
-            "init": "Inizializzazione",
+            "init": "Inizializza",
             "ready": "Pronta",
             "alarm": "Allarme",
             "stop": "Stop",
             "end": "Fine",
-            "run": "In movimento",
+            "run": "Movimento",
             "hold": "Pausa",
             "probe": "Sonda",
-            "cycling": "",
+            "cycling": "Ciclo",
             "homing": "Azzera",
-            "jogging": "Avanzamanto",
-            "shutdown": "Spegnimento"
+            "jogging": "Muovi",
+            "shutdown": "Spegni"
         }
     },
     "Grbl": {
         "activeState": {
             "idle": "Inattivo",
-            "run": "In movimento",
+            "run": "Movimento",
             "hold": "Pausa",
             "door": "Finecorsa",
-            "home": "Home",
+            "home": "Azzera",
             "alarm": "Allarme",
             "check": "Controllo"
         }
