@@ -1,29 +1,29 @@
 {
     "TinyG2": {
         "machineState": {
-            "init": "",
-            "ready": "",
-            "alarm": "",
-            "stop": "",
-            "end": "",
-            "run": "",
-            "hold": "",
-            "probe": "",
-            "cycling": "",
-            "homing": "",
-            "jogging": "",
-            "shutdown": ""
+            "init": "Inizializza",
+            "ready": "Pronta",
+            "alarm": "Allarme",
+            "stop": "Stop",
+            "end": "Fine",
+            "run": "Movimento",
+            "hold": "Pausa",
+            "probe": "Sonda",
+            "cycling": "Ciclo",
+            "homing": "Azzera",
+            "jogging": "Muovi",
+            "shutdown": "Spegni"
         }
     },
     "Grbl": {
         "activeState": {
-            "idle": "",
-            "run": "",
-            "hold": "",
-            "door": "",
-            "home": "",
-            "alarm": "",
-            "check": ""
+            "idle": "Inattivo",
+            "run": "Movimento",
+            "hold": "Pausa",
+            "door": "Finecorsa",
+            "home": "Azzera",
+            "alarm": "Allarme",
+            "check": "Controllo"
         }
     }
 }
