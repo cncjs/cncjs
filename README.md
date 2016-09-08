@@ -127,7 +127,7 @@ Locale | Language | Status | Contributors
 [de](https://github.com/cheton/cnc/tree/master/src/web/i18n/de) | Deutsch (German) | :heavy_check_mark: | [Thorsten Godau](https://github.com/dl9sec)
 [es](https://github.com/cheton/cnc/tree/master/src/web/i18n/es) | Español (Spanish) | |
 [fr](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr) | Français (French) | :heavy_check_mark: | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
-[it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it) | Italiano (Italian) | |
+[it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it) | Italiano (Italian) | :heavy_check_mark: | [vince87](https://github.com/vince87)
 [ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja) | にほんご (Japanese) | |
 [pt-br](https://github.com/cheton/cnc/tree/master/src/web/i18n/pt-br) | Português (Brasil) | :heavy_check_mark: | [cmsteinBR](https://github.com/cmsteinBR)
 [ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru) | Ру́сский язы́к (Russian) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
