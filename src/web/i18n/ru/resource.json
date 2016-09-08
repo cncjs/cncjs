@@ -88,7 +88,6 @@
     "Zero Out Work Z Axis (G10 L20 P6 Z0)": "Обнулить рабочую ось Z (G10 L20 P6 Z0)",
     "Go To Machine Zero On Z Axis (G53 G0 Z0)": "В машинный ноль по оси Z (G53 G0 Z0)",
     "Axes": "Оси",
-    "Move": "Перем.",
     "Custom": "Особое",
     "Custom distance for every move operation": "Особое расстояние для каждого перемещения",
     "Increase custom distance by one unit": "Добавить особое расстояние на одну единицу",

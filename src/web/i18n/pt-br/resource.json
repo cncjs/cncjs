@@ -88,7 +88,6 @@
     "Zero Out Work Z Axis (G10 L20 P6 Z0)": "Zera o Eixo Z de Trabalho (G10 L20 P6 Z0)",
     "Go To Machine Zero On Z Axis (G53 G0 Z0)": "Vai para o Zero do Eixo Z da Máquina (G53 G0 Z0)",
     "Axes": "Eixos",
-    "Move": "Mover",
     "Custom": "Person.",
     "Custom distance for every move operation": "Distância personalizada para cada operação de movimentação",
     "Increase custom distance by one unit": "Aumenta a distância personalizada em uma unidade",

@@ -88,7 +88,6 @@
     "Zero Out Work Z Axis (G10 L20 P6 Z0)": "Nulovat pracovní osu Z (G10 L20 P6 Z0)",
     "Go To Machine Zero On Z Axis (G53 G0 Z0)": "Jed na nulu stroje v ose Z (G53 G0 Z0)",
     "Axes": "Osy",
-    "Move": "Posuv",
     "Custom": "Různé",
     "Custom distance for every move operation": "Různá vzdálenost pro každý Posuv",
     "Increase custom distance by one unit": "Zvětšit různou vzdálenost o jednu jednotku",

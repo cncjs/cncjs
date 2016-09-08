@@ -88,7 +88,6 @@
     "Zero Out Work Z Axis (G10 L20 P6 Z0)": "设置 Z 轴工作原点 （G10 L20 P6 Z0）",
     "Go To Machine Zero On Z Axis (G53 G0 Z0)": "前往 Z 轴机器原点 （G53 G0 Z0）",
     "Axes": "坐标轴",
-    "Move": "移动",
     "Custom": "定制",
     "Custom distance for every move operation": "定制移动距离",
     "Increase custom distance by one unit": "增加一个单位的定制距离",
