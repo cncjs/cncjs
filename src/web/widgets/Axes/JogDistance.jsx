@@ -79,7 +79,6 @@ class JogDistance extends Component {
         return (
             <div styleName="jog-distance-control">
                 <div className="input-group input-group-xs">
-                    <span className="input-group-addon">{i18n._('Move')}</span>
                     <div className="input-group-btn">
                         <button
                             type="button"
