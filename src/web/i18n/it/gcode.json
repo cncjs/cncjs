@@ -23,7 +23,7 @@
     "Exact Stop (G61.1)": "Stop esatto (G61.1)",
     "Continuous (G64)": "Velocità costante (G64)",
     "Absolute (G90)": "Misure di distanza assolute (G90)",
-    "Relative (G91)": "	Misure di distanze relative (G91)",
+    "Relative (G91)": "Misure di distanze relative (G91)",
     "Inverse Time (G93)": "Velocita in inverso del tempo (G93)",
     "Units/Min (G94)": "Velocita in unità al minuto (G94)",
     "Active Tool Offset (G43.1)": "Offset lunghezza utensile (G43.1)",
