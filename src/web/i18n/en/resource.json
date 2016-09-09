@@ -42,6 +42,7 @@
     "This widget lets you monitor a webcam.": "This widget lets you monitor a webcam.",
     "Widgets": "Widgets",
     "Save Changes": "Save Changes",
+    "Drop G-code file here": "Drop G-code file here",
     "Manage Widgets ({{inactiveCount}})": "Manage Widgets ({{inactiveCount}})",
     "mm": "mm",
     "in": "in",

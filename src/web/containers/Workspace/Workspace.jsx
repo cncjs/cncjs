@@ -277,7 +277,9 @@ class Workspace extends React.Component {
         return (
             <div className="workspace" data-ns="workspace">
                 <div className="workspace-container">
-                    <div className={classes.dropzoneOverlay} />
+                    <div className={classes.dropzoneOverlay}>
+                        {i18n._('Drop G-code file here')}
+                    </div>
                     <Dropzone
                         ref="dropzone"
                         className="dropzone"

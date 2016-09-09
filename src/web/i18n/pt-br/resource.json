@@ -42,6 +42,7 @@
     "This widget lets you monitor a webcam.": "Este Módulo permite que você monitore uma webcam.",
     "Widgets": "Módulos",
     "Save Changes": "Salvar alterações",
+    "Drop G-code file here": "Solte o arquivo G-code aqui",
     "Manage Widgets ({{inactiveCount}})": "Gerenciar Módulos ({{inactiveCount}})",
     "mm": "mm",
     "in": "in",

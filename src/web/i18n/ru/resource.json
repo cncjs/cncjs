@@ -42,6 +42,7 @@
     "This widget lets you monitor a webcam.": "Этот виджет позволяет вам следить за камерой.",
     "Widgets": "Виджеты",
     "Save Changes": "Сохранить изменения",
+    "Drop G-code file here": "Перетащите G-код сюда",
     "Manage Widgets ({{inactiveCount}})": "Управление виджетами ({{inactiveCount}})",
     "mm": "мм",
     "in": "дюймы",
