@@ -32,10 +32,10 @@ class Notifications extends Component {
         return (
             <div
                 {...this.props}
-                role="alert"
+                role="notifications"
                 styleName={classNames(
-                    'alert',
-                    'alert-' + bsStyle
+                    'notifications',
+                    'notifications-' + bsStyle
                 )}
             >
                 {isDismissable ? this.renderDismissButton() : null}
