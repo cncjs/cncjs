@@ -154,7 +154,7 @@ class Workspace extends React.Component {
 
             const gcode = result;
             request
-                .post('/api/gcode/upload')
+                .put('/api/gcode')
                 .send({
                     port: port,
                     meta: {
@@ -246,13 +246,13 @@ class Workspace extends React.Component {
     }
     render() {
         const {
+            port,
             isDraggingFile,
             isDraggingWidget,
             showPrimaryContainer,
             showSecondaryContainer,
             inactiveCount
         } = this.state;
-        const notDraggingFile = !isDraggingFile;
         const hidePrimaryContainer = !showPrimaryContainer;
         const hideSecondaryContainer = !showSecondaryContainer;
         const classes = {
@@ -270,14 +270,14 @@ class Workspace extends React.Component {
             ),
             dropzoneOverlay: classNames(
                 'dropzone-overlay',
-                { 'hidden': notDraggingFile }
+                { 'hidden': !(port && isDraggingFile) }
             )
         };
 
         return (
             <div className="workspace" data-ns="workspace">
                 <div className="workspace-container">
-                    <div className={classes.dropzoneOverlay}></div>
+                    <div className={classes.dropzoneOverlay} />
                     <Dropzone
                         ref="dropzone"
                         className="dropzone"
