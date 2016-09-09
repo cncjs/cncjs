@@ -1,15 +1,18 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
 import Sortable from 'react-sortablejs';
 import store from '../../store';
 import Widget from './Widget';
+import styles from './widgets.styl';
 
-export default class PrimaryWidgets extends React.Component {
+@CSSModules(styles)
+class PrimaryWidgets extends Component {
     static propTypes = {
-        onDelete: React.PropTypes.func.isRequired,
-        onSortStart: React.PropTypes.func.isRequired,
-        onSortEnd: React.PropTypes.func.isRequired
+        onDelete: PropTypes.func.isRequired,
+        onSortStart: PropTypes.func.isRequired,
+        onSortEnd: PropTypes.func.isRequired
     };
     state = {
         widgets: store.get('workspace.container.primary.widgets')
@@ -70,6 +73,7 @@ export default class PrimaryWidgets extends React.Component {
         return (
             <Sortable
                 {...this.props}
+                styleName="widgets"
                 options={{
                     animation: 150,
                     group: {
@@ -97,3 +101,5 @@ export default class PrimaryWidgets extends React.Component {
         );
     }
 }
+
+export default PrimaryWidgets;

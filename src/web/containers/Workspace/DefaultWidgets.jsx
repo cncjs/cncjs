@@ -1,10 +1,13 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component } from 'react';
+import CSSModules from 'react-css-modules';
 import store from '../../store';
 import Widget from './Widget';
+import styles from './widgets.styl';
 
-class DefaultWidgets extends React.Component {
+@CSSModules(styles)
+class DefaultWidgets extends Component {
     state = {
         widgets: store.get('workspace.container.default.widgets')
     };
@@ -28,7 +31,12 @@ class DefaultWidgets extends React.Component {
         ));
 
         return (
-            <div {...this.props}>{widgets}</div>
+            <div
+                {...this.props}
+                styleName="widgets"
+            >
+                {widgets}
+            </div>
         );
     }
 }

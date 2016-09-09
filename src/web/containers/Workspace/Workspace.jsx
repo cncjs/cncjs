@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import classNames from 'classnames';
+import CSSModules from 'react-css-modules';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React from 'react';
@@ -12,7 +13,9 @@ import * as widgetManager from '../WidgetManager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class Workspace extends React.Component {
     state = {
         mounted: false,
@@ -255,34 +258,23 @@ class Workspace extends React.Component {
         } = this.state;
         const hidePrimaryContainer = !showPrimaryContainer;
         const hideSecondaryContainer = !showSecondaryContainer;
-        const classes = {
-            primaryContainer: classNames(
-                'primary-container',
-                { 'hidden': hidePrimaryContainer }
-            ),
-            secondaryContainer: classNames(
-                'secondary-container',
-                { 'hidden': hideSecondaryContainer }
-            ),
-            defaultContainer: classNames(
-                'default-container',
-                'fixed'
-            ),
-            dropzoneOverlay: classNames(
-                'dropzone-overlay',
-                { 'hidden': !(port && isDraggingFile) }
-            )
-        };
 
         return (
-            <div className="workspace" data-ns="workspace">
-                <div className="workspace-container">
-                    <div className={classes.dropzoneOverlay}>
-                        {i18n._('Drop G-code file here')}
+            <div styleName="workspace">
+                <div styleName="workspace-container">
+                    <div
+                        styleName={classNames(
+                            'dropzone-overlay',
+                            { 'hidden': !(port && isDraggingFile) }
+                        )}
+                    >
+                        <div styleName="text-block">
+                            {i18n._('Drop G-code file here')}
+                        </div>
                     </div>
                     <Dropzone
                         ref="dropzone"
-                        className="dropzone"
+                        styleName="dropzone"
                         disableClick={true}
                         multiple={false}
                         onDragStart={(event) => {
@@ -313,10 +305,20 @@ class Workspace extends React.Component {
                             this.onDrop(files);
                         }}
                     >
-                        <div className="workspace-table">
-                            <div className="workspace-table-row">
-                                <div className={classes.primaryContainer} ref="primaryContainer">
-                                    <div className="btn-toolbar clearfix" role="toolbar">
+                        <div styleName="workspace-table">
+                            <div styleName="workspace-table-row">
+                                <div
+                                    styleName={classNames(
+                                        'primary-container',
+                                        { 'hidden': hidePrimaryContainer }
+                                    )}
+                                    ref="primaryContainer"
+                                >
+                                    <div
+                                        className="clearfix"
+                                        styleName="toolbar"
+                                        role="toolbar"
+                                    >
                                         <div className="btn-group btn-group-xs pull-left" role="group">
                                             <button
                                                 type="button"
@@ -338,14 +340,13 @@ class Workspace extends React.Component {
                                         </div>
                                     </div>
                                     <PrimaryWidgets
-                                        className="widgets"
                                         onDelete={::this.handleDeleteWidget}
                                         onSortStart={::this.handleSortStart}
                                         onSortEnd={::this.handleSortEnd}
                                     />
                                 </div>
                             {hidePrimaryContainer &&
-                                <div className="primary-toggler" ref="primaryToggler">
+                                <div styleName="primary-toggler" ref="primaryToggler">
                                     <div className="btn-group btn-group-xs">
                                         <button
                                             type="button"
@@ -357,11 +358,11 @@ class Workspace extends React.Component {
                                     </div>
                                 </div>
                             }
-                                <div className={classes.defaultContainer} ref="defaultContainer">
-                                    <DefaultWidgets className="widgets" />
+                                <div styleName="default-container fixed" ref="defaultContainer">
+                                    <DefaultWidgets />
                                 </div>
                             {hideSecondaryContainer &&
-                                <div className="secondary-toggler" ref="secondaryToggler">
+                                <div styleName="secondary-toggler" ref="secondaryToggler">
                                     <div className="btn-group btn-group-xs">
                                         <button
                                             type="button"
@@ -373,8 +374,18 @@ class Workspace extends React.Component {
                                     </div>
                                 </div>
                             }
-                                <div className={classes.secondaryContainer} ref="secondaryContainer">
-                                    <div className="btn-toolbar clearfix" role="toolbar">
+                                <div
+                                    styleName={classNames(
+                                        'secondary-container',
+                                        { 'hidden': hideSecondaryContainer }
+                                    )}
+                                    ref="secondaryContainer"
+                                >
+                                    <div
+                                        className="clearfix"
+                                        styleName="toolbar"
+                                        role="toolbar"
+                                    >
                                         <div className="btn-group btn-group-xs pull-left" role="group">
                                             <button
                                                 type="button"
@@ -396,7 +407,6 @@ class Workspace extends React.Component {
                                         </div>
                                     </div>
                                     <SecondaryWidgets
-                                        className="widgets"
                                         onDelete={::this.handleDeleteWidget}
                                         onSortStart={::this.handleSortStart}
                                         onSortEnd={::this.handleSortEnd}
