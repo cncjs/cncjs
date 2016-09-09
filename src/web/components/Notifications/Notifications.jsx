@@ -6,7 +6,7 @@ import styles from './index.styl';
 import Anchor from '../Anchor';
 
 @CSSModules(styles, { allowMultiple: true })
-class Alert extends Component {
+class Notifications extends Component {
     static propTypes = {
         bsStyle: PropTypes.oneOf(State.values()),
         onDismiss: PropTypes.func
@@ -45,4 +45,4 @@ class Alert extends Component {
     }
 }
 
-export default Alert;
+export default Notifications;

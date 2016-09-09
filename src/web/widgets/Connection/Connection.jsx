@@ -5,7 +5,7 @@ import pubsub from 'pubsub-js';
 import React from 'react';
 import request from 'superagent';
 import Select from 'react-select';
-import Alert from '../../components/Alert';
+import Notifications from '../../components/Notifications';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import controller from '../../lib/controller';
@@ -368,9 +368,9 @@ class Connection extends React.Component {
         return (
             <div>
             {alertMessage &&
-                <Alert bsStyle="warning" onDismiss={::this.clearAlert}>
+                <Notifications bsStyle="danger" onDismiss={::this.clearAlert}>
                     {alertMessage}
-                </Alert>
+                </Notifications>
             }
                 <div className="form-group">
                     <div className="input-group input-group-xs">
