@@ -32,7 +32,6 @@ class Notifications extends Component {
         return (
             <div
                 {...this.props}
-                role="notifications"
                 styleName={classNames(
                     'notifications',
                     'notifications-' + bsStyle
