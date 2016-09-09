@@ -93,7 +93,7 @@ class Visualizer extends Component {
         }
 
         // Toggle toolhead visibility
-        if (this.toolhead.visible !== renderAnimation) {
+        if (this.toolhead && this.toolhead.visible !== renderAnimation) {
             this.toolhead.visible = renderAnimation;
 
             // Update the scene
