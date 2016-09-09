@@ -3,7 +3,7 @@ import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import CSSModules from 'react-css-modules';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import request from 'superagent';
+import api from '../../api';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -200,11 +200,9 @@ class VisualizerWidget extends Component {
                 }
             }),
             pubsub.subscribe('gcode:load', (msg, data = '') => {
-                // Start waiting
                 startWaiting();
 
                 this.loadGCode(data, () => {
-                    // Stop waiting
                     stopWaiting();
                 });
             }),
@@ -286,7 +284,6 @@ class VisualizerWidget extends Component {
     uploadFile(gcode, { name, size }) {
         const { port } = this.state;
 
-        // Start waiting
         startWaiting();
 
         this.setState({
@@ -297,35 +294,21 @@ class VisualizerWidget extends Component {
             }
         });
 
-        request
-            .put('/api/gcode')
-            .send({
-                port: port,
-                meta: {
-                    name: name,
-                    size: size
-                },
-                gcode: gcode
+        api.loadGCode({ port, name, gcode })
+            .then((res) => {
+                pubsub.publish('gcode:load', gcode);
             })
-            .end((err, res) => {
-                if (err || res.err) {
-                    // Stop waiting
-                    stopWaiting();
+            .catch((err) => {
+                stopWaiting();
 
-                    this.setState({
-                        gcode: {
-                            ...this.state.gcode,
-                            loading: false,
-                            ready: false
-                        }
-                    });
-                    log.error('Failed to upload file', err, res);
-                    return;
-                }
-
-                if (gcode) {
-                    pubsub.publish('gcode:load', gcode);
-                }
+                this.setState({
+                    gcode: {
+                        ...this.state.gcode,
+                        loading: false,
+                        ready: false
+                    }
+                });
+                log.error('Failed to upload G-code file:', err);
             });
     }
     loadGCode(gcode, callback = noop) {

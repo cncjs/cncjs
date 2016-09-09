@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import series from 'async/series';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import request from 'superagent';
 import Select from 'react-select';
 import Notifications from '../../components/Notifications';
+import api from '../../api';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import controller from '../../lib/controller';
@@ -205,57 +205,41 @@ class Connection extends React.Component {
             baudrate: baudrate
         });
 
-        let isReady = false;
         let workflowState = '';
         let gcode = '';
 
-        series([
-            (next) => {
-                request
-                    .get('/api/controllers')
-                    .end((err, res) => {
-                        if (err || res.err) {
-                            next();
-                            return;
-                        }
+        api.listControllers()
+            .then((res) => {
+                let next;
+                const c = _.find(res.body, { port: port });
 
-                        const data = _.find(res.body, { port });
-                        if (data) {
-                            isReady = data.ready;
-                            workflowState = _.get(data, 'workflowState');
-                        }
-
-                        next();
-                    });
-            },
-            (next) => {
-                if (!isReady) {
-                    next();
-                    return;
+                if (!c) {
+                    return next;
                 }
 
-                request
-                    .get('/api/gcode')
-                    .query({ port: port })
-                    .end((err, res) => {
-                        if (err || res.err) {
-                            next();
-                            return;
-                        }
+                workflowState = _.get(c, 'workflowState');
 
-                        gcode = res.body.data || '';
+                if (c.ready) {
+                    // Fetch G-code when the controller is ready
+                    next = api.fetchGCode({ port: port });
+                }
 
-                        next();
-                    });
-            }
-        ], (err, results) => {
-            if (workflowState) {
-                pubsub.publish('workflowState', workflowState);
-            }
-            if (gcode) {
-                pubsub.publish('gcode:load', gcode);
-            }
-        });
+                return next;
+            })
+            .then((res) => {
+                gcode = _.get(res, 'body.data', '');
+            })
+            .catch((err) => {
+                // Empty block
+            })
+            .then(() => {
+                if (workflowState) {
+                    pubsub.publish('workflowState', workflowState);
+                }
+                if (gcode) {
+                    pubsub.publish('gcode:load', gcode);
+                }
+            });
     }
     closePort(port = this.state.port) {
         // Close port

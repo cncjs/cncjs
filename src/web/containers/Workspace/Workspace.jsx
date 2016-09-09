@@ -5,7 +5,7 @@ import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import request from 'superagent';
+import api from '../../api';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import store from '../../store';
@@ -14,6 +14,17 @@ import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
 import styles from './index.styl';
+
+const startWaiting = () => {
+    // Adds the 'wait' class to <html>
+    const root = document.documentElement;
+    root.classList.add('wait');
+};
+const stopWaiting = () => {
+    // Adds the 'wait' class to <html>
+    const root = document.documentElement;
+    root.classList.remove('wait');
+};
 
 @CSSModules(styles, { allowMultiple: true })
 class Workspace extends React.Component {
@@ -79,16 +90,6 @@ class Workspace extends React.Component {
         });
         this.pubsubTokens = [];
     }
-    startWaiting() {
-        // Adds the 'wait' class to <html>
-        let root = document.documentElement;
-        root.classList.add('wait');
-    }
-    stopWaiting() {
-        // Adds the 'wait' class to <html>
-        let root = document.documentElement;
-        root.classList.remove('wait');
-    }
     togglePrimaryContainer() {
         const { showPrimaryContainer } = this.state;
         this.setState({ showPrimaryContainer: !showPrimaryContainer });
@@ -152,30 +153,22 @@ class Workspace extends React.Component {
                 'type'
             ]));
 
-            this.startWaiting();
+            startWaiting();
             this.setState({ isUploading: true });
 
+            const name = file.name;
             const gcode = result;
-            request
-                .put('/api/gcode')
-                .send({
-                    port: port,
-                    meta: {
-                        name: file.name,
-                        size: file.size
-                    },
-                    gcode: gcode
-                })
-                .end((err, res) => {
-                    this.stopWaiting();
-                    this.setState({ isUploading: false });
 
-                    if (err || !res.ok) {
-                        log.error('Failed to upload file', err, res);
-                        return;
-                    }
-
+            api.loadGCode({ port, name, gcode })
+                .then((res) => {
                     pubsub.publish('gcode:load', gcode);
+                })
+                .catch((err) => {
+                    log.error('Failed to upload G-code file:', err);
+                })
+                .then(() => {
+                    stopWaiting();
+                    this.setState({ isUploading: false });
                 });
         };
 

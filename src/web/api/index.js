@@ -3,6 +3,65 @@ import request from 'superagent';
 
 const API = {};
 
+{ // listControllers
+    const fn = () => new Promise((resolve, reject) => {
+        request
+            .get('/api/controllers')
+            .end((err, res) => {
+                if (err || res.err) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
+    });
+    set(API, 'listControllers', fn);
+}
+
+{ // loadGCode
+    const fn = (options) => new Promise((resolve, reject) => {
+        const { port = '', name = '', gcode = '' } = { ...options };
+        const meta = {
+            name: name,
+            size: gcode.length
+        };
+
+        request
+            .put('/api/gcode')
+            .send({
+                port: port,
+                meta: meta,
+                gcode: gcode
+            })
+            .end((err, res) => {
+                if (err || res.err) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
+    });
+    set(API, 'loadGCode', fn);
+}
+
+{ // fetchGCode
+    const fn = (options) => new Promise((resolve, reject) => {
+        const { port = '' } = { ...options };
+
+        request
+            .get('/api/gcode')
+            .query({ port: port })
+            .end((err, res) => {
+                if (err || res.err) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
+    });
+    set(API, 'fetchGCode', fn);
+}
+
 { // listMacros
     const fn = () => new Promise((resolve, reject) => {
         request
