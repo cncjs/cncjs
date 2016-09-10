@@ -30,17 +30,15 @@ class Macro extends Component {
     }
     confirmLoadMacro({ name }) {
         return confirm({
-            header: i18n._('Macro'),
+            title: i18n._('Macro'),
             body: (
                 <div className={styles['macro-load']}>
                     <p>{i18n._('Are you sure you want to load this macro?')}</p>
                     <p>{name}</p>
                 </div>
             ),
-            btnOKClass: 'btn-primary',
-            btnCancelClass: 'btn-default',
-            txtOK: i18n._('OK'),
-            txtCancel: i18n._('Cancel')
+            confirmText: i18n._('OK'),
+            cancelText: i18n._('Cancel')
         });
     }
     handleLoadMacro({ id, name, content }) {

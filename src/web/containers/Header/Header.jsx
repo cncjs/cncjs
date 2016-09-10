@@ -10,12 +10,8 @@ import confirm from '../../lib/confirm';
 const Header = (props) => {
     const handleRestoreDefaults = () => {
         confirm({
-            header: i18n._('Restore Defaults'),
-            body: i18n._('Are you sure you want to restore the default settings?'),
-            txtOK: i18n._('OK'),
-            txtCancel: i18n._('Cancel'),
-            btnOKClass: 'btn-danger',
-            btnCancelClass: 'btn-default'
+            title: i18n._('Restore Defaults'),
+            body: i18n._('Are you sure you want to restore the default settings?')
         }, () => {
             store.clear();
             window.location.reload();

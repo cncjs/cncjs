@@ -1,49 +1,68 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Confirm from '../components/Confirm';
 import i18n from './i18n';
 
-const noop = () => {};
+class ConfirmHOC extends Component {
+    static propTypes = {
+        ...Confirm.propTypes,
+        container: PropTypes.object
+    };
+    static defaultProps = {
+        ...Confirm.defaultProps
+    };
 
-// @param {object} options The options object
-// @param {function} [ok] The callback for handling the [OK] button
-// @param {function} [cancel] The callback for handling the [Cancel] button
-const confirm = (options, ok = noop, cancel = noop) => new Promise((resolve, reject) => {
-    const {
-        txtOK = i18n._('OK'),
-        txtCancel = i18n._('Cancel'),
-        ...props
-    } = { ...options };
+    state = {
+        show: true
+    };
 
-    //const el = document.body.appendChild(document.createElement('div'));
-    const el = document.createElement('div');
-    ReactDOM.render(
-        <Confirm
-            txtOK={txtOK}
-            txtCancel={txtCancel}
-            {...props}
-            show={true}
-            onOK={(event) => {
-                ok(event);
-                resolve(event);
+    removeContainer() {
+        const { container } = this.props;
+        ReactDOM.unmountComponentAtNode(container);
+        container.remove();
+    }
+    handleConfirm() {
+        this.setState({ show: false });
+        setTimeout(() => {
+            this.removeContainer();
+            this.props.onConfirm();
+        });
+    }
+    handleCancel() {
+        this.setState({ show: false });
+        setTimeout(() => {
+            this.removeContainer();
+            this.props.onCancel();
+        });
+    }
+    render() {
+        return (
+            <Confirm
+                style={{
+                    minWidth: 480
+                }}
+                confirmText={i18n._('OK')}
+                cancelText={i18n._('Cancel')}
+                {...this.props}
+                onConfirm={::this.handleConfirm}
+                onCancel={::this.handleCancel}
+            />
+        );
+    }
+}
 
-                ReactDOM.unmountComponentAtNode(el);
-                setTimeout(() => {
-                    el.remove();
-                }, 0);
-            }}
-            onCancel={(event) => {
-                cancel(event);
-                reject(event);
+export default (options, callback) => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
 
-                ReactDOM.unmountComponentAtNode(el);
-                setTimeout(() => {
-                    el.remove();
-                }, 0);
-            }}
-        />,
-        el
-    );
-});
+    const props = {
+        ...options,
+        container: container
+    };
 
-export default confirm;
+    if (typeof callback === 'function') {
+        props.onConfirm = callback;
+    }
+
+    ReactDOM.render(<ConfirmHOC {...props} />, container);
+};

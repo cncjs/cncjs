@@ -1,92 +1,117 @@
 /* eslint react/no-set-state: 0 */
 import classNames from 'classnames';
+import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import Modal from '../Modal';
 
-const noop = () => {};
+const defaultButtonOrder = [
+    'cancel',
+    'confirm'
+];
 
 class Confirm extends Component {
     static propTypes = {
         show: PropTypes.bool,
-        header: PropTypes.oneOfType([
-            PropTypes.element,
-            PropTypes.string
+        title: PropTypes.node,
+        body: PropTypes.node,
+        buttonOrder: PropTypes.array,
+        confirmBSStyle: PropTypes.oneOf([
+            'default',
+            'primary',
+            'info',
+            'warning',
+            'danger',
+            'link'
         ]),
-        body: PropTypes.oneOfType([
-            PropTypes.element,
-            PropTypes.string
-        ]),
-        txtOK: PropTypes.string,
-        txtCancel: PropTypes.string,
-        btnOKClass: PropTypes.string,
-        btnCancelClass: PropTypes.string,
-        onOK: PropTypes.func,
+        confirmText: PropTypes.node,
+        cancelText: PropTypes.node,
+        confirmButton: PropTypes.node,
+        cancelButton: PropTypes.node,
+        onConfirm: PropTypes.func,
         onCancel: PropTypes.func
     };
     static defaultProps = {
         show: true,
-        txtOK: 'OK',
-        txtCancel: 'Cancel',
-        btnOKClass: 'btn-default',
-        btnCancelClass: 'btn-default',
-        onOK: noop,
-        onCancel: noop
+        buttonOrder: defaultButtonOrder,
+        confirmBSStyle: 'primary',
+        confirmText: 'OK',
+        cancelText: 'Cancel',
+        confirmButton: null,
+        cancelButton: null,
+        onConfirm: _.noop,
+        onCancel: _.noop
     };
 
-    handleOK() {
-        const { onOK = noop } = this.props;
-        onOK();
+    handleConfirm() {
+        this.props.onConfirm();
     }
     handleCancel() {
-        const { onCancel = noop } = this.props;
-        onCancel();
+        this.props.onCancel();
     }
     render() {
         const {
+            className,
+            style,
             show,
-            header,
+            title,
             body,
-            txtOK,
-            txtCancel,
-            btnOKClass,
-            btnCancelClass
+            confirmBSStyle,
+            confirmButton,
+            cancelButton
         } = this.props;
+        const btnConfirm = confirmButton || (
+            <button
+                key="confirm"
+                type="button"
+                className={classNames(
+                    'btn',
+                    'btn-' + confirmBSStyle
+                )}
+                onClick={::this.handleConfirm}
+            >
+                {this.props.confirmText}
+            </button>
+        );
+        const btnCancel = cancelButton || (
+            <button
+                key="cancel"
+                type="button"
+                className="btn btn-default"
+                onClick={::this.handleCancel}
+            >
+                {this.props.cancelText}
+            </button>
+        );
+        const buttons = _(this.props.buttonOrder)
+            .union(defaultButtonOrder)
+            .uniq()
+            .map(button => {
+                const btn = {
+                    'confirm': btnConfirm,
+                    'cancel': btnCancel
+                }[button];
+                return btn;
+            })
+            .value();
 
         return (
             <Modal
+                className={className}
+                style={style}
                 backdrop="static"
                 show={show}
                 onHide={::this.handleCancel}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>
-                        {header}
+                        {title}
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body>
+                <Modal.Body style={{ minHeight: 80 }}>
                     {body}
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className={classNames(
-                            'btn',
-                            btnCancelClass
-                        )}
-                        onClick={::this.handleCancel}
-                    >
-                        {txtCancel}
-                    </button>
-                    <button
-                        type="button"
-                        className={classNames(
-                            'btn',
-                            btnOKClass
-                        )}
-                        onClick={::this.handleOK}
-                    >
-                        {txtOK}
-                    </button>
+                    {buttons}
                 </Modal.Footer>
             </Modal>
         );

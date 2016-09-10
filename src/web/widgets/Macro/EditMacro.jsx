@@ -77,12 +77,11 @@ class EditMacro extends Component {
                         className="btn btn-danger pull-left"
                         onClick={() => {
                             confirm({
-                                header: i18n._('Delete Macro'),
+                                title: i18n._('Delete Macro'),
                                 body: i18n._('Are you sure you want to delete this macro?'),
-                                btnOKClass: 'btn-danger',
-                                btnCancelClass: 'btn-default',
-                                txtOK: i18n._('Delete'),
-                                txtCancel: i18n._('Cancel')
+                                confirmBSStyle: 'danger',
+                                confirmText: i18n._('Delete'),
+                                cancelText: i18n._('Cancel')
                             }, () => {
                                 actions.deleteMacro({ id });
                                 actions.closeModal();
