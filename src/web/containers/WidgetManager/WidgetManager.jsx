@@ -165,7 +165,7 @@ class WidgetManager extends React.Component {
                         className="btn btn-primary"
                         onClick={::this.handleSave}
                     >
-                        {i18n._('Save Changes')}
+                        {i18n._('OK')}
                     </button>
                 </Modal.Footer>
             </Modal>
