@@ -159,14 +159,6 @@ class ToolbarButton extends Component {
                     </OverlayTrigger>
                 </div>
                 <div className="btn-group pull-right">
-                    <button
-                        type="button"
-                        className="btn btn-xs btn-default"
-                        onClick={actions.toggleDisplayUnits}
-                        disabled={!canClick}
-                    >
-                        {i18n._('in / mm')}
-                    </button>
                     <DropdownButton
                         bsSize="xs"
                         bsStyle="default"

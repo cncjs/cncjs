@@ -187,12 +187,14 @@ class AxesWidget extends Component {
             machinePosition: { // Machine position
                 x: '0.000',
                 y: '0.000',
-                z: '0.000'
+                z: '0.000',
+                a: '0.000'
             },
             workPosition: { // Work position
                 x: '0.000',
                 y: '0.000',
-                z: '0.000'
+                z: '0.000',
+                a: '0.000'
             },
             keypadJogging: store.get('widgets.axes.jog.keypad'),
             selectedAxis: '', // Defaults to empty
@@ -286,15 +288,6 @@ class AxesWidget extends Component {
 
         return true;
     }
-    toggleDisplayUnits() {
-        const { units } = this.state;
-
-        if (units === METRIC_UNITS) {
-            controller.command('gcode', 'G20'); // G20 specifies Imperial units
-        } else {
-            controller.command('gcode', 'G21'); // G21 specifies Metric units
-        }
-    }
     toggleKeypadJogging() {
         this.setState({ keypadJogging: !this.state.keypadJogging });
     }
@@ -363,7 +356,6 @@ class AxesWidget extends Component {
         };
         const actions = {
             getWorkCoordinateSystem: ::this.getWorkCoordinateSystem,
-            toggleDisplayUnits: ::this.toggleDisplayUnits,
             toggleKeypadJogging: ::this.toggleKeypadJogging,
             selectAxis: ::this.selectAxis,
             selectDistance: ::this.selectDistance,

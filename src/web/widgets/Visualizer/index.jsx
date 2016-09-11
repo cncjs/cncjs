@@ -488,6 +488,7 @@ class VisualizerWidget extends Component {
             setBoundingBox: ::this.setBoundingBox,
             toggleRenderAnimation: ::this.toggleRenderAnimation
         };
+        const units = this.state.units;
         const controllerType = this.state.controller.type;
         const controllerState = this.getControllerState();
         const canSendCommand = this.canSendCommand();
@@ -504,7 +505,41 @@ class VisualizerWidget extends Component {
                         {controllerState &&
                             <div styleName="controller-state">{controllerState}</div>
                         }
-                            <div styleName="wcs">
+                            <div className="pull-right">
+                                <Dropdown
+                                    style={{
+                                        marginBottom: 2,
+                                        marginRight: 5
+                                    }}
+                                    bsSize="xs"
+                                    id="units-dropdown"
+                                    pullRight
+                                >
+                                    <Dropdown.Toggle
+                                        disabled={!canSendCommand}
+                                        style={{ minWidth: 50 }}
+                                    >
+                                        {units}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <MenuItem
+                                            active={units === IMPERIAL_UNITS}
+                                            onClick={() => {
+                                                controller.command('gcode', 'G20');
+                                            }}
+                                        >
+                                            {i18n._('Inches (G20)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            active={units === METRIC_UNITS}
+                                            onClick={() => {
+                                                controller.command('gcode', 'G21');
+                                            }}
+                                        >
+                                            {i18n._('Millimeters (G21)')}
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
                                 <Dropdown
                                     style={{ marginBottom: 2 }}
                                     bsSize="xs"
@@ -513,6 +548,7 @@ class VisualizerWidget extends Component {
                                 >
                                     <Dropdown.Toggle
                                         disabled={!canSendCommand}
+                                        style={{ minWidth: 50 }}
                                     >
                                         {wcs}
                                     </Dropdown.Toggle>
