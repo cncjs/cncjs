@@ -23,7 +23,7 @@ class Probe extends Component {
         const { state, actions } = this.props;
         const { canClick, units, probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = state;
         const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
-        const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/mm');
+        const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
         const step = (units === METRIC_UNITS) ? 1 : 0.1;
         const classes = {
             'G38.2': classNames(
