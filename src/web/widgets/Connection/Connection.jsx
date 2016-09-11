@@ -2,7 +2,6 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import request from 'superagent';
 import Select from 'react-select';
 import Notifications from '../../components/Notifications';
 import api from '../../api';
