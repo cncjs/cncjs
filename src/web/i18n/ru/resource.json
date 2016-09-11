@@ -210,7 +210,7 @@
     "Run Macro": "Запуск макроса",
     "Probe": "Проба",
     "mm/min": "мм/мин",
-    "in/mm": "дюйм/мм",
+    "in/min": "дюймы/мин",
     "Probe Command": "Команда пробы",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "G38.2 проба до детали, стоп по контакту, выдать ошибку при неудаче",
     "G38.3 probe toward workpiece, stop on contact": "G38.3 проба до детали, стоп по контакту",

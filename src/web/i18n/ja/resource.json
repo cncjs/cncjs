@@ -210,7 +210,7 @@
     "Run Macro": "",
     "Probe": "",
     "mm/min": "",
-    "in/mm": "",
+    "in/min": "",
     "Probe Command": "",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "",
     "G38.3 probe toward workpiece, stop on contact": "",

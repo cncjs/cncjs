@@ -210,7 +210,7 @@
     "Run Macro": "Spuštění makra",
     "Probe": "Sonda",
     "mm/min": "mm/min",
-    "in/mm": "in/mm",
+    "in/min": "in/min",
     "Probe Command": "Příkazy sondy",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "G38.2 sonda najíždí k materiálu, zastaví při kontaktu, zahlásí chybu při selhání",
     "G38.3 probe toward workpiece, stop on contact": "G38.3 sonda najíždí k materiálu, zastaví při kontaktu",

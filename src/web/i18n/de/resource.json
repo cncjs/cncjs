@@ -210,7 +210,7 @@
     "Run Macro": "Ausführen eines Makros",
     "Probe": "Antaster",
     "mm/min": "mm/min",
-    "in/mm": "in/mm",
+    "in/min": "in/min",
     "Probe Command": "Antaster Kommando",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "G38.2 Antaster in Richtung Werkstück, bei Kontakt anhalten, Fehler melden bei Versagen",
     "G38.3 probe toward workpiece, stop on contact": "G38.3 Antaster in Richtung Werkstück, bei Kontakt anhalten",

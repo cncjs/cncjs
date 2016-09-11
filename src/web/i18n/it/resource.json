@@ -210,7 +210,7 @@
     "Run Macro": "Avvia Macro",
     "Probe": "Sonda",
     "mm/min": "",
-    "in/mm": "",
+    "in/min": "",
     "Probe Command": "Comandi sonda",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "G38.2 Sonda verso pezzo, si ferma al contatto , segnala errore se il fallimento",
     "G38.3 probe toward workpiece, stop on contact": "G38.3 Sonda verso pezzo, stop a contatto",

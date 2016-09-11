@@ -210,7 +210,7 @@
     "Run Macro": "執行巨集",
     "Probe": "探測",
     "mm/min": "mm/min",
-    "in/mm": "in/mm",
+    "in/min": "in/min",
     "Probe Command": "探測指令",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "G38.2 朝接近工件方向移動，在接觸時停止，若失敗會發出錯誤信號",
     "G38.3 probe toward workpiece, stop on contact": "G38.3 朝接近工件方向移動，在接觸時停止",

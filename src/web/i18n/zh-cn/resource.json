@@ -210,7 +210,7 @@
     "Run Macro": "运行宏",
     "Probe": "探针",
     "mm/min": "mm/min",
-    "in/mm": "in/mm",
+    "in/min": "in/min",
     "Probe Command": "探针指令",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "G38.2 探针向工作区移动，在接触时停止，若失败会发出错误信号",
     "G38.3 probe toward workpiece, stop on contact": "G38.3 探针向工作区移动，在接触时停止",

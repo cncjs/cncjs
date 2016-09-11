@@ -210,7 +210,7 @@
     "Run Macro": "Exécuter une macro",
     "Probe": "Palpeur",
     "mm/min": "mm/min",
-    "in/mm": "in/mm",
+    "in/min": "in/min",
     "Probe Command": "Commande de palpage",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "G38.2 palper vers la pièce, stopper au contact, signaler une erreur si échec",
     "G38.3 probe toward workpiece, stop on contact": "G38.3 palper vers la pièce, stopper au contact",

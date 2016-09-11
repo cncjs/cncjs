@@ -210,7 +210,7 @@
     "Run Macro": "Executar uma macro",
     "Probe": "Referenciamento e Nivelamento",
     "mm/min": "mm/min",
-    "in/mm": "in/mm",
+    "in/min": "in/min",
     "Probe Command": "Comando para Referenciamento",
     "G38.2 probe toward workpiece, stop on contact, signal error if failure": "G38.2 avança na direção da placa de toque, para no contato, sinal de erro se falhar",
     "G38.3 probe toward workpiece, stop on contact": "G38.3 avança na direção da placa de toque, para no contato",
