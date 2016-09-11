@@ -13,8 +13,10 @@ import log from '../../lib/log';
 import { mm2in } from '../../lib/units';
 import GCode from './GCode';
 import {
+    // Units
     IMPERIAL_UNITS,
     METRIC_UNITS,
+    // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
@@ -87,17 +89,11 @@ class GCodeWidget extends React.Component {
         },
         'Grbl:state': (state) => {
             const { parserstate } = { ...state };
-            let units = this.state.units;
-
-            // Imperial
-            if (parserstate.modal.units === 'G20') {
-                units = IMPERIAL_UNITS;
-            }
-
-            // Metric
-            if (parserstate.modal.units === 'G21') {
-                units = METRIC_UNITS;
-            }
+            const { modal = {} } = { ...parserstate };
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
 
             if (this.state.units !== units) {
                 this.setState({ units: units });
@@ -106,17 +102,10 @@ class GCodeWidget extends React.Component {
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
             const { modal = {} } = sr;
-            let units = this.state.units;
-
-            // Imperial
-            if (modal.units === 'G20') {
-                units = IMPERIAL_UNITS;
-            }
-
-            // Metric
-            if (modal.units === 'G21') {
-                units = METRIC_UNITS;
-            }
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
 
             if (this.state.units !== units) {
                 this.setState({ units: units });

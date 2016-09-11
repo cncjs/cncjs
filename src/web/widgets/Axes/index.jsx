@@ -11,16 +11,20 @@ import store from '../../store';
 import Axes from './Axes';
 import { show as showSettings } from './Settings';
 import {
+    // Units
     IMPERIAL_UNITS,
     METRIC_UNITS,
+    // Grbl
     GRBL,
-    TINYG2,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    // TinyG2
+    TINYG2,
     TINYG2_MACHINE_STATE_READY,
     TINYG2_MACHINE_STATE_STOP,
     TINYG2_MACHINE_STATE_END,
     TINYG2_MACHINE_STATE_RUN,
+    // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
@@ -78,18 +82,16 @@ class AxesWidget extends Component {
             const { status, parserstate } = { ...state };
             const { machinePosition, workPosition } = status;
             const { modal = {} } = { ...parserstate };
-            let units = this.state.units;
-            let customDistance = store.get('widgets.axes.jog.customDistance');
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
 
-            // Imperial
-            if (modal.units === 'G20') {
-                units = IMPERIAL_UNITS;
+            let customDistance = store.get('widgets.axes.jog.customDistance');
+            if (units === IMPERIAL_UNITS) {
                 customDistance = mm2in(customDistance).toFixed(4) * 1;
             }
-
-            // Metric
-            if (modal.units === 'G21') {
-                units = METRIC_UNITS;
+            if (units === METRIC_UNITS) {
                 customDistance = Number(customDistance).toFixed(3) * 1;
             }
 
@@ -107,18 +109,16 @@ class AxesWidget extends Component {
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
             const { machinePosition, workPosition, modal = {} } = sr;
-            let units = this.state.units;
-            let customDistance = store.get('widgets.axes.jog.customDistance');
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
 
-            // Imperial
-            if (modal.units === 'G20') {
-                units = IMPERIAL_UNITS;
+            let customDistance = store.get('widgets.axes.jog.customDistance');
+            if (units === IMPERIAL_UNITS) {
                 customDistance = mm2in(customDistance).toFixed(4) * 1;
             }
-
-            // Metric
-            if (modal.units === 'G21') {
-                units = METRIC_UNITS;
+            if (units === METRIC_UNITS) {
                 customDistance = Number(customDistance).toFixed(3) * 1;
             }
 

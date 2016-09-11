@@ -10,16 +10,20 @@ import controller from '../../lib/controller';
 import store from '../../store';
 import Probe from './Probe';
 import {
+    // Units
     IMPERIAL_UNITS,
     METRIC_UNITS,
+    // Grbl
     GRBL,
-    TINYG2,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    // TinyG2
+    TINYG2,
     TINYG2_MACHINE_STATE_READY,
     TINYG2_MACHINE_STATE_STOP,
     TINYG2_MACHINE_STATE_END,
     TINYG2_MACHINE_STATE_RUN,
+    // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import styles from './index.styl';
@@ -49,26 +53,24 @@ class ProbeWidget extends Component {
         'Grbl:state': (state) => {
             const { parserstate } = { ...state };
             const { modal = {} } = { ...parserstate };
-            let units = this.state.units;
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
+
             let {
                 probeDepth,
                 probeFeedrate,
                 tlo,
                 retractionDistance
             } = store.get('widgets.probe');
-
-            // Imperial
-            if (modal.units === 'G20') {
-                units = IMPERIAL_UNITS;
+            if (units === IMPERIAL_UNITS) {
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
                 tlo = mm2in(tlo).toFixed(4) * 1;
                 retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
             }
-
-            // Metric
-            if (modal.units === 'G21') {
-                units = METRIC_UNITS;
+            if (units === METRIC_UNITS) {
                 probeDepth = Number(probeDepth).toFixed(3) * 1;
                 probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
                 tlo = Number(tlo).toFixed(3) * 1;
@@ -95,26 +97,24 @@ class ProbeWidget extends Component {
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
             const { modal = {} } = sr;
-            let units = this.state.units;
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
+
             let {
                 probeDepth,
                 probeFeedrate,
                 tlo,
                 retractionDistance
             } = store.get('widgets.probe');
-
-            // Imperial
-            if (modal.units === 'G20') {
-                units = IMPERIAL_UNITS;
+            if (units === IMPERIAL_UNITS) {
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
                 tlo = mm2in(tlo).toFixed(4) * 1;
                 retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
             }
-
-            // Metric
-            if (modal.units === 'G21') {
-                units = METRIC_UNITS;
+            if (units === METRIC_UNITS) {
                 probeDepth = Number(probeDepth).toFixed(3) * 1;
                 probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
                 tlo = Number(tlo).toFixed(3) * 1;

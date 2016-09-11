@@ -11,6 +11,9 @@ import log from '../../lib/log';
 import store from '../../store';
 import Visualizer from './Visualizer';
 import {
+    // Units
+    IMPERIAL_UNITS,
+    METRIC_UNITS,
     // Grbl
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
@@ -20,7 +23,6 @@ import {
     GRBL_ACTIVE_STATE_HOME,
     GRBL_ACTIVE_STATE_ALARM,
     GRBL_ACTIVE_STATE_CHECK,
-
     // TinyG2
     TINYG2,
     TINYG2_MACHINE_STATE_INIT,
@@ -35,7 +37,6 @@ import {
     TINYG2_MACHINE_STATE_HOMING,
     TINYG2_MACHINE_STATE_JOGGING,
     TINYG2_MACHINE_STATE_SHUTDOWN,
-
     // Workflow
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -69,8 +70,13 @@ class VisualizerWidget extends Component {
             });
         },
         'Grbl:state': (state) => {
-            const { status } = { ...state };
+            const { status, parserstate } = { ...state };
             const { activeState, workPosition } = status;
+            const { modal = {} } = { ...parserstate };
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
 
@@ -85,6 +91,7 @@ class VisualizerWidget extends Component {
             }
 
             this.setState({
+                units: units,
                 controller: {
                     type: GRBL,
                     state: state
@@ -94,7 +101,11 @@ class VisualizerWidget extends Component {
         },
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
-            const { machineState, workPosition } = sr;
+            const { machineState, workPosition, modal = {} } = sr;
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
 
@@ -111,6 +122,7 @@ class VisualizerWidget extends Component {
             }
 
             this.setState({
+                units: units,
                 controller: {
                     type: TINYG2,
                     state: state
@@ -146,6 +158,7 @@ class VisualizerWidget extends Component {
             canClick: true, // Defaults to true
             isAgitated: false, // Defaults to false
             port: controller.port,
+            units: METRIC_UNITS,
             controller: {
                 type: controller.type,
                 state: controller.state
