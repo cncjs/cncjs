@@ -184,6 +184,7 @@ class AxesWidget extends Component {
                 state: controller.state
             },
             workflowState: controller.workflowState,
+            axes: ['x', 'y', 'z'],
             machinePosition: { // Machine position
                 x: '0.000',
                 y: '0.000',

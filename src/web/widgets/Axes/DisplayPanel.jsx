@@ -1,4 +1,4 @@
-import { isEqual } from 'lodash';
+import { includes, isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
@@ -37,7 +37,7 @@ class DisplayPanel extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { units, canClick, machinePosition, workPosition } = state;
+        const { units, canClick, axes, machinePosition, workPosition } = state;
         const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         const wcs = actions.getWorkCoordinateSystem();
 
@@ -53,6 +53,7 @@ class DisplayPanel extends Component {
                         </tr>
                     </thead>
                     <tbody>
+                    {includes(axes, 'x') &&
                         <tr>
                             <td styleName="coordinate">X</td>
                             <td styleName="machine-position">
@@ -209,6 +210,8 @@ class DisplayPanel extends Component {
                                 </DropdownButton>
                             </td>
                         </tr>
+                    }
+                    {includes(axes, 'y') &&
                         <tr>
                             <td styleName="coordinate">Y</td>
                             <td styleName="machine-position">
@@ -365,6 +368,8 @@ class DisplayPanel extends Component {
                                 </DropdownButton>
                             </td>
                         </tr>
+                    }
+                    {includes(axes, 'z') &&
                         <tr>
                             <td styleName="coordinate">Z</td>
                             <td styleName="machine-position">
@@ -521,6 +526,8 @@ class DisplayPanel extends Component {
                                 </DropdownButton>
                             </td>
                         </tr>
+                    }
+                    {includes(axes, 'a') &&
                         <tr>
                             <td styleName="coordinate">A</td>
                             <td styleName="machine-position">
@@ -677,6 +684,7 @@ class DisplayPanel extends Component {
                                 </DropdownButton>
                             </td>
                         </tr>
+                    }
                     </tbody>
                 </table>
             </div>
