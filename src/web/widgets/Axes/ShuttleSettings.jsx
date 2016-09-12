@@ -42,7 +42,7 @@ class ShuttleSettings extends React.Component {
         const { feedrateMin, feedrateMax, hertz, overshoot } = this.state;
 
         return (
-            <div className="panel panel-default">
+            <div className="panel panel-default" style={{ marginBottom: 0 }}>
                 <div className="panel-heading">
                     <h3 className="panel-title">{i18n._('Shuttle Settings')}</h3>
                 </div>

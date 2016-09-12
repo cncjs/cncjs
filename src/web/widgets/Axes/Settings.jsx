@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import Modal from '../../components/Modal';
 import i18n from '../../lib/i18n';
+import AxesSettings from './AxesSettings';
 import ShuttleSettings from './ShuttleSettings';
 
 const noop = () => {};
@@ -21,6 +22,7 @@ class Settings extends React.Component {
         }
     }
     handleSave() {
+        this.refs.axesSettings.save();
         this.refs.shuttleSettings.save();
         this.setState({ show: false });
         this.props.onSave();
@@ -34,14 +36,15 @@ class Settings extends React.Component {
         return (
             <Modal
                 backdrop="static"
+                bsSize="sm"
                 onHide={::this.handleCancel}
                 show={show}
-                style={{ minWidth: 480 }}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{i18n._('Axes Settings')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
+                    <AxesSettings ref="axesSettings" />
                     <ShuttleSettings ref="shuttleSettings" />
                 </Modal.Body>
                 <Modal.Footer>

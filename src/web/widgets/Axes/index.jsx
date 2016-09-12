@@ -30,7 +30,8 @@ import {
 import {
     DISTANCE_MIN,
     DISTANCE_MAX,
-    DISTANCE_STEP
+    DISTANCE_STEP,
+    DEFAULT_AXES
 } from './constants';
 import styles from './index.styl';
 
@@ -101,8 +102,14 @@ class AxesWidget extends Component {
                     type: GRBL,
                     state: state
                 },
-                machinePosition: machinePosition,
-                workPosition: workPosition,
+                machinePosition: {
+                    ...this.state.machinePosition,
+                    ...machinePosition
+                },
+                workPosition: {
+                    ...this.state.workPosition,
+                    ...workPosition
+                },
                 customDistance: customDistance
             });
         },
@@ -128,8 +135,14 @@ class AxesWidget extends Component {
                     type: TINYG2,
                     state: state
                 },
-                machinePosition: machinePosition,
-                workPosition: workPosition,
+                machinePosition: {
+                    ...this.state.machinePosition,
+                    ...machinePosition
+                },
+                workPosition: {
+                    ...this.state.workPosition,
+                    ...workPosition
+                },
                 customDistance: customDistance
             });
         }
@@ -184,7 +197,7 @@ class AxesWidget extends Component {
                 state: controller.state
             },
             workflowState: controller.workflowState,
-            axes: ['x', 'y', 'z'],
+            axes: store.get('widgets.axes.axes', DEFAULT_AXES),
             machinePosition: { // Machine position
                 x: '0.000',
                 y: '0.000',
@@ -374,7 +387,11 @@ class AxesWidget extends Component {
                             <Widget.Button
                                 type="edit"
                                 onClick={(event) => {
-                                    showSettings();
+                                    showSettings(() => {
+                                        // Update axes
+                                        const axes = store.get('widgets.axes.axes', DEFAULT_AXES);
+                                        this.setState({ axes: axes });
+                                    });
                                 }}
                             />
                             <Widget.Button
