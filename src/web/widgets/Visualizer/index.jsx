@@ -519,7 +519,8 @@ class VisualizerWidget extends Component {
                                         disabled={!canSendCommand}
                                         style={{ minWidth: 50 }}
                                     >
-                                        {units}
+                                        {units === IMPERIAL_UNITS && i18n._('in')}
+                                        {units === METRIC_UNITS && i18n._('mm')}
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
                                         <MenuItem
