@@ -55,11 +55,13 @@ export default (options) => new Promise((resolve, reject) => {
 
     const props = {
         ...options,
+        onConfirm: () => {
+            resolve();
+        },
+        onCancel: () => {
+            reject();
+        },
         container: container
-    };
-
-    props.onConfirm = () => {
-        resolve();
     };
 
     ReactDOM.render(<ConfirmHOC {...props} />, container);
