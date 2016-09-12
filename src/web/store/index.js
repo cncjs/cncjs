@@ -38,6 +38,7 @@ const defaultState = {
     },
     widgets: {
         axes: {
+            axes: ['x', 'y', 'z'],
             jog: {
                 keypad: false,
                 selectedDistance: '1',
