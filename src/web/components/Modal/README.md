@@ -5,18 +5,17 @@ import { Modal } from '../components';
 
 export default () => (
     <Modal
-        backdrop
         show={true}
         onHide={() => {
         }}
+        backdrop
+        closeButton
     >
-        <Modal.Header
-            closeButton
-        >
+        <Modal.Header>
             <Modal.Title>
             </Modal.Title>
         </Modal.Header>
-        <Modal.Body>
+        <Modal.Body padding={true}>
         </Modal.Body>
         <Modal.Footer>
             <button type="button" className="btn btn-default">Cancel</button>
