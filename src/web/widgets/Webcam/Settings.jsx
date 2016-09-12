@@ -39,9 +39,9 @@ class Settings extends Component {
         return (
             <Modal
                 backdrop="static"
+                bsSize="sm"
                 onHide={::this.handleCancel}
                 show={show}
-                style={{ minWidth: 480 }}
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>

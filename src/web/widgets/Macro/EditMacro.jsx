@@ -26,10 +26,10 @@ class EditMacro extends Component {
         return (
             <Modal
                 backdrop
+                bsSize="md"
                 onHide={() => {
                     actions.closeModal();
                 }}
-                style={{ minWidth: 640 }}
             >
                 <Modal.Header
                     closeButton
