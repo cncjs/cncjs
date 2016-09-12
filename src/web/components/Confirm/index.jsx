@@ -67,6 +67,7 @@ class Confirm extends Component {
                     'btn',
                     'btn-' + confirmBSStyle
                 )}
+                style={{ minWidth: 80 }}
                 onClick={::this.handleConfirm}
             >
                 {this.props.confirmText}
@@ -77,6 +78,7 @@ class Confirm extends Component {
                 key="cancel"
                 type="button"
                 className="btn btn-default"
+                style={{ minWidth: 80 }}
                 onClick={::this.handleCancel}
             >
                 {this.props.cancelText}
@@ -102,12 +104,14 @@ class Confirm extends Component {
                 show={show}
                 onHide={::this.handleCancel}
             >
-                <Modal.Header closeButton>
+            {title &&
+                <Modal.Header>
                     <Modal.Title>
                         {title}
                     </Modal.Title>
                 </Modal.Header>
-                <Modal.Body style={{ minHeight: 80 }}>
+            }
+                <Modal.Body>
                     {body}
                 </Modal.Body>
                 <Modal.Footer>
