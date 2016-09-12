@@ -1,3 +1,4 @@
+/* eslint react/no-set-state: 0 */
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Confirm from '../components/Confirm';
@@ -38,12 +39,9 @@ class ConfirmHOC extends Component {
     render() {
         return (
             <Confirm
-                style={{
-                    minWidth: 480
-                }}
+                {...this.props}
                 confirmText={i18n._('OK')}
                 cancelText={i18n._('Cancel')}
-                {...this.props}
                 onConfirm={::this.handleConfirm}
                 onCancel={::this.handleCancel}
             />
