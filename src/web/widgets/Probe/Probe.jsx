@@ -104,8 +104,8 @@ class Probe extends Component {
                     }
                     </p>
                 </div>
-                <div className="row no-gutters" styleName="probe-options-row">
-                    <div className="col-xs-6" styleName="probe-options-col">
+                <div className="row no-gutters">
+                    <div className="col-xs-6" style={{ paddingRight: 5 }}>
                         <div className="form-group">
                             <label className="control-label">{i18n._('Probe Depth')}</label>
                             <div className="input-group input-group-xs">
@@ -122,7 +122,7 @@ class Probe extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6" styleName="probe-options-col">
+                    <div className="col-xs-6" style={{ paddingLeft: 5 }}>
                         <div className="form-group">
                             <label className="control-label">{i18n._('Probe Feedrate')}</label>
                             <div className="input-group input-group-xs">
@@ -139,7 +139,7 @@ class Probe extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6" styleName="probe-options-col">
+                    <div className="col-xs-6" style={{ paddingRight: 5 }}>
                         <div className="form-group">
                             <label className="control-label">{i18n._('Touch Plate Thickness')}</label>
                             <div className="input-group input-group-xs">
@@ -156,7 +156,7 @@ class Probe extends Component {
                             </div>
                         </div>
                     </div>
-                    <div className="col-xs-6" styleName="probe-options-col">
+                    <div className="col-xs-6" style={{ paddingLeft: 5 }}>
                         <div className="form-group">
                             <label className="control-label">{i18n._('Retraction Distance')}</label>
                             <div className="input-group input-group-xs">
