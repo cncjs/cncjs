@@ -49,7 +49,7 @@ class ConfirmHOC extends Component {
     }
 }
 
-export default (options, callback) => {
+export default (options) => new Promise((resolve, reject) => {
     const container = document.createElement('div');
     document.body.appendChild(container);
 
@@ -58,9 +58,9 @@ export default (options, callback) => {
         container: container
     };
 
-    if (typeof callback === 'function') {
-        props.onConfirm = callback;
-    }
+    props.onConfirm = () => {
+        resolve();
+    };
 
     ReactDOM.render(<ConfirmHOC {...props} />, container);
-};
+});

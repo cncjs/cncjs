@@ -82,7 +82,7 @@ class EditMacro extends Component {
                                 confirmBSStyle: 'danger',
                                 confirmText: i18n._('Delete'),
                                 cancelText: i18n._('Cancel')
-                            }, () => {
+                            }).then(() => {
                                 actions.deleteMacro({ id });
                                 actions.closeModal();
                             });

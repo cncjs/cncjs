@@ -12,7 +12,7 @@ const Header = (props) => {
         confirm({
             title: i18n._('Restore Defaults'),
             body: i18n._('Are you sure you want to restore the default settings?')
-        }, () => {
+        }).then(() => {
             store.clear();
             window.location.reload();
         });
