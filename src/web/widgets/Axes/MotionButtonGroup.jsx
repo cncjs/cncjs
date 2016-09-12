@@ -31,11 +31,8 @@ class MotionButtonGroup extends Component {
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <DropdownButton
-                            bsSize="sm"
                             bsStyle="default"
-                            title={
-                                <span><i className="fa fa-h-square"></i>&nbsp;{i18n._('Predefined Position')}</span>
-                            }
+                            title={i18n._('Predefined Position')}
                             id="predefined-position-dropdown"
                             pullRight
                             disabled={!canClick}
