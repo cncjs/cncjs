@@ -269,7 +269,9 @@
     "Toggle Toolhead Animation": "Rimuovi animazione utensile",
     "Webcam": "",
     "Webcam Settings": "Impostazioni Webcam",
-    "URL": "",
+    "Media Source": "",
+    "Use a built-in camera or a connected webcam": "",
+    "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "Telecamera spenta",
     "Crosshair": ""
 }

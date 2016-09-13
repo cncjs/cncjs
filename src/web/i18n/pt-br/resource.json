@@ -269,7 +269,9 @@
     "Toggle Toolhead Animation": "Alterna para a ferramenta de exibição",
     "Webcam": "Webcam",
     "Webcam Settings": "Configurações da Webcam",
-    "URL": "URL",
+    "Media Source": "",
+    "Use a built-in camera or a connected webcam": "",
+    "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "Webcam desligada",
     "Crosshair": "Crosshair"
 }

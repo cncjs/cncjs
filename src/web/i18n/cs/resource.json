@@ -269,7 +269,9 @@
     "Toggle Toolhead Animation": "Animace nástroje",
     "Webcam": "Webkamera",
     "Webcam Settings": "Nastavení Webkamery",
-    "URL": "URL",
+    "Media Source": "",
+    "Use a built-in camera or a connected webcam": "",
+    "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "Webkamera je vypnuta",
     "Crosshair": "Crosshair"
 }

@@ -269,7 +269,9 @@
     "Toggle Toolhead Animation": "切換刀頭動畫",
     "Webcam": "網路攝影機",
     "Webcam Settings": "網路攝影機設定",
-    "URL": "網址",
+    "Media Source": "",
+    "Use a built-in camera or a connected webcam": "",
+    "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "網路攝影機未開啟",
     "Crosshair": "十字"
 }

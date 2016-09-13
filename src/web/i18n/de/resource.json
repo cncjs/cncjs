@@ -269,7 +269,9 @@
     "Toggle Toolhead Animation": "Werkzeugkopfanimation umschalten",
     "Webcam": "Webcam",
     "Webcam Settings": "Webcam-Einstellungen",
-    "URL": "URL",
+    "Media Source": "",
+    "Use a built-in camera or a connected webcam": "",
+    "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "Webcam ist aus",
     "Crosshair": "Fadenkreuz"
 }

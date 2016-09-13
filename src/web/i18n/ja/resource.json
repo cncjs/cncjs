@@ -269,7 +269,9 @@
     "Toggle Toolhead Animation": "",
     "Webcam": "",
     "Webcam Settings": "",
-    "URL": "",
+    "Media Source": "",
+    "Use a built-in camera or a connected webcam": "",
+    "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "",
     "Crosshair": ""
 }
