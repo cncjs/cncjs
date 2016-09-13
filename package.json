@@ -175,6 +175,7 @@
     "react-sortablejs": "~1.0.1",
     "react-validation": "~2.0.4",
     "react-virtualized": "~7.12.1",
+    "react-webcam": "0.0.14",
     "redux": "~3.5.2",
     "serialport": "~4.0.1",
     "serve-favicon": "~2.3.0",
