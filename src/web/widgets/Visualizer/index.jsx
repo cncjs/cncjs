@@ -513,10 +513,10 @@ class VisualizerWidget extends Component {
                                     }}
                                     bsSize="xs"
                                     id="units-dropdown"
+                                    disabled={!canSendCommand}
                                     pullRight
                                 >
                                     <Dropdown.Toggle
-                                        disabled={!canSendCommand}
                                         style={{ minWidth: 50 }}
                                     >
                                         {units === IMPERIAL_UNITS && i18n._('in')}
@@ -545,10 +545,10 @@ class VisualizerWidget extends Component {
                                     style={{ marginBottom: 2 }}
                                     bsSize="xs"
                                     id="wcs-dropdown"
+                                    disabled={!canSendCommand}
                                     pullRight
                                 >
                                     <Dropdown.Toggle
-                                        disabled={!canSendCommand}
                                         style={{ minWidth: 50 }}
                                     >
                                         {wcs}
