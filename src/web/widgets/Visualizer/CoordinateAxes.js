@@ -1,5 +1,5 @@
 import colornames from 'colornames';
-import THREE from 'three';
+import * as THREE from 'three';
 
 const buildAxis = (src, dst, color, dashed) => {
     let geometry = new THREE.Geometry();

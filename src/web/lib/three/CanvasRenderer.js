@@ -1,6 +1,7 @@
 /* eslint-disable */
-var THREE = require('three');
-module.exports = THREE;
+// https://github.com/mrdoob/three.js/blob/dev/examples/js/renderers/CanvasRenderer.js
+import * as THREE from 'three';
+import './Projector';
 
 /**
  * @author mrdoob / http://mrdoob.com/

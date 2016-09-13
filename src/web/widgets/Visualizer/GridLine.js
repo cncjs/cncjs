@@ -1,4 +1,4 @@
-import THREE from 'three';
+import * as THREE from 'three';
 
 class GridLine {
     group = new THREE.Object3D();

@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import THREE from 'three';
+import * as THREE from 'three';
 
 // Fits camera to object
 // @param {number} width The object width

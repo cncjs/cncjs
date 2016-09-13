@@ -3,7 +3,10 @@ import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
-import { THREE, Detector } from '../../lib/three';
+import * as THREE from 'three';
+import Detector from '../../lib/three/Detector';
+import '../../lib/three/CanvasRenderer';
+import '../../lib/three/TrackballControls';
 import Joystick from './Joystick';
 import Toolbar from './Toolbar';
 import FileUploader from './FileUploader';
@@ -105,6 +108,9 @@ class Visualizer extends Component {
             return true;
         }
         if (nextProps.state.workflowState !== this.props.state.workflowState) {
+            return true;
+        }
+        if (nextProps.state.renderAnimation !== this.props.state.renderAnimation) {
             return true;
         }
         if (!_.isEqual(
@@ -370,8 +376,8 @@ class Visualizer extends Component {
         const controls = new THREE.TrackballControls(object, domElement);
 
         controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 0.5;
-        controls.panSpeed = 1.0;
+        controls.zoomSpeed = 0.1;
+        controls.panSpeed = 0.3;
         controls.dynamicDampingFactor = 0.15;
         controls.minDistance = 1;
         controls.maxDistance = 5000;

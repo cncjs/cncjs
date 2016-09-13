@@ -1,4 +1,4 @@
-import THREE from 'three';
+import * as THREE from 'three';
 
 const buildToolHead = (color, texture) => {
     let object = new THREE.Object3D();
