@@ -2,6 +2,7 @@ import _ from 'lodash';
 import delay from 'delay';
 import React, { Component, PropTypes } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
+import WebcamMedia from 'react-webcam';
 import CSSModules from 'react-css-modules';
 import Anchor from '../../components/Anchor';
 import i18n from '../../lib/i18n';
@@ -10,6 +11,10 @@ import Image from './Image';
 import Line from './Line';
 import Circle from './Circle';
 import styles from './index.styl';
+import {
+    MEDIA_SOURCE_LOCAL,
+    MEDIA_SOURCE_MJPEG
+} from './constants';
 
 @CSSModules(styles, { allowMultiple: true })
 class Webcam extends Component {
@@ -23,18 +28,20 @@ class Webcam extends Component {
     }
     refresh() {
         const { state } = this.props;
-        const { url } = state;
+        const { mediaSource } = state;
 
-        this.refs['webcam-viewport'].src = '';
+        if (mediaSource === MEDIA_SOURCE_MJPEG) {
+            this.refs['mjpeg-media-source'].src = '';
 
-        delay(10) // delay 10ms
-            .then(() => {
-                this.refs['webcam-viewport'].src = url;
-            });
+            delay(10) // delay 10ms
+                .then(() => {
+                    this.refs['mjpeg-media-source'].src = state.url;
+                });
+        }
     }
     render() {
         const { state, actions } = this.props;
-        const { disabled, url, crosshair, scale } = state;
+        const { disabled, mediaSource, url, crosshair, scale } = state;
 
         if (disabled) {
             return (
@@ -47,17 +54,23 @@ class Webcam extends Component {
 
         return (
             <div styleName="webcam-on-container">
-            {url &&
+            {mediaSource === MEDIA_SOURCE_LOCAL &&
+                <div style={{ width: '100%' }}>
+                    <WebcamMedia
+                        className={styles.center}
+                        width={(100 * scale).toFixed(0) + '%'}
+                        height="auto"
+                    />
+                </div>
+            }
+            {mediaSource === MEDIA_SOURCE_MJPEG &&
                 <Image
                     src={url}
-                    ref="webcam-viewport"
+                    ref="mjpeg-media-source"
                     style={{
-                        width: (100 * scale).toFixed(0) + '%',
-                        position: 'absolute',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)'
+                        width: (100 * scale).toFixed(0) + '%'
                     }}
+                    className={styles.center}
                 />
             }
             {crosshair &&

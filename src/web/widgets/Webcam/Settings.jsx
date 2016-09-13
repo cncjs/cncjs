@@ -1,19 +1,30 @@
+import noop from 'lodash/noop';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Modal from '../../components/Modal';
 import i18n from '../../lib/i18n';
-
-const noop = () => {};
+import {
+    MEDIA_SOURCE_LOCAL,
+    MEDIA_SOURCE_MJPEG
+} from './constants';
 
 class Settings extends Component {
     static propTypes = {
+        mediaSource: PropTypes.string,
         url: PropTypes.string,
         onSave: PropTypes.func,
-        onClose: PropTypes.func.isRequired
+        onClose: PropTypes.func
+    };
+    static defaultProps = {
+        mediaSource: MEDIA_SOURCE_LOCAL,
+        url: '',
+        onSave: noop,
+        onClose: noop
     };
 
     state = {
         show: true,
+        mediaSource: this.props.mediaSource,
         url: this.props.url
     };
 
@@ -28,13 +39,17 @@ class Settings extends Component {
     }
     handleSave() {
         this.setState({ show: false });
-        this.props.onSave({ url: this.state.url });
+
+        this.props.onSave({
+            mediaSource: this.state.mediaSource,
+            url: this.state.url
+        });
     }
     handleCancel() {
         this.setState({ show: false });
     }
     render() {
-        const { show, url } = this.state;
+        const { show, mediaSource, url } = this.state;
 
         return (
             <Modal
@@ -47,18 +62,47 @@ class Settings extends Component {
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <form onSubmit={event => event.preventDefault()}>
+                    <h5>{i18n._('Media Source')}</h5>
+                    <div className="radio">
+                        <label>
+                            <input
+                                type="radio"
+                                name="mediaSource"
+                                value={MEDIA_SOURCE_LOCAL}
+                                checked={mediaSource === MEDIA_SOURCE_LOCAL}
+                                onChange={() => {
+                                    this.setState({ mediaSource: MEDIA_SOURCE_LOCAL });
+                                }}
+                            />
+                            {i18n._('Use a built-in camera or a connected webcam')}
+                        </label>
+                    </div>
+                    <div className="radio">
+                        <label>
+                            <input
+                                type="radio"
+                                name="mediaSource"
+                                value={MEDIA_SOURCE_MJPEG}
+                                checked={mediaSource === MEDIA_SOURCE_MJPEG}
+                                onChange={() => {
+                                    this.setState({ mediaSource: MEDIA_SOURCE_MJPEG });
+                                }}
+                            />
+                            {i18n._('Use a M-JPEG stream over HTTP')}
+                        </label>
+                    </div>
+                    <div style={{ marginLeft: 20 }}>
                         <div className="form-group">
-                            <label>{i18n._('URL')}</label>
                             <input
                                 type="url"
                                 className="form-control"
+                                disabled={mediaSource !== MEDIA_SOURCE_MJPEG}
                                 placeholder="http://raspberrypi:8080/?action=stream"
                                 defaultValue={url}
                                 onChange={::this.handleChangeURL}
                             />
                         </div>
-                    </form>
+                    </div>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
@@ -81,17 +125,27 @@ class Settings extends Component {
     }
 }
 
-export const show = (options, callback = noop) => {
-    const { url } = { ...options };
+export const show = (options) => new Promise((resolve, reject) => {
     const el = document.body.appendChild(document.createElement('div'));
-    const handleClose = (e) => {
-        ReactDOM.unmountComponentAtNode(el);
+    const removeContainer = (el) => {
         setTimeout(() => {
+            ReactDOM.unmountComponentAtNode(el);
             el.remove();
         }, 0);
     };
 
-    ReactDOM.render(<Settings url={url} onSave={callback} onClose={handleClose} />, el);
-};
+    const props = {
+        ...options,
+        onSave: (data) => {
+            removeContainer(el);
+            resolve(data);
+        },
+        onClose: () => {
+            removeContainer(el);
+        }
+    };
+
+    ReactDOM.render(<Settings {...props} />, el);
+});
 
 export default Settings;

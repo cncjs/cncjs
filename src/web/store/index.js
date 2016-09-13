@@ -102,7 +102,14 @@ const defaultState = {
         },
         webcam: {
             disabled: false,
+
+            // local - Use a built-in camera or a connected webcam
+            // mjpeg - M-JPEG stream over HTTP
+            mediaSource: 'local',
+
+            // The URL field is required for the M-JPEG stream
             url: '',
+
             crosshair: false,
             scale: 1.0
         }

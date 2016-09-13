@@ -6,8 +6,11 @@ import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import Webcam from './Webcam';
-import { show as editSettings } from './Settings';
+import * as Settings from './Settings';
 import styles from './index.styl';
+import {
+    MEDIA_SOURCE_LOCAL
+} from './constants';
 
 @CSSModules(styles, { allowMultiple: true })
 class WebcamWidget extends Component {
@@ -28,12 +31,14 @@ class WebcamWidget extends Component {
     componentDidUpdate(prevProps, prevState) {
         const {
             disabled,
+            mediaSource,
             url,
             crosshair,
             scale
         } = this.state;
 
         store.set('widgets.webcam.disabled', disabled);
+        store.set('widgets.webcam.mediaSource', mediaSource);
         store.set('widgets.webcam.url', url);
         store.set('widgets.webcam.crosshair', crosshair);
         store.set('widgets.webcam.scale', scale);
@@ -43,6 +48,7 @@ class WebcamWidget extends Component {
             isCollapsed: false,
             isFullscreen: false,
             disabled: store.get('widgets.webcam.disabled'),
+            mediaSource: store.get('widgets.webcam.mediaSource', MEDIA_SOURCE_LOCAL),
             url: store.get('widgets.webcam.url'),
             crosshair: store.get('widgets.webcam.crosshair'),
             scale: store.get('widgets.webcam.scale')
@@ -82,10 +88,16 @@ class WebcamWidget extends Component {
                             <Widget.Button
                                 type="edit"
                                 onClick={(event) => {
-                                    const { url } = this.state;
-                                    editSettings({ url }, ({ url }) => {
-                                        this.setState({ url: url });
-                                    });
+                                    const options = {
+                                        mediaSource: this.state.mediaSource,
+                                        url: this.state.url
+                                    };
+
+                                    Settings.show(options)
+                                        .then(data => {
+                                            const { mediaSource, url } = data;
+                                            this.setState({ mediaSource, url });
+                                        });
                                 }}
                             />
                             <Widget.Button
