@@ -39,10 +39,6 @@ export default {
             { // Hogan template with .hogan extension
                 extension: 'hogan',
                 template: 'hogan'
-            },
-            { // React template with .jsx extension
-                extension: 'jsx',
-                template: 'react'
             }
         ]
     },
