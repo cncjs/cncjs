@@ -68,7 +68,8 @@ export const getAcceptedLanguage = (req, res) => {
         acceptedList: acceptedList,
         sortedLngs: sortedLngs,
         supportedLngs: settings.supportedLngs,
-        preferred: preferred, match: match
+        preferred: preferred,
+        match: match
     });
 
     res.send(preferred);

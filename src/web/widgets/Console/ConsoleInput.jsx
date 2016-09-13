@@ -1,9 +1,9 @@
 import _ from 'lodash';
-import i18n from '../../lib/i18n';
 import React from 'react';
 import CSSModules from 'react-css-modules';
 import ReactDOM from 'react-dom';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
+import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
 import styles from './index.styl';
 

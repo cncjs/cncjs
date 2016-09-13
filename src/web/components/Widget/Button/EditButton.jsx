@@ -19,7 +19,7 @@ const EditButton = (props) => {
             onClick={handleClick}
         >
         {children ||
-            <i className="fa fa-cog"></i>
+            <i className="fa fa-cog" />
         }
         </a>
     );

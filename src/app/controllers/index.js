@@ -1,2 +1,2 @@
-export GrblController from './Grbl';
-export TinyG2Controller from './TinyG2';
+export GrblController from './Grbl/GrblController';
+export TinyG2Controller from './TinyG2/TinyG2Controller';

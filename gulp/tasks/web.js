@@ -15,6 +15,7 @@ export default (options) => {
         }
 
         const webpackConfig = require('../../webpack.config.development');
+
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build-dev', err);
@@ -46,6 +47,7 @@ export default (options) => {
         }
 
         const webpackConfig = require('../../webpack.config.production');
+
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build', err);

@@ -74,7 +74,7 @@ class FileUploader extends Component {
             <div styleName="file-uploader-block">
                 <div styleName="file-uploader-box" ref="file-uploader-box">
                     <div styleName="file-uploader-content" disabled={disabled}>
-                        <i style={{ fontSize: 48 }} className="fa fa-arrow-circle-o-up"></i>
+                        <i style={{ fontSize: 48 }} className="fa fa-arrow-circle-o-up" />
                         <p styleName="file-uploader-tips">{i18n._('Drop G-code file here or click below to upload.')}</p>
                         <br />
                         <button

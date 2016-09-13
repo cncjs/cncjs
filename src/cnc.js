@@ -1,11 +1,10 @@
 /* eslint max-len: 0 */
-
-// Defaults to 'production'
-process.env.NODE_ENV = process.env.NODE_ENV || 'production';
-
 import path from 'path';
 import program from 'commander';
 import pkg from './package.json';
+
+// Defaults to 'production'
+process.env.NODE_ENV = process.env.NODE_ENV || 'production';
 
 const increaseVerbosityLevel = (val, total) => {
     return total + 1;

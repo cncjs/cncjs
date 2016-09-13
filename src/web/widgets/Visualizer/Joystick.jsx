@@ -27,7 +27,7 @@ class Joystick extends Component {
         return (
             <div styleName="joystick">
                 <div className="row no-gutters">
-                    <div className="col-xs-4"></div>
+                    <div className="col-xs-4" />
                     <div className="col-xs-4">
                         <PressAndHold
                             styleName="joystick-button"
@@ -35,10 +35,10 @@ class Joystick extends Component {
                             title={i18n._('Move Up')}
                             disabled={disabled}
                         >
-                            <i className="fa fa-chevron-up"></i>
+                            <i className="fa fa-chevron-up" />
                         </PressAndHold>
                     </div>
-                    <div className="col-xs-4"></div>
+                    <div className="col-xs-4" />
                 </div>
                 <div className="row no-gutters">
                     <div className="col-xs-4 texe-center">
@@ -48,7 +48,7 @@ class Joystick extends Component {
                             title={i18n._('Move Left')}
                             disabled={disabled}
                         >
-                            <i className="fa fa-chevron-left"></i>
+                            <i className="fa fa-chevron-left" />
                         </PressAndHold>
                     </div>
                     <div className="col-xs-4">
@@ -58,7 +58,7 @@ class Joystick extends Component {
                             title={i18n._('Reset Position')}
                             disabled={disabled}
                         >
-                            <i className="fa fa-square-o"></i>
+                            <i className="fa fa-square-o" />
                         </PressAndHold>
                     </div>
                     <div className="col-xs-4">
@@ -68,12 +68,12 @@ class Joystick extends Component {
                             title={i18n._('Move Right')}
                             disabled={disabled}
                         >
-                            <i className="fa fa-chevron-right"></i>
+                            <i className="fa fa-chevron-right" />
                         </PressAndHold>
                     </div>
                 </div>
                 <div className="row no-gutters">
-                    <div className="col-xs-4"></div>
+                    <div className="col-xs-4" />
                     <div className="col-xs-4">
                         <PressAndHold
                             styleName="joystick-button"
@@ -81,10 +81,10 @@ class Joystick extends Component {
                             title={i18n._('Move Down')}
                             disabled={disabled}
                         >
-                            <i className="fa fa-chevron-down" style={{ verticalAlign: 'top' }}></i>
+                            <i className="fa fa-chevron-down" style={{ verticalAlign: 'top' }} />
                         </PressAndHold>
                     </div>
-                    <div className="col-xs-4"></div>
+                    <div className="col-xs-4" />
                 </div>
             </div>
         );

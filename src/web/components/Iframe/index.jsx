@@ -16,7 +16,7 @@ class Iframe extends React.Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return ! _.isEqual(nextProps, this.props);
+        return !_.isEqual(nextProps, this.props);
     }
     reload() {
         let el = ReactDOM.findDOMNode(this);

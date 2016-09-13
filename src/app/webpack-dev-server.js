@@ -3,9 +3,9 @@ import webpackDevMiddleware from 'webpack-dev-middleware';
 
 const webpackDevServer = (app) => {
     const config = require('../../webpack.config.development');
-    const compiler = webpack(config);
 
     // https://github.com/webpack/webpack-dev-middleware
+    const compiler = webpack(config);
     app.use(webpackDevMiddleware(compiler, {
         noInfo: false,
         quite: false,

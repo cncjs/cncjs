@@ -288,7 +288,7 @@ class Connection extends React.Component {
             <div style={styles.option} title={label}>
                 <div>
                 {inuse &&
-                    <span><i className="fa fa-lock"></i>&nbsp;</span>
+                    <span><i className="fa fa-lock" />&nbsp;</span>
                 }
                     {label}
                 </div>
@@ -310,7 +310,7 @@ class Connection extends React.Component {
         return (
             <div style={style} title={label}>
                 {inuse &&
-                    <span><i className="fa fa-lock"></i>&nbsp;</span>
+                    <span><i className="fa fa-lock" />&nbsp;</span>
                 }
                 {label}
             </div>
@@ -422,8 +422,8 @@ class Connection extends React.Component {
                                 disabled={!canRefresh}
                             >
                             {notLoading
-                                ? <i className="fa fa-refresh"></i>
-                                : <i className="fa fa-refresh rotating"></i>
+                                ? <i className="fa fa-refresh" />
+                                : <i className="fa fa-refresh rotating" />
                             }
                             </button>
                         </div>
@@ -466,7 +466,7 @@ class Connection extends React.Component {
                                 });
                             }}
                         >
-                            <i className="fa fa-toggle-off"></i>&nbsp;{i18n._('Open')}
+                            <i className="fa fa-toggle-off" />&nbsp;{i18n._('Open')}
                         </button>
                     }
                     {connected &&
@@ -478,7 +478,7 @@ class Connection extends React.Component {
                                 this.closePort(port);
                             }}
                         >
-                            <i className="fa fa-toggle-on"></i>&nbsp;{i18n._('Close')}
+                            <i className="fa fa-toggle-on" />&nbsp;{i18n._('Close')}
                         </button>
                     }
                 </div>

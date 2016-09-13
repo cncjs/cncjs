@@ -44,7 +44,7 @@ class Macro extends Component {
     handleLoadMacro({ id, name, content }) {
         controller.command('macro', id, (err) => {
             if (err) {
-                log.error('Failed to load the macro: id=${id}, name="${name}"');
+                log.error(`Failed to load the macro: id=${id}, name="${name}"`);
                 return;
             }
 
@@ -101,8 +101,7 @@ class Macro extends Component {
                                 <th>
                                     {i18n._('Total: {{total}}', { total: macros.length })}
                                 </th>
-                                <th style={{ width: '1%' }}>
-                                </th>
+                                <th style={{ width: '1%' }} />
                             </tr>
                         </thead>
                         <tbody>

@@ -187,7 +187,6 @@ class Probe extends Component {
                                     {i18n._('Run Z-probe')}
                                 </button>
                             </div>
-                            <div className="btn-group" role="group"></div>
                         </div>
                     </div>
                 </div>

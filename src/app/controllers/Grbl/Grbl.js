@@ -84,31 +84,31 @@ class GrblLineParserResultStatus {
         }
 
         { // Planner Buffer
-            if (result.hasOwnProperty('Buf')) {
+            if (_.has(result, 'Buf')) {
                 payload.plannerBuffer = _.get(result, 'Buf[0]');
             }
         }
 
         { // RX Buffer
-            if (result.hasOwnProperty('RX')) {
+            if (_.has(result, 'RX')) {
                 payload.rxBuffer = _.get(result, 'RX[0]');
             }
         }
 
         { // Line Number
-            if (result.hasOwnProperty('Ln')) {
+            if (_.has(result, 'Ln')) {
                 payload.lineNumber = _.get(result, 'Ln[0]');
             }
         }
 
         { // Realtime Rate
-            if (result.hasOwnProperty('F')) {
+            if (_.has(result, 'F')) {
                 payload.realtimeRate = _.get(result, 'F[0]');
             }
         }
 
         { // Limit Pins
-            if (result.hasOwnProperty('Lim')) {
+            if (_.has(result, 'Lim')) {
                 payload.limitPins = _.get(result, 'Lim[0]');
             }
         }

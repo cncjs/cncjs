@@ -45,7 +45,7 @@ class WidgetListItem extends React.Component {
         return (
             <div className="panel panel-default">
                 <div className="panel-head text-center" style={styles.thumbnail}>
-                    <i className="fa fa-list-alt"></i>
+                    <i className="fa fa-list-alt" />
                 </div>
                 <div className="panel-body">
                     <div className="row no-gutters">

@@ -124,7 +124,7 @@ class WebcamWidget extends Component {
                                 type="default"
                                 onClick={(event) => this.setState({ disabled: !disabled })}
                             >
-                                <i className={classes.webcamOnOff}></i>
+                                <i className={classes.webcamOnOff} />
                             </Widget.Button>
                         </Widget.Toolbar>
                     </Widget.Header>

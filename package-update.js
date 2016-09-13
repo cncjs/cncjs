@@ -4,11 +4,11 @@
 import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
+import findImports from 'find-imports';
 
 // Copy necessary properties from 'package.json' to 'src/package.json'
 import pkg from './package.json';
 import pkgApp from './src/package.json';
-import findImports from 'find-imports';
 
 const files = [
     'src/*.js',

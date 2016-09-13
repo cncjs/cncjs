@@ -318,7 +318,7 @@ class Workspace extends React.Component {
                                                 className="btn btn-default"
                                                 onClick={::this.updateWidgetsForPrimaryContainer}
                                             >
-                                                <i className="fa fa-list-alt"></i>&nbsp;
+                                                <i className="fa fa-list-alt" />&nbsp;
                                                 {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                             </button>
                                         </div>
@@ -328,7 +328,7 @@ class Workspace extends React.Component {
                                                 className="btn btn-default"
                                                 onClick={::this.togglePrimaryContainer}
                                             >
-                                                <i className="fa fa-chevron-left"></i>
+                                                <i className="fa fa-chevron-left" />
                                             </button>
                                         </div>
                                     </div>
@@ -346,7 +346,7 @@ class Workspace extends React.Component {
                                             className="btn btn-default"
                                             onClick={::this.togglePrimaryContainer}
                                         >
-                                            <i className="fa fa-chevron-right"></i>
+                                            <i className="fa fa-chevron-right" />
                                         </button>
                                     </div>
                                 </div>
@@ -362,7 +362,7 @@ class Workspace extends React.Component {
                                             className="btn btn-default"
                                             onClick={::this.toggleSecondaryContainer}
                                         >
-                                            <i className="fa fa-chevron-left"></i>
+                                            <i className="fa fa-chevron-left" />
                                         </button>
                                     </div>
                                 </div>
@@ -385,7 +385,7 @@ class Workspace extends React.Component {
                                                 className="btn btn-default"
                                                 onClick={::this.toggleSecondaryContainer}
                                             >
-                                                <i className="fa fa-chevron-right"></i>
+                                                <i className="fa fa-chevron-right" />
                                             </button>
                                         </div>
                                         <div className="btn-group btn-group-xs pull-right" role="group">
@@ -394,7 +394,7 @@ class Workspace extends React.Component {
                                                 className="btn btn-default"
                                                 onClick={::this.updateWidgetsForSecondaryContainer}
                                             >
-                                                <i className="fa fa-list-alt"></i>&nbsp;
+                                                <i className="fa fa-list-alt" />&nbsp;
                                                 {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                             </button>
                                         </div>

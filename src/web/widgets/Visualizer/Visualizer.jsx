@@ -252,34 +252,32 @@ class Visualizer extends Component {
             this.group.add(axisZLabel);
 
             for (let i = -GRID_X_LENGTH; i <= GRID_X_LENGTH; i += 50) {
-                if (i === 0) {
-                    continue;
+                if (i !== 0) {
+                    const textLabel = new TextSprite({
+                        x: i,
+                        y: 10,
+                        z: 0,
+                        size: 8,
+                        text: i,
+                        color: colornames('red'),
+                        opacity: 0.5
+                    });
+                    this.group.add(textLabel);
                 }
-                const textLabel = new TextSprite({
-                    x: i,
-                    y: 10,
-                    z: 0,
-                    size: 8,
-                    text: i,
-                    color: colornames('red'),
-                    opacity: 0.5
-                });
-                this.group.add(textLabel);
             }
             for (let i = -GRID_Y_LENGTH; i <= GRID_Y_LENGTH; i += 50) {
-                if (i === 0) {
-                    continue;
+                if (i !== 0) {
+                    const textLabel = new TextSprite({
+                        x: -10,
+                        y: i,
+                        z: 0,
+                        size: 8,
+                        text: i,
+                        color: colornames('green'),
+                        opacity: 0.5
+                    });
+                    this.group.add(textLabel);
                 }
-                const textLabel = new TextSprite({
-                    x: -10,
-                    y: i,
-                    z: 0,
-                    size: 8,
-                    text: i,
-                    color: colornames('green'),
-                    opacity: 0.5
-                });
-                this.group.add(textLabel);
             }
         }
 
@@ -501,7 +499,7 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
-	// deltaX and deltaY are in pixels; right and down are positive
+    // deltaX and deltaY are in pixels; right and down are positive
     pan(deltaX, deltaY) {
         const eye = new THREE.Vector3();
         const pan = new THREE.Vector3();

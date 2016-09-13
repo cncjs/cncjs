@@ -44,7 +44,7 @@ const browser = {
 // Data URIs must be smaller than 32 KiB in Internet Explorer 8
 browser.datauri = {
     // Alternative to Modernizr.datauri.over32kb
-    over32kb: ! (browser.isIE() && browser.getIEVersion() < 9)
+    over32kb: !(browser.isIE() && browser.getIEVersion() < 9)
 };
 
 export default browser;

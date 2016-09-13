@@ -1,8 +1,8 @@
 /* eslint import/no-unresolved: 0 */
 import util from 'util';
 import { app } from 'electron';
-import { WindowManager, handleStartupEvent, setApplicationMenu } from './desktop';
 import fse from 'fs-extra';
+import { WindowManager, handleStartupEvent, setApplicationMenu } from './desktop';
 import cnc from './cnc';
 import pkg from './package.json';
 

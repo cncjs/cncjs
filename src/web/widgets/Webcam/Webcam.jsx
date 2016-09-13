@@ -1,12 +1,12 @@
 import _ from 'lodash';
 import delay from 'delay';
+import Slider from 'rc-slider';
 import React, { Component, PropTypes } from 'react';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import WebcamMedia from 'react-webcam';
 import CSSModules from 'react-css-modules';
 import Anchor from '../../components/Anchor';
 import i18n from '../../lib/i18n';
-import Slider from 'rc-slider';
 import Image from './Image';
 import Line from './Line';
 import Circle from './Circle';
@@ -46,7 +46,7 @@ class Webcam extends Component {
         if (disabled) {
             return (
                 <div styleName="webcam-off-container">
-                    <h4><i styleName="icon-webcam"></i></h4>
+                    <h4><i styleName="icon-webcam" /></h4>
                     <h5>{i18n._('Webcam is off')}</h5>
                 </div>
             );
@@ -106,7 +106,7 @@ class Webcam extends Component {
                                 actions.toggleCrosshair();
                             }}
                         >
-                            <i className="fa fa-crosshairs"></i>
+                            <i className="fa fa-crosshairs" />
                         </Anchor>
                     </OverlayTrigger>
                 </div>

@@ -3,6 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import express from 'express';
 import engines from 'consolidate';
+import 'hogan.js'; // required by consolidate
 import errorhandler from 'errorhandler';
 import favicon from 'serve-favicon';
 import cookieParser from 'cookie-parser';
@@ -30,9 +31,6 @@ import errclient from './lib/middleware/errclient';
 import errlog from './lib/middleware/errlog';
 import errnotfound from './lib/middleware/errnotfound';
 import errserver from './lib/middleware/errserver';
-
-// Required by consolidate.js
-import 'hogan.js';
 
 const renderPage = (req, res, next) => {
     const view = req.params[0] || 'index';
@@ -86,6 +84,7 @@ const appMain = () => {
     {  // Settings
         if (process.env.NODE_ENV === 'development') {
             const webpackDevServer = require('./webpack-dev-server').default;
+
             webpackDevServer(app);
 
             // Error handler - https://github.com/expressjs/errorhandler

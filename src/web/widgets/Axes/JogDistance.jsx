@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import i18n from '../../lib/i18n';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
+import i18n from '../../lib/i18n';
 import combokeys from '../../lib/combokeys';
 import PressAndHold from '../../components/PressAndHold';
 import {
@@ -143,7 +143,7 @@ class JogDistance extends Component {
                             }}
                             title={i18n._('Increase custom distance by one unit')}
                         >
-                            <span className="fa fa-plus"></span>
+                            <i className="fa fa-plus" />
                         </PressAndHold>
                         <PressAndHold
                             className="btn btn-default"
@@ -152,7 +152,7 @@ class JogDistance extends Component {
                             }}
                             title={i18n._('Decrease custom distance by one unit')}
                         >
-                            <span className="fa fa-minus"></span>
+                            <i className="fa fa-minus" />
                         </PressAndHold>
                     </div>
                 </div>

@@ -36,21 +36,21 @@ class Toolbar extends Component {
                         onClick={actions.handleRun}
                         disabled={!canRun}
                     >
-                        <i className="fa fa-play"></i>
+                        <i className="fa fa-play" />
                     </Button>
                     <Button
                         title={i18n._('Pause')}
                         onClick={actions.handlePause}
                         disabled={!canPause}
                     >
-                        <i className="fa fa-pause"></i>
+                        <i className="fa fa-pause" />
                     </Button>
                     <Button
                         title={i18n._('Stop')}
                         onClick={actions.handleStop}
                         disabled={!canStop}
                     >
-                        <i className="fa fa-stop"></i>
+                        <i className="fa fa-stop" />
                     </Button>
                     <Button
                         title={i18n._('Close')}
@@ -64,7 +64,7 @@ class Toolbar extends Component {
                     <DropdownButton
                         bsSize="sm"
                         title={
-                            <i className="fa fa-cog"></i>
+                            <i className="fa fa-cog" />
                         }
                         noCaret={true}
                         id="visualizer-dropdown"

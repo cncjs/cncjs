@@ -75,7 +75,7 @@ class GCodeTable extends Component {
                             };
 
                             return (
-                                <i className={classes.icon} style={styles.icon}></i>
+                                <i className={classes.icon} style={styles.icon} />
                             );
                         }}
                         dataKey="status"

@@ -18,7 +18,7 @@ const RefreshButton = (props) => {
             onClick={handleClick}
         >
         {children ||
-            <i className="fa fa-refresh"></i>
+            <i className="fa fa-refresh" />
         }
         </a>
     );

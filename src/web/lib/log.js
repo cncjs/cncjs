@@ -77,9 +77,9 @@ const consoleLogger = (logger) => {
 
     let args = [];
     if (browser.isIE() ||
-       (browser.isFirefox() && ! supportFirefox()) ||
-       (browser.isOpera() && ! supportOpera()) ||
-       (browser.isSafari() && ! supportSafari())) {
+       (browser.isFirefox() && !supportFirefox()) ||
+       (browser.isOpera() && !supportOpera()) ||
+       (browser.isSafari() && !supportSafari())) {
         args.push(logger.datetime || '');
         args.push(logger.level || '');
     } else {
@@ -116,7 +116,7 @@ const consoleLogger = (logger) => {
         // console.log.apply not working in Internet Explorer 9 and earlier browser versions
         // Use console.log(message) for IE and console.log.apply(console, arguments) for Safari, Firefox, Chrome, etc.
         if ((browser.isIE() && (browser.getIEVersion() <= 9)) ||
-            (browser.isFirefox() && ! supportFirefox())) {
+            (browser.isFirefox() && !supportFirefox())) {
             const message = args.join(' ');
             console.log(message);
             return;

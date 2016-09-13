@@ -19,7 +19,7 @@ const DeleteButton = (props) => {
             onClick={handleClick}
         >
         {children ||
-            <i className="fa fa-times"></i>
+            <i className="fa fa-times" />
         }
         </a>
     );
