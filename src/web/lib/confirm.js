@@ -59,7 +59,6 @@ export default (options) => new Promise((resolve, reject) => {
             resolve();
         },
         onCancel: () => {
-            reject();
         },
         container: container
     };
