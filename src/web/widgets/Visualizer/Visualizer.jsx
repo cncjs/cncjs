@@ -273,7 +273,7 @@ class Visualizer extends Component {
                 if (i !== 0) {
                     const textLabel = new TextSprite({
                         x: i * gridSpacing,
-                        y: 10,
+                        y: 5,
                         z: 0,
                         size: 6,
                         text: i,
@@ -286,7 +286,7 @@ class Visualizer extends Component {
             for (let i = -gridCount; i <= gridCount; ++i) {
                 if (i !== 0) {
                     const textLabel = new TextSprite({
-                        x: -10,
+                        x: -5,
                         y: i * gridSpacing,
                         z: 0,
                         size: 6,
