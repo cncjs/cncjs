@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
+import Anchor from '../../Anchor';
 import styles from '../index.styl';
 
 @CSSModules(styles, { allowMultiple: true })
@@ -22,17 +23,16 @@ class DeleteButton extends Component {
         const { children, title, ...others } = this.props;
 
         return (
-            <a
+            <Anchor
                 {...others}
-                href="#"
                 title={title}
                 styleName="btn-icon"
                 onClick={::this.handleClick}
             >
             {children ||
-                <i className="fa fa-times"></i>
+                <i className="fa fa-times" />
             }
-            </a>
+            </Anchor>
         );
     }
 }

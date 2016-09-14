@@ -6,6 +6,7 @@ import i18n from '../../lib/i18n';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 import confirm from '../../lib/confirm';
+import Anchor from '../../components/Anchor';
 
 const Header = (props) => {
     const handleRestoreDefaults = () => {
@@ -27,20 +28,29 @@ const Header = (props) => {
             <Navbar fixedTop fluid inverse>
                 <Navbar.Header>
                     <Navbar.Brand>
-                        <a
+                        <Anchor
                             href={homepage}
                             target="_blank"
                             title={brandTitle}
                         >
                             {settings.name}
-                        </a>
+                        </Anchor>
                     </Navbar.Brand>
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
                     <Nav>
-                        <NavItem href="#/workspace">{i18n._('Workspace')}</NavItem>
-                        <NavDropdown title={i18n._('Settings')} id="nav-dropdown">
+                        <NavItem
+                            eventKey={1}
+                            href="#/workspace"
+                        >
+                            {i18n._('Workspace')}
+                        </NavItem>
+                        <NavDropdown
+                            eventKey={2}
+                            title={i18n._('Settings')}
+                            id="nav-dropdown"
+                        >
                             <MenuItem header>{i18n._('Language')}</MenuItem>
                             <MenuItem
                                 href="?lang=cs"
