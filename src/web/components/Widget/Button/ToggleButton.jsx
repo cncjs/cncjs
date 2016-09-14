@@ -1,27 +1,29 @@
+/* eslint react/no-set-state: 0 */
 import classNames from 'classnames';
 import React from 'react';
-import i18n from '../../../lib/i18n';
+import CSSModules from 'react-css-modules';
+import styles from '../index.styl';
 
+@CSSModules(styles)
 class ToggleButton extends React.Component {
     static propTypes = {
-        children: React.PropTypes.node,
         defaultValue: React.PropTypes.bool,
         title: React.PropTypes.string,
         onClick: React.PropTypes.func.isRequired
     };
     static defaultProps = {
-        title: i18n._('Expand/Collapse'),
-        defaultValue: false
+        defaultValue: false,
+        onClick: () => {}
     };
     state = {
         isCollapsed: this.props.defaultValue
     };
 
     handleClick(event) {
-        event.preventDefault();
-
+        const { onClick } = this.props;
         const { isCollapsed } = this.state;
-        this.props.onClick(event, !isCollapsed);
+        event.preventDefault();
+        onClick(event, !isCollapsed);
         this.setState({ isCollapsed: !isCollapsed });
     }
     render() {
@@ -40,11 +42,11 @@ class ToggleButton extends React.Component {
                 {...others}
                 href="#"
                 title={title}
-                className="btn-icon btn-toggle"
+                styleName="btn-icon"
                 onClick={::this.handleClick}
             >
             {children ||
-                <i className={classes.icon} />
+                <i className={classes.icon}></i>
             }
             </a>
         );

@@ -6,8 +6,6 @@ import Title from './Title';
 import Button from './Button';
 import Controls from './Controls';
 import Toolbar from './Toolbar';
-import './index.styl';
-import './theme.styl';
 
 Widget.Header = Header;
 Widget.Content = Content;

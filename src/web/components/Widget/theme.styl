@@ -1,114 +1,112 @@
-:global {
-    .widget[data-ns="widget"] {
-        // default
+.widget {
+    // default
+    .widget-header,
+    .widget-footer {
+        border-color: #ccc;
+        background-color: #fafafa;
+        color: #333;
+    }
+    .widget-toolbar,
+    .widget-controls {
+        a {
+            color: #838383;
+        }
+        a:hover {
+            color: #505050;
+        }
+    }
+
+    // facebook
+    &.widget-color-facebook {
         .widget-header,
         .widget-footer {
-            border-color: #ccc;
-            background-color: #fafafa;
-            color: #333;
+            border-color: #435a8b #3c5488 #334c83;
+            background-color: #3a5795;
+            color: #fff;
         }
         .widget-toolbar,
         .widget-controls {
             a {
-                color: #838383;
+                color: #f0f0f0;
             }
             a:hover {
-                color: #505050;
-            }
-        }
-
-        // facebook
-        &.widget-color-facebook {
-            .widget-header,
-            .widget-footer {
-                border-color: #435a8b #3c5488 #334c83;
-                background-color: #3a5795;
                 color: #fff;
             }
-            .widget-toolbar,
-            .widget-controls {
-                a {
-                    color: #f0f0f0;
-                }
-                a:hover {
-                    color: #fff;
-                }
-            }
         }
+    }
 
-        // lightblue
-        &.widget-color-lightblue {
-            .widget-header,
-            .widget-footer {
-                border-color: #a0aeb3;
-                background: #cbd2d5;
-                color: #000;
-            }
-            .widget-toolbar,
-            .widget-controls {
-                a {
-                    color: #f0f0f0;
-                }
-                a:hover {
-                    color: #fff;
-                }
-            }
+    // lightblue
+    &.widget-color-lightblue {
+        .widget-header,
+        .widget-footer {
+            border-color: #a0aeb3;
+            background: #cbd2d5;
+            color: #000;
         }
-
-        // night
-        &.widget-color-night {
-            .widget-header,
-            .widget-footer {
-                border-color: #383838;
-                background: #404040;
+        .widget-toolbar,
+        .widget-controls {
+            a {
+                color: #f0f0f0;
+            }
+            a:hover {
                 color: #fff;
             }
-            .widget-toolbar,
-            .widget-controls {
-                a {
-                    color: #f0f0f0;
-                }
-                a:hover {
-                    color: #fff;
-                }
-            }
         }
+    }
 
-        // nightsky
-        &.widget-color-nightsky {
-            .widget-header,
-            .widget-footer {
-                border-color: #45474b;
-                background-color: #4c4f53;
+    // night
+    &.widget-color-night {
+        .widget-header,
+        .widget-footer {
+            border-color: #383838;
+            background: #404040;
+            color: #fff;
+        }
+        .widget-toolbar,
+        .widget-controls {
+            a {
+                color: #f0f0f0;
+            }
+            a:hover {
                 color: #fff;
             }
-            .widget-toolbar,
-            .widget-controls {
-                a {
-                    color: #f0f0f0;
-                }
-                a:hover {
-                    color: #fff;
-                }
-            }
         }
+    }
 
-        // teal
-        &.widget-color-teal {
-            .widget-header,
-            .widget-footer {
-                border-color: #508180;
-                background: #568a89;
+    // nightsky
+    &.widget-color-nightsky {
+        .widget-header,
+        .widget-footer {
+            border-color: #45474b;
+            background-color: #4c4f53;
+            color: #fff;
+        }
+        .widget-toolbar,
+        .widget-controls {
+            a {
+                color: #f0f0f0;
+            }
+            a:hover {
                 color: #fff;
             }
-            .widget-toolbar,
-            .widget-controls {
-                a {
-                    color: #f0f0f0;
-                }
-                a:hover {
-                    color: #fff;
-                }
+        }
+    }
+
+    // teal
+    &.widget-color-teal {
+        .widget-header,
+        .widget-footer {
+            border-color: #508180;
+            background: #568a89;
+            color: #fff;
+        }
+        .widget-toolbar,
+        .widget-controls {
+            a {
+                color: #f0f0f0;
+            }
+            a:hover {
+                color: #fff;
             }
         }
     }

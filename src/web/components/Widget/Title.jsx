@@ -1,22 +1,21 @@
-import classNames from 'classnames';
-import React from 'react';
+import React, { Component } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from './index.styl';
 
-const Title = (props) => {
-    const { children, className, ...others } = props;
-    const titleClass = classNames(
-        'widget-title',
-        className
-    );
+@CSSModules(styles)
+class Title extends Component {
+    render() {
+        const { children, ...others } = this.props;
 
-    return (
-        <div {...others} className={titleClass}>
-            {children}
-        </div>
-    );
-};
-
-Title.propTypes = {
-    children: React.PropTypes.node
-};
+        return (
+            <div
+                {...others}
+                styleName="widget-title"
+            >
+                {children}
+            </div>
+        );
+    }
+}
 
 export default Title;

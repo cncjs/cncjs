@@ -1,22 +1,17 @@
-import React from 'react';
-import classNames from 'classnames';
+import React, { Component } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from './index.styl';
 
-const Controls = (props) => {
-    const { children, className, ...others } = props;
-    const controlsClass = classNames(
-        'widget-controls',
-        className
-    );
-
-    return (
-        <div {...others} className={controlsClass}>
-            {children}
-        </div>
-    );
-};
-
-Controls.propTypes = {
-    children: React.PropTypes.node
-};
+@CSSModules(styles)
+class Controls extends Component {
+    render() {
+        return (
+            <div
+                {...this.props}
+                styleName="widget-controls"
+            />
+        );
+    }
+}
 
 export default Controls;

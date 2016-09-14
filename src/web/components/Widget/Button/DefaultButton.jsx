@@ -1,30 +1,38 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from '../index.styl';
 
-const DefaultButton = (props) => {
-    const handleClick = (event) => {
-        event.preventDefault();
-
-        props.onClick(event);
+@CSSModules(styles)
+class DefaultButton extends Component {
+    static propTypes = {
+        title: PropTypes.string,
+        onClick: PropTypes.func.isRequired
     };
-    const { children, title, ...others } = props;
+    static defaultProps = {
+        title: '',
+        onClick: () => {}
+    };
 
-    return (
-        <a
-            {...others}
-            href="#"
-            title={title}
-            className="btn-icon"
-            onClick={handleClick}
-        >
-            {children}
-        </a>
-    );
-};
+    handleClick(event) {
+        const { onClick } = this.props;
+        event.preventDefault();
+        onClick(event);
+    }
+    render() {
+        const { children, title, ...others } = this.props;
 
-DefaultButton.propTypes = {
-    children: React.PropTypes.node,
-    title: React.PropTypes.string,
-    onClick: React.PropTypes.func.isRequired
-};
+        return (
+            <a
+                {...others}
+                href="#"
+                title={title}
+                styleName="btn-icon"
+                onClick={::this.handleClick}
+            >
+                {children}
+            </a>
+        );
+    }
+}
 
 export default DefaultButton;

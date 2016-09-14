@@ -1,37 +1,40 @@
-import React from 'react';
-import i18n from '../../../lib/i18n';
+import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from '../index.styl';
 
-const EditButton = (props) => {
-    const handleClick = (event) => {
-        event.preventDefault();
-
-        props.onClick(event);
+@CSSModules(styles)
+class EditButton extends Component {
+    static propTypes = {
+        title: PropTypes.string,
+        onClick: PropTypes.func.isRequired
+    };
+    static defaultProps = {
+        title: '',
+        onClick: () => {}
     };
 
-    const { children, title, ...others } = props;
+    handleClick(event) {
+        const { onClick } = this.props;
+        event.preventDefault();
+        onClick(event);
+    }
+    render() {
+        const { children, title, ...others } = this.props;
 
-    return (
-        <a
-            {...others}
-            href="#"
-            title={title}
-            className="btn-icon btn-edit"
-            onClick={handleClick}
-        >
-        {children ||
-            <i className="fa fa-cog" />
-        }
-        </a>
-    );
-};
-
-EditButton.propTypes = {
-    children: React.PropTypes.node,
-    title: React.PropTypes.string,
-    onClick: React.PropTypes.func.isRequired
-};
-EditButton.defaultProps = {
-    title: i18n._('Edit')
-};
+        return (
+            <a
+                {...others}
+                href="#"
+                title={title}
+                styleName="btn-icon"
+                onClick={::this.handleClick}
+            >
+            {children ||
+                <i className="fa fa-cog"></i>
+            }
+            </a>
+        );
+    }
+}
 
 export default EditButton;

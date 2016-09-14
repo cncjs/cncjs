@@ -1,7 +1,10 @@
+/* eslint react/no-set-state: 0 */
 import classNames from 'classnames';
 import React from 'react';
-import i18n from '../../../lib/i18n';
+import CSSModules from 'react-css-modules';
+import styles from '../index.styl';
 
+@CSSModules(styles)
 class FullscreenButton extends React.Component {
     static propTypes = {
         children: React.PropTypes.node,
@@ -10,18 +13,18 @@ class FullscreenButton extends React.Component {
         onClick: React.PropTypes.func.isRequired
     };
     static defaultProps = {
-        title: i18n._('Fullscreen'),
-        defaultValue: false
+        defaultValue: false,
+        onClick: () => {}
     };
     state = {
         isFullscreen: this.props.defaultValue
     };
 
     handleClick(event) {
-        event.preventDefault();
-
+        const { onClick } = this.props;
         const { isFullscreen } = this.state;
-        this.props.onClick(event, !isFullscreen);
+        event.preventDefault();
+        onClick(event, !isFullscreen);
         this.setState({ isFullscreen: !isFullscreen });
     }
     render() {
@@ -40,16 +43,15 @@ class FullscreenButton extends React.Component {
                 {...others}
                 href="#"
                 title={title}
-                className="btn-icon btn-fullscreen"
+                styleName="btn-icon"
                 onClick={::this.handleClick}
             >
             {children ||
-                <i className={classes.icon} />
+                <i className={classes.icon}></i>
             }
             </a>
         );
     }
-
 }
 
 export default FullscreenButton;

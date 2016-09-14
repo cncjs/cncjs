@@ -1,36 +1,40 @@
-import React from 'react';
-import i18n from '../../../lib/i18n';
+import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from '../index.styl';
 
-const RefreshButton = (props) => {
-    const handleClick = (event) => {
-        event.preventDefault();
-
-        props.onClick(event);
+@CSSModules(styles)
+class RefreshButton extends Component {
+    static propTypes = {
+        title: PropTypes.string,
+        onClick: PropTypes.func.isRequired
     };
-    const { children, title, ...others } = props;
+    static defaultProps = {
+        title: '',
+        onClick: () => {}
+    };
 
-    return (
-        <a
-            {...others}
-            href="#"
-            title={title}
-            className="btn-icon btn-refresh"
-            onClick={handleClick}
-        >
-        {children ||
-            <i className="fa fa-refresh" />
-        }
-        </a>
-    );
-};
+    handleClick(event) {
+        const { onClick } = this.props;
+        event.preventDefault();
+        onClick(event);
+    }
+    render() {
+        const { children, title, ...others } = this.props;
 
-RefreshButton.propTypes = {
-    children: React.PropTypes.node,
-    title: React.PropTypes.string,
-    onClick: React.PropTypes.func.isRequired
-};
-RefreshButton.defaultProps = {
-    title: i18n._('Refresh')
-};
+        return (
+            <a
+                {...others}
+                href="#"
+                title={title}
+                styleName="btn-icon"
+                onClick={::this.handleClick}
+            >
+            {children ||
+                <i className="fa fa-refresh"></i>
+            }
+            </a>
+        );
+    }
+}
 
 export default RefreshButton;

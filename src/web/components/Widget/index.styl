@@ -1,143 +1,139 @@
-:global {
-    .widget[data-ns="widget"] {
-        background-color: #FFF;
-        margin-bottom: 10px;
+@import './theme';
 
-        &.widget-borderless {
-            .widget-header,
-            .widget-content,
-            .widget-footer {
-                border: none;
-            }
-            .widget-header + .widget-content,
-            .widget-header + .widget-footer,
-            .widget-content + .widget-footer {
-                border-top: 1px solid #ccc;
-            }
-        }
+.widget {
+    background-color: #FFF;
+    margin-bottom: 10px;
 
-        &.widget-fullscreen {
-            position: fixed;
-            top: 50px;
-            left: 0;
-            z-index: 1000;
-            width: 100%;
-            height: 100%;
-        }
-        &.widget-fullscreen {
-            .widget-content {
-                position: absolute;
-                top: 0;
-                right: 0;
-                bottom: 50px; // .navbar height
-                left: 0;
-            }
-            .widget-header + .widget-content {
-                position: absolute;
-                top: 34px; // .widget-header height
-                bottom: 50px; // .navbar height
-                left: 0;
-                right: 0;
-            }
-        }
-
-        .widget-header {
-            background-color: #f6f7f8;
-            cursor: move;
-            border: 1px solid #ccc;
-        }
-        .widget-header-fixed {
-            cursor: default;
-        }
-
-        .widget-title {
-            margin-top: 0;
-            font-size: 14px;
-            font-weight: 400;
-            line-height: 32px;
-            display: inline-block;
-            vertical-align: middle;
-            margin-bottom: 0;
-            padding: 0 10px;
-
-            .glyphicon {
-                font-size: 14px;
-                top: 0;
-                vertical-align: middle;
-                margin-right: 5px;
-            }
-        }
-
-        .widget-content {
-            position: relative;
-        }
-
+    &.widget-borderless {
+        .widget-header,
         .widget-content,
         .widget-footer {
-            border: 1px solid #CCC;
-            border-top: none;
+            border: 0;
         }
+        .widget-header + .widget-content,
+        .widget-header + .widget-footer,
+        .widget-content + .widget-footer {
+            border-top: 1px solid #ccc;
+        }
+    }
 
-        .widget-toolbar {
-            cursor: auto;
-            float: right;
-            width: auto;
-            height: 32px;
-            line-height: 32px;
-            position: relative;
-            border-left: 1px solid rgba(0, 0, 0, .09);
-            padding: 0 8px;
+    &.widget-fullscreen {
+        position: fixed;
+        top: 50px;
+        left: 0;
+        z-index: 1000;
+        width: 100%;
+        height: 100%;
+    }
+    &.widget-fullscreen {
+        .widget-content {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 50px; // .navbar height
+            left: 0;
+        }
+        .widget-header + .widget-content {
+            position: absolute;
+            top: 34px; // .widget-header height
+            bottom: 50px; // .navbar height
+            left: 0;
+            right: 0;
+        }
+    }
+
+    .widget-header {
+        background-color: #f6f7f8;
+        cursor: move;
+        padding-left: 10px;
+        border: 1px solid #ccc;
+    }
+    .widget-header-fixed {
+        cursor: default;
+    }
+
+    .widget-title {
+        margin-top: 0;
+        font-size: 14px;
+        font-weight: 400;
+        line-height: 32px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-bottom: 0;
+
+        .glyphicon {
+            font-size: 14px;
+            top: 0;
+            vertical-align: middle;
+            margin-right: 5px;
+        }
+    }
+
+    .widget-content,
+    .widget-footer {
+        border: 1px solid #CCC;
+        border-top: none;
+    }
+
+    .widget-toolbar {
+        cursor: auto;
+        float: right;
+        width: auto;
+        height: 32px;
+        line-height: 32px;
+        position: relative;
+        border-left: 1px solid rgba(0, 0, 0, .09);
+        padding: 0 8px;
+        text-align: center;
+        white-space: nowrap;
+
+        a {
+            text-decoration: none;
+            font-size: 12px;
             text-align: center;
-            white-space: nowrap;
+            display: inline-block;
+            line-height: 32px;
+            padding: 0;
+            margin: 0;
+        }
+        i {
+            font-size: 14px;
+        }
+    }
 
-            a {
-                text-decoration: none;
-                font-size: 12px;
-                text-align: center;
-                display: inline-block;
-                line-height: 32px;
-                padding: 0;
-                margin: 0;
-            }
-            i {
-                font-size: 14px;
-            }
+    .widget-controls {
+        cursor: auto;
+        float: right;
+        width: auto;
+
+        a {
+            text-decoration: none;
+            font-size: 14px;
+            text-align: center;
+            display: inline-block;
+            line-height: 32px;
+            padding: 0;
+            margin: 0;
         }
 
-        .widget-controls {
-            cursor: auto;
-            float: right;
-            width: auto;
+        .btn-icon {
+            min-width: 30px;
+            height: 32px;
+            float: left;
+            position: relative;
+            font-family: Arial, Helvetica, sans-serif;
+            border-left: 1px solid rgba(0, 0, 0, .09);
+            margin: 0;
 
-            a {
-                text-decoration: none;
-                font-size: 14px;
-                text-align: center;
-                display: inline-block;
-                line-height: 32px;
-                padding: 0;
-                margin: 0;
+            &:hover {
+                background-color: rgba(0, 0, 0, .05);
             }
 
-            .btn-icon {
-                min-width: 30px;
-                height: 32px;
-                float: left;
-                position: relative;
-                font-family: Arial, Helvetica, sans-serif;
-                border-left: 1px solid rgba(0, 0, 0, .09);
-                margin: 0;
-
-                &:hover {
-                    background-color: rgba(0, 0, 0, .05);
-                }
-
-                &:first-child {
-                    padding-left: 0;
-                }
-                .glyphicon {
-                    font-size: 14px;
-                }
+            &:first-child {
+                padding-left: 0;
+            }
+            .glyphicon {
+                font-size: 14px;
             }
         }
     }

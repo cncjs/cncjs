@@ -1,26 +1,29 @@
 import classNames from 'classnames';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from './index.styl';
 
-const Widget = (props) => {
-    const { children, className, borderless, fullscreen, ...others } = props;
-    const widgetClass = classNames(
-        'widget',
-        { 'widget-borderless': !!borderless },
-        { 'widget-fullscreen': !!fullscreen },
-        className
-    );
+@CSSModules(styles, { allowMultiple: true })
+class Widget extends Component {
+    static propTypes = {
+        borderless: PropTypes.bool,
+        fullscreen: PropTypes.bool
+    };
 
-    return (
-        <div {...others} className={widgetClass} data-ns="widget">
-            {children}
-        </div>
-    );
-};
+    render() {
+        const { borderless, fullscreen, ...props } = this.props;
 
-Widget.propTypes = {
-    children: React.PropTypes.node,
-    borderless: React.PropTypes.bool,
-    fullscreen: React.PropTypes.bool
-};
+        return (
+            <div
+                {...props}
+                styleName={classNames(
+                    'widget',
+                    { 'widget-borderless': !!borderless },
+                    { 'widget-fullscreen': !!fullscreen }
+                )}
+            />
+        );
+    }
+}
 
 export default Widget;

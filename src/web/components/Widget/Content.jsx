@@ -1,22 +1,21 @@
-import classNames from 'classnames';
-import React from 'react';
+import React, { Component } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from './index.styl';
 
-const Content = (props) => {
-    const { children, className, ...others } = props;
-    const contentClass = classNames(
-        'widget-content',
-        className
-    );
+@CSSModules(styles)
+class Content extends Component {
+    render() {
+        const { children, ...others } = this.props;
 
-    return (
-        <div {...others} className={contentClass}>
-            {children}
-        </div>
-    );
-};
-
-Content.propTypes = {
-    children: React.PropTypes.node
-};
+        return (
+            <div
+                {...others}
+                styleName="widget-content"
+            >
+                {children}
+            </div>
+        );
+    }
+}
 
 export default Content;

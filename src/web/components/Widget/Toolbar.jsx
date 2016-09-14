@@ -1,22 +1,21 @@
-import classNames from 'classnames';
-import React from 'react';
+import React, { Component } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from './index.styl';
 
-const Toolbar = (props) => {
-    const { children, className, ...others } = props;
-    const toolbarClass = classNames(
-        'widget-toolbar',
-        className
-    );
+@CSSModules(styles)
+class Toolbar extends Component {
+    render() {
+        const { children, ...others } = this.props;
 
-    return (
-        <div {...others} className={toolbarClass}>
-            {children}
-        </div>
-    );
-};
-
-Toolbar.propTypes = {
-    children: React.PropTypes.node
-};
+        return (
+            <div
+                {...others}
+                styleName="widget-toolbar"
+            >
+                {children}
+            </div>
+        );
+    }
+}
 
 export default Toolbar;

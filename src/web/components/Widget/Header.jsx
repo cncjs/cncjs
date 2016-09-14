@@ -1,25 +1,26 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from './index.styl';
 
+@CSSModules(styles, { allowMultiple: true })
 class Header extends Component {
     static propTypes = {
         fixed: PropTypes.bool
     };
-    static defaultProps = {
-        fixed: false
-    };
 
     render() {
         const { children, className, fixed, ...others } = this.props;
-        const headerClass = classNames(
-            'widget-header',
-            { 'widget-header-fixed': !!fixed },
-            'clearfix',
-            className
-        );
 
         return (
-            <div {...others} className={headerClass}>
+            <div
+                {...others}
+                className={classNames(className, 'clearfix')}
+                styleName={classNames(
+                    'widget-header',
+                    { 'widget-header-fixed': !!fixed }
+                )}
+            >
                 {children}
             </div>
         );
