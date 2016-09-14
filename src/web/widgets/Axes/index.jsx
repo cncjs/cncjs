@@ -379,50 +379,48 @@ class AxesWidget extends Component {
         };
 
         return (
-            <div {...this.props} data-ns="widgets/axes">
-                <Widget fullscreen={isFullscreen}>
-                    <Widget.Header>
-                        <Widget.Title>{i18n._('Axes')}</Widget.Title>
-                        <Widget.Controls>
-                            <Widget.Button
-                                type="edit"
-                                onClick={(event) => {
-                                    showSettings(() => {
-                                        // Update axes
-                                        const axes = store.get('widgets.axes.axes', DEFAULT_AXES);
-                                        this.setState({ axes: axes });
-                                    });
-                                }}
-                            />
-                            <Widget.Button
-                                type="toggle"
-                                defaultValue={isCollapsed}
-                                onClick={(event, val) => this.setState({ isCollapsed: !!val })}
-                            />
-                            <Widget.Button
-                                type="fullscreen"
-                                defaultValue={isFullscreen}
-                                onClick={(event, val) => this.setState({ isFullscreen: !!val })}
-                            />
-                            <Widget.Button
-                                type="delete"
-                                onClick={(event) => this.props.onDelete()}
-                            />
-                        </Widget.Controls>
-                    </Widget.Header>
-                    <Widget.Content
-                        styleName={classNames(
-                            'widget-content',
-                            { 'hidden': isCollapsed }
-                        )}
-                    >
-                        <Axes
-                            state={state}
-                            actions={actions}
+            <Widget fullscreen={isFullscreen}>
+                <Widget.Header>
+                    <Widget.Title>{i18n._('Axes')}</Widget.Title>
+                    <Widget.Controls>
+                        <Widget.Button
+                            type="edit"
+                            onClick={(event) => {
+                                showSettings(() => {
+                                    // Update axes
+                                    const axes = store.get('widgets.axes.axes', DEFAULT_AXES);
+                                    this.setState({ axes: axes });
+                                });
+                            }}
                         />
-                    </Widget.Content>
-                </Widget>
-            </div>
+                        <Widget.Button
+                            type="toggle"
+                            defaultValue={isCollapsed}
+                            onClick={(event, val) => this.setState({ isCollapsed: !!val })}
+                        />
+                        <Widget.Button
+                            type="fullscreen"
+                            defaultValue={isFullscreen}
+                            onClick={(event, val) => this.setState({ isFullscreen: !!val })}
+                        />
+                        <Widget.Button
+                            type="delete"
+                            onClick={(event) => this.props.onDelete()}
+                        />
+                    </Widget.Controls>
+                </Widget.Header>
+                <Widget.Content
+                    styleName={classNames(
+                        'widget-content',
+                        { 'hidden': isCollapsed }
+                    )}
+                >
+                    <Axes
+                        state={state}
+                        actions={actions}
+                    />
+                </Widget.Content>
+            </Widget>
         );
     }
 }

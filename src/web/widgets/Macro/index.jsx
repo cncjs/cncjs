@@ -143,7 +143,7 @@ class MacroWidget extends Component {
         };
 
         return (
-            <Widget {...this.props} fullscreen={isFullscreen}>
+            <Widget fullscreen={isFullscreen}>
                 <Widget.Header>
                     <Widget.Title>{i18n._('Macro')}</Widget.Title>
                     <Widget.Controls>

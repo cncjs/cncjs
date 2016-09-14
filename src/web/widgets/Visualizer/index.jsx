@@ -495,128 +495,126 @@ class VisualizerWidget extends Component {
         const wcs = this.getWorkCoordinateSystem();
 
         return (
-            <div {...this.props} data-ns="widgets/visualizer">
-                <Widget borderless={true}>
-                    <Widget.Header fixed styleName="widget-header">
-                        <Widget.Title style={{ width: '100%' }}>
-                        {controllerType &&
-                            <div styleName="controller-type">{controllerType}</div>
-                        }
-                        {controllerState &&
-                            <div styleName="controller-state">{controllerState}</div>
-                        }
-                            <div className="pull-right">
-                                <Dropdown
-                                    style={{
-                                        marginBottom: 2,
-                                        marginRight: 5
-                                    }}
-                                    bsSize="xs"
-                                    id="units-dropdown"
-                                    disabled={!canSendCommand}
-                                    pullRight
+            <Widget borderless={true}>
+                <Widget.Header fixed styleName="widget-header">
+                    <Widget.Title style={{ width: '100%' }}>
+                    {controllerType &&
+                        <div styleName="controller-type">{controllerType}</div>
+                    }
+                    {controllerState &&
+                        <div styleName="controller-state">{controllerState}</div>
+                    }
+                        <div className="pull-right">
+                            <Dropdown
+                                style={{
+                                    marginBottom: 2,
+                                    marginRight: 5
+                                }}
+                                bsSize="xs"
+                                id="units-dropdown"
+                                disabled={!canSendCommand}
+                                pullRight
+                            >
+                                <Dropdown.Toggle
+                                    style={{ minWidth: 50 }}
                                 >
-                                    <Dropdown.Toggle
-                                        style={{ minWidth: 50 }}
+                                    {units === IMPERIAL_UNITS && i18n._('in')}
+                                    {units === METRIC_UNITS && i18n._('mm')}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <MenuItem
+                                        active={units === IMPERIAL_UNITS}
+                                        onClick={() => {
+                                            controller.command('gcode', 'G20');
+                                        }}
                                     >
-                                        {units === IMPERIAL_UNITS && i18n._('in')}
-                                        {units === METRIC_UNITS && i18n._('mm')}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <MenuItem
-                                            active={units === IMPERIAL_UNITS}
-                                            onClick={() => {
-                                                controller.command('gcode', 'G20');
-                                            }}
-                                        >
-                                            {i18n._('Inches (G20)')}
-                                        </MenuItem>
-                                        <MenuItem
-                                            active={units === METRIC_UNITS}
-                                            onClick={() => {
-                                                controller.command('gcode', 'G21');
-                                            }}
-                                        >
-                                            {i18n._('Millimeters (G21)')}
-                                        </MenuItem>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                                <Dropdown
-                                    style={{ marginBottom: 2 }}
-                                    bsSize="xs"
-                                    id="wcs-dropdown"
-                                    disabled={!canSendCommand}
-                                    pullRight
+                                        {i18n._('Inches (G20)')}
+                                    </MenuItem>
+                                    <MenuItem
+                                        active={units === METRIC_UNITS}
+                                        onClick={() => {
+                                            controller.command('gcode', 'G21');
+                                        }}
+                                    >
+                                        {i18n._('Millimeters (G21)')}
+                                    </MenuItem>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                            <Dropdown
+                                style={{ marginBottom: 2 }}
+                                bsSize="xs"
+                                id="wcs-dropdown"
+                                disabled={!canSendCommand}
+                                pullRight
+                            >
+                                <Dropdown.Toggle
+                                    style={{ minWidth: 50 }}
                                 >
-                                    <Dropdown.Toggle
-                                        style={{ minWidth: 50 }}
+                                    {wcs}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <MenuItem header>{i18n._('Work Coordinate System')}</MenuItem>
+                                    <MenuItem
+                                        active={wcs === 'G54'}
+                                        onClick={() => {
+                                            controller.command('gcode', 'G54');
+                                        }}
                                     >
-                                        {wcs}
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <MenuItem header>{i18n._('Work Coordinate System')}</MenuItem>
-                                        <MenuItem
-                                            active={wcs === 'G54'}
-                                            onClick={() => {
-                                                controller.command('gcode', 'G54');
-                                            }}
-                                        >
-                                            G54 (P1)
-                                        </MenuItem>
-                                        <MenuItem
-                                            active={wcs === 'G55'}
-                                            onClick={() => {
-                                                controller.command('gcode', 'G55');
-                                            }}
-                                        >
-                                            G55 (P2)
-                                        </MenuItem>
-                                        <MenuItem
-                                            active={wcs === 'G56'}
-                                            onClick={() => {
-                                                controller.command('gcode', 'G56');
-                                            }}
-                                        >
-                                            G56 (P3)
-                                        </MenuItem>
-                                        <MenuItem
-                                            active={wcs === 'G57'}
-                                            onClick={() => {
-                                                controller.command('gcode', 'G57');
-                                            }}
-                                        >
-                                            G57 (P4)
-                                        </MenuItem>
-                                        <MenuItem
-                                            active={wcs === 'G58'}
-                                            onClick={() => {
-                                                controller.command('gcode', 'G58');
-                                            }}
-                                        >
-                                            G58 (P5)
-                                        </MenuItem>
-                                        <MenuItem
-                                            active={wcs === 'G59'}
-                                            onClick={() => {
-                                                controller.command('gcode', 'G59');
-                                            }}
-                                        >
-                                            G59 (P6)
-                                        </MenuItem>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                            </div>
-                        </Widget.Title>
-                    </Widget.Header>
-                    <Widget.Content styleName="widget-content">
-                        <Visualizer
-                            ref="visualizer"
-                            state={state}
-                            actions={actions}
-                        />
-                    </Widget.Content>
-                </Widget>
-            </div>
+                                        G54 (P1)
+                                    </MenuItem>
+                                    <MenuItem
+                                        active={wcs === 'G55'}
+                                        onClick={() => {
+                                            controller.command('gcode', 'G55');
+                                        }}
+                                    >
+                                        G55 (P2)
+                                    </MenuItem>
+                                    <MenuItem
+                                        active={wcs === 'G56'}
+                                        onClick={() => {
+                                            controller.command('gcode', 'G56');
+                                        }}
+                                    >
+                                        G56 (P3)
+                                    </MenuItem>
+                                    <MenuItem
+                                        active={wcs === 'G57'}
+                                        onClick={() => {
+                                            controller.command('gcode', 'G57');
+                                        }}
+                                    >
+                                        G57 (P4)
+                                    </MenuItem>
+                                    <MenuItem
+                                        active={wcs === 'G58'}
+                                        onClick={() => {
+                                            controller.command('gcode', 'G58');
+                                        }}
+                                    >
+                                        G58 (P5)
+                                    </MenuItem>
+                                    <MenuItem
+                                        active={wcs === 'G59'}
+                                        onClick={() => {
+                                            controller.command('gcode', 'G59');
+                                        }}
+                                    >
+                                        G59 (P6)
+                                    </MenuItem>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </div>
+                    </Widget.Title>
+                </Widget.Header>
+                <Widget.Content styleName="widget-content">
+                    <Visualizer
+                        ref="visualizer"
+                        state={state}
+                        actions={actions}
+                    />
+                </Widget.Content>
+            </Widget>
         );
     }
 }
