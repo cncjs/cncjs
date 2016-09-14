@@ -17,12 +17,17 @@ import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
+import {
+    IMPERIAL_UNITS,
+    METRIC_UNITS
+} from '../../constants';
 
-const AXIS_LENGTH = 300;
-const GRID_X_LENGTH = 600;
-const GRID_Y_LENGTH = 600;
-const GRID_X_SPACING = 10;
-const GRID_Y_SPACING = 10;
+const IMPERIAL_GRID_COUNT = 32; // 32 inches
+const IMPERIAL_GRID_SPACING = 25.4; // 1 inch
+const IMPERIAL_AXIS_LENGTH = IMPERIAL_GRID_SPACING * 12; // 12 inches
+const METRIC_GRID_COUNT = 60; // 60 cm
+const METRIC_GRID_SPACING = 10; // 1 cm
+const METRIC_AXIS_LENGTH = METRIC_GRID_SPACING * 30; // 30 cm
 const CAMERA_FOV = 70;
 const CAMERA_NEAR = 0.001;
 const CAMERA_FAR = 10000;
@@ -76,13 +81,31 @@ class Visualizer extends Component {
         this.clearScene();
     }
     componentWillReceiveProps(nextProps) {
+        let dirty = false;
         const { state } = nextProps;
-        const { gcode, workPosition, renderAnimation } = state;
+        const { units, gcode, workPosition, renderAnimation } = state;
 
         // Update visualizer's frame index
         if (this.visualizer) {
             const frameIndex = gcode.sent;
             this.visualizer.setFrameIndex(frameIndex);
+        }
+
+        // Coordinate System
+        if (nextProps.state.units !== this.props.state.units) {
+            // Imperial
+            const imperialCoordinateSystem = this.group.getObjectByName('ImperialCoordinateSystem');
+            if (imperialCoordinateSystem) {
+                imperialCoordinateSystem.visible = (units === IMPERIAL_UNITS);
+            }
+
+            // Metric
+            const metricCoordinateSystem = this.group.getObjectByName('MetricCoordinateSystem');
+            if (metricCoordinateSystem) {
+                metricCoordinateSystem.visible = (units === METRIC_UNITS);
+            }
+
+            dirty = true;
         }
 
         // Update work position
@@ -92,13 +115,19 @@ class Visualizer extends Component {
                 ...workPosition
             };
 
-            this.updateWorkPosition(this.workPosition);
+            this.setWorkPosition(this.workPosition);
+
+            dirty = true;
         }
 
         // Toggle toolhead visibility
         if (this.toolhead && this.toolhead.visible !== renderAnimation) {
             this.toolhead.visible = renderAnimation;
 
+            dirty = true;
+        }
+
+        if (dirty) {
             // Update the scene
             this.updateScene();
         }
@@ -177,11 +206,108 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
+    createCoordinateSystem(options) {
+        const {
+            axisLength = METRIC_AXIS_LENGTH,
+            gridCount = METRIC_GRID_COUNT,
+            gridSpacing = METRIC_GRID_SPACING
+        } = { ...options };
+
+        const group = new THREE.Group();
+
+        { // Coordinate Grid
+            const gridLine = new GridLine(
+                gridCount * gridSpacing,
+                gridSpacing,
+                gridCount * gridSpacing,
+                gridSpacing,
+                colornames('blue'), // center line
+                colornames('gray 44') // grid
+            );
+            _.each(gridLine.children, (o) => {
+                o.material.opacity = 0.15;
+                o.material.transparent = true;
+                o.material.depthWrite = false;
+            });
+            gridLine.name = 'GridLine';
+            group.add(gridLine);
+        }
+
+        { // Coordinate Axes
+            const coordinateAxes = new CoordinateAxes(axisLength);
+            coordinateAxes.name = 'CoordinateAxes';
+            group.add(coordinateAxes);
+        }
+
+        { // Axis Labels
+            const axisXLabel = new TextSprite({
+                x: axisLength + 10,
+                y: 0,
+                z: 0,
+                size: 20,
+                text: 'X',
+                color: colornames('red')
+            });
+            const axisYLabel = new TextSprite({
+                x: 0,
+                y: axisLength + 10,
+                z: 0,
+                size: 20,
+                text: 'Y',
+                color: colornames('green')
+            });
+            const axisZLabel = new TextSprite({
+                x: 0,
+                y: 0,
+                z: axisLength + 10,
+                size: 20,
+                text: 'Z',
+                color: colornames('blue')
+            });
+
+            group.add(axisXLabel);
+            group.add(axisYLabel);
+            group.add(axisZLabel);
+
+            for (let i = -gridCount; i <= gridCount; ++i) {
+                if (i !== 0) {
+                    const textLabel = new TextSprite({
+                        x: i * gridSpacing,
+                        y: 10,
+                        z: 0,
+                        size: 6,
+                        text: i,
+                        color: colornames('red'),
+                        opacity: 0.5
+                    });
+                    group.add(textLabel);
+                }
+            }
+            for (let i = -gridCount; i <= gridCount; ++i) {
+                if (i !== 0) {
+                    const textLabel = new TextSprite({
+                        x: -10,
+                        y: i * gridSpacing,
+                        z: 0,
+                        size: 6,
+                        text: i,
+                        color: colornames('green'),
+                        opacity: 0.5
+                    });
+                    group.add(textLabel);
+                }
+            }
+        }
+
+        return group;
+    }
     //
     // Creating a scene
     // http://threejs.org/docs/#Manual/Introduction/Creating_a_scene
     //
     createScene(el) {
+        const { state } = this.props;
+        const { units, renderAnimation } = state;
         const width = el.clientWidth;
         const height = el.clientHeight;
 
@@ -203,93 +329,27 @@ class Visualizer extends Component {
         const light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
         this.scene.add(light);
 
-        { // Coordinate Grid
-            const gridLine = new GridLine(
-                GRID_X_LENGTH,
-                GRID_X_SPACING,
-                GRID_Y_LENGTH,
-                GRID_Y_SPACING,
-                colornames('blue'), // center line
-                colornames('gray 44') // grid
-            );
-            _.each(gridLine.children, (o) => {
-                o.material.opacity = 0.15;
-                o.material.transparent = true;
-                o.material.depthWrite = false;
-            });
-            gridLine.name = 'GridLine';
-            this.group.add(gridLine);
-        }
+        // Imperial
+        const imperialCoordinateSystem = this.createCoordinateSystem({
+            axisLength: IMPERIAL_AXIS_LENGTH,
+            gridCount: IMPERIAL_GRID_COUNT,
+            gridSpacing: IMPERIAL_GRID_SPACING
+        });
+        imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
+        imperialCoordinateSystem.visible = (units === IMPERIAL_UNITS);
+        this.group.add(imperialCoordinateSystem);
 
-        { // Coordinate Axes
-            const coordinateAxes = new CoordinateAxes(AXIS_LENGTH);
-            coordinateAxes.name = 'CoordinateAxes';
-            this.group.add(coordinateAxes);
-        }
-
-        { // Axis Labels
-            const axisXLabel = new TextSprite({
-                x: AXIS_LENGTH + 10,
-                y: 0,
-                z: 0,
-                size: 20,
-                text: 'X',
-                color: colornames('red')
-            });
-            const axisYLabel = new TextSprite({
-                x: 0,
-                y: AXIS_LENGTH + 10,
-                z: 0,
-                size: 20,
-                text: 'Y',
-                color: colornames('green')
-            });
-            const axisZLabel = new TextSprite({
-                x: 0,
-                y: 0,
-                z: AXIS_LENGTH + 10,
-                size: 20,
-                text: 'Z',
-                color: colornames('blue')
-            });
-
-            this.group.add(axisXLabel);
-            this.group.add(axisYLabel);
-            this.group.add(axisZLabel);
-
-            for (let i = -GRID_X_LENGTH; i <= GRID_X_LENGTH; i += 50) {
-                if (i !== 0) {
-                    const textLabel = new TextSprite({
-                        x: i,
-                        y: 10,
-                        z: 0,
-                        size: 8,
-                        text: i,
-                        color: colornames('red'),
-                        opacity: 0.5
-                    });
-                    this.group.add(textLabel);
-                }
-            }
-            for (let i = -GRID_Y_LENGTH; i <= GRID_Y_LENGTH; i += 50) {
-                if (i !== 0) {
-                    const textLabel = new TextSprite({
-                        x: -10,
-                        y: i,
-                        z: 0,
-                        size: 8,
-                        text: i,
-                        color: colornames('green'),
-                        opacity: 0.5
-                    });
-                    this.group.add(textLabel);
-                }
-            }
-        }
+        // Metric
+        const metricCoordinateSystem = this.createCoordinateSystem({
+            axisLength: METRIC_AXIS_LENGTH,
+            gridCount: METRIC_GRID_COUNT,
+            gridSpacing: METRIC_GRID_SPACING
+        });
+        metricCoordinateSystem.name = 'MetricCoordinateSystem';
+        metricCoordinateSystem.visible = (units === METRIC_UNITS);
+        this.group.add(metricCoordinateSystem);
 
         { // Tool Head
-            const { state } = this.props;
-            const { renderAnimation } = state;
             const color = colornames('silver');
             const url = 'textures/brushed-steel-texture.jpg';
             loadTexture(url, (err, texture) => {
@@ -420,8 +480,8 @@ class Visualizer extends Component {
         const degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
-    // Update work position
-    updateWorkPosition(workPosition) {
+    // Set work position
+    setWorkPosition(workPosition) {
         const pivotPoint = this.pivotPoint.get();
 
         let { x = 0, y = 0, z = 0 } = { ...workPosition };
@@ -433,9 +493,6 @@ class Visualizer extends Component {
             // Set tool head position
             this.toolhead.position.set(x, y, z);
         }
-
-        // Update the scene
-        this.updateScene();
     }
     // Make the controls look at the specified position
     lookAt(x, y, z) {
