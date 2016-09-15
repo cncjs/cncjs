@@ -36,6 +36,9 @@ const setApplicationMenu = () => {
                     }
                 },
                 {
+                    type: 'separator'
+                },
+                {
                     label: 'Toggle Full Screen',
                     accelerator: (process.platform === 'darwin') ? 'Ctrl+Command+F' : 'F11',
                     click: (item, focusedWindow) => {
@@ -43,6 +46,26 @@ const setApplicationMenu = () => {
                             focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
                         }
                     }
+                },
+                {
+                    label: 'Zoom',
+                    submenu: [
+                        {
+                            label: 'Zoom In',
+                            role: 'zoomin'
+                        },
+                        {
+                            label: 'Zoom Out',
+                            role: 'zoomout'
+                        },
+                        {
+                            label: 'Reset',
+                            role: 'resetzoom'
+                        }
+                    ]
+                },
+                {
+                    type: 'separator'
                 },
                 {
                     label: 'Toggle Developer Tools',
