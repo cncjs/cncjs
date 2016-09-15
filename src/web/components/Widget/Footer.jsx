@@ -1,22 +1,17 @@
-import classNames from 'classnames';
-import React from 'react';
+import React, { Component } from 'react';
+import CSSModules from 'react-css-modules';
+import styles from './index.styl';
 
-const Footer = (props) => {
-    const { children, className, ...others } = props;
-    const footerClass = classNames(
-        'widget-footer',
-        className
-    );
-
-    return (
-        <div {...others} className={footerClass}>
-            {children}
-        </div>
-    );
-};
-
-Footer.propTypes = {
-    children: React.PropTypes.node
-};
+@CSSModules(styles)
+class Footer extends Component {
+    render() {
+        return (
+            <div
+                {...this.props}
+                styleName="widget-footer"
+            />
+        );
+    }
+}
 
 export default Footer;

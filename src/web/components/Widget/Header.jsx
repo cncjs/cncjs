@@ -10,19 +10,16 @@ class Header extends Component {
     };
 
     render() {
-        const { children, className, fixed, ...others } = this.props;
+        const { fixed, ...props } = this.props;
 
         return (
             <div
-                {...others}
-                className={classNames(className, 'clearfix')}
+                {...props}
                 styleName={classNames(
                     'widget-header',
-                    { 'widget-header-fixed': !!fixed }
+                    { 'widget-header-fixed': fixed }
                 )}
-            >
-                {children}
-            </div>
+            />
         );
     }
 }

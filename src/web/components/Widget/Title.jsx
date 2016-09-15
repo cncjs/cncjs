@@ -5,15 +5,11 @@ import styles from './index.styl';
 @CSSModules(styles)
 class Title extends Component {
     render() {
-        const { children, ...others } = this.props;
-
         return (
             <div
-                {...others}
+                {...this.props}
                 styleName="widget-title"
-            >
-                {children}
-            </div>
+            />
         );
     }
 }
