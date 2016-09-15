@@ -187,19 +187,35 @@ class TinyG2Widget extends Component {
                     <Widget.Title>{i18n._('TinyG2')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button
-                            type="toggle"
-                            defaultValue={isCollapsed}
-                            onClick={(event, val) => this.setState({ isCollapsed: !!val })}
-                        />
+                            title={i18n._('Expand/Collapse')}
+                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                        >
+                            <i
+                                className={classNames(
+                                    'fa',
+                                    { 'fa-chevron-up': !isCollapsed },
+                                    { 'fa-chevron-down': isCollapsed }
+                                )}
+                            />
+                        </Widget.Button>
                         <Widget.Button
-                            type="fullscreen"
-                            defaultValue={isFullscreen}
-                            onClick={(event, val) => this.setState({ isFullscreen: !!val })}
-                        />
+                            title={i18n._('Fullscreen')}
+                            onClick={(event, val) => this.setState({ isFullscreen: !isFullscreen })}
+                        >
+                            <i
+                                className={classNames(
+                                    'fa',
+                                    { 'fa-expand': !isFullscreen },
+                                    { 'fa-compress': isFullscreen }
+                                )}
+                            />
+                        </Widget.Button>
                         <Widget.Button
-                            type="delete"
+                            title={i18n._('Delete')}
                             onClick={(event) => this.props.onDelete()}
-                        />
+                        >
+                            <i className="fa fa-times" />
+                        </Widget.Button>
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content

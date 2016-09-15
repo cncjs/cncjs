@@ -1,19 +1,14 @@
-:global {
-    .widget-fullscreen {
-        :local {
-            .webcam-on-container {
-                min-height: 100%;
-            }
-        }
-    }
-}
-
 .widget-content {
     position: relative;
     padding: 0;
 
     &.hidden {
         display: none;
+    }
+    &.fullscreen {
+        .webcam-on-container {
+            min-height: 100%;
+        }
     }
 }
 

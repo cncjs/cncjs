@@ -322,40 +322,54 @@ class GCodeWidget extends React.Component {
         };
 
         return (
-            <div {...this.props} data-ns="widgets/gcode">
-                <Widget fullscreen={isFullscreen}>
-                    <Widget.Header>
-                        <Widget.Title>{i18n._('G-code')}</Widget.Title>
-                        <Widget.Controls>
-                            <Widget.Button
-                                type="toggle"
-                                defaultValue={isCollapsed}
-                                onClick={(event, val) => this.setState({ isCollapsed: !!val })}
+            <Widget fullscreen={isFullscreen}>
+                <Widget.Header>
+                    <Widget.Title>{i18n._('G-code')}</Widget.Title>
+                    <Widget.Controls>
+                        <Widget.Button
+                            title={i18n._('Expand/Collapse')}
+                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                        >
+                            <i
+                                className={classNames(
+                                    'fa',
+                                    { 'fa-chevron-up': !isCollapsed },
+                                    { 'fa-chevron-down': isCollapsed }
+                                )}
                             />
-                            <Widget.Button
-                                type="fullscreen"
-                                defaultValue={isFullscreen}
-                                onClick={(event, val) => this.setState({ isFullscreen: !!val })}
+                        </Widget.Button>
+                        <Widget.Button
+                            title={i18n._('Fullscreen')}
+                            onClick={(event, val) => this.setState({ isFullscreen: !isFullscreen })}
+                        >
+                            <i
+                                className={classNames(
+                                    'fa',
+                                    { 'fa-expand': !isFullscreen },
+                                    { 'fa-compress': isFullscreen }
+                                )}
                             />
-                            <Widget.Button
-                                type="delete"
-                                onClick={(event) => this.props.onDelete()}
-                            />
-                        </Widget.Controls>
-                    </Widget.Header>
-                    <Widget.Content
-                        styleName={classNames(
-                            'widget-content',
-                            { 'hidden': isCollapsed }
-                        )}
-                    >
-                        <GCode
-                            state={state}
-                            actions={actions}
-                        />
-                    </Widget.Content>
-                </Widget>
-            </div>
+                        </Widget.Button>
+                        <Widget.Button
+                            title={i18n._('Delete')}
+                            onClick={(event) => this.props.onDelete()}
+                        >
+                            <i className="fa fa-times" />
+                        </Widget.Button>
+                    </Widget.Controls>
+                </Widget.Header>
+                <Widget.Content
+                    styleName={classNames(
+                        'widget-content',
+                        { 'hidden': isCollapsed }
+                    )}
+                >
+                    <GCode
+                        state={state}
+                        actions={actions}
+                    />
+                </Widget.Content>
+            </Widget>
         );
     }
 }
