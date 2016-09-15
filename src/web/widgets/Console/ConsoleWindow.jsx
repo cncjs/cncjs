@@ -44,11 +44,9 @@ class ConsoleWindow extends React.Component {
         // A workaround solution in fullscreen mode since the `containerHeight` is required
         // https://github.com/seatgeek/react-infinite/issues/62
         if (this.props.fullscreen) {
-            // widgetEl = <div class="widget widget-fullscreen"></div>
-            const widgetEl = document.querySelector('[data-widgetid="console"] > .widget');
-            const widgetContentEl = widgetEl.querySelector('.widget-content');
+            const widgetContentEl = document.querySelector('.' + styles['widget-content']);
             const widgetContentPadding = 10;
-            const consoleInputEl = widgetContentEl.querySelector('.console-input');
+            const consoleInputEl = widgetContentEl.querySelector('.' + styles['console-input']);
 
             containerHeight = widgetContentEl.offsetHeight
                             - widgetContentPadding * 2
