@@ -5,18 +5,38 @@
     &.hidden {
         display: none;
     }
+
+    &.fullscreen {
+        .console-container {
+            min-height: 100%;
+
+            .console-window {
+                height: auto;
+            }
+        }
+    }
 }
 
-.console-input {
-    margin-bottom: 10px;
-}
+.console-container {
+    display: flex;
+    flex-direction: column;
 
-.console-window {
-    font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
-    background-color: #000;
-    color: #FFF;
+    > * {
+        flex-shrink: 0;
+    }
 
-    :global {
+    .console-input {
+        margin-bottom: 10px;
+    }
+
+    .console-window {
+        flex-grow: 1;
+        height: 240px;
+
+        font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
+        background-color: #000;
+        color: #FFF;
+
         .infinite-list-item {
             white-space: nowrap;
             height: 20px;

@@ -1,25 +1,27 @@
 import _ from 'lodash';
-import Infinite from 'react-infinite';
-import React from 'react';
+import pubsub from 'pubsub-js';
+import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import ReactDOM from 'react-dom';
+import Infinite from 'react-infinite';
 import styles from './index.styl';
 
-const DEFAULT_CONTAINER_HEIGHT = 260;
-
 @CSSModules(styles)
-class ConsoleWindow extends React.Component {
+class ConsoleWindow extends Component {
     static propTypes = {
-        lines: React.PropTypes.array,
-        fullscreen: React.PropTypes.bool
+        state: PropTypes.object,
+        actions: PropTypes.object
     };
-    state = {
-        containerHeight: DEFAULT_CONTAINER_HEIGHT,
-        elementHeight: 20
-    };
+    pubsubTokens = [];
 
+    componentDidMount() {
+        this.subscribe();
+    }
+    componentWillUnmount() {
+        this.unsubscribe();
+    }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return !_.isEqual(nextProps, this.props);
     }
     // Scroll Position with React
     // http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
@@ -35,44 +37,47 @@ class ConsoleWindow extends React.Component {
         }
 
         setTimeout(() => {
-            this.updateContainerHeight();
+            this.resizeConsoleWindow();
         }, 0);
     }
-    updateContainerHeight() {
-        let containerHeight = DEFAULT_CONTAINER_HEIGHT;
-
-        // A workaround solution in fullscreen mode since the `containerHeight` is required
-        // https://github.com/seatgeek/react-infinite/issues/62
-        if (this.props.fullscreen) {
-            const widgetContentEl = document.querySelector('.' + styles['widget-content']);
-            const widgetContentPadding = 10;
-            const consoleInputEl = widgetContentEl.querySelector('.' + styles['console-input']);
-
-            containerHeight = widgetContentEl.offsetHeight
-                            - widgetContentPadding * 2
-                            - consoleInputEl.offsetHeight
-                            - 10; // extra padding
-        }
-
-        if (this.state.containerHeight !== containerHeight) {
-            this.setState({ containerHeight: containerHeight });
-        }
+    subscribe() {
+        const tokens = [
+            pubsub.subscribe('resize', (msg) => {
+                this.resizeConsoleWindow();
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
-    buildElements(lines) {
-        return _.map(lines, (line, index) => (
-            <div key={index} className="infinite-list-item" title={line}>{line}</div>
-        ));
+    unsubscribe() {
+        _.each(this.pubsubTokens, (token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    resizeConsoleWindow() {
+        const { state, actions } = this.props;
+        const widgetContentEl = actions.getWidgetContentEl();
+        const node = ReactDOM.findDOMNode(this.refs.infinite);
+        const offset = node.getBoundingClientRect().top
+                     - widgetContentEl.getBoundingClientRect().top;
+        const containerHeight = widgetContentEl.clientHeight - offset - 10; // exclude 10px bottom padding
+
+        if (state.containerHeight !== containerHeight) {
+            actions.setContainerHeight(containerHeight);
+        }
     }
     render() {
-        const { lines } = this.props;
-        const { containerHeight, elementHeight } = this.state;
-        const elements = this.buildElements(lines);
+        const { state } = this.props;
+        const { containerHeight, lines } = state;
+        const elements = _.map(lines, (line, index) => (
+            <div key={index} className={styles['infinite-list-item']} title={line}>{line}</div>
+        ));
 
         return (
             <div styleName="console-window">
                 <Infinite
                     containerHeight={containerHeight}
-                    elementHeight={elementHeight}
+                    elementHeight={20}
                     ref="infinite"
                 >
                     {elements}

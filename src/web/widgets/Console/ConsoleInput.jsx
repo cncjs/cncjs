@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import ReactDOM from 'react-dom';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
@@ -8,14 +8,14 @@ import controller from '../../lib/controller';
 import styles from './index.styl';
 
 @CSSModules(styles)
-class ConsoleInput extends React.Component {
+class ConsoleInput extends Component {
     static propTypes = {
-        port: React.PropTypes.string,
-        onClear: React.PropTypes.func
+        state: PropTypes.object,
+        actions: PropTypes.object
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return !_.isEqual(nextProps, this.props);
     }
     handleKeyDown(e) {
         const ENTER = 13;
@@ -34,11 +34,9 @@ class ConsoleInput extends React.Component {
 
         el.value = '';
     }
-    handleClear() {
-        this.props.onClear();
-    }
     render() {
-        const { port } = this.props;
+        const { state, actions } = this.props;
+        const { port } = state;
         const canInput = !!port;
         const canSend = canInput;
         const canClearAll = canInput;
@@ -69,7 +67,14 @@ class ConsoleInput extends React.Component {
                             id="console-command-dropdown"
                             pullRight
                         >
-                            <MenuItem onSelect={::this.handleClear} disabled={!canClearAll}>{i18n._('Clear all')}</MenuItem>
+                            <MenuItem
+                                onSelect={() => {
+                                    actions.clearAll();
+                                }}
+                                disabled={!canClearAll}
+                            >
+                                {i18n._('Clear all')}
+                            </MenuItem>
                         </DropdownButton>
                     </div>
                 </div>
