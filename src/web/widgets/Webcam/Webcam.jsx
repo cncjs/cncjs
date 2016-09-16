@@ -2,6 +2,7 @@ import _ from 'lodash';
 import delay from 'delay';
 import Slider from 'rc-slider';
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import WebcamMedia from 'react-webcam';
 import CSSModules from 'react-css-modules';
@@ -31,11 +32,12 @@ class Webcam extends Component {
         const { mediaSource } = state;
 
         if (mediaSource === MEDIA_SOURCE_MJPEG) {
-            this.refs['mjpeg-media-source'].src = '';
+            const node = ReactDOM.findDOMNode(this.refs['mjpeg-media-source']);
+            node.src = '';
 
             delay(10) // delay 10ms
                 .then(() => {
-                    this.refs['mjpeg-media-source'].src = state.url;
+                    node.src = state.url;
                 });
         }
     }
