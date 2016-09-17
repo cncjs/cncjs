@@ -12,7 +12,8 @@ import styles from './index.styl';
 @CSSModules(styles, { allowMultiple: true })
 class SpindleWidget extends Component {
     static propTypes = {
-        onDelete: PropTypes.func
+        onDelete: PropTypes.func,
+        sortableHandleClassName: PropTypes.string
     };
     static defaultProps = {
         onDelete: () => {}
@@ -82,6 +83,7 @@ class SpindleWidget extends Component {
         });
     }
     render() {
+        const { sortableHandleClassName } = this.props;
         const { isCollapsed, isFullscreen } = this.state;
         const state = {
             ...this.state,
@@ -93,7 +95,7 @@ class SpindleWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
+                <Widget.Header className={sortableHandleClassName}>
                     <Widget.Title>{i18n._('Spindle')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button

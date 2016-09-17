@@ -25,8 +25,8 @@ class DefaultWidgets extends Component {
     render() {
         const widgets = _.map(this.state.widgets, (widgetid) => (
             <Widget
-                key={widgetid}
                 widgetid={widgetid}
+                key={widgetid}
             />
         ));
 

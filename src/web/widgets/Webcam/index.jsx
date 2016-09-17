@@ -15,7 +15,8 @@ import {
 @CSSModules(styles, { allowMultiple: true })
 class WebcamWidget extends Component {
     static propTypes = {
-        onDelete: PropTypes.func
+        onDelete: PropTypes.func,
+        sortableHandleClassName: PropTypes.string
     };
     static defaultProps = {
         onDelete: () => {}
@@ -62,6 +63,7 @@ class WebcamWidget extends Component {
         this.setState({ crosshair: !crosshair });
     }
     render() {
+        const { sortableHandleClassName } = this.props;
         const { disabled, isCollapsed, isFullscreen } = this.state;
         const classes = {
             webcamOnOff: classNames(
@@ -81,7 +83,7 @@ class WebcamWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
+                <Widget.Header className={sortableHandleClassName}>
                     <Widget.Title>{i18n._('Webcam')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button

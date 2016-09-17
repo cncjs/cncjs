@@ -43,7 +43,8 @@ const toUnits = (units, val) => {
 @CSSModules(styles, { allowMultiple: true })
 class ProbeWidget extends Component {
     static propTypes = {
-        onDelete: PropTypes.func
+        onDelete: PropTypes.func,
+        sortableHandleClassName: PropTypes.string
     };
     static defaultProps = {
         onDelete: () => {}
@@ -339,6 +340,7 @@ class ProbeWidget extends Component {
         this.sendCommand('G90');
     }
     render() {
+        const { sortableHandleClassName } = this.props;
         const { isCollapsed, isFullscreen } = this.state;
         const state = {
             ...this.state,
@@ -355,7 +357,7 @@ class ProbeWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
+                <Widget.Header className={sortableHandleClassName}>
                     <Widget.Title>{i18n._('Probe')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button

@@ -16,7 +16,8 @@ import styles from './index.styl';
 @CSSModules(styles, { allowMultiple: true })
 class ConsoleWidget extends Component {
     static propTypes = {
-        onDelete: PropTypes.func
+        onDelete: PropTypes.func,
+        sortableHandleClassName: PropTypes.string
     };
     static defaultProps = {
         onDelete: () => {}
@@ -119,6 +120,7 @@ class ConsoleWidget extends Component {
         this.lineBuffers = [];
     }
     render() {
+        const { sortableHandleClassName } = this.props;
         const { isCollapsed, isFullscreen } = this.state;
         const state = {
             ...this.state
@@ -135,13 +137,8 @@ class ConsoleWidget extends Component {
         };
 
         return (
-            <Widget
-                fullscreen={isFullscreen}
-                ref={node => {
-                    this.widget = node;
-                }}
-            >
-                <Widget.Header>
+            <Widget fullscreen={isFullscreen}>
+                <Widget.Header className={sortableHandleClassName}>
                     <Widget.Title>{i18n._('Console')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button

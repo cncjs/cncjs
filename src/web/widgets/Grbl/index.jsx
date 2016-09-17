@@ -16,7 +16,8 @@ import styles from './index.styl';
 @CSSModules(styles, { allowMultiple: true })
 class GrblWidget extends Component {
     static propTypes = {
-        onDelete: PropTypes.func
+        onDelete: PropTypes.func,
+        sortableHandleClassName: PropTypes.string
     };
     static defaultProps = {
         onDelete: () => {}
@@ -151,6 +152,7 @@ class GrblWidget extends Component {
         });
     }
     render() {
+        const { sortableHandleClassName } = this.props;
         const { isCollapsed, isFullscreen } = this.state;
         const state = {
             ...this.state,
@@ -163,7 +165,7 @@ class GrblWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
+                <Widget.Header className={sortableHandleClassName}>
                     <Widget.Title>{i18n._('Grbl')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button

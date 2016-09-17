@@ -72,7 +72,8 @@ const normalizeToRange = (n, min, max) => {
 @CSSModules(styles, { allowMultiple: true })
 class AxesWidget extends Component {
     static propTypes = {
-        onDelete: PropTypes.func
+        onDelete: PropTypes.func,
+        sortableHandleClassName: PropTypes.string
     };
     static defaultProps = {
         onDelete: () => {}
@@ -353,6 +354,7 @@ class AxesWidget extends Component {
         return defaultWCS;
     }
     render() {
+        const { sortableHandleClassName } = this.props;
         const { isCollapsed, isFullscreen } = this.state;
         const { units, machinePosition, workPosition } = this.state;
         const state = {
@@ -380,7 +382,7 @@ class AxesWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
+                <Widget.Header className={sortableHandleClassName}>
                     <Widget.Title>{i18n._('Axes')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button

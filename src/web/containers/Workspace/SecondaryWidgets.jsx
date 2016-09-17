@@ -81,7 +81,7 @@ class SecondaryWidgets extends Component {
                         pull: true,
                         put: ['primary']
                     },
-                    handle: '.widget-header',
+                    handle: '.sortable-handle', // Sortable handle selector
                     chosenClass: 'sortable-chosen', // Class name for the chosen item
                     ghostClass: 'sortable-ghost', // Class name for the drop placeholder
                     dataIdAttr: 'data-widgetid',

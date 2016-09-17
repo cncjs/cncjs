@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import React, { Component } from 'react';
+import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
@@ -9,6 +9,10 @@ import styles from './index.styl';
 
 @CSSModules(styles, { allowMultiple: true })
 class ConnectionWidget extends Component {
+    static propTypes = {
+        sortableHandleClassName: PropTypes.string
+    };
+
     state = {
         isCollapsed: false,
         isFullscreen: false
@@ -18,11 +22,12 @@ class ConnectionWidget extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     render() {
+        const { sortableHandleClassName } = this.props;
         const { isCollapsed, isFullscreen } = this.state;
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
+                <Widget.Header className={sortableHandleClassName}>
                     <Widget.Title>{i18n._('Connection')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button

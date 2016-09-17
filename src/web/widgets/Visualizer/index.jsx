@@ -495,8 +495,8 @@ class VisualizerWidget extends Component {
         const wcs = this.getWorkCoordinateSystem();
 
         return (
-            <Widget borderless={true}>
-                <Widget.Header fixed styleName="widget-header">
+            <Widget borderless>
+                <Widget.Header styleName="widget-header" fixed>
                     <Widget.Title style={{ width: '100%' }}>
                     {controllerType &&
                         <div styleName="controller-type">{controllerType}</div>

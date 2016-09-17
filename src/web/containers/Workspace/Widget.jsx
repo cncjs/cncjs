@@ -11,20 +11,100 @@ import TinyG2Widget from '../../widgets/TinyG2';
 import VisualizerWidget from '../../widgets/Visualizer';
 import WebcamWidget from '../../widgets/Webcam';
 
+const sortableHandleClassName = 'sortable-handle';
+
 const Widget = (props) => {
-    const { widgetid, ...others } = props;
+    const {
+        widgetid,
+        onDelete,
+        ...others
+    } = props;
     const widget = {
-        'axes': () => <AxesWidget data-widgetid={widgetid} {...others} />,
-        'connection': () => <ConnectionWidget data-widgetid={widgetid} {...others} />,
-        'console': () => <ConsoleWidget data-widgetid={widgetid} {...others} />,
-        'gcode': () => <GCodeWidget data-widgetid={widgetid} {...others} />,
-        'grbl': () => <GrblWidget data-widgetid={widgetid} {...others} />,
-        'macro': () => <MacroWidget data-widgetid={widgetid} {...others} />,
-        'probe': () => <ProbeWidget data-widgetid={widgetid} {...others} />,
-        'spindle': () => <SpindleWidget data-widgetid={widgetid} {...others} />,
-        'tinyg2': () => <TinyG2Widget data-widgetid={widgetid} {...others} />,
-        'visualizer': () => <VisualizerWidget data-widgetid={widgetid} {...others} />,
-        'webcam': () => <WebcamWidget data-widgetid={widgetid} {...others} />
+        'axes': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <AxesWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'connection': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <ConnectionWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'console': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <ConsoleWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'gcode': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <GCodeWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'grbl': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <GrblWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'macro': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <MacroWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'probe': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <ProbeWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'spindle': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <SpindleWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'tinyg2': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <TinyG2Widget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        ),
+        'visualizer': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <VisualizerWidget />
+            </div>
+        ),
+        'webcam': () => (
+            <div {...others} data-widgetid={widgetid}>
+                <WebcamWidget
+                    onDelete={onDelete}
+                    sortableHandleClassName={sortableHandleClassName}
+                />
+            </div>
+        )
     }[widgetid];
 
     return widget ? widget() : null;

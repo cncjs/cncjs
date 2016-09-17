@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import { parseString } from 'gcode-parser';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import update from 'react-addons-update';
 import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
@@ -38,9 +38,10 @@ const toFixedUnits = (units, val) => {
 };
 
 @CSSModules(styles, { allowMultiple: true })
-class GCodeWidget extends React.Component {
+class GCodeWidget extends Component {
     static propTypes = {
-        onDelete: React.PropTypes.func
+        onDelete: PropTypes.func,
+        sortableHandleClassName: PropTypes.string
     };
     static defaultProps = {
         onDelete: () => {}
@@ -309,6 +310,7 @@ class GCodeWidget extends React.Component {
         }
     }
     render() {
+        const { sortableHandleClassName } = this.props;
         const { isCollapsed, isFullscreen } = this.state;
         const { units, bbox } = this.state;
         const state = {
@@ -323,7 +325,7 @@ class GCodeWidget extends React.Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header>
+                <Widget.Header className={sortableHandleClassName}>
                     <Widget.Title>{i18n._('G-code')}</Widget.Title>
                     <Widget.Controls>
                         <Widget.Button
