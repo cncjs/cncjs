@@ -15,7 +15,8 @@ const files = [
     'src/app/**/*.{js,jsx}'
 ];
 const deps = [
-    'babel-runtime' // 'babel-runtime' is required for an Electron app
+    'babel-runtime', // 'babel-runtime' is required for desktop app
+    'debug' // 'debug' is required for desktop app
 ].concat(findImports(files, { flatten: true })).sort();
 
 // Development:
