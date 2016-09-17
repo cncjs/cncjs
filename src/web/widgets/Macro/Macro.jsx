@@ -75,35 +75,25 @@ class Macro extends Component {
                 <EditMacro {...this.props} />
             }
                 <div styleName="toolbar">
-                    <div className="row no-gutters">
-                        <div className="col-xs-12 text-right">
-                            <button
-                                type="button"
-                                className="btn btn-xs btn-default"
-                                onClick={() => {
-                                    actions.openModal(MODAL_STATE_ADD_MACRO);
-                                }}
-                            >
-                                <i className="fa fa-plus" />
-                                &nbsp;
-                                {i18n._('Create Macro')}
-                            </button>
-                        </div>
+                    <div styleName="toolbar-button-group">
+                        <button
+                            type="button"
+                            className="btn btn-xs btn-default"
+                            onClick={() => {
+                                actions.openModal(MODAL_STATE_ADD_MACRO);
+                            }}
+                        >
+                            <i className="fa fa-plus" />
+                            &nbsp;
+                            {i18n._('Create Macro')}
+                        </button>
+                    </div>
+                    <div styleName="toolbar-records">
+                        {i18n._('Total: {{total}}', { total: macros.length })}
                     </div>
                 </div>
                 <div styleName="table-container">
-                    <table
-                        styleName="table table-bordered"
-                        style={{ border: 0 }}
-                    >
-                        <thead>
-                            <tr>
-                                <th>
-                                    {i18n._('Total: {{total}}', { total: macros.length })}
-                                </th>
-                                <th style={{ width: '1%' }} />
-                            </tr>
-                        </thead>
+                    <table styleName="table">
                         <tbody>
                             {macros.length === 0 &&
                                 <tr>
@@ -138,7 +128,7 @@ class Macro extends Component {
                                         </button>
                                         {macro.name}
                                     </td>
-                                    <td>
+                                    <td style={{ width: '1%' }}>
                                         <div className="nowrap">
                                             <button
                                                 type="button"

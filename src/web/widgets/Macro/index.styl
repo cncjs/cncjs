@@ -13,11 +13,20 @@
 }
 
 .toolbar {
+    clearfix()
+
     display: block;
     margin: 0;
     padding: 8px 10px;
     background: #fafafa;
-    border-bottom: 1px solid #ccc;
+
+    .toolbar-button-group {
+        float: left;
+    }
+
+    .toolbar-records {
+        float: right;
+    }
 }
 
 .table-container {
