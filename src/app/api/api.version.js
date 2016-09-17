@@ -5,7 +5,7 @@ export const getLatestVersion = (req, res) => {
         .then(json => {
             const {
                 name,
-                version, 
+                version,
                 description,
                 homepage
             } = { ...json };
