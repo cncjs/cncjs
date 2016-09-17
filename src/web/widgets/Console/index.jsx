@@ -7,6 +7,7 @@ import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import store from '../../store';
 import Console from './Console';
 import {
     SCROLL_BUFFER_SIZE
@@ -65,9 +66,16 @@ class ConsoleWidget extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    componentDidUpdate(prevProps, prevState) {
+        const {
+            minimized
+        } = this.state;
+
+        store.set('widgets.console.minimized', minimized);
+    }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.console.minimized', false),
             isFullscreen: false,
             port: controller.port,
             containerHeight: 240,
@@ -121,7 +129,7 @@ class ConsoleWidget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state
         };
@@ -143,13 +151,13 @@ class ConsoleWidget extends Component {
                     <Widget.Controls>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -179,7 +187,7 @@ class ConsoleWidget extends Component {
                     }}
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed },
+                        { 'hidden': minimized },
                         { 'fullscreen': isFullscreen }
                     )}
                 >

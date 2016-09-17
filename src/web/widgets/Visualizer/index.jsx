@@ -149,9 +149,11 @@ class VisualizerWidget extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.renderAnimation !== this.state.renderAnimation) {
-            store.set('widgets.visualizer.animation', this.state.renderAnimation);
-        }
+        const {
+            renderAnimation
+        } = this.state;
+
+        store.set('widgets.visualizer.animation', renderAnimation);
     }
     getDefaultState() {
         return {

@@ -31,6 +31,7 @@ class WebcamWidget extends Component {
     }
     componentDidUpdate(prevProps, prevState) {
         const {
+            minimized,
             disabled,
             mediaSource,
             url,
@@ -38,6 +39,7 @@ class WebcamWidget extends Component {
             scale
         } = this.state;
 
+        store.set('widgets.webcam.minimized', minimized);
         store.set('widgets.webcam.disabled', disabled);
         store.set('widgets.webcam.mediaSource', mediaSource);
         store.set('widgets.webcam.url', url);
@@ -46,7 +48,7 @@ class WebcamWidget extends Component {
     }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.webcam.minimized', false),
             isFullscreen: false,
             disabled: store.get('widgets.webcam.disabled'),
             mediaSource: store.get('widgets.webcam.mediaSource', MEDIA_SOURCE_LOCAL),
@@ -64,7 +66,7 @@ class WebcamWidget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { disabled, isCollapsed, isFullscreen } = this.state;
+        const { disabled, minimized, isFullscreen } = this.state;
         const classes = {
             webcamOnOff: classNames(
                 'fa',
@@ -111,13 +113,13 @@ class WebcamWidget extends Component {
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -152,7 +154,7 @@ class WebcamWidget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed },
+                        { 'hidden': minimized },
                         { 'fullscreen': isFullscreen }
                     )}
                 >

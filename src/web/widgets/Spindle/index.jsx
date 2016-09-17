@@ -6,6 +6,7 @@ import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import store from '../../store';
 import Spindle from './Spindle';
 import styles from './index.styl';
 
@@ -34,9 +35,16 @@ class SpindleWidget extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    componentDidUpdate(prevProps, prevState) {
+        const {
+            minimized
+        } = this.state;
+
+        store.set('widgets.spindle.minimized', minimized);
+    }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.spindle.minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -84,7 +92,7 @@ class SpindleWidget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -100,13 +108,13 @@ class SpindleWidget extends Component {
                     <Widget.Controls>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -133,7 +141,7 @@ class SpindleWidget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed }
+                        { 'hidden': minimized }
                     )}
                 >
                     <Spindle

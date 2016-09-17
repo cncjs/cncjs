@@ -166,29 +166,30 @@ class AxesWidget extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
+        const {
+            units,
+            minimized,
+            axes,
+            keypadJogging,
+            selectedDistance, // '1', '0.1', '0.01', '0.001', or ''
+            customDistance
+        } = this.state;
+
+        store.set('widgets.axes.minimized', minimized);
+        store.set('widgets.axes.axes', axes);
+        store.set('widgets.axes.jog.keypad', keypadJogging);
+        store.set('widgets.axes.jog.selectedDistance', selectedDistance);
+
         // The custom distance will not persist to store while toggling between in and mm
-        if ((prevState.customDistance !== this.state.customDistance) &&
-            (prevState.units === this.state.units)) {
-            let customDistance = this.state.customDistance;
-            if (this.state.units === IMPERIAL_UNITS) {
-                customDistance = in2mm(customDistance);
-            }
-            // To save in mm
-            store.set('widgets.axes.jog.customDistance', Number(customDistance));
-        }
-
-        if (prevState.selectedDistance !== this.state.selectedDistance) {
-            // '1', '0.1', '0.01', '0.001' or ''
-            store.set('widgets.axes.jog.selectedDistance', this.state.selectedDistance);
-        }
-
-        if (prevState.keypadJogging !== this.state.keypadJogging) {
-            store.set('widgets.axes.jog.keypad', this.state.keypadJogging);
+        if ((prevState.customDistance !== customDistance) && (prevState.units === units)) {
+            const distance = (units === IMPERIAL_UNITS) ? in2mm(customDistance) : customDistance;
+            // Save customDistance in mm
+            store.set('widgets.axes.jog.customDistance', Number(distance));
         }
     }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.axes.minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -355,7 +356,7 @@ class AxesWidget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
         const { units, machinePosition, workPosition } = this.state;
         const state = {
             ...this.state,
@@ -399,13 +400,13 @@ class AxesWidget extends Component {
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -432,7 +433,7 @@ class AxesWidget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed }
+                        { 'hidden': minimized }
                     )}
                 >
                     <Axes

@@ -11,6 +11,7 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import { mm2in } from '../../lib/units';
+import store from '../../store';
 import GCode from './GCode';
 import {
     // Units
@@ -132,9 +133,16 @@ class GCodeWidget extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    componentDidUpdate(prevProps, prevState) {
+        const {
+            minimized
+        } = this.state;
+
+        store.set('widgets.gcode.minimized', minimized);
+    }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.gcode.minimized', false),
             isFullscreen: false,
 
             port: controller.port,
@@ -311,7 +319,7 @@ class GCodeWidget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
         const { units, bbox } = this.state;
         const state = {
             ...this.state,
@@ -330,13 +338,13 @@ class GCodeWidget extends Component {
                     <Widget.Controls>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -363,7 +371,7 @@ class GCodeWidget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed }
+                        { 'hidden': minimized }
                     )}
                 >
                     <GCode

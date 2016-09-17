@@ -7,6 +7,7 @@ import api from '../../api';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import store from '../../store';
 import Macro from './Macro';
 import {
     MODAL_STATE_NONE
@@ -41,9 +42,16 @@ class MacroWidget extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    componentDidUpdate(prevProps, prevState) {
+        const {
+            minimized
+        } = this.state;
+
+        store.set('widgets.macro.minimized', minimized);
+    }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.macro.minimized', false),
             isFullscreen: false,
             port: controller.port,
             workflowState: controller.workflowState,
@@ -132,7 +140,7 @@ class MacroWidget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state
         };
@@ -151,13 +159,13 @@ class MacroWidget extends Component {
                     <Widget.Controls>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -184,7 +192,7 @@ class MacroWidget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed }
+                        { 'hidden': minimized }
                     )}
                 >
                     <Macro

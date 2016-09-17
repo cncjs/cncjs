@@ -38,6 +38,7 @@ const defaultState = {
     },
     widgets: {
         axes: {
+            minimized: false,
             axes: ['x', 'y', 'z'],
             jog: {
                 keypad: false,
@@ -52,6 +53,7 @@ const defaultState = {
             }
         },
         connection: {
+            minimized: false,
             controller: {
                 type: 'Grbl' // Grbl or TinyG2
             },
@@ -60,10 +62,13 @@ const defaultState = {
             autoReconnect: true
         },
         console: {
+            minimized: false
         },
         gcode: {
+            minimized: false
         },
         grbl: {
+            minimized: false,
             panel: {
                 parserState: {
                     expanded: true
@@ -74,8 +79,10 @@ const defaultState = {
             }
         },
         macro: {
+            minimized: false
         },
         probe: {
+            minimized: false,
             probeCommand: 'G38.2',
             probeDepth: 10,
             probeFeedrate: 20,
@@ -83,8 +90,10 @@ const defaultState = {
             retractionDistance: 4
         },
         spindle: {
+            minimized: false
         },
         tinyg2: {
+            minimized: false,
             panel: {
                 queueReports: {
                     expanded: true
@@ -98,9 +107,11 @@ const defaultState = {
             }
         },
         visualizer: {
+            minimized: false,
             animation: true
         },
         webcam: {
+            minimized: false,
             disabled: false,
 
             // local - Use a built-in camera or a connected webcam

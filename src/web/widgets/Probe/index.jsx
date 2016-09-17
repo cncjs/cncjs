@@ -159,6 +159,12 @@ class ProbeWidget extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
+        const {
+            minimized
+        } = this.state;
+
+        store.set('widgets.probe.minimized', minimized);
+
         // Do not save to store if the units did change between in and mm
         if (this.unitsDidChange) {
             this.unitsDidChange = false;
@@ -189,7 +195,7 @@ class ProbeWidget extends Component {
     }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.probe.minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -341,7 +347,7 @@ class ProbeWidget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -362,13 +368,13 @@ class ProbeWidget extends Component {
                     <Widget.Controls>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -395,7 +401,7 @@ class ProbeWidget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed }
+                        { 'hidden': minimized }
                     )}
                 >
                     <Probe

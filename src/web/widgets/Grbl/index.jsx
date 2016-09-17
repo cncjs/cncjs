@@ -51,16 +51,18 @@ class GrblWidget extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.panel.parserState.expanded !== this.state.panel.parserState.expanded) {
-            store.set('widgets.grbl.panel.parserState.expanded', this.state.panel.parserState.expanded);
-        }
-        if (prevState.panel.modalGroups.expanded !== this.state.panel.modalGroups.expanded) {
-            store.set('widgets.grbl.panel.modalGroups.expanded', this.state.panel.modalGroups.expanded);
-        }
+        const {
+            minimized,
+            panel
+        } = this.state;
+
+        store.set('widgets.grbl.minimized', minimized);
+        store.set('widgets.grbl.panel.parserState.expanded', panel.parserState.expanded);
+        store.set('widgets.grbl.panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.grbl.minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -153,7 +155,7 @@ class GrblWidget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -170,13 +172,13 @@ class GrblWidget extends Component {
                     <Widget.Controls>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -203,7 +205,7 @@ class GrblWidget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed }
+                        { 'hidden': minimized }
                     )}
                 >
                     <Grbl

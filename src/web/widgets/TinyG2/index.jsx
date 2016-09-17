@@ -51,19 +51,19 @@ class TinyG2Widget extends Component {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.panel.queueReports.expanded !== this.state.panel.queueReports.expanded) {
-            store.set('widgets.tinyg2.panel.queueReports.expanded', this.state.panel.queueReports.expanded);
-        }
-        if (prevState.panel.statusReports.expanded !== this.state.panel.statusReports.expanded) {
-            store.set('widgets.tinyg2.panel.statusReports.expanded', this.state.panel.statusReports.expanded);
-        }
-        if (prevState.panel.modalGroups.expanded !== this.state.panel.modalGroups.expanded) {
-            store.set('widgets.tinyg2.panel.modalGroups.expanded', this.state.panel.modalGroups.expanded);
-        }
+        const {
+            minimized,
+            panel
+        } = this.state;
+
+        store.set('widgets.tinyg2.minimized', minimized);
+        store.set('widgets.tinyg2.panel.queueReports.expanded', panel.queueReports.expanded);
+        store.set('widgets.tinyg2.panel.statusReports.expanded', panel.statusReports.expanded);
+        store.set('widgets.tinyg2.panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getDefaultState() {
         return {
-            isCollapsed: false,
+            minimized: store.get('widgets.tinyg2.minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -172,7 +172,7 @@ class TinyG2Widget extends Component {
     }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -190,13 +190,13 @@ class TinyG2Widget extends Component {
                     <Widget.Controls>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -223,7 +223,7 @@ class TinyG2Widget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed }
+                        { 'hidden': minimized }
                     )}
                 >
                     <TinyG2

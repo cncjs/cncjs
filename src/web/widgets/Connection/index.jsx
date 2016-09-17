@@ -4,6 +4,7 @@ import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
+import store from '../../store';
 import Connection from './Connection';
 import styles from './index.styl';
 
@@ -14,16 +15,23 @@ class ConnectionWidget extends Component {
     };
 
     state = {
-        isCollapsed: false,
+        minimized: store.get('widgets.connection.minimized', false),
         isFullscreen: false
     };
 
     shouldComponentUpdate(nextProps, nextState) {
         return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
     }
+    componentDidUpdate(prevProps, prevState) {
+        const {
+            minimized
+        } = this.state;
+
+        store.set('widgets.connection.minimized', minimized);
+    }
     render() {
         const { sortableHandleClassName } = this.props;
-        const { isCollapsed, isFullscreen } = this.state;
+        const { minimized, isFullscreen } = this.state;
 
         return (
             <Widget fullscreen={isFullscreen}>
@@ -32,13 +40,13 @@ class ConnectionWidget extends Component {
                     <Widget.Controls>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
-                            onClick={(event, val) => this.setState({ isCollapsed: !isCollapsed })}
+                            onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
                                 className={classNames(
                                     'fa',
-                                    { 'fa-chevron-up': !isCollapsed },
-                                    { 'fa-chevron-down': isCollapsed }
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
                                 )}
                             />
                         </Widget.Button>
@@ -59,7 +67,7 @@ class ConnectionWidget extends Component {
                 <Widget.Content
                     styleName={classNames(
                         'widget-content',
-                        { 'hidden': isCollapsed }
+                        { 'hidden': minimized }
                     )}
                 >
                     <Connection />
