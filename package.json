@@ -155,6 +155,7 @@
     "namespace-constants": "~0.1.1",
     "node-uuid": "~1.4.7",
     "normalize.css": "~4.2.0",
+    "package-json": "~2.4.0",
     "pubsub-js": "~1.5.3",
     "range_check": "~1.4.0",
     "rc-slider": "~5.1.1",
