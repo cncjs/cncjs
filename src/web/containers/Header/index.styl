@@ -1,32 +1,26 @@
-:global {
-    .header[data-ns="header"] {
-        .navbar-fixed-top {
-            border-width: 0;
+.quick-access-toolbar {
+    margin: 10px 0 10px 15px;
+
+    @media (min-width: 768px) {
+        float: right;
+    }
+
+    :global {
+        .btn-group {
+            float: left;
+            margin-right: 15px;
+
+            &:last-child {
+                margin-right: 0;
+            }
+        }
+        .btn {
+            height: 30px;
         }
 
-        .quick-access-toolbar {
-            @media (min-width: 768px) {
-                float: right;
-            }
-
-            margin: 10px 0;
-
-            .btn-group {
-                float: left;
-                margin-right: 15px;
-
-                &:last-child {
-                    margin-right: 0;
-                }
-            }
-            .btn {
-                height: 30px;
-            }
-
-            // Remove the outline on buttons
-            button:focus {
-                outline: 0;
-            }
+        // Remove the outline on buttons
+        button:focus {
+            outline: 0;
         }
     }
 }

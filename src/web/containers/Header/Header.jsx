@@ -1,15 +1,18 @@
 import i18next from 'i18next';
-import React from 'react';
+import React, { Component } from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import CSSModules from 'react-css-modules';
 import settings from '../../config/settings';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 import confirm from '../../lib/confirm';
 import Anchor from '../../components/Anchor';
+import styles from './index.styl';
 
-const Header = (props) => {
-    const handleRestoreDefaults = () => {
+@CSSModules(styles)
+class Header extends Component {
+    handleRestoreDefaults() {
         confirm({
             title: i18n._('Restore Defaults'),
             body: i18n._('Are you sure you want to restore the default settings?')
@@ -17,14 +20,14 @@ const Header = (props) => {
             store.clear();
             window.location.reload();
         });
-    };
+    }
+    render() {
+        const homepage = 'https://github.com/cheton/cnc';
+        const wiki = 'https://github.com/cheton/cnc/wiki';
+        const language = i18next.language;
+        const brandTitle = settings.name + ' v' + settings.version;
 
-    const homepage = 'https://github.com/cheton/cnc';
-    const language = i18next.language;
-    const brandTitle = settings.name + ' v' + settings.version;
-
-    return (
-        <div className="header" data-ns="header">
+        return (
             <Navbar fixedTop fluid inverse>
                 <Navbar.Header>
                     <Navbar.Brand>
@@ -41,15 +44,15 @@ const Header = (props) => {
                 <Navbar.Collapse>
                     <Nav>
                         <NavItem
-                            eventKey={1}
                             href="#/workspace"
                         >
                             {i18n._('Workspace')}
                         </NavItem>
+                    </Nav>
+                    <Nav>
                         <NavDropdown
-                            eventKey={2}
                             title={i18n._('Settings')}
-                            id="nav-dropdown"
+                            id="nav-dropdown-settings"
                         >
                             <MenuItem header>{i18n._('Language')}</MenuItem>
                             <MenuItem
@@ -130,7 +133,7 @@ const Header = (props) => {
                                 繁體中文
                             </MenuItem>
                             <MenuItem divider />
-                            <MenuItem onSelect={handleRestoreDefaults}>
+                            <MenuItem onSelect={::this.handleRestoreDefaults}>
                                 {i18n._('Restore Defaults')}
                             </MenuItem>
                         </NavDropdown>
@@ -138,8 +141,8 @@ const Header = (props) => {
                     <QuickAccessToolbar />
                 </Navbar.Collapse>
             </Navbar>
-        </div>
-    );
-};
+        );
+    }
+}
 
 export default Header;

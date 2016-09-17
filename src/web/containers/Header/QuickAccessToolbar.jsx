@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import CSSModules from 'react-css-modules';
 import combokeys from '../../lib/combokeys';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
@@ -8,7 +9,9 @@ import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED
 } from '../../constants';
+import styles from './index.styl';
 
+@CSSModules(styles)
 class QuickAccessToolbar extends React.Component {
     actionHandlers = {
         CONTROLLER_COMMAND: (event, { command }) => {
@@ -68,52 +71,54 @@ class QuickAccessToolbar extends React.Component {
     }
     render() {
         return (
-            <ul className="nav navbar-nav quick-access-toolbar">
-                <li className="btn-group btn-group-sm" role="group">
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={::this.handleCycleStart}
-                        title={i18n._('Cycle Start')}
-                    >
-                        <i className="fa fa-play" />&nbsp;{i18n._('Cycle Start')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={::this.handleFeedHold}
-                        title={i18n._('Feedhold')}
-                    >
-                        <i className="fa fa-pause" />&nbsp;{i18n._('Feedhold')}
-                    </button>
-                </li>
-                <li className="btn-group btn-group-sm" role="group">
-                    <button
-                        type="button"
-                        className="btn btn-primary"
-                        onClick={::this.handleHoming}
-                        title={i18n._('Homing')}
-                    >
-                        <i className="fa fa-home" />&nbsp;{i18n._('Homing')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-warning"
-                        onClick={::this.handleUnlock}
-                        title={i18n._('Unlock')}
-                    >
-                        <i className="fa fa-unlock-alt" />&nbsp;{i18n._('Unlock')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-danger"
-                        onClick={::this.handleReset}
-                        title={i18n._('Reset')}
-                    >
-                        <i className="fa fa-undo" />&nbsp;{i18n._('Reset')}
-                    </button>
-                </li>
-            </ul>
+            <div styleName="quick-access-toolbar">
+                <ul className="nav navbar-nav">
+                    <li className="btn-group btn-group-sm" role="group">
+                        <button
+                            type="button"
+                            className="btn btn-default"
+                            onClick={::this.handleCycleStart}
+                            title={i18n._('Cycle Start')}
+                        >
+                            <i className="fa fa-play" />&nbsp;{i18n._('Cycle Start')}
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-default"
+                            onClick={::this.handleFeedHold}
+                            title={i18n._('Feedhold')}
+                        >
+                            <i className="fa fa-pause" />&nbsp;{i18n._('Feedhold')}
+                        </button>
+                    </li>
+                    <li className="btn-group btn-group-sm" role="group">
+                        <button
+                            type="button"
+                            className="btn btn-primary"
+                            onClick={::this.handleHoming}
+                            title={i18n._('Homing')}
+                        >
+                            <i className="fa fa-home" />&nbsp;{i18n._('Homing')}
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-warning"
+                            onClick={::this.handleUnlock}
+                            title={i18n._('Unlock')}
+                        >
+                            <i className="fa fa-unlock-alt" />&nbsp;{i18n._('Unlock')}
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-danger"
+                            onClick={::this.handleReset}
+                            title={i18n._('Reset')}
+                        >
+                            <i className="fa fa-undo" />&nbsp;{i18n._('Reset')}
+                        </button>
+                    </li>
+                </ul>
+            </div>
         );
     }
 }
