@@ -1,6 +1,6 @@
 import settings from '../config/settings';
 import urljoin from '../lib/urljoin';
-import * as statusAPI from './api.status';
+import * as versionAPI from './api.version';
 import * as configAPI from './api.config';
 import * as gcodeAPI from './api.gcode';
 import * as i18nAPI from './api.i18n';
@@ -8,15 +8,15 @@ import * as controllersAPI from './api.controllers';
 import * as macroAPI from './api.macro';
 
 const api = {
-    status: statusAPI,
+    version: versionAPI,
     config: configAPI,
     gcode: gcodeAPI,
     i18n: i18nAPI,
     controllers: controllersAPI,
     macro: macroAPI,
     addRoutes: (app) => {
-        // Status
-        app.get(urljoin(settings.route, 'api/status'), api.status.currentStatus);
+        // Version
+        app.get(urljoin(settings.route, 'api/version/latest'), api.version.getLatestVersion);
 
         // Config
         app.get(urljoin(settings.route, 'api/config'), api.config.get);

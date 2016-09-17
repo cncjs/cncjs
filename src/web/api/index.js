@@ -3,6 +3,21 @@ import request from 'superagent';
 
 const API = {};
 
+{ // getLatestVersion
+    const fn = () => new Promise((resolve, reject) => {
+        request
+            .get('/api/version/latest')
+            .end((err, res) => {
+                if (err || res.err) {
+                    reject(err);
+                } else {
+                    resolve(res);
+                }
+            });
+    });
+    set(API, 'getLatestVersion', fn);
+}
+
 { // listControllers
     const fn = () => new Promise((resolve, reject) => {
         request
