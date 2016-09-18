@@ -2,8 +2,11 @@ import i18next from 'i18next';
 import React, { Component } from 'react';
 import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
+import semver from 'semver';
 import settings from '../../config/settings';
+import api from '../../api';
 import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 import confirm from '../../lib/confirm';
@@ -12,6 +15,18 @@ import styles from './index.styl';
 
 @CSSModules(styles)
 class Header extends Component {
+    componentDidMount() {
+        api.getLatestVersion()
+            .then((res) => {
+                const { version } = res.body;
+                if (semver.lt(settings.version, version)) {
+                    // New Version Available
+                }
+            })
+            .catch((err) => {
+                log.error(err);
+            });
+    }
     handleRestoreDefaults() {
         confirm({
             title: i18n._('Restore Defaults'),
