@@ -69,7 +69,7 @@ It's recommended that you run [Raspbian Jessie](https://www.raspberrypi.org/down
 Check out [wiki](https://github.com/cheton/cnc/wiki/Installation) for other installation methods.
 
 ## Upgrade
-Run `npm update -g cncjs` to upgrade to a newer version. To determine the version, use `cnc -V`.
+Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cnc -V`.
 
 ## Usage
 Run `cnc` or `~/.npm/bin/cnc` to start the server, and visit `http://yourhostname:8000/` to view the web interface:
