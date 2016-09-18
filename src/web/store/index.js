@@ -112,7 +112,7 @@ const defaultState = {
         },
         webcam: {
             minimized: false,
-            disabled: false,
+            disabled: true,
 
             // local - Use a built-in camera or a connected webcam
             // mjpeg - M-JPEG stream over HTTP

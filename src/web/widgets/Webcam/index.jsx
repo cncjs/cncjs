@@ -50,7 +50,7 @@ class WebcamWidget extends Component {
         return {
             minimized: store.get('widgets.webcam.minimized', false),
             isFullscreen: false,
-            disabled: store.get('widgets.webcam.disabled'),
+            disabled: store.get('widgets.webcam.disabled', true),
             mediaSource: store.get('widgets.webcam.mediaSource', MEDIA_SOURCE_LOCAL),
             url: store.get('widgets.webcam.url'),
             crosshair: store.get('widgets.webcam.crosshair'),
