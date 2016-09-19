@@ -52,7 +52,7 @@
     "start": "./bin/cnc",
     "start-electron": "electron ./dist/cnc/main",
     "predev": "bash ./watchpack-ignore-node-modules.sh",
-    "dev": "npm run build-dev && NODE_ENV=development ./bin/cnc -vv -p 8000",
+    "dev": "npm run build-dev && NODE_ENV=development ./bin/cnc -vv -p 8000 --mount /pendant:../../examples/tinyweb",
     "prod": "npm run build-prod && NODE_ENV=production ./bin/cnc",
     "lint": "npm run eslint && npm run stylint",
     "eslint": "eslint --ext .js --ext .jsx *.js src bin gulp test",
