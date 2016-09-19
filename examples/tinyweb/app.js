@@ -72,24 +72,24 @@ cnc.sendMove = function(cmd) {
         var s = _.map(params, (value, letter) => {
             return '' + letter + value;
         }).join(' ');
-        controller.writeln('G91 G0 ' + s); // relative distance
-        controller.writeln('G90'); // absolute distance
+        controller.command('gcode', 'G91 G0 ' + s); // relative distance
+        controller.command('gcode', 'G90'); // absolute distance
     };
     var move = function(params) {
         params = params || {};
         var s = _.map(params, (value, letter) => {
             return '' + letter + value;
         }).join(' ');
-        controller.writeln('G0 ' + s);
+        controller.command('gcode', 'G0 ' + s);
     };
     var distance = Number($('[data-route="axes"] select[data-name="select-distance"]').val()) || 0;
 
     var fn = {
         'G28': function() {
-            controller.writeln('G28');
+            controller.command('gcode', 'G28');
         },
         'G30': function() {
-            controller.writeln('G30');
+            controller.command('gcode', 'G30');
         },
         'X0Y0Z0': function() {
             move({ X: 0, Y: 0, Z: 0 })
@@ -148,26 +148,29 @@ controller.on('serialport:write', function(data) {
     console.log('%cW%c', style, '', data);
 });
 
-controller.on('grbl:status', function(data) {
-    var activeState = data.activeState;
-    var machinePos = data.machinePos;
-    var workingPos = data.workingPos;
+controller.on('Grbl:state', function(data) {
+    var status = data.status || {};
+    var activeState = status.activeState;
+    var machinePosition = status.machinePosition;
+    var workPosition = status.workPosition;
 
     $('[data-route="axes"] .control-pad .btn').prop('disabled', activeState !== 'Idle');
     $('[data-route="axes"] [data-name="active-state"]').text(activeState);
-    $('[data-route="axes"] [data-name="mpos-x"]').text(machinePos.x);
-    $('[data-route="axes"] [data-name="mpos-y"]').text(machinePos.y);
-    $('[data-route="axes"] [data-name="mpos-z"]').text(machinePos.z);
-    $('[data-route="axes"] [data-name="wpos-x"]').text(workingPos.x);
-    $('[data-route="axes"] [data-name="wpos-y"]').text(workingPos.y);
-    $('[data-route="axes"] [data-name="wpos-z"]').text(workingPos.z);
+    $('[data-route="axes"] [data-name="mpos-x"]').text(machinePosition.x);
+    $('[data-route="axes"] [data-name="mpos-y"]').text(machinePosition.y);
+    $('[data-route="axes"] [data-name="mpos-z"]').text(machinePosition.z);
+    $('[data-route="axes"] [data-name="wpos-x"]').text(workPosition.x);
+    $('[data-route="axes"] [data-name="wpos-y"]').text(workPosition.y);
+    $('[data-route="axes"] [data-name="wpos-z"]').text(workPosition.z);
 });
 
-controller.list();
-
+controller.listAllPorts();
 
 // Workspace 
 $('[data-route="workspace"] [data-name="port"]').val('');
+$('[data-route="workspace"] [data-name="btn-close"]').on('click', function() {
+    controller.closePort();
+});
 
 //
 // Connection
@@ -177,7 +180,7 @@ $('[data-route="connection"] [data-name="btn-open"]').on('click', function() {
     var baudrate = $('[data-route="connection"] [data-name="baudrate"]').val();
 
     $('[data-route="connection"] [data-name="msg"]').val('');
-    controller.open(port, baudrate);
+    controller.openPort(port, { baudrate: Number(baudrate) });
 });
 
 //
