@@ -3,7 +3,7 @@ import classNames from 'classnames';
 import colornames from 'colornames';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
-import { FlexTable, FlexColumn } from 'react-virtualized';
+import { Column, Table } from 'react-virtualized';
 import {
     GCODE_STATUS_ERROR,
     GCODE_STATUS_NOT_STARTED,
@@ -38,7 +38,7 @@ class GCodeTable extends Component {
 
         return (
             <div styleName="gcode-table">
-                <FlexTable
+                <Table
                     disableHeader={true}
                     headerHeight={headerHeight}
                     height={height}
@@ -50,7 +50,7 @@ class GCodeTable extends Component {
                     scrollToIndex={scrollToIndex}
                     width={width}
                 >
-                    <FlexColumn
+                    <Column
                         styleName="gcode-table-cell-status"
                         cellRenderer={({ cellData, columnData, dataKey, rowData, rowIndex }) => {
                             const value = rowData.status;
@@ -81,7 +81,7 @@ class GCodeTable extends Component {
                         dataKey="status"
                         width={30}
                     />
-                    <FlexColumn
+                    <Column
                         styleName="gcode-table-cell-command"
                         cellRenderer={({ cellData, columnData, dataKey, rowData, rowIndex }) => {
                             const value = rowData.cmd;
@@ -100,7 +100,7 @@ class GCodeTable extends Component {
                         flexGrow={1}
                         width={290}
                     />
-                </FlexTable>
+                </Table>
             </div>
         );
     }
