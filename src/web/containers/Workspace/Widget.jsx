@@ -11,98 +11,61 @@ import TinyG2Widget from '../../widgets/TinyG2';
 import VisualizerWidget from '../../widgets/Visualizer';
 import WebcamWidget from '../../widgets/Webcam';
 
-const sortableHandleClassName = 'sortable-handle';
-
-const Widget = (props) => {
-    const {
-        widgetid,
-        onDelete,
-        ...others
-    } = props;
+const Widget = ({ widgetid, key, ...props }) => {
     const widget = {
         'axes': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <AxesWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <AxesWidget {...props} />
             </div>
         ),
         'connection': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <ConnectionWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <ConnectionWidget {...props} />
             </div>
         ),
         'console': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <ConsoleWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <ConsoleWidget {...props} />
             </div>
         ),
         'gcode': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <GCodeWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <GCodeWidget {...props} />
             </div>
         ),
         'grbl': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <GrblWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <GrblWidget {...props} />
             </div>
         ),
         'macro': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <MacroWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <MacroWidget {...props} />
             </div>
         ),
         'probe': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <ProbeWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <ProbeWidget {...props} />
             </div>
         ),
         'spindle': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <SpindleWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <SpindleWidget {...props} />
             </div>
         ),
         'tinyg2': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <TinyG2Widget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <TinyG2Widget {...props} />
             </div>
         ),
         'visualizer': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <VisualizerWidget />
+            <div data-widgetid={widgetid} key={key}>
+                <VisualizerWidget {...props} />
             </div>
         ),
         'webcam': () => (
-            <div {...others} data-widgetid={widgetid}>
-                <WebcamWidget
-                    onDelete={onDelete}
-                    sortableHandleClassName={sortableHandleClassName}
-                />
+            <div data-widgetid={widgetid} key={key}>
+                <WebcamWidget {...props} />
             </div>
         )
     }[widgetid];

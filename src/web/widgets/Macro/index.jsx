@@ -18,7 +18,7 @@ import styles from './index.styl';
 class MacroWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
-        sortableHandleClassName: PropTypes.string
+        sortable: PropTypes.object
     };
     static defaultProps = {
         onDelete: () => {}
@@ -139,7 +139,6 @@ class MacroWidget extends Component {
         }
     }
     render() {
-        const { sortableHandleClassName } = this.props;
         const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state
@@ -154,9 +153,9 @@ class MacroWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header className={sortableHandleClassName}>
+                <Widget.Header className={this.props.sortable.handleClassName}>
                     <Widget.Title>{i18n._('Macro')}</Widget.Title>
-                    <Widget.Controls>
+                    <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}

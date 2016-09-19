@@ -64,6 +64,10 @@ class PrimaryWidgets extends Component {
             <Widget
                 widgetid={widgetid}
                 key={widgetid}
+                sortable={{
+                    handleClassName: 'sortable-handle',
+                    filterClassName: 'sortable-filter'
+                }}
                 onDelete={() => {
                     this.handleDeleteWidget(widgetid);
                 }}
@@ -81,7 +85,8 @@ class PrimaryWidgets extends Component {
                         pull: true,
                         put: ['secondary']
                     },
-                    handle: '.sortable-handle', // Sortable handle selector
+                    handle: '.sortable-handle', // Drag handle selector within list items
+                    filter: '.sortable-filter', // Selectors that do not lead to dragging
                     chosenClass: 'sortable-chosen', // Class name for the chosen item
                     ghostClass: 'sortable-ghost', // Class name for the drop placeholder
                     dataIdAttr: 'data-widgetid',

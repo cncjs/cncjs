@@ -14,7 +14,7 @@ import styles from './index.styl';
 class SpindleWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
-        sortableHandleClassName: PropTypes.string
+        sortable: PropTypes.object
     };
     static defaultProps = {
         onDelete: () => {}
@@ -91,7 +91,6 @@ class SpindleWidget extends Component {
         });
     }
     render() {
-        const { sortableHandleClassName } = this.props;
         const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state,
@@ -103,9 +102,9 @@ class SpindleWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header className={sortableHandleClassName}>
+                <Widget.Header className={this.props.sortable.handleClassName}>
                     <Widget.Title>{i18n._('Spindle')}</Widget.Title>
-                    <Widget.Controls>
+                    <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}

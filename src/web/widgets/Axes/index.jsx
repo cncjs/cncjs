@@ -73,7 +73,7 @@ const normalizeToRange = (n, min, max) => {
 class AxesWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
-        sortableHandleClassName: PropTypes.string
+        sortable: PropTypes.object
     };
     static defaultProps = {
         onDelete: () => {}
@@ -355,7 +355,6 @@ class AxesWidget extends Component {
         return defaultWCS;
     }
     render() {
-        const { sortableHandleClassName } = this.props;
         const { minimized, isFullscreen } = this.state;
         const { units, machinePosition, workPosition } = this.state;
         const state = {
@@ -383,9 +382,9 @@ class AxesWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header className={sortableHandleClassName}>
+                <Widget.Header className={this.props.sortable.handleClassName}>
                     <Widget.Title>{i18n._('Axes')}</Widget.Title>
-                    <Widget.Controls>
+                    <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={i18n._('Edit')}
                             onClick={(event) => {

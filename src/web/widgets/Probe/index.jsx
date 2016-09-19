@@ -44,7 +44,7 @@ const toUnits = (units, val) => {
 class ProbeWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
-        sortableHandleClassName: PropTypes.string
+        sortable: PropTypes.object
     };
     static defaultProps = {
         onDelete: () => {}
@@ -346,7 +346,6 @@ class ProbeWidget extends Component {
         this.sendCommand('G90');
     }
     render() {
-        const { sortableHandleClassName } = this.props;
         const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state,
@@ -363,9 +362,9 @@ class ProbeWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header className={sortableHandleClassName}>
+                <Widget.Header className={this.props.sortable.handleClassName}>
                     <Widget.Title>{i18n._('Probe')}</Widget.Title>
-                    <Widget.Controls>
+                    <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={i18n._('Expand/Collapse')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}
