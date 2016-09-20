@@ -78,13 +78,6 @@ after_success:
   - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
-    # tinyweb
-    if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      pushd examples;
-      zip -r "../releases/${RELEASE}-tinyweb.zip" "tinyweb";
-      popd;
-    fi
-  - |
     # build:mac-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       # https://github.com/electron-userland/electron-builder/issues/398
@@ -147,6 +140,13 @@ after_success:
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-linux-x64.deb" "releases/${RELEASE}-linux-x64.tar.gz";
       fi
+    fi
+  - |
+    # tinyweb
+    if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+      pushd examples;
+      zip -r "../releases/${RELEASE}-tinyweb.zip" "tinyweb";
+      popd;
     fi
   - |
     # docker image
