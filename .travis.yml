@@ -147,6 +147,16 @@ after_success:
       pushd examples;
       zip -r "../releases/${RELEASE}-tinyweb.zip" "tinyweb";
       popd;
+      ls -al releases/*;
+      if [[ -z "$TRAVIS_TAG" ]]; then
+        npm run github-release -- \
+          --user=cheton \
+          --repo=cnc \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="${TRAVIS_BRANCH}" \
+          --body="${COMMIT_LOG}" \
+          "releases/${RELEASE}-tinyweb.zip"
+      fi
     fi
   - |
     # docker image
