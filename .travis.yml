@@ -16,6 +16,7 @@ os:
 node_js:
   - '4'
   - '5'
+  - '6'
 
 env:
   global:
@@ -76,6 +77,13 @@ after_success:
   - PACKAGE_VERSION=`scripts/package-version.sh src/package.json`
   - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+  - |
+    # tinyweb
+    if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+      pushd examples;
+      zip -r "../releases/${RELEASE}-tinyweb.zip" "tinyweb";
+      popd;
+    fi
   - |
     # build:mac-x64
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
