@@ -127,7 +127,7 @@ const main = async () => {
             // Example:
             // 'cnc-1.1.0-latest-08c256a-linux-x64.tar.gz'
             // ["cnc-1.1.0-latest-08c256a-linux-x64.tar.gz", "cnc", "1.1.0-latest-08c256a", "linux", "x64", "tar.gz"]
-            const pattern = new RegExp(/([a-zA-Z0-9][a-zA-Z0-9\-]*)\-(\d+\.\d+\.\d+(?:\-[a-zA-Z0-9][a-zA-Z0-9\-]*)?)(?:\-([a-zA-Z0-9]+))(?:(?:\-([a-zA-Z0-9_\-]+))?\.(.*))/);
+            const pattern = new RegExp(/([a-zA-Z0-9][a-zA-Z0-9\-]*)\-(\d+\.\d+\.\d+(?:\-[a-zA-Z0-9][a-zA-Z0-9\-]*)?)(?:\-(mac|win|linux|tinyweb))(?:(?:\-([a-zA-Z0-9_\-]+))?\.(.*))/);
 
             return _.some(files, (file) => {
                 const r1 = asset.name.match(pattern);
