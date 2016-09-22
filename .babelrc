@@ -1,6 +1,16 @@
 {
-    "presets": ["es2015", "stage-0", "react"],
+    "presets": [
+        ["es2015", { "loose": true }],
+        "stage-0",
+        "react"
+    ],
+    "env": {
+        "development": {
+            "presets": ["react-hmre"]
+        }
+    },
     "plugins": [
+        "transform-proto-to-assign",
         "transform-decorators-legacy",
         "transform-runtime"
     ]

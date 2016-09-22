@@ -37,19 +37,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel',
-                exclude: /(node_modules|bower_components)/,
-                query: {
-                    env: {
-                        development: {
-                            presets: ['react-hmre']
-                        }
-                    },
-                    presets: ['es2015', 'stage-0', 'react'],
-                    plugins: [
-                        'transform-decorators-legacy',
-                        'transform-runtime'
-                    ]
-                }
+                exclude: /(node_modules|bower_components)/
             },
             {
                 test: /\.styl$/,
