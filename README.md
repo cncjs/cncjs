@@ -7,8 +7,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 
 ![cnc.png](https://raw.githubusercontent.com/cheton/cnc/master/media/cnc.png)
 
-
-## Key Features
+## Features
 * Supported CNC controllers
   * Grbl v0.9 or later
   * TinyG2 v0.97 or later
@@ -25,6 +24,11 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 * [Contour ShuttleXpress](https://github.com/cheton/cnc/wiki/User-Guide#contour-shuttlexpress)
 * I18n Ready
 * Z-Probing
+
+## Browser Support
+![Chrome](https://raw.github.com/alrra/browser-logos/master/chrome/chrome_48x48.png)<br>Chrome | ![Edge](https://raw.github.com/alrra/browser-logos/master/edge/edge_48x48.png)<br>Edge | ![Firefox](https://raw.github.com/alrra/browser-logos/master/firefox/firefox_48x48.png)<br>Firefox | ![IE](https://raw.github.com/alrra/browser-logos/master/internet-explorer/internet-explorer_48x48.png)<br>IE | ![Opera](https://raw.github.com/alrra/browser-logos/master/opera/opera_48x48.png)<br>Opera | ![Safari](https://raw.github.com/alrra/browser-logos/master/safari/safari_48x48.png)<br>Safari
+--- | --- | --- | --- | --- | --- |
+ Yes | Yes | Yes| No | Yes | Yes | 
 
 ## Installation
 
