@@ -1,10 +1,13 @@
 $padding-tb = 16px
 $padding-lr = 24px
 $modal-xs-min-width = 400px
+$modal-xs-max-width = 543px
 $modal-xs-min-height = 240px
 $modal-sm-min-width = 544px
+$modal-sm-max-width = 687px
 $modal-sm-min-height = 302px
 $modal-md-min-width = 688px
+$modal-md-max-width = 927px
 $modal-md-min-height = $sm-min-height
 $modal-lg-min-width = 928px
 $modal-lg-min-height = $sm-min-height
@@ -17,6 +20,7 @@ $modal-footer-button-margin = 8px
 
     &.xs {
         min-width: $modal-xs-min-width;
+        max-width: $modal-xs-max-width;
         .modal-body {
             min-height: ($modal-xs-min-height - $modal-footer-height)px;
         }
@@ -26,6 +30,7 @@ $modal-footer-button-margin = 8px
     }
     &.sm {
         min-width: $modal-sm-min-width;
+        max-width: $modal-sm-max-width;
         .modal-body {
             min-height: ($modal-sm-min-height - $modal-footer-height)px;
         }
@@ -35,6 +40,7 @@ $modal-footer-button-margin = 8px
     }
     &.md {
         min-width: $modal-md-min-width;
+        max-width: $modal-md-max-width;
         .modal-body {
             min-height: ($modal-md-min-height - $modal-footer-height)px;
         }
