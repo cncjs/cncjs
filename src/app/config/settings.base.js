@@ -17,10 +17,6 @@ export default {
     // version from package.json
     version: pkg.version,
 
-    route: '/', // with trailing slash
-    cdn: {
-        uri: ''
-    },
     // Express view engine
     view: {
         // Set html (w/o dot) as the default extension

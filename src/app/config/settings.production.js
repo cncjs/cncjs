@@ -15,7 +15,7 @@ const hashedVersion = ((version) => {
 const maxAge = (365 * 24 * 60 * 60 * 1000); // one year
 
 export default {
-    hashedVersion: hashedVersion,
+    route: '/', // with trailing slash
     assets: {
         // web
         web: {

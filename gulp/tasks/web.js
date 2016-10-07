@@ -1,6 +1,8 @@
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import webpack from 'webpack';
+import webpackDevelopmentConfig from '../../webpack.config.development';
+import webpackProductionConfig from '../../webpack.config.production';
 
 export default (options) => {
     gulp.task('web:i18n', ['i18next:web']);
@@ -14,8 +16,7 @@ export default (options) => {
             throw new gutil.PluginError('web:build-dev', err);
         }
 
-        const webpackConfig = require('../../webpack.config.development');
-
+        const webpackConfig = webpackDevelopmentConfig;
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build-dev', err);
@@ -27,9 +28,7 @@ export default (options) => {
     gulp.task('web:output', () => {
         const files = [
             'src/web/favicon.ico',
-            'src/web/plugins.js',
             'src/web/{images,textures}/**/*',
-            'src/web/vendor/**/*',
             'src/web/i18n/**/*'
         ];
 
@@ -46,8 +45,7 @@ export default (options) => {
             throw new gutil.PluginError('web:build-prod', err);
         }
 
-        const webpackConfig = require('../../webpack.config.production');
-
+        const webpackConfig = webpackProductionConfig;
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build', err);
@@ -59,10 +57,8 @@ export default (options) => {
     gulp.task('web:dist', () => {
         const files = [
             'src/web/favicon.ico',
-            'src/web/plugins.js',
-            'src/web/{images,textures}/**/*',
-            'src/web/vendor/**/*',
-            'src/web/i18n/**/*'
+            'src/web/i18n/**/*',
+            'src/web/{images,textures}/**/*'
         ];
 
         return gulp.src(files, { base: 'src/web' })

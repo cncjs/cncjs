@@ -4,11 +4,12 @@ import path from 'path';
 const maxAge = 0;
 
 export default {
+    route: '/', // with trailing slash
     assets: {
         // web
         web: {
             routes: [
-                '/'
+                '' // empty path
             ],
             path: path.resolve(__dirname, '..', '..', 'web'),
             maxAge: maxAge

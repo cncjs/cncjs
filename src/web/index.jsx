@@ -1,3 +1,6 @@
+/* eslint import/imports-first: 0 */
+require('./polyfill');
+
 import _ from 'lodash';
 import series from 'async/series';
 import Uri from 'jsuri';
@@ -9,31 +12,18 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import settings from './config/settings';
 import log from './lib/log';
+import { toQueryObject } from './lib/query';
 import App from './containers/App';
 import Workspace from './containers/Workspace';
 import './styles/vendor.styl';
 import './styles/app.styl';
 
-const queryparams = ((qs) => {
-    qs = String(qs || '');
-    if (qs[0] !== '?') {
-        qs = '?' + qs;
-    }
-    let uri = new Uri(qs);
-    let obj = _.reduce(uri.queryPairs, (obj, item) => {
-        let key = item[0], value = item[1];
-        obj[key] = decodeURIComponent(value);
-        return obj;
-    }, {});
-
-    return obj;
-})(window.root.location.search) || {};
-
 series([
     (next) => {
-        const level = queryparams.log_level || settings.log.level;
-        const logger = queryparams.log_logger || settings.log.logger;
-        const prefix = queryparams.log_prefix || settings.log.prefix;
+        const qp = toQueryObject(window.location.search);
+        const level = qp.log_level || settings.log.level;
+        const logger = qp.log_logger || settings.log.logger;
+        const prefix = qp.log_prefix || settings.log.prefix;
 
         log.setLevel(level);
         log.setLogger(logger);
@@ -66,18 +56,20 @@ series([
     }
 
     { // Hide loading
-        let loading = document.getElementById('loading');
-        if (loading) {
-            loading.style.display = 'none';
-        }
+        const loading = document.getElementById('loading');
+        loading && loading.remove();
     }
+
+    const container = document.createElement('div');
+    document.body.appendChild(container);
 
     ReactDOM.render(
         <Router history={browserHistory}>
             <Route path="/" component={App}>
                 <IndexRoute component={Workspace} />
+                <Route path="workspace" component={Workspace} />
             </Route>
         </Router>,
-        document.querySelector('#container')
+        container
     );
 });

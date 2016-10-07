@@ -1,6 +1,7 @@
+import io from 'socket.io-client';
 import log from './log';
 
-const socket = root.io.connect('');
+const socket = io.connect('');
 
 socket.on('connect', () => {
     log.debug('socket.io: connected');

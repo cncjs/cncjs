@@ -1,16 +1,15 @@
 import endsWith from 'lodash/endsWith';
 import mapKeys from 'lodash/mapKeys';
 import sha1 from 'sha1';
+import pkg from '../../package.json';
 import log from '../lib/log';
 
-const root = window.root;
-
-console.assert(typeof root.app.config === 'object', 'root.app.config is not an object');
+const webroot = '/';
 
 const settings = {
-    version: root.app.config.version,
-    webroot: root.app.config.webroot,
-    name: 'cnc',
+    name: pkg.name,
+    version: pkg.version,
+    webroot: webroot,
     log: {
         level: 'warn', // trace, debug, info, warn, error
         logger: 'console', // console
@@ -86,7 +85,7 @@ const settings = {
         // https://github.com/i18next/i18next-xhr-backend
         backend: {
             // path where resources get loaded from
-            loadPath: root.app.config.webroot + 'i18n/{{lng}}/{{ns}}.json',
+            loadPath: webroot + 'i18n/{{lng}}/{{ns}}.json',
 
             // path to post missing resources
             addPath: 'api/i18n/sendMissing/{{lng}}/{{ns}}',

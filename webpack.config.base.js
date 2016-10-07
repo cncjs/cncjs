@@ -8,14 +8,16 @@ module.exports = {
     cache: true,
     target: 'web',
     entry: {
+        polyfill: [
+            path.resolve(__dirname, 'src/web/polyfill/index.js')
+        ],
+        vendor: findImports([
+            'src/web/**/*.{js,jsx}'
+        ], { flatten: true }),
         app: [
             path.resolve(__dirname, 'src/web/index.jsx')
-        ],
-        vendor: findImports('src/web/**/*.{js,jsx}', { flatten: true })
+        ]
     },
-    plugins: [
-        new webpack.optimize.CommonsChunkPlugin('vendor', 'vendor.js')
-    ],
     module: {
         preLoaders: [
             // http://survivejs.com/webpack_react/linting_in_webpack/
@@ -96,7 +98,11 @@ module.exports = {
         alias: {},
         extensions: ['', '.js', '.jsx', '.styl']
     },
+    // Some libraries import Node modules but don't use them in the browser.
+    // Tell Webpack to provide empty mocks for them so importing them works.
     node: {
-        fs: 'empty'
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
     }
 };

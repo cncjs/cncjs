@@ -1,4 +1,5 @@
-import _ from 'lodash';
+/* eslint callback-return: 0 */
+import { noop } from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
@@ -32,50 +33,13 @@ import errlog from './lib/middleware/errlog';
 import errnotfound from './lib/middleware/errnotfound';
 import errserver from './lib/middleware/errserver';
 
-const renderPage = (req, res, next) => {
-    const view = req.params[0] || 'index';
-    const file = view + '.hbs';
+const renderPage = (view = 'index', cb = noop) => (req, res, next) => {
+    // Override IE's Compatibility View Settings
+    // http://stackoverflow.com/questions/6156639/x-ua-compatible-is-set-to-ie-edge-but-it-still-doesnt-stop-compatibility-mode
+    res.set({ 'X-UA-Compatible': 'IE=edge' });
 
-    if (fs.existsSync(path.resolve(__dirname, 'views', file))) {
-        let cdn, webroot, version;
-
-        // cdn
-        if (_.isEmpty(settings.cdn.uri)) {
-            cdn = urljoin(settings.assets.web.routes[0], '/'); // with trailing slash
-        } else {
-            cdn = urljoin(settings.cdn.uri, settings.assets.web.routes[0], '/'); // with trailing slash
-        }
-
-        // webroot
-        webroot = urljoin(settings.assets.web.routes[0], '/'); // with trailing slash
-
-        // version
-        version = settings.version;
-
-        let lng = req.language;
-        let t = req.t;
-
-        // Override IE's Compatibility View Settings
-        // http://stackoverflow.com/questions/6156639/x-ua-compatible-is-set-to-ie-edge-but-it-still-doesnt-stop-compatibility-mode
-        res.set({ 'X-UA-Compatible': 'IE=edge' });
-
-        res.render(file, {
-            'cdn': cdn,
-            'webroot': webroot,
-            'version': version,
-            'lang': lng,
-            'title': t('title'),
-            'dir': t('config:dir'),
-            'loading': t('loading'),
-            partials: {
-                loading: 'loading' // views/loading.hbs
-            }
-        });
-
-        return;
-    }
-
-    next();
+    const locals = { ...cb(req, res) };
+    res.render(view, locals);
 };
 
 const appMain = () => {
@@ -112,7 +76,10 @@ const appMain = () => {
             app.engine(extension, engines[template]);
         }
         app.set('view engine', settings.view.defaultExtension); // The default engine extension to use when omitted
-        app.set('views', path.resolve(__dirname, 'views')); // The view directory path
+        app.set('views', [
+            path.resolve(__dirname, '../web'),
+            path.resolve(__dirname, 'views')
+        ]); // The view directory path
 
         log.debug('app.settings: %j', app.settings);
     }
@@ -138,14 +105,15 @@ const appMain = () => {
         del.sync([path]);
         fs.mkdirSync(path); // Defaults to ./sessions
 
-        app.use(session(_.merge({}, settings.middleware.session, {
+        app.use(session({
+            ...settings.middleware.session,
             store: new (FileStore(session))({
                 path: path,
                 logFn: (...args) => {
                     log.debug.apply(log, args);
                 }
             })
-        })));
+        }));
     }
 
     app.use(favicon(path.join(settings.assets.web.path, 'favicon.ico')));
@@ -178,15 +146,16 @@ const appMain = () => {
     }
     app.use(compress(settings.middleware.compression));
 
-    _.each(settings.assets, (asset, name) => {
-        log.debug('assets: name=%s, asset=%s', name, JSON.stringify(asset));
+    Object.keys(settings.assets).forEach((name) => {
+        const asset = settings.assets[name];
 
+        log.debug('assets: name=%s, asset=%s', name, JSON.stringify(asset));
         if (!(asset.path)) {
             log.error('asset path is not defined');
             return;
         }
 
-        _.each(asset.routes, (assetRoute) => {
+        asset.routes.forEach((assetRoute) => {
             const route = urljoin(settings.route || '/', assetRoute || '');
             log.debug('> route=%s', name, route);
             app.use(route, serveStatic(asset.path, {
@@ -201,7 +170,18 @@ const appMain = () => {
     api.addRoutes(app);
 
     // page
-    app.get(urljoin(settings.route, '*'), renderPage);
+    app.get(urljoin(settings.route, '/'), renderPage('index.hbs', (req, res) => {
+        const webroot = settings.assets.web.routes[0] || ''; // with trailing slash
+        const lng = req.language;
+        const t = req.t;
+
+        return {
+            webroot: webroot,
+            lang: lng,
+            title: `${t('title')} ${settings.version}`,
+            loading: t('loading')
+        };
+    }));
 
     { // Error handling
         app.use(errlog());
