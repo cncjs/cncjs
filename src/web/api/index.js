@@ -1,165 +1,145 @@
-import set from 'lodash/set';
 import request from 'superagent';
 
-const API = {};
+const getLatestVersion = () => new Promise((resolve, reject) => {
+    request
+        .get('/api/version/latest')
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-{ // getLatestVersion
-    const fn = () => new Promise((resolve, reject) => {
-        request
-            .get('/api/version/latest')
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'getLatestVersion', fn);
-}
+const listControllers = () => new Promise((resolve, reject) => {
+    request
+        .get('/api/controllers')
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-{ // listControllers
-    const fn = () => new Promise((resolve, reject) => {
-        request
-            .get('/api/controllers')
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'listControllers', fn);
-}
+const loadGCode = (options) => new Promise((resolve, reject) => {
+    const { port = '', name = '', gcode = '' } = { ...options };
+    const meta = {
+        name: name,
+        size: gcode.length
+    };
 
-{ // loadGCode
-    const fn = (options) => new Promise((resolve, reject) => {
-        const { port = '', name = '', gcode = '' } = { ...options };
-        const meta = {
-            name: name,
-            size: gcode.length
-        };
+    request
+        .put('/api/gcode')
+        .send({
+            port: port,
+            meta: meta,
+            gcode: gcode
+        })
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-        request
-            .put('/api/gcode')
-            .send({
-                port: port,
-                meta: meta,
-                gcode: gcode
-            })
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'loadGCode', fn);
-}
+const fetchGCode = (options) => new Promise((resolve, reject) => {
+    const { port = '' } = { ...options };
 
-{ // fetchGCode
-    const fn = (options) => new Promise((resolve, reject) => {
-        const { port = '' } = { ...options };
+    request
+        .get('/api/gcode')
+        .query({ port: port })
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-        request
-            .get('/api/gcode')
-            .query({ port: port })
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'fetchGCode', fn);
-}
+const listMacros = () => new Promise((resolve, reject) => {
+    request
+        .get('/api/macro')
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-{ // listMacros
-    const fn = () => new Promise((resolve, reject) => {
-        request
-            .get('/api/macro')
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'listMacros', fn);
-}
+const getMacro = (options) => new Promise((resolve, reject) => {
+    const { id } = { ...options };
 
-{ // getMacro
-    const fn = (options) => new Promise((resolve, reject) => {
-        const { id } = { ...options };
+    request
+        .get('/api/macro/' + id)
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-        request
-            .get('/api/macro/' + id)
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'getMacro', fn);
-}
+const addMacro = (options) => new Promise((resolve, reject) => {
+    const { name, content } = { ...options };
 
-{ // addMacro
-    const fn = (options) => new Promise((resolve, reject) => {
-        const { name, content } = { ...options };
+    request
+        .post('/api/macro')
+        .send({ name, content })
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-        request
-            .post('/api/macro')
-            .send({ name, content })
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'addMacro', fn);
-}
+const updateMacro = (options) => new Promise((resolve, reject) => {
+    const { id, name, content } = { ...options };
 
-{ // updateMacro
-    const fn = (options) => new Promise((resolve, reject) => {
-        const { id, name, content } = { ...options };
+    request
+        .put('/api/macro/' + id)
+        .send({ name, content })
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-        request
-            .put('/api/macro/' + id)
-            .send({ name, content })
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'updateMacro', fn);
-}
+const deleteMacro = (options) => new Promise((resolve, reject) => {
+    const { id } = { ...options };
 
-{ // deleteMacro
-    const fn = (options) => new Promise((resolve, reject) => {
-        const { id } = { ...options };
+    request
+        .delete('/api/macro/' + id)
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
-        request
-            .delete('/api/macro/' + id)
-            .end((err, res) => {
-                if (err || res.err) {
-                    reject(err);
-                } else {
-                    resolve(res);
-                }
-            });
-    });
-    set(API, 'deleteMacro', fn);
-}
-
-export default API;
+export default {
+    getLatestVersion,
+    listControllers,
+    loadGCode,
+    fetchGCode,
+    listMacros,
+    getMacro,
+    addMacro,
+    updateMacro,
+    deleteMacro
+};
