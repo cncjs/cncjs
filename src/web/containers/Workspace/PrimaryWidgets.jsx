@@ -35,9 +35,6 @@ class PrimaryWidgets extends Component {
         // Calling store.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
         store.replace('workspace.container.primary.widgets', widgets);
-
-        // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
     }
     subscribe() {
         { // updatePrimaryWidgets
