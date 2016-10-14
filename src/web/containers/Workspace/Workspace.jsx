@@ -42,6 +42,28 @@ class Workspace extends React.Component {
         primary: null,
         secondary: null
     };
+    widgetEventHandler = {
+        onDelete: () => {
+            const { inactiveCount } = this.state;
+
+            // Update inactive count
+            this.setState({ inactiveCount: inactiveCount + 1 });
+        },
+        onSortStart: () => {
+            const { isDraggingWidget } = this.state;
+
+            if (!isDraggingWidget) {
+                this.setState({ isDraggingWidget: true });
+            }
+        },
+        onSortEnd: () => {
+            const { isDraggingWidget } = this.state;
+
+            if (isDraggingWidget) {
+                this.setState({ isDraggingWidget: false });
+            }
+        }
+    };
 
     componentDidMount() {
         this.addResizeEventListener();
@@ -220,26 +242,6 @@ class Workspace extends React.Component {
             this.setState({ inactiveCount: _.size(inactiveWidgets) });
         });
     }
-    handleDeleteWidget() {
-        const { inactiveCount } = this.state;
-
-        // Update inactive count
-        this.setState({ inactiveCount: inactiveCount + 1 });
-    }
-    handleSortStart() {
-        const { isDraggingWidget } = this.state;
-
-        if (!isDraggingWidget) {
-            this.setState({ isDraggingWidget: true });
-        }
-    }
-    handleSortEnd() {
-        const { isDraggingWidget } = this.state;
-
-        if (isDraggingWidget) {
-            this.setState({ isDraggingWidget: false });
-        }
-    }
     render() {
         const {
             port,
@@ -333,9 +335,9 @@ class Workspace extends React.Component {
                                         </div>
                                     </div>
                                     <PrimaryWidgets
-                                        onDelete={::this.handleDeleteWidget}
-                                        onSortStart={::this.handleSortStart}
-                                        onSortEnd={::this.handleSortEnd}
+                                        onDelete={this.widgetEventHandler.onDelete}
+                                        onSortStart={this.widgetEventHandler.onSortStart}
+                                        onSortEnd={this.widgetEventHandler.onSortEnd}
                                     />
                                 </div>
                             {hidePrimaryContainer &&
@@ -400,9 +402,9 @@ class Workspace extends React.Component {
                                         </div>
                                     </div>
                                     <SecondaryWidgets
-                                        onDelete={::this.handleDeleteWidget}
-                                        onSortStart={::this.handleSortStart}
-                                        onSortEnd={::this.handleSortEnd}
+                                        onDelete={this.widgetEventHandler.onDelete}
+                                        onSortStart={this.widgetEventHandler.onSortStart}
+                                        onSortEnd={this.widgetEventHandler.onSortEnd}
                                     />
                                 </div>
                             </div>

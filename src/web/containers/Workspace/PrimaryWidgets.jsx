@@ -26,7 +26,8 @@ class PrimaryWidgets extends Component {
         this.unsubscribe();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        // Do not compare props for performance considerations
+        return !_.isEqual(nextState, this.state);
     }
     componentDidUpdate() {
         const { widgets } = this.state;
