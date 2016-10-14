@@ -82,6 +82,10 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       # https://github.com/electron-userland/electron-builder/issues/398
       security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign;
+      # https://github.com/electron-userland/electron-osx-sign/issues/83
+      # Temporarily Bypass Gatekeeper
+      sudo spctl --master-disable;
+      sudo spctl --status;
       npm run build:mac-x64;
       ls -al output output/*;
       cp -af "output/mac/${RELEASE}.dmg" "releases/${RELEASE}-mac-x64.dmg";
