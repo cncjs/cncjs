@@ -61,17 +61,16 @@
   },
   "build": {
     "appId": "com.github.cnc",
-    "app-category-type": "public.app-category.productivity",
     "asar": false,
     "mac": {
+      "category": "public.app-category.productivity",
       "target": "default",
       "icon": "build/icon.icns"
     },
     "dmg": {
-      "title": "cnc",
-      "icon": "build/icon.icns",
       "background": "build/background.png",
-      "icon-size": 80,
+      "icon": "build/icon.icns",
+      "iconSize": 80,
       "contents": [
         {
           "x": 448,
