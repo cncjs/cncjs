@@ -14,6 +14,15 @@ cnc(function(err, server) {
         return;
     }
 
-    const address = server.address();
-    console.log('Started the server at http://%s:%d/.', address.address, address.port);
+    var serverAddress = server.address();
+    var dns = require('dns');
+    var os = require('os');
+    dns.lookup(os.hostname(), function(err, address, family) {
+        if (err) {
+            console.log('Started the server at http://%s:%d/.', serverAddress.address, serverAddress.port);
+            return;
+        }
+
+        console.log('Started the server at http://%s:%d/.', address, serverAddress.port);
+    });
 });
