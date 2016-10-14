@@ -85,7 +85,6 @@ after_success:
       npm run build:mac-x64;
       ls -al output output/*;
       cp -af "output/mac/${RELEASE}.dmg" "releases/${RELEASE}-mac-x64.dmg";
-      cp -af "output/mac/${RELEASE}-mac.zip" "releases/${RELEASE}-mac-x64.zip";
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- \
@@ -94,7 +93,7 @@ after_success:
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
-          "releases/${RELEASE}-mac-x64.dmg" "releases/${RELEASE}-mac-x64.zip";
+          "releases/${RELEASE}-mac-x64.dmg";
       fi
     fi
   - |
