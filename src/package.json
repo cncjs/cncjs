@@ -40,7 +40,7 @@
     "serialport": "~4.0.3",
     "serve-favicon": "~2.3.0",
     "serve-static": "~1.11.1",
-    "session-file-store": "~0.2.1",
+    "session-file-store": "~0.2.2",
     "socket.io": "~1.5.0",
     "webappengine": "~1.1.2",
     "winston": "~2.2.0"
