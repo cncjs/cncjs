@@ -117,14 +117,14 @@ class Workspace extends React.Component {
         this.setState({ showPrimaryContainer: !showPrimaryContainer });
 
         // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+        pubsub.publish('resize'); // Also see "widgets/Visualizer"
     }
     toggleSecondaryContainer() {
         const { showSecondaryContainer } = this.state;
         this.setState({ showSecondaryContainer: !showSecondaryContainer });
 
         // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+        pubsub.publish('resize'); // Also see "widgets/Visualizer"
     }
     resizeDefaultContainer() {
         let primaryContainer = ReactDOM.findDOMNode(this.refs.primaryContainer);
@@ -146,7 +146,7 @@ class Workspace extends React.Component {
         }
 
         // Publish a 'resize' event
-        pubsub.publish('resize'); // Also see "widgets/visualizer.jsx"
+        pubsub.publish('resize'); // Also see "widgets/Visualizer"
     }
     onDrop(files) {
         const { port } = this.state;
