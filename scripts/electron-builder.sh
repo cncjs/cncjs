@@ -32,7 +32,6 @@ npm run electron-rebuild -- \
     --version=${electron_version:1} \
     --pre-gyp-fix \
     --module-dir=dist/cnc/node_modules \
-    --electron-prebuilt-dir=node_modules/electron-prebuilt/ \
     --which-module=serialport
 
 npm run electron-builder -- "$@"
