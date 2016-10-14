@@ -48,9 +48,9 @@ export default (options) => {
         const webpackConfig = webpackProductionConfig;
         webpack(webpackConfig, (err, stats) => {
             if (err) {
-                throw new gutil.PluginError('web:build', err);
+                throw new gutil.PluginError('web:build-prod', err);
             }
-            gutil.log('[web:build]', stats.toString({ colors: true }));
+            gutil.log('[web:build-prod]', stats.toString({ colors: true }));
             callback();
         });
     });
