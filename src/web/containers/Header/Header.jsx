@@ -6,7 +6,6 @@ import semver from 'semver';
 import settings from '../../config/settings';
 import api from '../../api';
 import i18n from '../../lib/i18n';
-import log from '../../lib/log';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 import confirm from '../../lib/confirm';
@@ -24,7 +23,7 @@ class Header extends Component {
                 }
             })
             .catch((err) => {
-                log.error(err);
+                // Ignore error
             });
     }
     handleRestoreDefaults() {
@@ -38,7 +37,7 @@ class Header extends Component {
     }
     render() {
         const homepage = 'https://github.com/cheton/cnc';
-        const wiki = 'https://github.com/cheton/cnc/wiki';
+        //const wiki = 'https://github.com/cheton/cnc/wiki';
         const language = i18next.language;
         const brandTitle = settings.name + ' v' + settings.version;
 
