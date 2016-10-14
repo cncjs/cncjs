@@ -166,7 +166,7 @@ class GrblWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header className="widget-header">
+                <Widget.Header className={this.props.sortable.handleClassName}>
                     <Widget.Title>{i18n._('Grbl')}</Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
