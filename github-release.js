@@ -10,7 +10,7 @@ import pkg from './package.json';
 program
     .version(pkg.version)
     .option('-T, --token <token>', 'OAuth2 token')
-    .option('-u, --user <user>', 'user')
+    .option('-o, --owner <owner>', 'owner')
     .option('-r, --repo <repo>', 'repo')
     .option('-t, --tag <tag>', 'tag')
     .option('-n, --name <name>', 'name')
@@ -80,19 +80,19 @@ const uploadAsset = (options) => {
 };
 
 const main = async () => {
-    const { user, repo, tag, name, body } = program;
+    const { owner, repo, tag, name, body } = program;
 
     try {
         console.log('> releases#getReleaseByTag');
         let release = await getReleaseByTag({
-            user: user,
+            owner: owner,
             repo: repo,
             tag: tag
         });
         if (!release) {
             console.log('> releases#createRelease');
             release = await createRelease({
-                user: user,
+                owner: owner,
                 repo: repo,
                 tag_name: tag,
                 name: name || tag,
@@ -102,7 +102,7 @@ const main = async () => {
         } else if (release.body !== body) {
             console.log('> releases#editRelease');
             let releaseOptions = {
-                user: user,
+                owner: owner,
                 repo: repo,
                 id: release.id,
                 tag_name: tag,
@@ -117,7 +117,7 @@ const main = async () => {
 
         console.log('> releases#listAssets');
         let assets = await listAssets({
-            user: user,
+            owner: owner,
             repo: repo,
             id: release.id
         });
@@ -168,7 +168,7 @@ const main = async () => {
                     updated_at: asset.updated_at
                 });
                 await deleteAsset({
-                    user: user,
+                    owner: owner,
                     repo: repo,
                     id: asset.id
                 });
@@ -181,7 +181,7 @@ const main = async () => {
                 const file = files[i];
                 console.log('#%d name="%s" filePath="%s"', i + 1, path.basename(file), file);
                 await uploadAsset({
-                    user: user,
+                    owner: owner,
                     repo: repo,
                     id: release.id,
                     filePath: file,
