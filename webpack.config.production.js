@@ -12,7 +12,8 @@ var webpackConfig = Object.assign({}, baseConfig, {
     devtool: 'source-map',
     output: {
         path: path.join(__dirname, 'dist/cnc/web'),
-        filename: '[name].[chunkhash].js',
+        chunkFilename: '[name].[chunkhash].bundle.js',
+        filename: '[name].[chunkhash].bundle.js',
         publicPath: '/'
     },
     plugins: [

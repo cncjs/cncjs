@@ -13,7 +13,8 @@ var webpackConfig = Object.assign({}, baseConfig, {
     devtool: 'eval',
     output: {
         path: path.join(__dirname, 'output/web'),
-        filename: '[name].js',
+        chunkFilename: '[name].bundle.js',
+        filename: '[name].bundle.js',
         pathinfo: true,
         publicPath: '/'
     },
