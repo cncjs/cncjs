@@ -62,15 +62,17 @@
   "build": {
     "appId": "com.github.cnc",
     "asar": false,
+    "productName": "cnc",
     "mac": {
       "category": "public.app-category.productivity",
-      "target": "default",
+      "target": "dmg",
       "icon": "build/icon.icns"
     },
     "dmg": {
       "background": "build/background.png",
       "icon": "build/icon.icns",
       "iconSize": 80,
+      "iconTextSize": 12,
       "contents": [
         {
           "x": 448,
@@ -87,9 +89,6 @@
     },
     "win": {
       "target": "nsis",
-      "iconUrl": "https://raw.githubusercontent.com/cheton/cnc/master/build/icon.ico",
-      "loadingGif": "build/install-spinner.gif",
-      "msi": false,
       "icon": "build/icon.ico"
     },
     "linux": {
