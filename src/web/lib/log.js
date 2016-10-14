@@ -107,7 +107,8 @@ const consoleLogger = (logger) => {
         args = args.concat(logger.args);
     }
     if (logger.stackframes) {
-        args.push(logger.stackframes[4].source);
+        const frame = logger.stackframes[4] || logger.stackframes[logger.stackframes.length - 1] || {};
+        args.push(frame.source);
     }
 
     try {
