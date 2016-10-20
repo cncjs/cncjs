@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
-import Validation from 'react-validation';
 import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
 import Modal from '../../components/Modal';
+import Validation from '../../lib/react-validation';
 import styles from './index.styl';
 
 @CSSModules(styles)
@@ -12,6 +12,10 @@ class EditMacro extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
+    };
+    fields = {
+        name: null,
+        content: null
     };
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -40,7 +44,9 @@ class EditMacro extends Component {
                 </Modal.Header>
                 <Modal.Body>
                     <Validation.components.Form
-                        ref="form"
+                        ref={c => {
+                            this.form = c;
+                        }}
                         onSubmit={(event) => {
                             event.preventDefault();
                         }}
@@ -48,24 +54,32 @@ class EditMacro extends Component {
                         <div className="form-group">
                             <label>{i18n._('Macro Name')}</label>
                             <Validation.components.Input
-                                ref="name"
+                                ref={c => {
+                                    this.fields.name = c;
+                                }}
                                 type="text"
                                 className="form-control"
-                                name="name"
-                                value={name}
                                 placeholder={i18n._('Macro Name')}
+                                errorClassName="is-invalid-input"
+                                containerClassName=""
+                                value={name}
+                                name="name"
                                 validations={['required']}
                             />
                         </div>
                         <div className="form-group">
                             <label>{i18n._('G-code')}</label>
                             <Validation.components.Textarea
-                                ref="content"
+                                ref={c => {
+                                    this.fields.content = c;
+                                }}
                                 rows="10"
                                 className="form-control"
-                                name="content"
-                                value={content}
                                 placeholder={sample}
+                                errorClassName="is-invalid-input"
+                                containerClassName=""
+                                value={content}
+                                name="content"
                                 validations={['required']}
                             />
                         </div>
@@ -103,20 +117,18 @@ class EditMacro extends Component {
                         type="button"
                         className="btn btn-primary"
                         onClick={() => {
-                            const form = this.refs.form;
-
-                            if (_.size(form.state.errors) > 0) {
+                            if (Object.keys(this.form.state.errors).length > 0) {
                                 return;
                             }
 
-                            form.validateAll();
+                            this.form.validateAll();
 
-                            if (_.size(form.state.errors) > 0) {
+                            if (Object.keys(this.form.state.errors).length > 0) {
                                 return;
                             }
 
-                            const name = _.get(form.state, 'states.name.value');
-                            const content = _.get(form.state, 'states.content.value');
+                            const name = _.get(this.fields.name, 'state.value');
+                            const content = _.get(this.fields.content, 'state.value');
 
                             actions.updateMacro({ id, name, content });
                             actions.closeModal();

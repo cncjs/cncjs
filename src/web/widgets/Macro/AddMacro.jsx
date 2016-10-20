@@ -1,40 +1,20 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import CSSModules from 'react-css-modules';
-import Validation from 'react-validation';
 import i18n from '../../lib/i18n';
 import Modal from '../../components/Modal';
+import Validation from '../../lib/react-validation';
 import styles from './index.styl';
-
-// TODO
-const HelpBlock = (props) => {
-    const style = {
-        color: '#A94442'
-    };
-
-    return (
-        <div {...props} className="help-block" style={style} />
-    );
-};
-
-Object.assign(Validation.rules, {
-    required: {
-        rule: (value = '') => {
-            return value.trim();
-        },
-        hint: (value) => {
-            return (
-                <HelpBlock>{i18n._('This field is required.')}</HelpBlock>
-            );
-        }
-    }
-});
 
 @CSSModules(styles)
 class AddMacro extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
+    };
+    fields = {
+        name: null,
+        content: null
     };
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -59,7 +39,9 @@ class AddMacro extends Component {
                 </Modal.Header>
                 <Modal.Body>
                     <Validation.components.Form
-                        ref="form"
+                        ref={c => {
+                            this.form = c;
+                        }}
                         onSubmit={(event) => {
                             event.preventDefault();
                         }}
@@ -67,24 +49,32 @@ class AddMacro extends Component {
                         <div className="form-group">
                             <label>{i18n._('Macro Name')}</label>
                             <Validation.components.Input
-                                ref="name"
+                                ref={c => {
+                                    this.fields.name = c;
+                                }}
                                 type="text"
                                 className="form-control"
-                                name="name"
-                                value=""
                                 placeholder={i18n._('Macro Name')}
+                                errorClassName="is-invalid-input"
+                                containerClassName=""
+                                value=""
+                                name="name"
                                 validations={['required']}
                             />
                         </div>
                         <div className="form-group">
                             <label>{i18n._('G-code')}</label>
                             <Validation.components.Textarea
-                                ref="content"
+                                ref={c => {
+                                    this.fields.content = c;
+                                }}
                                 rows="10"
                                 className="form-control"
-                                name="content"
-                                value=""
                                 placeholder={sample}
+                                errorClassName="is-invalid-input"
+                                containerClassName=""
+                                value=""
+                                name="content"
                                 validations={['required']}
                             />
                         </div>
@@ -102,16 +92,14 @@ class AddMacro extends Component {
                         type="button"
                         className="btn btn-primary"
                         onClick={() => {
-                            const form = this.refs.form;
+                            this.form.validateAll();
 
-                            form.validateAll();
-
-                            if (_.size(form.state.errors) > 0) {
+                            if (Object.keys(this.form.state.errors).length > 0) {
                                 return;
                             }
 
-                            const name = _.get(form.state, 'states.name.value');
-                            const content = _.get(form.state, 'states.content.value');
+                            const name = _.get(this.fields.name, 'state.value');
+                            const content = _.get(this.fields.content, 'state.value');
 
                             actions.addMacro({ name, content });
                             actions.closeModal();
