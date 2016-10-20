@@ -1,6 +1,6 @@
 {
   "name": "cnc",
-  "version": "1.6.7",
+  "version": "1.6.8",
   "description": "CNC Milling Controller",
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -28,7 +28,7 @@
     "fs-extra": "~0.30.0",
     "gcode-parser": "~0.8.2",
     "hogan.js": "~3.0.2",
-    "i18next": "~3.4.3",
+    "i18next": "~3.4.4",
     "i18next-express-middleware": "~1.0.2",
     "i18next-node-fs-backend": "~0.1.2",
     "lodash": "~4.16.4",
