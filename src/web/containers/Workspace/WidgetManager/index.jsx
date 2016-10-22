@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import store from '../../store';
+import store from '../../../store';
 import WidgetManager from './WidgetManager';
 
 export const getActiveWidgets = () => {

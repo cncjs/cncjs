@@ -1,14 +1,14 @@
 import _ from 'lodash';
-import React from 'react';
-import Modal from '../../components/Modal';
-import i18n from '../../lib/i18n';
-import store from '../../store';
+import React, { Component, PropTypes } from 'react';
+import Modal from '../../../components/Modal';
+import i18n from '../../../lib/i18n';
+import store from '../../../store';
 import WidgetList from './WidgetList';
 
-class WidgetManager extends React.Component {
+class WidgetManager extends Component {
     static propTypes = {
-        onSave: React.PropTypes.func,
-        onClose: React.PropTypes.func.isRequired
+        onSave: PropTypes.func,
+        onClose: PropTypes.func.isRequired
     };
     state = {
         show: true

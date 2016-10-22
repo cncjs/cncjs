@@ -1,15 +1,15 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 import Switch from 'rc-switch';
-import i18n from '../../lib/i18n';
+import i18n from '../../../lib/i18n';
 
-class WidgetListItem extends React.Component {
+class WidgetListItem extends Component {
     static propTypes = {
-        id: React.PropTypes.string,
-        caption: React.PropTypes.string,
-        details: React.PropTypes.string,
-        checked: React.PropTypes.bool,
-        disabled: React.PropTypes.bool,
-        onChange: React.PropTypes.func
+        id: PropTypes.string,
+        caption: PropTypes.string,
+        details: PropTypes.string,
+        checked: PropTypes.bool,
+        disabled: PropTypes.bool,
+        onChange: PropTypes.func
     };
     state = {
         checked: this.props.checked

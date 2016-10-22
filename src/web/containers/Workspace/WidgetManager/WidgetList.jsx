@@ -1,5 +1,5 @@
 import _ from 'lodash';
-import React from 'react';
+import React, { PropTypes } from 'react';
 import { Grid, Row, Col } from 'react-bootstrap';
 import WidgetListItem from './WidgetListItem';
 
@@ -32,8 +32,8 @@ const WidgetList = (props) => {
 };
 
 WidgetList.propTypes = {
-    list: React.PropTypes.array.isRequired,
-    onChange: React.PropTypes.func
+    list: PropTypes.array.isRequired,
+    onChange: PropTypes.func
 };
 
 export default WidgetList;
