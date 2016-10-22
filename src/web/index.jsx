@@ -6,7 +6,8 @@ import series from 'async/series';
 import Uri from 'jsuri';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { createHashHistory } from 'history';
+import { Router, Route, IndexRoute, useRouterHistory } from 'react-router';
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
@@ -14,7 +15,6 @@ import settings from './config/settings';
 import log from './lib/log';
 import { toQueryObject } from './lib/query';
 import App from './containers/App';
-import Workspace from './containers/Workspace';
 import './styles/vendor.styl';
 import './styles/app.styl';
 
@@ -60,14 +60,23 @@ series([
         loading && loading.remove();
     }
 
+    { // Change backgrond color after loading complete
+        const body = document.querySelector('body');
+        body.style.backgroundColor = '#222'; // sidebar background color
+    }
+
     const container = document.createElement('div');
     document.body.appendChild(container);
 
+    const hashHistory = useRouterHistory(createHashHistory)({ queryKey: false });
+    const layoutToggler = () => (<div></div>);
+
     ReactDOM.render(
-        <Router history={browserHistory}>
+        <Router history={hashHistory}>
             <Route path="/" component={App}>
-                <IndexRoute component={Workspace} />
-                <Route path="workspace" component={Workspace} />
+                <IndexRoute component={layoutToggler} />
+                <Route path="workspace" component={layoutToggler} />
+                <Route path="settings" component={layoutToggler} />
             </Route>
         </Router>,
         container

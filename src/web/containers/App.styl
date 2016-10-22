@@ -1,0 +1,23 @@
+@import "variables";
+
+.sidebar {
+    background-color: $sidebar-background-color;
+    position: absolute;
+    top: $navbar-height;
+    left: 0;
+    width: $sidebar-width;
+}
+
+.main {
+    position: absolute;
+    top: $navbar-height;
+    left: $sidebar-width;
+    right: 0;
+    bottom: 0;
+    background-color: $content-background-color;
+}
+
+.content {
+    position: relative;
+    background-color: $content-background-color;
+}

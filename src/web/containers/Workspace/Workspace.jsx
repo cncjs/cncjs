@@ -9,7 +9,7 @@ import api from '../../api';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import store from '../../store';
-import * as widgetManager from '../WidgetManager';
+import * as widgetManager from './WidgetManager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
@@ -127,16 +127,17 @@ class Workspace extends React.Component {
         pubsub.publish('resize'); // Also see "widgets/Visualizer"
     }
     resizeDefaultContainer() {
-        let primaryContainer = ReactDOM.findDOMNode(this.refs.primaryContainer);
-        let secondaryContainer = ReactDOM.findDOMNode(this.refs.secondaryContainer);
-        let primaryToggler = ReactDOM.findDOMNode(this.refs.primaryToggler);
-        let secondaryToggler = ReactDOM.findDOMNode(this.refs.secondaryToggler);
-        let defaultContainer = ReactDOM.findDOMNode(this.refs.defaultContainer);
+        const sidebar = document.querySelector('#sidebar');
+        const primaryContainer = ReactDOM.findDOMNode(this.refs.primaryContainer);
+        const secondaryContainer = ReactDOM.findDOMNode(this.refs.secondaryContainer);
+        const primaryToggler = ReactDOM.findDOMNode(this.refs.primaryToggler);
+        const secondaryToggler = ReactDOM.findDOMNode(this.refs.secondaryToggler);
+        const defaultContainer = ReactDOM.findDOMNode(this.refs.defaultContainer);
 
         if (this.state.showPrimaryContainer) {
-            defaultContainer.style.left = primaryContainer.offsetWidth + 'px';
+            defaultContainer.style.left = primaryContainer.offsetWidth + sidebar.offsetWidth + 'px';
         } else {
-            defaultContainer.style.left = primaryToggler.offsetWidth + 'px';
+            defaultContainer.style.left = primaryToggler.offsetWidth + sidebar.offsetWidth + 'px';
         }
 
         if (this.state.showSecondaryContainer) {
@@ -255,162 +256,160 @@ class Workspace extends React.Component {
         const hideSecondaryContainer = !showSecondaryContainer;
 
         return (
-            <div styleName="workspace">
-                <div styleName="workspace-container">
-                    <div
-                        styleName={classNames(
-                            'dropzone-overlay',
-                            { 'hidden': !(port && isDraggingFile) }
-                        )}
-                    >
-                        <div styleName="text-block">
-                            {i18n._('Drop G-code file here')}
-                        </div>
+            <div {...this.props} styleName="workspace">
+                <div
+                    styleName={classNames(
+                        'dropzone-overlay',
+                        { 'hidden': !(port && isDraggingFile) }
+                    )}
+                >
+                    <div styleName="text-block">
+                        {i18n._('Drop G-code file here')}
                     </div>
-                    <Dropzone
-                        ref="dropzone"
-                        styleName="dropzone"
-                        disableClick={true}
-                        multiple={false}
-                        onDragStart={(event) => {
-                        }}
-                        onDragEnter={(event) => {
-                            if (isDraggingWidget) {
-                                return;
-                            }
-                            if (!isDraggingFile) {
-                                this.setState({ isDraggingFile: true });
-                            }
-                        }}
-                        onDragLeave={(event) => {
-                            if (isDraggingWidget) {
-                                return;
-                            }
-                            if (isDraggingFile) {
-                                this.setState({ isDraggingFile: false });
-                            }
-                        }}
-                        onDrop={(files) => {
-                            if (isDraggingWidget) {
-                                return;
-                            }
-                            if (isDraggingFile) {
-                                this.setState({ isDraggingFile: false });
-                            }
-                            this.onDrop(files);
-                        }}
-                    >
-                        <div styleName="workspace-table">
-                            <div styleName="workspace-table-row">
+                </div>
+                <Dropzone
+                    ref="dropzone"
+                    styleName="dropzone"
+                    disableClick={true}
+                    multiple={false}
+                    onDragStart={(event) => {
+                    }}
+                    onDragEnter={(event) => {
+                        if (isDraggingWidget) {
+                            return;
+                        }
+                        if (!isDraggingFile) {
+                            this.setState({ isDraggingFile: true });
+                        }
+                    }}
+                    onDragLeave={(event) => {
+                        if (isDraggingWidget) {
+                            return;
+                        }
+                        if (isDraggingFile) {
+                            this.setState({ isDraggingFile: false });
+                        }
+                    }}
+                    onDrop={(files) => {
+                        if (isDraggingWidget) {
+                            return;
+                        }
+                        if (isDraggingFile) {
+                            this.setState({ isDraggingFile: false });
+                        }
+                        this.onDrop(files);
+                    }}
+                >
+                    <div styleName="workspace-table">
+                        <div styleName="workspace-table-row">
+                            <div
+                                styleName={classNames(
+                                    'primary-container',
+                                    { 'hidden': hidePrimaryContainer }
+                                )}
+                                ref="primaryContainer"
+                            >
                                 <div
-                                    styleName={classNames(
-                                        'primary-container',
-                                        { 'hidden': hidePrimaryContainer }
-                                    )}
-                                    ref="primaryContainer"
+                                    className="clearfix"
+                                    styleName="toolbar"
+                                    role="toolbar"
                                 >
-                                    <div
-                                        className="clearfix"
-                                        styleName="toolbar"
-                                        role="toolbar"
-                                    >
-                                        <div className="btn-group btn-group-xs pull-left" role="group">
-                                            <button
-                                                type="button"
-                                                className="btn btn-default"
-                                                onClick={::this.updateWidgetsForPrimaryContainer}
-                                            >
-                                                <i className="fa fa-list-alt" />&nbsp;
-                                                {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
-                                            </button>
-                                        </div>
-                                        <div className="btn-group btn-group-xs pull-right" role="group">
-                                            <button
-                                                type="button"
-                                                className="btn btn-default"
-                                                onClick={::this.togglePrimaryContainer}
-                                            >
-                                                <i className="fa fa-chevron-left" />
-                                            </button>
-                                        </div>
+                                    <div className="btn-group btn-group-xs pull-left" role="group">
+                                        <button
+                                            type="button"
+                                            className="btn btn-default"
+                                            onClick={::this.updateWidgetsForPrimaryContainer}
+                                        >
+                                            <i className="fa fa-list-alt" />&nbsp;
+                                            {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
+                                        </button>
                                     </div>
-                                    <PrimaryWidgets
-                                        onDelete={this.widgetEventHandler.onDelete}
-                                        onSortStart={this.widgetEventHandler.onSortStart}
-                                        onSortEnd={this.widgetEventHandler.onSortEnd}
-                                    />
-                                </div>
-                            {hidePrimaryContainer &&
-                                <div styleName="primary-toggler" ref="primaryToggler">
-                                    <div className="btn-group btn-group-xs">
+                                    <div className="btn-group btn-group-xs pull-right" role="group">
                                         <button
                                             type="button"
                                             className="btn btn-default"
                                             onClick={::this.togglePrimaryContainer}
                                         >
-                                            <i className="fa fa-chevron-right" />
+                                            <i className="fa fa-chevron-left" />
                                         </button>
                                     </div>
                                 </div>
-                            }
-                                <div styleName="default-container fixed" ref="defaultContainer">
-                                    <DefaultWidgets />
+                                <PrimaryWidgets
+                                    onDelete={this.widgetEventHandler.onDelete}
+                                    onSortStart={this.widgetEventHandler.onSortStart}
+                                    onSortEnd={this.widgetEventHandler.onSortEnd}
+                                />
+                            </div>
+                        {hidePrimaryContainer &&
+                            <div styleName="primary-toggler" ref="primaryToggler">
+                                <div className="btn-group btn-group-xs">
+                                    <button
+                                        type="button"
+                                        className="btn btn-default"
+                                        onClick={::this.togglePrimaryContainer}
+                                    >
+                                        <i className="fa fa-chevron-right" />
+                                    </button>
                                 </div>
-                            {hideSecondaryContainer &&
-                                <div styleName="secondary-toggler" ref="secondaryToggler">
-                                    <div className="btn-group btn-group-xs">
+                            </div>
+                        }
+                            <div styleName="default-container fixed" ref="defaultContainer">
+                                <DefaultWidgets />
+                            </div>
+                        {hideSecondaryContainer &&
+                            <div styleName="secondary-toggler" ref="secondaryToggler">
+                                <div className="btn-group btn-group-xs">
+                                    <button
+                                        type="button"
+                                        className="btn btn-default"
+                                        onClick={::this.toggleSecondaryContainer}
+                                    >
+                                        <i className="fa fa-chevron-left" />
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                            <div
+                                styleName={classNames(
+                                    'secondary-container',
+                                    { 'hidden': hideSecondaryContainer }
+                                )}
+                                ref="secondaryContainer"
+                            >
+                                <div
+                                    className="clearfix"
+                                    styleName="toolbar"
+                                    role="toolbar"
+                                >
+                                    <div className="btn-group btn-group-xs pull-left" role="group">
                                         <button
                                             type="button"
                                             className="btn btn-default"
                                             onClick={::this.toggleSecondaryContainer}
                                         >
-                                            <i className="fa fa-chevron-left" />
+                                            <i className="fa fa-chevron-right" />
+                                        </button>
+                                    </div>
+                                    <div className="btn-group btn-group-xs pull-right" role="group">
+                                        <button
+                                            type="button"
+                                            className="btn btn-default"
+                                            onClick={::this.updateWidgetsForSecondaryContainer}
+                                        >
+                                            <i className="fa fa-list-alt" />&nbsp;
+                                            {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                         </button>
                                     </div>
                                 </div>
-                            }
-                                <div
-                                    styleName={classNames(
-                                        'secondary-container',
-                                        { 'hidden': hideSecondaryContainer }
-                                    )}
-                                    ref="secondaryContainer"
-                                >
-                                    <div
-                                        className="clearfix"
-                                        styleName="toolbar"
-                                        role="toolbar"
-                                    >
-                                        <div className="btn-group btn-group-xs pull-left" role="group">
-                                            <button
-                                                type="button"
-                                                className="btn btn-default"
-                                                onClick={::this.toggleSecondaryContainer}
-                                            >
-                                                <i className="fa fa-chevron-right" />
-                                            </button>
-                                        </div>
-                                        <div className="btn-group btn-group-xs pull-right" role="group">
-                                            <button
-                                                type="button"
-                                                className="btn btn-default"
-                                                onClick={::this.updateWidgetsForSecondaryContainer}
-                                            >
-                                                <i className="fa fa-list-alt" />&nbsp;
-                                                {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
-                                            </button>
-                                        </div>
-                                    </div>
-                                    <SecondaryWidgets
-                                        onDelete={this.widgetEventHandler.onDelete}
-                                        onSortStart={this.widgetEventHandler.onSortStart}
-                                        onSortEnd={this.widgetEventHandler.onSortEnd}
-                                    />
-                                </div>
+                                <SecondaryWidgets
+                                    onDelete={this.widgetEventHandler.onDelete}
+                                    onSortStart={this.widgetEventHandler.onSortStart}
+                                    onSortEnd={this.widgetEventHandler.onSortEnd}
+                                />
                             </div>
                         </div>
-                    </Dropzone>
-                </div>
+                    </div>
+                </Dropzone>
             </div>
         );
     }

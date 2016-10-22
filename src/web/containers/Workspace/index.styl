@@ -1,7 +1,9 @@
+@import "../variables";
+
 .workspace {
     .dropzone-overlay {
         position: fixed;
-        top: 50px;
+        top: $navbar-height;
         bottom: 0;
         left: 0;
         right: 0;
@@ -27,14 +29,6 @@
 
     .dropzone {
         height: 100%;
-    }
-
-    .workspace-container {
-        position: absolute;
-        top: 50px;
-        bottom: 0;
-        right: 0;
-        left: 0;
     }
 
     .workspace-table {
@@ -84,6 +78,9 @@
         padding-top: 5px;
         text-align: center;
         width: 32px;
+
+        // http://stackoverflow.com/questions/32272158/how-to-use-a-stylus-variable-in-calc
+        height: 'calc(100vh - %s)' % ($navbar-height);
     }
     .primary-toggler {
         border-right: 1px solid #ccc;
@@ -96,9 +93,9 @@
 
         &.fixed {
             position: fixed;
-            left: (360 + 10)px;
-            right: (360 + 10)px;
-            top: 50px;
+            left: 360px;
+            right: 360px;
+            top: $navbar-height;
             bottom: 0;
         }
     }
