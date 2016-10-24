@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import styles from './index.styl';
 
@@ -12,6 +13,9 @@ class TogglerIcon extends Component {
         expanded: false
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
     render() {
         const { className, expanded, ...props } = this.props;
 
