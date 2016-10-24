@@ -90,7 +90,8 @@ const defaultState = {
             retractionDistance: 4
         },
         spindle: {
-            minimized: false
+            minimized: false,
+            speed: 1000
         },
         tinyg2: {
             minimized: false,

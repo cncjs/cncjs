@@ -1,13 +1,19 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import Spindle from './Spindle';
+import {
+    // Grbl
+    GRBL,
+    // TinyG2
+    TINYG2
+} from '../../constants';
 import styles from './index.styl';
 
 @CSSModules(styles, { allowMultiple: true })
@@ -20,7 +26,38 @@ class SpindleWidget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+        handleSpindleSpeedChange: (event) => {
+            const spindleSpeed = Number(event.target.value) || 0;
+            this.setState({ spindleSpeed: spindleSpeed });
+        }
+    };
     pubsubTokens = [];
+    controllerEvents = {
+        'Grbl:state': (state) => {
+            const { parserstate } = { ...state };
+            const { modal = {} } = { ...parserstate };
+
+            this.setState({
+                controller: {
+                    type: GRBL,
+                    state: state
+                },
+                spindleState: modal.spindle || '',
+                coolantState: modal.coolant || ''
+            });
+        },
+        'TinyG2:state': (state) => {
+            const { sr } = { ...state };
+
+            this.setState({
+                controller: {
+                    type: TINYG2,
+                    state: state
+                }
+            });
+        }
+    };
 
     constructor() {
         super();
@@ -33,14 +70,16 @@ class SpindleWidget extends Component {
         this.unsubscribe();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
-            minimized
+            minimized,
+            spindleSpeed
         } = this.state;
 
         store.set('widgets.spindle.minimized', minimized);
+        store.set('widgets.spindle.speed', spindleSpeed);
     }
     getDefaultState() {
         return {
@@ -48,8 +87,13 @@ class SpindleWidget extends Component {
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
-            isCCWChecked: false,
-            spindleSpeed: 0
+            controller: {
+                type: controller.type,
+                state: controller.state
+            },
+            spindleState: '',
+            coolantState: '',
+            spindleSpeed: store.get('widgets.spindle.speed', 1000)
         };
     }
     subscribe() {
@@ -71,7 +115,7 @@ class SpindleWidget extends Component {
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
@@ -85,11 +129,6 @@ class SpindleWidget extends Component {
 
         return true;
     }
-    handleCCWChange() {
-        this.setState({
-            isCCWChecked: !(this.state.isCCWChecked)
-        });
-    }
     render() {
         const { minimized, isFullscreen } = this.state;
         const state = {
@@ -97,7 +136,7 @@ class SpindleWidget extends Component {
             canClick: this.canClick()
         };
         const actions = {
-            handleCCWChange: ::this.handleCCWChange
+            ...this.actions
         };
 
         return (
