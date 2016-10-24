@@ -45,7 +45,7 @@ class WidgetListItem extends Component {
         return (
             <div className="panel panel-default">
                 <div className="panel-head text-center" style={styles.thumbnail}>
-                    <i className="fa fa-list-alt" />
+                    <i className="fa fa-list-alt" style={{ fontSize: 'inherit' }} />
                 </div>
                 <div className="panel-body">
                     <div className="row no-gutters">

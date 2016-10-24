@@ -320,7 +320,8 @@ class Workspace extends React.Component {
                                             className="btn btn-default"
                                             onClick={::this.updateWidgetsForPrimaryContainer}
                                         >
-                                            <i className="fa fa-list-alt" />&nbsp;
+                                            <i className="fa fa-list-alt" style={{ verticalAlign: 'middle' }} />
+                                            &nbsp;
                                             {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                         </button>
                                     </div>
@@ -330,7 +331,7 @@ class Workspace extends React.Component {
                                             className="btn btn-default"
                                             onClick={::this.togglePrimaryContainer}
                                         >
-                                            <i className="fa fa-chevron-left" />
+                                            <i className="fa fa-chevron-left" style={{ verticalAlign: 'middle' }} />
                                         </button>
                                     </div>
                                 </div>
@@ -348,7 +349,7 @@ class Workspace extends React.Component {
                                         className="btn btn-default"
                                         onClick={::this.togglePrimaryContainer}
                                     >
-                                        <i className="fa fa-chevron-right" />
+                                        <i className="fa fa-chevron-right" style={{ verticalAlign: 'middle' }} />
                                     </button>
                                 </div>
                             </div>
@@ -364,7 +365,7 @@ class Workspace extends React.Component {
                                         className="btn btn-default"
                                         onClick={::this.toggleSecondaryContainer}
                                     >
-                                        <i className="fa fa-chevron-left" />
+                                        <i className="fa fa-chevron-left" style={{ verticalAlign: 'middle' }} />
                                     </button>
                                 </div>
                             </div>
@@ -387,7 +388,7 @@ class Workspace extends React.Component {
                                             className="btn btn-default"
                                             onClick={::this.toggleSecondaryContainer}
                                         >
-                                            <i className="fa fa-chevron-right" />
+                                            <i className="fa fa-chevron-right" style={{ verticalAlign: 'middle' }} />
                                         </button>
                                     </div>
                                     <div className="btn-group btn-group-xs pull-right" role="group">
@@ -396,7 +397,8 @@ class Workspace extends React.Component {
                                             className="btn btn-default"
                                             onClick={::this.updateWidgetsForSecondaryContainer}
                                         >
-                                            <i className="fa fa-list-alt" />&nbsp;
+                                            <i className="fa fa-list-alt" style={{ verticalAlign: 'middle' }} />
+                                            &nbsp;
                                             {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                         </button>
                                     </div>
