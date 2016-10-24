@@ -22,7 +22,7 @@ class Settings extends Component {
                     body: i18n._('Are you sure you want to restore the default settings?')
                 }).then(() => {
                     store.clear();
-                    window.location.reload();
+                    window.location = '/';
                 });
             },
             handleCancel: (event) => {
@@ -33,7 +33,7 @@ class Settings extends Component {
                 const { lang = 'en' } = this.state.general;
 
                 i18next.changeLanguage(lang, (err, t) => {
-                    window.location.reload();
+                    window.location = '/';
                 });
             },
             changeLanguage: (lang) => {
