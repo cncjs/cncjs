@@ -332,6 +332,7 @@ class GrblLineParserResultStartup {
 
 class Grbl extends events.EventEmitter {
     state = {
+        version: '',
         status: {
             activeState: '',
             machinePosition: {
@@ -445,6 +446,11 @@ class Grbl extends events.EventEmitter {
         }
         if (type === GrblLineParserResultStartup) {
             this.emit('startup', payload);
+            const { version } = payload;
+            this.state = { // enforce state change
+                ...this.state,
+                version: version
+            };
             return;
         }
         if (data.length > 0) {

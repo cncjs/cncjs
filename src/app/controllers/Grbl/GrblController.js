@@ -98,12 +98,16 @@ class GrblController {
                 return;
             }
 
-            socket && socket.emit('serialport:write', line);
-            const index = _.findIndex(this.connections, (c) => {
-                return c.socket === socket;
-            });
-            if (index >= 0) {
-                this.connections[index].sentCommand = line;
+            if (socket) {
+                socket.emit('serialport:write', line);
+                const index = _.findIndex(this.connections, (c) => {
+                    return c.socket === socket;
+                });
+                if (index >= 0) {
+                    this.connections[index].sentCommand = line;
+                }
+            } else {
+                this.emitAll('serialport:write', line);
             }
 
             const data = line + '\n';
@@ -161,10 +165,10 @@ class GrblController {
                 return;
             }
 
+            this.emitAll('serialport:read', res.raw);
+
             // Feeder
             this.feeder.next();
-
-            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('error', (res) => {
@@ -184,10 +188,10 @@ class GrblController {
                 return;
             }
 
+            this.emitAll('serialport:read', res.raw);
+
             // Feeder
             this.feeder.next();
-
-            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('alarm', (res) => {
@@ -218,12 +222,24 @@ class GrblController {
         });
 
         this.grbl.on('startup', (res) => {
+            this.emitAll('serialport:read', res.raw);
+
+            if (!this.ready) {
+                // View Grbl settings
+                this.feeder.feed({ line: '$$' });
+
+                // View startup blocks
+                this.feeder.feed({ line: '$N' });
+
+                if (!this.feeder.isPending()) {
+                    this.feeder.next();
+                }
+            }
+
             this.ready = true;
             this.queryResponse.status = false;
             this.queryResponse.parserstate = false;
             this.queryResponse.parserstateEnd = false;
-
-            this.emitAll('serialport:read', res.raw);
         });
 
         this.grbl.on('others', (res) => {
@@ -560,12 +576,14 @@ class GrblController {
         handler();
     }
     write(socket, data) {
-        socket && socket.emit('serialport:write', data);
-        const index = _.findIndex(this.connections, (c) => {
-            return c.socket === socket;
-        });
-        if (index >= 0) {
-            this.connections[index].sentCommand = data;
+        if (socket) {
+            socket.emit('serialport:write', data);
+            const index = _.findIndex(this.connections, (c) => {
+                return c.socket === socket;
+            });
+            if (index >= 0) {
+                this.connections[index].sentCommand = data;
+            }
         }
         this.serialport.write(data);
         dbg(`[Grbl] > ${data}`);
