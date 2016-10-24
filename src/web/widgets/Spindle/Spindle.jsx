@@ -37,7 +37,7 @@ class Spindle extends Component {
                                                 controller.command('gcode', 'M3');
                                             }
                                         }}
-                                        title={i18n._('Spindle On, CW (M3)')}
+                                        title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
                                         <i className="fa fa-rotate-right" />
@@ -55,7 +55,7 @@ class Spindle extends Component {
                                                 controller.command('gcode', 'M4');
                                             }
                                         }}
-                                        title={i18n._('Spindle On, CCW (M4)')}
+                                        title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
                                         <i className="fa fa-rotate-left" />
@@ -67,7 +67,7 @@ class Spindle extends Component {
                                         type="button"
                                         className="btn btn-default"
                                         onClick={() => controller.command('gcode', 'M5')}
-                                        title={i18n._('Spindle Off (M5)')}
+                                        title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
                                         <i className="fa fa-power-off" />
@@ -86,7 +86,7 @@ class Spindle extends Component {
                                         onClick={() => {
                                             controller.command('gcode', 'M7');
                                         }}
-                                        title={i18n._('Mist Coolant On (M7)')}
+                                        title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
                                         <i styleName="icon-fan" />
@@ -100,7 +100,7 @@ class Spindle extends Component {
                                         onClick={() => {
                                             controller.command('gcode', 'M8');
                                         }}
-                                        title={i18n._('Flood Coolant On (M8)')}
+                                        title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
                                         <i styleName="icon-fan" />
@@ -114,7 +114,7 @@ class Spindle extends Component {
                                         onClick={() => {
                                             controller.command('gcode', 'M9');
                                         }}
-                                        title={i18n._('Coolant Off (M9)')}
+                                        title={i18n._('Coolant Off (M9)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
                                         <i className="fa fa-power-off" />
