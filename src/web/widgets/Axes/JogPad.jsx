@@ -170,7 +170,7 @@ class JogPad extends Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y+')}
                                 >
-                                    <i className="fa fa-arrow-circle-up" styleName="rotate--45deg" />
+                                    <i className="fa fa-arrow-circle-up" styleName="rotate--45deg" style={{ fontSize: 16 }} />
                                 </button>
                             </div>
                         </div>
@@ -207,7 +207,7 @@ class JogPad extends Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y+')}
                                 >
-                                    <i className="fa fa-arrow-circle-up" styleName="rotate-45deg" />
+                                    <i className="fa fa-arrow-circle-up" styleName="rotate-45deg" style={{ fontSize: 16 }} />
                                 </button>
                             </div>
                         </div>
@@ -320,7 +320,7 @@ class JogPad extends Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X- Y-')}
                                 >
-                                    <i className="fa fa-arrow-circle-down" styleName="rotate-45deg" />
+                                    <i className="fa fa-arrow-circle-down" styleName="rotate-45deg" style={{ fontSize: 16 }} />
                                 </button>
                             </div>
                         </div>
@@ -357,7 +357,7 @@ class JogPad extends Component {
                                     disabled={!canClick}
                                     title={i18n._('Move X+ Y-')}
                                 >
-                                    <i className="fa fa-arrow-circle-down" styleName="rotate--45deg" />
+                                    <i className="fa fa-arrow-circle-down" styleName="rotate--45deg" style={{ fontSize: 16 }} />
                                 </button>
                             </div>
                         </div>

@@ -1,5 +1,5 @@
 import Slider from 'rc-slider';
-import React from 'react';
+import React, { Component } from 'react';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 
@@ -8,7 +8,7 @@ const FEEDRATE_STEP = 50;
 const OVERSHOOT_RANGE = [1, 1.5];
 const OVERSHOOT_STEP = 0.01;
 
-class ShuttleSettings extends React.Component {
+class ShuttleSettings extends Component {
     state = {
         feedrateMin: store.get('widgets.axes.shuttle.feedrateMin'),
         feedrateMax: store.get('widgets.axes.shuttle.feedrateMax'),
