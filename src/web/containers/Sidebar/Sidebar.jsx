@@ -31,7 +31,7 @@ class Sidebar extends Component {
                             title={i18n._('Workspace')}
                             href="#/workspace"
                         >
-                            <i className="fa fa-desktop fa-2x" />
+                            <i className="fa fa-desktop" style={{ fontSize: 32 }} />
                             <span
                                 style={{
                                     position: 'absolute',
@@ -53,7 +53,7 @@ class Sidebar extends Component {
                             title={i18n._('Settings')}
                             href="#/settings"
                         >
-                            <i className="fa fa-cogs fa-2x" />
+                            <i className="fa fa-cogs" style={{ fontSize: 32 }} />
                         </Anchor>
                     </li>
                 </ul>
