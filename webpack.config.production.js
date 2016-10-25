@@ -13,9 +13,9 @@ var pkg = require('./package.json');
 // Use publicPath for production
 var payload = pkg.version;
 var publicPath = (function(payload) {
-    const algorithm = 'sha1';
-    const buf = String(payload);
-    const hash = crypto.createHash(algorithm).update(buf).digest('hex');
+    var algorithm = 'sha1';
+    var buf = String(payload);
+    var hash = crypto.createHash(algorithm).update(buf).digest('hex');
     return '/' + hash.substr(0, 8) + '/'; // 8 digits
 }(payload));
 

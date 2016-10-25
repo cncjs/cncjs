@@ -1,9 +1,11 @@
+import crypto from 'crypto';
 import fs from 'fs';
 import path from 'path';
 import gulp from 'gulp';
 import babel from 'gulp-babel';
 import gutil from 'gulp-util';
 import webpack from 'webpack';
+import pkg from '../../package.json';
 
 const NODE_MODULES = path.resolve(__dirname, '../../node_modules');
 
@@ -16,6 +18,15 @@ fs.readdirSync(NODE_MODULES)
     .forEach((mod) => {
         externals[mod] = 'commonjs ' + mod;
     });
+
+// Use publicPath for production
+const payload = pkg.version;
+const publicPath = (function(payload) {
+    const algorithm = 'sha1';
+    const buf = String(payload);
+    const hash = crypto.createHash(algorithm).update(buf).digest('hex');
+    return '/' + hash.substr(0, 8) + '/'; // 8 digits
+}(payload));
 
 const webpackProductionConfig = {
     target: 'node',
@@ -31,6 +42,9 @@ const webpackProductionConfig = {
         libraryTarget: 'commonjs2'
     },
     plugins: [
+        new webpack.DefinePlugin({
+            'global.PUBLIC_PATH': JSON.stringify(publicPath)
+        }),
         new webpack.optimize.OccurrenceOrderPlugin()
     ],
     module: {
@@ -42,10 +56,7 @@ const webpackProductionConfig = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel',
-                exclude: /node_modules/,
-                query: {
-                    presets: ['es2015', 'stage-0', 'react']
-                }
+                exclude: /node_modules/
             }
         ]
     },
