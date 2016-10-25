@@ -3,16 +3,21 @@ var nib = require('nib');
 var path = require('path');
 var webpack = require('webpack');
 var findImports = require('find-imports');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     cache: true,
     target: 'web',
+    context: path.resolve(__dirname, 'src/web'),
     entry: {
         polyfill: [
             path.resolve(__dirname, 'src/web/polyfill/index.js')
         ],
         vendor: findImports([
-            'src/web/**/*.{js,jsx}'
+            'src/web/**/*.{js,jsx}',
+            '!src/web/polyfill/**/*.js',
+            '!src/web/containers/DevTools.js', // redux-devtools
+            '!src/web/**/*.development.js'
         ], { flatten: true }),
         app: [
             path.resolve(__dirname, 'src/web/index.jsx')
@@ -43,22 +48,20 @@ module.exports = {
             },
             {
                 test: /\.styl$/,
-                loaders: [
+                loader: ExtractTextPlugin.extract(
                     'style',
-                    'css?modules&importLoaders=1&localIdentName=[path]___[name]__[local]___[hash:base64:5]',
-                    'stylus'
-                ],
+                    'css?modules&importLoaders=1&localIdentName=[path][name]---[local]---[hash:base64:5]!stylus'
+                ),
                 exclude: [
                     path.resolve(__dirname, 'src/web/styles')
                 ]
             },
             {
                 test: /\.styl$/,
-                loaders: [
+                loader: ExtractTextPlugin.extract(
                     'style',
-                    'css',
-                    'stylus'
-                ],
+                    'css!stylus'
+                ),
                 include: [
                     path.resolve(__dirname, 'src/web/styles')
                 ]

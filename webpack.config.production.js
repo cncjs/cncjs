@@ -1,6 +1,8 @@
 /* eslint no-var: 0 */
+var crypto = require('crypto');
 var path = require('path');
 var webpack = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var WebpackMd5HashPlugin = require('webpack-md5-hash');
 var ManifestPlugin = require('webpack-manifest-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -8,13 +10,22 @@ var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 var baseConfig = require('./webpack.config.base');
 var pkg = require('./package.json');
 
+// Use publicPath for production
+var payload = pkg.version;
+var publicPath = (function(payload) {
+    const algorithm = 'sha1';
+    const buf = String(payload);
+    const hash = crypto.createHash(algorithm).update(buf).digest('hex');
+    return '/' + hash.substr(0, 8) + '/'; // 8 digits
+}(payload));
+
 var webpackConfig = Object.assign({}, baseConfig, {
     devtool: 'source-map',
     output: {
         path: path.join(__dirname, 'dist/cnc/web'),
         chunkFilename: '[name].[chunkhash].bundle.js',
         filename: '[name].[chunkhash].bundle.js',
-        publicPath: '/'
+        publicPath: publicPath
     },
     plugins: [
         new webpack.DefinePlugin({
@@ -36,6 +47,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
             fileName: 'manifest.json'
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
+        new ExtractTextPlugin('[name].[contenthash].css', { allChunks: true }),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
             compress: {

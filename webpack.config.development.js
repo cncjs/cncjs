@@ -1,6 +1,7 @@
 /* eslint no-var: 0 */
 var path = require('path');
 var webpack = require('webpack');
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var WebpackMd5HashPlugin = require('webpack-md5-hash');
 var ManifestPlugin = require('webpack-manifest-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -13,10 +14,10 @@ var webpackConfig = Object.assign({}, baseConfig, {
     devtool: 'eval',
     output: {
         path: path.join(__dirname, 'output/web'),
-        chunkFilename: '[name].bundle.js',
-        filename: '[name].bundle.js',
+        chunkFilename: '[name].bundle.js?[hash]',
+        filename: '[name].bundle.js?[hash]',
         pathinfo: true,
-        publicPath: '/'
+        publicPath: ''
     },
     plugins: [
         new webpack.DefinePlugin({
@@ -29,7 +30,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
             // The order matters, the order should be reversed just like loader chain.
             // https://github.com/webpack/webpack/issues/1016
             names: ['vendor', 'polyfill', 'manifest'],
-            filename: '[name].js',
+            filename: '[name].js?[hash]',
             minChunks: Infinity
         }),
         new WebpackMd5HashPlugin(),
@@ -38,6 +39,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
             fileName: 'manifest.json'
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
+        new ExtractTextPlugin('[name].[contenthash].css?[hash]', { allChunks: true }),
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             title: `cnc v${pkg.version}`,
