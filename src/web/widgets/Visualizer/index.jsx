@@ -71,7 +71,7 @@ class VisualizerWidget extends Component {
         },
         'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
-            const { activeState, workPosition } = status;
+            const { activeState, wpos } = status;
             const { modal = {} } = { ...parserstate };
             const units = {
                 'G20': IMPERIAL_UNITS,
@@ -96,12 +96,15 @@ class VisualizerWidget extends Component {
                     type: GRBL,
                     state: state
                 },
-                workPosition: workPosition
+                workPosition: {
+                    ...this.state.workPosition,
+                    ...wpos
+                }
             });
         },
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
-            const { machineState, workPosition, modal = {} } = sr;
+            const { machineState, wpos, modal = {} } = sr;
             const units = {
                 'G20': IMPERIAL_UNITS,
                 'G21': METRIC_UNITS
@@ -127,7 +130,10 @@ class VisualizerWidget extends Component {
                     type: TINYG2,
                     state: state
                 },
-                workPosition: workPosition
+                workPosition: {
+                    ...this.state.workPosition,
+                    ...wpos
+                }
             });
         }
     };

@@ -157,12 +157,12 @@ class TinyG2 extends events.EventEmitter {
         // Status Reports
         sr: {
             machineState: '',
-            machinePosition: {
+            mpos: {
                 x: '0.000',
                 y: '0.000',
                 z: '0.000'
             },
-            workPosition: {
+            wpos: {
                 x: '0.000',
                 y: '0.000',
                 z: '0.000'
@@ -289,29 +289,29 @@ class TinyG2 extends events.EventEmitter {
                         }[val] || '';
                         _.set(target, 'modal.path', gcode);
                     },
-                    'posx': 'workPosition.x',
-                    'posy': 'workPosition.y',
-                    'posz': 'workPosition.z',
-                    'posa': 'workPosition.a',
-                    'posb': 'workPosition.b',
-                    'posc': 'workPosition.c',
-                    'mpox': 'machinePosition.x',
-                    'mpoy': 'machinePosition.y',
-                    'mpoz': 'machinePosition.z',
-                    'mpoa': 'machinePosition.a',
-                    'mpob': 'machinePosition.b',
-                    'mpoc': 'machinePosition.c'
+                    'posx': 'wpos.x',
+                    'posy': 'wpos.y',
+                    'posz': 'wpos.z',
+                    'posa': 'wpos.a',
+                    'posb': 'wpos.b',
+                    'posc': 'wpos.c',
+                    'mpox': 'mpos.x',
+                    'mpoy': 'mpos.y',
+                    'mpoz': 'mpos.z',
+                    'mpoa': 'mpos.a',
+                    'mpob': 'mpos.b',
+                    'mpoc': 'mpos.c'
                 };
                 const sr = {
                     ...this.state.sr,
                     modal: {
                         ...this.state.sr.modal
                     },
-                    workPosition: {
-                        ...this.state.sr.workPosition
+                    wpos: {
+                        ...this.state.sr.wpos
                     },
-                    machinePosition: {
-                        ...this.state.sr.machinePosition
+                    mpos: {
+                        ...this.state.sr.mpos
                     }
                 };
                 _.each(keymaps, (target, key) => {

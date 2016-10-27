@@ -82,7 +82,7 @@ class AxesWidget extends Component {
     controllerEvents = {
         'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
-            const { machinePosition, workPosition } = status;
+            const { mpos, wpos } = status;
             const { modal = {} } = { ...parserstate };
             const units = {
                 'G20': IMPERIAL_UNITS,
@@ -105,18 +105,18 @@ class AxesWidget extends Component {
                 },
                 machinePosition: {
                     ...this.state.machinePosition,
-                    ...machinePosition
+                    ...mpos
                 },
                 workPosition: {
                     ...this.state.workPosition,
-                    ...workPosition
+                    ...wpos
                 },
                 customDistance: customDistance
             });
         },
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
-            const { machinePosition, workPosition, modal = {} } = sr;
+            const { mpos, wpos, modal = {} } = sr;
             const units = {
                 'G20': IMPERIAL_UNITS,
                 'G21': METRIC_UNITS
@@ -138,11 +138,11 @@ class AxesWidget extends Component {
                 },
                 machinePosition: {
                     ...this.state.machinePosition,
-                    ...machinePosition
+                    ...mpos
                 },
                 workPosition: {
                     ...this.state.workPosition,
-                    ...workPosition
+                    ...wpos
                 },
                 customDistance: customDistance
             });
