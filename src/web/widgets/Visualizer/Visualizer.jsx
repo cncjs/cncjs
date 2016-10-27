@@ -133,6 +133,9 @@ class Visualizer extends Component {
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.state.isAgitated !== this.props.state.isAgitated) {
+            return true;
+        }
         if (nextProps.state.port !== this.props.state.port) {
             return true;
         }
