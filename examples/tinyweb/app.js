@@ -151,17 +151,37 @@ controller.on('serialport:write', function(data) {
 controller.on('Grbl:state', function(data) {
     var status = data.status || {};
     var activeState = status.activeState;
-    var machinePosition = status.machinePosition;
-    var workPosition = status.workPosition;
+    var mpos = status.mpos;
+    var wpos = status.wpos;
+    var IDLE = 'Idle', RUN = 'Run';
+    var canClick = [IDLE, RUN].indexOf(activeState) >= 0;
 
-    $('[data-route="axes"] .control-pad .btn').prop('disabled', activeState !== 'Idle');
+    $('[data-route="axes"] .control-pad .btn').prop('disabled', !canClick);
     $('[data-route="axes"] [data-name="active-state"]').text(activeState);
-    $('[data-route="axes"] [data-name="mpos-x"]').text(machinePosition.x);
-    $('[data-route="axes"] [data-name="mpos-y"]').text(machinePosition.y);
-    $('[data-route="axes"] [data-name="mpos-z"]').text(machinePosition.z);
-    $('[data-route="axes"] [data-name="wpos-x"]').text(workPosition.x);
-    $('[data-route="axes"] [data-name="wpos-y"]').text(workPosition.y);
-    $('[data-route="axes"] [data-name="wpos-z"]').text(workPosition.z);
+    $('[data-route="axes"] [data-name="mpos-x"]').text(mpos.x);
+    $('[data-route="axes"] [data-name="mpos-y"]').text(mpos.y);
+    $('[data-route="axes"] [data-name="mpos-z"]').text(mpos.z);
+    $('[data-route="axes"] [data-name="wpos-x"]').text(wpos.x);
+    $('[data-route="axes"] [data-name="wpos-y"]').text(wpos.y);
+    $('[data-route="axes"] [data-name="wpos-z"]').text(wpos.z);
+});
+
+controller.on('TinyG2:state', function(data) {
+    var sr = data.sr || {};
+    var machineState = sr.machineState;
+    var mpos = sr.mpos;
+    var wpos = sr.wpos;
+    var READY = 1, STOP = 3, END = 4, RUN = 5;
+    var canClick = [READY, STOP, END, RUN].indexOf(machineState) >= 0;
+
+    $('[data-route="axes"] .control-pad .btn').prop('disabled', !canClick);
+    $('[data-route="axes"] [data-name="active-state"]').text(machineState);
+    $('[data-route="axes"] [data-name="mpos-x"]').text(mpos.x);
+    $('[data-route="axes"] [data-name="mpos-y"]').text(mpos.y);
+    $('[data-route="axes"] [data-name="mpos-z"]').text(mpos.z);
+    $('[data-route="axes"] [data-name="wpos-x"]').text(wpos.x);
+    $('[data-route="axes"] [data-name="wpos-y"]').text(wpos.y);
+    $('[data-route="axes"] [data-name="wpos-z"]').text(wpos.z);
 });
 
 controller.listAllPorts();
