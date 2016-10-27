@@ -1,20 +1,56 @@
+/*eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
 import _ from 'lodash';
 import events from 'events';
 import {
     GRBL_MODAL_GROUPS
 } from './constants';
 
+// http://stackoverflow.com/questions/10454518/javascript-how-to-retrieve-the-number-of-decimals-of-a-string-number
+function decimalPlaces(num) {
+    const match = ('' + num).match(/(?:\.(\d+))?(?:[eE]([+-]?\d+))?$/);
+    if (!match) {
+        return 0;
+    }
+    return Math.max(
+        0,
+        // Number of digits right of decimal point.
+        (match[1] ? match[1].length : 0)
+        // Adjust for scientific notation.
+        - (match[2] ? +match[2] : 0)
+    );
+}
+
+// Grbl v1.1
+// https://github.com/gnea/grbl/blob/edge/doc/markdown/interface.md
+
 class GrblLineParser {
     parse(line) {
         const parsers = [
+            // <>
             GrblLineParserResultStatus,
+            // ok
             GrblLineParserResultOk,
+            // error:x
             GrblLineParserResultError,
+            // ALARM:
             GrblLineParserResultAlarm,
+            // [] (v0.9) or [GC:] (v1.1)
             GrblLineParserResultParserState,
+            // [G54:], [G55:], [G56:], [G57:], [G58:], [G59:], [G28:], [G30:], [G92:], [TLO:], and [PRB:]
             GrblLineParserResultParameters,
+            // [HLP:] (v1.1)
+            GrblLineParserResultHelp,
+            // [VER:] (v1.1)
+            GrblLineParserResultVersion,
+            // [OPT:] (v1.1)
+            GrblLineParserResultOption,
+            // [echo:] (v1.1)
+            GrblLineParserResultEcho,
+            // [] (v0.9), [MSG:] (v1.1)
             GrblLineParserResultFeedback,
+            // $xx
             GrblLineParserResultSettings,
+            // Grbl X.Xx ['$' for help]
             GrblLineParserResultStartup
         ];
 
@@ -37,11 +73,18 @@ class GrblLineParser {
 
 //https://github.com/grbl/grbl/blob/master/grbl/report.c
 class GrblLineParserResultStatus {
-    // <Idle>
-    // <Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>
-    // <Idle,MPos:5.529,0.560,7.000,0.000,WPos:1.529,-5.440,-0.000,0.000>
-    // <Idle,MPos:0.000,0.000,0.000,WPos:0.000,0.000,0.000,Buf:0,RX:0,Lim:000>
-    // <Idle,MPos:0.000,0.000,0.000,WPos:0.000,0.000,0.000,Buf:0,RX:0,Ln:0,F:0.>
+    // * Grbl v0.9
+    //   <Idle>
+    //   <Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>
+    //   <Idle,MPos:5.529,0.560,7.000,0.000,WPos:1.529,-5.440,-0.000,0.000>
+    //   <Idle,MPos:0.000,0.000,0.000,WPos:0.000,0.000,0.000,Buf:0,RX:0,Lim:000>
+    //   <Idle,MPos:0.000,0.000,0.000,WPos:0.000,0.000,0.000,Buf:0,RX:0,Ln:0,F:0.>
+    // * Grbl v1.1
+    //   <Idle|MPos:3.000,2.000,0.000|FS:0,0>
+    //   <Hold:0|MPos:5.000,2.000,0.000|FS:0,0>
+    //   <Idle|MPos:5.000,2.000,0.000|FS:0,0|Ov:100,100,100>
+    //   <Idle|MPos:5.000,2.000,0.000|FS:0,0|WCO:0.000,0.000,0.000>
+    //   <Run|MPos:23.036,1.620,0.000|FS:500,0>
     static parse(line) {
         const r = line.match(/^<(.+)>$/);
         if (!r) {
@@ -50,11 +93,23 @@ class GrblLineParserResultStatus {
 
         const payload = {};
         const pattern = /[a-zA-Z]+(:[0-9\.\-]+(,[0-9\.\-]+){0,5})?/g;
-        let params = r[1].match(pattern);
-        let result = {};
+        const params = r[1].match(pattern);
+        const result = {};
 
-        // Active State
-        payload.activeState = params.shift();
+        { // Active State (v0.9, v1.1)
+            // * Valid states types: Idle, Run, Hold, Jog, Alarm, Door, Check, Home, Sleep
+            // * Sub-states may be included via : a colon delimiter and numeric code.
+            // * Current sub-states are:
+            //   - Hold:0 Hold complete. Ready to resume.
+            //   - Hold:1 Hold in-progress. Reset will throw an alarm.
+            //   - Door:0 Door closed. Ready to resume.
+            //   - Door:1 Machine stopped. Door still ajar. Can't resume until closed.
+            //   - Door:2 Door opened. Hold (or parking retract) in-progress. Reset will throw an alarm.
+            //   - Door:3 Door closed and resuming. Restoring from park, if applicable. Reset will throw an alarm.
+            const states = (params.shift() || '').split(':');
+            payload.activeState = states[0] || '';
+            payload.subState = Number(states[1] || '');
+        }
 
         for (let param of params) {
             const nv = param.match(/^(.+):(.+)/);
@@ -65,52 +120,117 @@ class GrblLineParserResultStatus {
             }
         }
 
-        { // Machine Position
+        // Machine Position (v0.9, v1.1)
+        if (_.has(result, 'MPos')) {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
-            const mPos = _.get(result, 'MPos') || ['0.000', '0.000', '0.000']; // Defaults to [x, y, z]
-            payload.machinePosition = {};
+            const mPos = _.get(result, 'MPos', ['0.000', '0.000', '0.000']); // Defaults to [x, y, z]
+            payload.mpos = {};
             for (let i = 0; i < mPos.length; ++i) {
-                payload.machinePosition[axes[i]] = mPos[i];
+                payload.mpos[axes[i]] = mPos[i];
             }
         }
 
-        { // Work Position
+        // Work Position (v0.9, v1.1)
+        if (_.has(result, 'WPos')) {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
-            const wPos = _.get(result, 'WPos') || ['0.000', '0.000', '0.000']; // Defaults to [x, y, z]
-            payload.workPosition = {};
+            const wPos = _.get(result, 'WPos', ['0.000', '0.000', '0.000']); // Defaults to [x, y, z]
+            payload.wpos = {};
             for (let i = 0; i < wPos.length; ++i) {
-                payload.workPosition[axes[i]] = wPos[i];
+                payload.wpos[axes[i]] = wPos[i];
             }
         }
 
-        { // Planner Buffer
-            if (_.has(result, 'Buf')) {
-                payload.plannerBuffer = _.get(result, 'Buf[0]');
+        // Work Coordinate Offset (v1.1)
+        if (_.has(result, 'WCO')) {
+            const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
+            const wco = _.get(result, 'WCO', ['0.000', '0.000', '0.000']); // Defaults to [x, y, z]
+            payload.wco = {};
+            for (let i = 0; i < wco.length; ++i) {
+                payload.wco[axes[i]] = wco[i];
             }
         }
 
-        { // RX Buffer
-            if (_.has(result, 'RX')) {
-                payload.rxBuffer = _.get(result, 'RX[0]');
-            }
+        // Planner Buffer (v0.9)
+        if (_.has(result, 'Buf')) {
+            payload.buf = payload.buf || {};
+            payload.buf.planner = Number(_.get(result, 'Buf[0]', 0));
         }
 
-        { // Line Number
-            if (_.has(result, 'Ln')) {
-                payload.lineNumber = _.get(result, 'Ln[0]');
-            }
+        // RX Buffer (v0.9)
+        if (_.has(result, 'RX')) {
+            payload.buf = payload.buf || {};
+            payload.buf.rx = Number(_.get(result, 'RX[0]', 0));
         }
 
-        { // Realtime Rate
-            if (_.has(result, 'F')) {
-                payload.realtimeRate = _.get(result, 'F[0]');
-            }
+        // Buffer State (v1.1)
+        // Bf:15,128. The first value is the number of available blocks in the planner buffer and the second is number of available bytes in the serial RX buffer.
+        if (_.has(result, 'Bf')) {
+            payload.buf = payload.buf || {};
+            payload.buf.planner = Number(_.get(result, 'Bf[0]', 0));
+            payload.buf.rx = Number(_.get(result, 'Bf[1]', 0));
         }
 
-        { // Limit Pins
-            if (_.has(result, 'Lim')) {
-                payload.limitPins = _.get(result, 'Lim[0]');
-            }
+        // Line Number (v0.9, v1.1)
+        // Ln:99999 indicates line 99999 is currently being executed.
+        if (_.has(result, 'Ln')) {
+            payload.ln = Number(_.get(result, 'Ln[0]', 0));
+        }
+
+        // Feed Rate (v0.9, v1.1)
+        // F:500 contains real-time feed rate data as the value.
+        // This appears only when VARIABLE_SPINDLE is disabled.
+        if (_.has(result, 'F')) {
+            payload.feedrate = Number(_.get(result, 'F[0]', 0));
+        }
+
+        // Current Feed and Speed (v1.1)
+        // FS:500,8000 contains real-time feed rate, followed by spindle speed, data as the values.
+        if (_.has(result, 'FS')) {
+            payload.feedrate = Number(_.get(result, 'FS[0]', 0));
+            payload.spindleSpeed = Number(_.get(result, 'FS[1]', 0));
+        }
+
+        // Limit Pins (v0.9)
+        // X_AXIS is (1<<0) or bit 0
+        // Y_AXIS is (1<<1) or bit 1
+        // Z_AXIS is (1<<2) or bit 2
+        if (_.has(result, 'Lim')) {
+            const value = Number(_.get(result, 'Lim[0]', 0));
+            payload.pinState = [
+                (value & (1 << 0)) ? 'X' : '',
+                (value & (1 << 1)) ? 'Y' : '',
+                (value & (1 << 2)) ? 'Z' : '',
+                (value & (1 << 2)) ? 'A' : ''
+            ].join('');
+        }
+
+        // Input Pin State (v1.1)
+        // * Pn:XYZPDHRS indicates which input pins Grbl has detected as 'triggered'.
+        // * Each letter of XYZPDHRS denotes a particular 'triggered' input pin.
+        //   - X Y Z XYZ limit pins, respectively
+        //   - P the probe pin.
+        //   - D H R S the door, hold, soft-reset, and cycle-start pins, respectively.
+        //   - Example: Pn:PZ indicates the probe and z-limit pins are 'triggered'.
+        //   - Note: A may be added in later versions for an A-axis limit pin.
+        if (_.has(result, 'Pn')) {
+            payload.pinState = _.get(result, 'Pn[0]', '');
+        }
+
+        // Override Values (v1.1)
+        // Ov:100,100,100 indicates current override values in percent of programmed values for feed, rapids, and spindle speed, respectively.
+        if (_.has(result, 'Ov')) {
+            payload.ov = _.get(result, 'Ov', []).map(v => Number(v));
+        }
+
+        // Accessory State (v1.1)
+        // * A:SFM indicates the current state of accessory machine components, such as the spindle and coolant.
+        // * Each letter after A: denotes a particular state. When it appears, the state is enabled. When it does not appear, the state is disabled.
+        //   - S indicates spindle is enabled in the CW direction. This does not appear with C.
+        //   - C indicates spindle is enabled in the CCW direction. This does not appear with S.
+        //   - F indicates flood coolant is enabled.
+        //   - M indicates mist coolant is enabled.
+        if (_.has(result, 'A')) {
+            payload.accessoryState = _.get(result, 'A[0]', '');
         }
 
         return {
@@ -175,9 +295,12 @@ class GrblLineParserResultAlarm {
 }
 
 class GrblLineParserResultParserState {
+    // * Grbl v0.9
+    //   [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
+    // * Grbl v1.1
+    //   [GC:G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 S0.0 F500.0]
     static parse(line) {
-        // [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
-        const r = line.match(/^\[((?:[a-zA-Z][0-9]+(?:\.[0-9]*)?\s*)+)\]$/);
+        const r = line.match(/^\[(?:GC:)?((?:[a-zA-Z][0-9]+(?:\.[0-9]*)?\s*)+)\]$/);
         if (!r) {
             return null;
         }
@@ -272,10 +395,94 @@ class GrblLineParserResultParameters {
     }
 }
 
+class GrblLineParserResultHelp {
+    static parse(line) {
+        // * Grbl v1.1
+        //   [HLP:]
+        const r = line.match(/^\[(?:HLP:)?(.+)\]$/);
+        if (!r) {
+            return null;
+        }
+
+        const payload = {
+            message: r[1]
+        };
+
+        return {
+            type: GrblLineParserResultHelp,
+            payload: payload
+        };
+    }
+}
+
+class GrblLineParserResultVersion {
+    static parse(line) {
+        // * Grbl v1.1
+        //   [VER:]
+        const r = line.match(/^\[(?:VER:)?(.+)\]$/);
+        if (!r) {
+            return null;
+        }
+
+        const payload = {
+            message: r[1]
+        };
+
+        return {
+            type: GrblLineParserResultVersion,
+            payload: payload
+        };
+    }
+}
+
+class GrblLineParserResultOption {
+    static parse(line) {
+        // * Grbl v1.1
+        //   [OPT:]
+        const r = line.match(/^\[(?:OPT:)?(.+)\]$/);
+        if (!r) {
+            return null;
+        }
+
+        const payload = {
+            message: r[1]
+        };
+
+        return {
+            type: GrblLineParserResultOption,
+            payload: payload
+        };
+    }
+}
+
+class GrblLineParserResultEcho {
+    static parse(line) {
+        // * Grbl v1.1
+        //   [echo:]
+        const r = line.match(/^\[(?:echo:)?(.+)\]$/);
+        if (!r) {
+            return null;
+        }
+
+        const payload = {
+            message: r[1]
+        };
+
+        return {
+            type: GrblLineParserResultEcho,
+            payload: payload
+        };
+    }
+}
+
 // https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl#feedback-messages
 class GrblLineParserResultFeedback {
+    // * Grbl v0.9
+    //   []
+    // * Grbl v1.1
+    //   [MSG:]
     static parse(line) {
-        const r = line.match(/^\[(.+)\]$/);
+        const r = line.match(/^\[(?:MSG:)?(.+)\]$/);
         if (!r) {
             return null;
         }
@@ -312,7 +519,10 @@ class GrblLineParserResultSettings {
 }
 
 class GrblLineParserResultStartup {
-    // Grbl 0.9j ['$' for help]
+    // * Grbl v0.9
+    //   Grbl 0.9j ['$' for help]
+    // * Grbl v1.1
+    //   Grbl 1.1d ['$' for help]
     static parse(line) {
         const r = line.match(/^Grbl\s*(\d+\.\d+[a-zA-Z]?)/);
         if (!r) {
@@ -335,12 +545,12 @@ class Grbl extends events.EventEmitter {
         version: '',
         status: {
             activeState: '',
-            machinePosition: {
+            mpos: {
                 x: '0.000',
                 y: '0.000',
                 z: '0.000'
             },
-            workPosition: {
+            wpos: {
                 x: '0.000',
                 y: '0.000',
                 z: '0.000'
@@ -354,9 +564,9 @@ class Grbl extends events.EventEmitter {
                 units: 'G21', // G20: Inches, G21: Millimeters
                 distance: 'G90', // G90: Absolute, G91: Relative
                 feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
-                program: 'M0',
-                spindle: 'M5',
-                coolant: 'M9'
+                program: 'M0', // M0, M1, M2, M30
+                spindle: 'M5', // M3, M4, M5
+                coolant: 'M9' // M7, M8, M9
             },
             tool: '',
             feedrate: '',
@@ -381,14 +591,35 @@ class Grbl extends events.EventEmitter {
         const { type, payload } = result;
 
         if (type === GrblLineParserResultStatus) {
-            if (!_.isEqual(this.state.status, payload)) {
-                this.state = { // enforce state change
-                    ...this.state,
-                    status: {
-                        ...this.state.status,
-                        ...payload
-                    }
-                };
+            // Grbl v1.1
+            // WCO:0.000,10.000,2.500
+            // A current work coordinate offset is now sent to easily convert
+            // between position vectors, where WPos = MPos - WCO for each axis.
+            if (_.has(payload, 'mpos') && !_.has(payload, 'wpos')) {
+                payload.wpos = payload.wpos || {};
+                _.each(payload.mpos, (mpos, axis) => {
+                    const digits = decimalPlaces(mpos);
+                    const wco = _.get((payload.wco || this.state.status.wco), axis, 0);
+                    payload.wpos[axis] = (Number(mpos) - Number(wco)).toFixed(digits);
+                });
+            } else if (_.has(payload, 'wpos') && !_.has(payload, 'mpos')) {
+                payload.mpos = payload.mpos || {};
+                _.each(payload.wpos, (wpos, axis) => {
+                    const digits = decimalPlaces(wpos);
+                    const wco = _.get((payload.wco || this.state.status.wco), axis, 0);
+                    payload.mpos[axis] = (Number(wpos) + Number(wco)).toFixed(digits);
+                });
+            }
+
+            const nextState = {
+                ...this.state,
+                status: {
+                    ...this.state.status,
+                    ...payload
+                }
+            };
+            if (!_.isEqual(this.state.status, nextState.status)) {
+                this.state = nextState; // enforce state change
             }
             this.emit('status', payload);
             return;
@@ -406,27 +637,32 @@ class Grbl extends events.EventEmitter {
             return;
         }
         if (type === GrblLineParserResultParserState) {
-            if (!_.isEqual(this.state.parserstate, payload)) {
-                this.state = { // enforce state change
-                    ...this.state,
-                    parserstate: {
-                        ...this.state.parserstate,
-                        ...payload
-                    }
-                };
+            const nextState = {
+                ...this.state,
+                parserstate: {
+                    ...this.state.parserstate,
+                    ...payload
+                }
+            };
+            if (!_.isEqual(this.state.parserstate, nextState.parserstate)) {
+                this.state = nextState; // enforce state change
             }
             this.emit('parserstate', payload);
             return;
         }
         if (type === GrblLineParserResultParameters) {
-            this.emit('parameters', payload);
             const { name, value } = payload;
             const { parameters } = this.state;
             parameters[name] = value;
-            this.state = { // enforce state change
+
+            const nextState = {
                 ...this.state,
                 parameters: parameters
             };
+            if (!_.isEqual(this.state.parameters, nextState.parameters)) {
+                this.state = nextState; // enforce state change
+            }
+            this.emit('parameters', payload);
             return;
         }
         if (type === GrblLineParserResultFeedback) {
@@ -434,23 +670,30 @@ class Grbl extends events.EventEmitter {
             return;
         }
         if (type === GrblLineParserResultSettings) {
-            this.emit('settings', payload);
             const { name, value } = payload;
             const { settings } = this.state;
             settings[name] = value;
-            this.state = { // enforce state change
+
+            const nextState = {
                 ...this.state,
                 settings: settings
             };
+            if (!_.isEqual(this.state.settings, nextState.settings)) {
+                this.state = nextState; // enforce state change
+            }
+            this.emit('settings', payload);
             return;
         }
         if (type === GrblLineParserResultStartup) {
-            this.emit('startup', payload);
             const { version } = payload;
-            this.state = { // enforce state change
+            const nextState = { // enforce state change
                 ...this.state,
                 version: version
             };
+            if (!_.isEqual(this.state.version, nextState.version)) {
+                this.state = nextState; // enforce state change
+            }
+            this.emit('startup', payload);
             return;
         }
         if (data.length > 0) {
@@ -468,6 +711,10 @@ export {
     GrblLineParserResultAlarm,
     GrblLineParserResultParserState,
     GrblLineParserResultParameters,
+    GrblLineParserResultHelp,
+    GrblLineParserResultVersion,
+    GrblLineParserResultOption,
+    GrblLineParserResultEcho,
     GrblLineParserResultFeedback,
     GrblLineParserResultSettings,
     GrblLineParserResultStartup
