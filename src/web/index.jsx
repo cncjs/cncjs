@@ -1,9 +1,7 @@
 /* eslint import/imports-first: 0 */
 require('./polyfill');
 
-import _ from 'lodash';
 import series from 'async/series';
-import Uri from 'jsuri';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createHashHistory } from 'history';
@@ -69,7 +67,7 @@ series([
     document.body.appendChild(container);
 
     const hashHistory = useRouterHistory(createHashHistory)({ queryKey: false });
-    const layoutToggler = () => (<div></div>);
+    const layoutToggler = () => <div />;
 
     ReactDOM.render(
         <Router history={hashHistory}>
