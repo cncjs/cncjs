@@ -290,14 +290,14 @@ class Workspace extends React.Component {
                             this.setState({ isDraggingFile: false });
                         }
                     }}
-                    onDrop={(files) => {
+                    onDrop={(acceptedFiles, rejectedFiles) => {
                         if (isDraggingWidget) {
                             return;
                         }
                         if (isDraggingFile) {
                             this.setState({ isDraggingFile: false });
                         }
-                        this.onDrop(files);
+                        this.onDrop(acceptedFiles);
                     }}
                 >
                     <div styleName="workspace-table">
