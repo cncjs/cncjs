@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import PressAndHold from '../../components/PressAndHold';
 import i18n from '../../lib/i18n';
@@ -8,7 +8,6 @@ import styles from './index.styl';
 @CSSModules(styles, { allowMultiple: true })
 class Joystick extends Component {
     static propTypes = {
-        state: PropTypes.object,
         up: PropTypes.func,
         down: PropTypes.func,
         left: PropTypes.func,
@@ -17,12 +16,10 @@ class Joystick extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { state, up, down, left, right, center } = this.props;
-        const { canClick } = state;
-        const disabled = !canClick;
+        const { up, down, left, right, center } = this.props;
 
         return (
             <div styleName="joystick">
@@ -33,7 +30,6 @@ class Joystick extends Component {
                             styleName="joystick-button"
                             onClick={up}
                             title={i18n._('Move Up')}
-                            disabled={disabled}
                         >
                             <i className="fa fa-chevron-up" />
                         </PressAndHold>
@@ -46,7 +42,6 @@ class Joystick extends Component {
                             styleName="joystick-button"
                             onClick={left}
                             title={i18n._('Move Left')}
-                            disabled={disabled}
                         >
                             <i className="fa fa-chevron-left" />
                         </PressAndHold>
@@ -56,7 +51,6 @@ class Joystick extends Component {
                             styleName="joystick-button"
                             onClick={center}
                             title={i18n._('Reset Position')}
-                            disabled={disabled}
                         >
                             <i className="fa fa-square-o" />
                         </PressAndHold>
@@ -66,7 +60,6 @@ class Joystick extends Component {
                             styleName="joystick-button"
                             onClick={right}
                             title={i18n._('Move Right')}
-                            disabled={disabled}
                         >
                             <i className="fa fa-chevron-right" />
                         </PressAndHold>
@@ -79,7 +72,6 @@ class Joystick extends Component {
                             styleName="joystick-button"
                             onClick={down}
                             title={i18n._('Move Down')}
-                            disabled={disabled}
                         >
                             <i className="fa fa-chevron-down" style={{ verticalAlign: 'top' }} />
                         </PressAndHold>

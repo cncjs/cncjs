@@ -1,17 +1,76 @@
-import _ from 'lodash';
 import colornames from 'colornames';
 import { GCodeToolpath } from 'gcode-toolpath';
 import * as THREE from 'three';
 import log from '../../lib/log';
 
-const noop = () => {};
-
-const defaultColor = new THREE.Color(colornames('darkgray'));
+const defaultColor = new THREE.Color(colornames('lightgrey'));
 const motionColor = {
     'G0': new THREE.Color(colornames('green')),
     'G1': new THREE.Color(colornames('blue')),
     'G2': new THREE.Color(colornames('deepskyblue')),
     'G3': new THREE.Color(colornames('deepskyblue'))
+};
+
+const addLine = (modalState, v1, v2) => {
+    const { motion } = modalState;
+    const color = motionColor[motion] || defaultColor;
+    const vertices = [
+        new THREE.Vector3(v1.x, v1.y, v1.z),
+        new THREE.Vector3(v2.x, v2.y, v2.z)
+    ];
+    const colors = [color, color];
+
+    return { vertices, colors };
+};
+
+// Parameters
+//   modalState The modal state
+//   v1 The start point
+//   v2 The end point
+//   v0 The fixed point
+const addArcCurve = (modalState, v1, v2, v0) => {
+    const { motion, plane } = modalState;
+    const isClockwise = (motion === 'G2');
+    const radius = Math.sqrt(
+        Math.pow((v1.x - v0.x), 2) + Math.pow((v1.y - v0.y), 2)
+    );
+    let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
+    let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
+
+    // Draw full circle if startAngle and endAngle are both zero
+    if (startAngle === endAngle) {
+        endAngle += (2 * Math.PI);
+    }
+
+    const arcCurve = new THREE.ArcCurve(
+        v0.x, // aX
+        v0.y, // aY
+        radius, // aRadius
+        startAngle, // aStartAngle
+        endAngle, // aEndAngle
+        isClockwise // isClockwise
+    );
+    const divisions = 30;
+    const points = arcCurve.getPoints(divisions);
+    const color = motionColor[motion] || defaultColor;
+    const vertices = [];
+    const colors = [];
+
+    for (let i = 0; i < points.length; ++i) {
+        const point = points[i];
+        const z = ((v2.z - v1.z) / points.length) * i + v1.z;
+
+        if (plane === 'G17') { // XY-plane
+            vertices.push(new THREE.Vector3(point.x, point.y, z));
+        } else if (plane === 'G18') { // ZX-plane
+            vertices.push(new THREE.Vector3(point.y, z, point.x));
+        } else if (plane === 'G19') { // YZ-plane
+            vertices.push(new THREE.Vector3(z, point.x, point.y));
+        }
+        colors.push(color);
+    }
+
+    return { vertices, colors };
 };
 
 class GCodeVisualizer {
@@ -28,87 +87,59 @@ class GCodeVisualizer {
         // ]
         this.frames = []; // Example
         this.frameIndex = 0;
+
+        return this;
     }
-    addLine(modalState, v1, v2) {
-        const { motion } = modalState;
-        this.geometry.vertices.push(new THREE.Vector3(v1.x, v1.y, v1.z));
-        this.geometry.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
-
-        let color = motionColor[motion] || defaultColor;
-        this.geometry.colors.push(color);
-        this.geometry.colors.push(color);
-    }
-    // Parameters
-    //   modalState The modal state
-    //   v1 The start point
-    //   v2 The end point
-    //   v0 The fixed point
-    addArcCurve(modalState, v1, v2, v0) {
-        const { motion, plane } = modalState;
-        let isClockwise = (motion === 'G2');
-        let radius = Math.sqrt(
-            Math.pow((v1.x - v0.x), 2) + Math.pow((v1.y - v0.y), 2)
-        );
-        let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
-        let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
-
-        // Draw full circle if startAngle and endAngle are both zero
-        if (startAngle === endAngle) {
-            endAngle += (2 * Math.PI);
-        }
-
-        let arcCurve = new THREE.ArcCurve(
-            v0.x, // aX
-            v0.y, // aY
-            radius, // aRadius
-            startAngle, // aStartAngle
-            endAngle, // aEndAngle
-            isClockwise // isClockwise
-        );
-        let divisions = 30;
-        let points = arcCurve.getPoints(divisions);
-        let vertices = [];
-
-        for (let i = 0; i < points.length; ++i) {
-            let point = points[i];
-            let z = ((v2.z - v1.z) / points.length) * i + v1.z;
-
-            if (plane === 'G17') { // XY-plane
-                vertices.push(new THREE.Vector3(point.x, point.y, z));
-            } else if (plane === 'G18') { // ZX-plane
-                vertices.push(new THREE.Vector3(point.y, z, point.x));
-            } else if (plane === 'G19') { // YZ-plane
-                vertices.push(new THREE.Vector3(z, point.x, point.y));
-            }
-        }
-
-        let color = motionColor[motion] || defaultColor;
-        let colors = _.fill(Array(vertices.length), color);
-
-        this.geometry.vertices = this.geometry.vertices.concat(vertices);
-        this.geometry.colors = this.geometry.colors.concat(colors);
-    }
-    render({ gcode }, callback = noop) {
+    render(options) {
+        const { gcode } = { ...options };
         const toolpath = new GCodeToolpath({
             addLine: (modalState, v1, v2) => {
-                this.addLine(modalState, v1, v2);
+                const path = addLine(modalState, v1, v2);
+                Array.prototype.push.apply(this.geometry.vertices, path.vertices);
+                Array.prototype.push.apply(this.geometry.colors, path.colors);
             },
             addArcCurve: (modalState, v1, v2, v0) => {
-                this.addArcCurve(modalState, v1, v2, v0);
+                const path = addArcCurve(modalState, v1, v2, v0);
+                Array.prototype.push.apply(this.geometry.vertices, path.vertices);
+                Array.prototype.push.apply(this.geometry.colors, path.colors);
             }
         });
 
-        toolpath
-            .loadFromString(gcode, (err, results) => {
-                this.update();
+        while (this.group.children.length > 0) {
+            const child = this.group.children[0];
+            this.group.remove(child);
+            child.geometry.dispose();
+        }
+
+        return new Promise((resolve, reject) => {
+            toolpath.loadFromString(gcode, (err, results) => {
+                if (err) {
+                    reject();
+                    return;
+                }
+
+                const workpiece = new THREE.Line(
+                    new THREE.Geometry(),
+                    new THREE.LineBasicMaterial({
+                        color: defaultColor,
+                        linewidth: 1,
+                        vertexColors: THREE.VertexColors,
+                        opacity: 0.5,
+                        transparent: true
+                    })
+                );
+                workpiece.geometry.vertices = this.geometry.vertices.slice();
+                workpiece.geometry.colors = this.geometry.colors.slice();
+
+                this.group.add(workpiece);
 
                 log.debug({
-                    geometry: this.geometry,
+                    workpiece: workpiece,
                     frames: this.frames,
                     frameIndex: this.frameIndex
                 });
 
-                callback(this.group);
+                resolve(this.group);
             })
             .on('data', (data) => {
                 this.frames.push({
@@ -116,47 +147,34 @@ class GCodeVisualizer {
                     vertexIndex: this.geometry.vertices.length // remember current vertex index
                 });
             });
-
-        return this.group;
-    }
-    update() {
-        while (this.group.children.length > 0) {
-            let path = this.group.children[0];
-            this.group.remove(path);
-            path.geometry.dispose();
-        }
-
-        { // Main object
-            let geometry = this.geometry;
-            let material = new THREE.LineBasicMaterial({
-                color: new THREE.Color(colornames('darkgray')),
-                linewidth: 1,
-                vertexColors: THREE.VertexColors,
-                opacity: 0.5,
-                transparent: true
-            });
-            this.group.add(new THREE.Line(geometry, material));
-        }
-
-        if (this.frameIndex > 0) { // Preview with frames
-            let geometry = new THREE.Geometry();
-            let material = new THREE.LineBasicMaterial({
-                color: new THREE.Color(colornames('red')),
-                linewidth: 1,
-                opacity: 0.5,
-                transparent: true
-            });
-            let currentFrame = this.frames[this.frameIndex] || {};
-            geometry.vertices = this.geometry.vertices.slice(0, currentFrame.vertexIndex);
-            this.group.add(new THREE.Line(geometry, material));
-        }
+        });
     }
     setFrameIndex(frameIndex) {
         frameIndex = Math.min(frameIndex, this.frames.length - 1);
         frameIndex = Math.max(frameIndex, 0);
 
+        const v1 = this.frames[this.frameIndex].vertexIndex;
+        const v2 = this.frames[frameIndex].vertexIndex;
+
+        // Completed path is grayed out
+        if (v1 < v2) {
+            const workpiece = this.group.children[0];
+            for (let i = v1; i < v2; ++i) {
+                workpiece.geometry.colors[i] = defaultColor;
+            }
+            workpiece.geometry.colorsNeedUpdate = true;
+        }
+
+        // Restore the path to its original colors
+        if (v2 < v1) {
+            const workpiece = this.group.children[0];
+            for (let i = v2; i < v1; ++i) {
+                workpiece.geometry.colors[i] = this.geometry.colors[i];
+            }
+            workpiece.geometry.colorsNeedUpdate = true;
+        }
+
         this.frameIndex = frameIndex;
-        this.update();
     }
 }
 

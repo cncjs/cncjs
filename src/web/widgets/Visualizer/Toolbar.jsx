@@ -1,6 +1,7 @@
 import _ from 'lodash';
-import { ButtonToolbar, ButtonGroup, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
+import { ButtonToolbar, ButtonGroup, Button } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import {
     WORKFLOW_STATE_RUNNING,
@@ -8,6 +9,7 @@ import {
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import styles from './index.styl';
 
 @CSSModules(styles)
@@ -16,20 +18,85 @@ class Toolbar extends Component {
         state: PropTypes.object,
         actions: PropTypes.object
     };
+    fileInputEl = null;
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
+    }
+    onClickToUpload() {
+        this.fileInputEl.value = null;
+        this.fileInputEl.click();
+    }
+    onChangeFile(event) {
+        const { actions } = this.props;
+        const files = event.target.files;
+        const file = files[0];
+        const reader = new FileReader();
+
+        reader.onloadend = (event) => {
+            const { result, error } = event.target;
+
+            if (error) {
+                log.error(error);
+                return;
+            }
+
+            log.debug('FileReader:', _.pick(file, [
+                'lastModified',
+                'lastModifiedDate',
+                'meta',
+                'name',
+                'size',
+                'type'
+            ]));
+
+            const meta = {
+                name: file.name,
+                size: file.size
+            };
+            actions.uploadFile(result, meta);
+        };
+
+        try {
+            reader.readAsText(file);
+        } catch (err) {
+            // Ignore error
+        }
     }
     render() {
         const { state, actions } = this.props;
-        const { canClick, workflowState, renderAnimation } = state;
-        const canRun = canClick && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
-        const canPause = canClick && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
-        const canStop = canClick && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
-        const canClose = canClick && _.includes([WORKFLOW_STATE_IDLE], workflowState);
+        const { port, gcode, workflowState } = state;
+        const canClick = !!port;
+        const isReady = canClick && gcode.ready;
+        const canRun = isReady && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
+        const canPause = isReady && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
+        const canStop = isReady && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
+        const canClose = isReady && _.includes([WORKFLOW_STATE_IDLE], workflowState);
+        const canUpload = isReady ? canClose : (canClick && !gcode.loading);
 
         return (
             <ButtonToolbar styleName="toolbar">
+                <ButtonGroup bsSize="sm" styleName="btn-group">
+                    <Button
+                        bsStyle="primary"
+                        title={i18n._('Upload G-code')}
+                        onClick={::this.onClickToUpload}
+                        disabled={!canUpload}
+                    >
+                        {i18n._('Upload G-code')}
+                    </Button>
+                    <input
+                        // The ref attribute adds a reference to the component to
+                        // this.refs when the component is mounted.
+                        ref={(node) => {
+                            this.fileInputEl = node;
+                        }}
+                        type="file"
+                        style={{ display: 'none' }}
+                        multiple={false}
+                        onChange={::this.onChangeFile}
+                    />
+                </ButtonGroup>
                 <ButtonGroup bsSize="sm" styleName="btn-group">
                     <Button
                         title={i18n._('Run')}
@@ -57,33 +124,8 @@ class Toolbar extends Component {
                         onClick={actions.handleClose}
                         disabled={!canClose}
                     >
-                        <i className="fa fa-close" style={{ fontSize: 14 }} />
+                        <i className="fa fa-close" />
                     </Button>
-                </ButtonGroup>
-                <ButtonGroup bsSize="sm">
-                    <DropdownButton
-                        bsSize="sm"
-                        title={
-                            <i className="fa fa-cog" />
-                        }
-                        noCaret={true}
-                        id="visualizer-dropdown"
-                        disabled={!canClick}
-                    >
-                        <MenuItem header>{i18n._('Options')}</MenuItem>
-                        <MenuItem
-                            onClick={(event) => {
-                                actions.toggleRenderAnimation();
-                            }}
-                        >
-                            {renderAnimation
-                                ? <i className="fa fa-toggle-on" />
-                                : <i className="fa fa-toggle-off" />
-                            }
-                            &nbsp;
-                            {i18n._('Toggle Toolhead Animation')}
-                        </MenuItem>
-                    </DropdownButton>
                 </ButtonGroup>
             </ButtonToolbar>
         );

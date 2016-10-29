@@ -1,14 +1,16 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
-import { Dropdown, MenuItem } from 'react-bootstrap';
 import api from '../../api';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import store from '../../store';
+import Controls from './Controls';
+import Toolbar from './Toolbar';
+import Joystick from './Joystick';
 import Visualizer from './Visualizer';
 import {
     // Units
@@ -18,25 +20,12 @@ import {
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
-    GRBL_ACTIVE_STATE_HOLD,
-    GRBL_ACTIVE_STATE_DOOR,
-    GRBL_ACTIVE_STATE_HOME,
-    GRBL_ACTIVE_STATE_ALARM,
-    GRBL_ACTIVE_STATE_CHECK,
     // TinyG2
     TINYG2,
-    TINYG2_MACHINE_STATE_INIT,
     TINYG2_MACHINE_STATE_READY,
-    TINYG2_MACHINE_STATE_ALARM,
     TINYG2_MACHINE_STATE_STOP,
     TINYG2_MACHINE_STATE_END,
     TINYG2_MACHINE_STATE_RUN,
-    TINYG2_MACHINE_STATE_HOLD,
-    TINYG2_MACHINE_STATE_PROBE,
-    TINYG2_MACHINE_STATE_CYCLING,
-    TINYG2_MACHINE_STATE_HOMING,
-    TINYG2_MACHINE_STATE_JOGGING,
-    TINYG2_MACHINE_STATE_SHUTDOWN,
     // Workflow
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -44,7 +33,6 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-const noop = () => {};
 const startWaiting = () => {
     // Adds the 'wait' class to <html>
     const root = document.documentElement;
@@ -58,6 +46,178 @@ const stopWaiting = () => {
 
 @CSSModules(styles, { allowMultiple: true })
 class VisualizerWidget extends Component {
+    actions = {
+        uploadFile: (gcode, meta) => {
+            const { name } = { ...meta };
+            const { port } = this.state;
+
+            startWaiting();
+
+            this.setState({
+                gcode: {
+                    ...this.state.gcode,
+                    loading: true,
+                    rendering: false,
+                    ready: false
+                }
+            });
+
+            api.loadGCode({ port, name, gcode })
+                .then((res) => {
+                    stopWaiting();
+
+                    // This will call loadGCode()
+                    pubsub.publish('gcode:load', gcode);
+                })
+                .catch((err) => {
+                    stopWaiting();
+
+                    this.setState({
+                        gcode: {
+                            ...this.state.gcode,
+                            loading: false,
+                            rendering: false,
+                            ready: false
+                        }
+                    });
+                    log.error('Failed to upload G-code file:', err);
+                });
+        },
+        loadGCode: (gcode) => {
+            const visualizer = this.visualizer;
+
+            this.setState({
+                gcode: {
+                    ...this.state.gcode,
+                    loading: false,
+                    rendering: true,
+                    ready: false,
+                    sent: 0,
+                    total: 0,
+                    bbox: {
+                        min: {
+                            x: 0,
+                            y: 0,
+                            z: 0
+                        },
+                        max: {
+                            x: 0,
+                            y: 0,
+                            z: 0
+                        }
+                    }
+                }
+            });
+
+            visualizer.load(gcode, ({ bbox }) => {
+                // bounding box
+                pubsub.publish('gcode:bbox', bbox);
+
+                this.setState({
+                    gcode: {
+                        ...this.state.gcode,
+                        loading: false,
+                        rendering: false,
+                        ready: true,
+                        bbox: bbox
+                    }
+                });
+            });
+        },
+        unloadGCode: () => {
+            const visualizer = this.visualizer;
+            visualizer.unload();
+
+            this.setState({
+                gcode: {
+                    ...this.state.gcode,
+                    loading: false,
+                    rendering: false,
+                    ready: false,
+                    sent: 0,
+                    total: 0,
+                    bbox: {
+                        min: {
+                            x: 0,
+                            y: 0,
+                            z: 0
+                        },
+                        max: {
+                            x: 0,
+                            y: 0,
+                            z: 0
+                        }
+                    }
+                }
+            });
+        },
+        handleRun: () => {
+            const { workflowState } = this.state;
+            console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
+
+            if (workflowState === WORKFLOW_STATE_IDLE) {
+                controller.command('start');
+            }
+            if (workflowState === WORKFLOW_STATE_PAUSED) {
+                controller.command('resume');
+            }
+
+            pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
+        },
+        handlePause: () => {
+            const { workflowState } = this.state;
+            console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
+
+            controller.command('pause');
+
+            pubsub.publish('workflowState', WORKFLOW_STATE_PAUSED);
+        },
+        handleStop: () => {
+            const { workflowState } = this.state;
+            console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
+
+            controller.command('stop');
+            controller.command('reset');
+
+            pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
+        },
+        handleClose: () => {
+            const { workflowState } = this.state;
+            console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
+
+            controller.command('unload');
+
+            pubsub.publish('gcode:unload'); // Unload the G-code
+        },
+        setBoundingBox: (bbox) => {
+            this.setState({
+                gcode: {
+                    ...this.state.gcode,
+                    bbox: bbox
+                }
+            });
+        },
+        toggleRenderAnimation: () => {
+            this.setState({ renderAnimation: !this.state.renderAnimation });
+        },
+        joystick: {
+            up: () => {
+                this.visualizer.panUp();
+            },
+            down: () => {
+                this.visualizer.panDown();
+            },
+            left: () => {
+                this.visualizer.panLeft();
+            },
+            right: () => {
+                this.visualizer.panRight();
+            },
+            center: () => {
+                this.visualizer.lookAtCenter();
+            }
+        }
+    };
     controllerEvents = {
         'sender:status': (data) => {
             const { sent = 0, total = 0 } = data;
@@ -138,6 +298,7 @@ class VisualizerWidget extends Component {
         }
     };
     pubsubTokens = [];
+    visualizer = null;
 
     constructor() {
         super();
@@ -152,7 +313,7 @@ class VisualizerWidget extends Component {
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -163,8 +324,6 @@ class VisualizerWidget extends Component {
     }
     getDefaultState() {
         return {
-            canClick: true, // Defaults to true
-            isAgitated: false, // Defaults to false
             port: controller.port,
             units: METRIC_UNITS,
             controller: {
@@ -179,6 +338,7 @@ class VisualizerWidget extends Component {
             },
             gcode: {
                 loading: false,
+                rendering: false,
                 ready: false,
                 sent: 0,
                 total: 0,
@@ -195,7 +355,8 @@ class VisualizerWidget extends Component {
                     }
                 }
             },
-            renderAnimation: store.get('widgets.visualizer.animation')
+            renderAnimation: store.get('widgets.visualizer.animation'),
+            isAgitated: false // Defaults to false
         };
     }
     subscribe() {
@@ -221,14 +382,12 @@ class VisualizerWidget extends Component {
                 }
             }),
             pubsub.subscribe('gcode:load', (msg, data = '') => {
-                startWaiting();
-
-                this.loadGCode(data, () => {
-                    stopWaiting();
-                });
+                const actions = this.actions;
+                actions.loadGCode(data);
             }),
             pubsub.subscribe('gcode:unload', (msg) => {
-                this.unloadGCode();
+                const actions = this.actions;
+                actions.unloadGCode();
             })
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
@@ -248,33 +407,6 @@ class VisualizerWidget extends Component {
         _.each(this.controllerEvents, (callback, eventName) => {
             controller.off(eventName, callback);
         });
-    }
-    canClick() {
-        const { port, gcode } = this.state;
-
-        if (!port) {
-            return false;
-        }
-        if (!gcode.ready) {
-            return false;
-        }
-
-        return true;
-    }
-    canSendCommand() {
-        const { port, controller, workflowState } = this.state;
-
-        if (!port) {
-            return false;
-        }
-        if (!controller.type || !controller.state) {
-            return false;
-        }
-        if (workflowState !== WORKFLOW_STATE_IDLE) {
-            return false;
-        }
-
-        return true;
     }
     isAgitated() {
         const { workflowState, renderAnimation } = this.state;
@@ -302,324 +434,42 @@ class VisualizerWidget extends Component {
 
         return true;
     }
-    uploadFile(gcode, { name, size }) {
-        const { port } = this.state;
-
-        startWaiting();
-
-        this.setState({
-            gcode: {
-                ...this.state.gcode,
-                loading: true,
-                ready: false
-            }
-        });
-
-        api.loadGCode({ port, name, gcode })
-            .then((res) => {
-                pubsub.publish('gcode:load', gcode);
-            })
-            .catch((err) => {
-                stopWaiting();
-
-                this.setState({
-                    gcode: {
-                        ...this.state.gcode,
-                        loading: false,
-                        ready: false
-                    }
-                });
-                log.error('Failed to upload G-code file:', err);
-            });
-    }
-    loadGCode(gcode, callback = noop) {
-        const visualizer = this.refs.visualizer;
-        visualizer.load(gcode, ({ bbox }) => {
-            // bounding box
-            pubsub.publish('gcode:bbox', bbox);
-
-            this.setState({
-                gcode: {
-                    ...this.state.gcode,
-                    loading: false,
-                    ready: true,
-                    bbox: bbox
-                }
-            });
-            callback();
-        });
-    }
-    unloadGCode() {
-        const visualizer = this.refs.visualizer;
-        visualizer.unload();
-        this.setState({
-            gcode: {
-                ...this.state.gcode,
-                loading: false,
-                ready: false,
-                sent: 0,
-                total: 0,
-                bbox: {
-                    min: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    },
-                    max: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    }
-                }
-            }
-        });
-    }
-    handleRun() {
-        const { workflowState } = this.state;
-        console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
-
-        if (workflowState === WORKFLOW_STATE_IDLE) {
-            controller.command('start');
-        }
-        if (workflowState === WORKFLOW_STATE_PAUSED) {
-            controller.command('resume');
-        }
-
-        pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
-    }
-    handlePause() {
-        const { workflowState } = this.state;
-        console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
-
-        controller.command('pause');
-
-        pubsub.publish('workflowState', WORKFLOW_STATE_PAUSED);
-    }
-    handleStop() {
-        const { workflowState } = this.state;
-        console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
-
-        controller.command('stop');
-        controller.command('reset');
-
-        pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
-    }
-    handleClose() {
-        const { workflowState } = this.state;
-        console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
-
-        controller.command('unload');
-
-        pubsub.publish('gcode:unload'); // Unload the G-code
-    }
-    setBoundingBox(bbox) {
-        this.setState({
-            gcode: {
-                ...this.state.gcode,
-                bbox: bbox
-            }
-        });
-    }
-    toggleRenderAnimation() {
-        this.setState({ renderAnimation: !this.state.renderAnimation });
-    }
-    getControllerState() {
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
-
-        if (controllerType === GRBL) {
-            const activeState = _.get(controllerState, 'status.activeState');
-            const stateText = {
-                [GRBL_ACTIVE_STATE_IDLE]: i18n.t('controller:Grbl.activeState.idle'),
-                [GRBL_ACTIVE_STATE_RUN]: i18n.t('controller:Grbl.activeState.run'),
-                [GRBL_ACTIVE_STATE_HOLD]: i18n.t('controller:Grbl.activeState.hold'),
-                [GRBL_ACTIVE_STATE_DOOR]: i18n.t('controller:Grbl.activeState.door'),
-                [GRBL_ACTIVE_STATE_HOME]: i18n.t('controller:Grbl.activeState.home'),
-                [GRBL_ACTIVE_STATE_ALARM]: i18n.t('controller:Grbl.activeState.alarm'),
-                [GRBL_ACTIVE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
-            }[activeState];
-
-            return stateText;
-        }
-
-        if (controllerType === TINYG2) {
-            const machineState = _.get(controllerState, 'sr.machineState');
-            const stateText = {
-                [TINYG2_MACHINE_STATE_INIT]: i18n.t('controller:TinyG2.machineState.init'),
-                [TINYG2_MACHINE_STATE_READY]: i18n.t('controller:TinyG2.machineState.ready'),
-                [TINYG2_MACHINE_STATE_ALARM]: i18n.t('controller:TinyG2.machineState.alarm'),
-                [TINYG2_MACHINE_STATE_STOP]: i18n.t('controller:TinyG2.machineState.stop'),
-                [TINYG2_MACHINE_STATE_END]: i18n.t('controller:TinyG2.machineState.end'),
-                [TINYG2_MACHINE_STATE_RUN]: i18n.t('controller:TinyG2.machineState.run'),
-                [TINYG2_MACHINE_STATE_HOLD]: i18n.t('controller:TinyG2.machineState.hold'),
-                [TINYG2_MACHINE_STATE_PROBE]: i18n.t('controller:TinyG2.machineState.probe'),
-                [TINYG2_MACHINE_STATE_CYCLING]: i18n.t('controller:TinyG2.machineState.cycling'),
-                [TINYG2_MACHINE_STATE_HOMING]: i18n.t('controller:TinyG2.machineState.homing'),
-                [TINYG2_MACHINE_STATE_JOGGING]: i18n.t('controller:TinyG2.machineState.jogging'),
-                [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG2.machineState.shutdown')
-            }[machineState];
-
-            return stateText;
-        }
-
-        return '';
-    }
-    getWorkCoordinateSystem() {
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
-        const defaultWCS = 'G54';
-
-        if (controllerType === GRBL) {
-            return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
-        }
-
-        if (controllerType === TINYG2) {
-            return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
-        }
-
-        return defaultWCS;
-    }
     render() {
         const state = {
             ...this.state,
-            canClick: this.canClick(),
             isAgitated: this.isAgitated()
         };
         const actions = {
-            uploadFile: ::this.uploadFile,
-            loadGCode: ::this.loadGCode,
-            unloadGCode: ::this.unloadGCode,
-            handleRun: ::this.handleRun,
-            handlePause: ::this.handlePause,
-            handleStop: ::this.handleStop,
-            handleClose: ::this.handleClose,
-            setBoundingBox: ::this.setBoundingBox,
-            toggleRenderAnimation: ::this.toggleRenderAnimation
+            ...this.actions
         };
-        const units = this.state.units;
-        const controllerType = this.state.controller.type;
-        const controllerState = this.getControllerState();
-        const canSendCommand = this.canSendCommand();
-        const wcs = this.getWorkCoordinateSystem();
 
         return (
             <Widget borderless>
                 <Widget.Header styleName="widget-header" fixed>
                     <Widget.Title style={{ width: '100%' }}>
-                    {controllerType &&
-                        <div styleName="controller-type">{controllerType}</div>
-                    }
-                    {controllerState &&
-                        <div styleName="controller-state">{controllerState}</div>
-                    }
-                        <div className="pull-right">
-                            <Dropdown
-                                style={{
-                                    marginBottom: 2,
-                                    marginRight: 5
-                                }}
-                                bsSize="xs"
-                                id="units-dropdown"
-                                disabled={!canSendCommand}
-                                pullRight
-                            >
-                                <Dropdown.Toggle
-                                    style={{ minWidth: 50 }}
-                                >
-                                    {units === IMPERIAL_UNITS && i18n._('in')}
-                                    {units === METRIC_UNITS && i18n._('mm')}
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <MenuItem
-                                        active={units === IMPERIAL_UNITS}
-                                        onClick={() => {
-                                            controller.command('gcode', 'G20');
-                                        }}
-                                    >
-                                        {i18n._('Inches (G20)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        active={units === METRIC_UNITS}
-                                        onClick={() => {
-                                            controller.command('gcode', 'G21');
-                                        }}
-                                    >
-                                        {i18n._('Millimeters (G21)')}
-                                    </MenuItem>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            <Dropdown
-                                style={{ marginBottom: 2 }}
-                                bsSize="xs"
-                                id="wcs-dropdown"
-                                disabled={!canSendCommand}
-                                pullRight
-                            >
-                                <Dropdown.Toggle
-                                    style={{ minWidth: 50 }}
-                                >
-                                    {wcs}
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu>
-                                    <MenuItem header>{i18n._('Work Coordinate System')}</MenuItem>
-                                    <MenuItem
-                                        active={wcs === 'G54'}
-                                        onClick={() => {
-                                            controller.command('gcode', 'G54');
-                                        }}
-                                    >
-                                        G54 (P1)
-                                    </MenuItem>
-                                    <MenuItem
-                                        active={wcs === 'G55'}
-                                        onClick={() => {
-                                            controller.command('gcode', 'G55');
-                                        }}
-                                    >
-                                        G55 (P2)
-                                    </MenuItem>
-                                    <MenuItem
-                                        active={wcs === 'G56'}
-                                        onClick={() => {
-                                            controller.command('gcode', 'G56');
-                                        }}
-                                    >
-                                        G56 (P3)
-                                    </MenuItem>
-                                    <MenuItem
-                                        active={wcs === 'G57'}
-                                        onClick={() => {
-                                            controller.command('gcode', 'G57');
-                                        }}
-                                    >
-                                        G57 (P4)
-                                    </MenuItem>
-                                    <MenuItem
-                                        active={wcs === 'G58'}
-                                        onClick={() => {
-                                            controller.command('gcode', 'G58');
-                                        }}
-                                    >
-                                        G58 (P5)
-                                    </MenuItem>
-                                    <MenuItem
-                                        active={wcs === 'G59'}
-                                        onClick={() => {
-                                            controller.command('gcode', 'G59');
-                                        }}
-                                    >
-                                        G59 (P6)
-                                    </MenuItem>
-                                </Dropdown.Menu>
-                            </Dropdown>
-                        </div>
+                        <Controls
+                            state={state}
+                            actions={actions}
+                        />
                     </Widget.Title>
                 </Widget.Header>
                 <Widget.Content styleName="widget-content">
-                    <Visualizer
-                        ref="visualizer"
+                    <Toolbar
                         state={state}
                         actions={actions}
+                    />
+                    <Joystick
+                        up={actions.joystick.up}
+                        down={actions.joystick.down}
+                        left={actions.joystick.left}
+                        right={actions.joystick.right}
+                        center={actions.joystick.center}
+                    />
+                    <Visualizer
+                        ref={(c) => {
+                            this.visualizer = c;
+                        }}
+                        state={state}
                     />
                 </Widget.Content>
             </Widget>
