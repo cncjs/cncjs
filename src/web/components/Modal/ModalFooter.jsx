@@ -6,7 +6,7 @@ import styles from './index.styl';
 @CSSModules(styles, { allowMultiple: true })
 class ModalFooter extends Component {
     static propTypes = {
-        padding: PropTypes.oneOf([PropTypes.bool, PropTypes.string])
+        padding: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
     };
     static defaultProps = {
         padding: true
