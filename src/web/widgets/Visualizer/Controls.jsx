@@ -119,7 +119,7 @@ class Controls extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { units } = state;
+        const { units, webgl } = state;
         const controllerType = state.controller.type;
         const controllerState = this.getControllerState();
         const canSendCommand = this.canSendCommand();
@@ -249,6 +249,7 @@ class Controls extends Component {
                         }}
                         bsSize="xs"
                         id="visualizer-dropdown"
+                        disabled={!webgl}
                         pullRight
                     >
                         <Dropdown.Toggle
