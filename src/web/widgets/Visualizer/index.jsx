@@ -3,9 +3,13 @@ import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
+import Detector from 'three/examples/js/Detector';
 import api from '../../api';
+import Anchor from '../../components/Anchor';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
+import i18n from '../../lib/i18n';
+import modal from '../../lib/modal';
 import log from '../../lib/log';
 import store from '../../store';
 import Controls from './Controls';
@@ -90,8 +94,8 @@ class VisualizerWidget extends Component {
                 gcode: {
                     ...this.state.gcode,
                     loading: false,
-                    rendering: true,
-                    ready: false,
+                    rendering: visualizer,
+                    ready: !visualizer,
                     sent: 0,
                     total: 0,
                     bbox: {
@@ -109,24 +113,28 @@ class VisualizerWidget extends Component {
                 }
             });
 
-            visualizer.load(gcode, ({ bbox }) => {
-                // bounding box
-                pubsub.publish('gcode:bbox', bbox);
+            if (visualizer) {
+                visualizer.load(gcode, ({ bbox }) => {
+                    // bounding box
+                    pubsub.publish('gcode:bbox', bbox);
 
-                this.setState({
-                    gcode: {
-                        ...this.state.gcode,
-                        loading: false,
-                        rendering: false,
-                        ready: true,
-                        bbox: bbox
-                    }
+                    this.setState({
+                        gcode: {
+                            ...this.state.gcode,
+                            loading: false,
+                            rendering: false,
+                            ready: true,
+                            bbox: bbox
+                        }
+                    });
                 });
-            });
+            }
         },
         unloadGCode: () => {
             const visualizer = this.visualizer;
-            visualizer.unload();
+            if (visualizer) {
+                visualizer.unload();
+            }
 
             this.setState({
                 gcode: {
@@ -202,19 +210,19 @@ class VisualizerWidget extends Component {
         },
         joystick: {
             up: () => {
-                this.visualizer.panUp();
+                this.visualizer && this.visualizer.panUp();
             },
             down: () => {
-                this.visualizer.panDown();
+                this.visualizer && this.visualizer.panDown();
             },
             left: () => {
-                this.visualizer.panLeft();
+                this.visualizer && this.visualizer.panLeft();
             },
             right: () => {
-                this.visualizer.panRight();
+                this.visualizer && this.visualizer.panRight();
             },
             center: () => {
-                this.visualizer.lookAtCenter();
+                this.visualizer && this.visualizer.lookAtCenter();
             }
         }
     };
@@ -307,6 +315,30 @@ class VisualizerWidget extends Component {
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
+
+        if (!Detector.webgl) {
+            modal({
+                title: 'WebGL Error Message',
+                body: (
+                    <div>
+                        {window.WebGLRenderingContext &&
+                        <div>
+                            Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+                            <br />
+                            Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+                        </div>
+                        }
+                        {!window.WebGLRenderingContext &&
+                        <div>
+                            Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+                            <br />
+                            Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+                        </div>
+                        }
+                    </div>
+                )
+            });
+        }
     }
     componentWillUnmount() {
         this.unsubscribe();
@@ -465,12 +497,14 @@ class VisualizerWidget extends Component {
                         right={actions.joystick.right}
                         center={actions.joystick.center}
                     />
+                    {Detector.webgl &&
                     <Visualizer
                         ref={(c) => {
                             this.visualizer = c;
                         }}
                         state={state}
                     />
+                    }
                 </Widget.Content>
             </Widget>
         );

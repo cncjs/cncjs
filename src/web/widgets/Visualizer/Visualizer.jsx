@@ -1,6 +1,4 @@
 /* eslint-disable import/no-unresolved */
-import 'imports?THREE=three!three/examples/js/renderers/Projector';
-import 'imports?THREE=three!three/examples/js/renderers/CanvasRenderer';
 import 'imports?THREE=three!three/examples/js/controls/TrackballControls';
 /* eslint-enable */
 import _ from 'lodash';
@@ -8,7 +6,6 @@ import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import * as THREE from 'three';
-import Detector from 'three/examples/js/Detector';
 import { fitCameraToObject, getBoundingBox, loadTexture } from './helpers';
 import CoordinateAxes from './CoordinateAxes';
 import ToolHead from './ToolHead';
@@ -295,13 +292,23 @@ class Visualizer extends Component {
         const width = el.clientWidth;
         const height = el.clientHeight;
 
+        // WebGLRenderer
+        this.renderer = new THREE.WebGLRenderer({
+            autoClearColor: true,
+            antialias: true,
+            alpha: true
+        });
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+        this.renderer.setClearColor(new THREE.Color(colornames('white')), 1);
+        this.renderer.setSize(width, height);
+        this.renderer.clear();
+
+        el.appendChild(this.renderer.domElement);
+
         // To actually be able to display anything with Three.js, we need three things:
         // A scene, a camera, and a renderer so we can render the scene with the camera.
         this.scene = new THREE.Scene();
-
-        // Creating a renderer
-        this.renderer = this.createRenderer(width, height);
-        el.appendChild(this.renderer.domElement);
 
         // Perspective camera
         this.camera = this.createPerspectiveCamera(width, height);
@@ -348,8 +355,6 @@ class Visualizer extends Component {
         }
 
         this.scene.add(this.group);
-
-        return this.scene;
     }
     updateScene() {
         if (this.renderer) {
@@ -380,25 +385,6 @@ class Visualizer extends Component {
 
         // Update the scene
         this.updateScene();
-    }
-    createRenderer(width, height) {
-        const options = {
-            autoClearColor: true,
-            antialias: true,
-            alpha: true
-        };
-        const renderer = Detector.webgl
-            ? new THREE.WebGLRenderer(options)
-            : new THREE.CanvasRenderer(options);
-        renderer.setClearColor(new THREE.Color(colornames('white')), 1);
-        renderer.setSize(width, height);
-        if (Detector.webgl) {
-            renderer.shadowMap.enabled = true;
-            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        }
-        renderer.clear();
-
-        return renderer;
     }
     createPerspectiveCamera(width, height) {
         const fov = CAMERA_FOV;
