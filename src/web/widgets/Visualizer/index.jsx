@@ -210,19 +210,29 @@ class VisualizerWidget extends Component {
         },
         joystick: {
             up: () => {
-                this.visualizer && this.visualizer.panUp();
+                if (this.visualizer) {
+                    this.visualizer.panUp();
+                }
             },
             down: () => {
-                this.visualizer && this.visualizer.panDown();
+                if (this.visualizer) {
+                    this.visualizer.panDown();
+                }
             },
             left: () => {
-                this.visualizer && this.visualizer.panLeft();
+                if (this.visualizer) {
+                    this.visualizer.panLeft();
+                }
             },
             right: () => {
-                this.visualizer && this.visualizer.panRight();
+                if (this.visualizer) {
+                    this.visualizer.panRight();
+                }
             },
             center: () => {
-                this.visualizer && this.visualizer.lookAtCenter();
+                if (this.visualizer) {
+                    this.visualizer.lookAtCenter();
+                }
             }
         }
     };
@@ -490,6 +500,7 @@ class VisualizerWidget extends Component {
                         state={state}
                         actions={actions}
                     />
+                    {Detector.webgl &&
                     <Joystick
                         up={actions.joystick.up}
                         down={actions.joystick.down}
@@ -497,7 +508,6 @@ class VisualizerWidget extends Component {
                         right={actions.joystick.right}
                         center={actions.joystick.center}
                     />
-                    {Detector.webgl &&
                     <Visualizer
                         ref={(c) => {
                             this.visualizer = c;
