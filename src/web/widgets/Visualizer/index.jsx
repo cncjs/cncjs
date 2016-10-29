@@ -508,6 +508,8 @@ class VisualizerWidget extends Component {
                         right={actions.joystick.right}
                         center={actions.joystick.center}
                     />
+                    }
+                    {Detector.webgl &&
                     <Visualizer
                         ref={(c) => {
                             this.visualizer = c;
