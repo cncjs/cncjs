@@ -323,10 +323,12 @@ class VisualizerWidget extends Component {
         this.state = this.getDefaultState();
     }
     componentDidMount() {
+        const { webgl } = this.state;
+
         this.subscribe();
         this.addControllerEvents();
 
-        if (!Detector.webgl) {
+        if (!webgl) {
             modal({
                 title: 'WebGL Error Message',
                 body: (
@@ -397,6 +399,7 @@ class VisualizerWidget extends Component {
                     }
                 }
             },
+            webgl: Detector.webgl,
             renderAnimation: store.get('widgets.visualizer.animation'),
             isAgitated: false // Defaults to false
         };
@@ -484,6 +487,7 @@ class VisualizerWidget extends Component {
         const actions = {
             ...this.actions
         };
+        const none = '–';
 
         return (
             <Widget borderless>
@@ -500,7 +504,7 @@ class VisualizerWidget extends Component {
                         state={state}
                         actions={actions}
                     />
-                    {Detector.webgl &&
+                    {state.webgl &&
                     <Joystick
                         up={actions.joystick.up}
                         down={actions.joystick.down}
@@ -509,13 +513,27 @@ class VisualizerWidget extends Component {
                         center={actions.joystick.center}
                     />
                     }
-                    {Detector.webgl &&
+                    {state.webgl &&
                     <Visualizer
                         ref={(c) => {
                             this.visualizer = c;
                         }}
                         state={state}
                     />
+                    }
+                    {!state.webgl &&
+                    <div style={{ margin: '60px 10px 10px 10px' }}>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-3">
+                                {i18n._('G-code')}
+                            </div>
+                            <div className="col col-xs-9">
+                                <div styleName="well">
+                                    {state.gcode.total > 0 ? `${state.gcode.sent} / ${state.gcode.total}` : none}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     }
                 </Widget.Content>
             </Widget>
