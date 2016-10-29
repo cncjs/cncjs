@@ -1,11 +1,14 @@
+/* eslint-disable import/no-unresolved */
+import 'imports?THREE=three!three/examples/js/renderers/Projector';
+import 'imports?THREE=three!three/examples/js/renderers/CanvasRenderer';
+import 'imports?THREE=three!three/examples/js/controls/TrackballControls';
+/* eslint-enable */
 import _ from 'lodash';
 import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import * as THREE from 'three';
-import Detector from '../../lib/three/Detector';
-import '../../lib/three/CanvasRenderer';
-import '../../lib/three/TrackballControls';
+import Detector from 'three/examples/js/Detector';
 import { fitCameraToObject, getBoundingBox, loadTexture } from './helpers';
 import CoordinateAxes from './CoordinateAxes';
 import ToolHead from './ToolHead';
