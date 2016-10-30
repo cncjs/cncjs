@@ -150,6 +150,10 @@ class GCodeVisualizer {
         });
     }
     setFrameIndex(frameIndex) {
+        if (this.frames.length === 0) {
+            return;
+        }
+
         frameIndex = Math.min(frameIndex, this.frames.length - 1);
         frameIndex = Math.max(frameIndex, 0);
 
