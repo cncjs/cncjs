@@ -311,14 +311,7 @@ class GrblController {
 
             // Sender
             if (this.sender.peek()) {
-                this.emitAll('sender:status', {
-                    'remain': this.sender.remain.length,
-                    'sent': this.sender.sent.length,
-                    'total': this.sender.total,
-                    'createdTime': this.sender.createdTime,
-                    'startedTime': this.sender.startedTime,
-                    'finishedTime': this.sender.finishedTime
-                });
+                this.emitAll('sender:status', this.sender.state);
             }
         }, 250);
     }
@@ -452,8 +445,13 @@ class GrblController {
         this.connections.push(new Connection(socket));
 
         if (!_.isEmpty(this.state)) {
-            // Send current state to the connected client
+            // Send TinyG2 state to a newly connected client
             socket.emit('Grbl:state', this.state);
+        }
+
+        if (this.sender) {
+            // Send sender status to a newly connected client
+            socket.emit('sender:status', this.sender.state);
         }
     }
     removeConnection(socket) {

@@ -20,6 +20,18 @@ class GCodeSender extends events.EventEmitter {
             this.changed = true;
         });
     }
+    get state() {
+        return {
+            name: this.name,
+            size: this.gcode.length,
+            remain: this.remain.length,
+            sent: this.sent.length,
+            total: this.total,
+            createdTime: this.createdTime,
+            startedTime: this.startedTime,
+            finishedTime: this.finishedTime
+        };
+    }
     load(name, gcode, callback) {
         parser.parseString(gcode, (err, results) => {
             if (err) {
