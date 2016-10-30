@@ -109,7 +109,17 @@ const defaultState = {
         },
         visualizer: {
             minimized: false,
-            animation: true
+
+            // 3D View
+            disabled: false,
+            objects: {
+                coordinateSystem: {
+                    visible: true
+                },
+                toolhead: {
+                    visible: true
+                }
+            }
         },
         webcam: {
             minimized: false,
