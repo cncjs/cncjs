@@ -33,6 +33,7 @@ const CAMERA_POSITION_Z = 200; // Move the camera out a bit from the origin (0, 
 
 class Visualizer extends Component {
     static propTypes = {
+        show: PropTypes.bool,
         state: PropTypes.object
     };
 
@@ -87,19 +88,29 @@ class Visualizer extends Component {
             this.visualizer.setFrameIndex(frameIndex);
         }
 
-        // Coordinate System
-        if (nextState.units !== state.units) {
+        // Display or hide coordinate system
+        if ((nextState.units !== state.units) ||
+            (nextState.objects.coordinateSystem.visible !== state.objects.coordinateSystem.visible)) {
+            const visible = nextState.objects.coordinateSystem.visible;
+
             // Imperial
             const imperialCoordinateSystem = this.group.getObjectByName('ImperialCoordinateSystem');
             if (imperialCoordinateSystem) {
-                imperialCoordinateSystem.visible = (nextState.units === IMPERIAL_UNITS);
+                imperialCoordinateSystem.visible = visible && (nextState.units === IMPERIAL_UNITS);
             }
 
             // Metric
             const metricCoordinateSystem = this.group.getObjectByName('MetricCoordinateSystem');
             if (metricCoordinateSystem) {
-                metricCoordinateSystem.visible = (nextState.units === METRIC_UNITS);
+                metricCoordinateSystem.visible = visible && (nextState.units === METRIC_UNITS);
             }
+
+            needUpdateScene = true;
+        }
+
+        // Display or hide toolhead
+        if (this.toolhead && (this.toolhead.visible !== nextState.objects.toolhead.visible)) {
+            this.toolhead.visible = nextState.objects.toolhead.visible;
 
             needUpdateScene = true;
         }
@@ -108,13 +119,6 @@ class Visualizer extends Component {
         if (!_.isEqual(this.workPosition, nextState.workPosition)) {
             this.workPosition = nextState.workPosition;
             this.setWorkPosition(this.workPosition);
-
-            needUpdateScene = true;
-        }
-
-        // Toggle toolhead visibility
-        if (this.toolhead && (this.toolhead.visible !== nextState.renderAnimation)) {
-            this.toolhead.visible = nextState.renderAnimation;
 
             needUpdateScene = true;
         }
@@ -133,6 +137,9 @@ class Visualizer extends Component {
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
+        if (nextProps.show !== this.props.show) {
+            return true;
+        }
         return false;
     }
     subscribe() {
@@ -288,7 +295,7 @@ class Visualizer extends Component {
     //
     createScene(el) {
         const { state } = this.props;
-        const { units, renderAnimation } = state;
+        const { units, objects } = state;
         const width = el.clientWidth;
         const height = el.clientHeight;
 
@@ -320,25 +327,29 @@ class Visualizer extends Component {
         const light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
         this.scene.add(light);
 
-        // Imperial
-        const imperialCoordinateSystem = this.createCoordinateSystem({
-            axisLength: IMPERIAL_AXIS_LENGTH,
-            gridCount: IMPERIAL_GRID_COUNT,
-            gridSpacing: IMPERIAL_GRID_SPACING
-        });
-        imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
-        imperialCoordinateSystem.visible = (units === IMPERIAL_UNITS);
-        this.group.add(imperialCoordinateSystem);
+        { // Imperial
+            const visible = objects.coordinateSystem.visible;
+            const imperialCoordinateSystem = this.createCoordinateSystem({
+                axisLength: IMPERIAL_AXIS_LENGTH,
+                gridCount: IMPERIAL_GRID_COUNT,
+                gridSpacing: IMPERIAL_GRID_SPACING
+            });
+            imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
+            imperialCoordinateSystem.visible = visible && (units === IMPERIAL_UNITS);
+            this.group.add(imperialCoordinateSystem);
+        }
 
-        // Metric
-        const metricCoordinateSystem = this.createCoordinateSystem({
-            axisLength: METRIC_AXIS_LENGTH,
-            gridCount: METRIC_GRID_COUNT,
-            gridSpacing: METRIC_GRID_SPACING
-        });
-        metricCoordinateSystem.name = 'MetricCoordinateSystem';
-        metricCoordinateSystem.visible = (units === METRIC_UNITS);
-        this.group.add(metricCoordinateSystem);
+        { // Metric
+            const visible = objects.coordinateSystem.visible;
+            const metricCoordinateSystem = this.createCoordinateSystem({
+                axisLength: METRIC_AXIS_LENGTH,
+                gridCount: METRIC_GRID_COUNT,
+                gridSpacing: METRIC_GRID_SPACING
+            });
+            metricCoordinateSystem.name = 'MetricCoordinateSystem';
+            metricCoordinateSystem.visible = visible && (units === METRIC_UNITS);
+            this.group.add(metricCoordinateSystem);
+        }
 
         { // Tool Head
             const color = colornames('silver');
@@ -346,7 +357,7 @@ class Visualizer extends Component {
             loadTexture(url, (err, texture) => {
                 this.toolhead = new ToolHead(color, texture);
                 this.toolhead.name = 'ToolHead';
-                this.toolhead.visible = renderAnimation;
+                this.toolhead.visible = objects.toolhead.visible;
                 this.group.add(this.toolhead);
 
                 // Update the scene
@@ -561,8 +572,13 @@ class Visualizer extends Component {
         !noPan && this.pan(-1 * panSpeed, 0);
     }
     render() {
+        const { show } = this.props;
+
         return (
             <div
+                style={{
+                    visibility: show ? 'visible' : 'hidden'
+                }}
                 ref={node => {
                     this.node = node;
                 }}

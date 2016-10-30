@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import controller from '../../lib/controller';
+import Interpolate from '../../components/Interpolate';
 import i18n from '../../lib/i18n';
 import {
     // Units
@@ -119,7 +120,7 @@ class Controls extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { units, webgl } = state;
+        const { units, webgl, disabled, objects } = state;
         const controllerType = state.controller.type;
         const controllerState = this.getControllerState();
         const canSendCommand = this.canSendCommand();
@@ -249,7 +250,6 @@ class Controls extends Component {
                         }}
                         bsSize="xs"
                         id="visualizer-dropdown"
-                        disabled={!webgl}
                         pullRight
                     >
                         <Dropdown.Toggle
@@ -258,18 +258,62 @@ class Controls extends Component {
                             <i className="fa fa-cube" />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
-                            <MenuItem header>{i18n._('Options')}</MenuItem>
                             <MenuItem
-                                onClick={(event) => {
-                                    actions.toggleRenderAnimation();
-                                }}
+                                style={{ color: '#222' }}
+                                header
                             >
-                                {state.renderAnimation
+                                <Interpolate
+                                    format={'WebGL: {{status}}'}
+                                    replacement={{
+                                        status: webgl
+                                            ? i18n._('Enabled')
+                                            : (<span style={{ color: '#dc143c' }}>{i18n._('Unavailable')}</span>)
+                                    }}
+                                />
+                            </MenuItem>
+                            <MenuItem divider />
+                            <MenuItem
+                                disabled={!webgl}
+                                onClick={actions.toggle3DView}
+                            >
+                                {disabled
+                                    ? <i className="fa fa-toggle-off" />
+                                    : <i className="fa fa-toggle-on" />
+                                }
+                                &nbsp;
+                                {disabled
+                                    ? i18n._('Enable 3D View')
+                                    : i18n._('Disable 3D View')
+                                }
+                            </MenuItem>
+                            <MenuItem divider />
+                            <MenuItem
+                                disabled={!webgl}
+                                onClick={actions.toggleCoordinateSystemVisibility}
+                            >
+                                {objects.coordinateSystem.visible
                                     ? <i className="fa fa-toggle-on" />
                                     : <i className="fa fa-toggle-off" />
                                 }
                                 &nbsp;
-                                {i18n._('Toggle Toolhead Animation')}
+                                {objects.coordinateSystem.visible
+                                    ? i18n._('Hide Coordinate System')
+                                    : i18n._('Show Coordinate System')
+                                }
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!webgl}
+                                onClick={actions.toggleToolheadVisibility}
+                            >
+                                {objects.toolhead.visible
+                                    ? <i className="fa fa-toggle-on" />
+                                    : <i className="fa fa-toggle-off" />
+                                }
+                                &nbsp;
+                                {objects.toolhead.visible
+                                    ? i18n._('Hide Toolhead')
+                                    : i18n._('Show Toolhead')
+                                }
                             </MenuItem>
                         </Dropdown.Menu>
                     </Dropdown>

@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
@@ -8,6 +9,7 @@ import styles from './index.styl';
 @CSSModules(styles, { allowMultiple: true })
 class Joystick extends Component {
     static propTypes = {
+        show: PropTypes.bool,
         up: PropTypes.func,
         down: PropTypes.func,
         left: PropTypes.func,
@@ -19,10 +21,10 @@ class Joystick extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { up, down, left, right, center } = this.props;
+        const { show, up, down, left, right, center } = this.props;
 
         return (
-            <div styleName="joystick">
+            <div styleName="joystick" className={classNames({ 'hidden': !show })}>
                 <div className="row no-gutters">
                     <div className="col-xs-4" />
                     <div className="col-xs-4">

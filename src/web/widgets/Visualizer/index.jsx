@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -6,9 +7,12 @@ import CSSModules from 'react-css-modules';
 import Detector from 'three/examples/js/Detector';
 import api from '../../api';
 import Anchor from '../../components/Anchor';
+import Modal from '../../components/Modal';
+import Panel from '../../components/Panel';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import { formatBytes } from '../../lib/numeral';
 import modal from '../../lib/modal';
 import log from '../../lib/log';
 import store from '../../store';
@@ -37,25 +41,12 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-const startWaiting = () => {
-    // Adds the 'wait' class to <html>
-    const root = document.documentElement;
-    root.classList.add('wait');
-};
-const stopWaiting = () => {
-    // Adds the 'wait' class to <html>
-    const root = document.documentElement;
-    root.classList.remove('wait');
-};
-
 @CSSModules(styles, { allowMultiple: true })
 class VisualizerWidget extends Component {
     actions = {
         uploadFile: (gcode, meta) => {
             const { name } = { ...meta };
             const { port } = this.state;
-
-            startWaiting();
 
             this.setState({
                 gcode: {
@@ -68,14 +59,10 @@ class VisualizerWidget extends Component {
 
             api.loadGCode({ port, name, gcode })
                 .then((res) => {
-                    stopWaiting();
-
                     // This will call loadGCode()
                     pubsub.publish('gcode:load', gcode);
                 })
                 .catch((err) => {
-                    stopWaiting();
-
                     this.setState({
                         gcode: {
                             ...this.state.gcode,
@@ -96,8 +83,6 @@ class VisualizerWidget extends Component {
                     loading: false,
                     rendering: visualizer,
                     ready: !visualizer,
-                    sent: 0,
-                    total: 0,
                     bbox: {
                         min: {
                             x: 0,
@@ -142,8 +127,6 @@ class VisualizerWidget extends Component {
                     loading: false,
                     rendering: false,
                     ready: false,
-                    sent: 0,
-                    total: 0,
                     bbox: {
                         min: {
                             x: 0,
@@ -205,8 +188,32 @@ class VisualizerWidget extends Component {
                 }
             });
         },
-        toggleRenderAnimation: () => {
-            this.setState({ renderAnimation: !this.state.renderAnimation });
+        toggle3DView: () => {
+            this.setState({
+                disabled: !this.state.disabled
+            });
+        },
+        toggleCoordinateSystemVisibility: () => {
+            this.setState({
+                objects: {
+                    ...this.state.objects,
+                    coordinateSystem: {
+                        ...this.state.objects.coordinateSystem,
+                        visible: !this.state.objects.coordinateSystem.visible
+                    }
+                }
+            });
+        },
+        toggleToolheadVisibility: () => {
+            this.setState({
+                objects: {
+                    ...this.state.objects,
+                    toolhead: {
+                        ...this.state.objects.toolhead,
+                        visible: !this.state.objects.toolhead.visible
+                    }
+                }
+            });
         },
         joystick: {
             up: () => {
@@ -238,12 +245,18 @@ class VisualizerWidget extends Component {
     };
     controllerEvents = {
         'sender:status': (data) => {
-            const { sent = 0, total = 0 } = data;
+            const { name, size, remain, sent, total, createdTime, startedTime, finishedTime } = data;
             this.setState({
                 gcode: {
                     ...this.state.gcode,
-                    sent: sent,
-                    total: total
+                    name,
+                    size,
+                    remain,
+                    sent,
+                    total,
+                    createdTime,
+                    startedTime,
+                    finishedTime
                 }
             });
         },
@@ -360,11 +373,15 @@ class VisualizerWidget extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
-        const {
-            renderAnimation
-        } = this.state;
-
-        store.set('widgets.visualizer.animation', renderAnimation);
+        if (this.state.disabled !== prevState.disabled) {
+            store.set('widgets.visualizer.disabled', this.state.disabled);
+        }
+        if (this.state.objects.coordinateSystem.visible !== prevState.objects.coordinateSystem.visible) {
+            store.set('widgets.visualizer.objects.coordinateSystem.visible', this.state.objects.coordinateSystem.visible);
+        }
+        if (this.state.objects.toolhead.visible !== prevState.objects.toolhead.visible) {
+            store.set('widgets.visualizer.objects.toolhead.visible', this.state.objects.toolhead.visible);
+        }
     }
     getDefaultState() {
         return {
@@ -384,8 +401,6 @@ class VisualizerWidget extends Component {
                 loading: false,
                 rendering: false,
                 ready: false,
-                sent: 0,
-                total: 0,
                 bbox: {
                     min: {
                         x: 0,
@@ -397,10 +412,27 @@ class VisualizerWidget extends Component {
                         y: 0,
                         z: 0
                     }
-                }
+                },
+                // sender:status
+                name: '',
+                size: 0,
+                remain: 0,
+                sent: 0,
+                total: 0,
+                createdTime: 0,
+                startedTime: 0,
+                finishedTime: 0
             },
             webgl: Detector.webgl,
-            renderAnimation: store.get('widgets.visualizer.animation'),
+            disabled: store.get('widgets.visualizer.disabled', false),
+            objects: {
+                coordinateSystem: {
+                    visible: store.get('widgets.visualizer.objects.coordinateSystem.visible', true)
+                },
+                toolhead: {
+                    visible: store.get('widgets.visualizer.objects.toolhead.visible', true)
+                }
+            },
             isAgitated: false // Defaults to false
         };
     }
@@ -454,14 +486,15 @@ class VisualizerWidget extends Component {
         });
     }
     isAgitated() {
-        const { workflowState, renderAnimation } = this.state;
+        const { workflowState, objects } = this.state;
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
 
         if (workflowState !== WORKFLOW_STATE_RUNNING) {
             return false;
         }
-        if (!renderAnimation) {
+        // Only toolhead has animation effects
+        if (!objects.toolhead) {
             return false;
         }
         if (controllerType === GRBL) {
@@ -490,7 +523,10 @@ class VisualizerWidget extends Component {
         const none = '–';
 
         return (
-            <Widget borderless>
+            <Widget
+                style={{ minWidth: 320 }}
+                borderless
+            >
                 <Widget.Header styleName="widget-header" fixed>
                     <Widget.Title style={{ width: '100%' }}>
                         <Controls
@@ -506,6 +542,7 @@ class VisualizerWidget extends Component {
                     />
                     {state.webgl &&
                     <Joystick
+                        show={!state.disabled}
                         up={actions.joystick.up}
                         down={actions.joystick.down}
                         left={actions.joystick.left}
@@ -515,26 +552,71 @@ class VisualizerWidget extends Component {
                     }
                     {state.webgl &&
                     <Visualizer
+                        show={!state.disabled}
                         ref={(c) => {
                             this.visualizer = c;
                         }}
                         state={state}
                     />
                     }
-                    {!state.webgl &&
-                    <div style={{ margin: '60px 10px 10px 10px' }}>
-                        <div className="row no-gutters">
-                            <div className="col col-xs-3">
+                    <div
+                        className={classNames(
+                            { 'hidden': !state.disabled }
+                        )}
+                        style={{
+                            position: 'absolute',
+                            top: 60,
+                            left: 10,
+                            right: 10
+                        }}
+                    >
+                        <Panel>
+                            <Panel.Heading>
                                 {i18n._('G-code')}
-                            </div>
-                            <div className="col col-xs-9">
-                                <div styleName="well">
-                                    {state.gcode.total > 0 ? `${state.gcode.sent} / ${state.gcode.total}` : none}
+                            </Panel.Heading>
+                            <Panel.Body>
+                                <div className="row no-gutters">
+                                    <div className="col col-xs-4">{i18n._('Name')}</div>
+                                    <div className="col col-xs-8">
+                                        <div styleName="well">{state.gcode.ready ? state.gcode.name : none}</div>
+                                    </div>
                                 </div>
-                            </div>
-                        </div>
+                                <div className="row no-gutters">
+                                    <div className="col col-xs-4">{i18n._('Size')}</div>
+                                    <div className="col col-xs-8">
+                                        <div styleName="well">{state.gcode.ready ? formatBytes(state.gcode.size, 1) : none}</div>
+                                    </div>
+                                </div>
+                                <div className="row no-gutters">
+                                    <div className="col col-xs-4">{i18n._('Sent')}</div>
+                                    <div className="col col-xs-8">
+                                        <div styleName="well">{state.gcode.ready ? state.gcode.sent : none}</div>
+                                    </div>
+                                </div>
+                                <div className="row no-gutters">
+                                    <div className="col col-xs-4">{i18n._('Total')}</div>
+                                    <div className="col col-xs-8">
+                                        <div styleName="well">{state.gcode.ready ? state.gcode.total : none}</div>
+                                    </div>
+                                </div>
+                            </Panel.Body>
+                        </Panel>
                     </div>
-                    }
+                    <Modal
+                        show={state.gcode.loading || state.gcode.rendering}
+                    >
+                        <Modal.Body
+                            className="text-center"
+                        >
+                            <div>
+                                <i className="fa fa-spinner rotating" style={{ fontSize: 48 }} />
+                            </div>
+                            <div style={{ margin: '15px 0 10px 0' }}>
+                                {state.gcode.loading && i18n._('Uploading...')}
+                                {state.gcode.rendering && i18n._('Loading...')}
+                            </div>
+                        </Modal.Body>
+                    </Modal>
                 </Widget.Content>
             </Widget>
         );
