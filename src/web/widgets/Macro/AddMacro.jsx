@@ -30,9 +30,7 @@ class AddMacro extends Component {
                 bsSize="md"
                 onHide={actions.closeModal}
             >
-                <Modal.Header
-                    closeButton
-                >
+                <Modal.Header>
                     <Modal.Title>
                         {i18n._('Create Macro')}
                     </Modal.Title>

@@ -40,7 +40,7 @@ class Settings extends React.Component {
                 onHide={::this.handleCancel}
                 show={show}
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>{i18n._('Axes Settings')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

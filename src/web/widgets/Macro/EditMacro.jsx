@@ -35,9 +35,7 @@ class EditMacro extends Component {
                     actions.closeModal();
                 }}
             >
-                <Modal.Header
-                    closeButton
-                >
+                <Modal.Header>
                     <Modal.Title>
                         {i18n._('Edit Macro')}
                     </Modal.Title>

@@ -58,7 +58,7 @@ class Settings extends Component {
                 onHide={::this.handleCancel}
                 show={show}
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
