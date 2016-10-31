@@ -608,16 +608,27 @@ class VisualizerWidget extends Component {
                     </div>
                     <Modal
                         show={state.gcode.loading || state.gcode.rendering}
+                        closeButton={false}
                     >
+                        <Modal.Header>
+                            <Modal.Title>
+                                {i18n._('G-code')}
+                            </Modal.Title>
+                        </Modal.Header>
                         <Modal.Body
                             className="text-center"
                         >
                             <div>
+                                {state.gcode.loading &&
                                 <i className="fa fa-spinner rotating" style={{ fontSize: 48 }} />
+                                }
+                                {state.gcode.rendering &&
+                                <i className="fa fa-cube rotating" style={{ fontSize: 48 }} />
+                                }
                             </div>
                             <div style={{ margin: '15px 0 10px 0' }}>
-                                {state.gcode.loading && i18n._('Uploading...')}
-                                {state.gcode.rendering && i18n._('Loading...')}
+                                {state.gcode.loading && i18n._('Uploading file...')}
+                                {state.gcode.rendering && i18n._('3D rendering...')}
                             </div>
                         </Modal.Body>
                     </Modal>
