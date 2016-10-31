@@ -78,9 +78,17 @@ class Visualizer extends Component {
         this.clearScene();
     }
     componentWillReceiveProps(nextProps) {
+        let forceUpdate = false;
         let needUpdateScene = false;
         const state = this.props.state;
         const nextState = nextProps.state;
+
+        // Enable or disable 3D view
+        if ((this.props.show !== nextProps.show) && (!!nextProps.show === true)) {
+            // Set forceUpdate to true when enabling or disabling 3D view
+            forceUpdate = true;
+            needUpdateScene = true;
+        }
 
         // Update visualizer's frame index
         if (this.visualizer) {
@@ -124,7 +132,7 @@ class Visualizer extends Component {
         }
 
         if (needUpdateScene) {
-            this.updateScene();
+            this.updateScene({ forceUpdate: forceUpdate });
         }
 
         if (this.isAgitated !== nextState.isAgitated) {
@@ -367,8 +375,13 @@ class Visualizer extends Component {
 
         this.scene.add(this.group);
     }
-    updateScene() {
-        if (this.renderer) {
+    // @param [options] The options object.
+    // @param [options.forceUpdate] Force rendering
+    updateScene(options) {
+        const { forceUpdate = false } = { ...options };
+        const needUpdateScene = this.props.show || forceUpdate;
+
+        if (this.renderer && needUpdateScene) {
             this.renderer.render(this.scene, this.camera);
         }
     }
