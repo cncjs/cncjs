@@ -1,7 +1,9 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
+import Detector from 'three/examples/js/Detector';
 import controller from '../../lib/controller';
 import Interpolate from '../../components/Interpolate';
 import i18n from '../../lib/i18n';
@@ -44,6 +46,9 @@ class Controls extends Component {
         actions: PropTypes.object
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
     canSendCommand() {
         const { state } = this.props;
         const { port, controller, workflowState } = state;
@@ -120,10 +125,11 @@ class Controls extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { units, webgl, disabled, objects } = state;
+        const { units, disabled, objects } = state;
         const controllerType = state.controller.type;
         const controllerState = this.getControllerState();
         const canSendCommand = this.canSendCommand();
+        const canToggle3DOptions = Detector.webgl && !disabled;
         const wcs = this.getWorkCoordinateSystem();
 
         return (
@@ -159,7 +165,7 @@ class Controls extends Component {
                         <Dropdown.Menu>
                             <MenuItem
                                 active={units === IMPERIAL_UNITS}
-                                onClick={() => {
+                                onSelect={() => {
                                     controller.command('gcode', 'G20');
                                 }}
                             >
@@ -167,7 +173,7 @@ class Controls extends Component {
                             </MenuItem>
                             <MenuItem
                                 active={units === METRIC_UNITS}
-                                onClick={() => {
+                                onSelect={() => {
                                     controller.command('gcode', 'G21');
                                 }}
                             >
@@ -195,7 +201,7 @@ class Controls extends Component {
                             <MenuItem header>{i18n._('Work Coordinate System')}</MenuItem>
                             <MenuItem
                                 active={wcs === 'G54'}
-                                onClick={() => {
+                                onSelect={() => {
                                     controller.command('gcode', 'G54');
                                 }}
                             >
@@ -203,7 +209,7 @@ class Controls extends Component {
                             </MenuItem>
                             <MenuItem
                                 active={wcs === 'G55'}
-                                onClick={() => {
+                                onSelect={() => {
                                     controller.command('gcode', 'G55');
                                 }}
                             >
@@ -211,7 +217,7 @@ class Controls extends Component {
                             </MenuItem>
                             <MenuItem
                                 active={wcs === 'G56'}
-                                onClick={() => {
+                                onSelect={() => {
                                     controller.command('gcode', 'G56');
                                 }}
                             >
@@ -219,7 +225,7 @@ class Controls extends Component {
                             </MenuItem>
                             <MenuItem
                                 active={wcs === 'G57'}
-                                onClick={() => {
+                                onSelect={() => {
                                     controller.command('gcode', 'G57');
                                 }}
                             >
@@ -227,7 +233,7 @@ class Controls extends Component {
                             </MenuItem>
                             <MenuItem
                                 active={wcs === 'G58'}
-                                onClick={() => {
+                                onSelect={() => {
                                     controller.command('gcode', 'G58');
                                 }}
                             >
@@ -235,7 +241,7 @@ class Controls extends Component {
                             </MenuItem>
                             <MenuItem
                                 active={wcs === 'G59'}
-                                onClick={() => {
+                                onSelect={() => {
                                     controller.command('gcode', 'G59');
                                 }}
                             >
@@ -265,7 +271,7 @@ class Controls extends Component {
                                 <Interpolate
                                     format={'WebGL: {{status}}'}
                                     replacement={{
-                                        status: webgl
+                                        status: Detector.webgl
                                             ? (<span style={{ color: '#4078c0' }}>{i18n._('Enabled')}</span>)
                                             : (<span style={{ color: '#dc143c' }}>{i18n._('Unavailable')}</span>)
                                     }}
@@ -273,23 +279,22 @@ class Controls extends Component {
                             </MenuItem>
                             <MenuItem divider />
                             <MenuItem
-                                disabled={!webgl}
-                                onClick={actions.toggle3DView}
+                                onSelect={actions.toggle3DView}
                             >
-                                {disabled
+                                {(!Detector.webgl || disabled)
                                     ? <i className="fa fa-toggle-off" />
                                     : <i className="fa fa-toggle-on" />
                                 }
                                 &nbsp;
-                                {disabled
+                                {(!Detector.webgl || disabled)
                                     ? i18n._('Enable 3D View')
                                     : i18n._('Disable 3D View')
                                 }
                             </MenuItem>
                             <MenuItem divider />
                             <MenuItem
-                                disabled={!webgl}
-                                onClick={actions.toggleCoordinateSystemVisibility}
+                                disabled={!canToggle3DOptions}
+                                onSelect={actions.toggleCoordinateSystemVisibility}
                             >
                                 {objects.coordinateSystem.visible
                                     ? <i className="fa fa-toggle-on" />
@@ -302,8 +307,8 @@ class Controls extends Component {
                                 }
                             </MenuItem>
                             <MenuItem
-                                disabled={!webgl}
-                                onClick={actions.toggleToolheadVisibility}
+                                disabled={!canToggle3DOptions}
+                                onSelect={actions.toggleToolheadVisibility}
                             >
                                 {objects.toolhead.visible
                                     ? <i className="fa fa-toggle-on" />

@@ -6,6 +6,7 @@ import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import * as THREE from 'three';
+import Detector from 'three/examples/js/Detector';
 import { fitCameraToObject, getBoundingBox, loadTexture } from './helpers';
 import CoordinateAxes from './CoordinateAxes';
 import ToolHead from './ToolHead';
@@ -69,8 +70,10 @@ class Visualizer extends Component {
         this.subscribe();
         this.addResizeEventListener();
 
-        this.createScene(this.node);
-        this.resizeRenderer();
+        if (this.node) {
+            this.createScene(this.node);
+            this.resizeRenderer();
+        }
     }
     componentWillUnmount() {
         this.unsubscribe();
@@ -302,6 +305,10 @@ class Visualizer extends Component {
     // http://threejs.org/docs/#Manual/Introduction/Creating_a_scene
     //
     createScene(el) {
+        if (!el) {
+            return;
+        }
+
         const { state } = this.props;
         const { units, objects } = state;
         const width = el.clientWidth;
@@ -542,11 +549,15 @@ class Visualizer extends Component {
             this.group.remove(visualizerObject);
         }
 
-        // Sets the pivot point to the origin point (0, 0, 0)
-        this.pivotPoint.set(0, 0, 0);
+        if (this.pivotPoint) {
+            // Sets the pivot point to the origin point (0, 0, 0)
+            this.pivotPoint.set(0, 0, 0);
+        }
 
-        // Reset controls
-        this.controls.reset();
+        if (this.controls) {
+            // Reset controls
+            this.controls.reset();
+        }
 
         // Update the scene
         this.updateScene();
@@ -586,12 +597,17 @@ class Visualizer extends Component {
     }
     render() {
         const { show } = this.props;
+        const style = {
+            visibility: show ? 'visible' : 'hidden'
+        };
+
+        if (!Detector.webgl) {
+            return null;
+        }
 
         return (
             <div
-                style={{
-                    visibility: show ? 'visible' : 'hidden'
-                }}
+                style={style}
                 ref={node => {
                     this.node = node;
                 }}

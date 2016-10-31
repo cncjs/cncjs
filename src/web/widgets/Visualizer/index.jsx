@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -7,12 +6,8 @@ import CSSModules from 'react-css-modules';
 import Detector from 'three/examples/js/Detector';
 import api from '../../api';
 import Anchor from '../../components/Anchor';
-import Modal from '../../components/Modal';
-import Panel from '../../components/Panel';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import { formatBytes } from '../../lib/numeral';
 import modal from '../../lib/modal';
 import log from '../../lib/log';
 import store from '../../store';
@@ -20,6 +15,8 @@ import Controls from './Controls';
 import Toolbar from './Toolbar';
 import Joystick from './Joystick';
 import Visualizer from './Visualizer';
+import GCodeLoader from './GCodeLoader';
+import Dashboard from './Dashboard';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -40,6 +37,30 @@ import {
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import styles from './index.styl';
+
+const displayWebGLErrorMessage = () => {
+    modal({
+        title: 'WebGL Error Message',
+        body: (
+            <div>
+                {window.WebGLRenderingContext &&
+                <div>
+                    Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+                    <br />
+                    Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+                </div>
+                }
+                {!window.WebGLRenderingContext &&
+                <div>
+                    Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+                    <br />
+                    Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+                </div>
+                }
+            </div>
+        )
+    });
+};
 
 @CSSModules(styles, { allowMultiple: true })
 class VisualizerWidget extends Component {
@@ -76,13 +97,16 @@ class VisualizerWidget extends Component {
         },
         loadGCode: (gcode) => {
             const visualizer = this.visualizer;
+            const capable = {
+                view3D: !!visualizer
+            };
 
             this.setState({
                 gcode: {
                     ...this.state.gcode,
                     loading: false,
-                    rendering: visualizer,
-                    ready: !visualizer,
+                    rendering: capable.view3D,
+                    ready: !capable.view3D,
                     bbox: {
                         min: {
                             x: 0,
@@ -189,6 +213,11 @@ class VisualizerWidget extends Component {
             });
         },
         toggle3DView: () => {
+            if (!Detector.webgl && this.state.disabled) {
+                displayWebGLErrorMessage();
+                return;
+            }
+
             this.setState({
                 disabled: !this.state.disabled
             });
@@ -336,33 +365,11 @@ class VisualizerWidget extends Component {
         this.state = this.getDefaultState();
     }
     componentDidMount() {
-        const { webgl } = this.state;
-
         this.subscribe();
         this.addControllerEvents();
 
-        if (!webgl) {
-            modal({
-                title: 'WebGL Error Message',
-                body: (
-                    <div>
-                        {window.WebGLRenderingContext &&
-                        <div>
-                            Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
-                            <br />
-                            Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
-                        </div>
-                        }
-                        {!window.WebGLRenderingContext &&
-                        <div>
-                            Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
-                            <br />
-                            Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
-                        </div>
-                        }
-                    </div>
-                )
-            });
+        if (!Detector.webgl && !this.state.disabled) {
+            displayWebGLErrorMessage();
         }
     }
     componentWillUnmount() {
@@ -423,7 +430,6 @@ class VisualizerWidget extends Component {
                 startedTime: 0,
                 finishedTime: 0
             },
-            webgl: Detector.webgl,
             disabled: store.get('widgets.visualizer.disabled', false),
             objects: {
                 coordinateSystem: {
@@ -524,7 +530,10 @@ class VisualizerWidget extends Component {
         const actions = {
             ...this.actions
         };
-        const none = '–';
+        const showLoader = state.gcode.loading || state.gcode.rendering;
+        const capable = {
+            view3D: Detector.webgl && !state.disabled
+        };
 
         return (
             <Widget
@@ -540,98 +549,32 @@ class VisualizerWidget extends Component {
                     </Widget.Title>
                 </Widget.Header>
                 <Widget.Content styleName="widget-content">
+                    <GCodeLoader state={state} />
                     <Toolbar
                         state={state}
                         actions={actions}
                     />
-                    {state.webgl &&
+                    <Dashboard
+                        show={!capable.view3D && !showLoader}
+                        state={state}
+                    />
                     <Joystick
-                        show={!state.disabled}
+                        show={capable.view3D}
                         up={actions.joystick.up}
                         down={actions.joystick.down}
                         left={actions.joystick.left}
                         right={actions.joystick.right}
                         center={actions.joystick.center}
                     />
-                    }
-                    {state.webgl &&
+                    {Detector.webgl &&
                     <Visualizer
-                        show={!state.disabled}
+                        show={capable.view3D && !showLoader}
                         ref={(c) => {
                             this.visualizer = c;
                         }}
                         state={state}
                     />
                     }
-                    <div
-                        className={classNames(
-                            { 'hidden': !state.disabled }
-                        )}
-                        style={{
-                            position: 'absolute',
-                            top: 60,
-                            left: 10,
-                            right: 10
-                        }}
-                    >
-                        <Panel>
-                            <Panel.Heading>
-                                {i18n._('G-code')}
-                            </Panel.Heading>
-                            <Panel.Body>
-                                <div className="row no-gutters">
-                                    <div className="col col-xs-4">{i18n._('Name')}</div>
-                                    <div className="col col-xs-8">
-                                        <div styleName="well">{state.gcode.ready ? state.gcode.name : none}</div>
-                                    </div>
-                                </div>
-                                <div className="row no-gutters">
-                                    <div className="col col-xs-4">{i18n._('Size')}</div>
-                                    <div className="col col-xs-8">
-                                        <div styleName="well">{state.gcode.ready ? formatBytes(state.gcode.size, 1) : none}</div>
-                                    </div>
-                                </div>
-                                <div className="row no-gutters">
-                                    <div className="col col-xs-4">{i18n._('Sent')}</div>
-                                    <div className="col col-xs-8">
-                                        <div styleName="well">{state.gcode.ready ? state.gcode.sent : none}</div>
-                                    </div>
-                                </div>
-                                <div className="row no-gutters">
-                                    <div className="col col-xs-4">{i18n._('Total')}</div>
-                                    <div className="col col-xs-8">
-                                        <div styleName="well">{state.gcode.ready ? state.gcode.total : none}</div>
-                                    </div>
-                                </div>
-                            </Panel.Body>
-                        </Panel>
-                    </div>
-                    <Modal
-                        show={state.gcode.loading || state.gcode.rendering}
-                        closeButton={false}
-                    >
-                        <Modal.Header>
-                            <Modal.Title>
-                                {i18n._('G-code')}
-                            </Modal.Title>
-                        </Modal.Header>
-                        <Modal.Body
-                            className="text-center"
-                        >
-                            <div>
-                                {state.gcode.loading &&
-                                <i className="fa fa-spinner rotating" style={{ fontSize: 48 }} />
-                                }
-                                {state.gcode.rendering &&
-                                <i className="fa fa-cube rotating" style={{ fontSize: 48 }} />
-                                }
-                            </div>
-                            <div style={{ margin: '15px 0 10px 0' }}>
-                                {state.gcode.loading && i18n._('Uploading file...')}
-                                {state.gcode.rendering && i18n._('3D rendering...')}
-                            </div>
-                        </Modal.Body>
-                    </Modal>
                 </Widget.Content>
             </Widget>
         );
