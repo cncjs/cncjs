@@ -266,7 +266,7 @@ class Controls extends Component {
                                     format={'WebGL: {{status}}'}
                                     replacement={{
                                         status: webgl
-                                            ? i18n._('Enabled')
+                                            ? (<span style={{ color: '#4078c0' }}>{i18n._('Enabled')}</span>)
                                             : (<span style={{ color: '#dc143c' }}>{i18n._('Unavailable')}</span>)
                                     }}
                                 />
