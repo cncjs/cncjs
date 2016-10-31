@@ -486,15 +486,19 @@ class VisualizerWidget extends Component {
         });
     }
     isAgitated() {
-        const { workflowState, objects } = this.state;
+        const { workflowState, disabled, objects } = this.state;
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
 
         if (workflowState !== WORKFLOW_STATE_RUNNING) {
             return false;
         }
-        // Only toolhead has animation effects
-        if (!objects.toolhead) {
+        // Return false when 3D view is disabled
+        if (disabled) {
+            return false;
+        }
+        // Return false when toolhead is not visible
+        if (!objects.toolhead.visible) {
             return false;
         }
         if (controllerType === GRBL) {
