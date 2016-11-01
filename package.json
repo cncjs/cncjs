@@ -210,7 +210,7 @@
     "coveralls": "~2.11.14",
     "css-loader": "~0.25.0",
     "electron": "~1.4.4",
-    "electron-builder": "~7.15.2",
+    "electron-builder": "~7.14.1",
     "electron-packager": "~8.2.0",
     "electron-rebuild": "~1.2.1",
     "eslint": "~3.9.1",
