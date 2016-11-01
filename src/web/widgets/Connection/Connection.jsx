@@ -423,7 +423,7 @@ class Connection extends React.Component {
                             >
                                 {notLoading
                                     ? <i className="fa fa-refresh" />
-                                    : <i className="fa fa-refresh rotating" />
+                                    : <i className="fa fa-refresh rotate-cw" />
                                 }
                             </button>
                         </div>

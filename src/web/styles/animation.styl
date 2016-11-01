@@ -1,7 +1,7 @@
 //
 // http://stackoverflow.com/questions/6410730/webkit-css-endless-rotation-animation-how
 //
-@-webkit-keyframes rotating /* Safari and Chrome */ {
+@-webkit-keyframes rotate /* Safari and Chrome */ {
     from {
         transform: rotate(0deg);
     }
@@ -9,7 +9,15 @@
         transform: rotate(360deg);
     }
 }
-@keyframes rotating {
+@-webkit-keyframes rotate-ccw /* Safari and Chrome */ {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+@keyframes rotate {
     from {
         transform: rotate(0deg);
     }
@@ -17,6 +25,18 @@
         transform: rotate(360deg);
     }
 }
-.rotating {
-    animation: rotating 2s linear infinite;
+@keyframes rotate-ccw {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(-360deg);
+    }
+}
+.rotate,
+.rotate-cw {
+    animation: rotate 2s linear infinite;
+}
+.rotate-ccw {
+    animation: rotate-ccw 2s linear infinite;
 }
