@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import React, { PropTypes } from 'react';
-import { Grid, Row, Col } from 'react-bootstrap';
 import WidgetListItem from './WidgetListItem';
 
 const WidgetList = (props) => {
@@ -12,10 +11,10 @@ const WidgetList = (props) => {
     };
 
     return (
-        <Grid fluid={true} style={style}>
-            <Row>
+        <div className="container-fluid" style={style}>
+            <div className="row">
                 {_.map(list, (o, key) =>
-                    <Col xs={6} md={4} key={key}>
+                    <div className="col-xs-6 col-md-4" key={key}>
                         <WidgetListItem
                             id={o.id}
                             caption={o.caption}
@@ -24,10 +23,10 @@ const WidgetList = (props) => {
                             disabled={o.disabled}
                             onChange={onChange}
                         />
-                    </Col>
+                    </div>
                 )}
-            </Row>
-        </Grid>
+            </div>
+        </div>
     );
 };
 
