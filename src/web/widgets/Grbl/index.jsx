@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
@@ -23,6 +23,34 @@ class GrblWidget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+        toggleStatusReports: () => {
+            const expanded = this.state.panel.statusReports.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    statusReports: {
+                        ...this.state.panel.statusReports,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
+        toggleModalGroups: () => {
+            const expanded = this.state.panel.modalGroups.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    modalGroups: {
+                        ...this.state.panel.modalGroups,
+                        expanded: !expanded
+                    }
+                }
+            });
+        }
+    };
     controllerEvents = {
         'Grbl:state': (state) => {
             this.setState({
@@ -48,7 +76,7 @@ class GrblWidget extends Component {
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -57,7 +85,7 @@ class GrblWidget extends Component {
         } = this.state;
 
         store.set('widgets.grbl.minimized', minimized);
-        store.set('widgets.grbl.panel.parserState.expanded', panel.parserState.expanded);
+        store.set('widgets.grbl.panel.statusReports.expanded', panel.statusReports.expanded);
         store.set('widgets.grbl.panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getDefaultState() {
@@ -71,8 +99,8 @@ class GrblWidget extends Component {
                 state: controller.state
             },
             panel: {
-                parserState: {
-                    expanded: store.get('widgets.grbl.panel.parserState.expanded')
+                statusReports: {
+                    expanded: store.get('widgets.grbl.panel.statusReports.expanded')
                 },
                 modalGroups: {
                     expanded: store.get('widgets.grbl.panel.modalGroups.expanded')
@@ -99,18 +127,20 @@ class GrblWidget extends Component {
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
     addControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.on(eventName, callback);
         });
     }
     removeControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.off(eventName, callback);
         });
     }
@@ -127,32 +157,6 @@ class GrblWidget extends Component {
 
         return true;
     }
-    toggleParserState() {
-        const expanded = this.state.panel.parserState.expanded;
-
-        this.setState({
-            panel: {
-                ...this.state.panel,
-                parserState: {
-                    ...this.state.panel.parserState,
-                    expanded: !expanded
-                }
-            }
-        });
-    }
-    toggleModalGroups() {
-        const expanded = this.state.panel.modalGroups.expanded;
-
-        this.setState({
-            panel: {
-                ...this.state.panel,
-                modalGroups: {
-                    ...this.state.panel.modalGroups,
-                    expanded: !expanded
-                }
-            }
-        });
-    }
     render() {
         const { minimized, isFullscreen } = this.state;
         const state = {
@@ -160,8 +164,7 @@ class GrblWidget extends Component {
             canClick: this.canClick()
         };
         const actions = {
-            toggleParserState: ::this.toggleParserState,
-            toggleModalGroups: ::this.toggleModalGroups
+            ...this.actions
         };
 
         return (

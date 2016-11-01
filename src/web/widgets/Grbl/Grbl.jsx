@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
@@ -16,16 +17,19 @@ class Grbl extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { state, actions } = this.props;
         const none = '–';
         const panel = state.panel;
-        const controllerState = state.controller.state;
-        const activeState = _.get(controllerState, 'status.activeState');
-        const parserstate = _.get(controllerState, 'parserstate', {});
-        const modal = _.mapValues(parserstate.modal || {}, (word, group) => mapGCodeToText(word));
+        const controllerState = state.controller.state || {};
+        const parserState = _.get(controllerState, 'parserstate', {});
+        const activeState = _.get(controllerState, 'status.activeState') || none;
+        const feedrate = _.get(controllerState, 'status.feedrate', parserState.feedrate);
+        const spindleSpeed = _.get(controllerState, 'status.spindle', parserState.spindle);
+        const toolNumber = parserState.tool;
+        const modal = _.mapValues(parserState.modal || {}, (word, group) => mapGCodeToText(word));
 
         return (
             <div>
@@ -35,17 +39,17 @@ class Grbl extends Component {
                         <Toggler
                             className="clearfix"
                             onToggle={() => {
-                                actions.toggleParserState();
+                                actions.toggleStatusReports();
                             }}
                         >
-                            <div className="pull-left">{i18n._('Parser State')}</div>
+                            <div className="pull-left">{i18n._('Status Reports')}</div>
                             <Toggler.Icon
                                 className="pull-right"
-                                expanded={panel.parserState.expanded}
+                                expanded={panel.statusReports.expanded}
                             />
                         </Toggler>
                     </Panel.Heading>
-                    {panel.parserState.expanded &&
+                    {panel.statusReports.expanded &&
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
@@ -53,7 +57,7 @@ class Grbl extends Component {
                             </div>
                             <div className="col col-xs-8">
                                 <div styleName="well">
-                                    {activeState || none}
+                                    {activeState}
                                 </div>
                             </div>
                         </div>
@@ -63,7 +67,7 @@ class Grbl extends Component {
                             </div>
                             <div className="col col-xs-8">
                                 <div styleName="well">
-                                    {Number(parserstate.feedrate) || 0}
+                                    {feedrate}
                                 </div>
                             </div>
                         </div>
@@ -73,7 +77,7 @@ class Grbl extends Component {
                             </div>
                             <div className="col col-xs-8">
                                 <div styleName="well">
-                                    {Number(parserstate.spindle) || 0}
+                                    {spindleSpeed}
                                 </div>
                             </div>
                         </div>
@@ -83,7 +87,7 @@ class Grbl extends Component {
                             </div>
                             <div className="col col-xs-8">
                                 <div styleName="well">
-                                    {parserstate.tool || none}
+                                    {toolNumber}
                                 </div>
                             </div>
                         </div>

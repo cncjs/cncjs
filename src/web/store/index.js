@@ -70,7 +70,7 @@ const defaultState = {
         grbl: {
             minimized: false,
             panel: {
-                parserState: {
+                statusReports: {
                     expanded: true
                 },
                 modalGroups: {
