@@ -71,7 +71,7 @@
             "allowShortCircuit": true,
             "allowTernary": true
         }],
-        "no-unused-vars": [1, {
+        "no-unused-vars": [2, {
             "vars": "local",
             "args": "none"
         }],
@@ -99,8 +99,8 @@
         "react/jsx-boolean-value": 0,
         "react/jsx-curly-spacing": 1,
         "react/jsx-filename-extension": 0,
-        "react/jsx-indent": [1, 4],
-        "react/jsx-indent-props": [1, 4],
+        "react/jsx-indent": [2, 4],
+        "react/jsx-indent-props": [2, 4],
         "react/jsx-max-props-per-line": [1, { "maximum": 3 }],
         "react/jsx-no-bind": [1, {
             "ignoreRefs": false,
