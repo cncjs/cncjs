@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { ButtonToolbar, ButtonGroup, Button } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import {
     WORKFLOW_STATE_RUNNING,
@@ -75,59 +74,66 @@ class Toolbar extends Component {
         const canUpload = isReady ? canClose : (canClick && !gcode.loading);
 
         return (
-            <ButtonToolbar styleName="toolbar">
-                <ButtonGroup bsSize="sm" styleName="btn-group">
-                    <Button
-                        bsStyle="primary"
-                        title={i18n._('Upload G-code')}
-                        onClick={::this.onClickToUpload}
-                        disabled={!canUpload}
-                    >
-                        {i18n._('Upload G-code')}
-                    </Button>
-                    <input
-                        // The ref attribute adds a reference to the component to
-                        // this.refs when the component is mounted.
-                        ref={(node) => {
-                            this.fileInputEl = node;
-                        }}
-                        type="file"
-                        style={{ display: 'none' }}
-                        multiple={false}
-                        onChange={::this.onChangeFile}
-                    />
-                </ButtonGroup>
-                <ButtonGroup bsSize="sm" styleName="btn-group">
-                    <Button
+            <div className="btn-toolbar" styleName="toolbar">
+                <button
+                    type="button"
+                    className="btn btn-sm btn-primary"
+                    title={i18n._('Upload G-code')}
+                    onClick={::this.onClickToUpload}
+                    disabled={!canUpload}
+                >
+                    {i18n._('Upload G-code')}
+                </button>
+                <input
+                    // The ref attribute adds a reference to the component to
+                    // this.refs when the component is mounted.
+                    ref={(node) => {
+                        this.fileInputEl = node;
+                    }}
+                    type="file"
+                    style={{ display: 'none' }}
+                    multiple={false}
+                    onChange={::this.onChangeFile}
+                />
+                <div className="btn-group btn-group-sm" styleName="btn-group">
+                    <button
+                        type="button"
+                        className="btn btn-default"
                         title={i18n._('Run')}
                         onClick={actions.handleRun}
                         disabled={!canRun}
                     >
                         <i className="fa fa-play" />
-                    </Button>
-                    <Button
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
                         title={i18n._('Pause')}
                         onClick={actions.handlePause}
                         disabled={!canPause}
                     >
                         <i className="fa fa-pause" />
-                    </Button>
-                    <Button
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
                         title={i18n._('Stop')}
                         onClick={actions.handleStop}
                         disabled={!canStop}
                     >
                         <i className="fa fa-stop" />
-                    </Button>
-                    <Button
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
                         title={i18n._('Close')}
                         onClick={actions.handleClose}
                         disabled={!canClose}
                     >
                         <i className="fa fa-close" />
-                    </Button>
-                </ButtonGroup>
-            </ButtonToolbar>
+                    </button>
+                </div>
+            </div>
         );
     }
 }
