@@ -260,6 +260,7 @@ class Controls extends Component {
                         pullRight
                     >
                         <Dropdown.Toggle
+                            title={i18n._('Options')}
                             style={{ minWidth: 50 }}
                         >
                             <i className="fa fa-cube" />
