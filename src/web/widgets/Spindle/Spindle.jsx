@@ -25,7 +25,7 @@ class Spindle extends Component {
                         <div className="col-xs-6" style={{ paddingRight: 5 }}>
                             <label className="control-label">{i18n._('Spindle')}</label>
                             <div className="btn-group btn-group-justified" role="group">
-                                <div className="btn-group btn-group-xs" role="group">
+                                <div className="btn-group btn-group-sm" role="group">
                                     <button
                                         type="button"
                                         className="btn btn-default"
@@ -49,7 +49,7 @@ class Spindle extends Component {
                                         &nbsp;M3
                                     </button>
                                 </div>
-                                <div className="btn-group btn-group-xs" role="group">
+                                <div className="btn-group btn-group-sm" role="group">
                                     <button
                                         type="button"
                                         className="btn btn-default"
@@ -73,7 +73,7 @@ class Spindle extends Component {
                                         &nbsp;M4
                                     </button>
                                 </div>
-                                <div className="btn-group btn-group-xs" role="group">
+                                <div className="btn-group btn-group-sms" role="group">
                                     <button
                                         type="button"
                                         className="btn btn-default"
@@ -90,7 +90,7 @@ class Spindle extends Component {
                         <div className="col-xs-6" style={{ paddingLeft: 5 }}>
                             <label className="control-label">{i18n._('Coolant')}</label>
                             <div className="btn-group btn-group-justified" role="group">
-                                <div className="btn-group btn-group-xs" role="group">
+                                <div className="btn-group btn-group-sm" role="group">
                                     <button
                                         type="button"
                                         className="btn btn-default"
@@ -109,7 +109,7 @@ class Spindle extends Component {
                                         &nbsp;M7
                                     </button>
                                 </div>
-                                <div className="btn-group btn-group-xs" role="group">
+                                <div className="btn-group btn-group-sm" role="group">
                                     <button
                                         type="button"
                                         className="btn btn-default"
@@ -128,7 +128,7 @@ class Spindle extends Component {
                                         &nbsp;M8
                                     </button>
                                 </div>
-                                <div className="btn-group btn-group-xs" role="group">
+                                <div className="btn-group btn-group-sm" role="group">
                                     <button
                                         type="button"
                                         className="btn btn-default"
@@ -150,7 +150,7 @@ class Spindle extends Component {
                     <div className="row no-gutters">
                         <div className="col-xs-6" style={{ paddingRight: 5 }}>
                             <label className="control-label">{i18n._('Spindle Speed')}</label>
-                            <div className="input-group input-group-xs">
+                            <div className="input-group input-group-sm">
                                 <input
                                     type="number"
                                     className="form-control"
