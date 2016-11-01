@@ -2,7 +2,7 @@ import _, { includes } from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
@@ -16,13 +16,11 @@ import {
     // Grbl
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_RUN,
     // TinyG2
     TINYG2,
     TINYG2_MACHINE_STATE_READY,
     TINYG2_MACHINE_STATE_STOP,
     TINYG2_MACHINE_STATE_END,
-    TINYG2_MACHINE_STATE_RUN,
     // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
@@ -40,7 +38,6 @@ const toUnits = (units, val) => {
     return val;
 };
 
-@CSSModules(styles, { allowMultiple: true })
 class ProbeWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
@@ -50,6 +47,61 @@ class ProbeWidget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+        changeProbeCommand: (value) => {
+            this.setState({ probeCommand: value });
+        },
+        handleProbeDepthChange: (event) => {
+            const probeDepth = event.target.value;
+            this.setState({ probeDepth });
+        },
+        handleProbeFeedrateChange: (event) => {
+            const probeFeedrate = event.target.value;
+            this.setState({ probeFeedrate });
+        },
+        handleTLOChange: (event) => {
+            const tlo = event.target.value;
+            this.setState({ tlo });
+        },
+        handleRetractionDistanceChange: (event) => {
+            const retractionDistance = event.target.value;
+            this.setState({ retractionDistance });
+        },
+        runZProbe: () => {
+            const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
+            const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
+
+            // Set relative distance mode
+            this.sendCommand('G91');
+
+            // Start Z-probing
+            this.sendCommand(probeCommand, {
+                Z: towardWorkpiece ? -probeDepth : probeDepth,
+                F: probeFeedrate
+            });
+
+            // Set back to asolute distance mode
+            this.sendCommand('G90');
+
+            // Zero out work z axis
+            this.sendCommand('G10', {
+                L: 20,
+                P: 1,
+                Z: tlo
+            });
+
+            // Set relative distance mode
+            this.sendCommand('G91');
+
+            // Retract slightly from the touch plate
+            this.sendCommand('G0', {
+                Z: retractionDistance
+            });
+
+            // Set back to asolute distance mode
+            this.sendCommand('G90');
+        }
+    };
     controllerEvents = {
         'Grbl:state': (state) => {
             const { parserstate } = { ...state };
@@ -156,7 +208,7 @@ class ProbeWidget extends Component {
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -236,18 +288,20 @@ class ProbeWidget extends Component {
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
     addControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.on(eventName, callback);
         });
     }
     removeControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.off(eventName, callback);
         });
     }
@@ -265,8 +319,7 @@ class ProbeWidget extends Component {
         if (controllerType === GRBL) {
             const activeState = _.get(controllerState, 'status.activeState');
             const states = [
-                GRBL_ACTIVE_STATE_IDLE,
-                GRBL_ACTIVE_STATE_RUN
+                GRBL_ACTIVE_STATE_IDLE
             ];
             if (!includes(states, activeState)) {
                 return false;
@@ -277,8 +330,7 @@ class ProbeWidget extends Component {
             const states = [
                 TINYG2_MACHINE_STATE_READY,
                 TINYG2_MACHINE_STATE_STOP,
-                TINYG2_MACHINE_STATE_END,
-                TINYG2_MACHINE_STATE_RUN
+                TINYG2_MACHINE_STATE_END
             ];
             if (!includes(states, machineState)) {
                 return false;
@@ -287,63 +339,10 @@ class ProbeWidget extends Component {
 
         return true;
     }
-    changeProbeCommand(value) {
-        this.setState({ probeCommand: value });
-    }
-    handleProbeDepthChange(event) {
-        const probeDepth = event.target.value;
-        this.setState({ probeDepth });
-    }
-    handleProbeFeedrateChange(event) {
-        const probeFeedrate = event.target.value;
-        this.setState({ probeFeedrate });
-    }
-    handleTLOChange(event) {
-        const tlo = event.target.value;
-        this.setState({ tlo });
-    }
-    handleRetractionDistanceChange(event) {
-        const retractionDistance = event.target.value;
-        this.setState({ retractionDistance });
-    }
     sendCommand(cmd, params) {
         const s = _.map(params, (value, letter) => String(letter + value)).join(' ');
         const gcode = (s.length > 0) ? (cmd + ' ' + s) : cmd;
         controller.command('gcode', gcode);
-    }
-    runZProbe() {
-        const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
-        const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
-
-        // Set relative distance mode
-        this.sendCommand('G91');
-
-        // Start Z-probing
-        this.sendCommand(probeCommand, {
-            Z: towardWorkpiece ? -probeDepth : probeDepth,
-            F: probeFeedrate
-        });
-
-        // Set back to asolute distance mode
-        this.sendCommand('G90');
-
-        // Zero out work z axis
-        this.sendCommand('G10', {
-            L: 20,
-            P: 1,
-            Z: tlo
-        });
-
-        // Set relative distance mode
-        this.sendCommand('G91');
-
-        // Retract slightly from the touch plate
-        this.sendCommand('G0', {
-            Z: retractionDistance
-        });
-
-        // Set back to asolute distance mode
-        this.sendCommand('G90');
     }
     render() {
         const { minimized, isFullscreen } = this.state;
@@ -352,12 +351,7 @@ class ProbeWidget extends Component {
             canClick: this.canClick()
         };
         const actions = {
-            runZProbe: ::this.runZProbe,
-            changeProbeCommand: ::this.changeProbeCommand,
-            handleProbeDepthChange: ::this.handleProbeDepthChange,
-            handleProbeFeedrateChange: ::this.handleProbeFeedrateChange,
-            handleTLOChange: ::this.handleTLOChange,
-            handleRetractionDistanceChange: ::this.handleRetractionDistanceChange
+            ...this.actions
         };
 
         return (
@@ -398,9 +392,9 @@ class ProbeWidget extends Component {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    styleName={classNames(
-                        'widget-content',
-                        { 'hidden': minimized }
+                    className={classNames(
+                        styles['widget-content'],
+                        { [styles.hidden]: minimized }
                     )}
                 >
                     <Probe

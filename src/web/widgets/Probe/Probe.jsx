@@ -1,7 +1,6 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import i18n from '../../lib/i18n';
 import Toolbar from './Toolbar';
 import {
@@ -9,7 +8,6 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class Probe extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -17,7 +15,7 @@ class Probe extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { state, actions } = this.props;
@@ -89,7 +87,7 @@ class Probe extends Component {
                             </button>
                         </div>
                     </div>
-                    <p styleName="probe-command-description">
+                    <p className={styles['probe-command-description']}>
                         {probeCommand === 'G38.2' &&
                         <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
                         }
