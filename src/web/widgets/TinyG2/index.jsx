@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
@@ -13,7 +12,6 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class TinyG2Widget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
@@ -222,9 +220,9 @@ class TinyG2Widget extends Component {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    styleName={classNames(
-                        'widget-content',
-                        { 'hidden': minimized }
+                    className={classNames(
+                        styles['widget-content'],
+                        { [styles.hidden]: minimized }
                     )}
                 >
                     <TinyG2

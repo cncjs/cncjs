@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import { ProgressBar } from 'react-bootstrap';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
@@ -23,7 +23,6 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class TinyG2 extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -35,7 +34,7 @@ class TinyG2 extends Component {
     plannerBufferMin = 8; // low water mark
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { state, actions } = this.props;
@@ -72,9 +71,9 @@ class TinyG2 extends Component {
 
         return (
             <div>
-                <Toolbar {...this.props} styleName="toolbar" />
-                <Panel styleName="panel">
-                    <Panel.Heading styleName="panel-heading">
+                <Toolbar {...this.props} className={styles.toolbar} />
+                <Panel className={styles.panel}>
+                    <Panel.Heading className={styles['panel-heading']}>
                         <Toggler
                             className="clearfix"
                             onToggle={actions.toggleQueueReports}
@@ -106,8 +105,8 @@ class TinyG2 extends Component {
                     </Panel.Body>
                     }
                 </Panel>
-                <Panel styleName="panel">
-                    <Panel.Heading styleName="panel-heading">
+                <Panel className={styles.panel}>
+                    <Panel.Heading className={styles['panel-heading']}>
                         <Toggler
                             className="clearfix"
                             onToggle={actions.toggleStatusReports}
@@ -126,7 +125,7 @@ class TinyG2 extends Component {
                                 {i18n._('State')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well">{machineStateText || none}</div>
+                                <div className={styles.well}>{machineStateText || none}</div>
                             </div>
                         </div>
                         <div className="row no-gutters">
@@ -134,7 +133,7 @@ class TinyG2 extends Component {
                                 {i18n._('Feed Rate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well">{Number(feedrate) || 0}</div>
+                                <div className={styles.well}>{Number(feedrate) || 0}</div>
                             </div>
                         </div>
                         <div className="row no-gutters">
@@ -142,7 +141,7 @@ class TinyG2 extends Component {
                                 {i18n._('Velocity')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well">{Number(velocity) || 0}</div>
+                                <div className={styles.well}>{Number(velocity) || 0}</div>
                             </div>
                         </div>
                         <div className="row no-gutters">
@@ -150,14 +149,14 @@ class TinyG2 extends Component {
                                 {i18n._('Line')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well">{Number(line) || 0}</div>
+                                <div className={styles.well}>{Number(line) || 0}</div>
                             </div>
                         </div>
                     </Panel.Body>
                     }
                 </Panel>
-                <Panel styleName="panel last">
-                    <Panel.Heading styleName="panel-heading">
+                <Panel className={styles.panel}>
+                    <Panel.Heading className={styles['panel-heading']}>
                         <Toggler
                             className="clearfix"
                             onToggle={actions.toggleModalGroups}
@@ -176,7 +175,7 @@ class TinyG2 extends Component {
                                 {i18n._('Motion')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well" title={modal.motion}>
+                                <div className={styles.well} title={modal.motion}>
                                     {modal.motion || none}
                                 </div>
                             </div>
@@ -186,7 +185,7 @@ class TinyG2 extends Component {
                                 {i18n._('Coordinate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well" title={modal.coordinate}>
+                                <div className={styles.well} title={modal.coordinate}>
                                     {modal.coordinate || none}
                                 </div>
                             </div>
@@ -196,7 +195,7 @@ class TinyG2 extends Component {
                                 {i18n._('Plane')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well" title={modal.plane}>
+                                <div className={styles.well} title={modal.plane}>
                                     {modal.plane || none}
                                 </div>
                             </div>
@@ -206,7 +205,7 @@ class TinyG2 extends Component {
                                 {i18n._('Distance')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well" title={modal.distance}>
+                                <div className={styles.well} title={modal.distance}>
                                     {modal.distance || none}
                                 </div>
                             </div>
@@ -216,7 +215,7 @@ class TinyG2 extends Component {
                                 {i18n._('Feed Rate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well" title={modal.feedrate}>
+                                <div className={styles.well} title={modal.feedrate}>
                                     {modal.feedrate || none}
                                 </div>
                             </div>
@@ -226,17 +225,17 @@ class TinyG2 extends Component {
                                 {i18n._('Units')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well" title={modal.units}>
+                                <div className={styles.well} title={modal.units}>
                                     {modal.units || none}
                                 </div>
                             </div>
                         </div>
-                        <div className="row no-gutters" styleName="last">
+                        <div className="row no-gutters">
                             <div className="col col-xs-4">
                                 {i18n._('Path')}
                             </div>
                             <div className="col col-xs-8">
-                                <div styleName="well" title={modal.path}>
+                                <div className={styles.well} title={modal.path}>
                                     {modal.path || none}
                                 </div>
                             </div>
