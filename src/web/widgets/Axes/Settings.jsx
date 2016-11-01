@@ -22,8 +22,8 @@ class Settings extends React.Component {
         }
     }
     handleSave() {
-        this.refs.axesSettings.save();
-        this.refs.shuttleSettings.save();
+        this.axesSettings.save();
+        this.shuttleSettings.save();
         this.setState({ show: false });
         this.props.onSave();
     }
@@ -44,8 +44,16 @@ class Settings extends React.Component {
                     <Modal.Title>{i18n._('Axes Settings')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <AxesSettings ref="axesSettings" />
-                    <ShuttleSettings ref="shuttleSettings" />
+                    <AxesSettings
+                        ref={node => {
+                            this.axesSettings = node;
+                        }}
+                    />
+                    <ShuttleSettings
+                        ref={node => {
+                            this.shuttleSettings = node;
+                        }}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
                     <button

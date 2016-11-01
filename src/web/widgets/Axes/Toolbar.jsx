@@ -1,7 +1,6 @@
 import classNames from 'classnames';
-import { isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import { DropdownButton, MenuItem, Tooltip, OverlayTrigger } from 'react-bootstrap';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
@@ -112,7 +111,6 @@ const keypadTooltip = () => {
     );
 };
 
-@CSSModules(styles)
 class ToolbarButton extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -120,7 +118,7 @@ class ToolbarButton extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     handleSelect(eventKey) {
         const data = eventKey;
@@ -134,7 +132,12 @@ class ToolbarButton extends Component {
         const wcs = actions.getWorkCoordinateSystem();
 
         return (
-            <div className="clearfix" styleName="toolbar-button">
+            <div
+                className={classNames(
+                    'clearfix',
+                    styles['toolbar-button']
+                )}
+            >
                 <div className="btn-group pull-left">
                     <OverlayTrigger
                         overlay={keypadTooltip()}

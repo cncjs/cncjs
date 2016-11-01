@@ -1,12 +1,10 @@
-import { isEqual } from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import CSSModules from 'react-css-modules';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class MotionButtonGroup extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -14,7 +12,7 @@ class MotionButtonGroup extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     handleSelect(eventKey) {
         const data = eventKey;
@@ -27,7 +25,7 @@ class MotionButtonGroup extends Component {
         const { canClick } = state;
 
         return (
-            <div styleName="motion-controls">
+            <div className={styles['motion-controls']}>
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <DropdownButton
@@ -53,7 +51,7 @@ class MotionButtonGroup extends Component {
                         </DropdownButton>
                     </div>
                 </div>
-                <div styleName="row-space" />
+                <div className={styles['row-space']} />
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <button
@@ -66,7 +64,7 @@ class MotionButtonGroup extends Component {
                         </button>
                     </div>
                 </div>
-                <div styleName="row-space" />
+                <div className={styles['row-space']} />
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <button
@@ -79,7 +77,7 @@ class MotionButtonGroup extends Component {
                         </button>
                     </div>
                 </div>
-                <div styleName="row-space" />
+                <div className={styles['row-space']} />
             </div>
         );
     }

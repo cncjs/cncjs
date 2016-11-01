@@ -1,12 +1,12 @@
-import _ from 'lodash';
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
 import ControlPanel from './ControlPanel';
 
 class Axes extends Component {
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         return (

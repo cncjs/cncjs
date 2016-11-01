@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import i18n from '../../lib/i18n';
 import combokeys from '../../lib/combokeys';
@@ -129,7 +130,7 @@ class JogPad extends Component {
         this.shuttleControl = null;
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     jog(params = {}) {
         const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');

@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import i18n from '../../lib/i18n';
 import combokeys from '../../lib/combokeys';
@@ -41,7 +42,7 @@ class JogDistance extends Component {
         });
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { state, actions } = this.props;
@@ -78,7 +79,7 @@ class JogDistance extends Component {
 
         return (
             <div styleName="jog-distance-control">
-                <div className="input-group input-group-xs">
+                <div className="input-group input-group-sm">
                     <div className="input-group-btn">
                         <button
                             type="button"
@@ -118,7 +119,7 @@ class JogDistance extends Component {
                             title={i18n._('Custom')}
                             onClick={() => actions.selectDistance()}
                         >
-                            {i18n._('Custom')}
+                            <i className="fa fa-adjust" />
                         </button>
                     </div>
                     <input

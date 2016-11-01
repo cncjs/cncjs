@@ -2,7 +2,7 @@ import _, { includes } from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
@@ -69,7 +69,6 @@ const normalizeToRange = (n, min, max) => {
     return n;
 };
 
-@CSSModules(styles, { allowMultiple: true })
 class AxesWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
@@ -79,6 +78,58 @@ class AxesWidget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+        getWorkCoordinateSystem: () => {
+            const controllerType = this.state.controller.type;
+            const controllerState = this.state.controller.state;
+            const defaultWCS = 'G54';
+
+            if (controllerType === GRBL) {
+                return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+            }
+
+            if (controllerType === TINYG2) {
+                return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
+            }
+
+            return defaultWCS;
+        },
+        toggleKeypadJogging: () => {
+            this.setState({ keypadJogging: !this.state.keypadJogging });
+        },
+        selectAxis: (axis = '') => {
+            this.setState({ selectedAxis: axis });
+        },
+        selectDistance: (distance = '') => {
+            this.setState({ selectedDistance: distance });
+        },
+        changeCustomDistance: (customDistance) => {
+            customDistance = normalizeToRange(customDistance, DISTANCE_MIN, DISTANCE_MAX);
+            this.setState({ customDistance: customDistance });
+        },
+        increaseCustomDistance: () => {
+            const { units, customDistance } = this.state;
+            let distance = Math.min(Number(customDistance) + DISTANCE_STEP, DISTANCE_MAX);
+            if (units === IMPERIAL_UNITS) {
+                distance = distance.toFixed(4) * 1;
+            }
+            if (units === METRIC_UNITS) {
+                distance = distance.toFixed(3) * 1;
+            }
+            this.setState({ customDistance: distance });
+        },
+        decreaseCustomDistance: () => {
+            const { units, customDistance } = this.state;
+            let distance = Math.max(Number(customDistance) - DISTANCE_STEP, DISTANCE_MIN);
+            if (units === IMPERIAL_UNITS) {
+                distance = distance.toFixed(4) * 1;
+            }
+            if (units === METRIC_UNITS) {
+                distance = distance.toFixed(3) * 1;
+            }
+            this.setState({ customDistance: distance });
+        }
+    };
     controllerEvents = {
         'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
@@ -163,7 +214,7 @@ class AxesWidget extends Component {
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -250,18 +301,20 @@ class AxesWidget extends Component {
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
     addControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.on(eventName, callback);
         });
     }
     removeControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.off(eventName, callback);
         });
     }
@@ -304,56 +357,6 @@ class AxesWidget extends Component {
 
         return true;
     }
-    toggleKeypadJogging() {
-        this.setState({ keypadJogging: !this.state.keypadJogging });
-    }
-    selectAxis(axis = '') {
-        this.setState({ selectedAxis: axis });
-    }
-    selectDistance(distance = '') {
-        this.setState({ selectedDistance: distance });
-    }
-    changeCustomDistance(customDistance) {
-        customDistance = normalizeToRange(customDistance, DISTANCE_MIN, DISTANCE_MAX);
-        this.setState({ customDistance: customDistance });
-    }
-    increaseCustomDistance() {
-        const { units, customDistance } = this.state;
-        let distance = Math.min(Number(customDistance) + DISTANCE_STEP, DISTANCE_MAX);
-        if (units === IMPERIAL_UNITS) {
-            distance = distance.toFixed(4) * 1;
-        }
-        if (units === METRIC_UNITS) {
-            distance = distance.toFixed(3) * 1;
-        }
-        this.setState({ customDistance: distance });
-    }
-    decreaseCustomDistance() {
-        const { units, customDistance } = this.state;
-        let distance = Math.max(Number(customDistance) - DISTANCE_STEP, DISTANCE_MIN);
-        if (units === IMPERIAL_UNITS) {
-            distance = distance.toFixed(4) * 1;
-        }
-        if (units === METRIC_UNITS) {
-            distance = distance.toFixed(3) * 1;
-        }
-        this.setState({ customDistance: distance });
-    }
-    getWorkCoordinateSystem() {
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
-        const defaultWCS = 'G54';
-
-        if (controllerType === GRBL) {
-            return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
-        }
-
-        if (controllerType === TINYG2) {
-            return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
-        }
-
-        return defaultWCS;
-    }
     render() {
         const { minimized, isFullscreen } = this.state;
         const { units, machinePosition, workPosition } = this.state;
@@ -371,13 +374,7 @@ class AxesWidget extends Component {
             })
         };
         const actions = {
-            getWorkCoordinateSystem: ::this.getWorkCoordinateSystem,
-            toggleKeypadJogging: ::this.toggleKeypadJogging,
-            selectAxis: ::this.selectAxis,
-            selectDistance: ::this.selectDistance,
-            changeCustomDistance: ::this.changeCustomDistance,
-            increaseCustomDistance: ::this.increaseCustomDistance,
-            decreaseCustomDistance: ::this.decreaseCustomDistance
+            ...this.actions
         };
 
         return (
@@ -430,9 +427,9 @@ class AxesWidget extends Component {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    styleName={classNames(
-                        'widget-content',
-                        { 'hidden': minimized }
+                    className={classNames(
+                        styles['widget-content'],
+                        { [styles.hidden]: minimized }
                     )}
                 >
                     <Axes

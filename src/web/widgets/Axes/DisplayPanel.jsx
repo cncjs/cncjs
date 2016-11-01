@@ -1,5 +1,6 @@
-import { includes, isEqual } from 'lodash';
+import includes from 'lodash/includes';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import { in2mm } from '../../lib/units';
@@ -27,7 +28,7 @@ class DisplayPanel extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !isEqual(nextProps, this.props) || !isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     handleSelect(eventKey) {
         const data = eventKey;

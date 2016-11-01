@@ -21,7 +21,7 @@ class PositionInput extends Component {
     };
 
     componentDidMount() {
-        this.refs.positionInput.focus();
+        this.positionInput.focus();
     }
     render() {
         const { onOK, onCancel, min, max } = this.props;
@@ -30,7 +30,9 @@ class PositionInput extends Component {
         return (
             <div className="input-group input-group-xs" style={{ width: '100%' }}>
                 <input
-                    ref="positionInput"
+                    ref={node => {
+                        this.positionInput = node;
+                    }}
                     type="number"
                     className="form-control"
                     placeholder=""
