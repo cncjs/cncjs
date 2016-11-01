@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import delay from 'delay';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -8,6 +9,7 @@ import api from '../../api';
 import Anchor from '../../components/Anchor';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
+import i18n from '../../lib/i18n';
 import modal from '../../lib/modal';
 import log from '../../lib/log';
 import store from '../../store';
@@ -15,7 +17,6 @@ import Controls from './Controls';
 import Toolbar from './Toolbar';
 import Joystick from './Joystick';
 import Visualizer from './Visualizer';
-import GCodeLoader from './GCodeLoader';
 import Dashboard from './Dashboard';
 import {
     // Units
@@ -61,6 +62,28 @@ const displayWebGLErrorMessage = () => {
         )
     });
 };
+
+const Loading = () => (
+    <div className={styles.loader}>
+        <div className={styles.loaderIcon}>
+            <i className="fa fa-spinner rotating" />
+        </div>
+        <div className={styles.loaderText}>
+            {i18n._('Loading...')}
+        </div>
+    </div>
+);
+
+const Rendering = () => (
+    <div className={styles.loader}>
+        <div className={styles.loaderIcon}>
+            <i className="fa fa-cube rotating" />
+        </div>
+        <div className={styles.loaderText}>
+            {i18n._('Rendering...')}
+        </div>
+    </div>
+);
 
 @CSSModules(styles, { allowMultiple: true })
 class VisualizerWidget extends Component {
@@ -370,6 +393,10 @@ class VisualizerWidget extends Component {
 
         if (!Detector.webgl && !this.state.disabled) {
             displayWebGLErrorMessage();
+
+            delay(0).then(() => {
+                this.setState({ disabled: true });
+            });
         }
     }
     componentWillUnmount() {
@@ -549,7 +576,12 @@ class VisualizerWidget extends Component {
                     </Widget.Title>
                 </Widget.Header>
                 <Widget.Content styleName="widget-content">
-                    <GCodeLoader state={state} />
+                    {state.gcode.loading &&
+                    <Loading />
+                    }
+                    {state.gcode.rendering &&
+                    <Rendering />
+                    }
                     <Toolbar
                         state={state}
                         actions={actions}
