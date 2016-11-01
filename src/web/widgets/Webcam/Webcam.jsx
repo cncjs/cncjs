@@ -1,11 +1,11 @@
-import _ from 'lodash';
+import classNames from 'classnames';
 import delay from 'delay';
 import Slider from 'rc-slider';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
+import shallowCompare from 'react-addons-shallow-compare';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import WebcamMedia from 'react-webcam';
-import CSSModules from 'react-css-modules';
 import Anchor from '../../components/Anchor';
 import i18n from '../../lib/i18n';
 import Image from './Image';
@@ -17,7 +17,6 @@ import {
     MEDIA_SOURCE_MJPEG
 } from './constants';
 
-@CSSModules(styles, { allowMultiple: true })
 class Webcam extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -25,14 +24,14 @@ class Webcam extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     refresh() {
         const { state } = this.props;
         const { mediaSource } = state;
 
         if (mediaSource === MEDIA_SOURCE_MJPEG) {
-            const node = ReactDOM.findDOMNode(this.refs['mjpeg-media-source']);
+            const node = ReactDOM.findDOMNode(this.mjpegMediaSource);
             node.src = '';
 
             delay(10) // delay 10ms
@@ -47,15 +46,15 @@ class Webcam extends Component {
 
         if (disabled) {
             return (
-                <div styleName="webcam-off-container">
-                    <h4><i styleName="icon-webcam" /></h4>
+                <div className={styles['webcam-off-container']}>
+                    <h4><i className={styles['icon-webcam']} /></h4>
                     <h5>{i18n._('Webcam is off')}</h5>
                 </div>
             );
         }
 
         return (
-            <div styleName="webcam-on-container">
+            <div className={styles['webcam-on-container']}>
                 {mediaSource === MEDIA_SOURCE_LOCAL &&
                 <div style={{ width: '100%' }}>
                     <WebcamMedia
@@ -67,8 +66,10 @@ class Webcam extends Component {
                 }
                 {mediaSource === MEDIA_SOURCE_MJPEG &&
                 <Image
+                    ref={node => {
+                        this.mjpegMediaSource = node;
+                    }}
                     src={url}
-                    ref="mjpeg-media-source"
                     style={{
                         width: (100 * scale).toFixed(0) + '%'
                     }}
@@ -78,32 +79,44 @@ class Webcam extends Component {
                 {crosshair &&
                 <div>
                     <Line
-                        styleName="center line-shadow"
+                        className={classNames(
+                            styles.center,
+                            styles['line-shadow']
+                        )}
                         length="100%"
                     />
                     <Line
-                        styleName="center line-shadow"
+                        className={classNames(
+                            styles.center,
+                            styles['line-shadow']
+                        )}
                         length="100%"
                         vertical
                     />
                     <Circle
-                        styleName="center line-shadow"
+                        className={classNames(
+                            styles.center,
+                            styles['line-shadow']
+                        )}
                         diameter={20}
                     />
                     <Circle
-                        styleName="center line-shadow"
+                        className={classNames(
+                            styles.center,
+                            styles['line-shadow']
+                        )}
                         diameter={40}
                     />
                 </div>
                 }
-                <div styleName="toolbar">
-                    <div styleName="scale-text">{scale}x</div>
+                <div className={styles.toolbar}>
+                    <div className={styles['scale-text']}>{scale}x</div>
                     <OverlayTrigger
                         overlay={<Tooltip>{i18n._('Crosshair')}</Tooltip>}
                         placement="top"
                     >
                         <Anchor
-                            styleName="btn-crosshair"
+                            className={styles['btn-crosshair']}
                             onClick={(event) => {
                                 actions.toggleCrosshair();
                             }}
@@ -112,7 +125,7 @@ class Webcam extends Component {
                         </Anchor>
                     </OverlayTrigger>
                 </div>
-                <div styleName="image-scale-slider">
+                <div className={styles['image-scale-slider']}>
                     <Slider
                         defaultValue={scale}
                         min={0.1}

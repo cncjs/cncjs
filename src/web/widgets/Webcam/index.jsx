@@ -1,7 +1,6 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import store from '../../store';
@@ -12,7 +11,6 @@ import {
     MEDIA_SOURCE_LOCAL
 } from './constants';
 
-@CSSModules(styles, { allowMultiple: true })
 class WebcamWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
@@ -27,7 +25,7 @@ class WebcamWidget extends Component {
         this.state = this.getDefaultState();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -106,7 +104,7 @@ class WebcamWidget extends Component {
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Refresh')}
-                            onClick={(event) => this.refs.webcam.refresh()}
+                            onClick={(event) => this.webcam.refresh()}
                         >
                             <i className="fa fa-refresh" />
                         </Widget.Button>
@@ -151,14 +149,16 @@ class WebcamWidget extends Component {
                     </Widget.Toolbar>
                 </Widget.Header>
                 <Widget.Content
-                    styleName={classNames(
-                        'widget-content',
-                        { 'hidden': minimized },
-                        { 'fullscreen': isFullscreen }
+                    className={classNames(
+                        styles['widget-content'],
+                        { [styles.hidden]: minimized },
+                        { [styles.fullscreen]: isFullscreen }
                     )}
                 >
                     <Webcam
-                        ref="webcam"
+                        ref={node => {
+                            this.webcam = node;
+                        }}
                         state={state}
                         actions={actions}
                     />
