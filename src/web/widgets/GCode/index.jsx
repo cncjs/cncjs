@@ -4,8 +4,8 @@ import { parseString } from 'gcode-parser';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import update from 'react-addons-update';
-import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -38,7 +38,6 @@ const toFixedUnits = (units, val) => {
     return val;
 };
 
-@CSSModules(styles, { allowMultiple: true })
 class GCodeWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
@@ -48,6 +47,8 @@ class GCodeWidget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+    };
     controllerEvents = {
         'sender:status': (data) => {
             const { remain, sent, total, createdTime, startedTime, finishedTime } = data;
@@ -131,7 +132,7 @@ class GCodeWidget extends Component {
         this.unsubscribe();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -328,6 +329,7 @@ class GCodeWidget extends Component {
             })
         };
         const actions = {
+            ...this.actions
         };
 
         return (
@@ -368,9 +370,9 @@ class GCodeWidget extends Component {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    styleName={classNames(
-                        'widget-content',
-                        { 'hidden': minimized }
+                    className={classNames(
+                        styles['widget-content'],
+                        { [styles.hidden]: minimized }
                     )}
                 >
                     <GCode

@@ -1,5 +1,6 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import GCodeStats from './GCodeStats';
 import GCodeTable from './GCodeTable';
 
@@ -10,7 +11,7 @@ class GCode extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { state } = this.props;

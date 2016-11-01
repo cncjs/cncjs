@@ -1,21 +1,20 @@
 import _ from 'lodash';
 import moment from 'moment';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import i18n from '../../lib/i18n';
 import {
     METRIC_UNITS
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class GCodeStats extends Component {
     static propTypes = {
         state: PropTypes.object
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { state } = this.props;
@@ -38,7 +37,7 @@ class GCodeStats extends Component {
         }
 
         return (
-            <div styleName="gcode-stats">
+            <div className={styles['gcode-stats']}>
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <table className="table-bordered" data-table="dimension">

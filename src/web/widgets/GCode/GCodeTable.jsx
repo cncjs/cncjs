@@ -1,8 +1,7 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import colornames from 'colornames';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import { Column, Table } from 'react-virtualized';
 import {
     GCODE_STATUS_ERROR,
@@ -12,7 +11,6 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class GCodeTable extends Component {
     static propTypes = {
         rows: PropTypes.array.isRequired,
@@ -24,7 +22,7 @@ class GCodeTable extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { rows, scrollToRow } = this.props;
@@ -37,7 +35,7 @@ class GCodeTable extends Component {
         const scrollToIndex = Math.max(0, (scrollToRow - 1) + (Math.ceil(visibleRows / 2) - offset));
 
         return (
-            <div styleName="gcode-table">
+            <div className={styles['gcode-table']}>
                 <Table
                     disableHeader={true}
                     headerHeight={headerHeight}
@@ -51,7 +49,7 @@ class GCodeTable extends Component {
                     width={width}
                 >
                     <Column
-                        styleName="gcode-table-cell-status"
+                        className={styles['gcode-table-cell-status']}
                         cellRenderer={({ cellData, columnData, dataKey, rowData, rowIndex }) => {
                             const value = rowData.status;
                             const classes = {
@@ -82,7 +80,7 @@ class GCodeTable extends Component {
                         width={30}
                     />
                     <Column
-                        styleName="gcode-table-cell-command"
+                        className={styles['gcode-table-cell-command']}
                         cellRenderer={({ cellData, columnData, dataKey, rowData, rowIndex }) => {
                             const value = rowData.cmd;
                             const style = {
