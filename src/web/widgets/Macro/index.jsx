@@ -1,8 +1,7 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import api from '../../api';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
@@ -14,7 +13,6 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class MacroWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
@@ -40,7 +38,7 @@ class MacroWidget extends Component {
         this.unsubscribe();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -78,7 +76,7 @@ class MacroWidget extends Component {
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
@@ -189,9 +187,9 @@ class MacroWidget extends Component {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    styleName={classNames(
-                        'widget-content',
-                        { 'hidden': minimized }
+                    className={classNames(
+                        styles['widget-content'],
+                        { [styles.hidden]: minimized }
                     )}
                 >
                     <Macro

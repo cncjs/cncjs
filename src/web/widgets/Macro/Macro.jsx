@@ -1,7 +1,6 @@
-import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import api from '../../api';
 import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
@@ -18,7 +17,6 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class Macro extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -26,7 +24,7 @@ class Macro extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     confirmLoadMacro({ name }) {
         return confirm({
@@ -74,8 +72,8 @@ class Macro extends Component {
                 {modalState === MODAL_STATE_EDIT_MACRO &&
                 <EditMacro {...this.props} />
                 }
-                <div styleName="toolbar">
-                    <div styleName="toolbar-button-group">
+                <div className={styles.toolbar}>
+                    <div className={styles['toolbar-button-group']}>
                         <button
                             type="button"
                             className="btn btn-xs btn-default"
@@ -88,17 +86,17 @@ class Macro extends Component {
                             {i18n._('Create Macro')}
                         </button>
                     </div>
-                    <div styleName="toolbar-records">
+                    <div className={styles['toolbar-records']}>
                         {i18n._('Total: {{total}}', { total: macros.length })}
                     </div>
                 </div>
-                <div styleName="table-container">
-                    <table styleName="table">
+                <div className={styles['table-container']}>
+                    <table className={styles.table}>
                         <tbody>
                             {macros.length === 0 &&
                                 <tr>
                                     <td colSpan="2">
-                                        <div styleName="empty-result">
+                                        <div className={styles['empty-result']}>
                                             {i18n._('No macros')}
                                         </div>
                                     </td>

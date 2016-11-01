@@ -1,13 +1,11 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
 import Modal from '../../components/Modal';
 import Validation from '../../lib/react-validation';
-import styles from './index.styl';
 
-@CSSModules(styles)
 class EditMacro extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -19,7 +17,7 @@ class EditMacro extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const sample = `G21  ; Set units to mm\nG90  ; Absolute positioning\nG1 Z1 F500  ; Move to clearance level`;
