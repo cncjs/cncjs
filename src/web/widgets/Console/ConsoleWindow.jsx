@@ -1,12 +1,11 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
 import ReactDOM from 'react-dom';
+import shallowCompare from 'react-addons-shallow-compare';
 import Infinite from 'react-infinite';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class ConsoleWindow extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -21,17 +20,17 @@ class ConsoleWindow extends Component {
         this.unsubscribe();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     // Scroll Position with React
     // http://blog.vjeux.com/2013/javascript/scroll-position-with-react.html
     componentWillUpdate(nextProps, nextState) {
-        const node = ReactDOM.findDOMNode(this.refs.infinite);
+        const node = ReactDOM.findDOMNode(this.node);
         const hScrollBarHeight = (node.scrollWidth !== node.clientWidth) ? 20 : 0;
         this.shouldScrollBottom = (Math.ceil(node.scrollTop) + node.clientHeight + hScrollBarHeight) >= node.scrollHeight;
     }
     componentDidUpdate(prevProps, prevState) {
-        const node = ReactDOM.findDOMNode(this.refs.infinite);
+        const node = ReactDOM.findDOMNode(this.node);
         if (this.shouldScrollBottom) {
             node.scrollTop = node.scrollHeight;
         }
@@ -57,7 +56,7 @@ class ConsoleWindow extends Component {
     resizeConsoleWindow() {
         const { state, actions } = this.props;
         const widgetContentEl = actions.getWidgetContentEl();
-        const node = ReactDOM.findDOMNode(this.refs.infinite);
+        const node = ReactDOM.findDOMNode(this.node);
         const offset = node.getBoundingClientRect().top
                      - widgetContentEl.getBoundingClientRect().top;
         const containerHeight = widgetContentEl.clientHeight - offset - 10; // exclude 10px bottom padding
@@ -74,11 +73,13 @@ class ConsoleWindow extends Component {
         ));
 
         return (
-            <div styleName="console-window">
+            <div className={styles['console-window']}>
                 <Infinite
+                    ref={c => {
+                        this.node = c;
+                    }}
                     containerHeight={containerHeight}
                     elementHeight={20}
-                    ref="infinite"
                 >
                     {elements}
                 </Infinite>

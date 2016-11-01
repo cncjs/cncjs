@@ -2,8 +2,8 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import ReactDOM from 'react-dom';
-import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -14,7 +14,6 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class ConsoleWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
@@ -64,7 +63,7 @@ class ConsoleWidget extends Component {
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -184,10 +183,10 @@ class ConsoleWidget extends Component {
                     ref={node => {
                         this.widgetContent = node;
                     }}
-                    styleName={classNames(
-                        'widget-content',
-                        { 'hidden': minimized },
-                        { 'fullscreen': isFullscreen }
+                    className={classNames(
+                        styles['widget-content'],
+                        { [styles.hidden]: minimized },
+                        { [styles.fullscreen]: isFullscreen }
                     )}
                 >
                     <Console
