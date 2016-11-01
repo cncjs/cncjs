@@ -77,9 +77,7 @@ class TinyG2 extends Component {
                     <Panel.Heading styleName="panel-heading">
                         <Toggler
                             className="clearfix"
-                            onToggle={() => {
-                                actions.toggleQueueReports();
-                            }}
+                            onToggle={actions.toggleQueueReports}
                         >
                             <div className="pull-left">{i18n._('Queue Reports')}</div>
                             <Toggler.Icon
@@ -112,9 +110,7 @@ class TinyG2 extends Component {
                     <Panel.Heading styleName="panel-heading">
                         <Toggler
                             className="clearfix"
-                            onToggle={() => {
-                                actions.toggleStatusReports();
-                            }}
+                            onToggle={actions.toggleStatusReports}
                         >
                             <div className="pull-left">{i18n._('Status Reports')}</div>
                             <Toggler.Icon
@@ -164,9 +160,7 @@ class TinyG2 extends Component {
                     <Panel.Heading styleName="panel-heading">
                         <Toggler
                             className="clearfix"
-                            onToggle={() => {
-                                actions.toggleModalGroups();
-                            }}
+                            onToggle={actions.toggleModalGroups}
                         >
                             <div className="pull-left">{i18n._('Modal Groups')}</div>
                             <Toggler.Icon

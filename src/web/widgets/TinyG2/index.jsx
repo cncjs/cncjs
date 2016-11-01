@@ -1,7 +1,7 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
@@ -23,6 +23,47 @@ class TinyG2Widget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+        toggleQueueReports: () => {
+            const expanded = this.state.panel.queueReports.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    queueReports: {
+                        ...this.state.panel.queueReports,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
+        toggleStatusReports: () => {
+            const expanded = this.state.panel.statusReports.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    statusReports: {
+                        ...this.state.panel.statusReports,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
+        toggleModalGroups: () => {
+            const expanded = this.state.panel.modalGroups.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    modalGroups: {
+                        ...this.state.panel.modalGroups,
+                        expanded: !expanded
+                    }
+                }
+            });
+        }
+    };
     controllerEvents = {
         'TinyG2:state': (state) => {
             this.setState({
@@ -48,7 +89,7 @@ class TinyG2Widget extends Component {
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -103,18 +144,20 @@ class TinyG2Widget extends Component {
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
     addControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.on(eventName, callback);
         });
     }
     removeControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.off(eventName, callback);
         });
     }
@@ -131,45 +174,6 @@ class TinyG2Widget extends Component {
 
         return true;
     }
-    toggleQueueReports() {
-        const expanded = this.state.panel.queueReports.expanded;
-
-        this.setState({
-            panel: {
-                ...this.state.panel,
-                queueReports: {
-                    ...this.state.panel.queueReports,
-                    expanded: !expanded
-                }
-            }
-        });
-    }
-    toggleStatusReports() {
-        const expanded = this.state.panel.statusReports.expanded;
-
-        this.setState({
-            panel: {
-                ...this.state.panel,
-                statusReports: {
-                    ...this.state.panel.statusReports,
-                    expanded: !expanded
-                }
-            }
-        });
-    }
-    toggleModalGroups() {
-        const expanded = this.state.panel.modalGroups.expanded;
-
-        this.setState({
-            panel: {
-                ...this.state.panel,
-                modalGroups: {
-                    ...this.state.panel.modalGroups,
-                    expanded: !expanded
-                }
-            }
-        });
-    }
     render() {
         const { minimized, isFullscreen } = this.state;
         const state = {
@@ -177,9 +181,7 @@ class TinyG2Widget extends Component {
             canClick: this.canClick()
         };
         const actions = {
-            toggleQueueReports: ::this.toggleQueueReports,
-            toggleStatusReports: ::this.toggleStatusReports,
-            toggleModalGroups: ::this.toggleModalGroups
+            ...this.actions
         };
 
         return (
