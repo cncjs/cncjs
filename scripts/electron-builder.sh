@@ -23,8 +23,6 @@ rm -rf node_modules
 echo "Installing packages..."
 npm install --production
 npm dedupe
-# https://github.com/electron/electron-rebuild/issues/59
-rm -f node_modules/serialport/build/Release/serialport.node
 popd
 
 echo "Rebuilding native modules using electron ${electron_version}"
