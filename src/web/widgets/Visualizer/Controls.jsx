@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import colornames from 'colornames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Dropdown, MenuItem } from 'react-bootstrap';
@@ -272,8 +273,8 @@ class Controls extends Component {
                                     format={'WebGL: {{status}}'}
                                     replacement={{
                                         status: Detector.webgl
-                                            ? (<span style={{ color: '#4078c0' }}>{i18n._('Enabled')}</span>)
-                                            : (<span style={{ color: '#dc143c' }}>{i18n._('Unavailable')}</span>)
+                                            ? (<span style={{ color: colornames('royalblue') }}>{i18n._('Enabled')}</span>)
+                                            : (<span style={{ color: colornames('crimson') }}>{i18n._('Unavailable')}</span>)
                                     }}
                                 />
                             </MenuItem>
