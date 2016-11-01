@@ -23,6 +23,18 @@ class ConsoleWidget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+        getWidgetContentEl: () => {
+            const widgetContentEl = ReactDOM.findDOMNode(this.widgetContent);
+            return widgetContentEl;
+        },
+        setContainerHeight: (containerHeight) => {
+            this.setState({ containerHeight: containerHeight });
+        },
+        clearAll: () => {
+            this.clearAll();
+        }
+    };
     controllerEvents = {
         'serialport:write': (data) => {
             const lines = data.split('\n');
@@ -132,14 +144,7 @@ class ConsoleWidget extends Component {
             ...this.state
         };
         const actions = {
-            getWidgetContentEl: () => {
-                const widgetContentEl = ReactDOM.findDOMNode(this.widgetContent);
-                return widgetContentEl;
-            },
-            setContainerHeight: (containerHeight) => {
-                this.setState({ containerHeight: containerHeight });
-            },
-            clearAll: ::this.clearAll
+            ...this.actions
         };
 
         return (

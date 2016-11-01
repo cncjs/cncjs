@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import ConsoleInput from './ConsoleInput';
 import ConsoleWindow from './ConsoleWindow';
 import styles from './index.styl';
@@ -11,7 +11,7 @@ class Console extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         return (
