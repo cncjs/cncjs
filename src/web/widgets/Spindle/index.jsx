@@ -63,9 +63,11 @@ class SpindleWidget extends Component {
     }
     componentDidMount() {
         this.subscribe();
+        this.addControllerEvents();
     }
     componentWillUnmount() {
         this.unsubscribe();
+        this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
@@ -117,6 +119,18 @@ class SpindleWidget extends Component {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
+    }
+    addControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.on(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.off(eventName, callback);
+        });
     }
     canClick() {
         const { port } = this.state;

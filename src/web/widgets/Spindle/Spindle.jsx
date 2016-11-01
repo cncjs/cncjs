@@ -1,11 +1,10 @@
+import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class Spindle extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -40,7 +39,13 @@ class Spindle extends Component {
                                         title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i className="fa fa-rotate-right" />
+                                        <i
+                                            className={classNames(
+                                                'fa',
+                                                'fa-rotate-right',
+                                                { 'rotate-cw': state.spindleState === 'M3' }
+                                            )}
+                                        />
                                         &nbsp;M3
                                     </button>
                                 </div>
@@ -58,7 +63,13 @@ class Spindle extends Component {
                                         title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i className="fa fa-rotate-left" />
+                                        <i
+                                            className={classNames(
+                                                'fa',
+                                                'fa-rotate-left',
+                                                { 'rotate-ccw': state.spindleState === 'M4' }
+                                            )}
+                                        />
                                         &nbsp;M4
                                     </button>
                                 </div>
@@ -89,7 +100,12 @@ class Spindle extends Component {
                                         title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i styleName="icon-fan" />
+                                        <i
+                                            className={classNames(
+                                                styles['icon-fan'],
+                                                { 'rotate-cw': state.coolantState === 'M7' }
+                                            )}
+                                        />
                                         &nbsp;M7
                                     </button>
                                 </div>
@@ -103,7 +119,12 @@ class Spindle extends Component {
                                         title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i styleName="icon-fan" />
+                                        <i
+                                            className={classNames(
+                                                styles['icon-fan'],
+                                                { 'rotate-cw': state.coolantState === 'M8' }
+                                            )}
+                                        />
                                         &nbsp;M8
                                     </button>
                                 </div>
