@@ -53,7 +53,7 @@ class DisplayPanel extends Component {
                         </tr>
                     </thead>
                     <tbody>
-                    {includes(axes, 'x') &&
+                        {includes(axes, 'x') &&
                         <tr>
                             <td styleName="coordinate">X</td>
                             <td styleName="machine-position">
@@ -64,7 +64,7 @@ class DisplayPanel extends Component {
                             </td>
                             <td styleName="work-position">
                                 <span styleName="dimension-units">{displayUnits}</span>
-                            {this.state.showXPositionInput &&
+                                {this.state.showXPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
                                         if (units === IMPERIAL_UNITS) {
@@ -77,8 +77,8 @@ class DisplayPanel extends Component {
                                         this.setState({ showXPositionInput: false });
                                     }}
                                 />
-                            }
-                            {!this.state.showXPositionInput &&
+                                }
+                                {!this.state.showXPositionInput &&
                                 <div
                                     style={{ cursor: canClick ? 'pointer' : 'auto' }}
                                     title={i18n._('Edit')}
@@ -92,7 +92,7 @@ class DisplayPanel extends Component {
                                     <span styleName="decimal-point">.</span>
                                     <span styleName="fractional-part">{workPosition.x.split('.')[1]}</span>
                                 </div>
-                            }
+                                }
                             </td>
                             <td styleName="action">
                                 <DropdownButton
@@ -119,24 +119,24 @@ class DisplayPanel extends Component {
                                         {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
                                     </MenuItem>
                                     <MenuItem divider />
-                                {wcs === 'G54' &&
+                                    {wcs === 'G54' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                                }
-                                {wcs === 'G55' &&
+                                    }
+                                    {wcs === 'G55' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-                                }
-                                {wcs === 'G56' &&
+                                    }
+                                    {wcs === 'G56' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-                                }
-                                {wcs === 'G57' &&
+                                    }
+                                    {wcs === 'G57' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-                                }
-                                {wcs === 'G58' &&
+                                    }
+                                    {wcs === 'G58' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-                                }
-                                {wcs === 'G59' &&
+                                    }
+                                    {wcs === 'G59' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-                                }
+                                    }
                                     <MenuItem
                                         eventKey="G0 X0"
                                         onSelect={::this.handleSelect}
@@ -144,7 +144,7 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Go To Work Zero On X Axis (G0 X0)')}
                                     </MenuItem>
-                                {wcs === 'G54' &&
+                                    {wcs === 'G54' &&
                                     <MenuItem
                                         eventKey="G10 L20 P1 X0"
                                         onSelect={::this.handleSelect}
@@ -152,8 +152,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work X Axis (G10 L20 P1 X0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G55' &&
+                                    }
+                                    {wcs === 'G55' &&
                                     <MenuItem
                                         eventKey="G10 L20 P2 X0"
                                         onSelect={::this.handleSelect}
@@ -161,8 +161,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work X Axis (G10 L20 P2 X0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G56' &&
+                                    }
+                                    {wcs === 'G56' &&
                                     <MenuItem
                                         eventKey="G10 L20 P3 X0"
                                         onSelect={::this.handleSelect}
@@ -170,8 +170,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work X Axis (G10 L20 P3 X0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G57' &&
+                                    }
+                                    {wcs === 'G57' &&
                                     <MenuItem
                                         eventKey="G10 L20 P4 X0"
                                         onSelect={::this.handleSelect}
@@ -179,8 +179,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work X Axis (G10 L20 P4 X0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G58' &&
+                                    }
+                                    {wcs === 'G58' &&
                                     <MenuItem
                                         eventKey="G10 L20 P5 X0"
                                         onSelect={::this.handleSelect}
@@ -188,8 +188,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work X Axis (G10 L20 P5 X0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G59' &&
+                                    }
+                                    {wcs === 'G59' &&
                                     <MenuItem
                                         eventKey="G10 L20 P6 X0"
                                         onSelect={::this.handleSelect}
@@ -197,7 +197,7 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work X Axis (G10 L20 P6 X0)')}
                                     </MenuItem>
-                                }
+                                    }
                                     <MenuItem divider />
                                     <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                     <MenuItem
@@ -210,8 +210,8 @@ class DisplayPanel extends Component {
                                 </DropdownButton>
                             </td>
                         </tr>
-                    }
-                    {includes(axes, 'y') &&
+                        }
+                        {includes(axes, 'y') &&
                         <tr>
                             <td styleName="coordinate">Y</td>
                             <td styleName="machine-position">
@@ -222,7 +222,7 @@ class DisplayPanel extends Component {
                             </td>
                             <td styleName="work-position">
                                 <span styleName="dimension-units">{displayUnits}</span>
-                            {this.state.showYPositionInput &&
+                                {this.state.showYPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
                                         if (units === IMPERIAL_UNITS) {
@@ -235,8 +235,8 @@ class DisplayPanel extends Component {
                                         this.setState({ showYPositionInput: false });
                                     }}
                                 />
-                            }
-                            {!this.state.showYPositionInput &&
+                                }
+                                {!this.state.showYPositionInput &&
                                 <div
                                     style={{ cursor: canClick ? 'pointer' : 'auto' }}
                                     title={i18n._('Edit')}
@@ -250,7 +250,7 @@ class DisplayPanel extends Component {
                                     <span styleName="decimal-point">.</span>
                                     <span styleName="fractional-part">{workPosition.y.split('.')[1]}</span>
                                 </div>
-                            }
+                                }
                             </td>
                             <td styleName="action">
                                 <DropdownButton
@@ -277,24 +277,24 @@ class DisplayPanel extends Component {
                                         {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
                                     </MenuItem>
                                     <MenuItem divider />
-                                {wcs === 'G54' &&
+                                    {wcs === 'G54' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                                }
-                                {wcs === 'G55' &&
+                                    }
+                                    {wcs === 'G55' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-                                }
-                                {wcs === 'G56' &&
+                                    }
+                                    {wcs === 'G56' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-                                }
-                                {wcs === 'G57' &&
+                                    }
+                                    {wcs === 'G57' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-                                }
-                                {wcs === 'G58' &&
+                                    }
+                                    {wcs === 'G58' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-                                }
-                                {wcs === 'G59' &&
+                                    }
+                                    {wcs === 'G59' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-                                }
+                                    }
                                     <MenuItem
                                         eventKey="G0 Y0"
                                         onSelect={::this.handleSelect}
@@ -302,7 +302,7 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Go To Work Zero On Y Axis (G0 Y0)')}
                                     </MenuItem>
-                                {wcs === 'G54' &&
+                                    {wcs === 'G54' &&
                                     <MenuItem
                                         eventKey="G10 L20 P1 Y0"
                                         onSelect={::this.handleSelect}
@@ -310,8 +310,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Y Axis (G10 L20 P1 Y0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G55' &&
+                                    }
+                                    {wcs === 'G55' &&
                                     <MenuItem
                                         eventKey="G10 L20 P2 Y0"
                                         onSelect={::this.handleSelect}
@@ -319,8 +319,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Y Axis (G10 L20 P2 Y0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G56' &&
+                                    }
+                                    {wcs === 'G56' &&
                                     <MenuItem
                                         eventKey="G10 L20 P3 Y0"
                                         onSelect={::this.handleSelect}
@@ -328,8 +328,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Y Axis (G10 L20 P3 Y0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G57' &&
+                                    }
+                                    {wcs === 'G57' &&
                                     <MenuItem
                                         eventKey="G10 L20 P4 Y0"
                                         onSelect={::this.handleSelect}
@@ -337,8 +337,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Y Axis (G10 L20 P4 Y0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G58' &&
+                                    }
+                                    {wcs === 'G58' &&
                                     <MenuItem
                                         eventKey="G10 L20 P5 Y0"
                                         onSelect={::this.handleSelect}
@@ -346,8 +346,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Y Axis (G10 L20 P5 Y0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G59' &&
+                                    }
+                                    {wcs === 'G59' &&
                                     <MenuItem
                                         eventKey="G10 L20 P6 Y0"
                                         onSelect={::this.handleSelect}
@@ -355,7 +355,7 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Y Axis (G10 L20 P6 Y0)')}
                                     </MenuItem>
-                                }
+                                    }
                                     <MenuItem divider />
                                     <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                     <MenuItem
@@ -368,8 +368,8 @@ class DisplayPanel extends Component {
                                 </DropdownButton>
                             </td>
                         </tr>
-                    }
-                    {includes(axes, 'z') &&
+                        }
+                        {includes(axes, 'z') &&
                         <tr>
                             <td styleName="coordinate">Z</td>
                             <td styleName="machine-position">
@@ -380,7 +380,7 @@ class DisplayPanel extends Component {
                             </td>
                             <td styleName="work-position">
                                 <span styleName="dimension-units">{displayUnits}</span>
-                            {this.state.showZPositionInput &&
+                                {this.state.showZPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
                                         if (units === IMPERIAL_UNITS) {
@@ -393,8 +393,8 @@ class DisplayPanel extends Component {
                                         this.setState({ showZPositionInput: false });
                                     }}
                                 />
-                            }
-                            {!this.state.showZPositionInput &&
+                                }
+                                {!this.state.showZPositionInput &&
                                 <div
                                     style={{ cursor: canClick ? 'pointer' : 'auto' }}
                                     title={i18n._('Edit')}
@@ -408,7 +408,7 @@ class DisplayPanel extends Component {
                                     <span styleName="decimal-point">.</span>
                                     <span styleName="fractional-part">{workPosition.z.split('.')[1]}</span>
                                 </div>
-                            }
+                                }
                             </td>
                             <td styleName="action">
                                 <DropdownButton
@@ -435,24 +435,24 @@ class DisplayPanel extends Component {
                                         {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
                                     </MenuItem>
                                     <MenuItem divider />
-                                {wcs === 'G54' &&
+                                    {wcs === 'G54' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                                }
-                                {wcs === 'G55' &&
+                                    }
+                                    {wcs === 'G55' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-                                }
-                                {wcs === 'G56' &&
+                                    }
+                                    {wcs === 'G56' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-                                }
-                                {wcs === 'G57' &&
+                                    }
+                                    {wcs === 'G57' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-                                }
-                                {wcs === 'G58' &&
+                                    }
+                                    {wcs === 'G58' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-                                }
-                                {wcs === 'G59' &&
+                                    }
+                                    {wcs === 'G59' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-                                }
+                                    }
                                     <MenuItem
                                         eventKey="G0 Z0"
                                         onSelect={::this.handleSelect}
@@ -460,7 +460,7 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Go To Work Zero On Z Axis (G0 Z0)')}
                                     </MenuItem>
-                                {wcs === 'G54' &&
+                                    {wcs === 'G54' &&
                                     <MenuItem
                                         eventKey="G10 L20 P1 Z0"
                                         onSelect={::this.handleSelect}
@@ -468,8 +468,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Z Axis (G10 L20 P1 Z0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G55' &&
+                                    }
+                                    {wcs === 'G55' &&
                                     <MenuItem
                                         eventKey="G10 L20 P2 Z0"
                                         onSelect={::this.handleSelect}
@@ -477,8 +477,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Z Axis (G10 L20 P2 Z0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G56' &&
+                                    }
+                                    {wcs === 'G56' &&
                                     <MenuItem
                                         eventKey="G10 L20 P3 Z0"
                                         onSelect={::this.handleSelect}
@@ -486,8 +486,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Z Axis (G10 L20 P3 Z0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G57' &&
+                                    }
+                                    {wcs === 'G57' &&
                                     <MenuItem
                                         eventKey="G10 L20 P4 Z0"
                                         onSelect={::this.handleSelect}
@@ -495,8 +495,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Z Axis (G10 L20 P4 Z0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G58' &&
+                                    }
+                                    {wcs === 'G58' &&
                                     <MenuItem
                                         eventKey="G10 L20 P5 Z0"
                                         onSelect={::this.handleSelect}
@@ -504,8 +504,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Z Axis (G10 L20 P5 Z0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G59' &&
+                                    }
+                                    {wcs === 'G59' &&
                                     <MenuItem
                                         eventKey="G10 L20 P6 Z0"
                                         onSelect={::this.handleSelect}
@@ -513,7 +513,7 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work Z Axis (G10 L20 P6 Z0)')}
                                     </MenuItem>
-                                }
+                                    }
                                     <MenuItem divider />
                                     <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                     <MenuItem
@@ -526,8 +526,8 @@ class DisplayPanel extends Component {
                                 </DropdownButton>
                             </td>
                         </tr>
-                    }
-                    {includes(axes, 'a') &&
+                        }
+                        {includes(axes, 'a') &&
                         <tr>
                             <td styleName="coordinate">A</td>
                             <td styleName="machine-position">
@@ -538,7 +538,7 @@ class DisplayPanel extends Component {
                             </td>
                             <td styleName="work-position">
                                 <span styleName="dimension-units">{displayUnits}</span>
-                            {this.state.showAPositionInput &&
+                                {this.state.showAPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
                                         if (units === IMPERIAL_UNITS) {
@@ -551,8 +551,8 @@ class DisplayPanel extends Component {
                                         this.setState({ showAPositionInput: false });
                                     }}
                                 />
-                            }
-                            {!this.state.showAPositionInput &&
+                                }
+                                {!this.state.showAPositionInput &&
                                 <div
                                     style={{ cursor: canClick ? 'pointer' : 'auto' }}
                                     title={i18n._('Edit')}
@@ -566,7 +566,7 @@ class DisplayPanel extends Component {
                                     <span styleName="decimal-point">.</span>
                                     <span styleName="fractional-part">{workPosition.a.split('.')[1]}</span>
                                 </div>
-                            }
+                                }
                             </td>
                             <td styleName="action">
                                 <DropdownButton
@@ -593,24 +593,24 @@ class DisplayPanel extends Component {
                                         {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
                                     </MenuItem>
                                     <MenuItem divider />
-                                {wcs === 'G54' &&
+                                    {wcs === 'G54' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                                }
-                                {wcs === 'G55' &&
+                                    }
+                                    {wcs === 'G55' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-                                }
-                                {wcs === 'G56' &&
+                                    }
+                                    {wcs === 'G56' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-                                }
-                                {wcs === 'G57' &&
+                                    }
+                                    {wcs === 'G57' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-                                }
-                                {wcs === 'G58' &&
+                                    }
+                                    {wcs === 'G58' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-                                }
-                                {wcs === 'G59' &&
+                                    }
+                                    {wcs === 'G59' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-                                }
+                                    }
                                     <MenuItem
                                         eventKey="G0 A0"
                                         onSelect={::this.handleSelect}
@@ -618,7 +618,7 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Go To Work Zero On A Axis (G0 A0)')}
                                     </MenuItem>
-                                {wcs === 'G54' &&
+                                    {wcs === 'G54' &&
                                     <MenuItem
                                         eventKey="G10 L20 P1 A0"
                                         onSelect={::this.handleSelect}
@@ -626,8 +626,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work A Axis (G10 L20 P1 A0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G55' &&
+                                    }
+                                    {wcs === 'G55' &&
                                     <MenuItem
                                         eventKey="G10 L20 P2 A0"
                                         onSelect={::this.handleSelect}
@@ -635,8 +635,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work A Axis (G10 L20 P2 A0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G56' &&
+                                    }
+                                    {wcs === 'G56' &&
                                     <MenuItem
                                         eventKey="G10 L20 P3 A0"
                                         onSelect={::this.handleSelect}
@@ -644,8 +644,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work A Axis (G10 L20 P3 A0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G57' &&
+                                    }
+                                    {wcs === 'G57' &&
                                     <MenuItem
                                         eventKey="G10 L20 P4 A0"
                                         onSelect={::this.handleSelect}
@@ -653,8 +653,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work A Axis (G10 L20 P4 A0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G58' &&
+                                    }
+                                    {wcs === 'G58' &&
                                     <MenuItem
                                         eventKey="G10 L20 P5 A0"
                                         onSelect={::this.handleSelect}
@@ -662,8 +662,8 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work A Axis (G10 L20 P5 A0)')}
                                     </MenuItem>
-                                }
-                                {wcs === 'G59' &&
+                                    }
+                                    {wcs === 'G59' &&
                                     <MenuItem
                                         eventKey="G10 L20 P6 A0"
                                         onSelect={::this.handleSelect}
@@ -671,7 +671,7 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Zero Out Work A Axis (G10 L20 P6 A0)')}
                                     </MenuItem>
-                                }
+                                    }
                                     <MenuItem divider />
                                     <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                     <MenuItem
@@ -684,7 +684,7 @@ class DisplayPanel extends Component {
                                 </DropdownButton>
                             </td>
                         </tr>
-                    }
+                        }
                     </tbody>
                 </table>
             </div>

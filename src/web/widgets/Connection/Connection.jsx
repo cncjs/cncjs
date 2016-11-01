@@ -287,14 +287,14 @@ class Connection extends React.Component {
         return (
             <div style={styles.option} title={label}>
                 <div>
-                {inuse &&
+                    {inuse &&
                     <span><i className="fa fa-lock" />&nbsp;</span>
-                }
+                    }
                     {label}
                 </div>
-            {manufacturer &&
+                {manufacturer &&
                 <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>
-            }
+                }
             </div>
         );
     }
@@ -350,11 +350,11 @@ class Connection extends React.Component {
 
         return (
             <div>
-            {alertMessage &&
+                {alertMessage &&
                 <Notifications bsStyle="danger" onDismiss={::this.clearAlert}>
                     {alertMessage}
                 </Notifications>
-            }
+                }
                 <div className="form-group">
                     <div className="input-group input-group-xs">
                         <div className="input-group-btn">
@@ -421,10 +421,10 @@ class Connection extends React.Component {
                                 onClick={::this.handleRefresh}
                                 disabled={!canRefresh}
                             >
-                            {notLoading
-                                ? <i className="fa fa-refresh" />
-                                : <i className="fa fa-refresh rotating" />
-                            }
+                                {notLoading
+                                    ? <i className="fa fa-refresh" />
+                                    : <i className="fa fa-refresh rotating" />
+                                }
                             </button>
                         </div>
                     </div>

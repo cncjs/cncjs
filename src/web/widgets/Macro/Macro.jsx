@@ -68,12 +68,12 @@ class Macro extends Component {
 
         return (
             <div>
-            {modalState === MODAL_STATE_ADD_MACRO &&
+                {modalState === MODAL_STATE_ADD_MACRO &&
                 <AddMacro {...this.props} />
-            }
-            {modalState === MODAL_STATE_EDIT_MACRO &&
+                }
+                {modalState === MODAL_STATE_EDIT_MACRO &&
                 <EditMacro {...this.props} />
-            }
+                }
                 <div styleName="toolbar">
                     <div styleName="toolbar-button-group">
                         <button

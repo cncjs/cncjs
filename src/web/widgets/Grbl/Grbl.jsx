@@ -45,7 +45,7 @@ class Grbl extends Component {
                             />
                         </Toggler>
                     </Panel.Heading>
-                {panel.parserState.expanded &&
+                    {panel.parserState.expanded &&
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
@@ -88,7 +88,7 @@ class Grbl extends Component {
                             </div>
                         </div>
                     </Panel.Body>
-                }
+                    }
                 </Panel>
                 <Panel styleName="panel last">
                     <Panel.Heading styleName="panel-heading">
@@ -105,7 +105,7 @@ class Grbl extends Component {
                             />
                         </Toggler>
                     </Panel.Heading>
-                {panel.modalGroups.expanded &&
+                    {panel.modalGroups.expanded &&
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
@@ -198,7 +198,7 @@ class Grbl extends Component {
                             </div>
                         </div>
                     </Panel.Body>
-                }
+                    }
                 </Panel>
             </div>
         );

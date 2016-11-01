@@ -104,13 +104,13 @@ class Confirm extends Component {
                 show={show}
                 onHide={::this.handleCancel}
             >
-            {title &&
+                {title &&
                 <Modal.Header>
                     <Modal.Title>
                         {title}
                     </Modal.Title>
                 </Modal.Header>
-            }
+                }
                 <Modal.Body>
                     {body}
                 </Modal.Body>

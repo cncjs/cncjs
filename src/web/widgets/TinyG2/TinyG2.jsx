@@ -88,7 +88,7 @@ class TinyG2 extends Component {
                             />
                         </Toggler>
                     </Panel.Heading>
-                {panel.queueReports.expanded &&
+                    {panel.queueReports.expanded &&
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
@@ -106,7 +106,7 @@ class TinyG2 extends Component {
                             </div>
                         </div>
                     </Panel.Body>
-                }
+                    }
                 </Panel>
                 <Panel styleName="panel">
                     <Panel.Heading styleName="panel-heading">
@@ -123,7 +123,7 @@ class TinyG2 extends Component {
                             />
                         </Toggler>
                     </Panel.Heading>
-                {panel.statusReports.expanded &&
+                    {panel.statusReports.expanded &&
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
@@ -158,7 +158,7 @@ class TinyG2 extends Component {
                             </div>
                         </div>
                     </Panel.Body>
-                }
+                    }
                 </Panel>
                 <Panel styleName="panel last">
                     <Panel.Heading styleName="panel-heading">
@@ -175,7 +175,7 @@ class TinyG2 extends Component {
                             />
                         </Toggler>
                     </Panel.Heading>
-                {panel.modalGroups.expanded &&
+                    {panel.modalGroups.expanded &&
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
@@ -248,7 +248,7 @@ class TinyG2 extends Component {
                             </div>
                         </div>
                     </Panel.Body>
-                }
+                    }
                 </Panel>
             </div>
         );

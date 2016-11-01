@@ -14,18 +14,18 @@ const WidgetList = (props) => {
     return (
         <Grid fluid={true} style={style}>
             <Row>
-            {_.map(list, (o, key) =>
-                <Col xs={6} md={4} key={key}>
-                    <WidgetListItem
-                        id={o.id}
-                        caption={o.caption}
-                        details={o.details}
-                        checked={o.visible}
-                        disabled={o.disabled}
-                        onChange={onChange}
-                    />
-                </Col>
-            )}
+                {_.map(list, (o, key) =>
+                    <Col xs={6} md={4} key={key}>
+                        <WidgetListItem
+                            id={o.id}
+                            caption={o.caption}
+                            details={o.details}
+                            checked={o.visible}
+                            disabled={o.disabled}
+                            onChange={onChange}
+                        />
+                    </Col>
+                )}
             </Row>
         </Grid>
     );

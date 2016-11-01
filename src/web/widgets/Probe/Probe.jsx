@@ -90,18 +90,18 @@ class Probe extends Component {
                         </div>
                     </div>
                     <p styleName="probe-command-description">
-                    {probeCommand === 'G38.2' &&
+                        {probeCommand === 'G38.2' &&
                         <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
-                    }
-                    {probeCommand === 'G38.3' &&
+                        }
+                        {probeCommand === 'G38.3' &&
                         <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>
-                    }
-                    {probeCommand === 'G38.4' &&
+                        }
+                        {probeCommand === 'G38.4' &&
                         <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>
-                    }
-                    {probeCommand === 'G38.5' &&
+                        }
+                        {probeCommand === 'G38.5' &&
                         <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
-                    }
+                        }
                     </p>
                 </div>
                 <div className="row no-gutters">

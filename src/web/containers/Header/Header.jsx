@@ -61,9 +61,9 @@ class Header extends Component {
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
-                {path === 'workspace' &&
+                    {path === 'workspace' &&
                     <QuickAccessToolbar />
-                }
+                    }
                 </Navbar.Collapse>
             </Navbar>
         );

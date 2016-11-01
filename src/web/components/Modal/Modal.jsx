@@ -88,7 +88,7 @@ class Modal extends Component {
                     )}
                 >
                     {children}
-                {closeButton &&
+                    {closeButton &&
                     <button
                         type="button"
                         styleName="close"
@@ -96,7 +96,7 @@ class Modal extends Component {
                     >
                         &times;
                     </button>
-                }
+                    }
                 </div>
             </ModalOverlay>
         );

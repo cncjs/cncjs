@@ -56,7 +56,7 @@ class Webcam extends Component {
 
         return (
             <div styleName="webcam-on-container">
-            {mediaSource === MEDIA_SOURCE_LOCAL &&
+                {mediaSource === MEDIA_SOURCE_LOCAL &&
                 <div style={{ width: '100%' }}>
                     <WebcamMedia
                         className={styles.center}
@@ -64,8 +64,8 @@ class Webcam extends Component {
                         height="auto"
                     />
                 </div>
-            }
-            {mediaSource === MEDIA_SOURCE_MJPEG &&
+                }
+                {mediaSource === MEDIA_SOURCE_MJPEG &&
                 <Image
                     src={url}
                     ref="mjpeg-media-source"
@@ -74,8 +74,8 @@ class Webcam extends Component {
                     }}
                     className={styles.center}
                 />
-            }
-            {crosshair &&
+                }
+                {crosshair &&
                 <div>
                     <Line
                         styleName="center line-shadow"
@@ -95,7 +95,7 @@ class Webcam extends Component {
                         diameter={40}
                     />
                 </div>
-            }
+                }
                 <div styleName="toolbar">
                     <div styleName="scale-text">{scale}x</div>
                     <OverlayTrigger
@@ -112,7 +112,6 @@ class Webcam extends Component {
                         </Anchor>
                     </OverlayTrigger>
                 </div>
-
                 <div styleName="image-scale-slider">
                     <Slider
                         defaultValue={scale}

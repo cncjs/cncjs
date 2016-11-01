@@ -19,9 +19,9 @@ class GCode extends Component {
         return (
             <div>
                 <GCodeStats {...this.props} />
-            {_.size(lines) > 0 &&
+                {_.size(lines) > 0 &&
                 <GCodeTable rows={lines} scrollToRow={sent} />
-            }
+                }
             </div>
         );
     }

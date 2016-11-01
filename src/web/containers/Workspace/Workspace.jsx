@@ -341,7 +341,7 @@ class Workspace extends React.Component {
                                     onSortEnd={this.widgetEventHandler.onSortEnd}
                                 />
                             </div>
-                        {hidePrimaryContainer &&
+                            {hidePrimaryContainer &&
                             <div styleName="primary-toggler" ref="primaryToggler">
                                 <div className="btn-group btn-group-xs">
                                     <button
@@ -353,11 +353,11 @@ class Workspace extends React.Component {
                                     </button>
                                 </div>
                             </div>
-                        }
+                            }
                             <div styleName="default-container fixed" ref="defaultContainer">
                                 <DefaultWidgets />
                             </div>
-                        {hideSecondaryContainer &&
+                            {hideSecondaryContainer &&
                             <div styleName="secondary-toggler" ref="secondaryToggler">
                                 <div className="btn-group btn-group-xs">
                                     <button
@@ -369,7 +369,7 @@ class Workspace extends React.Component {
                                     </button>
                                 </div>
                             </div>
-                        }
+                            }
                             <div
                                 styleName={classNames(
                                     'secondary-container',
