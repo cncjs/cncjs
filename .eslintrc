@@ -115,7 +115,7 @@
         "react/no-danger": 1,
         "react/no-did-mount-set-state": 1,
         "react/no-did-update-set-state": 1,
-        "react/no-find-dom-node": 1,
+        "react/no-find-dom-node": 0,
         "react/no-multi-comp": [1, { "ignoreStateless": true }],
         "react/no-string-refs": 1,
         "react/no-unknown-property": 1,
