@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
@@ -10,7 +10,7 @@ class Toolbar extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props);
+        return shallowCompare(this, nextProps, nextState);
     }
     handleSelect(eventKey) {
         const data = eventKey;
