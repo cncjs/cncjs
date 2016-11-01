@@ -187,7 +187,7 @@ class GrblLineParserResultStatus {
         // FS:500,8000 contains real-time feed rate, followed by spindle speed, data as the values.
         if (_.has(result, 'FS')) {
             payload.feedrate = Number(_.get(result, 'FS[0]', 0));
-            payload.spindleSpeed = Number(_.get(result, 'FS[1]', 0));
+            payload.spindle = Number(_.get(result, 'FS[1]', 0));
         }
 
         // Limit Pins (v0.9)
