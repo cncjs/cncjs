@@ -2,6 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import Select from 'react-select';
 import Notifications from '../../components/Notifications';
 import api from '../../api';
@@ -132,7 +133,7 @@ class Connection extends React.Component {
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const { controllerType, port, baudrate, autoReconnect } = this.state;

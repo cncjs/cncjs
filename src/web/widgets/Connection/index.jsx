@@ -1,14 +1,12 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import Connection from './Connection';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class ConnectionWidget extends Component {
     static propTypes = {
         sortable: PropTypes.object
@@ -20,7 +18,7 @@ class ConnectionWidget extends Component {
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -64,9 +62,9 @@ class ConnectionWidget extends Component {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    styleName={classNames(
-                        'widget-content',
-                        { 'hidden': minimized }
+                    className={classNames(
+                        styles['widget-content'],
+                        { [styles.hidden]: minimized }
                     )}
                 >
                     <Connection />
