@@ -1,6 +1,5 @@
-import i18next from 'i18next';
 import React, { Component, PropTypes } from 'react';
-import { Navbar, Nav, NavItem, NavDropdown, MenuItem } from 'react-bootstrap';
+import { Navbar } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import semver from 'semver';
 import settings from '../../config/settings';
@@ -42,8 +41,6 @@ class Header extends Component {
     render() {
         const { path } = this.props;
         const homepage = 'https://github.com/cheton/cnc';
-        //const wiki = 'https://github.com/cheton/cnc/wiki';
-        const language = i18next.language;
         const brandTitle = settings.name + ' v' + settings.version;
 
         return (

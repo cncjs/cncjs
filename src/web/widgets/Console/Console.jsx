@@ -16,9 +16,6 @@ class Console extends Component {
         return !_.isEqual(nextProps, this.props);
     }
     render() {
-        const { state } = this.props;
-        const { isFullscreen } = state;
-
         return (
             <div styleName="console-container">
                 <ConsoleInput {...this.props} />

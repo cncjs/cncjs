@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import CSSModules from 'react-css-modules';
 import store from '../../store';

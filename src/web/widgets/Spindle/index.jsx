@@ -48,8 +48,6 @@ class SpindleWidget extends Component {
             });
         },
         'TinyG2:state': (state) => {
-            const { sr } = { ...state };
-
             this.setState({
                 controller: {
                     type: TINYG2,

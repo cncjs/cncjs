@@ -4,8 +4,6 @@ import Header from './Header';
 import Sidebar from './Sidebar';
 import Workspace from './Workspace';
 import Settings from './Settings';
-import Anchor from '../components/Anchor';
-import i18n from '../lib/i18n';
 import styles from './App.styl';
 
 const App = (props) => {
