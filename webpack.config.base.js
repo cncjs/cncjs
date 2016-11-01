@@ -1,7 +1,6 @@
 /* eslint no-var: 0 */
 var nib = require('nib');
 var path = require('path');
-var webpack = require('webpack');
 var findImports = require('find-imports');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
