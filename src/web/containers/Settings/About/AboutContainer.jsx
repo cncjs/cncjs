@@ -4,7 +4,7 @@ import styles from './index.styl';
 const AboutContainer = ({ title }) => {
     return (
         <div className={styles.aboutContainer}>
-            <img src="icon.ico" alt="" className={styles.productLogo} />
+            <img src="logo.png" alt="" className={styles.productLogo} />
             <div className={styles.productDescription}>
                 <div className={styles.aboutProductTitle}>{title}</div>
                 <span className={styles.aboutProductDescription}>
