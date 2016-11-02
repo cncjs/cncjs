@@ -27,7 +27,7 @@ export default (options) => {
     });
     gulp.task('web:output', () => {
         const files = [
-            'src/web/favicon.ico',
+            'src/web/*.ico',
             'src/web/{images,textures}/**/*',
             'src/web/i18n/**/*'
         ];
