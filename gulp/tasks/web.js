@@ -27,7 +27,7 @@ export default (options) => {
     });
     gulp.task('web:output', () => {
         const files = [
-            'src/web/*.ico',
+            'src/web/*.{ico,png}',
             'src/web/{images,textures}/**/*',
             'src/web/i18n/**/*'
         ];
@@ -56,9 +56,9 @@ export default (options) => {
     });
     gulp.task('web:dist', () => {
         const files = [
-            'src/web/favicon.ico',
-            'src/web/i18n/**/*',
-            'src/web/{images,textures}/**/*'
+            'src/web/*.{ico,png}',
+            'src/web/{images,textures}/**/*',
+            'src/web/i18n/**/*'
         ];
 
         return gulp.src(files, { base: 'src/web' })
