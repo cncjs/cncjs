@@ -9,7 +9,7 @@ import QuickAccessToolbar from './QuickAccessToolbar';
 import confirm from '../../lib/confirm';
 import Anchor from '../../components/Anchor';
 
-const homepage = 'https://github.com/cheton/cnc/releases';
+const releases = 'https://github.com/cheton/cnc/releases';
 
 const newUpdateAvailableTooltip = (currentVersion) => {
     return (
@@ -74,8 +74,8 @@ class Header extends Component {
     render() {
         const { path } = this.props;
         const { currentVersion, latestVersion } = this.state;
-        const newVersionAvailable = semver.lt(currentVersion, latestVersion);
-        const tooltip = newVersionAvailable
+        const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
+        const tooltip = newUpdateAvailable
             ? newUpdateAvailableTooltip(currentVersion)
             : uptodateVersionTooltip(currentVersion);
 
@@ -88,11 +88,11 @@ class Header extends Component {
                     >
                         <Anchor
                             className="navbar-brand"
-                            href={homepage}
+                            href={releases}
                             target="_blank"
                         >
                             {settings.name}
-                            {newVersionAvailable &&
+                            {newUpdateAvailable &&
                             <span
                                 className="label label-primary"
                                 style={{
