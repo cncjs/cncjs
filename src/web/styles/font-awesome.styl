@@ -2,6 +2,29 @@
 @import url("~font-awesome/css/font-awesome.css");
 // @stylint on
 
+.fa {
+    font-size: 14px;
+
+    // makes the font 33% larger relative to the icon container
+    &.fa-lg {
+        font-size: 1.33333333em;
+        line-height: 0.75em;
+        vertical-align: -15%;
+    }
+    &.fa-2x {
+        font-size: 2em;
+    }
+    &.fa-3x {
+        font-size: 3em;
+    }
+    &.fa-4x {
+        font-size: 4em;
+    }
+    &.fa-5x {
+        font-size: 5em;
+    }
+}
+
 @-webkit-keyframes fa-spin-reverse /* Safari and Chrome */ {
     0% {
         transform: rotate(359deg);
