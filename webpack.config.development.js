@@ -1,4 +1,5 @@
 /* eslint no-var: 0 */
+var without = require('lodash/without');
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
@@ -7,6 +8,7 @@ var ManifestPlugin = require('webpack-manifest-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 var baseConfig = require('./webpack.config.base');
+var languages = require('./webpack.config.i18n').languages;
 var pkg = require('./package.json');
 
 var webpackConfig = Object.assign({}, baseConfig, {
@@ -26,6 +28,10 @@ var webpackConfig = Object.assign({}, baseConfig, {
                 NODE_ENV: JSON.stringify('development')
             }
         }),
+        new webpack.ContextReplacementPlugin(
+            /moment[\/\\]locale$/,
+            new RegExp('^\./(' + without(languages, 'en').join('|') + ')$')
+        ),
         new webpack.optimize.CommonsChunkPlugin({
             // The order matters, the order should be reversed just like loader chain.
             // https://github.com/webpack/webpack/issues/1016

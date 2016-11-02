@@ -8,6 +8,7 @@ var ManifestPlugin = require('webpack-manifest-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 var baseConfig = require('./webpack.config.base');
+var languages = require('./webpack.config.i18n').languages;
 var pkg = require('./package.json');
 
 // Use publicPath for production
@@ -34,6 +35,10 @@ var webpackConfig = Object.assign({}, baseConfig, {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
+        new webpack.ContextReplacementPlugin(
+            /moment[\/\\]locale$/,
+            new RegExp('^\./(' + without(languages, 'en').join('|') + ')$')
+        ),
         new webpack.optimize.CommonsChunkPlugin({
             // The order matters, the order should be reversed just like loader chain.
             // https://github.com/webpack/webpack/issues/1016

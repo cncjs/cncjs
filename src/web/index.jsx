@@ -1,7 +1,9 @@
 /* eslint import/imports-first: 0 */
+/* eslint import/no-dynamic-require: 0 */
 require('./polyfill');
 
 import series from 'async/series';
+import moment from 'moment';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { createHashHistory } from 'history';
@@ -36,6 +38,19 @@ series([
             .init(settings.i18next, (t) => {
                 next();
             });
+    },
+    (next) => {
+        const locale = i18next.language;
+        if (locale === 'en') {
+            next();
+            return;
+        }
+
+        require('bundle!moment/locale/' + locale)(() => {
+            log.debug(`moment: locale=${locale}`);
+            moment().locale(locale);
+            next();
+        });
     }
 ], (err, results) => {
     log.info(`${settings.name} v${settings.version}`);
@@ -66,7 +81,7 @@ series([
     const container = document.createElement('div');
     document.body.appendChild(container);
 
-    const hashHistory = useRouterHistory(createHashHistory)({ queryKey: false });
+    const hashHistory = useRouterHistory(createHashHistory)();
     const layoutToggler = () => <div />;
 
     ReactDOM.render(
