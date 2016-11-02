@@ -1,11 +1,9 @@
 import get from 'lodash/get';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
-import i18n from '../../lib/i18n';
+import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class General extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -22,7 +20,7 @@ class General extends Component {
 
         return (
             <form>
-                <div styleName="form-fields">
+                <div className={styles['form-fields']}>
                     <div className="form-group">
                         <label>{i18n._('Language')}</label>
                         <select
@@ -47,7 +45,7 @@ class General extends Component {
                         </select>
                     </div>
                 </div>
-                <div styleName="form-actions">
+                <div className={styles['form-actions']}>
                     <div className="row">
                         <div className="col-md-12">
                             <div className="pull-left">

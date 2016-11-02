@@ -3,18 +3,20 @@ import i18next from 'i18next';
 import isEqual from 'lodash/isEqual';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
+import api from '../../api';
+import settings from '../../config/settings';
 import Anchor from '../../components/Anchor';
 import Breadcrumb from '../../components/Breadcrumb';
 import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import General from './General';
+import About from './About';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class Settings extends Component {
     actions = {
+        // General
         general: {
             handleRestoreDefaults: (event) => {
                 confirm({
@@ -44,6 +46,39 @@ class Settings extends Component {
                     }
                 });
             }
+        },
+        // About
+        about: {
+            checkLatestVersion: () => {
+                this.setState({
+                    about: {
+                        ...this.state.about,
+                        version: {
+                            ...this.state.about.version,
+                            checking: true
+                        }
+                    }
+                });
+
+                api.getLatestVersion()
+                    .then((res) => {
+                        const { version, time } = res.body;
+                        this.setState({
+                            about: {
+                                ...this.state.about,
+                                version: {
+                                    ...this.state.about.version,
+                                    checking: false,
+                                    latest: version,
+                                    lastUpdate: time
+                                }
+                            }
+                        });
+                    })
+                    .catch((err) => {
+                        // Ignore error
+                    });
+            }
         }
     };
     sections = [
@@ -51,6 +86,11 @@ class Settings extends Component {
             key: 'general',
             title: i18n._('General'),
             component: (props) => <General {...props} />
+        },
+        {
+            key: 'about',
+            title: i18n._('About'),
+            component: (props) => <About {...props} />
         }
     ];
 
@@ -66,6 +106,14 @@ class Settings extends Component {
             activeSectionIndex: 0,
             general: {
                 lang: i18next.language
+            },
+            about: {
+                version: {
+                    checking: false,
+                    current: settings.version,
+                    latest: settings.version,
+                    lastUpdate: ''
+                }
             }
         };
     }
@@ -80,8 +128,8 @@ class Settings extends Component {
         const sectionItems = this.sections.map((section, index) =>
             <li
                 key={section.key}
-                styleName={classNames(
-                    { 'active': activeSection.key === section.key }
+                className={classNames(
+                    { [styles.active]: activeSection.key === section.key }
                 )}
             >
                 <Anchor
@@ -102,23 +150,23 @@ class Settings extends Component {
         };
 
         return (
-            <div {...this.props} styleName="settings">
+            <div {...this.props} className={styles.settings}>
                 <Breadcrumb>
                     <Breadcrumb.Item active>{i18n._('Settings')}</Breadcrumb.Item>
                 </Breadcrumb>
-                <div styleName="container border">
-                    <div styleName="row">
-                        <div styleName="col sidenav">
-                            <nav styleName="navbar">
-                                <ul styleName="nav">
+                <div className={classNames(styles.container, styles.border)}>
+                    <div className={styles.row}>
+                        <div className={classNames(styles.col, styles.sidenav)}>
+                            <nav className={styles.navbar}>
+                                <ul className={styles.nav}>
                                     {sectionItems}
                                 </ul>
                             </nav>
                         </div>
-                        <div styleName="col splitter" />
-                        <div styleName="col section">
-                            <div styleName="heading">{activeSection.title}</div>
-                            <div styleName="content">
+                        <div className={classNames(styles.col, styles.splitter)} />
+                        <div className={classNames(styles.col, styles.section)}>
+                            <div className={styles.heading}>{activeSection.title}</div>
+                            <div className={styles.content}>
                                 <Component {...componentProps} />
                             </div>
                         </div>

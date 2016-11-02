@@ -1,0 +1,67 @@
+.aboutContainer {
+    margin-top: 10px;
+    align-items: center;
+    display: flex;
+
+    .productLogo {
+        width: 48px;
+    }
+
+    .productDescription {
+        margin-left: 10px;
+
+        .aboutProductTitle {
+            font-size: 18px;
+            margin: 4px 0;
+        }
+        .aboutProductDescription {
+        }
+    }
+}
+
+.helpContainer {
+    margin-top: 15px;
+}
+
+.updateStatusContainer {
+    margin-top: 30px;
+    position: relative;
+
+    .updateStatusIcon {
+        position: absolute;
+        left: 0;
+        height: 18px;
+        width: 18px;
+
+        > * {
+            font-size: 18px;
+            vertical-align: top;
+        }
+
+        &.info {
+            color: #4078c0;
+        }
+        &.warning {
+            color: #f0ad4e;
+        }
+    }
+
+    .updateStatusMessageContainer {
+        display: inline-block;
+        position: relative;
+        padding-left: 26px;
+    }
+
+    .updateStatusMessage {
+        color: #222;
+    }
+    .releaseLatest {
+        color: #767676;
+    }
+
+    .updateStatusActionContainer {
+        display: inline-block;
+        vertical-align: top;
+        margin-left: 40px;
+    }
+}
