@@ -178,7 +178,7 @@ const appMain = () => {
         return {
             webroot: webroot,
             lang: lng,
-            title: `${t('title')} v${settings.version}`,
+            title: `${t('title')} ${settings.version}`,
             loading: t('loading')
         };
     }));

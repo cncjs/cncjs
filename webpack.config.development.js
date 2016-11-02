@@ -48,7 +48,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
         new ExtractTextPlugin('[name].[contenthash].css?[hash]', { allChunks: true }),
         new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
-            title: `cnc v${pkg.version}`,
+            title: `cnc ${pkg.version}`,
             filename: 'index.hbs',
             template: path.resolve(__dirname, 'src/web/assets/index.hbs'),
             chunksSortMode: 'dependency' // Sort chunks by dependency

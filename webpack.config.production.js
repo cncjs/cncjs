@@ -1,4 +1,5 @@
 /* eslint no-var: 0 */
+var without = require('lodash/without');
 var crypto = require('crypto');
 var path = require('path');
 var webpack = require('webpack');
@@ -68,7 +69,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
             }
         }),
         new HtmlWebpackPlugin({
-            title: `cnc v${pkg.version}`,
+            title: `cnc ${pkg.version}`,
             filename: 'index.hbs',
             template: path.resolve(__dirname, 'src/web/assets/index.hbs'),
             chunksSortMode: 'dependency' // Sort chunks by dependency
