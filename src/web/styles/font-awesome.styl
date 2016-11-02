@@ -2,21 +2,23 @@
 @import url("~font-awesome/css/font-awesome.css");
 // @stylint on
 
-.fa.fa-1 {
-    font-size: 1em;
+@-webkit-keyframes fa-spin-reverse /* Safari and Chrome */ {
+    0% {
+        transform: rotate(359deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
 }
-.fa.fa-2 {
-    font-size: 2em;
+@keyframes fa-spin-reverse {
+    0% {
+        transform: rotate(359deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
 }
-.fa.fa-3 {
-    font-size: 4em;
-}
-.fa.fa-4 {
-    font-size: 8em;
-}
-.fa.fa-5 {
-    font-size: 12em;
-}
-.fa.fa-6 {
-    font-size: 20em;
+
+.fa-spin-reverse {
+    animation: fa-spin-reverse 2s infinite linear;
 }

@@ -43,7 +43,7 @@ class Spindle extends Component {
                                             className={classNames(
                                                 'fa',
                                                 'fa-rotate-right',
-                                                { 'rotate-cw': state.spindleState === 'M3' }
+                                                { 'fa-spin': state.spindleState === 'M3' }
                                             )}
                                         />
                                         &nbsp;M3
@@ -67,7 +67,7 @@ class Spindle extends Component {
                                             className={classNames(
                                                 'fa',
                                                 'fa-rotate-left',
-                                                { 'rotate-ccw': state.spindleState === 'M4' }
+                                                { 'fa-spin-reverse': state.spindleState === 'M4' }
                                             )}
                                         />
                                         &nbsp;M4
@@ -103,7 +103,7 @@ class Spindle extends Component {
                                         <i
                                             className={classNames(
                                                 styles['icon-fan'],
-                                                { 'rotate-cw': state.coolantState === 'M7' }
+                                                { 'fa-spin': state.coolantState === 'M7' }
                                             )}
                                         />
                                         &nbsp;M7
@@ -122,7 +122,7 @@ class Spindle extends Component {
                                         <i
                                             className={classNames(
                                                 styles['icon-fan'],
-                                                { 'rotate-cw': state.coolantState === 'M8' }
+                                                { 'fa-spin': state.coolantState === 'M8' }
                                             )}
                                         />
                                         &nbsp;M8

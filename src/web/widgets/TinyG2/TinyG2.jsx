@@ -62,7 +62,7 @@ class TinyG2 extends Component {
         const modal = _.mapValues(_.get(controllerState, 'sr.modal', {}), (word, group) => mapGCodeToText(word));
         const panel = state.panel;
 
-        let plannerBufferStyle = 'default';
+        let plannerBufferStyle = 'info';
         this.plannerBufferMin = Math.min(this.plannerBufferMin, plannerBuffer);
         this.plannerBufferMax = Math.max(this.plannerBufferMax, plannerBuffer);
         if (plannerBuffer > 0 && plannerBuffer === this.plannerBufferMin) {

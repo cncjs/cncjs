@@ -422,10 +422,13 @@ class Connection extends React.Component {
                                 onClick={::this.handleRefresh}
                                 disabled={!canRefresh}
                             >
-                                {notLoading
-                                    ? <i className="fa fa-refresh" />
-                                    : <i className="fa fa-refresh rotate-cw" />
-                                }
+                                <i
+                                    className={classNames(
+                                        'fa',
+                                        'fa-refresh',
+                                        { 'fa-spin': loading }
+                                    )}
+                                />
                             </button>
                         </div>
                     </div>

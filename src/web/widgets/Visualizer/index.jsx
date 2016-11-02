@@ -66,7 +66,7 @@ const displayWebGLErrorMessage = () => {
 const Loading = () => (
     <div className={styles.loader}>
         <div className={styles.loaderIcon}>
-            <i className="fa fa-spinner rotate-cw" />
+            <i className="fa fa-spinner fa-spin" />
         </div>
         <div className={styles.loaderText}>
             {i18n._('Loading...')}
@@ -77,7 +77,7 @@ const Loading = () => (
 const Rendering = () => (
     <div className={styles.loader}>
         <div className={styles.loaderIcon}>
-            <i className="fa fa-cube rotate-cw" />
+            <i className="fa fa-cube fa-spin" />
         </div>
         <div className={styles.loaderText}>
             {i18n._('Rendering...')}
