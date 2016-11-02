@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React from 'react';
-import CSSModules from 'react-css-modules';
 import combokeys from '../../lib/combokeys';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
@@ -11,7 +10,6 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class QuickAccessToolbar extends React.Component {
     actionHandlers = {
         CONTROLLER_COMMAND: (event, { command }) => {
@@ -71,7 +69,7 @@ class QuickAccessToolbar extends React.Component {
     }
     render() {
         return (
-            <div styleName="quick-access-toolbar">
+            <div className={styles['quick-access-toolbar']}>
                 <ul className="nav navbar-nav">
                     <li className="btn-group btn-group-sm" role="group">
                         <button

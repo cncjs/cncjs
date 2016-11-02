@@ -1,6 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import { Navbar } from 'react-bootstrap';
-import CSSModules from 'react-css-modules';
+import { Navbar, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import semver from 'semver';
 import settings from '../../config/settings';
 import api from '../../api';
@@ -9,25 +8,59 @@ import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 import confirm from '../../lib/confirm';
 import Anchor from '../../components/Anchor';
-import styles from './index.styl';
 
-@CSSModules(styles)
+const homepage = 'https://github.com/cheton/cnc/releases';
+
+const newUpdateAvailableTooltip = (currentVersion) => {
+    return (
+        <Tooltip
+            id="navbarBrandTooltip"
+            style={{ color: '#fff' }}
+        >
+            <div>cnc {currentVersion}</div>
+            <div>{i18n._('New update available')}</div>
+        </Tooltip>
+    );
+};
+
+const uptodateVersionTooltip = (currentVersion) => {
+    return (
+        <Tooltip
+            id="navbarBrandTooltip"
+            style={{ color: '#fff' }}
+        >
+            <div>cnc {currentVersion}</div>
+        </Tooltip>
+    );
+};
+
 class Header extends Component {
     static propTypes = {
         path: PropTypes.string
     };
 
+    constructor() {
+        super();
+        this.state = this.getDefaultState();
+    }
     componentDidMount() {
         api.getLatestVersion()
             .then((res) => {
-                const { version } = res.body;
-                if (semver.lt(settings.version, version)) {
-                    // New Version Available
-                }
+                const { time, version } = res.body;
+                this.setState({
+                    latestVersion: version,
+                    latestTime: time
+                });
             })
             .catch((err) => {
                 // Ignore error
             });
+    }
+    getDefaultState() {
+        return {
+            currentVersion: settings.version,
+            latestVersion: settings.version
+        };
     }
     handleRestoreDefaults() {
         confirm({
@@ -40,21 +73,39 @@ class Header extends Component {
     }
     render() {
         const { path } = this.props;
-        const homepage = 'https://github.com/cheton/cnc';
-        const brandTitle = settings.name + ' v' + settings.version;
+        const { currentVersion, latestVersion } = this.state;
+        const newVersionAvailable = semver.lt(currentVersion, latestVersion);
+        const tooltip = newVersionAvailable
+            ? newUpdateAvailableTooltip(currentVersion)
+            : uptodateVersionTooltip(currentVersion);
 
         return (
             <Navbar fixedTop fluid inverse>
                 <Navbar.Header>
-                    <Navbar.Brand>
+                    <OverlayTrigger
+                        overlay={tooltip}
+                        placement="right"
+                    >
                         <Anchor
+                            className="navbar-brand"
                             href={homepage}
                             target="_blank"
-                            title={brandTitle}
                         >
                             {settings.name}
+                            {newVersionAvailable &&
+                            <span
+                                className="label label-primary"
+                                style={{
+                                    position: 'absolute',
+                                    top: 5,
+                                    fontSize: '50%'
+                                }}
+                            >
+                                N
+                            </span>
+                            }
                         </Anchor>
-                    </Navbar.Brand>
+                    </OverlayTrigger>
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
