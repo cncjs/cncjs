@@ -10,6 +10,7 @@ import Detector from 'three/examples/js/Detector';
 import { fitCameraToObject, getBoundingBox, loadTexture } from './helpers';
 import CoordinateAxes from './CoordinateAxes';
 import ToolHead from './ToolHead';
+import TargetPoint from './TargetPoint';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
@@ -64,6 +65,7 @@ class Visualizer extends Component {
         this.camera = null;
         this.controls = null;
         this.toolhead = null;
+        this.targetPoint = null;
         this.visualizer = null;
     }
     componentDidMount() {
@@ -380,6 +382,16 @@ class Visualizer extends Component {
             });
         }
 
+        { // Target Point
+            this.targetPoint = new TargetPoint({
+                color: colornames('indianred'),
+                radius: 0.5
+            });
+            this.targetPoint.name = 'TargetPoint';
+            this.targetPoint.visible = true;
+            this.group.add(this.targetPoint);
+        }
+
         this.scene.add(this.group);
     }
     // @param [options] The options object.
@@ -487,9 +499,12 @@ class Visualizer extends Component {
         y = (Number(y) || 0) - pivotPoint.y;
         z = (Number(z) || 0) - pivotPoint.z;
 
-        if (this.toolhead) {
-            // Set tool head position
+        if (this.toolhead) { // Update toolhead position
             this.toolhead.position.set(x, y, z);
+        }
+
+        if (this.targetPoint) { // Update target point position
+            this.targetPoint.position.set(x, y, z);
         }
     }
     // Make the controls look at the specified position
