@@ -87,6 +87,13 @@ class Settings extends Component {
             title: i18n._('General'),
             component: (props) => <General {...props} />
         },
+        /*
+        {
+            key: 'account',
+            title: i18n._('My Account'),
+            component: (props) => <Account {...props} />
+        },
+        */
         {
             key: 'about',
             title: i18n._('About'),
