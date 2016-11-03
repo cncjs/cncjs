@@ -72,7 +72,7 @@ class General extends Component {
                             >
                                 <i className="fa fa-save" />
                                 &nbsp;
-                                {i18n._('Save')}
+                                {i18n._('Save Changes')}
                             </button>
                         </div>
                     </div>
