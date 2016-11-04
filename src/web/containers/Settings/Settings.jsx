@@ -97,7 +97,7 @@ class Settings extends Component {
         /*
         {
             key: 'account',
-            title: i18n._('My Account'),
+            title: i18n._('Account'),
             component: (props) => <Account {...props} />
         },
         */
