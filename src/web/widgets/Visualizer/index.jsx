@@ -80,7 +80,7 @@ const Rendering = () => (
             <i className="fa fa-cube fa-spin" />
         </div>
         <div className={styles.loaderText}>
-            {i18n._('Rendering...')}
+            {i18n._('3D rendering')}
         </div>
     </div>
 );
