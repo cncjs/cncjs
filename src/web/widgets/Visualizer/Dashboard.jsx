@@ -30,7 +30,7 @@ class Dashboard extends Component {
                 </Panel.Heading>
                 <Panel.Body>
                     <div className="row no-gutters">
-                        <div className="col col-xs-4">{i18n._('Name')}</div>
+                        <div className="col col-xs-4">{i18n._('Filename')}</div>
                         <div className="col col-xs-8">
                             <div className={styles.well}>{state.gcode.ready ? state.gcode.name : none}</div>
                         </div>

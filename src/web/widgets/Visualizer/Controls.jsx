@@ -275,7 +275,7 @@ class Controls extends Component {
                                     replacement={{
                                         status: Detector.webgl
                                             ? (<span style={{ color: colornames('royalblue') }}>{i18n._('Enabled')}</span>)
-                                            : (<span style={{ color: colornames('crimson') }}>{i18n._('Unavailable')}</span>)
+                                            : (<span style={{ color: colornames('crimson') }}>{i18n._('Disabled')}</span>)
                                     }}
                                 />
                             </MenuItem>

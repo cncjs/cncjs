@@ -58,8 +58,8 @@ class WidgetListItem extends Component {
                                 disabled={this.props.disabled}
                                 defaultChecked={checked}
                                 onChange={::this.handleChange}
-                                checkedChildren={i18n._('ON')}
-                                unCheckedChildren={i18n._('OFF')}
+                                checkedChildren={i18n._('On')}
+                                unCheckedChildren={i18n._('Off')}
                             />
                         </div>
                     </div>
