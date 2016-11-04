@@ -34,7 +34,7 @@
     .workspace-table {
         display: table;
         width: 100%;
-        height: 100%;
+        height: 'calc(100vh - %s)' % ($navbar-height);
     }
     .workspace-table-row {
         display: table-row;
