@@ -24,7 +24,7 @@ class Settings extends Component {
                     body: i18n._('Are you sure you want to restore the default settings?')
                 }).then(() => {
                     store.clear();
-                    window.location = '/';
+                    window.location.reload();
                 });
             },
             handleCancel: (event) => {
@@ -35,7 +35,14 @@ class Settings extends Component {
                 const { lang = 'en' } = this.state.general;
 
                 i18next.changeLanguage(lang, (err, t) => {
-                    window.location = '/';
+                    if (window.location.search) {
+                        // Redirect to the originating page if URL query parameters exist
+                        // For example: ?lang=de#/settings
+                        window.location.replace(window.location.pathname);
+                        return;
+                    }
+
+                    window.location.reload();
                 });
             },
             changeLanguage: (lang) => {
