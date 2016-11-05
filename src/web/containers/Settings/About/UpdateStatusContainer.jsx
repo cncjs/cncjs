@@ -32,7 +32,7 @@ const UpdateStatusContainer = (props) => {
                 </div>
                 <div className={styles.updateStatusMessageContainer}>
                     <div className={styles.updateStatusMessage}>
-                        {i18n._('New update available')}
+                        {i18n._('A new version of {{name}} is available!', { name: 'cnc' })}
                     </div>
                     <div className={styles.releaseLatest}>
                         {i18n._('Version {{version}}', { version: latest })}
@@ -51,7 +51,7 @@ const UpdateStatusContainer = (props) => {
                     >
                         <i className="fa fa-external-link fa-fw" />
                         &nbsp;
-                        {i18n._('Latest release')}
+                        {i18n._('Latest version')}
                     </button>
                 </div>
             </div>
@@ -65,7 +65,7 @@ const UpdateStatusContainer = (props) => {
             </div>
             <div className={styles.updateStatusMessageContainer}>
                 <div className={styles.updateStatusMessage}>
-                    {i18n._('cnc is up to date')}
+                    {i18n._('You already have the newest version of {{name}}.', { name: 'cnc' })}
                 </div>
             </div>
         </div>
