@@ -9,6 +9,16 @@ const HelpContainer = () => {
                 type="button"
                 className="btn btn-default"
                 onClick={() => {
+                    const url = 'https://github.com/cheton/cnc/releases';
+                    window.open(url, '_blank');
+                }}
+            >
+                {i18n._('Downloads')}
+            </button>
+            <button
+                type="button"
+                className="btn btn-default"
+                onClick={() => {
                     const url = 'https://github.com/cheton/cnc/issues';
                     window.open(url, '_blank');
                 }}

@@ -1,10 +1,32 @@
+button + button {
+    margin-left: 5px;
+}
+
+.learnmore {
+    color: #0060AC;
+    font-size: 14px;
+
+    > * {
+        vertical-align: middle;
+    }
+}
+
+.label {
+    display: inline-block;
+    color: #0060AC;
+    border: 1px solid rgba(0, 0, 0, .1);
+    border-radius: 3px;
+    border-color: #8daed9;
+    padding: 4px 8px;
+}
+
 .aboutContainer {
-    margin-top: 10px;
+    margin-top: 0;
     align-items: center;
     display: flex;
 
     .productLogo {
-        width: 48px;
+        width: 96px;
     }
 
     .productDescription {
@@ -12,9 +34,9 @@
 
         .aboutProductTitle {
             font-size: 18px;
-            margin: 4px 0;
         }
         .aboutProductDescription {
+            margin-bottom: 10px;
         }
     }
 }

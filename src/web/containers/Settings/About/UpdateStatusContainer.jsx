@@ -2,12 +2,13 @@ import moment from 'moment';
 import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import semver from 'semver';
+import Anchor from '../../../components/Anchor';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
 const UpdateStatusContainer = (props) => {
     const { checking, current, latest, lastUpdate } = props;
-    const newUpdateAvailable = (checking === false) && semver.lt(current, latest);
+    const newUpdateAvailable = (checking === false) && semver.eq(current, latest);
 
     if (checking) {
         return (
@@ -32,7 +33,7 @@ const UpdateStatusContainer = (props) => {
                 </div>
                 <div className={styles.updateStatusMessageContainer}>
                     <div className={styles.updateStatusMessage}>
-                        {i18n._('A new version of {{name}} is available!', { name: 'cnc' })}
+                        {i18n._('A new version of {{name}} is available', { name: 'cnc' })}
                     </div>
                     <div className={styles.releaseLatest}>
                         {i18n._('Version {{version}}', { version: latest })}
@@ -41,18 +42,16 @@ const UpdateStatusContainer = (props) => {
                     </div>
                 </div>
                 <div className={styles.updateStatusActionContainer}>
-                    <button
-                        type="btn"
-                        className="btn btn-default btn-sm"
-                        onClick={() => {
-                            const url = 'https://github.com/cheton/cnc/releases/latest';
-                            window.open(url, '_blank');
-                        }}
+                    <Anchor
+                        href="https://github.com/cheton/cnc/releases/latest"
+                        target="_blank"
                     >
-                        <i className="fa fa-external-link fa-fw" />
-                        &nbsp;
-                        {i18n._('Latest version')}
-                    </button>
+                        <span className={styles.label}>
+                            {i18n._('Latest version')}
+                            <span className="space" />
+                            <i className="fa fa-external-link fa-fw" />
+                        </span>
+                    </Anchor>
                 </div>
             </div>
         );
@@ -65,7 +64,7 @@ const UpdateStatusContainer = (props) => {
             </div>
             <div className={styles.updateStatusMessageContainer}>
                 <div className={styles.updateStatusMessage}>
-                    {i18n._('You already have the newest version of {{name}}.', { name: 'cnc' })}
+                    {i18n._('You already have the newest version of {{name}}', { name: 'cnc' })}
                 </div>
             </div>
         </div>
