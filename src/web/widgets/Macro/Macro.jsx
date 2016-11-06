@@ -82,7 +82,7 @@ class Macro extends Component {
                             }}
                         >
                             <i className="fa fa-plus" />
-                            &nbsp;
+                            <span className="space" />
                             {i18n._('Create Macro')}
                         </button>
                     </div>

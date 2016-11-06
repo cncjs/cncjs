@@ -287,7 +287,7 @@ class Controls extends Component {
                                     ? <i className="fa fa-toggle-off" />
                                     : <i className="fa fa-toggle-on" />
                                 }
-                                &nbsp;
+                                <span className="space" />
                                 {(!Detector.webgl || disabled)
                                     ? i18n._('Enable 3D View')
                                     : i18n._('Disable 3D View')
@@ -302,7 +302,7 @@ class Controls extends Component {
                                     ? <i className="fa fa-toggle-on" />
                                     : <i className="fa fa-toggle-off" />
                                 }
-                                &nbsp;
+                                <span className="space" />
                                 {objects.coordinateSystem.visible
                                     ? i18n._('Hide Coordinate System')
                                     : i18n._('Show Coordinate System')
@@ -316,7 +316,7 @@ class Controls extends Component {
                                     ? <i className="fa fa-toggle-on" />
                                     : <i className="fa fa-toggle-off" />
                                 }
-                                &nbsp;
+                                <span className="space" />
                                 {objects.toolhead.visible
                                     ? i18n._('Hide Toolhead')
                                     : i18n._('Show Toolhead')

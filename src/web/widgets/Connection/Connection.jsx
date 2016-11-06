@@ -289,7 +289,10 @@ class Connection extends React.Component {
             <div style={styles.option} title={label}>
                 <div>
                     {inuse &&
-                    <span><i className="fa fa-lock" />&nbsp;</span>
+                    <span>
+                        <i className="fa fa-lock" />
+                        <span className="space" />
+                    </span>
                     }
                     {label}
                 </div>
@@ -311,7 +314,10 @@ class Connection extends React.Component {
         return (
             <div style={style} title={label}>
                 {inuse &&
-                    <span><i className="fa fa-lock" />&nbsp;</span>
+                <span>
+                    <i className="fa fa-lock" />
+                    <span className="space" />
+                </span>
                 }
                 {label}
             </div>
@@ -357,7 +363,7 @@ class Connection extends React.Component {
                 </Notifications>
                 }
                 <div className="form-group">
-                    <div className="input-group input-group-xs">
+                    <div className="input-group input-group-sm">
                         <div className="input-group-btn">
                             <button
                                 type="button"
@@ -371,7 +377,7 @@ class Connection extends React.Component {
                                     this.changeController('Grbl');
                                 }}
                             >
-                                &nbsp;Grbl&nbsp;
+                                Grbl
                             </button>
                             <button
                                 type="button"
@@ -385,7 +391,7 @@ class Connection extends React.Component {
                                     this.changeController('TinyG2');
                                 }}
                             >
-                                &nbsp;TinyG2&nbsp;
+                                TinyG2
                             </button>
                         </div>
                     </div>
@@ -470,7 +476,9 @@ class Connection extends React.Component {
                                 });
                             }}
                         >
-                            <i className="fa fa-toggle-off" />&nbsp;{i18n._('Open')}
+                            <i className="fa fa-toggle-off" />
+                            <span className="space" />
+                            {i18n._('Open')}
                         </button>
                     }
                     {connected &&
@@ -482,7 +490,9 @@ class Connection extends React.Component {
                                 this.closePort(port);
                             }}
                         >
-                            <i className="fa fa-toggle-on" />&nbsp;{i18n._('Close')}
+                            <i className="fa fa-toggle-on" />
+                            <span className="space" />
+                            {i18n._('Close')}
                         </button>
                     }
                 </div>

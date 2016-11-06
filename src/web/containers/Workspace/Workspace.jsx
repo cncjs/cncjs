@@ -321,7 +321,7 @@ class Workspace extends React.Component {
                                             onClick={::this.updateWidgetsForPrimaryContainer}
                                         >
                                             <i className="fa fa-list-alt" style={{ verticalAlign: 'middle' }} />
-                                            &nbsp;
+                                            <span className="space" />
                                             {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                         </button>
                                     </div>
@@ -398,7 +398,7 @@ class Workspace extends React.Component {
                                             onClick={::this.updateWidgetsForSecondaryContainer}
                                         >
                                             <i className="fa fa-list-alt" style={{ verticalAlign: 'middle' }} />
-                                            &nbsp;
+                                            <span className="space" />
                                             {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
                                         </button>
                                     </div>

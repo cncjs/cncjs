@@ -31,7 +31,7 @@ class AxesSettings extends React.Component {
                                 checked
                                 disabled
                             />
-                            &nbsp;
+                            <span className="space" />
                             {i18n._('X-axis')}
                         </label>
                     </div>
@@ -42,7 +42,7 @@ class AxesSettings extends React.Component {
                                 checked
                                 disabled
                             />
-                            &nbsp;
+                            <span className="space" />
                             {i18n._('Y-axis')}
                         </label>
                     </div>
@@ -53,7 +53,7 @@ class AxesSettings extends React.Component {
                                 checked
                                 disabled
                             />
-                            &nbsp;
+                            <span className="space" />
                             {i18n._('Z-axis')}
                         </label>
                     </div>
@@ -70,7 +70,7 @@ class AxesSettings extends React.Component {
                                     }
                                 }}
                             />
-                            &nbsp;
+                            <span className="space" />
                             {i18n._('A-axis')}
                         </label>
                     </div>

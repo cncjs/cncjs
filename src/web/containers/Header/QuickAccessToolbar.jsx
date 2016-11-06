@@ -78,7 +78,9 @@ class QuickAccessToolbar extends React.Component {
                             onClick={::this.handleCycleStart}
                             title={i18n._('Cycle Start')}
                         >
-                            <i className="fa fa-play" />&nbsp;{i18n._('Cycle Start')}
+                            <i className="fa fa-play" />
+                            <span className="space" />
+                            {i18n._('Cycle Start')}
                         </button>
                         <button
                             type="button"
@@ -86,7 +88,9 @@ class QuickAccessToolbar extends React.Component {
                             onClick={::this.handleFeedHold}
                             title={i18n._('Feedhold')}
                         >
-                            <i className="fa fa-pause" />&nbsp;{i18n._('Feedhold')}
+                            <i className="fa fa-pause" />
+                            <span className="space" />
+                            {i18n._('Feedhold')}
                         </button>
                     </li>
                     <li className="btn-group btn-group-sm" role="group">
@@ -96,7 +100,9 @@ class QuickAccessToolbar extends React.Component {
                             onClick={::this.handleHoming}
                             title={i18n._('Homing')}
                         >
-                            <i className="fa fa-home" />&nbsp;{i18n._('Homing')}
+                            <i className="fa fa-home" />
+                            <span className="space" />
+                            {i18n._('Homing')}
                         </button>
                         <button
                             type="button"
@@ -104,7 +110,9 @@ class QuickAccessToolbar extends React.Component {
                             onClick={::this.handleUnlock}
                             title={i18n._('Unlock')}
                         >
-                            <i className="fa fa-unlock-alt" />&nbsp;{i18n._('Unlock')}
+                            <i className="fa fa-unlock-alt" />
+                            <span className="space" />
+                            {i18n._('Unlock')}
                         </button>
                         <button
                             type="button"
@@ -112,7 +120,9 @@ class QuickAccessToolbar extends React.Component {
                             onClick={::this.handleReset}
                             title={i18n._('Reset')}
                         >
-                            <i className="fa fa-undo" />&nbsp;{i18n._('Reset')}
+                            <i className="fa fa-undo" />
+                            <span className="space" />
+                            {i18n._('Reset')}
                         </button>
                     </li>
                 </ul>

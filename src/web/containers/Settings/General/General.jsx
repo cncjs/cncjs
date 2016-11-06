@@ -71,7 +71,7 @@ class General extends Component {
                                 onClick={actions.handleSave}
                             >
                                 <i className="fa fa-save" />
-                                &nbsp;
+                                <span className="space" />
                                 {i18n._('Save Changes')}
                             </button>
                         </div>

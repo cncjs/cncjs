@@ -49,9 +49,7 @@ class ShuttleSettings extends Component {
                 <div className="panel-body">
                     <div className="form-group form-group-sm">
                         <p>
-                            {i18n._('Feed Rate Range:')}
-                            &nbsp;
-                            {i18n._('{{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
+                            {i18n._('Feed Rate Range: {{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
                         </p>
                         <Slider
                             range
@@ -64,7 +62,9 @@ class ShuttleSettings extends Component {
                         />
                     </div>
                     <div className="form-group form-group-sm">
-                        <label>{i18n._('Repeat Rate:')}&nbsp;{i18n._('{{hertz}}Hz', { hertz })}</label>
+                        <label>
+                            {i18n._('Repeat Rate: {{hertz}}Hz', { hertz: hertz })}
+                        </label>
                         <select className="form-control" defaultValue={hertz} onChange={::this.onHertzChange}>
                             <option value="60">{i18n._('60 Times per Second')}</option>
                             <option value="45">{i18n._('45 Times per Second')}</option>
@@ -77,7 +77,9 @@ class ShuttleSettings extends Component {
                         </select>
                     </div>
                     <div className="form-group form-group-sm" style={{ marginBottom: 0 }}>
-                        <p>{i18n._('Distance Overshoot:')}&nbsp;{overshoot}x</p>
+                        <p>
+                            {i18n._('Distance Overshoot: {{overshoot}}x', { overshoot: overshoot })}
+                        </p>
                         <Slider
                             defaultValue={overshoot}
                             min={OVERSHOOT_RANGE[0]}

@@ -52,7 +52,7 @@ class Probe extends Component {
                 <div className="form-group">
                     <label className="control-label">{i18n._('Probe Command')}</label>
                     <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>
-                        <div className="btn-group btn-group-xs">
+                        <div className="btn-group btn-group-sm">
                             <button
                                 type="button"
                                 className={classes['G38.2']}
@@ -106,7 +106,7 @@ class Probe extends Component {
                     <div className="col-xs-6" style={{ paddingRight: 5 }}>
                         <div className="form-group">
                             <label className="control-label">{i18n._('Probe Depth')}</label>
-                            <div className="input-group input-group-xs">
+                            <div className="input-group input-group-sm">
                                 <input
                                     type="number"
                                     className="form-control"
@@ -123,7 +123,7 @@ class Probe extends Component {
                     <div className="col-xs-6" style={{ paddingLeft: 5 }}>
                         <div className="form-group">
                             <label className="control-label">{i18n._('Probe Feedrate')}</label>
-                            <div className="input-group input-group-xs">
+                            <div className="input-group input-group-sm">
                                 <input
                                     type="number"
                                     className="form-control"
@@ -140,7 +140,7 @@ class Probe extends Component {
                     <div className="col-xs-6" style={{ paddingRight: 5 }}>
                         <div className="form-group">
                             <label className="control-label">{i18n._('Touch Plate Thickness')}</label>
-                            <div className="input-group input-group-xs">
+                            <div className="input-group input-group-sm">
                                 <input
                                     type="number"
                                     className="form-control"
@@ -157,7 +157,7 @@ class Probe extends Component {
                     <div className="col-xs-6" style={{ paddingLeft: 5 }}>
                         <div className="form-group">
                             <label className="control-label">{i18n._('Retraction Distance')}</label>
-                            <div className="input-group input-group-xs">
+                            <div className="input-group input-group-sm">
                                 <input
                                     type="number"
                                     className="form-control"

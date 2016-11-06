@@ -47,42 +47,48 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             <i className="fa fa-angle-right" style={styles.icon} />
                         </kbd>
-                        &nbsp;{i18n._('Right')}
+                        <span className="space" />
+                        {i18n._('Right')}
                     </div>
                     <div className="col-xs-12">
                         <span style={styles.axisDirection}>X-</span>
                         <kbd style={styles.kbd}>
                             <i className="fa fa-angle-left" style={styles.icon} />
                         </kbd>
-                        &nbsp;{i18n._('Left')}
+                        <span className="space" />
+                        {i18n._('Left')}
                     </div>
                     <div className="col-xs-12">
                         <span style={styles.axisDirection}>Y+</span>
                         <kbd style={styles.kbd}>
                             <i className="fa fa-angle-up" style={styles.icon} />
                         </kbd>
-                        &nbsp;{i18n._('Up')}
+                        <span className="space" />
+                        {i18n._('Up')}
                     </div>
                     <div className="col-xs-12">
                         <span style={styles.axisDirection}>Y-</span>
                         <kbd style={styles.kbd}>
                             <i className="fa fa-angle-down" style={styles.icon} />
                         </kbd>
-                        &nbsp;{i18n._('Down')}
+                        <span className="space" />
+                        {i18n._('Down')}
                     </div>
                     <div className="col-xs-12">
                         <span style={styles.axisDirection}>Z+</span>
                         <kbd style={styles.kbd}>
                             <i className="fa fa-long-arrow-up" style={styles.icon} />
                         </kbd>
-                        &nbsp;{i18n._('Page Up')}
+                        <span className="space" />
+                        {i18n._('Page Up')}
                     </div>
                     <div className="col-xs-12">
                         <span style={styles.axisDirection}>Z-</span>
                         <kbd style={styles.kbd}>
                             <i className="fa fa-long-arrow-down" style={styles.icon} />
                         </kbd>
-                        &nbsp;{i18n._('Page Down')}
+                        <span className="space" />
+                        {i18n._('Page Down')}
                     </div>
                 </div>
                 <div className="row no-gutters">
@@ -156,7 +162,7 @@ class ToolbarButton extends Component {
                             disabled={!canClick}
                         >
                             <i className="fa fa-keyboard-o" />
-                            &nbsp;
+                            <span className="space" />
                             {i18n._('Keypad')}
                         </button>
                     </OverlayTrigger>

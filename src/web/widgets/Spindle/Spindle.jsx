@@ -46,7 +46,8 @@ class Spindle extends Component {
                                                 { 'fa-spin': state.spindleState === 'M3' }
                                             )}
                                         />
-                                        &nbsp;M3
+                                        <span className="space space-sm" />
+                                        M3
                                     </button>
                                 </div>
                                 <div className="btn-group btn-group-sm" role="group">
@@ -70,10 +71,11 @@ class Spindle extends Component {
                                                 { 'fa-spin-reverse': state.spindleState === 'M4' }
                                             )}
                                         />
-                                        &nbsp;M4
+                                        <span className="space space-sm" />
+                                        M4
                                     </button>
                                 </div>
-                                <div className="btn-group btn-group-sms" role="group">
+                                <div className="btn-group btn-group-sm" role="group">
                                     <button
                                         type="button"
                                         className="btn btn-default"
@@ -82,7 +84,8 @@ class Spindle extends Component {
                                         disabled={!canClick}
                                     >
                                         <i className="fa fa-power-off" />
-                                        &nbsp;M5
+                                        <span className="space space-sm" />
+                                        M5
                                     </button>
                                 </div>
                             </div>
@@ -106,7 +109,8 @@ class Spindle extends Component {
                                                 { 'fa-spin': state.coolantState === 'M7' }
                                             )}
                                         />
-                                        &nbsp;M7
+                                        <span className="space space-sm" />
+                                        M7
                                     </button>
                                 </div>
                                 <div className="btn-group btn-group-sm" role="group">
@@ -125,7 +129,8 @@ class Spindle extends Component {
                                                 { 'fa-spin': state.coolantState === 'M8' }
                                             )}
                                         />
-                                        &nbsp;M8
+                                        <span className="space space-sm" />
+                                        M8
                                     </button>
                                 </div>
                                 <div className="btn-group btn-group-sm" role="group">
@@ -139,7 +144,8 @@ class Spindle extends Component {
                                         disabled={!canClick}
                                     >
                                         <i className="fa fa-power-off" />
-                                        &nbsp;M9
+                                        <span className="space space-sm" />
+                                        M9
                                     </button>
                                 </div>
                             </div>
