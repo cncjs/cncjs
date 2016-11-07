@@ -13,7 +13,7 @@
   font-style: normal;
   font-weight: normal;
   src: url(../fonts/Interstate-ExtraLight-webfont.eot);
-  src: url(../fonts/Interstate-ExtraLight-webfont.eot?#iefix) format("embedded-opentype"), 
+  src: url(../fonts/Interstate-ExtraLight-webfont.eot?#iefix) format("embedded-opentype"),
        url(../fonts/Interstate-ExtraLight-webfont.woff) format("woff"),
        url(../fonts/Interstate-ExtraLight-webfont.ttf) format("truetype"),
        url(../fonts/Interstate-ExtraLight-webfont.svg#InterstateExtraLight) format("svg");
@@ -25,7 +25,7 @@
   font-style: normal;
   font-weight: normal;
   src: url(../fonts/Interstate-Light-webfont.eot);
-  src: url(../fonts/Interstate-Light-webfont.eot?#iefix) format("embedded-opentype"), 
+  src: url(../fonts/Interstate-Light-webfont.eot?#iefix) format("embedded-opentype"),
        url(../fonts/Interstate-Light-webfont.woff) format("woff"),
        url(../fonts/Interstate-Light-webfont.ttf) format("truetype"),
        url(../fonts/Interstate-Light-webfont.svg#InterstateLight) format("svg");
@@ -34,7 +34,7 @@
 // Headings
 // -------------------------
 h1, h2, h3, h4, h5, h6,
-.h1, .h2, .h3, .h4, .h5, .h6 {  
+.h1, .h2, .h3, .h4, .h5, .h6 {
   font-weight: $headings-font-weight;
   line-height: $headings-line-height;
   color: $headings-color;
@@ -91,12 +91,24 @@ h6, .h6 {
   letter-spacing: $letter-spacing-heading-s;
 }
 
-h1, .h1 { font-size: $font-size-h1; }
-h2, .h2 { font-size: $font-size-h2; }
-h3, .h3 { font-size: $font-size-h3; }
-h4, .h4 { font-size: $font-size-h4; }
-h5, .h5 { font-size: $font-size-h5; }
-h6, .h6 { font-size: $font-size-h6; }
+h1, .h1 {
+    font-size: $font-size-h1;
+}
+h2, .h2 {
+    font-size: $font-size-h2;
+}
+h3, .h3 {
+    font-size: $font-size-h3;
+}
+h4, .h4 {
+    font-size: $font-size-h4;
+}
+h5, .h5 {
+    font-size: $font-size-h5;
+}
+h6, .h6 {
+    font-size: $font-size-h6;
+}
 
 
 // Body text
@@ -153,20 +165,36 @@ mark,
 }
 
 // Alignment
-.text-left           { text-align: left; }
-.text-right          { text-align: right; }
-.text-center         { text-align: center; }
-.text-justify        { text-align: justify; }
-.text-nowrap         { white-space: nowrap; }
+.text-left {
+    text-align: left;
+}
+.text-right {
+    text-align: right;
+}
+.text-center {
+    text-align: center;
+}
+.text-justify {
+    text-align: justify;
+}
+.text-nowrap {
+    white-space: nowrap;
+}
 
 // Transformation
-.text-lowercase      { text-transform: lowercase; }
-.text-uppercase      { text-transform: uppercase; }
-.text-capitalize     { text-transform: capitalize; }
+.text-lowercase {
+    text-transform: lowercase;
+}
+.text-uppercase {
+    text-transform: uppercase;
+}
+.text-capitalize {
+    text-transform: capitalize;
+}
 
 // Contextual colors
 .text-muted {
-  color: $text-muted;
+    color: $text-muted;
 }
 
 // Lists
@@ -194,10 +222,11 @@ ol {
 
 // Inline turns list items into inline-block
 .list-inline {
-  @extend .list-unstyled;
+  padding-left: 0;
+  list-style: none;
 
   > li {
-    display: inline-block;    
+    display: inline-block;
     margin-left: 21px;
     &:first-child {
       margin-left: 0;
@@ -237,11 +266,11 @@ dd {
 
   dt {
     color: $dl-horizontal-title-color;
-  }  
+  }
   
   @media (min-width: $dl-horizontal-breakpoint) {
     dt {
-      float: left;      
+      float: left;
       clear: left;
       text-align: left;
 
