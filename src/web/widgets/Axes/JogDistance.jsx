@@ -116,7 +116,7 @@ class JogDistance extends Component {
                         <button
                             type="button"
                             className={classes.custom}
-                            title={i18n._('Custom')}
+                            title={i18n._('User Defined')}
                             onClick={() => actions.selectDistance()}
                         >
                             <i className="fa fa-adjust" />
