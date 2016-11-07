@@ -227,6 +227,8 @@
     "Edit Macro": "編輯巨集",
     "Delete Macro": "刪除巨集",
     "Are you sure you want to delete this macro?": "你確定要刪除這個巨集？",
+    "Yes": "是",
+    "No": "否",
     "Delete": "刪除",
     "Macro": "巨集",
     "Are you sure you want to load this macro?": "你確定要載入這個巨集？",

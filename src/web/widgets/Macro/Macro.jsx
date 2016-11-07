@@ -35,8 +35,8 @@ class Macro extends Component {
                     <p>{name}</p>
                 </div>
             ),
-            confirmText: i18n._('OK'),
-            cancelText: i18n._('Cancel')
+            confirmText: i18n._('Yes'),
+            cancelText: i18n._('No')
         });
     }
     handleLoadMacro({ id, name, content }) {

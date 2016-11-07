@@ -227,6 +227,8 @@
     "Edit Macro": "Редактирование макроса",
     "Delete Macro": "Удаление макросов",
     "Are you sure you want to delete this macro?": "",
+    "Yes": "Да",
+    "No": "Нет",
     "Delete": "Удалить",
     "Macro": "Макрос",
     "Are you sure you want to load this macro?": "",
