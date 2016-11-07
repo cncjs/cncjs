@@ -245,6 +245,7 @@
     "Probe Feedrate": "Feedrate sondy",
     "Touch Plate Thickness": "Tloušťka dotykové desky",
     "Retraction Distance": "Vzdálenost vrácení",
+    "Start": "Spustit",
     "Run Z-probe": "Spustit sondu osy Z",
     "Cancel Tool Length Offset (G49)": "Zrušit offset délky nástroje (G49)",
     "Spindle Speed": "Otáčky nástroje",

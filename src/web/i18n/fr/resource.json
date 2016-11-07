@@ -245,6 +245,7 @@
     "Probe Feedrate": "Vitesse de palpage",
     "Touch Plate Thickness": "Largeur du palpeur",
     "Retraction Distance": "Distance de retrait",
+    "Start": "Démarrer",
     "Run Z-probe": "Lancer le palpage en Z",
     "Cancel Tool Length Offset (G49)": "Supprimer le décallage lié à la taille de l'outil(G49)",
     "Spindle Speed": "Vitesse de broche",

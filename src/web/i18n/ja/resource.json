@@ -245,6 +245,7 @@
     "Probe Feedrate": "",
     "Touch Plate Thickness": "",
     "Retraction Distance": "",
+    "Start": "開始",
     "Run Z-probe": "",
     "Cancel Tool Length Offset (G49)": "",
     "Spindle Speed": "",

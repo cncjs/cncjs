@@ -245,6 +245,7 @@
     "Probe Feedrate": "Velocidade",
     "Touch Plate Thickness": "Espessura da placa de toque",
     "Retraction Distance": "Distância de retração",
+    "Start": "Iniciar",
     "Run Z-probe": "Rodar o referenciamento de Z",
     "Cancel Tool Length Offset (G49)": "Cancel Tool Length Offset (G49)",
     "Spindle Speed": "Velocidade do Spindle",

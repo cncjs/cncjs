@@ -245,6 +245,7 @@
     "Probe Feedrate": "探測進給率",
     "Touch Plate Thickness": "對刀儀厚度",
     "Retraction Distance": "回縮距離",
+    "Start": "啟動",
     "Run Z-probe": "執行Ｚ軸探測",
     "Cancel Tool Length Offset (G49)": "刀具長度補償消除 (G49)",
     "Spindle Speed": "主軸轉速",
