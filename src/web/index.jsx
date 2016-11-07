@@ -1,7 +1,4 @@
-/* eslint import/imports-first: 0 */
 /* eslint import/no-dynamic-require: 0 */
-require('./polyfill');
-
 import series from 'async/series';
 import moment from 'moment';
 import React from 'react';
