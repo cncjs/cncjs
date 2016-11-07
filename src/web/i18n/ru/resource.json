@@ -1,6 +1,6 @@
 {
     "New update available": "Доступно новое обновление",
-    "Restore Defaults": "Вернуть настройки",
+    "Restore Defaults": "Восстановить настройки по умолчанию",
     "Are you sure you want to restore the default settings?": "",
     "Cycle Start": "Пуск",
     "Feedhold": "Пауза",
@@ -116,7 +116,7 @@
     "Open": "Открыть",
     "Fullscreen": "Развернуть на полный экран",
     "Remove": "Удалить",
-    "Custom": "Особое",
+    "User Defined": "Определяется пользователем",
     "Custom distance for every move operation": "Особое расстояние для каждого перемещения",
     "Increase custom distance by one unit": "Добавить особое расстояние на одну единицу",
     "Decrease custom distance by one unit": "Убавить особое расстояние на одну единицу",

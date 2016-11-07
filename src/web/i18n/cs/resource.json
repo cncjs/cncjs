@@ -1,6 +1,6 @@
 {
     "New update available": "K dispozici nová aktualizace",
-    "Restore Defaults": "Obnovit základ",
+    "Restore Defaults": "Obnovit výchozí",
     "Are you sure you want to restore the default settings?": "Opravdu chcete obnovit základní nastavení?",
     "Cycle Start": "Start cyklu",
     "Feedhold": "Feedhold",
@@ -116,7 +116,7 @@
     "Open": "Otevřít",
     "Fullscreen": "Fullscreen",
     "Remove": "Odebrat",
-    "Custom": "Různé",
+    "User Defined": "Uživatelské",
     "Custom distance for every move operation": "Různá vzdálenost pro každý Posuv",
     "Increase custom distance by one unit": "Zvětšit různou vzdálenost o jednu jednotku",
     "Decrease custom distance by one unit": "Zmenšit různou vzdálenost o jednu jednotku",

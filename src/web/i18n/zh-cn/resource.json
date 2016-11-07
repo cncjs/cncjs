@@ -1,6 +1,6 @@
 {
     "New update available": "有新的更新可用",
-    "Restore Defaults": "恢复默认值",
+    "Restore Defaults": "恢复缺省值",
     "Are you sure you want to restore the default settings?": "您确定要恢复默认值吗？",
     "Cycle Start": "循环启动",
     "Feedhold": "进给暂停",
@@ -116,7 +116,7 @@
     "Open": "打开",
     "Fullscreen": "全屏",
     "Remove": "删除",
-    "Custom": "定制",
+    "User Defined": "用户定义",
     "Custom distance for every move operation": "定制移动距离",
     "Increase custom distance by one unit": "增加一个单位的定制距离",
     "Decrease custom distance by one unit": "减少一个单位的定制距离",
