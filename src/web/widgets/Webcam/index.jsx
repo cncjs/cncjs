@@ -141,6 +141,7 @@ class WebcamWidget extends Component {
                     </Widget.Controls>
                     <Widget.Toolbar>
                         <Widget.Button
+                            title={disabled ? i18n._('Enable') : i18n._('Disable')}
                             type="default"
                             onClick={(event) => this.setState({ disabled: !disabled })}
                         >
