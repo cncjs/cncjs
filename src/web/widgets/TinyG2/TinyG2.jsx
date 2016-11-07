@@ -77,6 +77,7 @@ class TinyG2 extends Component {
                         <Toggler
                             className="clearfix"
                             onToggle={actions.toggleQueueReports}
+                            title={panel.queueReports.expanded ? i18n._('Hide') : i18n._('Show')}
                         >
                             <div className="pull-left">{i18n._('Queue Reports')}</div>
                             <Toggler.Icon
@@ -110,6 +111,7 @@ class TinyG2 extends Component {
                         <Toggler
                             className="clearfix"
                             onToggle={actions.toggleStatusReports}
+                            title={panel.statusReports.expanded ? i18n._('Hide') : i18n._('Show')}
                         >
                             <div className="pull-left">{i18n._('Status Reports')}</div>
                             <Toggler.Icon
@@ -160,6 +162,7 @@ class TinyG2 extends Component {
                         <Toggler
                             className="clearfix"
                             onToggle={actions.toggleModalGroups}
+                            title={panel.modalGroups.expanded ? i18n._('Hide') : i18n._('Show')}
                         >
                             <div className="pull-left">{i18n._('Modal Groups')}</div>
                             <Toggler.Icon
