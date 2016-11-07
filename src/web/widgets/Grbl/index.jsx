@@ -171,7 +171,7 @@ class GrblWidget extends Component {
                     <Widget.Title>{i18n._('Grbl')}</Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
-                            title={i18n._('Expand/Collapse')}
+                            title={minimized ? i18n._('Open') : i18n._('Close')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
@@ -195,7 +195,7 @@ class GrblWidget extends Component {
                             />
                         </Widget.Button>
                         <Widget.Button
-                            title={i18n._('Delete')}
+                            title={i18n._('Remove')}
                             onClick={(event) => this.props.onDelete()}
                         >
                             <i className="fa fa-times" />

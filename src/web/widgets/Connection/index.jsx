@@ -36,7 +36,7 @@ class ConnectionWidget extends Component {
                     <Widget.Title>{i18n._('Connection')}</Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
-                            title={i18n._('Expand/Collapse')}
+                            title={minimized ? i18n._('Open') : i18n._('Close')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i

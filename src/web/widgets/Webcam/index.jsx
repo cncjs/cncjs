@@ -109,7 +109,7 @@ class WebcamWidget extends Component {
                             <i className="fa fa-refresh" />
                         </Widget.Button>
                         <Widget.Button
-                            title={i18n._('Expand/Collapse')}
+                            title={minimized ? i18n._('Open') : i18n._('Close')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
                             <i
@@ -133,7 +133,7 @@ class WebcamWidget extends Component {
                             />
                         </Widget.Button>
                         <Widget.Button
-                            title={i18n._('Delete')}
+                            title={i18n._('Remove')}
                             onClick={(event) => this.props.onDelete()}
                         >
                             <i className="fa fa-times" />
