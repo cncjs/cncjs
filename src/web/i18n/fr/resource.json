@@ -195,6 +195,8 @@
     "Start Time": "Heure de début",
     "Duration": "Durée",
     "G-code": "G-code",
+    "Hide": "Masquer",
+    "Show": "Montrer",
     "Status Reports": "",
     "State": "État",
     "Feed Rate": "Vitesse d'usinage",

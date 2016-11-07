@@ -195,6 +195,8 @@
     "Start Time": "Start Time",
     "Duration": "Duration",
     "G-code": "G-code",
+    "Hide": "Hide",
+    "Show": "Show",
     "Status Reports": "Status Reports",
     "State": "State",
     "Feed Rate": "Feed Rate",
