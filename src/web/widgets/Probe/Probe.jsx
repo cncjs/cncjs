@@ -181,6 +181,7 @@ class Probe extends Component {
                                     className="btn btn-sm btn-default"
                                     onClick={actions.runZProbe}
                                     disabled={!canClick}
+                                    title={i18n._('Start')}
                                 >
                                     {i18n._('Run Z-probe')}
                                 </button>
