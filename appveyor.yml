@@ -27,6 +27,7 @@ matrix:
 
 platform:
   - x86
+  - x64
 
 install:
   - ps: |
