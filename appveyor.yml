@@ -26,7 +26,6 @@ matrix:
   fast_finish: true
 
 platform:
-  - x64
   - x86
 
 install:
