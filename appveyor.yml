@@ -26,7 +26,6 @@ matrix:
   fast_finish: true
 
 platform:
-  - x86
   - x64
 
 install:
@@ -74,7 +73,7 @@ build_script:
         }
       }
   - ps: |
-      if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x86') {
+      if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
         npm run build:win-ia32
         Get-ChildItem output
         Copy-Item "output\${PACKAGE_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win-ia32.exe"
