@@ -1,13 +1,16 @@
 /* eslint no-var: 0 */
+/* eslint prefer-arrow-callback: 0 */
 var without = require('lodash/without');
 var crypto = require('crypto');
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
 var WebpackMd5HashPlugin = require('webpack-md5-hash');
 var ManifestPlugin = require('webpack-manifest-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
+var HtmlWebpackPlugin = require('html-webpack-plugin');
+var HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
 var baseConfig = require('./webpack.config.base');
 var languages = require('./webpack.config.i18n').languages;
 var pkg = require('./package.json');
@@ -53,7 +56,13 @@ var webpackConfig = Object.assign({}, baseConfig, {
             fileName: 'manifest.json'
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new ExtractTextPlugin('[name].[contenthash].css', { allChunks: true }),
+        new ExtractTextPlugin('[name].css', { allChunks: true }),
+        new CSSSplitWebpackPlugin({
+            size: 4000,
+            imports: '[name].[ext]?[hash]',
+            filename: '[name]-[part].[ext]?[hash]',
+            preserve: false
+        }),
         new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
             compress: {
@@ -73,6 +82,19 @@ var webpackConfig = Object.assign({}, baseConfig, {
             filename: 'index.hbs',
             template: path.resolve(__dirname, 'src/web/assets/index.hbs'),
             chunksSortMode: 'dependency' // Sort chunks by dependency
+        }),
+        new HtmlWebpackPluginAddons({
+            /**
+             * Do not insert "[name]-[part].css" to the html. For example:
+             * <link href="/9b80ca13/[name]-1.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
+             * <link href="/9b80ca13/[name]-2.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
+             * <link href="/9b80ca13/[name].css?ff4bb41b7b5e61a63da54dff2e59581d" rel="stylesheet">
+             */
+            afterHTMLProcessing: function(pluginData, next) {
+                const re = new RegExp(/<link.* href="[^"]+\w+\-\d+\.css[^>]+>/);
+                pluginData.html = pluginData.html.replace(re, '');
+                next(null);
+            }
         }),
         new InlineChunkWebpackPlugin({
             inlineChunks: ['manifest']
