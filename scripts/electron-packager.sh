@@ -55,9 +55,12 @@ popd
 echo "Rebuilding native modules using electron ${electron_version}"
 npm run electron-rebuild -- \
     --version=${electron_version:1} \
-    --pre-gyp-fix \
+    --force \
     --module-dir=dist/cnc/node_modules \
-    --which-module=serialport
+    --which-module=serialport \
+    --pre-gyp-fix \
+    --ignore-devdeps \
+    --ignore-optdeps
 
 npm run electron-packager -- dist/cnc \
     --out=output \
