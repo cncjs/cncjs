@@ -49,7 +49,7 @@ module.exports = {
                 test: /\.styl$/,
                 loader: ExtractTextPlugin.extract(
                     'style',
-                    'css?-autoprefixer&modules&importLoaders=1&localIdentName=[path][name]---[local]---[hash:base64:5]!stylus'
+                    'css?-autoprefixer&camelCase&modules&importLoaders=1&localIdentName=[path][name]---[local]---[hash:base64:5]!stylus'
                 ),
                 exclude: [
                     path.resolve(__dirname, 'src/web/styles')
@@ -59,7 +59,7 @@ module.exports = {
                 test: /\.styl$/,
                 loader: ExtractTextPlugin.extract(
                     'style',
-                    'css?-autoprefixer!stylus'
+                    'css?-autoprefixer&camelCase!stylus'
                 ),
                 include: [
                     path.resolve(__dirname, 'src/web/styles')
