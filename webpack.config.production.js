@@ -56,7 +56,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
             fileName: 'manifest.json'
         }),
         new webpack.optimize.OccurrenceOrderPlugin(),
-        new ExtractTextPlugin('[name].css', { allChunks: true }),
+        new ExtractTextPlugin('[name].css', { allChunks: false }),
         new CSSSplitWebpackPlugin({
             size: 4000,
             imports: '[name].[ext]?[hash]',
