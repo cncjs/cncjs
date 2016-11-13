@@ -11,6 +11,9 @@ const loadConfigFile = (file) => {
     } catch (err) {
         config = {};
     }
+    if (!_.isArray(config.macros)) {
+        config.macros = [];
+    }
     return config;
 };
 

@@ -62,9 +62,21 @@ const fetchGCode = (options) => new Promise((resolve, reject) => {
         });
 });
 
+const listAccounts = () => new Promise((resolve, reject) => {
+    request
+        .get('/api/accounts')
+        .end((err, res) => {
+            if (err || res.err) {
+                reject(err);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
 const listMacros = () => new Promise((resolve, reject) => {
     request
-        .get('/api/macro')
+        .get('/api/macros')
         .end((err, res) => {
             if (err || res.err) {
                 reject(err);
@@ -78,7 +90,7 @@ const getMacro = (options) => new Promise((resolve, reject) => {
     const { id } = { ...options };
 
     request
-        .get('/api/macro/' + id)
+        .get('/api/macros/' + id)
         .end((err, res) => {
             if (err || res.err) {
                 reject(err);
@@ -92,7 +104,7 @@ const addMacro = (options) => new Promise((resolve, reject) => {
     const { name, content } = { ...options };
 
     request
-        .post('/api/macro')
+        .post('/api/macros')
         .send({ name, content })
         .end((err, res) => {
             if (err || res.err) {
@@ -107,7 +119,7 @@ const updateMacro = (options) => new Promise((resolve, reject) => {
     const { id, name, content } = { ...options };
 
     request
-        .put('/api/macro/' + id)
+        .put('/api/macros/' + id)
         .send({ name, content })
         .end((err, res) => {
             if (err || res.err) {
@@ -122,7 +134,7 @@ const deleteMacro = (options) => new Promise((resolve, reject) => {
     const { id } = { ...options };
 
     request
-        .delete('/api/macro/' + id)
+        .delete('/api/macros/' + id)
         .end((err, res) => {
             if (err || res.err) {
                 reject(err);
@@ -135,8 +147,12 @@ const deleteMacro = (options) => new Promise((resolve, reject) => {
 export default {
     getLatestVersion,
     listControllers,
+    // G-code
     loadGCode,
     fetchGCode,
+    // Accounts
+    listAccounts,
+    // Macros
     listMacros,
     getMacro,
     addMacro,
