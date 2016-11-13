@@ -263,7 +263,7 @@ class Controls extends Component {
                             title={i18n._('Options')}
                             style={{ minWidth: 50 }}
                         >
-                            <i className="fa fa-cube" />
+                            <i className="fa fa-cubes" />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <MenuItem
