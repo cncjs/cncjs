@@ -1,0 +1,62 @@
+@import "variables";
+
+.table-pagination {
+    &.pull-right {
+        float: right;
+    }
+    
+    .table-pagination-block {
+        margin-left: 8px;
+        margin-right: 8px;
+
+        > * {
+            margin: 8px;
+            float: left;
+        }
+        .pagination {
+            vertical-align: top;
+        }
+        .pagination-records {
+            color: #666666;
+            font-size: 13px;
+            margin-top: 14px;
+            margin-bottom: 14px;
+        }
+        .pagination-records + .dropdown {
+            border-left: 1px solid #dddddd;
+        }
+        .dropdown {
+            padding-left: 16px;
+            margin-top: 14px;
+            margin-bottom: 14px;
+
+            .btn {
+                border-left: 0;
+                border-right: 0;
+                color: #666666;
+                font-size: 13px;
+                text-decoration: none;
+
+                &:hover {
+                    color: $link-color;
+                }
+
+                .caret {
+                    margin-left: 8px;
+                }
+            }
+        }
+
+        .pagination-input {
+            color: #666666;
+
+            input {
+                width: 32px;
+                padding: 5px 0;
+                text-align: center;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+            }
+        }
+    }
+}
