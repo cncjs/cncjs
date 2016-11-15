@@ -14,7 +14,7 @@ const UpdateStatusContainer = (props) => {
         return (
             <div className={styles.updateStatusContainer}>
                 <div className={styles.updateStatusIcon}>
-                    <i className="fa fa-circle-o-notch fa-fw fa-spin" />
+                    <i className="fa fa-fw fa-spin fa-circle-o-notch" />
                 </div>
                 <div className={styles.updateStatusMessageContainer}>
                     <div className={styles.updateStatusMessage}>

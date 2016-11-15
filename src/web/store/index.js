@@ -17,6 +17,10 @@ if (isElectron()) {
 }
 
 const defaultState = {
+    session: {
+        name: '',
+        token: ''
+    },
     workspace: {
         container: {
             default: {

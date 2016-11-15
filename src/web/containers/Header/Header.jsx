@@ -1,13 +1,14 @@
+import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import { Navbar, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import semver from 'semver';
-import settings from '../../config/settings';
 import api from '../../api';
+import Anchor from '../../components/Anchor';
+import settings from '../../config/settings';
+import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
-import confirm from '../../lib/confirm';
-import Anchor from '../../components/Anchor';
 
 const releases = 'https://github.com/cheton/cnc/releases';
 
@@ -51,7 +52,7 @@ class Header extends Component {
                     latestTime: time
                 });
             })
-            .catch((err) => {
+            .catch((res) => {
                 // Ignore error
             });
     }
@@ -77,6 +78,8 @@ class Header extends Component {
         const tooltip = newUpdateAvailable
             ? newUpdateAvailableTooltip(currentVersion)
             : uptodateVersionTooltip(currentVersion);
+        const sessionToken = store.get('session.token');
+        const signedInName = store.get('session.name');
 
         return (
             <Navbar fixedTop fluid inverse>
@@ -108,6 +111,36 @@ class Header extends Component {
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
+                    <Nav
+                        className={classNames(
+                            { 'hidden': !sessionToken }
+                        )}
+                        pullRight
+                    >
+                        <NavDropdown
+                            id="nav-dropdown-user"
+                            title={<i className="fa fa-user" style={{ fontSize: 16 }} />}
+                        >
+                            <MenuItem header>
+                                {i18n._('Signed in as {{name}}', { name: signedInName })}
+                            </MenuItem>
+                            <MenuItem divider />
+                            <MenuItem
+                                href="#/settings/account"
+                            >
+                                <i className="fa fa-fw fa-user" />
+                                <span className="space" />
+                                {i18n._('Account')}
+                            </MenuItem>
+                            <MenuItem
+                                href="#/logout"
+                            >
+                                <i className="fa fa-fw fa-sign-out" />
+                                <span className="space" />
+                                {i18n._('Sign Out')}
+                            </MenuItem>
+                        </NavDropdown>
+                    </Nav>
                     {path === 'workspace' &&
                     <QuickAccessToolbar />
                     }

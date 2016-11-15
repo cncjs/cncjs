@@ -31,6 +31,7 @@ class Account extends Component {
         const { state, actions } = this.props;
         const {
             modalState,
+            failure,
             fetching,
             pagination,
             records
@@ -50,8 +51,28 @@ class Account extends Component {
                         borderBottom: totalRecords > 0 ? '1px solid #ddd' : 'none'
                     }}
                     border={false}
-                    loading={fetching}
-                    data={records}
+                    data={(failure || fetching) ? [] : records}
+                    emptyText={() => {
+                        if (failure) {
+                            return (
+                                <span className="text-danger">
+                                    {i18n._('An unexpected error has occurred.')}
+                                </span>
+                            );
+                        }
+
+                        if (fetching) {
+                            return (
+                                <span>
+                                    <i className="fa fa-fw fa-spin fa-circle-o-notch" />
+                                    <span className="space" />
+                                    {i18n._('Loading...')}
+                                </span>
+                            );
+                        }
+
+                        return i18n._('No data to display');
+                    }}
                     title={() =>
                         <Toolbar>
                             <button
@@ -148,9 +169,9 @@ class Account extends Component {
                                             onClick={(event) => {
                                                 confirm({
                                                     title: i18n._('Delete Account'),
-                                                    body: i18n._('Are you sure you want to delete this account?')
+                                                    body: i18n._('Are you sure you want to delete the account?')
                                                 }).then(() => {
-                                                    api.deleteAccount({ id })
+                                                    api.deleteUser({ id })
                                                         .then((res) => {
                                                             actions.fetchData();
                                                         })

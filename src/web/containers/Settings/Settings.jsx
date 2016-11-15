@@ -96,17 +96,19 @@ class Settings extends Component {
                 this.setState({
                     account: {
                         ...this.state.account,
+                        failure: false,
                         fetching: true
                     }
                 });
 
-                api.listAccounts({ page, pageLength })
+                api.listUsers({ page, pageLength })
                     .then((res) => {
                         const { pagination, records } = res.body;
 
                         this.setState({
                             account: {
                                 ...this.state.account,
+                                failure: false,
                                 fetching: false,
                                 pagination: {
                                     page: pagination.page,
@@ -121,7 +123,9 @@ class Settings extends Component {
                         this.setState({
                             account: {
                                 ...this.state.account,
-                                fetching: false
+                                failure: true,
+                                fetching: false,
+                                records: []
                             }
                         });
                     });
@@ -238,6 +242,7 @@ class Settings extends Component {
                 lang: i18next.language
             },
             account: {
+                failure: false,
                 fetching: false,
                 pagination: {
                     page: 1,

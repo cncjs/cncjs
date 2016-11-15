@@ -11,9 +11,22 @@ import XHR from 'i18next-xhr-backend';
 import settings from './config/settings';
 import log from './lib/log';
 import { toQueryObject } from './lib/query';
+import user from './lib/user';
+import store from './store';
 import App from './containers/App';
 import './styles/vendor.styl';
 import './styles/app.styl';
+
+const requireAuth = function (nextState, replace) {
+    if (!user.authenticated()) {
+        replace({
+            pathname: '/login',
+            state: {
+                nextPathname: nextState.location.pathname
+            }
+        });
+    }
+};
 
 series([
     (next) => {
@@ -27,6 +40,17 @@ series([
         log.setPrefix(prefix);
 
         next();
+    },
+    (next) => {
+        const token = store.get('session.token');
+        if (!token) {
+            next();
+        }
+
+        user.signin({ token: token })
+            .then(({ authenticated, token }) => {
+                next();
+            });
     },
     (next) => {
         i18next
@@ -79,14 +103,37 @@ series([
     document.body.appendChild(container);
 
     const hashHistory = useRouterHistory(createHashHistory)();
-    const layoutToggler = () => <div />;
+    const Empty = () => <div />;
 
     ReactDOM.render(
         <Router history={hashHistory}>
             <Route path="/" component={App}>
-                <IndexRoute component={layoutToggler} />
-                <Route path="workspace" component={layoutToggler} />
-                <Route path="settings" component={layoutToggler} />
+                <IndexRoute component={Empty} />
+                <Route
+                    path="login"
+                    component={Empty}
+                    onEnter={(nextState, replace) => {
+                        if (user.authenticated()) {
+                            replace('/');
+                        }
+                    }}
+                />
+                <Route
+                    path="logout"
+                    component={Empty}
+                    onEnter={(nextState, replace) => {
+                        if (user.authenticated()) {
+                            user.signout();
+                            replace('/');
+                        }
+                    }}
+                />
+                <Route path="workspace" component={Empty} onEnter={requireAuth} />
+                <Route path="settings" component={Empty} onEnter={requireAuth}>
+                    <Route path="general" component={Empty} onEnter={requireAuth} />
+                    <Route path="account" component={Empty} onEnter={requireAuth} />
+                    <Route path="about" component={Empty} onEnter={requireAuth} />
+                </Route>
             </Route>
         </Router>,
         container

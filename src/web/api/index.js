@@ -63,11 +63,29 @@ const fetchGCode = (options) => new Promise((resolve, reject) => {
 });
 
 //
-// Accounts
+// Authentication
 //
-const listAccounts = (options) => new Promise((resolve, reject) => {
+const signin = (options) => new Promise((resolve, reject) => {
+    const { token, name, password } = { ...options };
+
     request
-        .get('/api/accounts')
+        .post('/api/signin')
+        .send({ token, name, password })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+//
+// Users
+//
+const listUsers = (options) => new Promise((resolve, reject) => {
+    request
+        .get('/api/users')
         .query({ ...options })
         .end((err, res) => {
             if (err) {
@@ -78,11 +96,11 @@ const listAccounts = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const addAccount = (options) => new Promise((resolve, reject) => {
+const addUser = (options) => new Promise((resolve, reject) => {
     const { enabled, name, password } = { ...options };
 
     request
-        .post('/api/accounts')
+        .post('/api/users')
         .send({ enabled, name, password })
         .end((err, res) => {
             if (err) {
@@ -93,11 +111,11 @@ const addAccount = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const deleteAccount = (options) => new Promise((resolve, reject) => {
+const deleteUser = (options) => new Promise((resolve, reject) => {
     const { id } = { ...options };
 
     request
-        .delete('/api/accounts/' + id)
+        .delete('/api/users/' + id)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -107,11 +125,11 @@ const deleteAccount = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const editAccount = (options) => new Promise((resolve, reject) => {
+const editUser = (options) => new Promise((resolve, reject) => {
     const { id, enabled, name, oldPassword, newPassword } = { ...options };
 
     request
-        .put('/api/accounts/' + id)
+        .put('/api/users/' + id)
         .send({ enabled, name, oldPassword, newPassword })
         .end((err, res) => {
             if (err) {
@@ -201,11 +219,12 @@ export default {
     // G-code
     loadGCode,
     fetchGCode,
-    // Accounts
-    listAccounts,
-    addAccount,
-    deleteAccount,
-    editAccount,
+    // Users
+    signin,
+    listUsers,
+    addUser,
+    deleteUser,
+    editUser,
     // Macros
     listMacros,
     getMacro,

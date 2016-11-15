@@ -11,10 +11,8 @@ import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
 import styles from '../form.styl';
 import {
-    ERR_BAD_REQUEST,
     ERR_CONFLICT,
-    ERR_PRECONDITION_FAILED,
-    ERR_INTERNAL_SERVER_ERROR
+    ERR_PRECONDITION_FAILED
 } from '../../../api/constants';
 
 class EditAccount extends Component {
@@ -115,7 +113,7 @@ class EditAccount extends Component {
                                             styles.short
                                         )}
                                         containerClassName="pull-left"
-                                        validations={['required']}
+                                        validations={changePassword ? ['required'] : []}
                                         disabled={!changePassword}
                                     />
                                     {!changePassword &&
@@ -190,18 +188,17 @@ class EditAccount extends Component {
                             const id = modalParams.id;
                             const { enabled, name, oldPassword, newPassword } = this.value;
 
-                            api.editAccount({ id, enabled, name, oldPassword, newPassword })
+                            api.editUser({ id, enabled, name, oldPassword, newPassword })
                                 .then((res) => {
                                     actions.closeModal();
                                     actions.fetchData();
                                 })
                                 .catch((res) => {
+                                    const fallbackMsg = i18n._('An unexpected error has occurred.');
                                     const msg = {
-                                        [ERR_BAD_REQUEST]: i18n._('Invalid parameter'),
-                                        [ERR_CONFLICT]: i18n._('This account already exists'),
-                                        [ERR_PRECONDITION_FAILED]: i18n._('Incorrect password'),
-                                        [ERR_INTERNAL_SERVER_ERROR]: i18n._('Internal server error')
-                                    }[res.status] || '';
+                                        [ERR_CONFLICT]: i18n._('The account name is already being used. Choose another name.'),
+                                        [ERR_PRECONDITION_FAILED]: i18n._('Passwords do not match.')
+                                    }[res.status] || fallbackMsg;
 
                                     actions.showModalAlert(msg);
                                 });

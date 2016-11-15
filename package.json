@@ -116,6 +116,7 @@
   "dependencies": {
     "async": "~2.1.2",
     "babel-runtime": "~6.18.0",
+    "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.15.2",
     "bootstrap": "~3.3.7",
     "chalk": "~1.1.3",
@@ -148,6 +149,7 @@
     "i18next-xhr-backend": "~1.2.1",
     "is-electron": "~2.0.0",
     "js-polyfills": "~0.1.27",
+    "jsonwebtoken": "~7.1.9",
     "jsuri": "~1.3.1",
     "lodash": "~4.16.6",
     "method-override": "~2.3.6",

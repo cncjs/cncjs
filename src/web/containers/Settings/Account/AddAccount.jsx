@@ -11,9 +11,7 @@ import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
 import styles from '../form.styl';
 import {
-    ERR_BAD_REQUEST,
-    ERR_CONFLICT,
-    ERR_INTERNAL_SERVER_ERROR
+    ERR_CONFLICT
 } from '../../../api/constants';
 
 class AddAccount extends Component {
@@ -149,17 +147,16 @@ class AddAccount extends Component {
                             }
 
                             const { enabled, name, password } = this.value;
-                            api.addAccount({ enabled, name, password })
+                            api.addUser({ enabled, name, password })
                                 .then((res) => {
                                     actions.closeModal();
                                     actions.fetchData();
                                 })
                                 .catch((res) => {
+                                    const fallbackMsg = i18n._('An unexpected error has occurred.');
                                     const msg = {
-                                        [ERR_BAD_REQUEST]: i18n._('Invalid parameter'),
-                                        [ERR_CONFLICT]: i18n._('This account already exists'),
-                                        [ERR_INTERNAL_SERVER_ERROR]: i18n._('Internal server error')
-                                    }[res.status] || '';
+                                        [ERR_CONFLICT]: i18n._('The account name is already being used. Choose another name.')
+                                    }[res.status] || fallbackMsg;
 
                                     actions.showModalAlert(msg);
                                 });
