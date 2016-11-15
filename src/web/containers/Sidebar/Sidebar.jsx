@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import { Link } from 'react-router';
 import CSSModules from 'react-css-modules';
-import Anchor from '../../components/Anchor';
+//import Anchor from '../../components/Anchor';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
 
@@ -27,11 +28,8 @@ class Sidebar extends Component {
                             'active': path === 'workspace'
                         })}
                     >
-                        <Anchor
-                            title={i18n._('Workspace')}
-                            href="#/workspace"
-                        >
-                            <i className="fa fa-desktop" style={{ fontSize: 32 }} />
+                        <Link to="/workspace" title={i18n._('Workspace')}>
+                            <i className="fa fa-desktop fa-2x" />
                             <span
                                 style={{
                                     position: 'absolute',
@@ -41,7 +39,7 @@ class Sidebar extends Component {
                                     fontSize: '70%'
                                 }}
                             >XYZ</span>
-                        </Anchor>
+                        </Link>
                     </li>
                     <li
                         className="text-center"
@@ -49,12 +47,9 @@ class Sidebar extends Component {
                             'active': path === 'settings'
                         })}
                     >
-                        <Anchor
-                            title={i18n._('Settings')}
-                            href="#/settings"
-                        >
-                            <i className="fa fa-cogs" style={{ fontSize: 32 }} />
-                        </Anchor>
+                        <Link to="/settings" title={i18n._('Settings')}>
+                            <i className="fa fa-cogs fa-2x" />
+                        </Link>
                     </li>
                 </ul>
             </nav>
