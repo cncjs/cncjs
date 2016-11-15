@@ -112,7 +112,8 @@ class TablePagination extends Component {
                         pullRight
                         styleName="dropdown"
                         onSelect={(eventKey, event) => {
-                            this.handlePageChange({ pageLength: eventKey });
+                            const pageLength = Number(eventKey);
+                            this.handlePageChange({ pageLength: pageLength });
                         }}
                     >
                         <CustomToggle
