@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import RCTable from 'rc-table';
-import i18n from '../../lib/i18n';
 import styles from './index.styl';
 
 const renderWithTooltip = (value, tooltip) => {
@@ -16,13 +15,11 @@ class Table extends Component {
         ...RCTable.propTypes,
         title: PropTypes.func,
         footer: PropTypes.func,
-        border: PropTypes.bool,
-        loading: PropTypes.bool
+        border: PropTypes.bool
     };
     static defaultProps = {
         ...RCTable.defaultProps,
-        border: true,
-        loading: false
+        border: true
     };
 
     render() {
@@ -31,7 +28,6 @@ class Table extends Component {
             title,
             footer,
             border,
-            loading,
             data,
             ...props
         } = this.props;
@@ -54,14 +50,7 @@ class Table extends Component {
                 )}
                 title={title}
                 footer={footer}
-                data={loading ? [] : data}
-                emptyText={() => {
-                    if (loading) {
-                        return i18n._('Loading...');
-                    }
-
-                    return i18n._('No data to display');
-                }}
+                data={data}
             />
         );
     }
