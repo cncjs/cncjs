@@ -6,6 +6,7 @@ import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
 import Toolbar from './Toolbar';
+import Overrides from './Overrides';
 import styles from './index.styl';
 
 class Grbl extends Component {
@@ -31,7 +32,8 @@ class Grbl extends Component {
 
         return (
             <div>
-                <Toolbar {...this.props} className={styles.toolbar} />
+                <Toolbar state={state} actions={actions} />
+                <Overrides state={state} actions={actions} />
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles['panel-heading']}>
                         <Toggler

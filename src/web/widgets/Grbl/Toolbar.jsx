@@ -3,6 +3,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
+import styles from './index.styl';
 
 class Toolbar extends Component {
     static propTypes = {
@@ -14,22 +15,16 @@ class Toolbar extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { state, ...others } = this.props;
+        const { state } = this.props;
         const { canClick } = state;
-        const styles = {
-            button: {
-                minWidth: 24
-            }
-        };
 
         return (
-            <div {...others}>
+            <div className={styles.toolbar}>
                 <div className="btn-group btn-group-xs">
                     <button
                         type="button"
                         className="btn btn-default"
                         title={i18n._('Feedhold (!)')}
-                        style={styles.button}
                         onClick={() => controller.command('feedhold')}
                         disabled={!canClick}
                     >
@@ -39,7 +34,6 @@ class Toolbar extends Component {
                         type="button"
                         className="btn btn-default"
                         title={i18n._('Cycle Start (~)')}
-                        style={styles.button}
                         onClick={() => controller.command('cyclestart')}
                         disabled={!canClick}
                     >
@@ -51,7 +45,6 @@ class Toolbar extends Component {
                         type="button"
                         className="btn btn-default"
                         title={i18n._('Kill Alarm Lock ($X)')}
-                        style={styles.button}
                         onClick={() => controller.command('unlock')}
                         disabled={!canClick}
                     >
@@ -61,7 +54,6 @@ class Toolbar extends Component {
                         type="button"
                         className="btn btn-default"
                         title={i18n._('Check G-code Mode ($C)')}
-                        style={styles.button}
                         onClick={() => controller.command('check')}
                         disabled={!canClick}
                     >
@@ -71,7 +63,6 @@ class Toolbar extends Component {
                         type="button"
                         className="btn btn-default"
                         title={i18n._('Reset (^x)')}
-                        style={styles.button}
                         onClick={() => controller.command('reset')}
                         disabled={!canClick}
                     >
