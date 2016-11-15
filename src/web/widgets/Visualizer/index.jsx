@@ -106,7 +106,7 @@ class VisualizerWidget extends Component {
                     // This will call loadGCode()
                     pubsub.publish('gcode:load', gcode);
                 })
-                .catch((err) => {
+                .catch((res) => {
                     this.setState({
                         gcode: {
                             ...this.state.gcode,
@@ -115,7 +115,7 @@ class VisualizerWidget extends Component {
                             ready: false
                         }
                     });
-                    log.error('Failed to upload G-code file:', err);
+                    log.error('Failed to upload G-code file');
                 });
         },
         loadGCode: (gcode) => {

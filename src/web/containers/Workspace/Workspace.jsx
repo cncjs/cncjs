@@ -186,8 +186,8 @@ class Workspace extends React.Component {
                 .then((res) => {
                     pubsub.publish('gcode:load', gcode);
                 })
-                .catch((err) => {
-                    log.error('Failed to upload G-code file:', err);
+                .catch((res) => {
+                    log.error('Failed to upload G-code file');
                 })
                 .then(() => {
                     stopWaiting();
