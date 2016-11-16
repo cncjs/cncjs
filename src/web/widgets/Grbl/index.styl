@@ -18,6 +18,37 @@
 
 .toolbar {
     margin-bottom: 10px;
+
+    button {
+        min-width: 24px;
+    }
+}
+
+.overrides {
+    margin-bottom: 10px;
+
+    .dro {
+        margin-bottom: 10px;
+    }
+
+    .dro-label,
+    .dro-text,
+    .dro-btn-group {
+        height: 28px;
+    }
+    .dro-label {
+        font-size: 24px;
+        line-height: initial;
+        text-align: left;
+    }
+    .dro-text {
+        padding: 3px 5px;
+        font-size: 16px;
+        text-align: right;
+    }
+    .dro-btn-group {
+        padding: 4px 0 4px 15px;
+    }
 }
 
 .panel {
@@ -32,7 +63,7 @@
 }
 
 .well {
-    height: 20px;
+    min-height: 20px;
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
