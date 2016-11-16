@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { Component, PropTypes } from 'react';
 
-class PressAndHold extends React.Component {
+class RepeatButton extends Component {
     static propTypes = {
-        delay: React.PropTypes.number,
-        throttle: React.PropTypes.number,
-        onClick: React.PropTypes.func,
-        children: React.PropTypes.node
+        delay: PropTypes.number,
+        throttle: PropTypes.number,
+        onClick: PropTypes.func,
+        children: PropTypes.node
     };
 
     componentWillMount() {
@@ -41,16 +41,17 @@ class PressAndHold extends React.Component {
     }
     render() {
         return (
-            <div
+            <button
+                type="button"
                 {...this.props}
                 onMouseDown={::this.handleHoldDown}
                 onMouseUp={::this.handleRelease}
                 onMouseLeave={::this.handleRelease}
             >
                 {this.props.children}
-            </div>
+            </button>
         );
     }
 }
 
-export default PressAndHold;
+export default RepeatButton;

@@ -36,20 +36,24 @@
     position: absolute;
     top: 5px;
     right: 5px;
+    width: (18 * 3)px;
+    height: 18px;
 
     .joystick-button {
-        font-size: 14px;
+        background: transparent;
+        border: none;
         color: #777;
         text-align: center;
-        width: 16px;
+        padding: 0;
 
         &:hover,
-        &:focus {
+        &:focus,
+        &:active {
+            outline: none;
             cursor: pointer;
             color: #333;
         }
         &:active {
-            color: #333;
             text-shadow: 0 1px #ccc;
         }
     }

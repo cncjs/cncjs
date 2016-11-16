@@ -5,7 +5,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import CSSModules from 'react-css-modules';
 import i18n from '../../lib/i18n';
 import combokeys from '../../lib/combokeys';
-import PressAndHold from '../../components/PressAndHold';
+import RepeatButton from '../../components/RepeatButton';
 import {
     DISTANCE_MIN,
     DISTANCE_MAX,
@@ -137,7 +137,7 @@ class JogDistance extends Component {
                         title={i18n._('Custom distance for every move operation')}
                     />
                     <div className="input-group-btn">
-                        <PressAndHold
+                        <RepeatButton
                             className="btn btn-default"
                             onClick={(event) => {
                                 actions.increaseCustomDistance();
@@ -145,8 +145,8 @@ class JogDistance extends Component {
                             title={i18n._('Increase custom distance by one unit')}
                         >
                             <i className="fa fa-plus" />
-                        </PressAndHold>
-                        <PressAndHold
+                        </RepeatButton>
+                        <RepeatButton
                             className="btn btn-default"
                             onClick={(event) => {
                                 actions.decreaseCustomDistance();
@@ -154,7 +154,7 @@ class JogDistance extends Component {
                             title={i18n._('Decrease custom distance by one unit')}
                         >
                             <i className="fa fa-minus" />
-                        </PressAndHold>
+                        </RepeatButton>
                     </div>
                 </div>
             </div>
