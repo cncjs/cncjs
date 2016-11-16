@@ -78,7 +78,7 @@ class Header extends Component {
         const tooltip = newUpdateAvailable
             ? newUpdateAvailableTooltip(currentVersion)
             : uptodateVersionTooltip(currentVersion);
-        const sessionToken = store.get('session.token');
+        const sessionEnabled = store.get('session.enabled');
         const signedInName = store.get('session.name');
 
         return (
@@ -113,7 +113,7 @@ class Header extends Component {
                 <Navbar.Collapse>
                     <Nav
                         className={classNames(
-                            { 'hidden': !sessionToken }
+                            { 'hidden': !sessionEnabled }
                         )}
                         pullRight
                     >

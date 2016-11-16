@@ -44,7 +44,14 @@ export const signin = (req, res) => {
     const enabledUsers = _.filter(config.users, { enabled: true });
 
     if (enabledUsers.length === 0) {
-        res.send({ token: '', name: '' }); // clear token and signed in name
+        const user = { id: '', name: '' };
+        const payload = { ...user };
+        const token = generateToken(payload, SECRET); // generate new token
+        res.send({
+            enabled: false, // session is disabled
+            token: token,
+            name: user.name // empty name
+        });
         return;
     }
 
@@ -64,7 +71,11 @@ export const signin = (req, res) => {
             name: user.name
         };
         const token = generateToken(payload, SECRET); // generate new token
-        res.send({ token: token, name: user.name });
+        res.send({
+            enabled: true, // session is enabled
+            token: token, // new token
+            name: user.name
+        });
         return;
     }
 
@@ -84,7 +95,11 @@ export const signin = (req, res) => {
             return;
         }
 
-        res.send({ token: token, name: user.name }); // reuse old token
+        res.send({
+            enabled: true, // session is enabled
+            token: token, // old token
+            name: user.name
+        });
     });
 };
 

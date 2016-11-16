@@ -9,6 +9,7 @@ import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import settings from './config/settings';
+import controller from './lib/controller';
 import log from './lib/log';
 import { toQueryObject } from './lib/query';
 import user from './lib/user';
@@ -43,12 +44,12 @@ series([
     },
     (next) => {
         const token = store.get('session.token');
-        if (!token) {
-            next();
-        }
-
         user.signin({ token: token })
             .then(({ authenticated, token }) => {
+                if (authenticated) {
+                    log.debug('Create and establish a WebSocket connection');
+                    controller.connect(); // @see also: src/web/containers/Login/Login.jsx
+                }
                 next();
             });
     },
@@ -123,6 +124,9 @@ series([
                     component={Empty}
                     onEnter={(nextState, replace) => {
                         if (user.authenticated()) {
+                            log.debug('Destroy and cleanup the WebSocket connection');
+                            controller.disconnect();
+
                             user.signout();
                             replace('/');
                         }

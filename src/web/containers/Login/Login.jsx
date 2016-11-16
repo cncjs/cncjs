@@ -2,9 +2,10 @@ import classNames from 'classnames';
 import React, { Component } from 'react';
 import { withRouter } from 'react-router';
 import Notifications from '../../components/Notifications';
-import user from '../../lib/user';
+import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import store from '../../store';
+import log from '../../lib/log';
+import user from '../../lib/user';
 import styles from './index.styl';
 
 class Login extends Component {
@@ -33,14 +34,23 @@ class Login extends Component {
 
             user.signin({ name, password })
                 .then(({ authenticated }) => {
-                    const { location, router } = this.props;
-                    const msg = authenticated ? '' : i18n._('Authentication failed.');
+                    if (!authenticated) {
+                        this.setState({
+                            alertMessage: i18n._('Authentication failed.'),
+                            authenticating: false
+                        });
+                        return;
+                    }
 
                     this.setState({
-                        alertMessage: msg,
+                        alertMessage: '',
                         authenticating: false
                     });
 
+                    log.debug('Create and establish a WebSocket connection');
+                    controller.connect(); // @see also: src/web/index.jsx
+
+                    const { location, router } = this.props;
                     if (location.state && location.state.nextPathname) {
                         router.replace(location.state.nextPathname);
                     } else {
@@ -64,7 +74,6 @@ class Login extends Component {
         const state = { ...this.state };
         const actions = { ...this.actions };
         const { alertMessage, authenticating } = state;
-        const name = store.get('session.name');
 
         return (
             <div className={styles.container}>
@@ -89,7 +98,6 @@ class Login extends Component {
                                 type="text"
                                 className="form-control"
                                 placeholder={i18n._('Name')}
-                                defaultValue={name}
                             />
                         </div>
                         <div className="form-group">

@@ -7,8 +7,8 @@ module.exports = {
     signin: ({ token, name, password }) => new Promise((resolve, reject) => {
         api.signin({ token, name, password })
             .then((res) => {
-                // Access control is disabled when both session.token and session.name are empty
-                const { token = '', name = '' } = { ...res.body };
+                const { enabled = false, token = '', name = '' } = { ...res.body };
+                store.set('session.enabled', enabled);
                 store.set('session.token', token);
                 store.set('session.name', name);
 
@@ -16,7 +16,7 @@ module.exports = {
                 resolve({ authenticated: true, token: token });
             })
             .catch((res) => {
-                // Remember last session.name if a login failure occurred
+                // Keep session.name if a login failure occurred
                 store.unset('session.token');
                 authenticated = false;
                 resolve({ authenticated: false, token: null });

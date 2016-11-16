@@ -8,7 +8,7 @@
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>CNC.js</title>
+<title>cnc</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
@@ -20,6 +20,10 @@
 <link rel="stylesheet" type="text/css" href="css/app.css">
 </head>
 <body>
+<div id="loading" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
+    <div style="background: transparent url('loading.gif') no-repeat 0 0; height: 32px; width: 32px; display: block; margin: 0 auto;"></div>
+    <div style="font-family: Arial, Helvetica, sans-serif; font-size: 13px; font-weight: normal; color: #222; text-align: center; margin-top: 10px;">Loading...</div>
+</div>
 <div class="hidden" data-route="workspace">
     <div class="form-group clearfix">
         <div class="pull-left">
@@ -346,50 +350,48 @@
 <script src="vendor/jquery/jquery-2.2.1.min.js"></script>
 <script src="vendor/js-cookie/js.cookie.js"></script>
 <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
-<script src="socket.js"></script>
-<script src="controller.js"></script>
 <script>
-root = this;
+var root = window;
 root.cnc = {
+    router: null,
+    controller: null,
     port: Cookies.get('cnc.port'),
     baudrate: Cookies.get('cnc.baudrate'),
-    connected: false,
-    controller: new CNCController()
+    connected: false
 };
-
+</script>
+<script src="controller.js"></script>
+<script>
 $('document').ready(function() {
-var root = window;
-
-var routes = {
-    '/': function() {
-        if (root.cnc.connected) {
-            window.location = '#/workspace';
-        } else {
-            window.location = '#/connection';
+    var root = window;
+    var routes = {
+        '/': function() {
+            if (root.cnc.connected) {
+                window.location = '#/workspace';
+            } else {
+                window.location = '#/connection';
+            }
+        },
+        '/workspace': function() {
+        },
+        '/connection': function() {
+        },
+        '/axes': function() {
         }
-    },
-    '/workspace': function() {
-    },
-    '/connection': function() {
-    },
-    '/axes': function() {
-    }
-};
-var router = Router(routes);
-router.configure({
-    on: function() {
-        var route = window.location.hash.slice(2);
-        var views = $('[data-route]');
-        var view = views.filter('[data-route="' + route + '"]');
+    };
+    root.cnc.router = window.Router(routes);
+    root.cnc.router.configure({
+        on: function() {
+            var route = window.location.hash.slice(2);
+            var views = $('[data-route]');
+            var view = views.filter('[data-route="' + route + '"]');
 
-        if (view.length) {
-            views.addClass('hidden');
-            view.removeClass('hidden');
+            if (view.length) {
+                views.addClass('hidden');
+                view.removeClass('hidden');
+            }
         }
-    }
-});
-router.init();
-window.location = '#/';
+    });
 });
 </script>
 <script src="app.js"></script>
