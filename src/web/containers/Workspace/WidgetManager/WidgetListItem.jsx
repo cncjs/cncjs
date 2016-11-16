@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import Toggle from 'react-toggle';
+import i18n from '../../../lib/i18n';
 
 class WidgetListItem extends Component {
     static propTypes = {
@@ -53,11 +54,15 @@ class WidgetListItem extends Component {
                             <span style={styles.caption}>{this.props.caption}</span>
                         </div>
                         <div className="col-sm-4 text-right">
-                            <Toggle
-                                disabled={this.props.disabled}
-                                defaultChecked={checked}
-                                onChange={::this.handleChange}
-                            />
+                            <span
+                                title={checked ? i18n._('On') : i18n._('Off')}
+                            >
+                                <Toggle
+                                    disabled={this.props.disabled}
+                                    defaultChecked={checked}
+                                    onChange={::this.handleChange}
+                                />
+                            </span>
                         </div>
                     </div>
                     <div style={styles.details}>
