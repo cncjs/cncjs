@@ -27,13 +27,16 @@ class Grbl extends Component {
         const activeState = _.get(controllerState, 'status.activeState') || none;
         const feedrate = _.get(controllerState, 'status.feedrate', parserState.feedrate);
         const spindleSpeed = _.get(controllerState, 'status.spindle', parserState.spindle);
+        const ov = _.get(controllerState, 'status.ov');
         const toolNumber = parserState.tool;
         const modal = _.mapValues(parserState.modal || {}, (word, group) => mapGCodeToText(word));
 
         return (
             <div>
                 <Toolbar state={state} actions={actions} />
+                {ov &&
                 <Overrides state={state} actions={actions} />
+                }
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles['panel-heading']}>
                         <Toggler
