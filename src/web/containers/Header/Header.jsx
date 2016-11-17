@@ -1,34 +1,24 @@
+import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import { Navbar, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import semver from 'semver';
-import settings from '../../config/settings';
 import api from '../../api';
+import Anchor from '../../components/Anchor';
+import settings from '../../config/settings';
+import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
-import confirm from '../../lib/confirm';
-import Anchor from '../../components/Anchor';
 
 const releases = 'https://github.com/cheton/cnc/releases';
 
-const newUpdateAvailableTooltip = (currentVersion) => {
+const newUpdateAvailableTooltip = () => {
     return (
         <Tooltip
             id="navbarBrandTooltip"
             style={{ color: '#fff' }}
         >
             <div>{i18n._('New update available')}</div>
-        </Tooltip>
-    );
-};
-
-const uptodateVersionTooltip = (currentVersion) => {
-    return (
-        <Tooltip
-            id="navbarBrandTooltip"
-            style={{ color: '#fff' }}
-        >
-            <div>cnc {currentVersion}</div>
         </Tooltip>
     );
 };
@@ -51,7 +41,7 @@ class Header extends Component {
                     latestTime: time
                 });
             })
-            .catch((err) => {
+            .catch((res) => {
                 // Ignore error
             });
     }
@@ -74,9 +64,9 @@ class Header extends Component {
         const { path } = this.props;
         const { currentVersion, latestVersion } = this.state;
         const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
-        const tooltip = newUpdateAvailable
-            ? newUpdateAvailableTooltip(currentVersion)
-            : uptodateVersionTooltip(currentVersion);
+        const tooltip = newUpdateAvailable ? newUpdateAvailableTooltip() : <div />;
+        const sessionEnabled = store.get('session.enabled');
+        const signedInName = store.get('session.name');
 
         return (
             <Navbar fixedTop fluid inverse>
@@ -87,17 +77,31 @@ class Header extends Component {
                     >
                         <Anchor
                             className="navbar-brand"
+                            style={{
+                                padding: '10px 15px',
+                                position: 'relative'
+                            }}
                             href={releases}
                             target="_blank"
                         >
                             {settings.name}
+                            <div
+                                style={{
+                                    fontSize: '50%',
+                                    lineHeight: '12px',
+                                    textAlign: 'center'
+                                }}
+                            >
+                                {settings.version}
+                            </div>
                             {newUpdateAvailable &&
                             <span
                                 className="label label-primary"
                                 style={{
+                                    fontSize: '50%',
                                     position: 'absolute',
-                                    top: 5,
-                                    fontSize: '50%'
+                                    top: 2,
+                                    right: 2
                                 }}
                             >
                                 N
@@ -108,6 +112,36 @@ class Header extends Component {
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
+                    <Nav
+                        className={classNames(
+                            { 'hidden': !sessionEnabled }
+                        )}
+                        pullRight
+                    >
+                        <NavDropdown
+                            id="nav-dropdown-user"
+                            title={<i className="fa fa-user" style={{ fontSize: 16 }} />}
+                        >
+                            <MenuItem header>
+                                {i18n._('Signed in as {{name}}', { name: signedInName })}
+                            </MenuItem>
+                            <MenuItem divider />
+                            <MenuItem
+                                href="#/settings/account"
+                            >
+                                <i className="fa fa-fw fa-user" />
+                                <span className="space" />
+                                {i18n._('Account')}
+                            </MenuItem>
+                            <MenuItem
+                                href="#/logout"
+                            >
+                                <i className="fa fa-fw fa-sign-out" />
+                                <span className="space" />
+                                {i18n._('Sign Out')}
+                            </MenuItem>
+                        </NavDropdown>
+                    </Nav>
                     {path === 'workspace' &&
                     <QuickAccessToolbar />
                     }

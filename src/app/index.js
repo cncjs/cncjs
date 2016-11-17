@@ -1,12 +1,13 @@
 /* eslint no-unused-vars: 0 */
 import _ from 'lodash';
-import chalk from 'chalk';
+import bcrypt from 'bcrypt-nodejs';
 import fs from 'fs';
 import path from 'path';
 import webappengine from 'webappengine';
 import app from './app';
 import cncserver from './cncserver';
 import log from './lib/log';
+import { readConfigFileSync, writeConfigFileSync } from './lib/config-file';
 import settings from './config/settings';
 
 const createServer = ({ port = 0, host, backlog, config, verbosity, mount }, callback) => {
@@ -44,20 +45,17 @@ const createServer = ({ port = 0, host, backlog, config, verbosity, mount }, cal
         }
 
         const cncrc = path.resolve(config || settings.cncrc);
-        try {
-            const cnc = JSON.parse(fs.readFileSync(cncrc, 'utf8'));
+        const cnc = readConfigFileSync(cncrc);
+        if (!cnc.secret) {
+            // generate a secret key
+            cnc.secret = bcrypt.genSaltSync(); // TODO
 
-            if (!(_.isObject(cnc))) {
-                console.error(chalk.bold.red('Check your configuration file to ensure it contain valid settings.'));
-                console.error(cnc);
-                process.exit(1);
-            }
-
-            _.set(settings, 'cncrc', cncrc);
-            _.set(settings, 'cnc', _.merge({}, settings.cnc, cnc));
-        } catch (err) {
-            // skip error
+            // update changes
+            writeConfigFileSync(cncrc, cnc);
         }
+
+        settings.cncrc = cncrc;
+        settings.secret = cnc.secret || settings.secret;
     }
 
     webappengine({ port, host, backlog, routes })

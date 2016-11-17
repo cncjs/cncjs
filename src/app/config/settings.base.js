@@ -11,7 +11,11 @@ const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPRO
 
 export default {
     verbosity: 0,
-    cnc: {}, // override this settings using `cnc -c ~/.cncrc`
+
+    // The secret key is loaded from the config file (defaults to "~/.cncrc")
+    // @see "src/app/index.js"
+    secret: secret,
+
     cncrc: path.resolve(getUserHome(), RCFILE),
 
     // version from package.json
@@ -86,9 +90,7 @@ export default {
             // https://github.com/expressjs/session#resave
             resave: true,
             // https://github.com/expressjs/session#saveuninitialized
-            saveUninitialized: true,
-            // https://github.com/expressjs/session#secret
-            secret: secret
+            saveUninitialized: true
         }
     },
     // Supported languages

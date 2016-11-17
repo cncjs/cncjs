@@ -1,10 +1,40 @@
 (function(root) {
 
+// token
+var token = '';
+
+try {
+    var cnc = JSON.parse(localStorage.getItem('cnc') || {});
+    cnc.state = cnc.state || {};
+    cnc.state.session = cnc.state.session || {};
+    token = cnc.state.session.token || '';
+} catch (err) {
+    // Ignore error
+}
+
+// WebSocket
+var socket = root.io.connect('', {
+    query: 'token=' + token
+});
+
+socket.on('connect', function() {
+    $('#loading').remove(); // Remove loading message
+    root.cnc.router.init();
+    window.location = '#/';
+});
+
+socket.on('error', function() {
+    socket.destroy();
+    window.location = '/'; // Redirect to webroot
+});
+
+socket.on('close', function() {
+});
+
 // constants
 var GRBL = 'Grbl';
 var TINYG2 = 'TinyG2';
 
-var socket = root.socket;
 var CNCController = function() {
     this.callbacks = {
         'serialport:list': [],
@@ -128,6 +158,6 @@ CNCController.prototype.writeln = function(data) {
     this.write(data);
 };
 
-root.CNCController = CNCController;
+root.cnc.controller = new CNCController();
 
 })(this);

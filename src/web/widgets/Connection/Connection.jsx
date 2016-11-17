@@ -229,7 +229,7 @@ class Connection extends React.Component {
             .then((res) => {
                 gcode = _.get(res, 'body.data', '');
             })
-            .catch((err) => {
+            .catch((res) => {
                 // Empty block
             })
             .then(() => {

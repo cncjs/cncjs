@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import get from 'lodash/get';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -20,11 +21,15 @@ class General extends Component {
 
         return (
             <form>
-                <div className={styles['form-fields']}>
-                    <div className="form-group">
+                <div className={styles.formFields}>
+                    <div className={styles.formGroup}>
                         <label>{i18n._('Language')}</label>
                         <select
-                            className="form-control"
+                            className={classNames(
+                                'form-control',
+                                styles.formControl,
+                                styles.short
+                            )}
                             value={lang}
                             onChange={(event) => {
                                 const target = event.target;
@@ -45,7 +50,7 @@ class General extends Component {
                         </select>
                     </div>
                 </div>
-                <div className={styles['form-actions']}>
+                <div className={styles.formActions}>
                     <div className="row">
                         <div className="col-md-12">
                             <div className="pull-left">

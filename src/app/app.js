@@ -107,6 +107,8 @@ const appMain = () => {
 
         app.use(session({
             ...settings.middleware.session,
+            // https://github.com/expressjs/session#secret
+            secret: settings.secret,
             store: new (FileStore(session))({
                 path: path,
                 logFn: (...args) => {

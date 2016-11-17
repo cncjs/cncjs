@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react';
-import Switch from 'rc-switch';
+import Toggle from 'react-toggle';
 import i18n from '../../../lib/i18n';
 
 class WidgetListItem extends Component {
@@ -15,7 +15,8 @@ class WidgetListItem extends Component {
         checked: this.props.checked
     };
 
-    handleChange(checked) {
+    handleChange(event) {
+        const checked = event.target.checked;
         this.setState({ checked: checked });
         this.props.onChange(this.props.id, checked);
     }
@@ -53,14 +54,15 @@ class WidgetListItem extends Component {
                             <span style={styles.caption}>{this.props.caption}</span>
                         </div>
                         <div className="col-sm-4 text-right">
-                            <Switch
-                                className="noselect"
-                                disabled={this.props.disabled}
-                                defaultChecked={checked}
-                                onChange={::this.handleChange}
-                                checkedChildren={i18n._('On')}
-                                unCheckedChildren={i18n._('Off')}
-                            />
+                            <span
+                                title={checked ? i18n._('On') : i18n._('Off')}
+                            >
+                                <Toggle
+                                    disabled={this.props.disabled}
+                                    defaultChecked={checked}
+                                    onChange={::this.handleChange}
+                                />
+                            </span>
                         </div>
                     </div>
                     <div style={styles.details}>

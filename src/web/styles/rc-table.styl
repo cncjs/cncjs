@@ -1,0 +1,70 @@
+@import './helper.styl';
+
+.rc-table {
+    &.no-border {
+        .rc-table-thead th:first-child,
+        .rc-table-tbody td:first-child {
+            border-left: none;
+        }
+        .rc-table-thead th:last-child,
+        .rc-table-tbody td:last-child {
+            border-right: none;
+        }
+        .rc-table-thead tr:first-child > * {
+            border-top: none;
+        }
+        .rc-table-tbody tr:last-child > * {
+            border-bottom: none;
+        }
+        .rc-table-placeholder {
+            border: none;
+        }
+    }
+
+    .overflow-ellipsis {
+        @extend .text-overflow-ellipsis;
+        display: block;
+    }
+
+    .rc-table-content {
+    }
+
+    .rc-table-body {
+        table {
+            width: 100%;
+        }
+    }
+
+    .rc-table-placeholder {
+        border: 1px solid #d0d0d0;
+        text-align: center;
+        vertical-align: middle;
+        height: 72px;
+        line-height: 72px;
+        color: #aaa;
+    }
+
+    .rc-table-thead {
+        background-color: #eee;
+        border-bottom: 2px solid #d0d0d0;
+        color: #777;
+        font-weight: 700;
+        vertical-align: top!important;
+    }
+    
+    .rc-table-tbody tr:hover {
+        background-color: #e6f4fc;
+    }
+
+    .rc-table-thead th,
+    .rc-table-tbody td {
+        font-size: 13px;
+        border: 1px solid #ddd;
+        word-break: break-word;
+        padding: 8px 12px;
+    }
+    
+    .rc-table-thead th .sort {
+        cursor:pointer;
+    }
+}

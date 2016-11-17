@@ -2,6 +2,7 @@ import _ from 'lodash';
 import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
+import socketioJwt from 'socketio-jwt';
 import store from './store';
 import log from './lib/log';
 import settings from './config/settings';
@@ -40,14 +41,19 @@ class CNCServer {
         });
     }
     start() {
-        let io = socketIO(this.server, {
+        const io = socketIO(this.server, {
             serveClient: true,
             path: '/socket.io'
         });
 
+        io.use(socketioJwt.authorize({
+            secret: settings.secret,
+            handshake: true
+        }));
+
         io.use((socket, next) => {
-            let address = socket.handshake.address;
-            let allowed = _.some(ALLOWED_IP_RANGES, (range) => {
+            const address = socket.handshake.address;
+            const allowed = _.some(ALLOWED_IP_RANGES, (range) => {
                 return rangeCheck.inRange(address, range);
             });
 
@@ -61,14 +67,15 @@ class CNCServer {
         });
 
         io.on('connection', (socket) => {
-            let address = socket.handshake.address;
-            log.debug(`${PREFIX} New connection from ${address}: id=${socket.id}`);
+            const address = socket.handshake.address;
+            const token = socket.decoded_token || {};
+            log.debug(`${PREFIX} New connection from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
 
             // Add to the socket pool
             this.sockets.push(socket);
 
             socket.on('disconnect', () => {
-                log.debug(`${PREFIX} socket.disconnect(): id=${socket.id}`);
+                log.debug(`${PREFIX} Disconnected from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
 
                 _.each(this.controllers, (controller, port) => {
                     if (!controller) {
@@ -93,7 +100,7 @@ class CNCServer {
 
                     ports = ports.concat(_.get(settings, 'cnc.ports') || []);
 
-                    let portsInUse = _(this.controllers)
+                    const portsInUse = _(this.controllers)
                         .filter((controller) => {
                             return controller && controller.isOpen();
                         })
@@ -150,7 +157,7 @@ class CNCServer {
             socket.on('close', (port) => {
                 log.debug(`${PREFIX} socket.close("${port}"): id=${socket.id}`);
 
-                let controller = this.controllers[port];
+                const controller = this.controllers[port];
                 if (!controller) {
                     log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
@@ -162,7 +169,7 @@ class CNCServer {
             socket.on('command', (port, cmd, ...args) => {
                 log.debug(`${PREFIX} socket.command("${port}", "${cmd}"): id=${socket.id}, args=${JSON.stringify(args)}`);
 
-                let controller = this.controllers[port];
+                const controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
                     log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
@@ -174,7 +181,7 @@ class CNCServer {
             socket.on('write', (port, data) => {
                 log.debug(`${PREFIX} socket.write("${port}", "${data}"): id=${socket.id}`);
 
-                let controller = this.controllers[port];
+                const controller = this.controllers[port];
                 if (!controller || controller.isClose()) {
                     log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
@@ -189,7 +196,7 @@ class CNCServer {
 }
 
 const serverMain = (server) => {
-    let cncServer = new CNCServer(server);
+    const cncServer = new CNCServer(server);
     cncServer.start();
 };
 
