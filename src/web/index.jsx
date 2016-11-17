@@ -48,7 +48,7 @@ series([
             .then(({ authenticated, token }) => {
                 if (authenticated) {
                     log.debug('Create and establish a WebSocket connection');
-                    controller.connect(); // @see also: src/web/containers/Login/Login.jsx
+                    controller.connect(); // @see "src/web/containers/Login/Login.jsx"
                 }
                 next();
             });

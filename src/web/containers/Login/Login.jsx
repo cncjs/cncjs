@@ -48,7 +48,7 @@ class Login extends Component {
                     });
 
                     log.debug('Create and establish a WebSocket connection');
-                    controller.connect(); // @see also: src/web/index.jsx
+                    controller.connect(); // @see "src/web/index.jsx"
 
                     const { location, router } = this.props;
                     if (location.state && location.state.nextPathname) {
