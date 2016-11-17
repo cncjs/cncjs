@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "1.7.2",
+  "version": "1.8.0",
   "description": "A web-based interface for CNC milling controller running Grbl or TinyG2",
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
