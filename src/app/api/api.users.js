@@ -13,11 +13,9 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from './constants';
 
-const SECRET = 'SECRET'; // FIXME
-
 // Generate session token
 // Note. Do not use password and other sensitive fields in the payload
-const generateToken = (payload, secret = SECRET) => {
+const generateToken = (payload, secret = settings.secret) => {
     const token = jwt.sign(payload, secret, {
         expiresIn: 60 * 60 * 24 // expires in 24 hours
     });
@@ -46,7 +44,7 @@ export const signin = (req, res) => {
     if (enabledUsers.length === 0) {
         const user = { id: '', name: '' };
         const payload = { ...user };
-        const token = generateToken(payload, SECRET); // generate new token
+        const token = generateToken(payload, settings.secret); // generate new token
         res.send({
             enabled: false, // session is disabled
             token: token,
@@ -70,7 +68,7 @@ export const signin = (req, res) => {
             id: user.id,
             name: user.name
         };
-        const token = generateToken(payload, SECRET); // generate new token
+        const token = generateToken(payload, settings.secret); // generate new token
         res.send({
             enabled: true, // session is enabled
             token: token, // new token
@@ -79,7 +77,7 @@ export const signin = (req, res) => {
         return;
     }
 
-    jwt.verify(token, SECRET, (err, user) => {
+    jwt.verify(token, settings.secret, (err, user) => {
         if (err) {
             res.status(ERR_INTERNAL_SERVER_ERROR).send({
                 msg: 'Internal server error'

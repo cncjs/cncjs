@@ -47,7 +47,7 @@ class CNCServer {
         });
 
         io.use(socketioJwt.authorize({
-            secret: 'SECRET', // FIXME
+            secret: settings.secret,
             handshake: true
         }));
 
