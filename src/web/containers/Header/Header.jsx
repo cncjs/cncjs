@@ -12,24 +12,13 @@ import QuickAccessToolbar from './QuickAccessToolbar';
 
 const releases = 'https://github.com/cheton/cnc/releases';
 
-const newUpdateAvailableTooltip = (currentVersion) => {
+const newUpdateAvailableTooltip = () => {
     return (
         <Tooltip
             id="navbarBrandTooltip"
             style={{ color: '#fff' }}
         >
             <div>{i18n._('New update available')}</div>
-        </Tooltip>
-    );
-};
-
-const uptodateVersionTooltip = (currentVersion) => {
-    return (
-        <Tooltip
-            id="navbarBrandTooltip"
-            style={{ color: '#fff' }}
-        >
-            <div>cnc {currentVersion}</div>
         </Tooltip>
     );
 };
@@ -75,9 +64,7 @@ class Header extends Component {
         const { path } = this.props;
         const { currentVersion, latestVersion } = this.state;
         const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
-        const tooltip = newUpdateAvailable
-            ? newUpdateAvailableTooltip(currentVersion)
-            : uptodateVersionTooltip(currentVersion);
+        const tooltip = newUpdateAvailable ? newUpdateAvailableTooltip() : <div />;
         const sessionEnabled = store.get('session.enabled');
         const signedInName = store.get('session.name');
 
@@ -90,17 +77,31 @@ class Header extends Component {
                     >
                         <Anchor
                             className="navbar-brand"
+                            style={{
+                                padding: '10px 15px',
+                                position: 'relative'
+                            }}
                             href={releases}
                             target="_blank"
                         >
                             {settings.name}
+                            <div
+                                style={{
+                                    fontSize: '50%',
+                                    lineHeight: '12px',
+                                    textAlign: 'center'
+                                }}
+                            >
+                                {settings.version}
+                            </div>
                             {newUpdateAvailable &&
                             <span
                                 className="label label-primary"
                                 style={{
+                                    fontSize: '50%',
                                     position: 'absolute',
-                                    top: 5,
-                                    fontSize: '50%'
+                                    top: 2,
+                                    right: 2
                                 }}
                             >
                                 N
