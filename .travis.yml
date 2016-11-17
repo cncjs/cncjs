@@ -105,7 +105,7 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-ia32;
       ls -al output output/*;
-      cp -af "output/${RELEASE}-ia32.deb" "releases/${RELEASE}-linux-ia32.deb";
+      cp -af "output/${RELEASE}_ia32.deb" "releases/${RELEASE}-linux-ia32.deb";
       pushd releases;
       ln -sf ../output/linux-ia32-unpacked "${RELEASE}-linux-ia32";
       tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
@@ -127,7 +127,7 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-x64;
       ls -al output output/*;
-      cp -af "output/${RELEASE}-amd64.deb" "releases/${RELEASE}-linux-x64.deb";
+      cp -af "output/${RELEASE}_amd64.deb" "releases/${RELEASE}-linux-x64.deb";
       pushd releases;
       ln -sf ../output/linux-unpacked "${RELEASE}-linux-x64";
       tar zcfh "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64";
