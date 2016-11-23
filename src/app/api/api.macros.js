@@ -1,6 +1,6 @@
 import fs from 'fs';
 import _ from 'lodash';
-import uuid from 'node-uuid';
+import uuid from 'uuid';
 import settings from '../config/settings';
 import log from '../lib/log';
 

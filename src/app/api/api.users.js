@@ -2,7 +2,7 @@ import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
 import _ from 'lodash';
-import uuid from 'node-uuid';
+import uuid from 'uuid';
 import settings from '../config/settings';
 import {
     ERR_BAD_REQUEST,
