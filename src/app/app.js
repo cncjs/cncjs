@@ -16,7 +16,7 @@ import morgan from 'morgan';
 import compress from 'compression';
 import serveStatic from 'serve-static';
 import session from 'express-session';
-import FileStore from 'session-file-store';
+import sessionFileStore from 'session-file-store';
 import i18next from 'i18next';
 import i18nextBackend from 'i18next-node-fs-backend';
 import del from 'del';
@@ -105,11 +105,12 @@ const appMain = () => {
         del.sync([path]);
         fs.mkdirSync(path); // Defaults to ./sessions
 
+        const FileStore = sessionFileStore(session);
         app.use(session({
             ...settings.middleware.session,
             // https://github.com/expressjs/session#secret
             secret: settings.secret,
-            store: new (FileStore(session))({
+            store: new FileStore({
                 path: path,
                 logFn: (...args) => {
                     log.debug.apply(log, args);
