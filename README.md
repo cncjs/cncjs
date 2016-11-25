@@ -34,7 +34,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 ### Node.js Installation
 
 Node.js v4 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
-```bash
+```
 $ git clone https://github.com/creationix/nvm.git ~/.nvm
 $ cd ~/.nvm
 $ git checkout `git describe --abbrev=0 --tags`
@@ -50,20 +50,20 @@ export NVM_DIR="$HOME/.nvm"
 ```
 
 If you're using Node.js v4 or earlier versions, it's recommended that you use npm v3 to install packages. To upgrade, run:
-```bash
+```
 $ npm install npm@latest -g
 ```
 
 ### Getting Started
 
 Make sure you're using Node.js v4 (or higher) and npm v3:
-```bash
+```
 $ nvm use 4
 Now using node v4.5.0 (npm v3.10.6)
 ```
 
 Install `cncjs` without `sudo`, or the `serialport` module may not install correctly on some platforms like Raspberry Pi.
-```bash
+```
 $ npm install -g cncjs
 ```
 
@@ -76,12 +76,12 @@ Run `npm install -g cncjs@latest` to install the latest version. To determine th
 
 ## Usage
 Run `cnc` or `~/.npm/bin/cnc` to start the server, and visit `http://yourhostname:8000/` to view the web interface:
-```bash
+```
 $ cnc
 ```
 
 Run `cnc` with -h for detailed usage:
-```bash
+```
 $ cnc -h
 
   Usage: cnc [options]
@@ -107,7 +107,7 @@ $ cnc -h
 ```
 
 If you need view detailed logs for troubleshooting, you can run the server in debug mode.
-```bash
+```
 $ cnc -vv
 ```
 
