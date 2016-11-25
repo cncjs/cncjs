@@ -18,6 +18,9 @@ export default {
 
     cncrc: path.resolve(getUserHome(), RCFILE),
 
+    // Allow remote access
+    allowRemoteAccess: false,
+
     // version from package.json
     version: pkg.version,
 

@@ -7,26 +7,9 @@ import store from './store';
 import log from './lib/log';
 import settings from './config/settings';
 import { GrblController, TinyG2Controller } from './controllers';
+import { IP_WHITELIST } from './constants';
 
 const PREFIX = '[cncserver]';
-const ALLOWED_IP_RANGES = [
-    // IPv4 reserved space
-    '10.0.0.0/8', // Used for local communications within a private network
-    '127.0.0.0/8', // Used for loopback addresses to the local host
-    '172.16.0.0/12', // Used for local communications within a private network
-    '192.168.0.0/16', // Used for local communications within a private network
-
-    // IPv4 mapped IPv6 address
-    '::ffff:10.0.0.0/8',
-    '::ffff:127.0.0.0/8',
-    '::ffff:172.16.0.0/12',
-    '::ffff:192.168.0.0/16',
-
-    // IPv6 reserved space
-    '::1/128', // loopback address to the local host
-    'fc00::/7', // Unique local address
-    'fe80::/10' // Link-local address
-];
 
 class CNCServer {
     server = null;
@@ -52,13 +35,14 @@ class CNCServer {
         }));
 
         io.use((socket, next) => {
-            const address = socket.handshake.address;
-            const allowed = _.some(ALLOWED_IP_RANGES, (range) => {
-                return rangeCheck.inRange(address, range);
-            });
+            const clientIp = socket.handshake.address;
+            const allowedAccess = _.some(IP_WHITELIST, (whitelist) => {
+                return rangeCheck.inRange(clientIp, whitelist);
+            }) || (settings.allowRemoteAccess);
+            const deniedAccess = !allowedAccess;
 
-            if (!allowed) {
-                log.warn(`${PREFIX} Reject connection from ${address}`);
+            if (deniedAccess) {
+                log.warn(`${PREFIX} Forbidden: Deny connection from ${clientIp}`);
                 next(new Error('You are not allowed on this server!'));
                 return;
             }

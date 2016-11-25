@@ -35,7 +35,17 @@ program
     .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)', 511)
     .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
     .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
-    .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' });
+    .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
+    .option('--allow-remote-access', 'allow remote access to the server', false);
+
+program.on('--help', () => {
+    console.log('  Examples:');
+    console.log('');
+    console.log('    $ cnc -vv');
+    console.log('    $ cnc --mount /pendant:/home/pi/tinyweb');
+    console.log('    $ cnc --allow-remote-access');
+    console.log('');
+});
 
 // https://github.com/tj/commander.js/issues/512
 // Commander assumes that process.argv[0] is 'node' and argv[1] is script name
@@ -59,6 +69,7 @@ const cnc = (options = {}, callback) => {
         config: program.config,
         verbosity: program.verbose,
         mount: program.mount,
+        allowRemoteAccess: program.allowRemoteAccess,
         ...options // Override command-line options if specified
     }, callback);
 };

@@ -10,7 +10,16 @@ import log from './lib/log';
 import { readConfigFileSync, writeConfigFileSync } from './lib/config-file';
 import settings from './config/settings';
 
-const createServer = ({ port = 0, host, backlog, config, verbosity, mount }, callback) => {
+const createServer = (options, callback) => {
+    const {
+        port = 0,
+        host,
+        backlog,
+        config,
+        verbosity,
+        allowRemoteAccess = false,
+        mount
+    } = { ...options };
     const routes = [];
 
     { // routes
@@ -43,6 +52,8 @@ const createServer = ({ port = 0, host, backlog, config, verbosity, mount }, cal
             _.set(settings, 'verbosity', verbosity);
             log.logger.level = 'silly';
         }
+
+        _.set(settings, 'allowRemoteAccess', !!allowRemoteAccess);
 
         const cncrc = path.resolve(config || settings.cncrc);
         const cnc = readConfigFileSync(cncrc);

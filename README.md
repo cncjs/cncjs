@@ -96,6 +96,14 @@ $ cnc -h
     -c, --config <filename>     set config file (default: ~/.cncrc)
     -v, --verbose               increase the verbosity level
     -m, --mount [<url>:]<path>  set the mount point for serving static files (default: /static:static)
+    --allow-remote-access       allow remote access to the server
+
+  Examples:
+
+    $ cnc -vv
+    $ cnc --mount /pendant:/home/pi/tinyweb
+    $ cnc --allow-remote-access
+
 ```
 
 If you need view detailed logs for troubleshooting, you can run the server in debug mode.

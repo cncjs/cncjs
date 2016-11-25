@@ -1,5 +1,5 @@
 /* eslint callback-return: 0 */
-import { noop } from 'lodash';
+import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
@@ -20,6 +20,7 @@ import sessionFileStore from 'session-file-store';
 import i18next from 'i18next';
 import i18nextBackend from 'i18next-node-fs-backend';
 import del from 'del';
+import rangeCheck from 'range_check';
 import {
     LanguageDetector as i18nextLanguageDetector,
     handle as i18nextHandle
@@ -32,8 +33,9 @@ import errclient from './lib/middleware/errclient';
 import errlog from './lib/middleware/errlog';
 import errnotfound from './lib/middleware/errnotfound';
 import errserver from './lib/middleware/errserver';
+import { IP_WHITELIST } from './constants';
 
-const renderPage = (view = 'index', cb = noop) => (req, res, next) => {
+const renderPage = (view = 'index', cb = _.noop) => (req, res, next) => {
     // Override IE's Compatibility View Settings
     // http://stackoverflow.com/questions/6156639/x-ua-compatible-is-set-to-ie-edge-but-it-still-doesnt-stop-compatibility-mode
     res.set({ 'X-UA-Compatible': 'IE=edge' });
@@ -89,6 +91,22 @@ const appMain = () => {
         .use(i18nextBackend)
         .use(i18nextLanguageDetector)
         .init(settings.i18next);
+
+    // Check if client's IP address is in the whitelist
+    app.use((req, res, next) => {
+        const clientIp = req.ip || req.connection.remoteAddress;
+        const allowedAccess = _.some(IP_WHITELIST, (whitelist) => {
+            return rangeCheck.inRange(clientIp, whitelist);
+        }) || (settings.allowRemoteAccess);
+        const deniedAccess = !allowedAccess;
+
+        if (deniedAccess) {
+            res.status(403).end('Access to the requested directory is only available from the local network.');
+            return;
+        }
+
+        next();
+    });
 
     // Removes the 'X-Powered-By' header in earlier versions of Express
     app.use((req, res, next) => {
