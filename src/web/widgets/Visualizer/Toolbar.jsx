@@ -75,27 +75,29 @@ class Toolbar extends Component {
 
         return (
             <div className="btn-toolbar" styleName="toolbar">
-                <button
-                    type="button"
-                    className="btn btn-sm btn-primary"
-                    title={i18n._('Upload G-code')}
-                    onClick={::this.onClickToUpload}
-                    disabled={!canUpload}
-                >
-                    {i18n._('Upload G-code')}
-                </button>
-                <input
-                    // The ref attribute adds a reference to the component to
-                    // this.refs when the component is mounted.
-                    ref={(node) => {
-                        this.fileInputEl = node;
-                    }}
-                    type="file"
-                    style={{ display: 'none' }}
-                    multiple={false}
-                    onChange={::this.onChangeFile}
-                />
-                <div className="btn-group btn-group-sm" styleName="btn-group">
+                <div className="btn-group btn-group-sm">
+                    <button
+                        type="button"
+                        className="btn btn-primary"
+                        title={i18n._('Upload G-code')}
+                        onClick={::this.onClickToUpload}
+                        disabled={!canUpload}
+                    >
+                        {i18n._('Upload G-code')}
+                    </button>
+                    <input
+                        // The ref attribute adds a reference to the component to
+                        // this.refs when the component is mounted.
+                        ref={(node) => {
+                            this.fileInputEl = node;
+                        }}
+                        type="file"
+                        style={{ display: 'none' }}
+                        multiple={false}
+                        onChange={::this.onChangeFile}
+                    />
+                </div>
+                <div className="btn-group btn-group-sm">
                     <button
                         type="button"
                         className="btn btn-default"
