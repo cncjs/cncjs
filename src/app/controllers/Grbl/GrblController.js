@@ -4,7 +4,7 @@ import SerialPort from 'serialport';
 import settings from '../../config/settings';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
-import GCodeSender from '../../lib/gcode-sender';
+import Sender, { STREAMING_PROTOCOL_CHAR_COUNTING } from '../../lib/gcode-sender';
 import store from '../../store';
 import Grbl from './Grbl';
 import {
@@ -117,14 +117,23 @@ class GrblController {
         });
 
         // Sender
-        this.sender = new GCodeSender();
-        this.sender.on('progress', (res) => {
+        this.sender = new Sender({
+            streamingProtocol: STREAMING_PROTOCOL_CHAR_COUNTING,
+
+            // Grbl has a 127 character serial receive buffer.
+            // Use a lower value to deduct the length of regular commands:
+            // - parser state command ($G\n)
+            // - current status command: (?)
+            //
+            // The amount of free space in the serial receive buffer is 125 (i.e. 127 - 2 - 1).
+            streamingBufferSize: 120
+        });
+        this.sender.on('gcode', (gcode = '') => {
             if (this.isClose()) {
                 log.error(`[Grbl] The serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
-            let { gcode = '' } = { ...res };
             gcode = ('' + gcode).trim();
             if (gcode.length > 0) {
                 this.serialport.write(gcode + '\n');
@@ -181,7 +190,6 @@ class GrblController {
                     this.emitAll('serialport:read', msg);
                 }
 
-                // Sender
                 this.sender.next();
 
                 this.emitAll('serialport:read', res.raw);
@@ -349,19 +357,8 @@ class GrblController {
                 state: this.state
             },
             workflowState: this.workflowState,
-            feeder: {
-                size: this.feeder.size()
-            },
-            gcode: {
-                name: this.sender.name,
-                size: this.sender.gcode.length,
-                remain: this.sender.remain.length,
-                sent: this.sender.sent.length,
-                total: this.sender.total,
-                createdTime: this.sender.createdTime,
-                startedTime: this.sender.startedTime,
-                finishedTime: this.sender.finishedTime
-            }
+            feeder: this.feeder.state,
+            sender: this.sender.state
         };
     }
     reset() {
@@ -487,16 +484,15 @@ class GrblController {
                 this.sender.unload();
             },
             'start': () => {
-                // Feeder
-                this.feeder.clear(); // make sure feeder queue is empty
+                this.feeder.clear(); // clear feeder queue
 
-                // Sender
                 this.workflowState = WORKFLOW_STATE_RUNNING;
+                this.sender.rewind(); // rewind sender queue
                 this.sender.next();
             },
             'stop': () => {
                 this.workflowState = WORKFLOW_STATE_IDLE;
-                this.sender.rewind();
+                this.sender.rewind(); // rewind sender queue
             },
             'pause': () => {
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
