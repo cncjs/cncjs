@@ -31,7 +31,7 @@ class TinyG2 extends Component {
 
     // See src/app/controllers/TinyG2/constants.js
     plannerBufferMax = 28; // default pool size
-    plannerBufferMin = 8; // low water mark
+    plannerBufferMin = 0;
 
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
@@ -62,16 +62,11 @@ class TinyG2 extends Component {
         const modal = _.mapValues(_.get(controllerState, 'sr.modal', {}), (word, group) => mapGCodeToText(word));
         const panel = state.panel;
 
-        let plannerBufferStyle = 'info';
-        this.plannerBufferMin = Math.min(this.plannerBufferMin, plannerBuffer);
         this.plannerBufferMax = Math.max(this.plannerBufferMax, plannerBuffer);
-        if (plannerBuffer > 0 && plannerBuffer === this.plannerBufferMin) {
-            plannerBufferStyle = 'warning';
-        }
 
         return (
             <div>
-                <Toolbar {...this.props} className={styles.toolbar} />
+                <Toolbar state={state} actions={actions} />
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles['panel-heading']}>
                         <Toggler
@@ -95,11 +90,15 @@ class TinyG2 extends Component {
                             <div className="col col-xs-8">
                                 <ProgressBar
                                     style={{ marginBottom: 0 }}
-                                    bsStyle={plannerBufferStyle}
+                                    bsStyle="info"
                                     min={this.plannerBufferMin}
                                     max={this.plannerBufferMax}
                                     now={plannerBuffer}
-                                    label={plannerBuffer > 0 ? plannerBuffer : ''}
+                                    label={
+                                        <span className={styles.progressbarLabel}>
+                                            {plannerBuffer}
+                                        </span>
+                                    }
                                 />
                             </div>
                         </div>

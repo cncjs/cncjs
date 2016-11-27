@@ -3,6 +3,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
+import styles from './index.styl';
 
 class Toolbar extends Component {
     static propTypes = {
@@ -14,16 +15,11 @@ class Toolbar extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { state, ...others } = this.props;
+        const { state } = this.props;
         const { canClick } = state;
-        const styles = {
-            button: {
-                minWidth: 24
-            }
-        };
 
         return (
-            <div {...others}>
+            <div className={styles.toolbar}>
                 <div className="btn-group btn-group-xs">
                     <button
                         type="button"
