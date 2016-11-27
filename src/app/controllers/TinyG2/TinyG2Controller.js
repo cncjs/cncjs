@@ -4,7 +4,7 @@ import SerialPort from 'serialport';
 import settings from '../../config/settings';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
-import GCodeSender from '../../lib/gcode-sender';
+import Sender, { STREAMING_PROTOCOL_SEND_RESPONSE } from '../../lib/gcode-sender';
 import store from '../../store';
 import TinyG2 from './TinyG2';
 import {
@@ -113,14 +113,15 @@ class TinyG2Controller {
         });
 
         // Sender
-        this.sender = new GCodeSender();
-        this.sender.on('progress', (res) => {
+        this.sender = new Sender({
+            streamingProtocol: STREAMING_PROTOCOL_SEND_RESPONSE
+        });
+        this.sender.on('gcode', (gcode = '') => {
             if (this.isClose()) {
                 log.error(`[TinyG2] The serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
-            let { gcode = '' } = { ...res };
             gcode = ('' + gcode).trim();
             if (gcode.length > 0) {
                 const cmd = JSON.stringify({ gc: gcode });
@@ -377,19 +378,8 @@ class TinyG2Controller {
                 footer: this.tinyG2.footer
             },
             workflowState: this.workflowState,
-            feeder: {
-                size: this.feeder.size()
-            },
-            gcode: {
-                name: this.sender.name,
-                size: this.sender.gcode.length,
-                remain: this.sender.remain.length,
-                sent: this.sender.sent.length,
-                total: this.sender.total,
-                createdTime: this.sender.createdTime,
-                startedTime: this.sender.startedTime,
-                finishedTime: this.sender.finishedTime
-            }
+            feeder: this.feeder.state,
+            sender: this.sender.state
         };
     }
     reset() {
