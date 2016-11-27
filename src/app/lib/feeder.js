@@ -12,6 +12,11 @@ class Feeder extends events.EventEmitter {
             this.changed = true;
         });
     }
+    get state() {
+        return {
+            queue: this.queue.length
+        };
+    }
     feed(data) {
         this.queue = this.queue.concat(data);
         this.emit('change');
