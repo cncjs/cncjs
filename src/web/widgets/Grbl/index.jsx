@@ -22,6 +22,19 @@ class GrblWidget extends Component {
     };
 
     actions = {
+        toggleQueueReports: () => {
+            const expanded = this.state.panel.queueReports.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    queueReports: {
+                        ...this.state.panel.queueReports,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
         toggleStatusReports: () => {
             const expanded = this.state.panel.statusReports.expanded;
 
@@ -83,6 +96,7 @@ class GrblWidget extends Component {
         } = this.state;
 
         store.set('widgets.grbl.minimized', minimized);
+        store.set('widgets.grbl.panel.queueReports.expanded', panel.queueReports.expanded);
         store.set('widgets.grbl.panel.statusReports.expanded', panel.statusReports.expanded);
         store.set('widgets.grbl.panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
@@ -97,6 +111,9 @@ class GrblWidget extends Component {
                 state: controller.state
             },
             panel: {
+                queueReports: {
+                    expanded: store.get('widgets.grbl.panel.queueReports.expanded')
+                },
                 statusReports: {
                     expanded: store.get('widgets.grbl.panel.statusReports.expanded')
                 },

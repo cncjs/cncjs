@@ -74,6 +74,9 @@ const defaultState = {
         grbl: {
             minimized: false,
             panel: {
+                queueReports: {
+                    expanded: true
+                },
                 statusReports: {
                     expanded: true
                 },
