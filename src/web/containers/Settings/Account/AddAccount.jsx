@@ -39,8 +39,8 @@ class AddAccount extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { modalParams } = state;
-        const { alertMessage } = modalParams;
+        const { modal } = state;
+        const { alertMessage } = modal.params;
 
         return (
             <Modal
@@ -53,7 +53,12 @@ class AddAccount extends Component {
                 </Modal.Header>
                 <Modal.Body>
                     {alertMessage &&
-                    <Notifications bsStyle="danger" onDismiss={actions.clearModalAlert}>
+                    <Notifications
+                        bsStyle="danger"
+                        onDismiss={() => {
+                            actions.updateModalParams({ alertMessage: '' });
+                        }}
+                    >
                         {alertMessage}
                     </Notifications>
                     }
@@ -158,7 +163,7 @@ class AddAccount extends Component {
                                         [ERR_CONFLICT]: i18n._('The account name is already being used. Choose another name.')
                                     }[res.status] || fallbackMsg;
 
-                                    actions.showModalAlert(msg);
+                                    actions.updateModalParams({ alertMessage: msg });
                                 });
                         }}
                     >

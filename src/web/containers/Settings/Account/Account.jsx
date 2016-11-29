@@ -9,8 +9,8 @@ import i18n from '../../../lib/i18n';
 import AddAccount from './AddAccount';
 import EditAccount from './EditAccount';
 import {
-    MODAL_STATE_ADD_ACCOUNT,
-    MODAL_STATE_EDIT_ACCOUNT
+    MODAL_ADD_ACCOUNT,
+    MODAL_EDIT_ACCOUNT
 } from './constants';
 
 class Account extends Component {
@@ -30,7 +30,7 @@ class Account extends Component {
     render() {
         const { state, actions } = this.props;
         const {
-            modalState,
+            modal,
             failure,
             fetching,
             pagination,
@@ -40,10 +40,10 @@ class Account extends Component {
 
         return (
             <div style={{ margin: -15 }}>
-                {modalState === MODAL_STATE_ADD_ACCOUNT &&
+                {modal.name === MODAL_ADD_ACCOUNT &&
                 <AddAccount {...this.props} />
                 }
-                {modalState === MODAL_STATE_EDIT_ACCOUNT &&
+                {modal.name === MODAL_EDIT_ACCOUNT &&
                 <EditAccount {...this.props} />
                 }
                 <Table
@@ -79,7 +79,7 @@ class Account extends Component {
                                 type="button"
                                 className="btn btn-default"
                                 onClick={() => {
-                                    actions.openModal(MODAL_STATE_ADD_ACCOUNT);
+                                    actions.openModal(MODAL_ADD_ACCOUNT);
                                 }}
                             >
                                 <i className="fa fa-user-plus" />
@@ -107,7 +107,7 @@ class Account extends Component {
                                 return (
                                     <Anchor
                                         onClick={(event) => {
-                                            actions.openModal(MODAL_STATE_EDIT_ACCOUNT, row);
+                                            actions.openModal(MODAL_EDIT_ACCOUNT, row);
                                         }}
                                     >
                                         {name}
@@ -157,7 +157,7 @@ class Account extends Component {
                                             className="btn btn-xs btn-default"
                                             title={i18n._('Edit Account')}
                                             onClick={(event) => {
-                                                actions.openModal(MODAL_STATE_EDIT_ACCOUNT, row);
+                                                actions.openModal(MODAL_EDIT_ACCOUNT, row);
                                             }}
                                         >
                                             <i className="fa fa-fw fa-edit" />

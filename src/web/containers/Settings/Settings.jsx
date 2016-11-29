@@ -130,12 +130,14 @@ class Settings extends Component {
                         });
                     });
             },
-            openModal: (modalState = '', modalParams = {}) => {
+            openModal: (name = '', params = {}) => {
                 this.setState({
                     account: {
                         ...this.state.account,
-                        modalState: modalState,
-                        modalParams: modalParams
+                        modal: {
+                            name: name,
+                            params: params
+                        }
                     }
                 });
             },
@@ -143,40 +145,23 @@ class Settings extends Component {
                 this.setState({
                     account: {
                         ...this.state.account,
-                        modalState: '',
-                        modalParams: {}
-                    }
-                });
-            },
-            updateModalParams: (modalParams = {}) => {
-                this.setState({
-                    account: {
-                        ...this.state.account,
-                        modalParams: {
-                            ...this.state.account.modalParams,
-                            ...modalParams
+                        modal: {
+                            name: '',
+                            params: {}
                         }
                     }
                 });
             },
-            showModalAlert: (msg) => {
+            updateModalParams: (params = {}) => {
                 this.setState({
                     account: {
                         ...this.state.account,
-                        modalParams: {
-                            ...this.state.account.modalParams,
-                            alertMessage: msg
-                        }
-                    }
-                });
-            },
-            clearModalAlert: () => {
-                this.setState({
-                    account: {
-                        ...this.state.account,
-                        modalParams: {
-                            ...this.state.account.modalParams,
-                            alertMessage: ''
+                        modal: {
+                            ...this.state.account.modal,
+                            params: {
+                                ...this.state.account.modal.params,
+                                ...params
+                            }
                         }
                     }
                 });
@@ -251,10 +236,12 @@ class Settings extends Component {
                 },
                 records: [],
                 // Modal
-                modalState: '',
-                modalParams: {
-                    alertMessage: '',
-                    changePassword: false
+                modal: {
+                    name: '',
+                    params: {
+                        alertMessage: '',
+                        changePassword: false
+                    }
                 }
             },
             about: {

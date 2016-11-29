@@ -42,8 +42,8 @@ class EditAccount extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { modalParams } = state;
-        const { alertMessage, changePassword = false, enabled, name, password } = modalParams;
+        const { modal } = state;
+        const { alertMessage, changePassword = false, enabled, name, password } = modal.params;
 
         return (
             <Modal
@@ -56,7 +56,12 @@ class EditAccount extends Component {
                 </Modal.Header>
                 <Modal.Body>
                     {alertMessage &&
-                    <Notifications bsStyle="danger" onDismiss={actions.clearModalAlert}>
+                    <Notifications
+                        bsStyle="danger"
+                        onDismiss={() => {
+                            actions.updateModalParams({ alertMessage: '' });
+                        }}
+                    >
                         {alertMessage}
                     </Notifications>
                     }
@@ -185,7 +190,7 @@ class EditAccount extends Component {
                                 return;
                             }
 
-                            const id = modalParams.id;
+                            const { id } = modal.params;
                             const { enabled, name, oldPassword, newPassword } = this.value;
 
                             api.editUser({ id, enabled, name, oldPassword, newPassword })
@@ -200,7 +205,7 @@ class EditAccount extends Component {
                                         [ERR_PRECONDITION_FAILED]: i18n._('Passwords do not match.')
                                     }[res.status] || fallbackMsg;
 
-                                    actions.showModalAlert(msg);
+                                    actions.updateModalParams({ alertMessage: msg });
                                 });
                         }}
                     >
