@@ -27,7 +27,7 @@ module.exports = {
             // http://survivejs.com/webpack_react/linting_in_webpack/
             {
                 test: /\.jsx?$/,
-                loaders: ['eslint'],
+                loader: 'eslint',
                 exclude: /node_modules/
             },
             {
@@ -98,7 +98,10 @@ module.exports = {
     },
     resolve: {
         alias: {},
-        extensions: ['', '.js', '.jsx', '.styl']
+        extensions: ['', '.js', '.jsx', '.styl'],
+        root: [
+            path.resolve(__dirname, 'src/web')
+        ]
     },
     // Some libraries import Node modules but don't use them in the browser.
     // Tell Webpack to provide empty mocks for them so importing them works.

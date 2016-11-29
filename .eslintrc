@@ -1,5 +1,6 @@
 {
     "plugins": [
+        "import",
         "react"
     ],
     "extends": "airbnb",
@@ -15,6 +16,13 @@
         "ecmaFeatures": {
             "experimentalObjectRestSpread": true,
             "jsx": true
+        }
+    },
+    "settings": {
+        "import/resolver": {
+            "webpack": {
+                "config": "../webpack.config.base.js"
+            }
         }
     },
     "rules": {
