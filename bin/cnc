@@ -8,27 +8,4 @@ if (process.env.NODE_ENV === 'development') {
     cnc = require('../dist/cnc/cnc').default;
 }
 
-cnc(function(err, server) {
-    if (err) {
-        console.error(err);
-        return;
-    }
-
-    var address = server.address().address;
-    var port = server.address().port;
-    if (address !== '0.0.0.0') {
-        console.log('Started the server at http://%s:%d/.', address, port);
-        return;
-    }
-
-    var dns = require('dns');
-    var os = require('os');
-    dns.lookup(os.hostname(), function(err, address, family) {
-        if (err) {
-            console.error('Can\'t resolve host name:', err);
-            return;
-        }
-
-        console.log('Started the server at http://%s:%d/.', address, port);
-    });
-});
+cnc();

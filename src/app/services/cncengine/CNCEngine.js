@@ -3,38 +3,41 @@ import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
-import store from './store';
-import log from './lib/log';
-import settings from './config/settings';
-import { GrblController, TinyG2Controller } from './controllers';
-import { IP_WHITELIST } from './constants';
+import store from '../../store';
+import log from '../../lib/log';
+import settings from '../../config/settings';
+import { GrblController, TinyG2Controller } from '../../controllers';
+import { IP_WHITELIST } from '../../constants';
 
 const PREFIX = '[cncserver]';
 
 class CNCServer {
-    server = null;
-    sockets = [];
     controllers = store.get('controllers');
-
-    constructor(server) {
-        this.server = server;
-
-        store.on('change', (state) => {
+    listener = {
+        storeChange: (state) => {
             this.controllers = _.get(state, 'controllers', {});
-        });
-    }
-    start() {
-        const io = socketIO(this.server, {
+        }
+    };
+    server = null;
+    io = null;
+    sockets = [];
+
+    start(server) {
+        this.stop();
+
+        store.on('change', this.listener.storeChange);
+        this.server = server;
+        this.io = socketIO(this.server, {
             serveClient: true,
             path: '/socket.io'
         });
 
-        io.use(socketioJwt.authorize({
+        this.io.use(socketioJwt.authorize({
             secret: settings.secret,
             handshake: true
         }));
 
-        io.use((socket, next) => {
+        this.io.use((socket, next) => {
             const clientIp = socket.handshake.address;
             const allowedAccess = _.some(IP_WHITELIST, (whitelist) => {
                 return rangeCheck.inRange(clientIp, whitelist);
@@ -50,7 +53,7 @@ class CNCServer {
             next();
         });
 
-        io.on('connection', (socket) => {
+        this.io.on('connection', (socket) => {
             const address = socket.handshake.address;
             const token = socket.decoded_token || {};
             log.debug(`${PREFIX} New connection from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
@@ -176,12 +179,14 @@ class CNCServer {
         });
     }
     stop() {
+        if (this.io) {
+            this.io.close();
+            this.io = null;
+        }
+        this.sockets = [];
+        this.server = null;
+        store.removeListener('change', this.listener.storeChange);
     }
 }
 
-const serverMain = (server) => {
-    const cncServer = new CNCServer(server);
-    cncServer.start();
-};
-
-export default serverMain;
+export default CNCServer;

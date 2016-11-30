@@ -36,6 +36,7 @@ program
     .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
     .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
     .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
+    .option('-w, --watch-directory <path>', 'specify the watch directory')
     .option('--allow-remote-access', 'allow remote access to the server', false);
 
 program.on('--help', () => {
@@ -53,25 +54,21 @@ if (process.argv.length > 1) {
     program.parse(process.argv);
 }
 
-const cnc = (options = {}, callback) => {
+const cnc = (options = {}) => {
     // Change working directory to 'app' before require('./app')
     process.chdir(path.resolve(__dirname, 'app'));
-
-    if (typeof options === 'function') {
-        callback = options;
-        options = {};
-    }
 
     require('./app').createServer({
         port: program.port,
         host: program.host,
         backlog: program.backlog,
-        config: program.config,
+        configFile: program.config,
         verbosity: program.verbose,
         mount: program.mount,
+        watchDirectory: program.watchDirectory,
         allowRemoteAccess: program.allowRemoteAccess,
         ...options // Override command-line options if specified
-    }, callback);
+    });
 };
 
 export default cnc;

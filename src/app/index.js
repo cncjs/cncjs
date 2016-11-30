@@ -1,11 +1,15 @@
 /* eslint no-unused-vars: 0 */
+import dns from 'dns';
+import fs from 'fs';
+import os from 'os';
+import path from 'path';
 import _ from 'lodash';
 import bcrypt from 'bcrypt-nodejs';
-import fs from 'fs';
-import path from 'path';
+import chalk from 'chalk';
 import webappengine from 'webappengine';
 import app from './app';
-import cncserver from './cncserver';
+import cncengine from './services/cncengine';
+import monitor from './services/monitor';
 import log from './lib/log';
 import { readConfigFileSync, writeConfigFileSync } from './lib/config-file';
 import settings from './config/settings';
@@ -15,12 +19,24 @@ const createServer = (options, callback) => {
         port = 0,
         host,
         backlog,
-        config,
+        configFile,
         verbosity,
-        allowRemoteAccess = false,
-        mount
+        mount,
+        watchDirectory,
+        allowRemoteAccess = false
     } = { ...options };
     const routes = [];
+
+    if (watchDirectory) {
+        if (fs.existsSync(watchDirectory)) {
+            log.info(`Start watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes.`);
+
+            // Start monitor service
+            monitor.start({ watchDirectory: watchDirectory });
+        } else {
+            log.error(`The directory ${chalk.yellow(JSON.stringify(watchDirectory))} does not exist.`);
+        }
+    }
 
     { // routes
         if (mount) {
@@ -55,27 +71,45 @@ const createServer = (options, callback) => {
 
         _.set(settings, 'allowRemoteAccess', !!allowRemoteAccess);
 
-        const cncrc = path.resolve(config || settings.cncrc);
-        const cnc = readConfigFileSync(cncrc);
-        if (!cnc.secret) {
+        const cncrc = path.resolve(configFile || settings.cncrc);
+        const config = readConfigFileSync(cncrc);
+        if (!config.secret) {
             // generate a secret key
-            cnc.secret = bcrypt.genSaltSync(); // TODO
+            config.secret = bcrypt.genSaltSync(); // TODO
 
             // update changes
-            writeConfigFileSync(cncrc, cnc);
+            writeConfigFileSync(cncrc, config);
         }
 
         settings.cncrc = cncrc;
-        settings.secret = cnc.secret || settings.secret;
+        settings.secret = config.secret || settings.secret;
     }
 
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
-            cncserver(server);
-            callback && callback(null, server);
+            // Start cncengine service
+            cncengine.start(server);
+
+            const address = server.address().address;
+            const port = server.address().port;
+            if (address !== '0.0.0.0') {
+                log.info('Started the server at ' + chalk.cyan(`http://${address}:${port}`));
+                return;
+            }
+
+            dns.lookup(os.hostname(), { family: 4, all: true }, (err, addresses) => {
+                if (err) {
+                    log.error('Can\'t resolve host name:', err);
+                    return;
+                }
+
+                addresses.forEach(({ address, family }) => {
+                    log.info('Started the server at ' + chalk.cyan(`http://${address}:${port}`));
+                });
+            });
         })
         .on('error', (err) => {
-            callback && callback(err);
+            log.error(err);
         });
 };
 

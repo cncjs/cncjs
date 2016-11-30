@@ -7,6 +7,7 @@ import * as i18nAPI from './api.i18n';
 import * as controllersAPI from './api.controllers';
 import * as usersAPI from './api.users';
 import * as macroAPI from './api.macros';
+import * as watchAPI from './api.watch';
 
 const api = {
     version: versionAPI,
@@ -16,6 +17,7 @@ const api = {
     controllers: controllersAPI,
     users: usersAPI,
     macros: macroAPI,
+    watch: watchAPI,
     addRoutes: (app) => {
         // Sign In
         app.post(urljoin(settings.route, 'api/signin'), api.users.signin);
@@ -49,6 +51,10 @@ const api = {
         app.post(urljoin(settings.route, 'api/macros'), api.macros.addMacro);
         app.put(urljoin(settings.route, 'api/macros/:id'), api.macros.updateMacro);
         app.delete(urljoin(settings.route, 'api/macros/:id'), api.macros.deleteMacro);
+
+        // Watch
+        app.get(urljoin(settings.route, 'api/watch'), api.watch.find);
+        app.post(urljoin(settings.route, 'api/watch'), api.watch.find);
 
         // I18n
         app.get(urljoin(settings.route, 'api/i18n/acceptedLng'), api.i18n.getAcceptedLanguage);
