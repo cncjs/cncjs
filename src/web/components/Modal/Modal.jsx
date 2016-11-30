@@ -60,6 +60,17 @@ class Modal extends Component {
         onHide: noop
     };
 
+    style = {
+        overflowY: ''
+    };
+
+    componentDidMount() {
+        this.style.overflowY = document.body.style.overflowY;
+        document.body.style.overflowY = 'hidden'; // prevent body scrolling
+    }
+    componentWillUnmount() {
+        document.body.style.overflowY = this.style.overflowY;
+    }
     onHide(event) {
         this.props.onHide && this.props.onHide(event);
     }
