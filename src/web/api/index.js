@@ -213,6 +213,22 @@ const deleteMacro = (options) => new Promise((resolve, reject) => {
         });
 });
 
+// Watch Directory
+const listWatchDirectory = (options) => new Promise((resolve, reject) => {
+    const { path } = { ...options };
+
+    request
+        .post('/api/watch/')
+        .send({ path })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
 export default {
     getLatestVersion,
     listControllers,
@@ -230,5 +246,7 @@ export default {
     getMacro,
     addMacro,
     updateMacro,
-    deleteMacro
+    deleteMacro,
+    // Watch Directory
+    listWatchDirectory
 };
