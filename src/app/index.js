@@ -88,7 +88,7 @@ const createServer = (options, callback) => {
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
             // Start cncengine service
-            cncengine.start(server);
+            cncengine.start({ server: server });
 
             const address = server.address().address;
             const port = server.address().port;

@@ -27,7 +27,7 @@ const find = (searchPath) => {
             const stat = monitor.files[file] || {};
 
             return {
-                file: path.basename(file),
+                name: path.basename(file),
                 type: (function() {
                     if (stat.isFile()) {
                         return 'f';

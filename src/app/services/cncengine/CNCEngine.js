@@ -9,7 +9,7 @@ import settings from '../../config/settings';
 import { GrblController, TinyG2Controller } from '../../controllers';
 import { IP_WHITELIST } from '../../constants';
 
-const PREFIX = '[cncserver]';
+const PREFIX = '[cncengine]';
 
 class CNCServer {
     controllers = store.get('controllers');
