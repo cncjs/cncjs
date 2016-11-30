@@ -4,12 +4,11 @@ import settings from '../config/settings';
 
 // https://code.google.com/p/v8/wiki/JavaScriptStackTraceApi
 const getStackTrace = () => {
-    let obj = {};
+    const obj = {};
     Error.captureStackTrace(obj, getStackTrace);
     return (obj.stack || '').split('\n');
 };
 
-const prefix = [];
 const logger = new winston.Logger({
     exitOnError: false,
     level: settings.winston.level,
@@ -26,36 +25,48 @@ const logger = new winston.Logger({
 export default {
     logger,
     log: function(...args) {
-        let level = args.shift();
-        let stackTrace = getStackTrace()[2];
-        logger.log(level, util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
+        const level = args.shift();
+        const stackTrace = getStackTrace()[2];
+        logger.log(level, util.format.apply(util.format, args.concat(stackTrace)));
     },
     raw: function(...args) {
-        let level = args.shift();
-        logger.log(level, prefix.concat(args).join(' '));
+        const level = args.shift();
+        logger.log(level, args.join(' '));
     },
     silly: function(...args) {
-        let stackTrace = getStackTrace()[2];
-        logger.silly(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
+        if (logger.levels[logger.level] >= logger.levels.debug) {
+            args = args.concat(getStackTrace()[2]);
+        }
+        logger.silly(util.format(...args));
     },
     debug: function(...args) {
-        let stackTrace = getStackTrace()[2];
-        logger.debug(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
+        if (logger.levels[logger.level] >= logger.levels.debug) {
+            args = args.concat(getStackTrace()[2]);
+        }
+        logger.debug(util.format(...args));
     },
     verbose: function(...args) {
-        let stackTrace = getStackTrace()[2];
-        logger.verbose(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
+        if (logger.levels[logger.level] >= logger.levels.debug) {
+            args = args.concat(getStackTrace()[2]);
+        }
+        logger.verbose(util.format(...args));
     },
     info: function(...args) {
-        let stackTrace = getStackTrace()[2];
-        logger.info(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
+        if (logger.levels[logger.level] >= logger.levels.debug) {
+            args = args.concat(getStackTrace()[2]);
+        }
+        logger.info(util.format(...args));
     },
     warn: function(...args) {
-        let stackTrace = getStackTrace()[2];
-        logger.warn(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
+        if (logger.levels[logger.level] >= logger.levels.debug) {
+            args = args.concat(getStackTrace()[2]);
+        }
+        logger.warn(util.format(...args));
     },
     error: function(...args) {
-        let stackTrace = getStackTrace()[2];
-        logger.error(util.format.apply(util.format, prefix.concat(args).concat(stackTrace)));
+        if (logger.levels[logger.level] >= logger.levels.debug) {
+            args = args.concat(getStackTrace()[2]);
+        }
+        logger.error(util.format(...args));
     }
 };
