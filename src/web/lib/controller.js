@@ -145,8 +145,10 @@ class CNCController {
     //   controller.command('unlock')
     // - G-code
     //   controller.command('gcode', 'G0X0Y0')
-    // - Macro
-    //   controller.command('macro', '<macro-id>', callback)
+    // - Load macro
+    //   controller.command('loadmacro', '<macro-id>', callback)
+    // - Load file from a watch directory
+    //   controller.command('loadfile', '/path/to/file', callback)
     command(cmd, ...args) {
         const { port } = this;
         if (!port) {

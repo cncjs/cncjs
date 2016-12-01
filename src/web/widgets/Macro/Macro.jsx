@@ -40,7 +40,7 @@ class Macro extends Component {
         });
     }
     handleLoadMacro({ id, name, content }) {
-        controller.command('macro', id, (err) => {
+        controller.command('loadmacro', id, (err, data) => {
             if (err) {
                 log.error(`Failed to load the macro: id=${id}, name="${name}"`);
                 return;

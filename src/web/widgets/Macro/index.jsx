@@ -100,7 +100,7 @@ class MacroWidget extends Component {
             const macros = res.body;
             this.setState({ macros: macros });
         } catch (err) {
-            // FIXME
+            // Ignore error
         }
     }
     async addMacro({ name, content }) {
@@ -111,7 +111,7 @@ class MacroWidget extends Component {
             const macros = res.body;
             this.setState({ macros: macros });
         } catch (err) {
-            // FIXME
+            // Ignore error
         }
     }
     async deleteMacro({ id }) {
@@ -122,7 +122,7 @@ class MacroWidget extends Component {
             const macros = res.body;
             this.setState({ macros: macros });
         } catch (err) {
-            // FIXME
+            // Ignore error
         }
     }
     async updateMacro({ id, name, content }) {
@@ -133,7 +133,7 @@ class MacroWidget extends Component {
             const macros = res.body;
             this.setState({ macros: macros });
         } catch (err) {
-            // FIXME
+            // Ignore error
         }
     }
     render() {

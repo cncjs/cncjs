@@ -142,8 +142,10 @@ CNCController.prototype.listAllPorts = function() {
 //   controller.command('unlock')
 // - G-code
 //   controller.command('gcode', 'G0X0Y0')
-// - Macro
-//   controller.command('macro', '<macro-id>', callback)
+// - Load macro
+//   controller.command('loadmacro', '<macro-id>', callback)
+// - Load file from a watch directory
+//   controller.command('loadfile', '/path/to/file', callback)
 CNCController.prototype.command = function(cmd) {
     var args = Array.prototype.slice.call(arguments, 1);
     socket.emit.apply(socket, ['command', this.port, cmd].concat(args));

@@ -210,21 +210,15 @@ class Connection extends React.Component {
 
         api.listControllers()
             .then((res) => {
-                let next;
                 const c = _.find(res.body, { port: port });
 
                 if (!c) {
-                    return next;
+                    return;
                 }
 
                 workflowState = _.get(c, 'workflowState');
 
-                if (c.ready) {
-                    // Fetch G-code when the controller is ready
-                    next = api.fetchGCode({ port: port });
-                }
-
-                return next;
+                return api.fetchGCode({ port: port });
             })
             .then((res) => {
                 gcode = _.get(res, 'body.data', '');
