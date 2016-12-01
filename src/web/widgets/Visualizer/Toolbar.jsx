@@ -111,14 +111,17 @@ class Toolbar extends Component {
                             <i className="fa fa-caret-down" />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
+                            <MenuItem header>
+                                {i18n._('Watch Directory')}
+                            </MenuItem>
                             <MenuItem
                                 onSelect={() => {
                                     actions.openModal(MODAL_WATCH_DIRECTORY);
                                 }}
                             >
-                                <i className="fa fa-fw fa-folder-o" />
+                                <i className="fa fa-search" />
                                 <span className="space" />
-                                {i18n._('Watch Directory')}
+                                {i18n._('Browse...')}
                             </MenuItem>
                         </Dropdown.Menu>
                     </Dropdown>
