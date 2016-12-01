@@ -8,11 +8,12 @@ import { formatBytes } from '../../lib/numeral';
 import styles from './renderer.styl';
 
 const TreeNode = (props) => {
-    const { componentClass, id, selected, disabled, className, children } = props;
+    const { componentClass, id, selected, disabled, className, children, ...others } = props;
     const Component = componentClass || 'tr';
 
     return (
         <Component
+            {...others}
             className={classNames(
                 className,
                 styles.treeNode,
@@ -36,11 +37,12 @@ TreeNode.propTypes = {
 };
 
 const TreeNodeColumn = (props) => {
-    const { className, children, padding = true, componentClass } = props;
+    const { className, children, padding = true, componentClass, ...others } = props;
     const Component = componentClass || 'td';
 
     return (
         <Component
+            {...others}
             className={classNames(
                 className,
                 styles.treeNodeColumn,
@@ -176,13 +178,13 @@ const renderer = (node, treeOptions) => {
                     <TreeNodeLoader show={loading} />
                 </div>
             </TreeNodeColumn>
-            <TreeNodeColumn>
+            <TreeNodeColumn className="text-nowrap">
                 {dateModified}
             </TreeNodeColumn>
-            <TreeNodeColumn>
+            <TreeNodeColumn className="text-nowrap">
                 {type}
             </TreeNodeColumn>
-            <TreeNodeColumn className="text-right">
+            <TreeNodeColumn className="text-nowrap text-right">
                 {size}
             </TreeNodeColumn>
         </TreeNode>

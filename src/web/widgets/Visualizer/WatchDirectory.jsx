@@ -19,6 +19,7 @@ class WatchDirectory extends Component {
     treeNode = null;
 
     componentDidMount() {
+        this.addColumnGroup();
         this.addResizeEventListener();
 
         api.watch.getFiles({ path: '' })
@@ -59,6 +60,17 @@ class WatchDirectory extends Component {
     removeResizeEventListener() {
         window.removeEventListener('resize', this.fitHeaderColumns);
     }
+    addColumnGroup() {
+        this.treeNode.tree.scrollElement.style.height = '240px';
+        const table = this.treeNode.tree.contentElement.parentNode;
+        const colgroup = document.createElement('colgroup');
+        table.appendChild(colgroup);
+
+        for (let i = 0; i < 4; ++i) {
+            const col = document.createElement('col');
+            colgroup.appendChild(col);
+        }
+    }
     fitHeaderColumns() {
         const ready = this.tableNode && this.treeNode;
         if (!ready) {
@@ -92,7 +104,7 @@ class WatchDirectory extends Component {
 
         return (
             <Modal
-                backdrop="static"
+                backdrop
                 bsSize="md"
                 onHide={actions.closeModal}
             >
@@ -122,16 +134,6 @@ class WatchDirectory extends Component {
                         ref={(node) => {
                             if (node) {
                                 this.treeNode = node;
-                                this.treeNode.tree.scrollElement.style.height = '240px';
-
-                                const table = this.treeNode.tree.contentElement.parentNode;
-                                const colgroup = document.createElement('colgroup');
-                                table.appendChild(colgroup);
-
-                                colgroup.appendChild(document.createElement('col'));
-                                colgroup.appendChild(document.createElement('col'));
-                                colgroup.appendChild(document.createElement('col'));
-                                colgroup.appendChild(document.createElement('col'));
                             }
                         }}
                         noDataClass={styles.noData}
@@ -201,7 +203,7 @@ class WatchDirectory extends Component {
                         }}
                         disabled={!canUpload}
                     >
-                        {i18n._('Load')}
+                        {i18n._('Load G-code')}
                     </button>
                 </Modal.Footer>
             </Modal>
