@@ -97,7 +97,7 @@ class Login extends Component {
                                 }}
                                 type="text"
                                 className="form-control"
-                                placeholder={i18n._('Name')}
+                                placeholder={i18n._('Username')}
                             />
                         </div>
                         <div className="form-group">

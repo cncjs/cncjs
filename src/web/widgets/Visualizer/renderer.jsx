@@ -127,6 +127,29 @@ const renderer = (node, treeOptions) => {
         }
         return disabled;
     }(node));
+    const dateModified = moment(node.props.mtime).format('lll');
+    const size = includes(['f', 'l'], node.props.type) ? formatBytes(node.props.size, 1) : '--';
+    const type = (function(node) {
+        if (node.props.type === 'd') {
+            return i18n._('File folder');
+        }
+
+        if (node.props.type === 'f') {
+            const extname = path.extname(node.name || '');
+
+            // path.extname('index.html')
+            // -> '.html'
+            // path.extname('index.')
+            // -> '.'
+            // path.extname('index')
+            // -> ''
+            return (extname.length > 1)
+                ? i18n._('{{extname}} File', { extname: extname.toUpperCase() }) // e.g. NC File
+                : i18n._('File');
+        }
+
+        return '';
+    }(node));
 
     return (
         <TreeNode
@@ -154,14 +177,13 @@ const renderer = (node, treeOptions) => {
                 </div>
             </TreeNodeColumn>
             <TreeNodeColumn>
-                {moment(node.props.mtime).format('lll')}
-            </TreeNodeColumn>
-            <TreeNodeColumn className="text-right">
-                {includes(['f', 'l'], node.props.type) ? formatBytes(node.props.size, 1) : '--'}
+                {dateModified}
             </TreeNodeColumn>
             <TreeNodeColumn>
-                {node.props.type === 'f' && i18n._('File')}
-                {node.props.type === 'd' && i18n._('Folder')}
+                {type}
+            </TreeNodeColumn>
+            <TreeNodeColumn className="text-right">
+                {size}
             </TreeNodeColumn>
         </TreeNode>
     );
