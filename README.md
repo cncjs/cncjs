@@ -78,6 +78,7 @@ Run `npm install -g cncjs@latest` to install the latest version. To determine th
 Run `cnc` or `~/.npm/bin/cnc` to start the server, and visit `http://yourhostname:8000/` to view the web interface:
 ```
 $ cnc
+2016-12-01T15:00:41.499Z - info: Started the server at http://192.168.1.100:8000
 ```
 
 Run `cnc` with -h for detailed usage:
@@ -110,8 +111,8 @@ $ cnc -h
 Instead of passing command line options for `--watch-directory` and `--allow-remote-access`, you can create a `~/.cncrc` file that contains the following configuration in JSON format:
 ```json
 {
-    "watchDirectory": "/path/to/dir",
-    "allowRemoteAccess": false
+  "watchDirectory": "/path/to/dir",
+  "allowRemoteAccess": false
 }
 ```
 
