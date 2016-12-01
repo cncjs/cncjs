@@ -42,7 +42,7 @@ class Dashboard extends Component {
         }(state));
         const filesize = (
             <span className={styles['text-gray']}>
-                {state.gcode.ready ? formatBytes(state.gcode.size, 1) : ''}
+                {state.gcode.ready ? formatBytes(state.gcode.size, 0) : ''}
             </span>
         );
         const sent = state.gcode.ready ? state.gcode.sent : none;

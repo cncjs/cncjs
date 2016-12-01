@@ -129,7 +129,7 @@ const renderer = (node, treeOptions) => {
         return disabled;
     }(node));
     const dateModified = moment(node.props.mtime).format('lll');
-    const size = includes(['f', 'l'], node.props.type) ? formatBytes(node.props.size, 1) : '--';
+    const size = includes(['f', 'l'], node.props.type) ? formatBytes(node.props.size, 0) : '';
     const type = (function(node) {
         if (node.props.type === 'd') {
             return i18n._('File folder');
@@ -142,8 +142,8 @@ const renderer = (node, treeOptions) => {
             // -> '.'
             // path.extname('index')
             // -> ''
-            const extname = path.extname(node.name || '');
-            return (extname.length > 1)
+            const extname = path.extname(node.name || '').slice(1);
+            return (extname.length > 0)
                 ? i18n._('{{extname}} File', { extname: extname.toUpperCase() }) // e.g. NC File
                 : i18n._('File');
         }
