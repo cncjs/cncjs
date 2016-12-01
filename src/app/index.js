@@ -26,17 +26,20 @@ const createServer = (options, callback) => {
         allowRemoteAccess = false
     } = { ...options };
     const routes = [];
+    const cncrc = path.resolve(configFile || settings.cncrc);
+    const config = readConfigFileSync(cncrc);
 
-    if (watchDirectory) {
-        if (fs.existsSync(watchDirectory)) {
-            log.info(`Start watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes.`);
+    // Secret
+    if (!config.secret) {
+        // generate a secret key
+        config.secret = bcrypt.genSaltSync(); // TODO
 
-            // Start monitor service
-            monitor.start({ watchDirectory: watchDirectory });
-        } else {
-            log.error(`The directory ${chalk.yellow(JSON.stringify(watchDirectory))} does not exist.`);
-        }
+        // update changes
+        writeConfigFileSync(cncrc, config);
     }
+
+    config.watchDirectory = _.get(config, 'watchDirectory', watchDirectory);
+    config.allowRemoteAccess = _.get(config, 'allowRemoteAccess', allowRemoteAccess);
 
     { // routes
         if (mount) {
@@ -54,7 +57,10 @@ const createServer = (options, callback) => {
         });
     }
 
-    { // settings
+    { // Settings
+        settings.cncrc = cncrc;
+        settings.secret = config.secret || settings.secret;
+
         // https://github.com/winstonjs/winston#logging-levels
         if (verbosity === 1) {
             _.set(settings, 'verbosity', verbosity);
@@ -69,20 +75,19 @@ const createServer = (options, callback) => {
             log.logger.level = 'silly';
         }
 
-        _.set(settings, 'allowRemoteAccess', !!allowRemoteAccess);
+        _.set(settings, 'allowRemoteAccess', config.allowRemoteAccess);
+    }
 
-        const cncrc = path.resolve(configFile || settings.cncrc);
-        const config = readConfigFileSync(cncrc);
-        if (!config.secret) {
-            // generate a secret key
-            config.secret = bcrypt.genSaltSync(); // TODO
+    // Watch Directory
+    if (config.watchDirectory) {
+        if (fs.existsSync(config.watchDirectory)) {
+            log.info(`Start watching ${chalk.yellow(JSON.stringify(config.watchDirectory))} for file changes.`);
 
-            // update changes
-            writeConfigFileSync(cncrc, config);
+            // Start monitor service
+            monitor.start({ watchDirectory: config.watchDirectory });
+        } else {
+            log.error(`The directory ${chalk.yellow(JSON.stringify(config.watchDirectory))} does not exist.`);
         }
-
-        settings.cncrc = cncrc;
-        settings.secret = config.secret || settings.secret;
     }
 
     webappengine({ port, host, backlog, routes })
