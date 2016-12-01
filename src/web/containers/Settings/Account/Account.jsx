@@ -176,7 +176,7 @@ class Account extends Component {
                                                             actions.fetchData();
                                                         })
                                                         .catch((res) => {
-                                                            // TODO
+                                                            // Ignore error
                                                         });
                                                 });
                                             }}
