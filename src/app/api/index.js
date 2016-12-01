@@ -53,8 +53,10 @@ const api = {
         app.delete(urljoin(settings.route, 'api/macros/:id'), api.macros.deleteMacro);
 
         // Watch
-        app.get(urljoin(settings.route, 'api/watch'), api.watch.find);
-        app.post(urljoin(settings.route, 'api/watch'), api.watch.find);
+        app.get(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
+        app.post(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
+        app.get(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
+        app.post(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
 
         // I18n
         app.get(urljoin(settings.route, 'api/i18n/acceptedLng'), api.i18n.getAcceptedLanguage);

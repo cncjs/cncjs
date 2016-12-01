@@ -1,12 +1,16 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from '../../constants';
+import {
+    MODAL_WATCH_DIRECTORY
+} from './constants';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import styles from './index.styl';
@@ -96,6 +100,28 @@ class Toolbar extends Component {
                         multiple={false}
                         onChange={::this.onChangeFile}
                     />
+                    <Dropdown
+                        id="upload-dropdown"
+                        disabled={!canUpload}
+                    >
+                        <Dropdown.Toggle
+                            bsStyle="primary"
+                            noCaret
+                        >
+                            <i className="fa fa-caret-down" />
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <MenuItem
+                                onSelect={() => {
+                                    actions.openModal(MODAL_WATCH_DIRECTORY);
+                                }}
+                            >
+                                <i className="fa fa-fw fa-folder-o" />
+                                <span className="space" />
+                                {i18n._('Watch Directory')}
+                            </MenuItem>
+                        </Dropdown.Menu>
+                    </Dropdown>
                 </div>
                 <div className="btn-group btn-group-sm">
                     <button

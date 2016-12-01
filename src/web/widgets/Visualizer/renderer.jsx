@@ -1,0 +1,170 @@
+import includes from 'lodash/includes';
+import moment from 'moment';
+import React, { PropTypes } from 'react';
+import classNames from 'classnames';
+import i18n from '../../lib/i18n';
+import { formatBytes } from '../../lib/numeral';
+import styles from './renderer.styl';
+
+const TreeNode = (props) => {
+    const { componentClass, id, selected, disabled, className, children } = props;
+    const Component = componentClass || 'tr';
+
+    return (
+        <Component
+            className={classNames(
+                className,
+                styles.treeNode,
+                { [styles.selected]: selected }
+            )}
+            data-id={id}
+            disabled={disabled}
+        >
+            {children}
+        </Component>
+    );
+};
+TreeNode.propTypes = {
+    componentClass: PropTypes.node,
+    id: PropTypes.oneOfType([
+        PropTypes.string,
+        PropTypes.number
+    ]),
+    selected: PropTypes.bool,
+    disabled: PropTypes.bool
+};
+
+const TreeNodeColumn = (props) => {
+    const { className, children, padding = true, componentClass } = props;
+    const Component = componentClass || 'td';
+
+    return (
+        <Component
+            className={classNames(
+                className,
+                styles.treeNodeColumn,
+                { [styles.noPadding]: !padding }
+            )}
+        >
+            {children}
+        </Component>
+    );
+};
+TreeNodeColumn.propTypes = {
+    padding: PropTypes.bool,
+    componentClass: PropTypes.node
+};
+
+const TreeNodeToggler = ({ show, expanded }) => {
+    if (!show) {
+        return null;
+    }
+
+    return (
+        <span
+            className={classNames(
+                styles.treeToggler
+            )}
+        >
+            <i
+                className={classNames(
+                    'fa',
+                    'fa-fw',
+                    { 'fa-chevron-down': expanded },
+                    { 'fa-chevron-right': !expanded }
+                )}
+                style={{
+                    opacity: expanded ? 1 : 0.5
+                }}
+            />
+        </span>
+    );
+};
+TreeNodeToggler.propTypes = {
+    show: PropTypes.bool,
+    expanded: PropTypes.bool
+};
+
+const TreeNodeLoader = ({ show }) => {
+    if (!show) {
+        return null;
+    }
+
+    return (
+        <i
+            style={{ marginLeft: 5 }}
+            className={classNames(
+                { 'hidden': !show },
+                'fa',
+                'fa-circle-o-notch',
+                'fa-fw',
+                { 'fa-spin': show }
+            )}
+        />
+    );
+};
+TreeNodeLoader.propTypes = {
+    show: PropTypes.bool
+};
+
+const renderer = (node, treeOptions) => {
+    const { id, loadOnDemand = false } = node;
+    const { depth, open, loading = false, selected = false } = node.state;
+    const more = node.hasChildren();
+    const paddingLeft = (more || loadOnDemand) ? depth * 18 : (depth + 1) * 18;
+
+    node.props = { ...node.props };
+
+    const disabled = (function(node) {
+        let { disabled = false } = node.props;
+
+        while (node && node.parent) {
+            if (node.props && node.props.disabled) {
+                disabled = true;
+                break;
+            }
+            node = node.parent;
+        }
+        return disabled;
+    }(node));
+
+    return (
+        <TreeNode
+            id={id}
+            selected={selected}
+            disabled={disabled}
+        >
+            <TreeNodeColumn>
+                <div style={{ paddingLeft: paddingLeft }}>
+                    <TreeNodeToggler
+                        show={more || loadOnDemand}
+                        expanded={more && open}
+                    />
+                    <i
+                        className={classNames(
+                            'fa',
+                            { 'fa-folder-open-o': more && open },
+                            { 'fa-folder-o': more && !open },
+                            { 'fa-file-o': !more }
+                        )}
+                    />
+                    <span className="space" />
+                    {node.name}
+                    <TreeNodeLoader show={loading} />
+                </div>
+            </TreeNodeColumn>
+            <TreeNodeColumn>
+                {moment(node.props.mtime).format('lll')}
+            </TreeNodeColumn>
+            <TreeNodeColumn className="text-right">
+                {includes(['f', 'l'], node.props.type) ? formatBytes(node.props.size, 1) : '--'}
+            </TreeNodeColumn>
+            <TreeNodeColumn>
+                {node.props.type === 'f' && i18n._('File')}
+                {node.props.type === 'd' && i18n._('Folder')}
+            </TreeNodeColumn>
+        </TreeNode>
+    );
+};
+
+export default renderer;

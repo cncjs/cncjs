@@ -1,3 +1,4 @@
+import fs from 'fs';
 import path from 'path';
 import minimatch from 'minimatch';
 import FSMonitor from './FSMonitor';
@@ -12,7 +13,7 @@ const stop = () => {
     monitor.unwatch();
 };
 
-const find = (searchPath) => {
+const getFiles = (searchPath) => {
     const root = monitor.root;
     const files = Object.keys(monitor.files);
     const pattern = path.join(root, searchPath, '*');
@@ -60,8 +61,16 @@ const find = (searchPath) => {
         });
 };
 
+const readFile = (file, callback) => {
+    const root = monitor.root;
+    file = path.join(root, file);
+
+    fs.readFile(file, 'utf8', callback);
+};
+
 export default {
     start,
     stop,
-    find
+    getFiles,
+    readFile
 };

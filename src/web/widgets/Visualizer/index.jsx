@@ -9,7 +9,6 @@ import api from '../../api';
 import Anchor from '../../components/Anchor';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
 import modal from '../../lib/modal';
 import log from '../../lib/log';
 import store from '../../store';
@@ -18,6 +17,9 @@ import Toolbar from './Toolbar';
 import Joystick from './Joystick';
 import Visualizer from './Visualizer';
 import Dashboard from './Dashboard';
+import WatchDirectory from './WatchDirectory';
+import Loading from './Loading';
+import Rendering from './Rendering';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -37,6 +39,9 @@ import {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from '../../constants';
+import {
+    MODAL_WATCH_DIRECTORY
+} from './constants';
 import styles from './index.styl';
 
 const displayWebGLErrorMessage = () => {
@@ -63,31 +68,66 @@ const displayWebGLErrorMessage = () => {
     });
 };
 
-const Loading = () => (
-    <div className={styles.loader}>
-        <div className={styles.loaderIcon}>
-            <i className="fa fa-spinner fa-spin" />
-        </div>
-        <div className={styles.loaderText}>
-            {i18n._('Loading...')}
-        </div>
-    </div>
-);
-
-const Rendering = () => (
-    <div className={styles.loader}>
-        <div className={styles.loaderIcon}>
-            <i className="fa fa-cube fa-spin" />
-        </div>
-        <div className={styles.loaderText}>
-            {i18n._('3D rendering')}
-        </div>
-    </div>
-);
-
 @CSSModules(styles, { allowMultiple: true })
 class VisualizerWidget extends Component {
     actions = {
+        openModal: (name = '', params = {}) => {
+            this.setState({
+                modal: {
+                    name: name,
+                    params: params
+                }
+            });
+        },
+        closeModal: () => {
+            this.setState({
+                modal: {
+                    name: '',
+                    params: {}
+                }
+            });
+        },
+        updateModalParams: (params = {}) => {
+            this.setState({
+                modal: {
+                    ...this.state.modal,
+                    params: {
+                        ...this.state.modal.params,
+                        ...params
+                    }
+                }
+            });
+        },
+        // Load file from watch directory
+        loadFile: (file) => {
+            this.setState({
+                gcode: {
+                    ...this.state.gcode,
+                    loading: true,
+                    rendering: false,
+                    ready: false
+                }
+            });
+
+            controller.command('loadfile', file, (err, data) => {
+                if (err) {
+                    this.setState({
+                        gcode: {
+                            ...this.state.gcode,
+                            loading: false,
+                            rendering: false,
+                            ready: false
+                        }
+                    });
+
+                    log.error(err);
+                    return;
+                }
+
+                const { gcode = '' } = { ...data };
+                pubsub.publish('gcode:load', gcode);
+            });
+        },
         uploadFile: (gcode, meta) => {
             const { name } = { ...meta };
             const { port } = this.state;
@@ -115,6 +155,7 @@ class VisualizerWidget extends Component {
                             ready: false
                         }
                     });
+
                     log.error('Failed to upload G-code file');
                 });
         },
@@ -425,6 +466,10 @@ class VisualizerWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
+            modal: {
+                name: '',
+                params: {}
+            },
             workflowState: controller.workflowState,
             workPosition: { // Work position
                 x: '0.000',
@@ -447,7 +492,7 @@ class VisualizerWidget extends Component {
                         z: 0
                     }
                 },
-                // sender:status
+                // Updates by the "sender:status" event
                 name: '',
                 size: 0,
                 remain: 0,
@@ -581,6 +626,12 @@ class VisualizerWidget extends Component {
                     }
                     {state.gcode.rendering &&
                     <Rendering />
+                    }
+                    {state.modal.name === MODAL_WATCH_DIRECTORY &&
+                    <WatchDirectory
+                        state={state}
+                        actions={actions}
+                    />
                     }
                     <Toolbar
                         state={state}

@@ -5,6 +5,7 @@ import settings from '../../config/settings';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
 import Sender, { STREAMING_PROTOCOL_SEND_RESPONSE } from '../../lib/gcode-sender';
+import monitor from '../../services/monitor';
 import store from '../../store';
 import TinyG2 from './TinyG2';
 import {
@@ -225,16 +226,6 @@ class TinyG2Controller {
                 return;
             }
 
-            if (!(this.ready)) {
-                // Not ready yet
-                return;
-            }
-
-            if (this.state !== this.tinyG2.state) {
-                this.state = this.tinyG2.state;
-                this.emitAll('TinyG2:state', this.state);
-            }
-
             // Feeder
             if (this.feeder.peek()) {
                 this.emitAll('feeder:status', {
@@ -245,6 +236,12 @@ class TinyG2Controller {
             // Sender
             if (this.sender.peek()) {
                 this.emitAll('sender:status', this.sender.state);
+            }
+
+            // TinyG2 state
+            if (this.state !== this.tinyG2.state) {
+                this.state = this.tinyG2.state;
+                this.emitAll('TinyG2:state', this.state);
             }
         }, 250);
     }
@@ -594,7 +591,7 @@ class TinyG2Controller {
                     this.feeder.next();
                 }
             },
-            'macro': () => {
+            'loadmacro': () => {
                 const config = loadConfigFile(settings.cncrc);
                 const [id, callback = noop] = args;
                 const macro = _.find(config.macros, { id: id });
@@ -605,6 +602,18 @@ class TinyG2Controller {
                 }
 
                 this.command(null, 'load', macro.name, macro.content, callback);
+            },
+            'loadfile': () => {
+                const [file, callback = noop] = args;
+
+                monitor.readFile(file, (err, data) => {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+
+                    this.command(null, 'load', file, data, callback);
+                });
             }
         }[cmd];
 

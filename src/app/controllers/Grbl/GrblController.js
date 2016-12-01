@@ -5,6 +5,7 @@ import settings from '../../config/settings';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
 import Sender, { STREAMING_PROTOCOL_CHAR_COUNTING } from '../../lib/gcode-sender';
+import monitor from '../../services/monitor';
 import store from '../../store';
 import Grbl from './Grbl';
 import {
@@ -287,14 +288,28 @@ class GrblController {
                 return;
             }
 
-            if (!(this.ready)) {
-                // Not ready yet
-                return;
+            // Feeder
+            if (this.feeder.peek()) {
+                this.emitAll('feeder:status', {
+                    'size': this.feeder.queue.length
+                });
             }
 
+            // Sender
+            if (this.sender.peek()) {
+                this.emitAll('sender:status', this.sender.state);
+            }
+
+            // Grbl state
             if (this.state !== this.grbl.state) {
                 this.state = this.grbl.state;
                 this.emitAll('Grbl:state', this.state);
+            }
+
+            // Do not send "?" and "$G" when Grbl is not ready
+            if (!(this.ready)) {
+                // Not ready yet
+                return;
             }
 
             // ? - Current Status
@@ -308,18 +323,6 @@ class GrblController {
                 this.queryResponse.parserstate = true;
                 this.queryResponse.parserstateEnd = false;
                 this.serialport.write('$G\n');
-            }
-
-            // Feeder
-            if (this.feeder.peek()) {
-                this.emitAll('feeder:status', {
-                    'size': this.feeder.queue.length
-                });
-            }
-
-            // Sender
-            if (this.sender.peek()) {
-                this.emitAll('sender:status', this.sender.state);
             }
         }, 250);
     }
@@ -476,7 +479,7 @@ class GrblController {
                     log.debug(`[Grbl] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
 
                     this.workflowState = WORKFLOW_STATE_IDLE;
-                    callback();
+                    callback(null, { name: name, gcode: gcode });
                 });
             },
             'unload': () => {
@@ -548,7 +551,7 @@ class GrblController {
                     this.feeder.next();
                 }
             },
-            'macro': () => {
+            'loadmacro': () => {
                 const config = loadConfigFile(settings.cncrc);
                 const [id, callback = noop] = args;
                 const macro = _.find(config.macros, { id: id });
@@ -559,6 +562,18 @@ class GrblController {
                 }
 
                 this.command(null, 'load', macro.name, macro.content, callback);
+            },
+            'loadfile': () => {
+                const [file, callback = noop] = args;
+
+                monitor.readFile(file, (err, data) => {
+                    if (err) {
+                        callback(err);
+                        return;
+                    }
+
+                    this.command(null, 'load', file, data, callback);
+                });
             }
         }[cmd];
 

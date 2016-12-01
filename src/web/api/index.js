@@ -214,12 +214,29 @@ const deleteMacro = (options) => new Promise((resolve, reject) => {
 });
 
 // Watch Directory
-const listWatchDirectory = (options) => new Promise((resolve, reject) => {
+const watch = {};
+
+watch.getFiles = (options) => new Promise((resolve, reject) => {
     const { path } = { ...options };
 
     request
-        .post('/api/watch/')
+        .post('/api/watch/files')
         .send({ path })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+watch.readFile = (options) => new Promise((resolve, reject) => {
+    const { file } = { ...options };
+
+    request
+        .post('/api/watch/file')
+        .send({ file })
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -248,5 +265,5 @@ export default {
     updateMacro,
     deleteMacro,
     // Watch Directory
-    listWatchDirectory
+    watch: watch
 };

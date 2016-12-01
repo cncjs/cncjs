@@ -1,0 +1,46 @@
+@import "nib";
+
+.tree-node {
+    cursor: default;
+
+    .selected&,
+    .selected&:hover {
+        background: #deecfd;
+    }
+
+    &:hover {
+        background: #f2fdff;
+    }
+    &:disabled,
+    &[disabled] {
+        cursor: not-allowed;
+        opacity: 0.5;
+    }
+}
+
+.tree-node-column {
+    padding: 2px 4px;
+
+    &.no-padding {
+        padding: 0;
+    }
+}
+
+.tree-toggler {
+    display: inline-block;
+    width: 18px;
+    text-align: center;
+    cursor: pointer;
+    color: #666;
+    margin-left: -2px;
+    margin-right: 2px;
+
+    &:hover {
+        color: #333;
+        text-decoration: none;
+    }
+}
+
+.no-data {
+    text-align: center;
+}
