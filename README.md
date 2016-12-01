@@ -88,20 +88,22 @@ $ cnc -h
   
   Options:
 
-    -h, --help                  output usage information
-    -V, --version               output the version number
-    -p, --port                  set listen port (default: 8000)
-    -l, --host                  set listen address or hostname (default: 0.0.0.0)
-    -b, --backlog               set listen backlog (default: 511)
-    -c, --config <filename>     set config file (default: ~/.cncrc)
-    -v, --verbose               increase the verbosity level
-    -m, --mount [<url>:]<path>  set the mount point for serving static files (default: /static:static)
-    --allow-remote-access       allow remote access to the server
+    -h, --help                    output usage information
+    -V, --version                 output the version number
+    -p, --port                    set listen port (default: 8000)
+    -l, --host                    set listen address or hostname (default: 0.0.0.0)
+    -b, --backlog                 set listen backlog (default: 511)
+    -c, --config <filename>       set config file (default: ~/.cncrc)
+    -v, --verbose                 increase the verbosity level
+    -m, --mount [<url>:]<path>    set the mount point for serving static files (default: /static:static)
+    -w, --watch-directory <path>  watch a directory for changes
+    --allow-remote-access         allow remote access to the server
 
   Examples:
 
     $ cnc -vv
     $ cnc --mount /pendant:/home/pi/tinyweb
+    $ cnc --watch-directory /home/pi/watch
     $ cnc --allow-remote-access
 
 ```
