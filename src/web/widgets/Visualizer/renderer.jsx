@@ -1,3 +1,4 @@
+import path from 'path';
 import includes from 'lodash/includes';
 import moment from 'moment';
 import React, { PropTypes } from 'react';
@@ -135,14 +136,13 @@ const renderer = (node, treeOptions) => {
         }
 
         if (node.props.type === 'f') {
-            const extname = path.extname(node.name || '');
-
             // path.extname('index.html')
             // -> '.html'
             // path.extname('index.')
             // -> '.'
             // path.extname('index')
             // -> ''
+            const extname = path.extname(node.name || '');
             return (extname.length > 1)
                 ? i18n._('{{extname}} File', { extname: extname.toUpperCase() }) // e.g. NC File
                 : i18n._('File');
