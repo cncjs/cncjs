@@ -107,7 +107,7 @@ $ cnc -h
     $ cnc --allow-remote-access
 ```
 
-Instead of passing command line options, you can create a `~/.cncrc` file that contains the following configuration in JSON format:
+Instead of passing command line options for `--watch-directory` and `--allow-remote-access`, you can create a `~/.cncrc` file that contains the following configuration in JSON format:
 ```json
 {
     "watchDirectory": "/path/to/dir",
