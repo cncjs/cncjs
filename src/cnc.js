@@ -36,7 +36,7 @@ program
     .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
     .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
     .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
-    .option('-w, --watch-directory <path>', 'specify the watch directory')
+    .option('-w, --watch-directory <path>', 'watch a directory for changes')
     .option('--allow-remote-access', 'allow remote access to the server', false);
 
 program.on('--help', () => {
