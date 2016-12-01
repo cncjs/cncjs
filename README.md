@@ -105,7 +105,14 @@ $ cnc -h
     $ cnc --mount /pendant:/home/pi/tinyweb
     $ cnc --watch-directory /home/pi/watch
     $ cnc --allow-remote-access
+```
 
+Instead of passing command line options, you can create a `~/.cncrc` file that contains the following configuration in JSON format:
+```json
+{
+    "watchDirectory": "/path/to/dir",
+    "allowRemoteAccess": false
+}
 ```
 
 If you need view detailed logs for troubleshooting, you can run the server in debug mode.
