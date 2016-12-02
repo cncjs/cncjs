@@ -131,7 +131,7 @@ class TinyG2Controller {
         });
 
         // TinyG2
-        this.tinyG2 = new TinyG2(this.serialport);
+        this.tinyG2 = new TinyG2();
 
         this.tinyG2.on('raw', (res) => {
             if (this.workflowState === WORKFLOW_STATE_IDLE) {
