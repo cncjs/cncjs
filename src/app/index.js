@@ -96,7 +96,7 @@ const createServer = (options, callback) => {
 
         if (config.allowRemoteAccess) {
             if (_.size(config.users) === 0) {
-                log.warning('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
+                log.warn('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
             }
 
             _.set(settings, 'allowRemoteAccess', config.allowRemoteAccess);
