@@ -29,17 +29,20 @@ const createServer = (options, callback) => {
     const cncrc = path.resolve(configFile || settings.cncrc);
     const config = readConfigFileSync(cncrc);
 
-    // Secret
-    if (!config.secret) {
-        // generate a secret key
-        config.secret = bcrypt.genSaltSync(); // TODO
+    // cncrc
+    settings.cncrc = cncrc;
 
-        // update changes
-        writeConfigFileSync(cncrc, config);
+    { // secret
+        if (!config.secret) {
+            // generate a secret key
+            config.secret = bcrypt.genSaltSync(); // TODO
+
+            // update changes
+            writeConfigFileSync(cncrc, config);
+        }
+
+        settings.secret = config.secret || settings.secret;
     }
-
-    config.watchDirectory = _.get(config, 'watchDirectory', watchDirectory);
-    config.allowRemoteAccess = _.get(config, 'allowRemoteAccess', allowRemoteAccess);
 
     { // routes
         if (mount) {
@@ -57,10 +60,7 @@ const createServer = (options, callback) => {
         });
     }
 
-    { // Settings
-        settings.cncrc = cncrc;
-        settings.secret = config.secret || settings.secret;
-
+    { // verbosity
         // https://github.com/winstonjs/winston#logging-levels
         if (verbosity === 1) {
             _.set(settings, 'verbosity', verbosity);
@@ -74,19 +74,32 @@ const createServer = (options, callback) => {
             _.set(settings, 'verbosity', verbosity);
             log.logger.level = 'silly';
         }
-
-        _.set(settings, 'allowRemoteAccess', config.allowRemoteAccess);
     }
 
-    // Watch Directory
-    if (config.watchDirectory) {
-        if (fs.existsSync(config.watchDirectory)) {
-            log.info(`Start watching ${chalk.yellow(JSON.stringify(config.watchDirectory))} for file changes.`);
+    { // watchDirectory
+        config.watchDirectory = _.get(config, 'watchDirectory', watchDirectory);
 
-            // Start monitor service
-            monitor.start({ watchDirectory: config.watchDirectory });
-        } else {
-            log.error(`The directory ${chalk.yellow(JSON.stringify(config.watchDirectory))} does not exist.`);
+        if (config.watchDirectory) {
+            if (fs.existsSync(config.watchDirectory)) {
+                log.info(`Start watching ${chalk.yellow(JSON.stringify(config.watchDirectory))} for file changes.`);
+
+                // Start monitor service
+                monitor.start({ watchDirectory: config.watchDirectory });
+            } else {
+                log.error(`The directory ${chalk.yellow(JSON.stringify(config.watchDirectory))} does not exist.`);
+            }
+        }
+    }
+
+    { // allowRemoteAccess
+        config.allowRemoteAccess = _.get(config, 'allowRemoteAccess', allowRemoteAccess);
+
+        if (config.allowRemoteAccess) {
+            if (_.size(config.users) === 0) {
+                log.warning('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
+            }
+
+            _.set(settings, 'allowRemoteAccess', config.allowRemoteAccess);
         }
     }
 
