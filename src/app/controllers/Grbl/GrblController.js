@@ -21,7 +21,7 @@ import {
 } from './constants';
 import {
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_HOLD,
+    SMOOTHIE_ACTIVE_STATE_HOLD
 } from '../Smoothie/constants';
 
 const noop = () => {};
