@@ -8,6 +8,7 @@ import Sender, { STREAMING_PROTOCOL_CHAR_COUNTING } from '../../lib/gcode-sender
 import monitor from '../../services/monitor';
 import store from '../../store';
 import Grbl from './Grbl';
+import Smoothie from '../Smoothie/Smoothie';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -15,8 +16,13 @@ import {
 } from '../../constants';
 import {
     GRBL,
+    GRBL_ACTIVE_STATE_HOLD,
     GRBL_REALTIME_COMMANDS
 } from './constants';
+import {
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_HOLD,
+} from '../Smoothie/constants';
 
 const noop = () => {};
 
@@ -57,6 +63,9 @@ class GrblController {
     };
     serialport = null;
 
+    // Grbl or Smoothie
+    firmware = GRBL;
+
     // Grbl
     grbl = null;
     ready = false;
@@ -67,6 +76,9 @@ class GrblController {
         parserstate: false,
         parserstateEnd: false
     };
+
+    // Smoothie
+    smoothie = null;
 
     // Feeder
     feeder = null;
@@ -142,7 +154,7 @@ class GrblController {
         });
 
         // Grbl
-        this.grbl = new Grbl(this.serialport);
+        this.grbl = new Grbl();
 
         this.grbl.on('raw', (res) => {});
 
@@ -231,21 +243,11 @@ class GrblController {
         });
 
         this.grbl.on('startup', (res) => {
+            this.firmware = GRBL;
             this.emitAll('serialport:read', res.raw);
 
-            if (!this.ready) {
-                // View Grbl settings
-                this.feeder.feed({ line: '$$' });
-
-                // View startup blocks
-                this.feeder.feed({ line: '$N' });
-
-                if (!this.feeder.isPending()) {
-                    this.feeder.next();
-                }
-            }
-
-            this.ready = true;
+            // The start up message always prints upon startup, after a reset, or at program end.
+            // Reset the following values when Grbl has completed re-initializing all systems.
             this.queryResponse.status = false;
             this.queryResponse.parserstate = false;
             this.queryResponse.parserstateEnd = false;
@@ -253,6 +255,16 @@ class GrblController {
 
         this.grbl.on('others', (res) => {
             this.emitAll('serialport:read', res.raw);
+        });
+
+        // Smoothie
+        this.smoothie = new Smoothie();
+
+        this.smoothie.on('version', (res) => {
+            this.firmware = SMOOTHIE;
+
+            // Do not respond to the client, it's already emitted by "grbl.on('others')"
+            //this.emitAll('serialport:read', res.raw);
         });
 
         // SerialPort
@@ -264,6 +276,7 @@ class GrblController {
 
         this.serialport.on('data', (data) => {
             this.grbl.parse('' + data);
+            this.smoothie.parse('' + data);
             dbg(`[Grbl] < ${data}`);
         });
 
@@ -346,8 +359,28 @@ class GrblController {
         }
     }
     initController() {
-        // Reset Grbl
-        this.command(null, 'reset');
+        const cmds = [
+            { pauseAfter: 500 },
+
+            // Check if it is Smoothieware
+            { cmd: 'version', pauseAfter: 50 }
+        ];
+
+        const sendInitCommands = (i = 0) => {
+            if (i >= cmds.length) {
+                this.ready = true;
+                return;
+            }
+            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
+            if (cmd) {
+                this.serialport.write(cmd + '\n');
+                dbg(`[Grbl] > ${cmd}`);
+            }
+            setTimeout(() => {
+                sendInitCommands(i + 1);
+            }, pauseAfter);
+        };
+        sendInitCommands();
     }
     get status() {
         return {
@@ -356,6 +389,7 @@ class GrblController {
             connections: _.size(this.connections),
             ready: this.ready,
             controller: {
+                firmware: this.firmware,
                 type: this.type,
                 state: this.state
             },
@@ -494,8 +528,25 @@ class GrblController {
                 this.sender.next();
             },
             'stop': () => {
+                const activeState = _.get(this.state, 'status.activeState', '');
+
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 this.sender.rewind(); // rewind sender queue
+
+                if (this.firmware === GRBL) {
+                    if (activeState !== GRBL_ACTIVE_STATE_HOLD) {
+                        this.write(socket, '!'); // feedhold
+                    }
+                    this.write(socket, '\x18'); // ^x
+                }
+
+                // Do not send ctrl-x to Smoothie when stopping a job,
+                // or it will cause a serial port error.
+                if (this.firmware === SMOOTHIE) {
+                    if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
+                        this.write(socket, '~'); // resume
+                    }
+                }
             },
             'pause': () => {
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {

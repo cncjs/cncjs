@@ -1,6 +1,6 @@
 {
   "name": "cnc",
-  "version": "1.8.5",
+  "version": "1.8.6",
   "description": "CNC Milling Controller",
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",

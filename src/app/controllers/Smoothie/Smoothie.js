@@ -2,7 +2,7 @@
 import _ from 'lodash';
 import events from 'events';
 import {
-    GRBL_MODAL_GROUPS
+    SMOOTHIE_MODAL_GROUPS
 } from './constants';
 
 // http://stackoverflow.com/questions/10454518/javascript-how-to-retrieve-the-number-of-decimals-of-a-string-number
@@ -20,27 +20,23 @@ function decimalPlaces(num) {
     );
 }
 
-// Grbl v1.1
-// https://github.com/gnea/grbl/blob/edge/doc/markdown/interface.md
-
-class GrblLineParser {
+class SmoothieLineParser {
     parse(line) {
         const parsers = [
             // <>
-            GrblLineParserResultStatus,
+            SmoothieLineParserResultStatus,
 
             // ok
-            GrblLineParserResultOk,
+            SmoothieLineParserResultOk,
 
             // error:x
-            GrblLineParserResultError,
+            SmoothieLineParserResultError,
 
             // ALARM:
-            GrblLineParserResultAlarm,
+            SmoothieLineParserResultAlarm,
 
-            // [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.] (v0.9)
-            // [GC:G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.] (v1.1)
-            GrblLineParserResultParserState,
+            // [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
+            SmoothieLineParserResultParserState,
 
             // [G54:0.000,0.000,0.000]
             // [G55:0.000,0.000,0.000]
@@ -53,29 +49,10 @@ class GrblLineParser {
             // [G92:0.000,0.000,0.000]
             // [TLO:0.000]
             // [PRB:0.000,0.000,0.000:0]
-            GrblLineParserResultParameters,
+            SmoothieLineParserResultParameters,
 
-            // [HLP:] (v1.1)
-            GrblLineParserResultHelp,
-
-            // [VER:] (v1.1)
-            GrblLineParserResultVersion,
-
-            // [OPT:] (v1.1)
-            GrblLineParserResultOption,
-
-            // [echo:] (v1.1)
-            GrblLineParserResultEcho,
-
-            // [] (v0.9)
-            // [MSG:] (v1.1)
-            GrblLineParserResultFeedback,
-
-            // $xx
-            GrblLineParserResultSettings,
-
-            // Grbl X.Xx ['$' for help]
-            GrblLineParserResultStartup
+            // Build version: edge-3332442, Build date: xxx, MCU: LPC1769, System Clock: 120MHz
+            SmoothieLineParserResultVersion
         ];
 
         for (let parser of parsers) {
@@ -95,20 +72,12 @@ class GrblLineParser {
     }
 }
 
-//https://github.com/grbl/grbl/blob/master/grbl/report.c
-class GrblLineParserResultStatus {
-    // * Grbl v0.9
-    //   <Idle>
-    //   <Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>
-    //   <Idle,MPos:5.529,0.560,7.000,0.000,WPos:1.529,-5.440,-0.000,0.000>
-    //   <Idle,MPos:0.000,0.000,0.000,WPos:0.000,0.000,0.000,Buf:0,RX:0,Lim:000>
-    //   <Idle,MPos:0.000,0.000,0.000,WPos:0.000,0.000,0.000,Buf:0,RX:0,Ln:0,F:0.>
-    // * Grbl v1.1
-    //   <Idle|MPos:3.000,2.000,0.000|FS:0,0>
-    //   <Hold:0|MPos:5.000,2.000,0.000|FS:0,0>
-    //   <Idle|MPos:5.000,2.000,0.000|FS:0,0|Ov:100,100,100>
-    //   <Idle|MPos:5.000,2.000,0.000|FS:0,0|WCO:0.000,0.000,0.000>
-    //   <Run|MPos:23.036,1.620,0.000|FS:500,0>
+class SmoothieLineParserResultStatus {
+    // <Idle>
+    // <Idle,MPos:5.5290,0.5600,7.0000,WPos:1.5290,-5.4400,-0.0000>
+    // <Idle,MPos:5.5290,0.5600,7.0000,0.0000,WPos:1.5290,-5.4400,-0.0000,0.0000>
+    // <Idle,MPos:0.0000,0.0000,0.0000,WPos:0.0000,0.0000,0.0000,Buf:0,RX:0,Lim:000>
+    // <Idle,MPos:0.0000,0.0000,0.0000,WPos:0.0000,0.0000,0.0000,Buf:0,RX:0,Ln:0,F:0.>
     static parse(line) {
         const r = line.match(/^<(.+)>$/);
         if (!r) {
@@ -120,7 +89,7 @@ class GrblLineParserResultStatus {
         const params = r[1].match(pattern);
         const result = {};
 
-        { // Active State (v0.9, v1.1)
+        { // Active State (Grbl v0.9, v1.1)
             // * Valid states types: Idle, Run, Hold, Jog, Alarm, Door, Check, Home, Sleep
             // * Sub-states may be included via : a colon delimiter and numeric code.
             // * Current sub-states are:
@@ -144,7 +113,7 @@ class GrblLineParserResultStatus {
             }
         }
 
-        // Machine Position (v0.9, v1.1)
+        // Machine Position
         if (_.has(result, 'MPos')) {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const mPos = _.get(result, 'MPos', ['0.000', '0.000', '0.000']); // Defaults to [x, y, z]
@@ -154,7 +123,7 @@ class GrblLineParserResultStatus {
             }
         }
 
-        // Work Position (v0.9, v1.1)
+        // Work Position
         if (_.has(result, 'WPos')) {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const wPos = _.get(result, 'WPos', ['0.000', '0.000', '0.000']); // Defaults to [x, y, z]
@@ -164,29 +133,19 @@ class GrblLineParserResultStatus {
             }
         }
 
-        // Work Coordinate Offset (v1.1)
-        if (_.has(result, 'WCO')) {
-            const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
-            const wco = _.get(result, 'WCO', ['0.000', '0.000', '0.000']); // Defaults to [x, y, z]
-            payload.wco = {};
-            for (let i = 0; i < wco.length; ++i) {
-                payload.wco[axes[i]] = wco[i];
-            }
-        }
-
-        // Planner Buffer (v0.9)
+        // Planner Buffer (Grbl v0.9)
         if (_.has(result, 'Buf')) {
             payload.buf = payload.buf || {};
             payload.buf.planner = Number(_.get(result, 'Buf[0]', 0));
         }
 
-        // RX Buffer (v0.9)
+        // RX Buffer (Grbl v0.9)
         if (_.has(result, 'RX')) {
             payload.buf = payload.buf || {};
             payload.buf.rx = Number(_.get(result, 'RX[0]', 0));
         }
 
-        // Buffer State (v1.1)
+        // Buffer State (Grbl v1.1)
         // Bf:15,128. The first value is the number of available blocks in the planner buffer and the second is number of available bytes in the serial RX buffer.
         if (_.has(result, 'Bf')) {
             payload.buf = payload.buf || {};
@@ -194,27 +153,27 @@ class GrblLineParserResultStatus {
             payload.buf.rx = Number(_.get(result, 'Bf[1]', 0));
         }
 
-        // Line Number (v0.9, v1.1)
+        // Line Number
         // Ln:99999 indicates line 99999 is currently being executed.
         if (_.has(result, 'Ln')) {
             payload.ln = Number(_.get(result, 'Ln[0]', 0));
         }
 
-        // Feed Rate (v0.9, v1.1)
+        // Feed Rate
         // F:500 contains real-time feed rate data as the value.
         // This appears only when VARIABLE_SPINDLE is disabled.
         if (_.has(result, 'F')) {
             payload.feedrate = Number(_.get(result, 'F[0]', 0));
         }
 
-        // Current Feed and Speed (v1.1)
+        // Current Feed and Speed (Grbl v1.1)
         // FS:500,8000 contains real-time feed rate, followed by spindle speed, data as the values.
         if (_.has(result, 'FS')) {
             payload.feedrate = Number(_.get(result, 'FS[0]', 0));
             payload.spindle = Number(_.get(result, 'FS[1]', 0));
         }
 
-        // Limit Pins (v0.9)
+        // Limit Pins (Grbl v0.9)
         // X_AXIS is (1<<0) or bit 0
         // Y_AXIS is (1<<1) or bit 1
         // Z_AXIS is (1<<2) or bit 2
@@ -228,8 +187,8 @@ class GrblLineParserResultStatus {
             ].join('');
         }
 
-        // Input Pin State (v1.1)
-        // * Pn:XYZPDHRS indicates which input pins Grbl has detected as 'triggered'.
+        // Input Pin State (Grbl v1.1)
+        // * Pn:XYZPDHRS indicates which input pins Smoothie has detected as 'triggered'.
         // * Each letter of XYZPDHRS denotes a particular 'triggered' input pin.
         //   - X Y Z XYZ limit pins, respectively
         //   - P the probe pin.
@@ -240,13 +199,13 @@ class GrblLineParserResultStatus {
             payload.pinState = _.get(result, 'Pn[0]', '');
         }
 
-        // Override Values (v1.1)
+        // Override Values (Grbl v1.1)
         // Ov:100,100,100 indicates current override values in percent of programmed values for feed, rapids, and spindle speed, respectively.
         if (_.has(result, 'Ov')) {
             payload.ov = _.get(result, 'Ov', []).map(v => Number(v));
         }
 
-        // Accessory State (v1.1)
+        // Accessory State (Grbl v1.1)
         // * A:SFM indicates the current state of accessory machine components, such as the spindle and coolant.
         // * Each letter after A: denotes a particular state. When it appears, the state is enabled. When it does not appear, the state is disabled.
         //   - S indicates spindle is enabled in the CW direction. This does not appear with C.
@@ -258,13 +217,13 @@ class GrblLineParserResultStatus {
         }
 
         return {
-            type: GrblLineParserResultStatus,
+            type: SmoothieLineParserResultStatus,
             payload: payload
         };
     }
 }
 
-class GrblLineParserResultOk {
+class SmoothieLineParserResultOk {
     static parse(line) {
         const r = line.match(/^ok$/);
         if (!r) {
@@ -274,14 +233,13 @@ class GrblLineParserResultOk {
         const payload = {};
 
         return {
-            type: GrblLineParserResultOk,
+            type: SmoothieLineParserResultOk,
             payload: payload
         };
     }
 }
 
-// https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl#grbl-response-meanings
-class GrblLineParserResultError {
+class SmoothieLineParserResultError {
     static parse(line) {
         const r = line.match(/^error:\s*(.+)$/);
         if (!r) {
@@ -293,14 +251,13 @@ class GrblLineParserResultError {
         };
 
         return {
-            type: GrblLineParserResultError,
+            type: SmoothieLineParserResultError,
             payload: payload
         };
     }
 }
 
-// https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl#alarms
-class GrblLineParserResultAlarm {
+class SmoothieLineParserResultAlarm {
     static parse(line) {
         const r = line.match(/^ALARM:\s*(.+)$/);
         if (!r) {
@@ -312,19 +269,16 @@ class GrblLineParserResultAlarm {
         };
 
         return {
-            type: GrblLineParserResultAlarm,
+            type: SmoothieLineParserResultAlarm,
             payload: payload
         };
     }
 }
 
-class GrblLineParserResultParserState {
-    // * Grbl v0.9
-    //   [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
-    // * Grbl v1.1
-    //   [GC:G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 S0.0 F500.0]
+class SmoothieLineParserResultParserState {
+    // [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
     static parse(line) {
-        const r = line.match(/^\[(?:GC:)?((?:[a-zA-Z][0-9]+(?:\.[0-9]*)?\s*)+)\]$/);
+        const r = line.match(/^\[((?:[a-zA-Z][0-9]+(?:\.[0-9]*)?\s*)+)\]$/);
         if (!r) {
             return null;
         }
@@ -340,7 +294,7 @@ class GrblLineParserResultParserState {
         words.forEach((word) => {
             // Gx, Mx
             if (word.indexOf('G') === 0 || word.indexOf('M') === 0) {
-                let r = _.find(GRBL_MODAL_GROUPS, (group) => {
+                let r = _.find(SMOOTHIE_MODAL_GROUPS, (group) => {
                     return _.includes(group.modes, word);
                 });
 
@@ -366,15 +320,15 @@ class GrblLineParserResultParserState {
         });
 
         return {
-            type: GrblLineParserResultParserState,
+            type: SmoothieLineParserResultParserState,
             payload: payload
         };
     }
 }
 
-class GrblLineParserResultParameters {
+class SmoothieLineParserResultParameters {
     static parse(line) {
-        const r = line.match(/^\[(G54|G55|G56|G57|G58|G59|G28|G30|G92|TLO|PRB):(.+)\]$/);
+        const r = line.match(/^\[(G54|G55|G56|G57|G58|G59|G59.1|G59.2|G59.3|G28|G30|G92|TLO|PRB):(.+)\]$/);
         if (!r) {
             return null;
         }
@@ -386,8 +340,8 @@ class GrblLineParserResultParameters {
             value: ''
         };
 
-        // [Gxx:0.000]
-        const re = /^G\d+$/i;
+        // [G59:0.0000] or [G59.1:0.0000]
+        const re = /^G\d+(\.\d+)?$/i;
         if (re.test(name)) {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const list = value.split(',');
@@ -397,12 +351,12 @@ class GrblLineParserResultParameters {
             }
         }
 
-        // [TLO:0.000]
+        // [TLO:0.0000]
         if (name === 'TLO') {
             payload.value = value;
         }
 
-        // [PRB:0.000,0.000,1.492:1]
+        // [PRB:0.0000,0.0000,0.0000:0]
         if (name === 'PRB') {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const [str, result] = value.split(':');
@@ -415,171 +369,86 @@ class GrblLineParserResultParameters {
         }
 
         return {
-            type: GrblLineParserResultParameters,
+            type: SmoothieLineParserResultParameters,
             payload: payload
         };
     }
 }
 
-class GrblLineParserResultHelp {
+class SmoothieLineParserResultVersion {
+    // Build version: edge-3332442, Build date: xxx, MCU: LPC1769, System Clock: 120MHz
     static parse(line) {
-        // * Grbl v1.1
-        //   [HLP:]
-        const r = line.match(/^\[(?:HLP:)?(.+)\]$/);
+        // LPC1768 or LPC1769 should be Smoothie
+        if (line.indexOf('LPC176') < 0) {
+            return null;
+        }
+
+        const payload = {};
+        const r = line.match(/[a-zA-Z0-9\s]+:[^,]+/g);
         if (!r) {
             return null;
         }
 
-        const payload = {
-            message: r[1]
-        };
+        r.forEach((str) => {
+            const nv = str.match(/\s*([^:]+)\s*:\s*(.*)\s*$/);
+            if (!nv) {
+                return;
+            }
 
-        return {
-            type: GrblLineParserResultHelp,
-            payload: payload
-        };
-    }
-}
+            const [name, value] = nv.slice(1);
 
-class GrblLineParserResultVersion {
-    static parse(line) {
-        // * Grbl v1.1
-        //   [VER:]
-        const r = line.match(/^\[(?:VER:)?(.+)\]$/);
-        if (!r) {
+            // Build version: edge-3332442
+            if (name.match(/Build version/i)) {
+                _.set(payload, 'build.version', value);
+            }
+
+            // Build date: Apr 22 2015 15:52:55
+            if (name.match(/Build date/i)) {
+                _.set(payload, 'build.date', value);
+            }
+
+            // MCU: LPC1769
+            if (name.match(/MCU/i)) {
+                _.set(payload, 'mcu', value);
+            }
+
+            // System Clock: 120MHz
+            if (name.match(/System Clock/i)) {
+                _.set(payload, 'sysclk', value);
+            }
+        });
+
+        // MCU is a required field
+        if (!payload.mcu) {
             return null;
         }
 
-        const payload = {
-            message: r[1]
-        };
-
         return {
-            type: GrblLineParserResultVersion,
+            type: SmoothieLineParserResultVersion,
             payload: payload
         };
     }
 }
 
-class GrblLineParserResultOption {
-    static parse(line) {
-        // * Grbl v1.1
-        //   [OPT:]
-        const r = line.match(/^\[(?:OPT:)?(.+)\]$/);
-        if (!r) {
-            return null;
-        }
-
-        const payload = {
-            message: r[1]
-        };
-
-        return {
-            type: GrblLineParserResultOption,
-            payload: payload
-        };
-    }
-}
-
-class GrblLineParserResultEcho {
-    static parse(line) {
-        // * Grbl v1.1
-        //   [echo:]
-        const r = line.match(/^\[(?:echo:)?(.+)\]$/);
-        if (!r) {
-            return null;
-        }
-
-        const payload = {
-            message: r[1]
-        };
-
-        return {
-            type: GrblLineParserResultEcho,
-            payload: payload
-        };
-    }
-}
-
-// https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl#feedback-messages
-class GrblLineParserResultFeedback {
-    // * Grbl v0.9
-    //   []
-    // * Grbl v1.1
-    //   [MSG:]
-    static parse(line) {
-        const r = line.match(/^\[(?:MSG:)?(.+)\]$/);
-        if (!r) {
-            return null;
-        }
-
-        const payload = {
-            message: r[1]
-        };
-
-        return {
-            type: GrblLineParserResultFeedback,
-            payload: payload
-        };
-    }
-}
-
-class GrblLineParserResultSettings {
-    static parse(line) {
-        const r = line.match(/^(\$[^=]+)=([^ ]*)\s*(.*)/);
-        if (!r) {
-            return null;
-        }
-
-        const payload = {
-            name: r[1],
-            value: r[2],
-            message: _.trim(r[3], '()')
-        };
-
-        return {
-            type: GrblLineParserResultSettings,
-            payload: payload
-        };
-    }
-}
-
-class GrblLineParserResultStartup {
-    // * Grbl v0.9
-    //   Grbl 0.9j ['$' for help]
-    // * Grbl v1.1
-    //   Grbl 1.1d ['$' for help]
-    static parse(line) {
-        const r = line.match(/^Grbl\s*(\d+\.\d+[a-zA-Z]?)/);
-        if (!r) {
-            return null;
-        }
-
-        const payload = {
-            version: r[1]
-        };
-
-        return {
-            type: GrblLineParserResultStartup,
-            payload: payload
-        };
-    }
-}
-
-class Grbl extends events.EventEmitter {
+class Smoothie extends events.EventEmitter {
     state = {
-        version: '',
+        build: {
+            version: '',
+            date: ''
+        },
+        mcu: '',
+        sysclk: '',
         status: {
             activeState: '',
             mpos: {
-                x: '0.000',
-                y: '0.000',
-                z: '0.000'
+                x: '0.0000',
+                y: '0.0000',
+                z: '0.0000'
             },
             wpos: {
-                x: '0.000',
-                y: '0.000',
-                z: '0.000'
+                x: '0.0000',
+                y: '0.0000',
+                z: '0.0000'
             }
         },
         parserstate: {
@@ -598,12 +467,9 @@ class Grbl extends events.EventEmitter {
             feedrate: '',
             spindle: ''
         },
-        parameters: {
-        },
-        settings: {
-        }
+        parameters: {}
     };
-    parser = new GrblLineParser();
+    parser = new SmoothieLineParser();
 
     parse(data) {
         data = ('' + data).replace(/\s+$/, '');
@@ -616,9 +482,8 @@ class Grbl extends events.EventEmitter {
         const result = this.parser.parse(data) || {};
         const { type, payload } = result;
 
-        if (type === GrblLineParserResultStatus) {
-            // Grbl v1.1
-            // WCO:0.000,10.000,2.500
+        if (type === SmoothieLineParserResultStatus) {
+            // WCO:0.0000,10.0000,2.5000
             // A current work coordinate offset is now sent to easily convert
             // between position vectors, where WPos = MPos - WCO for each axis.
             if (_.has(payload, 'mpos') && !_.has(payload, 'wpos')) {
@@ -650,19 +515,19 @@ class Grbl extends events.EventEmitter {
             this.emit('status', payload);
             return;
         }
-        if (type === GrblLineParserResultOk) {
+        if (type === SmoothieLineParserResultOk) {
             this.emit('ok', payload);
             return;
         }
-        if (type === GrblLineParserResultError) {
+        if (type === SmoothieLineParserResultError) {
             this.emit('error', payload);
             return;
         }
-        if (type === GrblLineParserResultAlarm) {
+        if (type === SmoothieLineParserResultAlarm) {
             this.emit('alarm', payload);
             return;
         }
-        if (type === GrblLineParserResultParserState) {
+        if (type === SmoothieLineParserResultParserState) {
             const nextState = {
                 ...this.state,
                 parserstate: {
@@ -676,7 +541,7 @@ class Grbl extends events.EventEmitter {
             this.emit('parserstate', payload);
             return;
         }
-        if (type === GrblLineParserResultParameters) {
+        if (type === SmoothieLineParserResultParameters) {
             const { name, value } = payload;
             const { parameters } = this.state;
             parameters[name] = value;
@@ -691,35 +556,15 @@ class Grbl extends events.EventEmitter {
             this.emit('parameters', payload);
             return;
         }
-        if (type === GrblLineParserResultFeedback) {
-            this.emit('feedback', payload);
-            return;
-        }
-        if (type === GrblLineParserResultSettings) {
-            const { name, value } = payload;
-            const { settings } = this.state;
-            settings[name] = value;
-
-            const nextState = {
-                ...this.state,
-                settings: settings
-            };
-            if (!_.isEqual(this.state.settings, nextState.settings)) {
-                this.state = nextState; // enforce state change
-            }
-            this.emit('settings', payload);
-            return;
-        }
-        if (type === GrblLineParserResultStartup) {
-            const { version } = payload;
+        if (type === SmoothieLineParserResultVersion) {
             const nextState = { // enforce state change
                 ...this.state,
-                version: version
+                ...payload
             };
-            if (!_.isEqual(this.state.version, nextState.version)) {
+            if (!_.isEqual(this.state.build, nextState.build)) {
                 this.state = nextState; // enforce state change
             }
-            this.emit('startup', payload);
+            this.emit('version', payload);
             return;
         }
         if (data.length > 0) {
@@ -730,19 +575,13 @@ class Grbl extends events.EventEmitter {
 }
 
 export {
-    GrblLineParser,
-    GrblLineParserResultStatus,
-    GrblLineParserResultOk,
-    GrblLineParserResultError,
-    GrblLineParserResultAlarm,
-    GrblLineParserResultParserState,
-    GrblLineParserResultParameters,
-    GrblLineParserResultHelp,
-    GrblLineParserResultVersion,
-    GrblLineParserResultOption,
-    GrblLineParserResultEcho,
-    GrblLineParserResultFeedback,
-    GrblLineParserResultSettings,
-    GrblLineParserResultStartup
+    SmoothieLineParser,
+    SmoothieLineParserResultStatus,
+    SmoothieLineParserResultOk,
+    SmoothieLineParserResultError,
+    SmoothieLineParserResultAlarm,
+    SmoothieLineParserResultParserState,
+    SmoothieLineParserResultParameters,
+    SmoothieLineParserResultVersion
 };
-export default Grbl;
+export default Smoothie;

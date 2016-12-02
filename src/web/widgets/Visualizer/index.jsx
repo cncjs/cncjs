@@ -256,7 +256,6 @@ class VisualizerWidget extends Component {
             console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
 
             controller.command('stop');
-            controller.command('reset');
 
             pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
         },
