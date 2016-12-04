@@ -4,6 +4,17 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import {
+    // Grbl
+    GRBL,
+    GRBL_ACTIVE_STATE_IDLE,
+    GRBL_ACTIVE_STATE_HOLD,
+    // TinyG2
+    TINYG2,
+    TINYG2_MACHINE_STATE_READY,
+    TINYG2_MACHINE_STATE_STOP,
+    TINYG2_MACHINE_STATE_END,
+    TINYG2_MACHINE_STATE_HOLD,
+    // Workflow
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
@@ -66,12 +77,52 @@ class Toolbar extends Component {
             // Ignore error
         }
     }
+    canRun() {
+        const { state } = this.props;
+        const { port, gcode, workflowState } = state;
+        const controllerType = state.controller.type;
+        const controllerState = state.controller.state;
+
+        if (!port) {
+            return false;
+        }
+        if (!gcode.ready) {
+            return false;
+        }
+        if (!_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState)) {
+            return false;
+        }
+        if (controllerType === GRBL) {
+            const activeState = _.get(controllerState, 'status.activeState');
+            const states = [
+                GRBL_ACTIVE_STATE_IDLE,
+                GRBL_ACTIVE_STATE_HOLD // Hold
+            ];
+            if (!_.includes(states, activeState)) {
+                return false;
+            }
+        }
+        if (controllerType === TINYG2) {
+            const machineState = _.get(controllerState, 'sr.machineState');
+            const states = [
+                TINYG2_MACHINE_STATE_READY,
+                TINYG2_MACHINE_STATE_STOP,
+                TINYG2_MACHINE_STATE_END,
+                TINYG2_MACHINE_STATE_HOLD // Hold
+            ];
+            if (!_.includes(states, machineState)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
     render() {
         const { state, actions } = this.props;
         const { port, gcode, workflowState } = state;
         const canClick = !!port;
         const isReady = canClick && gcode.ready;
-        const canRun = isReady && _.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
+        const canRun = this.canRun();
         const canPause = isReady && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
         const canStop = isReady && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
         const canClose = isReady && _.includes([WORKFLOW_STATE_IDLE], workflowState);
