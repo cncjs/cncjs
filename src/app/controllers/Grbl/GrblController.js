@@ -16,15 +16,17 @@ import {
 } from '../../constants';
 import {
     GRBL,
+    GRBL_ACTIVE_STATE_RUN,
     GRBL_ACTIVE_STATE_HOLD,
     GRBL_REALTIME_COMMANDS
 } from './constants';
 import {
     SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_RUN,
     SMOOTHIE_ACTIVE_STATE_HOLD
 } from '../Smoothie/constants';
 
-const noop = () => {};
+const noop = _.noop;
 
 const dbg = (...args) => {
     log.raw.apply(log, ['silly'].concat(args));
@@ -156,7 +158,7 @@ class GrblController {
         // Grbl
         this.grbl = new Grbl();
 
-        this.grbl.on('raw', (res) => {});
+        this.grbl.on('raw', noop);
 
         this.grbl.on('status', (res) => {
             this.queryResponse.status = false;
@@ -260,12 +262,20 @@ class GrblController {
         // Smoothie
         this.smoothie = new Smoothie();
 
+        this.smoothie.on('raw', noop);
+        this.smoothie.on('status', noop);
+        this.smoothie.on('ok', noop);
+        this.smoothie.on('error', noop);
+        this.smoothie.on('alarm', noop);
+        this.smoothie.on('parserstate', noop);
+        this.smoothie.on('parameters', noop);
         this.smoothie.on('version', (res) => {
             this.firmware = SMOOTHIE;
 
-            // Do not respond to the client, it's already emitted by "grbl.on('others')"
+            // The "serialport:read" event is already emitted by "grbl.on('others')"
             //this.emitAll('serialport:read', res.raw);
         });
+        this.smoothie.on('others', noop);
 
         // SerialPort
         this.serialport = new SerialPort(this.options.port, {
@@ -534,17 +544,20 @@ class GrblController {
                 this.sender.rewind(); // rewind sender queue
 
                 if (this.firmware === GRBL) {
-                    if (activeState !== GRBL_ACTIVE_STATE_HOLD) {
-                        this.write(socket, '!'); // feedhold
+                    if (activeState === GRBL_ACTIVE_STATE_RUN) {
+                        this.write(socket, '!');
+                        this.write(socket, '\x18'); // ctrl-x
+                    } else if (activeState === GRBL_ACTIVE_STATE_HOLD) {
+                        this.write(socket, '\x18'); // ctrl-x
                     }
-                    this.write(socket, '\x18'); // ^x
                 }
 
-                // Do not send ctrl-x to Smoothie when stopping a job,
-                // or it will cause a serial port error.
                 if (this.firmware === SMOOTHIE) {
-                    if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
-                        this.write(socket, '~'); // resume
+                    if (activeState === SMOOTHIE_ACTIVE_STATE_RUN) {
+                        this.write(socket, '!');
+                        this.write(socket, '\x18'); // ctrl-x
+                    } else if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
+                        this.write(socket, '\x18'); // ctrl-x
                     }
                 }
             },
