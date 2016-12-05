@@ -54,7 +54,7 @@ if (process.argv.length > 1) {
     program.parse(process.argv);
 }
 
-const cnc = (options = {}) => {
+const cnc = (options = {}, callback) => {
     // Change working directory to 'app' before require('./app')
     process.chdir(path.resolve(__dirname, 'app'));
 
@@ -68,7 +68,7 @@ const cnc = (options = {}) => {
         watchDirectory: program.watchDirectory,
         allowRemoteAccess: program.allowRemoteAccess,
         ...options // Override command-line options if specified
-    });
+    }, callback);
 };
 
 export default cnc;

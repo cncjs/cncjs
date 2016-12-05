@@ -6,14 +6,10 @@ import CSSModules from 'react-css-modules';
 import {
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_HOLD,
+    GRBL_ACTIVE_STATE_ALARM,
     // TinyG2
     TINYG2,
-    TINYG2_MACHINE_STATE_READY,
-    TINYG2_MACHINE_STATE_STOP,
-    TINYG2_MACHINE_STATE_END,
-    TINYG2_MACHINE_STATE_HOLD,
+    TINYG2_MACHINE_STATE_ALARM,
     // Workflow
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -95,22 +91,18 @@ class Toolbar extends Component {
         if (controllerType === GRBL) {
             const activeState = _.get(controllerState, 'status.activeState');
             const states = [
-                GRBL_ACTIVE_STATE_IDLE,
-                GRBL_ACTIVE_STATE_HOLD // Hold
+                GRBL_ACTIVE_STATE_ALARM
             ];
-            if (!_.includes(states, activeState)) {
+            if (_.includes(states, activeState)) {
                 return false;
             }
         }
         if (controllerType === TINYG2) {
             const machineState = _.get(controllerState, 'sr.machineState');
             const states = [
-                TINYG2_MACHINE_STATE_READY,
-                TINYG2_MACHINE_STATE_STOP,
-                TINYG2_MACHINE_STATE_END,
-                TINYG2_MACHINE_STATE_HOLD // Hold
+                TINYG2_MACHINE_STATE_ALARM
             ];
-            if (!_.includes(states, machineState)) {
+            if (_.includes(states, machineState)) {
                 return false;
             }
         }

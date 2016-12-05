@@ -107,6 +107,7 @@ const createServer = (options, callback) => {
         .on('ready', (server) => {
             // Start cncengine service
             cncengine.start({ server: server });
+            callback && callback(null, server);
 
             const address = server.address().address;
             const port = server.address().port;
@@ -127,6 +128,7 @@ const createServer = (options, callback) => {
             });
         })
         .on('error', (err) => {
+            callback && callback(err);
             log.error(err);
         });
 };
