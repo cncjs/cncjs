@@ -235,6 +235,11 @@ class VisualizerWidget extends Component {
             console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
 
             if (workflowState === WORKFLOW_STATE_IDLE) {
+                // All G-code data might be sent to Grbl at once while Grbl is running with
+                // character-counting streaming protocol, this will keep workflow in a running
+                // state if the controller state is not updated in time.
+                this.requestStart = true;
+
                 controller.command('start');
             }
             if (workflowState === WORKFLOW_STATE_PAUSED) {
@@ -362,15 +367,19 @@ class VisualizerWidget extends Component {
             }[modal.units] || this.state.units;
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
+            const isControllerIdle = _.includes([
+                GRBL_ACTIVE_STATE_IDLE
+            ], activeState);
 
-            if (total > 0 && sent >= total && workflowState !== WORKFLOW_STATE_IDLE) {
-                const states = [
-                    GRBL_ACTIVE_STATE_IDLE
-                ];
-                if (_.includes(states, activeState)) {
-                    controller.command('stop');
-                    pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
-                }
+            // Keep workflow in a running state if the controller state is not updated in time
+            if (this.requestStart && !isControllerIdle) {
+                this.requestStart = false;
+            }
+
+            const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
+            if (finishing) {
+                controller.command('stop');
+                pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             }
 
             this.setState({
@@ -394,17 +403,21 @@ class VisualizerWidget extends Component {
             }[modal.units] || this.state.units;
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
+            const isControllerIdle = _.includes([
+                TINYG2_MACHINE_STATE_READY,
+                TINYG2_MACHINE_STATE_STOP,
+                TINYG2_MACHINE_STATE_END
+            ], machineState);
 
-            if (total > 0 && sent >= total && workflowState !== WORKFLOW_STATE_IDLE) {
-                const states = [
-                    TINYG2_MACHINE_STATE_READY,
-                    TINYG2_MACHINE_STATE_STOP,
-                    TINYG2_MACHINE_STATE_END
-                ];
-                if (_.includes(states, machineState)) {
-                    controller.command('stop');
-                    pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
-                }
+            // Keep workflow in a running state if the controller state is not updated in time
+            if (this.requestStart && !isControllerIdle) {
+                this.requestStart = false;
+            }
+
+            const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
+            if (finishing) {
+                controller.command('stop');
+                pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             }
 
             this.setState({
@@ -421,6 +434,7 @@ class VisualizerWidget extends Component {
         }
     };
     pubsubTokens = [];
+    requestStart = false;
     visualizer = null;
 
     constructor() {
