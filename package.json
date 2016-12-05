@@ -63,6 +63,7 @@
   "build": {
     "appId": "com.github.cnc",
     "asar": false,
+    "asarUnpack": [],
     "productName": "cnc",
     "mac": {
       "category": "public.app-category.productivity",
@@ -221,7 +222,7 @@
     "css-loader": "~0.26.0",
     "css-split-webpack-plugin": "~0.2.1",
     "electron": "~1.4.8",
-    "electron-builder": "8.6.0",
+    "electron-builder": "~10.5.0",
     "electron-packager": "~8.3.0",
     "electron-rebuild": "~1.4.0",
     "eslint": "~3.11.0",
