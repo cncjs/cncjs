@@ -63,6 +63,7 @@
   "build": {
     "appId": "com.github.cnc",
     "asar": false,
+    "asarUnpack": [],
     "productName": "cnc",
     "mac": {
       "category": "public.app-category.productivity",
