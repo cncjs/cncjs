@@ -21,9 +21,7 @@ import {
     GRBL_REALTIME_COMMANDS
 } from './constants';
 import {
-    SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_RUN,
-    SMOOTHIE_ACTIVE_STATE_HOLD
+    SMOOTHIE
 } from '../Smoothie/constants';
 
 const noop = _.noop;
@@ -543,22 +541,11 @@ class GrblController {
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 this.sender.rewind(); // rewind sender queue
 
-                if (this.firmware === GRBL) {
-                    if (activeState === GRBL_ACTIVE_STATE_RUN) {
-                        this.write(socket, '!');
-                        this.write(socket, '\x18'); // ctrl-x
-                    } else if (activeState === GRBL_ACTIVE_STATE_HOLD) {
-                        this.write(socket, '\x18'); // ctrl-x
-                    }
-                }
-
-                if (this.firmware === SMOOTHIE) {
-                    if (activeState === SMOOTHIE_ACTIVE_STATE_RUN) {
-                        this.write(socket, '!');
-                        this.write(socket, '\x18'); // ctrl-x
-                    } else if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
-                        this.write(socket, '\x18'); // ctrl-x
-                    }
+                if (activeState === GRBL_ACTIVE_STATE_RUN) {
+                    this.write(socket, '!');
+                    this.write(socket, '\x18'); // ctrl-x
+                } else if (activeState === GRBL_ACTIVE_STATE_HOLD) {
+                    this.write(socket, '\x18'); // ctrl-x
                 }
             },
             'pause': () => {
