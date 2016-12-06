@@ -16,6 +16,7 @@ class GCodeSender extends events.EventEmitter {
     streamingProtocol = STREAMING_PROTOCOL_SEND_RESPONSE;
     streamingQueue = []; // used in char-counting streaming protocol
     total = 0;
+    received = 0;
     createdTime = 0;
     startedTime = 0;
     finishedTime = 0;
@@ -51,6 +52,7 @@ class GCodeSender extends events.EventEmitter {
             size: this.gcode.length,
             remain: this.remain.length,
             sent: this.sent.length,
+            received: this.received,
             total: this.total,
             streaming: {
                 proto: this.streamingProtocol,
@@ -116,14 +118,16 @@ class GCodeSender extends events.EventEmitter {
         const streamingMethod = {
             [STREAMING_PROTOCOL_SEND_RESPONSE]: () => {
                 while (this.remain.length > 0) {
-                    const gcode = this.remain.shift();
+                    const gcode = ('' + this.remain.shift()).trim();
                     this.sent.push(gcode);
                     this.emit('change');
 
-                    if (gcode.trim().length > 0) {
+                    if (gcode.length > 0) {
                         this.emit('gcode', gcode);
                         break;
                     }
+
+                    this.ack(); // Ack for empty lines
 
                     // Continue to the next line if empty
                 }
@@ -132,7 +136,7 @@ class GCodeSender extends events.EventEmitter {
                 this.streamingQueue.shift();
 
                 while (this.remain.length > 0) {
-                    const gcode = this.remain.shift();
+                    const gcode = ('' + this.remain.shift()).trim();
                     const streamingQueueLength = this.streamingQueue.join('').length;
 
                     if (gcode.length + streamingQueueLength >= this.streamingBufferSize) {
@@ -143,9 +147,11 @@ class GCodeSender extends events.EventEmitter {
                     this.sent.push(gcode);
                     this.emit('change');
 
-                    if (gcode.trim().length > 0) {
+                    if (gcode.length > 0) {
                         this.streamingQueue.push(gcode);
                         this.emit('gcode', gcode);
+                    } else {
+                        this.ack(); // Ack for empty lines
                     }
 
                     // Continue to the next line if empty
@@ -165,8 +171,13 @@ class GCodeSender extends events.EventEmitter {
         this.remain = this.sent.concat(this.remain);
         this.sent = [];
         this.streamingQueue = [];
+        this.received = 0;
         this.startedTime = 0;
         this.finishedTime = 0;
+        this.emit('change');
+    }
+    ack() {
+        this.received++;
         this.emit('change');
     }
     // Returns true if any state have changes

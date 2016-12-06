@@ -183,6 +183,7 @@ class GrblController {
 
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                this.sender.ack();
                 this.sender.next();
                 return;
             }
@@ -196,16 +197,12 @@ class GrblController {
         this.grbl.on('error', (res) => {
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                const length = this.sender.sent.length;
-                if (length > 0) {
-                    const lastDataSent = this.sender.sent[length - 1];
-                    const msg = '> (' + length + ') ' + lastDataSent;
-                    this.emitAll('serialport:read', msg);
-                }
+                const line = this.sender.sent[this.sender.received];
+                this.emitAll('serialport:read', `> ${line}`);
+                this.emitAll('serialport:read', `error=${res.message}, line=${this.sender.received + 1}`);
 
+                this.sender.ack();
                 this.sender.next();
-
-                this.emitAll('serialport:read', res.raw);
                 return;
             }
 

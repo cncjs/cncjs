@@ -183,7 +183,7 @@ class TinyG2 extends events.EventEmitter {
     };
     footer = {
         revision: 0,
-        statusCode: 0,
+        statusCode: 0, // https://github.com/synthetos/g2/wiki/Status-Codes
         rxBufferInfo: 0
     };
     parser = new TinyG2Parser();

@@ -160,6 +160,7 @@ class TinyG2Controller {
             if (prevPlannerQueueStatus === TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.sender.ack();
                     this.sender.next();
                     return;
                 }
@@ -179,11 +180,20 @@ class TinyG2Controller {
         });
 
         this.tinyG2.on('f', (f) => {
+            // https://github.com/synthetos/g2/wiki/Status-Codes
+            const statusCode = f[1] || 0;
             const prevPlannerQueueStatus = this.plannerQueueStatus;
+
+            if ((this.workflowState !== WORKFLOW_STATE_IDLE) && (statusCode !== 0)) {
+                const line = this.sender.sent[this.sender.received];
+                this.emitAll('serialport:read', `> ${line}`);
+                this.emitAll('serialport:read', `error=${statusCode}, line=${this.sender.received + 1}`);
+            }
 
             if (prevPlannerQueueStatus !== TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.sender.ack();
                     this.sender.next();
                     return;
                 }
