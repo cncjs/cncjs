@@ -508,7 +508,7 @@ class TinyG2Controller {
                     log.debug(`[TinyG2] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
 
                     this.workflowState = WORKFLOW_STATE_IDLE;
-                    callback();
+                    callback(null, { name: name, gcode: gcode });
                 });
             },
             'unload': () => {
