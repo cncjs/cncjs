@@ -123,6 +123,11 @@ class TinyG2Controller {
                 return;
             }
 
+            if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
+                log.error(`[TinyG2] Unexpected workflow state: ${this.workflowState}`);
+                return;
+            }
+
             gcode = ('' + gcode).trim();
             if (gcode.length > 0) {
                 const cmd = JSON.stringify({ gc: gcode });
@@ -581,6 +586,11 @@ class TinyG2Controller {
                 this.writeln(socket, '\x04'); // ^d
             },
             'reset': () => {
+                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
+                    this.workflowState = WORKFLOW_STATE_IDLE;
+                    this.sender.rewind(); // rewind sender queue
+                }
+
                 this.writeln(socket, '\x18'); // ^x
             },
             'unlock': () => {
