@@ -15,13 +15,13 @@ class GCode extends Component {
     }
     render() {
         const { state } = this.props;
-        const { lines, sent } = state;
+        const { lines, received } = state;
 
         return (
             <div>
                 <GCodeStats {...this.props} />
                 {_.size(lines) > 0 &&
-                <GCodeTable rows={lines} scrollToRow={sent} />
+                <GCodeTable rows={lines} scrollToRow={received} />
                 }
             </div>
         );

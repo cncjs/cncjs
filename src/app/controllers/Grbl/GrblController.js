@@ -17,11 +17,11 @@ import {
 import {
     GRBL,
     GRBL_ACTIVE_STATE_RUN,
-    GRBL_ACTIVE_STATE_HOLD,
     GRBL_REALTIME_COMMANDS
 } from './constants';
 import {
-    SMOOTHIE
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_HOLD
 } from '../Smoothie/constants';
 
 const noop = _.noop;
@@ -147,6 +147,11 @@ class GrblController {
                 return;
             }
 
+            if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
+                log.error(`[Grbl] Unexpected workflow state: ${this.workflowState}`);
+                return;
+            }
+
             gcode = ('' + gcode).trim();
             if (gcode.length > 0) {
                 this.serialport.write(gcode + '\n');
@@ -183,6 +188,7 @@ class GrblController {
 
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                this.sender.ack();
                 this.sender.next();
                 return;
             }
@@ -196,16 +202,12 @@ class GrblController {
         this.grbl.on('error', (res) => {
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                const length = this.sender.sent.length;
-                if (length > 0) {
-                    const lastDataSent = this.sender.sent[length - 1];
-                    const msg = '> (' + length + ') ' + lastDataSent;
-                    this.emitAll('serialport:read', msg);
-                }
+                const line = this.sender.sent[this.sender.received];
+                this.emitAll('serialport:read', `> ${line}`);
+                this.emitAll('serialport:read', `error=${res.message}, line=${this.sender.received + 1}`);
 
+                this.sender.ack();
                 this.sender.next();
-
-                this.emitAll('serialport:read', res.raw);
                 return;
             }
 
@@ -541,11 +543,32 @@ class GrblController {
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 this.sender.rewind(); // rewind sender queue
 
-                if (activeState === GRBL_ACTIVE_STATE_RUN) {
-                    this.write(socket, '!');
-                    this.write(socket, '\x18'); // ctrl-x
-                } else if (activeState === GRBL_ACTIVE_STATE_HOLD) {
-                    this.write(socket, '\x18'); // ctrl-x
+                // Grbl
+                if (this.firmware === GRBL) {
+                    let delay = 0;
+
+                    if (activeState === GRBL_ACTIVE_STATE_RUN) {
+                        this.write(socket, '!'); // hold
+                        delay = 50; // 50ms delay
+                    }
+
+                    setTimeout(() => {
+                        this.write(socket, '\x18'); // ctrl-x
+                    }, delay);
+                }
+
+                // Smoothie
+                if (this.firmware === SMOOTHIE) {
+                    let delay = 0;
+
+                    if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
+                        this.write(socket, '~'); // resume
+                        delay = 50; // 50ms delay
+                    }
+
+                    setTimeout(() => {
+                        this.write(socket, '\x18'); // ctrl-x
+                    }, delay);
                 }
             },
             'pause': () => {
@@ -579,6 +602,11 @@ class GrblController {
                 }
             },
             'reset': () => {
+                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
+                    this.workflowState = WORKFLOW_STATE_IDLE;
+                    this.sender.rewind(); // rewind sender queue
+                }
+
                 this.write(socket, '\x18'); // ^x
             },
             'unlock': () => {

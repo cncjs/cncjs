@@ -51,12 +51,12 @@ class GCodeWidget extends Component {
     };
     controllerEvents = {
         'sender:status': (data) => {
-            const { remain, sent, total, createdTime, startedTime, finishedTime } = data;
+            const { remain, sent, received, total, createdTime, startedTime, finishedTime } = data;
 
             let lines = this.state.lines;
             if (this.state.lines.length > 0) {
-                const from = this.state.sent;
-                const to = sent;
+                const from = this.state.received;
+                const to = received;
                 let list = {};
 
                 // Reset obsolete queue items
@@ -84,6 +84,7 @@ class GCodeWidget extends Component {
                 lines,
                 remain,
                 sent,
+                received,
                 total,
                 createdTime,
                 startedTime,
@@ -154,6 +155,7 @@ class GCodeWidget extends Component {
             // G-code Status (from server)
             remain: 0,
             sent: 0,
+            received: 0,
             total: 0,
             createdTime: 0,
             startedTime: 0,

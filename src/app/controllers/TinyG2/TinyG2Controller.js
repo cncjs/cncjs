@@ -123,6 +123,11 @@ class TinyG2Controller {
                 return;
             }
 
+            if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
+                log.error(`[TinyG2] Unexpected workflow state: ${this.workflowState}`);
+                return;
+            }
+
             gcode = ('' + gcode).trim();
             if (gcode.length > 0) {
                 const cmd = JSON.stringify({ gc: gcode });
@@ -160,6 +165,7 @@ class TinyG2Controller {
             if (prevPlannerQueueStatus === TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.sender.ack();
                     this.sender.next();
                     return;
                 }
@@ -179,11 +185,20 @@ class TinyG2Controller {
         });
 
         this.tinyG2.on('f', (f) => {
+            // https://github.com/synthetos/g2/wiki/Status-Codes
+            const statusCode = f[1] || 0;
             const prevPlannerQueueStatus = this.plannerQueueStatus;
+
+            if ((this.workflowState !== WORKFLOW_STATE_IDLE) && (statusCode !== 0)) {
+                const line = this.sender.sent[this.sender.received];
+                this.emitAll('serialport:read', `> ${line}`);
+                this.emitAll('serialport:read', `error=${statusCode}, line=${this.sender.received + 1}`);
+            }
 
             if (prevPlannerQueueStatus !== TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+                    this.sender.ack();
                     this.sender.next();
                     return;
                 }
@@ -498,7 +513,7 @@ class TinyG2Controller {
                     log.debug(`[TinyG2] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
 
                     this.workflowState = WORKFLOW_STATE_IDLE;
-                    callback();
+                    callback(null, { name: name, gcode: gcode });
                 });
             },
             'unload': () => {
@@ -571,6 +586,11 @@ class TinyG2Controller {
                 this.writeln(socket, '\x04'); // ^d
             },
             'reset': () => {
+                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
+                    this.workflowState = WORKFLOW_STATE_IDLE;
+                    this.sender.rewind(); // rewind sender queue
+                }
+
                 this.writeln(socket, '\x18'); // ^x
             },
             'unlock': () => {
