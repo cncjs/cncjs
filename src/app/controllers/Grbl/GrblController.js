@@ -17,11 +17,11 @@ import {
 import {
     GRBL,
     GRBL_ACTIVE_STATE_RUN,
-    GRBL_ACTIVE_STATE_HOLD,
     GRBL_REALTIME_COMMANDS
 } from './constants';
 import {
-    SMOOTHIE
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_HOLD
 } from '../Smoothie/constants';
 
 const noop = _.noop;
@@ -144,6 +144,11 @@ class GrblController {
         this.sender.on('gcode', (gcode = '') => {
             if (this.isClose()) {
                 log.error(`[Grbl] The serial port "${this.options.port}" is not accessible`);
+                return;
+            }
+
+            if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
+                log.error(`[Grbl] Unexpected workflow state: ${this.workflowState}`);
                 return;
             }
 
@@ -538,11 +543,32 @@ class GrblController {
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 this.sender.rewind(); // rewind sender queue
 
-                if (activeState === GRBL_ACTIVE_STATE_RUN) {
-                    this.write(socket, '!');
-                    this.write(socket, '\x18'); // ctrl-x
-                } else if (activeState === GRBL_ACTIVE_STATE_HOLD) {
-                    this.write(socket, '\x18'); // ctrl-x
+                // Grbl
+                if (this.firmware === GRBL) {
+                    let delay = 0;
+
+                    if (activeState === GRBL_ACTIVE_STATE_RUN) {
+                        this.write(socket, '!'); // hold
+                        delay = 50; // 50ms delay
+                    }
+
+                    setTimeout(() => {
+                        this.write(socket, '\x18'); // ctrl-x
+                    }, delay);
+                }
+
+                // Smoothie
+                if (this.firmware === SMOOTHIE) {
+                    let delay = 0;
+
+                    if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
+                        this.write(socket, '~'); // resume
+                        delay = 50; // 50ms delay
+                    }
+
+                    setTimeout(() => {
+                        this.write(socket, '\x18'); // ctrl-x
+                    }, delay);
                 }
             },
             'pause': () => {
@@ -576,6 +602,11 @@ class GrblController {
                 }
             },
             'reset': () => {
+                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
+                    this.workflowState = WORKFLOW_STATE_IDLE;
+                    this.sender.rewind(); // rewind sender queue
+                }
+
                 this.write(socket, '\x18'); // ^x
             },
             'unlock': () => {
