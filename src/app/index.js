@@ -10,46 +10,38 @@ import webappengine from 'webappengine';
 import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
+import config from './services/configstore';
 import log from './lib/log';
-import { readConfigFileSync, writeConfigFileSync } from './lib/config-file';
 import settings from './config/settings';
 
 const createServer = (options, callback) => {
-    const {
-        port = 0,
-        host,
-        backlog,
-        configFile,
-        verbosity,
-        mount,
-        watchDirectory,
-        allowRemoteAccess = false
-    } = { ...options };
+    options = { ...options };
+
     const routes = [];
-    const cncrc = path.resolve(configFile || settings.cncrc);
-    const config = readConfigFileSync(cncrc);
+    const cncrc = path.resolve(options.configFile || settings.cncrc);
+
+    // Setup configstore service
+    config.load(cncrc);
 
     // cncrc
     settings.cncrc = cncrc;
 
     { // secret
-        if (!config.secret) {
+        if (!config.get('secret')) {
             // generate a secret key
-            config.secret = bcrypt.genSaltSync(); // TODO
-
-            // update changes
-            writeConfigFileSync(cncrc, config);
+            const secret = bcrypt.genSaltSync(); // TODO: use a strong secret
+            config.set('secret', secret);
         }
 
-        settings.secret = config.secret || settings.secret;
+        settings.secret = config.get('secret', settings.secret);
     }
 
     { // routes
-        if (mount) {
+        if (typeof options.mount === 'object') {
             routes.push({
                 type: 'static',
-                route: mount.url,
-                directory: mount.path
+                route: options.mount.url,
+                directory: options.mount.path
             });
         }
 
@@ -61,6 +53,8 @@ const createServer = (options, callback) => {
     }
 
     { // verbosity
+        const verbosity = options.verbosity;
+
         // https://github.com/winstonjs/winston#logging-levels
         if (verbosity === 1) {
             _.set(settings, 'verbosity', verbosity);
@@ -77,32 +71,41 @@ const createServer = (options, callback) => {
     }
 
     { // watchDirectory
-        config.watchDirectory = _.get(config, 'watchDirectory', watchDirectory);
+        const watchDirectory = options.watchDirectory || config.get('watchDirectory');
 
-        if (config.watchDirectory) {
-            if (fs.existsSync(config.watchDirectory)) {
-                log.info(`Start watching ${chalk.yellow(JSON.stringify(config.watchDirectory))} for file changes.`);
+        if (watchDirectory) {
+            if (fs.existsSync(watchDirectory)) {
+                log.info(`Start watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes.`);
 
                 // Start monitor service
-                monitor.start({ watchDirectory: config.watchDirectory });
+                monitor.start({ watchDirectory: watchDirectory });
             } else {
-                log.error(`The directory ${chalk.yellow(JSON.stringify(config.watchDirectory))} does not exist.`);
+                log.error(`The directory ${chalk.yellow(JSON.stringify(watchDirectory))} does not exist.`);
             }
+        }
+    }
+
+    { // accessTokenLifetime
+        const accessTokenLifetime = options.accessTokenLifetime || config.get('accessTokenLifetime');
+
+        if (accessTokenLifetime) {
+            _.set(settings, 'accessTokenLifetime', accessTokenLifetime);
         }
     }
 
     { // allowRemoteAccess
-        config.allowRemoteAccess = _.get(config, 'allowRemoteAccess', allowRemoteAccess);
+        const allowRemoteAccess = options.allowRemoteAccess || config.get('allowRemoteAccess', false);
 
-        if (config.allowRemoteAccess) {
-            if (_.size(config.users) === 0) {
+        if (allowRemoteAccess) {
+            if (_.size(config.get('users')) === 0) {
                 log.warn('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
             }
 
-            _.set(settings, 'allowRemoteAccess', config.allowRemoteAccess);
+            _.set(settings, 'allowRemoteAccess', allowRemoteAccess);
         }
     }
 
+    const { port = 0, host, backlog } = options;
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
             // Start cncengine service

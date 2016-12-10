@@ -32,7 +32,7 @@ const loadGCode = (options) => new Promise((resolve, reject) => {
     };
 
     request
-        .put('/api/gcode')
+        .post('/api/gcode')
         .send({
             port: port,
             meta: meta,
