@@ -37,6 +37,7 @@ program
     .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
     .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
     .option('-w, --watch-directory <path>', 'watch a directory for changes')
+    .option('--access-token-lifetime <lifetime>', 'access token lifetime in seconds or a time span string (default: 30d)')
     .option('--allow-remote-access', 'allow remote access to the server', false);
 
 program.on('--help', () => {
@@ -66,6 +67,7 @@ const cnc = (options = {}, callback) => {
         verbosity: program.verbose,
         mount: program.mount,
         watchDirectory: program.watchDirectory,
+        accessTokenLifetime: program.accessTokenLifetime,
         allowRemoteAccess: program.allowRemoteAccess,
         ...options // Override command-line options if specified
     }, callback);

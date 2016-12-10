@@ -4,6 +4,7 @@ import bcrypt from 'bcrypt-nodejs';
 import _ from 'lodash';
 import uuid from 'uuid';
 import settings from '../config/settings';
+import log from '../lib/log';
 import {
     ERR_BAD_REQUEST,
     ERR_UNAUTHORIZED,
@@ -13,11 +14,12 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from './constants';
 
-// Generate session token
+// Generate access token
+// https://github.com/auth0/node-jsonwebtoken#jwtsignpayload-secretorprivatekey-options-callback
 // Note. Do not use password and other sensitive fields in the payload
-const generateToken = (payload, secret = settings.secret) => {
+const generateAccessToken = (payload, secret = settings.secret) => {
     const token = jwt.sign(payload, secret, {
-        expiresIn: 60 * 60 * 24 // expires in 24 hours
+        expiresIn: settings.accessTokenLifetime
     });
 
     return token;
@@ -44,7 +46,7 @@ export const signin = (req, res) => {
     if (enabledUsers.length === 0) {
         const user = { id: '', name: '' };
         const payload = { ...user };
-        const token = generateToken(payload, settings.secret); // generate new token
+        const token = generateAccessToken(payload, settings.secret); // generate access token
         res.send({
             enabled: false, // session is disabled
             token: token,
@@ -68,7 +70,7 @@ export const signin = (req, res) => {
             id: user.id,
             name: user.name
         };
-        const token = generateToken(payload, settings.secret); // generate new token
+        const token = generateAccessToken(payload, settings.secret); // generate access token
         res.send({
             enabled: true, // session is enabled
             token: token, // new token
@@ -84,6 +86,8 @@ export const signin = (req, res) => {
             });
             return;
         }
+
+        log.debug(`jwt.verify: id=${user.id}, name="${user.name}", iat=${new Date(user.iat * 1000).toISOString()}, exp=${new Date(user.exp * 1000).toISOString()}`);
 
         user = _.find(enabledUsers, { id: user.id, name: user.name });
         if (!user) {

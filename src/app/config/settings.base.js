@@ -10,19 +10,19 @@ const secret = pkg.version;
 const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME']);
 
 export default {
+    cncrc: path.resolve(getUserHome(), RCFILE),
     verbosity: 0,
+    version: pkg.version,
 
     // The secret key is loaded from the config file (defaults to "~/.cncrc")
     // @see "src/app/index.js"
     secret: secret,
 
-    cncrc: path.resolve(getUserHome(), RCFILE),
+    // Access Token Lifetime
+    accessTokenLifetime: '30d', // https://github.com/zeit/ms
 
-    // Allow remote access
+    // Allow Remote Access
     allowRemoteAccess: false,
-
-    // version from package.json
-    version: pkg.version,
 
     // Express view engine
     view: {

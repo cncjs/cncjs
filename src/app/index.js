@@ -15,18 +15,10 @@ import { readConfigFileSync, writeConfigFileSync } from './lib/config-file';
 import settings from './config/settings';
 
 const createServer = (options, callback) => {
-    const {
-        port = 0,
-        host,
-        backlog,
-        configFile,
-        verbosity,
-        mount,
-        watchDirectory,
-        allowRemoteAccess = false
-    } = { ...options };
+    options = { ...options };
+
     const routes = [];
-    const cncrc = path.resolve(configFile || settings.cncrc);
+    const cncrc = path.resolve(options.configFile || settings.cncrc);
     const config = readConfigFileSync(cncrc);
 
     // cncrc
@@ -45,11 +37,11 @@ const createServer = (options, callback) => {
     }
 
     { // routes
-        if (mount) {
+        if (typeof options.mount === 'object') {
             routes.push({
                 type: 'static',
-                route: mount.url,
-                directory: mount.path
+                route: options.mount.url,
+                directory: options.mount.path
             });
         }
 
@@ -61,6 +53,8 @@ const createServer = (options, callback) => {
     }
 
     { // verbosity
+        const verbosity = options.verbosity;
+
         // https://github.com/winstonjs/winston#logging-levels
         if (verbosity === 1) {
             _.set(settings, 'verbosity', verbosity);
@@ -77,32 +71,41 @@ const createServer = (options, callback) => {
     }
 
     { // watchDirectory
-        config.watchDirectory = _.get(config, 'watchDirectory', watchDirectory);
+        const watchDirectory = options.watchDirectory || config.watchDirectory;
 
-        if (config.watchDirectory) {
-            if (fs.existsSync(config.watchDirectory)) {
-                log.info(`Start watching ${chalk.yellow(JSON.stringify(config.watchDirectory))} for file changes.`);
+        if (watchDirectory) {
+            if (fs.existsSync(watchDirectory)) {
+                log.info(`Start watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes.`);
 
                 // Start monitor service
-                monitor.start({ watchDirectory: config.watchDirectory });
+                monitor.start({ watchDirectory: watchDirectory });
             } else {
-                log.error(`The directory ${chalk.yellow(JSON.stringify(config.watchDirectory))} does not exist.`);
+                log.error(`The directory ${chalk.yellow(JSON.stringify(watchDirectory))} does not exist.`);
             }
+        }
+    }
+
+    { // accessTokenLifetime
+        const accessTokenLifetime = options.accessTokenLifetime || config.accessTokenLifetime;
+
+        if (accessTokenLifetime) {
+            _.set(settings, 'accessTokenLifetime', accessTokenLifetime);
         }
     }
 
     { // allowRemoteAccess
-        config.allowRemoteAccess = _.get(config, 'allowRemoteAccess', allowRemoteAccess);
+        const allowRemoteAccess = (!!options.allowRemoteAccess) || (!!config.allowRemoteAccess);
 
-        if (config.allowRemoteAccess) {
+        if (allowRemoteAccess) {
             if (_.size(config.users) === 0) {
                 log.warn('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
             }
 
-            _.set(settings, 'allowRemoteAccess', config.allowRemoteAccess);
+            _.set(settings, 'allowRemoteAccess', allowRemoteAccess);
         }
     }
 
+    const { port = 0, host, backlog } = options;
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
             // Start cncengine service
