@@ -1,7 +1,7 @@
 import settings from '../config/settings';
 import urljoin from '../lib/urljoin';
 import * as versionAPI from './api.version';
-import * as configAPI from './api.config';
+import * as stateAPI from './api.state';
 import * as gcodeAPI from './api.gcode';
 import * as i18nAPI from './api.i18n';
 import * as controllersAPI from './api.controllers';
@@ -11,7 +11,7 @@ import * as watchAPI from './api.watch';
 
 const api = {
     version: versionAPI,
-    config: configAPI,
+    state: stateAPI,
     gcode: gcodeAPI,
     i18n: i18nAPI,
     controllers: controllersAPI,
@@ -25,14 +25,14 @@ const api = {
         // Version
         app.get(urljoin(settings.route, 'api/version/latest'), api.version.getLatestVersion);
 
-        // Config
-        app.get(urljoin(settings.route, 'api/config'), api.config.get);
-        app.put(urljoin(settings.route, 'api/config'), api.config.set);
-        app.delete(urljoin(settings.route, 'api/config'), api.config.unset);
+        // State
+        app.get(urljoin(settings.route, 'api/state'), api.state.get);
+        app.post(urljoin(settings.route, 'api/state'), api.state.set);
+        app.delete(urljoin(settings.route, 'api/state'), api.state.unset);
 
         // G-code
         app.get(urljoin(settings.route, 'api/gcode'), api.gcode.get);
-        app.put(urljoin(settings.route, 'api/gcode'), api.gcode.set);
+        app.post(urljoin(settings.route, 'api/gcode'), api.gcode.set);
         app.get(urljoin(settings.route, 'api/gcode/download'), api.gcode.download);
 
         // Controllers
