@@ -10,8 +10,8 @@ import webappengine from 'webappengine';
 import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
+import config from './services/configstore';
 import log from './lib/log';
-import { readConfigFileSync, writeConfigFileSync } from './lib/config-file';
 import settings from './config/settings';
 
 const createServer = (options, callback) => {
@@ -19,21 +19,21 @@ const createServer = (options, callback) => {
 
     const routes = [];
     const cncrc = path.resolve(options.configFile || settings.cncrc);
-    const config = readConfigFileSync(cncrc);
+
+    // Setup configstore service
+    config.load(cncrc);
 
     // cncrc
     settings.cncrc = cncrc;
 
     { // secret
-        if (!config.secret) {
+        if (!config.get('secret')) {
             // generate a secret key
-            config.secret = bcrypt.genSaltSync(); // TODO
-
-            // update changes
-            writeConfigFileSync(cncrc, config);
+            const secret = bcrypt.genSaltSync(); // TODO: use a strong secret
+            config.set('secret', secret);
         }
 
-        settings.secret = config.secret || settings.secret;
+        settings.secret = config.get('secret', settings.secret);
     }
 
     { // routes
@@ -71,7 +71,7 @@ const createServer = (options, callback) => {
     }
 
     { // watchDirectory
-        const watchDirectory = options.watchDirectory || config.watchDirectory;
+        const watchDirectory = options.watchDirectory || config.get('watchDirectory');
 
         if (watchDirectory) {
             if (fs.existsSync(watchDirectory)) {
@@ -86,7 +86,7 @@ const createServer = (options, callback) => {
     }
 
     { // accessTokenLifetime
-        const accessTokenLifetime = options.accessTokenLifetime || config.accessTokenLifetime;
+        const accessTokenLifetime = options.accessTokenLifetime || config.get('accessTokenLifetime');
 
         if (accessTokenLifetime) {
             _.set(settings, 'accessTokenLifetime', accessTokenLifetime);
@@ -94,10 +94,10 @@ const createServer = (options, callback) => {
     }
 
     { // allowRemoteAccess
-        const allowRemoteAccess = (!!options.allowRemoteAccess) || (!!config.allowRemoteAccess);
+        const allowRemoteAccess = options.allowRemoteAccess || config.get('allowRemoteAccess', false);
 
         if (allowRemoteAccess) {
-            if (_.size(config.users) === 0) {
+            if (_.size(config.get('users')) === 0) {
                 log.warn('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
             }
 

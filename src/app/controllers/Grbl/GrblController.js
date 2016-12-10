@@ -1,10 +1,9 @@
-import fs from 'fs';
 import _ from 'lodash';
 import SerialPort from 'serialport';
-import settings from '../../config/settings';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
 import Sender, { STREAMING_PROTOCOL_CHAR_COUNTING } from '../../lib/gcode-sender';
+import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import store from '../../store';
 import Grbl from './Grbl';
@@ -28,17 +27,6 @@ const noop = _.noop;
 
 const dbg = (...args) => {
     log.raw.apply(log, ['silly'].concat(args));
-};
-
-const loadConfigFile = (file) => {
-    let config;
-    try {
-        config = JSON.parse(fs.readFileSync(file, 'utf8'));
-    } catch (err) {
-        log.error(`[Grbl] Failed to load "${file}": err=${err}`);
-        config = {};
-    }
-    return config;
 };
 
 class Connection {
@@ -631,9 +619,9 @@ class GrblController {
                 }
             },
             'loadmacro': () => {
-                const config = loadConfigFile(settings.cncrc);
                 const [id, callback = noop] = args;
-                const macro = _.find(config.macros, { id: id });
+                const macros = config.get('macros');
+                const macro = _.find(macros, { id: id });
 
                 if (!macro) {
                     log.error(`[Grbl] Cannot find the macro: id=${id}`);

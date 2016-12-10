@@ -1,10 +1,10 @@
-import fs from 'fs';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
 import _ from 'lodash';
 import uuid from 'uuid';
 import settings from '../config/settings';
 import log from '../lib/log';
+import config from '../services/configstore';
 import {
     ERR_BAD_REQUEST,
     ERR_UNAUTHORIZED,
@@ -25,23 +25,9 @@ const generateAccessToken = (payload, secret = settings.secret) => {
     return token;
 };
 
-const loadConfigFile = (file) => {
-    let config;
-    try {
-        config = JSON.parse(fs.readFileSync(file, 'utf8'));
-    } catch (err) {
-        config = {};
-    }
-    if (!_.isArray(config.users)) {
-        config.users = [];
-    }
-    return config;
-};
-
 export const signin = (req, res) => {
     const { token = '', name = '', password = '' } = { ...req.body };
-    const config = loadConfigFile(settings.cncrc);
-    const enabledUsers = _.filter(config.users, { enabled: true });
+    const enabledUsers = _.filter(config.get('users', []), { enabled: true });
 
     if (enabledUsers.length === 0) {
         const user = { id: '', name: '' };
@@ -106,8 +92,7 @@ export const signin = (req, res) => {
 };
 
 export const listUsers = (req, res) => {
-    const config = loadConfigFile(settings.cncrc);
-    const users = _.orderBy(config.users, ['name'], ['asc']);
+    const users = _.orderBy(config.get('users', []), ['name'], ['asc']);
     const totalRecords = users.length;
     let { page = 1, pageLength = 10 } = req.query;
 
@@ -145,8 +130,7 @@ export const listUsers = (req, res) => {
 };
 
 export const getUser = (req, res) => {
-    const config = loadConfigFile(settings.cncrc);
-    const user = _.find(config.users, { id: req.params.id });
+    const user = _.find(config.get('users', []), { id: req.params.id });
     const { id, enabled, name } = { ...user };
 
     if (!user) {
@@ -160,7 +144,6 @@ export const getUser = (req, res) => {
 };
 
 export const newUser = (req, res) => {
-    const config = loadConfigFile(settings.cncrc);
     const {
         enabled = false,
         name = '',
@@ -181,7 +164,7 @@ export const newUser = (req, res) => {
         return;
     }
 
-    if (_.find(config.users, { name: name })) {
+    if (_.find(config.get('users', []), { name: name })) {
         res.status(ERR_CONFLICT).send({
             msg: 'The specified user already exists'
         });
@@ -191,6 +174,7 @@ export const newUser = (req, res) => {
     try {
         const salt = bcrypt.genSaltSync();
         const hash = bcrypt.hashSync(password.trim(), salt);
+        const users = config.get('users', []);
         const user = {
             id: uuid.v4(),
             enabled: enabled,
@@ -198,19 +182,14 @@ export const newUser = (req, res) => {
             password: hash
         };
 
-        if (!_.isArray(config.users)) {
-            config.users = [];
+        if (_.isArray(users)) {
+            users.push(user);
+            config.set('users', users);
+        } else {
+            config.set('users', [user]);
         }
-        config.users.push(user);
 
-        const text = JSON.stringify(config, null, 4);
-        fs.writeFile(settings.cncrc, text, (err) => {
-            if (err) {
-                throw err;
-            }
-
-            res.send({ id: user.id });
-        });
+        res.send({ id: user.id });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
@@ -219,7 +198,6 @@ export const newUser = (req, res) => {
 };
 
 export const updateUser = (req, res) => {
-    const config = loadConfigFile(settings.cncrc);
     const id = req.params.id;
     const {
         enabled = false,
@@ -227,7 +205,8 @@ export const updateUser = (req, res) => {
         oldPassword = '',
         newPassword = ''
     } = { ...req.body };
-    const user = _.find(config.users, { id: id });
+    const users = config.get('users', []);
+    const user = _.find(users, { id: id });
     const changePassword = oldPassword && newPassword;
 
     if (!user) {
@@ -254,7 +233,7 @@ export const updateUser = (req, res) => {
     const inuse = (user) => {
         return user.id !== id && user.name === name;
     };
-    if (_.some(config.users, inuse)) {
+    if (_.some(users, inuse)) {
         res.status(ERR_CONFLICT).send({
             msg: 'The specified user already exists'
         });
@@ -271,14 +250,9 @@ export const updateUser = (req, res) => {
             user.password = hash;
         }
 
-        const text = JSON.stringify(config, null, 4);
-        fs.writeFile(settings.cncrc, text, (err) => {
-            if (err) {
-                throw err;
-            }
+        config.set('users', users);
 
-            res.send({ id: user.id });
-        });
+        res.send({ id: user.id });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
@@ -287,31 +261,22 @@ export const updateUser = (req, res) => {
 };
 
 export const deleteUser = (req, res) => {
-    const config = loadConfigFile(settings.cncrc);
-    const user = _.find(config.users, { id: req.params.id });
-
+    const id = req.params.id;
+    const user = _.find(config.get('users', []), { id: id });
     if (!user) {
         res.status(ERR_NOT_FOUND).send({
-            msg: 'The specified user does not exist'
+            msg: 'User not found'
         });
         return;
     }
 
     try {
-        const start = config.users.indexOf(user);
-        if (start >= 0) {
-            const deleteCount = 1;
-            config.users.splice(start, deleteCount);
-        }
-
-        const text = JSON.stringify(config, null, 4);
-        fs.writeFile(settings.cncrc, text, (err) => {
-            if (err) {
-                throw err;
-            }
-
-            res.send({ id: user.id });
+        const users = _.filter(config.get('users', []), (user) => {
+            return user.id !== id;
         });
+        config.set('users', users);
+
+        res.send({ id: user.id });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
