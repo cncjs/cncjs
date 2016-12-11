@@ -1,7 +1,40 @@
-import request from 'superagent';
+import superagent from 'superagent';
+import superagentUse from 'superagent-use';
+import store from '../store';
 
+const bearer = (request) => {
+    const token = store.get('session.token');
+    if (token) {
+        request.set('Authorization', 'Bearer ' + token);
+    }
+};
+
+const authrequest = superagentUse(superagent);
+authrequest.use(bearer);
+
+//
+// Authentication
+//
+const signin = (options) => new Promise((resolve, reject) => {
+    const { token, name, password } = { ...options };
+
+    authrequest
+        .post('/api/signin')
+        .send({ token, name, password })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+//
+// Latest Version
+//
 const getLatestVersion = () => new Promise((resolve, reject) => {
-    request
+    authrequest
         .get('/api/version/latest')
         .end((err, res) => {
             if (err) {
@@ -12,8 +45,11 @@ const getLatestVersion = () => new Promise((resolve, reject) => {
         });
 });
 
+//
+// Controllers
+//
 const listControllers = () => new Promise((resolve, reject) => {
-    request
+    authrequest
         .get('/api/controllers')
         .end((err, res) => {
             if (err) {
@@ -24,6 +60,9 @@ const listControllers = () => new Promise((resolve, reject) => {
         });
 });
 
+//
+// G-code
+//
 const loadGCode = (options) => new Promise((resolve, reject) => {
     const { port = '', name = '', gcode = '' } = { ...options };
     const meta = {
@@ -31,7 +70,7 @@ const loadGCode = (options) => new Promise((resolve, reject) => {
         size: gcode.length
     };
 
-    request
+    authrequest
         .post('/api/gcode')
         .send({
             port: port,
@@ -50,27 +89,9 @@ const loadGCode = (options) => new Promise((resolve, reject) => {
 const fetchGCode = (options) => new Promise((resolve, reject) => {
     const { port = '' } = { ...options };
 
-    request
+    authrequest
         .get('/api/gcode')
         .query({ port: port })
-        .end((err, res) => {
-            if (err) {
-                reject(res);
-            } else {
-                resolve(res);
-            }
-        });
-});
-
-//
-// Authentication
-//
-const signin = (options) => new Promise((resolve, reject) => {
-    const { token, name, password } = { ...options };
-
-    request
-        .post('/api/signin')
-        .send({ token, name, password })
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -84,7 +105,7 @@ const signin = (options) => new Promise((resolve, reject) => {
 // Users
 //
 const listUsers = (options) => new Promise((resolve, reject) => {
-    request
+    authrequest
         .get('/api/users')
         .query({ ...options })
         .end((err, res) => {
@@ -99,7 +120,7 @@ const listUsers = (options) => new Promise((resolve, reject) => {
 const addUser = (options) => new Promise((resolve, reject) => {
     const { enabled, name, password } = { ...options };
 
-    request
+    authrequest
         .post('/api/users')
         .send({ enabled, name, password })
         .end((err, res) => {
@@ -114,7 +135,7 @@ const addUser = (options) => new Promise((resolve, reject) => {
 const deleteUser = (options) => new Promise((resolve, reject) => {
     const { id } = { ...options };
 
-    request
+    authrequest
         .delete('/api/users/' + id)
         .end((err, res) => {
             if (err) {
@@ -128,7 +149,7 @@ const deleteUser = (options) => new Promise((resolve, reject) => {
 const editUser = (options) => new Promise((resolve, reject) => {
     const { id, enabled, name, oldPassword, newPassword } = { ...options };
 
-    request
+    authrequest
         .put('/api/users/' + id)
         .send({ enabled, name, oldPassword, newPassword })
         .end((err, res) => {
@@ -144,7 +165,7 @@ const editUser = (options) => new Promise((resolve, reject) => {
 // Macros
 //
 const listMacros = () => new Promise((resolve, reject) => {
-    request
+    authrequest
         .get('/api/macros')
         .end((err, res) => {
             if (err) {
@@ -158,7 +179,7 @@ const listMacros = () => new Promise((resolve, reject) => {
 const getMacro = (options) => new Promise((resolve, reject) => {
     const { id } = { ...options };
 
-    request
+    authrequest
         .get('/api/macros/' + id)
         .end((err, res) => {
             if (err) {
@@ -172,7 +193,7 @@ const getMacro = (options) => new Promise((resolve, reject) => {
 const addMacro = (options) => new Promise((resolve, reject) => {
     const { name, content } = { ...options };
 
-    request
+    authrequest
         .post('/api/macros')
         .send({ name, content })
         .end((err, res) => {
@@ -187,7 +208,7 @@ const addMacro = (options) => new Promise((resolve, reject) => {
 const updateMacro = (options) => new Promise((resolve, reject) => {
     const { id, name, content } = { ...options };
 
-    request
+    authrequest
         .put('/api/macros/' + id)
         .send({ name, content })
         .end((err, res) => {
@@ -202,7 +223,7 @@ const updateMacro = (options) => new Promise((resolve, reject) => {
 const deleteMacro = (options) => new Promise((resolve, reject) => {
     const { id } = { ...options };
 
-    request
+    authrequest
         .delete('/api/macros/' + id)
         .end((err, res) => {
             if (err) {
@@ -219,7 +240,7 @@ const watch = {};
 watch.getFiles = (options) => new Promise((resolve, reject) => {
     const { path } = { ...options };
 
-    request
+    authrequest
         .post('/api/watch/files')
         .send({ path })
         .end((err, res) => {
@@ -234,7 +255,7 @@ watch.getFiles = (options) => new Promise((resolve, reject) => {
 watch.readFile = (options) => new Promise((resolve, reject) => {
     const { file } = { ...options };
 
-    request
+    authrequest
         .post('/api/watch/file')
         .send({ file })
         .end((err, res) => {
