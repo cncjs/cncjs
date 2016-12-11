@@ -45,6 +45,8 @@ program.on('--help', () => {
     console.log('');
     console.log('    $ cnc -vv');
     console.log('    $ cnc --mount /pendant:/home/pi/tinyweb');
+    console.log('    $ cnc --watch-directory /home/pi/watch');
+    console.log('    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d');
     console.log('    $ cnc --allow-remote-access');
     console.log('');
 });
