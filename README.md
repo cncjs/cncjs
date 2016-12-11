@@ -106,7 +106,7 @@ $ cnc -h
     $ cnc -vv
     $ cnc --mount /pendant:/home/pi/tinyweb
     $ cnc --watch-directory /home/pi/watch
-    $ cnc --access-token-lifetime 60d  # e.g. 30m, 12h, 30d
+    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d
     $ cnc --allow-remote-access
 ```
 
