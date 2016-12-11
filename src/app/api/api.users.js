@@ -12,7 +12,7 @@ import {
     ERR_CONFLICT,
     ERR_PRECONDITION_FAILED,
     ERR_INTERNAL_SERVER_ERROR
-} from './constants';
+} from '../constants';
 
 // Generate access token
 // https://github.com/auth0/node-jsonwebtoken#jwtsignpayload-secretorprivatekey-options-callback

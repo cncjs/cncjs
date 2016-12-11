@@ -3,6 +3,7 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
+import jwt from 'express-jwt';
 import engines from 'consolidate';
 import 'hogan.js'; // required by consolidate
 import errorhandler from 'errorhandler';
@@ -33,7 +34,12 @@ import errclient from './lib/middleware/errclient';
 import errlog from './lib/middleware/errlog';
 import errnotfound from './lib/middleware/errnotfound';
 import errserver from './lib/middleware/errserver';
-import { IP_WHITELIST } from './constants';
+import config from './services/configstore';
+import {
+    IP_WHITELIST,
+    ERR_UNAUTHORIZED,
+    ERR_FORBIDDEN
+} from './constants';
 
 const renderPage = (view = 'index', cb = _.noop) => (req, res, next) => {
     // Override IE's Compatibility View Settings
@@ -94,14 +100,16 @@ const appMain = () => {
 
     // Check if client's IP address is in the whitelist
     app.use((req, res, next) => {
-        const clientIp = req.ip || req.connection.remoteAddress;
+        const ipaddr = req.ip || req.connection.remoteAddress;
         const allowedAccess = _.some(IP_WHITELIST, (whitelist) => {
-            return rangeCheck.inRange(clientIp, whitelist);
+            return rangeCheck.inRange(ipaddr, whitelist);
         }) || (settings.allowRemoteAccess);
-        const deniedAccess = !allowedAccess;
+        const forbiddenAccess = !allowedAccess;
 
-        if (deniedAccess) {
-            res.status(403).end('Access to the requested directory is only available from the local network.');
+        if (forbiddenAccess) {
+            const text = 'Access to the requested directory is only available from the local network.';
+            res.status(ERR_FORBIDDEN).end(text);
+            log.warn(`[app] ERR_FORBIDDEN: ipaddr=${ipaddr}, message=${text}`);
             return;
         }
 
@@ -187,7 +195,35 @@ const appMain = () => {
 
     app.use(i18nextHandle(i18next, {}));
 
-    // api
+    { // Secure API Access
+        app.use(urljoin(settings.route, 'api'), jwt({
+            secret: config.get('secret'),
+            credentialsRequired: true
+        }));
+
+        app.use((err, req, res, next) => {
+            const whitelist = [
+                // Also see "src/app/api/index.js"
+                urljoin(settings.route, 'api/signin')
+            ];
+
+            const bypass = _.some(whitelist, (path) => {
+                return req.path.indexOf(path) === 0;
+            });
+
+            if (!bypass && err && (err.name === 'UnauthorizedError')) {
+                const ipaddr = req.ip || req.connection.remoteAddress;
+                const text = 'No Unauthorized Access';
+                res.status(ERR_UNAUTHORIZED).end(text);
+                log.warn(`[app] ERR_UNAUTHORIZED: ipaddr=${ipaddr}, code="${err.code}", message="${err.message}"`);
+                return;
+            }
+
+            next();
+        });
+    }
+
+    // API Routes
     api.addRoutes(app);
 
     // page

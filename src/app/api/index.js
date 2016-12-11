@@ -19,8 +19,16 @@ const api = {
     macros: macroAPI,
     watch: watchAPI,
     addRoutes: (app) => {
-        // Sign In
+        //
+        // Unauthoirzed Access
+        //
+
+        // Also see "src/app/app.js"
         app.post(urljoin(settings.route, 'api/signin'), api.users.signin);
+
+        //
+        // Authorized Access
+        //
 
         // Version
         app.get(urljoin(settings.route, 'api/version/latest'), api.version.getLatestVersion);

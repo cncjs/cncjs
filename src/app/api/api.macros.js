@@ -5,7 +5,7 @@ import config from '../services/configstore';
 import {
     ERR_NOT_FOUND,
     ERR_INTERNAL_SERVER_ERROR
-} from './constants';
+} from '../constants';
 
 export const listMacros = (req, res) => {
     const macros = _.map(config.get('macros', []), (macro) => {
