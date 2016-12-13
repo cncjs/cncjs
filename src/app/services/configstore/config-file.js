@@ -24,7 +24,7 @@ export const readConfigFileSync = (file) => {
 export const writeConfigFileSync = (file, config = {}) => {
     try {
         const content = (typeof config !== 'string') ? JSON.stringify(config, null, 4) : config;
-        fs.writeFileSync(file, content);
+        fs.writeFileSync(file, content, 'utf8');
     } catch (err) {
         log.error(`Unable to write configuration settings to ${JSON.stringify(file)}.`);
     }
