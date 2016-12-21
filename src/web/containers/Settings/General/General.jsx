@@ -2,25 +2,85 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
+import FacebookLoading from 'react-facebook-loading';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
 class General extends Component {
     static propTypes = {
+        initialState: PropTypes.object,
         state: PropTypes.object,
         stateChanged: PropTypes.bool,
         actions: PropTypes.object
     };
 
+    fields = {
+        checkForUpdates: null
+    };
+    handlers = {
+        changeCheckForUpdates: (event) => {
+            const { actions } = this.props;
+            actions.toggleCheckForUpdates();
+        },
+        changeLanguage: (event) => {
+            const { actions } = this.props;
+            const target = event.target;
+            actions.changeLanguage(target.value);
+        },
+        restoreDefaults: (event) => {
+            const { actions } = this.props;
+            actions.restoreDefaults();
+        },
+        cancel: (event) => {
+            const { actions } = this.props;
+            actions.restoreSettings();
+        },
+        save: (event) => {
+            const { actions } = this.props;
+            actions.save();
+        }
+    };
+
+    componentDidMount() {
+        const { actions } = this.props;
+        actions.load();
+    }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { state, stateChanged, actions } = this.props;
+        const { state, stateChanged } = this.props;
         const lang = get(state, 'lang', 'en');
 
+        if (state.api.loading) {
+            return (
+                <FacebookLoading
+                    delay={400}
+                    zoom={2}
+                    style={{ margin: '15px auto' }}
+                />
+            );
+        }
+
         return (
-            <form>
+            <form style={{ marginTop: -10 }}>
+                <div className={styles.formFields}>
+                    <div className={styles.formGroup}>
+                        <div className="checkbox">
+                            <label>
+                                <input
+                                    ref={(node) => {
+                                        this.fields.checkForUpdates = node;
+                                    }}
+                                    type="checkbox"
+                                    checked={state.checkForUpdates}
+                                    onChange={this.handlers.changeCheckForUpdates}
+                                />
+                                {i18n._('Automatically check for updates')}
+                            </label>
+                        </div>
+                    </div>
+                </div>
                 <div className={styles.formFields}>
                     <div className={styles.formGroup}>
                         <label>{i18n._('Language')}</label>
@@ -31,10 +91,7 @@ class General extends Component {
                                 styles.short
                             )}
                             value={lang}
-                            onChange={(event) => {
-                                const target = event.target;
-                                actions.changeLanguage(target.value);
-                            }}
+                            onChange={this.handlers.changeLanguage}
                         >
                             <option value="cs">Čeština</option>
                             <option value="de">Deutsch</option>
@@ -57,7 +114,7 @@ class General extends Component {
                                 <button
                                     type="button"
                                     className="btn btn-danger"
-                                    onClick={actions.handleRestoreDefaults}
+                                    onClick={this.handlers.restoreDefaults}
                                 >
                                     {i18n._('Restore Defaults')}
                                 </button>
@@ -65,7 +122,7 @@ class General extends Component {
                             <button
                                 type="button"
                                 className="btn btn-default"
-                                onClick={actions.handleCancel}
+                                onClick={this.handlers.cancel}
                             >
                                 {i18n._('Cancel')}
                             </button>
@@ -73,9 +130,12 @@ class General extends Component {
                                 type="button"
                                 className="btn btn-primary"
                                 disabled={!stateChanged}
-                                onClick={actions.handleSave}
+                                onClick={this.handlers.save}
                             >
-                                <i className="fa fa-save" />
+                                {state.api.saving
+                                    ? <i className="fa fa-circle-o-notch fa-spin" />
+                                    : <i className="fa fa-save" />
+                                }
                                 <span className="space" />
                                 {i18n._('Save Changes')}
                             </button>

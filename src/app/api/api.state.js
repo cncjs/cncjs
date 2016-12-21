@@ -41,19 +41,27 @@ export const unset = (req, res) => {
 
 export const set = (req, res) => {
     const query = req.query || {};
+    const data = { ...req.body };
 
-    if (!query.key) {
-        res.send(config.get('state'));
+    if (query.key) {
+        config.set(`state.${query.key}`, data);
+        res.send({ err: false });
         return;
     }
 
-    const key = `state.${query.key}`;
-    const value = req.body;
-    if (!config.has(key)) {
-        res.status(ERR_NOT_FOUND).send({ msg: 'Not found' });
-        return;
-    }
+    Object.keys(data).forEach((key) => {
+        const oldValue = config.get(`state.${key}`);
+        const newValue = data[key];
 
-    config.set(key, value);
+        if (typeof oldValue === 'object' && typeof newValue === 'object') {
+            config.set(`state.${key}`, {
+                ...oldValue,
+                ...newValue
+            });
+        } else {
+            config.set(`state.${key}`, newValue);
+        }
+    });
+
     res.send({ err: false });
 };

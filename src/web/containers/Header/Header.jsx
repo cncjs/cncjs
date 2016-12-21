@@ -28,28 +28,33 @@ class Header extends Component {
         path: PropTypes.string
     };
 
-    constructor() {
-        super();
-        this.state = this.getDefaultState();
-    }
-    componentDidMount() {
-        api.getLatestVersion()
-            .then((res) => {
-                const { time, version } = res.body;
-                this.setState({
-                    latestVersion: version,
-                    latestTime: time
-                });
-            })
-            .catch((res) => {
+    state = {
+        currentVersion: settings.version,
+        latestVersion: settings.version
+    };
+    actions = {
+        checkForUpdates: async () => {
+            try {
+                const res = await api.getState();
+                const { checkForUpdates } = res.body;
+
+                if (checkForUpdates) {
+                    const res = await api.getLatestVersion();
+                    const { time, version } = res.body;
+
+                    this.setState({
+                        latestVersion: version,
+                        latestTime: time
+                    });
+                }
+            } catch (res) {
                 // Ignore error
-            });
-    }
-    getDefaultState() {
-        return {
-            currentVersion: settings.version,
-            latestVersion: settings.version
-        };
+            }
+        }
+    };
+
+    componentDidMount() {
+        this.actions.checkForUpdates();
     }
     handleRestoreDefaults() {
         confirm({

@@ -44,11 +44,126 @@ class Settings extends Component {
             component: (props) => <About {...props} />
         }
     ];
+    initialState = this.getDefaultState();
     state = this.getDefaultState();
     actions = {
         // General
         general: {
-            handleRestoreDefaults: (event) => {
+            load: (options) => {
+                this.setState({
+                    general: {
+                        ...this.state.general,
+                        api: {
+                            ...this.state.general.api,
+                            err: false,
+                            loading: true
+                        }
+                    }
+                });
+
+                api.getState()
+                    .then((res) => {
+                        const { checkForUpdates } = { ...res.body };
+
+                        const nextState = {
+                            ...this.state.general,
+                            api: {
+                                ...this.state.general.api,
+                                err: false,
+                                loading: false
+                            },
+                            // followed by data
+                            checkForUpdates: !!checkForUpdates,
+                            lang: i18next.language
+                        };
+
+                        this.initialState.general = nextState;
+
+                        this.setState({ general: nextState });
+                    })
+                    .catch((res) => {
+                        this.setState({
+                            general: {
+                                ...this.state.general,
+                                api: {
+                                    ...this.state.general.api,
+                                    err: true,
+                                    loading: false
+                                }
+                            }
+                        });
+                    });
+            },
+            save: () => {
+                const { lang = 'en' } = this.state.general;
+
+                this.setState({
+                    general: {
+                        ...this.state.general,
+                        api: {
+                            ...this.state.general.api,
+                            err: false,
+                            saving: true
+                        }
+                    }
+                });
+
+                const data = {
+                    checkForUpdates: this.state.general.checkForUpdates
+                };
+
+                api.setState(data)
+                    .then((res) => {
+                        const nextState = {
+                            ...this.state.general,
+                            api: {
+                                ...this.state.general.api,
+                                err: false,
+                                saving: false
+                            }
+                        };
+
+                        // Update settings to initialState
+                        this.initialState.general = nextState;
+
+                        this.setState({ general: nextState });
+                    })
+                    .catch((res) => {
+                        this.setState({
+                            general: {
+                                ...this.state.general,
+                                api: {
+                                    ...this.state.general.api,
+                                    err: true,
+                                    saving: false
+                                }
+                            }
+                        });
+                    })
+                    .then(() => {
+                        if (lang === i18next.language) {
+                            return;
+                        }
+
+                        i18next.changeLanguage(lang, (err, t) => {
+                            if (window.location.search) {
+                                // Redirect to the originating page if URL query parameters exist
+                                // For example: ?lang=de#/settings
+                                window.location.replace(window.location.pathname);
+                                return;
+                            }
+
+                            window.location.reload();
+                        });
+                    });
+            },
+            restoreSettings: () => {
+                // Restore settings from initialState
+                this.setState({
+                    general: this.initialState.general
+                });
+            },
+            restoreDefaults: (event) => {
                 confirm({
                     title: i18n._('Restore Defaults'),
                     body: i18n._('Are you sure you want to restore the default settings?')
@@ -57,22 +172,13 @@ class Settings extends Component {
                     window.location.reload();
                 });
             },
-            handleCancel: (event) => {
-                const defaultState = this.getDefaultState();
-                this.setState({ general: defaultState.general });
-            },
-            handleSave: (event) => {
-                const { lang = 'en' } = this.state.general;
-
-                i18next.changeLanguage(lang, (err, t) => {
-                    if (window.location.search) {
-                        // Redirect to the originating page if URL query parameters exist
-                        // For example: ?lang=de#/settings
-                        window.location.replace(window.location.pathname);
-                        return;
+            toggleCheckForUpdates: () => {
+                const { checkForUpdates } = this.state.general;
+                this.setState({
+                    general: {
+                        ...this.state.general,
+                        checkForUpdates: !checkForUpdates
                     }
-
-                    window.location.reload();
                 });
             },
             changeLanguage: (lang) => {
@@ -96,8 +202,11 @@ class Settings extends Component {
                 this.setState({
                     account: {
                         ...this.state.account,
-                        failure: false,
-                        fetching: true
+                        api: {
+                            ...this.state.account.api,
+                            err: false,
+                            fetching: true
+                        }
                     }
                 });
 
@@ -108,8 +217,11 @@ class Settings extends Component {
                         this.setState({
                             account: {
                                 ...this.state.account,
-                                failure: false,
-                                fetching: false,
+                                api: {
+                                    ...this.state.account.api,
+                                    err: false,
+                                    fetching: false
+                                },
                                 pagination: {
                                     page: pagination.page,
                                     pageLength: pagination.pageLength,
@@ -123,8 +235,11 @@ class Settings extends Component {
                         this.setState({
                             account: {
                                 ...this.state.account,
-                                failure: true,
-                                fetching: false,
+                                api: {
+                                    ...this.state.account.api,
+                                    err: true,
+                                    fetching: false
+                                },
                                 records: []
                             }
                         });
@@ -224,11 +339,23 @@ class Settings extends Component {
         return {
             path: this.props.path,
             general: {
+                // followed by api state
+                api: {
+                    err: false,
+                    loading: true, // defaults to true
+                    saving: false
+                },
+                // followed by data
+                checkForUpdates: true,
                 lang: i18next.language
             },
             account: {
-                failure: false,
-                fetching: false,
+                // followed by api state
+                api: {
+                    err: false,
+                    fetching: false
+                },
+                // followed by data
                 pagination: {
                     page: 1,
                     pageLength: 10,
@@ -275,15 +402,12 @@ class Settings extends Component {
                 </Link>
             </li>
         );
-        const defaultState = this.getDefaultState();
 
         // Section component
         const Section = activeSection.component;
+        const sectionInitialState = this.initialState[activeSection.key];
         const sectionState = state[activeSection.key];
-        const sectionStateChanged = !_.isEqual(
-            state[activeSection.key],
-            defaultState[activeSection.key]
-        );
+        const sectionStateChanged = !_.isEqual(sectionInitialState, sectionState);
         const sectionActions = actions[activeSection.key];
 
         return (
@@ -305,6 +429,7 @@ class Settings extends Component {
                             <div className={styles.heading}>{activeSection.title}</div>
                             <div className={styles.content}>
                                 <Section
+                                    initialState={sectionInitialState}
                                     state={sectionState}
                                     stateChanged={sectionStateChanged}
                                     actions={sectionActions}

@@ -15,6 +15,7 @@ import {
 
 class Account extends Component {
     static propTypes = {
+        initialState: PropTypes.object,
         state: PropTypes.object,
         stateChanged: PropTypes.bool,
         actions: PropTypes.object
@@ -29,21 +30,14 @@ class Account extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const {
-            modal,
-            failure,
-            fetching,
-            pagination,
-            records
-        } = state;
-        const totalRecords = records.length;
+        const totalRecords = state.records.length;
 
         return (
             <div style={{ margin: -15 }}>
-                {modal.name === MODAL_ADD_ACCOUNT &&
+                {state.modal.name === MODAL_ADD_ACCOUNT &&
                 <AddAccount {...this.props} />
                 }
-                {modal.name === MODAL_EDIT_ACCOUNT &&
+                {state.modal.name === MODAL_EDIT_ACCOUNT &&
                 <EditAccount {...this.props} />
                 }
                 <Table
@@ -51,9 +45,9 @@ class Account extends Component {
                         borderBottom: totalRecords > 0 ? '1px solid #ddd' : 'none'
                     }}
                     border={false}
-                    data={(failure || fetching) ? [] : records}
+                    data={(state.api.err || state.api.fetching) ? [] : state.records}
                     emptyText={() => {
-                        if (failure) {
+                        if (state.api.err) {
                             return (
                                 <span className="text-danger">
                                     {i18n._('An unexpected error has occurred.')}
@@ -61,7 +55,7 @@ class Account extends Component {
                             );
                         }
 
-                        if (fetching) {
+                        if (state.api.fetching) {
                             return (
                                 <span>
                                     <i className="fa fa-fw fa-spin fa-circle-o-notch" />
@@ -88,9 +82,9 @@ class Account extends Component {
                             </button>
                             <TablePagination
                                 style={{ position: 'absolute', right: 0, top: 0 }}
-                                page={pagination.page}
-                                pageLength={pagination.pageLength}
-                                totalRecords={pagination.totalRecords}
+                                page={state.pagination.page}
+                                pageLength={state.pagination.pageLength}
+                                totalRecords={state.pagination.totalRecords}
                                 onPageChange={({ page, pageLength }) => {
                                     actions.fetchData({ page, pageLength });
                                 }}

@@ -61,6 +61,54 @@ const listControllers = () => new Promise((resolve, reject) => {
 });
 
 //
+// State
+//
+const getState = (options) => new Promise((resolve, reject) => {
+    const { key } = { ...options };
+
+    authrequest
+        .get('/api/state')
+        .query({ key: key })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+const setState = (options) => new Promise((resolve, reject) => {
+    const data = { ...options };
+
+    authrequest
+        .post('/api/state')
+        .send(data)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+const unsetState = (options) => new Promise((resolve, reject) => {
+    const { key } = { ...options };
+
+    authrequest
+        .delete('/api/state')
+        .query({ key: key })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+//
 // G-code
 //
 const loadGCode = (options) => new Promise((resolve, reject) => {
@@ -270,6 +318,10 @@ watch.readFile = (options) => new Promise((resolve, reject) => {
 export default {
     getLatestVersion,
     listControllers,
+    // State
+    getState,
+    setState,
+    unsetState,
     // G-code
     loadGCode,
     fetchGCode,
