@@ -544,6 +544,25 @@ class Visualizer extends Component {
                 // Update work position
                 this.setWorkPosition(this.workPosition);
 
+                { // G-code meta text sprite
+                    const { units, gcode } = this.props.state;
+                    const gridLength = (units === METRIC_UNITS) ? 10 : 25.4;
+                    const textSize = 5;
+                    const posx = bbox.min.x + (dX / 2);
+                    const posy = Math.floor(bbox.min.y / gridLength) * gridLength - (gridLength / 2);
+                    const posz = textSize / 2;
+                    const metaTextSprite = new TextSprite({
+                        x: posx,
+                        y: posy,
+                        z: posz,
+                        size: textSize,
+                        text: gcode.name,
+                        color: colornames('gray 44'), // grid color
+                        opacity: 0.5
+                    });
+                    obj.add(metaTextSprite);
+                }
+
                 { // Fit the camera to object
                     const objectWidth = dX;
                     const objectHeight = dY;
