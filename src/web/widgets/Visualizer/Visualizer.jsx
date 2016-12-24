@@ -548,15 +548,15 @@ class Visualizer extends Component {
                     const { units, gcode } = this.props.state;
                     const gridLength = (units === METRIC_UNITS) ? 10 : 25.4;
                     const textSize = 5;
-                    const posx = bbox.min.x + (dX / 2);
+                    const posx = center.x;
                     const posy = Math.floor(bbox.min.y / gridLength) * gridLength - (gridLength / 2);
-                    const posz = textSize / 2;
+                    const posz = Math.ceil(bbox.max.z / gridLength) * gridLength + (gridLength / 2);
                     const metaTextSprite = new TextSprite({
                         x: posx,
                         y: posy,
                         z: posz,
                         size: textSize,
-                        text: gcode.name,
+                        text: `G-code: ${gcode.name}`,
                         color: colornames('gray 44'), // grid color
                         opacity: 0.5
                     });
