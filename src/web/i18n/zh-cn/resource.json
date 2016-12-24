@@ -302,6 +302,7 @@
     "Options": "选项",
     "Enable 3D View": "",
     "Disable 3D View": "",
+    "Display G-code Filename": "",
     "Hide Coordinate System": "",
     "Show Coordinate System": "",
     "Hide Toolhead": "",

@@ -302,6 +302,7 @@
     "Options": "オプション",
     "Enable 3D View": "3Dビューを有効化する",
     "Disable 3D View": "3Dビューを無効化する",
+    "Display G-code Filename": "",
     "Hide Coordinate System": "座標系を非表示にする",
     "Show Coordinate System": "座標系を表示する",
     "Hide Toolhead": "ツールヘッドを非表示にする",

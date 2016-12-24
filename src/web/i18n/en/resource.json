@@ -302,6 +302,7 @@
     "Options": "Options",
     "Enable 3D View": "Enable 3D View",
     "Disable 3D View": "Disable 3D View",
+    "Display G-code Filename": "Display G-code Filename",
     "Hide Coordinate System": "Hide Coordinate System",
     "Show Coordinate System": "Show Coordinate System",
     "Hide Toolhead": "Hide Toolhead",
