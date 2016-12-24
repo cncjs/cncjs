@@ -119,6 +119,9 @@ const defaultState = {
 
             // 3D View
             disabled: false,
+            gcode: {
+                displayName: true
+            },
             objects: {
                 coordinateSystem: {
                     visible: true

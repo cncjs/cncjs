@@ -101,6 +101,16 @@ class Visualizer extends Component {
             this.visualizer.setFrameIndex(frameIndex);
         }
 
+        // Display the name of the G-code file
+        if (state.gcode.displayName !== nextState.gcode.displayName) {
+            const gcodeName = this.group.getObjectByName('GCodeName');
+            if (gcodeName) {
+                gcodeName.visible = nextState.gcode.displayName;
+
+                needUpdateScene = true;
+            }
+        }
+
         // Display or hide coordinate system
         if ((nextState.units !== state.units) ||
             (nextState.objects.coordinateSystem.visible !== state.objects.coordinateSystem.visible)) {
@@ -544,14 +554,14 @@ class Visualizer extends Component {
                 // Update work position
                 this.setWorkPosition(this.workPosition);
 
-                { // G-code meta text sprite
+                { // Display the name of the G-code file
                     const { units, gcode } = this.props.state;
                     const gridLength = (units === METRIC_UNITS) ? 10 : 25.4;
                     const textSize = 5;
                     const posx = center.x;
                     const posy = Math.floor(bbox.min.y / gridLength) * gridLength - (gridLength / 2);
                     const posz = Math.ceil(bbox.max.z / gridLength) * gridLength + (gridLength / 2);
-                    const metaTextSprite = new TextSprite({
+                    const gcodeName = new TextSprite({
                         x: posx,
                         y: posy,
                         z: posz,
@@ -560,7 +570,9 @@ class Visualizer extends Component {
                         color: colornames('gray 44'), // grid color
                         opacity: 0.5
                     });
-                    obj.add(metaTextSprite);
+                    gcodeName.name = 'GCodeName';
+                    gcodeName.visible = gcode.displayName;
+                    obj.add(gcodeName);
                 }
 
                 { // Fit the camera to object

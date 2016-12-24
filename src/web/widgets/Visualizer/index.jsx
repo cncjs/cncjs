@@ -290,6 +290,14 @@ class VisualizerWidget extends Component {
                 disabled: !this.state.disabled
             });
         },
+        toggleGCodeFilename: () => {
+            this.setState({
+                gcode: {
+                    ...this.state.gcode,
+                    displayName: !this.state.gcode.displayName
+                }
+            });
+        },
         toggleCoordinateSystemVisibility: () => {
             this.setState({
                 objects: {
@@ -464,6 +472,9 @@ class VisualizerWidget extends Component {
         if (this.state.disabled !== prevState.disabled) {
             store.set('widgets.visualizer.disabled', this.state.disabled);
         }
+        if (this.state.gcode.displayName !== prevState.gcode.displayName) {
+            store.set('widgets.visualizer.gcode.displayName', this.state.gcode.displayName);
+        }
         if (this.state.objects.coordinateSystem.visible !== prevState.objects.coordinateSystem.visible) {
             store.set('widgets.visualizer.objects.coordinateSystem.visible', this.state.objects.coordinateSystem.visible);
         }
@@ -490,6 +501,7 @@ class VisualizerWidget extends Component {
                 z: '0.000'
             },
             gcode: {
+                displayName: store.get('widgets.visualizer.gcode.displayName', true),
                 loading: false,
                 rendering: false,
                 ready: false,

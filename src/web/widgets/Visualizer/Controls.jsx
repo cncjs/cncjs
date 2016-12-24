@@ -126,7 +126,7 @@ class Controls extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { units, disabled, objects } = state;
+        const { units, disabled, gcode, objects } = state;
         const controllerType = state.controller.type;
         const controllerState = this.getControllerState();
         const canSendCommand = this.canSendCommand();
@@ -294,6 +294,17 @@ class Controls extends Component {
                                 }
                             </MenuItem>
                             <MenuItem divider />
+                            <MenuItem
+                                disabled={!canToggle3DOptions}
+                                onSelect={actions.toggleGCodeFilename}
+                            >
+                                {gcode.displayName
+                                    ? <i className="fa fa-toggle-on" />
+                                    : <i className="fa fa-toggle-off" />
+                                }
+                                <span className="space" />
+                                {i18n._('Display G-code Filename')}
+                            </MenuItem>
                             <MenuItem
                                 disabled={!canToggle3DOptions}
                                 onSelect={actions.toggleCoordinateSystemVisibility}
