@@ -55,9 +55,9 @@ const editRelease = (options) => {
     });
 };
 
-const listAssets = (options) => {
+const getAssets = (options) => {
     return new Promise((resolve, reject) => {
-        github.repos.listAssets(options, (err, res) => {
+        github.repos.getAssets(options, (err, res) => {
             err ? reject(err) : resolve(res);
         });
     });
@@ -115,8 +115,8 @@ const main = async () => {
             console.log('ok', release);
         }
 
-        console.log('> releases#listAssets');
-        let assets = await listAssets({
+        console.log('> releases#getAssets');
+        let assets = await getAssets({
             owner: owner,
             repo: repo,
             id: release.id
