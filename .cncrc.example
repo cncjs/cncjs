@@ -1,0 +1,17 @@
+{
+    "state": {
+        "checkForUpdates": true
+    },
+    "commands": [
+        {
+            "text": "Reboot",
+            "command": "/sbin/reboot"
+        },
+        {
+            "text": "Shutdown",
+            "command": "/sbin/shutdown"
+        }
+    ],
+    "macros": [],
+    "users": []
+}
