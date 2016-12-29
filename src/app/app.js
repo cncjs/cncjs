@@ -29,7 +29,7 @@ import {
 import urljoin from './lib/urljoin';
 import log from './lib/log';
 import settings from './config/settings';
-import api from './api';
+import * as api from './api';
 import errclient from './lib/middleware/errclient';
 import errlog from './lib/middleware/errlog';
 import errnotfound from './lib/middleware/errnotfound';
@@ -223,8 +223,56 @@ const appMain = () => {
         });
     }
 
-    // API Routes
-    api.addRoutes(app);
+    { // Register API routes with public access
+        // Also see "src/app/app.js"
+        app.post(urljoin(settings.route, 'api/signin'), api.users.signin);
+    }
+
+    { // Register API routes with authorized access
+        // Version
+        app.get(urljoin(settings.route, 'api/version/latest'), api.version.getLatestVersion);
+
+        // State
+        app.get(urljoin(settings.route, 'api/state'), api.state.get);
+        app.post(urljoin(settings.route, 'api/state'), api.state.set);
+        app.delete(urljoin(settings.route, 'api/state'), api.state.unset);
+
+        // G-code
+        app.get(urljoin(settings.route, 'api/gcode'), api.gcode.get);
+        app.post(urljoin(settings.route, 'api/gcode'), api.gcode.set);
+        app.get(urljoin(settings.route, 'api/gcode/download'), api.gcode.download);
+
+        // Controllers
+        app.get(urljoin(settings.route, 'api/controllers'), api.controllers.getActiveControllers);
+
+        // Users
+        app.get(urljoin(settings.route, 'api/users'), api.users.getUsers);
+        app.get(urljoin(settings.route, 'api/users/:id'), api.users.getUser);
+        app.post(urljoin(settings.route, 'api/users/'), api.users.addUser);
+        app.put(urljoin(settings.route, 'api/users/:id'), api.users.updateUser);
+        app.delete(urljoin(settings.route, 'api/users/:id'), api.users.deleteUser);
+
+        // Macros
+        app.get(urljoin(settings.route, 'api/macros'), api.macros.getMacros);
+        app.get(urljoin(settings.route, 'api/macros/:id'), api.macros.getMacro);
+        app.post(urljoin(settings.route, 'api/macros'), api.macros.addMacro);
+        app.put(urljoin(settings.route, 'api/macros/:id'), api.macros.updateMacro);
+        app.delete(urljoin(settings.route, 'api/macros/:id'), api.macros.deleteMacro);
+
+        // Commands
+        app.get(urljoin(settings.route, 'api/commands'), api.commands.getCommands);
+        app.post(urljoin(settings.route, 'api/commands/run'), api.commands.runCommand);
+
+        // Watch
+        app.get(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
+        app.post(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
+        app.get(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
+        app.post(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
+
+        // I18n
+        app.get(urljoin(settings.route, 'api/i18n/acceptedLng'), api.i18n.getAcceptedLanguage);
+        app.post(urljoin(settings.route, 'api/i18n/sendMissing/:__lng__/:__ns__'), api.i18n.saveMissing);
+    }
 
     // page
     app.get(urljoin(settings.route, '/'), renderPage('index.hbs', (req, res) => {

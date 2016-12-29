@@ -7,7 +7,7 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-export const listMacros = (req, res) => {
+export const getMacros = (req, res) => {
     const macros = _.map(config.get('macros', []), (macro) => {
         const { id, name, content } = macro;
 

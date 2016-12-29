@@ -91,7 +91,7 @@ export const signin = (req, res) => {
     });
 };
 
-export const listUsers = (req, res) => {
+export const getUsers = (req, res) => {
     const users = _.orderBy(config.get('users', []), ['name'], ['asc']);
     const totalRecords = users.length;
     let { page = 1, pageLength = 10 } = req.query;
@@ -143,7 +143,7 @@ export const getUser = (req, res) => {
     res.send({ id, enabled, name });
 };
 
-export const newUser = (req, res) => {
+export const addUser = (req, res) => {
     const {
         enabled = false,
         name = '',

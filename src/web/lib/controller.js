@@ -10,6 +10,10 @@ import {
 
 class CNCController {
     callbacks = {
+        'config:change': [],
+        'task:run': [],
+        'task:complete': [],
+        'task:error': [],
         'serialport:list': [],
         'serialport:open': [],
         'serialport:close': [],

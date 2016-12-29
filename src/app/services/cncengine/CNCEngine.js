@@ -6,6 +6,8 @@ import socketioJwt from 'socketio-jwt';
 import store from '../../store';
 import log from '../../lib/log';
 import settings from '../../config/settings';
+import config from '../configstore';
+import taskRunner from '../taskrunner';
 import { GrblController, TinyG2Controller } from '../../controllers';
 import { IP_WHITELIST } from '../../constants';
 
@@ -14,6 +16,18 @@ const PREFIX = '[cncengine]';
 class CNCServer {
     controllers = store.get('controllers');
     listener = {
+        taskRun: (...args) => {
+            this.io.sockets.emit('task:run', ...args);
+        },
+        taskError: (...args) => {
+            this.io.sockets.emit('task:error', ...args);
+        },
+        taskComplete: (...args) => {
+            this.io.sockets.emit('task:complete', ...args);
+        },
+        configChange: (...args) => {
+            this.io.sockets.emit('config:change', ...args);
+        },
         storeChange: (state) => {
             this.controllers = _.get(state, 'controllers', {});
         }
@@ -25,7 +39,12 @@ class CNCServer {
     start(server) {
         this.stop();
 
+        taskRunner.on('run', this.listener.taskRun);
+        taskRunner.on('error', this.listener.taskError);
+        taskRunner.on('complete', this.listener.taskComplete);
+        config.on('change', this.listener.configChange);
         store.on('change', this.listener.storeChange);
+
         this.server = server;
         this.io = socketIO(this.server, {
             serveClient: true,
@@ -185,6 +204,11 @@ class CNCServer {
         }
         this.sockets = [];
         this.server = null;
+
+        taskRunner.removeListener('run', this.listener.taskRun);
+        taskRunner.removeListener('error', this.listener.taskError);
+        taskRunner.removeListener('complete', this.listener.taskComplete);
+        config.removeListener('change', this.listener.configChange);
         store.removeListener('change', this.listener.storeChange);
     }
 }

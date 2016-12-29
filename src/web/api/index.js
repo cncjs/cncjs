@@ -282,6 +282,36 @@ const deleteMacro = (options) => new Promise((resolve, reject) => {
         });
 });
 
+// Commands
+const commands = {};
+
+commands.getCommands = (options) => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/commands')
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+commands.runCommand = (options) => new Promise((resolve, reject) => {
+    const { id } = { ...options };
+
+    authrequest
+        .post('/api/commands/run')
+        .send({ id })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
 // Watch Directory
 const watch = {};
 
@@ -337,6 +367,7 @@ export default {
     addMacro,
     updateMacro,
     deleteMacro,
-    // Watch Directory
-    watch: watch
+
+    commands,
+    watch
 };

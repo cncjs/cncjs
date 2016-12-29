@@ -2,10 +2,12 @@ import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import semver from 'semver';
+import without from 'lodash/without';
 import api from '../../api';
 import Anchor from '../../components/Anchor';
 import settings from '../../config/settings';
 import confirm from '../../lib/confirm';
+import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
@@ -29,6 +31,8 @@ class Header extends Component {
     };
 
     state = {
+        commands: [],
+        runningTasks: [],
         currentVersion: settings.version,
         latestVersion: settings.version
     };
@@ -50,11 +54,82 @@ class Header extends Component {
             } catch (res) {
                 // Ignore error
             }
+        },
+        getCommands: async () => {
+            try {
+                const res = await api.commands.getCommands();
+                const { commands = [] } = res.body;
+
+                this.setState({ commands: commands });
+            } catch (res) {
+                // Ignore error
+            }
+        },
+        runCommand: async (cmd) => {
+            try {
+                const res = await api.commands.runCommand({ id: cmd.id });
+                const { taskId } = res.body;
+
+                this.setState({
+                    commands: this.state.commands.map(c => {
+                        return (c.id === cmd.id) ? { ...c, taskId: taskId } : c;
+                    })
+                });
+            } catch (res) {
+                // Ignore error
+            }
+        }
+    };
+    controllerEvents = {
+        'task:run': (taskId) => {
+            this.setState({
+                runningTasks: this.state.runningTasks.concat(taskId)
+            });
+        },
+        'task:complete': (taskId) => {
+            this.setState({
+                commands: this.state.commands.map(c => {
+                    return (c.taskId === taskId) ? { ...c, taskId: null } : c;
+                }),
+                runningTasks: without(this.state.runningTasks, taskId)
+            });
+        },
+        'task:error': (taskId) => {
+            this.setState({
+                commands: this.state.commands.map(c => {
+                    return (c.taskId === taskId) ? { ...c, taskId: null } : c;
+                }),
+                runningTasks: without(this.state.runningTasks, taskId)
+            });
+        },
+        'config:change': () => {
+            this.actions.getCommands();
         }
     };
 
     componentDidMount() {
+        this.addControllerEvents();
+
+        // Initial actions
         this.actions.checkForUpdates();
+        this.actions.getCommands();
+    }
+    componentWillUnmount() {
+        this.removeControllerEvents();
+
+        this.runningTasks = [];
+    }
+    addControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.on(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.off(eventName, callback);
+        });
     }
     handleRestoreDefaults() {
         confirm({
@@ -67,7 +142,7 @@ class Header extends Component {
     }
     render() {
         const { path } = this.props;
-        const { currentVersion, latestVersion } = this.state;
+        const { commands, runningTasks, currentVersion, latestVersion } = this.state;
         const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
         const tooltip = newUpdateAvailable ? newUpdateAvailableTooltip() : <div />;
         const sessionEnabled = store.get('session.enabled');
@@ -147,6 +222,43 @@ class Header extends Component {
                             </MenuItem>
                         </NavDropdown>
                     </Nav>
+                    {(commands.length > 0) &&
+                    <Nav pullRight>
+                        <NavDropdown
+                            id="nav-dropdown-command"
+                            title={<i className="fa fa-tasks" style={{ fontSize: 16 }} />}
+                        >
+                            <MenuItem header>
+                                {i18n._('Command')}
+                            </MenuItem>
+                            {commands.map((cmd) => {
+                                const isTaskRunning = runningTasks.indexOf(cmd.taskId) >= 0;
+
+                                return (
+                                    <MenuItem
+                                        key={cmd.id}
+                                        disabled={cmd.disabled}
+                                        onSelect={() => {
+                                            this.actions.runCommand(cmd);
+                                        }}
+                                    >
+                                        <i
+                                            className={classNames(
+                                                'fa',
+                                                'fa-fw',
+                                                { 'fa-file-text': !isTaskRunning },
+                                                { 'fa-circle-o-notch': isTaskRunning },
+                                                { 'fa-spin': isTaskRunning }
+                                            )}
+                                        />
+                                        &nbsp;
+                                        {cmd.text}
+                                    </MenuItem>
+                                );
+                            })}
+                        </NavDropdown>
+                    </Nav>
+                    }
                     {path === 'workspace' &&
                     <QuickAccessToolbar />
                     }
