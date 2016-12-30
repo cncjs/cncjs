@@ -69,7 +69,7 @@ class QuickAccessToolbar extends React.Component {
     }
     render() {
         return (
-            <div className={styles['quick-access-toolbar']}>
+            <div className={styles.quickAccessToolbar}>
                 <ul className="nav navbar-nav">
                     <li className="btn-group btn-group-sm" role="group">
                         <button

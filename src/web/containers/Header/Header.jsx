@@ -147,9 +147,14 @@ class Header extends Component {
         const tooltip = newUpdateAvailable ? newUpdateAvailableTooltip() : <div />;
         const sessionEnabled = store.get('session.enabled');
         const signedInName = store.get('session.name');
+        const hideUserDropdown = !sessionEnabled;
 
         return (
-            <Navbar fixedTop fluid inverse>
+            <Navbar
+                fixedTop
+                fluid
+                inverse
+            >
                 <Navbar.Header>
                     <OverlayTrigger
                         overlay={tooltip}
@@ -192,15 +197,14 @@ class Header extends Component {
                     <Navbar.Toggle />
                 </Navbar.Header>
                 <Navbar.Collapse>
-                    <Nav
-                        className={classNames(
-                            { 'hidden': !sessionEnabled }
-                        )}
-                        pullRight
-                    >
+                    <Nav pullRight>
                         <NavDropdown
+                            className={classNames(
+                                { 'hidden': hideUserDropdown }
+                            )}
                             id="nav-dropdown-user"
-                            title={<i className="fa fa-user" style={{ fontSize: 16 }} />}
+                            title={<i className="fa fa-fw fa-user" />}
+                            noCaret
                         >
                             <MenuItem header>
                                 {i18n._('Signed in as {{name}}', { name: signedInName })}
@@ -221,12 +225,10 @@ class Header extends Component {
                                 {i18n._('Sign Out')}
                             </MenuItem>
                         </NavDropdown>
-                    </Nav>
-                    {(commands.length > 0) &&
-                    <Nav pullRight>
                         <NavDropdown
-                            id="nav-dropdown-command"
-                            title={<i className="fa fa-tasks" style={{ fontSize: 16 }} />}
+                            id="nav-dropdown-menu"
+                            title={<i className="fa fa-fw fa-ellipsis-v" />}
+                            noCaret
                         >
                             <MenuItem header>
                                 {i18n._('Command')}
@@ -258,7 +260,6 @@ class Header extends Component {
                             })}
                         </NavDropdown>
                     </Nav>
-                    }
                     {path === 'workspace' &&
                     <QuickAccessToolbar />
                     }
