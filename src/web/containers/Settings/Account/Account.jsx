@@ -46,6 +46,9 @@ class Account extends Component {
                     }}
                     border={false}
                     data={(state.api.err || state.api.fetching) ? [] : state.records}
+                    rowKey={(record) => {
+                        return record.id;
+                    }}
                     emptyText={() => {
                         if (state.api.err) {
                             return (
