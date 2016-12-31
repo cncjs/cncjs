@@ -17,41 +17,6 @@ import settings from './config/settings';
 const createServer = (options, callback) => {
     options = { ...options };
 
-    const routes = [];
-    const cncrc = path.resolve(options.configFile || settings.cncrc);
-
-    // Setup configstore service
-    config.load(cncrc);
-
-    // cncrc
-    settings.cncrc = cncrc;
-
-    { // secret
-        if (!config.get('secret')) {
-            // generate a secret key
-            const secret = bcrypt.genSaltSync(); // TODO: use a strong secret
-            config.set('secret', secret);
-        }
-
-        settings.secret = config.get('secret', settings.secret);
-    }
-
-    { // routes
-        if (typeof options.mount === 'object') {
-            routes.push({
-                type: 'static',
-                route: options.mount.url,
-                directory: options.mount.path
-            });
-        }
-
-        routes.push({
-            type: 'server',
-            route: '/',
-            server: () => app()
-        });
-    }
-
     { // verbosity
         const verbosity = options.verbosity;
 
@@ -68,6 +33,24 @@ const createServer = (options, callback) => {
             _.set(settings, 'verbosity', verbosity);
             log.logger.level = 'silly';
         }
+    }
+
+    const cncrc = path.resolve(options.configFile || settings.cncrc);
+
+    // Setup configstore service
+    config.load(cncrc);
+
+    // cncrc
+    settings.cncrc = cncrc;
+
+    { // secret
+        if (!config.get('secret')) {
+            // generate a secret key
+            const secret = bcrypt.genSaltSync(); // TODO: use a strong secret
+            config.set('secret', secret);
+        }
+
+        settings.secret = config.get('secret', settings.secret);
     }
 
     { // watchDirectory
@@ -106,6 +89,21 @@ const createServer = (options, callback) => {
     }
 
     const { port = 0, host, backlog } = options;
+    const routes = [];
+
+    if (typeof options.mount === 'object') {
+        routes.push({
+            type: 'static',
+            route: options.mount.url,
+            directory: options.mount.path
+        });
+    }
+    routes.push({
+        type: 'server',
+        route: '/',
+        server: () => app()
+    });
+
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
             // Start cncengine service
