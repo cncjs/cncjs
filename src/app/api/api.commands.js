@@ -2,7 +2,7 @@ import _ from 'lodash';
 import uuid from 'uuid';
 import log from '../lib/log';
 import taskRunner from '../services/taskrunner';
-import config from '../services/configstore';
+import configStore from '../services/configstore';
 import {
     ERR_NOT_FOUND
 } from '../constants';
@@ -10,16 +10,17 @@ import {
 const PREFIX = '[api.commands]';
 
 const state = {
-    commands: _.map(config.get('commands', []), (c) => {
-        return { ...c, id: uuid.v4() };
-    })
+    commands: []
 };
 
-config.on('change', () => {
-    state.commands = _.map(config.get('commands', []), (c) => {
+const mapConfigToState = (config) => {
+    state.commands = _.map(config.commands, (c) => {
         return { ...c, id: uuid.v4() };
     });
-});
+};
+
+configStore.on('load', mapConfigToState);
+configStore.on('change', mapConfigToState);
 
 export const getCommands = (req, res) => {
     res.send({
