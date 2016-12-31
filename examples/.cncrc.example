@@ -1,4 +1,7 @@
 {
+  "watchDirectory": "/path/to/dir",
+  "accessTokenLifetime": "30d",
+  "allowRemoteAccess": false,
   "state": {
     "checkForUpdates": true
   },
