@@ -121,7 +121,6 @@
     "body-parser": "~1.15.2",
     "bootstrap": "~3.3.7",
     "chalk": "~1.1.3",
-    "chokidar": "~1.6.1",
     "classnames": "~2.2.5",
     "colornames": "~1.1.1",
     "commander": "~2.9.0",

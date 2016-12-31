@@ -1,6 +1,5 @@
 import events from 'events';
 import fs from 'fs';
-import chokidar from 'chokidar';
 import _ from 'lodash';
 import chalk from 'chalk';
 import parseJSON from 'parse-json';
@@ -29,24 +28,24 @@ class ConfigStore extends events.EventEmitter {
             this.watcher = null;
         }
 
-        this.watcher = chokidar.watch(this.file);
-        this.watcher
-            .on('add', (path) => {
-                log.debug(`${PREFIX} "${path}" has been added`);
-                const ok = this.reload();
-                ok && this.emit('change'); // it is ok to emit change event
-            })
-            .on('change', (path) => {
-                log.debug(`${PREFIX} "${path}" has been changed`);
-                const ok = this.reload();
-                ok && this.emit('change'); // it is ok to emit change event
-            })
-            .on('unlink', (path) => {
-                log.debug(`${PREFIX} "${path}" has been removed`);
-            })
-            .on('error', (error) => {
-                log.error(`${PREFIX} Watcher error: ${error}`);
+        try {
+            if (!fs.existsSync(this.file)) {
+                const content = JSON.stringify({});
+                fs.writeFileSync(this.file, content, 'utf8');
+            }
+
+            this.watcher = fs.watch(this.file, (eventType, filename) => {
+                log.debug(`${PREFIX} fs.watch(eventType='${eventType}', filename='${filename}')`);
+
+                if (eventType === 'change') {
+                    log.debug(`${PREFIX} "${filename}" has been changed`);
+                    const ok = this.reload();
+                    ok && this.emit('change'); // it is ok to emit change event
+                }
             });
+        } catch (err) {
+            log.error(`${PREFIX} err=${err}`);
+        }
 
         return this.config;
     }
