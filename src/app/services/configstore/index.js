@@ -20,7 +20,10 @@ class ConfigStore extends events.EventEmitter {
     // @return {object} The config object.
     load(file) {
         this.file = file;
-        this.reload();
+        if (this.reload()) {
+            log.debug(`${PREFIX} Loaded Configuration File: "${this.file}"`);
+        }
+        this.emit('load', this.config); // emit load event
 
         if (this.watcher) {
             // Stop watching for changes
@@ -40,11 +43,12 @@ class ConfigStore extends events.EventEmitter {
                 if (eventType === 'change') {
                     log.debug(`${PREFIX} "${filename}" has been changed`);
                     const ok = this.reload();
-                    ok && this.emit('change'); // it is ok to emit change event
+                    ok && this.emit('change', this.config); // it is ok to emit change event
                 }
             });
         } catch (err) {
             log.error(`${PREFIX} err=${err}`);
+            this.emit('error', err); // emit error event
         }
 
         return this.config;
@@ -59,6 +63,7 @@ class ConfigStore extends events.EventEmitter {
             err.fileName = this.file;
             log.error(`${PREFIX} Unable to load data from "${this.file}"`);
             console.error(chalk.red(err));
+            this.emit('error', err); // emit error event
             return false;
         }
 
@@ -80,6 +85,7 @@ class ConfigStore extends events.EventEmitter {
             fs.writeFileSync(this.file, content, 'utf8');
         } catch (err) {
             log.error(`${PREFIX} Unable to write data to "${this.file}"`);
+            this.emit('error', err); // emit error event
             return false;
         }
 
