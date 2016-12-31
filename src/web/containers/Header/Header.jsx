@@ -148,6 +148,7 @@ class Header extends Component {
         const sessionEnabled = store.get('session.enabled');
         const signedInName = store.get('session.name');
         const hideUserDropdown = !sessionEnabled;
+        const showCommands = commands.length > 0;
 
         return (
             <Navbar
@@ -230,10 +231,12 @@ class Header extends Component {
                             title={<i className="fa fa-fw fa-ellipsis-v" />}
                             noCaret
                         >
+                            {showCommands &&
                             <MenuItem header>
                                 {i18n._('Command')}
                             </MenuItem>
-                            {commands.map((cmd) => {
+                            }
+                            {showCommands && commands.map((cmd) => {
                                 const isTaskRunning = runningTasks.indexOf(cmd.taskId) >= 0;
 
                                 return (
@@ -257,7 +260,9 @@ class Header extends Component {
                                     </MenuItem>
                                 );
                             })}
+                            {showCommands &&
                             <MenuItem divider />
+                            }
                             <MenuItem
                                 href="https://github.com/cheton/cnc/wiki"
                                 target="_blank"
