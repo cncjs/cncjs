@@ -46,9 +46,7 @@ export const runCommand = (req, res) => {
 
     log.info(`${PREFIX} Execute the "${c.text}" command from "${c.command}"`);
 
-    const taskId = taskRunner.run(c.command, c.args || [], {
-        detached: true
-    });
+    const taskId = taskRunner.run(c.command);
 
     res.send({ taskId: taskId });
 };

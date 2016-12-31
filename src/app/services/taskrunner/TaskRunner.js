@@ -1,5 +1,5 @@
-import childProcess from 'child_process';
 import events from 'events';
+import defaultShell from 'spawn-default-shell';
 import without from 'lodash/without';
 import shortid from 'shortid';
 import log from '../../lib/log';
@@ -9,9 +9,9 @@ const PREFIX = '[taskrunner]';
 class TaskRunner extends events.EventEmitter {
     tasks = [];
 
-    run(command, args = [], options = {}) {
+    run(command, options = {}) {
         const id = shortid.generate(); // task id
-        const child = childProcess.spawn(command, args, {
+        const child = defaultShell.spawn(command, {
             detached: true,
             ...options
         });
