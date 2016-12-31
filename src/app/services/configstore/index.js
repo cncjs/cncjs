@@ -21,7 +21,7 @@ class ConfigStore extends events.EventEmitter {
     load(file) {
         this.file = file;
         if (this.reload()) {
-            log.debug(`${PREFIX} Loaded Configuration File: "${this.file}"`);
+            log.info(`Loaded configuration from "${this.file}"`);
         }
         this.emit('load', this.config); // emit load event
 
