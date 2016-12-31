@@ -244,20 +244,32 @@ class Header extends Component {
                                             this.actions.runCommand(cmd);
                                         }}
                                     >
+                                        {cmd.text}
                                         <i
                                             className={classNames(
+                                                'pull-right',
                                                 'fa',
                                                 'fa-fw',
-                                                { 'fa-file-text': !isTaskRunning },
                                                 { 'fa-circle-o-notch': isTaskRunning },
                                                 { 'fa-spin': isTaskRunning }
                                             )}
                                         />
-                                        &nbsp;
-                                        {cmd.text}
                                     </MenuItem>
                                 );
                             })}
+                            <MenuItem divider />
+                            <MenuItem
+                                href="https://github.com/cheton/cnc/wiki"
+                                target="_blank"
+                            >
+                                {i18n._('Help')}
+                            </MenuItem>
+                            <MenuItem
+                                href="https://github.com/cheton/cnc/issues"
+                                target="_blank"
+                            >
+                                {i18n._('Report an issue')}
+                            </MenuItem>
                         </NavDropdown>
                     </Nav>
                     {path === 'workspace' &&
