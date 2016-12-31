@@ -1,17 +1,24 @@
 {
-    "state": {
-        "checkForUpdates": true
+  "watchDirectory": "/path/to/dir",
+  "accessTokenLifetime": "30d",
+  "allowRemoteAccess": false,
+  "state": {
+    "checkForUpdates": true
+  },
+  "commands": [
+    {
+      "text": "Check network connection",
+      "command": "ping -c 10 127.0.0.1"
     },
-    "commands": [
-        {
-            "text": "Reboot",
-            "command": "/sbin/reboot"
-        },
-        {
-            "text": "Shutdown",
-            "command": "/sbin/shutdown"
-        }
-    ],
-    "macros": [],
-    "users": []
+    {
+      "text": "Reboot",
+      "command": "sudo /sbin/reboot"
+    },
+    {
+      "text": "Shutdown",
+      "command": "sudo /sbin/shutdown"
+    }
+  ],
+  "macros": [],
+  "users": []
 }
