@@ -7,8 +7,12 @@
   },
   "commands": [
     {
-      "text": "Check network connection",
-      "command": "ping -c 10 127.0.0.1"
+      "text": "Update (root user)",
+      "command": "sudo npm install -g cncjs@latest --unsafe-perm"
+    },
+    {
+      "text": "Update (non-root user)",
+      "command": "npm install -g cncjs@latest"
     },
     {
       "text": "Reboot",
