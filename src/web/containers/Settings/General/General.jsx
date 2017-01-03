@@ -99,11 +99,12 @@ class General extends Component {
                             <option value="es">Español</option>
                             <option value="fr">Français (France)</option>
                             <option value="it">Italiano</option>
-                            <option value="ja">日本語</option>
+                            <option value="hu">Magyar</option>
                             <option value="pt-br">Português (Brasil)</option>
                             <option value="ru">Русский</option>
-                            <option value="zh-cn">简体中文</option>
-                            <option value="zh-tw">繁體中文</option>
+                            <option value="zh-tw">中文 (繁體)/option>
+                            <option value="zh-cn">中文 (简体)</option>
+                            <option value="ja">日本語</option>
                         </select>
                     </div>
                 </div>

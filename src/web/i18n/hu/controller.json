@@ -1,0 +1,29 @@
+{
+    "TinyG2": {
+        "machineState": {
+            "init": "Inicializálás",
+            "ready": "Kész",
+            "alarm": "Riasztás",
+            "stop": "Stop",
+            "end": "Vége",
+            "run": "Futtatás",
+            "hold": "Tartás",
+            "probe": "Próba",
+            "cycling": "Folyamat",
+            "homing": "Referencia",
+            "jogging": "Jogging",
+            "shutdown": "Leállítás"
+        }
+    },
+    "Grbl": {
+        "activeState": {
+            "idle": "Készenlét",
+            "run": "Futtatás",
+            "hold": "Tartás",
+            "door": "Ajtó",
+            "home": "Nullpont",
+            "alarm": "Riasztás",
+            "check": "Ellenörzés"
+        }
+    }
+}

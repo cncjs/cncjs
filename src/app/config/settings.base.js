@@ -103,6 +103,7 @@ export default {
         'de', // German
         'es', // Spanish
         'fr', // French
+        'hu', // Hungarian
         'it', // Italian
         'ja', // Japanese
         'pt-br', // Portuguese (Brazil)
@@ -137,6 +138,7 @@ export default {
             'de', // German
             'es', // Spanish
             'fr', // French
+            'hu', // Hungarian
             'it', // Italian
             'ja', // Japanese
             'pt-br', // Portuguese (Brazil)
