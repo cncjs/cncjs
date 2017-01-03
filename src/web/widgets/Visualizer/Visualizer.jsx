@@ -456,9 +456,9 @@ class Visualizer extends Component {
         const controls = new THREE.TrackballControls(object, domElement);
 
         controls.rotateSpeed = 1.0;
-        controls.zoomSpeed = 0.1;
+        controls.zoomSpeed = 1.2;
         controls.panSpeed = 0.3;
-        controls.dynamicDampingFactor = 0.15;
+        controls.dynamicDampingFactor = 0.2;
         controls.minDistance = 1;
         controls.maxDistance = 5000;
 
