@@ -13,7 +13,7 @@ init:
 
 environment:
   matrix:
-  - nodejs_version: "4"
+  - nodejs_version: "6"
   global:
     GITHUB_TOKEN:
       secure: pHSSJbIpu8XvZzBVVLN50Scjic1Wo01v8WhCn0SBOQji4zZPWrM7zssrwuQjRzwn
@@ -63,7 +63,7 @@ build_script:
   - ps: echo "$env:RELEASE"
   - ps: echo "$env:COMMIT_LOG"
   - ps: |
-      if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
+      if ($env:nodejs_version -eq '6' -And $env:platform -eq 'x64') {
         npm run build:win-x64
         Get-ChildItem output
         Copy-Item "output\${PACKAGE_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win-x64.exe"
@@ -73,7 +73,7 @@ build_script:
         }
       }
   - ps: |
-      if ($env:nodejs_version -eq '4' -And $env:platform -eq 'x64') {
+      if ($env:nodejs_version -eq '6' -And $env:platform -eq 'x64') {
         npm run build:win-ia32
         Get-ChildItem output
         Copy-Item "output\${PACKAGE_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${env:RELEASE}-win-ia32.exe"
@@ -101,4 +101,4 @@ deploy:
     prerelease: false
     on:
       appveyor_repo_tag: true  # deploy on tag push only
-      nodejs_version: "4"
+      nodejs_version: "6"
