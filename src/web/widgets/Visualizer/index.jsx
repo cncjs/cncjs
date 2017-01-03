@@ -125,7 +125,7 @@ class VisualizerWidget extends Component {
                 }
 
                 const { name = '', gcode = '' } = { ...data };
-                pubsub.publish('gcode:load', name, gcode);
+                pubsub.publish('gcode:load', { name, gcode });
             });
         },
         uploadFile: (gcode, meta) => {
@@ -144,7 +144,7 @@ class VisualizerWidget extends Component {
             api.loadGCode({ port, name, gcode })
                 .then((res) => {
                     // This will call loadGCode()
-                    pubsub.publish('gcode:load', name, gcode);
+                    pubsub.publish('gcode:load', { name, gcode });
                 })
                 .catch((res) => {
                     this.setState({
@@ -561,7 +561,7 @@ class VisualizerWidget extends Component {
                     this.setState({ workflowState: workflowState });
                 }
             }),
-            pubsub.subscribe('gcode:load', (msg, name, gcode) => {
+            pubsub.subscribe('gcode:load', (msg, { name, gcode }) => {
                 const actions = this.actions;
                 actions.loadGCode(name, gcode);
             }),

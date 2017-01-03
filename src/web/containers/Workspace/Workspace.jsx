@@ -184,7 +184,7 @@ class Workspace extends React.Component {
 
             api.loadGCode({ port, name, gcode })
                 .then((res) => {
-                    pubsub.publish('gcode:load', name, gcode);
+                    pubsub.publish('gcode:load', { name, gcode });
                 })
                 .catch((res) => {
                     log.error('Failed to upload G-code file');

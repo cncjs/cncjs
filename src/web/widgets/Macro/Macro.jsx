@@ -48,7 +48,7 @@ class Macro extends Component {
                 return;
             }
 
-            pubsub.publish('gcode:load', name, gcode);
+            pubsub.publish('gcode:load', { name, gcode });
         });
     }
     handleEditMacro({ id }) {

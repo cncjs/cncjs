@@ -231,7 +231,7 @@ class Connection extends React.Component {
                     pubsub.publish('workflowState', workflowState);
                 }
                 if (gcode) {
-                    pubsub.publish('gcode:load', name, gcode);
+                    pubsub.publish('gcode:load', { name, gcode });
                 }
             });
     }

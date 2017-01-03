@@ -198,7 +198,7 @@ class GCodeWidget extends Component {
                     });
                 }
             }),
-            pubsub.subscribe('gcode:load', (msg, name, gcode) => {
+            pubsub.subscribe('gcode:load', (msg, { name, gcode }) => {
                 parseString(gcode, (err, lines) => {
                     if (err) {
                         log.error(err);
