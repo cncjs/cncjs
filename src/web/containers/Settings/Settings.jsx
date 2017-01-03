@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import i18next from 'i18next';
+import cookie from 'js-cookie';
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
@@ -145,16 +146,17 @@ class Settings extends Component {
                             return;
                         }
 
-                        i18next.changeLanguage(lang, (err, t) => {
-                            if (window.location.search) {
-                                // Redirect to the originating page if URL query parameters exist
-                                // For example: ?lang=de#/settings
-                                window.location.replace(window.location.pathname);
-                                return;
-                            }
+                        // Force set lang cookie
+                        cookie.set('lang', lang, { expires: 365 });
 
-                            window.location.reload();
-                        });
+                        if (window.location.search) {
+                            // Redirect to the originating page if URL query parameters exist
+                            // For example: ?lang=de#/settings
+                            window.location.replace(window.location.pathname);
+                            return;
+                        }
+
+                        window.location.reload();
                     });
             },
             restoreSettings: () => {
