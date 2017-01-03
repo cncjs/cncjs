@@ -102,7 +102,7 @@ class General extends Component {
                             <option value="hu">Magyar</option>
                             <option value="pt-br">Português (Brasil)</option>
                             <option value="ru">Русский</option>
-                            <option value="zh-tw">中文 (繁體)/option>
+                            <option value="zh-tw">中文 (繁體)</option>
                             <option value="zh-cn">中文 (简体)</option>
                             <option value="ja">日本語</option>
                         </select>
