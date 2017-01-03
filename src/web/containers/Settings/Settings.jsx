@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import i18next from 'i18next';
-import cookie from 'js-cookie';
 import _ from 'lodash';
+import Uri from 'jsuri';
 import React, { Component, PropTypes } from 'react';
 import { Link } from 'react-router';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -146,17 +146,11 @@ class Settings extends Component {
                             return;
                         }
 
-                        // Force set lang cookie
-                        cookie.set('lang', lang, { expires: 365 });
-
-                        if (window.location.search) {
-                            // Redirect to the originating page if URL query parameters exist
-                            // For example: ?lang=de#/settings
-                            window.location.replace(window.location.pathname);
-                            return;
-                        }
-
-                        window.location.reload();
+                        i18next.changeLanguage(lang, (err, t) => {
+                            const uri = new Uri(window.location.search);
+                            uri.replaceQueryParam('lang', lang);
+                            window.location.search = uri.toString();
+                        });
                     });
             },
             restoreSettings: () => {
