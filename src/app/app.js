@@ -202,6 +202,11 @@ const appMain = () => {
         }));
 
         app.use((err, req, res, next) => {
+            if (process.env.NODE_ENV === 'development') {
+                next(); // Do not block unauthorized connections on development mode
+                return;
+            }
+
             const whitelist = [
                 // Also see "src/app/api/index.js"
                 urljoin(settings.route, 'api/signin')

@@ -103,9 +103,9 @@ class Visualizer extends Component {
 
         // Display the name of the G-code file
         if (state.gcode.displayName !== nextState.gcode.displayName) {
-            const gcodeName = this.group.getObjectByName('GCodeName');
-            if (gcodeName) {
-                gcodeName.visible = nextState.gcode.displayName;
+            const gcodeDisplayName = this.group.getObjectByName('GCodeDisplayName');
+            if (gcodeDisplayName) {
+                gcodeDisplayName.visible = nextState.gcode.displayName;
 
                 needUpdateScene = true;
             }
@@ -528,12 +528,12 @@ class Visualizer extends Component {
     lookAtCenter() {
         this.controls.reset();
     }
-    load(data, callback) {
+    load(name, gcode, callback) {
         // Remove previous G-code object
         this.unload();
 
         this.visualizer = new GCodeVisualizer();
-        this.visualizer.render({ gcode: data })
+        this.visualizer.render({ gcode: gcode })
             .then((obj) => {
                 obj.name = 'Visualizer';
                 this.group.add(obj);
@@ -566,11 +566,11 @@ class Visualizer extends Component {
                         y: posy,
                         z: posz,
                         size: textSize,
-                        text: `G-code: ${gcode.name}`,
+                        text: `G-code: ${name}`,
                         color: colornames('gray 44'), // grid color
                         opacity: 0.5
                     });
-                    gcodeName.name = 'GCodeName';
+                    gcodeName.name = 'GCodeDisplayName';
                     gcodeName.visible = gcode.displayName;
                     obj.add(gcodeName);
                 }

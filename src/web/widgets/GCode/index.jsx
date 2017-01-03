@@ -54,9 +54,9 @@ class GCodeWidget extends Component {
             const { remain, sent, received, total, createdTime, startedTime, finishedTime } = data;
 
             let lines = this.state.lines;
-            if (this.state.lines.length > 0) {
-                const from = this.state.received;
-                const to = received;
+            if (lines.length > 0 && total > 0) {
+                const from = Math.min(this.state.received, lines.length);
+                const to = Math.min(received, lines.length);
                 let list = {};
 
                 // Reset obsolete queue items
@@ -198,8 +198,8 @@ class GCodeWidget extends Component {
                     });
                 }
             }),
-            pubsub.subscribe('gcode:load', (msg, data = '') => {
-                parseString(data, (err, lines) => {
+            pubsub.subscribe('gcode:load', (msg, name, gcode) => {
+                parseString(gcode, (err, lines) => {
                     if (err) {
                         log.error(err);
                         return;

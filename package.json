@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "1.8.10",
+  "version": "1.8.11",
   "description": "A web-based interface for CNC milling controller running Grbl or TinyG2",
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -151,6 +151,7 @@
     "i18next-xhr-backend": "~1.2.1",
     "infinite-tree": "~1.7.3",
     "is-electron": "~2.0.0",
+    "js-cookie": "~2.1.3",
     "js-polyfills": "~0.1.30",
     "jsonwebtoken": "~7.2.1",
     "jsuri": "~1.3.1",
