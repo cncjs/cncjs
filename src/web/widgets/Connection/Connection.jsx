@@ -206,6 +206,7 @@ class Connection extends React.Component {
         });
 
         let workflowState = '';
+        let name = '';
         let gcode = '';
 
         api.listControllers()
@@ -219,6 +220,7 @@ class Connection extends React.Component {
                 return next;
             })
             .then((res) => {
+                name = _.get(res, 'body.name', '');
                 gcode = _.get(res, 'body.data', '');
             })
             .catch((res) => {
@@ -229,7 +231,7 @@ class Connection extends React.Component {
                     pubsub.publish('workflowState', workflowState);
                 }
                 if (gcode) {
-                    pubsub.publish('gcode:load', gcode);
+                    pubsub.publish('gcode:load', name, gcode);
                 }
             });
     }

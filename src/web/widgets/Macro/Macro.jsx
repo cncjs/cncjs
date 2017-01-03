@@ -40,14 +40,15 @@ class Macro extends Component {
         });
     }
     handleLoadMacro({ id, name, content }) {
+        const gcode = content;
+
         controller.command('loadmacro', id, (err, data) => {
             if (err) {
                 log.error(`Failed to load the macro: id=${id}, name="${name}"`);
                 return;
             }
 
-            const gcode = content;
-            pubsub.publish('gcode:load', gcode);
+            pubsub.publish('gcode:load', name, gcode);
         });
     }
     handleEditMacro({ id }) {

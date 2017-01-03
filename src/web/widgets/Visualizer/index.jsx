@@ -124,8 +124,8 @@ class VisualizerWidget extends Component {
                     return;
                 }
 
-                const { gcode = '' } = { ...data };
-                pubsub.publish('gcode:load', gcode);
+                const { name = '', gcode = '' } = { ...data };
+                pubsub.publish('gcode:load', name, gcode);
             });
         },
         uploadFile: (gcode, meta) => {
@@ -144,7 +144,7 @@ class VisualizerWidget extends Component {
             api.loadGCode({ port, name, gcode })
                 .then((res) => {
                     // This will call loadGCode()
-                    pubsub.publish('gcode:load', gcode);
+                    pubsub.publish('gcode:load', name, gcode);
                 })
                 .catch((res) => {
                     this.setState({
@@ -159,7 +159,7 @@ class VisualizerWidget extends Component {
                     log.error('Failed to upload G-code file');
                 });
         },
-        loadGCode: (gcode) => {
+        loadGCode: (name, gcode) => {
             const visualizer = this.visualizer;
             const capable = {
                 view3D: !!visualizer
@@ -187,7 +187,7 @@ class VisualizerWidget extends Component {
             });
 
             if (visualizer) {
-                visualizer.load(gcode, ({ bbox }) => {
+                visualizer.load(name, gcode, ({ bbox }) => {
                     // bounding box
                     pubsub.publish('gcode:bbox', bbox);
 
@@ -561,9 +561,9 @@ class VisualizerWidget extends Component {
                     this.setState({ workflowState: workflowState });
                 }
             }),
-            pubsub.subscribe('gcode:load', (msg, data = '') => {
+            pubsub.subscribe('gcode:load', (msg, name, gcode) => {
                 const actions = this.actions;
-                actions.loadGCode(data);
+                actions.loadGCode(name, gcode);
             }),
             pubsub.subscribe('gcode:unload', (msg) => {
                 const actions = this.actions;
