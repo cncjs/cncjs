@@ -533,61 +533,60 @@ class Visualizer extends Component {
         this.unload();
 
         this.visualizer = new GCodeVisualizer();
-        this.visualizer.render({ gcode: gcode })
-            .then((obj) => {
-                obj.name = 'Visualizer';
-                this.group.add(obj);
 
-                const bbox = getBoundingBox(obj);
-                const dX = bbox.max.x - bbox.min.x;
-                const dY = bbox.max.y - bbox.min.y;
-                const dZ = bbox.max.z - bbox.min.z;
-                const center = new THREE.Vector3(
-                    bbox.min.x + (dX / 2),
-                    bbox.min.y + (dY / 2),
-                    bbox.min.z + (dZ / 2)
-                );
+        const obj = this.visualizer.render(gcode);
+        obj.name = 'Visualizer';
+        this.group.add(obj);
 
-                // Set the pivot point to the object's center position
-                this.pivotPoint.set(center.x, center.y, center.z);
+        const bbox = getBoundingBox(obj);
+        const dX = bbox.max.x - bbox.min.x;
+        const dY = bbox.max.y - bbox.min.y;
+        const dZ = bbox.max.z - bbox.min.z;
+        const center = new THREE.Vector3(
+            bbox.min.x + (dX / 2),
+            bbox.min.y + (dY / 2),
+            bbox.min.z + (dZ / 2)
+        );
 
-                // Update work position
-                this.setWorkPosition(this.workPosition);
+        // Set the pivot point to the object's center position
+        this.pivotPoint.set(center.x, center.y, center.z);
 
-                { // Display the name of the G-code file
-                    const { units, gcode } = this.props.state;
-                    const gridLength = (units === METRIC_UNITS) ? 10 : 25.4;
-                    const textSize = 5;
-                    const posx = center.x;
-                    const posy = Math.floor(bbox.min.y / gridLength) * gridLength - (gridLength / 2);
-                    const posz = Math.ceil(bbox.max.z / gridLength) * gridLength + (gridLength / 2);
-                    const gcodeName = new TextSprite({
-                        x: posx,
-                        y: posy,
-                        z: posz,
-                        size: textSize,
-                        text: `G-code: ${name}`,
-                        color: colornames('gray 44'), // grid color
-                        opacity: 0.5
-                    });
-                    gcodeName.name = 'GCodeDisplayName';
-                    gcodeName.visible = gcode.displayName;
-                    obj.add(gcodeName);
-                }
+        // Update work position
+        this.setWorkPosition(this.workPosition);
 
-                { // Fit the camera to object
-                    const objectWidth = dX;
-                    const objectHeight = dY;
-                    const lookTarget = new THREE.Vector3(0, 0, bbox.max.z);
-
-                    fitCameraToObject(this.camera, objectWidth, objectHeight, lookTarget);
-                }
-
-                // Update the scene
-                this.updateScene();
-
-                (typeof callback === 'function') && callback({ bbox: bbox });
+        { // Display the name of the G-code file
+            const { units, gcode } = this.props.state;
+            const gridLength = (units === METRIC_UNITS) ? 10 : 25.4;
+            const textSize = 5;
+            const posx = center.x;
+            const posy = Math.floor(bbox.min.y / gridLength) * gridLength - (gridLength / 2);
+            const posz = Math.ceil(bbox.max.z / gridLength) * gridLength + (gridLength / 2);
+            const gcodeName = new TextSprite({
+                x: posx,
+                y: posy,
+                z: posz,
+                size: textSize,
+                text: `G-code: ${name}`,
+                color: colornames('gray 44'), // grid color
+                opacity: 0.5
             });
+            gcodeName.name = 'GCodeDisplayName';
+            gcodeName.visible = gcode.displayName;
+            obj.add(gcodeName);
+        }
+
+        { // Fit the camera to object
+            const objectWidth = dX;
+            const objectHeight = dY;
+            const lookTarget = new THREE.Vector3(0, 0, bbox.max.z);
+
+            fitCameraToObject(this.camera, objectWidth, objectHeight, lookTarget);
+        }
+
+        // Update the scene
+        this.updateScene();
+
+        (typeof callback === 'function') && callback({ bbox: bbox });
     }
     unload() {
         const visualizerObject = this.group.getObjectByName('Visualizer');

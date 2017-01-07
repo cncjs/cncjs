@@ -90,8 +90,7 @@ class GCodeVisualizer {
 
         return this;
     }
-    render(options) {
-        const { gcode } = { ...options };
+    render(gcode) {
         const toolpath = new GCodeToolpath({
             addLine: (modalState, v1, v2) => {
                 const path = addLine(modalState, v1, v2);
@@ -111,43 +110,35 @@ class GCodeVisualizer {
             child.geometry.dispose();
         }
 
-        return new Promise((resolve, reject) => {
-            toolpath.loadFromString(gcode, (err, results) => {
-                if (err) {
-                    reject();
-                    return;
-                }
-
-                const workpiece = new THREE.Line(
-                    new THREE.Geometry(),
-                    new THREE.LineBasicMaterial({
-                        color: defaultColor,
-                        linewidth: 1,
-                        vertexColors: THREE.VertexColors,
-                        opacity: 0.5,
-                        transparent: true
-                    })
-                );
-                workpiece.geometry.vertices = this.geometry.vertices.slice();
-                workpiece.geometry.colors = this.geometry.colors.slice();
-
-                this.group.add(workpiece);
-
-                log.debug({
-                    workpiece: workpiece,
-                    frames: this.frames,
-                    frameIndex: this.frameIndex
-                });
-
-                resolve(this.group);
-            })
-            .on('data', (data) => {
-                this.frames.push({
-                    data: data,
-                    vertexIndex: this.geometry.vertices.length // remember current vertex index
-                });
+        toolpath.loadFromStringSync(gcode, (line, index) => {
+            this.frames.push({
+                data: line,
+                vertexIndex: this.geometry.vertices.length // remember current vertex index
             });
         });
+
+        const workpiece = new THREE.Line(
+            new THREE.Geometry(),
+            new THREE.LineBasicMaterial({
+                color: defaultColor,
+                linewidth: 1,
+                vertexColors: THREE.VertexColors,
+                opacity: 0.5,
+                transparent: true
+            })
+        );
+        workpiece.geometry.vertices = this.geometry.vertices.slice();
+        workpiece.geometry.colors = this.geometry.colors.slice();
+
+        this.group.add(workpiece);
+
+        log.debug({
+            workpiece: workpiece,
+            frames: this.frames,
+            frameIndex: this.frameIndex
+        });
+
+        return this.group;
     }
     setFrameIndex(frameIndex) {
         if (this.frames.length === 0) {

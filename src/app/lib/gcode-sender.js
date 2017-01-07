@@ -1,45 +1,53 @@
 import _ from 'lodash';
 import events from 'events';
-import * as parser from 'gcode-parser';
 
 export const STREAMING_PROTOCOL_SEND_RESPONSE = 0;
 export const STREAMING_PROTOCOL_CHAR_COUNTING = 1;
 
-const DEFAULT_STREAMING_BUFFER_SIZE = 127;
+const stripLine = (() => {
+    const re1 = new RegExp(/\s*[%#;].*/g); // Strip everything after %, #, or ; to the end of the line, including preceding spaces
+    const re2 = new RegExp(/\s*\(.*\)/g); // Remove anything inside the parentheses
+    return line => line.replace(re1, '').replace(re2, '').trim();
+})();
 
 class GCodeSender extends events.EventEmitter {
+    protocol = STREAMING_PROTOCOL_SEND_RESPONSE;
+    // The following properties are only used in character-counting streaming protocol
+    transmitBufferSize = 127; // Defaults to 127
+    transmitDataLength = 0;
+    transmitDataQueue = [];
+    transmitLine = '';
+
     name = '';
     gcode = '';
-    remain = [];
-    sent = [];
-    streamingBufferSize = DEFAULT_STREAMING_BUFFER_SIZE;
-    streamingProtocol = STREAMING_PROTOCOL_SEND_RESPONSE;
-    streamingQueue = []; // used in char-counting streaming protocol
+    lines = [];
     total = 0;
+    sent = 0;
     received = 0;
     createdTime = 0;
     startedTime = 0;
     finishedTime = 0;
     changed = false;
 
-    // @param {number} streamingProtocol The streaming protocol. 0 for send-response (default), 1 for character-counting.
-    // @param {number} streamingBufferSize The buffer size used in character-counting streaming protocol. Defaults to 127.
-    constructor(options) {
+    // @param {number} [protocol] The streaming protocol. 0 for send-response (default), 1 for character-counting.
+    // @param {object} [options] The options object.
+    // @param {number} [options.bufferSize] The buffer size used in character-counting streaming protocol. Defaults to 127.
+    constructor(protocol = STREAMING_PROTOCOL_SEND_RESPONSE, options = {}) {
         super();
-
-        const {
-            streamingProtocol = STREAMING_PROTOCOL_SEND_RESPONSE,
-            streamingBufferSize = DEFAULT_STREAMING_BUFFER_SIZE
-        } = { ...options };
 
         if (_.includes([
             STREAMING_PROTOCOL_SEND_RESPONSE,
             STREAMING_PROTOCOL_CHAR_COUNTING
-        ], streamingProtocol)) {
-            this.streamingProtocol = streamingProtocol;
+        ], protocol)) {
+            this.protocol = protocol;
         }
-        if (_.isNumber(streamingBufferSize) && streamingBufferSize > 0) {
-            this.streamingBufferSize = streamingBufferSize;
+
+        if (this.protocol === STREAMING_PROTOCOL_CHAR_COUNTING) {
+            const { bufferSize } = { ...options };
+
+            if (_.isNumber(bufferSize) && bufferSize > 0) {
+                this.transmitBufferSize = bufferSize;
+            }
         }
 
         this.on('change', () => {
@@ -48,56 +56,50 @@ class GCodeSender extends events.EventEmitter {
     }
     get state() {
         return {
+            protocol: this.protocol,
             name: this.name,
             size: this.gcode.length,
-            remain: this.remain.length,
-            sent: this.sent.length,
-            received: this.received,
             total: this.total,
-            streaming: {
-                proto: this.streamingProtocol,
-                queue: this.streamingQueue.join('').length
-            },
+            sent: this.sent,
+            received: this.received,
             createdTime: this.createdTime,
             startedTime: this.startedTime,
             finishedTime: this.finishedTime
         };
     }
-    load(name, gcode, callback) {
-        parser.parseString(gcode, (err, results) => {
-            if (err) {
-                callback(err);
-                return;
-            }
+    load(name, gcode = '') {
+        if (typeof gcode !== 'string') {
+            return false;
+        }
 
-            this.name = name;
-            this.gcode = gcode;
-            this.remain = _(results)
-                .map('words')
-                .map((words) => {
-                    return _.map(words, (word) => word[0] + word[1]).join(' ') + '\n';
-                })
-                .value();
-            this.sent = [];
-            this.streamingQueue = [];
-            this.total = this.remain.length;
-            this.createdTime = new Date().getTime();
-            this.startedTime = 0;
-            this.finishedTime = 0;
+        this.transmitDataLength = 0;
+        this.transmitDataQueue = [];
+        this.transmitLine = '';
 
-            this.emit('load', { name: name, gcode: gcode });
-            this.emit('change');
+        this.name = name;
+        this.gcode = gcode;
+        this.lines = gcode.split('\n')
+            .filter(line => (line.trim().length > 0));
+        this.total = this.lines.length;
+        this.sent = 0;
+        this.createdTime = new Date().getTime();
+        this.startedTime = 0;
+        this.finishedTime = 0;
 
-            callback();
-        });
+        this.emit('load', { name: name, gcode: gcode });
+        this.emit('change');
+
+        return true;
     }
     unload() {
+        this.transmitDataLength = 0;
+        this.transmitDataQueue = [];
+        this.transmitLine = '';
+
         this.name = '';
         this.gcode = '';
-        this.remain = [];
-        this.sent = [];
-        this.streamingQueue = [];
         this.total = 0;
+        this.sent = 0;
         this.createdTime = 0;
         this.startedTime = 0;
         this.finishedTime = 0;
@@ -106,10 +108,10 @@ class GCodeSender extends events.EventEmitter {
         this.emit('change');
     }
     next() {
-        if (this.remain.length === 0 && this.sent.length === 0) {
+        if (this.total === 0) {
             return;
         }
-        if (this.remain.length > 0 && this.sent.length === 0) {
+        if (this.total > 0 && this.sent === 0) {
             this.startedTime = new Date().getTime();
             this.emit('start', { time: this.startedTime });
             this.emit('change');
@@ -117,9 +119,12 @@ class GCodeSender extends events.EventEmitter {
 
         const streamingMethod = {
             [STREAMING_PROTOCOL_SEND_RESPONSE]: () => {
-                while (this.remain.length > 0) {
-                    const gcode = ('' + this.remain.shift()).trim();
-                    this.sent.push(gcode);
+                while (this.sent < this.total) {
+                    const line = this.lines[this.sent];
+                    const gcode = stripLine(line);
+
+                    this.sent++;
+
                     this.emit('change');
 
                     if (gcode.length > 0) {
@@ -133,22 +138,28 @@ class GCodeSender extends events.EventEmitter {
                 }
             },
             [STREAMING_PROTOCOL_CHAR_COUNTING]: () => {
-                this.streamingQueue.shift();
+                if (this.transmitDataQueue.length > 0) {
+                    const dataLength = this.transmitDataQueue.shift();
+                    this.transmitDataLength -= dataLength;
+                }
 
-                while (this.remain.length > 0) {
-                    const gcode = ('' + this.remain.shift()).trim();
-                    const streamingQueueLength = this.streamingQueue.join('').length;
+                while (this.sent < this.total) {
+                    const line = this.lines[this.sent];
+                    this.transmitLine = this.transmitLine || stripLine(line);
 
-                    if (gcode.length + streamingQueueLength >= this.streamingBufferSize) {
-                        this.remain.unshift(gcode);
+                    if (this.transmitLine.length + this.transmitDataLength >= this.transmitBufferSize) {
                         break;
                     }
 
-                    this.sent.push(gcode);
+                    const gcode = this.transmitLine;
+                    this.transmitLine = ''; // clear transmitLine
+
+                    this.sent++;
                     this.emit('change');
 
                     if (gcode.length > 0) {
-                        this.streamingQueue.push(gcode);
+                        this.transmitDataLength += gcode.length;
+                        this.transmitDataQueue.push(gcode.length);
                         this.emit('gcode', gcode);
                     } else {
                         this.ack(); // Ack for empty lines
@@ -157,20 +168,22 @@ class GCodeSender extends events.EventEmitter {
                     // Continue to the next line if empty
                 }
             }
-        }[this.streamingProtocol];
+        }[this.protocol];
 
         streamingMethod && streamingMethod();
 
-        if (this.remain.length === 0) {
+        if (this.sent >= this.total) {
             this.finishedTime = new Date().getTime();
             this.emit('done', { time: this.finishedTime });
             this.emit('change');
         }
     }
     rewind() {
-        this.remain = this.sent.concat(this.remain);
-        this.sent = [];
-        this.streamingQueue = [];
+        this.transmitDataLength = 0;
+        this.transmitDataQueue = [];
+        this.transmitLine = '';
+
+        this.sent = 0;
         this.received = 0;
         this.startedTime = 0;
         this.finishedTime = 0;

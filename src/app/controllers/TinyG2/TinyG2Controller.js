@@ -102,9 +102,7 @@ class TinyG2Controller {
         });
 
         // Sender
-        this.sender = new Sender({
-            streamingProtocol: STREAMING_PROTOCOL_SEND_RESPONSE
-        });
+        this.sender = new Sender(STREAMING_PROTOCOL_SEND_RESPONSE);
         this.sender.on('gcode', (gcode = '') => {
             if (this.isClose()) {
                 log.error(`[TinyG2] The serial port "${this.options.port}" is not accessible`);
@@ -120,6 +118,7 @@ class TinyG2Controller {
             if (gcode.length > 0) {
                 const cmd = JSON.stringify({ gc: gcode });
                 this.serialport.write(cmd + '\n');
+                dbg(`[TinyG2] > ${cmd}`);
             }
         });
 
@@ -492,17 +491,16 @@ class TinyG2Controller {
             'load': () => {
                 const [name, gcode, callback = noop] = args;
 
-                this.sender.load(name, gcode, (err) => {
-                    if (err) {
-                        callback(err);
-                        return;
-                    }
+                const ok = this.sender.load(name, gcode);
+                if (!ok) {
+                    callback(new Error(`Invalid G-code: name=${name}`));
+                    return;
+                }
 
-                    log.debug(`[TinyG2] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
+                log.debug(`[TinyG2] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
 
-                    this.workflowState = WORKFLOW_STATE_IDLE;
-                    callback(null, { name: name, gcode: gcode });
-                });
+                this.workflowState = WORKFLOW_STATE_IDLE;
+                callback(null, { name: name, gcode: gcode });
             },
             'unload': () => {
                 this.workflowState = WORKFLOW_STATE_IDLE;
