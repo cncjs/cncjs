@@ -178,6 +178,21 @@ class WatchDirectory extends Component {
                         onSelectNode={(node) => {
                             actions.updateModalParams({ selectedNode: node });
                         }}
+                        onDoubleClick={(event) => {
+                            event.stopPropagation();
+
+                            // Call setTimeout(fn, 0) to make sure it returns the last selected node
+                            setTimeout(() => {
+                                const tree = this.treeNode.tree;
+                                const node = tree.getSelectedNode();
+
+                                if (node) {
+                                    const file = path.join(node.props.path, node.name);
+                                    actions.loadFile(file);
+                                    actions.closeModal();
+                                }
+                            }, 0);
+                        }}
                     />
                 </Modal.Body>
                 <Modal.Footer>
