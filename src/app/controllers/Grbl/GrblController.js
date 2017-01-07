@@ -291,6 +291,15 @@ class GrblController {
         });
 
         // Timer
+        const queryCurrentStatus = () => {
+            this.queryResponse.status = true;
+            this.serialport.write('?');
+        };
+        const queryParserState = _.throttle(() => {
+            this.queryResponse.parserstate = true;
+            this.queryResponse.parserstateEnd = false;
+            this.serialport.write('$G\n');
+        }, 500);
         this.queryTimer = setInterval(() => {
             if (this.isClose()) {
                 // Serial port is closed
@@ -323,15 +332,12 @@ class GrblController {
 
             // ? - Current Status
             if (!(this.queryResponse.status)) {
-                this.queryResponse.status = true;
-                this.serialport.write('?');
+                queryCurrentStatus();
             }
 
             // $G - Parser State
             if (!(this.queryResponse.parserstate) && !(this.queryResponse.parserstateEnd)) {
-                this.queryResponse.parserstate = true;
-                this.queryResponse.parserstateEnd = false;
-                this.serialport.write('$G\n');
+                queryParserState();
             }
         }, 250);
     }
