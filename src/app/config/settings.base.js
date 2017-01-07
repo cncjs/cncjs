@@ -51,19 +51,18 @@ export default {
         'body-parser': {
             'json': {
                 // maximum request body size. (default: <100kb>)
-                limit: '10mb'
+                limit: '100mb'
             },
             'urlencoded': {
                 extended: true,
                 // maximum request body size. (default: <100kb>)
-                limit: '10mb'
+                limit: '100mb'
             }
         },
         // https://github.com/mscdex/connect-busboy
         'busboy': {
-            highWaterMark: 2 * 1024 * 1024,
             limits: {
-                fileSize: 20 * 1024 * 1024 // 20MB
+                fileSize: 100 * 1024 * 1024 // 100MB
             },
             // immediate
             //   false: no immediate parsing
