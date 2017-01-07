@@ -113,21 +113,18 @@ class GrblController {
 
             const data = line + '\n';
             this.serialport.write(data);
-
             dbg(`[Grbl] > ${line}`);
         });
 
         // Sender
-        this.sender = new Sender({
-            streamingProtocol: STREAMING_PROTOCOL_CHAR_COUNTING,
-
+        this.sender = new Sender(STREAMING_PROTOCOL_CHAR_COUNTING, {
             // Grbl has a 127 character serial receive buffer.
             // Use a lower value to deduct the length of regular commands:
             // - parser state command ($G\n)
             // - current status command: (?)
             //
             // The amount of free space in the serial receive buffer is 125 (i.e. 127 - 2 - 1).
-            streamingBufferSize: 120
+            bufferSize: 120
         });
         this.sender.on('gcode', (gcode = '') => {
             if (this.isClose()) {
@@ -143,6 +140,7 @@ class GrblController {
             gcode = ('' + gcode).trim();
             if (gcode.length > 0) {
                 this.serialport.write(gcode + '\n');
+                dbg(`[Grbl] > ${gcode}`);
             }
         });
 
@@ -502,17 +500,16 @@ class GrblController {
             'load': () => {
                 const [name, gcode, callback = noop] = args;
 
-                this.sender.load(name, gcode, (err) => {
-                    if (err) {
-                        callback(err);
-                        return;
-                    }
+                const ok = this.sender.load(name, gcode);
+                if (!ok) {
+                    callback(new Error(`Invalid G-code: name=${name}`));
+                    return;
+                }
 
-                    log.debug(`[Grbl] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
+                log.debug(`[Grbl] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
 
-                    this.workflowState = WORKFLOW_STATE_IDLE;
-                    callback(null, { name: name, gcode: gcode });
-                });
+                this.workflowState = WORKFLOW_STATE_IDLE;
+                callback(null, { name: name, gcode: gcode });
             },
             'unload': () => {
                 this.workflowState = WORKFLOW_STATE_IDLE;

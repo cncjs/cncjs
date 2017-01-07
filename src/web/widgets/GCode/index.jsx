@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import { parseString } from 'gcode-parser';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
@@ -9,7 +8,6 @@ import update from 'react-addons-update';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import log from '../../lib/log';
 import { mm2in } from '../../lib/units';
 import store from '../../store';
 import GCode from './GCode';
@@ -51,7 +49,7 @@ class GCodeWidget extends Component {
     };
     controllerEvents = {
         'sender:status': (data) => {
-            const { remain, sent, received, total, createdTime, startedTime, finishedTime } = data;
+            const { total, sent, received, createdTime, startedTime, finishedTime } = data;
 
             let lines = this.state.lines;
             if (lines.length > 0 && total > 0) {
@@ -82,10 +80,9 @@ class GCodeWidget extends Component {
 
             this.setState({
                 lines,
-                remain,
+                total,
                 sent,
                 received,
-                total,
                 createdTime,
                 startedTime,
                 finishedTime
@@ -153,10 +150,9 @@ class GCodeWidget extends Component {
             lines: [], // List of G-code lines
 
             // G-code Status (from server)
-            remain: 0,
+            total: 0,
             sent: 0,
             received: 0,
-            total: 0,
             createdTime: 0,
             startedTime: 0,
             finishedTime: 0,
@@ -199,22 +195,17 @@ class GCodeWidget extends Component {
                 }
             }),
             pubsub.subscribe('gcode:load', (msg, { name, gcode }) => {
-                parseString(gcode, (err, lines) => {
-                    if (err) {
-                        log.error(err);
-                        return;
-                    }
-
-                    lines = _(lines)
-                        .map((o, index) => ({
+                const lines = gcode.split('\n')
+                    .filter(line => (line.trim().length > 0))
+                    .map((line, index) => {
+                        return {
                             id: index,
                             status: GCODE_STATUS_NOT_STARTED,
-                            cmd: o.line
-                        }))
-                        .value();
+                            cmd: line
+                        };
+                    });
 
-                    this.setState({ lines: lines });
-                });
+                this.setState({ lines: lines });
             }),
             pubsub.subscribe('gcode:unload', (msg) => {
                 this.setState({

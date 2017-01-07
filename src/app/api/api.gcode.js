@@ -60,9 +60,9 @@ export const get = (req, res) => {
         name: controller.sender.name,
         data: controller.sender.gcode,
         size: controller.sender.gcode.length,
-        remain: controller.sender.remain.length,
-        sent: controller.sender.sent.length,
         total: controller.sender.total,
+        sent: controller.sender.sent,
+        received: controller.sender.received,
         createdTime: controller.sender.createdTime,
         startedTime: controller.sender.startedTime,
         finishedTime: controller.sender.finishedTime

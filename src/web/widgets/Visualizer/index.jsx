@@ -160,12 +160,11 @@ class VisualizerWidget extends Component {
                 });
         },
         loadGCode: (name, gcode) => {
-            const visualizer = this.visualizer;
             const capable = {
-                view3D: !!visualizer
+                view3D: !!this.visualizer
             };
 
-            this.setState({
+            const nextState = {
                 gcode: {
                     ...this.state.gcode,
                     loading: false,
@@ -184,10 +183,10 @@ class VisualizerWidget extends Component {
                         }
                     }
                 }
-            });
+            };
 
-            if (visualizer) {
-                visualizer.load(name, gcode, ({ bbox }) => {
+            this.setState(nextState, () => {
+                this.visualizer && this.visualizer.load(name, gcode, ({ bbox }) => {
                     // bounding box
                     pubsub.publish('gcode:bbox', bbox);
 
@@ -201,7 +200,7 @@ class VisualizerWidget extends Component {
                         }
                     });
                 });
-            }
+            });
         },
         unloadGCode: () => {
             const visualizer = this.visualizer;
@@ -350,15 +349,15 @@ class VisualizerWidget extends Component {
     };
     controllerEvents = {
         'sender:status': (data) => {
-            const { name, size, remain, sent, total, createdTime, startedTime, finishedTime } = data;
+            const { name, size, total, sent, received, createdTime, startedTime, finishedTime } = data;
             this.setState({
                 gcode: {
                     ...this.state.gcode,
                     name,
                     size,
-                    remain,
-                    sent,
                     total,
+                    sent,
+                    received,
                     createdTime,
                     startedTime,
                     finishedTime
@@ -520,9 +519,9 @@ class VisualizerWidget extends Component {
                 // Updates by the "sender:status" event
                 name: '',
                 size: 0,
-                remain: 0,
-                sent: 0,
                 total: 0,
+                sent: 0,
+                received: 0,
                 createdTime: 0,
                 startedTime: 0,
                 finishedTime: 0
