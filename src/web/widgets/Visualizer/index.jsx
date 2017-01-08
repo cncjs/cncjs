@@ -186,18 +186,24 @@ class VisualizerWidget extends Component {
             };
 
             this.setState(nextState, () => {
-                this.visualizer && this.visualizer.load(name, gcode, ({ bbox }) => {
-                    // bounding box
-                    pubsub.publish('gcode:bbox', bbox);
+                if (!capable.view3D) {
+                    return;
+                }
 
-                    this.setState({
-                        gcode: {
-                            ...this.state.gcode,
-                            loading: false,
-                            rendering: false,
-                            ready: true,
-                            bbox: bbox
-                        }
+                delay(0).then(() => {
+                    this.visualizer.load(name, gcode, ({ bbox }) => {
+                        // bounding box
+                        pubsub.publish('gcode:bbox', bbox);
+
+                        this.setState({
+                            gcode: {
+                                ...this.state.gcode,
+                                loading: false,
+                                rendering: false,
+                                ready: true,
+                                bbox: bbox
+                            }
+                        });
                     });
                 });
             });
