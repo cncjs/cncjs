@@ -188,7 +188,7 @@ class GrblController {
         this.grbl.on('error', (res) => {
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                const line = this.sender.sent[this.sender.received];
+                const line = this.sender.lines[this.sender.received];
                 this.emitAll('serialport:read', `> ${line}`);
                 this.emitAll('serialport:read', `error=${res.message}, line=${this.sender.received + 1}`);
 

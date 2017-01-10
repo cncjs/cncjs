@@ -177,7 +177,7 @@ class TinyG2Controller {
             const prevPlannerQueueStatus = this.plannerQueueStatus;
 
             if ((this.workflowState !== WORKFLOW_STATE_IDLE) && (statusCode !== 0)) {
-                const line = this.sender.sent[this.sender.received];
+                const line = this.sender.lines[this.sender.received];
                 this.emitAll('serialport:read', `> ${line}`);
                 this.emitAll('serialport:read', `error=${statusCode}, line=${this.sender.received + 1}`);
             }
