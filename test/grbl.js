@@ -15,16 +15,7 @@ test('GrblLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
         t.equal(raw, '<Idle>');
         t.same(status, {
             activeState: 'Idle',
-            machinePosition: {
-                x: '0.000',
-                y: '0.000',
-                z: '0.000'
-            },
-            workPosition: {
-                x: '0.000',
-                y: '0.000',
-                z: '0.000'
-            }
+            subState: 0
         });
         t.end();
     });
@@ -39,12 +30,13 @@ test('GrblLineParserResultStatus: default ($10=3)', (t) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>');
         t.same(status, {
             activeState: 'Idle',
-            machinePosition: {
+            subState: 0,
+            mpos: {
                 x: '5.529',
                 y: '0.560',
                 z: '7.000'
             },
-            workPosition: {
+            wpos: {
                 x: '1.529',
                 y: '-5.440',
                 z: '-0.000'
@@ -63,7 +55,8 @@ test('GrblLineParserResultStatus: 6-axis', (t) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>');
         t.same(status, {
             activeState: 'Idle',
-            machinePosition: {
+            subState: 0,
+            mpos: {
                 x: '5.529',
                 y: '0.560',
                 z: '7.000',
@@ -71,7 +64,7 @@ test('GrblLineParserResultStatus: 6-axis', (t) => {
                 b: '0.250',
                 c: '0.500'
             },
-            workPosition: {
+            wpos: {
                 x: '1.529',
                 y: '-5.440',
                 z: '-0.000',
@@ -93,19 +86,22 @@ test('GrblLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>');
         t.same(status, {
             activeState: 'Idle',
-            machinePosition: {
+            subState: 0,
+            mpos: {
                 x: '5.529',
                 y: '0.560',
                 z: '7.000'
             },
-            workPosition: {
+            wpos: {
                 x: '1.529',
                 y: '-5.440',
                 z: '-0.000'
             },
-            plannerBuffer: '0',
-            rxBuffer: '0',
-            limitPins: '000'
+            buf: {
+                planner: 0,
+                rx: 0
+            },
+            pinState: ''
         });
         t.end();
     });
