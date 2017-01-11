@@ -56,16 +56,18 @@ export const get = (req, res) => {
         return;
     }
 
+    const { sender } = controller;
+
     res.send({
-        name: controller.sender.name,
-        data: controller.sender.gcode,
-        size: controller.sender.gcode.length,
-        total: controller.sender.total,
-        sent: controller.sender.sent,
-        received: controller.sender.received,
-        createdTime: controller.sender.createdTime,
-        startedTime: controller.sender.startedTime,
-        finishedTime: controller.sender.finishedTime
+        name: sender.state.name,
+        data: sender.state.gcode,
+        size: sender.state.gcode.length,
+        total: sender.state.total,
+        sent: sender.state.sent,
+        received: sender.state.received,
+        createdTime: sender.state.createdTime,
+        startedTime: sender.state.startedTime,
+        finishedTime: sender.state.finishedTime
     });
 };
 
@@ -87,6 +89,7 @@ export const download = (req, res) => {
         return;
     }
 
+    const { sender } = controller;
     const filename = (function(req) {
         const headers = req.headers || {};
         const ua = headers['user-agent'] || '';
@@ -97,10 +100,10 @@ export const download = (req, res) => {
             return (/Trident\/\d/).test(ua) && (!(/MSIE \d/).test(ua));
         }(ua));
 
-        const name = controller.sender.name || 'noname.txt';
+        const name = sender.state.name || 'noname.txt';
         return (isIE || isEdge) ? encodeURIComponent(name) : name;
     }(req));
-    const content = controller.sender.gcode || '';
+    const content = sender.state.gcode || '';
 
     res.setHeader('Content-Disposition', 'attachment; filename=' + JSON.stringify(filename));
     res.setHeader('Connection', 'close');

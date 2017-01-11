@@ -2,7 +2,7 @@ import _ from 'lodash';
 import SerialPort from 'serialport';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
-import Sender, { STREAMING_PROTOCOL_CHAR_COUNTING } from '../../lib/gcode-sender';
+import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import store from '../../store';
@@ -117,16 +117,14 @@ class GrblController {
         });
 
         // Sender
-        this.sender = new Sender(STREAMING_PROTOCOL_CHAR_COUNTING, {
+        this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
             // Grbl has a 127 character serial receive buffer.
             // Use a lower value to deduct the length of regular commands:
-            // - parser state command ($G\n)
-            // - current status command: (?)
-            //
-            // The amount of free space in the serial receive buffer is 125 (i.e. 127 - 2 - 1).
+            // - parser state command: $G\n"
+            // - current status command: "?"
             bufferSize: 120
         });
-        this.sender.on('gcode', (gcode = '') => {
+        this.sender.on('data', (gcode = '') => {
             if (this.isClose()) {
                 log.error(`[Grbl] The serial port "${this.options.port}" is not accessible`);
                 return;
@@ -151,6 +149,12 @@ class GrblController {
 
         this.grbl.on('status', (res) => {
             this.queryResponse.status = false;
+
+            if (res && res.buf && res.buf.rx) {
+                const rx = Number(res.buf.rx) || 0;
+                const bufferSize = Math.max(rx - 8, this.sender.sp.bufferSize);
+                this.sender.sp.bufferSize = bufferSize;
+            }
 
             this.connections.forEach((c) => {
                 if (c.sentCommand.indexOf('?') === 0) {
@@ -188,9 +192,11 @@ class GrblController {
         this.grbl.on('error', (res) => {
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                const line = this.sender.lines[this.sender.received];
+                const { lines, received } = this.sender.state;
+                const line = lines[received];
+                const error = res.message;
                 this.emitAll('serialport:read', `> ${line}`);
-                this.emitAll('serialport:read', `error=${res.message}, line=${this.sender.received + 1}`);
+                this.emitAll('serialport:read', `error=${error}, line=${received + 1}`);
 
                 this.sender.ack();
                 this.sender.next();
@@ -308,14 +314,12 @@ class GrblController {
 
             // Feeder
             if (this.feeder.peek()) {
-                this.emitAll('feeder:status', {
-                    'size': this.feeder.queue.length
-                });
+                this.emitAll('feeder:status', this.feeder.toJSON());
             }
 
             // Sender
             if (this.sender.peek()) {
-                this.emitAll('sender:status', this.sender.state);
+                this.emitAll('sender:status', this.sender.toJSON());
             }
 
             // Grbl state
@@ -396,8 +400,8 @@ class GrblController {
                 state: this.state
             },
             workflowState: this.workflowState,
-            feeder: this.feeder.state,
-            sender: this.sender.state
+            feeder: this.feeder.toJSON(),
+            sender: this.sender.toJSON()
         };
     }
     reset() {
@@ -487,7 +491,7 @@ class GrblController {
 
         if (this.sender) {
             // Send sender status to a newly connected client
-            socket.emit('sender:status', this.sender.state);
+            socket.emit('sender:status', this.sender.toJSON());
         }
     }
     removeConnection(socket) {
@@ -512,7 +516,7 @@ class GrblController {
                     return;
                 }
 
-                log.debug(`[Grbl] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
+                log.debug(`[Grbl] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 callback(null, { name: name, gcode: gcode });

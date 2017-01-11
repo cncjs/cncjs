@@ -425,7 +425,7 @@ class GrblLineParserResultHelp {
     static parse(line) {
         // * Grbl v1.1
         //   [HLP:]
-        const r = line.match(/^\[(?:HLP:)?(.+)\]$/);
+        const r = line.match(/^\[(?:HLP:)(.+)\]$/);
         if (!r) {
             return null;
         }
@@ -445,7 +445,7 @@ class GrblLineParserResultVersion {
     static parse(line) {
         // * Grbl v1.1
         //   [VER:]
-        const r = line.match(/^\[(?:VER:)?(.+)\]$/);
+        const r = line.match(/^\[(?:VER:)(.+)\]$/);
         if (!r) {
             return null;
         }
@@ -465,7 +465,7 @@ class GrblLineParserResultOption {
     static parse(line) {
         // * Grbl v1.1
         //   [OPT:]
-        const r = line.match(/^\[(?:OPT:)?(.+)\]$/);
+        const r = line.match(/^\[(?:OPT:)(.+)\]$/);
         if (!r) {
             return null;
         }
@@ -485,7 +485,7 @@ class GrblLineParserResultEcho {
     static parse(line) {
         // * Grbl v1.1
         //   [echo:]
-        const r = line.match(/^\[(?:echo:)?(.+)\]$/);
+        const r = line.match(/^\[(?:echo:)(.+)\]$/);
         if (!r) {
             return null;
         }

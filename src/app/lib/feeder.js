@@ -1,54 +1,58 @@
 import events from 'events';
 
 class Feeder extends events.EventEmitter {
-    queue = [];
-    pending = false;
-    changed = false;
+    state = {
+        queue: [],
+        pending: false,
+        changed: false
+    };
 
     constructor() {
         super();
 
         this.on('change', () => {
-            this.changed = true;
+            this.state.changed = true;
         });
     }
-    get state() {
+    toJSON() {
         return {
-            queue: this.queue.length
+            queue: this.state.queue.length,
+            pending: this.state.pending,
+            changed: this.state.changed
         };
     }
     feed(data) {
-        this.queue = this.queue.concat(data);
+        this.state.queue = this.state.queue.concat(data);
         this.emit('change');
     }
     clear() {
-        this.queue = [];
-        this.pending = false;
+        this.state.queue = [];
+        this.state.pending = false;
         this.emit('change');
     }
     size() {
-        return this.queue.length;
+        return this.state.queue.length;
     }
     next() {
-        if (this.queue.length === 0) {
-            this.pending = false;
+        if (this.state.queue.length === 0) {
+            this.state.pending = false;
             return false;
         }
 
-        const data = this.queue.shift();
-        this.pending = true;
+        const data = this.state.queue.shift();
+        this.state.pending = true;
         this.emit('data', data);
         this.emit('change');
 
         return data;
     }
     isPending() {
-        return this.pending;
+        return this.state.pending;
     }
     // Returns true if any state have changes
     peek() {
-        const changed = this.changed;
-        this.changed = false;
+        const changed = this.state.changed;
+        this.state.changed = false;
         return changed;
     }
 }

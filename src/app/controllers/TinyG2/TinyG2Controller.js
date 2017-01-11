@@ -2,7 +2,7 @@ import _ from 'lodash';
 import SerialPort from 'serialport';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
-import Sender, { STREAMING_PROTOCOL_SEND_RESPONSE } from '../../lib/gcode-sender';
+import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/sender';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import store from '../../store';
@@ -102,8 +102,8 @@ class TinyG2Controller {
         });
 
         // Sender
-        this.sender = new Sender(STREAMING_PROTOCOL_SEND_RESPONSE);
-        this.sender.on('gcode', (gcode = '') => {
+        this.sender = new Sender(SP_TYPE_SEND_RESPONSE);
+        this.sender.on('data', (gcode = '') => {
             if (this.isClose()) {
                 log.error(`[TinyG2] The serial port "${this.options.port}" is not accessible`);
                 return;
@@ -177,9 +177,11 @@ class TinyG2Controller {
             const prevPlannerQueueStatus = this.plannerQueueStatus;
 
             if ((this.workflowState !== WORKFLOW_STATE_IDLE) && (statusCode !== 0)) {
-                const line = this.sender.lines[this.sender.received];
+                const { lines, received } = this.sender.state;
+                const line = lines[received];
+                const error = statusCode;
                 this.emitAll('serialport:read', `> ${line}`);
-                this.emitAll('serialport:read', `error=${statusCode}, line=${this.sender.received + 1}`);
+                this.emitAll('serialport:read', `error=${error}, line=${received + 1}`);
             }
 
             if (prevPlannerQueueStatus !== TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
@@ -230,14 +232,12 @@ class TinyG2Controller {
 
             // Feeder
             if (this.feeder.peek()) {
-                this.emitAll('feeder:status', {
-                    'size': this.feeder.queue.length
-                });
+                this.emitAll('feeder:status', this.feeder.toJSON());
             }
 
             // Sender
             if (this.sender.peek()) {
-                this.emitAll('sender:status', this.sender.state);
+                this.emitAll('sender:status', this.sender.toJSON());
             }
 
             // TinyG2 state
@@ -377,8 +377,8 @@ class TinyG2Controller {
                 footer: this.tinyG2.footer
             },
             workflowState: this.workflowState,
-            feeder: this.feeder.state,
-            sender: this.sender.state
+            feeder: this.feeder.toJSON(),
+            sender: this.sender.toJSON()
         };
     }
     reset() {
@@ -465,7 +465,7 @@ class TinyG2Controller {
 
         if (this.sender) {
             // Send sender status to a newly connected client
-            socket.emit('sender:status', this.sender.state);
+            socket.emit('sender:status', this.sender.toJSON());
         }
     }
     removeConnection(socket) {
@@ -497,7 +497,7 @@ class TinyG2Controller {
                     return;
                 }
 
-                log.debug(`[TinyG2] Load G-code: name="${this.sender.name}", size=${this.sender.gcode.length}, total=${this.sender.total}`);
+                log.debug(`[TinyG2] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 callback(null, { name: name, gcode: gcode });
