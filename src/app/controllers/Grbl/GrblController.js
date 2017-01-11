@@ -150,10 +150,14 @@ class GrblController {
         this.grbl.on('status', (res) => {
             this.queryResponse.status = false;
 
+            // Detect the buffer size if Grbl is set to report the rx buffer (#115)
             if (res && res.buf && res.buf.rx) {
                 const rx = Number(res.buf.rx) || 0;
-                const bufferSize = Math.max(rx - 8, this.sender.sp.bufferSize);
-                this.sender.sp.bufferSize = bufferSize;
+                const spare = 8; // deduct the length of regular commands
+                const bufferSize = (rx - spare);
+                if (bufferSize > this.sender.sp.bufferSize) {
+                    this.sender.sp.bufferSize = bufferSize;
+                }
             }
 
             this.connections.forEach((c) => {
