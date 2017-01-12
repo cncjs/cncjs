@@ -145,7 +145,7 @@ after_success:
     fi
   - |
     # tinyweb
-    if [[ "$TRAVIS_NODE_VERSION" == "5" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       pushd examples;
       zip -r "../releases/${RELEASE}-tinyweb.zip" "tinyweb";
       popd;
