@@ -18,7 +18,8 @@ import {
     TINYG2_PLANNER_BUFFER_LOW_WATER_MARK,
     TINYG2_PLANNER_QUEUE_STATUS_READY,
     TINYG2_PLANNER_QUEUE_STATUS_RUNNING,
-    TINYG2_PLANNER_QUEUE_STATUS_BLOCKED
+    TINYG2_PLANNER_QUEUE_STATUS_BLOCKED,
+    TINYG2_STATUS_CODES
 } from './constants';
 
 const noop = () => {};
@@ -176,12 +177,31 @@ class TinyG2Controller {
             const statusCode = f[1] || 0;
             const prevPlannerQueueStatus = this.plannerQueueStatus;
 
-            if ((this.workflowState !== WORKFLOW_STATE_IDLE) && (statusCode !== 0)) {
-                const { lines, received } = this.sender.state;
-                const line = lines[received];
-                const error = statusCode;
-                this.emitAll('serialport:read', `> ${line}`);
-                this.emitAll('serialport:read', `error=${error}, line=${received + 1}`);
+            if (statusCode !== 0) {
+                const code = Number(statusCode);
+                const err = _.find(TINYG2_STATUS_CODES, { code: code }) || {};
+
+                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
+                    const { lines, received } = this.sender.state;
+                    const line = lines[received] || '';
+
+                    this.emitAll('serialport:read', `> ${line}`);
+                    this.emitAll('serialport:read', JSON.stringify({
+                        cnc: {
+                            code: code,
+                            msg: err.msg,
+                            line: received + 1,
+                            data: line.trim()
+                        }
+                    }));
+                } else {
+                    this.emitAll('serialport:read', JSON.stringify({
+                        cnc: {
+                            code: code,
+                            msg: err.msg
+                        }
+                    }));
+                }
             }
 
             if (prevPlannerQueueStatus !== TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {

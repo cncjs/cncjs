@@ -16,7 +16,8 @@ import {
 import {
     GRBL,
     GRBL_ACTIVE_STATE_RUN,
-    GRBL_REALTIME_COMMANDS
+    GRBL_REALTIME_COMMANDS,
+    GRBL_ERRORS
 } from './constants';
 import {
     SMOOTHIE,
@@ -194,13 +195,24 @@ class GrblController {
         });
 
         this.grbl.on('error', (res) => {
+            const code = Number(res.message) || undefined;
+            const err = _.find(GRBL_ERRORS, { code: code }) || {};
+            const msg = err ? err.msg : res.message;
+
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                 const { lines, received } = this.sender.state;
-                const line = lines[received];
-                const error = res.message;
+                const line = lines[received] || '';
+
                 this.emitAll('serialport:read', `> ${line}`);
-                this.emitAll('serialport:read', `error=${error}, line=${received + 1}`);
+                this.emitAll('serialport:read', JSON.stringify({
+                    cnc: {
+                        code: code,
+                        msg: msg,
+                        line: received + 1,
+                        data: line.trim()
+                    }
+                }));
 
                 this.sender.ack();
                 this.sender.next();
@@ -208,6 +220,14 @@ class GrblController {
             }
 
             this.emitAll('serialport:read', res.raw);
+            if (code) {
+                this.emitAll('serialport:read', JSON.stringify({
+                    cnc: {
+                        code: code,
+                        msg: msg
+                    }
+                }));
+            }
 
             // Feeder
             this.feeder.next();
