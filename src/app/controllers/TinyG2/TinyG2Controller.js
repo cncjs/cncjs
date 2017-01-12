@@ -187,7 +187,7 @@ class TinyG2Controller {
 
                     this.emitAll('serialport:read', `> ${line}`);
                     this.emitAll('serialport:read', JSON.stringify({
-                        cnc: {
+                        err: {
                             code: code,
                             msg: err.msg,
                             line: received + 1,
@@ -196,7 +196,7 @@ class TinyG2Controller {
                     }));
                 } else {
                     this.emitAll('serialport:read', JSON.stringify({
-                        cnc: {
+                        err: {
                             code: code,
                             msg: err.msg
                         }

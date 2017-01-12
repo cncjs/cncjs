@@ -206,7 +206,7 @@ class GrblController {
 
                 this.emitAll('serialport:read', `> ${line}`);
                 this.emitAll('serialport:read', JSON.stringify({
-                    cnc: {
+                    err: {
                         code: code,
                         msg: msg,
                         line: received + 1,
@@ -222,7 +222,7 @@ class GrblController {
             this.emitAll('serialport:read', res.raw);
             if (code) {
                 this.emitAll('serialport:read', JSON.stringify({
-                    cnc: {
+                    err: {
                         code: code,
                         msg: msg
                     }
