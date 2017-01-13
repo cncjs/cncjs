@@ -1,13 +1,15 @@
+/* eslint no-continue: 0 */
 import events from 'events';
 
 export const SP_TYPE_SEND_RESPONSE = 0;
 export const SP_TYPE_CHAR_COUNTING = 1;
 
 const noop = () => {};
-const stripLine = (() => {
+
+const stripComments = (() => {
     const re1 = new RegExp(/\s*[%#;].*/g); // Strip everything after %, #, or ; to the end of the line, including preceding spaces
     const re2 = new RegExp(/\s*\(.*\)/g); // Remove anything inside the parentheses
-    return line => line.replace(re1, '').replace(re2, '').trim();
+    return line => line.replace(re1, '').replace(re2, '');
 })();
 
 class SPSendResponse {
@@ -36,7 +38,7 @@ class SPSendResponse {
 class SPCharCounting {
     callback = null;
     state = {
-        bufferSize: 120, // Defaults to 120
+        bufferSize: 128, // Defaults to 128
         dataLength: 0,
         queue: [],
         line: ''
@@ -62,7 +64,7 @@ class SPCharCounting {
         this.callback && this.callback(this);
     }
     reset() {
-        this.state.bufferSize = 120; // Defaults to 120
+        this.state.bufferSize = 128; // Defaults to 128
         this.state.dataLength = 0;
         this.state.queue = [];
         this.state.line = '';
@@ -137,27 +139,29 @@ class Sender extends events.EventEmitter {
                 }
 
                 while (this.state.sent < this.state.total) {
-                    sp.line = sp.line || stripLine(this.state.lines[this.state.sent]);
+                    // Remove leading and trailing whitespace from both ends of a string
+                    sp.line = sp.line || stripComments(this.state.lines[this.state.sent]).trim();
 
-                    if (sp.line.length + sp.dataLength >= sp.bufferSize) {
+                    // The newline character (\n) consumed the RX buffer space
+                    if ((sp.line.length > 0) && ((sp.dataLength + sp.line.length + 1) >= sp.bufferSize)) {
                         break;
                     }
-
-                    const line = sp.line;
-                    sp.line = '';
 
                     this.state.sent++;
                     this.emit('change');
 
-                    if (line.length > 0) {
-                        sp.dataLength += line.length;
-                        sp.queue.push(line.length);
-                        this.emit('data', line);
-                    } else {
-                        this.ack(); // Ack for empty lines
+                    if (sp.line.length === 0) {
+                        this.ack(); // ack empty line
+
+                        // continue to the next line if empty
+                        continue;
                     }
 
-                    // Continue to the next line if empty
+                    const line = sp.line + '\n';
+                    sp.line = '';
+                    sp.dataLength += line.length;
+                    sp.queue.push(line.length);
+                    this.emit('data', line);
                 }
             });
         }
@@ -166,20 +170,21 @@ class Sender extends events.EventEmitter {
         if (type === SP_TYPE_SEND_RESPONSE) {
             this.sp = new SPSendResponse(options, (sp) => {
                 while (this.state.sent < this.state.total) {
-                    const line = stripLine(this.state.lines[this.state.sent]);
+                    // Remove leading and trailing whitespace from both ends of a string
+                    const line = stripComments(this.state.lines[this.state.sent]).trim();
 
                     this.state.sent++;
-
                     this.emit('change');
 
-                    if (line.length > 0) {
-                        this.emit('data', line);
-                        break;
+                    if (line.length === 0) {
+                        this.ack(); // ack empty line
+
+                        // continue to the next line if empty
+                        continue;
                     }
 
-                    this.ack(); // Ack for empty lines
-
-                    // Continue to the next line if empty
+                    this.emit('data', line + '\n');
+                    break;
                 }
             });
         }

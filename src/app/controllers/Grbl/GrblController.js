@@ -119,11 +119,8 @@ class GrblController {
 
         // Sender
         this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
-            // Grbl has a 127 character serial receive buffer.
-            // Use a lower value to deduct the length of regular commands:
-            // - parser state command: $G\n"
-            // - current status command: "?"
-            bufferSize: 120
+            // Consider periodic commands ('$G\n', '?') to make sure the buffer doesn't overflow
+            bufferSize: (128 - 4) // Grbl's RX buffer size is 128 bytes
         });
         this.sender.on('data', (gcode = '') => {
             if (this.isClose()) {
@@ -154,8 +151,8 @@ class GrblController {
             // Detect the buffer size if Grbl is set to report the rx buffer (#115)
             if (res && res.buf && res.buf.rx) {
                 const rx = Number(res.buf.rx) || 0;
-                const spare = 8; // deduct the length of regular commands
-                const bufferSize = (rx - spare);
+                // Consider periodic commands ('$G\n', '?') to make sure the buffer doesn't overflow
+                const bufferSize = (rx - 4);
                 if (bufferSize > this.sender.sp.bufferSize) {
                     this.sender.sp.bufferSize = bufferSize;
                 }
