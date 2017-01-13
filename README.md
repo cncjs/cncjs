@@ -129,7 +129,7 @@ $ cnc -vv
 
 The configuration file <b>.cncrc</b> contains settings that are equivalent to the cnc command-line options. The configuration file is stored in user's home directory. To find out the actual location of the home directory, do the following:
 
-* Unix/Linux
+* Linux/Mac
   ```sh
   echo $HOME
   ```
