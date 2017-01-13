@@ -122,7 +122,7 @@ Instead of passing command line options for `--watch-directory`, `--access-token
 
 If you need view detailed logs for troubleshooting, you can run the server in debug mode.
 ```
-$ cnc -vv
+$ cnc -vvv
 ```
 
 ## Configuration File
