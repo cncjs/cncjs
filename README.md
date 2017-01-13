@@ -173,6 +173,9 @@ Check out an example configuration file [here](https://github.com/cheton/cnc/blo
 }
 ```
 
+## TinyWeb
+Visit https://github.com/cheton/cnc/releases to download the latest "tinyweb.zip" file.
+
 ## Wiki
 https://github.com/cheton/cnc/wiki
 
