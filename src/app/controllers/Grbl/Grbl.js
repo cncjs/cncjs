@@ -532,9 +532,9 @@ class GrblLineParserResultSettings {
         }
 
         const payload = {
-            name: r[1],
+            setting: r[1],
             value: r[2],
-            message: _.trim(r[3], '()')
+            description: _.trim(r[3], '()')
         };
 
         return {
@@ -698,13 +698,13 @@ class Grbl extends events.EventEmitter {
             return;
         }
         if (type === GrblLineParserResultSettings) {
-            const { name, value } = payload;
-            const { settings } = this.state;
-            settings[name] = value;
-
+            const { setting, value } = payload;
             const nextState = {
                 ...this.state,
-                settings: settings
+                settings: {
+                    ...this.state.settings,
+                    [setting]: value
+                }
             };
             if (!_.isEqual(this.state.settings, nextState.settings)) {
                 this.state = nextState; // enforce state change

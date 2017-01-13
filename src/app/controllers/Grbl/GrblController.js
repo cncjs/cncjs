@@ -17,7 +17,9 @@ import {
     GRBL,
     GRBL_ACTIVE_STATE_RUN,
     GRBL_REALTIME_COMMANDS,
-    GRBL_ERRORS
+    GRBL_ALARMS,
+    GRBL_ERRORS,
+    GRBL_SETTINGS
 } from './constants';
 import {
     SMOOTHIE,
@@ -193,37 +195,33 @@ class GrblController {
 
         this.grbl.on('error', (res) => {
             const code = Number(res.message) || undefined;
-            const err = _.find(GRBL_ERRORS, { code: code }) || {};
-            const msg = err ? err.msg : res.message;
+            const error = _.find(GRBL_ERRORS, { code: code });
 
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
-                this.emitAll('serialport:read', `> ${line}`);
-                this.emitAll('serialport:read', JSON.stringify({
-                    err: {
-                        code: code,
-                        msg: msg,
-                        line: received + 1,
-                        data: line.trim()
-                    }
-                }));
+                this.emitAll('serialport:read', `> ${line.trim()} (line=${received + 1})`);
+                if (error) {
+                    // Grbl v1.1
+                    this.emitAll('serialport:read', `error:${code} (${error.description})`);
+                } else {
+                    // Grbl v0.9
+                    this.emitAll('serialport:read', res.raw);
+                }
 
                 this.sender.ack();
                 this.sender.next();
                 return;
             }
 
-            this.emitAll('serialport:read', res.raw);
-            if (code) {
-                this.emitAll('serialport:read', JSON.stringify({
-                    err: {
-                        code: code,
-                        msg: msg
-                    }
-                }));
+            if (error) {
+                // Grbl v1.1
+                this.emitAll('serialport:read', `error:${code} (${error.description})`);
+            } else {
+                // Grbl v0.9
+                this.emitAll('serialport:read', res.raw);
             }
 
             // Feeder
@@ -231,7 +229,16 @@ class GrblController {
         });
 
         this.grbl.on('alarm', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            const code = Number(res.message) || undefined;
+            const alarm = _.find(GRBL_ALARMS, { code: code });
+
+            if (alarm) {
+                // Grbl v1.1
+                this.emitAll('serialport:read', `ALARM:${code} (${alarm.description})`);
+            } else {
+                // Grbl v0.9
+                this.emitAll('serialport:read', res.raw);
+            }
         });
 
         this.grbl.on('parserstate', (res) => {
@@ -254,7 +261,15 @@ class GrblController {
         });
 
         this.grbl.on('settings', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            const setting = _.find(GRBL_SETTINGS, { setting: res.setting });
+
+            if (!res.description && setting) {
+                // Grbl v1.1
+                this.emitAll('serialport:read', `${res.setting}=${res.value} (${setting.description}, ${setting.units})`);
+            } else {
+                // Grbl v0.9
+                this.emitAll('serialport:read', res.raw);
+            }
         });
 
         this.grbl.on('startup', (res) => {
