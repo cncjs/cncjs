@@ -8,7 +8,7 @@ const noop = () => {};
 
 const stripComments = (() => {
     const re1 = new RegExp(/\s*[%#;].*/g); // Strip everything after %, #, or ; to the end of the line, including preceding spaces
-    const re2 = new RegExp(/\s*\(.*\)/g); // Remove anything inside the parentheses
+    const re2 = new RegExp(/\s*\([^\)]*\)/g); // Remove anything inside the parentheses
     return line => line.replace(re1, '').replace(re2, '');
 })();
 
