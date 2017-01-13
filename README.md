@@ -120,11 +120,57 @@ Instead of passing command line options for `--watch-directory`, `--access-token
 }
 ```
 
-Check out an example configuration file [here](https://github.com/cheton/cnc/blob/master/examples/.cncrc).
-
 If you need view detailed logs for troubleshooting, you can run the server in debug mode.
 ```
 $ cnc -vv
+```
+
+## Configuration File
+
+The configuration file <b>.cncrc</b> contains settings that are equivalent to the cnc command-line options. The configuration file is stored in user's home directory. To find out the actual location of the home directory, do the following:
+
+* Unix/Linux
+  ```sh
+  echo $HOME
+  ```
+
+* Windows
+  ```sh
+  echo %USERPROFILE%
+  ```
+
+Check out an example configuration file [here](https://github.com/cheton/cnc/blob/master/examples/.cncrc).
+
+### File Format
+```json
+{
+  "watchDirectory": "/path/to/dir",
+  "accessTokenLifetime": "30d",
+  "allowRemoteAccess": false,
+  "state": {
+    "checkForUpdates": true
+  },
+  "commands": [
+    {
+      "text": "Update (root user)",
+      "command": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cnc"
+    },
+    {
+      "text": "Update (non-root user)",
+      "command": "npm install -g cncjs@latest; pkill -a -f cnc"
+    },
+    {
+      "text": "Reboot",
+      "command": "sudo /sbin/reboot"
+    },
+    {
+      "text": "Shutdown",
+      "command": "sudo /sbin/shutdown"
+    }
+  ],
+  "macros": [],
+  "users": []
+}
 ```
 
 ## Wiki
