@@ -76,23 +76,21 @@ test('send-response streaming protocol', (t) => {
             startedTime: 0,
             finishedTime: 0
         });
+
         t.end();
     });
 
     const bar = new ProgressBar('processing [:bar] :percent :etas', {
-        stream: process.stderr,
         total: sender.state.total
     });
     const timer = setInterval(() => {
         bar.tick();
 
+        sender.next();
+
         if (bar.complete) {
             clearInterval(timer);
             return;
-        }
-
-        if (sender.state.sent < sender.state.total) {
-            sender.next();
         }
 
         if (sender.peek()) {
@@ -184,23 +182,21 @@ test('character-counting streaming protocol', (t) => {
             startedTime: 0,
             finishedTime: 0
         });
+
         t.end();
     });
 
     const bar = new ProgressBar('processing [:bar] :percent :etas', {
-        stream: process.stderr,
         total: sender.state.total
     });
     const timer = setInterval(() => {
         bar.tick();
 
+        sender.next();
+
         if (bar.complete) {
             clearInterval(timer);
             return;
-        }
-
-        if (sender.state.sent < sender.state.total) {
-            sender.next();
         }
 
         if (sender.peek()) {
