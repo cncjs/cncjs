@@ -58,14 +58,17 @@ class QuickAccessToolbar extends React.Component {
         }
         controller.command('feedhold');
     }
-    handleReset() {
-        controller.command('reset');
-    }
     handleHoming() {
         controller.command('homing');
     }
+    handleSleep() {
+        controller.command('$SLP');
+    }
     handleUnlock() {
         controller.command('unlock');
+    }
+    handleReset() {
+        controller.command('reset');
     }
     render() {
         return (
@@ -103,6 +106,16 @@ class QuickAccessToolbar extends React.Component {
                             <i className="fa fa-home" />
                             <span className="space" />
                             {i18n._('Homing')}
+                        </button>
+                        <button
+                            type="button"
+                            className="btn btn-info"
+                            onClick={::this.handleSleep}
+                            title={i18n._('Sleep')}
+                        >
+                            <i className="fa fa-sleep" />
+                            <span className="space" />
+                            {i18n._('Sleep')}
                         </button>
                         <button
                             type="button"
