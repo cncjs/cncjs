@@ -62,7 +62,7 @@ class QuickAccessToolbar extends React.Component {
         controller.command('homing');
     }
     handleSleep() {
-        controller.command('$SLP');
+        controller.command('gcode', '$SLP');
     }
     handleUnlock() {
         controller.command('unlock');
