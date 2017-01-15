@@ -17,6 +17,7 @@ export const GRBL_ACTIVE_STATE_RUN = 'Run';
 export const GRBL_ACTIVE_STATE_HOLD = 'Hold';
 export const GRBL_ACTIVE_STATE_DOOR = 'Door';
 export const GRBL_ACTIVE_STATE_HOME = 'Home';
+export const GRBL_ACTIVE_STATE_SLEEP = 'Sleep';
 export const GRBL_ACTIVE_STATE_ALARM = 'Alarm';
 export const GRBL_ACTIVE_STATE_CHECK = 'Check';
 
