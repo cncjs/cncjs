@@ -138,12 +138,14 @@ CNCController.prototype.listAllPorts = function() {
 //   controller.command('feedhold')
 // - Cycle Start
 //   controller.command('cyclestart')
-// - Reset
-//   controller.command('reset')
 // - Homing
 //   controller.command('homing')
+// - Sleep
+//   controller.command('sleep')
 // - Unlock
 //   controller.command('unlock')
+// - Reset
+//   controller.command('reset')
 // - G-code
 //   controller.command('gcode', 'G0X0Y0')
 // - Load macro

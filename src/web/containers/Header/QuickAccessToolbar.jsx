@@ -62,7 +62,7 @@ class QuickAccessToolbar extends React.Component {
         controller.command('homing');
     }
     handleSleep() {
-        controller.command('gcode', '$SLP');
+        controller.command('sleep');
     }
     handleUnlock() {
         controller.command('unlock');
@@ -81,7 +81,7 @@ class QuickAccessToolbar extends React.Component {
                             onClick={::this.handleCycleStart}
                             title={i18n._('Cycle Start')}
                         >
-                            <i className="fa fa-play" />
+                            <i className="fa fa-repeat" />
                             <span className="space" />
                             {i18n._('Cycle Start')}
                         </button>
@@ -91,7 +91,7 @@ class QuickAccessToolbar extends React.Component {
                             onClick={::this.handleFeedHold}
                             title={i18n._('Feedhold')}
                         >
-                            <i className="fa fa-pause" />
+                            <i className="fa fa-hand-paper-o" />
                             <span className="space" />
                             {i18n._('Feedhold')}
                         </button>
@@ -109,11 +109,11 @@ class QuickAccessToolbar extends React.Component {
                         </button>
                         <button
                             type="button"
-                            className="btn btn-info"
+                            className="btn btn-success"
                             onClick={::this.handleSleep}
                             title={i18n._('Sleep')}
                         >
-                            <i className="fa fa-sleep" />
+                            <i className="fa fa-bed" />
                             <span className="space" />
                             {i18n._('Sleep')}
                         </button>

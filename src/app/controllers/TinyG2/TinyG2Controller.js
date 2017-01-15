@@ -591,6 +591,15 @@ class TinyG2Controller {
             'killjob': () => {
                 this.writeln(socket, '\x04'); // ^d
             },
+            'homing': () => {
+                this.writeln(socket, '{home:1}');
+            },
+            'sleep': () => {
+                // Not supported
+            },
+            'unlock': () => {
+                this.writeln(socket, '{clear:null}');
+            },
             'reset': () => {
                 if (this.workflowState !== WORKFLOW_STATE_IDLE) {
                     this.workflowState = WORKFLOW_STATE_IDLE;
@@ -598,12 +607,6 @@ class TinyG2Controller {
                 }
 
                 this.writeln(socket, '\x18'); // ^x
-            },
-            'unlock': () => {
-                this.writeln(socket, '{clear:null}');
-            },
-            'homing': () => {
-                this.writeln(socket, '{home:1}');
             },
             'gcode': () => {
                 const line = args.join(' ');

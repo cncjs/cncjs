@@ -632,6 +632,18 @@ class GrblController {
                     this.sender.next();
                 }
             },
+            'check': () => {
+                this.writeln(socket, '$C');
+            },
+            'homing': () => {
+                this.writeln(socket, '$H');
+            },
+            'sleep': () => {
+                this.writeln(socket, '$SLP');
+            },
+            'unlock': () => {
+                this.writeln(socket, '$X');
+            },
             'reset': () => {
                 if (this.workflowState !== WORKFLOW_STATE_IDLE) {
                     this.workflowState = WORKFLOW_STATE_IDLE;
@@ -639,15 +651,6 @@ class GrblController {
                 }
 
                 this.write(socket, '\x18'); // ^x
-            },
-            'unlock': () => {
-                this.writeln(socket, '$X');
-            },
-            'homing': () => {
-                this.writeln(socket, '$H');
-            },
-            'check': () => {
-                this.writeln(socket, '$C');
             },
             'gcode': () => {
                 const line = args.join(' ');
