@@ -19,6 +19,7 @@ import {
     GRBL_ACTIVE_STATE_HOLD,
     GRBL_ACTIVE_STATE_DOOR,
     GRBL_ACTIVE_STATE_HOME,
+    GRBL_ACTIVE_STATE_SLEEP,
     GRBL_ACTIVE_STATE_ALARM,
     GRBL_ACTIVE_STATE_CHECK,
     // TinyG2
@@ -79,6 +80,7 @@ class Controls extends Component {
                 [GRBL_ACTIVE_STATE_HOLD]: i18n.t('controller:Grbl.activeState.hold'),
                 [GRBL_ACTIVE_STATE_DOOR]: i18n.t('controller:Grbl.activeState.door'),
                 [GRBL_ACTIVE_STATE_HOME]: i18n.t('controller:Grbl.activeState.home'),
+                [GRBL_ACTIVE_STATE_SLEEP]: i18n.t('controller:Grbl.activeState.sleep'),
                 [GRBL_ACTIVE_STATE_ALARM]: i18n.t('controller:Grbl.activeState.alarm'),
                 [GRBL_ACTIVE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
             }[activeState];
