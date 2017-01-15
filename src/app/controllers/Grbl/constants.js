@@ -61,7 +61,7 @@ export const GRBL_MODAL_GROUPS = [
 ];
 
 // Errors
-// https://github.com/gnea/grbl-Mega/blob/edge/doc/csv/error_codes_en_US.csv
+// https://github.com/gnea/grbl/blob/master/doc/csv/error_codes_en_US.csv
 export const GRBL_ERRORS = [
     {
         code: 1,
@@ -232,11 +232,16 @@ export const GRBL_ERRORS = [
         code: 37,
         description: 'Invalid gcode ID:37',
         help: 'G43.1 dynamic tool length offset is not assigned to configured tool length axis.'
+    },
+    {
+        code: 38,
+        description: 'Invalid gcode ID:38',
+        help: 'Tool number greater than max supported value.'
     }
 ];
 
 // Alarms
-// https://github.com/gnea/grbl-Mega/blob/edge/doc/csv/alarm_codes_en_US.csv
+// https://github.com/gnea/grbl/blob/master/doc/csv/alarm_codes_en_US.csv
 export const GRBL_ALARMS = [
     {
         code: 1,
@@ -286,7 +291,7 @@ export const GRBL_ALARMS = [
 ];
 
 // Settings
-// https://github.com/gnea/grbl-Mega/blob/edge/doc/csv/setting_codes_en_US.csv
+// https://github.com/gnea/grbl/blob/master/doc/csv/setting_codes_en_US.csv
 export const GRBL_SETTINGS = [
     {
         setting: '$0',
