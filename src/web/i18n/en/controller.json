@@ -1,18 +1,20 @@
 {
     "TinyG2": {
         "machineState": {
-            "init": "Init",
+            "initializing": "Initializing",
             "ready": "Ready",
             "alarm": "Alarm",
-            "stop": "Stop",
-            "end": "End",
+            "stop": "Program Stop",
+            "end": "Program End",
             "run": "Run",
             "hold": "Hold",
             "probe": "Probe",
-            "cycling": "Cycling",
+            "cycle": "Cycle",
             "homing": "Homing",
-            "jogging": "Jogging",
-            "shutdown": "Shutdown"
+            "jog": "Jog",
+            "interlock": "Interlock",
+            "shutdown": "Shutdown",
+            "panic": "Panic"
         }
     },
     "Grbl": {

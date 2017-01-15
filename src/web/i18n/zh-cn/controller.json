@@ -1,7 +1,7 @@
 {
     "TinyG2": {
         "machineState": {
-            "init": "",
+            "initializing": "",
             "ready": "",
             "alarm": "",
             "stop": "",
@@ -9,10 +9,12 @@
             "run": "",
             "hold": "",
             "probe": "",
-            "cycling": "",
+            "cycle": "",
             "homing": "",
-            "jogging": "",
-            "shutdown": ""
+            "jog": "",
+            "interlock": "",
+            "shutdown": "",
+            "panic": ""
         }
     },
     "Grbl": {
