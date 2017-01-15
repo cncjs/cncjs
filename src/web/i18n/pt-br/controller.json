@@ -22,6 +22,7 @@
             "hold": "Manter",
             "door": "Porta",
             "home": "Casa",
+            "sleep": "",
             "alarm": "Alarme",
             "check": "Checar"
         }

@@ -22,6 +22,7 @@
             "hold": "Pausa",
             "door": "Finecorsa",
             "home": "Home",
+            "sleep": "",
             "alarm": "Allarme",
             "check": "Controllo"
         }

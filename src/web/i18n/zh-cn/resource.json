@@ -14,6 +14,7 @@
     "Cycle Start": "循环启动",
     "Feedhold": "进给暂停",
     "Homing": "原点复位",
+    "Sleep": "",
     "Unlock": "解除锁定",
     "Reset": "重置",
     "Authentication failed.": "",
