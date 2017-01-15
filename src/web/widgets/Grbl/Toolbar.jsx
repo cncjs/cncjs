@@ -44,20 +44,38 @@ class Toolbar extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        title={i18n._('Kill Alarm Lock ($X)')}
-                        onClick={() => controller.command('unlock')}
-                        disabled={!canClick}
-                    >
-                        $X
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
                         title={i18n._('Check G-code Mode ($C)')}
                         onClick={() => controller.command('check')}
                         disabled={!canClick}
                     >
                         $C
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        title={i18n._('Homing ($H)')}
+                        onClick={() => controller.command('homing')}
+                        disabled={!canClick}
+                    >
+                        $H
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        title={i18n._('Sleep ($SLP)')}
+                        onClick={() => controller.command('sleep')}
+                        disabled={!canClick}
+                    >
+                        $SLP
+                    </button>
+                    <button
+                        type="button"
+                        className="btn btn-default"
+                        title={i18n._('Kill Alarm Lock ($X)')}
+                        onClick={() => controller.command('unlock')}
+                        disabled={!canClick}
+                    >
+                        $X
                     </button>
                     <button
                         type="button"
