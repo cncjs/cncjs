@@ -86,11 +86,11 @@ var webpackConfig = Object.assign({}, baseConfig, {
     ]
 });
 
-Object.keys(webpackConfig.entry, (name) => {
-    // necessary for hot reloading with IE:
-    webpackConfig[name].push('eventsource-polyfill');
-    // listen to code updates emitted by hot middleware:
-    webpackConfig[name].push('webpack-hot-middleware/client');
+Object.keys(webpackConfig.entry).forEach((name) => {
+    webpackConfig.entry[name] = [
+        'eventsource-polyfill', // necessary for hot reloading with IE
+        'webpack-hot-middleware/client?reload=true' // listen to code updates emitted by hot middleware
+    ].concat(webpackConfig.entry[name]);
 });
 
 module.exports = webpackConfig;
