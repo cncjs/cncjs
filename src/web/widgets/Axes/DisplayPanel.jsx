@@ -40,7 +40,8 @@ class DisplayPanel extends Component {
     render() {
         const { state, actions } = this.props;
         const { units, canClick, axes, machinePosition, workPosition } = state;
-        const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
+        const lengthUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
+        const degreeUnits = i18n._('deg');
         const wcs = actions.getWorkCoordinateSystem();
 
         return (
@@ -62,10 +63,10 @@ class DisplayPanel extends Component {
                                 <span styleName="integer-part">{machinePosition.x.split('.')[0]}</span>
                                 <span styleName="decimal-point">.</span>
                                 <span styleName="fractional-part">{machinePosition.x.split('.')[1]}</span>
-                                <span styleName="dimension-units">{displayUnits}</span>
+                                <span styleName="dimension-units">{lengthUnits}</span>
                             </td>
                             <td styleName="work-position">
-                                <span styleName="dimension-units">{displayUnits}</span>
+                                <span styleName="dimension-units">{lengthUnits}</span>
                                 {this.state.showXPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
@@ -220,10 +221,10 @@ class DisplayPanel extends Component {
                                 <span styleName="integer-part">{machinePosition.y.split('.')[0]}</span>
                                 <span styleName="decimal-point">.</span>
                                 <span styleName="fractional-part">{machinePosition.y.split('.')[1]}</span>
-                                <span styleName="dimension-units">{displayUnits}</span>
+                                <span styleName="dimension-units">{lengthUnits}</span>
                             </td>
                             <td styleName="work-position">
-                                <span styleName="dimension-units">{displayUnits}</span>
+                                <span styleName="dimension-units">{lengthUnits}</span>
                                 {this.state.showYPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
@@ -378,10 +379,10 @@ class DisplayPanel extends Component {
                                 <span styleName="integer-part">{machinePosition.z.split('.')[0]}</span>
                                 <span styleName="decimal-point">.</span>
                                 <span styleName="fractional-part">{machinePosition.z.split('.')[1]}</span>
-                                <span styleName="dimension-units">{displayUnits}</span>
+                                <span styleName="dimension-units">{lengthUnits}</span>
                             </td>
                             <td styleName="work-position">
-                                <span styleName="dimension-units">{displayUnits}</span>
+                                <span styleName="dimension-units">{lengthUnits}</span>
                                 {this.state.showZPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
@@ -556,10 +557,10 @@ class DisplayPanel extends Component {
                                 <span styleName="integer-part">{machinePosition.a.split('.')[0]}</span>
                                 <span styleName="decimal-point">.</span>
                                 <span styleName="fractional-part">{machinePosition.a.split('.')[1]}</span>
-                                <span styleName="dimension-units">{i18n._('deg')}</span>
+                                <span styleName="dimension-units">{degreeUnits}</span>
                             </td>
                             <td styleName="work-position">
-                                <span styleName="dimension-units">{i18n._('deg')}</span>
+                                <span styleName="dimension-units">{degreeUnits}</span>
                                 {this.state.showAPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
