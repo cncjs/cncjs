@@ -148,7 +148,7 @@ class ToolbarButton extends Component {
                     <OverlayTrigger
                         overlay={keypadTooltip()}
                         placement="bottom"
-                        delayShow={600}
+                        delayShow={800}
                     >
                         <button
                             type="button"

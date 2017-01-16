@@ -4,6 +4,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
 import CSSModules from 'react-css-modules';
 import { in2mm } from '../../lib/units';
+import Anchor from '../../components/Anchor';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
 import PositionInput from './PositionInput';
@@ -13,7 +14,7 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles)
+@CSSModules(styles, { allowMultiple: true })
 class DisplayPanel extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -530,21 +531,39 @@ class DisplayPanel extends Component {
                         }
                         {includes(axes, 'a') &&
                         <tr>
-                            <td styleName="coordinate">A</td>
+                            <td styleName="coordinate top">
+                                <div>A</div>
+                                <Anchor
+                                    styleName="move-backward"
+                                    onClick={() => {
+                                        const distance = actions.getJogDistance();
+                                        actions.jog({ A: -distance });
+                                    }}
+                                >
+                                    <i className="fa fa-fw fa-minus" />
+                                </Anchor>
+                                <Anchor
+                                    styleName="move-forward"
+                                    onClick={() => {
+                                        const distance = actions.getJogDistance();
+                                        actions.jog({ A: distance });
+                                    }}
+                                >
+                                    <i className="fa fa-fw fa-plus" />
+                                </Anchor>
+                            </td>
                             <td styleName="machine-position">
                                 <span styleName="integer-part">{machinePosition.a.split('.')[0]}</span>
                                 <span styleName="decimal-point">.</span>
                                 <span styleName="fractional-part">{machinePosition.a.split('.')[1]}</span>
-                                <span styleName="dimension-units">{displayUnits}</span>
+                                <span styleName="dimension-units">{i18n._('deg')}</span>
                             </td>
                             <td styleName="work-position">
-                                <span styleName="dimension-units">{displayUnits}</span>
+                                <span styleName="dimension-units">{i18n._('deg')}</span>
                                 {this.state.showAPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
-                                        if (units === IMPERIAL_UNITS) {
-                                            value = in2mm(value);
-                                        }
+                                        // units of degree
                                         controller.command('gcode', 'G10 L20 P1 A' + value);
                                         this.setState({ showAPositionInput: false });
                                     }}

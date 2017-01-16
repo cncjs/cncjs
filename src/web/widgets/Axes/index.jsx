@@ -79,6 +79,15 @@ class AxesWidget extends Component {
     };
 
     actions = {
+        getJogDistance: () => {
+            const { units } = this.state;
+            const selectedDistance = store.get('widgets.axes.jog.selectedDistance');
+            const customDistance = store.get('widgets.axes.jog.customDistance');
+            if (selectedDistance) {
+                return Number(selectedDistance) || 0;
+            }
+            return toUnits(units, customDistance);
+        },
         getWorkCoordinateSystem: () => {
             const controllerType = this.state.controller.type;
             const controllerState = this.state.controller.state;
@@ -93,6 +102,15 @@ class AxesWidget extends Component {
             }
 
             return defaultWCS;
+        },
+        jog: (params = {}) => {
+            const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
+            controller.command('gcode', 'G91 G0 ' + s); // relative distance
+            controller.command('gcode', 'G90'); // absolute distance
+        },
+        move: (params = {}) => {
+            const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
+            controller.command('gcode', 'G0 ' + s);
         },
         toggleKeypadJogging: () => {
             this.setState({ keypadJogging: !this.state.keypadJogging });

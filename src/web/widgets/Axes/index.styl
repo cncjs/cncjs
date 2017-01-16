@@ -47,17 +47,50 @@
     margin-bottom: 10px;
 
     .coordinate {
-        text-align: center;
+        position: relative;
         font-size: 24px;
-        padding: 0;
+        padding: 5px 0;
+        text-align: center;
         width: 1%;
+
+        &.top {
+            vertical-align: top;
+        }
+
+        .move-backward,
+        .move-forward {
+            color: #444;
+
+            :global {
+                // font awesome icons
+                .fa {
+                    font-size: 10px;
+                }
+            }
+        
+            &:hover {
+                font-weight: bold;
+                color: #222;
+            }
+        }
+
+        .move-backward {
+            position: absolute;
+            left: 3px;
+            bottom: 3px;
+        }
+        .move-forward {
+            position: absolute;
+            right: 3px;
+            bottom: 3px;
+        }
     }
     .machine-position,
     .work-position {
+        position: relative;
         padding: 5px 5px 15px 5px;
         text-align: right;
         white-space: nowrap;
-        position: relative;
         width: 48%;
 
         .integer-part,
