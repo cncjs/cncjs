@@ -94,6 +94,7 @@
     "A-axis": "A-tengely",
     "mm": "mm",
     "in": "inch",
+    "deg": "",
     "Axis": "Tengely",
     "Machine Position": "Gép pozíció",
     "Work Position": "Munka pozíció",

@@ -94,6 +94,7 @@
     "A-axis": "",
     "mm": "mm",
     "in": "in",
+    "deg": "",
     "Axis": "Axes",
     "Machine Position": "Position de la machine",
     "Work Position": "Position de travail",

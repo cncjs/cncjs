@@ -94,6 +94,7 @@
     "A-axis": "",
     "mm": "mm",
     "in": "in",
+    "deg": "",
     "Axis": "坐标轴",
     "Machine Position": "机器位置",
     "Work Position": "工作位置",
