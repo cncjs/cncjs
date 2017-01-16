@@ -318,13 +318,26 @@ class TinyG2Controller {
                         unit: true,
                         dist: true,
                         frmo: true,
-                        path: true,
+                        path: true
+                    }
+                }),
+                pauseAfter: 50
+            },
+            {
+                cmd: JSON.stringify({
+                    sr: {
                         posx: true,
                         posy: true,
                         posz: true,
+                        posa: true,
+                        posb: true,
+                        posc: true,
                         mpox: true,
                         mpoy: true,
-                        mpoz: true
+                        mpoz: true,
+                        mpoa: true,
+                        mpob: true,
+                        mpoc: true
                     }
                 }),
                 pauseAfter: 50
