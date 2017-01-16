@@ -3,6 +3,7 @@
 var without = require('lodash/without');
 var crypto = require('crypto');
 var path = require('path');
+var findImports = require('find-imports');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
@@ -26,6 +27,20 @@ var publicPath = (function(payload) {
 
 var webpackConfig = Object.assign({}, baseConfig, {
     devtool: 'source-map',
+    entry: {
+        polyfill: [
+            path.resolve(__dirname, 'src/web/polyfill/index.js')
+        ],
+        vendor: findImports([
+            'src/web/**/*.{js,jsx}',
+            '!src/web/polyfill/**/*.js',
+            '!src/web/containers/DevTools.js', // redux-devtools
+            '!src/web/**/*.development.js'
+        ], { flatten: true }),
+        app: [
+            path.resolve(__dirname, 'src/web/index.jsx')
+        ]
+    },
     output: {
         path: path.join(__dirname, 'dist/cnc/web'),
         chunkFilename: '[name].[chunkhash].bundle.js',

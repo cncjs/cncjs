@@ -1,27 +1,12 @@
 /* eslint no-var: 0 */
 var nib = require('nib');
 var path = require('path');
-var findImports = require('find-imports');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     cache: true,
     target: 'web',
     context: path.resolve(__dirname, 'src/web'),
-    entry: {
-        polyfill: [
-            path.resolve(__dirname, 'src/web/polyfill/index.js')
-        ],
-        vendor: findImports([
-            'src/web/**/*.{js,jsx}',
-            '!src/web/polyfill/**/*.js',
-            '!src/web/containers/DevTools.js', // redux-devtools
-            '!src/web/**/*.development.js'
-        ], { flatten: true }),
-        app: [
-            path.resolve(__dirname, 'src/web/index.jsx')
-        ]
-    },
     module: {
         preLoaders: [
             // http://survivejs.com/webpack_react/linting_in_webpack/

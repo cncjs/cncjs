@@ -18,6 +18,22 @@ var pkg = require('./package.json');
 var webpackConfig = Object.assign({}, baseConfig, {
     debug: true,
     devtool: 'eval',
+    entry: {
+        polyfill: [
+            // https://github.com/Yaffle/EventSource
+            'eventsource-polyfill',
+            // https://github.com/glenjamin/webpack-hot-middleware
+            'webpack-hot-middleware/client?reload=true',
+            path.resolve(__dirname, 'src/web/polyfill/index.js')
+        ],
+        app: [
+            // https://github.com/Yaffle/EventSource
+            'eventsource-polyfill',
+            // https://github.com/glenjamin/webpack-hot-middleware
+            'webpack-hot-middleware/client?reload=true',
+            path.resolve(__dirname, 'src/web/index.jsx')
+        ]
+    },
     output: {
         path: path.join(__dirname, 'output/web'),
         chunkFilename: '[name].bundle.js?[hash]',
@@ -84,13 +100,6 @@ var webpackConfig = Object.assign({}, baseConfig, {
         }),
         new webpack.NoErrorsPlugin()
     ]
-});
-
-Object.keys(webpackConfig.entry).forEach((name) => {
-    webpackConfig.entry[name] = [
-        'eventsource-polyfill', // necessary for hot reloading with IE
-        'webpack-hot-middleware/client?reload=true' // listen to code updates emitted by hot middleware
-    ].concat(webpackConfig.entry[name]);
 });
 
 module.exports = webpackConfig;
