@@ -7,7 +7,7 @@ import { Link } from 'react-router';
 import shallowCompare from 'react-addons-shallow-compare';
 import api from '../../api';
 import settings from '../../config/settings';
-import Breadcrumb from '../../components/Breadcrumb';
+import Breadcrumbs from '../../components/Breadcrumbs';
 import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
 import store from '../../store';
@@ -408,9 +408,9 @@ class Settings extends Component {
 
         return (
             <div className={styles.settings}>
-                <Breadcrumb>
-                    <Breadcrumb.Item active>{i18n._('Settings')}</Breadcrumb.Item>
-                </Breadcrumb>
+                <Breadcrumbs>
+                    <Breadcrumbs.Item active>{i18n._('Settings')}</Breadcrumbs.Item>
+                </Breadcrumbs>
                 <div className={classNames(styles.container, styles.border)}>
                     <div className={styles.row}>
                         <div className={classNames(styles.col, styles.sidenav)}>
