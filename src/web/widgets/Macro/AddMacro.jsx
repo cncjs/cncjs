@@ -24,9 +24,8 @@ class AddMacro extends Component {
 
         return (
             <Modal
-                backdrop
-                bsSize="md"
-                onHide={actions.closeModal}
+                onClose={actions.closeModal}
+                size="md"
             >
                 <Modal.Header>
                     <Modal.Title>

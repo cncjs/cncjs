@@ -35,10 +35,9 @@ class Settings extends React.Component {
 
         return (
             <Modal
-                backdrop="static"
-                bsSize="sm"
-                onHide={::this.handleCancel}
+                onClose={::this.handleCancel}
                 show={show}
+                size="sm"
             >
                 <Modal.Header>
                     <Modal.Title>{i18n._('Axes Settings')}</Modal.Title>

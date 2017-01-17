@@ -104,9 +104,8 @@ class WatchDirectory extends Component {
 
         return (
             <Modal
-                backdrop
-                bsSize="md"
-                onHide={actions.closeModal}
+                onClose={actions.closeModal}
+                size="md"
             >
                 <Modal.Header>
                     <Modal.Title>{i18n._('Watch Directory')}</Modal.Title>

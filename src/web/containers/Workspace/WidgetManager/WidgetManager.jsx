@@ -141,12 +141,9 @@ class WidgetManager extends Component {
 
         return (
             <Modal
-                backdrop="static"
-                onHide={::this.handleCancel}
+                onClose={::this.handleCancel}
                 show={this.state.show}
-                style={{
-                    maxWidth: 800
-                }}
+                size="md"
             >
                 <Modal.Header closeButton>
                     <Modal.Title>{i18n._('Widgets')}</Modal.Title>

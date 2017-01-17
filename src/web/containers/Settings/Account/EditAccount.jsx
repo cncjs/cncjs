@@ -47,9 +47,8 @@ class EditAccount extends Component {
 
         return (
             <Modal
-                backdrop
-                bsSize="sm"
-                onHide={actions.closeModal}
+                onClose={actions.closeModal}
+                size="sm"
             >
                 <Modal.Header>
                     <Modal.Title>{i18n._('Edit Account')}</Modal.Title>
