@@ -1,6 +1,6 @@
 {
-    "Records: {{from}} - {{to}} / {{total}}": "",
-    "Records: {{total}}": "",
+    "Records: {{from}} - {{to}} / {{totalRecords}}": "",
+    "Records: {{totalRecords}}": "",
     "{{pageLength}} per page": "",
     "New update available": "有新的更新可用",
     "Restore Defaults": "恢复缺省值",

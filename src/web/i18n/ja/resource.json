@@ -1,6 +1,6 @@
 {
-    "Records: {{from}} - {{to}} / {{total}}": "アカウント: {{from}} - {{to}} / {{total}}",
-    "Records: {{total}}": "レコード: {{total}}",
+    "Records: {{from}} - {{to}} / {{totalRecords}}": "アカウント: {{from}} - {{to}} / {{totalRecords}}",
+    "Records: {{totalRecords}}": "レコード: {{totalRecords}}",
     "{{pageLength}} per page": "{{pageLength}} / ページ",
     "New update available": "利用可能な新しいアップデート",
     "Restore Defaults": "初期設定を復元",

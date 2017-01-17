@@ -1,6 +1,6 @@
 {
-    "Records: {{from}} - {{to}} / {{total}}": "",
-    "Records: {{total}}": "",
+    "Records: {{from}} - {{to}} / {{totalRecords}}": "",
+    "Records: {{totalRecords}}": "",
     "{{pageLength}} per page": "",
     "New update available": "Nouvelles mises à jour disponibles",
     "Restore Defaults": "Restaurer défaut",

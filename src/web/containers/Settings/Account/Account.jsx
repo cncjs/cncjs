@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Anchor from '../../../components/Anchor';
 import Table, { Toolbar } from '../../../components/Table';
-import TablePagination from '../../../components/TablePagination';
+import { TablePagination } from '../../../components/Paginations';
 import api from '../../../api';
 import confirm from '../../../lib/confirm';
 import i18n from '../../../lib/i18n';
@@ -83,15 +83,18 @@ class Account extends Component {
                                 <span className="space" />
                                 {i18n._('Add New Account')}
                             </button>
-                            <TablePagination
-                                style={{ position: 'absolute', right: 0, top: 0 }}
-                                page={state.pagination.page}
-                                pageLength={state.pagination.pageLength}
-                                totalRecords={state.pagination.totalRecords}
-                                onPageChange={({ page, pageLength }) => {
-                                    actions.fetchData({ page, pageLength });
-                                }}
-                            />
+                            <div style={{ position: 'absolute', right: 0, top: 0 }}>
+                                <TablePagination
+                                    page={state.pagination.page}
+                                    pageLength={state.pagination.pageLength}
+                                    totalRecords={state.pagination.totalRecords}
+                                    onPageChange={({ page, pageLength }) => {
+                                        actions.fetchData({ page, pageLength });
+                                    }}
+                                    prevPageRenderer={() => <i className="fa fa-angle-left" />}
+                                    nextPageRenderer={() => <i className="fa fa-angle-right" />}
+                                />
+                            </div>
                         </Toolbar>
                     }
                     columns={[
