@@ -110,6 +110,7 @@
     "tinyg2"
   ],
   "dependencies": {
+    "@trendmicro/react-anchor": "~0.5.2",
     "@trendmicro/react-modal": "~0.6.0",
     "@trendmicro/react-paginations": "~0.5.1",
     "async": "~2.1.4",
