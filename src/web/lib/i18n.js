@@ -18,10 +18,19 @@ const _ = (...args) => {
         return i18next.t.apply(i18next, args);
     }
 
-    const value = args[0];
-    const options = args[1] || {};
-    const key = sha1(value);
-    args[0] = value;
+    const [value = '', options = {}] = args;
+    const key = ((value, options) => {
+        const { context, count } = { ...options };
+        const containsContext = (context !== undefined) && (context !== null);
+        const containsPlural = (typeof count === 'number');
+        if (containsContext) {
+            value = value + i18next.options.contextSeparator + options.context;
+        }
+        if (containsPlural) {
+            value = value + i18next.options.pluralSeparator + 'plural';
+        }
+        return sha1(value);
+    })(value, options);
 
     options.defaultValue = value;
 
