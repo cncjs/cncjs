@@ -6,11 +6,7 @@ import i18n from './i18n';
 
 class ConfirmHOC extends Component {
     static propTypes = {
-        ...Confirm.propTypes,
         container: PropTypes.object
-    };
-    static defaultProps = {
-        ...Confirm.defaultProps
     };
 
     state = {
@@ -40,10 +36,16 @@ class ConfirmHOC extends Component {
         return (
             <Confirm
                 {...this.props}
-                confirmText={i18n._('OK')}
-                cancelText={i18n._('Cancel')}
-                onConfirm={::this.handleConfirm}
-                onCancel={::this.handleCancel}
+                btnConfirm={{
+                    text: i18n._('OK'),
+                    ...this.props.btnConfirm,
+                    onClick: ::this.handleConfirm
+                }}
+                btnCancel={{
+                    text: i18n._('Cancel'),
+                    ...this.props.btnCancel,
+                    onClick: ::this.handleCancel
+                }}
             />
         );
     }

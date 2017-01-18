@@ -86,9 +86,13 @@ class EditMacro extends Component {
                             confirm({
                                 title: i18n._('Delete Macro'),
                                 body: i18n._('Are you sure you want to delete this macro?'),
-                                confirmBSStyle: 'danger',
-                                confirmText: i18n._('Yes'),
-                                cancelText: i18n._('No')
+                                btnConfirm: {
+                                    btnStyle: 'danger',
+                                    text: i18n._('Yes')
+                                },
+                                btnCancel: {
+                                    text: i18n._('No')
+                                }
                             }).then(() => {
                                 actions.deleteMacro({ id });
                                 actions.closeModal();
