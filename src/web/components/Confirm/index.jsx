@@ -22,6 +22,11 @@ const ConfirmButton = ({ btnStyle = 'primary', text = 'OK', onClick }) => (
         {text}
     </button>
 );
+ConfirmButton.propTypes = {
+    btnStyle: PropTypes.string,
+    text: PropTypes.string,
+    onClick: PropTypes.func
+};
 
 const CancelButton = ({ btnStyle = 'default', text = 'Cancel', onClick }) => (
     <button
@@ -37,6 +42,11 @@ const CancelButton = ({ btnStyle = 'default', text = 'Cancel', onClick }) => (
         {text}
     </button>
 );
+CancelButton.propTypes = {
+    btnStyle: PropTypes.string,
+    text: PropTypes.string,
+    onClick: PropTypes.func
+};
 
 class Confirm extends Component {
     static propTypes = {
