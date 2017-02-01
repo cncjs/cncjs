@@ -1,4 +1,22 @@
 {
+    "TinyG": {
+        "machineState": {
+            "initializing": "Iniciar",
+            "ready": "Pronto",
+            "alarm": "Alarme",
+            "stop": "Parar",
+            "end": "Fim",
+            "run": "Rodar",
+            "hold": "Manter",
+            "probe": "Sonda",
+            "cycle": "",
+            "homing": "",
+            "jog": "",
+            "interlock": "",
+            "shutdown": "Desligar",
+            "panic": ""
+        }
+    },
     "Grbl": {
         "activeState": {
             "idle": "Inativo",
@@ -21,24 +39,6 @@
             "sleep": "",
             "alarm": "Alarme",
             "check": "Checar"
-        }
-    },
-    "TinyG": {
-        "machineState": {
-            "initializing": "Iniciar",
-            "ready": "Pronto",
-            "alarm": "Alarme",
-            "stop": "Parar",
-            "end": "Fim",
-            "run": "Rodar",
-            "hold": "Manter",
-            "probe": "Sonda",
-            "cycle": "",
-            "homing": "",
-            "jog": "",
-            "interlock": "",
-            "shutdown": "Desligar",
-            "panic": ""
         }
     }
 }

@@ -4,6 +4,7 @@ import ConnectionWidget from '../../widgets/Connection';
 import ConsoleWidget from '../../widgets/Console';
 import GCodeWidget from '../../widgets/GCode';
 import GrblWidget from '../../widgets/Grbl';
+import LaserWidget from '../../widgets/Laser';
 import MacroWidget from '../../widgets/Macro';
 import ProbeWidget from '../../widgets/Probe';
 import SmoothieWidget from '../../widgets/Smoothie';
@@ -37,6 +38,11 @@ const Widget = ({ widgetid, key, ...props }) => {
         'grbl': () => (
             <div data-widgetid={widgetid} key={key}>
                 <GrblWidget {...props} />
+            </div>
+        ),
+        'laser': () => (
+            <div data-widgetid={widgetid} key={key}>
+                <LaserWidget {...props} />
             </div>
         ),
         'macro': () => (

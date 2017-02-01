@@ -1,4 +1,22 @@
 {
+    "TinyG": {
+        "machineState": {
+            "initializing": "Inizializza",
+            "ready": "Pronta",
+            "alarm": "Allarme",
+            "stop": "Stop",
+            "end": "Fine",
+            "run": "Movimento",
+            "hold": "Pausa",
+            "probe": "Sonda",
+            "cycle": "Ciclo",
+            "homing": "Azzera",
+            "jog": "Muovi",
+            "interlock": "",
+            "shutdown": "Spegni",
+            "panic": ""
+        }
+    },
     "Grbl": {
         "activeState": {
             "idle": "Inattivo",
@@ -21,24 +39,6 @@
             "sleep": "",
             "alarm": "Allarme",
             "check": "Controllo"
-        }
-    },
-    "TinyG": {
-        "machineState": {
-            "initializing": "Inizializza",
-            "ready": "Pronta",
-            "alarm": "Allarme",
-            "stop": "Stop",
-            "end": "Fine",
-            "run": "Movimento",
-            "hold": "Pausa",
-            "probe": "Sonda",
-            "cycle": "Ciclo",
-            "homing": "Azzera",
-            "jog": "Muovi",
-            "interlock": "",
-            "shutdown": "Spegni",
-            "panic": ""
         }
     }
 }
