@@ -68,7 +68,7 @@ series([
             return;
         }
 
-        require('bundle!moment/locale/' + locale)(() => {
+        require('bundle-loader!moment/locale/' + locale)(() => {
             log.debug(`moment: locale=${locale}`);
             moment().locale(locale);
             next();
