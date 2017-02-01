@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import store from '../../../store';
+import store, { defaultState } from '../../../store';
 import WidgetManager from './WidgetManager';
 
 export const getActiveWidgets = () => {
@@ -14,7 +14,7 @@ export const getActiveWidgets = () => {
 };
 
 export const getInactiveWidgets = () => {
-    const allWidgets = _.keys(store.get('widgets'));
+    const allWidgets = Object.keys(defaultState.widgets);
     const defaultWidgets = store.get('workspace.container.default.widgets');
     const primaryWidgets = store.get('workspace.container.primary.widgets');
     const secondaryWidgets = store.get('workspace.container.secondary.widgets');
