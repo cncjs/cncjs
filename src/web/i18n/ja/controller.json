@@ -23,7 +23,7 @@
             "check": "確認"
         }
     },
-    "TinyG2": {
+    "TinyG": {
         "machineState": {
             "initializing": "初期化",
             "ready": "待機",

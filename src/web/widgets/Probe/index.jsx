@@ -19,11 +19,11 @@ import {
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_IDLE,
-    // TinyG2
-    TINYG2,
-    TINYG2_MACHINE_STATE_READY,
-    TINYG2_MACHINE_STATE_STOP,
-    TINYG2_MACHINE_STATE_END,
+    // TinyG
+    TINYG,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
     // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
@@ -194,7 +194,7 @@ class ProbeWidget extends Component {
                 retractionDistance: retractionDistance
             });
         },
-        'TinyG2:state': (state) => {
+        'TinyG:state': (state) => {
             const { sr } = { ...state };
             const { modal = {} } = sr;
             const units = {
@@ -229,7 +229,7 @@ class ProbeWidget extends Component {
             this.setState({
                 units: units,
                 controller: {
-                    type: TINYG2,
+                    type: TINYG,
                     state: state
                 },
                 probeDepth: probeDepth,
@@ -381,12 +381,12 @@ class ProbeWidget extends Component {
                 return false;
             }
         }
-        if (controllerType === TINYG2) {
+        if (controllerType === TINYG) {
             const machineState = _.get(controllerState, 'sr.machineState');
             const states = [
-                TINYG2_MACHINE_STATE_READY,
-                TINYG2_MACHINE_STATE_STOP,
-                TINYG2_MACHINE_STATE_END
+                TINYG_MACHINE_STATE_READY,
+                TINYG_MACHINE_STATE_STOP,
+                TINYG_MACHINE_STATE_END
             ];
             if (!includes(states, machineState)) {
                 return false;

@@ -50,9 +50,9 @@ class WidgetManager extends Component {
             disabled: false
         },
         {
-            id: 'tinyg2',
-            caption: i18n._('TinyG2 Widget'),
-            details: i18n._('This widget shows the TinyG2 state and provides TinyG2 specific features.'),
+            id: 'tinyg',
+            caption: i18n._('TinyG Widget'),
+            details: i18n._('This widget shows the TinyG state and provides TinyG specific features.'),
             visible: true,
             disabled: false
         },

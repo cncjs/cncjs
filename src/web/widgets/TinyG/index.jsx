@@ -6,13 +6,13 @@ import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
 import store from '../../store';
-import TinyG2 from './TinyG2';
+import TinyG from './TinyG';
 import {
-    TINYG2
+    TINYG
 } from '../../constants';
 import styles from './index.styl';
 
-class TinyG2Widget extends Component {
+class TinyGWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
         sortable: PropTypes.object
@@ -63,10 +63,10 @@ class TinyG2Widget extends Component {
         }
     };
     controllerEvents = {
-        'TinyG2:state': (state) => {
+        'TinyG:state': (state) => {
             this.setState({
                 controller: {
-                    type: TINYG2,
+                    type: TINYG,
                     state: state
                 }
             });
@@ -166,7 +166,7 @@ class TinyG2Widget extends Component {
         if (!port) {
             return false;
         }
-        if (type !== TINYG2) {
+        if (type !== TINYG) {
             return false;
         }
 
@@ -185,7 +185,9 @@ class TinyG2Widget extends Component {
         return (
             <Widget fullscreen={isFullscreen}>
                 <Widget.Header className={this.props.sortable.handleClassName}>
-                    <Widget.Title>{i18n._('TinyG2')}</Widget.Title>
+                    <Widget.Title>
+                        TinyG
+                    </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={minimized ? i18n._('Open') : i18n._('Close')}
@@ -225,7 +227,7 @@ class TinyG2Widget extends Component {
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <TinyG2
+                    <TinyG
                         state={state}
                         actions={actions}
                     />
@@ -235,4 +237,4 @@ class TinyG2Widget extends Component {
     }
 }
 
-export default TinyG2Widget;
+export default TinyGWidget;

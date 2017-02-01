@@ -112,7 +112,7 @@ class GCodeWidget extends Component {
                 this.setState({ units: units });
             }
         },
-        'TinyG2:state': (state) => {
+        'TinyG:state': (state) => {
             const { sr } = { ...state };
             const { modal = {} } = sr;
             const units = {

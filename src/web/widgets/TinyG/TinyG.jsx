@@ -8,30 +8,30 @@ import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
 import Toolbar from './Toolbar';
 import {
-    TINYG2_MACHINE_STATE_INITIALIZING,
-    TINYG2_MACHINE_STATE_READY,
-    TINYG2_MACHINE_STATE_ALARM,
-    TINYG2_MACHINE_STATE_STOP,
-    TINYG2_MACHINE_STATE_END,
-    TINYG2_MACHINE_STATE_RUN,
-    TINYG2_MACHINE_STATE_HOLD,
-    TINYG2_MACHINE_STATE_PROBE,
-    TINYG2_MACHINE_STATE_CYCLE,
-    TINYG2_MACHINE_STATE_HOMING,
-    TINYG2_MACHINE_STATE_JOG,
-    TINYG2_MACHINE_STATE_INTERLOCK,
-    TINYG2_MACHINE_STATE_SHUTDOWN,
-    TINYG2_MACHINE_STATE_PANIC
+    TINYG_MACHINE_STATE_INITIALIZING,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_ALARM,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
+    TINYG_MACHINE_STATE_RUN,
+    TINYG_MACHINE_STATE_HOLD,
+    TINYG_MACHINE_STATE_PROBE,
+    TINYG_MACHINE_STATE_CYCLE,
+    TINYG_MACHINE_STATE_HOMING,
+    TINYG_MACHINE_STATE_JOG,
+    TINYG_MACHINE_STATE_INTERLOCK,
+    TINYG_MACHINE_STATE_SHUTDOWN,
+    TINYG_MACHINE_STATE_PANIC
 } from '../../constants';
 import styles from './index.styl';
 
-class TinyG2 extends Component {
+class TinyG extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    // See src/app/controllers/TinyG2/constants.js
+    // See src/app/controllers/TinyG/constants.js
     plannerBufferMax = 28; // default pool size
     plannerBufferMin = 0;
 
@@ -44,20 +44,20 @@ class TinyG2 extends Component {
         const controllerState = state.controller.state;
         const machineState = _.get(controllerState, 'sr.machineState');
         const machineStateText = {
-            [TINYG2_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG2.machineState.initializing'),
-            [TINYG2_MACHINE_STATE_READY]: i18n.t('controller:TinyG2.machineState.ready'),
-            [TINYG2_MACHINE_STATE_ALARM]: i18n.t('controller:TinyG2.machineState.alarm'),
-            [TINYG2_MACHINE_STATE_STOP]: i18n.t('controller:TinyG2.machineState.stop'),
-            [TINYG2_MACHINE_STATE_END]: i18n.t('controller:TinyG2.machineState.end'),
-            [TINYG2_MACHINE_STATE_RUN]: i18n.t('controller:TinyG2.machineState.run'),
-            [TINYG2_MACHINE_STATE_HOLD]: i18n.t('controller:TinyG2.machineState.hold'),
-            [TINYG2_MACHINE_STATE_PROBE]: i18n.t('controller:TinyG2.machineState.probe'),
-            [TINYG2_MACHINE_STATE_CYCLE]: i18n.t('controller:TinyG2.machineState.cycle'),
-            [TINYG2_MACHINE_STATE_HOMING]: i18n.t('controller:TinyG2.machineState.homing'),
-            [TINYG2_MACHINE_STATE_JOG]: i18n.t('controller:TinyG2.machineState.jog'),
-            [TINYG2_MACHINE_STATE_INTERLOCK]: i18n.t('controller:TinyG2.machineState.interlock'),
-            [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG2.machineState.shutdown'),
-            [TINYG2_MACHINE_STATE_PANIC]: i18n.t('controller:TinyG2.machineState.panic')
+            [TINYG_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG.machineState.initializing'),
+            [TINYG_MACHINE_STATE_READY]: i18n.t('controller:TinyG.machineState.ready'),
+            [TINYG_MACHINE_STATE_ALARM]: i18n.t('controller:TinyG.machineState.alarm'),
+            [TINYG_MACHINE_STATE_STOP]: i18n.t('controller:TinyG.machineState.stop'),
+            [TINYG_MACHINE_STATE_END]: i18n.t('controller:TinyG.machineState.end'),
+            [TINYG_MACHINE_STATE_RUN]: i18n.t('controller:TinyG.machineState.run'),
+            [TINYG_MACHINE_STATE_HOLD]: i18n.t('controller:TinyG.machineState.hold'),
+            [TINYG_MACHINE_STATE_PROBE]: i18n.t('controller:TinyG.machineState.probe'),
+            [TINYG_MACHINE_STATE_CYCLE]: i18n.t('controller:TinyG.machineState.cycle'),
+            [TINYG_MACHINE_STATE_HOMING]: i18n.t('controller:TinyG.machineState.homing'),
+            [TINYG_MACHINE_STATE_JOG]: i18n.t('controller:TinyG.machineState.jog'),
+            [TINYG_MACHINE_STATE_INTERLOCK]: i18n.t('controller:TinyG.machineState.interlock'),
+            [TINYG_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG.machineState.shutdown'),
+            [TINYG_MACHINE_STATE_PANIC]: i18n.t('controller:TinyG.machineState.panic')
         }[machineState];
         const plannerBuffer = _.get(controllerState, 'qr') || 0;
         const feedrate = _.get(controllerState, 'sr.feedrate');
@@ -254,4 +254,4 @@ class TinyG2 extends Component {
     }
 }
 
-export default TinyG2;
+export default TinyG;

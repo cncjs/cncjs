@@ -23,7 +23,7 @@
             "check": "Ellenörzés"
         }
     },
-    "TinyG2": {
+    "TinyG": {
         "machineState": {
             "initializing": "Inicializálás",
             "ready": "Kész",

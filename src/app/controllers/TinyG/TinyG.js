@@ -3,53 +3,53 @@ import events from 'events';
 
 import {
     // G-code Motion Mode
-    TINYG2_GCODE_MOTION_G0,
-    TINYG2_GCODE_MOTION_G1,
-    TINYG2_GCODE_MOTION_G2,
-    TINYG2_GCODE_MOTION_G3,
-    TINYG2_GCODE_MOTION_G80,
+    TINYG_GCODE_MOTION_G0,
+    TINYG_GCODE_MOTION_G1,
+    TINYG_GCODE_MOTION_G2,
+    TINYG_GCODE_MOTION_G3,
+    TINYG_GCODE_MOTION_G80,
 
     // G-code Coordinate System
-    TINYG2_GCODE_COORDINATE_G53,
-    TINYG2_GCODE_COORDINATE_G54,
-    TINYG2_GCODE_COORDINATE_G55,
-    TINYG2_GCODE_COORDINATE_G56,
-    TINYG2_GCODE_COORDINATE_G57,
-    TINYG2_GCODE_COORDINATE_G58,
-    TINYG2_GCODE_COORDINATE_G59,
+    TINYG_GCODE_COORDINATE_G53,
+    TINYG_GCODE_COORDINATE_G54,
+    TINYG_GCODE_COORDINATE_G55,
+    TINYG_GCODE_COORDINATE_G56,
+    TINYG_GCODE_COORDINATE_G57,
+    TINYG_GCODE_COORDINATE_G58,
+    TINYG_GCODE_COORDINATE_G59,
 
     // G-code Plane Selection
-    TINYG2_GCODE_PLANE_G17,
-    TINYG2_GCODE_PLANE_G18,
-    TINYG2_GCODE_PLANE_G19,
+    TINYG_GCODE_PLANE_G17,
+    TINYG_GCODE_PLANE_G18,
+    TINYG_GCODE_PLANE_G19,
 
     // G-code Units
-    TINYG2_GCODE_UNITS_G20,
-    TINYG2_GCODE_UNITS_G21,
+    TINYG_GCODE_UNITS_G20,
+    TINYG_GCODE_UNITS_G21,
 
     // G-code Distance Mode
-    TINYG2_GCODE_DISTANCE_G90,
-    TINYG2_GCODE_DISTANCE_G91,
+    TINYG_GCODE_DISTANCE_G90,
+    TINYG_GCODE_DISTANCE_G91,
 
     // G-code Feedrate Mode
-    TINYG2_GCODE_FEEDRATE_G93,
-    TINYG2_GCODE_FEEDRATE_G94,
-    TINYG2_GCODE_FEEDRATE_G95,
+    TINYG_GCODE_FEEDRATE_G93,
+    TINYG_GCODE_FEEDRATE_G94,
+    TINYG_GCODE_FEEDRATE_G95,
 
     // G-code Path Control Mode
-    TINYG2_GCODE_PATH_G61,
-    TINYG2_GCODE_PATH_G61_1,
-    TINYG2_GCODE_PATH_G64
+    TINYG_GCODE_PATH_G61,
+    TINYG_GCODE_PATH_G61_1,
+    TINYG_GCODE_PATH_G64
 
 } from './constants';
 
-class TinyG2Parser {
+class TinyGParser {
     parse(data) {
         const parsers = [
-            TinyG2ParserResultQueueReports,
-            TinyG2ParserResultStatusReports,
-            TinyG2ParserResultFirmwareBuild,
-            TinyG2ParserResultHardwarePlatform
+            TinyGParserResultQueueReports,
+            TinyGParserResultStatusReports,
+            TinyGParserResultFirmwareBuild,
+            TinyGParserResultHardwarePlatform
         ];
 
         for (let parser of parsers) {
@@ -71,7 +71,7 @@ class TinyG2Parser {
     }
 }
 
-class TinyG2ParserResultQueueReports {
+class TinyGParserResultQueueReports {
     static parse(data) {
         const qr = _.get(data, 'r.qr') || _.get(data, 'qr');
         const qi = _.get(data, 'r.qi') || _.get(data, 'qi');
@@ -88,13 +88,13 @@ class TinyG2ParserResultQueueReports {
         };
 
         return {
-            type: TinyG2ParserResultQueueReports,
+            type: TinyGParserResultQueueReports,
             payload: payload
         };
     }
 }
 
-class TinyG2ParserResultStatusReports {
+class TinyGParserResultStatusReports {
     static parse(data) {
         const sr = _.get(data, 'r.sr') || _.get(data, 'sr');
         if (!sr) {
@@ -106,13 +106,13 @@ class TinyG2ParserResultStatusReports {
         };
 
         return {
-            type: TinyG2ParserResultStatusReports,
+            type: TinyGParserResultStatusReports,
             payload: payload
         };
     }
 }
 
-class TinyG2ParserResultFirmwareBuild {
+class TinyGParserResultFirmwareBuild {
     static parse(data) {
         const fb = _.get(data, 'r.fb');
         if (!fb) {
@@ -124,13 +124,13 @@ class TinyG2ParserResultFirmwareBuild {
         };
 
         return {
-            type: TinyG2ParserResultFirmwareBuild,
+            type: TinyGParserResultFirmwareBuild,
             payload: payload
         };
     }
 }
 
-class TinyG2ParserResultHardwarePlatform {
+class TinyGParserResultHardwarePlatform {
     static parse(data) {
         const hp = _.get(data, 'r.hp');
         if (!hp) {
@@ -142,13 +142,13 @@ class TinyG2ParserResultHardwarePlatform {
         };
 
         return {
-            type: TinyG2ParserResultHardwarePlatform,
+            type: TinyGParserResultHardwarePlatform,
             payload: payload
         };
     }
 }
 
-class TinyG2 extends events.EventEmitter {
+class TinyG extends events.EventEmitter {
     state = {
         // Queue Reports
         qr: 0,
@@ -186,7 +186,7 @@ class TinyG2 extends events.EventEmitter {
         statusCode: 0, // https://github.com/synthetos/g2/wiki/Status-Codes
         rxBufferInfo: 0
     };
-    parser = new TinyG2Parser();
+    parser = new TinyGParser();
 
     parse(data) {
         data = ('' + data).replace(/\s+$/, '');
@@ -206,7 +206,7 @@ class TinyG2 extends events.EventEmitter {
             const result = this.parser.parse(data) || {};
             const { type, payload } = result;
 
-            if (type === TinyG2ParserResultQueueReports) {
+            if (type === TinyGParserResultQueueReports) {
                 const { qr, qi, qo } = payload;
                 if (this.state.qr !== qr ||
                     this.state.qi !== qi ||
@@ -219,7 +219,7 @@ class TinyG2 extends events.EventEmitter {
                     };
                 }
                 this.emit('qr', { qr, qi, qo });
-            } else if (type === TinyG2ParserResultStatusReports) {
+            } else if (type === TinyGParserResultStatusReports) {
                 // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
                 const keymaps = {
                     'line': 'line',
@@ -231,61 +231,61 @@ class TinyG2 extends events.EventEmitter {
                     'hold': 'feedholdState',
                     'momo': (target, val) => {
                         const gcode = {
-                            [TINYG2_GCODE_MOTION_G0]: 'G0', // Straight (linear) traverse
-                            [TINYG2_GCODE_MOTION_G1]: 'G1', // Straight (linear) feed
-                            [TINYG2_GCODE_MOTION_G2]: 'G2', // CW arc traverse
-                            [TINYG2_GCODE_MOTION_G3]: 'G3', // CCW arc traverse
-                            [TINYG2_GCODE_MOTION_G80]: 'G80' // Cancel motion mode
+                            [TINYG_GCODE_MOTION_G0]: 'G0', // Straight (linear) traverse
+                            [TINYG_GCODE_MOTION_G1]: 'G1', // Straight (linear) feed
+                            [TINYG_GCODE_MOTION_G2]: 'G2', // CW arc traverse
+                            [TINYG_GCODE_MOTION_G3]: 'G3', // CCW arc traverse
+                            [TINYG_GCODE_MOTION_G80]: 'G80' // Cancel motion mode
                         }[val] || '';
                         _.set(target, 'modal.motion', gcode);
                     },
                     'coor': (target, val) => {
                         const gcode = {
-                            [TINYG2_GCODE_COORDINATE_G53]: 'G53', // Machine coordinate system
-                            [TINYG2_GCODE_COORDINATE_G54]: 'G54', // Coordinate system 1
-                            [TINYG2_GCODE_COORDINATE_G55]: 'G55', // Coordinate system 2
-                            [TINYG2_GCODE_COORDINATE_G56]: 'G56', // Coordinate system 3
-                            [TINYG2_GCODE_COORDINATE_G57]: 'G57', // Coordinate system 4
-                            [TINYG2_GCODE_COORDINATE_G58]: 'G58', // Coordinate system 5
-                            [TINYG2_GCODE_COORDINATE_G59]: 'G59' // Coordinate system 6
+                            [TINYG_GCODE_COORDINATE_G53]: 'G53', // Machine coordinate system
+                            [TINYG_GCODE_COORDINATE_G54]: 'G54', // Coordinate system 1
+                            [TINYG_GCODE_COORDINATE_G55]: 'G55', // Coordinate system 2
+                            [TINYG_GCODE_COORDINATE_G56]: 'G56', // Coordinate system 3
+                            [TINYG_GCODE_COORDINATE_G57]: 'G57', // Coordinate system 4
+                            [TINYG_GCODE_COORDINATE_G58]: 'G58', // Coordinate system 5
+                            [TINYG_GCODE_COORDINATE_G59]: 'G59' // Coordinate system 6
                         }[val] || '';
                         _.set(target, 'modal.coordinate', gcode);
                     },
                     'plan': (target, val) => {
                         const gcode = {
-                            [TINYG2_GCODE_PLANE_G17]: 'G17', // XY plane
-                            [TINYG2_GCODE_PLANE_G18]: 'G18', // XZ plane
-                            [TINYG2_GCODE_PLANE_G19]: 'G19' // YZ plane
+                            [TINYG_GCODE_PLANE_G17]: 'G17', // XY plane
+                            [TINYG_GCODE_PLANE_G18]: 'G18', // XZ plane
+                            [TINYG_GCODE_PLANE_G19]: 'G19' // YZ plane
                         }[val] || '';
                         _.set(target, 'modal.plane', gcode);
                     },
                     'unit': (target, val) => {
                         const gcode = {
-                            [TINYG2_GCODE_UNITS_G20]: 'G20', // Inches mode
-                            [TINYG2_GCODE_UNITS_G21]: 'G21' // Millimeters mode
+                            [TINYG_GCODE_UNITS_G20]: 'G20', // Inches mode
+                            [TINYG_GCODE_UNITS_G21]: 'G21' // Millimeters mode
                         }[val] || '';
                         _.set(target, 'modal.units', gcode);
                     },
                     'dist': (target, val) => {
                         const gcode = {
-                            [TINYG2_GCODE_DISTANCE_G90]: 'G90', // Absolute distance
-                            [TINYG2_GCODE_DISTANCE_G91]: 'G91' // Incremental distance
+                            [TINYG_GCODE_DISTANCE_G90]: 'G90', // Absolute distance
+                            [TINYG_GCODE_DISTANCE_G91]: 'G91' // Incremental distance
                         }[val] || '';
                         _.set(target, 'modal.distance', gcode);
                     },
                     'frmo': (target, val) => {
                         const gcode = {
-                            [TINYG2_GCODE_FEEDRATE_G93]: 'G93', // Inverse time mode
-                            [TINYG2_GCODE_FEEDRATE_G94]: 'G94', // Units-per-minute mode
-                            [TINYG2_GCODE_FEEDRATE_G95]: 'G95' // Units-per-revolution mode
+                            [TINYG_GCODE_FEEDRATE_G93]: 'G93', // Inverse time mode
+                            [TINYG_GCODE_FEEDRATE_G94]: 'G94', // Units-per-minute mode
+                            [TINYG_GCODE_FEEDRATE_G95]: 'G95' // Units-per-revolution mode
                         }[val] || '';
                         _.set(target, 'modal.feedrate', gcode);
                     },
                     'path': (target, val) => {
                         const gcode = {
-                            [TINYG2_GCODE_PATH_G61]: 'G61', // Exact path mode
-                            [TINYG2_GCODE_PATH_G61_1]: 'G61.1', // Exact stop mode
-                            [TINYG2_GCODE_PATH_G64]: 'G64' // Continuous mode
+                            [TINYG_GCODE_PATH_G61]: 'G61', // Exact path mode
+                            [TINYG_GCODE_PATH_G61_1]: 'G61.1', // Exact stop mode
+                            [TINYG_GCODE_PATH_G64]: 'G64' // Continuous mode
                         }[val] || '';
                         _.set(target, 'modal.path', gcode);
                     },
@@ -336,7 +336,7 @@ class TinyG2 extends events.EventEmitter {
                     };
                 }
                 this.emit('sr', payload.sr);
-            } else if (type === TinyG2ParserResultFirmwareBuild) {
+            } else if (type === TinyGParserResultFirmwareBuild) {
                 if (!_.isEqual(this.state.fb, payload.fb)) {
                     this.state = { // enforce state change
                         ...this.state,
@@ -344,7 +344,7 @@ class TinyG2 extends events.EventEmitter {
                     };
                 }
                 this.emit('fb', payload.fb);
-            } else if (type === TinyG2ParserResultHardwarePlatform) {
+            } else if (type === TinyGParserResultHardwarePlatform) {
                 if (!_.isEqual(this.state.hp, payload.hp)) {
                     this.state = { // enforce state change
                         ...this.state,
@@ -365,6 +365,6 @@ class TinyG2 extends events.EventEmitter {
 }
 
 export {
-    TinyG2Parser
+    TinyGParser
 };
-export default TinyG2;
+export default TinyG;

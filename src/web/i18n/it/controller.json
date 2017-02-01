@@ -23,7 +23,7 @@
             "check": "Controllo"
         }
     },
-    "TinyG2": {
+    "TinyG": {
         "machineState": {
             "initializing": "Inizializza",
             "ready": "Pronta",

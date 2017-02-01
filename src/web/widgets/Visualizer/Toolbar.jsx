@@ -10,9 +10,9 @@ import {
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_ALARM,
-    // TinyG2
-    TINYG2,
-    TINYG2_MACHINE_STATE_ALARM,
+    // TinyG
+    TINYG,
+    TINYG_MACHINE_STATE_ALARM,
     // Workflow
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -109,10 +109,10 @@ class Toolbar extends Component {
                 return false;
             }
         }
-        if (controllerType === TINYG2) {
+        if (controllerType === TINYG) {
             const machineState = _.get(controllerState, 'sr.machineState');
             const states = [
-                TINYG2_MACHINE_STATE_ALARM
+                TINYG_MACHINE_STATE_ALARM
             ];
             if (_.includes(states, machineState)) {
                 return false;

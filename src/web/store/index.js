@@ -29,7 +29,7 @@ const defaultState = {
             primary: {
                 show: true,
                 widgets: [
-                    'connection', 'console', 'grbl', 'smoothie', 'tinyg2', 'webcam'
+                    'connection', 'console', 'grbl', 'smoothie', 'tinyg', 'webcam'
                 ]
             },
             secondary: {
@@ -59,7 +59,7 @@ const defaultState = {
         connection: {
             minimized: false,
             controller: {
-                type: 'Grbl' // Grbl|Smoothie|TinyG2
+                type: 'Grbl' // Grbl|Smoothie|TinyG
             },
             port: '',
             baudrate: 115200,
@@ -114,7 +114,7 @@ const defaultState = {
             minimized: false,
             speed: 1000
         },
-        tinyg2: {
+        tinyg: {
             minimized: false,
             panel: {
                 queueReports: {

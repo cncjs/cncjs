@@ -6,20 +6,20 @@ import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/sender';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import store from '../../store';
-import TinyG2 from './TinyG2';
+import TinyG from './TinyG';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
-    TINYG2,
-    TINYG2_PLANNER_BUFFER_POOL_SIZE,
-    TINYG2_PLANNER_BUFFER_LOW_WATER_MARK,
-    TINYG2_PLANNER_QUEUE_STATUS_READY,
-    TINYG2_PLANNER_QUEUE_STATUS_RUNNING,
-    TINYG2_PLANNER_QUEUE_STATUS_BLOCKED,
-    TINYG2_STATUS_CODES
+    TINYG,
+    TINYG_PLANNER_BUFFER_POOL_SIZE,
+    TINYG_PLANNER_BUFFER_LOW_WATER_MARK,
+    TINYG_PLANNER_QUEUE_STATUS_READY,
+    TINYG_PLANNER_QUEUE_STATUS_RUNNING,
+    TINYG_PLANNER_QUEUE_STATUS_BLOCKED,
+    TINYG_STATUS_CODES
 } from './constants';
 
 const noop = () => {};
@@ -37,8 +37,8 @@ class Connection {
     }
 }
 
-class TinyG2Controller {
-    type = TINYG2;
+class TinyGController {
+    type = TINYG;
 
     // Connections
     connections = [];
@@ -50,7 +50,7 @@ class TinyG2Controller {
     };
     serialport = null;
 
-    // TinyG2
+    // TinyG
     tinyG2 = null;
     ready = false;
     state = {};
@@ -64,7 +64,7 @@ class TinyG2Controller {
 
     // Workflow state
     workflowState = WORKFLOW_STATE_IDLE;
-    plannerQueueStatus = TINYG2_PLANNER_QUEUE_STATUS_READY;
+    plannerQueueStatus = TINYG_PLANNER_QUEUE_STATUS_READY;
 
     constructor(port, options) {
         const { baudrate } = { ...options };
@@ -79,7 +79,7 @@ class TinyG2Controller {
         this.feeder = new Feeder();
         this.feeder.on('data', ({ socket = null, line }) => {
             if (this.isClose()) {
-                log.error(`[TinyG2] The serial port "${this.options.port}" is not accessible`);
+                log.error(`[TinyG] The serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
@@ -99,19 +99,19 @@ class TinyG2Controller {
             const data = JSON.stringify({ gc: line }) + '\n';
             this.serialport.write(data);
 
-            dbg(`[TinyG2] > ${line}`);
+            dbg(`[TinyG] > ${line}`);
         });
 
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE);
         this.sender.on('data', (gcode = '') => {
             if (this.isClose()) {
-                log.error(`[TinyG2] The serial port "${this.options.port}" is not accessible`);
+                log.error(`[TinyG] The serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
             if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
-                log.error(`[TinyG2] Unexpected workflow state: ${this.workflowState}`);
+                log.error(`[TinyG] Unexpected workflow state: ${this.workflowState}`);
                 return;
             }
 
@@ -119,12 +119,12 @@ class TinyG2Controller {
             if (gcode.length > 0) {
                 const cmd = JSON.stringify({ gc: gcode });
                 this.serialport.write(cmd + '\n');
-                dbg(`[TinyG2] > ${cmd}`);
+                dbg(`[TinyG] > ${cmd}`);
             }
         });
 
-        // TinyG2
-        this.tinyG2 = new TinyG2();
+        // TinyG
+        this.tinyG2 = new TinyG();
 
         this.tinyG2.on('raw', (res) => {
             if (this.workflowState === WORKFLOW_STATE_IDLE) {
@@ -139,18 +139,18 @@ class TinyG2Controller {
             this.state.qi = qi;
             this.state.qo = qo;
 
-            if (qr <= TINYG2_PLANNER_BUFFER_LOW_WATER_MARK) {
-                this.plannerQueueStatus = TINYG2_PLANNER_QUEUE_STATUS_BLOCKED;
+            if (qr <= TINYG_PLANNER_BUFFER_LOW_WATER_MARK) {
+                this.plannerQueueStatus = TINYG_PLANNER_QUEUE_STATUS_BLOCKED;
                 return;
             }
 
-            if (qr >= TINYG2_PLANNER_BUFFER_POOL_SIZE) {
-                this.plannerQueueStatus = TINYG2_PLANNER_QUEUE_STATUS_READY;
+            if (qr >= TINYG_PLANNER_BUFFER_POOL_SIZE) {
+                this.plannerQueueStatus = TINYG_PLANNER_QUEUE_STATUS_READY;
             } else {
-                this.plannerQueueStatus = TINYG2_PLANNER_QUEUE_STATUS_RUNNING;
+                this.plannerQueueStatus = TINYG_PLANNER_QUEUE_STATUS_RUNNING;
             }
 
-            if (prevPlannerQueueStatus === TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
+            if (prevPlannerQueueStatus === TINYG_PLANNER_QUEUE_STATUS_BLOCKED) {
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                     this.sender.ack();
@@ -179,7 +179,7 @@ class TinyG2Controller {
 
             if (statusCode !== 0) {
                 const code = Number(statusCode);
-                const err = _.find(TINYG2_STATUS_CODES, { code: code }) || {};
+                const err = _.find(TINYG_STATUS_CODES, { code: code }) || {};
 
                 if (this.workflowState !== WORKFLOW_STATE_IDLE) {
                     const { lines, received } = this.sender.state;
@@ -204,7 +204,7 @@ class TinyG2Controller {
                 }
             }
 
-            if (prevPlannerQueueStatus !== TINYG2_PLANNER_QUEUE_STATUS_BLOCKED) {
+            if (prevPlannerQueueStatus !== TINYG_PLANNER_QUEUE_STATUS_BLOCKED) {
                 // Sender
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                     this.sender.ack();
@@ -226,12 +226,12 @@ class TinyG2Controller {
 
         this.serialport.on('data', (data) => {
             this.tinyG2.parse('' + data);
-            dbg(`[TinyG2] < ${data}`);
+            dbg(`[TinyG] < ${data}`);
         });
 
         this.serialport.on('disconnect', (err) => {
             if (err) {
-                log.warn(`[TinyG2] Disconnected from serial port "${port}":`, err);
+                log.warn(`[TinyG] Disconnected from serial port "${port}":`, err);
             }
 
             this.close();
@@ -239,7 +239,7 @@ class TinyG2Controller {
 
         this.serialport.on('error', (err) => {
             if (err) {
-                log.error(`[TinyG2] Unexpected error while reading/writing serial port "${port}":`, err);
+                log.error(`[TinyG] Unexpected error while reading/writing serial port "${port}":`, err);
             }
         });
 
@@ -260,10 +260,10 @@ class TinyG2Controller {
                 this.emitAll('sender:status', this.sender.toJSON());
             }
 
-            // TinyG2 state
+            // TinyG state
             if (this.state !== this.tinyG2.state) {
                 this.state = this.tinyG2.state;
-                this.emitAll('TinyG2:state', this.state);
+                this.emitAll('TinyG:state', this.state);
             }
         }, 250);
     }
@@ -371,7 +371,7 @@ class TinyG2Controller {
             if (cmd) {
                 this.emitAll('serialport:write', cmd);
                 this.serialport.write(cmd + '\n');
-                dbg(`[TinyG2] > ${cmd}`);
+                dbg(`[TinyG] > ${cmd}`);
             }
             setTimeout(() => {
                 sendInitCommands(i + 1);
@@ -423,19 +423,19 @@ class TinyG2Controller {
 
         // Assertion check
         if (this.isOpen()) {
-            log.error(`[TinyG2] Cannot open serial port "${port}"`);
+            log.error(`[TinyG] Cannot open serial port "${port}"`);
             return;
         }
 
         this.serialport.open((err) => {
             if (err) {
-                log.error(`[TinyG2] Error opening serial port "${port}":`, err);
+                log.error(`[TinyG] Error opening serial port "${port}":`, err);
                 this.emitAll('serialport:error', { port: port });
                 return;
             }
 
             if (store.get('controllers["' + port + '"]')) {
-                log.error(`[TinyG2] Serial port "${port}" was not properly closed`);
+                log.error(`[TinyG] Serial port "${port}" was not properly closed`);
             }
 
             store.set('controllers["' + port + '"]', this);
@@ -447,7 +447,7 @@ class TinyG2Controller {
                 inuse: true
             });
 
-            log.debug(`[TinyG2] Connected to serial port "${port}"`);
+            log.debug(`[TinyG] Connected to serial port "${port}"`);
 
             // Reset
             this.reset();
@@ -464,7 +464,7 @@ class TinyG2Controller {
 
         // Assertion check
         if (this.isClose()) {
-            log.error(`[TinyG2] The serial port "${port}" was already closed`);
+            log.error(`[TinyG] The serial port "${port}" was already closed`);
             return;
         }
 
@@ -478,7 +478,7 @@ class TinyG2Controller {
 
         this.serialport.close((err) => {
             if (err) {
-                log.error(`[TinyG2] Error closing serial port "${port}":`, err);
+                log.error(`[TinyG] Error closing serial port "${port}":`, err);
             }
         });
     }
@@ -492,8 +492,8 @@ class TinyG2Controller {
         this.connections.push(new Connection(socket));
 
         if (!_.isEmpty(this.state)) {
-            // Send TinyG2 state to a newly connected client
-            socket.emit('TinyG2:state', this.state);
+            // Send controller state to a newly connected client
+            socket.emit('TinyG:state', this.state);
         }
 
         if (this.sender) {
@@ -530,7 +530,7 @@ class TinyG2Controller {
                     return;
                 }
 
-                log.debug(`[TinyG2] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
+                log.debug(`[TinyG] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 callback(null, { name: name, gcode: gcode });
@@ -651,7 +651,7 @@ class TinyG2Controller {
                 const macro = _.find(macros, { id: id });
 
                 if (!macro) {
-                    log.error(`[TinyG2] Cannot find the macro: id=${id}`);
+                    log.error(`[TinyG] Cannot find the macro: id=${id}`);
                     return;
                 }
 
@@ -672,7 +672,7 @@ class TinyG2Controller {
         }[cmd];
 
         if (!handler) {
-            log.error(`[TinyG2] Unknown command: ${cmd}`);
+            log.error(`[TinyG] Unknown command: ${cmd}`);
             return;
         }
 
@@ -687,11 +687,11 @@ class TinyG2Controller {
             this.connections[index].sentCommand = data;
         }
         this.serialport.write(data);
-        dbg(`[TinyG2] > ${data}`);
+        dbg(`[TinyG] > ${data}`);
     }
     writeln(socket, data) {
         this.write(socket, data + '\n');
     }
 }
 
-export default TinyG2Controller;
+export default TinyGController;

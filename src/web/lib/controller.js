@@ -5,7 +5,7 @@ import log from './log';
 import {
     GRBL,
     SMOOTHIE,
-    TINYG2,
+    TINYG,
     WORKFLOW_STATE_IDLE
 } from '../constants';
 
@@ -25,7 +25,7 @@ class CNCController {
         'sender:status': [],
         'Grbl:state': [],
         'Smoothie:state': [],
-        'TinyG2:state': []
+        'TinyG:state': []
     };
 
     port = '';
@@ -85,8 +85,8 @@ class CNCController {
                     this.type = SMOOTHIE;
                     this.state = { ...args[0] };
                 }
-                if (eventName === 'TinyG2:state') {
-                    this.type = TINYG2;
+                if (eventName === 'TinyG:state') {
+                    this.type = TINYG;
                     this.state = { ...args[0] };
                 }
 

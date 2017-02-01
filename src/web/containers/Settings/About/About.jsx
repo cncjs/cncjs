@@ -25,7 +25,7 @@ class About extends Component {
 
         return (
             <div>
-                <AboutContainer title={`cnc ${version.current}`} />
+                <AboutContainer version={version} />
                 <HelpContainer />
                 <UpdateStatusContainer
                     checking={version.checking}

@@ -32,22 +32,22 @@ import {
     SMOOTHIE_ACTIVE_STATE_SLEEP,
     SMOOTHIE_ACTIVE_STATE_ALARM,
     SMOOTHIE_ACTIVE_STATE_CHECK,
-    // TinyG2
-    TINYG2,
-    TINYG2_MACHINE_STATE_INITIALIZING,
-    TINYG2_MACHINE_STATE_READY,
-    TINYG2_MACHINE_STATE_ALARM,
-    TINYG2_MACHINE_STATE_STOP,
-    TINYG2_MACHINE_STATE_END,
-    TINYG2_MACHINE_STATE_RUN,
-    TINYG2_MACHINE_STATE_HOLD,
-    TINYG2_MACHINE_STATE_PROBE,
-    TINYG2_MACHINE_STATE_CYCLE,
-    TINYG2_MACHINE_STATE_HOMING,
-    TINYG2_MACHINE_STATE_JOG,
-    TINYG2_MACHINE_STATE_INTERLOCK,
-    TINYG2_MACHINE_STATE_SHUTDOWN,
-    TINYG2_MACHINE_STATE_PANIC,
+    // TinyG
+    TINYG,
+    TINYG_MACHINE_STATE_INITIALIZING,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_ALARM,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
+    TINYG_MACHINE_STATE_RUN,
+    TINYG_MACHINE_STATE_HOLD,
+    TINYG_MACHINE_STATE_PROBE,
+    TINYG_MACHINE_STATE_CYCLE,
+    TINYG_MACHINE_STATE_HOMING,
+    TINYG_MACHINE_STATE_JOG,
+    TINYG_MACHINE_STATE_INTERLOCK,
+    TINYG_MACHINE_STATE_SHUTDOWN,
+    TINYG_MACHINE_STATE_PANIC,
     // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
@@ -147,42 +147,42 @@ class Controls extends Component {
             }[activeState];
         }
 
-        if (controllerType === TINYG2) {
+        if (controllerType === TINYG) {
             const machineState = _.get(controllerState, 'sr.machineState');
 
             // https://github.com/synthetos/g2/wiki/Alarm-Processing
             stateStyle = {
-                [TINYG2_MACHINE_STATE_INITIALIZING]: 'controller-state-warning',
-                [TINYG2_MACHINE_STATE_READY]: 'controller-state-default',
-                [TINYG2_MACHINE_STATE_ALARM]: 'controller-state-danger',
-                [TINYG2_MACHINE_STATE_STOP]: 'controller-state-default',
-                [TINYG2_MACHINE_STATE_END]: 'controller-state-default',
-                [TINYG2_MACHINE_STATE_RUN]: 'controller-state-primary',
-                [TINYG2_MACHINE_STATE_HOLD]: 'controller-state-warning',
-                [TINYG2_MACHINE_STATE_PROBE]: 'controller-state-primary',
-                [TINYG2_MACHINE_STATE_CYCLE]: 'controller-state-primary',
-                [TINYG2_MACHINE_STATE_HOMING]: 'controller-state-primary',
-                [TINYG2_MACHINE_STATE_JOG]: 'controller-state-primary',
-                [TINYG2_MACHINE_STATE_INTERLOCK]: 'controller-state-warning',
-                [TINYG2_MACHINE_STATE_SHUTDOWN]: 'controller-state-danger',
-                [TINYG2_MACHINE_STATE_PANIC]: 'controller-state-danger'
+                [TINYG_MACHINE_STATE_INITIALIZING]: 'controller-state-warning',
+                [TINYG_MACHINE_STATE_READY]: 'controller-state-default',
+                [TINYG_MACHINE_STATE_ALARM]: 'controller-state-danger',
+                [TINYG_MACHINE_STATE_STOP]: 'controller-state-default',
+                [TINYG_MACHINE_STATE_END]: 'controller-state-default',
+                [TINYG_MACHINE_STATE_RUN]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_HOLD]: 'controller-state-warning',
+                [TINYG_MACHINE_STATE_PROBE]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_CYCLE]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_HOMING]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_JOG]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_INTERLOCK]: 'controller-state-warning',
+                [TINYG_MACHINE_STATE_SHUTDOWN]: 'controller-state-danger',
+                [TINYG_MACHINE_STATE_PANIC]: 'controller-state-danger'
             }[machineState];
 
             stateText = {
-                [TINYG2_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG2.machineState.initializing'),
-                [TINYG2_MACHINE_STATE_READY]: i18n.t('controller:TinyG2.machineState.ready'),
-                [TINYG2_MACHINE_STATE_ALARM]: i18n.t('controller:TinyG2.machineState.alarm'),
-                [TINYG2_MACHINE_STATE_STOP]: i18n.t('controller:TinyG2.machineState.stop'),
-                [TINYG2_MACHINE_STATE_END]: i18n.t('controller:TinyG2.machineState.end'),
-                [TINYG2_MACHINE_STATE_RUN]: i18n.t('controller:TinyG2.machineState.run'),
-                [TINYG2_MACHINE_STATE_HOLD]: i18n.t('controller:TinyG2.machineState.hold'),
-                [TINYG2_MACHINE_STATE_PROBE]: i18n.t('controller:TinyG2.machineState.probe'),
-                [TINYG2_MACHINE_STATE_CYCLE]: i18n.t('controller:TinyG2.machineState.cycle'),
-                [TINYG2_MACHINE_STATE_HOMING]: i18n.t('controller:TinyG2.machineState.homing'),
-                [TINYG2_MACHINE_STATE_JOG]: i18n.t('controller:TinyG2.machineState.jog'),
-                [TINYG2_MACHINE_STATE_INTERLOCK]: i18n.t('controller:TinyG2.machineState.interlock'),
-                [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG2.machineState.shutdown'),
-                [TINYG2_MACHINE_STATE_PANIC]: i18n.t('controller:TinyG2.machineState.panic')
+                [TINYG_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG.machineState.initializing'),
+                [TINYG_MACHINE_STATE_READY]: i18n.t('controller:TinyG.machineState.ready'),
+                [TINYG_MACHINE_STATE_ALARM]: i18n.t('controller:TinyG.machineState.alarm'),
+                [TINYG_MACHINE_STATE_STOP]: i18n.t('controller:TinyG.machineState.stop'),
+                [TINYG_MACHINE_STATE_END]: i18n.t('controller:TinyG.machineState.end'),
+                [TINYG_MACHINE_STATE_RUN]: i18n.t('controller:TinyG.machineState.run'),
+                [TINYG_MACHINE_STATE_HOLD]: i18n.t('controller:TinyG.machineState.hold'),
+                [TINYG_MACHINE_STATE_PROBE]: i18n.t('controller:TinyG.machineState.probe'),
+                [TINYG_MACHINE_STATE_CYCLE]: i18n.t('controller:TinyG.machineState.cycle'),
+                [TINYG_MACHINE_STATE_HOMING]: i18n.t('controller:TinyG.machineState.homing'),
+                [TINYG_MACHINE_STATE_JOG]: i18n.t('controller:TinyG.machineState.jog'),
+                [TINYG_MACHINE_STATE_INTERLOCK]: i18n.t('controller:TinyG.machineState.interlock'),
+                [TINYG_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG.machineState.shutdown'),
+                [TINYG_MACHINE_STATE_PANIC]: i18n.t('controller:TinyG.machineState.panic')
             }[machineState];
         }
 
@@ -207,7 +207,7 @@ class Controls extends Component {
             return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
         }
 
-        if (controllerType === TINYG2) {
+        if (controllerType === TINYG) {
             return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
         }
 
