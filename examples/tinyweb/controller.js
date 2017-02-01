@@ -33,6 +33,7 @@ socket.on('close', function() {
 
 // constants
 var GRBL = 'Grbl';
+var SMOOTHIE = 'Smoothie';
 var TINYG2 = 'TinyG2';
 
 var CNCController = function() {
@@ -50,6 +51,7 @@ var CNCController = function() {
         'feeder:status': [],
         'sender:status': [],
         'Grbl:state': [],
+        'Smoothie:state': [],
         'TinyG2:state': []
     };
 
@@ -64,6 +66,10 @@ var CNCController = function() {
 
             if (eventName === 'Grbl:state') {
                 this.type = GRBL;
+                this.state = args[0];
+            }
+            if (eventName === 'Smoothie:state') {
+                this.type = SMOOTHIE;
                 this.state = args[0];
             }
             if (eventName === 'TinyG2:state') {

@@ -4,6 +4,7 @@ export const METRIC_UNITS = 'mm';
 
 // Controller
 export const GRBL = 'Grbl';
+export const SMOOTHIE = 'Smoothie';
 export const TINYG2 = 'TinyG2';
 
 // G-code Workflow State
@@ -20,6 +21,15 @@ export const GRBL_ACTIVE_STATE_HOME = 'Home';
 export const GRBL_ACTIVE_STATE_SLEEP = 'Sleep';
 export const GRBL_ACTIVE_STATE_ALARM = 'Alarm';
 export const GRBL_ACTIVE_STATE_CHECK = 'Check';
+
+// Smoothie Active State
+export const SMOOTHIE_ACTIVE_STATE_IDLE = 'Idle';
+export const SMOOTHIE_ACTIVE_STATE_RUN = 'Run';
+export const SMOOTHIE_ACTIVE_STATE_HOLD = 'Hold';
+export const SMOOTHIE_ACTIVE_STATE_DOOR = 'Door';
+export const SMOOTHIE_ACTIVE_STATE_HOME = 'Home';
+export const SMOOTHIE_ACTIVE_STATE_ALARM = 'Alarm';
+export const SMOOTHIE_ACTIVE_STATE_CHECK = 'Check';
 
 // TinyG2 Machine State
 // https://github.com/synthetos/g2/wiki/Status-Reports#stat-values

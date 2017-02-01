@@ -28,6 +28,10 @@ import {
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    // Smoothie
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_IDLE,
+    SMOOTHIE_ACTIVE_STATE_RUN,
     // TinyG2
     TINYG2,
     TINYG2_MACHINE_STATE_READY,
@@ -407,6 +411,43 @@ class VisualizerWidget extends Component {
                 }
             });
         },
+        'Smoothie:state': (state) => {
+            const { status, parserstate } = { ...state };
+            const { activeState, wpos } = status;
+            const { modal = {} } = { ...parserstate };
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
+            const { workflowState, gcode } = this.state;
+            const { sent, total } = gcode;
+            const isControllerIdle = _.includes([
+                SMOOTHIE_ACTIVE_STATE_IDLE
+            ], activeState);
+
+            // Keep workflow in a running state if the controller state is not updated in time
+            if (this.requestStart && !isControllerIdle) {
+                this.requestStart = false;
+            }
+
+            const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
+            if (finishing) {
+                controller.command('stop');
+                pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
+            }
+
+            this.setState({
+                units: units,
+                controller: {
+                    type: SMOOTHIE,
+                    state: state
+                },
+                workPosition: {
+                    ...this.state.workPosition,
+                    ...wpos
+                }
+            });
+        },
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
             const { machineState, wpos, modal = {} } = sr;
@@ -612,6 +653,12 @@ class VisualizerWidget extends Component {
         if (controllerType === GRBL) {
             const activeState = _.get(controllerState, 'status.activeState');
             if (activeState !== GRBL_ACTIVE_STATE_RUN) {
+                return false;
+            }
+        }
+        if (controllerType === SMOOTHIE) {
+            const activeState = _.get(controllerState, 'status.activeState');
+            if (activeState !== SMOOTHIE_ACTIVE_STATE_RUN) {
                 return false;
             }
         }
