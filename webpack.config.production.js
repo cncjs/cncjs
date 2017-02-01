@@ -12,6 +12,8 @@ var ManifestPlugin = require('webpack-manifest-plugin');
 var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
+var nib = require('nib');
+var stylusLoader = require('stylus-loader');
 var baseConfig = require('./webpack.config.base');
 var languages = require('./webpack.config.i18n').languages;
 var pkg = require('./package.json');
@@ -54,6 +56,15 @@ var webpackConfig = Object.assign({}, baseConfig, {
                 NODE_ENV: JSON.stringify('production')
             }
         }),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new stylusLoader.OptionsPlugin({
+            default: {
+                // nib - CSS3 extensions for Stylus
+                use: [nib()],
+                // no need to have a '@import "nib"' in the stylesheet
+                import: ['~nib/lib/nib/index.styl']
+            }
+        }),
         new webpack.ContextReplacementPlugin(
             /moment[\/\\]locale$/,
             new RegExp('^\./(' + without(languages, 'en').join('|') + ')$')
@@ -70,16 +81,18 @@ var webpackConfig = Object.assign({}, baseConfig, {
         new ManifestPlugin({
             fileName: 'manifest.json'
         }),
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new ExtractTextPlugin('[name].css', { allChunks: false }),
+        new ExtractTextPlugin({
+            filename: '[name].css',
+            allChunks: false
+        }),
         new CSSSplitWebpackPlugin({
             size: 4000,
             imports: '[name].[ext]?[hash]',
             filename: '[name]-[part].[ext]?[hash]',
             preserve: false
         }),
-        new webpack.optimize.DedupePlugin(),
         new webpack.optimize.UglifyJsPlugin({
+            sourceMap: true,
             compress: {
                 screw_ie8: true, // React doesn't support IE8
                 warnings: false
@@ -113,8 +126,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
         }),
         new InlineChunkWebpackPlugin({
             inlineChunks: ['manifest']
-        }),
-        new webpack.NoErrorsPlugin()
+        })
     ]
 });
 

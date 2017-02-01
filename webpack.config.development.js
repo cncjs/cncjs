@@ -11,12 +11,13 @@ var ManifestPlugin = require('webpack-manifest-plugin');
 var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
 var HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
+var nib = require('nib');
+var stylusLoader = require('stylus-loader');
 var baseConfig = require('./webpack.config.base');
 var languages = require('./webpack.config.i18n').languages;
 var pkg = require('./package.json');
 
 var webpackConfig = Object.assign({}, baseConfig, {
-    debug: true,
     devtool: 'eval',
     entry: {
         polyfill: [
@@ -42,15 +43,28 @@ var webpackConfig = Object.assign({}, baseConfig, {
         publicPath: ''
     },
     plugins: [
-        // https://github.com/gajus/write-file-webpack-plugin
-        // Forces webpack-dev-server to write bundle files to the file system.
-        new WriteFileWebpackPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
                 // This has effect on the react lib size
                 NODE_ENV: JSON.stringify('development')
             }
         }),
+        new webpack.HotModuleReplacementPlugin(),
+        new webpack.LoaderOptionsPlugin({
+            debug: true
+        }),
+        new webpack.NoEmitOnErrorsPlugin(),
+        new stylusLoader.OptionsPlugin({
+            default: {
+                // nib - CSS3 extensions for Stylus
+                use: [nib()],
+                // no need to have a '@import "nib"' in the stylesheet
+                import: ['~nib/lib/nib/index.styl']
+            }
+        }),
+        // https://github.com/gajus/write-file-webpack-plugin
+        // Forces webpack-dev-server to write bundle files to the file system.
+        new WriteFileWebpackPlugin(),
         new webpack.ContextReplacementPlugin(
             /moment[\/\\]locale$/,
             new RegExp('^\./(' + without(languages, 'en').join('|') + ')$')
@@ -67,15 +81,16 @@ var webpackConfig = Object.assign({}, baseConfig, {
         new ManifestPlugin({
             fileName: 'manifest.json'
         }),
-        new webpack.optimize.OccurrenceOrderPlugin(),
-        new ExtractTextPlugin('[name].css', { allChunks: true }),
+        new ExtractTextPlugin({
+            filename: '[name].css',
+            allChunks: true
+        }),
         new CSSSplitWebpackPlugin({
             size: 4000,
             imports: '[name].[ext]?[hash]',
             filename: '[name]-[part].[ext]?[hash]',
             preserve: false
         }),
-        new webpack.HotModuleReplacementPlugin(),
         new HtmlWebpackPlugin({
             title: `cnc ${pkg.version}`,
             filename: 'index.hbs',
@@ -83,12 +98,10 @@ var webpackConfig = Object.assign({}, baseConfig, {
             chunksSortMode: 'dependency' // Sort chunks by dependency
         }),
         new HtmlWebpackPluginAddons({
-            /**
-             * Do not insert "[name]-[part].css" to the html. For example:
-             * <link href="/9b80ca13/[name]-1.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
-             * <link href="/9b80ca13/[name]-2.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
-             * <link href="/9b80ca13/[name].css?ff4bb41b7b5e61a63da54dff2e59581d" rel="stylesheet">
-             */
+            // Do not insert "[name]-[part].css" to the html. For example:
+            // <link href="/9b80ca13/[name]-1.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
+            // <link href="/9b80ca13/[name]-2.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
+            // <link href="/9b80ca13/[name].css?ff4bb41b7b5e61a63da54dff2e59581d" rel="stylesheet">
             afterHTMLProcessing: function(pluginData, next) {
                 const re = new RegExp(/<link.* href="[^"]+\w+\-\d+\.css[^>]+>/);
                 pluginData.html = pluginData.html.replace(re, '');
@@ -97,8 +110,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
         }),
         new InlineChunkWebpackPlugin({
             inlineChunks: ['manifest']
-        }),
-        new webpack.NoErrorsPlugin()
+        })
     ]
 });
 

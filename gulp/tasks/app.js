@@ -44,30 +44,23 @@ const webpackProductionConfig = {
     plugins: [
         new webpack.DefinePlugin({
             'global.PUBLIC_PATH': JSON.stringify(publicPath)
-        }),
-        new webpack.optimize.OccurrenceOrderPlugin()
+        })
     ],
     module: {
-        loaders: [
-            {
-                test: /\.json$/,
-                loader: 'json'
-            },
+        rules: [
             {
                 test: /\.jsx?$/,
-                loader: 'babel',
+                loader: 'babel-loader',
                 exclude: /node_modules/
             }
         ]
     },
     externals: externals,
     resolve: {
-        extensions: ['', '.js', '.jsx']
+        extensions: ['.js', '.json', '.jsx']
     },
     resolveLoader: {
-        modulesDirectories: [
-            NODE_MODULES
-        ]
+        modules: [NODE_MODULES]
     },
     node: {
         console: true,

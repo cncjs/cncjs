@@ -1,5 +1,5 @@
 /* eslint-disable import/no-unresolved */
-import 'imports?THREE=three!three/examples/js/controls/TrackballControls';
+import 'imports-loader?THREE=three!three/examples/js/controls/TrackballControls';
 /* eslint-enable */
 import _ from 'lodash';
 import colornames from 'colornames';
