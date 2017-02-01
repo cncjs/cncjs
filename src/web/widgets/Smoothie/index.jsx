@@ -3,21 +3,16 @@ import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import controller from '../../lib/controller';
 import store from '../../store';
-import Spindle from './Spindle';
+import Smoothie from './Smoothie';
 import {
-    // Grbl
-    GRBL,
-    // Smoothie
-    SMOOTHIE,
-    // TinyG2
-    TINYG2
+    SMOOTHIE
 } from '../../constants';
 import styles from './index.styl';
 
-class SpindleWidget extends Component {
+class SmoothieWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
         sortable: PropTypes.object
@@ -27,42 +22,51 @@ class SpindleWidget extends Component {
     };
 
     actions = {
-        handleSpindleSpeedChange: (event) => {
-            const spindleSpeed = Number(event.target.value) || 0;
-            this.setState({ spindleSpeed: spindleSpeed });
+        toggleQueueReports: () => {
+            const expanded = this.state.panel.queueReports.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    queueReports: {
+                        ...this.state.panel.queueReports,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
+        toggleStatusReports: () => {
+            const expanded = this.state.panel.statusReports.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    statusReports: {
+                        ...this.state.panel.statusReports,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
+        toggleModalGroups: () => {
+            const expanded = this.state.panel.modalGroups.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    modalGroups: {
+                        ...this.state.panel.modalGroups,
+                        expanded: !expanded
+                    }
+                }
+            });
         }
     };
     controllerEvents = {
-        'Grbl:state': (state) => {
-            const { parserstate } = { ...state };
-            const { modal = {} } = { ...parserstate };
-
-            this.setState({
-                controller: {
-                    type: GRBL,
-                    state: state
-                },
-                spindleState: modal.spindle || '',
-                coolantState: modal.coolant || ''
-            });
-        },
         'Smoothie:state': (state) => {
-            const { parserstate } = { ...state };
-            const { modal = {} } = { ...parserstate };
-
             this.setState({
                 controller: {
                     type: SMOOTHIE,
-                    state: state
-                },
-                spindleState: modal.spindle || '',
-                coolantState: modal.coolant || ''
-            });
-        },
-        'TinyG2:state': (state) => {
-            this.setState({
-                controller: {
-                    type: TINYG2,
                     state: state
                 }
             });
@@ -88,15 +92,17 @@ class SpindleWidget extends Component {
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
-            spindleSpeed
+            panel
         } = this.state;
 
-        store.set('widgets.spindle.minimized', minimized);
-        store.set('widgets.spindle.speed', spindleSpeed);
+        store.set('widgets.smoothie.minimized', minimized);
+        store.set('widgets.smoothie.panel.queueReports.expanded', panel.queueReports.expanded);
+        store.set('widgets.smoothie.panel.statusReports.expanded', panel.statusReports.expanded);
+        store.set('widgets.smoothie.panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getDefaultState() {
         return {
-            minimized: store.get('widgets.spindle.minimized', false),
+            minimized: store.get('widgets.smoothie.minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -104,9 +110,17 @@ class SpindleWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
-            spindleState: '',
-            coolantState: '',
-            spindleSpeed: store.get('widgets.spindle.speed', 1000)
+            panel: {
+                queueReports: {
+                    expanded: store.get('widgets.smoothie.panel.queueReports.expanded')
+                },
+                statusReports: {
+                    expanded: store.get('widgets.smoothie.panel.statusReports.expanded')
+                },
+                modalGroups: {
+                    expanded: store.get('widgets.smoothie.panel.modalGroups.expanded')
+                }
+            }
         };
     }
     subscribe() {
@@ -147,8 +161,12 @@ class SpindleWidget extends Component {
     }
     canClick() {
         const { port } = this.state;
+        const { type } = this.state.controller;
 
         if (!port) {
+            return false;
+        }
+        if (type !== SMOOTHIE) {
             return false;
         }
 
@@ -167,7 +185,7 @@ class SpindleWidget extends Component {
         return (
             <Widget fullscreen={isFullscreen}>
                 <Widget.Header className={this.props.sortable.handleClassName}>
-                    <Widget.Title>{i18n._('Spindle')}</Widget.Title>
+                    <Widget.Title>{i18n._('Smoothie')}</Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={minimized ? i18n._('Open') : i18n._('Close')}
@@ -207,7 +225,7 @@ class SpindleWidget extends Component {
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <Spindle
+                    <Smoothie
                         state={state}
                         actions={actions}
                     />
@@ -217,4 +235,4 @@ class SpindleWidget extends Component {
     }
 }
 
-export default SpindleWidget;
+export default SmoothieWidget;

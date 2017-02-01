@@ -1,7 +1,6 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { ProgressBar } from 'react-bootstrap';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
@@ -10,19 +9,11 @@ import Toolbar from './Toolbar';
 import Overrides from './Overrides';
 import styles from './index.styl';
 
-class Grbl extends Component {
+class Smoothie extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
-
-    // https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl
-    // Grbl v0.9: BLOCK_BUFFER_SIZE (18), RX_BUFFER_SIZE (128)
-    // Grbl v1.1: BLOCK_BUFFER_SIZE (16), RX_BUFFER_SIZE (128)
-    plannerBufferMax = 0;
-    plannerBufferMin = 0;
-    receiveBufferMax = 128;
-    receiveBufferMin = 0;
 
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
@@ -33,84 +24,22 @@ class Grbl extends Component {
         const panel = state.panel;
         const controllerState = state.controller.state || {};
         const parserState = _.get(controllerState, 'parserstate', {});
-        const activeState = _.get(controllerState, 'status.activeState') || none;
-        const feedrate = _.get(controllerState, 'status.feedrate', _.get(parserState, 'feedrate', none));
-        const spindle = _.get(controllerState, 'status.spindle', _.get(parserState, 'spindle', none));
+        const activeState = _.get(controllerState, 'status.activeState', none);
+        const ovF = _.get(controllerState, 'status.ovF');
+        const ovS = _.get(controllerState, 'status.ovS');
+        const feedrate = _.get(parserState, 'feedrate', none);
+        const spindle = _.get(parserState, 'spindle', none);
         const tool = _.get(parserState, 'tool', none);
-        const ov = _.get(controllerState, 'status.ov', []);
-        const buf = _.get(controllerState, 'status.buf', {});
         const modal = _.mapValues(parserState.modal || {}, (word, group) => mapGCodeToText(word));
-
-        this.plannerBufferMax = Math.max(this.plannerBufferMax, buf.planner) || this.plannerBufferMax;
-        this.receiveBufferMax = Math.max(this.receiveBufferMax, buf.rx) || this.receiveBufferMax;
 
         return (
             <div>
                 <Toolbar state={state} actions={actions} />
-                {!_.isEmpty(ov) &&
+                {(ovF !== undefined || ovS !== undefined) &&
                 <Overrides state={state} actions={actions} />
                 }
-                {!_.isEmpty(buf) &&
                 <Panel className={styles.panel}>
-                    <Panel.Heading className={styles['panel-heading']}>
-                        <Toggler
-                            className="clearfix"
-                            onToggle={actions.toggleQueueReports}
-                            title={panel.queueReports.expanded ? i18n._('Hide') : i18n._('Show')}
-                        >
-                            <div className="pull-left">{i18n._('Queue Reports')}</div>
-                            <Toggler.Icon
-                                className="pull-right"
-                                expanded={panel.queueReports.expanded}
-                            />
-                        </Toggler>
-                    </Panel.Heading>
-                    {panel.queueReports.expanded &&
-                    <Panel.Body>
-                        <div className="row no-gutters">
-                            <div className="col col-xs-4">
-                                {i18n._('Planner Buffer')}
-                            </div>
-                            <div className="col col-xs-8">
-                                <ProgressBar
-                                    style={{ marginBottom: 0 }}
-                                    bsStyle="info"
-                                    min={this.plannerBufferMin}
-                                    max={this.plannerBufferMax}
-                                    now={buf.planner}
-                                    label={
-                                        <span className={styles.progressbarLabel}>
-                                            {buf.planner}
-                                        </span>
-                                    }
-                                />
-                            </div>
-                        </div>
-                        <div className="row no-gutters">
-                            <div className="col col-xs-4">
-                                {i18n._('Receive Buffer')}
-                            </div>
-                            <div className="col col-xs-8">
-                                <ProgressBar
-                                    style={{ marginBottom: 0 }}
-                                    bsStyle="info"
-                                    min={this.receiveBufferMin}
-                                    max={this.receiveBufferMax}
-                                    now={buf.rx}
-                                    label={
-                                        <span className={styles.progressbarLabel}>
-                                            {buf.rx}
-                                        </span>
-                                    }
-                                />
-                            </div>
-                        </div>
-                    </Panel.Body>
-                    }
-                </Panel>
-                }
-                <Panel className={styles.panel}>
-                    <Panel.Heading className={styles['panel-heading']}>
+                    <Panel.Heading className={styles.panelHeading}>
                         <Toggler
                             className="clearfix"
                             onToggle={() => {
@@ -171,7 +100,7 @@ class Grbl extends Component {
                     }
                 </Panel>
                 <Panel className={styles.panel}>
-                    <Panel.Heading className={styles['panel-heading']}>
+                    <Panel.Heading className={styles.panelHeading}>
                         <Toggler
                             className="clearfix"
                             onToggle={() => {
@@ -286,4 +215,4 @@ class Grbl extends Component {
     }
 }
 
-export default Grbl;
+export default Smoothie;

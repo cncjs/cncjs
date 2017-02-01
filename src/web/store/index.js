@@ -29,13 +29,13 @@ const defaultState = {
             primary: {
                 show: true,
                 widgets: [
-                    'connection', 'console', 'grbl', 'tinyg2', 'webcam'
+                    'connection', 'console', 'grbl', 'smoothie', 'tinyg2', 'webcam'
                 ]
             },
             secondary: {
                 show: true,
                 widgets: [
-                    'axes', 'gcode', 'macro', 'probe', 'spindle'
+                    'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser'
                 ]
             }
         }
@@ -59,7 +59,7 @@ const defaultState = {
         connection: {
             minimized: false,
             controller: {
-                type: 'Grbl' // Grbl or TinyG2
+                type: 'Grbl' // Grbl|Smoothie|TinyG2
             },
             port: '',
             baudrate: 115200,
@@ -85,6 +85,9 @@ const defaultState = {
                 }
             }
         },
+        laser: {
+            minimized: false
+        },
         macro: {
             minimized: false
         },
@@ -95,6 +98,17 @@ const defaultState = {
             probeFeedrate: 20,
             tlo: 10,
             retractionDistance: 4
+        },
+        smoothie: {
+            minimized: false,
+            panel: {
+                statusReports: {
+                    expanded: true
+                },
+                modalGroups: {
+                    expanded: true
+                }
+            }
         },
         spindle: {
             minimized: false,

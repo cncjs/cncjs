@@ -100,6 +100,18 @@ class GCodeWidget extends Component {
                 this.setState({ units: units });
             }
         },
+        'Smoothie:state': (state) => {
+            const { parserstate } = { ...state };
+            const { modal = {} } = { ...parserstate };
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
+
+            if (this.state.units !== units) {
+                this.setState({ units: units });
+            }
+        },
         'TinyG2:state': (state) => {
             const { sr } = { ...state };
             const { modal = {} } = sr;

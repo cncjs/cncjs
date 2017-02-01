@@ -7,6 +7,7 @@
         margin-right: 10px;
     }
     .controller-state {
+        color: #222;
         background-color: #fff;
         border: 1px solid #e3e3e3;
         border-radius: 3px;
@@ -15,6 +16,37 @@
         min-width: 50px;
         padding: 0 10px;
         text-align: center;
+
+        &.controller-state-default {
+            color: #222;
+            background-color: #fff;
+            border: 1px solid #e3e3e3;
+        }
+        &.controller-state-primary {
+            color: #fff;
+            background-color: #337ab7;
+            border-color: #2e6da4;
+        }
+        &.controller-state-success {
+            color: #fff;
+            background-color: #5cb85c;
+            border-color: #4cae4c;
+        }
+        &.controller-state-info {
+            color: #fff;
+            background-color: #5bc0de;
+            border-color: #46b8da;
+        }
+        &.controller-state-warning {
+            color: #fff;
+            background-color: #f0ad4e;
+            border-color: #eea236;
+        }
+        &.controller-state-danger {
+            color: #fff;
+            background-color: #d9534f;
+            border-color: #d43f3a;
+        }
     }
 }
 

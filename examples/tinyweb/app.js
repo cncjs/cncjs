@@ -166,6 +166,24 @@ controller.on('Grbl:state', function(data) {
     $('[data-route="axes"] [data-name="wpos-z"]').text(wpos.z);
 });
 
+controller.on('Smoothie:state', function(data) {
+    var status = data.status || {};
+    var activeState = status.activeState;
+    var mpos = status.mpos;
+    var wpos = status.wpos;
+    var IDLE = 'Idle', RUN = 'Run';
+    var canClick = [IDLE, RUN].indexOf(activeState) >= 0;
+
+    $('[data-route="axes"] .control-pad .btn').prop('disabled', !canClick);
+    $('[data-route="axes"] [data-name="active-state"]').text(activeState);
+    $('[data-route="axes"] [data-name="mpos-x"]').text(mpos.x);
+    $('[data-route="axes"] [data-name="mpos-y"]').text(mpos.y);
+    $('[data-route="axes"] [data-name="mpos-z"]').text(mpos.z);
+    $('[data-route="axes"] [data-name="wpos-x"]').text(wpos.x);
+    $('[data-route="axes"] [data-name="wpos-y"]').text(wpos.y);
+    $('[data-route="axes"] [data-name="wpos-z"]').text(wpos.z);
+});
+
 controller.on('TinyG2:state', function(data) {
     var sr = data.sr || {};
     var machineState = sr.machineState;

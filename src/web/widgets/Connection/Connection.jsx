@@ -83,7 +83,7 @@ class Connection extends React.Component {
             this.setState({
                 connecting: false,
                 connected: true,
-                controllerType: controllerType, // Grbl or TinyG2
+                controllerType: controllerType, // Grbl|Smoothie|TinyG2
                 port: port,
                 baudrate: baudrate,
                 ports: ports
@@ -372,6 +372,20 @@ class Connection extends React.Component {
                                 }}
                             >
                                 Grbl
+                            </button>
+                            <button
+                                type="button"
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': controllerType === 'Smoothie' }
+                                )}
+                                disabled={!canChangeController}
+                                onClick={() => {
+                                    this.changeController('Smoothie');
+                                }}
+                            >
+                                Smoothie
                             </button>
                             <button
                                 type="button"

@@ -145,14 +145,6 @@ class SmoothieLineParserResultStatus {
             payload.buf.rx = Number(_.get(result, 'RX[0]', 0));
         }
 
-        // Buffer State (Grbl v1.1)
-        // Bf:15,128. The first value is the number of available blocks in the planner buffer and the second is number of available bytes in the serial RX buffer.
-        if (_.has(result, 'Bf')) {
-            payload.buf = payload.buf || {};
-            payload.buf.planner = Number(_.get(result, 'Bf[0]', 0));
-            payload.buf.rx = Number(_.get(result, 'Bf[1]', 0));
-        }
-
         // Line Number
         // Ln:99999 indicates line 99999 is currently being executed.
         if (_.has(result, 'Ln')) {
@@ -164,13 +156,6 @@ class SmoothieLineParserResultStatus {
         // This appears only when VARIABLE_SPINDLE is disabled.
         if (_.has(result, 'F')) {
             payload.feedrate = Number(_.get(result, 'F[0]', 0));
-        }
-
-        // Current Feed and Speed (Grbl v1.1)
-        // FS:500,8000 contains real-time feed rate, followed by spindle speed, data as the values.
-        if (_.has(result, 'FS')) {
-            payload.feedrate = Number(_.get(result, 'FS[0]', 0));
-            payload.spindle = Number(_.get(result, 'FS[1]', 0));
         }
 
         // Limit Pins (Grbl v0.9)
@@ -185,35 +170,6 @@ class SmoothieLineParserResultStatus {
                 (value & (1 << 2)) ? 'Z' : '',
                 (value & (1 << 2)) ? 'A' : ''
             ].join('');
-        }
-
-        // Input Pin State (Grbl v1.1)
-        // * Pn:XYZPDHRS indicates which input pins Smoothie has detected as 'triggered'.
-        // * Each letter of XYZPDHRS denotes a particular 'triggered' input pin.
-        //   - X Y Z XYZ limit pins, respectively
-        //   - P the probe pin.
-        //   - D H R S the door, hold, soft-reset, and cycle-start pins, respectively.
-        //   - Example: Pn:PZ indicates the probe and z-limit pins are 'triggered'.
-        //   - Note: A may be added in later versions for an A-axis limit pin.
-        if (_.has(result, 'Pn')) {
-            payload.pinState = _.get(result, 'Pn[0]', '');
-        }
-
-        // Override Values (Grbl v1.1)
-        // Ov:100,100,100 indicates current override values in percent of programmed values for feed, rapids, and spindle speed, respectively.
-        if (_.has(result, 'Ov')) {
-            payload.ov = _.get(result, 'Ov', []).map(v => Number(v));
-        }
-
-        // Accessory State (Grbl v1.1)
-        // * A:SFM indicates the current state of accessory machine components, such as the spindle and coolant.
-        // * Each letter after A: denotes a particular state. When it appears, the state is enabled. When it does not appear, the state is disabled.
-        //   - S indicates spindle is enabled in the CW direction. This does not appear with C.
-        //   - C indicates spindle is enabled in the CCW direction. This does not appear with S.
-        //   - F indicates flood coolant is enabled.
-        //   - M indicates mist coolant is enabled.
-        if (_.has(result, 'A')) {
-            payload.accessoryState = _.get(result, 'A[0]', '');
         }
 
         return {
@@ -449,7 +405,9 @@ class Smoothie extends events.EventEmitter {
                 x: '0.0000',
                 y: '0.0000',
                 z: '0.0000'
-            }
+            },
+            ovF: 100,
+            ovS: 100
         },
         parserstate: {
             modal: {

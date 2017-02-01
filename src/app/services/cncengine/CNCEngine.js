@@ -8,7 +8,7 @@ import log from '../../lib/log';
 import settings from '../../config/settings';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
-import { GrblController, TinyG2Controller } from '../../controllers';
+import { GrblController, SmoothieController, TinyG2Controller } from '../../controllers';
 import { IP_WHITELIST } from '../../constants';
 
 const PREFIX = '[cncengine]';
@@ -137,6 +137,8 @@ class CNCServer {
 
                     if (controllerType === 'Grbl') {
                         controller = new GrblController(port, { baudrate });
+                    } else if (controllerType === 'Smoothie') {
+                        controller = new SmoothieController(port, { baudrate });
                     } else if (controllerType === 'TinyG2') {
                         controller = new TinyG2Controller(port, { baudrate });
                     } else {

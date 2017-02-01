@@ -597,15 +597,18 @@ class TinyG2Controller {
                 // Feeder
                 this.feeder.next();
             },
+            'check': () => {
+                // Not supported
+            },
+            'homing': () => {
+                this.writeln(socket, '{home:1}');
+            },
             'queueflush': () => {
                 this.writeln(socket, '!%'); // queue flush
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'killjob': () => {
                 this.writeln(socket, '\x04'); // ^d
-            },
-            'homing': () => {
-                this.writeln(socket, '{home:1}');
             },
             'sleep': () => {
                 // Not supported
@@ -620,6 +623,15 @@ class TinyG2Controller {
                 }
 
                 this.writeln(socket, '\x18'); // ^x
+            },
+            'feedOverride': () => {
+                // Not supported
+            },
+            'spindleOverride': () => {
+                // Not supported
+            },
+            'rapidOverride': () => {
+                // Not supported
             },
             'gcode': () => {
                 const line = args.join(' ');

@@ -16,6 +16,9 @@ import {
     // Grbl
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
+    // Smoothie
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_IDLE,
     // TinyG2
     TINYG2,
     TINYG2_MACHINE_STATE_READY,
@@ -139,6 +142,50 @@ class ProbeWidget extends Component {
                 units: units,
                 controller: {
                     type: GRBL,
+                    state: state
+                },
+                probeDepth: probeDepth,
+                probeFeedrate: probeFeedrate,
+                tlo: tlo,
+                retractionDistance: retractionDistance
+            });
+        },
+        'Smoothie:state': (state) => {
+            const { parserstate } = { ...state };
+            const { modal = {} } = { ...parserstate };
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
+
+            let {
+                probeDepth,
+                probeFeedrate,
+                tlo,
+                retractionDistance
+            } = store.get('widgets.probe');
+            if (units === IMPERIAL_UNITS) {
+                probeDepth = mm2in(probeDepth).toFixed(4) * 1;
+                probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
+                tlo = mm2in(tlo).toFixed(4) * 1;
+                retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
+            }
+            if (units === METRIC_UNITS) {
+                probeDepth = Number(probeDepth).toFixed(3) * 1;
+                probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
+                tlo = Number(tlo).toFixed(3) * 1;
+                retractionDistance = Number(retractionDistance).toFixed(3) * 1;
+            }
+
+            if (this.state.units !== units) {
+                // Set `this.unitsDidChange` to true if the unit has changed
+                this.unitsDidChange = true;
+            }
+
+            this.setState({
+                units: units,
+                controller: {
+                    type: SMOOTHIE,
                     state: state
                 },
                 probeDepth: probeDepth,
@@ -320,6 +367,15 @@ class ProbeWidget extends Component {
             const activeState = _.get(controllerState, 'status.activeState');
             const states = [
                 GRBL_ACTIVE_STATE_IDLE
+            ];
+            if (!includes(states, activeState)) {
+                return false;
+            }
+        }
+        if (controllerType === SMOOTHIE) {
+            const activeState = _.get(controllerState, 'status.activeState');
+            const states = [
+                SMOOTHIE_ACTIVE_STATE_IDLE
             ];
             if (!includes(states, activeState)) {
                 return false;

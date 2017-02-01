@@ -6,19 +6,16 @@ import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import store from '../../store';
-import Grbl from './Grbl';
+import Smoothie from './Smoothie';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
-    GRBL,
-    GRBL_ACTIVE_STATE_RUN,
-    GRBL_REALTIME_COMMANDS,
-    GRBL_ALARMS,
-    GRBL_ERRORS,
-    GRBL_SETTINGS
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_HOLD,
+    SMOOTHIE_REALTIME_COMMANDS
 } from './constants';
 
 const noop = _.noop;
@@ -36,8 +33,8 @@ class Connection {
     }
 }
 
-class GrblController {
-    type = GRBL;
+class SmoothieController {
+    type = SMOOTHIE;
 
     // Connections
     connections = [];
@@ -49,8 +46,8 @@ class GrblController {
     };
     serialport = null;
 
-    // Grbl
-    grbl = null;
+    // Smoothie
+    smoothie = null;
     ready = false;
     state = {};
     queryTimer = null;
@@ -59,6 +56,8 @@ class GrblController {
         parserstate: false,
         parserstateEnd: false
     };
+    feedOverride = 100;
+    spindleOverride = 100;
 
     // Feeder
     feeder = null;
@@ -82,7 +81,7 @@ class GrblController {
         this.feeder = new Feeder();
         this.feeder.on('data', ({ socket = null, line }) => {
             if (this.isClose()) {
-                log.error(`[Grbl] The serial port "${this.options.port}" is not accessible`);
+                log.error(`[Smoothie] The serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
@@ -105,7 +104,7 @@ class GrblController {
 
             const data = line + '\n';
             this.serialport.write(data);
-            dbg(`[Grbl] > ${line}`);
+            dbg(`[Smoothie] > ${line}`);
         });
 
         // Sender
@@ -115,31 +114,31 @@ class GrblController {
         });
         this.sender.on('data', (gcode = '') => {
             if (this.isClose()) {
-                log.error(`[Grbl] The serial port "${this.options.port}" is not accessible`);
+                log.error(`[Smoothie] The serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
             if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
-                log.error(`[Grbl] Unexpected workflow state: ${this.workflowState}`);
+                log.error(`[Smoothie] Unexpected workflow state: ${this.workflowState}`);
                 return;
             }
 
             gcode = ('' + gcode).trim();
             if (gcode.length > 0) {
                 this.serialport.write(gcode + '\n');
-                dbg(`[Grbl] > ${gcode}`);
+                dbg(`[Smoothie] > ${gcode}`);
             }
         });
 
-        // Grbl
-        this.grbl = new Grbl();
+        // Smoothie
+        this.smoothie = new Smoothie();
 
-        this.grbl.on('raw', noop);
+        this.smoothie.on('raw', noop);
 
-        this.grbl.on('status', (res) => {
+        this.smoothie.on('status', (res) => {
             this.queryResponse.status = false;
 
-            // Detect the buffer size if Grbl is set to report the rx buffer (#115)
+            // Detect the buffer size if Smoothie is set to report the rx buffer (#115)
             if (res && res.buf && res.buf.rx) {
                 const rx = Number(res.buf.rx) || 0;
                 // Consider periodic commands ('$G\n', '?') to make sure the buffer doesn't overflow
@@ -157,7 +156,7 @@ class GrblController {
             });
         });
 
-        this.grbl.on('ok', (res) => {
+        this.smoothie.on('ok', (res) => {
             if (this.queryResponse.parserstateEnd) {
                 this.connections.forEach((c) => {
                     if (c.sentCommand.indexOf('$G') === 0) {
@@ -182,55 +181,31 @@ class GrblController {
             this.feeder.next();
         });
 
-        this.grbl.on('error', (res) => {
-            const code = Number(res.message) || undefined;
-            const error = _.find(GRBL_ERRORS, { code: code });
-
+        this.smoothie.on('error', (res) => {
             // Sender
             if (this.workflowState === WORKFLOW_STATE_RUNNING) {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
                 this.emitAll('serialport:read', `> ${line.trim()} (line=${received + 1})`);
-                if (error) {
-                    // Grbl v1.1
-                    this.emitAll('serialport:read', `error:${code} (${error.description})`);
-                } else {
-                    // Grbl v0.9
-                    this.emitAll('serialport:read', res.raw);
-                }
+                this.emitAll('serialport:read', res.raw);
 
                 this.sender.ack();
                 this.sender.next();
                 return;
             }
 
-            if (error) {
-                // Grbl v1.1
-                this.emitAll('serialport:read', `error:${code} (${error.description})`);
-            } else {
-                // Grbl v0.9
-                this.emitAll('serialport:read', res.raw);
-            }
+            this.emitAll('serialport:read', res.raw);
 
             // Feeder
             this.feeder.next();
         });
 
-        this.grbl.on('alarm', (res) => {
-            const code = Number(res.message) || undefined;
-            const alarm = _.find(GRBL_ALARMS, { code: code });
-
-            if (alarm) {
-                // Grbl v1.1
-                this.emitAll('serialport:read', `ALARM:${code} (${alarm.description})`);
-            } else {
-                // Grbl v0.9
-                this.emitAll('serialport:read', res.raw);
-            }
+        this.smoothie.on('alarm', (res) => {
+            this.emitAll('serialport:read', res.raw);
         });
 
-        this.grbl.on('parserstate', (res) => {
+        this.smoothie.on('parserstate', (res) => {
             this.queryResponse.parserstate = false;
             this.queryResponse.parserstateEnd = true; // wait for ok response
 
@@ -241,37 +216,15 @@ class GrblController {
             });
         });
 
-        this.grbl.on('parameters', (res) => {
+        this.smoothie.on('parameters', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
-        this.grbl.on('feedback', (res) => {
+        this.smoothie.on('version', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
-        this.grbl.on('settings', (res) => {
-            const setting = _.find(GRBL_SETTINGS, { setting: res.setting });
-
-            if (!res.description && setting) {
-                // Grbl v1.1
-                this.emitAll('serialport:read', `${res.setting}=${res.value} (${setting.description}, ${setting.units})`);
-            } else {
-                // Grbl v0.9
-                this.emitAll('serialport:read', res.raw);
-            }
-        });
-
-        this.grbl.on('startup', (res) => {
-            this.emitAll('serialport:read', res.raw);
-
-            // The start up message always prints upon startup, after a reset, or at program end.
-            // Reset the following values when Grbl has completed re-initializing all systems.
-            this.queryResponse.status = false;
-            this.queryResponse.parserstate = false;
-            this.queryResponse.parserstateEnd = false;
-        });
-
-        this.grbl.on('others', (res) => {
+        this.smoothie.on('others', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
@@ -283,13 +236,13 @@ class GrblController {
         });
 
         this.serialport.on('data', (data) => {
-            this.grbl.parse('' + data);
-            dbg(`[Grbl] < ${data}`);
+            this.smoothie.parse('' + data);
+            dbg(`[Smoothie] < ${data}`);
         });
 
         this.serialport.on('disconnect', (err) => {
             if (err) {
-                log.warn(`[Grbl] Disconnected from serial port "${port}":`, err);
+                log.warn(`[Smoothie] Disconnected from serial port "${port}":`, err);
             }
 
             this.close();
@@ -297,7 +250,7 @@ class GrblController {
 
         this.serialport.on('error', (err) => {
             if (err) {
-                log.error(`[Grbl] Unexpected error while reading/writing serial port "${port}":`, err);
+                log.error(`[Smoothie] Unexpected error while reading/writing serial port "${port}":`, err);
             }
         });
 
@@ -327,13 +280,13 @@ class GrblController {
                 this.emitAll('sender:status', this.sender.toJSON());
             }
 
-            // Grbl state
-            if (this.state !== this.grbl.state) {
-                this.state = this.grbl.state;
-                this.emitAll('Grbl:state', this.state);
+            // Smoothie state
+            if (this.state !== this.smoothie.state) {
+                this.state = this.smoothie.state;
+                this.emitAll('Smoothie:state', this.state);
             }
 
-            // Do not send "?" and "$G" when Grbl is not ready
+            // Do not send "?" and "$G" when Smoothie is not ready
             if (!(this.ready)) {
                 // Not ready yet
                 return;
@@ -364,14 +317,17 @@ class GrblController {
             this.queryTimer = null;
         }
 
-        if (this.grbl) {
-            this.grbl.removeAllListeners();
-            this.grbl = null;
+        if (this.smoothie) {
+            this.smoothie.removeAllListeners();
+            this.smoothie = null;
         }
     }
     initController() {
         const cmds = [
-            { pauseAfter: 500 }
+            { pauseAfter: 500 },
+
+            // Check if it is Smoothieware
+            { cmd: 'version', pauseAfter: 50 }
         ];
 
         const sendInitCommands = (i = 0) => {
@@ -382,7 +338,7 @@ class GrblController {
             const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
             if (cmd) {
                 this.serialport.write(cmd + '\n');
-                dbg(`[Grbl] > ${cmd}`);
+                dbg(`[Smoothie] > ${cmd}`);
             }
             setTimeout(() => {
                 sendInitCommands(i + 1);
@@ -417,19 +373,19 @@ class GrblController {
 
         // Assertion check
         if (this.isOpen()) {
-            log.error(`[Grbl] Cannot open serial port "${port}"`);
+            log.error(`[Smoothie] Cannot open serial port "${port}"`);
             return;
         }
 
         this.serialport.open((err) => {
             if (err) {
-                log.error(`[Grbl] Error opening serial port "${port}":`, err);
+                log.error(`[Smoothie] Error opening serial port "${port}":`, err);
                 this.emitAll('serialport:error', { port: port });
                 return;
             }
 
             if (store.get('controllers["' + port + '"]')) {
-                log.error(`[Grbl] Serial port "${port}" was not properly closed`);
+                log.error(`[Smoothie] Serial port "${port}" was not properly closed`);
             }
 
             store.set('controllers["' + port + '"]', this);
@@ -441,7 +397,7 @@ class GrblController {
                 inuse: true
             });
 
-            log.debug(`[Grbl] Connected to serial port "${port}"`);
+            log.debug(`[Smoothie] Connected to serial port "${port}"`);
 
             // Reset
             this.reset();
@@ -458,7 +414,7 @@ class GrblController {
 
         // Assertion check
         if (this.isClose()) {
-            log.error(`[Grbl] The serial port "${port}" was already closed`);
+            log.error(`[Smoothie] The serial port "${port}" was already closed`);
             return;
         }
 
@@ -472,7 +428,7 @@ class GrblController {
 
         this.serialport.close((err) => {
             if (err) {
-                log.error(`[Grbl] Error closing serial port "${port}":`, err);
+                log.error(`[Smoothie] Error closing serial port "${port}":`, err);
             }
         });
     }
@@ -487,7 +443,7 @@ class GrblController {
 
         if (!_.isEmpty(this.state)) {
             // Send TinyG2 state to a newly connected client
-            socket.emit('Grbl:state', this.state);
+            socket.emit('Smoothie:state', this.state);
         }
 
         if (this.sender) {
@@ -517,7 +473,7 @@ class GrblController {
                     return;
                 }
 
-                log.debug(`[Grbl] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
+                log.debug(`[Smoothie] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 callback(null, { name: name, gcode: gcode });
@@ -539,16 +495,9 @@ class GrblController {
                 this.workflowState = WORKFLOW_STATE_IDLE;
                 this.sender.rewind(); // rewind sender queue
 
-                let delay = 0;
-
-                if (activeState === GRBL_ACTIVE_STATE_RUN) {
-                    this.write(socket, '!'); // hold
-                    delay = 50; // 50ms delay
+                if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
+                    this.write(socket, '~'); // resume
                 }
-
-                setTimeout(() => {
-                    this.write(socket, '\x18'); // ctrl-x
-                }, delay);
             },
             'pause': () => {
                 if (this.workflowState === WORKFLOW_STATE_RUNNING) {
@@ -581,13 +530,13 @@ class GrblController {
                 }
             },
             'check': () => {
-                this.writeln(socket, '$C');
+                // Not supported
             },
             'homing': () => {
                 this.writeln(socket, '$H');
             },
             'sleep': () => {
-                this.writeln(socket, '$SLP');
+                // Not supported
             },
             'unlock': () => {
                 this.writeln(socket, '$X');
@@ -602,44 +551,54 @@ class GrblController {
             },
             'feedOverride': () => {
                 const [value] = args;
+                let feedOverride = this.smoothie.state.status.ovF;
 
                 if (value === 0) {
-                    this.write(socket, '\x90');
-                } else if (value === 10) {
-                    this.write(socket, '\x91');
-                } else if (value === -10) {
-                    this.write(socket, '\x92');
-                } else if (value === 1) {
-                    this.write(socket, '\x93');
-                } else if (value === -1) {
-                    this.write(socket, '\x94');
+                    feedOverride = 100;
+                } else if ((feedOverride + value) > 200) {
+                    feedOverride = 200;
+                } else if ((feedOverride + value) < 10) {
+                    feedOverride = 10;
+                } else {
+                    feedOverride += value;
                 }
+                this.command(socket, 'gcode', 'M220S' + feedOverride);
+
+                // enforce state change
+                this.smoothie.state = {
+                    ...this.smoothie.state,
+                    status: {
+                        ...this.smoothie.state.status,
+                        ovF: feedOverride
+                    }
+                };
             },
             'spindleOverride': () => {
                 const [value] = args;
+                let spindleOverride = this.smoothie.state.status.ovS;
 
                 if (value === 0) {
-                    this.write(socket, '\x99');
-                } else if (value === 10) {
-                    this.write(socket, '\x9a');
-                } else if (value === -10) {
-                    this.write(socket, '\x9b');
-                } else if (value === 1) {
-                    this.write(socket, '\x9c');
-                } else if (value === -1) {
-                    this.write(socket, '\x9d');
+                    spindleOverride = 100;
+                } else if ((spindleOverride + value) > 200) {
+                    spindleOverride = 200;
+                } else if ((spindleOverride + value) < 0) {
+                    spindleOverride = 0;
+                } else {
+                    spindleOverride += value;
                 }
+                this.command(socket, 'gcode', 'M221S' + spindleOverride);
+
+                // enforce state change
+                this.smoothie.state = {
+                    ...this.smoothie.state,
+                    status: {
+                        ...this.smoothie.state.status,
+                        ovS: spindleOverride
+                    }
+                };
             },
             'rapidOverride': () => {
-                const [value] = args;
-
-                if (value === 0 || value === 100) {
-                    this.write(socket, '\x95');
-                } else if (value === 50) {
-                    this.write(socket, '\x96');
-                } else if (value === 25) {
-                    this.write(socket, '\x97');
-                }
+                // Not supported
             },
             'gcode': () => {
                 const line = args.join(' ');
@@ -659,7 +618,7 @@ class GrblController {
                 const macro = _.find(macros, { id: id });
 
                 if (!macro) {
-                    log.error(`[Grbl] Cannot find the macro: id=${id}`);
+                    log.error(`[Smoothie] Cannot find the macro: id=${id}`);
                     return;
                 }
 
@@ -680,7 +639,7 @@ class GrblController {
         }[cmd];
 
         if (!handler) {
-            log.error(`[Grbl] Unknown command: ${cmd}`);
+            log.error(`[Smoothie] Unknown command: ${cmd}`);
             return;
         }
 
@@ -697,10 +656,10 @@ class GrblController {
             }
         }
         this.serialport.write(data);
-        dbg(`[Grbl] > ${data}`);
+        dbg(`[Smoothie] > ${data}`);
     }
     writeln(socket, data) {
-        if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
+        if (_.includes(SMOOTHIE_REALTIME_COMMANDS, data)) {
             this.write(socket, data);
         } else {
             this.write(socket, data + '\n');
@@ -708,4 +667,4 @@ class GrblController {
     }
 }
 
-export default GrblController;
+export default SmoothieController;

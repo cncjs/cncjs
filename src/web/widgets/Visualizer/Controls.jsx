@@ -1,9 +1,9 @@
 import _ from 'lodash';
+import classNames from 'classnames';
 import colornames from 'colornames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import CSSModules from 'react-css-modules';
 import Detector from 'three/examples/js/Detector';
 import controller from '../../lib/controller';
 import Interpolate from '../../components/Interpolate';
@@ -22,6 +22,16 @@ import {
     GRBL_ACTIVE_STATE_SLEEP,
     GRBL_ACTIVE_STATE_ALARM,
     GRBL_ACTIVE_STATE_CHECK,
+    // Smoothie
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_IDLE,
+    SMOOTHIE_ACTIVE_STATE_RUN,
+    SMOOTHIE_ACTIVE_STATE_HOLD,
+    SMOOTHIE_ACTIVE_STATE_DOOR,
+    SMOOTHIE_ACTIVE_STATE_HOME,
+    SMOOTHIE_ACTIVE_STATE_SLEEP,
+    SMOOTHIE_ACTIVE_STATE_ALARM,
+    SMOOTHIE_ACTIVE_STATE_CHECK,
     // TinyG2
     TINYG2,
     TINYG2_MACHINE_STATE_INITIALIZING,
@@ -43,7 +53,6 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class Controls extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -69,14 +78,38 @@ class Controls extends Component {
 
         return true;
     }
-    getControllerState() {
+    renderControllerType() {
+        const { state } = this.props;
+        const controllerType = state.controller.type;
+
+        return (
+            <div className={styles.controllerType}>
+                {controllerType}
+            </div>
+        );
+    }
+    renderControllerState() {
         const { state } = this.props;
         const controllerType = state.controller.type;
         const controllerState = state.controller.state;
+        let stateStyle = 'controller-state-default';
+        let stateText = '';
 
         if (controllerType === GRBL) {
             const activeState = _.get(controllerState, 'status.activeState');
-            const stateText = {
+
+            stateStyle = {
+                [GRBL_ACTIVE_STATE_IDLE]: 'controller-state-default',
+                [GRBL_ACTIVE_STATE_RUN]: 'controller-state-primary',
+                [GRBL_ACTIVE_STATE_HOLD]: 'controller-state-warning',
+                [GRBL_ACTIVE_STATE_DOOR]: 'controller-state-warning',
+                [GRBL_ACTIVE_STATE_HOME]: 'controller-state-primary',
+                [GRBL_ACTIVE_STATE_SLEEP]: 'controller-state-success',
+                [GRBL_ACTIVE_STATE_ALARM]: 'controller-state-danger',
+                [GRBL_ACTIVE_STATE_CHECK]: 'controller-state-info'
+            }[activeState];
+
+            stateText = {
                 [GRBL_ACTIVE_STATE_IDLE]: i18n.t('controller:Grbl.activeState.idle'),
                 [GRBL_ACTIVE_STATE_RUN]: i18n.t('controller:Grbl.activeState.run'),
                 [GRBL_ACTIVE_STATE_HOLD]: i18n.t('controller:Grbl.activeState.hold'),
@@ -86,13 +119,56 @@ class Controls extends Component {
                 [GRBL_ACTIVE_STATE_ALARM]: i18n.t('controller:Grbl.activeState.alarm'),
                 [GRBL_ACTIVE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
             }[activeState];
+        }
 
-            return stateText;
+        if (controllerType === SMOOTHIE) {
+            const activeState = _.get(controllerState, 'status.activeState');
+
+            stateStyle = {
+                [SMOOTHIE_ACTIVE_STATE_IDLE]: 'controller-state-default',
+                [SMOOTHIE_ACTIVE_STATE_RUN]: 'controller-state-primary',
+                [SMOOTHIE_ACTIVE_STATE_HOLD]: 'controller-state-warning',
+                [SMOOTHIE_ACTIVE_STATE_DOOR]: 'controller-state-warning',
+                [SMOOTHIE_ACTIVE_STATE_HOME]: 'controller-state-primary',
+                [SMOOTHIE_ACTIVE_STATE_SLEEP]: 'controller-state-success',
+                [SMOOTHIE_ACTIVE_STATE_ALARM]: 'controller-state-danger',
+                [SMOOTHIE_ACTIVE_STATE_CHECK]: 'controller-state-info'
+            }[activeState];
+
+            stateText = {
+                [SMOOTHIE_ACTIVE_STATE_IDLE]: i18n.t('controller:Smoothie.activeState.idle'),
+                [SMOOTHIE_ACTIVE_STATE_RUN]: i18n.t('controller:Smoothie.activeState.run'),
+                [SMOOTHIE_ACTIVE_STATE_HOLD]: i18n.t('controller:Smoothie.activeState.hold'),
+                [SMOOTHIE_ACTIVE_STATE_DOOR]: i18n.t('controller:Smoothie.activeState.door'),
+                [SMOOTHIE_ACTIVE_STATE_HOME]: i18n.t('controller:Smoothie.activeState.home'),
+                [SMOOTHIE_ACTIVE_STATE_SLEEP]: i18n.t('controller:Smoothie.activeState.sleep'),
+                [SMOOTHIE_ACTIVE_STATE_ALARM]: i18n.t('controller:Smoothie.activeState.alarm'),
+                [SMOOTHIE_ACTIVE_STATE_CHECK]: i18n.t('controller:Smoothie.activeState.check')
+            }[activeState];
         }
 
         if (controllerType === TINYG2) {
             const machineState = _.get(controllerState, 'sr.machineState');
-            const stateText = {
+
+            // https://github.com/synthetos/g2/wiki/Alarm-Processing
+            stateStyle = {
+                [TINYG2_MACHINE_STATE_INITIALIZING]: 'controller-state-warning',
+                [TINYG2_MACHINE_STATE_READY]: 'controller-state-default',
+                [TINYG2_MACHINE_STATE_ALARM]: 'controller-state-danger',
+                [TINYG2_MACHINE_STATE_STOP]: 'controller-state-default',
+                [TINYG2_MACHINE_STATE_END]: 'controller-state-default',
+                [TINYG2_MACHINE_STATE_RUN]: 'controller-state-primary',
+                [TINYG2_MACHINE_STATE_HOLD]: 'controller-state-warning',
+                [TINYG2_MACHINE_STATE_PROBE]: 'controller-state-primary',
+                [TINYG2_MACHINE_STATE_CYCLE]: 'controller-state-primary',
+                [TINYG2_MACHINE_STATE_HOMING]: 'controller-state-primary',
+                [TINYG2_MACHINE_STATE_JOG]: 'controller-state-primary',
+                [TINYG2_MACHINE_STATE_INTERLOCK]: 'controller-state-warning',
+                [TINYG2_MACHINE_STATE_SHUTDOWN]: 'controller-state-danger',
+                [TINYG2_MACHINE_STATE_PANIC]: 'controller-state-danger'
+            }[machineState];
+
+            stateText = {
                 [TINYG2_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG2.machineState.initializing'),
                 [TINYG2_MACHINE_STATE_READY]: i18n.t('controller:TinyG2.machineState.ready'),
                 [TINYG2_MACHINE_STATE_ALARM]: i18n.t('controller:TinyG2.machineState.alarm'),
@@ -108,11 +184,18 @@ class Controls extends Component {
                 [TINYG2_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG2.machineState.shutdown'),
                 [TINYG2_MACHINE_STATE_PANIC]: i18n.t('controller:TinyG2.machineState.panic')
             }[machineState];
-
-            return stateText;
         }
 
-        return '';
+        return (
+            <div
+                className={classNames(
+                    styles.controllerState,
+                    styles[stateStyle]
+                )}
+            >
+                {stateText}
+            </div>
+        );
     }
     getWorkCoordinateSystem() {
         const { state } = this.props;
@@ -133,24 +216,16 @@ class Controls extends Component {
     render() {
         const { state, actions } = this.props;
         const { units, disabled, gcode, objects } = state;
-        const controllerType = state.controller.type;
-        const controllerState = this.getControllerState();
+        const controllerType = this.renderControllerType();
+        const controllerState = this.renderControllerState();
         const canSendCommand = this.canSendCommand();
         const canToggle3DOptions = Detector.webgl && !disabled;
         const wcs = this.getWorkCoordinateSystem();
 
         return (
             <div>
-                {controllerType &&
-                <div styleName="controller-type">
-                    {controllerType}
-                </div>
-                }
-                {controllerState &&
-                <div styleName="controller-state">
-                    {controllerState}
-                </div>
-                }
+                {controllerType}
+                {controllerState}
                 <div className="pull-right">
                     <Dropdown
                         style={{

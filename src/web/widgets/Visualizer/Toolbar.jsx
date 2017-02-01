@@ -7,6 +7,9 @@ import {
     // Grbl
     GRBL,
     GRBL_ACTIVE_STATE_ALARM,
+    // Smoothie
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_ALARM,
     // TinyG2
     TINYG2,
     TINYG2_MACHINE_STATE_ALARM,
@@ -92,6 +95,15 @@ class Toolbar extends Component {
             const activeState = _.get(controllerState, 'status.activeState');
             const states = [
                 GRBL_ACTIVE_STATE_ALARM
+            ];
+            if (_.includes(states, activeState)) {
+                return false;
+            }
+        }
+        if (controllerType === SMOOTHIE) {
+            const activeState = _.get(controllerState, 'status.activeState');
+            const states = [
+                SMOOTHIE_ACTIVE_STATE_ALARM
             ];
             if (_.includes(states, activeState)) {
                 return false;

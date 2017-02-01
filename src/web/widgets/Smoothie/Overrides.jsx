@@ -18,12 +18,12 @@ class Overrides extends Component {
     render() {
         const { state } = this.props;
         const controllerState = state.controller.state || {};
-        const ov = _.get(controllerState, 'status.ov', []);
-        const [ovF = '', ovR = '', ovS = ''] = ov;
+        const ovF = _.get(controllerState, 'status.ovF');
+        const ovS = _.get(controllerState, 'status.ovS');
 
         return (
             <div className={styles.overrides}>
-                <DigitalReadout label="F" value={ovF + '%'}>
+                <DigitalReadout label="F" value={ovF !== undefined ? ovF + '%' : ''}>
                     <RepeatButton
                         className="btn btn-default"
                         style={{ padding: 5 }}
@@ -71,7 +71,7 @@ class Overrides extends Component {
                         <i className="fa fa-undo fa-fw" />
                     </button>
                 </DigitalReadout>
-                <DigitalReadout label="S" value={ovS + '%'}>
+                <DigitalReadout label="S" value={ovS !== undefined ? ovS + '%' : ''}>
                     <RepeatButton
                         className="btn btn-default"
                         style={{ padding: 5 }}
@@ -117,35 +117,6 @@ class Overrides extends Component {
                         }}
                     >
                         <i className="fa fa-fw fa-undo" />
-                    </button>
-                </DigitalReadout>
-                <DigitalReadout label="R" value={ovR + '%'}>
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={() => {
-                            controller.command('rapidOverride', 100);
-                        }}
-                    >
-                        100%
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={() => {
-                            controller.command('rapidOverride', 50);
-                        }}
-                    >
-                        50%
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
-                        onClick={() => {
-                            controller.command('rapidOverride', 25);
-                        }}
-                    >
-                        25%
                     </button>
                 </DigitalReadout>
             </div>

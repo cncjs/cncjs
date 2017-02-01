@@ -18,6 +18,10 @@ import {
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    // Smoothie
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_IDLE,
+    SMOOTHIE_ACTIVE_STATE_RUN,
     // TinyG2
     TINYG2,
     TINYG2_MACHINE_STATE_READY,
@@ -170,6 +174,40 @@ class AxesWidget extends Component {
                 units: units,
                 controller: {
                     type: GRBL,
+                    state: state
+                },
+                machinePosition: {
+                    ...this.state.machinePosition,
+                    ...mpos
+                },
+                workPosition: {
+                    ...this.state.workPosition,
+                    ...wpos
+                },
+                customDistance: customDistance
+            });
+        },
+        'Smoothie:state': (state) => {
+            const { status, parserstate } = { ...state };
+            const { mpos, wpos } = status;
+            const { modal = {} } = { ...parserstate };
+            const units = {
+                'G20': IMPERIAL_UNITS,
+                'G21': METRIC_UNITS
+            }[modal.units] || this.state.units;
+
+            let customDistance = store.get('widgets.axes.jog.customDistance');
+            if (units === IMPERIAL_UNITS) {
+                customDistance = mm2in(customDistance).toFixed(4) * 1;
+            }
+            if (units === METRIC_UNITS) {
+                customDistance = Number(customDistance).toFixed(3) * 1;
+            }
+
+            this.setState({
+                units: units,
+                controller: {
+                    type: SMOOTHIE,
                     state: state
                 },
                 machinePosition: {
@@ -347,7 +385,7 @@ class AxesWidget extends Component {
         if (workflowState !== WORKFLOW_STATE_IDLE) {
             return false;
         }
-        if (!includes([GRBL, TINYG2], controllerType)) {
+        if (!includes([GRBL, SMOOTHIE, TINYG2], controllerType)) {
             return false;
         }
         if (controllerType === GRBL) {
@@ -355,6 +393,16 @@ class AxesWidget extends Component {
             const states = [
                 GRBL_ACTIVE_STATE_IDLE,
                 GRBL_ACTIVE_STATE_RUN
+            ];
+            if (!includes(states, activeState)) {
+                return false;
+            }
+        }
+        if (controllerType === SMOOTHIE) {
+            const activeState = _.get(controllerState, 'status.activeState');
+            const states = [
+                SMOOTHIE_ACTIVE_STATE_IDLE,
+                SMOOTHIE_ACTIVE_STATE_RUN
             ];
             if (!includes(states, activeState)) {
                 return false;
