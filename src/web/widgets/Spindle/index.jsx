@@ -12,8 +12,8 @@ import {
     GRBL,
     // Smoothie
     SMOOTHIE,
-    // TinyG2
-    TINYG2
+    // TinyG
+    TINYG
 } from '../../constants';
 import styles from './index.styl';
 
@@ -59,10 +59,10 @@ class SpindleWidget extends Component {
                 coolantState: modal.coolant || ''
             });
         },
-        'TinyG2:state': (state) => {
+        'TinyG:state': (state) => {
             this.setState({
                 controller: {
-                    type: TINYG2,
+                    type: TINYG,
                     state: state
                 }
             });

@@ -3,16 +3,18 @@ import Anchor from '../../../components/Anchor';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
-const AboutContainer = ({ title }) => {
+const AboutContainer = ({ version }) => {
     const wiki = 'https://github.com/cheton/cnc/wiki';
 
     return (
         <div className={styles.aboutContainer}>
             <img src="logo.png" alt="" className={styles.productLogo} />
-            <div className={styles.productDescription}>
-                <div className={styles.aboutProductTitle}>{title}</div>
+            <div className={styles.productDetails}>
+                <div className={styles.aboutProductName}>
+                    {`cnc ${version.current}`}
+                </div>
                 <div className={styles.aboutProductDescription}>
-                    A web-based interface for CNC milling controller running Grbl or TinyG2
+                    {i18n._('A web-based interface for CNC milling controller running Grbl, Smoothieware, or TinyG')}
                 </div>
                 <Anchor
                     className={styles.learnmore}

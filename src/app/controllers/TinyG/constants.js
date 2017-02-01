@@ -1,93 +1,93 @@
-// TinyG2
-export const TINYG2 = 'TinyG2';
+// TinyG
+export const TINYG = 'TinyG';
 
 // https://github.com/synthetos/TinyG/wiki/Tinyg-Communications-Programming
 // An optimal way to feed the system is to have about 20 to 24 moves in the planner buffer at all times once movement has started. Note that the planner queue actually has 28 buffers, but the controller will not process a command from the serial buffer unless at least 4 buffers are free, so the effective max queue depth is actually 24, not 28.
-export const TINYG2_PLANNER_BUFFER_POOL_SIZE = 28;
-export const TINYG2_PLANNER_BUFFER_LOW_WATER_MARK = 8; // 28 (buffers) - 20 (moves) = 8
-export const TINYG2_PLANNER_QUEUE_STATUS_READY = 0;
-export const TINYG2_PLANNER_QUEUE_STATUS_RUNNING = 1;
-export const TINYG2_PLANNER_QUEUE_STATUS_BLOCKED = 2;
+export const TINYG_PLANNER_BUFFER_POOL_SIZE = 28;
+export const TINYG_PLANNER_BUFFER_LOW_WATER_MARK = 8; // 28 (buffers) - 20 (moves) = 8
+export const TINYG_PLANNER_QUEUE_STATUS_READY = 0;
+export const TINYG_PLANNER_QUEUE_STATUS_RUNNING = 1;
+export const TINYG_PLANNER_QUEUE_STATUS_BLOCKED = 2;
 
 // Machine State
 // https://github.com/synthetos/g2/wiki/Status-Reports#stat-values
-export const TINYG2_MACHINE_STATE_INITIALIZING = 0; // Machine is initializing
-export const TINYG2_MACHINE_STATE_READY = 1; // Machine is ready for use
-export const TINYG2_MACHINE_STATE_ALARM = 2; // Machine is in alarm state
-export const TINYG2_MACHINE_STATE_STOP = 3; // Machine has encountered program stop
-export const TINYG2_MACHINE_STATE_END = 4; // Machine has encountered program end
-export const TINYG2_MACHINE_STATE_RUN = 5; // Machine is running
-export const TINYG2_MACHINE_STATE_HOLD = 6; // Machine is holding
-export const TINYG2_MACHINE_STATE_PROBE = 7; // Machine is in probing operation
-export const TINYG2_MACHINE_STATE_CYCLE = 8; // Reserved for canned cycles (not used)
-export const TINYG2_MACHINE_STATE_HOMING = 9; // Machine is in a homing cycle
-export const TINYG2_MACHINE_STATE_JOG = 10; // Machine is in a jogging cycle
-export const TINYG2_MACHINE_STATE_INTERLOCK = 11; // Machine is in safety interlock hold
-export const TINYG2_MACHINE_STATE_SHUTDOWN = 12; // Machine is in shutdown state. Will not process commands
-export const TINYG2_MACHINE_STATE_PANIC = 13; // Machine is in panic state. Needs to be physically reset
+export const TINYG_MACHINE_STATE_INITIALIZING = 0; // Machine is initializing
+export const TINYG_MACHINE_STATE_READY = 1; // Machine is ready for use
+export const TINYG_MACHINE_STATE_ALARM = 2; // Machine is in alarm state
+export const TINYG_MACHINE_STATE_STOP = 3; // Machine has encountered program stop
+export const TINYG_MACHINE_STATE_END = 4; // Machine has encountered program end
+export const TINYG_MACHINE_STATE_RUN = 5; // Machine is running
+export const TINYG_MACHINE_STATE_HOLD = 6; // Machine is holding
+export const TINYG_MACHINE_STATE_PROBE = 7; // Machine is in probing operation
+export const TINYG_MACHINE_STATE_CYCLE = 8; // Reserved for canned cycles (not used)
+export const TINYG_MACHINE_STATE_HOMING = 9; // Machine is in a homing cycle
+export const TINYG_MACHINE_STATE_JOG = 10; // Machine is in a jogging cycle
+export const TINYG_MACHINE_STATE_INTERLOCK = 11; // Machine is in safety interlock hold
+export const TINYG_MACHINE_STATE_SHUTDOWN = 12; // Machine is in shutdown state. Will not process commands
+export const TINYG_MACHINE_STATE_PANIC = 13; // Machine is in panic state. Needs to be physically reset
 
 // Cycle State
-export const TINYG2_CYCLE_STATE_OFF = 0; // cycle off (not in cycle)
-export const TINYG2_CYCLE_STATE_NORMAL = 1; // normal machine state
-export const TINYG2_CYCLE_STATE_PROBE = 2; // probe cycle
-export const TINYG2_CYCLE_STATE_HOMING = 3; // homing cycle
-export const TINYG2_CYCLE_STATE_JOG = 4; // jog cycle
+export const TINYG_CYCLE_STATE_OFF = 0; // cycle off (not in cycle)
+export const TINYG_CYCLE_STATE_NORMAL = 1; // normal machine state
+export const TINYG_CYCLE_STATE_PROBE = 2; // probe cycle
+export const TINYG_CYCLE_STATE_HOMING = 3; // homing cycle
+export const TINYG_CYCLE_STATE_JOG = 4; // jog cycle
 
 // Motion State
-export const TINYG2_MOTION_STATE_OFF = 0; // motion off
-export const TINYG2_MOTION_STATE_RUN = 1; // motion run
-export const TINYG2_MOTION_STATE_HOLD = 2; // motion hold
+export const TINYG_MOTION_STATE_OFF = 0; // motion off
+export const TINYG_MOTION_STATE_RUN = 1; // motion run
+export const TINYG_MOTION_STATE_HOLD = 2; // motion hold
 
 // Feedhold State
-export const TINYG2_FEEDHOLD_STATE_OFF = 0; // feedhold off (not in feedhold)
-export const TINYG2_FEEDHOLD_STATE_SYNC = 1; // feedhold sync phase
-export const TINYG2_FEEDHOLD_STATE_PLANNING = 2; // feedhold planning phase
-export const TINYG2_FEEDHOLD_STATE_DECELERATION = 3; // feedhold deceleration phase
-export const TINYG2_FEEDHOLD_STATE_HOLDING = 4; // feedhold holding
-export const TINYG2_FEEDHOLD_STATE_END = 5; // feedhold end hold
+export const TINYG_FEEDHOLD_STATE_OFF = 0; // feedhold off (not in feedhold)
+export const TINYG_FEEDHOLD_STATE_SYNC = 1; // feedhold sync phase
+export const TINYG_FEEDHOLD_STATE_PLANNING = 2; // feedhold planning phase
+export const TINYG_FEEDHOLD_STATE_DECELERATION = 3; // feedhold deceleration phase
+export const TINYG_FEEDHOLD_STATE_HOLDING = 4; // feedhold holding
+export const TINYG_FEEDHOLD_STATE_END = 5; // feedhold end hold
 
 // G-code Motion Mode
-export const TINYG2_GCODE_MOTION_G0 = 0;
-export const TINYG2_GCODE_MOTION_G1 = 1;
-export const TINYG2_GCODE_MOTION_G2 = 2;
-export const TINYG2_GCODE_MOTION_G3 = 3;
-export const TINYG2_GCODE_MOTION_G80 = 4;
+export const TINYG_GCODE_MOTION_G0 = 0;
+export const TINYG_GCODE_MOTION_G1 = 1;
+export const TINYG_GCODE_MOTION_G2 = 2;
+export const TINYG_GCODE_MOTION_G3 = 3;
+export const TINYG_GCODE_MOTION_G80 = 4;
 
 // G-code Coordinate System
-export const TINYG2_GCODE_COORDINATE_G53 = 0;
-export const TINYG2_GCODE_COORDINATE_G54 = 1;
-export const TINYG2_GCODE_COORDINATE_G55 = 2;
-export const TINYG2_GCODE_COORDINATE_G56 = 3;
-export const TINYG2_GCODE_COORDINATE_G57 = 4;
-export const TINYG2_GCODE_COORDINATE_G58 = 5;
-export const TINYG2_GCODE_COORDINATE_G59 = 6;
+export const TINYG_GCODE_COORDINATE_G53 = 0;
+export const TINYG_GCODE_COORDINATE_G54 = 1;
+export const TINYG_GCODE_COORDINATE_G55 = 2;
+export const TINYG_GCODE_COORDINATE_G56 = 3;
+export const TINYG_GCODE_COORDINATE_G57 = 4;
+export const TINYG_GCODE_COORDINATE_G58 = 5;
+export const TINYG_GCODE_COORDINATE_G59 = 6;
 
 // G-code Plane Selection
-export const TINYG2_GCODE_PLANE_G17 = 0;
-export const TINYG2_GCODE_PLANE_G18 = 1;
-export const TINYG2_GCODE_PLANE_G19 = 2;
+export const TINYG_GCODE_PLANE_G17 = 0;
+export const TINYG_GCODE_PLANE_G18 = 1;
+export const TINYG_GCODE_PLANE_G19 = 2;
 
 // G-code Units
-export const TINYG2_GCODE_UNITS_G20 = 0;
-export const TINYG2_GCODE_UNITS_G21 = 1;
+export const TINYG_GCODE_UNITS_G20 = 0;
+export const TINYG_GCODE_UNITS_G21 = 1;
 
 // G-code Distance Mode
-export const TINYG2_GCODE_DISTANCE_G90 = 0;
-export const TINYG2_GCODE_DISTANCE_G91 = 1;
+export const TINYG_GCODE_DISTANCE_G90 = 0;
+export const TINYG_GCODE_DISTANCE_G91 = 1;
 
 // G-code Feedrate Mode
-export const TINYG2_GCODE_FEEDRATE_G93 = 0;
-export const TINYG2_GCODE_FEEDRATE_G94 = 1;
-export const TINYG2_GCODE_FEEDRATE_G95 = 2;
+export const TINYG_GCODE_FEEDRATE_G93 = 0;
+export const TINYG_GCODE_FEEDRATE_G94 = 1;
+export const TINYG_GCODE_FEEDRATE_G95 = 2;
 
 // G-code Path Control Mode
-export const TINYG2_GCODE_PATH_G61 = 0;
-export const TINYG2_GCODE_PATH_G61_1 = 1;
-export const TINYG2_GCODE_PATH_G64 = 2;
+export const TINYG_GCODE_PATH_G61 = 0;
+export const TINYG_GCODE_PATH_G61_1 = 1;
+export const TINYG_GCODE_PATH_G64 = 2;
 
 // Status Codes
 // https://github.com/synthetos/g2/wiki/Status-Codes
-export const TINYG2_STATUS_CODES = [
+export const TINYG_STATUS_CODES = [
     {
         code: 0,
         msg: 'OK'

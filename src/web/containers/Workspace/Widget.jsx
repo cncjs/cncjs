@@ -8,7 +8,7 @@ import MacroWidget from '../../widgets/Macro';
 import ProbeWidget from '../../widgets/Probe';
 import SmoothieWidget from '../../widgets/Smoothie';
 import SpindleWidget from '../../widgets/Spindle';
-import TinyG2Widget from '../../widgets/TinyG2';
+import TinyGWidget from '../../widgets/TinyG';
 import VisualizerWidget from '../../widgets/Visualizer';
 import WebcamWidget from '../../widgets/Webcam';
 
@@ -59,9 +59,9 @@ const Widget = ({ widgetid, key, ...props }) => {
                 <SpindleWidget {...props} />
             </div>
         ),
-        'tinyg2': () => (
+        'tinyg': () => (
             <div data-widgetid={widgetid} key={key}>
-                <TinyG2Widget {...props} />
+                <TinyGWidget {...props} />
             </div>
         ),
         'visualizer': () => (

@@ -1,7 +1,7 @@
 {
   "name": "cnc",
   "version": "1.9.0-alpha",
-  "description": "A web-based interface for CNC milling controller running Grbl or TinyG2",
+  "description": "A web-based interface for CNC milling controller running Grbl, Smoothieware, or TinyG",
   "homepage": "https://github.com/cheton/cnc",
   "author": "Cheton Wu <cheton@gmail.com>",
   "main": "./dist/cnc/cnc.js",
@@ -99,15 +99,17 @@
   },
   "keywords": [
     "arduino",
+    "raspberry",
+    "pi",
     "cnc",
     "gcode",
     "grbl",
-    "pi",
-    "raspberry",
-    "react",
-    "socket.io",
+    "smoothie",
+    "smoothieware",
     "tinyg",
-    "tinyg2"
+    "g2core",
+    "react",
+    "socket.io"
   ],
   "dependencies": {
     "@trendmicro/react-anchor": "~0.5.2",

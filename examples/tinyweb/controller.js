@@ -34,7 +34,7 @@ socket.on('close', function() {
 // constants
 var GRBL = 'Grbl';
 var SMOOTHIE = 'Smoothie';
-var TINYG2 = 'TinyG2';
+var TINYG = 'TinyG';
 
 var CNCController = function() {
     this.callbacks = {
@@ -52,7 +52,7 @@ var CNCController = function() {
         'sender:status': [],
         'Grbl:state': [],
         'Smoothie:state': [],
-        'TinyG2:state': []
+        'TinyG:state': []
     };
 
     port = '';
@@ -72,8 +72,8 @@ var CNCController = function() {
                 this.type = SMOOTHIE;
                 this.state = args[0];
             }
-            if (eventName === 'TinyG2:state') {
-                this.type = TINYG2;
+            if (eventName === 'TinyG:state') {
+                this.type = TINYG;
                 this.state = args[0];
             }
 

@@ -32,12 +32,12 @@ import {
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_IDLE,
     SMOOTHIE_ACTIVE_STATE_RUN,
-    // TinyG2
-    TINYG2,
-    TINYG2_MACHINE_STATE_READY,
-    TINYG2_MACHINE_STATE_STOP,
-    TINYG2_MACHINE_STATE_END,
-    TINYG2_MACHINE_STATE_RUN,
+    // TinyG
+    TINYG,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
+    TINYG_MACHINE_STATE_RUN,
     // Workflow
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
@@ -448,7 +448,7 @@ class VisualizerWidget extends Component {
                 }
             });
         },
-        'TinyG2:state': (state) => {
+        'TinyG:state': (state) => {
             const { sr } = { ...state };
             const { machineState, wpos, modal = {} } = sr;
             const units = {
@@ -458,9 +458,9 @@ class VisualizerWidget extends Component {
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
             const isControllerIdle = _.includes([
-                TINYG2_MACHINE_STATE_READY,
-                TINYG2_MACHINE_STATE_STOP,
-                TINYG2_MACHINE_STATE_END
+                TINYG_MACHINE_STATE_READY,
+                TINYG_MACHINE_STATE_STOP,
+                TINYG_MACHINE_STATE_END
             ], machineState);
 
             // Keep workflow in a running state if the controller state is not updated in time
@@ -477,7 +477,7 @@ class VisualizerWidget extends Component {
             this.setState({
                 units: units,
                 controller: {
-                    type: TINYG2,
+                    type: TINYG,
                     state: state
                 },
                 workPosition: {
@@ -662,9 +662,9 @@ class VisualizerWidget extends Component {
                 return false;
             }
         }
-        if (controllerType === TINYG2) {
+        if (controllerType === TINYG) {
             const machineState = _.get(controllerState, 'sr.machineState');
-            if (machineState !== TINYG2_MACHINE_STATE_RUN) {
+            if (machineState !== TINYG_MACHINE_STATE_RUN) {
                 return false;
             }
         }
