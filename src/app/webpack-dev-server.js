@@ -1,5 +1,5 @@
 import webpack from 'webpack';
-import webpackDevMiddleware from 'webpack-dev-middleware';
+import webpackMiddleware from 'webpack-dev-middleware';
 import config from '../../webpack.config.development';
 
 const webpackDevServer = (app) => {
@@ -8,7 +8,7 @@ const webpackDevServer = (app) => {
 
     // https://github.com/webpack/webpack-dev-middleware
     // webpack-dev-middleware handle the files in memory.
-    app.use(webpackDevMiddleware(compiler, {
+    app.use(webpackMiddleware(compiler, {
         noInfo: false,
         quite: false,
         lazy: false,

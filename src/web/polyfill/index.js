@@ -10,4 +10,4 @@ require('babel-polyfill');
 // console (IE9)
 require('./console');
 
-require('imports?self=>window!js-polyfills/web'); // deps: Symbol
+require('imports-loader?self=>window!js-polyfills/web'); // deps: Symbol
