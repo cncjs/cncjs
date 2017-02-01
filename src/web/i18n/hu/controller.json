@@ -1,4 +1,28 @@
 {
+    "Grbl": {
+        "activeState": {
+            "idle": "Készenlét",
+            "run": "Futtatás",
+            "hold": "Tartás",
+            "door": "Ajtó",
+            "home": "Nullpont",
+            "sleep": "",
+            "alarm": "Riasztás",
+            "check": "Ellenörzés"
+        }
+    },
+    "Smoothie": {
+        "activeState": {
+            "idle": "Készenlét",
+            "run": "Futtatás",
+            "hold": "Tartás",
+            "door": "Ajtó",
+            "home": "Nullpont",
+            "sleep": "",
+            "alarm": "Riasztás",
+            "check": "Ellenörzés"
+        }
+    },
     "TinyG2": {
         "machineState": {
             "initializing": "Inicializálás",
@@ -15,18 +39,6 @@
             "interlock": "",
             "shutdown": "Leállítás",
             "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Készenlét",
-            "run": "Futtatás",
-            "hold": "Tartás",
-            "door": "Ajtó",
-            "home": "Nullpont",
-            "sleep": "",
-            "alarm": "Riasztás",
-            "check": "Ellenörzés"
         }
     }
 }

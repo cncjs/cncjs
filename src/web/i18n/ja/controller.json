@@ -1,4 +1,28 @@
 {
+    "Grbl": {
+        "activeState": {
+            "idle": "待機",
+            "run": "実行",
+            "hold": "一時停止",
+            "door": "ドア",
+            "home": "ホーム",
+            "sleep": "",
+            "alarm": "アラーム",
+            "check": "確認"
+        }
+    },
+    "Smoothie": {
+        "activeState": {
+            "idle": "待機",
+            "run": "実行",
+            "hold": "一時停止",
+            "door": "ドア",
+            "home": "ホーム",
+            "sleep": "",
+            "alarm": "アラーム",
+            "check": "確認"
+        }
+    },
     "TinyG2": {
         "machineState": {
             "initializing": "初期化",
@@ -15,18 +39,6 @@
             "interlock": "",
             "shutdown": "シャットダウン",
             "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "待機",
-            "run": "実行",
-            "hold": "一時停止",
-            "door": "ドア",
-            "home": "ホーム",
-            "sleep": "",
-            "alarm": "アラーム",
-            "check": "確認"
         }
     }
 }
