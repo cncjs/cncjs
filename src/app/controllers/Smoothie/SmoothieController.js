@@ -442,7 +442,7 @@ class SmoothieController {
         this.connections.push(new Connection(socket));
 
         if (!_.isEmpty(this.state)) {
-            // Send TinyG2 state to a newly connected client
+            // Send controller state to a newly connected client
             socket.emit('Smoothie:state', this.state);
         }
 
