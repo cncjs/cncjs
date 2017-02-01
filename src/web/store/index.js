@@ -16,7 +16,8 @@ if (isElectron()) {
     };
 }
 
-const defaultState = {
+// Also see "containers/Workspace/WidgetManager/index.jsx"
+export const defaultState = {
     session: {
         name: '',
         token: ''
