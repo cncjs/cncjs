@@ -1,4 +1,28 @@
 {
+    "Grbl": {
+        "activeState": {
+            "idle": "Inativo",
+            "run": "Rodar",
+            "hold": "Manter",
+            "door": "Porta",
+            "home": "Casa",
+            "sleep": "",
+            "alarm": "Alarme",
+            "check": "Checar"
+        }
+    },
+    "Smoothie": {
+        "activeState": {
+            "idle": "Inativo",
+            "run": "Rodar",
+            "hold": "Manter",
+            "door": "Porta",
+            "home": "Casa",
+            "sleep": "",
+            "alarm": "Alarme",
+            "check": "Checar"
+        }
+    },
     "TinyG2": {
         "machineState": {
             "initializing": "Iniciar",
@@ -15,18 +39,6 @@
             "interlock": "",
             "shutdown": "Desligar",
             "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Inativo",
-            "run": "Rodar",
-            "hold": "Manter",
-            "door": "Porta",
-            "home": "Casa",
-            "sleep": "",
-            "alarm": "Alarme",
-            "check": "Checar"
         }
     }
 }

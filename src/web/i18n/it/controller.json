@@ -1,4 +1,28 @@
 {
+    "Grbl": {
+        "activeState": {
+            "idle": "Inattivo",
+            "run": "Movimento",
+            "hold": "Pausa",
+            "door": "Finecorsa",
+            "home": "Home",
+            "sleep": "",
+            "alarm": "Allarme",
+            "check": "Controllo"
+        }
+    },
+    "Smoothie": {
+        "activeState": {
+            "idle": "Inattivo",
+            "run": "Movimento",
+            "hold": "Pausa",
+            "door": "Finecorsa",
+            "home": "Home",
+            "sleep": "",
+            "alarm": "Allarme",
+            "check": "Controllo"
+        }
+    },
     "TinyG2": {
         "machineState": {
             "initializing": "Inizializza",
@@ -15,18 +39,6 @@
             "interlock": "",
             "shutdown": "Spegni",
             "panic": ""
-        }
-    },
-    "Grbl": {
-        "activeState": {
-            "idle": "Inattivo",
-            "run": "Movimento",
-            "hold": "Pausa",
-            "door": "Finecorsa",
-            "home": "Home",
-            "sleep": "",
-            "alarm": "Allarme",
-            "check": "Controllo"
         }
     }
 }
