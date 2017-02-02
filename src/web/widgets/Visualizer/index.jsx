@@ -11,6 +11,7 @@ import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import modal from '../../lib/modal';
 import log from '../../lib/log';
+import { in2mm } from '../../lib/units';
 import store from '../../store';
 import Controls from './Controls';
 import Toolbar from './Toolbar';
@@ -474,16 +475,22 @@ class VisualizerWidget extends Component {
                 pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             }
 
+            // TinyG work position (mm or inch)
+            const workPosition = _.mapValues({
+                ...this.state.workPosition,
+                ...wpos
+            }, (val) => {
+                // convert to mm for inch units
+                return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+            });
+
             this.setState({
                 units: units,
                 controller: {
                     type: TINYG,
                     state: state
                 },
-                workPosition: {
-                    ...this.state.workPosition,
-                    ...wpos
-                }
+                workPosition: workPosition
             });
         }
     };
