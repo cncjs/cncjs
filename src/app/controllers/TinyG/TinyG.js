@@ -48,8 +48,7 @@ class TinyGParser {
         const parsers = [
             TinyGParserResultQueueReports,
             TinyGParserResultStatusReports,
-            TinyGParserResultFirmwareBuild,
-            TinyGParserResultHardwarePlatform
+            TinyGParserResultReceiveReports
         ];
 
         for (let parser of parsers) {
@@ -112,37 +111,19 @@ class TinyGParserResultStatusReports {
     }
 }
 
-class TinyGParserResultFirmwareBuild {
+class TinyGParserResultReceiveReports {
     static parse(data) {
-        const fb = _.get(data, 'r.fb');
-        if (!fb) {
+        const r = _.get(data, 'r.r') || _.get(data, 'r');
+        if (!r) {
             return null;
         }
 
         const payload = {
-            fb: fb
+            r: r
         };
 
         return {
-            type: TinyGParserResultFirmwareBuild,
-            payload: payload
-        };
-    }
-}
-
-class TinyGParserResultHardwarePlatform {
-    static parse(data) {
-        const hp = _.get(data, 'r.hp');
-        if (!hp) {
-            return null;
-        }
-
-        const payload = {
-            hp: hp
-        };
-
-        return {
-            type: TinyGParserResultHardwarePlatform,
+            type: TinyGParserResultReceiveReports,
             payload: payload
         };
     }
@@ -292,12 +273,12 @@ class TinyG extends events.EventEmitter {
                     'posx': 'wpos.x',
                     'posy': 'wpos.y',
                     'posz': 'wpos.z',
-                    'posa': 'wpos.a',
-                    'posb': 'wpos.b',
-                    'posc': 'wpos.c',
                     'mpox': 'mpos.x',
                     'mpoy': 'mpos.y',
                     'mpoz': 'mpos.z',
+                    'posa': 'wpos.a',
+                    'posb': 'wpos.b',
+                    'posc': 'wpos.c',
                     'mpoa': 'mpos.a',
                     'mpob': 'mpos.b',
                     'mpoc': 'mpos.c'
@@ -336,22 +317,15 @@ class TinyG extends events.EventEmitter {
                     };
                 }
                 this.emit('sr', payload.sr);
-            } else if (type === TinyGParserResultFirmwareBuild) {
-                if (!_.isEqual(this.state.fb, payload.fb)) {
-                    this.state = { // enforce state change
-                        ...this.state,
-                        fb: payload.fb
-                    };
-                }
-                this.emit('fb', payload.fb);
-            } else if (type === TinyGParserResultHardwarePlatform) {
-                if (!_.isEqual(this.state.hp, payload.hp)) {
-                    this.state = { // enforce state change
-                        ...this.state,
-                        hp: payload.hp
-                    };
-                }
-                this.emit('hp', payload.hp);
+            } else if (type === TinyGParserResultReceiveReports) {
+                this.state = { // enforce state change
+                    ...this.state,
+                    r: {
+                        ...this.state.r,
+                        ...payload.r
+                    }
+                };
+                this.emit('r', payload.r);
             }
 
             if (payload.f && payload.f.length > 0) {
