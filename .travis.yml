@@ -90,9 +90,15 @@ after_success:
       cp -af "output/mac/${RELEASE}.dmg" "releases/${RELEASE}-mac-x64.dmg";
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
-        npm run github-release -- \
-          --owner=cheton \
-          --repo=cnc \
+        npm run github-release -- delete \
+          --owner=cncjs \
+          --repo=cncjs \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="${TRAVIS_BRANCH}" \
+          "*-mac-x64.dmg";
+        npm run github-release -- upload \
+          --owner=cncjs \
+          --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
@@ -112,9 +118,15 @@ after_success:
       popd;
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
-        npm run github-release -- \
-          --owner=cheton \
-          --repo=cnc \
+        npm run github-release -- delete \
+          --owner=cncjs \
+          --repo=cncjs \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="${TRAVIS_BRANCH}" \
+          "*-linux-i386.deb" "*-linux-ia32.tar.gz";
+        npm run github-release -- upload \
+          --owner=cncjs \
+          --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
@@ -134,9 +146,15 @@ after_success:
       popd;
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
-        npm run github-release -- \
-          --owner=cheton \
-          --repo=cnc \
+        npm run github-release -- delete \
+          --owner=cncjs \
+          --repo=cncjs \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="${TRAVIS_BRANCH}" \
+          "*-linux-amd64.deb" "*-linux-x64.tar.gz";
+        npm run github-release -- upload \
+          --owner=cncjs \
+          --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
