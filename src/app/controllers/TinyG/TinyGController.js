@@ -291,7 +291,7 @@ class TinyGController {
 
             // Queue report verbosity
             // 0=off, 1=filtered, 2=verbose
-            { cmd: '{"qv":2}', pauseAfter: 50 },
+            { cmd: '{"qv":1}', pauseAfter: 50 },
 
             // Status report verbosity
             // 0=off, 1=filtered, 2=verbose
@@ -342,9 +342,6 @@ class TinyGController {
 
             // Motor Timeout
             { cmd: '{"mt":null}' },
-
-            // Request queue report
-            { cmd: '{"qr":null}' },
 
             // Request status report
             { cmd: '{"sr":null}' }
