@@ -144,23 +144,6 @@ after_success:
       fi
     fi
   - |
-    # tinyweb
-    if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      pushd examples;
-      zip -r "../releases/${RELEASE}-tinyweb.zip" "tinyweb";
-      popd;
-      ls -al releases/*;
-      if [[ -z "$TRAVIS_TAG" ]]; then
-        npm run github-release -- \
-          --owner=cheton \
-          --repo=cnc \
-          --tag="${TRAVIS_BRANCH}-latest" \
-          --name="${TRAVIS_BRANCH}" \
-          --body="${COMMIT_LOG}" \
-          "releases/${RELEASE}-tinyweb.zip"
-      fi
-    fi
-  - |
     # docker image
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       travis_wait scripts/travis-docker-build.sh;
