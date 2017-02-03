@@ -3,15 +3,13 @@ import SerialPort from 'serialport';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
+import Workflow, {
+    WORKFLOW_STATE_RUNNING
+} from '../../lib/workflow';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import store from '../../store';
 import Grbl from './Grbl';
-import {
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
-} from '../../constants';
 import {
     GRBL,
     GRBL_ACTIVE_STATE_RUN,
@@ -66,8 +64,8 @@ class GrblController {
     // Sender
     sender = null;
 
-    // Workflow state
-    workflowState = WORKFLOW_STATE_IDLE;
+    // Workflow
+    workflow = null;
 
     constructor(port, options) {
         const { baudrate } = { ...options };
@@ -119,8 +117,8 @@ class GrblController {
                 return;
             }
 
-            if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
-                log.error(`[Grbl] Unexpected workflow state: ${this.workflowState}`);
+            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
+                log.error(`[Grbl] Unexpected workflow state: ${this.workflow.state}`);
                 return;
             }
 
@@ -129,6 +127,18 @@ class GrblController {
                 this.serialport.write(gcode + '\n');
                 dbg(`[Grbl] > ${gcode}`);
             }
+        });
+
+        // Workflow
+        this.workflow = new Workflow();
+        this.workflow.on('start', () => {
+            this.sender.rewind(); // rewind sender queue
+        });
+        this.workflow.on('stop', () => {
+            this.sender.rewind(); // rewind sender queue
+        });
+        this.workflow.on('resume', () => {
+            this.sender.next();
         });
 
         // Grbl
@@ -170,7 +180,7 @@ class GrblController {
             }
 
             // Sender
-            if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 this.sender.ack();
                 this.sender.next();
                 return;
@@ -187,7 +197,7 @@ class GrblController {
             const error = _.find(GRBL_ERRORS, { code: code });
 
             // Sender
-            if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
@@ -288,6 +298,7 @@ class GrblController {
         });
 
         this.serialport.on('disconnect', (err) => {
+            this.ready = false;
             if (err) {
                 log.warn(`[Grbl] Disconnected from serial port "${port}":`, err);
             }
@@ -296,6 +307,7 @@ class GrblController {
         });
 
         this.serialport.on('error', (err) => {
+            this.ready = false;
             if (err) {
                 log.error(`[Grbl] Unexpected error while reading/writing serial port "${port}":`, err);
             }
@@ -351,6 +363,10 @@ class GrblController {
         }, 250);
     }
     destroy() {
+        if (this.workflow) {
+            this.workflow = null;
+        }
+
         if (this.feeder) {
             this.feeder = null;
         }
@@ -400,17 +416,10 @@ class GrblController {
                 type: this.type,
                 state: this.state
             },
-            workflowState: this.workflowState,
+            workflowState: this.workflow.state,
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON()
         };
-    }
-    reset() {
-        this.ready = false;
-        this.workflowState = WORKFLOW_STATE_IDLE;
-        this.queryResponse.status = false;
-        this.queryResponse.parserstate = false;
-        this.queryResponse.parserstateEnd = false;
     }
     open() {
         const { port, baudrate } = this.options;
@@ -443,8 +452,12 @@ class GrblController {
 
             log.debug(`[Grbl] Connected to serial port "${port}"`);
 
-            // Reset
-            this.reset();
+            this.workflow.stop();
+
+            // Reset query response
+            this.queryResponse.status = false;
+            this.queryResponse.parserstate = false;
+            this.queryResponse.parserstateEnd = false;
 
             // Unload G-code
             this.command(null, 'unload');
@@ -471,6 +484,7 @@ class GrblController {
         this.destroy();
 
         this.serialport.close((err) => {
+            this.ready = false;
             if (err) {
                 log.error(`[Grbl] Error closing serial port "${port}":`, err);
             }
@@ -519,28 +533,30 @@ class GrblController {
 
                 log.debug(`[Grbl] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
-                this.workflowState = WORKFLOW_STATE_IDLE;
+                this.workflow.stop();
+
                 callback(null, { name: name, gcode: gcode });
             },
             'unload': () => {
-                this.workflowState = WORKFLOW_STATE_IDLE;
+                this.workflow.stop();
+
+                // Sender
                 this.sender.unload();
             },
             'start': () => {
-                this.feeder.clear(); // clear feeder queue
+                this.workflow.start();
 
-                this.workflowState = WORKFLOW_STATE_RUNNING;
-                this.sender.rewind(); // rewind sender queue
+                // Feeder
+                this.feeder.clear();
+
+                // Sender
                 this.sender.next();
             },
             'stop': () => {
+                this.workflow.stop();
+
                 const activeState = _.get(this.state, 'status.activeState', '');
-
-                this.workflowState = WORKFLOW_STATE_IDLE;
-                this.sender.rewind(); // rewind sender queue
-
                 let delay = 0;
-
                 if (activeState === GRBL_ACTIVE_STATE_RUN) {
                     this.write(socket, '!'); // hold
                     delay = 50; // 50ms delay
@@ -551,34 +567,24 @@ class GrblController {
                 }, delay);
             },
             'pause': () => {
-                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                    this.workflowState = WORKFLOW_STATE_PAUSED;
-                }
+                this.workflow.pause();
 
                 this.write(socket, '!');
             },
             'resume': () => {
                 this.write(socket, '~');
 
-                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
-                    this.workflowState = WORKFLOW_STATE_RUNNING;
-                    this.sender.next();
-                }
+                this.workflow.resume();
             },
             'feedhold': () => {
-                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                    this.workflowState = WORKFLOW_STATE_PAUSED;
-                }
+                this.workflow.pause();
 
                 this.write(socket, '!');
             },
             'cyclestart': () => {
                 this.write(socket, '~');
 
-                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
-                    this.workflowState = WORKFLOW_STATE_RUNNING;
-                    this.sender.next();
-                }
+                this.workflow.resume();
             },
             'check': () => {
                 this.writeln(socket, '$C');
@@ -593,10 +599,7 @@ class GrblController {
                 this.writeln(socket, '$X');
             },
             'reset': () => {
-                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
-                    this.workflowState = WORKFLOW_STATE_IDLE;
-                    this.sender.rewind(); // rewind sender queue
-                }
+                this.workflow.stop();
 
                 this.write(socket, '\x18'); // ^x
             },

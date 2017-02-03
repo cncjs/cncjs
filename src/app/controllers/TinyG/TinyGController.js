@@ -373,6 +373,10 @@ class TinyGController {
         sendInitCommands();
     }
     destroy() {
+        if (this.workflow) {
+            this.workflow = null;
+        }
+
         if (this.feeder) {
             this.feeder = null;
         }
