@@ -3,22 +3,18 @@ import SerialPort from 'serialport';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/sender';
+import Workflow, {
+    WORKFLOW_STATE_RUNNING,
+    WORKFLOW_STATE_IDLE
+} from '../../lib/workflow';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import store from '../../store';
 import TinyG from './TinyG';
 import {
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
-} from '../../constants';
-import {
     TINYG,
-    TINYG_PLANNER_BUFFER_POOL_SIZE,
-    TINYG_PLANNER_BUFFER_LOW_WATER_MARK,
-    TINYG_PLANNER_QUEUE_STATUS_READY,
-    TINYG_PLANNER_QUEUE_STATUS_RUNNING,
-    TINYG_PLANNER_QUEUE_STATUS_BLOCKED,
+    TINYG_SERIAL_BUFFER_LIMIT,
+    TINYG_LINE_BUFFER_SIZE,
     TINYG_STATUS_CODES
 } from './constants';
 
@@ -51,7 +47,7 @@ class TinyGController {
     serialport = null;
 
     // TinyG
-    tinyG2 = null;
+    tinyg = null;
     ready = false;
     state = {};
     queryTimer = null;
@@ -62,9 +58,10 @@ class TinyGController {
     // Sender
     sender = null;
 
-    // Workflow state
-    workflowState = WORKFLOW_STATE_IDLE;
-    plannerQueueStatus = TINYG_PLANNER_QUEUE_STATUS_READY;
+    // Workflow
+    workflow = null;
+
+    lineBufferSize = TINYG_LINE_BUFFER_SIZE;
 
     constructor(port, options) {
         const { baudrate } = { ...options };
@@ -96,8 +93,7 @@ class TinyGController {
                 this.connections[index].sentCommand = line;
             }
 
-            const data = JSON.stringify({ gc: line }) + '\n';
-            this.serialport.write(data);
+            this.serialport.write(line + '\n');
 
             dbg(`[TinyG] > ${line}`);
         });
@@ -110,78 +106,96 @@ class TinyGController {
                 return;
             }
 
-            if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
-                log.error(`[TinyG] Unexpected workflow state: ${this.workflowState}`);
+            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
+                log.error(`[TinyG] Unexpected workflow state: ${this.workflow.state}`);
                 return;
             }
 
-            gcode = ('' + gcode).trim();
-            if (gcode.length > 0) {
-                const cmd = JSON.stringify({ gc: gcode });
-                this.serialport.write(cmd + '\n');
-                dbg(`[TinyG] > ${cmd}`);
-            }
+            // Remove blanks to reduce the amount of bandwidth
+            gcode = ('' + gcode).replace(/\s+/g, '');
+
+            this.serialport.write(gcode + '\n');
+        });
+
+        // Workflow
+        this.workflow = new Workflow();
+        this.workflow.on('start', () => {
+            this.sender.rewind(); // rewind sender queue
+        });
+        this.workflow.on('stop', () => {
+            this.sender.rewind(); // rewind sender queue
+
+            // Reset line buffer size when workflow is stopped
+            this.lineBufferSize = TINYG_LINE_BUFFER_SIZE;
+        });
+        this.workflow.on('resume', () => {
+            this.sender.next();
         });
 
         // TinyG
-        this.tinyG2 = new TinyG();
+        this.tinyg = new TinyG();
 
-        this.tinyG2.on('raw', (res) => {
-            if (this.workflowState === WORKFLOW_STATE_IDLE) {
+        this.tinyg.on('raw', (res) => {
+            if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 this.emitAll('serialport:read', res.raw);
             }
         });
 
-        this.tinyG2.on('qr', ({ qr, qi, qo }) => {
-            const prevPlannerQueueStatus = this.plannerQueueStatus;
-
-            this.state.qr = qr;
-            this.state.qi = qi;
-            this.state.qo = qo;
-
-            if (qr <= TINYG_PLANNER_BUFFER_LOW_WATER_MARK) {
-                this.plannerQueueStatus = TINYG_PLANNER_QUEUE_STATUS_BLOCKED;
+        this.tinyg.on('r', (r) => {
+            // Feeder
+            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
+                this.feeder.next();
                 return;
             }
 
-            if (qr >= TINYG_PLANNER_BUFFER_POOL_SIZE) {
-                this.plannerQueueStatus = TINYG_PLANNER_QUEUE_STATUS_READY;
-            } else {
-                this.plannerQueueStatus = TINYG_PLANNER_QUEUE_STATUS_RUNNING;
+            // https://github.com/synthetos/g2/issues/209#issuecomment-271121598
+            //
+            // Simple Line Mode
+            //   1) send a line
+            //   2) wait for the {r} response
+            //   3) go to 1 if there are more lines to send
+            //   4) done
+            //
+            // Complete Line Mode
+            //   0) Count how many lines you have to send (IOW, in the gcode file, etc) and
+            //      put that in lines_in_file. Set lines_to_send=4
+            //   1) while (lines_to_send && lines_in_file) { send_next_line();
+            //      lines_to_send--; lines_in_file--; }
+            //   2) read lines from serial, counting {r}s. For each {r}, set
+            //      lines_to_send++. (Error checking and status report processing goes here.)
+            //   3) if lines_in_file > 0 the goto (1)
+            //   4) done
+            //
+
+            this.lineBufferSize++;
+            dbg(`[TinyG] sender.ack(): lineBufferSize=${this.lineBufferSize}`);
+            this.sender.ack();
+
+            while (this.lineBufferSize > 0) {
+                this.lineBufferSize--;
+                dbg(`[TinyG] sender.next(): lineBufferSize=${this.lineBufferSize}`);
+                this.sender.next();
             }
-
-            if (prevPlannerQueueStatus === TINYG_PLANNER_QUEUE_STATUS_BLOCKED) {
-                // Sender
-                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                    this.sender.ack();
-                    this.sender.next();
-                    return;
-                }
-
-                // Feeder
-                this.feeder.next();
-            }
         });
 
-        this.tinyG2.on('sr', (sr) => {
+        this.tinyg.on('sr', (sr) => {
         });
 
-        this.tinyG2.on('fb', (fb) => {
+        this.tinyg.on('fb', (fb) => {
         });
 
-        this.tinyG2.on('hp', (hp) => {
+        this.tinyg.on('hp', (hp) => {
         });
 
-        this.tinyG2.on('f', (f) => {
+        this.tinyg.on('f', (f) => {
             // https://github.com/synthetos/g2/wiki/Status-Codes
             const statusCode = f[1] || 0;
-            const prevPlannerQueueStatus = this.plannerQueueStatus;
 
             if (statusCode !== 0) {
                 const code = Number(statusCode);
                 const err = _.find(TINYG_STATUS_CODES, { code: code }) || {};
 
-                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
+                if (this.workflow.state !== WORKFLOW_STATE_IDLE) {
                     const { lines, received } = this.sender.state;
                     const line = lines[received] || '';
 
@@ -204,14 +218,7 @@ class TinyGController {
                 }
             }
 
-            if (prevPlannerQueueStatus !== TINYG_PLANNER_QUEUE_STATUS_BLOCKED) {
-                // Sender
-                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                    this.sender.ack();
-                    this.sender.next();
-                    return;
-                }
-
+            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
                 // Feeder
                 this.feeder.next();
             }
@@ -225,11 +232,12 @@ class TinyGController {
         });
 
         this.serialport.on('data', (data) => {
-            this.tinyG2.parse('' + data);
+            this.tinyg.parse('' + data);
             dbg(`[TinyG] < ${data}`);
         });
 
         this.serialport.on('disconnect', (err) => {
+            this.ready = false;
             if (err) {
                 log.warn(`[TinyG] Disconnected from serial port "${port}":`, err);
             }
@@ -238,6 +246,7 @@ class TinyGController {
         });
 
         this.serialport.on('error', (err) => {
+            this.ready = false;
             if (err) {
                 log.error(`[TinyG] Unexpected error while reading/writing serial port "${port}":`, err);
             }
@@ -261,8 +270,8 @@ class TinyGController {
             }
 
             // TinyG state
-            if (this.state !== this.tinyG2.state) {
-                this.state = this.tinyG2.state;
+            if (this.state !== this.tinyg.state) {
+                this.state = this.tinyg.state;
                 this.emitAll('TinyG:state', this.state);
             }
         }, 250);
@@ -280,14 +289,6 @@ class TinyGController {
             // 0=silent, 1=footer, 2=messages, 3=configs, 4=linenum, 5=verbose
             { cmd: '{"jv":4}', pauseAfter: 50 },
 
-            // JSON syntax
-            // 0=relaxed, 1=strict
-            { cmd: '{"js":1}', pauseAfter: 50 },
-
-            // Enable CR on TX
-            // 0=send LF line termination on TX, 1=send both LF and CR termination
-            { cmd: '{"ec":0}', pauseAfter: 50 },
-
             // Queue report verbosity
             // 0=off, 1=filtered, 2=verbose
             { cmd: '{"qv":2}', pauseAfter: 50 },
@@ -303,6 +304,7 @@ class TinyGController {
             // Setting Status Report Fields
             // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports#setting-status-report-fields
             {
+                // Minify the cmd string to ensure it won't exceed the serial buffer limit
                 cmd: JSON.stringify({
                     sr: {
                         line: true,
@@ -318,28 +320,17 @@ class TinyGController {
                         unit: true,
                         dist: true,
                         frmo: true,
-                        path: true
-                    }
-                }),
-                pauseAfter: 50
-            },
-            {
-                cmd: JSON.stringify({
-                    sr: {
+                        path: true,
                         posx: true,
                         posy: true,
                         posz: true,
                         posa: true,
-                        posb: true,
-                        posc: true,
                         mpox: true,
                         mpoy: true,
                         mpoz: true,
-                        mpoa: true,
-                        mpob: true,
-                        mpoc: true
+                        mpoa: true
                     }
-                }),
+                }).replace(/"/g, '').replace(/true/g, 't'),
                 pauseAfter: 50
             },
 
@@ -356,10 +347,7 @@ class TinyGController {
             { cmd: '{"qr":null}' },
 
             // Request status report
-            { cmd: '{"sr":null}' },
-
-            // Help
-            { cmd: '?', pauseAfter: 250 }
+            { cmd: '{"sr":null}' }
         ];
 
         const sendInitCommands = (i = 0) => {
@@ -369,9 +357,14 @@ class TinyGController {
             }
             const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
             if (cmd) {
+                if (cmd.length >= TINYG_SERIAL_BUFFER_LIMIT) {
+                    log.error(`[TinyG] Exceeded serial buffer limit (${TINYG_SERIAL_BUFFER_LIMIT}): cmd=${cmd}`);
+                    return;
+                }
+
+                dbg(`[TinyG] > Init: ${cmd} ${cmd.length}`);
                 this.emitAll('serialport:write', cmd);
                 this.serialport.write(cmd + '\n');
-                dbg(`[TinyG] > ${cmd}`);
             }
             setTimeout(() => {
                 sendInitCommands(i + 1);
@@ -393,9 +386,9 @@ class TinyGController {
             this.queryTimer = null;
         }
 
-        if (this.tinyG2) {
-            this.tinyG2.removeAllListeners();
-            this.tinyG2 = null;
+        if (this.tinyg) {
+            this.tinyg.removeAllListeners();
+            this.tinyg = null;
         }
     }
     get status() {
@@ -407,16 +400,12 @@ class TinyGController {
             controller: {
                 type: this.type,
                 state: this.state,
-                footer: this.tinyG2.footer
+                footer: this.tinyg.footer
             },
-            workflowState: this.workflowState,
+            workflowState: this.workflow.state,
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON()
         };
-    }
-    reset() {
-        this.ready = false;
-        this.workflowState = WORKFLOW_STATE_IDLE;
     }
     open() {
         const { port, baudrate } = this.options;
@@ -449,8 +438,7 @@ class TinyGController {
 
             log.debug(`[TinyG] Connected to serial port "${port}"`);
 
-            // Reset
-            this.reset();
+            this.workflow.stop();
 
             // Unload G-code
             this.command(null, 'unload');
@@ -477,6 +465,7 @@ class TinyGController {
         this.destroy();
 
         this.serialport.close((err) => {
+            this.ready = false;
             if (err) {
                 log.error(`[TinyG] Error closing serial port "${port}":`, err);
             }
@@ -532,24 +521,27 @@ class TinyGController {
 
                 log.debug(`[TinyG] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
-                this.workflowState = WORKFLOW_STATE_IDLE;
+                this.workflow.stop();
+
                 callback(null, { name: name, gcode: gcode });
             },
             'unload': () => {
-                this.workflowState = WORKFLOW_STATE_IDLE;
+                this.workflow.stop();
+
+                // Sender
                 this.sender.unload();
             },
             'start': () => {
+                this.workflow.start();
+
                 // Feeder
-                this.feeder.clear(); // make sure feeder queue is empty
+                this.feeder.clear();
 
                 // Sender
-                this.workflowState = WORKFLOW_STATE_RUNNING;
                 this.sender.next();
             },
             'stop': () => {
-                this.workflowState = WORKFLOW_STATE_IDLE;
-                this.sender.rewind();
+                this.workflow.stop();
 
                 this.writeln(socket, '!%'); // feedhold and queue flush
 
@@ -559,9 +551,7 @@ class TinyGController {
                 }, 250); // delay 250ms
             },
             'pause': () => {
-                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                    this.workflowState = WORKFLOW_STATE_PAUSED;
-                }
+                this.workflow.pause();
 
                 this.writeln(socket, '!'); // feedhold
                 this.writeln(socket, '{"qr":""}'); // queue report
@@ -570,15 +560,10 @@ class TinyGController {
                 this.writeln(socket, '~'); // cycle start
                 this.writeln(socket, '{"qr":""}'); // queue report
 
-                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
-                    this.workflowState = WORKFLOW_STATE_RUNNING;
-                    this.sender.next();
-                }
+                this.workflow.resume();
             },
             'feedhold': () => {
-                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                    this.workflowState = WORKFLOW_STATE_PAUSED;
-                }
+                this.workflow.pause();
 
                 this.writeln(socket, '!'); // feedhold
                 this.writeln(socket, '{"qr":""}'); // queue report
@@ -587,15 +572,7 @@ class TinyGController {
                 this.writeln(socket, '~'); // cycle start
                 this.writeln(socket, '{"qr":""}'); // queue report
 
-                // Sender
-                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
-                    this.workflowState = WORKFLOW_STATE_RUNNING;
-                    this.sender.next();
-                    return;
-                }
-
-                // Feeder
-                this.feeder.next();
+                this.workflow.resume();
             },
             'check': () => {
                 // Not supported
@@ -617,10 +594,7 @@ class TinyGController {
                 this.writeln(socket, '{clear:null}');
             },
             'reset': () => {
-                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
-                    this.workflowState = WORKFLOW_STATE_IDLE;
-                    this.sender.rewind(); // rewind sender queue
-                }
+                this.workflow.stop();
 
                 this.writeln(socket, '\x18'); // ^x
             },

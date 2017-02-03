@@ -139,7 +139,7 @@ class CNCServer {
                         controller = new GrblController(port, { baudrate });
                     } else if (controllerType === 'Smoothie') {
                         controller = new SmoothieController(port, { baudrate });
-                    } else if (controllerType === 'TinyG') {
+                    } else if (controllerType === 'TinyG' || controllerType === 'TinyG2') {
                         controller = new TinyGController(port, { baudrate });
                     } else {
                         throw new Error('Not supported controller: ' + controllerType);

@@ -1,13 +1,18 @@
 // TinyG
 export const TINYG = 'TinyG';
 
+// Tinyg Communications Programming
 // https://github.com/synthetos/TinyG/wiki/Tinyg-Communications-Programming
-// An optimal way to feed the system is to have about 20 to 24 moves in the planner buffer at all times once movement has started. Note that the planner queue actually has 28 buffers, but the controller will not process a command from the serial buffer unless at least 4 buffers are free, so the effective max queue depth is actually 24, not 28.
-export const TINYG_PLANNER_BUFFER_POOL_SIZE = 28;
-export const TINYG_PLANNER_BUFFER_LOW_WATER_MARK = 8; // 28 (buffers) - 20 (moves) = 8
-export const TINYG_PLANNER_QUEUE_STATUS_READY = 0;
-export const TINYG_PLANNER_QUEUE_STATUS_RUNNING = 1;
-export const TINYG_PLANNER_QUEUE_STATUS_BLOCKED = 2;
+
+// TinyG has a 254 byte serial buffer that receives raw ASCII commands.
+export const TINYG_SERIAL_BUFFER_LIMIT = 254;
+
+// https://github.com/synthetos/g2/issues/209#issuecomment-271121598
+// Simple Line Mode:
+//   lineBufferSize = 1
+// Complete Line Mode:
+//   lineBufferSize = 4
+export const TINYG_LINE_BUFFER_SIZE = 4;
 
 // Machine State
 // https://github.com/synthetos/g2/wiki/Status-Reports#stat-values
