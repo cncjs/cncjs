@@ -1,8 +1,3 @@
-// Workflow State
-export const WORKFLOW_STATE_RUNNING = 'running';
-export const WORKFLOW_STATE_PAUSED = 'paused';
-export const WORKFLOW_STATE_IDLE = 'idle';
-
 // IP_WHITELIST
 export const IP_WHITELIST = [
     // IPv4 reserved space
