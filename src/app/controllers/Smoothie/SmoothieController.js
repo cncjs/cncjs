@@ -3,15 +3,13 @@ import SerialPort from 'serialport';
 import log from '../../lib/log';
 import Feeder from '../../lib/feeder';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
+import Workflow, {
+    WORKFLOW_STATE_RUNNING
+} from '../../lib/workflow';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import store from '../../store';
 import Smoothie from './Smoothie';
-import {
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
-} from '../../constants';
 import {
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_HOLD,
@@ -65,8 +63,8 @@ class SmoothieController {
     // Sender
     sender = null;
 
-    // Workflow state
-    workflowState = WORKFLOW_STATE_IDLE;
+    // Workflow
+    workflow = null;
 
     constructor(port, options) {
         const { baudrate } = { ...options };
@@ -118,8 +116,8 @@ class SmoothieController {
                 return;
             }
 
-            if (this.workflowState !== WORKFLOW_STATE_RUNNING) {
-                log.error(`[Smoothie] Unexpected workflow state: ${this.workflowState}`);
+            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
+                log.error(`[Smoothie] Unexpected workflow state: ${this.workflow.state}`);
                 return;
             }
 
@@ -128,6 +126,18 @@ class SmoothieController {
                 this.serialport.write(gcode + '\n');
                 dbg(`[Smoothie] > ${gcode}`);
             }
+        });
+
+        // Workflow
+        this.workflow = new Workflow();
+        this.workflow.on('start', () => {
+            this.sender.rewind(); // rewind sender queue
+        });
+        this.workflow.on('stop', () => {
+            this.sender.rewind(); // rewind sender queue
+        });
+        this.workflow.on('resume', () => {
+            this.sender.next();
         });
 
         // Smoothie
@@ -169,7 +179,7 @@ class SmoothieController {
             }
 
             // Sender
-            if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 this.sender.ack();
                 this.sender.next();
                 return;
@@ -183,7 +193,7 @@ class SmoothieController {
 
         this.smoothie.on('error', (res) => {
             // Sender
-            if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
@@ -241,6 +251,7 @@ class SmoothieController {
         });
 
         this.serialport.on('disconnect', (err) => {
+            this.ready = false;
             if (err) {
                 log.warn(`[Smoothie] Disconnected from serial port "${port}":`, err);
             }
@@ -249,6 +260,7 @@ class SmoothieController {
         });
 
         this.serialport.on('error', (err) => {
+            this.ready = false;
             if (err) {
                 log.error(`[Smoothie] Unexpected error while reading/writing serial port "${port}":`, err);
             }
@@ -304,6 +316,10 @@ class SmoothieController {
         }, 250);
     }
     destroy() {
+        if (this.workflow) {
+            this.workflow = null;
+        }
+
         if (this.feeder) {
             this.feeder = null;
         }
@@ -356,17 +372,10 @@ class SmoothieController {
                 type: this.type,
                 state: this.state
             },
-            workflowState: this.workflowState,
+            workflowState: this.workflow.state,
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON()
         };
-    }
-    reset() {
-        this.ready = false;
-        this.workflowState = WORKFLOW_STATE_IDLE;
-        this.queryResponse.status = false;
-        this.queryResponse.parserstate = false;
-        this.queryResponse.parserstateEnd = false;
     }
     open() {
         const { port, baudrate } = this.options;
@@ -399,8 +408,12 @@ class SmoothieController {
 
             log.debug(`[Smoothie] Connected to serial port "${port}"`);
 
-            // Reset
-            this.reset();
+            this.workflow.stop();
+
+            // Reset query response
+            this.queryResponse.status = false;
+            this.queryResponse.parserstate = false;
+            this.queryResponse.parserstateEnd = false;
 
             // Unload G-code
             this.command(null, 'unload');
@@ -427,6 +440,7 @@ class SmoothieController {
         this.destroy();
 
         this.serialport.close((err) => {
+            this.ready = false;
             if (err) {
                 log.error(`[Smoothie] Error closing serial port "${port}":`, err);
             }
@@ -475,59 +489,52 @@ class SmoothieController {
 
                 log.debug(`[Smoothie] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
-                this.workflowState = WORKFLOW_STATE_IDLE;
+                this.workflow.stop();
+
                 callback(null, { name: name, gcode: gcode });
             },
             'unload': () => {
-                this.workflowState = WORKFLOW_STATE_IDLE;
+                this.workflow.stop();
+
+                // Sender
                 this.sender.unload();
             },
             'start': () => {
-                this.feeder.clear(); // clear feeder queue
+                this.workflow.start();
 
-                this.workflowState = WORKFLOW_STATE_RUNNING;
-                this.sender.rewind(); // rewind sender queue
+                // Feeder
+                this.feeder.clear();
+
+                // Sender
                 this.sender.next();
             },
             'stop': () => {
+                this.workflow.stop();
+
                 const activeState = _.get(this.state, 'status.activeState', '');
-
-                this.workflowState = WORKFLOW_STATE_IDLE;
-                this.sender.rewind(); // rewind sender queue
-
                 if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
                     this.write(socket, '~'); // resume
                 }
             },
             'pause': () => {
-                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                    this.workflowState = WORKFLOW_STATE_PAUSED;
-                }
+                this.workflow.pause();
 
                 this.write(socket, '!');
             },
             'resume': () => {
                 this.write(socket, '~');
 
-                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
-                    this.workflowState = WORKFLOW_STATE_RUNNING;
-                    this.sender.next();
-                }
+                this.workflow.resume();
             },
             'feedhold': () => {
-                if (this.workflowState === WORKFLOW_STATE_RUNNING) {
-                    this.workflowState = WORKFLOW_STATE_PAUSED;
-                }
+                this.workflow.pause();
 
                 this.write(socket, '!');
             },
             'cyclestart': () => {
                 this.write(socket, '~');
 
-                if (this.workflowState === WORKFLOW_STATE_PAUSED) {
-                    this.workflowState = WORKFLOW_STATE_RUNNING;
-                    this.sender.next();
-                }
+                this.workflow.resume();
             },
             'check': () => {
                 // Not supported
@@ -542,10 +549,7 @@ class SmoothieController {
                 this.writeln(socket, '$X');
             },
             'reset': () => {
-                if (this.workflowState !== WORKFLOW_STATE_IDLE) {
-                    this.workflowState = WORKFLOW_STATE_IDLE;
-                    this.sender.rewind(); // rewind sender queue
-                }
+                this.workflow.stop();
 
                 this.write(socket, '\x18'); // ^x
             },
