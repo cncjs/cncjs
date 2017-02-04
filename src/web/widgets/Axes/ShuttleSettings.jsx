@@ -1,4 +1,4 @@
-import Slider from 'rc-slider';
+import Slider, { Range } from 'rc-slider';
 import React, { Component } from 'react';
 import i18n from '../../lib/i18n';
 import store from '../../store';
@@ -51,8 +51,7 @@ class ShuttleSettings extends Component {
                         <p>
                             {i18n._('Feed Rate Range: {{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
                         </p>
-                        <Slider
-                            range
+                        <Range
                             allowCross={false}
                             defaultValue={[feedrateMin, feedrateMax]}
                             min={FEEDRATE_RANGE[0]}
