@@ -159,7 +159,7 @@ class WidgetManager extends Component {
                 show={this.state.show}
                 size="md"
             >
-                <Modal.Header closeButton>
+                <Modal.Header>
                     <Modal.Title>{i18n._('Widgets')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ padding: 0 }}>
