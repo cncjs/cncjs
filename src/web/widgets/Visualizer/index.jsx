@@ -360,7 +360,7 @@ class VisualizerWidget extends Component {
     };
     controllerEvents = {
         'sender:status': (data) => {
-            const { name, size, total, sent, received, createdTime, startedTime, finishedTime } = data;
+            const { name, size, total, sent, received } = data;
             this.setState({
                 gcode: {
                     ...this.state.gcode,
@@ -368,10 +368,7 @@ class VisualizerWidget extends Component {
                     size,
                     total,
                     sent,
-                    received,
-                    createdTime,
-                    startedTime,
-                    finishedTime
+                    received
                 }
             });
         },
@@ -575,10 +572,7 @@ class VisualizerWidget extends Component {
                 size: 0,
                 total: 0,
                 sent: 0,
-                received: 0,
-                createdTime: 0,
-                startedTime: 0,
-                finishedTime: 0
+                received: 0
             },
             disabled: store.get('widgets.visualizer.disabled', false),
             objects: {
