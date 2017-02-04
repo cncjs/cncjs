@@ -127,7 +127,9 @@ class Overrides extends Component {
                             controller.command('rapidOverride', 100);
                         }}
                     >
-                        <i className="fa fa-battery-full fa-fw" />100%
+                        <i className="fa fa-battery-full" />
+                        <span className="space" />
+                        100%
                     </button>
                     <button
                         type="button"
@@ -136,7 +138,9 @@ class Overrides extends Component {
                             controller.command('rapidOverride', 50);
                         }}
                     >
-                        <i className="fa fa-battery-half fa-fw" />50%
+                        <i className="fa fa-battery-half" />
+                        <span className="space" />
+                        50%
                     </button>
                     <button
                         type="button"
@@ -145,7 +149,9 @@ class Overrides extends Component {
                             controller.command('rapidOverride', 25);
                         }}
                     >
-                        <i className="fa fa-battery-quarter fa-fw" />25%
+                        <i className="fa fa-battery-quarter" />
+                        <span className="space" />
+                        25%
                     </button>
                 </DigitalReadout>
             </div>
