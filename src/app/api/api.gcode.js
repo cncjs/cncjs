@@ -59,15 +59,8 @@ export const get = (req, res) => {
     const { sender } = controller;
 
     res.send({
-        name: sender.state.name,
-        data: sender.state.gcode,
-        size: sender.state.gcode.length,
-        total: sender.state.total,
-        sent: sender.state.sent,
-        received: sender.state.received,
-        createdTime: sender.state.createdTime,
-        startedTime: sender.state.startedTime,
-        finishedTime: sender.state.finishedTime
+        ...sender.toJSON(),
+        data: sender.state.gcode
     });
 };
 

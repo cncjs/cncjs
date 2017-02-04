@@ -118,9 +118,10 @@ class Sender extends events.EventEmitter {
         total: 0,
         sent: 0,
         received: 0,
-        createdTime: 0,
-        startedTime: 0,
-        finishedTime: 0,
+        startTime: 0,
+        finishTime: 0,
+        elapsedTime: 0,
+        remainingTime: 0,
         changed: false
     };
 
@@ -201,9 +202,10 @@ class Sender extends events.EventEmitter {
             total: this.state.total,
             sent: this.state.sent,
             received: this.state.received,
-            createdTime: this.state.createdTime,
-            startedTime: this.state.startedTime,
-            finishedTime: this.state.finishedTime
+            startTime: this.state.startTime,
+            finishTime: this.state.finishTime,
+            elapsedTime: this.state.elapsedTime,
+            remainingTime: this.state.remainingTime
         };
     }
     load(name, gcode = '') {
@@ -221,9 +223,10 @@ class Sender extends events.EventEmitter {
         this.state.total = this.state.lines.length;
         this.state.sent = 0;
         this.state.received = 0;
-        this.state.createdTime = new Date().getTime();
-        this.state.startedTime = 0;
-        this.state.finishedTime = 0;
+        this.state.startTime = 0;
+        this.state.finishTime = 0;
+        this.state.elapsedTime = 0;
+        this.state.remainingTime = 0;
 
         this.emit('load', { name: name, gcode: gcode });
         this.emit('change');
@@ -240,9 +243,10 @@ class Sender extends events.EventEmitter {
         this.state.total = 0;
         this.state.sent = 0;
         this.state.received = 0;
-        this.state.createdTime = 0;
-        this.state.startedTime = 0;
-        this.state.finishedTime = 0;
+        this.state.startTime = 0;
+        this.state.finishTime = 0;
+        this.state.elapsedTime = 0;
+        this.state.remainingTime = 0;
 
         this.emit('unload');
         this.emit('change');
@@ -251,9 +255,13 @@ class Sender extends events.EventEmitter {
         if (this.state.total === 0) {
             return;
         }
+
+        const now = new Date().getTime();
+
         if (this.state.total > 0 && this.state.sent === 0) {
-            this.state.startedTime = new Date().getTime();
-            this.emit('start', { time: this.state.startedTime });
+            this.state.startTime = now;
+            this.state.finishTime = 0;
+            this.emit('start', { time: this.state.startTime });
             this.emit('change');
         }
 
@@ -261,9 +269,17 @@ class Sender extends events.EventEmitter {
             this.sp.process();
         }
 
-        if (this.state.sent >= this.state.total) {
-            this.state.finishedTime = new Date().getTime();
-            this.emit('end', { time: this.state.finishedTime });
+        // Elapsed Time
+        this.state.elapsedTime = now - this.state.startTime;
+
+        // Remaining Time
+        const denominator = (this.state.sent + this.state.received) / 2;
+        const timePerCode = this.state.elapsedTime / denominator;
+        this.state.remainingTime = (timePerCode * this.state.total - this.state.elapsedTime);
+
+        if (this.state.received >= this.state.total) {
+            this.state.finishTime = now;
+            this.emit('end', { time: this.state.finishTime });
             this.emit('change');
         }
     }
@@ -273,8 +289,6 @@ class Sender extends events.EventEmitter {
         }
         this.state.sent = 0;
         this.state.received = 0;
-        this.state.startedTime = 0;
-        this.state.finishedTime = 0;
         this.emit('change');
     }
     ack() {

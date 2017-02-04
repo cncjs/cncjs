@@ -1,4 +1,3 @@
-import _ from 'lodash';
 import moment from 'moment';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -7,6 +6,23 @@ import {
     METRIC_UNITS
 } from '../../constants';
 import styles from './index.styl';
+
+const formatISODateTime = (time) => {
+    return time > 0 ? moment.unix(time / 1000).format('YYYY-MM-DD HH:mm:ss') : '–';
+};
+
+const formatElapsedTime = (elapsedTime) => {
+    const d = moment.duration(elapsedTime, 'ms');
+    return moment(d._data).format('HH:mm:ss');
+};
+
+const formatRemainingTime = (remainingTime) => {
+    if (!remainingTime) {
+        return '––:––:––';
+    }
+    const d = moment.duration(remainingTime, 'ms');
+    return moment(d._data).format('HH:mm:ss');
+};
 
 class GCodeStats extends Component {
     static propTypes = {
@@ -18,27 +34,16 @@ class GCodeStats extends Component {
     }
     render() {
         const { state } = this.props;
-        const { units, total, sent, startTime, duration, bbox } = state;
+        const { units, total, sent, received, bbox } = state;
         const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
-
-        let formattedStartTime = '–';
-        if (startTime > 0) {
-            formattedStartTime = moment.unix(startTime).format('YYYY-MM-DD HH:mm:ss');
-        }
-
-        let formattedDuration = '–';
-        if (duration > 0) {
-            const d = moment.duration(duration, 'seconds');
-            const hours = _.padStart(d.hours(), 2, '0');
-            const minutes = _.padStart(d.minutes(), 2, '0');
-            const seconds = _.padStart(d.seconds(), 2, '0');
-
-            formattedDuration = (hours + ':' + minutes + ':' + seconds);
-        }
+        const startTime = formatISODateTime(state.startTime);
+        const finishTime = formatISODateTime(state.finishTime);
+        const elapsedTime = formatElapsedTime(state.elapsedTime);
+        const remainingTime = formatRemainingTime(state.remainingTime);
 
         return (
             <div className={styles['gcode-stats']}>
-                <div className="row no-gutters">
+                <div className="row no-gutters" style={{ marginBottom: 10 }}>
                     <div className="col-xs-12">
                         <table className="table-bordered" data-table="dimension">
                             <thead>
@@ -72,21 +77,35 @@ class GCodeStats extends Component {
                         </table>
                     </div>
                 </div>
-                <div className="row no-gutters">
-                    <div className="col-xs-6">{i18n._('Sent')}</div>
-                    <div className="col-xs-6">{i18n._('Total')}</div>
+                <div className="row no-gutters" style={{ marginBottom: 10 }}>
+                    <div className="col-xs-6">
+                        <div>{i18n._('Sent')}</div>
+                        <div>{total > 0 ? `${sent} / ${total}` : '–'}</div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div>{i18n._('Received')}</div>
+                        <div>{total > 0 ? `${received} / ${total}` : '–'}</div>
+                    </div>
+                </div>
+                <div className="row no-gutters" style={{ marginBottom: 10 }}>
+                    <div className="col-xs-6">
+                        <div>{i18n._('Start Time')}</div>
+                        <div>{startTime}</div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div>{i18n._('Elapsed Time')}</div>
+                        <div>{elapsedTime}</div>
+                    </div>
                 </div>
                 <div className="row no-gutters">
-                    <div className="col-xs-6">{sent}</div>
-                    <div className="col-xs-6">{total}</div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col-xs-6">{i18n._('Start Time')}</div>
-                    <div className="col-xs-6">{i18n._('Duration')}</div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col-xs-6">{formattedStartTime}</div>
-                    <div className="col-xs-6">{formattedDuration}</div>
+                    <div className="col-xs-6">
+                        <div>{i18n._('Finish Time')}</div>
+                        <div>{finishTime}</div>
+                    </div>
+                    <div className="col-xs-6">
+                        <div>{i18n._('Remaining Time')}</div>
+                        <div>{remainingTime}</div>
+                    </div>
                 </div>
             </div>
         );

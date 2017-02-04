@@ -1,10 +1,8 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import moment from 'moment';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import update from 'react-addons-update';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -14,14 +12,8 @@ import GCode from './GCode';
 import {
     // Units
     IMPERIAL_UNITS,
-    METRIC_UNITS,
-    // Workflow
-    WORKFLOW_STATE_IDLE
+    METRIC_UNITS
 } from '../../constants';
-import {
-    GCODE_STATUS_NOT_STARTED,
-    GCODE_STATUS_COMPLETED
-} from './constants';
 import styles from './index.styl';
 
 const toFixedUnits = (units, val) => {
@@ -49,43 +41,16 @@ class GCodeWidget extends Component {
     };
     controllerEvents = {
         'sender:status': (data) => {
-            const { total, sent, received, createdTime, startedTime, finishedTime } = data;
-
-            let lines = this.state.lines;
-            if (lines.length > 0 && total > 0) {
-                const from = Math.min(this.state.received, lines.length);
-                const to = Math.min(received, lines.length);
-                let list = {};
-
-                // Reset obsolete queue items
-                for (let i = to; i < from; ++i) {
-                    list[i] = {
-                        status: {
-                            $set: GCODE_STATUS_NOT_STARTED
-                        }
-                    };
-                }
-
-                // Update completed queue items
-                for (let i = from; i < to; ++i) {
-                    list[i] = {
-                        status: {
-                            $set: GCODE_STATUS_COMPLETED
-                        }
-                    };
-                }
-
-                lines = update(this.state.lines, list);
-            }
+            const { total, sent, received, startTime, finishTime, elapsedTime, remainingTime } = data;
 
             this.setState({
-                lines,
                 total,
                 sent,
                 received,
-                createdTime,
-                startedTime,
-                finishedTime
+                startTime,
+                finishTime,
+                elapsedTime,
+                remainingTime
             });
         },
         'Grbl:state': (state) => {
@@ -134,10 +99,8 @@ class GCodeWidget extends Component {
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
-        this.setTimer();
     }
     componentWillUnmount() {
-        this.clearTimer();
         this.removeControllerEvents();
         this.unsubscribe();
     }
@@ -159,20 +122,18 @@ class GCodeWidget extends Component {
             port: controller.port,
             units: METRIC_UNITS,
             workflowState: controller.workflowState,
-            lines: [], // List of G-code lines
 
             // G-code Status (from server)
             total: 0,
             sent: 0,
             received: 0,
-            createdTime: 0,
-            startedTime: 0,
-            finishedTime: 0,
-
-            // Stats
             startTime: 0,
-            duration: 0,
-            bbox: { // bounding box
+            finishTime: 0,
+            elapsedTime: 0,
+            remainingTime: 0,
+
+            // Bounding box
+            bbox: {
                 min: {
                     x: 0,
                     y: 0,
@@ -206,24 +167,8 @@ class GCodeWidget extends Component {
                     });
                 }
             }),
-            pubsub.subscribe('gcode:load', (msg, { name, gcode }) => {
-                const lines = gcode.split('\n')
-                    .filter(line => (line.trim().length > 0))
-                    .map((line, index) => {
-                        return {
-                            id: index,
-                            status: GCODE_STATUS_NOT_STARTED,
-                            cmd: line
-                        };
-                    });
-
-                this.setState({ lines: lines });
-            }),
             pubsub.subscribe('gcode:unload', (msg) => {
                 this.setState({
-                    lines: [],
-                    startTime: 0,
-                    duration: 0,
                     bbox: {
                         min: {
                             x: 0,
@@ -244,22 +189,7 @@ class GCodeWidget extends Component {
                 });
             }),
             pubsub.subscribe('workflowState', (msg, workflowState) => {
-                if (workflowState === WORKFLOW_STATE_IDLE) {
-                    this.setState({
-                        workflowState: workflowState,
-                        startTime: 0,
-                        duration: 0
-                    });
-                } else {
-                    const now = moment().unix();
-                    const startTime = this.state.startTime || now; // use startTime or current time
-                    const duration = (startTime !== now) ? this.state.duration : 0;
-                    this.setState({
-                        workflowState: workflowState,
-                        startTime: startTime,
-                        duration: duration
-                    });
-                }
+                this.setState({ workflowState: workflowState });
             }),
             pubsub.subscribe('gcode:bbox', (msg, bbox) => {
                 const dX = bbox.max.x - bbox.min.x;
@@ -304,24 +234,6 @@ class GCodeWidget extends Component {
         _.each(this.controllerEvents, (callback, eventName) => {
             controller.off(eventName, callback);
         });
-    }
-    setTimer() {
-        this.timer = setInterval(() => {
-            if (this.state.startTime === 0) {
-                return;
-            }
-
-            const from = moment.unix(this.state.startTime);
-            const to = moment();
-            const duration = to.diff(from, 'seconds');
-            this.setState({ duration: duration });
-        }, 1000);
-    }
-    clearTimer() {
-        if (this.timer) {
-            clearInterval(this.timer);
-            this.timer = null;
-        }
     }
     render() {
         const { minimized, isFullscreen } = this.state;
