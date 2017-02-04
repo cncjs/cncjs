@@ -25,13 +25,23 @@ export const getInactiveWidgets = () => {
 
 // @param {string} targetContainer The target container: primary|secondary
 export const show = (callback) => {
+    const body = document.querySelector('body');
+    const bodyStyle = {
+        overflowY: ''
+    };
     const el = document.body.appendChild(document.createElement('div'));
     const handleClose = (e) => {
+        body.style.overflowY = bodyStyle.overflowY;
+
         ReactDOM.unmountComponentAtNode(el);
         setTimeout(() => {
             el.remove();
         }, 0);
     };
+
+    // Prevent body from scrolling when a modal is opened
+    bodyStyle.overflowY = body.style.overflowY;
+    body.style.overflowY = 'hidden';
 
     ReactDOM.render(<WidgetManager onSave={callback} onClose={handleClose} />, el);
 };
