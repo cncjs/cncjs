@@ -14,9 +14,15 @@ import TinyG from './TinyG';
 import {
     TINYG,
     TINYG_SERIAL_BUFFER_LIMIT,
-    TINYG_LINE_BUFFER_SIZE,
+    TINYG_PLANNER_BUFFER_LOW_WATER_MARK,
+    TINYG_PLANNER_BUFFER_HIGH_WATER_MARK,
     TINYG_STATUS_CODES
 } from './constants';
+
+// Send Response State
+const SEND_RESPONSE_STATE_NONE = 0;
+const SEND_RESPONSE_STATE_SEND = 1;
+const SEND_RESPONSE_STATE_ACK = 2;
 
 const noop = () => {};
 
@@ -52,6 +58,9 @@ class TinyGController {
     state = {};
     queryTimer = null;
 
+    blocked = false;
+    sendResponseState = SEND_RESPONSE_STATE_NONE;
+
     // Feeder
     feeder = null;
 
@@ -60,8 +69,6 @@ class TinyGController {
 
     // Workflow
     workflow = null;
-
-    lineBufferSize = TINYG_LINE_BUFFER_SIZE;
 
     constructor(port, options) {
         const { baudrate } = { ...options };
@@ -94,7 +101,6 @@ class TinyGController {
             }
 
             this.serialport.write(line + '\n');
-
             dbg(`[TinyG] > ${line}`);
         });
 
@@ -111,25 +117,29 @@ class TinyGController {
                 return;
             }
 
+            // Replace line numbers with the number of lines sent
+            const n = this.sender.state.sent;
+            gcode = ('' + gcode).replace(/^N[0-9]*/, '');
+            gcode = ('N' + n + ' ' + gcode);
+
             // Remove blanks to reduce the amount of bandwidth
             gcode = ('' + gcode).replace(/\s+/g, '');
 
             this.serialport.write(gcode + '\n');
+            dbg(`[TinyG] > SEND: n=${n}, gcode="${gcode}"`);
         });
 
         // Workflow
         this.workflow = new Workflow();
         this.workflow.on('start', () => {
-            this.sender.rewind(); // rewind sender queue
+            this.blocked = false;
+            this.sendResponseState = SEND_RESPONSE_STATE_NONE;
+            this.sender.rewind();
         });
         this.workflow.on('stop', () => {
-            this.sender.rewind(); // rewind sender queue
-
-            // Reset line buffer size when workflow is stopped
-            this.lineBufferSize = TINYG_LINE_BUFFER_SIZE;
-        });
-        this.workflow.on('resume', () => {
-            this.sender.next();
+            this.blocked = false;
+            this.sendResponseState = SEND_RESPONSE_STATE_NONE;
+            this.sender.rewind();
         });
 
         // TinyG
@@ -141,40 +151,56 @@ class TinyGController {
             }
         });
 
+        // https://github.com/synthetos/g2/wiki/g2core-Communications
         this.tinyg.on('r', (r) => {
-            // Feeder
-            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
+            if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 this.feeder.next();
                 return;
             }
 
-            // https://github.com/synthetos/g2/issues/209#issuecomment-271121598
-            //
-            // Simple Line Mode
-            //   1) send a line
-            //   2) wait for the {r} response
-            //   3) go to 1 if there are more lines to send
-            //   4) done
-            //
-            // Complete Line Mode
-            //   0) Count how many lines you have to send (IOW, in the gcode file, etc) and
-            //      put that in lines_in_file. Set lines_to_send=4
-            //   1) while (lines_to_send && lines_in_file) { send_next_line();
-            //      lines_to_send--; lines_in_file--; }
-            //   2) read lines from serial, counting {r}s. For each {r}, set
-            //      lines_to_send++. (Error checking and status report processing goes here.)
-            //   3) if lines_in_file > 0 the goto (1)
-            //   4) done
-            //
+            this.sendResponseState = SEND_RESPONSE_STATE_ACK; // ACK received
 
-            this.lineBufferSize++;
-            dbg(`[TinyG] sender.ack(): lineBufferSize=${this.lineBufferSize}`);
-            this.sender.ack();
+            const n = _.get(r, 'r.n') || _.get(r, 'n');
+            const { sent } = this.sender.state;
 
-            while (this.lineBufferSize > 0) {
-                this.lineBufferSize--;
-                dbg(`[TinyG] sender.next(): lineBufferSize=${this.lineBufferSize}`);
+            if (n !== sent) {
+                log.error(`[TinyG] Assertion failed: n (${n}) is not equal to sent (${sent})`);
+            }
+
+            dbg(`[TinyG] < ACK: n=${n}, sent=${sent}, blocked=${this.blocked}`);
+
+            // Continue to the next line if not blocked
+            if (!this.blocked) {
+                this.sender.ack();
                 this.sender.next();
+                this.sendResponseState = SEND_RESPONSE_STATE_SEND; // data sent
+            }
+        });
+
+        this.tinyg.on('qr', ({ qr, qi, qo }) => {
+            this.state.qr = qr;
+            this.state.qi = qi;
+            this.state.qo = qo;
+
+            if (this.workflow.state === WORKFLOW_STATE_IDLE) {
+                this.feeder.next();
+                return;
+            }
+
+            if (qr <= TINYG_PLANNER_BUFFER_LOW_WATER_MARK) {
+                this.blocked = true;
+                return;
+            }
+
+            if (qr >= TINYG_PLANNER_BUFFER_HIGH_WATER_MARK) {
+                this.blocked = false;
+            }
+
+            if ((this.workflow.state === WORKFLOW_STATE_RUNNING) && (this.sendResponseState === SEND_RESPONSE_STATE_ACK)) {
+                dbg(`[TinyG] > NEXT: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
+                this.sender.ack();
+                this.sender.next();
+                this.sendResponseState = SEND_RESPONSE_STATE_SEND;
             }
         });
 
@@ -218,8 +244,7 @@ class TinyGController {
                 }
             }
 
-            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
-                // Feeder
+            if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 this.feeder.next();
             }
         });
@@ -553,26 +578,22 @@ class TinyGController {
             },
             'pause': () => {
                 this.workflow.pause();
-
                 this.writeln(socket, '!'); // feedhold
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'resume': () => {
                 this.writeln(socket, '~'); // cycle start
                 this.writeln(socket, '{"qr":""}'); // queue report
-
                 this.workflow.resume();
             },
             'feedhold': () => {
                 this.workflow.pause();
-
                 this.writeln(socket, '!'); // feedhold
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'cyclestart': () => {
                 this.writeln(socket, '~'); // cycle start
                 this.writeln(socket, '{"qr":""}'); // queue report
-
                 this.workflow.resume();
             },
             'check': () => {
@@ -596,7 +617,6 @@ class TinyGController {
             },
             'reset': () => {
                 this.workflow.stop();
-
                 this.writeln(socket, '\x18'); // ^x
             },
             'feedOverride': () => {

@@ -3,16 +3,11 @@ export const TINYG = 'TinyG';
 
 // Tinyg Communications Programming
 // https://github.com/synthetos/TinyG/wiki/Tinyg-Communications-Programming
+export const TINYG_PLANNER_BUFFER_LOW_WATER_MARK = 5;
+export const TINYG_PLANNER_BUFFER_HIGH_WATER_MARK = 7;
 
 // TinyG has a 254 byte serial buffer that receives raw ASCII commands.
 export const TINYG_SERIAL_BUFFER_LIMIT = 254;
-
-// https://github.com/synthetos/g2/issues/209#issuecomment-271121598
-// Simple Line Mode:
-//   lineBufferSize = 1
-// Complete Line Mode:
-//   lineBufferSize = 4
-export const TINYG_LINE_BUFFER_SIZE = 4;
 
 // Machine State
 // https://github.com/synthetos/g2/wiki/Status-Reports#stat-values

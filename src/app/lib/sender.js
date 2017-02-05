@@ -208,8 +208,9 @@ class Sender extends events.EventEmitter {
             remainingTime: this.state.remainingTime
         };
     }
+    // @return {boolean} Returns true on success, false otherwise.
     load(name, gcode = '') {
-        if (typeof gcode !== 'string') {
+        if (typeof gcode !== 'string' || !gcode) {
             return false;
         }
 
@@ -251,9 +252,23 @@ class Sender extends events.EventEmitter {
         this.emit('unload');
         this.emit('change');
     }
+    // Tells the sender an acknowledgement has received.
+    // @return {boolean} Returns true on success, false otherwise.
+    ack() {
+        if (!this.state.gcode) {
+            return false;
+        }
+
+        this.state.received++;
+        this.emit('change');
+
+        return true;
+    }
+    // Tells the sender to send more data.
+    // @return {boolean} Returns true on success, false otherwise.
     next() {
-        if (this.state.total === 0) {
-            return;
+        if (!this.state.gcode) {
+            return false;
         }
 
         const now = new Date().getTime();
@@ -261,6 +276,8 @@ class Sender extends events.EventEmitter {
         if (this.state.total > 0 && this.state.sent === 0) {
             this.state.startTime = now;
             this.state.finishTime = 0;
+            this.state.elapsedTime = 0;
+            this.state.remainingTime = 0;
             this.emit('start', { time: this.state.startTime });
             this.emit('change');
         }
@@ -272,31 +289,43 @@ class Sender extends events.EventEmitter {
         // Elapsed Time
         this.state.elapsedTime = now - this.state.startTime;
 
-        // Remaining Time
-        const denominator = (this.state.sent + this.state.received) / 2;
-        const timePerCode = this.state.elapsedTime / denominator;
-        this.state.remainingTime = (timePerCode * this.state.total - this.state.elapsedTime);
+        // Make a 1 second delay before estimating the remaining time
+        if (this.state.elapsedTime >= 1000 && this.state.received > 0) {
+            const timePerCode = this.state.elapsedTime / this.state.received;
+            this.state.remainingTime = (timePerCode * this.state.total - this.state.elapsedTime);
+        }
 
         if (this.state.received >= this.state.total) {
             this.state.finishTime = now;
             this.emit('end', { time: this.state.finishTime });
             this.emit('change');
         }
+
+        return true;
     }
+    // Rewinds the internal array pointer.
+    // @return {boolean} Returns true on success, false otherwise.
     rewind() {
+        if (!this.state.gcode) {
+            return false;
+        }
+
         if (this.sp) {
             this.sp.clear();
         }
         this.state.sent = 0;
         this.state.received = 0;
         this.emit('change');
+
+        return true;
     }
-    ack() {
-        this.state.received++;
-        this.emit('change');
-    }
-    // Returns true if any state have changes
+    // Checks if there are any state changes. It will also clear the changed flag.
+    // @return {boolean} Returns true on state changes, false otherwise.
     peek() {
+        if (!this.state.gcode) {
+            return false;
+        }
+
         const changed = this.state.changed;
         this.state.changed = false;
         return changed;
