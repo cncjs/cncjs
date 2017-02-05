@@ -3,7 +3,8 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import express from 'express';
-import jwt from 'express-jwt';
+import expressJwt from 'express-jwt';
+import jwt from 'jsonwebtoken';
 import engines from 'consolidate';
 import 'hogan.js'; // required by consolidate
 import errorhandler from 'errorhandler';
@@ -48,6 +49,16 @@ const renderPage = (view = 'index', cb = _.noop) => (req, res, next) => {
 
     const locals = { ...cb(req, res) };
     res.render(view, locals);
+};
+
+const verifyToken = (token) => {
+    // https://github.com/auth0/node-jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
+    try {
+        jwt.verify(token, settings.secret);
+    } catch (err) {
+        return false;
+    }
+    return true;
 };
 
 const appMain = () => {
@@ -196,23 +207,27 @@ const appMain = () => {
     app.use(i18nextHandle(i18next, {}));
 
     { // Secure API Access
-        app.use(urljoin(settings.route, 'api'), jwt({
+        app.use(urljoin(settings.route, 'api'), expressJwt({
             secret: config.get('secret'),
             credentialsRequired: true
         }));
 
         app.use((err, req, res, next) => {
-            if (process.env.NODE_ENV === 'development') {
-                next(); // Do not block unauthorized connections on development mode
-                return;
-            }
+            let bypass = false;
 
+            // Check whether the app is running in development mode
+            bypass = bypass || (process.env.NODE_ENV === 'development');
+
+            // Check if the provided credentials are correct
+            const token = req.query && req.query.token;
+            bypass = bypass || (token && verifyToken(token));
+
+            // Check white list
             const whitelist = [
                 // Also see "src/app/api/index.js"
                 urljoin(settings.route, 'api/signin')
             ];
-
-            const bypass = _.some(whitelist, (path) => {
+            bypass = bypass || _.some(whitelist, (path) => {
                 return req.path.indexOf(path) === 0;
             });
 
