@@ -12,7 +12,7 @@ import i18n from '../../lib/i18n';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 
-const releases = 'https://github.com/cheton/cnc/releases';
+const releases = 'https://github.com/cncjs/cncjs/releases';
 
 const newUpdateAvailableTooltip = () => {
     return (
@@ -264,13 +264,13 @@ class Header extends Component {
                             <MenuItem divider />
                             }
                             <MenuItem
-                                href="https://github.com/cheton/cnc/wiki"
+                                href="https://github.com/cncjs/cncjs/wiki"
                                 target="_blank"
                             >
                                 {i18n._('Help')}
                             </MenuItem>
                             <MenuItem
-                                href="https://github.com/cheton/cnc/issues"
+                                href="https://github.com/cncjs/cncjs/issues"
                                 target="_blank"
                             >
                                 {i18n._('Report an issue')}

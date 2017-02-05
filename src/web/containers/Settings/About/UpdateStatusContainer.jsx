@@ -43,7 +43,7 @@ const UpdateStatusContainer = (props) => {
                 </div>
                 <div className={styles.updateStatusActionContainer}>
                     <Anchor
-                        href="https://github.com/cheton/cnc/releases/latest"
+                        href="https://github.com/cncjs/cncjs/releases/latest"
                         target="_blank"
                     >
                         <span className={styles.label}>
