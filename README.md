@@ -25,7 +25,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 * Watch Directory
 * Z-Probing
 
-### Ecosystem
+## Ecosystem
 
 * [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3)
 * [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb)
