@@ -1,30 +1,34 @@
-# cnc [![Travis CI Build Status](https://travis-ci.org/cheton/cnc.svg)](https://travis-ci.org/cheton/cnc) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/bf64c0brafpp4ucg?svg=true)](https://ci.appveyor.com/project/cheton/cnc) [![Coverage Status](https://coveralls.io/repos/github/cheton/cnc/badge.svg?branch=master)](https://coveralls.io/github/cheton/cnc?branch=master)
+# cncjs [![Travis CI Build Status](https://travis-ci.org/cncjs/cncjs.svg)](https://travis-ci.org/cncjs/cncjs) [![AppVeyor Build Status](https://ci.appveyor.com/api/projects/status/bf64c0brafpp4ucg?svg=true)](https://ci.appveyor.com/project/cncjs/cncjs) [![Coverage Status](https://coveralls.io/repos/github/cncjs/cncjs/badge.svg?branch=master)](https://coveralls.io/github/cncjs/cncjs?branch=master)
 
 [![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://www.npmjs.com/package/cncjs)
-![cnc](https://raw.githubusercontent.com/cheton/cnc/master/media/banner.png)
+![cncjs](https://raw.githubusercontent.com/cncjs/cncjs/master/media/banner.png)
 
 A web-based interface for CNC milling controller running [Grbl](https://github.com/grbl/grbl), [Smoothieware](https://github.com/Smoothieware/Smoothieware), or [TinyG](https://github.com/synthetos/TinyG). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
 
-![cnc.png](https://raw.githubusercontent.com/cheton/cnc/master/media/cnc.png)
+![cnc.png](https://raw.githubusercontent.com/cncjs/cncjs/master/media/cnc.png)
 
 ## Features
 * Supported CNC controllers
   * [Grbl](https://github.com/gnea/grbl)
   * [Smoothieware](https://github.com/Smoothieware/Smoothieware)
   * [TinyG](https://github.com/synthetos/TinyG) and [g2core](https://github.com/synthetos/g2)
-* [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cheton/cnc/wiki/Desktop-App)
+* [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cncjs/cncjs/wiki/Desktop-App)
 * 3D Visualizer
 * Allows multiple HTTP connections at the same serial port
 * Responsive view for small screen display with device width less than 720px
   - <i>Safari on an iPhone 5S</i> [\[1\]](https://cloud.githubusercontent.com/assets/447801/15633749/b817cd4a-25e7-11e6-9beb-600c65ea1324.PNG) [\[2\]](https://cloud.githubusercontent.com/assets/447801/15633750/b819b5f6-25e7-11e6-8bfe-d3e6247e443b.PNG)
-* [Account Management](https://github.com/cheton/cnc/wiki/User-Guide#account-management)
-* [Widget Management](https://github.com/cheton/cnc/wiki/User-Guide#widget-management)
-* [TinyWeb Console for 320x240 LCD Display](https://github.com/cheton/cnc/wiki/User-Guide#tinyweb-console-for-320x240-lcd-display)
-* [Keyboard Shortcuts](https://github.com/cheton/cnc/wiki/User-Guide#keyboard-shortcuts)
-* [Contour ShuttleXpress](https://github.com/cheton/cnc/wiki/User-Guide#contour-shuttlexpress)
+* [Account Management](https://github.com/cncjs/cncjs/wiki/User-Guide#account-management)
+* [Widget Management](https://github.com/cncjs/cncjs/wiki/User-Guide#widget-management)
+* [Keyboard Shortcuts](https://github.com/cncjs/cncjs/wiki/User-Guide#keyboard-shortcuts)
+* [Contour ShuttleXpress](https://github.com/cncjs/cncjs/wiki/User-Guide#contour-shuttlexpress)
 * Multi-Language Support 
 * Watch Directory
 * Z-Probing
+
+### Ecosystem
+
+* [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3)
+* [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb)
 
 ## Browser Support
 ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)<br>Chrome | ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)<br>Edge | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)<br>Firefox | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png)<br>IE | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)<br>Opera | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png)<br>Safari
@@ -71,7 +75,7 @@ $ npm install -g cncjs
 
 It's recommended that you run [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) on the RPi2 or RPi3. For Raspbian Wheezy, be sure to [install gcc/g++ 4.8](https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/) before npm install.
 
-Check out [wiki](https://github.com/cheton/cnc/wiki/Installation) for other installation methods.
+Check out [wiki](https://github.com/cncjs/cncjs/wiki/Installation) for other installation methods.
 
 ## Upgrade
 Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cnc -V`.
@@ -140,7 +144,7 @@ The configuration file <b>.cncrc</b> contains settings that are equivalent to th
   echo %USERPROFILE%
   ```
 
-Check out an example configuration file [here](https://github.com/cheton/cnc/blob/master/examples/.cncrc).
+Check out an example configuration file [here](https://github.com/cncjs/cncjs/blob/master/examples/.cncrc).
 
 ### File Format
 ```json
@@ -174,14 +178,11 @@ Check out an example configuration file [here](https://github.com/cheton/cnc/blo
 }
 ```
 
-## TinyWeb
-Visit https://github.com/cheton/cnc/releases to download the latest "tinyweb.zip" file.
-
 ## Wiki
-https://github.com/cheton/cnc/wiki
+https://github.com/cncjs/cncjs/wiki
 
 ## Examples
-There are several *.gcode files in the [examples](https://github.com/cheton/cnc/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
+There are several *.gcode files in the [examples](https://github.com/cncjs/cncjs/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
 
 If you don't have a CAM software, try using [jscut](http://jscut.org/) to create G-Code from *.svg. It's a simple CAM package that runs in the browser.
 
@@ -189,27 +190,27 @@ Check out a live demo at http://jscut.org/jscut.html.
 
 ## Contributions
 
-Use [GitHub issues](https://github.com/cheton/cnc/issues) for requests.
+Use [GitHub issues](https://github.com/cncjs/cncjs/issues) for requests.
 
 Pull requests welcome! Learn how to [contribute](CONTRIBUTING.md).
 
 ## Localization
 
-You can help translate resource files in both of [app](https://github.com/cheton/cnc/tree/master/src/app/i18n) and [web](https://github.com/cheton/cnc/tree/master/src/web/i18n) directories from English to other languages. Check out [Localization guide](https://github.com/cheton/cnc/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can [open an issue](https://github.com/cheton/cnc/issues) or send your translations to cheton@gmail.com.
+You can help translate resource files in both of [app](https://github.com/cncjs/cncjs/tree/master/src/app/i18n) and [web](https://github.com/cncjs/cncjs/tree/master/src/web/i18n) directories from English to other languages. Check out [Localization guide](https://github.com/cncjs/cncjs/blob/master/CONTRIBUTING.md#localization) to learn how to get started. If you are not familiar with GitHub development, you can [open an issue](https://github.com/cncjs/cncjs/issues) or send your translations to cheton@gmail.com.
 
 Locale | Language | Status | Contributors 
 ------ | -------- | ------ | ------------
-[cs](https://github.com/cheton/cnc/tree/master/src/web/i18n/cs) | Čeština (Czech) | :heavy_check_mark: | [Miroslav Zuzelka](https://github.com/dronecz)
-[de](https://github.com/cheton/cnc/tree/master/src/web/i18n/de) | Deutsch (German) | :heavy_check_mark: | [Thorsten Godau](https://github.com/dl9sec)
-[es](https://github.com/cheton/cnc/tree/master/src/web/i18n/es) | Español (Spanish) | |
-[fr](https://github.com/cheton/cnc/tree/master/src/web/i18n/fr) | Français (French) | :heavy_check_mark: | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
-[it](https://github.com/cheton/cnc/tree/master/src/web/i18n/it) | Italiano (Italian) | :heavy_check_mark: | [vince87](https://github.com/vince87)
-[hu](https://github.com/cheton/cnc/tree/master/src/web/i18n/hu) | Magyar (Hungarian) | :heavy_check_mark: | Sipos Péter
-[pt-br](https://github.com/cheton/cnc/tree/master/src/web/i18n/pt-br) | Português (Brasil) | :heavy_check_mark: | [cmsteinBR](https://github.com/cmsteinBR)
-[ru](https://github.com/cheton/cnc/tree/master/src/web/i18n/ru) | Ру́сский (Russian) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
-[zh-tw](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-tw) | 繁體中文 (Traditional Chinese) | :heavy_check_mark: | [Cheton Wu](https://github.com/cheton)
-[zh-cn](https://github.com/cheton/cnc/tree/master/src/web/i18n/zh-cn) | 简体中文 (Simplified Chinese) | :heavy_check_mark: | [Mandy Chien](https://github.com/MandyChien), [Terry Lee](https://github.com/TerryShampoo)
-[ja](https://github.com/cheton/cnc/tree/master/src/web/i18n/ja) | 日本語 (Japanese) | :heavy_check_mark: | [Naoki Okamoto](https://github.com/toonaoki)
+[cs](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/cs) | Čeština (Czech) | :heavy_check_mark: | [Miroslav Zuzelka](https://github.com/dronecz)
+[de](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/de) | Deutsch (German) | :heavy_check_mark: | [Thorsten Godau](https://github.com/dl9sec)
+[es](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/es) | Español (Spanish) | |
+[fr](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/fr) | Français (French) | :heavy_check_mark: | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
+[it](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/it) | Italiano (Italian) | :heavy_check_mark: | [vince87](https://github.com/vince87)
+[hu](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/hu) | Magyar (Hungarian) | :heavy_check_mark: | Sipos Péter
+[pt-br](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/pt-br) | Português (Brasil) | :heavy_check_mark: | [cmsteinBR](https://github.com/cmsteinBR)
+[ru](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/ru) | Ру́сский (Russian) | :heavy_check_mark: | [Denis Yusupov](https://github.com/minithc)
+[zh-tw](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/zh-tw) | 繁體中文 (Traditional Chinese) | :heavy_check_mark: | [Cheton Wu](https://github.com/cheton)
+[zh-cn](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/zh-cn) | 简体中文 (Simplified Chinese) | :heavy_check_mark: | [Mandy Chien](https://github.com/MandyChien), [Terry Lee](https://github.com/TerryShampoo)
+[ja](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/ja) | 日本語 (Japanese) | :heavy_check_mark: | [Naoki Okamoto](https://github.com/toonaoki)
 
 ## Donate
 
@@ -221,4 +222,4 @@ If you would like to support this project, you can make a donation using PayPal.
 
 Copyright (c) 2015-2016 Cheton Wu
 
-Licensed under the [MIT License](https://raw.githubusercontent.com/cheton/cnc/master/LICENSE).
+Licensed under the [MIT License](https://raw.githubusercontent.com/cncjs/cncjs/master/LICENSE).
