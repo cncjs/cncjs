@@ -131,10 +131,10 @@ class SmoothieController {
         // Workflow
         this.workflow = new Workflow();
         this.workflow.on('start', () => {
-            this.sender.rewind(); // rewind sender queue
+            this.sender.rewind();
         });
         this.workflow.on('stop', () => {
-            this.sender.rewind(); // rewind sender queue
+            this.sender.rewind();
         });
         this.workflow.on('resume', () => {
             this.sender.next();
