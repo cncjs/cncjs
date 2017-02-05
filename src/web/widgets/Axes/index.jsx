@@ -237,20 +237,28 @@ class AxesWidget extends Component {
                 customDistance = Number(customDistance).toFixed(3) * 1;
             }
 
+            // https://github.com/synthetos/g2/wiki/Status-Reports
+            // Canonical machine position are always reported in millimeters with no offsets.
+            const machinePosition = {
+                ...this.state.machinePosition,
+                ...mpos
+            };
+            // Work position are reported in current units, and also apply any offsets.
+            const workPosition = _.mapValues({
+                ...this.state.workPosition,
+                ...wpos
+            }, (val) => {
+                return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+            });
+
             this.setState({
                 units: units,
                 controller: {
                     type: TINYG,
                     state: state
                 },
-                machinePosition: {
-                    ...this.state.machinePosition,
-                    ...mpos
-                },
-                workPosition: {
-                    ...this.state.workPosition,
-                    ...wpos
-                },
+                machinePosition: machinePosition,
+                workPosition: workPosition,
                 customDistance: customDistance
             });
         }

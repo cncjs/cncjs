@@ -472,12 +472,12 @@ class VisualizerWidget extends Component {
                 pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             }
 
-            // TinyG work position (mm or inch)
+            // https://github.com/synthetos/g2/wiki/Status-Reports
+            // Work position are reported in current units, and also apply any offsets.
             const workPosition = _.mapValues({
                 ...this.state.workPosition,
                 ...wpos
             }, (val) => {
-                // convert to mm for inch units
                 return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
             });
 
