@@ -426,6 +426,7 @@ class TinyGController {
             controller: {
                 type: this.type,
                 state: this.state,
+                ident: this.tinyg.ident,
                 footer: this.tinyg.footer
             },
             workflowState: this.workflow.state,

@@ -156,11 +156,18 @@ class TinyG extends events.EventEmitter {
                 distance: '', // G90: Absolute, G91: Relative
                 feedrate: '' // G93: Inverse Time Mode, G94: Units Per Minutes
             }
-        },
-        // Hardware Platform
-        hp: 0,
-        // Firmware Build
-        fb: 0
+        }
+    };
+    // Identification Parameters
+    // https://github.com/synthetos/g2/wiki/Configuring-0.99-System-Groups#identification-parameters
+    ident = {
+        fv: 0, // Firmware Version
+        fb: 0, // Firmware Build
+        fbs: '', // Firmware Build String
+        fbc: '', // Firmware Build Config
+        hp: 0, // Hardware Platform: 1=Xmega, 2=Due, 3=v9(ARM)
+        hv: 0, // Hardware Version
+        id: '' // board ID
     };
     footer = {
         revision: 0,
@@ -331,13 +338,13 @@ class TinyG extends events.EventEmitter {
                 }
                 this.emit('sr', payload.sr);
             } else if (type === TinyGParserResultReceiveReports) {
-                this.state = { // enforce state change
-                    ...this.state,
-                    r: {
-                        ...this.state.r,
-                        ...payload.r
+                // Identification Parameters
+                for (let setting of ['fv', 'fb', 'fbs', 'fbc', 'hp', 'hv', 'id']) {
+                    if (payload.r[setting]) {
+                        this.ident[setting] = payload.r[setting];
                     }
-                };
+                }
+
                 this.emit('r', payload.r);
             }
 
