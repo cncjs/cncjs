@@ -1,8 +1,8 @@
 {
-  "name": "cnc",
+  "name": "cncjs",
   "version": "1.9.0-alpha",
   "description": "A web-based interface for CNC milling controller running Grbl, Smoothieware, or TinyG",
-  "homepage": "https://github.com/cheton/cnc",
+  "homepage": "https://github.com/cncjs/cncjs",
   "author": "Cheton Wu <cheton@gmail.com>",
   "main": "./dist/cnc/cnc.js",
   "bin": {
@@ -15,7 +15,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git@github.com:cheton/cnc.git"
+    "url": "git@github.com:cncjs/cncjs.git"
   },
   "license": "MIT",
   "engines": {
