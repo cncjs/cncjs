@@ -19,13 +19,7 @@ const deps = [
     'debug' // 'debug' is required for desktop app
 ].concat(findImports(files, { flatten: true })).sort();
 
-// Development:
-//   package.json
-//   - name: cncjs (https://www.npmjs.com/package/cncjs)
-//
-// Application:
-//   src/package.json
-//   - name: cnc
+pkgApp.name = pkg.name;
 pkgApp.version = pkg.version;
 pkgApp.homepage = pkg.homepage;
 pkgApp.author = pkg.author;
