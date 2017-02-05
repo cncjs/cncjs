@@ -9,7 +9,7 @@ const HelpContainer = () => {
                 type="button"
                 className="btn btn-default"
                 onClick={() => {
-                    const url = 'https://github.com/cheton/cnc/releases';
+                    const url = 'https://github.com/cncjs/cncjs/releases';
                     window.open(url, '_blank');
                 }}
             >
@@ -19,7 +19,7 @@ const HelpContainer = () => {
                 type="button"
                 className="btn btn-default"
                 onClick={() => {
-                    const url = 'https://github.com/cheton/cnc/issues';
+                    const url = 'https://github.com/cncjs/cncjs/issues';
                     window.open(url, '_blank');
                 }}
             >

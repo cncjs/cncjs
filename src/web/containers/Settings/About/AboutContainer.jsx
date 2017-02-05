@@ -4,7 +4,7 @@ import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
 const AboutContainer = ({ version }) => {
-    const wiki = 'https://github.com/cheton/cnc/wiki';
+    const wiki = 'https://github.com/cncjs/cncjs/wiki';
 
     return (
         <div className={styles.aboutContainer}>
