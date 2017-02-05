@@ -270,15 +270,28 @@ class TinyG extends events.EventEmitter {
                         }[val] || '';
                         _.set(target, 'modal.path', gcode);
                     },
+
+                    // Work Position
+                    // {posx: ... through {posa:... are reported in the currently
+                    // active Units mode (G20/G21), and also apply any offsets,
+                    // including coordinate system selection, G92, and tool offsets.
+                    // These are provided to drive digital readouts
                     'posx': 'wpos.x',
                     'posy': 'wpos.y',
                     'posz': 'wpos.z',
-                    'mpox': 'mpos.x',
-                    'mpoy': 'mpos.y',
-                    'mpoz': 'mpos.z',
                     'posa': 'wpos.a',
                     'posb': 'wpos.b',
                     'posc': 'wpos.c',
+
+                    // Machine Position
+                    // {mpox: ... through {mpoa:... are reported in the machine's
+                    // internal coordinate system (canonical machine) and will always
+                    // be in millimeters with no offsets.
+                    // These are provided to drive graphical displays so they do not
+                    // have to be aware of Gcode Units mode or any offsets in effect.
+                    'mpox': 'mpos.x',
+                    'mpoy': 'mpos.y',
+                    'mpoz': 'mpos.z',
                     'mpoa': 'mpos.a',
                     'mpob': 'mpos.b',
                     'mpoc': 'mpos.c'
