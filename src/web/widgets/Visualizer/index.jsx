@@ -3,7 +3,6 @@ import delay from 'delay';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
 import Detector from 'three/examples/js/Detector';
 import api from '../../api';
 import Anchor from '../../components/Anchor';
@@ -73,7 +72,6 @@ const displayWebGLErrorMessage = () => {
     });
 };
 
-@CSSModules(styles, { allowMultiple: true })
 class VisualizerWidget extends Component {
     actions = {
         openModal: (name = '', params = {}) => {
@@ -690,15 +688,13 @@ class VisualizerWidget extends Component {
                 style={{ minWidth: 320 }}
                 borderless
             >
-                <Widget.Header styleName="widget-header" fixed>
-                    <Widget.Title style={{ width: '100%' }}>
-                        <Controls
-                            state={state}
-                            actions={actions}
-                        />
-                    </Widget.Title>
+                <Widget.Header className={styles.widgetHeader} fixed>
+                    <Controls
+                        state={state}
+                        actions={actions}
+                    />
                 </Widget.Header>
-                <Widget.Content styleName="widget-content">
+                <Widget.Content className={styles.widgetContent}>
                     {state.gcode.loading &&
                     <Loading />
                     }

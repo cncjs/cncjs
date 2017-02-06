@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import semver from 'semver';
 import without from 'lodash/without';
+import Push from 'push.js';
 import api from '../../api';
 import Anchor from '../../components/Anchor';
 import settings from '../../config/settings';
@@ -11,6 +12,7 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
+import styles from './index.styl';
 
 const releases = 'https://github.com/cncjs/cncjs/releases';
 
@@ -31,12 +33,26 @@ class Header extends Component {
     };
 
     state = {
+        pushPermission: Push.Permission.get(),
         commands: [],
         runningTasks: [],
         currentVersion: settings.version,
         latestVersion: settings.version
     };
     actions = {
+        requestPushPermission: () => {
+            const onGranted = () => {
+                this.setState({ pushPermission: Push.Permission.GRANTED });
+            };
+            const onDenied = () => {
+                this.setState({ pushPermission: Push.Permission.DENIED });
+            };
+            // Note that if "Permission.DEFAULT" is returned, no callback is executed
+            const permission = Push.Permission.request(onGranted, onDenied);
+            if (permission === Push.Permission.DEFAULT) {
+                this.setState({ pushPermission: Push.Permission.DEFAULT });
+            }
+        },
         checkForUpdates: async () => {
             try {
                 const res = await api.getState();
@@ -72,7 +88,7 @@ class Header extends Component {
 
                 this.setState({
                     commands: this.state.commands.map(c => {
-                        return (c.id === cmd.id) ? { ...c, taskId: taskId } : c;
+                        return (c.id === cmd.id) ? { ...c, taskId: taskId, err: null } : c;
                     })
                 });
             } catch (res) {
@@ -81,26 +97,73 @@ class Header extends Component {
         }
     };
     controllerEvents = {
-        'task:run': (taskId) => {
+        'task:start': (taskId) => {
             this.setState({
                 runningTasks: this.state.runningTasks.concat(taskId)
             });
         },
-        'task:complete': (taskId) => {
+        'task:finish': (taskId, code) => {
+            const err = (code !== 0) ? new Error(`errno=${code}`) : null;
+            let cmd = null;
+
             this.setState({
                 commands: this.state.commands.map(c => {
-                    return (c.taskId === taskId) ? { ...c, taskId: null } : c;
+                    if (c.taskId !== taskId) {
+                        return c;
+                    }
+                    cmd = c;
+                    return {
+                        ...c,
+                        taskId: null,
+                        err: err
+                    };
                 }),
                 runningTasks: without(this.state.runningTasks, taskId)
             });
+
+            if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
+                Push.create(cmd.title, {
+                    body: code === 0
+                        ? i18n._('Command succeeded')
+                        : i18n._('Command failed ({{err}})', { err: err }),
+                    icon: 'images/32x32/logo.png',
+                    timeout: 10 * 1000,
+                    onClick: function () {
+                        window.focus();
+                        this.close();
+                    }
+                });
+            }
         },
-        'task:error': (taskId) => {
+        'task:error': (taskId, err) => {
+            let cmd = null;
+
             this.setState({
                 commands: this.state.commands.map(c => {
-                    return (c.taskId === taskId) ? { ...c, taskId: null } : c;
+                    if (c.taskId !== taskId) {
+                        return c;
+                    }
+                    cmd = c;
+                    return {
+                        ...c,
+                        taskId: null,
+                        err: err
+                    };
                 }),
                 runningTasks: without(this.state.runningTasks, taskId)
             });
+
+            if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
+                Push.create(cmd.title, {
+                    body: i18n._('Command failed ({{err}})', { err: err }),
+                    icon: 'images/32x32/logo.png',
+                    timeout: 10 * 1000,
+                    onClick: function () {
+                        window.focus();
+                        this.close();
+                    }
+                });
+            }
         },
         'config:change': () => {
             this.actions.getCommands();
@@ -142,7 +205,7 @@ class Header extends Component {
     }
     render() {
         const { path } = this.props;
-        const { commands, runningTasks, currentVersion, latestVersion } = this.state;
+        const { pushPermission, commands, runningTasks, currentVersion, latestVersion } = this.state;
         const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
         const tooltip = newUpdateAvailable ? newUpdateAvailableTooltip() : <div />;
         const sessionEnabled = store.get('session.enabled');
@@ -228,12 +291,49 @@ class Header extends Component {
                         </NavDropdown>
                         <NavDropdown
                             id="nav-dropdown-menu"
-                            title={<i className="fa fa-fw fa-ellipsis-v" />}
+                            title={
+                                <div>
+                                    <i className="fa fa-fw fa-ellipsis-v" />
+                                    {this.state.runningTasks.length > 0 &&
+                                    <span
+                                        className="label label-primary"
+                                        style={{
+                                            position: 'absolute',
+                                            top: 4,
+                                            right: 4
+                                        }}
+                                    >
+                                        N
+                                    </span>
+                                    }
+                                </div>
+                            }
                             noCaret
                         >
                             {showCommands &&
                             <MenuItem header>
                                 {i18n._('Command')}
+                                {pushPermission === Push.Permission.GRANTED &&
+                                <span className="pull-right">
+                                    <i className="fa fa-fw fa-bell-o" />
+                                </span>
+                                }
+                                {pushPermission === Push.Permission.DENIED &&
+                                <span className="pull-right">
+                                    <i className="fa fa-fw fa-bell-slash-o" />
+                                </span>
+                                }
+                                {pushPermission === Push.Permission.DEFAULT &&
+                                <span className="pull-right">
+                                    <Anchor
+                                        className={styles.btnIcon}
+                                        onClick={this.actions.requestPushPermission}
+                                        title={i18n._('Show notifications')}
+                                    >
+                                        <i className="fa fa-fw fa-bell" />
+                                    </Anchor>
+                                </span>
+                                }
                             </MenuItem>
                             }
                             {showCommands && commands.map((cmd) => {
@@ -247,16 +347,20 @@ class Header extends Component {
                                             this.actions.runCommand(cmd);
                                         }}
                                     >
-                                        {cmd.text}
-                                        <i
-                                            className={classNames(
-                                                'pull-right',
-                                                'fa',
-                                                'fa-fw',
-                                                { 'fa-circle-o-notch': isTaskRunning },
-                                                { 'fa-spin': isTaskRunning }
-                                            )}
-                                        />
+                                        <span title={cmd.command}>{cmd.title || cmd.command}</span>
+                                        <span className="pull-right">
+                                            <i
+                                                className={classNames(
+                                                    'fa',
+                                                    'fa-fw',
+                                                    { 'fa-circle-o-notch': isTaskRunning },
+                                                    { 'fa-spin': isTaskRunning },
+                                                    { 'fa-exclamation-circle': cmd.err },
+                                                    { 'text-error': cmd.err }
+                                                )}
+                                                title={cmd.err}
+                                            />
+                                        </span>
                                     </MenuItem>
                                 );
                             })}

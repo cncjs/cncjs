@@ -92,7 +92,7 @@ class Controls extends Component {
         const { state } = this.props;
         const controllerType = state.controller.type;
         const controllerState = state.controller.state;
-        let stateStyle = 'controller-state-default';
+        let stateStyle = '';
         let stateText = '';
 
         if (controllerType === GRBL) {
@@ -228,10 +228,7 @@ class Controls extends Component {
                 {controllerState}
                 <div className="pull-right">
                     <Dropdown
-                        style={{
-                            marginBottom: 2,
-                            marginRight: 5
-                        }}
+                        style={{ marginRight: 5 }}
                         bsSize="xs"
                         id="units-dropdown"
                         disabled={!canSendCommand}
@@ -264,10 +261,7 @@ class Controls extends Component {
                         </Dropdown.Menu>
                     </Dropdown>
                     <Dropdown
-                        style={{
-                            marginBottom: 2,
-                            marginRight: 5
-                        }}
+                        style={{ marginRight: 5 }}
                         bsSize="xs"
                         id="wcs-dropdown"
                         disabled={!canSendCommand}
@@ -332,10 +326,7 @@ class Controls extends Component {
                         </Dropdown.Menu>
                     </Dropdown>
                     <Dropdown
-                        style={{
-                            marginBottom: 2,
-                            marginRight: 0
-                        }}
+                        style={{ marginRight: 0 }}
                         bsSize="xs"
                         id="visualizer-dropdown"
                         pullRight

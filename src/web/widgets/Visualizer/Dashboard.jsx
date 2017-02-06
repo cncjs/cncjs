@@ -1,5 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
+import { ProgressBar } from 'react-bootstrap';
 import Anchor from '../../components/Anchor';
 import Panel from '../../components/Panel';
 import i18n from '../../lib/i18n';
@@ -22,7 +23,6 @@ class Dashboard extends Component {
             return null;
         }
 
-        const none = '–';
         const filename = (function(state) {
             if (state.gcode.ready) {
                 const url = `api/gcode/download?port=${state.port}`;
@@ -34,19 +34,10 @@ class Dashboard extends Component {
                 );
             }
 
-            return (
-                <span className={styles['text-gray']}>
-                    {i18n._('G-code not loaded')}
-                </span>
-            );
+            return i18n._('G-code not loaded');
         }(state));
-        const filesize = (
-            <span className={styles['text-gray']}>
-                {state.gcode.ready ? formatBytes(state.gcode.size, 0) : ''}
-            </span>
-        );
-        const sent = state.gcode.ready ? state.gcode.sent : none;
-        const total = state.gcode.ready ? state.gcode.total : none;
+        const filesize = state.gcode.ready ? formatBytes(state.gcode.size, 0) : '';
+        const { sent = 0, total = 0 } = state.gcode;
 
         return (
             <Panel className={styles.dashboard}>
@@ -67,18 +58,18 @@ class Dashboard extends Component {
                         </div>
                     </div>
                     <div className={styles.divider} />
-                    <div className="row no-gutters">
-                        <div className="col col-xs-4">{i18n._('Sent')}</div>
-                        <div className="col col-xs-8">
-                            <div className={styles.well}>{sent}</div>
-                        </div>
-                    </div>
-                    <div className="row no-gutters">
-                        <div className="col col-xs-4">{i18n._('Total')}</div>
-                        <div className="col col-xs-8">
-                            <div className={styles.well}>{total}</div>
-                        </div>
-                    </div>
+                    <ProgressBar
+                        style={{ marginBottom: 0 }}
+                        bsStyle="info"
+                        min={0}
+                        max={total}
+                        now={sent}
+                        label={total > 0 &&
+                            <span className={styles.progressbarLabel}>
+                                {sent}&nbsp;/&nbsp;{total}
+                            </span>
+                        }
+                    />
                 </Panel.Body>
             </Panel>
         );

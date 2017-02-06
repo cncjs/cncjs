@@ -15,7 +15,11 @@ const state = {
 
 const mapConfigToState = (config) => {
     state.commands = _.map(config.commands, (c) => {
-        return { ...c, id: uuid.v4() };
+        return {
+            id: uuid.v4(),
+            title: c.title || c.text,
+            command: c.command
+        };
     });
 };
 
@@ -24,11 +28,12 @@ configStore.on('change', mapConfigToState);
 
 export const getCommands = (req, res) => {
     res.send({
-        commands: state.commands.map(({ id, command, text }) => {
+        commands: state.commands.map(({ id, title, command }) => {
             return {
-                id: id,
                 disabled: !command,
-                text: text
+                id: id,
+                title: title,
+                command: command
             };
         })
     });
@@ -45,9 +50,9 @@ export const runCommand = (req, res) => {
         return;
     }
 
-    log.info(`${PREFIX} Execute the "${c.text}" command from "${c.command}"`);
+    log.info(`${PREFIX} Execute the "${c.title}" command from "${c.command}"`);
 
-    const taskId = taskRunner.run(c.command);
+    const taskId = taskRunner.run(c.command, c.title);
 
     res.send({ taskId: taskId });
 };
