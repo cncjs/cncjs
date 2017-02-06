@@ -5,7 +5,7 @@ echo "TRAVIS_BUILD_NUMBER=$TRAVIS_BUILD_NUMBER"
 echo "TRAVIS_COMMIT=$TRAVIS_COMMIT"
 echo "TRAVIS_TAG=$TRAVIS_TAG"
 
-DOCKER_REPO=cheton/cnc
+DOCKER_REPO=cncjs/cncjs
 DOCKER_BUILD_TAG=travis-$TRAVIS_BUILD_NUMBER.${TRAVIS_COMMIT::8}
 DOCKER_BRANCH_TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo -n "latest"; else echo -n "$TRAVIS_BRANCH"; fi`
 
