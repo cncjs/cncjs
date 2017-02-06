@@ -319,13 +319,9 @@ class Sender extends events.EventEmitter {
 
         return true;
     }
-    // Checks if there are any state changes. It will also clear the changed flag.
+    // Checks if there are any state changes. It also clears the changed flag.
     // @return {boolean} Returns true on state changes, false otherwise.
     peek() {
-        if (!this.state.gcode) {
-            return false;
-        }
-
         const changed = this.state.changed;
         this.state.changed = false;
         return changed;
