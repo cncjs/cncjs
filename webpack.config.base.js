@@ -26,7 +26,7 @@ module.exports = {
             },
             {
                 test: /\.styl$/,
-                use: ExtractTextPlugin.extract({
+                loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use: 'css-loader?camelCase&modules&importLoaders=1&localIdentName=[path][name]__[local]--[hash:base64:5]!stylus-loader'
                 }),
@@ -36,7 +36,7 @@ module.exports = {
             },
             {
                 test: /\.styl$/,
-                use: ExtractTextPlugin.extract({
+                loader: ExtractTextPlugin.extract({
                     fallback: 'style-loader',
                     use: 'css-loader?camelCase!stylus-loader'
                 }),
