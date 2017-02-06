@@ -121,7 +121,7 @@ class Header extends Component {
                 runningTasks: without(this.state.runningTasks, taskId)
             });
 
-            if (cmd) {
+            if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
                 Push.create(cmd.title, {
                     body: code === 0
                         ? i18n._('Command succeeded')
@@ -153,7 +153,7 @@ class Header extends Component {
                 runningTasks: without(this.state.runningTasks, taskId)
             });
 
-            if (cmd) {
+            if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
                 Push.create(cmd.title, {
                     body: i18n._('Command failed ({{err}})', { err: err }),
                     icon: 'images/32x32/logo.png',
