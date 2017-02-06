@@ -50,7 +50,7 @@ const webpackProductionConfig = {
         rules: [
             {
                 test: /\.jsx?$/,
-                use: 'babel-loader',
+                loader: 'babel-loader',
                 exclude: /node_modules/
             }
         ]
