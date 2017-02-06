@@ -241,7 +241,7 @@
     "eslint-plugin-jsx-a11y": "~2.2.3",
     "eslint-plugin-react": "~6.9.0",
     "eventsource-polyfill": "~0.9.6",
-    "extract-text-webpack-plugin": "^2.0.0-rc.2",
+    "extract-text-webpack-plugin": "^2.0.0-rc.3",
     "file-loader": "~0.10.0",
     "find-imports": "~0.5.1",
     "github-release-cli": "~0.3.0",
