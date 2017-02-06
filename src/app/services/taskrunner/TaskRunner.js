@@ -9,16 +9,21 @@ const PREFIX = '[taskrunner]';
 class TaskRunner extends events.EventEmitter {
     tasks = [];
 
-    run(command, options = {}) {
-        const id = shortid.generate(); // task id
+    run(command, title, options) {
+        if (options === undefined && typeof title === 'object') {
+            options = title;
+            title = '';
+        }
+
+        const taskId = shortid.generate(); // task id
         const child = defaultShell.spawn(command, {
             detached: true,
             ...options
         });
         child.unref();
 
-        this.tasks.push(id);
-        this.emit('run', id);
+        this.tasks.push(taskId);
+        this.emit('start', taskId);
 
         child.stdout.on('data', (data) => {
             process.stdout.write(`PID:${child.pid}> ${data}`);
@@ -28,21 +33,25 @@ class TaskRunner extends events.EventEmitter {
         });
         child.on('error', (err) => {
             // Listen for error event can prevent from throwing an unhandled exception
-            log.error(`${PREFIX} Failed to start child process: err=${JSON.stringify(err)}`);
-            this.emit('error', id, err);
+            log.error(`${PREFIX} Failed to start a child process: err=${JSON.stringify(err)}`);
+
+            this.tasks = without(this.tasks, taskId);
+            this.emit('error', taskId, err);
         });
-        child.on('close', (code) => {
-            this.tasks = without(this.tasks, id);
-        });
+        // The 'exit' event is emitted after the child process ends.
+        // Note that the 'exit' event may or may not fire after an error has occurred.
+        // It is important to guard against accidentally invoking handler functions multiple times.
         child.on('exit', (code) => {
-            this.tasks = without(this.tasks, id);
-            this.emit('complete', id, code);
+            if (this.contains(taskId)) {
+                this.tasks = without(this.tasks, taskId);
+                this.emit('finish', taskId, code);
+            }
         });
 
-        return id;
+        return taskId;
     }
-    contains(id) {
-        return this.tasks.indexOf(id) >= 0;
+    contains(taskId) {
+        return this.tasks.indexOf(taskId) >= 0;
     }
 }
 

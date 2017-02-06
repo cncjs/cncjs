@@ -16,14 +16,14 @@ const PREFIX = '[cncengine]';
 class CNCServer {
     controllers = store.get('controllers');
     listener = {
-        taskRun: (...args) => {
-            this.io.sockets.emit('task:run', ...args);
+        taskStart: (...args) => {
+            this.io.sockets.emit('task:start', ...args);
+        },
+        taskFinish: (...args) => {
+            this.io.sockets.emit('task:finish', ...args);
         },
         taskError: (...args) => {
             this.io.sockets.emit('task:error', ...args);
-        },
-        taskComplete: (...args) => {
-            this.io.sockets.emit('task:complete', ...args);
         },
         configChange: (...args) => {
             this.io.sockets.emit('config:change', ...args);
@@ -39,9 +39,9 @@ class CNCServer {
     start(server) {
         this.stop();
 
-        taskRunner.on('run', this.listener.taskRun);
+        taskRunner.on('start', this.listener.taskStart);
+        taskRunner.on('finish', this.listener.taskFinish);
         taskRunner.on('error', this.listener.taskError);
-        taskRunner.on('complete', this.listener.taskComplete);
         config.on('change', this.listener.configChange);
         store.on('change', this.listener.storeChange);
 
@@ -207,9 +207,9 @@ class CNCServer {
         this.sockets = [];
         this.server = null;
 
-        taskRunner.removeListener('run', this.listener.taskRun);
+        taskRunner.removeListener('start', this.listener.taskStart);
+        taskRunner.removeListener('finish', this.listener.taskFinish);
         taskRunner.removeListener('error', this.listener.taskError);
-        taskRunner.removeListener('complete', this.listener.taskComplete);
         config.removeListener('change', this.listener.configChange);
         store.removeListener('change', this.listener.storeChange);
     }
