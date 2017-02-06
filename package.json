@@ -56,10 +56,10 @@
     "coveralls": "node babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
   "build": {
-    "appId": "com.github.cnc",
+    "appId": "com.github.cncjs",
     "asar": false,
     "asarUnpack": [],
-    "productName": "cnc",
+    "productName": "cncjs",
     "mac": {
       "category": "public.app-category.productivity",
       "target": "dmg",
@@ -98,6 +98,7 @@
     "app": "dist/cnc"
   },
   "keywords": [
+    "cncjs",
     "arduino",
     "raspberry",
     "pi",
