@@ -10,25 +10,25 @@ module.exports = {
         rules: [
             {
                 test: /\.jsx?$/,
-                loader: 'eslint-loader',
+                use: 'eslint-loader',
                 enforce: 'pre',
                 exclude: /node_modules/
             },
             {
                 test: /\.styl$/,
-                loader: 'stylint-loader',
+                use: 'stylint-loader',
                 enforce: 'pre'
             },
             {
                 test: /\.jsx?$/,
-                loader: 'babel-loader',
+                use: 'babel-loader',
                 exclude: /(node_modules|bower_components)/
             },
             {
                 test: /\.styl$/,
                 loader: ExtractTextPlugin.extract({
-                    fallbackLoader: 'style-loader',
-                    loader: 'css-loader?camelCase&modules&importLoaders=1&localIdentName=[path][name]__[local]--[hash:base64:5]!stylus-loader'
+                    fallback: 'style-loader',
+                    use: 'css-loader?camelCase&modules&importLoaders=1&localIdentName=[path][name]__[local]--[hash:base64:5]!stylus-loader'
                 }),
                 exclude: [
                     path.resolve(__dirname, 'src/web/styles')
@@ -37,8 +37,8 @@ module.exports = {
             {
                 test: /\.styl$/,
                 loader: ExtractTextPlugin.extract({
-                    fallbackLoader: 'style-loader',
-                    loader: 'css-loader?camelCase!stylus-loader'
+                    fallback: 'style-loader',
+                    use: 'css-loader?camelCase!stylus-loader'
                 }),
                 include: [
                     path.resolve(__dirname, 'src/web/styles')
@@ -53,14 +53,14 @@ module.exports = {
             },
             {
                 test: /\.(png|jpg)$/,
-                loader: 'url-loader',
+                use: 'url-loader',
                 options: {
                     limit: 8192
                 }
             },
             {
                 test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'url-loader',
+                use: 'url-loader',
                 options: {
                     limit: 10000,
                     mimetype: 'application/font-woff'
@@ -68,7 +68,7 @@ module.exports = {
             },
             {
                 test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                loader: 'file-loader'
+                use: 'file-loader'
             }
         ]
     },
