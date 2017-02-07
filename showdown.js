@@ -51,7 +51,7 @@ img {
                 </button>
                 <a
                     class="navbar-brand"
-                    href="https://github.com/cncjs/cncjs"
+                    href="https://cnc.js.org"
                     style="padding: 5px 10px">
                     <img src="logo.png" style="width: 40px; height: 40px">
                 </a>
