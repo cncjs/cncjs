@@ -6,7 +6,8 @@
   "author": "Cheton Wu <cheton@gmail.com>",
   "main": "./dist/cnc/cnc.js",
   "bin": {
-    "cnc": "./bin/cnc"
+    "cnc": "./bin/cnc",
+    "cncjs": "./bin/cnc"
   },
   "files": [
     "bin",
