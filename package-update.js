@@ -1,5 +1,3 @@
-#!/usr/bin/env node
-
 /* eslint max-len: 0 */
 import _ from 'lodash';
 import fs from 'fs';

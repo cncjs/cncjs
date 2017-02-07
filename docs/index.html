@@ -1,0 +1,305 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv-"X-UA-Compatible" content="IE=edge">
+<title>cncjs</title>
+<meta name="description" content="">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="shortcut icon" href="favicon.ico">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<style>
+html, body {
+    color: #222;
+    font-family: Arial, Helvetica, sans-serif;
+}
+table.table {
+    width: auto;
+}
+img {
+    max-width: 100%;
+}
+</style>
+</head>
+<body>
+    <nav class="navbar navbar-default" style="margin-bottom: 0">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a
+                    class="navbar-brand"
+                    href="https://github.com/cncjs/cncjs"
+                    style="padding: 5px 10px">
+                    <img src="logo.png" style="width: 40px; height: 40px">
+                </a>
+            </div>
+            <div class="navbar-right" style="margin: 0">
+                <a
+                    class="btn btn-default navbar-btn"
+                    href="https://github.com/cncjs/cncjs"
+                >
+                    <i class="fa fa-github fa-fw" style="font-size: 16px"></i>
+                    GitHub
+                </a>
+            </div>
+        </div>
+    </nav>
+    <div class="container-fluid">
+        <h1>cncjs <a href="https://travis-ci.org/cncjs/cncjs"><img src="https://travis-ci.org/cncjs/cncjs.svg" alt="Travis CI Build Status" /></a> <a href="https://ci.appveyor.com/project/cheton/cncjs"><img src="https://ci.appveyor.com/api/projects/status/qxx53wq32w3edule?svg=true" alt="AppVeyor Build status" /></a> <a href="https://coveralls.io/github/cncjs/cncjs?branch=master"><img src="https://coveralls.io/repos/github/cncjs/cncjs/badge.svg?branch=master" alt="Coverage Status" /></a></h1>
+<p><a href="https://www.npmjs.com/package/cncjs"><img src="https://nodei.co/npm/cncjs.png?downloads=true&stars=true" alt="NPM" /></a><br />
+<img src="https://raw.githubusercontent.com/cncjs/cncjs/master/media/banner.png" alt="cncjs" /></p>
+<p>A web-based interface for CNC milling controller running <a href="https://github.com/grbl/grbl">Grbl</a>, <a href="https://github.com/Smoothieware/Smoothieware">Smoothieware</a>, or <a href="https://github.com/synthetos/TinyG">TinyG</a>. It runs on an <a href="https://www.raspberrypi.org/">Raspberry Pi</a> or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like <a href="https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2">XBee</a> or <a href="https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd">USR-WIFI232-T</a>.</p>
+<p><img src="https://raw.githubusercontent.com/cncjs/cncjs/master/media/cnc.png" alt="cnc.png" /></p>
+<h2>Features</h2>
+<ul>
+<li>Supported CNC controllers<ul>
+<li><a href="https://github.com/gnea/grbl">Grbl</a></li>
+<li><a href="https://github.com/Smoothieware/Smoothieware">Smoothieware</a></li>
+<li><a href="https://github.com/synthetos/TinyG">TinyG</a> and <a href="https://github.com/synthetos/g2">g2core</a></li></ul></li>
+<li><a href="https://github.com/cncjs/cncjs/wiki/Desktop-App">Desktop App for Linux, Mac OS X, and Windows</a></li>
+<li>3D Visualizer</li>
+<li>Allows multiple HTTP connections at the same serial port</li>
+<li>Responsive view for small screen display with device width less than 720px<ul>
+<li><i>Safari on an iPhone 5S</i> <a href="https://cloud.githubusercontent.com/assets/447801/15633749/b817cd4a-25e7-11e6-9beb-600c65ea1324.PNG">[1]</a> <a href="https://cloud.githubusercontent.com/assets/447801/15633750/b819b5f6-25e7-11e6-8bfe-d3e6247e443b.PNG">[2]</a></li></ul></li>
+<li><a href="https://github.com/cncjs/cncjs/wiki/User-Guide#account-management">Account Management</a></li>
+<li><a href="https://github.com/cncjs/cncjs/wiki/User-Guide#widget-management">Widget Management</a></li>
+<li><a href="https://github.com/cncjs/cncjs/wiki/User-Guide#keyboard-shortcuts">Keyboard Shortcuts</a></li>
+<li><a href="https://github.com/cncjs/cncjs/wiki/User-Guide#contour-shuttlexpress">Contour ShuttleXpress</a></li>
+<li>Multi-Language Support </li>
+<li>Watch Directory</li>
+<li>Z-Probing</li>
+</ul>
+<h2>Ecosystem</h2>
+<ul>
+<li><a href="https://github.com/cncjs/cncjs-pendant-ps3">cncjs-pendant-ps3</a></li>
+<li><a href="https://github.com/cncjs/cncjs-pendant-tinyweb">cncjs-pendant-tinyweb</a></li>
+</ul>
+<h2>Browser Support</h2>
+<table class="table">
+<thead>
+<tr>
+<th><img src="https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png" alt="Chrome" /><br>Chrome</th>
+<th><img src="https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png" alt="Edge" /><br>Edge</th>
+<th><img src="https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png" alt="Firefox" /><br>Firefox</th>
+<th><img src="https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png" alt="IE" /><br>IE</th>
+<th><img src="https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png" alt="Opera" /><br>Opera</th>
+<th><img src="https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png" alt="Safari" /><br>Safari</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Yes</td>
+<td>Yes</td>
+<td>Yes</td>
+<td>Not supported</td>
+<td>Yes</td>
+<td>Yes</td>
+</tr>
+</tbody>
+</table>
+<h2>Installation</h2>
+<h3>Node.js Installation</h3>
+<p>Node.js v4 or higher is recommended. You can install <a href="https://github.com/creationix/nvm">Node Version Manager</a> to manage multiple Node.js versions. If you have <code>git</code> installed, just clone the <code>nvm</code> repo, and check out the latest version:</p>
+<pre><code>$ git clone https://github.com/creationix/nvm.git ~/.nvm
+$ cd ~/.nvm
+$ git checkout `git describe --abbrev=0 --tags`
+$ cd ..
+$ . ~/.nvm/nvm.sh
+$ nvm install 4</code></pre>
+<p>Add these lines to your <code>~/.bash_profile</code>, <code>~/.bashrc</code>, or <code>~/.profile</code> file to have it automatically sourced upon login: </p>
+<pre><code class="bash language-bash">export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] &amp;&amp; . "$NVM_DIR/nvm.sh" # This loads nvm</code></pre>
+<p>If you're using Node.js v4 or earlier versions, it's recommended that you use npm v3 to install packages. To upgrade, run:</p>
+<pre><code>$ npm install npm@latest -g</code></pre>
+<h3>Getting Started</h3>
+<p>Make sure you're using Node.js v4 (or higher) and npm v3:</p>
+<pre><code>$ nvm use 4
+Now using node v4.5.0 (npm v3.10.6)</code></pre>
+<p>Install <code>cncjs</code> without <code>sudo</code>, or the <code>serialport</code> module may not install correctly on some platforms like Raspberry Pi.</p>
+<pre><code>$ npm install -g cncjs</code></pre>
+<p>It's recommended that you run <a href="https://www.raspberrypi.org/downloads/raspbian/">Raspbian Jessie</a> on the RPi2 or RPi3. For Raspbian Wheezy, be sure to <a href="https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/">install gcc/g++ 4.8</a> before npm install.</p>
+<p>Check out <a href="https://github.com/cncjs/cncjs/wiki/Installation">wiki</a> for other installation methods.</p>
+<h2>Upgrade</h2>
+<p>Run <code>npm install -g cncjs@latest</code> to install the latest version. To determine the version, use <code>cnc -V</code>.</p>
+<h2>Usage</h2>
+<p>Run <code>cnc</code> or <code>~/.npm/bin/cnc</code> to start the server, and visit <code>http://yourhostname:8000/</code> to view the web interface:</p>
+<pre><code>$ cnc
+2016-12-01T15:00:41.499Z - info: Started the server at http://192.168.1.100:8000</code></pre>
+<p>Run <code>cnc</code> with -h for detailed usage:</p>
+<pre><code>$ cnc -h
+
+  Usage: cnc [options]
+
+  Options:
+
+    -h, --help                          output usage information
+    -V, --version                       output the version number
+    -p, --port                          set listen port (default: 8000)
+    -l, --host                          set listen address or hostname (default: 0.0.0.0)
+    -b, --backlog                       set listen backlog (default: 511)
+    -c, --config &lt;filename&gt;             set config file (default: ~/.cncrc)
+    -v, --verbose                       increase the verbosity level
+    -m, --mount [&lt;url&gt;:]&lt;path&gt;          set the mount point for serving static files (default: /static:static)
+    -w, --watch-directory &lt;path&gt;        watch a directory for changes
+    --access-token-lifetime &lt;lifetime&gt;  access token lifetime in seconds or a time span string (default: 30d)
+    --allow-remote-access               allow remote access to the server
+
+  Examples:
+
+    $ cnc -vv
+    $ cnc --mount /pendant:/home/pi/tinyweb
+    $ cnc --watch-directory /home/pi/watch
+    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d
+    $ cnc --allow-remote-access</code></pre>
+<p>Instead of passing command line options for <code>--watch-directory</code>, <code>--access-token-lifetime</code>, and <code>--allow-remote-access</code>, you can create a <code>~/.cncrc</code> file that contains the following configuration in JSON format:</p>
+<pre><code class="json language-json">{
+    "watchDirectory": "/path/to/dir",
+    "accessTokenLifetime": "30d",
+    "allowRemoteAccess": false
+}</code></pre>
+<p>If you need view detailed logs for troubleshooting, you can run the server in debug mode.</p>
+<pre><code>$ cnc -vvv</code></pre>
+<h2>Configuration File</h2>
+<p>The configuration file <b>.cncrc</b> contains settings that are equivalent to the cnc command-line options. The configuration file is stored in user's home directory. To find out the actual location of the home directory, do the following:</p>
+<ul>
+<li><p>Linux/Mac</p>
+<pre><code class="sh language-sh">echo $HOME</code></pre></li>
+<li><p>Windows<br />
+<code>sh
+echo %USERPROFILE%
+</code></p></li>
+</ul>
+<p>Check out an example configuration file <a href="https://github.com/cncjs/cncjs/blob/master/examples/.cncrc">here</a>.</p>
+<h3>File Format</h3>
+<pre><code class="json language-json">{
+  "watchDirectory": "/path/to/dir",
+  "accessTokenLifetime": "30d",
+  "allowRemoteAccess": false,
+  "state": {
+    "checkForUpdates": true
+  },
+  "commands": [
+    {
+      "text": "Update (root user)",
+      "command": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cnc"
+    },
+    {
+      "text": "Update (non-root user)",
+      "command": "npm install -g cncjs@latest; pkill -a -f cnc"
+    },
+    {
+      "text": "Reboot",
+      "command": "sudo /sbin/reboot"
+    },
+    {
+      "text": "Shutdown",
+      "command": "sudo /sbin/shutdown"
+    }
+  ],
+  "macros": [],
+  "users": []
+}</code></pre>
+<h2>Wiki</h2>
+<p><a href="https://github.com/cncjs/cncjs/wiki">https://github.com/cncjs/cncjs/wiki</a></p>
+<h2>Examples</h2>
+<p>There are several *.gcode files in the <a href="https://github.com/cncjs/cncjs/tree/master/examples">examples</a> directory. You can use the GCode widget to load a GCode file and make a trial run.</p>
+<p>If you don't have a CAM software, try using <a href="http://jscut.org/">jscut</a> to create G-Code from *.svg. It's a simple CAM package that runs in the browser.</p>
+<p>Check out a live demo at <a href="http://jscut.org/jscut.html">http://jscut.org/jscut.html</a>.</p>
+<h2>Contributions</h2>
+<p>Use <a href="https://github.com/cncjs/cncjs/issues">GitHub issues</a> for requests.</p>
+<p>Pull requests welcome! Learn how to <a href="CONTRIBUTING.md">contribute</a>.</p>
+<h2>Localization</h2>
+<p>You can help translate resource files in both of <a href="https://github.com/cncjs/cncjs/tree/master/src/app/i18n">app</a> and <a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n">web</a> directories from English to other languages. Check out <a href="https://github.com/cncjs/cncjs/blob/master/CONTRIBUTING.md#localization">Localization guide</a> to learn how to get started. If you are not familiar with GitHub development, you can <a href="https://github.com/cncjs/cncjs/issues">open an issue</a> or send your translations to cheton@gmail.com.</p>
+<table class="table">
+<thead>
+<tr>
+<th style="text-align:left;">Locale</th>
+<th style="text-align:left;">Language</th>
+<th style="text-align:left;">Status</th>
+<th style="text-align:left;">Contributors</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/cs">cs</a></td>
+<td style="text-align:left;">Čeština (Czech)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/dronecz">Miroslav Zuzelka</a></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/de">de</a></td>
+<td style="text-align:left;">Deutsch (German)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/dl9sec">Thorsten Godau</a></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/es">es</a></td>
+<td style="text-align:left;">Español (Spanish)</td>
+<td style="text-align:left;"></td>
+<td style="text-align:left;"></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/fr">fr</a></td>
+<td style="text-align:left;">Français (French)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/maisim">Simon Maillard</a>, <a href="https://github.com/CorentinBrule">CorentinBrulé</a></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/it">it</a></td>
+<td style="text-align:left;">Italiano (Italian)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/vince87">vince87</a></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/hu">hu</a></td>
+<td style="text-align:left;">Magyar (Hungarian)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;">Sipos Péter</td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/pt-br">pt-br</a></td>
+<td style="text-align:left;">Português (Brasil)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/cmsteinBR">cmsteinBR</a></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/ru">ru</a></td>
+<td style="text-align:left;">Ру́сский (Russian)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/minithc">Denis Yusupov</a></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/zh-tw">zh-tw</a></td>
+<td style="text-align:left;">繁體中文 (Traditional Chinese)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/cheton">Cheton Wu</a></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/zh-cn">zh-cn</a></td>
+<td style="text-align:left;">简体中文 (Simplified Chinese)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/MandyChien">Mandy Chien</a>, <a href="https://github.com/TerryShampoo">Terry Lee</a></td>
+</tr>
+<tr>
+<td style="text-align:left;"><a href="https://github.com/cncjs/cncjs/tree/master/src/web/i18n/ja">ja</a></td>
+<td style="text-align:left;">日本語 (Japanese)</td>
+<td style="text-align:left;">✔</td>
+<td style="text-align:left;"><a href="https://github.com/toonaoki">Naoki Okamoto</a></td>
+</tr>
+</tbody>
+</table>
+<h2>Donate</h2>
+<p>If you would like to support this project, you can make a donation using PayPal. Thank you!</p>
+<p><a href="https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38CYN33CWPBR2"><img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="Donate" /></a></p>
+<h2>License</h2>
+<p>Licensed under the <a href="https://raw.githubusercontent.com/cncjs/cncjs/master/LICENSE">MIT License</a>.</p>
+    <div>
+</body>
+</html>
