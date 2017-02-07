@@ -1,5 +1,6 @@
 import React, { PropTypes } from 'react';
 import Anchor from '../../../components/Anchor';
+import settings from '../../../config/settings';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
@@ -11,7 +12,7 @@ const AboutContainer = ({ version }) => {
             <img src="logo.png" alt="" className={styles.productLogo} />
             <div className={styles.productDetails}>
                 <div className={styles.aboutProductName}>
-                    {`cnc ${version.current}`}
+                    {`${settings.name} ${version.current}`}
                 </div>
                 <div className={styles.aboutProductDescription}>
                     {i18n._('A web-based interface for CNC milling controller running Grbl, Smoothieware, or TinyG')}

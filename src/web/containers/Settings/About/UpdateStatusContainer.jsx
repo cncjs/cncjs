@@ -3,6 +3,7 @@ import classNames from 'classnames';
 import React, { PropTypes } from 'react';
 import semver from 'semver';
 import Anchor from '../../../components/Anchor';
+import settings from '../../../config/settings';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
@@ -64,7 +65,7 @@ const UpdateStatusContainer = (props) => {
             </div>
             <div className={styles.updateStatusMessageContainer}>
                 <div className={styles.updateStatusMessage}>
-                    {i18n._('You already have the newest version of {{name}}', { name: 'cnc' })}
+                    {i18n._('You already have the newest version of {{name}}', { name: settings.name })}
                 </div>
             </div>
         </div>
