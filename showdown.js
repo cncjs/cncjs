@@ -1,8 +1,9 @@
-var fs = require('fs');
-var path = require('path');
-var program = require('commander');
-var showdown = require('showdown');
-var pkg = require('./package.json');
+/* eslint import/no-dynamic-require: 0 */
+import fs from 'fs';
+import path from 'path';
+import program from 'commander';
+import showdown from 'showdown';
+import pkg from './package.json';
 
 program
     .usage('[options]')
@@ -78,7 +79,7 @@ const extensions = [
     {
         type: 'output',
         filter: (html, converter, options) => {
-            html = html.replace(/<table>/g, '<table class="table">'); 
+            html = html.replace(/<table>/g, '<table class="table">');
             return outputFilter(html);
         }
     }
