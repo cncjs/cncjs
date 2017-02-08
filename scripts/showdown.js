@@ -1,9 +1,11 @@
+#!/usr/bin/env node
+
 /* eslint import/no-dynamic-require: 0 */
 const fs = require('fs');
 const path = require('path');
 const program = require('commander');
 const showdown = require('showdown');
-const pkg = require('./package.json');
+const pkg = require('../package.json');
 
 program
     .usage('[options]')
