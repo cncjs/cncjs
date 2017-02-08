@@ -1,11 +1,11 @@
 #!/usr/bin/env node
 
 /* eslint import/no-dynamic-require: 0 */
-const fs = require('fs');
-const path = require('path');
-const program = require('commander');
-const showdown = require('showdown');
-const pkg = require('../package.json');
+var fs = require('fs');
+var path = require('path');
+var program = require('commander');
+var showdown = require('showdown');
+var pkg = require('../package.json');
 
 program
     .usage('[options]')
@@ -17,7 +17,7 @@ if (process.argv.length > 1) {
     program.parse(process.argv);
 }
 
-const outputFilter = (html) => `<!doctype html>
+var outputFilter = (html) => `<!doctype html>
 <html>
 <head>
 <meta charset="utf-8">
@@ -76,8 +76,9 @@ img {
 </body>
 </html>
 `;
-let config = {};
-const extensions = [
+
+var config = {};
+var extensions = [
     {
         type: 'output',
         filter: (html, converter, options) => {
@@ -91,24 +92,24 @@ if (program.config) {
     config = Object.assign(require(path.resolve(program.config)));
 }
 
-const converter = new showdown.Converter(Object.assign({}, config, {
+var converter = new showdown.Converter(Object.assign({}, config, {
     extensions: extensions
 }));
 
 if (!program.input) {
-    let text = '';
+    var text = '';
     process.stdin.on('data', (data) => {
         text += data;
     });
     process.stdin.on('end', () => {
-        const html = converter.makeHtml(text);
+        var html = converter.makeHtml(text);
         program.output
             ? fs.writeFileSync(program.output, html, 'utf8')
             : process.stdout.write(html);
     });
 } else {
-    const text = fs.readFileSync(program.input, 'utf8');
-    const html = converter.makeHtml(text);
+    var text = fs.readFileSync(program.input, 'utf8');
+    var html = converter.makeHtml(text);
     program.output
         ? fs.writeFileSync(program.output, html, 'utf8')
         : process.stdout.write(html);

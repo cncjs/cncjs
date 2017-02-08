@@ -24,7 +24,7 @@
   },
   "preferGlobal": true,
   "scripts": {
-    "pkgsync": "babel-node scripts/pkgsync.js",
+    "pkgsync": "scripts/pkgsync.js",
     "prepublish": "npm run clean && npm run lint && npm run build",
     "prebuild": "npm run prebuild-prod",
     "prebuild-latest": "scripts/prebuild-latest.sh",
@@ -34,7 +34,7 @@
     "build-latest": "gulp prod",
     "build-dev": "gulp dev",
     "build-prod": "gulp prod",
-    "build-docs": "babel-node scripts/showdown.js -i README.md -o docs/index.html -c showdown.config.js",
+    "build-docs": "scripts/showdown.js -i README.md -o docs/index.html -c showdown.config.js",
     "postbuild": "npm run build-docs",
     "clean": "bash -c 'rm -rf ./dist ./output'",
     "electron": "electron",
