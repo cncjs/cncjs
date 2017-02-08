@@ -1,9 +1,9 @@
 /* eslint import/no-dynamic-require: 0 */
-import fs from 'fs';
-import path from 'path';
-import program from 'commander';
-import showdown from 'showdown';
-import pkg from './package.json';
+const fs = require('fs');
+const path = require('path');
+const program = require('commander');
+const showdown = require('showdown');
+const pkg = require('./package.json');
 
 program
     .usage('[options]')
