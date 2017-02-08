@@ -35,7 +35,6 @@
     "build-dev": "gulp dev",
     "build-prod": "gulp prod",
     "build-docs": "scripts/showdown.js -i README.md -o docs/index.html -c showdown.config.js",
-    "postbuild": "npm run build-docs",
     "clean": "bash -c 'rm -rf ./dist ./output'",
     "electron": "electron",
     "electron-builder": "build",
