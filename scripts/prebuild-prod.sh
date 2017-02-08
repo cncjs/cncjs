@@ -3,7 +3,7 @@
 mkdir -p output
 rm -rf output/*
 
-npm run package-update
+npm run pkgsync
 
 pushd src
 mkdir -p ../dist/cnc/
