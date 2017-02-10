@@ -267,7 +267,6 @@
     "redux-devtools-log-monitor": "~1.2.0",
     "require-dir": "~0.3.1",
     "run-sequence": "~1.2.2",
-    "showdown": "~1.6.4",
     "style-loader": "~0.13.1",
     "stylint": "~1.5.9",
     "stylint-loader": "~1.0.0",
