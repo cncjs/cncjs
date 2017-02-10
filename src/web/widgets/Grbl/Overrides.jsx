@@ -28,19 +28,19 @@ class Overrides extends Component {
                         className="btn btn-default"
                         style={{ padding: 5 }}
                         onClick={() => {
-                            controller.command('feedOverride', 10);
+                            controller.command('feedOverride', -10);
                         }}
                     >
-                        <i className="fa fa-arrow-up fa-fw" />10%
+                        <i className="fa fa-arrow-down fa-fw" />-10%
                     </RepeatButton>
                     <RepeatButton
                         className="btn btn-default"
                         style={{ padding: 5 }}
                         onClick={() => {
-                            controller.command('feedOverride', -10);
+                            controller.command('feedOverride', -1);
                         }}
                     >
-                        <i className="fa fa-arrow-down fa-fw" />10%
+                        <i className="fa fa-arrow-down fa-fw" />-1%
                     </RepeatButton>
                     <RepeatButton
                         className="btn btn-default"
@@ -55,10 +55,10 @@ class Overrides extends Component {
                         className="btn btn-default"
                         style={{ padding: 5 }}
                         onClick={() => {
-                            controller.command('feedOverride', -1);
+                            controller.command('feedOverride', 10);
                         }}
                     >
-                        <i className="fa fa-arrow-down fa-fw" />1%
+                        <i className="fa fa-arrow-up fa-fw" />10%
                     </RepeatButton>
                     <button
                         type="button"
@@ -76,19 +76,19 @@ class Overrides extends Component {
                         className="btn btn-default"
                         style={{ padding: 5 }}
                         onClick={() => {
-                            controller.command('spindleOverride', 10);
+                            controller.command('spindleOverride', -10);
                         }}
                     >
-                        <i className="fa fa-arrow-up fa-fw" />10%
+                        <i className="fa fa-arrow-down fa-fw" />-10%
                     </RepeatButton>
                     <RepeatButton
                         className="btn btn-default"
                         style={{ padding: 5 }}
                         onClick={() => {
-                            controller.command('spindleOverride', -10);
+                            controller.command('spindleOverride', -1);
                         }}
                     >
-                        <i className="fa fa-arrow-down fa-fw" />10%
+                        <i className="fa fa-arrow-down fa-fw" />-1%
                     </RepeatButton>
                     <RepeatButton
                         className="btn btn-default"
@@ -103,10 +103,10 @@ class Overrides extends Component {
                         className="btn btn-default"
                         style={{ padding: 5 }}
                         onClick={() => {
-                            controller.command('spindleOverride', -1);
+                            controller.command('spindleOverride', 10);
                         }}
                     >
-                        <i className="fa fa-arrow-down fa-fw" />1%
+                        <i className="fa fa-arrow-up fa-fw" />10%
                     </RepeatButton>
                     <button
                         type="button"
