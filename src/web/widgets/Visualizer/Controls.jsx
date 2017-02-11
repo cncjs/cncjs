@@ -242,6 +242,7 @@ class Controls extends Component {
                             {units === METRIC_UNITS && i18n._('mm')}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
+                            <MenuItem header>{i18n._('Units')}</MenuItem>
                             <MenuItem
                                 active={units === IMPERIAL_UNITS}
                                 onSelect={() => {
