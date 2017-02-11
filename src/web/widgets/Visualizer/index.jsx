@@ -687,10 +687,7 @@ class VisualizerWidget extends Component {
         };
 
         return (
-            <Widget
-                style={{ minWidth: 320 }}
-                borderless
-            >
+            <Widget borderless>
                 <Widget.Header className={styles.widgetHeader} fixed>
                     <Controls
                         state={state}

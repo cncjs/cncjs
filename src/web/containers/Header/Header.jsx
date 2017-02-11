@@ -267,7 +267,11 @@ class Header extends Component {
                                 { 'hidden': hideUserDropdown }
                             )}
                             id="nav-dropdown-user"
-                            title={<i className="fa fa-fw fa-user" />}
+                            title={
+                                <div title={i18n._('Account')}>
+                                    <i className="fa fa-fw fa-user" />
+                                </div>
+                            }
                             noCaret
                         >
                             <MenuItem header>
@@ -292,7 +296,7 @@ class Header extends Component {
                         <NavDropdown
                             id="nav-dropdown-menu"
                             title={
-                                <div>
+                                <div title={i18n._('Options')}>
                                     <i className="fa fa-fw fa-ellipsis-v" />
                                     {this.state.runningTasks.length > 0 &&
                                     <span

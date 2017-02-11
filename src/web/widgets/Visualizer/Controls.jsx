@@ -346,7 +346,9 @@ class Controls extends Component {
                             <span className="space" />
                             {i18n._('3D View')}
                         </button>
-                        <Dropdown.Toggle bsStyle="default" />
+                        <Dropdown.Toggle
+                            bsStyle="default"
+                        />
                         <Dropdown.Menu>
                             <MenuItem
                                 style={{ color: '#222' }}
