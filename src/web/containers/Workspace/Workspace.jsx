@@ -268,9 +268,9 @@ class Workspace extends React.Component {
                     </div>
                 </div>
                 <Dropzone
-                    ref="dropzone"
                     styleName="dropzone"
                     disableClick={true}
+                    disablePreview={true}
                     multiple={false}
                     onDragStart={(event) => {
                     }}
