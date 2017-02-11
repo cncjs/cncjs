@@ -63,6 +63,13 @@ class TinyGWidget extends Component {
         }
     };
     controllerEvents = {
+        'serialport:open': (options) => {
+            const { controllerType } = options;
+            this.setState({ isReady: controllerType === TINYG });
+        },
+        'serialport:close': (options) => {
+            this.setState({ isReady: true });
+        },
         'TinyG:state': (state) => {
             this.setState({
                 controller: {
@@ -95,15 +102,16 @@ class TinyGWidget extends Component {
             panel
         } = this.state;
 
-        store.set('widgets.tinyg2.minimized', minimized);
-        store.set('widgets.tinyg2.panel.queueReports.expanded', panel.queueReports.expanded);
-        store.set('widgets.tinyg2.panel.statusReports.expanded', panel.statusReports.expanded);
-        store.set('widgets.tinyg2.panel.modalGroups.expanded', panel.modalGroups.expanded);
+        store.set('widgets.tinyg.minimized', minimized);
+        store.set('widgets.tinyg.panel.queueReports.expanded', panel.queueReports.expanded);
+        store.set('widgets.tinyg.panel.statusReports.expanded', panel.statusReports.expanded);
+        store.set('widgets.tinyg.panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getDefaultState() {
         return {
-            minimized: store.get('widgets.tinyg2.minimized', false),
+            minimized: store.get('widgets.tinyg.minimized', false),
             isFullscreen: false,
+            isReady: controller.type === TINYG,
             canClick: true, // Defaults to true
             port: controller.port,
             controller: {
@@ -112,13 +120,13 @@ class TinyGWidget extends Component {
             },
             panel: {
                 queueReports: {
-                    expanded: store.get('widgets.tinyg2.panel.queueReports.expanded')
+                    expanded: store.get('widgets.tinyg.panel.queueReports.expanded')
                 },
                 statusReports: {
-                    expanded: store.get('widgets.tinyg2.panel.statusReports.expanded')
+                    expanded: store.get('widgets.tinyg.panel.statusReports.expanded')
                 },
                 modalGroups: {
-                    expanded: store.get('widgets.tinyg2.panel.modalGroups.expanded')
+                    expanded: store.get('widgets.tinyg.panel.modalGroups.expanded')
                 }
             }
         };
@@ -173,7 +181,7 @@ class TinyGWidget extends Component {
         return true;
     }
     render() {
-        const { minimized, isFullscreen } = this.state;
+        const { minimized, isFullscreen, isReady } = this.state;
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -189,6 +197,7 @@ class TinyGWidget extends Component {
                         TinyG
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
+                        {isReady &&
                         <Widget.Button
                             title={minimized ? i18n._('Open') : i18n._('Close')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}
@@ -201,6 +210,8 @@ class TinyGWidget extends Component {
                                 )}
                             />
                         </Widget.Button>
+                        }
+                        {isReady &&
                         <Widget.Button
                             title={i18n._('Fullscreen')}
                             onClick={(event, val) => this.setState({ isFullscreen: !isFullscreen })}
@@ -213,6 +224,7 @@ class TinyGWidget extends Component {
                                 )}
                             />
                         </Widget.Button>
+                        }
                         <Widget.Button
                             title={i18n._('Remove')}
                             onClick={(event) => this.props.onDelete()}
@@ -221,6 +233,7 @@ class TinyGWidget extends Component {
                         </Widget.Button>
                     </Widget.Controls>
                 </Widget.Header>
+                {isReady &&
                 <Widget.Content
                     className={classNames(
                         styles['widget-content'],
@@ -232,6 +245,7 @@ class TinyGWidget extends Component {
                         actions={actions}
                     />
                 </Widget.Content>
+                }
             </Widget>
         );
     }

@@ -63,6 +63,13 @@ class SmoothieWidget extends Component {
         }
     };
     controllerEvents = {
+        'serialport:open': (options) => {
+            const { controllerType } = options;
+            this.setState({ isReady: controllerType === SMOOTHIE });
+        },
+        'serialport:close': (options) => {
+            this.setState({ isReady: true });
+        },
         'Smoothie:state': (state) => {
             this.setState({
                 controller: {
@@ -104,6 +111,7 @@ class SmoothieWidget extends Component {
         return {
             minimized: store.get('widgets.smoothie.minimized', false),
             isFullscreen: false,
+            isReady: controller.type === SMOOTHIE,
             canClick: true, // Defaults to true
             port: controller.port,
             controller: {
@@ -173,7 +181,7 @@ class SmoothieWidget extends Component {
         return true;
     }
     render() {
-        const { minimized, isFullscreen } = this.state;
+        const { minimized, isFullscreen, isReady } = this.state;
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -189,6 +197,7 @@ class SmoothieWidget extends Component {
                         Smoothie
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
+                        {isReady &&
                         <Widget.Button
                             title={minimized ? i18n._('Open') : i18n._('Close')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}
@@ -201,6 +210,8 @@ class SmoothieWidget extends Component {
                                 )}
                             />
                         </Widget.Button>
+                        }
+                        {isReady &&
                         <Widget.Button
                             title={i18n._('Fullscreen')}
                             onClick={(event, val) => this.setState({ isFullscreen: !isFullscreen })}
@@ -213,6 +224,7 @@ class SmoothieWidget extends Component {
                                 )}
                             />
                         </Widget.Button>
+                        }
                         <Widget.Button
                             title={i18n._('Remove')}
                             onClick={(event) => this.props.onDelete()}
@@ -221,6 +233,7 @@ class SmoothieWidget extends Component {
                         </Widget.Button>
                     </Widget.Controls>
                 </Widget.Header>
+                {isReady &&
                 <Widget.Content
                     className={classNames(
                         styles['widget-content'],
@@ -232,6 +245,7 @@ class SmoothieWidget extends Component {
                         actions={actions}
                     />
                 </Widget.Content>
+                }
             </Widget>
         );
     }

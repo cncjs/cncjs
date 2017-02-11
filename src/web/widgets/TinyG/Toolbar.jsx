@@ -89,7 +89,7 @@ class Toolbar extends Component {
                         bsSize="xs"
                         bsStyle="default"
                         title={i18n._('More')}
-                        id="tinyg2-dropdown"
+                        id="tinyg-dropdown"
                         pullRight
                         disabled={!canClick}
                     >
