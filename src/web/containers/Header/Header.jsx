@@ -126,7 +126,7 @@ class Header extends Component {
                     body: code === 0
                         ? i18n._('Command succeeded')
                         : i18n._('Command failed ({{err}})', { err: err }),
-                    icon: 'images/32x32/logo.png',
+                    icon: 'images/logo-badge-32x32.png',
                     timeout: 10 * 1000,
                     onClick: function () {
                         window.focus();
@@ -156,7 +156,7 @@ class Header extends Component {
             if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
                 Push.create(cmd.title, {
                     body: i18n._('Command failed ({{err}})', { err: err }),
-                    icon: 'images/32x32/logo.png',
+                    icon: 'images/logo-badge-32x32.png',
                     timeout: 10 * 1000,
                     onClick: function () {
                         window.focus();

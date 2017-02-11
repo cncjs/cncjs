@@ -226,7 +226,7 @@ class Controls extends Component {
             <div>
                 {controllerType}
                 {controllerState}
-                <div className="pull-right">
+                <div className={styles.dropdownMenu}>
                     <Dropdown
                         style={{ marginRight: 5 }}
                         bsSize="xs"
@@ -326,17 +326,27 @@ class Controls extends Component {
                         </Dropdown.Menu>
                     </Dropdown>
                     <Dropdown
-                        style={{ marginRight: 0 }}
                         bsSize="xs"
                         id="visualizer-dropdown"
                         pullRight
                     >
-                        <Dropdown.Toggle
-                            title={i18n._('Options')}
-                            style={{ minWidth: 50 }}
+                        <button
+                            type="button"
+                            className="btn btn-default"
+                            title={(!Detector.webgl || disabled)
+                                ? i18n._('Enable 3D View')
+                                : i18n._('Disable 3D View')
+                            }
+                            onClick={actions.toggle3DView}
                         >
-                            <i className="fa fa-cubes" />
-                        </Dropdown.Toggle>
+                            {(!Detector.webgl || disabled)
+                                ? <i className="fa fa-toggle-off" />
+                                : <i className="fa fa-toggle-on" />
+                            }
+                            <span className="space" />
+                            {i18n._('3D View')}
+                        </button>
+                        <Dropdown.Toggle bsStyle="default" />
                         <Dropdown.Menu>
                             <MenuItem
                                 style={{ color: '#222' }}
@@ -350,20 +360,6 @@ class Controls extends Component {
                                             : (<span style={{ color: colornames('crimson') }}>{i18n._('Disabled')}</span>)
                                     }}
                                 />
-                            </MenuItem>
-                            <MenuItem divider />
-                            <MenuItem
-                                onSelect={actions.toggle3DView}
-                            >
-                                {(!Detector.webgl || disabled)
-                                    ? <i className="fa fa-toggle-off" />
-                                    : <i className="fa fa-toggle-on" />
-                                }
-                                <span className="space" />
-                                {(!Detector.webgl || disabled)
-                                    ? i18n._('Enable 3D View')
-                                    : i18n._('Disable 3D View')
-                                }
                             </MenuItem>
                             <MenuItem divider />
                             <MenuItem

@@ -79,7 +79,7 @@ class Login extends Component {
             <div className={styles.container}>
                 <div className={styles.login}>
                     <div className={styles.logo}>
-                        <img src="logo.png" alt="" />
+                        <img src="images/logo-square-256x256.png" role="presentation" />
                     </div>
                     <div className={styles.title}>
                         {i18n._('Sign in to cnc')}

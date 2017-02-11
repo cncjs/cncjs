@@ -1,3 +1,4 @@
+import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { ProgressBar } from 'react-bootstrap';
@@ -59,37 +60,46 @@ class Dashboard extends Component {
                     {i18n._('G-code')}
                 </Panel.Heading>
                 <Panel.Body>
-                    <div className="row no-gutters">
-                        <div className="col col-xs-10">
-                            <div className="pull-left text-nowrap">
-                                {filename}
-                            </div>
+                    <div className="clearfix" style={{ marginBottom: 10 }}>
+                        <div className="pull-left text-nowrap">
+                            {filename}
                         </div>
-                        <div className="col col-xs-2">
-                            <div className="pull-right text-nowrap">
-                                {filesize}
-                            </div>
+                        <div className="pull-right text-nowrap">
+                            {filesize}
                         </div>
                     </div>
-                    <div className={styles.divider} />
-                    <ProgressBar
-                        style={{ marginBottom: 0 }}
-                        bsStyle="info"
-                        min={0}
-                        max={total}
-                        now={sent}
-                        label={total > 0 &&
-                            <span className={styles.progressbarLabel}>
-                                {sent}&nbsp;/&nbsp;{total}
-                            </span>
-                        }
-                    />
-                    <div className={styles.gcodeViewer}>
+                    <div style={{ marginBottom: 10 }}>
+                        <ProgressBar
+                            style={{ marginBottom: 0 }}
+                            bsStyle="info"
+                            min={0}
+                            max={total}
+                            now={sent}
+                            label={total > 0 &&
+                                <span className={styles.progressbarLabel}>
+                                    {sent}&nbsp;/&nbsp;{total}
+                                </span>
+                            }
+                        />
+                    </div>
+                    <div
+                        className={classNames(
+                            styles.gcodeViewer,
+                            { [styles.gcodeViewerDisabled]: this.lines.length === 0 }
+                        )}
+                    >
+                        {this.lines.length > 0 &&
                         <Clusterize
                             style={{ padding: '0 5px' }}
                             rows={this.lines}
                             scrollTop={scrollTop}
                         />
+                        }
+                        {this.lines.length === 0 &&
+                        <div className={styles.absoluteCenter}>
+                            <img src="images/logo-square-256x256.png" role="presentation" />
+                        </div>
+                        }
                     </div>
                 </Panel.Body>
             </Panel>

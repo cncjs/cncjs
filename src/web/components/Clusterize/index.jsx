@@ -1,7 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import Clusterize from 'clusterize.js';
-import i18n from '../../lib/i18n';
 
 export default class extends Component {
     static propTypes = {
@@ -25,8 +24,7 @@ export default class extends Component {
             rows: this.props.rows,
             scrollElem: scrollElem,
             contentElem: contentElem,
-            show_no_data_row: true,
-            no_data_text: i18n._('No data to display')
+            show_no_data_row: false
         });
     }
     componentWillUnmount() {

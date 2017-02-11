@@ -56,6 +56,12 @@
             border-color: #d43f3a;
         }
     }
+    .dropdown-menu {
+        position: absolute;
+        right: 0;
+        top: 0;
+        margin: 4px 8px;
+    }
 }
 
 .widget-content {
@@ -142,10 +148,14 @@
     .gcode-viewer {
         border: 1px solid #ddd;
         position: absolute;
-        top: 110px;
+        top: 100px;
         left: 10px;
         right: 10px;
         bottom: 10px;
+
+        &.gcode-viewer-disabled {
+            background-color: #f5f5f5;
+        }
 
         .line {
             white-space: nowrap;
@@ -174,6 +184,13 @@
 
 .text-gray {
     color: #767676;
+}
+
+.absolute-center {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .divider {
