@@ -3,6 +3,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import { ProgressBar } from 'react-bootstrap';
 import Anchor from '../../components/Anchor';
 import Panel from '../../components/Panel';
+import Clusterize from '../../components/Clusterize';
 import i18n from '../../lib/i18n';
 import { formatBytes } from '../../lib/numeral';
 import styles from './index.styl';
@@ -13,6 +14,17 @@ class Dashboard extends Component {
         state: PropTypes.object
     };
 
+    lines = [];
+
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.state.gcode.content !== this.props.state.gcode.content) {
+            this.lines = nextProps.state.gcode.content.split('\n')
+                .filter(line => line.trim().length > 0)
+                .map((line, index) => (
+                `<div class="${styles.line}"><span class="${styles.label} ${styles.labelDefault}">${index + 1}</span> ${line}</div>`
+            ));
+        }
+    }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
@@ -38,6 +50,8 @@ class Dashboard extends Component {
         }(state));
         const filesize = state.gcode.ready ? formatBytes(state.gcode.size, 0) : '';
         const { sent = 0, total = 0 } = state.gcode;
+        const rowHeight = 20;
+        const scrollTop = (sent > 0) ? (sent - 1) * rowHeight : 0;
 
         return (
             <Panel className={styles.dashboard}>
@@ -47,12 +61,12 @@ class Dashboard extends Component {
                 <Panel.Body>
                     <div className="row no-gutters">
                         <div className="col col-xs-10">
-                            <div className="pull-left">
+                            <div className="pull-left text-nowrap">
                                 {filename}
                             </div>
                         </div>
                         <div className="col col-xs-2">
-                            <div className="pull-right">
+                            <div className="pull-right text-nowrap">
                                 {filesize}
                             </div>
                         </div>
@@ -70,6 +84,13 @@ class Dashboard extends Component {
                             </span>
                         }
                     />
+                    <div className={styles.gcodeViewer}>
+                        <Clusterize
+                            style={{ padding: '0 5px' }}
+                            rows={this.lines}
+                            scrollTop={scrollTop}
+                        />
+                    </div>
                 </Panel.Body>
             </Panel>
         );

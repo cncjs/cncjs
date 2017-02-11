@@ -173,6 +173,7 @@ class VisualizerWidget extends Component {
                     loading: false,
                     rendering: capable.view3D,
                     ready: !capable.view3D,
+                    content: gcode,
                     bbox: {
                         min: {
                             x: 0,
@@ -223,6 +224,7 @@ class VisualizerWidget extends Component {
                     loading: false,
                     rendering: false,
                     ready: false,
+                    content: '',
                     bbox: {
                         min: {
                             x: 0,
@@ -553,6 +555,7 @@ class VisualizerWidget extends Component {
                 loading: false,
                 rendering: false,
                 ready: false,
+                content: '',
                 bbox: {
                     min: {
                         x: 0,
