@@ -1,6 +1,6 @@
 #!/bin/bash
 
-abbrev_commit=`git log -1 --format=%h`
+abbrev_commit=`git log -1 --format=%h --abbrev=8`
 
 mkdir -p output
 rm -rf output/*
