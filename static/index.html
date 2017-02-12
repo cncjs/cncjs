@@ -1,17 +1,11 @@
-<!--[if IE]><![endif]-->
-<!DOCTYPE html>
-<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
-<!--[if IE 7]>         <html class="no-js ie7 lt-ie9 lt-ie8"> <![endif]-->
-<!--[if IE 8]>         <html lang="{{lang}}" class="no-js ie8 lt-ie9"> <![endif]-->
-<!--[if IE 9]>         <html lang="{{lang}}" class="no-js ie9"> <![endif]-->
-<!--[if gt IE 9]><!--> <html lang="{{lang}}" class="no-js"> <!--<![endif]-->
+<!doctype html>
+<html>
 <head>
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-<title>CNC.js</title>
+<title>cncjs</title>
 <meta name="description" content="">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
 <link rel="shortcut icon" href="/favicon.ico">
 <link rel="stylesheet" type="text/css" href="normalize.css">
 <link rel="stylesheet" type="text/css" href="bootstrap.min.css">
@@ -37,31 +31,31 @@
 <body>
     <div class="jumbotron">
         <div class="container">
-            <h1>Welcome to CNC.js!</h1>
+            <h1>Welcome to cncjs!</h1>
             <hr>
             <p>If you see this page, the default mount point for serving static files is working. Further configuration is required.</p>
             <ol>
                 <li>
-                    <h5>Run <span class="code">cnc</span> with -h for detailed usage:</h5>
+                    <h5>Run <span class="code">cncjs</span> with -h for detailed usage:</h5>
                     <pre>
-$ cnc -h
+$ cncjs -h
 
-  Usage: cnc [options]
+  Usage: cncjs [options]
   
   Options:
     -m, --mount [&lt;url&gt;:]&lt;path&gt;  set the mount point for serving static files (default: /static:static)</pre>
                 </li>
                 <li>
                     <h5>Specify a mount path for the static directory, as shown below:</h5>
-                    <pre>$ cnc -m /static:/path/to/your/static/files</pre>
+                    <pre>$ cncjs -m /static:/path/to/your/static/files</pre>
                 </li>
             </ol>
             <hr>
-            <p>The example shown below is a tiny web interface for small size LCD display 320x240 with very limited features.<br>Visit <span class="code">http://localhost:8000/tinyweb/</span> after running the command:</p>
-            <pre>$ cnc -m /tinyweb:examples/tinyweb</pre>
+            <p>The example shown below is a tiny web interface for small size LCD display 320x240 with very limited features.<br>Visit <span class="code">http://localhost:8000/pendant/</span> after running the command:</p>
+            <pre>$ cncjs -m /pendant:/path/to/tinyweb</pre>
             <hr>
-            <p>For online documentation please refer to <a href="https://github.com/cheton/cnc.js/wiki">https://github.com/cheton/cnc.js/wiki</a>.</p>
-            <p><a class="btn btn-primary btn-lg" href="https://github.com/cheton/cnc.js" role="button">Learn more »</a></p>
+            <p>For online documentation please refer to <a href="https://cnc.js.org/docs">https://cnc.js.org/docs</a>.</p>
+            <p><a class="btn btn-primary btn-lg" href="https://github.com/cncjs/cncjs" role="button">Learn more »</a></p>
         </div>
     </div>
 </body>
