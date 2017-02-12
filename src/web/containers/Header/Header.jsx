@@ -227,17 +227,26 @@ class Header extends Component {
                         <Anchor
                             className="navbar-brand"
                             style={{
-                                padding: '10px 15px',
-                                position: 'relative'
+                                padding: 0,
+                                position: 'relative',
+                                height: 50,
+                                width: 60
                             }}
                             href={releases}
                             target="_blank"
+                            title={`${settings.name} ${settings.version}`}
                         >
-                            {settings.name}
+                            <img
+                                src="images/logo-badge-32x32.png"
+                                role="presentation"
+                                style={{
+                                    margin: '4px auto 0 auto'
+                                }}
+                            />
                             <div
                                 style={{
                                     fontSize: '50%',
-                                    lineHeight: '12px',
+                                    lineHeight: '14px',
                                     textAlign: 'center'
                                 }}
                             >
