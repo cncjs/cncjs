@@ -489,10 +489,7 @@ class TinyG2Controller {
         }
     }
     removeConnection(socket) {
-        const index = _.findIndex(this.connections, (c) => {
-            return c.socket === socket;
-        });
-        this.connections.splice(index, 1);
+        this.connections = this.connections.filter(c => (c.socket.id !== socket.id));
     }
     emitAll(eventName, ...args) {
         this.connections.forEach((c) => {
