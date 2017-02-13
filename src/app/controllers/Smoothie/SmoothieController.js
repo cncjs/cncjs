@@ -366,7 +366,7 @@ class SmoothieController {
         return {
             port: this.options.port,
             baudrate: this.options.baudrate,
-            connections: _.size(this.connections),
+            connections: this.connections.map(c => c.socket.id),
             ready: this.ready,
             controller: {
                 type: this.type,
@@ -453,6 +453,8 @@ class SmoothieController {
         return !(this.isOpen());
     }
     addConnection(socket) {
+        log.debug(`[Smoothie] Add socket connection: id=${socket.id}`);
+
         this.connections.push(new Connection(socket));
 
         if (!_.isEmpty(this.state)) {
@@ -466,10 +468,9 @@ class SmoothieController {
         }
     }
     removeConnection(socket) {
-        const index = _.findIndex(this.connections, (c) => {
-            return c.socket === socket;
-        });
-        this.connections.splice(index, 1);
+        log.debug(`[Smoothie] Remove socket connection: id=${socket.id}`);
+
+        this.connections = this.connections.filter(c => (c.socket.id !== socket.id));
     }
     emitAll(eventName, ...args) {
         this.connections.forEach((c) => {
