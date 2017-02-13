@@ -433,7 +433,7 @@ class GrblController {
         this.serialport.open((err) => {
             if (err) {
                 log.error(`[Grbl] Error opening serial port "${port}":`, err);
-                this.emitAll('serialport:error', { port: port });
+                this.emitAll('serialport:error', { err: err, port: port });
                 return;
             }
 
