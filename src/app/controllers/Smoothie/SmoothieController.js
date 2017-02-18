@@ -109,7 +109,7 @@ class SmoothieController {
         // Sender
         this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
             // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
-            bufferSize: (128 - 4) // The default buffer size is 128 bytes
+            bufferSize: (128 - 8) // The default buffer size is 128 bytes
         });
         this.sender.on('data', (gcode = '') => {
             if (this.isClose()) {
@@ -153,7 +153,7 @@ class SmoothieController {
             if (res && res.buf && res.buf.rx) {
                 const rx = Number(res.buf.rx) || 0;
                 // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
-                const bufferSize = (rx - 4);
+                const bufferSize = (rx - 8);
                 if (bufferSize > this.sender.sp.bufferSize) {
                     this.sender.sp.bufferSize = bufferSize;
                 }
