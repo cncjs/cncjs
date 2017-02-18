@@ -44,7 +44,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
         ]
     },
     output: {
-        path: path.join(__dirname, 'dist/cnc/web'),
+        path: path.resolve(__dirname, 'dist/cnc/web'),
         chunkFilename: '[name].[chunkhash].bundle.js',
         filename: '[name].[chunkhash].bundle.js',
         publicPath: publicPath

@@ -36,7 +36,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
         ]
     },
     output: {
-        path: path.join(__dirname, 'output/web'),
+        path: path.resolve(__dirname, 'output/web'),
         chunkFilename: '[name].bundle.js?[hash]',
         filename: '[name].bundle.js?[hash]',
         pathinfo: true,
@@ -50,6 +50,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
             }
         }),
         new webpack.HotModuleReplacementPlugin(),
+        new webpack.NamedModulesPlugin(),
         new webpack.LoaderOptionsPlugin({
             debug: true
         }),
