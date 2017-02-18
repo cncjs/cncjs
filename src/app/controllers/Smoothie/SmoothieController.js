@@ -5,6 +5,7 @@ import EventTrigger from '../../lib/event-trigger';
 import Feeder from '../../lib/feeder';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
 import Workflow, {
+    WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/workflow';
 import config from '../../services/configstore';
@@ -149,13 +150,16 @@ class SmoothieController {
         this.smoothie.on('status', (res) => {
             this.actionMask.queryStatusReport = false;
 
-            // Detect the buffer size if Smoothie is set to report the rx buffer (#115)
-            if (res && res.buf && res.buf.rx) {
-                const rx = Number(res.buf.rx) || 0;
-                // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
-                const bufferSize = (rx - 8);
-                if (bufferSize > this.sender.sp.bufferSize) {
-                    this.sender.sp.bufferSize = bufferSize;
+            // Do not change buffer size during gcode sending (#133)
+            if (this.workflow.state === WORKFLOW_STATE_IDLE && this.sender.sp.dataLength === 0) {
+                // Check if Smoothie reported the rx buffer (#115)
+                if (res && res.buf && res.buf.rx) {
+                    const rx = Number(res.buf.rx) || 0;
+                    // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
+                    const bufferSize = (rx - 8);
+                    if (bufferSize > this.sender.sp.bufferSize) {
+                        this.sender.sp.bufferSize = bufferSize;
+                    }
                 }
             }
 
