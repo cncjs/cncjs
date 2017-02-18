@@ -13,8 +13,7 @@ import { IP_WHITELIST } from '../../constants';
 
 const PREFIX = '[cncengine]';
 
-class CNCServer {
-    controllers = store.get('controllers');
+class CNCEngine {
     listener = {
         taskStart: (...args) => {
             this.io.sockets.emit('task:start', ...args);
@@ -27,9 +26,6 @@ class CNCServer {
         },
         configChange: (...args) => {
             this.io.sockets.emit('config:change', ...args);
-        },
-        storeChange: (state) => {
-            this.controllers = _.get(state, 'controllers', {});
         }
     };
     server = null;
@@ -43,7 +39,6 @@ class CNCServer {
         taskRunner.on('finish', this.listener.taskFinish);
         taskRunner.on('error', this.listener.taskError);
         config.on('change', this.listener.configChange);
-        store.on('change', this.listener.storeChange);
 
         this.server = server;
         this.io = socketIO(this.server, {
@@ -83,7 +78,9 @@ class CNCServer {
             socket.on('disconnect', () => {
                 log.debug(`${PREFIX} Disconnected from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
 
-                _.each(this.controllers, (controller, port) => {
+                const controllers = store.get('controllers', {});
+                Object.keys(controllers).forEach(port => {
+                    const controller = controllers[port];
                     if (!controller) {
                         return;
                     }
@@ -106,7 +103,8 @@ class CNCServer {
 
                     ports = ports.concat(_.get(settings, 'cnc.ports') || []);
 
-                    const portsInUse = _(this.controllers)
+                    const controllers = store.get('controllers', {});
+                    const portsInUse = _(controllers)
                         .filter((controller) => {
                             return controller && controller.isOpen();
                         })
@@ -131,7 +129,7 @@ class CNCServer {
             socket.on('open', (port, options) => {
                 log.debug(`${PREFIX} socket.open("${port}", ${JSON.stringify(options)}): id=${socket.id}`);
 
-                let controller = this.controllers[port];
+                let controller = store.get(`controllers["${port}"]`);
                 if (!controller) {
                     const { controllerType = 'Grbl', baudrate } = { ...options };
 
@@ -155,21 +153,39 @@ class CNCServer {
                         controllerType: controller.type,
                         inuse: true
                     });
+
+                    // Join the room
+                    socket.join(port); // FIXME
                     return;
                 }
 
-                controller.open();
+                controller.open((err = null) => {
+                    if (err) {
+                        return;
+                    }
+
+                    if (store.get(`controllers["${port}"]`)) {
+                        log.error(`${PREFIX} Serial port "${port}" was not properly closed`);
+                    }
+                    store.set(`controllers["${port}"]`, controller);
+
+                    // Join the room
+                    socket.join(port); // FIXME
+                });
             });
 
             // Close serial port
             socket.on('close', (port) => {
                 log.debug(`${PREFIX} socket.close("${port}"): id=${socket.id}`);
 
-                const controller = this.controllers[port];
+                const controller = store.get(`controllers["${port}"]`);
                 if (!controller) {
                     log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
                 }
+
+                // Leave the room
+                socket.leave(port); // FIXME
 
                 controller.close();
             });
@@ -177,7 +193,7 @@ class CNCServer {
             socket.on('command', (port, cmd, ...args) => {
                 log.debug(`${PREFIX} socket.command("${port}", "${cmd}"): id=${socket.id}, args=${JSON.stringify(args)}`);
 
-                const controller = this.controllers[port];
+                const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
                     log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
@@ -189,7 +205,7 @@ class CNCServer {
             socket.on('write', (port, data) => {
                 log.debug(`${PREFIX} socket.write("${port}", "${data}"): id=${socket.id}`);
 
-                const controller = this.controllers[port];
+                const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
                     log.error(`${PREFIX} Serial port "${port}" not accessible`);
                     return;
@@ -211,8 +227,7 @@ class CNCServer {
         taskRunner.removeListener('finish', this.listener.taskFinish);
         taskRunner.removeListener('error', this.listener.taskError);
         config.removeListener('change', this.listener.configChange);
-        store.removeListener('change', this.listener.storeChange);
     }
 }
 
-export default CNCServer;
+export default CNCEngine;

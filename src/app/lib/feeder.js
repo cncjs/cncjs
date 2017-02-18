@@ -21,9 +21,14 @@ class Feeder extends events.EventEmitter {
             changed: this.state.changed
         };
     }
-    feed(data) {
-        this.state.queue = this.state.queue.concat(data);
-        this.emit('change');
+    feed(data = [], params) {
+        data = [].concat(data);
+        if (data.length > 0) {
+            this.state.queue = this.state.queue.concat(data.map(command => {
+                return { command: command, params: params };
+            }));
+            this.emit('change');
+        }
     }
     clear() {
         this.state.queue = [];
@@ -39,12 +44,12 @@ class Feeder extends events.EventEmitter {
             return false;
         }
 
-        const data = this.state.queue.shift();
+        const { command, params } = this.state.queue.shift();
         this.state.pending = true;
-        this.emit('data', data);
+        this.emit('data', command, params);
         this.emit('change');
 
-        return data;
+        return true;
     }
     isPending() {
         return this.state.pending;

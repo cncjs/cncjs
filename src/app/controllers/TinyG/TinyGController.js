@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import SerialPort from 'serialport';
 import log from '../../lib/log';
+import EventTrigger from '../../lib/event-trigger';
 import Feeder from '../../lib/feeder';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/sender';
 import Workflow, {
@@ -9,6 +10,7 @@ import Workflow, {
 } from '../../lib/workflow';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
+import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import TinyG from './TinyG';
 import {
@@ -30,20 +32,11 @@ const dbg = (...args) => {
     log.raw.apply(log, ['silly'].concat(args));
 };
 
-class Connection {
-    socket = null;
-    sentCommand = '';
-
-    constructor(socket) {
-        this.socket = socket;
-    }
-}
-
 class TinyGController {
     type = TINYG;
 
     // Connections
-    connections = [];
+    connections = {};
 
     // SerialPort
     options = {
@@ -60,6 +53,9 @@ class TinyGController {
 
     blocked = false;
     sendResponseState = SEND_RESPONSE_STATE_NONE;
+
+    // Event Trigger
+    event = null;
 
     // Feeder
     feeder = null;
@@ -79,26 +75,30 @@ class TinyGController {
             baudrate: baudrate
         };
 
+        // Event Trigger
+        this.event = new EventTrigger((event, trigger, command) => {
+            log.debug(`[TinyG] EventTrigger: event="${event}", trigger="${trigger}", command="${command}"`);
+            if (trigger === 'system') {
+                taskRunner.run(command);
+            } else {
+                this.command(null, 'gcode', command);
+            }
+        });
+
         // Feeder
         this.feeder = new Feeder();
-        this.feeder.on('data', ({ socket = null, line }) => {
+        this.feeder.on('data', (command = '') => {
             if (this.isClose()) {
-                log.error(`[TinyG] The serial port "${this.options.port}" is not accessible`);
+                log.error(`[TinyG] Serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
-            line = ('' + line).trim();
+            const line = String(command).trim();
             if (line.length === 0) {
                 return;
             }
 
-            socket && socket.emit('serialport:write', line);
-            const index = _.findIndex(this.connections, (c) => {
-                return c.socket === socket;
-            });
-            if (index >= 0) {
-                this.connections[index].sentCommand = line;
-            }
+            this.emitAll('serialport:write', line);
 
             this.serialport.write(line + '\n');
             dbg(`[TinyG] > ${line}`);
@@ -108,7 +108,7 @@ class TinyGController {
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE);
         this.sender.on('data', (gcode = '') => {
             if (this.isClose()) {
-                log.error(`[TinyG] The serial port "${this.options.port}" is not accessible`);
+                log.error(`[TinyG] Serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
@@ -395,8 +395,10 @@ class TinyGController {
         sendInitCommands();
     }
     destroy() {
-        if (this.workflow) {
-            this.workflow = null;
+        this.connections = {};
+
+        if (this.event) {
+            this.event = null;
         }
 
         if (this.feeder) {
@@ -405,6 +407,10 @@ class TinyGController {
 
         if (this.sender) {
             this.sender = null;
+        }
+
+        if (this.workflow) {
+            this.workflow = null;
         }
 
         if (this.queryTimer) {
@@ -421,7 +427,7 @@ class TinyGController {
         return {
             port: this.options.port,
             baudrate: this.options.baudrate,
-            connections: this.connections.map(c => c.socket.id),
+            connections: Object.keys(this.connections),
             ready: this.ready,
             controller: {
                 type: this.type,
@@ -434,7 +440,7 @@ class TinyGController {
             sender: this.sender.toJSON()
         };
     }
-    open() {
+    open(callback = noop) {
         const { port, baudrate } = this.options;
 
         // Assertion check
@@ -447,14 +453,9 @@ class TinyGController {
             if (err) {
                 log.error(`[TinyG] Error opening serial port "${port}":`, err);
                 this.emitAll('serialport:error', { port: port });
+                callback(err); // notify error
                 return;
             }
-
-            if (store.get('controllers["' + port + '"]')) {
-                log.error(`[TinyG] Serial port "${port}" was not properly closed`);
-            }
-
-            store.set('controllers["' + port + '"]', this);
 
             this.emitAll('serialport:open', {
                 port: port,
@@ -462,6 +463,8 @@ class TinyGController {
                 controllerType: this.type,
                 inuse: true
             });
+
+            callback(); // register controller
 
             log.debug(`[TinyG] Connected to serial port "${port}"`);
 
@@ -479,7 +482,7 @@ class TinyGController {
 
         // Assertion check
         if (this.isClose()) {
-            log.error(`[TinyG] The serial port "${port}" was already closed`);
+            log.error(`[TinyG] Serial port "${port}" was already closed`);
             return;
         }
 
@@ -505,9 +508,13 @@ class TinyGController {
         return !(this.isOpen());
     }
     addConnection(socket) {
-        log.debug(`[TinyG] Add socket connection: id=${socket.id}`);
+        if (!socket) {
+            log.error('[TinyG] The socket parameter is not specified');
+            return;
+        }
 
-        this.connections.push(new Connection(socket));
+        log.debug(`[TinyG] Add socket connection: id=${socket.id}`);
+        this.connections[socket.id] = socket;
 
         if (!_.isEmpty(this.state)) {
             // Send controller state to a newly connected client
@@ -520,13 +527,19 @@ class TinyGController {
         }
     }
     removeConnection(socket) {
-        log.debug(`[TinyG] Remove socket connection: id=${socket.id}`);
+        if (!socket) {
+            log.error('[TinyG] The socket parameter is not specified');
+            return;
+        }
 
-        this.connections = this.connections.filter(c => (c.socket.id !== socket.id));
+        log.debug(`[TinyG] Remove socket connection: id=${socket.id}`);
+        this.connections[socket.id] = undefined;
+        delete this.connections[socket.id];
     }
     emitAll(eventName, ...args) {
-        this.connections.forEach((c) => {
-            c.socket.emit.apply(c.socket, [eventName].concat(args));
+        Object.keys(this.connections).forEach(id => {
+            const socket = this.connections[id];
+            socket.emit.apply(socket, [eventName].concat(args));
         });
     }
     // https://github.com/synthetos/g2/wiki/Job-Exception-Handling
@@ -547,6 +560,8 @@ class TinyGController {
                     return;
                 }
 
+                this.event.trigger('gcode:load');
+
                 log.debug(`[TinyG] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
                 this.workflow.stop();
@@ -558,8 +573,12 @@ class TinyGController {
 
                 // Sender
                 this.sender.unload();
+
+                this.event.trigger('gcode:unload');
             },
             'start': () => {
+                this.event.trigger('gcode:start');
+
                 this.workflow.start();
 
                 // Feeder
@@ -569,6 +588,8 @@ class TinyGController {
                 this.sender.next();
             },
             'stop': () => {
+                this.event.trigger('gcode:stop');
+
                 this.workflow.stop();
 
                 this.writeln(socket, '!%'); // feedhold and queue flush
@@ -579,21 +600,29 @@ class TinyGController {
                 }, 250); // delay 250ms
             },
             'pause': () => {
+                this.event.trigger('gcode:pause');
+
                 this.workflow.pause();
                 this.writeln(socket, '!'); // feedhold
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'resume': () => {
+                this.event.trigger('gcode:resume');
+
                 this.writeln(socket, '~'); // cycle start
                 this.writeln(socket, '{"qr":""}'); // queue report
                 this.workflow.resume();
             },
             'feedhold': () => {
+                this.event.trigger('feedhold');
+
                 this.workflow.pause();
                 this.writeln(socket, '!'); // feedhold
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'cyclestart': () => {
+                this.event.trigger('cyclestart');
+
                 this.writeln(socket, '~'); // cycle start
                 this.writeln(socket, '{"qr":""}'); // queue report
                 this.workflow.resume();
@@ -602,6 +631,8 @@ class TinyGController {
                 // Not supported
             },
             'homing': () => {
+                this.event.trigger('homing');
+
                 this.writeln(socket, '{home:1}');
             },
             'queueflush': () => {
@@ -612,6 +643,8 @@ class TinyGController {
                 this.writeln(socket, '\x04'); // ^d
             },
             'sleep': () => {
+                this.event.trigger('sleep');
+
                 // Not supported
             },
             'unlock': () => {
@@ -631,12 +664,8 @@ class TinyGController {
                 // Not supported
             },
             'gcode': () => {
-                const line = args.join(' ');
-
-                this.feeder.feed({
-                    socket: socket,
-                    line: line
-                });
+                const command = args.join(' ').split('\n');
+                this.feeder.feed(command);
 
                 if (!this.feeder.isPending()) {
                     this.feeder.next();
@@ -652,6 +681,8 @@ class TinyGController {
                     return;
                 }
 
+                this.event.trigger('loadmacro');
+
                 this.command(null, 'load', macro.name, macro.content, callback);
             },
             'loadfile': () => {
@@ -662,6 +693,8 @@ class TinyGController {
                         callback(err);
                         return;
                     }
+
+                    this.event.trigger('loadfile');
 
                     this.command(null, 'load', file, data, callback);
                 });
@@ -676,13 +709,7 @@ class TinyGController {
         handler();
     }
     write(socket, data) {
-        socket && socket.emit('serialport:write', data);
-        const index = _.findIndex(this.connections, (c) => {
-            return c.socket === socket;
-        });
-        if (index >= 0) {
-            this.connections[index].sentCommand = data;
-        }
+        this.emitAll('serialport:write', data);
         this.serialport.write(data);
         dbg(`[TinyG] > ${data}`);
     }
