@@ -121,8 +121,8 @@ class GrblController {
 
         // Sender
         this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
-            // Consider periodic commands ('$G\n', '?') to make sure the buffer doesn't overflow
-            bufferSize: (128 - 4) // Grbl's RX buffer size is 128 bytes
+            // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
+            bufferSize: (128 - 8) // Grbl's RX buffer size is 128 bytes
         });
         this.sender.on('data', (gcode = '') => {
             if (this.isClose()) {
@@ -150,13 +150,16 @@ class GrblController {
         this.grbl.on('status', (res) => {
             this.queryResponse.status = false;
 
-            // Detect the buffer size if Grbl is set to report the rx buffer (#115)
-            if (res && res.buf && res.buf.rx) {
-                const rx = Number(res.buf.rx) || 0;
-                // Consider periodic commands ('$G\n', '?') to make sure the buffer doesn't overflow
-                const bufferSize = (rx - 4);
-                if (bufferSize > this.sender.sp.bufferSize) {
-                    this.sender.sp.bufferSize = bufferSize;
+            // Do not change buffer size during gcode sending (#133)
+            if (this.workflowState === WORKFLOW_STATE_IDLE && this.sender.sp.dataLength === 0) {
+                // Check if Grbl reported the rx buffer (#115)
+                if (res && res.buf && res.buf.rx) {
+                    const rx = Number(res.buf.rx) || 0;
+                    // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
+                    const bufferSize = (rx - 8);
+                    if (bufferSize > this.sender.sp.bufferSize) {
+                        this.sender.sp.bufferSize = bufferSize;
+                    }
                 }
             }
 
