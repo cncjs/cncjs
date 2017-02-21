@@ -35,7 +35,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 --- | --- | --- | --- | --- | --- |
  Yes | Yes | Yes| Not supported | Yes | Yes | 
 
-## Installation
+## Getting Started
 
 ### Node.js Installation
 
@@ -65,7 +65,7 @@ If you're using Node.js 4 or earlier versions, it's recommended that you upgrade
 npm install npm@latest -g
 ```
 
-### Getting Started
+### Installation
 
 Install cncjs as a non-root user, or the [serialport](https://github.com/EmergingTechnologyAdvisors/node-serialport) module may not install correctly on some platforms like Raspberry Pi.
 ```
@@ -81,11 +81,11 @@ It's recommended that you run [Raspbian Jessie](https://www.raspberrypi.org/down
 
 Check out [https://cnc.js.org/docs/installation/](https://cnc.js.org/docs/installation/) for other installation methods.
 
-## Upgrade
+### Upgrade
 
 Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cnc -V`.
 
-## Usage
+### Usage
 
 Run `cnc` to start the server, and visit `http://yourhostname:8000/` to view the web interface. Pass `--help` to `cnc` for more options.
 
@@ -131,7 +131,7 @@ To troubleshoot issues, run:
 cnc -vvv
 ```
 
-## Configuration File
+### Configuration File
 
 The configuration file <b>.cncrc</b> contains settings that are equivalent to the cnc command-line options. The configuration file is stored in user's home directory. To find out the actual location of the home directory, do the following:
 
