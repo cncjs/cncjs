@@ -126,9 +126,9 @@ Instead of passing command line options for `--watch-directory`, `--access-token
 }
 ```
 
-If you need view detailed logs for troubleshooting, you can run the server in debug mode.
+To troubleshoot issues, run:
 ```
-$ cnc -vvv
+cnc -vvv
 ```
 
 ## Configuration File
@@ -179,10 +179,12 @@ Check out an example configuration file [here](https://github.com/cncjs/cncjs/bl
 }
 ```
 
-## Wiki
-https://github.com/cncjs/cncjs/wiki
+## Documentation
+
+https://cnc.js.org/docs/
 
 ## Examples
+
 There are several *.gcode files in the [examples](https://github.com/cncjs/cncjs/tree/master/examples) directory. You can use the GCode widget to load a GCode file and make a trial run.
 
 If you don't have a CAM software, try using [jscut](http://jscut.org/) to create G-Code from *.svg. It's a simple CAM package that runs in the browser.
