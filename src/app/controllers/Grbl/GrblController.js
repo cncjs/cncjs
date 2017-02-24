@@ -625,10 +625,9 @@ class GrblController {
                 this.workflow.stop();
 
                 const activeState = _.get(this.state, 'status.activeState', '');
-                let delay = 0;
+                const delay = 250; // 250ms
                 if (activeState === GRBL_ACTIVE_STATE_RUN) {
                     this.write(socket, '!'); // hold
-                    delay = 50; // 50ms delay
                 }
 
                 setTimeout(() => {
