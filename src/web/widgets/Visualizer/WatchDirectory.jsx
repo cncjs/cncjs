@@ -174,6 +174,33 @@ class WatchDirectory extends Component {
                         onContentDidUpdate={() => {
                             this.fitHeaderColumns();
                         }}
+                        onKeyDown={(event) => {
+                            // Prevent the default scroll
+                            event.preventDefault();
+
+                            const tree = this.treeNode.tree;
+                            const node = tree.getSelectedNode();
+                            const nodeIndex = tree.getSelectedIndex();
+
+                            if (event.keyCode === 13) { // Enter
+                                if (!node) {
+                                    return;
+                                }
+                                const file = path.join(node.props.path, node.name);
+                                actions.loadFile(file);
+                                actions.closeModal();
+                            } else if (event.keyCode === 37) { // Left
+                                tree.closeNode(node);
+                            } else if (event.keyCode === 38) { // Up
+                                const prevNode = tree.nodes[nodeIndex - 1] || node;
+                                tree.selectNode(prevNode);
+                            } else if (event.keyCode === 39) { // Right
+                                tree.openNode(node);
+                            } else if (event.keyCode === 40) { // Down
+                                const nextNode = tree.nodes[nodeIndex + 1] || node;
+                                tree.selectNode(nextNode);
+                            }
+                        }}
                         onSelectNode={(node) => {
                             actions.updateModalParams({ selectedNode: node });
                         }}
