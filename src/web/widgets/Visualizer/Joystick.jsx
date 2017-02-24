@@ -1,12 +1,10 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
 import RepeatButton from '../../components/RepeatButton';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class Joystick extends Component {
     static propTypes = {
         show: PropTypes.bool,
@@ -24,12 +22,17 @@ class Joystick extends Component {
         const { show, up, down, left, right, center } = this.props;
 
         return (
-            <div styleName="joystick" className={classNames({ 'hidden': !show })}>
+            <div
+                className={classNames({
+                    [styles.joystick]: true,
+                    [styles.hidden]: !show
+                })}
+            >
                 <div className="row no-gutters">
                     <div className="col-xs-4" />
                     <div className="col-xs-4">
                         <RepeatButton
-                            styleName="joystick-button"
+                            className={styles.joystickButton}
                             onClick={up}
                             title={i18n._('Move Up')}
                         >
@@ -41,7 +44,7 @@ class Joystick extends Component {
                 <div className="row no-gutters">
                     <div className="col-xs-4 texe-center">
                         <RepeatButton
-                            styleName="joystick-button"
+                            className={styles.joystickButton}
                             onClick={left}
                             title={i18n._('Move Left')}
                         >
@@ -50,7 +53,7 @@ class Joystick extends Component {
                     </div>
                     <div className="col-xs-4">
                         <RepeatButton
-                            styleName="joystick-button"
+                            className={styles.joystickButton}
                             onClick={center}
                             title={i18n._('Reset Position')}
                         >
@@ -59,7 +62,7 @@ class Joystick extends Component {
                     </div>
                     <div className="col-xs-4">
                         <RepeatButton
-                            styleName="joystick-button"
+                            className={styles.joystickButton}
                             onClick={right}
                             title={i18n._('Move Right')}
                         >
@@ -71,7 +74,7 @@ class Joystick extends Component {
                     <div className="col-xs-4" />
                     <div className="col-xs-4">
                         <RepeatButton
-                            styleName="joystick-button"
+                            className={styles.joystickButton}
                             onClick={down}
                             title={i18n._('Move Down')}
                         >
