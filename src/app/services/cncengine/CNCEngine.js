@@ -213,6 +213,18 @@ class CNCEngine {
 
                 controller.write(socket, data);
             });
+
+            socket.on('writeln', (port, data) => {
+                log.debug(`${PREFIX} socket.writeln("${port}", "${data}"): id=${socket.id}`);
+
+                const controller = store.get(`controllers["${port}"]`);
+                if (!controller || controller.isClose()) {
+                    log.error(`${PREFIX} Serial port "${port}" not accessible`);
+                    return;
+                }
+
+                controller.writeln(socket, data);
+            });
         });
     }
     stop() {
