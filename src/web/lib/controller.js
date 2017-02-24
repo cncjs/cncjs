@@ -147,6 +147,8 @@ class CNCController {
     //   controller.command('feedhold')
     // - Cycle Start
     //   controller.command('cyclestart')
+    // - Status Report
+    //   controller.command('statusreport')
     // - Homing
     //   controller.command('homing')
     // - Sleep
@@ -155,6 +157,12 @@ class CNCController {
     //   controller.command('unlock')
     // - Reset
     //   controller.command('reset')
+    // - Feed Override
+    //   controller.command('feedOverride')
+    // - Spindle Override
+    //   controller.command('spindleOverride')
+    // - Rapid Override
+    //   controller.command('rapidOverride')
     // - G-code
     //   controller.command('gcode', 'G0X0Y0')
     // - Load macro
@@ -178,8 +186,11 @@ class CNCController {
     }
     // @param {string} data The data to write
     writeln(data) {
-        data = ('' + data).trim() + '\n';
-        this.write(data);
+        const { port } = this;
+        if (!port) {
+            return;
+        }
+        this.socket && this.socket.emit('writeln', port, data);
     }
 }
 

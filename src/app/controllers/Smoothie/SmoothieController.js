@@ -54,6 +54,10 @@ class SmoothieController {
         replyParserState: false, // $G
         replyStatusReport: false // ?
     };
+    actionTime = {
+        queryParserState: 0,
+        queryStatusReport: 0
+    };
     feedOverride = 100;
     spindleOverride = 100;
 
@@ -266,21 +270,52 @@ class SmoothieController {
         });
 
         const queryStatusReport = () => {
+            const now = new Date().getTime();
+            const lastQueryTime = this.actionTime.queryStatusReport;
+
+            if (lastQueryTime > 0) {
+                const timespan = Math.abs(now - lastQueryTime);
+                const toleranceTime = 250 * 10; // 2500ms
+
+                // Check if it has not been updated for a long time
+                if (timespan >= toleranceTime) {
+                    log.debug(`[Smoothie] Continue status report query: timespan=${timespan}ms`);
+                    this.actionMask.queryStatusReport = false;
+                }
+            }
+
             if (this.actionMask.queryStatusReport) {
                 return;
             }
 
             this.actionMask.queryStatusReport = true;
+            this.actionTime.queryStatusReport = now;
             this.serialport.write('?');
         };
 
         const queryParserState = _.throttle(() => {
+            const now = new Date().getTime();
+            const lastQueryTime = this.actionTime.queryParserState;
+
+            if (lastQueryTime > 0) {
+                const timespan = Math.abs(now - lastQueryTime);
+                const toleranceTime = 500 * 10; // 5000ms
+
+                // Check if it has not been updated for a long time
+                if (timespan >= toleranceTime) {
+                    log.debug(`[Smoothie] Continue parser state query: timespan=${timespan}ms`);
+                    this.actionMask.queryParserState.state = false;
+                    this.actionMask.queryParserState.reply = false;
+                }
+            }
+
             if (this.actionMask.queryParserState.state || this.actionMask.queryParserState.reply) {
                 return;
             }
 
             this.actionMask.queryParserState.state = true;
             this.actionMask.queryParserState.reply = false;
+            this.actionTime.queryParserState = now;
             this.serialport.write('$G\n');
         }, 500);
 
@@ -319,12 +354,14 @@ class SmoothieController {
             queryParserState();
         }, 250);
     }
-    clearActionMask() {
+    clearActionValues() {
         this.actionMask.queryParserState.state = false;
         this.actionMask.queryParserState.reply = false;
         this.actionMask.queryStatusReport = false;
         this.actionMask.replyParserState = false;
         this.actionMask.replyStatusReport = false;
+        this.actionTime.queryParserState = 0;
+        this.actionTime.queryStatusReport = 0;
     }
     destroy() {
         this.connections = {};
@@ -424,11 +461,13 @@ class SmoothieController {
 
             this.workflow.stop();
 
-            // Clear action mask
-            this.clearActionMask();
+            // Clear action values
+            this.clearActionValues();
 
-            // Unload G-code
-            this.command(null, 'unload');
+            if (this.sender.state.gcode) {
+                // Unload G-code
+                this.command(null, 'unload');
+            }
 
             // Initialize controller
             this.initController();
@@ -575,8 +614,8 @@ class SmoothieController {
 
                 this.workflow.resume();
             },
-            'check': () => {
-                // Not supported
+            'statusreport': () => {
+                this.write(socket, '?');
             },
             'homing': () => {
                 this.event.trigger('homing');

@@ -6,6 +6,7 @@ import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
+import ControllerState from './ControllerState';
 import Toolbar from './Toolbar';
 import {
     TINYG_MACHINE_STATE_INITIALIZING,
@@ -70,6 +71,7 @@ class TinyG extends Component {
 
         return (
             <div>
+                <ControllerState state={state} actions={actions} />
                 <Toolbar state={state} actions={actions} />
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles['panel-heading']}>

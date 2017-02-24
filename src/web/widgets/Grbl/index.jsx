@@ -10,6 +10,9 @@ import Grbl from './Grbl';
 import {
     GRBL
 } from '../../constants';
+import {
+    MODAL_NONE
+} from './constants';
 import styles from './index.styl';
 
 class GrblWidget extends Component {
@@ -22,6 +25,47 @@ class GrblWidget extends Component {
     };
 
     actions = {
+        openModal: (name = MODAL_NONE, params = {}) => {
+            // Prevent body from scrolling when a modal is opened
+            const body = document.querySelector('body');
+            const bodyStyle = {
+                overflowY: body.style.overflowY
+            };
+            bodyStyle.overflowY = body.style.overflowY;
+            body.style.overflowY = 'hidden';
+
+            this.setState({
+                modal: {
+                    name: name,
+                    bodyStyle: bodyStyle,
+                    params: params
+                }
+            });
+        },
+        closeModal: () => {
+            const body = document.querySelector('body');
+            if (this.state.modal.bodyStyle) {
+                body.style.overflowY = this.state.modal.bodyStyle.overflowY;
+            }
+
+            this.setState({
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
+            });
+        },
+        updateModalParams: (params = {}) => {
+            this.setState({
+                modal: {
+                    ...this.state.modal,
+                    params: {
+                        ...this.state.modal.params,
+                        ...params
+                    }
+                }
+            });
+        },
         toggleQueueReports: () => {
             const expanded = this.state.panel.queueReports.expanded;
 
@@ -117,6 +161,10 @@ class GrblWidget extends Component {
             controller: {
                 type: controller.type,
                 state: controller.state
+            },
+            modal: {
+                name: MODAL_NONE,
+                params: {}
             },
             panel: {
                 queueReports: {
