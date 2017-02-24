@@ -29,7 +29,7 @@ class ControllerState extends Component {
                 size="lg"
             >
                 <Modal.Header>
-                    <Modal.Title>{i18n._('Controller State')}</Modal.Title>
+                    <Modal.Title>{i18n._('Current State')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ maxHeight: maxHeight }}>
                     <pre><code>{JSON.stringify(state.controller.state, null, 2)}</code></pre>
