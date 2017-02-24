@@ -470,8 +470,10 @@ class TinyGController {
 
             this.workflow.stop();
 
-            // Unload G-code
-            this.command(null, 'unload');
+            if (this.sender.state.gcode) {
+                // Unload G-code
+                this.command(null, 'unload');
+            }
 
             // Initialize controller
             this.initController();
@@ -627,20 +629,13 @@ class TinyGController {
                 this.writeln(socket, '{"qr":""}'); // queue report
                 this.workflow.resume();
             },
-            'check': () => {
-                // Not supported
+            'statusreport': () => {
+                this.writeln(socket, '{"sr":null}');
             },
             'homing': () => {
                 this.event.trigger('homing');
 
                 this.writeln(socket, '{home:1}');
-            },
-            'queueflush': () => {
-                this.writeln(socket, '!%'); // queue flush
-                this.writeln(socket, '{"qr":""}'); // queue report
-            },
-            'killjob': () => {
-                this.writeln(socket, '\x04'); // ^d
             },
             'sleep': () => {
                 this.event.trigger('sleep');
