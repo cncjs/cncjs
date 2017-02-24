@@ -5,6 +5,7 @@ import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
+import ControllerState from './ControllerState';
 import Toolbar from './Toolbar';
 import Overrides from './Overrides';
 import styles from './index.styl';
@@ -34,6 +35,7 @@ class Smoothie extends Component {
 
         return (
             <div>
+                <ControllerState state={state} actions={actions} />
                 <Toolbar state={state} actions={actions} />
                 {(ovF !== undefined || ovS !== undefined) &&
                 <Overrides state={state} actions={actions} />
