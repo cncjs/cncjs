@@ -24,12 +24,13 @@ class ConsoleWidget extends Component {
     };
 
     actions = {
-        getWidgetContentEl: () => {
-            const widgetContentEl = ReactDOM.findDOMNode(this.widgetContent);
-            return widgetContentEl;
+        getContainerEl: () => {
+            return ReactDOM.findDOMNode(this.container);
         },
         setContainerHeight: (containerHeight) => {
-            this.setState({ containerHeight: containerHeight });
+            if (containerHeight > 0) {
+                this.setState({ containerHeight: containerHeight });
+            }
         },
         clearAll: () => {
             this.clearAll();
@@ -51,6 +52,7 @@ class ConsoleWidget extends Component {
     pubsubTokens = [];
     lineBuffers = [];
     throttledTimer = null;
+    container = null;
 
     constructor() {
         super();
@@ -114,19 +116,21 @@ class ConsoleWidget extends Component {
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
     addControllerEvents() {
-        _.each(this.controllerEvents, (eventHandler, eventName) => {
-            controller.on(eventName, eventHandler);
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.on(eventName, callback);
         });
     }
     removeControllerEvents() {
-        _.each(this.controllerEvents, (eventHandler, eventName) => {
-            controller.off(eventName, eventHandler);
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.off(eventName, callback);
         });
     }
     appendLine(line) {
@@ -185,16 +189,16 @@ class ConsoleWidget extends Component {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    ref={node => {
-                        this.widgetContent = node;
-                    }}
                     className={classNames(
-                        styles['widget-content'],
+                        styles.widgetContent,
                         { [styles.hidden]: minimized },
                         { [styles.fullscreen]: isFullscreen }
                     )}
                 >
                     <Console
+                        ref={node => {
+                            this.container = node;
+                        }}
                         state={state}
                         actions={actions}
                     />

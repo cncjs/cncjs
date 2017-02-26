@@ -1,8 +1,8 @@
+import classNames from 'classnames';
 import includes from 'lodash/includes';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { DropdownButton, MenuItem } from 'react-bootstrap';
-import CSSModules from 'react-css-modules';
 import { in2mm } from '../../lib/units';
 import Anchor from '../../components/Anchor';
 import i18n from '../../lib/i18n';
@@ -14,7 +14,6 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class DisplayPanel extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -43,9 +42,19 @@ class DisplayPanel extends Component {
         const lengthUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         const degreeUnits = i18n._('deg');
         const wcs = actions.getWorkCoordinateSystem();
+        const {
+            showXPositionInput,
+            showYPositionInput,
+            showZPositionInput,
+            showAPositionInput
+        } = this.state;
+        const hideXPositionInput = !showXPositionInput;
+        const hideYPositionInput = !showYPositionInput;
+        const hideZPositionInput = !showZPositionInput;
+        const hideAPositionInput = !showAPositionInput;
 
         return (
-            <div styleName="display-panel">
+            <div className={styles.displayPanel}>
                 <table className="table-bordered">
                     <thead>
                         <tr>
@@ -58,16 +67,16 @@ class DisplayPanel extends Component {
                     <tbody>
                         {includes(axes, 'x') &&
                         <tr>
-                            <td styleName="coordinate">X</td>
-                            <td styleName="machine-position">
-                                <span styleName="integer-part">{machinePosition.x.split('.')[0]}</span>
-                                <span styleName="decimal-point">.</span>
-                                <span styleName="fractional-part">{machinePosition.x.split('.')[1]}</span>
-                                <span styleName="dimension-units">{lengthUnits}</span>
+                            <td className={styles.coordinate}>X</td>
+                            <td className={styles.machinePosition}>
+                                <span className={styles.integerPart}>{machinePosition.x.split('.')[0]}</span>
+                                <span className={styles.decimalPoint}>.</span>
+                                <span className={styles.fractionalPart}>{machinePosition.x.split('.')[1]}</span>
+                                <span className={styles.dimensionUnits}>{lengthUnits}</span>
                             </td>
-                            <td styleName="work-position">
-                                <span styleName="dimension-units">{lengthUnits}</span>
-                                {this.state.showXPositionInput &&
+                            <td className={styles.workPosition}>
+                                <span className={styles.dimensionUnits}>{lengthUnits}</span>
+                                {showXPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
                                         if (units === IMPERIAL_UNITS) {
@@ -81,23 +90,28 @@ class DisplayPanel extends Component {
                                     }}
                                 />
                                 }
-                                {!this.state.showXPositionInput &&
-                                <div
-                                    style={{ cursor: canClick ? 'pointer' : 'auto' }}
+                                {hideXPositionInput && canClick &&
+                                <Anchor
+                                    style={{ color: 'inherit' }}
                                     title={i18n._('Edit')}
                                     onClick={() => {
-                                        if (canClick) {
-                                            this.setState({ showXPositionInput: true });
-                                        }
+                                        this.setState({ showXPositionInput: true });
                                     }}
                                 >
-                                    <span styleName="integer-part">{workPosition.x.split('.')[0]}</span>
-                                    <span styleName="decimal-point">.</span>
-                                    <span styleName="fractional-part">{workPosition.x.split('.')[1]}</span>
+                                    <span className={styles.integerPart}>{workPosition.x.split('.')[0]}</span>
+                                    <span className={styles.decimalPoint}>.</span>
+                                    <span className={styles.fractionalPart}>{workPosition.x.split('.')[1]}</span>
+                                </Anchor>
+                                }
+                                {hideXPositionInput && !canClick &&
+                                <div>
+                                    <span className={styles.integerPart}>{workPosition.x.split('.')[0]}</span>
+                                    <span className={styles.decimalPoint}>.</span>
+                                    <span className={styles.fractionalPart}>{workPosition.x.split('.')[1]}</span>
                                 </div>
                                 }
                             </td>
-                            <td styleName="action">
+                            <td className={styles.action}>
                                 <DropdownButton
                                     bsSize="xs"
                                     bsStyle="default"
@@ -216,16 +230,16 @@ class DisplayPanel extends Component {
                         }
                         {includes(axes, 'y') &&
                         <tr>
-                            <td styleName="coordinate">Y</td>
-                            <td styleName="machine-position">
-                                <span styleName="integer-part">{machinePosition.y.split('.')[0]}</span>
-                                <span styleName="decimal-point">.</span>
-                                <span styleName="fractional-part">{machinePosition.y.split('.')[1]}</span>
-                                <span styleName="dimension-units">{lengthUnits}</span>
+                            <td className={styles.coordinate}>Y</td>
+                            <td className={styles.machinePosition}>
+                                <span className={styles.integerPart}>{machinePosition.y.split('.')[0]}</span>
+                                <span className={styles.decimalPoint}>.</span>
+                                <span className={styles.fractionalPart}>{machinePosition.y.split('.')[1]}</span>
+                                <span className={styles.dimensionUnits}>{lengthUnits}</span>
                             </td>
-                            <td styleName="work-position">
-                                <span styleName="dimension-units">{lengthUnits}</span>
-                                {this.state.showYPositionInput &&
+                            <td className={styles.workPosition}>
+                                <span className={styles.dimensionUnits}>{lengthUnits}</span>
+                                {showYPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
                                         if (units === IMPERIAL_UNITS) {
@@ -239,23 +253,28 @@ class DisplayPanel extends Component {
                                     }}
                                 />
                                 }
-                                {!this.state.showYPositionInput &&
-                                <div
-                                    style={{ cursor: canClick ? 'pointer' : 'auto' }}
+                                {hideYPositionInput && canClick &&
+                                <Anchor
+                                    style={{ color: 'inherit' }}
                                     title={i18n._('Edit')}
                                     onClick={() => {
-                                        if (canClick) {
-                                            this.setState({ showYPositionInput: true });
-                                        }
+                                        this.setState({ showYPositionInput: true });
                                     }}
                                 >
-                                    <span styleName="integer-part">{workPosition.y.split('.')[0]}</span>
-                                    <span styleName="decimal-point">.</span>
-                                    <span styleName="fractional-part">{workPosition.y.split('.')[1]}</span>
+                                    <span className={styles.integerPart}>{workPosition.y.split('.')[0]}</span>
+                                    <span className={styles.decimalPoint}>.</span>
+                                    <span className={styles.fractionalPart}>{workPosition.y.split('.')[1]}</span>
+                                </Anchor>
+                                }
+                                {hideYPositionInput && !canClick &&
+                                <div>
+                                    <span className={styles.integerPart}>{workPosition.y.split('.')[0]}</span>
+                                    <span className={styles.decimalPoint}>.</span>
+                                    <span className={styles.fractionalPart}>{workPosition.y.split('.')[1]}</span>
                                 </div>
                                 }
                             </td>
-                            <td styleName="action">
+                            <td className={styles.action}>
                                 <DropdownButton
                                     bsSize="xs"
                                     bsStyle="default"
@@ -374,16 +393,16 @@ class DisplayPanel extends Component {
                         }
                         {includes(axes, 'z') &&
                         <tr>
-                            <td styleName="coordinate">Z</td>
-                            <td styleName="machine-position">
-                                <span styleName="integer-part">{machinePosition.z.split('.')[0]}</span>
-                                <span styleName="decimal-point">.</span>
-                                <span styleName="fractional-part">{machinePosition.z.split('.')[1]}</span>
-                                <span styleName="dimension-units">{lengthUnits}</span>
+                            <td className={styles.coordinate}>Z</td>
+                            <td className={styles.machinePosition}>
+                                <span className={styles.integerPart}>{machinePosition.z.split('.')[0]}</span>
+                                <span className={styles.decimalPoint}>.</span>
+                                <span className={styles.fractionalPart}>{machinePosition.z.split('.')[1]}</span>
+                                <span className={styles.dimensionUnits}>{lengthUnits}</span>
                             </td>
-                            <td styleName="work-position">
-                                <span styleName="dimension-units">{lengthUnits}</span>
-                                {this.state.showZPositionInput &&
+                            <td className={styles.workPosition}>
+                                <span className={styles.dimensionUnits}>{lengthUnits}</span>
+                                {showZPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
                                         if (units === IMPERIAL_UNITS) {
@@ -397,9 +416,9 @@ class DisplayPanel extends Component {
                                     }}
                                 />
                                 }
-                                {!this.state.showZPositionInput &&
-                                <div
-                                    style={{ cursor: canClick ? 'pointer' : 'auto' }}
+                                {hideZPositionInput && canClick &&
+                                <Anchor
+                                    style={{ color: 'inherit' }}
                                     title={i18n._('Edit')}
                                     onClick={() => {
                                         if (canClick) {
@@ -407,13 +426,20 @@ class DisplayPanel extends Component {
                                         }
                                     }}
                                 >
-                                    <span styleName="integer-part">{workPosition.z.split('.')[0]}</span>
-                                    <span styleName="decimal-point">.</span>
-                                    <span styleName="fractional-part">{workPosition.z.split('.')[1]}</span>
+                                    <span className={styles.integerPart}>{workPosition.z.split('.')[0]}</span>
+                                    <span className={styles.decimalPoint}>.</span>
+                                    <span className={styles.fractionalPart}>{workPosition.z.split('.')[1]}</span>
+                                </Anchor>
+                                }
+                                {hideZPositionInput && !canClick &&
+                                <div>
+                                    <span className={styles.integerPart}>{workPosition.z.split('.')[0]}</span>
+                                    <span className={styles.decimalPoint}>.</span>
+                                    <span className={styles.fractionalPart}>{workPosition.z.split('.')[1]}</span>
                                 </div>
                                 }
                             </td>
-                            <td styleName="action">
+                            <td className={styles.action}>
                                 <DropdownButton
                                     bsSize="xs"
                                     bsStyle="default"
@@ -532,10 +558,10 @@ class DisplayPanel extends Component {
                         }
                         {includes(axes, 'a') &&
                         <tr>
-                            <td styleName="coordinate top">
+                            <td className={classNames(styles.coordinate, styles.top)}>
                                 <div>A</div>
                                 <Anchor
-                                    styleName="move-backward"
+                                    className={styles.moveBackward}
                                     onClick={() => {
                                         const distance = actions.getJogDistance();
                                         actions.jog({ A: -distance });
@@ -544,7 +570,7 @@ class DisplayPanel extends Component {
                                     <i className="fa fa-fw fa-minus" />
                                 </Anchor>
                                 <Anchor
-                                    styleName="move-forward"
+                                    className={styles.moveForward}
                                     onClick={() => {
                                         const distance = actions.getJogDistance();
                                         actions.jog({ A: distance });
@@ -553,15 +579,15 @@ class DisplayPanel extends Component {
                                     <i className="fa fa-fw fa-plus" />
                                 </Anchor>
                             </td>
-                            <td styleName="machine-position">
-                                <span styleName="integer-part">{machinePosition.a.split('.')[0]}</span>
-                                <span styleName="decimal-point">.</span>
-                                <span styleName="fractional-part">{machinePosition.a.split('.')[1]}</span>
-                                <span styleName="dimension-units">{degreeUnits}</span>
+                            <td className={styles.machinePosition}>
+                                <span className={styles.integerPart}>{machinePosition.a.split('.')[0]}</span>
+                                <span className={styles.decimalPoint}>.</span>
+                                <span className={styles.fractionalPart}>{machinePosition.a.split('.')[1]}</span>
+                                <span className={styles.dimensionUnits}>{degreeUnits}</span>
                             </td>
-                            <td styleName="work-position">
-                                <span styleName="dimension-units">{degreeUnits}</span>
-                                {this.state.showAPositionInput &&
+                            <td className={styles.workPosition}>
+                                <span className={styles.dimensionUnits}>{degreeUnits}</span>
+                                {showAPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
                                         // units of degree
@@ -573,9 +599,9 @@ class DisplayPanel extends Component {
                                     }}
                                 />
                                 }
-                                {!this.state.showAPositionInput &&
-                                <div
-                                    style={{ cursor: canClick ? 'pointer' : 'auto' }}
+                                {hideAPositionInput && canClick &&
+                                <Anchor
+                                    style={{ color: 'inherit' }}
                                     title={i18n._('Edit')}
                                     onClick={() => {
                                         if (canClick) {
@@ -583,13 +609,20 @@ class DisplayPanel extends Component {
                                         }
                                     }}
                                 >
-                                    <span styleName="integer-part">{workPosition.a.split('.')[0]}</span>
-                                    <span styleName="decimal-point">.</span>
-                                    <span styleName="fractional-part">{workPosition.a.split('.')[1]}</span>
+                                    <span className={styles.integerPart}>{workPosition.a.split('.')[0]}</span>
+                                    <span className={styles.decimalPoint}>.</span>
+                                    <span className={styles.fractionalPart}>{workPosition.a.split('.')[1]}</span>
+                                </Anchor>
+                                }
+                                {hideAPositionInput && !canClick &&
+                                <div>
+                                    <span className={styles.integerPart}>{workPosition.a.split('.')[0]}</span>
+                                    <span className={styles.decimalPoint}>.</span>
+                                    <span className={styles.fractionalPart}>{workPosition.a.split('.')[1]}</span>
                                 </div>
                                 }
                             </td>
-                            <td styleName="action">
+                            <td className={styles.action}>
                                 <DropdownButton
                                     bsSize="xs"
                                     bsStyle="default"

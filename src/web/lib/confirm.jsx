@@ -6,7 +6,11 @@ import i18n from './i18n';
 
 class ConfirmHOC extends Component {
     static propTypes = {
-        container: PropTypes.object
+        container: PropTypes.object,
+        onConfirm: PropTypes.func,
+        onCancel: PropTypes.func,
+        btnConfirm: PropTypes.node,
+        btnCancel: PropTypes.node
     };
 
     state = {

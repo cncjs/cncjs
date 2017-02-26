@@ -1,15 +1,9 @@
+import classNames from 'classnames';
 import React from 'react';
-import CSSModules from 'react-css-modules';
 import styles from './index.styl';
 
-const PanelHeading = (props) => {
-    const { children, ...others } = props;
+const PanelHeading = ({ className, ...props }) => (
+    <div {...props} className={classNames(className, styles.panelHeading)} />
+);
 
-    return (
-        <div {...others} styleName="panel-heading">
-            {children}
-        </div>
-    );
-};
-
-export default CSSModules(PanelHeading, styles);
+export default PanelHeading;

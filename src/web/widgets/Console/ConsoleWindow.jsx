@@ -48,21 +48,24 @@ class ConsoleWindow extends Component {
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
     resizeConsoleWindow() {
         const { state, actions } = this.props;
-        const widgetContentEl = actions.getWidgetContentEl();
-        const node = ReactDOM.findDOMNode(this.node);
-        const offset = node.getBoundingClientRect().top
-                     - widgetContentEl.getBoundingClientRect().top;
-        const containerHeight = widgetContentEl.clientHeight - offset - 10; // exclude 10px bottom padding
 
-        if (state.containerHeight !== containerHeight) {
-            actions.setContainerHeight(containerHeight);
+        const containerEl = actions.getContainerEl();
+        const node = ReactDOM.findDOMNode(this.node);
+        if (containerEl && node) {
+            const offset = node.getBoundingClientRect().top
+                         - containerEl.getBoundingClientRect().top;
+            const containerHeight = containerEl.clientHeight - offset;
+
+            if (state.containerHeight !== containerHeight) {
+                actions.setContainerHeight(containerHeight);
+            }
         }
     }
     render() {

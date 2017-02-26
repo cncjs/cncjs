@@ -1,9 +1,8 @@
+import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
 import Anchor from '../Anchor';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class Button extends Component {
     static propTypes = {
         onClick: PropTypes.func
@@ -13,12 +12,12 @@ class Button extends Component {
     };
 
     render() {
-        const { onClick, ...props } = this.props;
+        const { onClick, className, ...props } = this.props;
 
         return (
             <Anchor
                 {...props}
-                styleName="btn-icon"
+                className={classNames(className, styles.btnIcon)}
                 onClick={onClick}
             />
         );

@@ -1,13 +1,17 @@
+import classNames from 'classnames';
 import _ from 'lodash';
 import React, { Component } from 'react';
-import CSSModules from 'react-css-modules';
+import shallowCompare from 'react-addons-shallow-compare';
 import store from '../../store';
 import Widget from './Widget';
 import styles from './widgets.styl';
 
-@CSSModules(styles)
 class DefaultWidgets extends Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
     render() {
+        const { className } = this.props;
         const defaultWidgets = store.get('workspace.container.default.widgets');
         const widgets = _.map(defaultWidgets, (widgetid) => (
             <Widget
@@ -17,10 +21,7 @@ class DefaultWidgets extends Component {
         ));
 
         return (
-            <div
-                {...this.props}
-                styleName="widgets"
-            >
+            <div className={classNames(className, styles.widgets)}>
                 {widgets}
             </div>
         );

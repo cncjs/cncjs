@@ -1,9 +1,9 @@
+import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
+import Anchor from '../Anchor';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class Toggler extends Component {
     static propTypes = {
         onToggle: PropTypes.func.isRequired
@@ -13,12 +13,12 @@ class Toggler extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { onToggle, ...props } = this.props;
+        const { onToggle, className, ...props } = this.props;
 
         return (
-            <div
+            <Anchor
                 {...props}
-                styleName="toggler"
+                className={classNames(className, styles.toggler)}
                 onClick={(event) => {
                     onToggle(event);
                 }}

@@ -2,9 +2,7 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
 import i18n from '../../lib/i18n';
-import combokeys from '../../lib/combokeys';
 import RepeatButton from '../../components/RepeatButton';
 import {
     DISTANCE_MIN,
@@ -13,34 +11,12 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class JogDistance extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    actionHandlers = {
-        JOG_LEVER_SWITCH: (event) => {
-            const { state, actions } = this.props;
-            const { selectedDistance } = state;
-            const distances = ['1', '0.1', '0.01', '0.001', ''];
-            const currentIndex = distances.indexOf(selectedDistance);
-            const distance = distances[(currentIndex + 1) % distances.length];
-            actions.selectDistance(distance);
-        }
-    };
-
-    componentDidMount() {
-        _.each(this.actionHandlers, (callback, eventName) => {
-            combokeys.on(eventName, callback);
-        });
-    }
-    componentWillUnmount() {
-        _.each(this.actionHandlers, (callback, eventName) => {
-            combokeys.removeListener(eventName, callback);
-        });
-    }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
@@ -50,27 +26,27 @@ class JogDistance extends Component {
         const distance = String(selectedDistance); // force convert to string
         const isCustomDistanceSelected = !(_.includes(['1', '0.1', '0.01', '0.001'], distance));
         const classes = {
-            1: classNames(
+            '1': classNames(
                 'btn',
                 'btn-default',
                 { 'btn-select': distance === '1' }
             ),
-            0.1: classNames(
+            '0.1': classNames(
                 'btn',
                 'btn-default',
                 { 'btn-select': distance === '0.1' }
             ),
-            0.01: classNames(
+            '0.01': classNames(
                 'btn',
                 'btn-default',
                 { 'btn-select': distance === '0.01' }
             ),
-            0.001: classNames(
+            '0.001': classNames(
                 'btn',
                 'btn-default',
                 { 'btn-select': distance === '0.001' }
             ),
-            custom: classNames(
+            'custom': classNames(
                 'btn',
                 'btn-default',
                 { 'btn-select': isCustomDistanceSelected }
@@ -78,7 +54,7 @@ class JogDistance extends Component {
         };
 
         return (
-            <div styleName="jog-distance-control">
+            <div className={styles.jogDistanceControl}>
                 <div className="input-group input-group-sm">
                     <div className="input-group-btn">
                         <button

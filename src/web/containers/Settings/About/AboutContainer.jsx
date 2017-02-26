@@ -31,7 +31,7 @@ const AboutContainer = ({ version }) => {
 };
 
 AboutContainer.propTypes = {
-    title: PropTypes.string
+    version: PropTypes.object
 };
 
 export default AboutContainer;

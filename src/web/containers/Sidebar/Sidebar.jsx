@@ -1,32 +1,29 @@
-import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { Link } from 'react-router';
-import CSSModules from 'react-css-modules';
-//import Anchor from '../../components/Anchor';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
 
-@CSSModules(styles, { allowMultiple: true })
 class Sidebar extends Component {
     static propTypes = {
         path: PropTypes.string
     };
 
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { path, ...props } = this.props;
 
         return (
-            <nav {...props} styleName="navbar">
-                <ul styleName="nav">
+            <nav {...props} className={styles.navbar}>
+                <ul className={styles.nav}>
                     <li
-                        className="text-center"
-                        styleName={classNames({
-                            'active': path === 'workspace'
-                        })}
+                        className={classNames(
+                            'text-center',
+                            { [styles.active]: path === 'workspace' }
+                        )}
                     >
                         <Link to="/workspace" title={i18n._('Workspace')}>
                             <i className="fa fa-desktop fa-2x" />
@@ -42,10 +39,10 @@ class Sidebar extends Component {
                         </Link>
                     </li>
                     <li
-                        className="text-center"
-                        styleName={classNames({
-                            'active': path === 'settings'
-                        })}
+                        className={classNames(
+                            'text-center',
+                            { [styles.active]: path === 'settings' }
+                        )}
                     >
                         <Link to="/settings" title={i18n._('Settings')}>
                             <i className="fa fa-cogs fa-2x" />

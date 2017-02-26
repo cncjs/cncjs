@@ -1,8 +1,8 @@
+import classNames from 'classnames';
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import CSSModules from 'react-css-modules';
 import {
     // Grbl
     GRBL,
@@ -25,7 +25,6 @@ import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class Toolbar extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -133,7 +132,7 @@ class Toolbar extends Component {
         const canUpload = isReady ? canClose : (canClick && !gcode.loading);
 
         return (
-            <div className="btn-toolbar" styleName="toolbar">
+            <div className={classNames('btn-toolbar', styles.toolbar)}>
                 <div className="btn-group btn-group-sm">
                     <button
                         type="button"

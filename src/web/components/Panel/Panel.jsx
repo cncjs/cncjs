@@ -1,15 +1,9 @@
+import classNames from 'classnames';
 import React from 'react';
-import CSSModules from 'react-css-modules';
 import styles from './index.styl';
 
-const Panel = (props) => {
-    const { children, ...others } = props;
+const Panel = ({ className, ...props }) => (
+    <div {...props} className={classNames(className, styles.panel, styles.panelDefault)} />
+);
 
-    return (
-        <div {...others} styleName="panel panel-default">
-            {children}
-        </div>
-    );
-};
-
-export default CSSModules(Panel, styles, { allowMultiple: true });
+export default Panel;

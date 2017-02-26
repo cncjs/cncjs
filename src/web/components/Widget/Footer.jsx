@@ -1,17 +1,12 @@
-import React, { Component } from 'react';
-import CSSModules from 'react-css-modules';
+import classNames from 'classnames';
+import React from 'react';
 import styles from './index.styl';
 
-@CSSModules(styles)
-class Footer extends Component {
-    render() {
-        return (
-            <div
-                {...this.props}
-                styleName="widget-footer"
-            />
-        );
-    }
-}
+const Footer = ({ className, ...props }) => (
+    <div
+        {...props}
+        className={classNames(className, styles.widgetFooter)}
+    />
+);
 
 export default Footer;

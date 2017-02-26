@@ -150,12 +150,14 @@ class Connection extends React.Component {
         store.set('widgets.connection.autoReconnect', autoReconnect);
     }
     addControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.on(eventName, callback);
         });
     }
     removeControllerEvents() {
-        _.each(this.controllerEvents, (callback, eventName) => {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
             controller.off(eventName, callback);
         });
     }

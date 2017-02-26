@@ -13,70 +13,70 @@ import TinyGWidget from '../../widgets/TinyG';
 import VisualizerWidget from '../../widgets/Visualizer';
 import WebcamWidget from '../../widgets/Webcam';
 
-const Widget = ({ widgetid, key, ...props }) => {
+const Widget = ({ widgetid, ...props }) => {
     const widget = {
         'axes': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <AxesWidget {...props} />
             </div>
         ),
         'connection': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <ConnectionWidget {...props} />
             </div>
         ),
         'console': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <ConsoleWidget {...props} />
             </div>
         ),
         'gcode': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <GCodeWidget {...props} />
             </div>
         ),
         'grbl': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <GrblWidget {...props} />
             </div>
         ),
         'laser': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <LaserWidget {...props} />
             </div>
         ),
         'macro': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <MacroWidget {...props} />
             </div>
         ),
         'probe': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <ProbeWidget {...props} />
             </div>
         ),
         'smoothie': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <SmoothieWidget {...props} />
             </div>
         ),
         'spindle': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <SpindleWidget {...props} />
             </div>
         ),
         'tinyg': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <TinyGWidget {...props} />
             </div>
         ),
         'visualizer': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <VisualizerWidget {...props} />
             </div>
         ),
         'webcam': () => (
-            <div data-widgetid={widgetid} key={key}>
+            <div data-widgetid={widgetid}>
                 <WebcamWidget {...props} />
             </div>
         )

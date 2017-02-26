@@ -1,10 +1,10 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import CSSModules from 'react-css-modules';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import shallowCompare from 'react-addons-shallow-compare';
 import api from '../../api';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -26,8 +26,7 @@ const stopWaiting = () => {
     root.classList.remove('wait');
 };
 
-@CSSModules(styles, { allowMultiple: true })
-class Workspace extends React.Component {
+class Workspace extends Component {
     state = {
         mounted: false,
         port: '',
@@ -42,6 +41,11 @@ class Workspace extends React.Component {
         primary: null,
         secondary: null
     };
+    primaryContainer = null;
+    secondaryContainer = null;
+    primaryToggler = null;
+    secondaryToggler = null;
+    defaultContainer = null;
     widgetEventHandler = {
         onDelete: () => {
             const { inactiveCount } = this.state;
@@ -79,7 +83,7 @@ class Workspace extends React.Component {
         this.removeResizeEventListener();
     }
     shouldComponentUpdate(nextProps, nextState) {
-        return !_.isEqual(nextProps, this.props) || !_.isEqual(nextState, this.state);
+        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate() {
         store.set('workspace.container.primary.show', this.state.showPrimaryContainer);
@@ -107,7 +111,7 @@ class Workspace extends React.Component {
         }
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
@@ -128,11 +132,11 @@ class Workspace extends React.Component {
     }
     resizeDefaultContainer() {
         const sidebar = document.querySelector('#sidebar');
-        const primaryContainer = ReactDOM.findDOMNode(this.refs.primaryContainer);
-        const secondaryContainer = ReactDOM.findDOMNode(this.refs.secondaryContainer);
-        const primaryToggler = ReactDOM.findDOMNode(this.refs.primaryToggler);
-        const secondaryToggler = ReactDOM.findDOMNode(this.refs.secondaryToggler);
-        const defaultContainer = ReactDOM.findDOMNode(this.refs.defaultContainer);
+        const primaryContainer = ReactDOM.findDOMNode(this.primaryContainer);
+        const secondaryContainer = ReactDOM.findDOMNode(this.secondaryContainer);
+        const primaryToggler = ReactDOM.findDOMNode(this.primaryToggler);
+        const secondaryToggler = ReactDOM.findDOMNode(this.secondaryToggler);
+        const defaultContainer = ReactDOM.findDOMNode(this.defaultContainer);
 
         if (this.state.showPrimaryContainer) {
             defaultContainer.style.left = primaryContainer.offsetWidth + sidebar.offsetWidth + 'px';
@@ -256,19 +260,19 @@ class Workspace extends React.Component {
         const hideSecondaryContainer = !showSecondaryContainer;
 
         return (
-            <div {...this.props} styleName="workspace">
+            <div {...this.props} className={styles.workspace}>
                 <div
-                    styleName={classNames(
-                        'dropzone-overlay',
-                        { 'hidden': !(port && isDraggingFile) }
+                    className={classNames(
+                        styles.dropzoneOverlay,
+                        { [styles.hidden]: !(port && isDraggingFile) }
                     )}
                 >
-                    <div styleName="text-block">
+                    <div className={styles.textBlock}>
                         {i18n._('Drop G-code file here')}
                     </div>
                 </div>
                 <Dropzone
-                    styleName="dropzone"
+                    className={styles.dropzone}
                     disableClick={true}
                     disablePreview={true}
                     multiple={false}
@@ -300,20 +304,18 @@ class Workspace extends React.Component {
                         this.onDrop(acceptedFiles);
                     }}
                 >
-                    <div styleName="workspace-table">
-                        <div styleName="workspace-table-row">
+                    <div className={styles.workspaceTable}>
+                        <div className={styles.workspaceTableRow}>
                             <div
-                                styleName={classNames(
-                                    'primary-container',
-                                    { 'hidden': hidePrimaryContainer }
+                                ref={node => {
+                                    this.primaryContainer = node;
+                                }}
+                                className={classNames(
+                                    styles.primaryContainer,
+                                    { [styles.hidden]: hidePrimaryContainer }
                                 )}
-                                ref="primaryContainer"
                             >
-                                <div
-                                    className="clearfix"
-                                    styleName="toolbar"
-                                    role="toolbar"
-                                >
+                                <div className={styles.toolbar} role="toolbar">
                                     <div className="btn-group btn-group-xs pull-left" role="group">
                                         <button
                                             type="button"
@@ -342,7 +344,12 @@ class Workspace extends React.Component {
                                 />
                             </div>
                             {hidePrimaryContainer &&
-                            <div styleName="primary-toggler" ref="primaryToggler">
+                            <div
+                                ref={node => {
+                                    this.primaryToggler = node;
+                                }}
+                                className={styles.primaryToggler}
+                            >
                                 <div className="btn-group btn-group-xs">
                                     <button
                                         type="button"
@@ -354,11 +361,24 @@ class Workspace extends React.Component {
                                 </div>
                             </div>
                             }
-                            <div styleName="default-container fixed" ref="defaultContainer">
+                            <div
+                                ref={node => {
+                                    this.defaultContainer = node;
+                                }}
+                                className={classNames(
+                                    styles.defaultContainer,
+                                    styles.fixed
+                                )}
+                            >
                                 <DefaultWidgets />
                             </div>
                             {hideSecondaryContainer &&
-                            <div styleName="secondary-toggler" ref="secondaryToggler">
+                            <div
+                                ref={node => {
+                                    this.secondaryToggler = node;
+                                }}
+                                className={styles.secondaryToggler}
+                            >
                                 <div className="btn-group btn-group-xs">
                                     <button
                                         type="button"
@@ -371,17 +391,15 @@ class Workspace extends React.Component {
                             </div>
                             }
                             <div
-                                styleName={classNames(
-                                    'secondary-container',
-                                    { 'hidden': hideSecondaryContainer }
+                                ref={node => {
+                                    this.secondaryContainer = node;
+                                }}
+                                className={classNames(
+                                    styles.secondaryContainer,
+                                    { [styles.hidden]: hideSecondaryContainer }
                                 )}
-                                ref="secondaryContainer"
                             >
-                                <div
-                                    className="clearfix"
-                                    styleName="toolbar"
-                                    role="toolbar"
-                                >
+                                <div className={styles.toolbar} role="toolbar">
                                     <div className="btn-group btn-group-xs pull-left" role="group">
                                         <button
                                             type="button"

@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { withRouter } from 'react-router';
 import Notifications from '../../components/Notifications';
 import controller from '../../lib/controller';
@@ -64,6 +65,9 @@ class Login extends Component {
         password: null
     };
 
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
     getDefaultState() {
         return {
             alertMessage: '',

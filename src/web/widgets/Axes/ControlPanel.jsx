@@ -1,12 +1,10 @@
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import CSSModules from 'react-css-modules';
 import JogPad from './JogPad';
 import JogDistance from './JogDistance';
 import MotionButtonGroup from './MotionButtonGroup';
 import styles from './index.styl';
 
-@CSSModules(styles)
 class ControlPanel extends Component {
     static propTypes = {
         state: PropTypes.object,
@@ -18,7 +16,7 @@ class ControlPanel extends Component {
     }
     render() {
         return (
-            <div styleName="control-panel">
+            <div className={styles.controlPanel}>
                 <div className="row no-gutters">
                     <div className="col-xs-6">
                         <JogPad {...this.props} />

@@ -18,7 +18,6 @@ import {
 class EditAccount extends Component {
     static propTypes = {
         state: PropTypes.object,
-        stateChanged: PropTypes.bool,
         actions: PropTypes.object
     };
 

@@ -1,5 +1,6 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import semver from 'semver';
 import without from 'lodash/without';
@@ -181,6 +182,9 @@ class Header extends Component {
         this.removeControllerEvents();
 
         this.runningTasks = [];
+    }
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {

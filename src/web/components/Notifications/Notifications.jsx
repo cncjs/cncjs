@@ -1,11 +1,9 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
 import { State } from '../styleMaps';
 import styles from './index.styl';
 import Anchor from '../Anchor';
 
-@CSSModules(styles, { allowMultiple: true })
 class Notifications extends Component {
     static propTypes = {
         bsStyle: PropTypes.oneOf(State.values()),
@@ -19,7 +17,7 @@ class Notifications extends Component {
         return (
             <Anchor
                 onClick={this.props.onDismiss}
-                styleName="close"
+                className={styles.close}
             >
                 ×
             </Anchor>
@@ -32,9 +30,9 @@ class Notifications extends Component {
         return (
             <div
                 {...this.props}
-                styleName={classNames(
-                    'notifications',
-                    'notifications-' + bsStyle
+                className={classNames(
+                    styles.notifications,
+                    styles['notifications-' + bsStyle]
                 )}
             >
                 {isDismissable ? this.renderDismissButton() : null}

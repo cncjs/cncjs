@@ -1,13 +1,12 @@
+import classNames from 'classnames';
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
-import CSSModules from 'react-css-modules';
 import Sortable from 'react-sortablejs';
 import store from '../../store';
 import Widget from './Widget';
 import styles from './widgets.styl';
 
-@CSSModules(styles)
 class SecondaryWidgets extends Component {
     static propTypes = {
         onDelete: PropTypes.func.isRequired,
@@ -45,7 +44,7 @@ class SecondaryWidgets extends Component {
         }
     }
     unsubscribe() {
-        _.each(this.pubsubTokens, (token) => {
+        this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
@@ -58,6 +57,7 @@ class SecondaryWidgets extends Component {
         this.props.onDelete();
     }
     render() {
+        const { className } = this.props;
         const widgets = _.map(this.state.widgets, (widgetid) => (
             <Widget
                 widgetid={widgetid}
@@ -74,8 +74,7 @@ class SecondaryWidgets extends Component {
 
         return (
             <Sortable
-                {...this.props}
-                styleName="widgets"
+                className={classNames(className, styles.widgets)}
                 options={{
                     animation: 150,
                     group: {

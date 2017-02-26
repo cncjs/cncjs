@@ -17,7 +17,6 @@ import {
 class AddAccount extends Component {
     static propTypes = {
         state: PropTypes.object,
-        stateChanged: PropTypes.bool,
         actions: PropTypes.object
     };
 

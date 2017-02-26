@@ -4,12 +4,15 @@ import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
+import combokeys from '../../lib/combokeys';
+import controller from '../../lib/controller';
+import { preventDefault } from '../../lib/dom-events';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
-import controller from '../../lib/controller';
 import store from '../../store';
 import Axes from './Axes';
 import { show as showSettings } from './Settings';
+import ShuttleControl from './ShuttleControl';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -152,6 +155,80 @@ class AxesWidget extends Component {
             this.setState({ customDistance: distance });
         }
     };
+    shuttleControlEvents = {
+        SELECT_AXIS: (event, { axis }) => {
+            const { canClick, selectedAxis } = this.state;
+
+            if (!canClick) {
+                return;
+            }
+
+            if (selectedAxis === axis) {
+                this.actions.selectAxis(); // deselect axis
+            } else {
+                this.actions.selectAxis(axis);
+            }
+        },
+        JOG: (event, { axis = null, direction = 1, factor = 1 }) => {
+            const { canClick, keypadJogging, selectedAxis } = this.state;
+
+            if (!canClick) {
+                return;
+            }
+
+            if (axis !== null && !keypadJogging) {
+                // keypad jogging is disabled
+                return;
+            }
+
+            // The keyboard events of arrow keys for X-axis/Y-axis and pageup/pagedown for Z-axis
+            // are not prevented by default. If a jog command will be executed, it needs to
+            // stop the default behavior of a keyboard combination in a browser.
+            preventDefault(event);
+
+            axis = axis || selectedAxis;
+            const distance = this.actions.getJogDistance();
+            const jog = {
+                x: () => this.actions.jog({ X: direction * distance * factor }),
+                y: () => this.actions.jog({ Y: direction * distance * factor }),
+                z: () => this.actions.jog({ Z: direction * distance * factor })
+            }[axis];
+
+            jog && jog();
+        },
+        JOG_LEVER_SWITCH: (event) => {
+            const { selectedDistance } = this.state;
+            const distances = ['1', '0.1', '0.01', '0.001', ''];
+            const currentIndex = distances.indexOf(selectedDistance);
+            const distance = distances[(currentIndex + 1) % distances.length];
+            this.actions.selectDistance(distance);
+        },
+        SHUTTLE: (event, { value = 0 }) => {
+            const { canClick, selectedAxis } = this.state;
+
+            if (!canClick) {
+                return;
+            }
+
+            if (value === 0) {
+                // Clear accumulated result
+                this.shuttleControl.clear();
+
+                if (selectedAxis) {
+                    controller.command('gcode', 'G90');
+                }
+                return;
+            }
+
+            if (!selectedAxis) {
+                return;
+            }
+
+            const distance = Math.min(this.actions.getJogDistance(), 1);
+
+            this.shuttleControl.accumulate(selectedAxis, value, distance);
+        }
+    };
     controllerEvents = {
         'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
@@ -264,6 +341,7 @@ class AxesWidget extends Component {
         }
     };
     pubsubTokens = [];
+    shuttleControl = null;
 
     constructor() {
         super();
@@ -272,10 +350,12 @@ class AxesWidget extends Component {
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
+        this.addShuttleControlEvents();
     }
     componentWillUnmount() {
         this.unsubscribe();
         this.removeControllerEvents();
+        this.removeShuttleControlEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
@@ -381,6 +461,31 @@ class AxesWidget extends Component {
             const callback = this.controllerEvents[eventName];
             controller.off(eventName, callback);
         });
+    }
+    addShuttleControlEvents() {
+        Object.keys(this.shuttleControlEvents).forEach(eventName => {
+            const callback = this.shuttleControlEvents[eventName];
+            combokeys.on(eventName, callback);
+        });
+
+        // Shuttle Zone
+        this.shuttleControl = new ShuttleControl();
+        this.shuttleControl.on('flush', ({ axis, feedrate, relativeDistance }) => {
+            feedrate = feedrate.toFixed(3) * 1;
+            relativeDistance = relativeDistance.toFixed(4) * 1;
+
+            controller.command('gcode', 'G91 G1 F' + feedrate + ' ' + axis + relativeDistance);
+            controller.command('gcode', 'G90');
+        });
+    }
+    removeShuttleControlEvents() {
+        Object.keys(this.shuttleControlEvents).forEach(eventName => {
+            const callback = this.shuttleControlEvents[eventName];
+            combokeys.removeListener(eventName, callback);
+        });
+
+        this.shuttleControl.removeAllListeners('flush');
+        this.shuttleControl = null;
     }
     canClick() {
         const { port, workflowState } = this.state;

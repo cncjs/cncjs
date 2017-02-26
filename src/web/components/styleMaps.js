@@ -12,7 +12,7 @@ const styleMaps = {
         'large': 'lg',
         'medium': 'md',
         'small': 'sm',
-        'xsmall': 'xs',
+        'extra-small': 'xs',
         'lg': 'lg',
         'md': 'md',
         'sm': 'sm',

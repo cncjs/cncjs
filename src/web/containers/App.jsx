@@ -1,5 +1,5 @@
-import classNames from 'classnames';
 import React, { Component } from 'react';
+import shallowCompare from 'react-addons-shallow-compare';
 import user from '../lib/user';
 import Login from './Login';
 import Header from './Header';
@@ -11,6 +11,9 @@ import styles from './App.styl';
 const defaultPath = 'workspace';
 
 class App extends Component {
+    shouldComponentUpdate(nextProps, nextState) {
+        return shallowCompare(this, nextProps, nextState);
+    }
     render() {
         const { children } = this.props;
         const { path = defaultPath } = children.props.route;
@@ -30,11 +33,7 @@ class App extends Component {
                 </aside>
                 <div className={styles.main}>
                     <div className={styles.content}>
-                        <Workspace
-                            className={classNames(
-                                { 'hidden': path !== 'workspace' }
-                            )}
-                        />
+                        <Workspace style={{ display: (path !== 'workspace') ? 'none' : 'block' }} />
                         {path === 'settings' &&
                             <Settings path={childPath} />
                         }
