@@ -1,4 +1,6 @@
 import classNames from 'classnames';
+import includes from 'lodash/includes';
+import get from 'lodash/get';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -10,10 +12,20 @@ import Spindle from './Spindle';
 import {
     // Grbl
     GRBL,
+    GRBL_ACTIVE_STATE_IDLE,
+    GRBL_ACTIVE_STATE_HOLD,
     // Smoothie
     SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_IDLE,
+    SMOOTHIE_ACTIVE_STATE_HOLD,
     // TinyG
-    TINYG
+    TINYG,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
+    TINYG_MACHINE_STATE_HOLD,
+    // Workflow
+    WORKFLOW_STATE_RUN
 } from '../../constants';
 import styles from './index.styl';
 
@@ -104,6 +116,7 @@ class SpindleWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
+            workflowState: controller.workflowState,
             spindleState: '',
             coolantState: '',
             spindleSpeed: store.get('widgets.spindle.speed', 1000)
@@ -122,6 +135,11 @@ class SpindleWidget extends Component {
                         ...defaultState,
                         port: ''
                     });
+                }
+            }),
+            pubsub.subscribe('workflowState', (msg, workflowState) => {
+                if (this.state.workflowState !== workflowState) {
+                    this.setState({ workflowState: workflowState });
                 }
             })
         ];
@@ -146,10 +164,50 @@ class SpindleWidget extends Component {
         });
     }
     canClick() {
-        const { port } = this.state;
+        const { port, workflowState } = this.state;
+        const controllerType = this.state.controller.type;
+        const controllerState = this.state.controller.state;
 
         if (!port) {
             return false;
+        }
+        if (workflowState === WORKFLOW_STATE_RUN) {
+            return false;
+        }
+        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+            return false;
+        }
+        if (controllerType === GRBL) {
+            const activeState = get(controllerState, 'status.activeState');
+            const states = [
+                GRBL_ACTIVE_STATE_IDLE,
+                GRBL_ACTIVE_STATE_HOLD
+            ];
+            if (!includes(states, activeState)) {
+                return false;
+            }
+        }
+        if (controllerType === SMOOTHIE) {
+            const activeState = get(controllerState, 'status.activeState');
+            const states = [
+                SMOOTHIE_ACTIVE_STATE_IDLE,
+                SMOOTHIE_ACTIVE_STATE_HOLD
+            ];
+            if (!includes(states, activeState)) {
+                return false;
+            }
+        }
+        if (controllerType === TINYG) {
+            const machineState = get(controllerState, 'sr.machineState');
+            const states = [
+                TINYG_MACHINE_STATE_READY,
+                TINYG_MACHINE_STATE_STOP,
+                TINYG_MACHINE_STATE_END,
+                TINYG_MACHINE_STATE_HOLD
+            ];
+            if (!includes(states, machineState)) {
+                return false;
+            }
         }
 
         return true;
