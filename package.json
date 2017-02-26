@@ -70,7 +70,7 @@
     },
     "mac": {
       "category": "public.app-category.productivity",
-      "target": "dmg",
+      "target": ["dmg"],
       "icon": "build/icon.icns"
     },
     "dmg": {
@@ -93,11 +93,11 @@
       ]
     },
     "win": {
-      "target": "nsis",
+      "target": ["nsis"],
       "icon": "build/icon.ico"
     },
     "linux": {
-      "target": "deb"
+      "target": ["deb"]
     }
   },
   "keywords": [
