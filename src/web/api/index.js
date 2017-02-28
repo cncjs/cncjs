@@ -167,7 +167,7 @@ users.fetch = (options) => new Promise((resolve, reject) => {
         });
 });
 
-users.add = (options) => new Promise((resolve, reject) => {
+users.create = (options) => new Promise((resolve, reject) => {
     const { enabled, name, password } = { ...options };
 
     authrequest
@@ -227,12 +227,12 @@ events.fetch = (options) => new Promise((resolve, reject) => {
         });
 });
 
-events.add = (options) => new Promise((resolve, reject) => {
-    const { enabled, event, trigger, command } = { ...options };
+events.create = (options) => new Promise((resolve, reject) => {
+    const { enabled, event, trigger, commands } = { ...options };
 
     authrequest
         .post('/api/events')
-        .send({ enabled, event, trigger, command })
+        .send({ enabled, event, trigger, commands })
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -255,11 +255,11 @@ events.delete = (id) => new Promise((resolve, reject) => {
 });
 
 events.update = (id, options) => new Promise((resolve, reject) => {
-    const { enabled, event, trigger, command } = { ...options };
+    const { enabled, event, trigger, commands } = { ...options };
 
     authrequest
         .put('/api/events/' + id)
-        .send({ enabled, event, trigger, command })
+        .send({ enabled, event, trigger, commands })
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -298,7 +298,7 @@ macros.get = (id) => new Promise((resolve, reject) => {
         });
 });
 
-macros.add = (options) => new Promise((resolve, reject) => {
+macros.create = (options) => new Promise((resolve, reject) => {
     const { name, content } = { ...options };
 
     authrequest

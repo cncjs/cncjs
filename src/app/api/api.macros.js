@@ -39,7 +39,7 @@ export const getMacro = (req, res) => {
     });
 };
 
-export const addMacro = (req, res) => {
+export const createMacro = (req, res) => {
     const { name, content } = { ...req.body };
 
     try {

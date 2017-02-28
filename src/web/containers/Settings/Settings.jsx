@@ -203,7 +203,7 @@ class Settings extends Component {
         },
         // Account
         account: {
-            fetchItems: (options) => {
+            fetchRecords: (options) => {
                 const state = this.state.account;
                 const {
                     page = state.pagination.page,
@@ -256,13 +256,13 @@ class Settings extends Component {
                         });
                     });
             },
-            addItem: (options) => {
+            createRecord: (options) => {
                 const actions = this.actions.account;
 
-                api.users.add(options)
+                api.users.create(options)
                     .then((res) => {
                         actions.closeModal();
-                        actions.fetchItems();
+                        actions.fetchRecords();
                     })
                     .catch((res) => {
                         const fallbackMsg = i18n._('An unexpected error has occurred.');
@@ -273,13 +273,34 @@ class Settings extends Component {
                         actions.updateModalParams({ alertMessage: msg });
                     });
             },
-            updateItem: (id, options) => {
+            updateRecord: (id, options, forceReload = false) => {
                 const actions = this.actions.account;
 
                 api.users.update(id, options)
                     .then((res) => {
                         actions.closeModal();
-                        actions.fetchItems();
+
+                        if (forceReload) {
+                            actions.fetchRecords();
+                            return;
+                        }
+
+                        const records = this.state.account.records;
+                        const index = _.findIndex(records, { id: id });
+
+                        if (index >= 0) {
+                            records[index] = {
+                                ...records[index],
+                                ...options
+                            };
+
+                            this.setState({
+                                account: {
+                                    ...this.state.account,
+                                    records: records
+                                }
+                            });
+                        }
                     })
                     .catch((res) => {
                         const fallbackMsg = i18n._('An unexpected error has occurred.');
@@ -291,12 +312,12 @@ class Settings extends Component {
                         actions.updateModalParams({ alertMessage: msg });
                     });
             },
-            deleteItem: (id) => {
+            deleteRecord: (id) => {
                 const actions = this.actions.account;
 
                 api.users.delete(id)
                     .then((res) => {
-                        actions.fetchItems();
+                        actions.fetchRecords();
                     })
                     .catch((res) => {
                         // Ignore error
@@ -341,7 +362,7 @@ class Settings extends Component {
         },
         // Event Trigger
         eventTrigger: {
-            fetchItems: (options) => {
+            fetchRecords: (options) => {
                 const state = this.state.eventTrigger;
                 const {
                     page = state.pagination.page,
@@ -394,13 +415,13 @@ class Settings extends Component {
                         });
                     });
             },
-            addItem: (options) => {
+            createRecord: (options) => {
                 const actions = this.actions.eventTrigger;
 
-                api.events.add(options)
+                api.events.create(options)
                     .then((res) => {
                         actions.closeModal();
-                        actions.fetchItems();
+                        actions.fetchRecords();
                     })
                     .catch((res) => {
                         const fallbackMsg = i18n._('An unexpected error has occurred.');
@@ -411,12 +432,17 @@ class Settings extends Component {
                         actions.updateModalParams({ alertMessage: msg });
                     });
             },
-            updateItem: (id, options) => {
+            updateRecord: (id, options, forceReload = false) => {
                 const actions = this.actions.eventTrigger;
 
                 api.events.update(id, options)
                     .then((res) => {
                         actions.closeModal();
+
+                        if (forceReload) {
+                            actions.fetchRecords();
+                            return;
+                        }
 
                         const records = this.state.eventTrigger.records;
                         const index = _.findIndex(records, { id: id });
@@ -444,12 +470,12 @@ class Settings extends Component {
                         actions.updateModalParams({ alertMessage: msg });
                     });
             },
-            deleteItem: (id) => {
+            deleteRecord: (id) => {
                 const actions = this.actions.eventTrigger;
 
                 api.events.delete(id)
                     .then((res) => {
-                        actions.fetchItems();
+                        actions.fetchRecords();
                     })
                     .catch((res) => {
                         // Ignore error

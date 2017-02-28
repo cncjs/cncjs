@@ -48,7 +48,7 @@ class MacroWidget extends Component {
         addMacro: async ({ name, content }) => {
             try {
                 let res;
-                res = await api.macros.add({ name, content });
+                res = await api.macros.create({ name, content });
                 res = await api.macros.fetch();
                 const macros = res.body;
                 this.setState({ macros: macros });

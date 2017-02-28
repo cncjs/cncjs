@@ -1,16 +1,15 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
-import Toggle from 'react-toggle';
 import Modal from '../../../components/Modal';
 import Notifications from '../../../components/Notifications';
+import ToggleSwitch from '../../../components/ToggleSwitch';
 import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
 import styles from '../form.styl';
 
-class EditModal extends Component {
+class UpdateRecord extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -28,7 +27,7 @@ class EditModal extends Component {
     }
     get value() {
         return {
-            enabled: !!_.get(this.fields.enabled, 'checked'),
+            enabled: !!_.get(this.fields.enabled, 'state.checked'),
             name: _.get(this.fields.name, 'state.value'),
             oldPassword: _.get(this.fields.oldPassword, 'state.value'),
             newPassword: _.get(this.fields.newPassword, 'state.value')
@@ -45,7 +44,13 @@ class EditModal extends Component {
                 size="sm"
             >
                 <Modal.Header>
-                    <Modal.Title>{i18n._('Edit Account')}</Modal.Title>
+                    <Modal.Title>
+                        {i18n._('Account')}
+                        <span className="space" />
+                        &rsaquo;
+                        <span className="space" />
+                        {i18n._('Update')}
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {alertMessage &&
@@ -70,11 +75,12 @@ class EditModal extends Component {
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Account status')}</label>
                                 <div>
-                                    <Toggle
+                                    <ToggleSwitch
                                         ref={node => {
-                                            this.fields.enabled = node ? ReactDOM.findDOMNode(node).querySelector('input') : null;
+                                            this.fields.enabled = node;
                                         }}
-                                        defaultChecked={enabled}
+                                        size="sm"
+                                        checked={enabled}
                                     />
                                 </div>
                             </div>
@@ -185,8 +191,9 @@ class EditModal extends Component {
 
                             const { id } = modal.params;
                             const { enabled, name, oldPassword, newPassword } = this.value;
+                            const forceReload = true;
 
-                            actions.updateItem(id, { enabled, name, oldPassword, newPassword });
+                            actions.updateRecord(id, { enabled, name, oldPassword, newPassword }, forceReload);
                         }}
                     >
                         {i18n._('OK')}
@@ -197,4 +204,4 @@ class EditModal extends Component {
     }
 }
 
-export default EditModal;
+export default UpdateRecord;

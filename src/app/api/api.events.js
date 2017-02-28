@@ -9,7 +9,8 @@ import {
 } from '../constants';
 
 export const fetchEvents = (req, res) => {
-    const events = _.orderBy(config.get('events', []), ['event'], ['asc']);
+    // Sort by `mtime` in descending order and by `event` in ascending order.
+    const events = _.orderBy(config.get('events', []), ['mtime', 'event'], ['desc', 'asc']);
     const totalRecords = events.length;
     let { page = 1, pageLength = 10 } = req.query;
 
@@ -35,10 +36,12 @@ export const fetchEvents = (req, res) => {
         }
         return {
             id: evt.id,
+            mtime: evt.mtime,
             enabled: evt.enabled,
             event: evt.event,
             trigger: evt.trigger,
-            command: evt.command
+            // WARNING: The "command" parameter is deprecated and will be removed in a future release.
+            commands: (evt.commands || evt.command || '')
         };
     });
 
@@ -69,38 +72,40 @@ export const getEvent = (req, res) => {
 
     res.send({
         id: evt.id,
+        mtime: evt.mtime,
         enabled: evt.enabled,
         event: evt.event,
         trigger: evt.trigger,
-        command: evt.command
+        // WARNING: The "command" parameter is deprecated and will be removed in a future release.
+        commands: (evt.commands || evt.command || '')
     });
 };
 
-export const addEvent = (req, res) => {
+export const createEvent = (req, res) => {
     const {
         enabled = false,
         event = '',
         trigger = '',
-        command = ''
+        commands = ''
     } = { ...req.body };
 
     if (!event) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'event\' must not be empty'
+            msg: 'The "event" parameter must not be empty'
         });
         return;
     }
 
     if (!trigger) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'trigger\' must not be empty'
+            msg: 'The "trigger" parameter must not be empty'
         });
         return;
     }
 
-    if (!command) {
+    if (!commands) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'command\' must not be empty'
+            msg: 'The "commands" parameter must not be empty'
         });
         return;
     }
@@ -109,10 +114,11 @@ export const addEvent = (req, res) => {
         const events = config.get('events', []);
         const evt = {
             id: uuid.v4(),
+            mtime: new Date().getTime(),
             enabled: !!enabled,
             event: event,
             trigger: trigger,
-            command: command
+            commands: commands
         };
 
         if (_.isArray(events)) {
@@ -122,7 +128,7 @@ export const addEvent = (req, res) => {
             config.set('events', [evt]);
         }
 
-        res.send({ id: evt.id });
+        res.send({ id: evt.id, mtime: evt.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
@@ -146,45 +152,46 @@ export const updateEvent = (req, res) => {
         enabled = evt.enabled,
         event = evt.event,
         trigger = evt.trigger,
-        command = evt.command
+        // WARNING: The "command" parameter is deprecated and will be removed in a future release.
+        commands = (evt.commands || evt.command || '')
     } = { ...req.body };
 
     if (typeof enabled !== 'boolean') {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'enabled\' must be a boolean value'
+            msg: 'The "enabled" parameter must be a boolean value'
         });
         return;
     }
 
     if (!event) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'event\' must not be empty'
+            msg: 'The "event" parameter must not be empty'
         });
         return;
     }
 
     if (!trigger) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'trigger\' must not be empty'
+            msg: 'The "trigger" parameter must not be empty'
         });
         return;
     }
 
-    if (!command) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'command\' must not be empty'
-        });
-        return;
-    }
+    // Skip checking whether the commands parameter is empty or not
 
     try {
+        evt.mtime = new Date().getTime();
         evt.enabled = enabled;
         evt.event = event;
         evt.trigger = trigger;
-        evt.command = command;
+        evt.commands = commands;
+        if (evt.command !== undefined) {
+            // WARNING: The "command" parameter is deprecated and will be removed in a future release.
+            delete evt.command;
+        }
         config.set('events', events);
 
-        res.send({ id: evt.id });
+        res.send({ id: evt.id, mtime: evt.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)

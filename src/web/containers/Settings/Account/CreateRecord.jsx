@@ -1,16 +1,15 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
-import Toggle from 'react-toggle';
 import Modal from '../../../components/Modal';
 import Notifications from '../../../components/Notifications';
+import ToggleSwitch from '../../../components/ToggleSwitch';
 import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
 import styles from '../form.styl';
 
-class AddModal extends Component {
+class CreateRecord extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -27,7 +26,7 @@ class AddModal extends Component {
     }
     get value() {
         return {
-            enabled: !!_.get(this.fields.enabled, 'checked'),
+            enabled: !!_.get(this.fields.enabled, 'state.checked'),
             name: _.get(this.fields.name, 'state.value'),
             password: _.get(this.fields.password, 'state.value')
         };
@@ -43,7 +42,13 @@ class AddModal extends Component {
                 size="sm"
             >
                 <Modal.Header>
-                    <Modal.Title>{i18n._('Add New Account')}</Modal.Title>
+                    <Modal.Title>
+                        {i18n._('Account')}
+                        <span className="space" />
+                        &rsaquo;
+                        <span className="space" />
+                        {i18n._('New')}
+                    </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {alertMessage &&
@@ -68,11 +73,12 @@ class AddModal extends Component {
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Account status')}</label>
                                 <div>
-                                    <Toggle
+                                    <ToggleSwitch
                                         ref={node => {
-                                            this.fields.enabled = node ? ReactDOM.findDOMNode(node).querySelector('input') : null;
+                                            this.fields.enabled = node;
                                         }}
-                                        defaultChecked={true}
+                                        size="sm"
+                                        checked={true}
                                     />
                                 </div>
                             </div>
@@ -147,7 +153,7 @@ class AddModal extends Component {
 
                             const { enabled, name, password } = this.value;
 
-                            actions.addItem({ enabled, name, password });
+                            actions.createRecord({ enabled, name, password });
                         }}
                     >
                         {i18n._('OK')}
@@ -158,4 +164,4 @@ class AddModal extends Component {
     }
 }
 
-export default AddModal;
+export default CreateRecord;

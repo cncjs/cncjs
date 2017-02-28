@@ -1,17 +1,19 @@
 /* eslint react/jsx-no-bind: 0 */
+import moment from 'moment';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Anchor from '../../../components/Anchor';
 import Table, { Toolbar } from '../../../components/Table';
+import ToggleSwitch from '../../../components/ToggleSwitch';
 import { TablePagination } from '../../../components/Paginations';
 import confirm from '../../../lib/confirm';
 import i18n from '../../../lib/i18n';
 import {
-    MODAL_ADD,
-    MODAL_EDIT
+    MODAL_CREATE_RECORD,
+    MODAL_UPDATE_RECORD
 } from './constants';
 
-class TableView extends Component {
+class TableRecords extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -61,12 +63,12 @@ class TableView extends Component {
                             type="button"
                             className="btn btn-default"
                             onClick={() => {
-                                actions.openModal(MODAL_ADD);
+                                actions.openModal(MODAL_CREATE_RECORD);
                             }}
                         >
                             <i className="fa fa-user-plus" />
                             <span className="space" />
-                            {i18n._('Add New Account')}
+                            {i18n._('New')}
                         </button>
                         <div style={{ position: 'absolute', right: 0, top: 0 }}>
                             <TablePagination
@@ -74,7 +76,7 @@ class TableView extends Component {
                                 pageLength={state.pagination.pageLength}
                                 totalRecords={state.pagination.totalRecords}
                                 onPageChange={({ page, pageLength }) => {
-                                    actions.fetchItems({ page, pageLength });
+                                    actions.fetchRecords({ page, pageLength });
                                 }}
                                 prevPageRenderer={() => <i className="fa fa-angle-left" />}
                                 nextPageRenderer={() => <i className="fa fa-angle-right" />}
@@ -84,6 +86,26 @@ class TableView extends Component {
                 }
                 columns={[
                     {
+                        title: i18n._('Enabled'),
+                        key: 'enabled',
+                        width: '1%',
+                        render: (value, row, index) => {
+                            const { id, enabled } = row;
+                            const title = enabled ? i18n._('Enabled') : i18n._('Disabled');
+
+                            return (
+                                <ToggleSwitch
+                                    checked={enabled}
+                                    size="sm"
+                                    title={title}
+                                    onChange={(event) => {
+                                        actions.updateRecord(id, { enabled: !enabled });
+                                    }}
+                                />
+                            );
+                        }
+                    },
+                    {
                         title: i18n._('Name'),
                         key: 'name',
                         render: (value, row, index) => {
@@ -92,7 +114,7 @@ class TableView extends Component {
                             return (
                                 <Anchor
                                     onClick={(event) => {
-                                        actions.openModal(MODAL_EDIT, row);
+                                        actions.openModal(MODAL_UPDATE_RECORD, row);
                                     }}
                                 >
                                     {name}
@@ -101,30 +123,17 @@ class TableView extends Component {
                         }
                     },
                     {
-                        title: i18n._('Status'),
+                        title: i18n._('Date Modified'),
                         className: 'text-nowrap',
-                        key: 'status',
+                        key: 'date-modified',
                         width: '1%',
                         render: (value, row, index) => {
-                            const { enabled } = row;
-
-                            if (enabled) {
-                                return (
-                                    <span>
-                                        <i className="fa fa-fw fa-check" />
-                                        <span className="space" />
-                                        {i18n._('Enabled')}
-                                    </span>
-                                );
-                            } else {
-                                return (
-                                    <span>
-                                        <i className="fa fa-fw fa-times" />
-                                        <span className="space" />
-                                        {i18n._('Disabled')}
-                                    </span>
-                                );
+                            const { mtime } = row;
+                            if (mtime) {
+                                return moment(mtime).format('lll');
                             }
+
+                            return '–';
                         }
                     },
                     {
@@ -142,7 +151,7 @@ class TableView extends Component {
                                         className="btn btn-xs btn-default"
                                         title={i18n._('Edit Account')}
                                         onClick={(event) => {
-                                            actions.openModal(MODAL_EDIT, row);
+                                            actions.openModal(MODAL_UPDATE_RECORD, row);
                                         }}
                                     >
                                         <i className="fa fa-fw fa-edit" />
@@ -156,7 +165,7 @@ class TableView extends Component {
                                                 title: i18n._('Delete Account'),
                                                 body: i18n._('Are you sure you want to delete the account?')
                                             }).then(() => {
-                                                actions.deleteItem(id);
+                                                actions.deleteRecord(id);
                                             });
                                         }}
                                     >
@@ -172,4 +181,4 @@ class TableView extends Component {
     }
 }
 
-export default TableView;
+export default TableRecords;

@@ -17,13 +17,20 @@ class EventTrigger {
 
         events
             .filter(event => event && event.event === eventKey)
-            .forEach(({ enabled = false, event, trigger, command }) => {
-                if (!enabled || !trigger || !command) {
+            .forEach(options => {
+                const {
+                    enabled = false,
+                    event,
+                    trigger,
+                    commands
+                } = { ...options };
+
+                if (!enabled) {
                     return;
                 }
 
                 if (typeof this.callback === 'function') {
-                    this.callback(event, trigger, command);
+                    this.callback(event, trigger, commands);
                 }
             });
     }
