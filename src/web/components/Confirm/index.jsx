@@ -99,8 +99,8 @@ class Confirm extends Component {
             .uniq()
             .map(button => {
                 return {
-                    'confirm': <ConfirmButton {...btnConfirm} />,
-                    'cancel': <CancelButton {...btnCancel} />
+                    'confirm': <ConfirmButton key="confirm" {...btnConfirm} />,
+                    'cancel': <CancelButton key="cancel" {...btnCancel} />
                 }[button];
             })
             .value();

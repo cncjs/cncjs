@@ -22,6 +22,63 @@ class MacroWidget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+        openModal: (modalState = MODAL_STATE_NONE, modalParams = {}) => {
+            this.setState({
+                modalState: modalState,
+                modalParams: modalParams
+            });
+        },
+        closeModal: () => {
+            this.setState({
+                modalState: MODAL_STATE_NONE,
+                modalParams: {}
+            });
+        },
+        fetchMacros: async () => {
+            try {
+                let res;
+                res = await api.macros.fetch();
+                const macros = res.body;
+                this.setState({ macros: macros });
+            } catch (err) {
+                // Ignore error
+            }
+        },
+        addMacro: async ({ name, content }) => {
+            try {
+                let res;
+                res = await api.macros.create({ name, content });
+                res = await api.macros.fetch();
+                const macros = res.body;
+                this.setState({ macros: macros });
+            } catch (err) {
+                // Ignore error
+            }
+        },
+        deleteMacro: async (id) => {
+            try {
+                let res;
+                res = await api.macros.delete(id);
+                res = await api.macros.fetch();
+                const macros = res.body;
+                this.setState({ macros: macros });
+            } catch (err) {
+                // Ignore error
+            }
+        },
+        updateMacro: async (id, { name, content }) => {
+            try {
+                let res;
+                res = await api.macros.update(id, { name, content });
+                res = await api.macros.fetch();
+                const macros = res.body;
+                this.setState({ macros: macros });
+            } catch (err) {
+                // Ignore error
+            }
+        }
+    };
     pubsubTokens = [];
 
     constructor() {
@@ -32,7 +89,7 @@ class MacroWidget extends Component {
         this.subscribe();
 
         // Fetch the list of macros
-        this.listMacros();
+        this.actions.fetchMacros();
     }
     componentWillUnmount() {
         this.unsubscribe();
@@ -81,72 +138,13 @@ class MacroWidget extends Component {
         });
         this.pubsubTokens = [];
     }
-    openModal(modalState = MODAL_STATE_NONE, modalParams = {}) {
-        this.setState({
-            modalState: modalState,
-            modalParams: modalParams
-        });
-    }
-    closeModal() {
-        this.setState({
-            modalState: MODAL_STATE_NONE,
-            modalParams: {}
-        });
-    }
-    async listMacros() {
-        try {
-            let res;
-            res = await api.listMacros();
-            const macros = res.body;
-            this.setState({ macros: macros });
-        } catch (err) {
-            // Ignore error
-        }
-    }
-    async addMacro({ name, content }) {
-        try {
-            let res;
-            res = await api.addMacro({ name, content });
-            res = await api.listMacros();
-            const macros = res.body;
-            this.setState({ macros: macros });
-        } catch (err) {
-            // Ignore error
-        }
-    }
-    async deleteMacro({ id }) {
-        try {
-            let res;
-            res = await api.deleteMacro({ id });
-            res = await api.listMacros();
-            const macros = res.body;
-            this.setState({ macros: macros });
-        } catch (err) {
-            // Ignore error
-        }
-    }
-    async updateMacro({ id, name, content }) {
-        try {
-            let res;
-            res = await api.updateMacro({ id, name, content });
-            res = await api.listMacros();
-            const macros = res.body;
-            this.setState({ macros: macros });
-        } catch (err) {
-            // Ignore error
-        }
-    }
     render() {
         const { minimized, isFullscreen } = this.state;
         const state = {
             ...this.state
         };
         const actions = {
-            openModal: ::this.openModal,
-            closeModal: ::this.closeModal,
-            addMacro: ::this.addMacro,
-            updateMacro: ::this.updateMacro,
-            deleteMacro: ::this.deleteMacro
+            ...this.actions
         };
 
         return (

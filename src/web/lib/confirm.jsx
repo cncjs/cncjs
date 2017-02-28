@@ -9,8 +9,8 @@ class ConfirmHOC extends Component {
         container: PropTypes.object,
         onConfirm: PropTypes.func,
         onCancel: PropTypes.func,
-        btnConfirm: PropTypes.node,
-        btnCancel: PropTypes.node
+        btnConfirm: Confirm.propTypes.btnConfirm,
+        btnCancel: Confirm.propTypes.btnCancel
     };
 
     state = {

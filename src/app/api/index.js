@@ -4,6 +4,7 @@ export * as gcode from './api.gcode';
 export * as i18n from './api.i18n';
 export * as controllers from './api.controllers';
 export * as users from './api.users';
+export * as events from './api.events';
 export * as macros from './api.macros';
 export * as commands from './api.commands';
 export * as watch from './api.watch';

@@ -2,7 +2,9 @@ import classNames from 'classnames';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { withRouter } from 'react-router';
+import Anchor from '../../components/Anchor';
 import Notifications from '../../components/Notifications';
+import settings from '../../config/settings';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -78,6 +80,7 @@ class Login extends Component {
         const state = { ...this.state };
         const actions = { ...this.actions };
         const { alertMessage, authenticating } = state;
+        const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
 
         return (
             <div className={styles.container}>
@@ -86,7 +89,7 @@ class Login extends Component {
                         <img src="images/logo-square-256x256.png" role="presentation" />
                     </div>
                     <div className={styles.title}>
-                        {i18n._('Sign in to cnc')}
+                        {i18n._('Sign in to {{name}}', { name: settings.name })}
                     </div>
                     {alertMessage &&
                     <Notifications bsStyle="danger" onDismiss={actions.clearAlertMessage}>
@@ -114,23 +117,30 @@ class Login extends Component {
                                 placeholder={i18n._('Password')}
                             />
                         </div>
-                        <button
-                            type="button"
-                            className="btn btn-block btn-primary"
-                            onClick={this.actions.handleSignIn}
-                        >
-                            <i
-                                className={classNames(
-                                    'fa',
-                                    'fa-fw',
-                                    { 'fa-spin': authenticating },
-                                    { 'fa-circle-o-notch': authenticating },
-                                    { 'fa-sign-in': !authenticating }
-                                )}
-                            />
-                            <span className="space" />
-                            {i18n._('Sign In')}
-                        </button>
+                        <div className="form-group">
+                            <button
+                                type="button"
+                                className="btn btn-block btn-primary"
+                                onClick={this.actions.handleSignIn}
+                            >
+                                <i
+                                    className={classNames(
+                                        'fa',
+                                        'fa-fw',
+                                        { 'fa-spin': authenticating },
+                                        { 'fa-circle-o-notch': authenticating },
+                                        { 'fa-sign-in': !authenticating }
+                                    )}
+                                />
+                                <span className="space" />
+                                {i18n._('Sign In')}
+                            </button>
+                        </div>
+                        <p>
+                            <Anchor href={forgotPasswordLink}>
+                                {i18n._('Forgot your password?')}
+                            </Anchor>
+                        </p>
                     </form>
                 </div>
             </div>

@@ -94,7 +94,7 @@ class EditMacro extends Component {
                                     text: i18n._('No')
                                 }
                             }).then(() => {
-                                actions.deleteMacro({ id });
+                                actions.deleteMacro(id);
                                 actions.closeModal();
                             });
                         }}
@@ -127,7 +127,7 @@ class EditMacro extends Component {
                             const name = _.get(this.fields.name, 'state.value');
                             const content = _.get(this.fields.content, 'state.value');
 
-                            actions.updateMacro({ id, name, content });
+                            actions.updateMacro(id, { name, content });
                             actions.closeModal();
                         }}
                     >

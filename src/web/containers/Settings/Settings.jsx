@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import i18next from 'i18next';
 import _ from 'lodash';
+import camelCase from 'lodash/camelCase';
 import Uri from 'jsuri';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -13,11 +14,16 @@ import i18n from '../../lib/i18n';
 import store from '../../store';
 import General from './General';
 import Account from './Account';
+import EventTrigger from './EventTrigger';
 import About from './About';
 import styles from './index.styl';
+import {
+    ERR_CONFLICT,
+    ERR_PRECONDITION_FAILED
+} from '../../api/constants';
 
-const mapPathToSectionKey = (path = '') => {
-    return path.split('/')[0] || '';
+const mapPathToSectionId = (path = '') => {
+    return camelCase(path.split('/')[0] || '');
 };
 
 class Settings extends Component {
@@ -30,17 +36,26 @@ class Settings extends Component {
 
     sections = [
         {
-            key: 'general',
+            id: 'general',
+            path: 'general',
             title: i18n._('General'),
             component: (props) => <General {...props} />
         },
         {
-            key: 'account',
+            id: 'account',
+            path: 'account',
             title: i18n._('Account'),
             component: (props) => <Account {...props} />
         },
         {
-            key: 'about',
+            id: 'eventTrigger',
+            path: 'event-trigger',
+            title: i18n._('Event Trigger'),
+            component: (props) => <EventTrigger {...props} />
+        },
+        {
+            id: 'about',
+            path: 'about',
             title: i18n._('About'),
             component: (props) => <About {...props} />
         }
@@ -188,7 +203,7 @@ class Settings extends Component {
         },
         // Account
         account: {
-            fetchData: (options) => {
+            fetchRecords: (options) => {
                 const state = this.state.account;
                 const {
                     page = state.pagination.page,
@@ -206,7 +221,7 @@ class Settings extends Component {
                     }
                 });
 
-                api.listUsers({ page, pageLength })
+                api.users.fetch({ page, pageLength })
                     .then((res) => {
                         const { pagination, records } = res.body;
 
@@ -241,6 +256,73 @@ class Settings extends Component {
                         });
                     });
             },
+            createRecord: (options) => {
+                const actions = this.actions.account;
+
+                api.users.create(options)
+                    .then((res) => {
+                        actions.closeModal();
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            [ERR_CONFLICT]: i18n._('The account name is already being used. Choose another name.')
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    });
+            },
+            updateRecord: (id, options, forceReload = false) => {
+                const actions = this.actions.account;
+
+                api.users.update(id, options)
+                    .then((res) => {
+                        actions.closeModal();
+
+                        if (forceReload) {
+                            actions.fetchRecords();
+                            return;
+                        }
+
+                        const records = this.state.account.records;
+                        const index = _.findIndex(records, { id: id });
+
+                        if (index >= 0) {
+                            records[index] = {
+                                ...records[index],
+                                ...options
+                            };
+
+                            this.setState({
+                                account: {
+                                    ...this.state.account,
+                                    records: records
+                                }
+                            });
+                        }
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            [ERR_CONFLICT]: i18n._('The account name is already being used. Choose another name.'),
+                            [ERR_PRECONDITION_FAILED]: i18n._('Passwords do not match.')
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    });
+            },
+            deleteRecord: (id) => {
+                const actions = this.actions.account;
+
+                api.users.delete(id)
+                    .then((res) => {
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        // Ignore error
+                    });
+            },
             openModal: (name = '', params = {}) => {
                 this.setState({
                     account: {
@@ -271,6 +353,164 @@ class Settings extends Component {
                             ...this.state.account.modal,
                             params: {
                                 ...this.state.account.modal.params,
+                                ...params
+                            }
+                        }
+                    }
+                });
+            }
+        },
+        // Event Trigger
+        eventTrigger: {
+            fetchRecords: (options) => {
+                const state = this.state.eventTrigger;
+                const {
+                    page = state.pagination.page,
+                    pageLength = state.pagination.pageLength
+                } = { ...options };
+
+                this.setState({
+                    eventTrigger: {
+                        ...this.state.eventTrigger,
+                        api: {
+                            ...this.state.eventTrigger.api,
+                            err: false,
+                            fetching: true
+                        }
+                    }
+                });
+
+                api.events.fetch({ page, pageLength })
+                    .then((res) => {
+                        const { pagination, records } = res.body;
+
+                        this.setState({
+                            eventTrigger: {
+                                ...this.state.eventTrigger,
+                                api: {
+                                    ...this.state.eventTrigger.api,
+                                    err: false,
+                                    fetching: false
+                                },
+                                pagination: {
+                                    page: pagination.page,
+                                    pageLength: pagination.pageLength,
+                                    totalRecords: pagination.totalRecords
+                                },
+                                records: records
+                            }
+                        });
+                    })
+                    .catch((res) => {
+                        this.setState({
+                            eventTrigger: {
+                                ...this.state.eventTrigger,
+                                api: {
+                                    ...this.state.eventTrigger.api,
+                                    err: true,
+                                    fetching: false
+                                },
+                                records: []
+                            }
+                        });
+                    });
+            },
+            createRecord: (options) => {
+                const actions = this.actions.eventTrigger;
+
+                api.events.create(options)
+                    .then((res) => {
+                        actions.closeModal();
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            // TODO
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    });
+            },
+            updateRecord: (id, options, forceReload = false) => {
+                const actions = this.actions.eventTrigger;
+
+                api.events.update(id, options)
+                    .then((res) => {
+                        actions.closeModal();
+
+                        if (forceReload) {
+                            actions.fetchRecords();
+                            return;
+                        }
+
+                        const records = this.state.eventTrigger.records;
+                        const index = _.findIndex(records, { id: id });
+
+                        if (index >= 0) {
+                            records[index] = {
+                                ...records[index],
+                                ...options
+                            };
+
+                            this.setState({
+                                eventTrigger: {
+                                    ...this.state.eventTrigger,
+                                    records: records
+                                }
+                            });
+                        }
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            // TODO
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    });
+            },
+            deleteRecord: (id) => {
+                const actions = this.actions.eventTrigger;
+
+                api.events.delete(id)
+                    .then((res) => {
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        // Ignore error
+                    });
+            },
+            openModal: (name = '', params = {}) => {
+                this.setState({
+                    eventTrigger: {
+                        ...this.state.eventTrigger,
+                        modal: {
+                            name: name,
+                            params: params
+                        }
+                    }
+                });
+            },
+            closeModal: () => {
+                this.setState({
+                    eventTrigger: {
+                        ...this.state.eventTrigger,
+                        modal: {
+                            name: '',
+                            params: {}
+                        }
+                    }
+                });
+            },
+            updateModalParams: (params = {}) => {
+                this.setState({
+                    eventTrigger: {
+                        ...this.state.eventTrigger,
+                        modal: {
+                            ...this.state.eventTrigger.modal,
+                            params: {
+                                ...this.state.eventTrigger.modal.params,
                                 ...params
                             }
                         }
@@ -367,6 +607,26 @@ class Settings extends Component {
                     }
                 }
             },
+            eventTrigger: {
+                // followed by api state
+                api: {
+                    err: false,
+                    fetching: false
+                },
+                // followed by data
+                pagination: {
+                    page: 1,
+                    pageLength: 10,
+                    totalRecords: 0
+                },
+                records: [],
+                // Modal
+                modal: {
+                    name: '',
+                    params: {
+                    }
+                }
+            },
             about: {
                 version: {
                     checking: false,
@@ -384,16 +644,16 @@ class Settings extends Component {
         const actions = {
             ...this.actions
         };
-        const key = mapPathToSectionKey(state.path);
-        const activeSection = _.find(this.sections, { key: key }) || this.sections[0];
+        const id = mapPathToSectionId(state.path);
+        const activeSection = _.find(this.sections, { id: id }) || this.sections[0];
         const sectionItems = this.sections.map((section, index) =>
             <li
-                key={section.key}
+                key={section.id}
                 className={classNames(
-                    { [styles.active]: activeSection.key === section.key }
+                    { [styles.active]: activeSection.id === section.id }
                 )}
             >
-                <Link to={`/settings/${section.key}`}>
+                <Link to={`/settings/${section.path}`}>
                     {section.title}
                 </Link>
             </li>
@@ -401,10 +661,10 @@ class Settings extends Component {
 
         // Section component
         const Section = activeSection.component;
-        const sectionInitialState = this.initialState[activeSection.key];
-        const sectionState = state[activeSection.key];
+        const sectionInitialState = this.initialState[activeSection.id];
+        const sectionState = state[activeSection.id];
         const sectionStateChanged = !_.isEqual(sectionInitialState, sectionState);
-        const sectionActions = actions[activeSection.key];
+        const sectionActions = actions[activeSection.id];
 
         return (
             <div className={styles.settings}>

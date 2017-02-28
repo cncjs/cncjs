@@ -91,8 +91,9 @@ export const signin = (req, res) => {
     });
 };
 
-export const getUsers = (req, res) => {
-    const users = _.orderBy(config.get('users', []), ['name'], ['asc']);
+export const fetchUsers = (req, res) => {
+    // Sort by `mtime` in descending order and by `name` in ascending order.
+    const users = _.orderBy(config.get('users', []), ['mtime', 'name'], ['desc', 'asc']);
     const totalRecords = users.length;
     let { page = 1, pageLength = 10 } = req.query;
 
@@ -114,6 +115,7 @@ export const getUsers = (req, res) => {
     const records = users.slice(begin, end).map((user) => {
         return {
             id: user.id,
+            mtime: user.mtime,
             enabled: user.enabled,
             name: user.name
         };
@@ -131,7 +133,7 @@ export const getUsers = (req, res) => {
 
 export const getUser = (req, res) => {
     const user = _.find(config.get('users', []), { id: req.params.id });
-    const { id, enabled, name } = { ...user };
+    const { id, mtime, enabled, name } = { ...user };
 
     if (!user) {
         res.status(ERR_NOT_FOUND).send({
@@ -140,10 +142,10 @@ export const getUser = (req, res) => {
         return;
     }
 
-    res.send({ id, enabled, name });
+    res.send({ id, mtime, enabled, name });
 };
 
-export const addUser = (req, res) => {
+export const createUser = (req, res) => {
     const {
         enabled = false,
         name = '',
@@ -152,14 +154,14 @@ export const addUser = (req, res) => {
 
     if (!name) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'name\' must not be empty'
+            msg: 'The "name" parameter must not be empty'
         });
         return;
     }
 
     if (!password) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'password\' must not be empty'
+            msg: 'The "password" parameter must not be empty'
         });
         return;
     }
@@ -177,6 +179,7 @@ export const addUser = (req, res) => {
         const users = config.get('users', []);
         const user = {
             id: uuid.v4(),
+            mtime: new Date().getTime(),
             enabled: enabled,
             name: name,
             password: hash
@@ -189,7 +192,7 @@ export const addUser = (req, res) => {
             config.set('users', [user]);
         }
 
-        res.send({ id: user.id });
+        res.send({ id: user.id, mtime: user.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
@@ -199,15 +202,8 @@ export const addUser = (req, res) => {
 
 export const updateUser = (req, res) => {
     const id = req.params.id;
-    const {
-        enabled = false,
-        name = '',
-        oldPassword = '',
-        newPassword = ''
-    } = { ...req.body };
     const users = config.get('users', []);
     const user = _.find(users, { id: id });
-    const changePassword = oldPassword && newPassword;
 
     if (!user) {
         res.status(ERR_NOT_FOUND).send({
@@ -216,9 +212,24 @@ export const updateUser = (req, res) => {
         return;
     }
 
+    const {
+        enabled = user.enabled,
+        name = user.name,
+        oldPassword = '',
+        newPassword = ''
+    } = { ...req.body };
+    const changePassword = oldPassword && newPassword;
+
+    if (typeof enabled !== 'boolean') {
+        res.status(ERR_BAD_REQUEST).send({
+            msg: 'The "enabled" parameter must be a boolean value'
+        });
+        return;
+    }
+
     if (!name) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'The parameter \'name\' must not be empty'
+            msg: 'The "name" parameter must not be empty'
         });
         return;
     }
@@ -241,7 +252,8 @@ export const updateUser = (req, res) => {
     }
 
     try {
-        user.enabled = !!enabled;
+        user.mtime = new Date().getTime();
+        user.enabled = enabled;
         user.name = name;
 
         if (changePassword) {
@@ -252,7 +264,7 @@ export const updateUser = (req, res) => {
 
         config.set('users', users);
 
-        res.send({ id: user.id });
+        res.send({ id: user.id, mtime: user.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)

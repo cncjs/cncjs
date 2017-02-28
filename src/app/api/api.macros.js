@@ -7,7 +7,7 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-export const getMacros = (req, res) => {
+export const fetchMacros = (req, res) => {
     const macros = _.map(config.get('macros', []), (macro) => {
         const { id, name, content } = macro;
 
@@ -39,7 +39,7 @@ export const getMacro = (req, res) => {
     });
 };
 
-export const addMacro = (req, res) => {
+export const createMacro = (req, res) => {
     const { name, content } = { ...req.body };
 
     try {

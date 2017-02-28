@@ -83,12 +83,12 @@ class SmoothieController {
         };
 
         // Event Trigger
-        this.event = new EventTrigger((event, trigger, command) => {
-            log.debug(`[Smoothie] EventTrigger: event="${event}", trigger="${trigger}", command="${command}"`);
+        this.event = new EventTrigger((event, trigger, commands) => {
+            log.debug(`[Smoothie] EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
             if (trigger === 'system') {
-                taskRunner.run(command);
+                taskRunner.run(commands);
             } else {
-                this.command(null, 'gcode', command);
+                this.command(null, 'gcode', commands);
             }
         });
 
