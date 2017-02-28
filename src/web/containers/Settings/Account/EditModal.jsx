@@ -4,17 +4,13 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
 import Toggle from 'react-toggle';
-import api from '../../../api';
 import Modal from '../../../components/Modal';
 import Notifications from '../../../components/Notifications';
 import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
 import styles from '../form.styl';
-import {
-    ERR_CONFLICT
-} from '../../../api/constants';
 
-class AddAccount extends Component {
+class EditModal extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -23,7 +19,8 @@ class AddAccount extends Component {
     fields = {
         enabled: null,
         name: null,
-        password: null
+        oldPassword: null,
+        newPassword: null
     };
 
     shouldComponentUpdate(nextProps, nextState) {
@@ -33,13 +30,14 @@ class AddAccount extends Component {
         return {
             enabled: !!_.get(this.fields.enabled, 'checked'),
             name: _.get(this.fields.name, 'state.value'),
-            password: _.get(this.fields.password, 'state.value')
+            oldPassword: _.get(this.fields.oldPassword, 'state.value'),
+            newPassword: _.get(this.fields.newPassword, 'state.value')
         };
     }
     render() {
         const { state, actions } = this.props;
         const { modal } = state;
-        const { alertMessage } = modal.params;
+        const { alertMessage, changePassword = false, enabled, name, password } = modal.params;
 
         return (
             <Modal
@@ -47,7 +45,7 @@ class AddAccount extends Component {
                 size="sm"
             >
                 <Modal.Header>
-                    <Modal.Title>{i18n._('Add New Account')}</Modal.Title>
+                    <Modal.Title>{i18n._('Edit Account')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     {alertMessage &&
@@ -76,7 +74,7 @@ class AddAccount extends Component {
                                         ref={node => {
                                             this.fields.enabled = node ? ReactDOM.findDOMNode(node).querySelector('input') : null;
                                         }}
-                                        defaultChecked={true}
+                                        defaultChecked={enabled}
                                     />
                                 </div>
                             </div>
@@ -88,7 +86,7 @@ class AddAccount extends Component {
                                     }}
                                     type="text"
                                     name="name"
-                                    value=""
+                                    value={name}
                                     className={classNames(
                                         'form-control',
                                         styles.formControl,
@@ -98,10 +96,43 @@ class AddAccount extends Component {
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label>{i18n._('Password')}</label>
+                                <label>{changePassword ? i18n._('Old Password') : i18n._('Password')}</label>
+                                <div className="clearfix">
+                                    <Validation.components.Input
+                                        ref={node => {
+                                            this.fields.oldPassword = node;
+                                        }}
+                                        type="password"
+                                        name="oldPassword"
+                                        value={changePassword ? '' : password}
+                                        className={classNames(
+                                            'form-control',
+                                            styles.formControl,
+                                            styles.short
+                                        )}
+                                        containerClassName="pull-left"
+                                        validations={changePassword ? ['required'] : []}
+                                        disabled={!changePassword}
+                                    />
+                                    {!changePassword &&
+                                    <button
+                                        type="button"
+                                        className="btn btn-default pull-left"
+                                        onClick={() => {
+                                            actions.updateModalParams({ changePassword: true });
+                                        }}
+                                    >
+                                        {i18n._('Change Password')}
+                                    </button>
+                                    }
+                                </div>
+                            </div>
+                            {changePassword &&
+                            <div className={styles.formGroup}>
+                                <label>{i18n._('New Password')}</label>
                                 <Validation.components.Input
                                     ref={node => {
-                                        this.fields.password = node;
+                                        this.fields.newPassword = node;
                                     }}
                                     type="password"
                                     name="password"
@@ -114,6 +145,8 @@ class AddAccount extends Component {
                                     validations={['required', 'password']}
                                 />
                             </div>
+                            }
+                            {changePassword &&
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Confirm Password')}</label>
                                 <Validation.components.Input
@@ -128,6 +161,7 @@ class AddAccount extends Component {
                                     validations={['required']}
                                 />
                             </div>
+                            }
                         </div>
                     </Validation.components.Form>
                 </Modal.Body>
@@ -149,20 +183,10 @@ class AddAccount extends Component {
                                 return;
                             }
 
-                            const { enabled, name, password } = this.value;
-                            api.addUser({ enabled, name, password })
-                                .then((res) => {
-                                    actions.closeModal();
-                                    actions.fetchData();
-                                })
-                                .catch((res) => {
-                                    const fallbackMsg = i18n._('An unexpected error has occurred.');
-                                    const msg = {
-                                        [ERR_CONFLICT]: i18n._('The account name is already being used. Choose another name.')
-                                    }[res.status] || fallbackMsg;
+                            const { id } = modal.params;
+                            const { enabled, name, oldPassword, newPassword } = this.value;
 
-                                    actions.updateModalParams({ alertMessage: msg });
-                                });
+                            actions.updateItem(id, { enabled, name, oldPassword, newPassword });
                         }}
                     >
                         {i18n._('OK')}
@@ -173,4 +197,4 @@ class AddAccount extends Component {
     }
 }
 
-export default AddAccount;
+export default EditModal;

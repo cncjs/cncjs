@@ -43,7 +43,7 @@ class Macro extends Component {
             }
         });
     }
-    handleLoadMacro({ id, name, content }) {
+    handleLoadMacro(id, { name, content }) {
         const gcode = content;
 
         controller.command('loadmacro', id, (err, data) => {
@@ -55,10 +55,10 @@ class Macro extends Component {
             pubsub.publish('gcode:load', { name, gcode });
         });
     }
-    handleEditMacro({ id }) {
+    handleEditMacro(id) {
         const { actions } = this.props;
 
-        api.getMacro({ id: id })
+        api.macros.get(id)
             .then((res) => {
                 const { id, name, content } = res.body;
                 actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
@@ -118,11 +118,11 @@ class Macro extends Component {
                                             onClick={() => {
                                                 this.confirmLoadMacro({ name: macro.name })
                                                     .then(() => {
-                                                        return api.getMacro({ id: macro.id });
+                                                        return api.macros.get(macro.id);
                                                     })
                                                     .then((res) => {
                                                         const { id, name, content } = res.body;
-                                                        this.handleLoadMacro({ id, name, content });
+                                                        this.handleLoadMacro(id, { name, content });
                                                     });
                                             }}
                                             title={i18n._('Run Macro')}
@@ -137,7 +137,7 @@ class Macro extends Component {
                                                 type="button"
                                                 className="btn btn-xs btn-default"
                                                 onClick={() => {
-                                                    this.handleEditMacro({ id: macro.id });
+                                                    this.handleEditMacro(macro.id);
                                                 }}
                                             >
                                                 <i className="fa fa-edit" />

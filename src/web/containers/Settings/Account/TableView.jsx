@@ -4,15 +4,14 @@ import shallowCompare from 'react-addons-shallow-compare';
 import Anchor from '../../../components/Anchor';
 import Table, { Toolbar } from '../../../components/Table';
 import { TablePagination } from '../../../components/Paginations';
-import api from '../../../api';
 import confirm from '../../../lib/confirm';
 import i18n from '../../../lib/i18n';
 import {
-    MODAL_ADD_ACCOUNT,
-    MODAL_EDIT_ACCOUNT
+    MODAL_ADD,
+    MODAL_EDIT
 } from './constants';
 
-class AccountList extends Component {
+class TableView extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -62,7 +61,7 @@ class AccountList extends Component {
                             type="button"
                             className="btn btn-default"
                             onClick={() => {
-                                actions.openModal(MODAL_ADD_ACCOUNT);
+                                actions.openModal(MODAL_ADD);
                             }}
                         >
                             <i className="fa fa-user-plus" />
@@ -75,7 +74,7 @@ class AccountList extends Component {
                                 pageLength={state.pagination.pageLength}
                                 totalRecords={state.pagination.totalRecords}
                                 onPageChange={({ page, pageLength }) => {
-                                    actions.fetchData({ page, pageLength });
+                                    actions.fetchItems({ page, pageLength });
                                 }}
                                 prevPageRenderer={() => <i className="fa fa-angle-left" />}
                                 nextPageRenderer={() => <i className="fa fa-angle-right" />}
@@ -93,7 +92,7 @@ class AccountList extends Component {
                             return (
                                 <Anchor
                                     onClick={(event) => {
-                                        actions.openModal(MODAL_EDIT_ACCOUNT, row);
+                                        actions.openModal(MODAL_EDIT, row);
                                     }}
                                 >
                                     {name}
@@ -103,7 +102,7 @@ class AccountList extends Component {
                     },
                     {
                         title: i18n._('Status'),
-                        className: 'text-center',
+                        className: 'text-nowrap',
                         key: 'status',
                         width: '1%',
                         render: (value, row, index) => {
@@ -111,7 +110,7 @@ class AccountList extends Component {
 
                             if (enabled) {
                                 return (
-                                    <span className="text-nowrap">
+                                    <span>
                                         <i className="fa fa-fw fa-check" />
                                         <span className="space" />
                                         {i18n._('Enabled')}
@@ -119,7 +118,7 @@ class AccountList extends Component {
                                 );
                             } else {
                                 return (
-                                    <span className="text-nowrap">
+                                    <span>
                                         <i className="fa fa-fw fa-times" />
                                         <span className="space" />
                                         {i18n._('Disabled')}
@@ -130,20 +129,20 @@ class AccountList extends Component {
                     },
                     {
                         title: i18n._('Action'),
-                        className: 'text-center',
+                        className: 'text-nowrap',
                         key: 'action',
                         width: '1%',
                         render: (value, row, index) => {
                             const { id } = row;
 
                             return (
-                                <div className="text-nowrap">
+                                <div>
                                     <button
                                         type="button"
                                         className="btn btn-xs btn-default"
                                         title={i18n._('Edit Account')}
                                         onClick={(event) => {
-                                            actions.openModal(MODAL_EDIT_ACCOUNT, row);
+                                            actions.openModal(MODAL_EDIT, row);
                                         }}
                                     >
                                         <i className="fa fa-fw fa-edit" />
@@ -157,13 +156,7 @@ class AccountList extends Component {
                                                 title: i18n._('Delete Account'),
                                                 body: i18n._('Are you sure you want to delete the account?')
                                             }).then(() => {
-                                                api.deleteUser({ id })
-                                                    .then((res) => {
-                                                        actions.fetchData();
-                                                    })
-                                                    .catch((res) => {
-                                                        // Ignore error
-                                                    });
+                                                actions.deleteItem(id);
                                             });
                                         }}
                                     >
@@ -179,4 +172,4 @@ class AccountList extends Component {
     }
 }
 
-export default AccountList;
+export default TableView;

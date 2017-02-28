@@ -1,11 +1,11 @@
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import AddAccount from './AddAccount';
-import EditAccount from './EditAccount';
-import AccountList from './AccountList';
+import AddModal from './AddModal';
+import EditModal from './EditModal';
+import TableView from './TableView';
 import {
-    MODAL_ADD_ACCOUNT,
-    MODAL_EDIT_ACCOUNT
+    MODAL_ADD,
+    MODAL_EDIT
 } from './constants';
 
 class Account extends Component {
@@ -18,7 +18,7 @@ class Account extends Component {
 
     componentDidMount() {
         const { actions } = this.props;
-        actions.fetchData();
+        actions.fetchItems();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
@@ -28,13 +28,13 @@ class Account extends Component {
 
         return (
             <div style={{ margin: -15 }}>
-                {state.modal.name === MODAL_ADD_ACCOUNT &&
-                <AddAccount state={state} actions={actions} />
+                {state.modal.name === MODAL_ADD &&
+                <AddModal state={state} actions={actions} />
                 }
-                {state.modal.name === MODAL_EDIT_ACCOUNT &&
-                <EditAccount state={state} actions={actions} />
+                {state.modal.name === MODAL_EDIT &&
+                <EditModal state={state} actions={actions} />
                 }
-                <AccountList state={state} actions={actions} />
+                <TableView state={state} actions={actions} />
             </div>
         );
     }

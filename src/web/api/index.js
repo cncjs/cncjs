@@ -152,7 +152,9 @@ const fetchGCode = (options) => new Promise((resolve, reject) => {
 //
 // Users
 //
-const listUsers = (options) => new Promise((resolve, reject) => {
+const users = {};
+
+users.fetch = (options) => new Promise((resolve, reject) => {
     authrequest
         .get('/api/users')
         .query({ ...options })
@@ -165,7 +167,7 @@ const listUsers = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const addUser = (options) => new Promise((resolve, reject) => {
+users.add = (options) => new Promise((resolve, reject) => {
     const { enabled, name, password } = { ...options };
 
     authrequest
@@ -180,9 +182,7 @@ const addUser = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const deleteUser = (options) => new Promise((resolve, reject) => {
-    const { id } = { ...options };
-
+users.delete = (id) => new Promise((resolve, reject) => {
     authrequest
         .delete('/api/users/' + id)
         .end((err, res) => {
@@ -194,8 +194,8 @@ const deleteUser = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const editUser = (options) => new Promise((resolve, reject) => {
-    const { id, enabled, name, oldPassword, newPassword } = { ...options };
+users.update = (id, options) => new Promise((resolve, reject) => {
+    const { enabled, name, oldPassword, newPassword } = { ...options };
 
     authrequest
         .put('/api/users/' + id)
@@ -210,9 +210,71 @@ const editUser = (options) => new Promise((resolve, reject) => {
 });
 
 //
+// Events
+//
+const events = {};
+
+events.fetch = (options) => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/events')
+        .query({ ...options })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+events.add = (options) => new Promise((resolve, reject) => {
+    const { enabled, event, trigger, command } = { ...options };
+
+    authrequest
+        .post('/api/events')
+        .send({ enabled, event, trigger, command })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+events.delete = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .delete('/api/events/' + id)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+events.update = (id, options) => new Promise((resolve, reject) => {
+    const { enabled, event, trigger, command } = { ...options };
+
+    authrequest
+        .put('/api/events/' + id)
+        .send({ enabled, event, trigger, command })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+//
 // Macros
 //
-const listMacros = () => new Promise((resolve, reject) => {
+const macros = {};
+
+macros.fetch = () => new Promise((resolve, reject) => {
     authrequest
         .get('/api/macros')
         .end((err, res) => {
@@ -224,9 +286,7 @@ const listMacros = () => new Promise((resolve, reject) => {
         });
 });
 
-const getMacro = (options) => new Promise((resolve, reject) => {
-    const { id } = { ...options };
-
+macros.get = (id) => new Promise((resolve, reject) => {
     authrequest
         .get('/api/macros/' + id)
         .end((err, res) => {
@@ -238,7 +298,7 @@ const getMacro = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const addMacro = (options) => new Promise((resolve, reject) => {
+macros.add = (options) => new Promise((resolve, reject) => {
     const { name, content } = { ...options };
 
     authrequest
@@ -253,8 +313,8 @@ const addMacro = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const updateMacro = (options) => new Promise((resolve, reject) => {
-    const { id, name, content } = { ...options };
+macros.update = (id, options) => new Promise((resolve, reject) => {
+    const { name, content } = { ...options };
 
     authrequest
         .put('/api/macros/' + id)
@@ -268,9 +328,7 @@ const updateMacro = (options) => new Promise((resolve, reject) => {
         });
 });
 
-const deleteMacro = (options) => new Promise((resolve, reject) => {
-    const { id } = { ...options };
-
+macros.delete = (id) => new Promise((resolve, reject) => {
     authrequest
         .delete('/api/macros/' + id)
         .end((err, res) => {
@@ -355,19 +413,11 @@ export default {
     // G-code
     loadGCode,
     fetchGCode,
-    // Users
-    signin,
-    listUsers,
-    addUser,
-    deleteUser,
-    editUser,
-    // Macros
-    listMacros,
-    getMacro,
-    addMacro,
-    updateMacro,
-    deleteMacro,
 
-    commands,
-    watch
+    signin,
+    users, // Users
+    events, // Events
+    macros, // Macros
+    commands, // Commands
+    watch // Watch Directory
 };
