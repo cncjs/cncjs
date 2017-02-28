@@ -266,14 +266,21 @@ const appMain = () => {
         app.get(urljoin(settings.route, 'api/controllers'), api.controllers.getActiveControllers);
 
         // Users
-        app.get(urljoin(settings.route, 'api/users'), api.users.getUsers);
+        app.get(urljoin(settings.route, 'api/users'), api.users.fetchUsers);
         app.get(urljoin(settings.route, 'api/users/:id'), api.users.getUser);
         app.post(urljoin(settings.route, 'api/users/'), api.users.addUser);
         app.put(urljoin(settings.route, 'api/users/:id'), api.users.updateUser);
         app.delete(urljoin(settings.route, 'api/users/:id'), api.users.deleteUser);
 
+        // Events
+        app.get(urljoin(settings.route, 'api/events'), api.events.fetchEvents);
+        app.get(urljoin(settings.route, 'api/events/:id'), api.events.getEvent);
+        app.post(urljoin(settings.route, 'api/events/'), api.events.addEvent);
+        app.put(urljoin(settings.route, 'api/events/:id'), api.events.updateEvent);
+        app.delete(urljoin(settings.route, 'api/events/:id'), api.events.deleteEvent);
+
         // Macros
-        app.get(urljoin(settings.route, 'api/macros'), api.macros.getMacros);
+        app.get(urljoin(settings.route, 'api/macros'), api.macros.fetchMacros);
         app.get(urljoin(settings.route, 'api/macros/:id'), api.macros.getMacro);
         app.post(urljoin(settings.route, 'api/macros'), api.macros.addMacro);
         app.put(urljoin(settings.route, 'api/macros/:id'), api.macros.updateMacro);
