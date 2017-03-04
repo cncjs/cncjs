@@ -136,7 +136,8 @@ series([
                 <Route path="settings" component={Empty} onEnter={requireAuth}>
                     <Route path="general" component={Empty} onEnter={requireAuth} />
                     <Route path="account" component={Empty} onEnter={requireAuth} />
-                    <Route path="event-trigger" component={Empty} onEnter={requireAuth} />
+                    <Route path="commands" component={Empty} onEnter={requireAuth} />
+                    <Route path="events" component={Empty} onEnter={requireAuth} />
                     <Route path="about" component={Empty} onEnter={requireAuth} />
                 </Route>
             </Route>

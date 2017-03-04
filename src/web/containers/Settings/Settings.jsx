@@ -14,7 +14,8 @@ import i18n from '../../lib/i18n';
 import store from '../../store';
 import General from './General';
 import Account from './Account';
-import EventTrigger from './EventTrigger';
+import Commands from './Commands';
+import Events from './Events';
 import About from './About';
 import styles from './index.styl';
 import {
@@ -44,14 +45,20 @@ class Settings extends Component {
         {
             id: 'account',
             path: 'account',
-            title: i18n._('Account'),
+            title: i18n._('My Account'),
             component: (props) => <Account {...props} />
         },
         {
-            id: 'eventTrigger',
-            path: 'event-trigger',
-            title: i18n._('Event Trigger'),
-            component: (props) => <EventTrigger {...props} />
+            id: 'commands',
+            path: 'commands',
+            title: i18n._('Commands'),
+            component: (props) => <Commands {...props} />
+        },
+        {
+            id: 'events',
+            path: 'events',
+            title: i18n._('Events'),
+            component: (props) => <Events {...props} />
         },
         {
             id: 'about',
@@ -60,8 +67,8 @@ class Settings extends Component {
             component: (props) => <About {...props} />
         }
     ];
-    initialState = this.getDefaultState();
-    state = this.getDefaultState();
+    initialState = this.getInitialState();
+    state = this.getInitialState();
     actions = {
         // General
         general: {
@@ -360,35 +367,35 @@ class Settings extends Component {
                 });
             }
         },
-        // Event Trigger
-        eventTrigger: {
+        // Commands
+        commands: {
             fetchRecords: (options) => {
-                const state = this.state.eventTrigger;
+                const state = this.state.commands;
                 const {
                     page = state.pagination.page,
                     pageLength = state.pagination.pageLength
                 } = { ...options };
 
                 this.setState({
-                    eventTrigger: {
-                        ...this.state.eventTrigger,
+                    commands: {
+                        ...this.state.commands,
                         api: {
-                            ...this.state.eventTrigger.api,
+                            ...this.state.commands.api,
                             err: false,
                             fetching: true
                         }
                     }
                 });
 
-                api.events.fetch({ page, pageLength })
+                api.commands.fetch({ page, pageLength })
                     .then((res) => {
                         const { pagination, records } = res.body;
 
                         this.setState({
-                            eventTrigger: {
-                                ...this.state.eventTrigger,
+                            commands: {
+                                ...this.state.commands,
                                 api: {
-                                    ...this.state.eventTrigger.api,
+                                    ...this.state.commands.api,
                                     err: false,
                                     fetching: false
                                 },
@@ -403,10 +410,10 @@ class Settings extends Component {
                     })
                     .catch((res) => {
                         this.setState({
-                            eventTrigger: {
-                                ...this.state.eventTrigger,
+                            commands: {
+                                ...this.state.commands,
                                 api: {
-                                    ...this.state.eventTrigger.api,
+                                    ...this.state.commands.api,
                                     err: true,
                                     fetching: false
                                 },
@@ -416,7 +423,165 @@ class Settings extends Component {
                     });
             },
             createRecord: (options) => {
-                const actions = this.actions.eventTrigger;
+                const actions = this.actions.commands;
+
+                api.commands.create(options)
+                    .then((res) => {
+                        actions.closeModal();
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            // TODO
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    });
+            },
+            updateRecord: (id, options, forceReload = false) => {
+                const actions = this.actions.commands;
+
+                api.commands.update(id, options)
+                    .then((res) => {
+                        actions.closeModal();
+
+                        if (forceReload) {
+                            actions.fetchRecords();
+                            return;
+                        }
+
+                        const records = this.state.commands.records;
+                        const index = _.findIndex(records, { id: id });
+
+                        if (index >= 0) {
+                            records[index] = {
+                                ...records[index],
+                                ...options
+                            };
+
+                            this.setState({
+                                commands: {
+                                    ...this.state.commands,
+                                    records: records
+                                }
+                            });
+                        }
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            // TODO
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    });
+            },
+            deleteRecord: (id) => {
+                const actions = this.actions.commands;
+
+                api.commands.delete(id)
+                    .then((res) => {
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        // Ignore error
+                    });
+            },
+            openModal: (name = '', params = {}) => {
+                this.setState({
+                    commands: {
+                        ...this.state.commands,
+                        modal: {
+                            name: name,
+                            params: params
+                        }
+                    }
+                });
+            },
+            closeModal: () => {
+                this.setState({
+                    commands: {
+                        ...this.state.commands,
+                        modal: {
+                            name: '',
+                            params: {}
+                        }
+                    }
+                });
+            },
+            updateModalParams: (params = {}) => {
+                this.setState({
+                    commands: {
+                        ...this.state.commands,
+                        modal: {
+                            ...this.state.commands.modal,
+                            params: {
+                                ...this.state.commands.modal.params,
+                                ...params
+                            }
+                        }
+                    }
+                });
+            }
+        },
+        // Events
+        events: {
+            fetchRecords: (options) => {
+                const state = this.state.events;
+                const {
+                    page = state.pagination.page,
+                    pageLength = state.pagination.pageLength
+                } = { ...options };
+
+                this.setState({
+                    events: {
+                        ...this.state.events,
+                        api: {
+                            ...this.state.events.api,
+                            err: false,
+                            fetching: true
+                        }
+                    }
+                });
+
+                api.events.fetch({ page, pageLength })
+                    .then((res) => {
+                        const { pagination, records } = res.body;
+
+                        this.setState({
+                            events: {
+                                ...this.state.events,
+                                api: {
+                                    ...this.state.events.api,
+                                    err: false,
+                                    fetching: false
+                                },
+                                pagination: {
+                                    page: pagination.page,
+                                    pageLength: pagination.pageLength,
+                                    totalRecords: pagination.totalRecords
+                                },
+                                records: records
+                            }
+                        });
+                    })
+                    .catch((res) => {
+                        this.setState({
+                            events: {
+                                ...this.state.events,
+                                api: {
+                                    ...this.state.events.api,
+                                    err: true,
+                                    fetching: false
+                                },
+                                records: []
+                            }
+                        });
+                    });
+            },
+            createRecord: (options) => {
+                const actions = this.actions.events;
 
                 api.events.create(options)
                     .then((res) => {
@@ -433,7 +598,7 @@ class Settings extends Component {
                     });
             },
             updateRecord: (id, options, forceReload = false) => {
-                const actions = this.actions.eventTrigger;
+                const actions = this.actions.events;
 
                 api.events.update(id, options)
                     .then((res) => {
@@ -444,7 +609,7 @@ class Settings extends Component {
                             return;
                         }
 
-                        const records = this.state.eventTrigger.records;
+                        const records = this.state.events.records;
                         const index = _.findIndex(records, { id: id });
 
                         if (index >= 0) {
@@ -454,8 +619,8 @@ class Settings extends Component {
                             };
 
                             this.setState({
-                                eventTrigger: {
-                                    ...this.state.eventTrigger,
+                                events: {
+                                    ...this.state.events,
                                     records: records
                                 }
                             });
@@ -471,7 +636,7 @@ class Settings extends Component {
                     });
             },
             deleteRecord: (id) => {
-                const actions = this.actions.eventTrigger;
+                const actions = this.actions.events;
 
                 api.events.delete(id)
                     .then((res) => {
@@ -483,8 +648,8 @@ class Settings extends Component {
             },
             openModal: (name = '', params = {}) => {
                 this.setState({
-                    eventTrigger: {
-                        ...this.state.eventTrigger,
+                    events: {
+                        ...this.state.events,
                         modal: {
                             name: name,
                             params: params
@@ -494,8 +659,8 @@ class Settings extends Component {
             },
             closeModal: () => {
                 this.setState({
-                    eventTrigger: {
-                        ...this.state.eventTrigger,
+                    events: {
+                        ...this.state.events,
                         modal: {
                             name: '',
                             params: {}
@@ -505,12 +670,12 @@ class Settings extends Component {
             },
             updateModalParams: (params = {}) => {
                 this.setState({
-                    eventTrigger: {
-                        ...this.state.eventTrigger,
+                    events: {
+                        ...this.state.events,
                         modal: {
-                            ...this.state.eventTrigger.modal,
+                            ...this.state.events.modal,
                             params: {
-                                ...this.state.eventTrigger.modal.params,
+                                ...this.state.events.modal.params,
                                 ...params
                             }
                         }
@@ -571,9 +736,10 @@ class Settings extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             path: this.props.path,
+            // General
             general: {
                 // followed by api state
                 api: {
@@ -585,6 +751,7 @@ class Settings extends Component {
                 checkForUpdates: true,
                 lang: i18next.language
             },
+            // My Account
             account: {
                 // followed by api state
                 api: {
@@ -607,7 +774,8 @@ class Settings extends Component {
                     }
                 }
             },
-            eventTrigger: {
+            // Commands
+            commands: {
                 // followed by api state
                 api: {
                     err: false,
@@ -627,6 +795,28 @@ class Settings extends Component {
                     }
                 }
             },
+            // Events
+            events: {
+                // followed by api state
+                api: {
+                    err: false,
+                    fetching: false
+                },
+                // followed by data
+                pagination: {
+                    page: 1,
+                    pageLength: 10,
+                    totalRecords: 0
+                },
+                records: [],
+                // Modal
+                modal: {
+                    name: '',
+                    params: {
+                    }
+                }
+            },
+            // About
             about: {
                 version: {
                     checking: false,
