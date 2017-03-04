@@ -38,8 +38,8 @@ class MacroWidget extends Component {
         fetchMacros: async () => {
             try {
                 let res;
-                res = await api.macros.fetch();
-                const macros = res.body;
+                res = await api.macros.fetch({ paging: false });
+                const { records: macros } = res.body;
                 this.setState({ macros: macros });
             } catch (err) {
                 // Ignore error
@@ -49,8 +49,8 @@ class MacroWidget extends Component {
             try {
                 let res;
                 res = await api.macros.create({ name, content });
-                res = await api.macros.fetch();
-                const macros = res.body;
+                res = await api.macros.fetch({ paging: false });
+                const { records: macros } = res.body;
                 this.setState({ macros: macros });
             } catch (err) {
                 // Ignore error
@@ -60,8 +60,8 @@ class MacroWidget extends Component {
             try {
                 let res;
                 res = await api.macros.delete(id);
-                res = await api.macros.fetch();
-                const macros = res.body;
+                res = await api.macros.fetch({ paging: false });
+                const { records: macros } = res.body;
                 this.setState({ macros: macros });
             } catch (err) {
                 // Ignore error
@@ -71,8 +71,8 @@ class MacroWidget extends Component {
             try {
                 let res;
                 res = await api.macros.update(id, { name, content });
-                res = await api.macros.fetch();
-                const macros = res.body;
+                res = await api.macros.fetch({ paging: false });
+                const { records: macros } = res.body;
                 this.setState({ macros: macros });
             } catch (err) {
                 // Ignore error

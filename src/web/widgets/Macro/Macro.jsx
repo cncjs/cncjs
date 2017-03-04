@@ -58,7 +58,7 @@ class Macro extends Component {
     handleEditMacro(id) {
         const { actions } = this.props;
 
-        api.macros.get(id)
+        api.macros.read(id)
             .then((res) => {
                 const { id, name, content } = res.body;
                 actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
@@ -118,7 +118,7 @@ class Macro extends Component {
                                             onClick={() => {
                                                 this.confirmLoadMacro({ name: macro.name })
                                                     .then(() => {
-                                                        return api.macros.get(macro.id);
+                                                        return api.macros.read(macro.id);
                                                     })
                                                     .then((res) => {
                                                         const { id, name, content } = res.body;

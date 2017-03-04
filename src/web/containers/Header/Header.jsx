@@ -72,11 +72,10 @@ class Header extends Component {
                 // Ignore error
             }
         },
-        getCommands: async () => {
+        fetchCommands: async () => {
             try {
-                const res = await api.commands.getCommands();
-                const { commands = [] } = res.body;
-
+                const res = await api.commands.fetch({ paging: false });
+                const { records: commands } = res.body;
                 this.setState({ commands: commands });
             } catch (res) {
                 // Ignore error
@@ -84,7 +83,7 @@ class Header extends Component {
         },
         runCommand: async (cmd) => {
             try {
-                const res = await api.commands.runCommand({ id: cmd.id });
+                const res = await api.commands.run(cmd.id);
                 const { taskId } = res.body;
 
                 this.setState({
@@ -167,7 +166,7 @@ class Header extends Component {
             }
         },
         'config:change': () => {
-            this.actions.getCommands();
+            this.actions.fetchCommands();
         }
     };
 
@@ -176,7 +175,7 @@ class Header extends Component {
 
         // Initial actions
         this.actions.checkForUpdates();
-        this.actions.getCommands();
+        this.actions.fetchCommands();
     }
     componentWillUnmount() {
         this.removeControllerEvents();
@@ -281,7 +280,7 @@ class Header extends Component {
                             )}
                             id="nav-dropdown-user"
                             title={
-                                <div title={i18n._('Account')}>
+                                <div title={i18n._('My Account')}>
                                     <i className="fa fa-fw fa-user" />
                                 </div>
                             }
