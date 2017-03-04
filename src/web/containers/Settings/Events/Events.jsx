@@ -8,7 +8,7 @@ import {
     MODAL_UPDATE_RECORD
 } from './constants';
 
-class EventTrigger extends Component {
+class Events extends Component {
     static propTypes = {
         initialState: PropTypes.object,
         state: PropTypes.object,
@@ -40,4 +40,4 @@ class EventTrigger extends Component {
     }
 }
 
-export default EventTrigger;
+export default Events;

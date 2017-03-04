@@ -9,7 +9,7 @@ import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
 import styles from '../form.styl';
 
-class UpdateRecord extends Component {
+class CreateRecord extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -36,14 +36,7 @@ class UpdateRecord extends Component {
     render() {
         const { state, actions } = this.props;
         const { modal } = state;
-        const {
-            alertMessage,
-            sampleCommands,
-            enabled,
-            event,
-            trigger,
-            commands
-        } = modal.params;
+        const { alertMessage, sampleCommands = '' } = modal.params;
 
         return (
             <Modal
@@ -52,11 +45,11 @@ class UpdateRecord extends Component {
             >
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('Event Trigger')}
+                        {i18n._('Events')}
                         <span className="space" />
                         &rsaquo;
                         <span className="space" />
-                        {i18n._('Update')}
+                        {i18n._('New')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -87,7 +80,7 @@ class UpdateRecord extends Component {
                                             this.fields.enabled = node;
                                         }}
                                         size="sm"
-                                        checked={enabled}
+                                        checked={true}
                                     />
                                 </div>
                             </div>
@@ -98,7 +91,7 @@ class UpdateRecord extends Component {
                                         this.fields.event = node;
                                     }}
                                     name="event"
-                                    value={event}
+                                    value=""
                                     className={classNames(
                                         'form-control',
                                         styles.formControl,
@@ -128,7 +121,7 @@ class UpdateRecord extends Component {
                                         this.fields.trigger = node;
                                     }}
                                     name="trigger"
-                                    value={trigger}
+                                    value=""
                                     className={classNames(
                                         'form-control',
                                         styles.formControl,
@@ -165,7 +158,7 @@ class UpdateRecord extends Component {
                                         this.fields.commands = node;
                                     }}
                                     name="commands"
-                                    value={commands}
+                                    value=""
                                     rows="5"
                                     className={classNames(
                                         'form-control',
@@ -197,11 +190,8 @@ class UpdateRecord extends Component {
                                 return;
                             }
 
-                            const { id } = modal.params;
                             const { enabled, event, trigger, commands } = this.value;
-                            const forceReload = true;
-
-                            actions.updateRecord(id, { enabled, event, trigger, commands }, forceReload);
+                            actions.createRecord({ enabled, event, trigger, commands });
                         }}
                     >
                         {i18n._('OK')}
@@ -212,4 +202,4 @@ class UpdateRecord extends Component {
     }
 }
 
-export default UpdateRecord;
+export default CreateRecord;
