@@ -14,8 +14,8 @@ var HtmlWebpackPlugin = require('html-webpack-plugin');
 var HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
 var nib = require('nib');
 var stylusLoader = require('stylus-loader');
-var baseConfig = require('./webpack.config.base');
-var languages = require('./webpack.config.i18n').languages;
+var baseConfig = require('./webpack.webconfig.base');
+var languages = require('./webpack.webconfig.i18n').languages;
 var pkg = require('./package.json');
 
 // Use publicPath for production

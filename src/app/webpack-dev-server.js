@@ -1,6 +1,6 @@
 import webpack from 'webpack';
 import webpackMiddleware from 'webpack-dev-middleware';
-import config from '../../webpack.config.development';
+import config from '../../webpack.webconfig.development';
 
 const webpackDevServer = (app) => {
     // https://github.com/webpack/webpack-dev-middleware

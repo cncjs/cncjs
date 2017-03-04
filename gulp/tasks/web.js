@@ -1,8 +1,6 @@
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import webpack from 'webpack';
-import webpackDevelopmentConfig from '../../webpack.config.development';
-import webpackProductionConfig from '../../webpack.config.production';
 
 export default (options) => {
     gulp.task('web:i18n', ['i18next:web']);
@@ -16,7 +14,7 @@ export default (options) => {
             throw new gutil.PluginError('web:build-dev', err);
         }
 
-        const webpackConfig = webpackDevelopmentConfig;
+        const webpackConfig = require('../../webpack.webconfig.development.js');
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build-dev', err);
@@ -45,7 +43,7 @@ export default (options) => {
             throw new gutil.PluginError('web:build-prod', err);
         }
 
-        const webpackConfig = webpackProductionConfig;
+        const webpackConfig = require('../../webpack.webconfig.production.js');
         webpack(webpackConfig, (err, stats) => {
             if (err) {
                 throw new gutil.PluginError('web:build-prod', err);
