@@ -157,7 +157,7 @@ const users = {};
 users.fetch = (options) => new Promise((resolve, reject) => {
     authrequest
         .get('/api/users')
-        .query({ ...options })
+        .query(options)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -168,11 +168,21 @@ users.fetch = (options) => new Promise((resolve, reject) => {
 });
 
 users.create = (options) => new Promise((resolve, reject) => {
-    const { enabled, name, password } = { ...options };
-
     authrequest
         .post('/api/users')
-        .send({ enabled, name, password })
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+users.read = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/users/' + id)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -195,11 +205,9 @@ users.delete = (id) => new Promise((resolve, reject) => {
 });
 
 users.update = (id, options) => new Promise((resolve, reject) => {
-    const { enabled, name, oldPassword, newPassword } = { ...options };
-
     authrequest
         .put('/api/users/' + id)
-        .send({ enabled, name, oldPassword, newPassword })
+        .send(options)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -217,7 +225,7 @@ const events = {};
 events.fetch = (options) => new Promise((resolve, reject) => {
     authrequest
         .get('/api/events')
-        .query({ ...options })
+        .query(options)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -228,11 +236,21 @@ events.fetch = (options) => new Promise((resolve, reject) => {
 });
 
 events.create = (options) => new Promise((resolve, reject) => {
-    const { enabled, event, trigger, commands } = { ...options };
-
     authrequest
         .post('/api/events')
-        .send({ enabled, event, trigger, commands })
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+events.read = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/events/' + id)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -255,11 +273,9 @@ events.delete = (id) => new Promise((resolve, reject) => {
 });
 
 events.update = (id, options) => new Promise((resolve, reject) => {
-    const { enabled, event, trigger, commands } = { ...options };
-
     authrequest
         .put('/api/events/' + id)
-        .send({ enabled, event, trigger, commands })
+        .send(options)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -274,9 +290,10 @@ events.update = (id, options) => new Promise((resolve, reject) => {
 //
 const macros = {};
 
-macros.fetch = () => new Promise((resolve, reject) => {
+macros.fetch = (options) => new Promise((resolve, reject) => {
     authrequest
         .get('/api/macros')
+        .query(options)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -286,7 +303,20 @@ macros.fetch = () => new Promise((resolve, reject) => {
         });
 });
 
-macros.get = (id) => new Promise((resolve, reject) => {
+macros.create = (options) => new Promise((resolve, reject) => {
+    authrequest
+        .post('/api/macros')
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+macros.read = (id) => new Promise((resolve, reject) => {
     authrequest
         .get('/api/macros/' + id)
         .end((err, res) => {
@@ -298,27 +328,10 @@ macros.get = (id) => new Promise((resolve, reject) => {
         });
 });
 
-macros.create = (options) => new Promise((resolve, reject) => {
-    const { name, content } = { ...options };
-
-    authrequest
-        .post('/api/macros')
-        .send({ name, content })
-        .end((err, res) => {
-            if (err) {
-                reject(res);
-            } else {
-                resolve(res);
-            }
-        });
-});
-
 macros.update = (id, options) => new Promise((resolve, reject) => {
-    const { name, content } = { ...options };
-
     authrequest
         .put('/api/macros/' + id)
-        .send({ name, content })
+        .send(options)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -343,9 +356,10 @@ macros.delete = (id) => new Promise((resolve, reject) => {
 // Commands
 const commands = {};
 
-commands.getCommands = (options) => new Promise((resolve, reject) => {
+commands.fetch = (options) => new Promise((resolve, reject) => {
     authrequest
         .get('/api/commands')
+        .query(options)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -355,12 +369,59 @@ commands.getCommands = (options) => new Promise((resolve, reject) => {
         });
 });
 
-commands.runCommand = (options) => new Promise((resolve, reject) => {
-    const { id } = { ...options };
-
+commands.create = (options) => new Promise((resolve, reject) => {
     authrequest
-        .post('/api/commands/run')
-        .send({ id })
+        .post('/api/commands')
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+commands.read = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/commands/' + id)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+commands.update = (id, options) => new Promise((resolve, reject) => {
+    authrequest
+        .put('/api/commands/' + id)
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+commands.delete = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .delete('/api/commands/' + id)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+commands.run = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .post('/api/commands/run/' + id)
         .end((err, res) => {
             if (err) {
                 reject(res);

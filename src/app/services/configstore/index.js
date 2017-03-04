@@ -103,14 +103,16 @@ class ConfigStore extends events.EventEmitter {
             ? _.get(this.config, key, defaultValue)
             : this.config;
     }
-    set(key, value) {
+    set(key, value, options) {
+        const { silent = false } = { ...options };
+
         if (key === undefined) {
             return;
         }
 
         const ok = this.reload(); // reload before making changes
         _.set(this.config, key, value);
-        ok && this.sync(); // it is ok to write
+        ok && !silent && this.sync(); // it is ok to write
     }
     unset(key) {
         if (key === undefined) {

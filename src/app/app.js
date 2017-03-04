@@ -265,30 +265,34 @@ const appMain = () => {
         // Controllers
         app.get(urljoin(settings.route, 'api/controllers'), api.controllers.getActiveControllers);
 
-        // Users
-        app.get(urljoin(settings.route, 'api/users'), api.users.fetchUsers);
-        app.get(urljoin(settings.route, 'api/users/:id'), api.users.getUser);
-        app.post(urljoin(settings.route, 'api/users/'), api.users.createUser);
-        app.put(urljoin(settings.route, 'api/users/:id'), api.users.updateUser);
-        app.delete(urljoin(settings.route, 'api/users/:id'), api.users.deleteUser);
+        // Commands
+        app.get(urljoin(settings.route, 'api/commands'), api.commands.fetch);
+        app.post(urljoin(settings.route, 'api/commands'), api.commands.create);
+        app.get(urljoin(settings.route, 'api/commands/:id'), api.commands.read);
+        app.put(urljoin(settings.route, 'api/commands/:id'), api.commands.update);
+        app.delete(urljoin(settings.route, 'api/commands/:id'), api.commands.__delete);
+        app.post(urljoin(settings.route, 'api/commands/run/:id'), api.commands.run);
 
         // Events
-        app.get(urljoin(settings.route, 'api/events'), api.events.fetchEvents);
-        app.get(urljoin(settings.route, 'api/events/:id'), api.events.getEvent);
-        app.post(urljoin(settings.route, 'api/events/'), api.events.createEvent);
-        app.put(urljoin(settings.route, 'api/events/:id'), api.events.updateEvent);
-        app.delete(urljoin(settings.route, 'api/events/:id'), api.events.deleteEvent);
+        app.get(urljoin(settings.route, 'api/events'), api.events.fetch);
+        app.post(urljoin(settings.route, 'api/events/'), api.events.create);
+        app.get(urljoin(settings.route, 'api/events/:id'), api.events.read);
+        app.put(urljoin(settings.route, 'api/events/:id'), api.events.update);
+        app.delete(urljoin(settings.route, 'api/events/:id'), api.events.__delete);
 
         // Macros
-        app.get(urljoin(settings.route, 'api/macros'), api.macros.fetchMacros);
-        app.get(urljoin(settings.route, 'api/macros/:id'), api.macros.getMacro);
-        app.post(urljoin(settings.route, 'api/macros'), api.macros.createMacro);
-        app.put(urljoin(settings.route, 'api/macros/:id'), api.macros.updateMacro);
-        app.delete(urljoin(settings.route, 'api/macros/:id'), api.macros.deleteMacro);
+        app.get(urljoin(settings.route, 'api/macros'), api.macros.fetch);
+        app.post(urljoin(settings.route, 'api/macros'), api.macros.create);
+        app.get(urljoin(settings.route, 'api/macros/:id'), api.macros.read);
+        app.put(urljoin(settings.route, 'api/macros/:id'), api.macros.update);
+        app.delete(urljoin(settings.route, 'api/macros/:id'), api.macros.__delete);
 
-        // Commands
-        app.get(urljoin(settings.route, 'api/commands'), api.commands.getCommands);
-        app.post(urljoin(settings.route, 'api/commands/run'), api.commands.runCommand);
+        // Users
+        app.get(urljoin(settings.route, 'api/users'), api.users.fetch);
+        app.post(urljoin(settings.route, 'api/users/'), api.users.create);
+        app.get(urljoin(settings.route, 'api/users/:id'), api.users.read);
+        app.put(urljoin(settings.route, 'api/users/:id'), api.users.update);
+        app.delete(urljoin(settings.route, 'api/users/:id'), api.users.__delete);
 
         // Watch
         app.get(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);

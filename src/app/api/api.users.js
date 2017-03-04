@@ -1,10 +1,14 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
-import _ from 'lodash';
+import castArray from 'lodash/castArray';
+import isPlainObject from 'lodash/isPlainObject';
+import find from 'lodash/find';
+import some from 'lodash/some';
 import uuid from 'uuid';
 import settings from '../config/settings';
 import log from '../lib/log';
 import config from '../services/configstore';
+import { getPagingRange } from './paging';
 import {
     ERR_BAD_REQUEST,
     ERR_UNAUTHORIZED,
@@ -13,6 +17,9 @@ import {
     ERR_PRECONDITION_FAILED,
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
+
+const PREFIX = '[api.users]';
+const CONFIG_KEY = 'users';
 
 // Generate access token
 // https://github.com/auth0/node-jsonwebtoken#jwtsignpayload-secretorprivatekey-options-callback
@@ -25,9 +32,39 @@ const generateAccessToken = (payload, secret = settings.secret) => {
     return token;
 };
 
+const getSanitizedRecords = () => {
+    const records = castArray(config.get(CONFIG_KEY, []));
+
+    let shouldUpdate = false;
+    for (let i = 0; i < records.length; ++i) {
+        if (!isPlainObject(records[i])) {
+            records[i] = {};
+        }
+
+        const record = records[i];
+
+        if (!record.id) {
+            record.id = uuid.v4();
+            shouldUpdate = true;
+        }
+    }
+
+    if (shouldUpdate) {
+        log.debug(`${PREFIX} update sanitized records: ${JSON.stringify(records)}`);
+
+        // Pass `{ silent changes }` will suppress the change event
+        config.set(CONFIG_KEY, records, { silent: true });
+    }
+
+    return records;
+};
+
 export const signin = (req, res) => {
     const { token = '', name = '', password = '' } = { ...req.body };
-    const enabledUsers = _.filter(config.get('users', []), { enabled: true });
+    const users = getSanitizedRecords();
+    const enabledUsers = users.filter(user => {
+        return user.enabled;
+    });
 
     if (enabledUsers.length === 0) {
         const user = { id: '', name: '' };
@@ -42,7 +79,7 @@ export const signin = (req, res) => {
     }
 
     if (!token) {
-        const user = _.find(enabledUsers, { name: name });
+        const user = find(enabledUsers, { name: name });
         const valid = user && bcrypt.compareSync(password, user.password);
 
         if (!valid) {
@@ -73,9 +110,11 @@ export const signin = (req, res) => {
             return;
         }
 
-        log.debug(`jwt.verify: id=${user.id}, name="${user.name}", iat=${new Date(user.iat * 1000).toISOString()}, exp=${new Date(user.exp * 1000).toISOString()}`);
+        const iat = new Date(user.iat * 1000).toISOString();
+        const exp = new Date(user.exp * 1000).toISOString();
+        log.debug(`${PREFIX} jwt.verify: id=${user.id}, name="${user.name}", iat=${iat}, exp=${exp}`);
 
-        user = _.find(enabledUsers, { id: user.id, name: user.name });
+        user = find(enabledUsers, { id: user.id, name: user.name });
         if (!user) {
             res.status(ERR_UNAUTHORIZED).send({
                 msg: 'Authentication failed'
@@ -91,61 +130,27 @@ export const signin = (req, res) => {
     });
 };
 
-export const fetchUsers = (req, res) => {
-    // Sort by `mtime` in descending order and by `name` in ascending order.
-    const users = _.orderBy(config.get('users', []), ['mtime', 'name'], ['desc', 'asc']);
-    const totalRecords = users.length;
-    let { page = 1, pageLength = 10 } = req.query;
-
-    page = Number(page);
-    pageLength = Number(pageLength);
-
-    if (!page || page < 1) {
-        page = 1;
-    }
-    if (!pageLength || pageLength < 1) {
-        pageLength = 10;
-    }
-    if (((page - 1) * pageLength) >= totalRecords) {
-        page = Math.ceil(totalRecords / pageLength);
-    }
-
-    const begin = (page - 1) * pageLength;
-    const end = Math.min((page - 1) * pageLength + pageLength, totalRecords);
-    const records = users.slice(begin, end).map((user) => {
-        return {
-            id: user.id,
-            mtime: user.mtime,
-            enabled: user.enabled,
-            name: user.name
-        };
-    });
+export const fetch = (req, res) => {
+    const records = getSanitizedRecords();
+    const { paging = true, page = 1, pageLength = 10 } = req.query;
+    const totalRecords = records.length;
+    const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
+    const pagedRecords = paging ? records.slice(begin, end) : records;
 
     res.send({
         pagination: {
-            page: page,
-            pageLength: pageLength,
-            totalRecords: totalRecords
+            page: Number(page),
+            pageLength: Number(pageLength),
+            totalRecords: Number(totalRecords)
         },
-        records: records
+        records: pagedRecords.map(record => {
+            const { id, mtime, enabled, name } = { ...record };
+            return { id, mtime, enabled, name };
+        })
     });
 };
 
-export const getUser = (req, res) => {
-    const user = _.find(config.get('users', []), { id: req.params.id });
-    const { id, mtime, enabled, name } = { ...user };
-
-    if (!user) {
-        res.status(ERR_NOT_FOUND).send({
-            msg: 'User not found'
-        });
-        return;
-    }
-
-    res.send({ id, mtime, enabled, name });
-};
-
-export const createUser = (req, res) => {
+export const create = (req, res) => {
     const {
         enabled = false,
         name = '',
@@ -166,7 +171,8 @@ export const createUser = (req, res) => {
         return;
     }
 
-    if (_.find(config.get('users', []), { name: name })) {
+    const records = getSanitizedRecords();
+    if (find(records, { name: name })) {
         res.status(ERR_CONFLICT).send({
             msg: 'The specified user already exists'
         });
@@ -176,8 +182,8 @@ export const createUser = (req, res) => {
     try {
         const salt = bcrypt.genSaltSync();
         const hash = bcrypt.hashSync(password.trim(), salt);
-        const users = config.get('users', []);
-        const user = {
+        const records = getSanitizedRecords();
+        const record = {
             id: uuid.v4(),
             mtime: new Date().getTime(),
             enabled: enabled,
@@ -185,14 +191,10 @@ export const createUser = (req, res) => {
             password: hash
         };
 
-        if (_.isArray(users)) {
-            users.push(user);
-            config.set('users', users);
-        } else {
-            config.set('users', [user]);
-        }
+        records.push(record);
+        config.set(CONFIG_KEY, records);
 
-        res.send({ id: user.id, mtime: user.mtime });
+        res.send({ id: record.id, mtime: record.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
@@ -200,26 +202,43 @@ export const createUser = (req, res) => {
     }
 };
 
-export const updateUser = (req, res) => {
+export const read = (req, res) => {
     const id = req.params.id;
-    const users = config.get('users', []);
-    const user = _.find(users, { id: id });
+    const records = getSanitizedRecords();
+    const record = find(records, { id: id });
 
-    if (!user) {
+    if (!record) {
         res.status(ERR_NOT_FOUND).send({
-            msg: 'User not found'
+            msg: 'Not found'
+        });
+        return;
+    }
+
+    const { mtime, enabled, name } = { ...record };
+    res.send({ id, mtime, enabled, name });
+};
+
+export const update = (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = find(records, { id: id });
+
+    if (!record) {
+        res.status(ERR_NOT_FOUND).send({
+            msg: 'Not found'
         });
         return;
     }
 
     const {
-        enabled = user.enabled,
-        name = user.name,
+        enabled = record.enabled,
+        name = record.name,
         oldPassword = '',
         newPassword = ''
     } = { ...req.body };
-    const changePassword = oldPassword && newPassword;
+    const willChangePassword = oldPassword && newPassword;
 
+    /*
     if (typeof enabled !== 'boolean') {
         res.status(ERR_BAD_REQUEST).send({
             msg: 'The "enabled" parameter must be a boolean value'
@@ -233,18 +252,19 @@ export const updateUser = (req, res) => {
         });
         return;
     }
+    */
 
-    if (changePassword && !bcrypt.compareSync(oldPassword, user.password)) {
+    if (willChangePassword && !bcrypt.compareSync(oldPassword, record.password)) {
         res.status(ERR_PRECONDITION_FAILED).send({
             msg: 'Incorrect password'
         });
         return;
     }
 
-    const inuse = (user) => {
-        return user.id !== id && user.name === name;
+    const inuse = (record) => {
+        return record.id !== id && record.name === name;
     };
-    if (_.some(users, inuse)) {
+    if (some(records, inuse)) {
         res.status(ERR_CONFLICT).send({
             msg: 'The specified user already exists'
         });
@@ -252,19 +272,19 @@ export const updateUser = (req, res) => {
     }
 
     try {
-        user.mtime = new Date().getTime();
-        user.enabled = enabled;
-        user.name = name;
+        record.mtime = new Date().getTime();
+        record.enabled = Boolean(enabled);
+        record.name = String(name || '');
 
-        if (changePassword) {
+        if (willChangePassword) {
             const salt = bcrypt.genSaltSync();
             const hash = bcrypt.hashSync(newPassword.trim(), salt);
-            user.password = hash;
+            record.password = hash;
         }
 
-        config.set('users', users);
+        config.set(CONFIG_KEY, records);
 
-        res.send({ id: user.id, mtime: user.mtime });
+        res.send({ id: record.id, mtime: record.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
@@ -272,23 +292,25 @@ export const updateUser = (req, res) => {
     }
 };
 
-export const deleteUser = (req, res) => {
+export const __delete = (req, res) => {
     const id = req.params.id;
-    const user = _.find(config.get('users', []), { id: id });
-    if (!user) {
+    const records = getSanitizedRecords();
+    const record = find(records, { id: id });
+
+    if (!record) {
         res.status(ERR_NOT_FOUND).send({
-            msg: 'User not found'
+            msg: 'Not found'
         });
         return;
     }
 
     try {
-        const users = _.filter(config.get('users', []), (user) => {
-            return user.id !== id;
+        const filteredRecords = records.filter(record => {
+            return record.id !== id;
         });
-        config.set('users', users);
+        config.set(CONFIG_KEY, filteredRecords);
 
-        res.send({ id: user.id });
+        res.send({ id: record.id });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)

@@ -4,6 +4,8 @@ import path from 'path';
 import settings from '../config/settings';
 import log from '../lib/log';
 
+const PREFIX = '[api.i18n]';
+
 export const getAcceptedLanguage = (req, res) => {
     let headers = req.headers || {};
     let httpAccept = headers['accept-language'] || '';
@@ -64,13 +66,14 @@ export const getAcceptedLanguage = (req, res) => {
         preferred = settings.supportedLngs[0];
     }
 
-    log.debug({
+    const result = {
         acceptedList: acceptedList,
         sortedLngs: sortedLngs,
         supportedLngs: settings.supportedLngs,
         preferred: preferred,
         match: match
-    });
+    };
+    log.debug(`${PREFIX} getAcceptedLanguage: ${JSON.stringify(result)}`);
 
     res.send(preferred);
 };
@@ -98,9 +101,9 @@ export const saveMissing = (req, res) => {
 
     fs.writeFile(savedMissingFile, prettyJSON, (err) => {
         if (err) {
-            log.error(err);
+            log.error(`${PREFIX} err=${err}`);
         } else {
-            log.debug('i18n: Saved missing %s to %s', JSON.stringify(savedMissingObject), savedMissingFile);
+            log.debug(`${PREFIX} Saved missing ${JSON.stringify(savedMissingObject)} to "${savedMissingFile}"`);
         }
     });
 

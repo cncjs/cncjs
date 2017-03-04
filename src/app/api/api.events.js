@@ -1,87 +1,74 @@
-import _ from 'lodash';
+import find from 'lodash/find';
+import castArray from 'lodash/castArray';
+import isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
+import log from '../lib/log';
 import config from '../services/configstore';
+import { getPagingRange } from './paging';
 import {
     ERR_BAD_REQUEST,
     ERR_NOT_FOUND,
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-export const fetchEvents = (req, res) => {
-    // Sort by `mtime` in descending order and by `event` in ascending order.
-    const events = _.orderBy(config.get('events', []), ['mtime', 'event'], ['desc', 'asc']);
-    const totalRecords = events.length;
-    let { page = 1, pageLength = 10 } = req.query;
+const PREFIX = '[api.events]';
+const CONFIG_KEY = 'events';
 
-    page = Number(page);
-    pageLength = Number(pageLength);
+const getSanitizedRecords = () => {
+    const records = castArray(config.get(CONFIG_KEY, []));
 
-    if (!page || page < 1) {
-        page = 1;
-    }
-    if (!pageLength || pageLength < 1) {
-        pageLength = 10;
-    }
-    if (((page - 1) * pageLength) >= totalRecords) {
-        page = Math.ceil(totalRecords / pageLength);
-    }
-
-    const begin = (page - 1) * pageLength;
-    const end = Math.min((page - 1) * pageLength + pageLength, totalRecords);
-    const records = events.slice(begin, end).map((evt) => {
-        if (evt.id !== 0 && !evt.id) {
-            // Generate event id
-            evt.id = uuid.v4();
+    let shouldUpdate = false;
+    for (let i = 0; i < records.length; ++i) {
+        if (!isPlainObject(records[i])) {
+            records[i] = {};
         }
-        return {
-            id: evt.id,
-            mtime: evt.mtime,
-            enabled: evt.enabled,
-            event: evt.event,
-            trigger: evt.trigger,
-            // WARNING: The "command" parameter is deprecated and will be removed in a future release.
-            commands: (evt.commands || evt.command || '')
-        };
-    });
+
+        const record = records[i];
+
+        if (!record.id) {
+            record.id = uuid.v4();
+            shouldUpdate = true;
+        }
+
+        // Alias command
+        if (!record.commands) {
+            record.commands = record.command || '';
+            delete record.command;
+        }
+    }
+
+    if (shouldUpdate) {
+        log.debug(`${PREFIX} update sanitized records: ${JSON.stringify(records)}`);
+
+        // Pass `{ silent changes }` will suppress the change event
+        config.set(CONFIG_KEY, records, { silent: true });
+    }
+
+    return records;
+};
+
+export const fetch = (req, res) => {
+    const records = getSanitizedRecords();
+    const { paging = true, page = 1, pageLength = 10 } = req.query;
+    const totalRecords = records.length;
+    const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
+    const pagedRecords = paging ? records.slice(begin, end) : records;
 
     res.send({
         pagination: {
-            page: page,
-            pageLength: pageLength,
-            totalRecords: totalRecords
+            page: Number(page),
+            pageLength: Number(pageLength),
+            totalRecords: Number(totalRecords)
         },
-        records: records
+        records: pagedRecords.map(record => {
+            const { id, mtime, enabled, event, trigger, commands } = { ...record };
+            return { id, mtime, enabled, event, trigger, commands };
+        })
     });
 };
 
-export const getEvent = (req, res) => {
-    const evt = _.find(config.get('events', []), { id: req.params.id });
-
-    if (!evt) {
-        res.status(ERR_NOT_FOUND).send({
-            msg: 'Event not found'
-        });
-        return;
-    }
-
-    if (evt.id !== 0 && !evt.id) {
-        // Generate event id
-        evt.id = uuid.v4();
-    }
-
-    res.send({
-        id: evt.id,
-        mtime: evt.mtime,
-        enabled: evt.enabled,
-        event: evt.event,
-        trigger: evt.trigger,
-        // WARNING: The "command" parameter is deprecated and will be removed in a future release.
-        commands: (evt.commands || evt.command || '')
-    });
-};
-
-export const createEvent = (req, res) => {
+export const create = (req, res) => {
     const {
         enabled = false,
         event = '',
@@ -111,8 +98,8 @@ export const createEvent = (req, res) => {
     }
 
     try {
-        const events = config.get('events', []);
-        const evt = {
+        const records = getSanitizedRecords();
+        const record = {
             id: uuid.v4(),
             mtime: new Date().getTime(),
             enabled: !!enabled,
@@ -121,14 +108,10 @@ export const createEvent = (req, res) => {
             commands: commands
         };
 
-        if (_.isArray(events)) {
-            events.push(evt);
-            config.set('events', events);
-        } else {
-            config.set('events', [evt]);
-        }
+        records.push(record);
+        config.set(CONFIG_KEY, records);
 
-        res.send({ id: evt.id, mtime: evt.mtime });
+        res.send({ id: record.id, mtime: record.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
@@ -136,26 +119,42 @@ export const createEvent = (req, res) => {
     }
 };
 
-export const updateEvent = (req, res) => {
+export const read = (req, res) => {
     const id = req.params.id;
-    const events = config.get('events', []);
-    const evt = _.find(events, { id: id });
+    const records = getSanitizedRecords();
+    const record = find(records, { id: id });
 
-    if (!evt) {
+    if (!record) {
         res.status(ERR_NOT_FOUND).send({
-            msg: 'Event not found'
+            msg: 'Not found'
+        });
+        return;
+    }
+
+    const { mtime, enabled, event, trigger, commands } = { ...record };
+    res.send({ id, mtime, enabled, event, trigger, commands });
+};
+
+export const update = (req, res) => {
+    const id = req.params.id;
+    const records = getSanitizedRecords();
+    const record = find(records, { id: id });
+
+    if (!record) {
+        res.status(ERR_NOT_FOUND).send({
+            msg: 'Not found'
         });
         return;
     }
 
     const {
-        enabled = evt.enabled,
-        event = evt.event,
-        trigger = evt.trigger,
-        // WARNING: The "command" parameter is deprecated and will be removed in a future release.
-        commands = (evt.commands || evt.command || '')
+        enabled = record.enabled,
+        event = record.event,
+        trigger = record.trigger,
+        commands = record.commands
     } = { ...req.body };
 
+    /*
     if (typeof enabled !== 'boolean') {
         res.status(ERR_BAD_REQUEST).send({
             msg: 'The "enabled" parameter must be a boolean value'
@@ -177,21 +176,29 @@ export const updateEvent = (req, res) => {
         return;
     }
 
-    // Skip checking whether the commands parameter is empty or not
+    if (!commands) {
+        res.status(ERR_BAD_REQUEST).send({
+            msg: 'The "commands" parameter must not be empty'
+        });
+        return;
+    }
+    */
 
     try {
-        evt.mtime = new Date().getTime();
-        evt.enabled = enabled;
-        evt.event = event;
-        evt.trigger = trigger;
-        evt.commands = commands;
-        if (evt.command !== undefined) {
-            // WARNING: The "command" parameter is deprecated and will be removed in a future release.
-            delete evt.command;
-        }
-        config.set('events', events);
+        record.mtime = new Date().getTime();
+        record.enabled = Boolean(enabled);
+        record.event = String(event || '');
+        record.trigger = String(trigger || '');
+        record.commands = String(commands || '');
 
-        res.send({ id: evt.id, mtime: evt.mtime });
+        // Remove deprecated parameter
+        if (record.command !== undefined) {
+            delete record.command;
+        }
+
+        config.set(CONFIG_KEY, records);
+
+        res.send({ id: record.id, mtime: record.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
@@ -199,23 +206,25 @@ export const updateEvent = (req, res) => {
     }
 };
 
-export const deleteEvent = (req, res) => {
+export const __delete = (req, res) => {
     const id = req.params.id;
-    const evt = _.find(config.get('events', []), { id: id });
-    if (!evt) {
+    const records = getSanitizedRecords();
+    const record = find(records, { id: id });
+
+    if (!record) {
         res.status(ERR_NOT_FOUND).send({
-            msg: 'Event not found'
+            msg: 'Not found'
         });
         return;
     }
 
     try {
-        const events = _.filter(config.get('events', []), (evt) => {
-            return evt.id !== id;
+        const filteredRecords = records.filter(record => {
+            return record.id !== id;
         });
-        config.set('events', events);
+        config.set(CONFIG_KEY, filteredRecords);
 
-        res.send({ id: evt.id });
+        res.send({ id: record.id });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
             msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
