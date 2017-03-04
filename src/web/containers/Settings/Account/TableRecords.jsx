@@ -24,12 +24,11 @@ class TableRecords extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const totalRecords = state.records.length;
 
         return (
             <Table
                 style={{
-                    borderBottom: totalRecords > 0 ? '1px solid #ddd' : 'none'
+                    borderBottom: state.records.length > 0 ? '1px solid #ddd' : 'none'
                 }}
                 border={false}
                 data={(state.api.err || state.api.fetching) ? [] : state.records}
