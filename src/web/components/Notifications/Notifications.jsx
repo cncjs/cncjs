@@ -24,13 +24,14 @@ class Notifications extends Component {
         );
     }
     render() {
-        const { children, bsStyle, onDismiss } = this.props;
+        const { children, bsStyle, onDismiss, className, ...props } = this.props;
         const isDismissable = !!onDismiss;
 
         return (
             <div
-                {...this.props}
+                {...props}
                 className={classNames(
+                    className,
                     styles.notifications,
                     styles['notifications-' + bsStyle]
                 )}
