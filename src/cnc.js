@@ -1,4 +1,5 @@
 /* eslint max-len: 0 */
+/* eslint no-console: 0 */
 import path from 'path';
 import program from 'commander';
 import pkg from './package.json';
