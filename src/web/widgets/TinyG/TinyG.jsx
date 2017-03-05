@@ -64,7 +64,7 @@ class TinyG extends Component {
         const feedrate = _.get(controllerState, 'sr.feedrate');
         const velocity = _.get(controllerState, 'sr.velocity');
         const line = _.get(controllerState, 'sr.line');
-        const modal = _.mapValues(_.get(controllerState, 'sr.modal', {}), (word, group) => mapGCodeToText(word));
+        const modal = _.mapValues(_.get(controllerState, 'sr.modal', {}), mapGCodeToText);
         const panel = state.panel;
 
         this.plannerBufferMax = Math.max(this.plannerBufferMax, plannerBuffer);

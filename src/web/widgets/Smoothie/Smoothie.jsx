@@ -31,7 +31,7 @@ class Smoothie extends Component {
         const feedrate = _.get(parserState, 'feedrate', none);
         const spindle = _.get(parserState, 'spindle', none);
         const tool = _.get(parserState, 'tool', none);
-        const modal = _.mapValues(parserState.modal || {}, (word, group) => mapGCodeToText(word));
+        const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
 
         return (
             <div>
@@ -204,9 +204,17 @@ class Smoothie extends Component {
                                 {i18n._('Coolant')}
                             </div>
                             <div className="col col-xs-8">
+                                {!_.isPlainObject(modal.coolant) &&
                                 <div className={styles.well} title={modal.coolant}>
                                     {modal.coolant || none}
                                 </div>
+                                }
+                                {_.isPlainObject(modal.coolant) &&
+                                <div className={styles.well}>
+                                    <div title={modal.coolant.mist}>{modal.coolant.mist}</div>
+                                    <div title={modal.coolant.flood}>{modal.coolant.flood}</div>
+                                </div>
+                                }
                             </div>
                         </div>
                     </Panel.Body>

@@ -52,10 +52,15 @@ class SpindleWidget extends Component {
             this.setState({
                 controller: {
                     type: GRBL,
-                    state: state
-                },
-                spindleState: modal.spindle || '',
-                coolantState: modal.coolant || ''
+                    state: state,
+                    modal: {
+                        spindle: modal.spindle || '',
+                        coolant: {
+                            mist: get(modal, 'coolant.mist', false),
+                            flood: get(modal, 'coolant.flood', false)
+                        }
+                    }
+                }
             });
         },
         'Smoothie:state': (state) => {
@@ -65,17 +70,29 @@ class SpindleWidget extends Component {
             this.setState({
                 controller: {
                     type: SMOOTHIE,
-                    state: state
-                },
-                spindleState: modal.spindle || '',
-                coolantState: modal.coolant || ''
+                    state: state,
+                    modal: {
+                        spindle: modal.spindle || '',
+                        coolant: {
+                            mist: get(modal, 'coolant.mist', false),
+                            flood: get(modal, 'coolant.flood', false)
+                        }
+                    }
+                }
             });
         },
         'TinyG:state': (state) => {
             this.setState({
                 controller: {
                     type: TINYG,
-                    state: state
+                    state: state,
+                    modal: { // Not supported yet
+                        spindle: '',
+                        coolant: {
+                            mist: false,
+                            flood: false
+                        }
+                    }
                 }
             });
         }
@@ -114,11 +131,16 @@ class SpindleWidget extends Component {
             port: controller.port,
             controller: {
                 type: controller.type,
-                state: controller.state
+                state: controller.state,
+                modal: {
+                    spindle: '',
+                    coolant: {
+                        mist: false,
+                        flood: false
+                    }
+                }
             },
             workflowState: controller.workflowState,
-            spindleState: '',
-            coolantState: '',
             spindleSpeed: store.get('widgets.spindle.speed', 1000)
         };
     }

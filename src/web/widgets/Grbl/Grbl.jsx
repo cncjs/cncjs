@@ -40,7 +40,7 @@ class Grbl extends Component {
         const tool = _.get(parserState, 'tool', none);
         const ov = _.get(controllerState, 'status.ov', []);
         const buf = _.get(controllerState, 'status.buf', {});
-        const modal = _.mapValues(parserState.modal || {}, (word, group) => mapGCodeToText(word));
+        const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
 
         this.plannerBufferMax = Math.max(this.plannerBufferMax, buf.planner) || this.plannerBufferMax;
         this.receiveBufferMax = Math.max(this.receiveBufferMax, buf.rx) || this.receiveBufferMax;
@@ -275,9 +275,17 @@ class Grbl extends Component {
                                 {i18n._('Coolant')}
                             </div>
                             <div className="col col-xs-8">
+                                {!_.isPlainObject(modal.coolant) &&
                                 <div className={styles.well} title={modal.coolant}>
                                     {modal.coolant || none}
                                 </div>
+                                }
+                                {_.isPlainObject(modal.coolant) &&
+                                <div className={styles.well}>
+                                    <div title={modal.coolant.mist}>{modal.coolant.mist}</div>
+                                    <div title={modal.coolant.flood}>{modal.coolant.flood}</div>
+                                </div>
+                                }
                             </div>
                         </div>
                     </Panel.Body>

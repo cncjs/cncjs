@@ -1,4 +1,5 @@
-/*eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
+/* eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
+/* eslint no-continue: 0 */
 import _ from 'lodash';
 import events from 'events';
 import {
@@ -337,33 +338,53 @@ class GrblLineParserResultParserState {
             })
             .value();
 
-        words.forEach((word) => {
+        for (let i = 0; i < words.length; ++i) {
+            const word = words[i];
+
             // Gx, Mx
             if (word.indexOf('G') === 0 || word.indexOf('M') === 0) {
-                let r = _.find(GRBL_MODAL_GROUPS, (group) => {
+                const r = _.find(GRBL_MODAL_GROUPS, (group) => {
                     return _.includes(group.modes, word);
                 });
 
-                if (r) {
+                if (!r) {
+                    continue;
+                }
+
+                if (r.group === 'coolant') {
+                    if (word === 'M7') {
+                        _.set(payload, 'modal.coolant.mist', true);
+                    } else if (word === 'M8') {
+                        _.set(payload, 'modal.coolant.flood', true);
+                    } else { // M9
+                        _.set(payload, 'modal.coolant.mist', false);
+                        _.set(payload, 'modal.coolant.flood', false);
+                    }
+                } else {
                     _.set(payload, 'modal.' + r.group, word);
                 }
+
+                continue;
             }
 
             // T: tool number
             if (word.indexOf('T') === 0) {
                 _.set(payload, 'tool', word.substring(1));
+                continue;
             }
 
             // F: feed rate
             if (word.indexOf('F') === 0) {
                 _.set(payload, 'feedrate', word.substring(1));
+                continue;
             }
 
             // S: spindle speed
             if (word.indexOf('S') === 0) {
                 _.set(payload, 'spindle', word.substring(1));
+                continue;
             }
-        });
+        }
 
         return {
             type: GrblLineParserResultParserState,
@@ -592,7 +613,10 @@ class Grbl extends events.EventEmitter {
                 feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
                 program: 'M0', // M0, M1, M2, M30
                 spindle: 'M5', // M3, M4, M5
-                coolant: 'M9' // M7, M8, M9
+                coolant: { // M7, M8, M9
+                    mist: false, // M7
+                    flood: false // M8
+                }
             },
             tool: '',
             feedrate: '',

@@ -1,6 +1,7 @@
+import isPlainObject from 'lodash/isPlainObject';
 import i18n from './i18n';
 
-export default (word) => {
+export default (word, group, object) => {
     const wordText = {
         // Motion
         'G0': i18n._('Rapid Move (G0)', { ns: 'gcode' }),
@@ -63,6 +64,23 @@ export default (word) => {
         'M8': i18n._('Flood Coolant On (M8)', { ns: 'gcode' }),
         'M9': i18n._('Coolant Off (M9)', { ns: 'gcode' })
     };
+
+    if (group === 'coolant') {
+        if (!isPlainObject(object.coolant)) {
+            return '';
+        }
+        if (object.coolant.mist) {
+            object.coolant.mist = wordText.M7;
+        }
+        if (object.coolant.flood) {
+            object.coolant.flood = wordText.M8;
+        }
+        if (!object.coolant.mist && !object.coolant.flood) {
+            object.coolant = wordText.M9;
+        }
+
+        return object.coolant;
+    }
 
     return (wordText[word] || word);
 };

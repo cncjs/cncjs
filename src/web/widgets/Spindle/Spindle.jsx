@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import get from 'lodash/get';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import controller from '../../lib/controller';
@@ -17,6 +18,9 @@ class Spindle extends Component {
     render() {
         const { state, actions } = this.props;
         const { canClick, spindleSpeed } = state;
+        const spindle = get(state, 'controller.modal.spindle');
+        const mistCoolant = get(state, 'controller.modal.coolant.mist');
+        const floodCoolant = get(state, 'controller.modal.coolant.flood');
 
         return (
             <div>
@@ -29,6 +33,7 @@ class Spindle extends Component {
                                     <button
                                         type="button"
                                         className="btn btn-default"
+                                        style={{ padding: '5px 0' }}
                                         onClick={() => {
                                             if (spindleSpeed > 0) {
                                                 controller.command('gcode', 'M3 S' + spindleSpeed);
@@ -43,7 +48,7 @@ class Spindle extends Component {
                                             className={classNames(
                                                 'fa',
                                                 'fa-rotate-right',
-                                                { 'fa-spin': state.spindleState === 'M3' }
+                                                { 'fa-spin': spindle === 'M3' }
                                             )}
                                         />
                                         <span className="space space-sm" />
@@ -54,6 +59,7 @@ class Spindle extends Component {
                                     <button
                                         type="button"
                                         className="btn btn-default"
+                                        style={{ padding: '5px 0' }}
                                         onClick={() => {
                                             if (spindleSpeed > 0) {
                                                 controller.command('gcode', 'M4 S' + spindleSpeed);
@@ -68,7 +74,7 @@ class Spindle extends Component {
                                             className={classNames(
                                                 'fa',
                                                 'fa-rotate-left',
-                                                { 'fa-spin-reverse': state.spindleState === 'M4' }
+                                                { 'fa-spin-reverse': spindle === 'M4' }
                                             )}
                                         />
                                         <span className="space space-sm" />
@@ -79,6 +85,7 @@ class Spindle extends Component {
                                     <button
                                         type="button"
                                         className="btn btn-default"
+                                        style={{ padding: '5px 0' }}
                                         onClick={() => controller.command('gcode', 'M5')}
                                         title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
                                         disabled={!canClick}
@@ -97,6 +104,7 @@ class Spindle extends Component {
                                     <button
                                         type="button"
                                         className="btn btn-default"
+                                        style={{ padding: '5px 0' }}
                                         onClick={() => {
                                             controller.command('gcode', 'M7');
                                         }}
@@ -105,8 +113,9 @@ class Spindle extends Component {
                                     >
                                         <i
                                             className={classNames(
-                                                styles['icon-fan'],
-                                                { 'fa-spin': state.coolantState === 'M7' }
+                                                styles.icon,
+                                                styles.iconFan,
+                                                { 'fa-spin': mistCoolant }
                                             )}
                                         />
                                         <span className="space space-sm" />
@@ -117,6 +126,7 @@ class Spindle extends Component {
                                     <button
                                         type="button"
                                         className="btn btn-default"
+                                        style={{ padding: '5px 0' }}
                                         onClick={() => {
                                             controller.command('gcode', 'M8');
                                         }}
@@ -125,8 +135,9 @@ class Spindle extends Component {
                                     >
                                         <i
                                             className={classNames(
-                                                styles['icon-fan'],
-                                                { 'fa-spin': state.coolantState === 'M8' }
+                                                styles.icon,
+                                                styles.iconFan,
+                                                { 'fa-spin': floodCoolant }
                                             )}
                                         />
                                         <span className="space space-sm" />
@@ -137,6 +148,7 @@ class Spindle extends Component {
                                     <button
                                         type="button"
                                         className="btn btn-default"
+                                        style={{ padding: '5px 0' }}
                                         onClick={() => {
                                             controller.command('gcode', 'M9');
                                         }}
