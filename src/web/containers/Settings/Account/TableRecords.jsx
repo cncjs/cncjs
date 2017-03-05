@@ -65,7 +65,7 @@ class TableRecords extends Component {
                                 actions.openModal(MODAL_CREATE_RECORD);
                             }}
                         >
-                            <i className="fa fa-user-plus" />
+                            <i className="fa fa-plus" />
                             <span className="space" />
                             {i18n._('New')}
                         </button>
