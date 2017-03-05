@@ -31,6 +31,11 @@ const getSanitizedRecords = () => {
             shouldUpdate = true;
         }
 
+        // Defaults to true
+        if (record.enabled === undefined) {
+            record.enabled = true;
+        }
+
         // Alias command
         if (!record.commands) {
             record.commands = record.command || '';
@@ -70,7 +75,7 @@ export const fetch = (req, res) => {
 
 export const create = (req, res) => {
     const {
-        enabled = false,
+        enabled = true,
         event = '',
         trigger = '',
         commands = ''
@@ -154,35 +159,7 @@ export const update = (req, res) => {
         commands = record.commands
     } = { ...req.body };
 
-    /*
-    if (typeof enabled !== 'boolean') {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "enabled" parameter must be a boolean value'
-        });
-        return;
-    }
-
-    if (!event) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "event" parameter must not be empty'
-        });
-        return;
-    }
-
-    if (!trigger) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "trigger" parameter must not be empty'
-        });
-        return;
-    }
-
-    if (!commands) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "commands" parameter must not be empty'
-        });
-        return;
-    }
-    */
+    // Skip validation for "enabled", "event", "trigger", and "commands"
 
     try {
         record.mtime = new Date().getTime();

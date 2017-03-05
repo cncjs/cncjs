@@ -47,6 +47,11 @@ const getSanitizedRecords = () => {
             record.id = uuid.v4();
             shouldUpdate = true;
         }
+
+        // Defaults to true
+        if (record.enabled === undefined) {
+            record.enabled = true;
+        }
     }
 
     if (shouldUpdate) {
@@ -152,7 +157,7 @@ export const fetch = (req, res) => {
 
 export const create = (req, res) => {
     const {
-        enabled = false,
+        enabled = true,
         name = '',
         password = ''
     } = { ...req.body };
@@ -238,21 +243,7 @@ export const update = (req, res) => {
     } = { ...req.body };
     const willChangePassword = oldPassword && newPassword;
 
-    /*
-    if (typeof enabled !== 'boolean') {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "enabled" parameter must be a boolean value'
-        });
-        return;
-    }
-
-    if (!name) {
-        res.status(ERR_BAD_REQUEST).send({
-            msg: 'The "name" parameter must not be empty'
-        });
-        return;
-    }
-    */
+    // Skip validation for "enabled" and "name"
 
     if (willChangePassword && !bcrypt.compareSync(oldPassword, record.password)) {
         res.status(ERR_PRECONDITION_FAILED).send({
