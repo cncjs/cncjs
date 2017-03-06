@@ -76,7 +76,9 @@ class Header extends Component {
             try {
                 const res = await api.commands.fetch({ paging: false });
                 const { records: commands } = res.body;
-                this.setState({ commands: commands });
+                this.setState({
+                    commands: commands.filter(command => command.enabled)
+                });
             } catch (res) {
                 // Ignore error
             }
