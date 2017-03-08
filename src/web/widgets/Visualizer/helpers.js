@@ -21,20 +21,20 @@ const fitCameraToObject = (camera, width, height, lookTarget) => {
     console.assert(_.isNumber(height));
     console.assert(lookTarget instanceof THREE.Vector3);
 
-    let v1 = (lookTarget instanceof THREE.Vector3) ? lookTarget : new THREE.Vector3(0, 0, 0);
-    let v2 = new THREE.Vector3(
+    const v1 = (lookTarget instanceof THREE.Vector3) ? lookTarget : new THREE.Vector3(0, 0, 0);
+    const v2 = new THREE.Vector3(
         camera.position.x,
         camera.position.y,
         camera.position.z
     );
-    let dist = v1.distanceTo(v2); // the distance from the camera to the closest face of the object
-    let aspect = camera.aspect; // the aspect ratio of the canvas (width / height)
+    const dist = v1.distanceTo(v2); // the distance from the camera to the closest face of the object
+    const aspect = camera.aspect || 1; // the aspect ratio of the canvas (width / height)
 
     width = Number(width) || 0;
     height = Number(height) || 0;
 
     // Find the largest value of fov
-    let fov = _.max([
+    const fov = _.max([
         // to fit the object height
         2 * Math.atan(height / (2 * dist)) * (180 / Math.PI),
         // to fit the object width
