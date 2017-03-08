@@ -1,51 +1,4 @@
-import _ from 'lodash';
 import * as THREE from 'three';
-
-// Fits camera to object
-// @param {number} width The object width
-// @param {number} height The object height
-// @param {THREE.Vector3} [lookTarget] The object's top position which is nearest to the camera
-//
-// http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
-//
-// To match the object height with the visible height
-//   fov = 2 * Math.atan(height / (2 * dist)) * ( 180 / Math.PI); // in degrees
-//
-// To match the object width with the visible width
-//   fov = 2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI); // in degrees
-//
-const fitCameraToObject = (camera, width, height, lookTarget) => {
-    const FOV = 15;
-
-    console.assert(_.isNumber(width));
-    console.assert(_.isNumber(height));
-    console.assert(lookTarget instanceof THREE.Vector3);
-
-    const v1 = (lookTarget instanceof THREE.Vector3) ? lookTarget : new THREE.Vector3(0, 0, 0);
-    const v2 = new THREE.Vector3(
-        camera.position.x,
-        camera.position.y,
-        camera.position.z
-    );
-    const dist = v1.distanceTo(v2); // the distance from the camera to the closest face of the object
-    const aspect = camera.aspect || 1; // the aspect ratio of the canvas (width / height)
-
-    width = Number(width) || 0;
-    height = Number(height) || 0;
-
-    // Find the largest value of fov
-    const fov = _.max([
-        // to fit the object height
-        2 * Math.atan(height / (2 * dist)) * (180 / Math.PI),
-        // to fit the object width
-        2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI),
-        // a minimum value of fov
-        FOV
-    ]);
-
-    camera.fov = fov;
-    camera.updateProjectionMatrix();
-};
 
 const getBoundingBox = (object) => {
     const box = new THREE.Box3().setFromObject(object);
@@ -83,7 +36,6 @@ const loadTexture = (url, callback) => {
 };
 
 export {
-    fitCameraToObject,
     getBoundingBox,
     loadTexture
 };

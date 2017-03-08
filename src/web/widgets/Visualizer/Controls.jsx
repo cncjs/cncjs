@@ -215,11 +215,11 @@ class Controls extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { units, disabled, gcode, objects } = state;
+        const { units, disabled, gcode, projection, objects } = state;
         const controllerType = this.renderControllerType();
         const controllerState = this.renderControllerState();
         const canSendCommand = this.canSendCommand();
-        const canToggle3DOptions = Detector.webgl && !disabled;
+        const canToggleOptions = Detector.webgl && !disabled;
         const wcs = this.getWorkCoordinateSystem();
 
         return (
@@ -365,40 +365,63 @@ class Controls extends Component {
                                 />
                             </MenuItem>
                             <MenuItem divider />
+                            <MenuItem header>
+                                {i18n._('Projection')}
+                            </MenuItem>
                             <MenuItem
-                                disabled={!canToggle3DOptions}
+                                disabled={!canToggleOptions}
+                                onSelect={actions.toPerspectiveProjection}
+                            >
+                                <i className={classNames('fa', 'fa-fw', { 'fa-check': projection !== 'orthographic' })} />
+                                <span className="space space-sm" />
+                                {i18n._('Perspective Projection')}
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
+                                onSelect={actions.toOrthographicProjection}
+                            >
+                                <i className={classNames('fa', 'fa-fw', { 'fa-check': projection === 'orthographic' })} />
+                                <span className="space space-sm" />
+                                {i18n._('Orthographic Projection')}
+                            </MenuItem>
+                            <MenuItem divider />
+                            <MenuItem header>
+                                {i18n._('3D Scene Objects')}
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
                                 onSelect={actions.toggleGCodeFilename}
                             >
                                 {gcode.displayName
-                                    ? <i className="fa fa-toggle-on" />
-                                    : <i className="fa fa-toggle-off" />
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <span className="space" />
+                                <span className="space space-sm" />
                                 {i18n._('Display G-code Filename')}
                             </MenuItem>
                             <MenuItem
-                                disabled={!canToggle3DOptions}
+                                disabled={!canToggleOptions}
                                 onSelect={actions.toggleCoordinateSystemVisibility}
                             >
                                 {objects.coordinateSystem.visible
-                                    ? <i className="fa fa-toggle-on" />
-                                    : <i className="fa fa-toggle-off" />
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <span className="space" />
+                                <span className="space space-sm" />
                                 {objects.coordinateSystem.visible
                                     ? i18n._('Hide Coordinate System')
                                     : i18n._('Show Coordinate System')
                                 }
                             </MenuItem>
                             <MenuItem
-                                disabled={!canToggle3DOptions}
+                                disabled={!canToggleOptions}
                                 onSelect={actions.toggleToolheadVisibility}
                             >
                                 {objects.toolhead.visible
-                                    ? <i className="fa fa-toggle-on" />
-                                    : <i className="fa fa-toggle-off" />
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <span className="space" />
+                                <span className="space space-sm" />
                                 {objects.toolhead.visible
                                     ? i18n._('Hide Toolhead')
                                     : i18n._('Show Toolhead')

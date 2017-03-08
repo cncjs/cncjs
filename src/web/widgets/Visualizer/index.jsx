@@ -300,6 +300,16 @@ class VisualizerWidget extends Component {
                 disabled: !this.state.disabled
             });
         },
+        toPerspectiveProjection: (projection) => {
+            this.setState({
+                projection: 'perspective'
+            });
+        },
+        toOrthographicProjection: (projection) => {
+            this.setState({
+                projection: 'orthographic'
+            });
+        },
         toggleGCodeFilename: () => {
             this.setState({
                 gcode: {
@@ -522,6 +532,9 @@ class VisualizerWidget extends Component {
         if (this.state.disabled !== prevState.disabled) {
             store.set('widgets.visualizer.disabled', this.state.disabled);
         }
+        if (this.state.projection !== prevState.projection) {
+            store.set('widgets.visualizer.projection', this.state.projection);
+        }
         if (this.state.gcode.displayName !== prevState.gcode.displayName) {
             store.set('widgets.visualizer.gcode.displayName', this.state.gcode.displayName);
         }
@@ -576,6 +589,7 @@ class VisualizerWidget extends Component {
                 received: 0
             },
             disabled: store.get('widgets.visualizer.disabled', false),
+            projection: store.get('widgets.visualizer.projection', 'perspective'),
             objects: {
                 coordinateSystem: {
                     visible: store.get('widgets.visualizer.objects.coordinateSystem.visible', true)

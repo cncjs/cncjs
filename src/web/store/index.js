@@ -134,6 +134,7 @@ export const defaultState = {
 
             // 3D View
             disabled: false,
+            projection: 'perspective', // 'perspective' or 'orthographic'
             gcode: {
                 displayName: true
             },

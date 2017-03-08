@@ -1,13 +1,17 @@
 /* eslint-disable import/no-unresolved */
+import 'imports-loader?THREE=three!three/examples/js/cameras/CombinedCamera';
 import 'imports-loader?THREE=three!three/examples/js/controls/TrackballControls';
+import 'imports-loader?THREE=three!./TrackballControls';
 /* eslint-enable */
 import _ from 'lodash';
 import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import Detector from 'three/examples/js/Detector';
-import { fitCameraToObject, getBoundingBox, loadTexture } from './helpers';
+import { getBoundingBox, loadTexture } from './helpers';
+import Viewport from './Viewport';
 import CoordinateAxes from './CoordinateAxes';
 import ToolHead from './ToolHead';
 import TargetPoint from './TargetPoint';
@@ -20,18 +24,25 @@ import {
     METRIC_UNITS
 } from '../../constants';
 
-const IMPERIAL_GRID_COUNT = 32; // 32 inches
-const IMPERIAL_GRID_SPACING = 25.4; // 1 inch
-const IMPERIAL_AXIS_LENGTH = IMPERIAL_GRID_SPACING * 12; // 12 inches
+const IMPERIAL_GRID_COUNT = 32; // 32 in
+const IMPERIAL_GRID_SPACING = 25.4; // 1 in
+const IMPERIAL_AXIS_LENGTH = IMPERIAL_GRID_SPACING * 12; // 12 in
 const METRIC_GRID_COUNT = 60; // 60 cm
-const METRIC_GRID_SPACING = 10; // 1 cm
-const METRIC_AXIS_LENGTH = METRIC_GRID_SPACING * 30; // 30 cm
-const CAMERA_FOV = 70;
-const CAMERA_NEAR = 0.001;
-const CAMERA_FAR = 10000;
+const METRIC_GRID_SPACING = 10; // 10 mm
+const METRIC_AXIS_LENGTH = METRIC_GRID_SPACING * 30; // 300 mm
+const CAMERA_VIEWPORT_WIDTH = 300; // 300 mm
+const CAMERA_VIEWPORT_HEIGHT = 300; // 300 mm
+const PERSPECTIVE_FOV = 70;
+const PERSPECTIVE_NEAR = 0.001;
+const PERSPECTIVE_FAR = 2000;
+const ORTHOGRAPHIC_FOV = 35;
+const ORTHOGRAPHIC_NEAR = 0.001;
+const ORTHOGRAPHIC_FAR = 2000;
 const CAMERA_POSITION_X = 0;
 const CAMERA_POSITION_Y = 0;
 const CAMERA_POSITION_Z = 200; // Move the camera out a bit from the origin (0, 0, 0)
+const TRACKBALL_CONTROLS_MIN_DISTANCE = 1;
+const TRACKBALL_CONTROLS_MAX_DISTANCE = 2000;
 
 class Visualizer extends Component {
     static propTypes = {
@@ -64,6 +75,7 @@ class Visualizer extends Component {
         this.scene = null;
         this.camera = null;
         this.controls = null;
+        this.viewport = null;
         this.toolhead = null;
         this.targetPoint = null;
         this.visualizer = null;
@@ -73,7 +85,8 @@ class Visualizer extends Component {
         this.addResizeEventListener();
 
         if (this.node) {
-            this.createScene(this.node);
+            const el = ReactDOM.findDOMNode(this.node);
+            this.createScene(el);
             this.resizeRenderer();
         }
     }
@@ -99,6 +112,22 @@ class Visualizer extends Component {
         if (this.visualizer) {
             const frameIndex = nextState.gcode.sent;
             this.visualizer.setFrameIndex(frameIndex);
+        }
+
+        if (state.projection !== nextState.projection) {
+            if (nextState.projection === 'orthographic') {
+                this.camera.toOrthographic();
+                this.camera.setZoom(1);
+                this.camera.setFov(ORTHOGRAPHIC_FOV);
+            } else {
+                this.camera.toPerspective();
+                this.camera.setZoom(1);
+                this.camera.setFov(PERSPECTIVE_FOV);
+            }
+            if (this.viewport) {
+                this.viewport.update();
+            }
+            needUpdateScene = true;
         }
 
         // Display the name of the G-code file
@@ -200,17 +229,32 @@ class Visualizer extends Component {
             return;
         }
 
-        const el = this.node;
+        const el = ReactDOM.findDOMNode(this.node);
         const navbarHeight = 50;
         const widgetHeaderHeight = 32;
         const borderWidth = 1;
-        const width = el.offsetWidth;
-        const height = window.innerHeight - navbarHeight - widgetHeaderHeight - borderWidth;
+        const width = Number(el.offsetWidth);
+        const height = Number(window.innerHeight - navbarHeight - widgetHeaderHeight - borderWidth);
 
-        // Update the camera aspect ratio (width / height), and set a new size to the renderer.
-        // Also see "Window on resize, and aspect ratio #69" at https://github.com/mrdoob/three.js/issues/69
-        this.camera.aspect = width / height;
+        // https://github.com/mrdoob/three.js/blob/dev/examples/js/cameras/CombinedCamera.js#L156
+        // THREE.CombinedCamera.prototype.setSize = function(width, height) {
+        //     this.cameraP.aspect = width / height;
+        //     this.left = - width / 2;
+        //     this.right = width / 2;
+        //     this.top = height / 2;
+        //     this.bottom = - height / 2;
+        // }
+        this.camera.setSize(width, height);
+        this.camera.aspect = width / height; // Update camera aspect as well
         this.camera.updateProjectionMatrix();
+
+        // Initialize viewport at the first time of resizing renderer
+        if (!this.viewport) {
+            // Defaults to 300x300mm
+            this.viewport = new Viewport(this.camera, CAMERA_VIEWPORT_WIDTH, CAMERA_VIEWPORT_HEIGHT);
+        }
+
+        this.controls.handleResize();
 
         this.renderer.setSize(width, height);
 
@@ -323,8 +367,8 @@ class Visualizer extends Component {
 
         const { state } = this.props;
         const { units, objects } = state;
-        const width = el.clientWidth;
-        const height = el.clientHeight;
+        const width = Number(el.clientWidth);
+        const height = Number(el.clientHeight) || width; // same to width if clientHeight is 0
 
         // WebGLRenderer
         this.renderer = new THREE.WebGLRenderer({
@@ -344,15 +388,37 @@ class Visualizer extends Component {
         // A scene, a camera, and a renderer so we can render the scene with the camera.
         this.scene = new THREE.Scene();
 
-        // Perspective camera
-        this.camera = this.createPerspectiveCamera(width, height);
-
-        // Trackball Controls
+        this.camera = this.createCombinedCamera(width, height);
         this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
 
-        // Ambient light
-        const light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
-        this.scene.add(light);
+        // Projection
+        if (state.projection === 'orthographic') {
+            this.camera.toOrthographic();
+            this.camera.setZoom(1);
+            this.camera.setFov(ORTHOGRAPHIC_FOV);
+        } else {
+            this.camera.toPerspective();
+            this.camera.setZoom(1);
+            this.camera.setFov(PERSPECTIVE_FOV);
+        }
+
+        { // Lights
+            let light;
+
+            // Directional Light
+            light = new THREE.DirectionalLight(0xffffff);
+            light.position.set(1, 1, 1);
+            this.scene.add(light);
+
+            // Directional Light
+            light = new THREE.DirectionalLight(0x002288);
+            light.position.set(-1, -1, -1);
+            this.scene.add(light);
+
+            // Ambient Light
+            light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
+            this.scene.add(light);
+        }
 
         { // Imperial
             const visible = objects.coordinateSystem.visible;
@@ -439,11 +505,36 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
+    createCombinedCamera(width, height) {
+        const frustumWidth = width / 2;
+        const frustumHeight = (height || width) / 2; // same to width if height is 0
+        const fov = PERSPECTIVE_FOV;
+        const near = PERSPECTIVE_NEAR;
+        const far = PERSPECTIVE_FAR;
+        const orthoNear = ORTHOGRAPHIC_NEAR;
+        const orthoFar = ORTHOGRAPHIC_FAR;
+
+        const camera = new THREE.CombinedCamera(
+            frustumWidth,
+            frustumHeight,
+            fov,
+            near,
+            far,
+            orthoNear,
+            orthoFar
+        );
+
+        camera.position.x = CAMERA_POSITION_X;
+        camera.position.y = CAMERA_POSITION_Y;
+        camera.position.z = CAMERA_POSITION_Z;
+
+        return camera;
+    }
     createPerspectiveCamera(width, height) {
-        const fov = CAMERA_FOV;
-        const aspect = Number(width) / Number(height);
-        const near = CAMERA_NEAR;
-        const far = CAMERA_FAR;
+        const fov = PERSPECTIVE_FOV;
+        const aspect = (width > 0 && height > 0) ? Number(width) / Number(height) : 1;
+        const near = PERSPECTIVE_NEAR;
+        const far = PERSPECTIVE_FAR;
         const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
         camera.position.x = CAMERA_POSITION_X;
@@ -452,15 +543,33 @@ class Visualizer extends Component {
 
         return camera;
     }
+    createOrthographicCamera(width, height) {
+        const left = -width / 2;
+        const right = width / 2;
+        const top = height / 2;
+        const bottom = -height / 2;
+        const near = ORTHOGRAPHIC_NEAR;
+        const far = ORTHOGRAPHIC_FAR;
+        const camera = new THREE.OrthographicCamera(left, right, top, bottom, near, far);
+
+        return camera;
+    }
     createTrackballControls(object, domElement) {
         const controls = new THREE.TrackballControls(object, domElement);
 
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 1.2;
-        controls.panSpeed = 0.3;
-        controls.dynamicDampingFactor = 0.2;
-        controls.minDistance = 1;
-        controls.maxDistance = 5000;
+        controls.panSpeed = 0.8;
+        controls.noZoom = false;
+        controls.noPan = false;
+
+        controls.staticMoving = true;
+        controls.dynamicDampingFactor = 0.3;
+
+        controls.keys = [65, 83, 68];
+
+        controls.minDistance = TRACKBALL_CONTROLS_MIN_DISTANCE;
+        controls.maxDistance = TRACKBALL_CONTROLS_MAX_DISTANCE;
 
         let shouldAnimate = false;
         const animate = () => {
@@ -480,6 +589,7 @@ class Visualizer extends Component {
         });
         controls.addEventListener('end', () => {
             shouldAnimate = false;
+            this.updateScene();
         });
         controls.addEventListener('change', () => {
             // Update the scene
@@ -526,7 +636,12 @@ class Visualizer extends Component {
     }
     // Make the controls look at the center position
     lookAtCenter() {
-        this.controls.reset();
+        if (this.viewport) {
+            this.viewport.update();
+        }
+        if (this.controls) {
+            this.controls.reset();
+        }
     }
     load(name, gcode, callback) {
         // Remove previous G-code object
@@ -575,12 +690,11 @@ class Visualizer extends Component {
             obj.add(gcodeName);
         }
 
-        { // Fit the camera to object
-            const objectWidth = dX;
-            const objectHeight = dY;
-            const lookTarget = new THREE.Vector3(0, 0, bbox.max.z);
-
-            fitCameraToObject(this.camera, objectWidth, objectHeight, lookTarget);
+        if (this.viewport) {
+            const width = dX;
+            const height = dY;
+            const target = new THREE.Vector3(0, 0, bbox.max.z);
+            this.viewport.set(width, height, target);
         }
 
         // Update the scene
@@ -600,8 +714,11 @@ class Visualizer extends Component {
         }
 
         if (this.controls) {
-            // Reset controls
             this.controls.reset();
+        }
+
+        if (this.viewport) {
+            this.viewport.reset();
         }
 
         // Update the scene
