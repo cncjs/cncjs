@@ -275,7 +275,7 @@ class SmoothieController {
 
             if (lastQueryTime > 0) {
                 const timespan = Math.abs(now - lastQueryTime);
-                const toleranceTime = 250 * 10; // 2500ms
+                const toleranceTime = 5000; // 5 seconds
 
                 // Check if it has not been updated for a long time
                 if (timespan >= toleranceTime) {
@@ -299,7 +299,7 @@ class SmoothieController {
 
             if (lastQueryTime > 0) {
                 const timespan = Math.abs(now - lastQueryTime);
-                const toleranceTime = 500 * 10; // 5000ms
+                const toleranceTime = 10000; // 10 seconds
 
                 // Check if it has not been updated for a long time
                 if (timespan >= toleranceTime) {
