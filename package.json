@@ -242,7 +242,7 @@
     "css-loader": "~0.26.4",
     "css-split-webpack-plugin": "~0.2.3",
     "electron": "~1.6.2",
-    "electron-builder": "~14.5.3",
+    "electron-builder": "~15.1.1",
     "electron-rebuild": "~1.5.7",
     "eslint": "~3.17.1",
     "eslint-config-trendmicro": "~0.5.1",

@@ -87,7 +87,7 @@ after_success:
       sudo spctl --status;
       npm run build:mac-x64;
       ls -al output output/*;
-      cp -af "output/mac/${RELEASE}.dmg" "releases/${RELEASE}-mac-x64.dmg";
+      cp -af "output/${RELEASE}.dmg" "releases/${RELEASE}-mac-x64.dmg";
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- delete \
