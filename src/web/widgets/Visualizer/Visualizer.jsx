@@ -1,7 +1,5 @@
 /* eslint-disable import/no-unresolved */
 import 'imports-loader?THREE=three!three/examples/js/cameras/CombinedCamera';
-import 'imports-loader?THREE=three!three/examples/js/controls/TrackballControls';
-import 'imports-loader?THREE=three!./TrackballControls';
 /* eslint-enable */
 import _ from 'lodash';
 import colornames from 'colornames';
@@ -10,6 +8,7 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import Detector from 'three/examples/js/Detector';
+import './TrackballControls';
 import { getBoundingBox, loadTexture } from './helpers';
 import Viewport from './Viewport';
 import CoordinateAxes from './CoordinateAxes';
