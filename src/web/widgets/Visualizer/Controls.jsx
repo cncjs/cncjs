@@ -386,7 +386,7 @@ class Controls extends Component {
                             </MenuItem>
                             <MenuItem divider />
                             <MenuItem header>
-                                {i18n._('3D Scene Objects')}
+                                {i18n._('Scene Objects')}
                             </MenuItem>
                             <MenuItem
                                 disabled={!canToggleOptions}
