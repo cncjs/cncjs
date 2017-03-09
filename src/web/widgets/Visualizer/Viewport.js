@@ -4,6 +4,7 @@ import log from '../../lib/log';
 const FOV_MIN = 15;
 const TARGET0 = new THREE.Vector3(0, 0, 0);
 
+// http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
 // https://github.com/mrdoob/three.js/issues/1454
 // https://github.com/mrdoob/three.js/issues/1521
 class Viewport {
@@ -75,10 +76,21 @@ class Viewport {
             const aspect = visibleHeight > 0 ? (visibleWidth / visibleHeight) : 1;
 
             // http://stackoverflow.com/questions/14614252/how-to-fit-camera-to-object
-            // To match the object height with the visible height
+            //
+            // If you want the object height to match the visible height, set the camera
+            // field-of-view like so:
             //   fov = 2 * Math.atan(height / (2 * dist)) * ( 180 / Math.PI); // in degrees
-            // To match the object width with the visible width
+            //
+            // If you want the object width to match the visible width, let `aspect` be the
+            // aspect ratio of the canvas (canvas width divided by canvas height), and set
+            // the camera field-of-view like so:
             //   fov = 2 * Math.atan((width / aspect) / (2 * dist)) * (180 / Math.PI); // in degrees
+            //
+            // Calculate the distance with a fixed camera field-of-view:
+            //   maxDim = Math.max(w, h);
+            //   aspectRatio = w / h;
+            //   distance = maxDim / 2 / aspectRatio / Math.tan(Math.PI * fov / 360);
+            //
             const fov = Math.max(
                 // to fit the viewport height
                 2 * Math.atan(height / (2 * distance)) * (180 / Math.PI),
