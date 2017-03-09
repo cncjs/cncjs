@@ -28,6 +28,44 @@ class LaserWidget extends Component {
     };
 
     actions = {
+        toggleLaserTest: () => {
+            const expanded = this.state.panel.laserTest.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    laserTest: {
+                        ...this.state.panel.laserTest,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
+        changeLaserTestPower: (value) => {
+            const power = Number(value) || 0;
+            this.setState({
+                test: {
+                    ...this.state.test,
+                    power
+                }
+            });
+        },
+        changeLaserTestDuration: (event) => {
+            const duration = Number(event.target.value) || 0;
+            this.setState({
+                test: {
+                    ...this.state.test,
+                    duration
+                }
+            });
+        },
+        laserTestOn: () => {
+            const { power, duration } = this.state.test;
+            controller.command('lasertest:on', power, duration);
+        },
+        laserTestOff: () => {
+            controller.command('lasertest:off');
+        }
     };
     controllerEvents = {
         'Grbl:state': (state) => {
@@ -74,10 +112,15 @@ class LaserWidget extends Component {
     }
     componentDidUpdate(prevProps, prevState) {
         const {
-            minimized
+            minimized,
+            panel,
+            test
         } = this.state;
 
         store.set('widgets.laser.minimized', minimized);
+        store.set('widgets.laser.panel.laserTest.expanded', panel.laserTest.expanded);
+        store.set('widgets.laser.test.power', test.power);
+        store.set('widgets.laser.test.duration', test.duration);
     }
     getDefaultState() {
         return {
@@ -89,8 +132,15 @@ class LaserWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
-            spindleState: '',
-            coolantState: ''
+            panel: {
+                laserTest: {
+                    expanded: store.get('widgets.laser.panel.laserTest.expanded')
+                }
+            },
+            test: {
+                power: store.get('widgets.laser.test.power', 0),
+                duration: store.get('widgets.laser.test.duration', 0)
+            }
         };
     }
     subscribe() {

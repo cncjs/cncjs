@@ -658,6 +658,23 @@ class TinyGController {
             'rapidOverride': () => {
                 // Not supported
             },
+            'lasertest:on': () => {
+                const [power = 0, duration = 0] = args;
+                const commands = [
+                    'M3S' + Math.abs(power)
+                ];
+                if (duration > 0) {
+                    commands.push('G4P' + (duration / 1000));
+                    commands.push('M5S0');
+                }
+                this.command(null, 'gcode', commands.join('\n'));
+            },
+            'lasertest:off': () => {
+                const commands = [
+                    'M5S0'
+                ];
+                this.command(null, 'gcode', commands.join('\n'));
+            },
             'gcode': () => {
                 const command = args.join(' ').split('\n');
                 this.feeder.feed(command);

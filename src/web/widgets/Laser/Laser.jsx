@@ -1,7 +1,10 @@
 //import classNames from 'classnames';
 import _ from 'lodash';
+import Slider from 'rc-slider';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
+import Panel from '../../components/Panel';
+import Toggler from '../../components/Toggler';
 import RepeatButton from '../../components/RepeatButton';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -45,8 +48,8 @@ class Laser extends Component {
         return scale;
     }
     render() {
-        const { state } = this.props;
-        const { canClick } = state;
+        const { state, actions } = this.props;
+        const { canClick, panel, test } = state;
         const laserIntensityScale = this.getLaserIntensityScale();
 
         return (
@@ -120,11 +123,87 @@ class Laser extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="form-group">
-                    <label className="control-label">
-                        {i18n._('Laser Test')}
-                    </label>
-                </div>
+                <Panel className={styles.panel}>
+                    <Panel.Heading className={styles.panelHeading}>
+                        <Toggler
+                            className="clearfix"
+                            onToggle={actions.toggleLaserTest}
+                            title={panel.laserTest.expanded ? i18n._('Hide') : i18n._('Show')}
+                        >
+                            <div className="pull-left">{i18n._('Laser Test')}</div>
+                            <Toggler.Icon
+                                className="pull-right"
+                                expanded={panel.laserTest.expanded}
+                            />
+                        </Toggler>
+                    </Panel.Heading>
+                    {panel.laserTest.expanded &&
+                    <Panel.Body>
+                        <div className="table-form" style={{ marginBottom: 15 }}>
+                            <div className="table-form-row">
+                                <div className="table-form-col table-form-col-label middle">
+                                    {i18n._('Laser test power')}
+                                </div>
+                                <div className="table-form-col">
+                                    <div className="text-center">{test.power}%</div>
+                                    <Slider
+                                        style={{ padding: 0 }}
+                                        defaultValue={test.power}
+                                        min={0}
+                                        max={100}
+                                        step={1}
+                                        onChange={actions.changeLaserTestPower}
+                                    />
+                                </div>
+                            </div>
+                            <div className="table-form-row">
+                                <div className="table-form-col table-form-col-label middle">
+                                    {i18n._('Laser test duration')}
+                                </div>
+                                <div className="table-form-col">
+                                    <div className="input-group input-group-sm">
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            style={{ borderRadius: 0 }}
+                                            value={test.duration}
+                                            placeholder="0"
+                                            min={0}
+                                            step={1}
+                                            onChange={actions.changeLaserTestDuration}
+                                        />
+                                        <span className="input-group-addon">{i18n._('ms')}</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="btn-toolbar" role="toolbar">
+                            <div className="btn-group" role="group">
+                                <button
+                                    type="button"
+                                    className="btn btn-default"
+                                    style={{ minWidth: 80 }}
+                                    disabled={!canClick}
+                                    onClick={actions.laserTestOn}
+                                >
+                                    {i18n._('Laser Test')}
+                                </button>
+                            </div>
+                            <div className="btn-group" role="group">
+                                <button
+                                    type="button"
+                                    className="btn btn-default"
+                                    style={{ minWidth: 80 }}
+                                    disabled={!canClick}
+                                    onClick={actions.laserTestOff}
+                                >
+                                    {i18n._('Laser Off')}
+                                </button>
+                            </div>
+                        </div>
+                    </Panel.Body>
+                    }
+                </Panel>
             </div>
         );
     }

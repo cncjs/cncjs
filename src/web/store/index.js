@@ -87,7 +87,16 @@ export const defaultState = {
             }
         },
         laser: {
-            minimized: false
+            minimized: false,
+            panel: {
+                laserTest: {
+                    expanded: true
+                }
+            },
+            test: {
+                power: 0,
+                duration: 0
+            }
         },
         macro: {
             minimized: false
