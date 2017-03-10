@@ -1,6 +1,6 @@
 import { test } from 'tap';
 import trim from 'lodash/trim';
-import Grbl from '../src/app/controllers/Grbl/Grbl';
+import Smoothie from '../src/app/controllers/Smoothie/Smoothie';
 
 // $10 - Status report mask:binary
 // Report Type      | Value
@@ -9,9 +9,9 @@ import Grbl from '../src/app/controllers/Grbl/Grbl';
 // Planner Buffer   | 4
 // RX Buffer        | 8
 // Limit Pins       | 16
-test('GrblLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
-    const grbl = new Grbl();
-    grbl.on('status', ({ raw, ...status }) => {
+test('SmoothieLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle>');
         t.same(status, {
             activeState: 'Idle',
@@ -21,12 +21,12 @@ test('GrblLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
     });
 
     const line = '<Idle>';
-    grbl.parse(line);
+    smoothie.parse(line);
 });
 
-test('GrblLineParserResultStatus: default ($10=3)', (t) => {
-    const grbl = new Grbl();
-    grbl.on('status', ({ raw, ...status }) => {
+test('SmoothieLineParserResultStatus: default ($10=3)', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>');
         t.same(status, {
             activeState: 'Idle',
@@ -46,12 +46,12 @@ test('GrblLineParserResultStatus: default ($10=3)', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>';
-    grbl.parse(line);
+    smoothie.parse(line);
 });
 
-test('GrblLineParserResultStatus: 6-axis', (t) => {
-    const grbl = new Grbl();
-    grbl.on('status', ({ raw, ...status }) => {
+test('SmoothieLineParserResultStatus: 6-axis', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>');
         t.same(status, {
             activeState: 'Idle',
@@ -77,12 +77,12 @@ test('GrblLineParserResultStatus: 6-axis', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>';
-    grbl.parse(line);
+    smoothie.parse(line);
 });
 
-test('GrblLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
-    const grbl = new Grbl();
-    grbl.on('status', ({ raw, ...status }) => {
+test('SmoothieLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>');
         t.same(status, {
             activeState: 'Idle',
@@ -107,47 +107,47 @@ test('GrblLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>';
-    grbl.parse(line);
+    smoothie.parse(line);
 });
 
-test('GrblLineParserResultOk', (t) => {
-    const grbl = new Grbl();
-    grbl.on('ok', ({ raw }) => {
+test('SmoothieLineParserResultOk', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('ok', ({ raw }) => {
         t.equal(raw, 'ok');
         t.end();
     });
 
     const line = 'ok';
-    grbl.parse(line);
+    smoothie.parse(line);
 });
 
-test('GrblLineParserResultError', (t) => {
-    const grbl = new Grbl();
-    grbl.on('error', ({ raw, message }) => {
+test('SmoothieLineParserResultError', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('error', ({ raw, message }) => {
         t.equal(raw, 'error: Expected command letter');
         t.equal(message, 'Expected command letter');
         t.end();
     });
 
     const line = 'error: Expected command letter';
-    grbl.parse(line);
+    smoothie.parse(line);
 });
 
-test('GrblLineParserResultAlarm', (t) => {
-    const grbl = new Grbl();
-    grbl.on('alarm', ({ raw, message }) => {
+test('SmoothieLineParserResultAlarm', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('alarm', ({ raw, message }) => {
         t.equal(raw, 'ALARM: Probe fail');
         t.equal(message, 'Probe fail');
         t.end();
     });
 
     const line = 'ALARM: Probe fail';
-    grbl.parse(line);
+    smoothie.parse(line);
 });
 
-test('GrblLineParserResultParserState', (t) => {
-    const grbl = new Grbl();
-    grbl.on('parserstate', ({ raw, ...parserstate }) => {
+test('SmoothieLineParserResultParserState', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('parserstate', ({ raw, ...parserstate }) => {
         t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]');
         t.same(parserstate, {
             modal: {
@@ -172,10 +172,10 @@ test('GrblLineParserResultParserState', (t) => {
     });
 
     const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]';
-    grbl.parse(line);
+    smoothie.parse(line);
 });
 
-test('GrblLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) => {
+test('SmoothieLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) => {
     const lines = [
         '[G54:0.000,0.000,0.000]',
         '[G55:0.000,0.000,0.000]',
@@ -187,9 +187,9 @@ test('GrblLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) =
         '[G30:0.000,0.000,0.000]',
         '[G92:0.000,0.000,0.000]'
     ];
-    const grbl = new Grbl();
+    const smoothie = new Smoothie();
     let i = 0;
-    grbl.on('parameters', ({ name, value, raw }) => {
+    smoothie.on('parameters', ({ name, value, raw }) => {
         if (i < lines.length) {
             t.equal(raw, lines[i]);
         }
@@ -228,25 +228,25 @@ test('GrblLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) =
     });
 
     lines.forEach(line => {
-        grbl.parse(line);
+        smoothie.parse(line);
     });
 });
 
-test('GrblLineParserResultParameters:TLO', (t) => {
-    const grbl = new Grbl();
-    grbl.on('parameters', ({ name, value, raw }) => {
+test('SmoothieLineParserResultParameters:TLO', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('parameters', ({ name, value, raw }) => {
         t.equal(raw, '[TLO:0.000]');
         t.equal(name, 'TLO');
         t.equal(value, '0.000');
         t.end();
     });
 
-    grbl.parse('[TLO:0.000]');
+    smoothie.parse('[TLO:0.000]');
 });
 
-test('GrblLineParserResultParameters:PRB', (t) => {
-    const grbl = new Grbl();
-    grbl.on('parameters', ({ name, value, raw }) => {
+test('SmoothieLineParserResultParameters:PRB', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('parameters', ({ name, value, raw }) => {
         t.equal(raw, '[PRB:0.000,0.000,1.492:1]');
         t.equal(name, 'PRB');
         t.same(value, {
@@ -258,118 +258,35 @@ test('GrblLineParserResultParameters:PRB', (t) => {
         t.end();
     });
 
-    grbl.parse('[PRB:0.000,0.000,1.492:1]');
+    smoothie.parse('[PRB:0.000,0.000,1.492:1]');
 });
 
-test('GrblLineParserResultFeedback', (t) => {
-    const lines = [
-        // $I - View build info
-        '[0.9j.20160303:]',
-        // Sent after an alarm message to tell the user to reset Grbl as an acknowledgement that an alarm has happened.
-        '[Reset to continue]',
-        // After an alarm and the user has sent a reset,
-        '[\'$H\'|\'$X\' to unlock]',
-        // This feedback message is sent when the user overrides the alarm.
-        '[Caution: Unlocked]',
-        // $C - Check gcode mode
-        '[Enabled]',
-        '[Disabled]'
-    ];
-    const grbl = new Grbl();
-    let i = 0;
-    grbl.on('feedback', ({ raw, ...full }) => {
-        const message = trim(lines[i], '[]');
-
-        if (i < lines.length) {
-            t.equal(raw, lines[i]);
-            t.equal(full.message, message);
-        }
-
-        ++i;
-        if (i >= lines.length) {
-            t.end();
-        }
-    });
-
-    lines.forEach(line => {
-        grbl.parse(line);
-    });
-});
-
-test('GrblLineParserResultSettings', (t) => {
-    const lines = [
-        '$1=25 (step idle delay, msec)',
-        '$2=0 (step port invert mask:00000000)',
-        '$3=0 (dir port invert mask:00000000)',
-        '$4=0 (step enable invert, bool)',
-        '$5=0 (limit pins invert, bool)',
-        '$6=0 (probe pin invert, bool)',
-        '$10=3 (status report mask:00000011)',
-        '$11=0.020 (junction deviation, mm)',
-        '$12=0.002 (arc tolerance, mm)',
-        '$13=0 (report inches, bool)',
-        '$20=0 (soft limits, bool)',
-        '$21=0 (hard limits, bool)',
-        '$22=0 (homing cycle, bool)',
-        '$23=0 (homing dir invert mask:00000000)',
-        '$24=25.000 (homing feed, mm/min)',
-        '$25=500.000 (homing seek, mm/min)',
-        '$26=250 (homing debounce, msec)',
-        '$27=1.000 (homing pull-off, mm)',
-        '$100=320.000 (x, step/mm)',
-        '$101=320.000 (y, step/mm)',
-        '$102=250.000 (z, step/mm)',
-        '$110=2500.000 (x max rate, mm/min)',
-        '$111=2500.000 (y max rate, mm/min)',
-        '$112=500.000 (z max rate, mm/min)',
-        '$120=250.000 (x accel, mm/sec^2)',
-        '$121=250.000 (y accel, mm/sec^2)',
-        '$122=50.000 (z accel, mm/sec^2)',
-        '$130=200.000 (x max travel, mm)',
-        '$131=200.000 (y max travel, mm)',
-        '$132=200.000 (z max travel, mm)'
-    ];
-    const grbl = new Grbl();
-    let i = 0;
-    grbl.on('settings', ({ raw, setting, value, description }) => {
-        if (i < lines.length) {
-            const r = raw.match(/^(\$[^=]+)=([^ ]*)\s*(.*)/);
-            t.equal(raw, lines[i]);
-            t.equal(setting, r[1]);
-            t.equal(value, r[2]);
-            t.equal(description, trim(r[3], '()'));
-        }
-
-        ++i;
-        if (i >= lines.length) {
-            t.end();
-        }
-    });
-
-    lines.forEach(line => {
-        grbl.parse(line);
-    });
-});
-
-test('GrblLineParserResultStartup', (t) => {
-    const grbl = new Grbl();
-    grbl.on('startup', ({ raw, version }) => {
-        t.equal(raw, 'Grbl 0.9j [\'$\' for help]');
-        t.equal(version, '0.9j');
+test('SmoothieLineParserResultVersion', (t) => {
+    const smoothie = new Smoothie();
+    smoothie.on('version', ({ raw, ...others }) => {
+        t.equal(raw, 'Build version: edge-3332442, Build date: xxx, MCU: LPC1769, System Clock: 120MHz');
+        t.same(others, {
+            build: {
+                version: 'edge-3332442',
+                date: 'xxx'
+            },
+            mcu: 'LPC1769',
+            sysclk: '120MHz'
+        });
         t.end();
     });
 
-    const line = 'Grbl 0.9j [\'$\' for help]';
-    grbl.parse(line);
+    const line = 'Build version: edge-3332442, Build date: xxx, MCU: LPC1769, System Clock: 120MHz';
+    smoothie.parse(line);
 });
 
 test('Not supported output format', (t) => {
-    const grbl = new Grbl();
-    grbl.on('others', ({ raw }) => {
+    const smoothie = new Smoothie();
+    smoothie.on('others', ({ raw }) => {
         t.equal(raw, 'Not supported output format');
         t.end();
     });
 
     const line = 'Not supported output format';
-    grbl.parse(line);
+    smoothie.parse(line);
 });

@@ -27,9 +27,10 @@ test('send-response streaming protocol', (t) => {
         total: total,
         sent: 0,
         received: 0,
-        createdTime: sender.state.createdTime,
-        startedTime: sender.state.startedTime,
-        finishedTime: sender.state.finishedTime
+        startTime: sender.state.startTime,
+        finishTime: sender.state.finishTime,
+        elapsedTime: sender.state.elapsedTime,
+        remainingTime: sender.state.remainingTime
     });
 
     sender.on('data', () => {
@@ -45,9 +46,10 @@ test('send-response streaming protocol', (t) => {
             total: total,
             sent: total,
             received: total,
-            createdTime: sender.state.createdTime,
-            startedTime: sender.state.startedTime,
-            finishedTime: sender.state.finishedTime
+            startTime: sender.state.startTime,
+            finishTime: sender.state.finishTime,
+            elapsedTime: sender.state.elapsedTime,
+            remainingTime: sender.state.remainingTime
         });
 
         sender.unload();
@@ -60,9 +62,10 @@ test('send-response streaming protocol', (t) => {
             total: 0,
             sent: 0,
             received: 0,
-            createdTime: 0,
-            startedTime: 0,
-            finishedTime: 0,
+            startTime: 0,
+            finishTime: 0,
+            elapsedTime: 0,
+            remainingTime: 0,
             changed: true
         });
         t.same(sender.toJSON(), {
@@ -72,9 +75,10 @@ test('send-response streaming protocol', (t) => {
             total: 0,
             sent: 0,
             received: 0,
-            createdTime: 0,
-            startedTime: 0,
-            finishedTime: 0
+            startTime: 0,
+            finishTime: 0,
+            elapsedTime: 0,
+            remainingTime: 0
         });
 
         t.end();
@@ -133,9 +137,10 @@ test('character-counting streaming protocol', (t) => {
         total: total,
         sent: 0,
         received: 0,
-        createdTime: sender.state.createdTime,
-        startedTime: sender.state.startedTime,
-        finishedTime: sender.state.finishedTime
+        startTime: sender.state.startTime,
+        finishTime: sender.state.finishTime,
+        elapsedTime: sender.state.elapsedTime,
+        remainingTime: sender.state.remainingTime
     });
 
     sender.on('data', () => {
@@ -151,9 +156,10 @@ test('character-counting streaming protocol', (t) => {
             total: total,
             sent: total,
             received: total,
-            createdTime: sender.state.createdTime,
-            startedTime: sender.state.startedTime,
-            finishedTime: sender.state.finishedTime
+            startTime: sender.state.startTime,
+            finishTime: sender.state.finishTime,
+            elapsedTime: sender.state.elapsedTime,
+            remainingTime: sender.state.remainingTime
         });
 
         sender.unload();
@@ -166,9 +172,10 @@ test('character-counting streaming protocol', (t) => {
             total: 0,
             sent: 0,
             received: 0,
-            createdTime: 0,
-            startedTime: 0,
-            finishedTime: 0,
+            startTime: 0,
+            finishTime: 0,
+            elapsedTime: 0,
+            remainingTime: 0,
             changed: true
         });
         t.same(sender.toJSON(), {
@@ -178,9 +185,10 @@ test('character-counting streaming protocol', (t) => {
             total: 0,
             sent: 0,
             received: 0,
-            createdTime: 0,
-            startedTime: 0,
-            finishedTime: 0
+            startTime: 0,
+            finishTime: 0,
+            elapsedTime: 0,
+            remainingTime: 0
         });
 
         t.end();
