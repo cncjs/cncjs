@@ -1,5 +1,4 @@
 import { test } from 'tap';
-import trim from 'lodash/trim';
 import Smoothie from '../src/app/controllers/Smoothie/Smoothie';
 
 // $10 - Status report mask:binary
