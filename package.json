@@ -25,7 +25,7 @@
   "preferGlobal": true,
   "scripts": {
     "pkgsync": "babel-node scripts/pkgsync.js",
-    "prepublish": "npm run clean && npm run lint && npm run build",
+    "prepublish": "npm run clean && npm run lint && npm run test && npm run build",
     "prebuild": "npm run prebuild-prod",
     "prebuild-latest": "bash scripts/prebuild-latest.sh",
     "prebuild-dev": "bash scripts/prebuild-dev.sh",
@@ -54,6 +54,7 @@
     "prod": "npm run build-prod && NODE_ENV=production ./bin/cnc",
     "lint": "npm run eslint && npm run stylint",
     "eslint": "eslint --ext .js --ext .jsx *.js src bin gulp test",
+    "eslint:debug": "echo \"Checking code style...\"; DEBUG=eslint:cli-engine eslint --ext .js --ext .jsx *.js src bin gulp test",
     "stylint": "stylint src/web",
     "test": "node babel-tap --coverage test/*.js",
     "coveralls": "node babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
@@ -268,6 +269,8 @@
     "imports-loader": "~0.7.1",
     "json-loader": "~0.5.4",
     "nib": "~1.1.2",
+    "pre-commit": "~1.2.2",
+    "pre-push": "~0.1.1",
     "progress": "~1.1.8",
     "redux-devtools": "~3.3.2",
     "redux-devtools-chart-monitor": "~1.6.1",
@@ -292,5 +295,10 @@
     "webpack-manifest-plugin": "~1.1.0",
     "webpack-md5-hash": "0.0.5",
     "write-file-webpack-plugin": "~3.4.2"
-  }
+  },
+  "pre-commit": [
+  ],
+  "pre-push": [
+    "eslint:debug"
+  ]
 }
