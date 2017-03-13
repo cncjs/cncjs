@@ -52,15 +52,15 @@ const commandKeys = [
         },
         preventDefault: true
     },
-    { // Jog Lever Switch
+    { // Select Jog Distance
         keys: ['ctrl', 'alt', 'command', '='].join('+'),
         cmd: 'JOG_LEVER_SWITCH',
         payload: {
         },
         preventDefault: true
     },
-    { // Jog Lever Switch (Alias)
-        keys: ['ctrl', 'alt', 'command', 'l'].join('+'),
+    { // Select Jog Distance (Alias)
+        keys: ['ctrl', 'alt', 'command', 'd'].join('+'),
         cmd: 'JOG_LEVER_SWITCH',
         payload: {
         },
@@ -427,6 +427,14 @@ const commandKeys = [
         cmd: 'SELECT_AXIS',
         payload: {
             axis: 'z'
+        },
+        preventDefault: true
+    },
+    { // Select A-axis
+        keys: ['ctrl', 'alt', 'command', 'a'].join('+'),
+        cmd: 'SELECT_AXIS',
+        payload: {
+            axis: 'a'
         },
         preventDefault: true
     }
