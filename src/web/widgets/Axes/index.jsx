@@ -191,7 +191,8 @@ class AxesWidget extends Component {
             const jog = {
                 x: () => this.actions.jog({ X: direction * distance * factor }),
                 y: () => this.actions.jog({ Y: direction * distance * factor }),
-                z: () => this.actions.jog({ Z: direction * distance * factor })
+                z: () => this.actions.jog({ Z: direction * distance * factor }),
+                a: () => this.actions.jog({ A: direction * distance * factor })
             }[axis];
 
             jog && jog();
