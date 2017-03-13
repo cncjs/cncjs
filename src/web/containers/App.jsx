@@ -1,41 +1,60 @@
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import user from '../lib/user';
-import Login from './Login';
+import { Redirect, withRouter } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
 import Workspace from './Workspace';
 import Settings from './Settings';
 import styles from './App.styl';
 
-const defaultPath = 'workspace';
-
 class App extends Component {
+    static propTypes = {
+        ...withRouter.propTypes
+    };
+
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const { children } = this.props;
-        const { path = defaultPath } = children.props.route;
-        const childPath = children.props.routes.slice(2).map(route => route.path).join('/');
+        const { location } = this.props;
+        const accepted = ([
+            '/workspace',
+            '/settings',
+            '/settings/general',
+            '/settings/account',
+            '/settings/commands',
+            '/settings/events',
+            '/settings/about'
+        ].indexOf(location.pathname) >= 0);
 
-        if (!user.authenticated()) {
+        if (!accepted) {
             return (
-                <Login {...this.props} />
+                <Redirect
+                    to={{
+                        pathname: '/workspace',
+                        state: {
+                            from: location
+                        }
+                    }}
+                />
             );
         }
 
         return (
             <div>
-                <Header path={path} />
+                <Header {...this.props} />
                 <aside className={styles.sidebar} id="sidebar">
-                    <Sidebar path={path} />
+                    <Sidebar {...this.props} />
                 </aside>
                 <div className={styles.main}>
                     <div className={styles.content}>
-                        <Workspace style={{ display: (path !== 'workspace') ? 'none' : 'block' }} />
-                        {path === 'settings' &&
-                            <Settings path={childPath} />
+                        <Workspace
+                            style={{
+                                display: (location.pathname !== '/workspace') ? 'none' : 'block'
+                            }}
+                        />
+                        {location.pathname.indexOf('/settings') === 0 &&
+                            <Settings {...this.props} />
                         }
                     </div>
                 </div>
@@ -44,4 +63,4 @@ class App extends Component {
     }
 }
 
-export default App;
+export default withRouter(App);

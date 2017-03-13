@@ -1,16 +1,21 @@
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
+import pubsub from 'pubsub-js';
+import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
+import { withRouter } from 'react-router-dom';
 import semver from 'semver';
 import without from 'lodash/without';
 import Push from 'push.js';
 import api from '../../api';
 import Anchor from '../../components/Anchor';
 import settings from '../../config/settings';
+import combokeys from '../../lib/combokeys';
 import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import log from '../../lib/log';
+import user from '../../lib/user';
 import store from '../../store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 import styles from './index.styl';
@@ -30,16 +35,9 @@ const newUpdateAvailableTooltip = () => {
 
 class Header extends Component {
     static propTypes = {
-        path: PropTypes.string
+        ...withRouter.propTypes
     };
 
-    state = {
-        pushPermission: Push.Permission.get(),
-        commands: [],
-        runningTasks: [],
-        currentVersion: settings.version,
-        latestVersion: settings.version
-    };
     actions = {
         requestPushPermission: () => {
             const onGranted = () => {
@@ -63,7 +61,7 @@ class Header extends Component {
                     const res = await api.getLatestVersion();
                     const { time, version } = res.body;
 
-                    this.setState({
+                    this._isMounted && this.setState({
                         latestVersion: version,
                         latestTime: time
                     });
@@ -76,7 +74,8 @@ class Header extends Component {
             try {
                 const res = await api.commands.fetch({ paging: false });
                 const { records: commands } = res.body;
-                this.setState({
+
+                this._isMounted && this.setState({
                     commands: commands.filter(command => command.enabled)
                 });
             } catch (res) {
@@ -96,6 +95,12 @@ class Header extends Component {
             } catch (res) {
                 // Ignore error
             }
+        }
+    };
+    actionHandlers = {
+        CONTROLLER_COMMAND: (event, { command }) => {
+            // feedhold, cyclestart, homing, unlock, reset
+            controller.command(command);
         }
     };
     controllerEvents = {
@@ -171,8 +176,28 @@ class Header extends Component {
             this.actions.fetchCommands();
         }
     };
+    pubsubTokens = [];
+    _isMounted = false;
 
+    constructor() {
+        super();
+        this.state = this.getInitialState();
+    }
+    getInitialState() {
+        return {
+            workflowState: controller.workflowState,
+            pushPermission: Push.Permission.get(),
+            commands: [],
+            runningTasks: [],
+            currentVersion: settings.version,
+            latestVersion: settings.version
+        };
+    }
     componentDidMount() {
+        this._isMounted = true;
+
+        this.subscribe();
+        this.addActionHandlers();
         this.addControllerEvents();
 
         // Initial actions
@@ -180,12 +205,42 @@ class Header extends Component {
         this.actions.fetchCommands();
     }
     componentWillUnmount() {
+        this._isMounted = false;
+
+        this.unsubscribe();
+        this.removeActionHandlers();
         this.removeControllerEvents();
 
         this.runningTasks = [];
     }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
+    }
+    subscribe() {
+        const tokens = [
+            pubsub.subscribe('workflowState', (msg, workflowState) => {
+                this.setState({ workflowState: workflowState });
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
+    }
+    unsubscribe() {
+        this.pubsubTokens.forEach((token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
+    }
+    addActionHandlers() {
+        Object.keys(this.actionHandlers).forEach(eventName => {
+            const callback = this.actionHandlers[eventName];
+            combokeys.on(eventName, callback);
+        });
+    }
+    removeActionHandlers() {
+        Object.keys(this.actionHandlers).forEach(eventName => {
+            const callback = this.actionHandlers[eventName];
+            combokeys.removeListener(eventName, callback);
+        });
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
@@ -209,7 +264,7 @@ class Header extends Component {
         });
     }
     render() {
-        const { path } = this.props;
+        const { history, location } = this.props;
         const { pushPermission, commands, runningTasks, currentVersion, latestVersion } = this.state;
         const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
         const tooltip = newUpdateAvailable ? newUpdateAvailableTooltip() : <div />;
@@ -300,7 +355,17 @@ class Header extends Component {
                                 {i18n._('Account')}
                             </MenuItem>
                             <MenuItem
-                                href="#/logout"
+                                onClick={() => {
+                                    if (user.authenticated()) {
+                                        log.debug('Destroy and cleanup the WebSocket connection');
+                                        controller.disconnect();
+
+                                        user.signout();
+
+                                        // Remember current location
+                                        history.replace(location.pathname);
+                                    }
+                                }}
                             >
                                 <i className="fa fa-fw fa-sign-out" />
                                 <span className="space" />
@@ -399,7 +464,7 @@ class Header extends Component {
                             </MenuItem>
                         </NavDropdown>
                     </Nav>
-                    {path === 'workspace' &&
+                    {location.pathname === '/workspace' &&
                     <QuickAccessToolbar />
                     }
                 </Navbar.Collapse>
@@ -408,4 +473,4 @@ class Header extends Component {
     }
 }
 
-export default Header;
+export default withRouter(Header);

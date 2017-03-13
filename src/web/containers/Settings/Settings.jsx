@@ -3,9 +3,9 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import camelCase from 'lodash/camelCase';
 import Uri from 'jsuri';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { Link } from 'react-router';
+import { Link, withRouter } from 'react-router-dom';
 import api from '../../api';
 import settings from '../../config/settings';
 import Breadcrumbs from '../../components/Breadcrumbs';
@@ -23,16 +23,13 @@ import {
     ERR_PRECONDITION_FAILED
 } from '../../api/constants';
 
-const mapPathToSectionId = (path = '') => {
+const mapSectionPathToId = (path = '') => {
     return camelCase(path.split('/')[0] || '');
 };
 
 class Settings extends Component {
     static propTypes = {
-        path: PropTypes.string
-    };
-    static defaultProps = {
-        path: 'general'
+        ...withRouter.propTypes
     };
 
     sections = [
@@ -728,17 +725,11 @@ class Settings extends Component {
     componentWillUnmount() {
         this.mounted = false;
     }
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.path !== this.props.path) {
-            this.setState({ path: nextProps.path });
-        }
-    }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
     getInitialState() {
         return {
-            path: this.props.path,
             // General
             general: {
                 // followed by api state
@@ -834,7 +825,10 @@ class Settings extends Component {
         const actions = {
             ...this.actions
         };
-        const id = mapPathToSectionId(state.path);
+        const { pathname = '' } = this.props.location;
+        const initialSectionPath = this.sections[0].path;
+        const sectionPath = pathname.replace(/^\/settings(\/)?/, ''); // TODO
+        const id = mapSectionPathToId(sectionPath || initialSectionPath);
         const activeSection = _.find(this.sections, { id: id }) || this.sections[0];
         const sectionItems = this.sections.map((section, index) =>
             <li
@@ -889,4 +883,4 @@ class Settings extends Component {
     }
 }
 
-export default Settings;
+export default withRouter(Settings);

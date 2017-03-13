@@ -1,59 +1,31 @@
-import _ from 'lodash';
 import pubsub from 'pubsub-js';
-import React from 'react';
-import combokeys from '../../lib/combokeys';
-import i18n from '../../lib/i18n';
+import React, { Component, PropTypes } from 'react';
 import controller from '../../lib/controller';
+import i18n from '../../lib/i18n';
 import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED
 } from '../../constants';
 import styles from './index.styl';
 
-class QuickAccessToolbar extends React.Component {
-    actionHandlers = {
-        CONTROLLER_COMMAND: (event, { command }) => {
-            // feedhold, cyclestart, homing, unlock, reset
-            controller.command(command);
-        }
+class QuickAccessToolbar extends Component {
+    static propTypes = {
+        state: PropTypes.object,
+        actions: PropTypes.object
     };
-    workflowState = controller.workflowState;
-    pubsubTokens = [];
 
-    componentDidMount() {
-        _.each(this.actionHandlers, (callback, eventName) => {
-            combokeys.on(eventName, callback);
-        });
-        this.subscribe();
-    }
-    componentWillUnmount() {
-        this.unsubscribe();
-        _.each(this.actionHandlers, (callback, eventName) => {
-            combokeys.removeListener(eventName, callback);
-        });
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                this.workflowState = workflowState;
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
-    }
     handleCycleStart() {
-        if (this.workflowState === WORKFLOW_STATE_PAUSED) {
+        const { state } = this.props;
+
+        if (state.workflowState === WORKFLOW_STATE_PAUSED) {
             pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
         }
         controller.command('cyclestart');
     }
     handleFeedHold() {
-        if (this.workflowState === WORKFLOW_STATE_RUNNING) {
+        const { state } = this.props;
+
+        if (state.workflowState === WORKFLOW_STATE_RUNNING) {
             pubsub.publish('workflowState', WORKFLOW_STATE_PAUSED);
         }
         controller.command('feedhold');

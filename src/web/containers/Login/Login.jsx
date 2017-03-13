@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import { withRouter } from 'react-router';
+import { withRouter, Redirect } from 'react-router-dom';
 import Anchor from '../../components/Anchor';
 import Notifications from '../../components/Notifications';
 import settings from '../../config/settings';
@@ -29,7 +29,8 @@ class Login extends Component {
 
             this.setState({
                 alertMessage: '',
-                authenticating: true
+                authenticating: true,
+                redirectToReferrer: false
             });
 
             const name = this.fields.name.value;
@@ -40,25 +41,20 @@ class Login extends Component {
                     if (!authenticated) {
                         this.setState({
                             alertMessage: i18n._('Authentication failed.'),
-                            authenticating: false
+                            authenticating: false,
+                            redirectToReferrer: false
                         });
                         return;
                     }
 
-                    this.setState({
-                        alertMessage: '',
-                        authenticating: false
-                    });
-
                     log.debug('Create and establish a WebSocket connection');
                     controller.connect(); // @see "src/web/index.jsx"
 
-                    const { location, router } = this.props;
-                    if (location.state && location.state.nextPathname) {
-                        router.replace(location.state.nextPathname);
-                    } else {
-                        router.replace('/');
-                    }
+                    this.setState({
+                        alertMessage: '',
+                        authenticating: false,
+                        redirectToReferrer: true
+                    });
                 });
         }
     };
@@ -73,14 +69,23 @@ class Login extends Component {
     getDefaultState() {
         return {
             alertMessage: '',
-            authenticating: false
+            authenticating: false,
+            redirectToReferrer: false
         };
     }
     render() {
+        const { from } = this.props.location.state || { from: { pathname: '/' } };
         const state = { ...this.state };
         const actions = { ...this.actions };
         const { alertMessage, authenticating } = state;
         const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
+
+        if (state.redirectToReferrer) {
+            log.debug('Redirect to referrer:', from);
+            return (
+                <Redirect to={from} />
+            );
+        }
 
         return (
             <div className={styles.container}>
