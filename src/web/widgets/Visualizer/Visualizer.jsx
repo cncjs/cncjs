@@ -102,6 +102,8 @@ class Visualizer extends Component {
 
         // Enable or disable 3D view
         if ((this.props.show !== nextProps.show) && (!!nextProps.show === true)) {
+            this.viewport.update();
+
             // Set forceUpdate to true when enabling or disabling 3D view
             forceUpdate = true;
             needUpdateScene = true;
@@ -229,11 +231,22 @@ class Visualizer extends Component {
         }
 
         const el = ReactDOM.findDOMNode(this.node);
+        const sidebarWidth = 60;
         const navbarHeight = 50;
         const widgetHeaderHeight = 32;
         const borderWidth = 1;
-        const width = Number(el.offsetWidth);
-        const height = Number(window.innerHeight - navbarHeight - widgetHeaderHeight - borderWidth);
+        const width = el.clientWidth > 0
+            ? el.clientWidth
+            : Math.max(
+                Number(window.innerWidth - sidebarWidth),
+                CAMERA_VIEWPORT_WIDTH
+            );
+        const height = el.clientHeight > 0
+            ? el.clientHeight
+            : Math.max(
+                Number(window.innerHeight - navbarHeight - widgetHeaderHeight - borderWidth),
+                CAMERA_VIEWPORT_HEIGHT
+            );
 
         // https://github.com/mrdoob/three.js/blob/dev/examples/js/cameras/CombinedCamera.js#L156
         // THREE.CombinedCamera.prototype.setSize = function(width, height) {
@@ -366,8 +379,22 @@ class Visualizer extends Component {
 
         const { state } = this.props;
         const { units, objects } = state;
-        const width = Number(el.clientWidth);
-        const height = Number(el.clientHeight) || width; // same to width if clientHeight is 0
+        const sidebarWidth = 60;
+        const navbarHeight = 50;
+        const widgetHeaderHeight = 32;
+        const borderWidth = 1;
+        const width = el.clientWidth > 0
+            ? el.clientWidth
+            : Math.max(
+                Number(window.innerWidth - sidebarWidth),
+                CAMERA_VIEWPORT_WIDTH
+            );
+        const height = el.clientHeight > 0
+            ? el.clientHeight
+            : Math.max(
+                Number(window.innerHeight - navbarHeight - widgetHeaderHeight - borderWidth),
+                CAMERA_VIEWPORT_HEIGHT
+            );
 
         // WebGLRenderer
         this.renderer = new THREE.WebGLRenderer({
@@ -641,6 +668,7 @@ class Visualizer extends Component {
         if (this.controls) {
             this.controls.reset();
         }
+        this.updateScene();
     }
     load(name, gcode, callback) {
         // Remove previous G-code object
