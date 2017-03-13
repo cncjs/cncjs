@@ -59,7 +59,14 @@ const commandKeys = [
         },
         preventDefault: true
     },
-    { // Jog X+/Y+/Z+ (selected axis)
+    { // Jog Lever Switch (Alias)
+        keys: ['ctrl', 'alt', 'command', 'l'].join('+'),
+        cmd: 'JOG_LEVER_SWITCH',
+        payload: {
+        },
+        preventDefault: true
+    },
+    { // Jog Forward
         keys: ['ctrl', 'alt', 'command', ']'].join('+'),
         cmd: 'JOG',
         payload: {
@@ -69,8 +76,28 @@ const commandKeys = [
         },
         preventDefault: true
     },
-    { // Jog X-/Y-/Z- (selected axis)
+    { // Jog Forward (Alias)
+        keys: ['ctrl', 'alt', 'command', 'f'].join('+'),
+        cmd: 'JOG',
+        payload: {
+            axis: null,
+            direction: FORWARD,
+            factor: 1
+        },
+        preventDefault: true
+    },
+    { // Jog Backward
         keys: ['ctrl', 'alt', 'command', '['].join('+'),
+        cmd: 'JOG',
+        payload: {
+            axis: null,
+            direction: BACKWARD,
+            factor: 1
+        },
+        preventDefault: true
+    },
+    { // Jog Backward (Alias)
+        keys: ['ctrl', 'alt', 'command', 'b'].join('+'),
         cmd: 'JOG',
         payload: {
             axis: null,
