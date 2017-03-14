@@ -56,8 +56,8 @@
     "eslint": "eslint --ext .js --ext .jsx *.js src bin gulp test",
     "eslint:debug": "echo \"Checking code style...\"; DEBUG=eslint:cli-engine eslint --ext .js --ext .jsx *.js src bin gulp test",
     "stylint": "stylint src/web",
-    "test": "./babel-tap --coverage test/*.js",
-    "coveralls": "./babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
+    "test": "node babel-tap --coverage test/*.js",
+    "coveralls": "node babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
   "build": {
     "appId": "org.cncjs",
