@@ -25,7 +25,7 @@
   "preferGlobal": true,
   "scripts": {
     "pkgsync": "babel-node scripts/pkgsync.js",
-    "prepublish": "npm run clean && npm run lint && npm run build",
+    "prepublish": "npm run clean && npm run lint && npm run test && npm run build",
     "prebuild": "npm run prebuild-prod",
     "prebuild-latest": "bash scripts/prebuild-latest.sh",
     "prebuild-dev": "bash scripts/prebuild-dev.sh",
@@ -56,8 +56,8 @@
     "eslint": "eslint --ext .js --ext .jsx *.js src bin gulp test",
     "eslint:debug": "echo \"Checking code style...\"; DEBUG=eslint:cli-engine eslint --ext .js --ext .jsx *.js src bin gulp test",
     "stylint": "stylint src/web",
-    "test": "node babel-tap --coverage test/*.js",
-    "coveralls": "node babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
+    "test": "./babel-tap --coverage test/*.js",
+    "coveralls": "./babel-tap --coverage --coverage-report=text-lcov test/*.js | node_modules/.bin/coveralls"
   },
   "build": {
     "appId": "org.cncjs",
@@ -294,6 +294,7 @@
     "webpack-hot-middleware": "~2.17.1",
     "webpack-manifest-plugin": "~1.1.0",
     "webpack-md5-hash": "0.0.5",
+    "which": "~1.2.12",
     "write-file-webpack-plugin": "~4.0.0"
   },
   "pre-push": [
