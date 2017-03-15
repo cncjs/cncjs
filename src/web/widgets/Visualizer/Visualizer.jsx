@@ -8,6 +8,7 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import Detector from 'three/examples/js/Detector';
+import log from '../../lib/log';
 import './TrackballControls';
 import { getBoundingBox, loadTexture } from './helpers';
 import Viewport from './Viewport';
@@ -22,6 +23,10 @@ import {
     IMPERIAL_UNITS,
     METRIC_UNITS
 } from '../../constants';
+import {
+    CAMERA_MODE_PAN,
+    CAMERA_MODE_ROTATE
+} from './constants';
 
 const IMPERIAL_GRID_COUNT = 32; // 32 in
 const IMPERIAL_GRID_SPACING = 25.4; // 1 in
@@ -115,6 +120,7 @@ class Visualizer extends Component {
             this.visualizer.setFrameIndex(frameIndex);
         }
 
+        // Projection
         if (state.projection !== nextState.projection) {
             if (nextState.projection === 'orthographic') {
                 this.camera.toOrthographic();
@@ -128,6 +134,12 @@ class Visualizer extends Component {
             if (this.viewport) {
                 this.viewport.update();
             }
+            needUpdateScene = true;
+        }
+
+        // Camera Mode
+        if (state.cameraMode !== nextState.cameraMode) {
+            this.setCameraMode(nextState.cameraMode);
             needUpdateScene = true;
         }
 
@@ -209,6 +221,16 @@ class Visualizer extends Component {
         });
         this.pubsubTokens = [];
     }
+    getVisibleWidth() {
+        const el = ReactDOM.findDOMNode(this.node);
+
+        return (el && el.parentNode && el.parentNode.clientWidth) || 0;
+    }
+    getVisibleHeight() {
+        const el = ReactDOM.findDOMNode(this.node);
+
+        return (el && el.parentNode && el.parentNode.clientHeight) || 0;
+    }
     addResizeEventListener() {
         // handle resize event
         if (!(this.onResize)) {
@@ -230,23 +252,12 @@ class Visualizer extends Component {
             return;
         }
 
-        const el = ReactDOM.findDOMNode(this.node);
-        const sidebarWidth = 60;
-        const navbarHeight = 50;
-        const widgetHeaderHeight = 32;
-        const borderWidth = 1;
-        const width = el.clientWidth > 0
-            ? el.clientWidth
-            : Math.max(
-                Number(window.innerWidth - sidebarWidth),
-                CAMERA_VIEWPORT_WIDTH
-            );
-        const height = el.clientHeight > 0
-            ? el.clientHeight
-            : Math.max(
-                Number(window.innerHeight - navbarHeight - widgetHeaderHeight - borderWidth),
-                CAMERA_VIEWPORT_HEIGHT
-            );
+        const width = this.getVisibleWidth();
+        const height = this.getVisibleHeight();
+
+        if (width === 0 || height === 0) {
+            log.warn(`The width (${width}) and height (${height}) cannot be a zero value`);
+        }
 
         // https://github.com/mrdoob/three.js/blob/dev/examples/js/cameras/CombinedCamera.js#L156
         // THREE.CombinedCamera.prototype.setSize = function(width, height) {
@@ -379,22 +390,8 @@ class Visualizer extends Component {
 
         const { state } = this.props;
         const { units, objects } = state;
-        const sidebarWidth = 60;
-        const navbarHeight = 50;
-        const widgetHeaderHeight = 32;
-        const borderWidth = 1;
-        const width = el.clientWidth > 0
-            ? el.clientWidth
-            : Math.max(
-                Number(window.innerWidth - sidebarWidth),
-                CAMERA_VIEWPORT_WIDTH
-            );
-        const height = el.clientHeight > 0
-            ? el.clientHeight
-            : Math.max(
-                Number(window.innerHeight - navbarHeight - widgetHeaderHeight - borderWidth),
-                CAMERA_VIEWPORT_HEIGHT
-            );
+        const width = this.getVisibleWidth();
+        const height = this.getVisibleHeight();
 
         // WebGLRenderer
         this.renderer = new THREE.WebGLRenderer({
@@ -416,6 +413,14 @@ class Visualizer extends Component {
 
         this.camera = this.createCombinedCamera(width, height);
         this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
+
+        // NONE: -1
+        // ROTATE: 0
+        // ZOOM: 1
+        // PAN: 2
+        // TOUCH_ROTATE: 3
+        // TOUCH_ZOOM_PAN: 4
+        this.controls.setState(state.cameraMode === CAMERA_MODE_PAN ? 2 : 0); // FIXME
 
         // Projection
         if (state.projection === 'orthographic') {
@@ -512,6 +517,10 @@ class Visualizer extends Component {
         _.each(objsToRemove, (obj) => {
             this.scene.remove(obj);
         });
+
+        if (this.controls) {
+            this.controls.dispose();
+        }
 
         // Update the scene
         this.updateScene();
@@ -662,11 +671,14 @@ class Visualizer extends Component {
     }
     // Make the controls look at the center position
     lookAtCenter() {
+        const { state } = this.props;
+
         if (this.viewport) {
             this.viewport.update();
         }
         if (this.controls) {
             this.controls.reset();
+            this.setCameraMode(state.cameraMode);
         }
         this.updateScene();
     }
@@ -730,7 +742,9 @@ class Visualizer extends Component {
         (typeof callback === 'function') && callback({ bbox: bbox });
     }
     unload() {
+        const { state } = this.props;
         const visualizerObject = this.group.getObjectByName('Visualizer');
+
         if (visualizerObject) {
             this.group.remove(visualizerObject);
         }
@@ -742,6 +756,7 @@ class Visualizer extends Component {
 
         if (this.controls) {
             this.controls.reset();
+            this.setCameraMode(state.cameraMode);
         }
 
         if (this.viewport) {
@@ -750,6 +765,47 @@ class Visualizer extends Component {
 
         // Update the scene
         this.updateScene();
+    }
+    setCameraMode(mode) {
+        if (mode === CAMERA_MODE_ROTATE) {
+            // 0: Main button pressed, usually the left button or the un-initialized state
+            this.controls.setState(0);
+        }
+        if (mode === CAMERA_MODE_PAN) {
+            // 2: Secondary button pressed, usually the right button
+            this.controls.setState(2);
+        }
+    }
+    zoom(factor) {
+        if (factor === 1.0 || factor <= 0) {
+            return;
+        }
+
+        if (this.camera.inOrthographicMode) {
+            const zoom = this.camera.zoom * factor;
+            if (zoom > 0.1) {
+                this.camera.setZoom(zoom);
+            } else {
+                this.camera.setZoom(0.1);
+            }
+        } else {
+            this.camera.position.z *= (2 - factor);
+        }
+
+        this.controls.update();
+
+        // Update the scene
+        this.updateScene();
+    }
+    zoomIn(delta = 0.1) {
+        const { noZoom, zoomSpeed } = this.controls;
+        const factor = 1.0 + delta * zoomSpeed;
+        !noZoom && this.zoom(factor);
+    }
+    zoomOut(delta = 0.1) {
+        const { noZoom, zoomSpeed } = this.controls;
+        const factor = 1.0 + -1 * delta * zoomSpeed;
+        !noZoom && this.zoom(factor);
     }
     // deltaX and deltaY are in pixels; right and down are positive
     pan(deltaX, deltaY) {

@@ -7,7 +7,7 @@ import Panel from '../../components/Panel';
 import Clusterize from '../../components/Clusterize';
 import i18n from '../../lib/i18n';
 import { formatBytes } from '../../lib/numeral';
-import styles from './index.styl';
+import styles from './dashboard.styl';
 
 class Dashboard extends Component {
     static propTypes = {

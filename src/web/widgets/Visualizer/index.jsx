@@ -1,4 +1,7 @@
-import _ from 'lodash';
+import classNames from 'classnames';
+import includes from 'lodash/includes';
+import get from 'lodash/get';
+import mapValues from 'lodash/mapValues';
 import delay from 'delay';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
@@ -13,8 +16,8 @@ import log from '../../lib/log';
 import { in2mm } from '../../lib/units';
 import store from '../../store';
 import Controls from './Controls';
-import Toolbar from './Toolbar';
-import Joystick from './Joystick';
+import PrimaryToolbar from './PrimaryToolbar';
+import SecondaryToolbar from './SecondaryToolbar';
 import Visualizer from './Visualizer';
 import Dashboard from './Dashboard';
 import WatchDirectory from './WatchDirectory';
@@ -44,6 +47,8 @@ import {
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
+    CAMERA_MODE_PAN,
+    CAMERA_MODE_ROTATE,
     MODAL_WATCH_DIRECTORY
 } from './constants';
 import styles from './index.styl';
@@ -242,7 +247,7 @@ class VisualizerWidget extends Component {
         },
         handleRun: () => {
             const { workflowState } = this.state;
-            console.assert(_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
+            console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
 
             if (workflowState === WORKFLOW_STATE_IDLE) {
                 // All G-code data might be sent to Grbl at once while Grbl is running with
@@ -260,7 +265,7 @@ class VisualizerWidget extends Component {
         },
         handlePause: () => {
             const { workflowState } = this.state;
-            console.assert(_.includes([WORKFLOW_STATE_RUNNING], workflowState));
+            console.assert(includes([WORKFLOW_STATE_RUNNING], workflowState));
 
             controller.command('pause');
 
@@ -268,7 +273,7 @@ class VisualizerWidget extends Component {
         },
         handleStop: () => {
             const { workflowState } = this.state;
-            console.assert(_.includes([WORKFLOW_STATE_PAUSED], workflowState));
+            console.assert(includes([WORKFLOW_STATE_PAUSED], workflowState));
 
             controller.command('stop');
 
@@ -276,7 +281,7 @@ class VisualizerWidget extends Component {
         },
         handleClose: () => {
             const { workflowState } = this.state;
-            console.assert(_.includes([WORKFLOW_STATE_IDLE], workflowState));
+            console.assert(includes([WORKFLOW_STATE_IDLE], workflowState));
 
             controller.command('unload');
 
@@ -340,28 +345,44 @@ class VisualizerWidget extends Component {
                 }
             });
         },
-        joystick: {
-            up: () => {
+        camera: {
+            toRotateMode: () => {
+                this.setState({ cameraMode: CAMERA_MODE_ROTATE });
+            },
+            toPanMode: () => {
+                this.setState({ cameraMode: CAMERA_MODE_PAN });
+            },
+            zoomIn: () => {
+                if (this.visualizer) {
+                    this.visualizer.zoomIn();
+                }
+            },
+            zoomOut: () => {
+                if (this.visualizer) {
+                    this.visualizer.zoomOut();
+                }
+            },
+            panUp: () => {
                 if (this.visualizer) {
                     this.visualizer.panUp();
                 }
             },
-            down: () => {
+            panDown: () => {
                 if (this.visualizer) {
                     this.visualizer.panDown();
                 }
             },
-            left: () => {
+            panLeft: () => {
                 if (this.visualizer) {
                     this.visualizer.panLeft();
                 }
             },
-            right: () => {
+            panRight: () => {
                 if (this.visualizer) {
                     this.visualizer.panRight();
                 }
             },
-            center: () => {
+            lookAtCenter: () => {
                 if (this.visualizer) {
                     this.visualizer.lookAtCenter();
                 }
@@ -392,7 +413,7 @@ class VisualizerWidget extends Component {
             }[modal.units] || this.state.units;
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
-            const isControllerIdle = _.includes([
+            const isControllerIdle = includes([
                 GRBL_ACTIVE_STATE_IDLE
             ], activeState);
 
@@ -429,7 +450,7 @@ class VisualizerWidget extends Component {
             }[modal.units] || this.state.units;
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
-            const isControllerIdle = _.includes([
+            const isControllerIdle = includes([
                 SMOOTHIE_ACTIVE_STATE_IDLE
             ], activeState);
 
@@ -465,7 +486,7 @@ class VisualizerWidget extends Component {
             }[modal.units] || this.state.units;
             const { workflowState, gcode } = this.state;
             const { sent, total } = gcode;
-            const isControllerIdle = _.includes([
+            const isControllerIdle = includes([
                 TINYG_MACHINE_STATE_READY,
                 TINYG_MACHINE_STATE_STOP,
                 TINYG_MACHINE_STATE_END
@@ -484,7 +505,7 @@ class VisualizerWidget extends Component {
 
             // https://github.com/synthetos/g2/wiki/Status-Reports
             // Work position are reported in current units, and also apply any offsets.
-            const workPosition = _.mapValues({
+            const workPosition = mapValues({
                 ...this.state.workPosition,
                 ...wpos
             }, (val) => {
@@ -503,11 +524,14 @@ class VisualizerWidget extends Component {
     };
     pubsubTokens = [];
     requestStart = false;
+
+    // refs
+    widgetContent = null;
     visualizer = null;
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -535,6 +559,9 @@ class VisualizerWidget extends Component {
         if (this.state.projection !== prevState.projection) {
             store.set('widgets.visualizer.projection', this.state.projection);
         }
+        if (this.state.cameraMode !== prevState.cameraMode) {
+            store.set('widgets.visualizer.cameraMode', this.state.cameraMode);
+        }
         if (this.state.gcode.displayName !== prevState.gcode.displayName) {
             store.set('widgets.visualizer.gcode.displayName', this.state.gcode.displayName);
         }
@@ -545,7 +572,7 @@ class VisualizerWidget extends Component {
             store.set('widgets.visualizer.objects.toolhead.visible', this.state.objects.toolhead.visible);
         }
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             port: controller.port,
             units: METRIC_UNITS,
@@ -589,7 +616,7 @@ class VisualizerWidget extends Component {
                 received: 0
             },
             disabled: store.get('widgets.visualizer.disabled', false),
-            projection: store.get('widgets.visualizer.projection', 'perspective'),
+            projection: store.get('widgets.visualizer.projection', 'orthographic'),
             objects: {
                 coordinateSystem: {
                     visible: store.get('widgets.visualizer.objects.coordinateSystem.visible', true)
@@ -598,6 +625,7 @@ class VisualizerWidget extends Component {
                     visible: store.get('widgets.visualizer.objects.toolhead.visible', true)
                 }
             },
+            cameraMode: store.get('widgets.visualizer.cameraMode', CAMERA_MODE_PAN),
             isAgitated: false // Defaults to false
         };
     }
@@ -611,9 +639,9 @@ class VisualizerWidget extends Component {
                 } else {
                     pubsub.publish('gcode:unload');
 
-                    const defaultState = this.getDefaultState();
+                    const initialState = this.getInitialState();
                     this.setState({
-                        ...defaultState,
+                        ...initialState,
                         port: ''
                     });
                 }
@@ -669,19 +697,19 @@ class VisualizerWidget extends Component {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const activeState = get(controllerState, 'status.activeState');
             if (activeState !== GRBL_ACTIVE_STATE_RUN) {
                 return false;
             }
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const activeState = get(controllerState, 'status.activeState');
             if (activeState !== SMOOTHIE_ACTIVE_STATE_RUN) {
                 return false;
             }
         }
         if (controllerType === TINYG) {
-            const machineState = _.get(controllerState, 'sr.machineState');
+            const machineState = get(controllerState, 'sr.machineState');
             if (machineState !== TINYG_MACHINE_STATE_RUN) {
                 return false;
             }
@@ -710,7 +738,15 @@ class VisualizerWidget extends Component {
                         actions={actions}
                     />
                 </Widget.Header>
-                <Widget.Content className={styles.widgetContent}>
+                <Widget.Content
+                    ref={node => {
+                        this.widgetContent = node;
+                    }}
+                    className={classNames(
+                        styles.widgetContent,
+                        { [styles.view3D]: capable.view3D }
+                    )}
+                >
                     {state.gcode.loading &&
                     <Loading />
                     }
@@ -723,7 +759,7 @@ class VisualizerWidget extends Component {
                         actions={actions}
                     />
                     }
-                    <Toolbar
+                    <PrimaryToolbar
                         state={state}
                         actions={actions}
                     />
@@ -731,24 +767,24 @@ class VisualizerWidget extends Component {
                         show={!capable.view3D && !showLoader}
                         state={state}
                     />
-                    <Joystick
-                        show={capable.view3D}
-                        up={actions.joystick.up}
-                        down={actions.joystick.down}
-                        left={actions.joystick.left}
-                        right={actions.joystick.right}
-                        center={actions.joystick.center}
-                    />
                     {Detector.webgl &&
                     <Visualizer
                         show={capable.view3D && !showLoader}
-                        ref={(c) => {
-                            this.visualizer = c;
+                        ref={node => {
+                            this.visualizer = node;
                         }}
                         state={state}
                     />
                     }
                 </Widget.Content>
+                {capable.view3D &&
+                <Widget.Footer className={styles.widgetFooter}>
+                    <SecondaryToolbar
+                        state={state}
+                        actions={actions}
+                    />
+                </Widget.Footer>
+                }
             </Widget>
         );
     }

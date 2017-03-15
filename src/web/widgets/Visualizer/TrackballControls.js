@@ -24,7 +24,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	this.rotateSpeed = 1.0;
 	this.zoomSpeed = 1.2;
-	this.panSpeed = 0.3;
+	this.panSpeed = 0.8;
 
 	this.noRotate = false;
 	this.noZoom = false;
@@ -80,6 +80,10 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 
 	// methods
+    
+    this.setState = function(state) {
+        _state = state;
+    };
 
 	this.handleResize = function () {
 
@@ -405,8 +409,15 @@ THREE.TrackballControls = function ( object, domElement ) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		if ( _state === STATE.NONE ) {
+        _prevState = _state;
 
+		if ( _state === STATE.NONE ) {
+            // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+            // 0: Main button pressed, usually the left button or the un-initialized state
+            // 1: Auxiliary button pressed, usually the wheel button or the middle button (if present)
+            // 2: Secondary button pressed, usually the right button
+            // 3: Fourth button, typically the Browser Back button
+            // 4: Fifth button, typically the Browser Forward button
             _state = event.button;
 
 		}
@@ -466,7 +477,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		_state = STATE.NONE;
+		_state = _prevState;
 
 		document.removeEventListener( 'mousemove', mousemove );
 		document.removeEventListener( 'mouseup', mouseup );

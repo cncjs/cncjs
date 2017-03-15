@@ -349,7 +349,10 @@ class Controls extends Component {
                         </button>
                         <Dropdown.Toggle
                             bsStyle="default"
-                        />
+                            noCaret
+                        >
+                            <i className="fa fa-caret-down" />
+                        </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <MenuItem
                                 style={{ color: '#222' }}
