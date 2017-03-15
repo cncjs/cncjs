@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "1.9.0-beta",
+  "version": "1.9.0-beta.1",
   "description": "CNC Milling Controller",
   "homepage": "https://github.com/cncjs/cncjs",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -21,7 +21,7 @@
     "connect-restreamer": "~1.0.3",
     "consolidate": "~0.14.5",
     "cookie-parser": "~1.4.3",
-    "debug": "~2.6.2",
+    "debug": "~2.6.3",
     "del": "~2.2.2",
     "errorhandler": "~1.5.0",
     "express": "~4.15.2",
