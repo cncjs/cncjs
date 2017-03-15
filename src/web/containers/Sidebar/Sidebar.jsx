@@ -26,16 +26,13 @@ class Sidebar extends Component {
                         )}
                     >
                         <Link to="/workspace" title={i18n._('Workspace')}>
-                            <i className="fa fa-desktop fa-2x" />
-                            <span
-                                style={{
-                                    position: 'absolute',
-                                    left: '50%',
-                                    top: '41%',
-                                    transform: 'translate(-50%, -50%)',
-                                    fontSize: '70%'
-                                }}
-                            >XYZ</span>
+                            <i
+                                className={classNames(
+                                    styles.icon,
+                                    styles.iconInvert,
+                                    styles.iconXyz
+                                )}
+                            />
                         </Link>
                     </li>
                     <li
@@ -45,7 +42,13 @@ class Sidebar extends Component {
                         )}
                     >
                         <Link to="/settings" title={i18n._('Settings')}>
-                            <i className="fa fa-cogs fa-2x" />
+                            <i
+                                className={classNames(
+                                    styles.icon,
+                                    styles.iconInvert,
+                                    styles.iconGear
+                                )}
+                            />
                         </Link>
                     </li>
                 </ul>

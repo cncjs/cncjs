@@ -2,6 +2,20 @@
     position: relative;
 }
 
+.icon {
+    display: inline-block;
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+
+    &.icon-xyz {
+        background: url("./images/xyz.svg") no-repeat 0 0;
+    }
+    &.icon-gear {
+        background: url("./images/gear.svg") no-repeat 0 0;
+    }
+}
+
 .nav {
     padding-left: 0;
     margin-bottom: 0;
@@ -14,18 +28,26 @@
         > a {
             position: relative;
             display: block;
-            padding: 15px 10px;
             background-color: #222;
             border-top: 1px solid #222;
             border-bottom: 1px solid #333;
             color: #9d9d9d;
             text-decoration: none;
             white-space: nowrap;
+            padding: 10px 0;
+
+            > .icon.icon-invert {
+                filter: invert(60%);
+            }
         }
         > a:focus,
         > a:hover {
             color: #fff;
             background-color: #222;
+
+            > .icon.icon-invert {
+                filter: invert(100%);
+            }
         }
     }
     > li.active {
@@ -34,6 +56,10 @@
         > a:hover {
             color: #fff;
             background-color: #080808;
+
+            > .icon.icon-invert {
+                filter: invert(100%);
+            }
         }
     }
 }
