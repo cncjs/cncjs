@@ -465,7 +465,7 @@ class Header extends Component {
                         </NavDropdown>
                     </Nav>
                     {location.pathname === '/workspace' &&
-                    <QuickAccessToolbar />
+                    <QuickAccessToolbar state={this.state} actions={this.actions} />
                     }
                 </Navbar.Collapse>
             </Navbar>
