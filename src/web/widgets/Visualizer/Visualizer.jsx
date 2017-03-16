@@ -414,13 +414,7 @@ class Visualizer extends Component {
         this.camera = this.createCombinedCamera(width, height);
         this.controls = this.createTrackballControls(this.camera, this.renderer.domElement);
 
-        // NONE: -1
-        // ROTATE: 0
-        // ZOOM: 1
-        // PAN: 2
-        // TOUCH_ROTATE: 3
-        // TOUCH_ZOOM_PAN: 4
-        this.controls.setState(state.cameraMode === CAMERA_MODE_PAN ? 2 : 0); // FIXME
+        this.setCameraMode(state.cameraMode);
 
         // Projection
         if (state.projection === 'orthographic') {
@@ -671,14 +665,11 @@ class Visualizer extends Component {
     }
     // Make the controls look at the center position
     lookAtCenter() {
-        const { state } = this.props;
-
         if (this.viewport) {
             this.viewport.update();
         }
         if (this.controls) {
             this.controls.reset();
-            this.setCameraMode(state.cameraMode);
         }
         this.updateScene();
     }
@@ -742,7 +733,6 @@ class Visualizer extends Component {
         (typeof callback === 'function') && callback({ bbox: bbox });
     }
     unload() {
-        const { state } = this.props;
         const visualizerObject = this.group.getObjectByName('Visualizer');
 
         if (visualizerObject) {
@@ -756,7 +746,6 @@ class Visualizer extends Component {
 
         if (this.controls) {
             this.controls.reset();
-            this.setCameraMode(state.cameraMode);
         }
 
         if (this.viewport) {
@@ -767,13 +756,18 @@ class Visualizer extends Component {
         this.updateScene();
     }
     setCameraMode(mode) {
+        // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+        // A number representing a given button:
+        // 0: main button pressed, usually the left button or the un-initialized state
+        const MAIN_BUTTON = 0;
+        const ROTATE = 0;
+        const PAN = 2;
+
         if (mode === CAMERA_MODE_ROTATE) {
-            // 0: Main button pressed, usually the left button or the un-initialized state
-            this.controls.setState(0);
+            this.controls && this.controls.setMouseButtonState(MAIN_BUTTON, ROTATE);
         }
         if (mode === CAMERA_MODE_PAN) {
-            // 2: Secondary button pressed, usually the right button
-            this.controls.setState(2);
+            this.controls && this.controls.setMouseButtonState(MAIN_BUTTON, PAN);
         }
     }
     zoom(factor) {

@@ -11,7 +11,7 @@ import * as THREE from 'three';
 THREE.TrackballControls = function ( object, domElement ) {
 
 	var _this = this;
-	var STATE = { NONE: - 1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
+	var STATE = { NONE: -1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
 
 	this.object = object;
 	this.domElement = ( domElement !== undefined ) ? domElement : document;
@@ -37,6 +37,22 @@ THREE.TrackballControls = function ( object, domElement ) {
 	this.maxDistance = Infinity;
 
 	this.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
+
+    // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
+    //
+    // A number representing a given button:
+    // 0: Main button pressed, usually the left button or the un-initialized state
+    // 1: Auxiliary button pressed, usually the wheel button or the middle button (if present)
+    // 2: Secondary button pressed, usually the right button
+    // 3: Fourth button, typically the Browser Back button
+    // 4: Fifth button, typically the Browser Forward button
+    this.mouseButtonState = [
+        STATE.NONE, // 0
+        STATE.NONE, // 1
+        STATE.NONE, // 2
+        STATE.NONE, // 3
+        STATE.NONE  // 4
+    ];
 
 	// internals
 
@@ -81,8 +97,25 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	// methods
     
-    this.setState = function(state) {
-        _state = state;
+    this.setMouseButtonState = function(button, state) {
+        if (this.mouseButtonState[button] === undefined) {
+            return;
+        }
+        if ((state < STATE.NONE) || (state > STATE.TOUCH_ZOOM_PAN)) {
+            return;
+        }
+
+        this.mouseButtonState[button] = state;
+    };
+
+    this.getMouseButtonState = function(button) {
+        var buttonState = this.mouseButtonState[button];
+
+        if (buttonState === undefined) {
+            return STATE.NONE;
+        }
+
+        return buttonState;
     };
 
 	this.handleResize = function () {
@@ -409,17 +442,9 @@ THREE.TrackballControls = function ( object, domElement ) {
 		event.preventDefault();
 		event.stopPropagation();
 
-        _prevState = _state;
-
 		if ( _state === STATE.NONE ) {
-            // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
-            // 0: Main button pressed, usually the left button or the un-initialized state
-            // 1: Auxiliary button pressed, usually the wheel button or the middle button (if present)
-            // 2: Secondary button pressed, usually the right button
-            // 3: Fourth button, typically the Browser Back button
-            // 4: Fifth button, typically the Browser Forward button
-            _state = event.button;
-
+            var buttonState = _this.getMouseButtonState(event.button);
+            _state = (buttonState === STATE.NONE) ? event.button : buttonState;
 		}
 
 		if ( _state === STATE.ROTATE && ! _this.noRotate ) {
@@ -477,7 +502,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 		event.preventDefault();
 		event.stopPropagation();
 
-		_state = _prevState;
+		_state = STATE.NONE;
 
 		document.removeEventListener( 'mousemove', mousemove );
 		document.removeEventListener( 'mouseup', mouseup );
