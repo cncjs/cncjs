@@ -1,28 +1,56 @@
-import classNames from 'classnames';
 import _ from 'lodash';
+import classNames from 'classnames';
+import colornames from 'colornames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import Detector from 'three/examples/js/Detector';
+import controller from '../../lib/controller';
+import Interpolate from '../../components/Interpolate';
+import i18n from '../../lib/i18n';
 import {
+    // Units
+    IMPERIAL_UNITS,
+    METRIC_UNITS,
     // Grbl
     GRBL,
+    GRBL_ACTIVE_STATE_IDLE,
+    GRBL_ACTIVE_STATE_RUN,
+    GRBL_ACTIVE_STATE_HOLD,
+    GRBL_ACTIVE_STATE_DOOR,
+    GRBL_ACTIVE_STATE_HOME,
+    GRBL_ACTIVE_STATE_SLEEP,
     GRBL_ACTIVE_STATE_ALARM,
+    GRBL_ACTIVE_STATE_CHECK,
     // Smoothie
     SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_IDLE,
+    SMOOTHIE_ACTIVE_STATE_RUN,
+    SMOOTHIE_ACTIVE_STATE_HOLD,
+    SMOOTHIE_ACTIVE_STATE_DOOR,
+    SMOOTHIE_ACTIVE_STATE_HOME,
+    SMOOTHIE_ACTIVE_STATE_SLEEP,
     SMOOTHIE_ACTIVE_STATE_ALARM,
+    SMOOTHIE_ACTIVE_STATE_CHECK,
     // TinyG
     TINYG,
+    TINYG_MACHINE_STATE_INITIALIZING,
+    TINYG_MACHINE_STATE_READY,
     TINYG_MACHINE_STATE_ALARM,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
+    TINYG_MACHINE_STATE_RUN,
+    TINYG_MACHINE_STATE_HOLD,
+    TINYG_MACHINE_STATE_PROBE,
+    TINYG_MACHINE_STATE_CYCLE,
+    TINYG_MACHINE_STATE_HOMING,
+    TINYG_MACHINE_STATE_JOG,
+    TINYG_MACHINE_STATE_INTERLOCK,
+    TINYG_MACHINE_STATE_SHUTDOWN,
+    TINYG_MACHINE_STATE_PANIC,
     // Workflow
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
 } from '../../constants';
-import {
-    MODAL_WATCH_DIRECTORY
-} from './constants';
-import i18n from '../../lib/i18n';
-import log from '../../lib/log';
 import styles from './primary-toolbar.styl';
 
 class PrimaryToolbar extends Component {
@@ -30,218 +58,377 @@ class PrimaryToolbar extends Component {
         state: PropTypes.object,
         actions: PropTypes.object
     };
-    fileInputEl = null;
 
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
-    onClickToUpload() {
-        this.fileInputEl.value = null;
-        this.fileInputEl.click();
-    }
-    onChangeFile(event) {
-        const { actions } = this.props;
-        const files = event.target.files;
-        const file = files[0];
-        const reader = new FileReader();
-
-        reader.onloadend = (event) => {
-            const { result, error } = event.target;
-
-            if (error) {
-                log.error(error);
-                return;
-            }
-
-            log.debug('FileReader:', _.pick(file, [
-                'lastModified',
-                'lastModifiedDate',
-                'meta',
-                'name',
-                'size',
-                'type'
-            ]));
-
-            const meta = {
-                name: file.name,
-                size: file.size
-            };
-            actions.uploadFile(result, meta);
-        };
-
-        try {
-            reader.readAsText(file);
-        } catch (err) {
-            // Ignore error
-        }
-    }
-    canRun() {
+    canSendCommand() {
         const { state } = this.props;
-        const { port, gcode, workflowState } = state;
-        const controllerType = state.controller.type;
-        const controllerState = state.controller.state;
+        const { port, controller, workflowState } = state;
 
         if (!port) {
             return false;
         }
-        if (!gcode.ready) {
+        if (!controller.type || !controller.state) {
             return false;
         }
-        if (!_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState)) {
+        if (workflowState !== WORKFLOW_STATE_IDLE) {
             return false;
-        }
-        if (controllerType === GRBL) {
-            const activeState = _.get(controllerState, 'status.activeState');
-            const states = [
-                GRBL_ACTIVE_STATE_ALARM
-            ];
-            if (_.includes(states, activeState)) {
-                return false;
-            }
-        }
-        if (controllerType === SMOOTHIE) {
-            const activeState = _.get(controllerState, 'status.activeState');
-            const states = [
-                SMOOTHIE_ACTIVE_STATE_ALARM
-            ];
-            if (_.includes(states, activeState)) {
-                return false;
-            }
-        }
-        if (controllerType === TINYG) {
-            const machineState = _.get(controllerState, 'sr.machineState');
-            const states = [
-                TINYG_MACHINE_STATE_ALARM
-            ];
-            if (_.includes(states, machineState)) {
-                return false;
-            }
         }
 
         return true;
     }
-    render() {
-        const { state, actions } = this.props;
-        const { port, gcode, workflowState } = state;
-        const canClick = !!port;
-        const isReady = canClick && gcode.ready;
-        const canRun = this.canRun();
-        const canPause = isReady && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
-        const canStop = isReady && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
-        const canClose = isReady && _.includes([WORKFLOW_STATE_IDLE], workflowState);
-        const canUpload = isReady ? canClose : (canClick && !gcode.loading);
+    renderControllerType() {
+        const { state } = this.props;
+        const controllerType = state.controller.type;
 
         return (
-            <div className={styles.primaryToolbar}>
-                <input
-                    // The ref attribute adds a reference to the component to
-                    // this.refs when the component is mounted.
-                    ref={(node) => {
-                        this.fileInputEl = node;
-                    }}
-                    type="file"
-                    style={{ display: 'none' }}
-                    multiple={false}
-                    onChange={::this.onChangeFile}
-                />
-                <div className="btn-toolbar">
-                    <div className="btn-group btn-group-sm">
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            title={i18n._('Upload G-code')}
-                            onClick={::this.onClickToUpload}
-                            disabled={!canUpload}
-                        >
-                            {i18n._('Upload G-code')}
-                        </button>
-                        <Dropdown
-                            id="upload-dropdown"
-                            disabled={!canUpload}
-                        >
-                            <Dropdown.Toggle
-                                bsStyle="primary"
-                                noCaret
-                            >
-                                <i className="fa fa-caret-down" />
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <MenuItem header>
-                                    {i18n._('Watch Directory')}
-                                </MenuItem>
-                                <MenuItem
-                                    onSelect={() => {
-                                        actions.openModal(MODAL_WATCH_DIRECTORY);
-                                    }}
-                                >
-                                    <i className="fa fa-search" />
-                                    <span className="space space-sm" />
-                                    {i18n._('Browse...')}
-                                </MenuItem>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </div>
-                    <div className="btn-group btn-group-sm">
-                        <button
-                            type="button"
-                            className="btn btn-default"
-                            title={i18n._('Run')}
-                            onClick={actions.handleRun}
-                            disabled={!canRun}
-                        >
-                            <i className="fa fa-play" />
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-default"
-                            title={i18n._('Pause')}
-                            onClick={actions.handlePause}
-                            disabled={!canPause}
-                        >
-                            <i className="fa fa-pause" />
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-default"
-                            title={i18n._('Stop')}
-                            onClick={actions.handleStop}
-                            disabled={!canStop}
-                        >
-                            <i className="fa fa-stop" />
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-default"
-                            title={i18n._('Close')}
-                            onClick={actions.handleClose}
-                            disabled={!canClose}
-                        >
-                            <i className="fa fa-close" />
-                        </button>
-                    </div>
+            <div className={styles.controllerType}>
+                {controllerType}
+            </div>
+        );
+    }
+    renderControllerState() {
+        const { state } = this.props;
+        const controllerType = state.controller.type;
+        const controllerState = state.controller.state;
+        let stateStyle = '';
+        let stateText = '';
+
+        if (controllerType === GRBL) {
+            const activeState = _.get(controllerState, 'status.activeState');
+
+            stateStyle = {
+                [GRBL_ACTIVE_STATE_IDLE]: 'controller-state-default',
+                [GRBL_ACTIVE_STATE_RUN]: 'controller-state-primary',
+                [GRBL_ACTIVE_STATE_HOLD]: 'controller-state-warning',
+                [GRBL_ACTIVE_STATE_DOOR]: 'controller-state-warning',
+                [GRBL_ACTIVE_STATE_HOME]: 'controller-state-primary',
+                [GRBL_ACTIVE_STATE_SLEEP]: 'controller-state-success',
+                [GRBL_ACTIVE_STATE_ALARM]: 'controller-state-danger',
+                [GRBL_ACTIVE_STATE_CHECK]: 'controller-state-info'
+            }[activeState];
+
+            stateText = {
+                [GRBL_ACTIVE_STATE_IDLE]: i18n.t('controller:Grbl.activeState.idle'),
+                [GRBL_ACTIVE_STATE_RUN]: i18n.t('controller:Grbl.activeState.run'),
+                [GRBL_ACTIVE_STATE_HOLD]: i18n.t('controller:Grbl.activeState.hold'),
+                [GRBL_ACTIVE_STATE_DOOR]: i18n.t('controller:Grbl.activeState.door'),
+                [GRBL_ACTIVE_STATE_HOME]: i18n.t('controller:Grbl.activeState.home'),
+                [GRBL_ACTIVE_STATE_SLEEP]: i18n.t('controller:Grbl.activeState.sleep'),
+                [GRBL_ACTIVE_STATE_ALARM]: i18n.t('controller:Grbl.activeState.alarm'),
+                [GRBL_ACTIVE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
+            }[activeState];
+        }
+
+        if (controllerType === SMOOTHIE) {
+            const activeState = _.get(controllerState, 'status.activeState');
+
+            stateStyle = {
+                [SMOOTHIE_ACTIVE_STATE_IDLE]: 'controller-state-default',
+                [SMOOTHIE_ACTIVE_STATE_RUN]: 'controller-state-primary',
+                [SMOOTHIE_ACTIVE_STATE_HOLD]: 'controller-state-warning',
+                [SMOOTHIE_ACTIVE_STATE_DOOR]: 'controller-state-warning',
+                [SMOOTHIE_ACTIVE_STATE_HOME]: 'controller-state-primary',
+                [SMOOTHIE_ACTIVE_STATE_SLEEP]: 'controller-state-success',
+                [SMOOTHIE_ACTIVE_STATE_ALARM]: 'controller-state-danger',
+                [SMOOTHIE_ACTIVE_STATE_CHECK]: 'controller-state-info'
+            }[activeState];
+
+            stateText = {
+                [SMOOTHIE_ACTIVE_STATE_IDLE]: i18n.t('controller:Smoothie.activeState.idle'),
+                [SMOOTHIE_ACTIVE_STATE_RUN]: i18n.t('controller:Smoothie.activeState.run'),
+                [SMOOTHIE_ACTIVE_STATE_HOLD]: i18n.t('controller:Smoothie.activeState.hold'),
+                [SMOOTHIE_ACTIVE_STATE_DOOR]: i18n.t('controller:Smoothie.activeState.door'),
+                [SMOOTHIE_ACTIVE_STATE_HOME]: i18n.t('controller:Smoothie.activeState.home'),
+                [SMOOTHIE_ACTIVE_STATE_SLEEP]: i18n.t('controller:Smoothie.activeState.sleep'),
+                [SMOOTHIE_ACTIVE_STATE_ALARM]: i18n.t('controller:Smoothie.activeState.alarm'),
+                [SMOOTHIE_ACTIVE_STATE_CHECK]: i18n.t('controller:Smoothie.activeState.check')
+            }[activeState];
+        }
+
+        if (controllerType === TINYG) {
+            const machineState = _.get(controllerState, 'sr.machineState');
+
+            // https://github.com/synthetos/g2/wiki/Alarm-Processing
+            stateStyle = {
+                [TINYG_MACHINE_STATE_INITIALIZING]: 'controller-state-warning',
+                [TINYG_MACHINE_STATE_READY]: 'controller-state-default',
+                [TINYG_MACHINE_STATE_ALARM]: 'controller-state-danger',
+                [TINYG_MACHINE_STATE_STOP]: 'controller-state-default',
+                [TINYG_MACHINE_STATE_END]: 'controller-state-default',
+                [TINYG_MACHINE_STATE_RUN]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_HOLD]: 'controller-state-warning',
+                [TINYG_MACHINE_STATE_PROBE]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_CYCLE]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_HOMING]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_JOG]: 'controller-state-primary',
+                [TINYG_MACHINE_STATE_INTERLOCK]: 'controller-state-warning',
+                [TINYG_MACHINE_STATE_SHUTDOWN]: 'controller-state-danger',
+                [TINYG_MACHINE_STATE_PANIC]: 'controller-state-danger'
+            }[machineState];
+
+            stateText = {
+                [TINYG_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG.machineState.initializing'),
+                [TINYG_MACHINE_STATE_READY]: i18n.t('controller:TinyG.machineState.ready'),
+                [TINYG_MACHINE_STATE_ALARM]: i18n.t('controller:TinyG.machineState.alarm'),
+                [TINYG_MACHINE_STATE_STOP]: i18n.t('controller:TinyG.machineState.stop'),
+                [TINYG_MACHINE_STATE_END]: i18n.t('controller:TinyG.machineState.end'),
+                [TINYG_MACHINE_STATE_RUN]: i18n.t('controller:TinyG.machineState.run'),
+                [TINYG_MACHINE_STATE_HOLD]: i18n.t('controller:TinyG.machineState.hold'),
+                [TINYG_MACHINE_STATE_PROBE]: i18n.t('controller:TinyG.machineState.probe'),
+                [TINYG_MACHINE_STATE_CYCLE]: i18n.t('controller:TinyG.machineState.cycle'),
+                [TINYG_MACHINE_STATE_HOMING]: i18n.t('controller:TinyG.machineState.homing'),
+                [TINYG_MACHINE_STATE_JOG]: i18n.t('controller:TinyG.machineState.jog'),
+                [TINYG_MACHINE_STATE_INTERLOCK]: i18n.t('controller:TinyG.machineState.interlock'),
+                [TINYG_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG.machineState.shutdown'),
+                [TINYG_MACHINE_STATE_PANIC]: i18n.t('controller:TinyG.machineState.panic')
+            }[machineState];
+        }
+
+        return (
+            <div
+                className={classNames(
+                    styles.controllerState,
+                    styles[stateStyle]
+                )}
+            >
+                {stateText}
+            </div>
+        );
+    }
+    getWorkCoordinateSystem() {
+        const { state } = this.props;
+        const controllerType = state.controller.type;
+        const controllerState = state.controller.state;
+        const defaultWCS = 'G54';
+
+        if (controllerType === GRBL) {
+            return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+        }
+
+        if (controllerType === TINYG) {
+            return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
+        }
+
+        return defaultWCS;
+    }
+    render() {
+        const { state, actions } = this.props;
+        const { units, disabled, gcode, projection, objects } = state;
+        const controllerType = this.renderControllerType();
+        const controllerState = this.renderControllerState();
+        const canSendCommand = this.canSendCommand();
+        const canToggleOptions = Detector.webgl && !disabled;
+        const wcs = this.getWorkCoordinateSystem();
+
+        return (
+            <div>
+                {controllerType}
+                {controllerState}
+                <div className={styles.dropdownGroup}>
                     <Dropdown
-                        className="hidden"
-                        bsSize="sm"
-                        id="toolbar-dropdown"
+                        style={{ marginRight: 5 }}
+                        bsSize="xs"
+                        id="units-dropdown"
+                        disabled={!canSendCommand}
                         pullRight
                     >
                         <Dropdown.Toggle
-                            noCaret
-                            style={{
-                                paddingLeft: 8,
-                                paddingRight: 8
-                            }}
+                            title={i18n._('Units')}
+                            style={{ minWidth: 50 }}
                         >
-                            <i className="fa fa-list-alt" />
+                            {units === IMPERIAL_UNITS && i18n._('in')}
+                            {units === METRIC_UNITS && i18n._('mm')}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <MenuItem header>{i18n._('Units')}</MenuItem>
+                            <MenuItem
+                                active={units === IMPERIAL_UNITS}
+                                onSelect={() => {
+                                    controller.command('gcode', 'G20');
+                                }}
+                            >
+                                {i18n._('Inches (G20)')}
+                            </MenuItem>
+                            <MenuItem
+                                active={units === METRIC_UNITS}
+                                onSelect={() => {
+                                    controller.command('gcode', 'G21');
+                                }}
+                            >
+                                {i18n._('Millimeters (G21)')}
+                            </MenuItem>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown
+                        style={{ marginRight: 5 }}
+                        bsSize="xs"
+                        id="wcs-dropdown"
+                        disabled={!canSendCommand}
+                        pullRight
+                    >
+                        <Dropdown.Toggle
+                            title={i18n._('Work Coordinate System')}
+                            style={{ minWidth: 50 }}
+                        >
+                            {wcs}
+                        </Dropdown.Toggle>
+                        <Dropdown.Menu>
+                            <MenuItem header>{i18n._('Work Coordinate System')}</MenuItem>
+                            <MenuItem
+                                active={wcs === 'G54'}
+                                onSelect={() => {
+                                    controller.command('gcode', 'G54');
+                                }}
+                            >
+                                G54 (P1)
+                            </MenuItem>
+                            <MenuItem
+                                active={wcs === 'G55'}
+                                onSelect={() => {
+                                    controller.command('gcode', 'G55');
+                                }}
+                            >
+                                G55 (P2)
+                            </MenuItem>
+                            <MenuItem
+                                active={wcs === 'G56'}
+                                onSelect={() => {
+                                    controller.command('gcode', 'G56');
+                                }}
+                            >
+                                G56 (P3)
+                            </MenuItem>
+                            <MenuItem
+                                active={wcs === 'G57'}
+                                onSelect={() => {
+                                    controller.command('gcode', 'G57');
+                                }}
+                            >
+                                G57 (P4)
+                            </MenuItem>
+                            <MenuItem
+                                active={wcs === 'G58'}
+                                onSelect={() => {
+                                    controller.command('gcode', 'G58');
+                                }}
+                            >
+                                G58 (P5)
+                            </MenuItem>
+                            <MenuItem
+                                active={wcs === 'G59'}
+                                onSelect={() => {
+                                    controller.command('gcode', 'G59');
+                                }}
+                            >
+                                G59 (P6)
+                            </MenuItem>
+                        </Dropdown.Menu>
+                    </Dropdown>
+                    <Dropdown
+                        bsSize="xs"
+                        id="visualizer-dropdown"
+                        pullRight
+                    >
+                        <button
+                            type="button"
+                            className="btn btn-default"
+                            title={(!Detector.webgl || disabled)
+                                ? i18n._('Enable 3D View')
+                                : i18n._('Disable 3D View')
+                            }
+                            onClick={actions.toggle3DView}
+                        >
+                            {(!Detector.webgl || disabled)
+                                ? <i className="fa fa-toggle-off" />
+                                : <i className="fa fa-toggle-on" />
+                            }
+                            <span className="space" />
+                            {i18n._('3D View')}
+                        </button>
+                        <Dropdown.Toggle
+                            bsStyle="default"
+                            noCaret
+                        >
+                            <i className="fa fa-caret-down" />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <MenuItem
-                                onSelect={() => {
-                                }}
+                                style={{ color: '#222' }}
+                                header
                             >
-                                <i className={classNames(styles.icon, styles.iconPerimeterTracingSquare)} />
+                                <Interpolate
+                                    format={'WebGL: {{status}}'}
+                                    replacement={{
+                                        status: Detector.webgl
+                                            ? (<span style={{ color: colornames('royalblue') }}>{i18n._('Enabled')}</span>)
+                                            : (<span style={{ color: colornames('crimson') }}>{i18n._('Disabled')}</span>)
+                                    }}
+                                />
+                            </MenuItem>
+                            <MenuItem divider />
+                            <MenuItem header>
+                                {i18n._('Projection')}
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
+                                onSelect={actions.toPerspectiveProjection}
+                            >
+                                <i className={classNames('fa', 'fa-fw', { 'fa-check': projection !== 'orthographic' })} />
                                 <span className="space space-sm" />
-                                {i18n._('Perimeter Tracing')}
+                                {i18n._('Perspective Projection')}
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
+                                onSelect={actions.toOrthographicProjection}
+                            >
+                                <i className={classNames('fa', 'fa-fw', { 'fa-check': projection === 'orthographic' })} />
+                                <span className="space space-sm" />
+                                {i18n._('Orthographic Projection')}
+                            </MenuItem>
+                            <MenuItem divider />
+                            <MenuItem header>
+                                {i18n._('Scene Objects')}
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
+                                onSelect={actions.toggleGCodeFilename}
+                            >
+                                {gcode.displayName
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
+                                }
+                                <span className="space space-sm" />
+                                {i18n._('Display G-code Filename')}
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
+                                onSelect={actions.toggleCoordinateSystemVisibility}
+                            >
+                                {objects.coordinateSystem.visible
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
+                                }
+                                <span className="space space-sm" />
+                                {objects.coordinateSystem.visible
+                                    ? i18n._('Hide Coordinate System')
+                                    : i18n._('Show Coordinate System')
+                                }
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
+                                onSelect={actions.toggleToolheadVisibility}
+                            >
+                                {objects.toolhead.visible
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
+                                }
+                                <span className="space space-sm" />
+                                {objects.toolhead.visible
+                                    ? i18n._('Hide Toolhead')
+                                    : i18n._('Show Toolhead')
+                                }
                             </MenuItem>
                         </Dropdown.Menu>
                     </Dropdown>

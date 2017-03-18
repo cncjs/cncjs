@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import get from 'lodash/get';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { ProgressBar } from 'react-bootstrap';
@@ -19,7 +20,8 @@ class Dashboard extends Component {
 
     componentWillReceiveProps(nextProps) {
         if (nextProps.state.gcode.content !== this.props.state.gcode.content) {
-            this.lines = nextProps.state.gcode.content.split('\n')
+            this.lines = get(nextProps, 'state.gcode.content', '')
+                .split('\n')
                 .filter(line => line.trim().length > 0)
                 .map((line, index) => (
                 `<div class="${styles.line}"><span class="${styles.label} ${styles.labelDefault}">${index + 1}</span> ${line}</div>`

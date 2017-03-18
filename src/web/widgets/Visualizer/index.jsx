@@ -15,9 +15,9 @@ import modal from '../../lib/modal';
 import log from '../../lib/log';
 import { in2mm } from '../../lib/units';
 import store from '../../store';
-import Controls from './Controls';
 import PrimaryToolbar from './PrimaryToolbar';
 import SecondaryToolbar from './SecondaryToolbar';
+import WorkflowControl from './WorkflowControl';
 import Visualizer from './Visualizer';
 import Dashboard from './Dashboard';
 import WatchDirectory from './WatchDirectory';
@@ -117,7 +117,7 @@ class VisualizerWidget extends Component {
                 }
             });
 
-            controller.command('loadfile', file, (err, data) => {
+            controller.command('watchdir:load', file, (err, data) => {
                 if (err) {
                     this.setState({
                         gcode: {
@@ -195,13 +195,34 @@ class VisualizerWidget extends Component {
             };
 
             this.setState(nextState, () => {
+                // Clear gcode bounding box
+                controller.vars = {
+                    ...controller.vars,
+                    xmin: 0,
+                    xmax: 0,
+                    ymin: 0,
+                    ymax: 0,
+                    zmin: 0,
+                    zmax: 0
+                };
+
                 if (!capable.view3D) {
                     return;
                 }
 
                 delay(0).then(() => {
                     this.visualizer.load(name, gcode, ({ bbox }) => {
-                        // bounding box
+                        // Set gcode bounding box
+                        controller.vars = {
+                            ...controller.vars,
+                            xmin: bbox.min.x,
+                            xmax: bbox.max.x,
+                            ymin: bbox.min.y,
+                            ymax: bbox.max.y,
+                            zmin: bbox.min.z,
+                            zmax: bbox.max.z
+                        };
+
                         pubsub.publish('gcode:bbox', bbox);
 
                         this.setState({
@@ -222,6 +243,17 @@ class VisualizerWidget extends Component {
             if (visualizer) {
                 visualizer.unload();
             }
+
+            // Clear gcode bounding box
+            controller.vars = {
+                ...controller.vars,
+                xmin: 0,
+                xmax: 0,
+                ymin: 0,
+                ymax: 0,
+                zmin: 0,
+                zmax: 0
+            };
 
             this.setState({
                 gcode: {
@@ -255,10 +287,10 @@ class VisualizerWidget extends Component {
                 // state if the controller state is not updated in time.
                 this.requestStart = true;
 
-                controller.command('start');
+                controller.command('gcode:start');
             }
             if (workflowState === WORKFLOW_STATE_PAUSED) {
-                controller.command('resume');
+                controller.command('gcode:resume');
             }
 
             pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
@@ -267,7 +299,7 @@ class VisualizerWidget extends Component {
             const { workflowState } = this.state;
             console.assert(includes([WORKFLOW_STATE_RUNNING], workflowState));
 
-            controller.command('pause');
+            controller.command('gcode:pause');
 
             pubsub.publish('workflowState', WORKFLOW_STATE_PAUSED);
         },
@@ -275,7 +307,7 @@ class VisualizerWidget extends Component {
             const { workflowState } = this.state;
             console.assert(includes([WORKFLOW_STATE_PAUSED], workflowState));
 
-            controller.command('stop');
+            controller.command('gcode:stop');
 
             pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
         },
@@ -283,7 +315,7 @@ class VisualizerWidget extends Component {
             const { workflowState } = this.state;
             console.assert(includes([WORKFLOW_STATE_IDLE], workflowState));
 
-            controller.command('unload');
+            controller.command('gcode:unload');
 
             pubsub.publish('gcode:unload'); // Unload the G-code
         },
@@ -424,7 +456,7 @@ class VisualizerWidget extends Component {
 
             const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
             if (finishing) {
-                controller.command('stop');
+                controller.command('gcode:stop');
                 pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             }
 
@@ -461,7 +493,7 @@ class VisualizerWidget extends Component {
 
             const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
             if (finishing) {
-                controller.command('stop');
+                controller.command('gcode:stop');
                 pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             }
 
@@ -499,7 +531,7 @@ class VisualizerWidget extends Component {
 
             const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
             if (finishing) {
-                controller.command('stop');
+                controller.command('gcode:stop');
                 pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
             }
 
@@ -733,7 +765,7 @@ class VisualizerWidget extends Component {
         return (
             <Widget borderless>
                 <Widget.Header className={styles.widgetHeader} fixed>
-                    <Controls
+                    <PrimaryToolbar
                         state={state}
                         actions={actions}
                     />
@@ -759,7 +791,7 @@ class VisualizerWidget extends Component {
                         actions={actions}
                     />
                     }
-                    <PrimaryToolbar
+                    <WorkflowControl
                         state={state}
                         actions={actions}
                     />

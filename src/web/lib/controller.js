@@ -27,6 +27,14 @@ class CNCController {
         'Smoothie:state': [],
         'TinyG:state': []
     };
+    vars = { // FIXME
+        xmin: 0,
+        xmax: 0,
+        ymin: 0,
+        ymax: 0,
+        zmin: 0,
+        zmax: 0
+    };
 
     port = '';
     workflowState = WORKFLOW_STATE_IDLE;
@@ -132,17 +140,17 @@ class CNCController {
     // @param {string} cmd The command string
     // @example Example Usage
     // - Load G-code
-    //   controller.command('load', name, gcode, callback)
+    //   controller.command('gcode:load', name, gcode, callback)
     // - Unload G-code
-    //   controller.command('unload')
+    //   controller.command('gcode:unload')
     // - Start sending G-code
-    //   controller.command('start')
+    //   controller.command('gcode:start')
     // - Stop sending G-code
-    //   controller.command('stop')
+    //   controller.command('gcode:stop')
     // - Pause
-    //   controller.command('pause')
+    //   controller.command('gcode:pause')
     // - Resume
-    //   controller.command('resume')
+    //   controller.command('gcode:resume')
     // - Feed Hold
     //   controller.command('feedhold')
     // - Cycle Start
@@ -165,10 +173,12 @@ class CNCController {
     //   controller.command('rapidOverride')
     // - G-code
     //   controller.command('gcode', 'G0X0Y0')
-    // - Load macro
-    //   controller.command('loadmacro', '<macro-id>', callback)
+    // - Load a macro
+    //   controller.command('macro:load', '<macro-id>', { /* optional vars */ }, callback)
+    // - Run a macro
+    //   controller.command('macro:run', '<macro-id>', { /* optional vars */ }, callback)
     // - Load file from a watch directory
-    //   controller.command('loadfile', '/path/to/file', callback)
+    //   controller.command('watchdir:load', '/path/to/file', callback)
     command(cmd, ...args) {
         const { port } = this;
         if (!port) {

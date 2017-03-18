@@ -720,9 +720,10 @@ class Visualizer extends Component {
             obj.add(gcodeName);
         }
 
-        if (this.viewport) {
-            const width = dX;
-            const height = dY;
+        if (this.viewport && dX > 0 && dY > 0) {
+            // The minimum viewport is 50x50mm
+            const width = Math.max(dX, 50);
+            const height = Math.max(dY, 50);
             const target = new THREE.Vector3(0, 0, bbox.max.z);
             this.viewport.set(width, height, target);
         }

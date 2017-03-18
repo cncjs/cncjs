@@ -23,7 +23,7 @@ class SecondaryToolbar extends Component {
         const { state, actions } = this.props;
 
         return (
-            <div className={classNames(styles.secondaryToolbar, 'pull-right')}>
+            <div className="pull-right">
                 <div className="btn-toolbar">
                     <div className="btn-group btn-group-sm">
                         <RepeatButton
@@ -67,14 +67,17 @@ class SecondaryToolbar extends Component {
                             className={styles.btnIcon}
                         >
                             <i
-                                className={classNames({
-                                    'fa': true,
-                                    'fa-rotate-right': (state.cameraMode === CAMERA_MODE_ROTATE),
-                                    'fa-arrows': (state.cameraMode === CAMERA_MODE_PAN)
-                                })}
+                                className={classNames(
+                                    'fa',
+                                    'fa-fw',
+                                    {
+                                        'fa-rotate-right': (state.cameraMode === CAMERA_MODE_ROTATE),
+                                        'fa-arrows': (state.cameraMode === CAMERA_MODE_PAN)
+                                    }
+                                )}
                                 style={{ fontSize: 16, verticalAlign: 'top' }}
                             />
-                            <span className="space space-sm" />
+                            <span className="space space-xs" />
                             <i
                                 className="fa fa-caret-up"
                                 style={{ verticalAlign: 'top' }}

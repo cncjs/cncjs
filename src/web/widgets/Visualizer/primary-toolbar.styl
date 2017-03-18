@@ -1,27 +1,61 @@
-.primary-toolbar {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-    right: 10px;
+.controller-type {
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+    margin-right: 10px;
+    padding: 2px 0;
+}
+.controller-state {
+    display: none;
+    color: #222;
+    font-size: 14px;
+    background-color: #fff;
+    border: 1px solid #e3e3e3;
+    border-radius: 3px;
+    min-width: 50px;
+    padding: 1px 10px;
+    text-align: center;
 
-    :global {
-        .btn-group {
-            background-color: #fff;
-        }
+    &.controller-state-default {
+        display: inline-block;
+        color: #222;
+        background-color: #fff;
+        border: 1px solid #e3e3e3;
+    }
+    &.controller-state-primary {
+        display: inline-block;
+        color: #fff;
+        background-color: #337ab7;
+        border-color: #2e6da4;
+    }
+    &.controller-state-success {
+        display: inline-block;
+        color: #fff;
+        background-color: #5cb85c;
+        border-color: #4cae4c;
+    }
+    &.controller-state-info {
+        display: inline-block;
+        color: #fff;
+        background-color: #5bc0de;
+        border-color: #46b8da;
+    }
+    &.controller-state-warning {
+        display: inline-block;
+        color: #fff;
+        background-color: #f0ad4e;
+        border-color: #eea236;
+    }
+    &.controller-state-danger {
+        display: inline-block;
+        color: #fff;
+        background-color: #d9534f;
+        border-color: #d43f3a;
     }
 }
-
-.icon {
-    display: inline-block;
-    width: 14px;
-    height: 14px;
-    vertical-align: middle;
-    margin-bottom: 4px; // dropdown menu item
-
-    &.icon-perimeter-tracing-square {
-        background: url("./images/perimeter-tracing-square.svg") no-repeat 0 0;
-    }
-    &.icon-perimeter-tracing-circle {
-        background: url("./images/perimeter-tracing-circle.svg") no-repeat 0 0;
-    }
+.dropdown-group {
+    position: absolute;
+    right: 0;
+    top: 0;
+    margin: 4px 8px;
 }
