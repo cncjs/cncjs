@@ -856,8 +856,6 @@ class GrblController {
                         return;
                     }
 
-                    this.event.trigger('watchdir:load');
-
                     this.command(socket, 'gcode:load', file, data, callback);
                 });
             }
