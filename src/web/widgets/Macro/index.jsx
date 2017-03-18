@@ -4,12 +4,17 @@ import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import api from '../../api';
 import Widget from '../../components/Widget';
+import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import store from '../../store';
 import Macro from './Macro';
 import {
-    MODAL_STATE_NONE
+    MODAL_STATE_NONE,
+    MODAL_STATE_ADD_MACRO,
+    MODAL_STATE_EDIT_MACRO,
+    MODAL_STATE_RUN_MACRO
 } from './constants';
 import styles from './index.styl';
 
@@ -33,6 +38,14 @@ class MacroWidget extends Component {
             this.setState({
                 modalState: MODAL_STATE_NONE,
                 modalParams: {}
+            });
+        },
+        updateModalParams: (params = {}) => {
+            this.setState({
+                modalParams: {
+                    ...this.state.modalParams,
+                    ...params
+                }
             });
         },
         fetchMacros: async () => {
@@ -77,6 +90,69 @@ class MacroWidget extends Component {
             } catch (err) {
                 // Ignore error
             }
+        },
+        runMacro: (id, { name }) => {
+            controller.command('macro:run', id, controller.vars, (err, data) => {
+                if (err) {
+                    log.error(`Failed to run the macro: id=${id}, name="${name}"`);
+                    return;
+                }
+            });
+        },
+        confirmLoadMacro: ({ name }) => confirm({
+            title: i18n._('Load Macro'),
+            body: (
+                <div className={styles.macroLoad}>
+                    <p>{i18n._('Are you sure you want to load this macro?')}</p>
+                    <p>{name}</p>
+                </div>
+            ),
+            btnConfirm: {
+                text: i18n._('Yes')
+            },
+            btnCancel: {
+                text: i18n._('No')
+            }
+        }),
+        loadMacro: async (id, { name }) => {
+            try {
+                let res;
+                res = await api.macros.read(id);
+                const { name } = res.body;
+                controller.command('macro:load', id, controller.vars, (err, data) => {
+                    if (err) {
+                        log.error(`Failed to load the macro: id=${id}, name="${name}"`);
+                        return;
+                    }
+
+                    const { gcode = '' } = { ...data };
+                    pubsub.publish('gcode:load', { name, gcode });
+                });
+            } catch (err) {
+                // Ignore error
+            }
+        },
+        openAddMacroModal: () => {
+            this.actions.openModal(MODAL_STATE_ADD_MACRO);
+        },
+        openRunMacroModal: (id) => {
+            api.macros.read(id)
+                .then((res) => {
+                    const { id, name, content } = res.body;
+                    this.actions.openModal(MODAL_STATE_RUN_MACRO, {
+                        id,
+                        name,
+                        content,
+                        displayOriginalContent: false
+                    });
+                });
+        },
+        openEditMacroModal: (id) => {
+            api.macros.read(id)
+                .then((res) => {
+                    const { id, name, content } = res.body;
+                    this.actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
+                });
         }
     };
     pubsubTokens = [];

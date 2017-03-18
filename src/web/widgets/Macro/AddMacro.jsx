@@ -19,7 +19,7 @@ class AddMacro extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const sample = 'G21  ; Set units to mm\nG90  ; Absolute positioning\nG1 Z1 F500  ; Move to clearance level';
+        const sample = '; Traverse around the boundary\nG90\nG0 Z10 ; go to z-safe\nG0 X[xmin] Y[ymin]\nG0 X[xmax]\nG0 Y[ymax]\nG0 X[xmin]\nG0 Y[ymin]';
         const { actions } = this.props;
 
         return (

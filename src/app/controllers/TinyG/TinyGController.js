@@ -1,8 +1,9 @@
 import _ from 'lodash';
 import SerialPort from 'serialport';
-import log from '../../lib/log';
+import ensureArray from '../../lib/ensure-array';
 import EventTrigger from '../../lib/event-trigger';
 import Feeder from '../../lib/feeder';
+import log from '../../lib/log';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/sender';
 import Workflow, {
     WORKFLOW_STATE_RUNNING,
@@ -30,6 +31,26 @@ const noop = () => {};
 
 const dbg = (...args) => {
     log.raw.apply(log, ['silly'].concat(args));
+};
+
+const replaceVariables = (gcode = '', vars = {}) => {
+    const interpolationPrefix = '[';
+    const interpolationSuffix = ']';
+
+    if (typeof vars !== 'object') {
+        return gcode;
+    }
+
+    Object.keys(vars).forEach(key => {
+        const value = vars[key];
+        if (value === undefined || value === null) {
+            return;
+        }
+        const re = new RegExp(_.escapeRegExp(interpolationPrefix + key + interpolationSuffix), 'g');
+        gcode = gcode.replace(re, value);
+    });
+
+    return gcode;
 };
 
 class TinyGController {
@@ -553,7 +574,7 @@ class TinyGController {
     // ^x           Reset Board     Perform hardware reset to restart the board
     command(socket, cmd, ...args) {
         const handler = {
-            'load': () => {
+            'gcode:load': () => {
                 const [name, gcode, callback = noop] = args;
 
                 const ok = this.sender.load(name, gcode);
@@ -570,7 +591,7 @@ class TinyGController {
 
                 callback(null, { name: name, gcode: gcode });
             },
-            'unload': () => {
+            'gcode:unload': () => {
                 this.workflow.stop();
 
                 // Sender
@@ -579,6 +600,10 @@ class TinyGController {
                 this.event.trigger('gcode:unload');
             },
             'start': () => {
+                log.warn(`[TinyG] Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+                this.command(socket, 'gcode:start');
+            },
+            'gcode:start': () => {
                 this.event.trigger('gcode:start');
 
                 this.workflow.start();
@@ -590,6 +615,10 @@ class TinyGController {
                 this.sender.next();
             },
             'stop': () => {
+                log.warn(`[TinyG] Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+                this.command(socket, 'gcode:stop');
+            },
+            'gcode:stop': () => {
                 this.event.trigger('gcode:stop');
 
                 this.workflow.stop();
@@ -602,6 +631,10 @@ class TinyGController {
                 }, 250); // delay 250ms
             },
             'pause': () => {
+                log.warn(`[TinyG] Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+                this.command(socket, 'gcode:pause');
+            },
+            'gcode:pause': () => {
                 this.event.trigger('gcode:pause');
 
                 this.workflow.pause();
@@ -609,6 +642,10 @@ class TinyGController {
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'resume': () => {
+                log.warn(`[TinyG] Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+                this.command(socket, 'gcode:resume');
+            },
+            'gcode:resume': () => {
                 this.event.trigger('gcode:resume');
 
                 this.writeln(socket, '~'); // cycle start
@@ -667,24 +704,38 @@ class TinyGController {
                     commands.push('G4P' + (duration / 1000));
                     commands.push('M5S0');
                 }
-                this.command(null, 'gcode', commands.join('\n'));
+                this.command(socket, 'gcode', commands.join('\n'));
             },
             'lasertest:off': () => {
                 const commands = [
                     'M5S0'
                 ];
-                this.command(null, 'gcode', commands.join('\n'));
+                this.command(socket, 'gcode', commands.join('\n'));
             },
             'gcode': () => {
-                const command = args.join(' ').split('\n');
-                this.feeder.feed(command);
+                const [commands, params] = args;
+                const data = ensureArray(commands)
+                    .filter(line => {
+                        if (typeof line !== 'string') {
+                            return false;
+                        }
+
+                        return line.trim().length > 0;
+                    });
+
+                this.feeder.feed(data, params);
 
                 if (!this.feeder.isPending()) {
                     this.feeder.next();
                 }
             },
-            'loadmacro': () => {
-                const [id, callback = noop] = args;
+            'macro:run': () => {
+                let [id, vars = {}, callback = noop] = args;
+                if (typeof vars === 'function') {
+                    callback = vars;
+                    vars = {};
+                }
+
                 const macros = config.get('macros');
                 const macro = _.find(macros, { id: id });
 
@@ -693,11 +744,41 @@ class TinyGController {
                     return;
                 }
 
-                this.event.trigger('loadmacro');
+                // Replace variables
+                // G0 X[xmin] -> G0 X0.5
+                // G0 X[xmax] -> G0 X100.5
+                const gcode = replaceVariables(macro.content, vars);
 
-                this.command(null, 'load', macro.name, macro.content, callback);
+                this.event.trigger('macro:run');
+
+                this.command(socket, 'gcode', gcode);
+                callback(null);
             },
-            'loadfile': () => {
+            'macro:load': () => {
+                let [id, vars = {}, callback = noop] = args;
+                if (typeof vars === 'function') {
+                    callback = vars;
+                    vars = {};
+                }
+
+                const macros = config.get('macros');
+                const macro = _.find(macros, { id: id });
+
+                if (!macro) {
+                    log.error(`[TinyG] Cannot find the macro: id=${id}`);
+                    return;
+                }
+
+                // Replace variables
+                // G0 X[xmin] -> G0 X0.5
+                // G0 X[xmax] -> G0 X100.5
+                const gcode = replaceVariables(macro.content, vars);
+
+                this.event.trigger('macro:load');
+
+                this.command(socket, 'gcode:load', macro.name, gcode, callback);
+            },
+            'watchdir:load': () => {
                 const [file, callback = noop] = args;
 
                 monitor.readFile(file, (err, data) => {
@@ -706,9 +787,9 @@ class TinyGController {
                         return;
                     }
 
-                    this.event.trigger('loadfile');
+                    this.event.trigger('watchdir:load');
 
-                    this.command(null, 'load', file, data, callback);
+                    this.command(socket, 'gcode:load', file, data, callback);
                 });
             }
         }[cmd];

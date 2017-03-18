@@ -26,7 +26,7 @@ export const set = (req, res) => {
 
     // Load G-code
     const { name = '' } = meta;
-    controller.command(null, 'load', name, gcode, (err) => {
+    controller.command(null, 'gcode:load', name, gcode, (err) => {
         if (err) {
             res.status(500).send({
                 err: 'Failed to load G-code: ' + err

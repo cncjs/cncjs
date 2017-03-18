@@ -1,16 +1,13 @@
-import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import api from '../../api';
-import confirm from '../../lib/confirm';
-import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import log from '../../lib/log';
 import AddMacro from './AddMacro';
 import EditMacro from './EditMacro';
+import RunMacro from './RunMacro';
 import {
     MODAL_STATE_ADD_MACRO,
-    MODAL_STATE_EDIT_MACRO
+    MODAL_STATE_EDIT_MACRO,
+    MODAL_STATE_RUN_MACRO
 } from './constants';
 import {
     WORKFLOW_STATE_IDLE
@@ -26,48 +23,10 @@ class Macro extends Component {
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
-    confirmLoadMacro({ name }) {
-        return confirm({
-            title: i18n._('Macro'),
-            body: (
-                <div className={styles['macro-load']}>
-                    <p>{i18n._('Are you sure you want to load this macro?')}</p>
-                    <p>{name}</p>
-                </div>
-            ),
-            btnConfirm: {
-                text: i18n._('Yes')
-            },
-            btnCancel: {
-                text: i18n._('No')
-            }
-        });
-    }
-    handleLoadMacro(id, { name, content }) {
-        const gcode = content;
-
-        controller.command('loadmacro', id, (err, data) => {
-            if (err) {
-                log.error(`Failed to load the macro: id=${id}, name="${name}"`);
-                return;
-            }
-
-            pubsub.publish('gcode:load', { name, gcode });
-        });
-    }
-    handleEditMacro(id) {
-        const { actions } = this.props;
-
-        api.macros.read(id)
-            .then((res) => {
-                const { id, name, content } = res.body;
-                actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
-            });
-    }
     render() {
         const { state, actions } = this.props;
         const { port, workflowState, macros = [], modalState } = state;
-        const canLoadMacro = port && workflowState === WORKFLOW_STATE_IDLE;
+        const canClick = port && workflowState === WORKFLOW_STATE_IDLE;
 
         return (
             <div>
@@ -77,31 +36,32 @@ class Macro extends Component {
                 {modalState === MODAL_STATE_EDIT_MACRO &&
                 <EditMacro {...this.props} />
                 }
+                {modalState === MODAL_STATE_RUN_MACRO &&
+                <RunMacro {...this.props} />
+                }
                 <div className={styles.toolbar}>
-                    <div className={styles['toolbar-button-group']}>
+                    <div className={styles.toolbarButtonGroup}>
                         <button
                             type="button"
                             className="btn btn-xs btn-default"
-                            onClick={() => {
-                                actions.openModal(MODAL_STATE_ADD_MACRO);
-                            }}
+                            onClick={actions.openAddMacroModal}
                         >
                             <i className="fa fa-plus" />
                             <span className="space" />
                             {i18n._('Create Macro')}
                         </button>
                     </div>
-                    <div className={styles['toolbar-records']}>
+                    <div className={styles.toolbarRecords}>
                         {i18n._('Total: {{total}}', { total: macros.length })}
                     </div>
                 </div>
-                <div className={styles['table-container']}>
+                <div className={styles.tableContainer}>
                     <table className={styles.table}>
                         <tbody>
                             {macros.length === 0 &&
                                 <tr>
                                     <td colSpan="2">
-                                        <div className={styles['empty-result']}>
+                                        <div className={styles.emptyResult}>
                                             {i18n._('No macros')}
                                         </div>
                                     </td>
@@ -113,22 +73,16 @@ class Macro extends Component {
                                         <button
                                             type="button"
                                             className="btn btn-xs btn-default"
-                                            style={{ marginRight: 10 }}
-                                            disabled={!canLoadMacro}
+                                            disabled={!canClick}
                                             onClick={() => {
-                                                this.confirmLoadMacro({ name: macro.name })
-                                                    .then(() => {
-                                                        return api.macros.read(macro.id);
-                                                    })
-                                                    .then((res) => {
-                                                        const { id, name, content } = res.body;
-                                                        this.handleLoadMacro(id, { name, content });
-                                                    });
+                                                const { id } = macro;
+                                                actions.openRunMacroModal(id);
                                             }}
                                             title={i18n._('Run Macro')}
                                         >
-                                            <i className="fa fa-arrow-circle-o-up" style={{ fontSize: 16 }} />
+                                            <i className="fa fa-play" />
                                         </button>
+                                        <span className="space" />
                                         {macro.name}
                                     </td>
                                     <td style={{ width: '1%' }}>
@@ -136,8 +90,23 @@ class Macro extends Component {
                                             <button
                                                 type="button"
                                                 className="btn btn-xs btn-default"
+                                                disabled={!canClick}
                                                 onClick={() => {
-                                                    this.handleEditMacro(macro.id);
+                                                    const { id, name } = macro;
+                                                    actions.confirmLoadMacro({ name })
+                                                        .then(() => {
+                                                            actions.loadMacro(id, { name });
+                                                        });
+                                                }}
+                                                title={i18n._('Load Macro')}
+                                            >
+                                                <i className="fa fa-chevron-up" />
+                                            </button>
+                                            <button
+                                                type="button"
+                                                className="btn btn-xs btn-default"
+                                                onClick={() => {
+                                                    actions.openEditMacroModal(macro.id);
                                                 }}
                                             >
                                                 <i className="fa fa-edit" />
