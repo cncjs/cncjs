@@ -5,7 +5,6 @@ import i18n from '../../lib/i18n';
 import {
     MODAL_CONTROLLER_STATE
 } from './constants';
-//import styles from './index.styl';
 
 class ControllerState extends Component {
     static propTypes = {

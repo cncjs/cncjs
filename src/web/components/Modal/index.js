@@ -12,6 +12,15 @@ class ModalWrapper extends Component {
 
     bodyStyle = null;
 
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.show !== this.props.show) {
+            if (nextProps.show) {
+                this.changeBodyStyle();
+            } else {
+                this.restoreBodyStyle();
+            }
+        }
+    }
     componentWillUnmount() {
         this.restoreBodyStyle();
     }
