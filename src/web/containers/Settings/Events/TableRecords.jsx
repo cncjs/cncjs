@@ -121,8 +121,9 @@ class TableRecords extends Component {
                                 'cyclestart': i18n._('Cycle Start'),
                                 'homing': i18n._('Homing'),
                                 'sleep': i18n._('Sleep'),
-                                'loadmacro': i18n._('Load Macro'),
-                                'loadfile': i18n._('Load File')
+                                'macro:run': i18n._('Macro: Run'),
+                                'macro:load': i18n._('Macro: Load'),
+                                'watchdir:load': i18n._('Watch Directory: Load')
                             }[row.event] || '';
 
                             return eventText;
