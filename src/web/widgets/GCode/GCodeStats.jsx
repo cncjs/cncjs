@@ -48,27 +48,27 @@ class GCodeStats extends Component {
                         <table className="table-bordered" data-table="dimension">
                             <thead>
                                 <tr>
-                                    <th className="axis nowrap">{i18n._('Axis')}</th>
-                                    <th className="nowrap">{i18n._('Min')}</th>
-                                    <th className="nowrap">{i18n._('Max')}</th>
-                                    <th className="nowrap">{i18n._('Dimension')}</th>
+                                    <th className={styles.axis}>{i18n._('Axis')}</th>
+                                    <th>{i18n._('Min')}</th>
+                                    <th>{i18n._('Max')}</th>
+                                    <th>{i18n._('Dimension')}</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td className="axis">X</td>
+                                    <td className={styles.axis}>X</td>
                                     <td>{bbox.min.x} {displayUnits}</td>
                                     <td>{bbox.max.x} {displayUnits}</td>
                                     <td>{bbox.delta.x} {displayUnits}</td>
                                 </tr>
                                 <tr>
-                                    <td className="axis">Y</td>
+                                    <td className={styles.axis}>Y</td>
                                     <td>{bbox.min.y} {displayUnits}</td>
                                     <td>{bbox.max.y} {displayUnits}</td>
                                     <td>{bbox.delta.y} {displayUnits}</td>
                                 </tr>
                                 <tr>
-                                    <td className="axis">Z</td>
+                                    <td className={styles.axis}>Z</td>
                                     <td>{bbox.min.z} {displayUnits}</td>
                                     <td>{bbox.max.z} {displayUnits}</td>
                                     <td>{bbox.delta.z} {displayUnits}</td>
