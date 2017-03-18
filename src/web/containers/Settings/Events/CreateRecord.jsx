@@ -110,8 +110,9 @@ class CreateRecord extends Component {
                                     <option value="cyclestart">{i18n._('Cycle Start')}</option>
                                     <option value="homing">{i18n._('Homing')}</option>
                                     <option value="sleep">{i18n._('Sleep')}</option>
-                                    <option value="loadmacro">{i18n._('Load Macro')}</option>
-                                    <option value="loadfile">{i18n._('Load File')}</option>
+                                    <option value="macro:run">{i18n._('Macro: Run')}</option>
+                                    <option value="macro:load">{i18n._('Macro: Load')}</option>
+                                    <option value="watchdir:load">{i18n._('Watch Directory: Load')}</option>
                                 </Validation.components.Select>
                             </div>
                             <div className={styles.formGroup}>
