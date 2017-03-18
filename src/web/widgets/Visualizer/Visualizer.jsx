@@ -223,13 +223,15 @@ class Visualizer extends Component {
     }
     getVisibleWidth() {
         const el = ReactDOM.findDOMNode(this.node);
+        const sidebarWidth = 60; // TODO
 
-        return (el && el.parentNode && el.parentNode.clientWidth) || 0;
+        return (el && el.parentNode && el.parentNode.clientWidth) || (window.innerWidth - sidebarWidth);
     }
     getVisibleHeight() {
         const el = ReactDOM.findDOMNode(this.node);
+        const navbarHeight = 50; // TODO
 
-        return (el && el.parentNode && el.parentNode.clientHeight) || 0;
+        return (el && el.parentNode && el.parentNode.clientHeight) || (window.innerHeight - navbarHeight);
     }
     addResizeEventListener() {
         // handle resize event
