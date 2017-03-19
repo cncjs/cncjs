@@ -168,8 +168,12 @@ export const defaultState = {
             // The URL field is required for the M-JPEG stream
             url: '',
 
-            crosshair: false,
-            scale: 1.0
+            centerFocus: false,
+            geometry: {
+                flipHorizontally: false,
+                flipVertically: false,
+                scale: 1.0
+            }
         }
     }
 };

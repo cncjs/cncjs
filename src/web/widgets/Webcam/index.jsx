@@ -20,9 +20,27 @@ class WebcamWidget extends Component {
         onDelete: () => {}
     };
 
+    actions = {
+        changeImageScale: (value) => {
+            this.setState({ scale: value });
+        },
+        toggleCenterFocus: () => {
+            const { centerFocus } = this.state;
+            this.setState({ centerFocus: !centerFocus });
+        },
+        toggleFlipHorizontally: () => {
+            const { flipHorizontally } = this.state;
+            this.setState({ flipHorizontally: !flipHorizontally });
+        },
+        toggleFlipVertically: () => {
+            const { flipVertically } = this.state;
+            this.setState({ flipVertically: !flipVertically });
+        }
+    };
+
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
@@ -33,7 +51,9 @@ class WebcamWidget extends Component {
             disabled,
             mediaSource,
             url,
-            crosshair,
+            centerFocus,
+            flipHorizontally,
+            flipVertically,
             scale
         } = this.state;
 
@@ -41,26 +61,23 @@ class WebcamWidget extends Component {
         store.set('widgets.webcam.disabled', disabled);
         store.set('widgets.webcam.mediaSource', mediaSource);
         store.set('widgets.webcam.url', url);
-        store.set('widgets.webcam.crosshair', crosshair);
-        store.set('widgets.webcam.scale', scale);
+        store.set('widgets.webcam.centerFocus', centerFocus);
+        store.set('widgets.webcam.geometry.flipHorizontally', flipHorizontally);
+        store.set('widgets.webcam.geometry.flipVertically', flipVertically);
+        store.set('widgets.webcam.geometry.scale', scale);
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.webcam.minimized', false),
             isFullscreen: false,
             disabled: store.get('widgets.webcam.disabled', true),
             mediaSource: store.get('widgets.webcam.mediaSource', MEDIA_SOURCE_LOCAL),
             url: store.get('widgets.webcam.url'),
-            crosshair: store.get('widgets.webcam.crosshair'),
-            scale: store.get('widgets.webcam.scale')
+            centerFocus: store.get('widgets.webcam.centerFocus', false),
+            flipHorizontally: store.get('widgets.webcam.geometry.flipHorizontally', false),
+            flipVertically: store.get('widgets.webcam.geometry.flipVertically', false),
+            scale: store.get('widgets.webcam.geometry.scale', 1.0)
         };
-    }
-    changeImageScale(value) {
-        this.setState({ scale: value });
-    }
-    toggleCrosshair() {
-        const { crosshair } = this.state;
-        this.setState({ crosshair: !crosshair });
     }
     render() {
         const { disabled, minimized, isFullscreen } = this.state;
@@ -76,8 +93,7 @@ class WebcamWidget extends Component {
             ...this.state
         };
         const actions = {
-            changeImageScale: ::this.changeImageScale,
-            toggleCrosshair: ::this.toggleCrosshair
+            ...this.actions
         };
 
         return (

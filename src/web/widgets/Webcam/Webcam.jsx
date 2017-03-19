@@ -42,7 +42,15 @@ class Webcam extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { disabled, mediaSource, url, crosshair, scale } = state;
+        const {
+            disabled,
+            mediaSource,
+            url,
+            centerFocus,
+            flipHorizontally,
+            flipVertically,
+            scale
+        } = state;
 
         if (disabled) {
             return (
@@ -58,7 +66,11 @@ class Webcam extends Component {
                 {mediaSource === MEDIA_SOURCE_LOCAL &&
                 <div style={{ width: '100%' }}>
                     <WebcamMedia
-                        className={styles.center}
+                        className={classNames(
+                            styles.center,
+                            { [styles.flipHorizontally]: flipHorizontally },
+                            { [styles.flipVertically]: flipVertically }
+                        )}
                         width={(100 * scale).toFixed(0) + '%'}
                         height="auto"
                     />
@@ -73,10 +85,14 @@ class Webcam extends Component {
                     style={{
                         width: (100 * scale).toFixed(0) + '%'
                     }}
-                    className={styles.center}
+                    className={classNames(
+                        styles.center,
+                        { [styles.flipHorizontally]: flipHorizontally },
+                        { [styles.flipVertically]: flipVertically }
+                    )}
                 />
                 }
-                {crosshair &&
+                {centerFocus &&
                 <div>
                     <Line
                         className={classNames(
@@ -111,19 +127,59 @@ class Webcam extends Component {
                 }
                 <div className={styles.toolbar}>
                     <div className={styles['scale-text']}>{scale}x</div>
-                    <OverlayTrigger
-                        overlay={<Tooltip>{i18n._('Crosshair')}</Tooltip>}
-                        placement="top"
-                    >
-                        <Anchor
-                            className={styles['btn-crosshair']}
-                            onClick={(event) => {
-                                actions.toggleCrosshair();
-                            }}
+                    <div className="pull-right">
+                        <OverlayTrigger
+                            overlay={<Tooltip>{i18n._('Flip Horizontally')}</Tooltip>}
+                            placement="top"
                         >
-                            <i className="fa fa-crosshairs" />
-                        </Anchor>
-                    </OverlayTrigger>
+                            <Anchor
+                                className={styles.btnIcon}
+                                onClick={actions.toggleFlipHorizontally}
+                            >
+                                <i
+                                    className={classNames(
+                                        styles.icon,
+                                        styles.inverted,
+                                        styles.iconFlipHorizontally
+                                    )}
+                                />
+                            </Anchor>
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                            overlay={<Tooltip>{i18n._('Flip Vertically')}</Tooltip>}
+                            placement="top"
+                        >
+                            <Anchor
+                                className={styles.btnIcon}
+                                onClick={actions.toggleFlipVertically}
+                            >
+                                <i
+                                    className={classNames(
+                                        styles.icon,
+                                        styles.inverted,
+                                        styles.iconFlipVertically
+                                    )}
+                                />
+                            </Anchor>
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                            overlay={<Tooltip>{i18n._('Center Focus')}</Tooltip>}
+                            placement="top"
+                        >
+                            <Anchor
+                                className={styles.btnIcon}
+                                onClick={actions.toggleCenterFocus}
+                            >
+                                <i
+                                    className={classNames(
+                                        styles.icon,
+                                        styles.inverted,
+                                        styles.iconCenterFocus
+                                    )}
+                                />
+                            </Anchor>
+                        </OverlayTrigger>
+                    </div>
                 </div>
                 <div className={styles['image-scale-slider']}>
                     <Slider

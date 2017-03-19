@@ -17,6 +17,16 @@
     left: 50%;
     top: 50%;
     transform: translate(-50%, -50%);
+
+    &.flip-horizontally {
+        transform: translate(-50%, -50%) rotateX(180deg);
+    }
+    &.flip-vertically {
+        transform: translate(-50%, -50%) rotateY(180deg);
+    }
+    &.flip-horizontally.flip-vertically {
+        transform: translate(-50%, -50%) rotateX(180deg) rotateY(180deg);
+    }
 }
 
 .webcam-on-container {
@@ -58,11 +68,11 @@
             text-shadow: 0 0 5px #333;
         }
 
-        .btn-crosshair {
-            float: right;
+        .btn-icon {
             color: #f5f5f5;
             font-size: 18px;
             text-shadow: 0 0 5px #333;
+            margin-left: 10px;
 
             &:hover {
                 color: #fff;
@@ -87,5 +97,26 @@
         height: 64px;
         width: 64px;
         background: url("./images/64x64/webcam.png") no-repeat 0 0;
+    }
+}
+
+.icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    vertical-align: middle;
+    margin-bottom: 2px;
+
+    &.inverted {
+        filter: invert(100%);
+    }
+    &.icon-flip-vertically {
+        background: url("./images/flip-vertically.svg") no-repeat 0 0;
+    }
+    &.icon-flip-horizontally {
+        background: url("./images/flip-horizontally.svg") no-repeat 0 0;
+    }
+    &.icon-center-focus {
+        background: url("./images/center-focus.svg") no-repeat 0 0;
     }
 }

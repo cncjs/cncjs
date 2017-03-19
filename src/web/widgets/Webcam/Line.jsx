@@ -6,7 +6,7 @@ class Line extends Component {
         vertical: PropTypes.bool,
         color: PropTypes.string,
         opacity: PropTypes.number,
-        length: PropTypes.oneOf([PropTypes.number, PropTypes.string]),
+        length: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         width: PropTypes.number
     };
     static defaultProps = {
