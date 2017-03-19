@@ -71,9 +71,8 @@
     "G-code: Pause": "",
     "G-code: Resume": "",
     "Feed Hold": "",
-    "Macro: Run": "",
-    "Macro: Load": "",
-    "Watch Directory: Load": "",
+    "Run Macro": "Запуск макроса",
+    "Load Macro": "",
     "Trigger": "",
     "Choose an trigger": "",
     "System": "",
@@ -308,12 +307,10 @@
     "Are you sure you want to delete this macro?": "",
     "Yes": "Да",
     "No": "Нет",
-    "Load Macro": "",
     "Are you sure you want to load this macro?": "",
     "Macro": "Макрос",
     "Total: {{total}}": "Всего: {{total}}",
     "No macros": "",
-    "Run Macro": "Запуск макроса",
     "Display original content": "",
     "Run": "Выполнить",
     "Probe": "Проба",
@@ -385,5 +382,7 @@
     "Use a built-in camera or a connected webcam": "",
     "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "Камера выключена",
-    "Crosshair": ""
+    "Flip Horizontally": "",
+    "Flip Vertically": "",
+    "Center Focus": ""
 }

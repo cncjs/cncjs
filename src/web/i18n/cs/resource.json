@@ -71,9 +71,8 @@
     "G-code: Pause": "",
     "G-code: Resume": "",
     "Feed Hold": "",
-    "Macro: Run": "",
-    "Macro: Load": "",
-    "Watch Directory: Load": "",
+    "Run Macro": "Spuštění makra",
+    "Load Macro": "",
     "Trigger": "",
     "Choose an trigger": "",
     "System": "",
@@ -308,12 +307,10 @@
     "Are you sure you want to delete this macro?": "",
     "Yes": "Ano",
     "No": "Ne",
-    "Load Macro": "",
     "Are you sure you want to load this macro?": "",
     "Macro": "Makro",
     "Total: {{total}}": "Celkový: {{total}}",
     "No macros": "",
-    "Run Macro": "Spuštění makra",
     "Display original content": "",
     "Run": "Spustit",
     "Probe": "Sonda",
@@ -385,5 +382,7 @@
     "Use a built-in camera or a connected webcam": "",
     "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "Webkamera je vypnuta",
-    "Crosshair": "Crosshair"
+    "Flip Horizontally": "",
+    "Flip Vertically": "",
+    "Center Focus": ""
 }

@@ -71,9 +71,8 @@
     "G-code: Pause": "",
     "G-code: Resume": "",
     "Feed Hold": "",
-    "Macro: Run": "",
-    "Macro: Load": "",
-    "Watch Directory: Load": "",
+    "Run Macro": "執行巨集",
+    "Load Macro": "",
     "Trigger": "",
     "Choose an trigger": "",
     "System": "",
@@ -308,12 +307,10 @@
     "Are you sure you want to delete this macro?": "你確定要刪除這個巨集？",
     "Yes": "是",
     "No": "否",
-    "Load Macro": "",
     "Are you sure you want to load this macro?": "你確定要載入這個巨集？",
     "Macro": "巨集",
     "Total: {{total}}": "總計：{{total}}",
     "No macros": "沒有可用的巨集",
-    "Run Macro": "執行巨集",
     "Display original content": "",
     "Run": "執行",
     "Probe": "探測",
@@ -385,5 +382,7 @@
     "Use a built-in camera or a connected webcam": "",
     "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "網路攝影機未開啟",
-    "Crosshair": "十字"
+    "Flip Horizontally": "",
+    "Flip Vertically": "",
+    "Center Focus": ""
 }

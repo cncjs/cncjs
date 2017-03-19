@@ -71,9 +71,8 @@
     "G-code: Pause": "G-code: Pause",
     "G-code: Resume": "G-code: Resume",
     "Feed Hold": "Feed Hold",
-    "Macro: Run": "Macro: Run",
-    "Macro: Load": "Macro: Load",
-    "Watch Directory: Load": "Watch Directory: Load",
+    "Run Macro": "Run Macro",
+    "Load Macro": "Load Macro",
     "Trigger": "Trigger",
     "Choose an trigger": "Choose an trigger",
     "System": "System",
@@ -308,12 +307,10 @@
     "Are you sure you want to delete this macro?": "Are you sure you want to delete this macro?",
     "Yes": "Yes",
     "No": "No",
-    "Load Macro": "Load Macro",
     "Are you sure you want to load this macro?": "Are you sure you want to load this macro?",
     "Macro": "Macro",
     "Total: {{total}}": "Total: {{total}}",
     "No macros": "No macros",
-    "Run Macro": "Run Macro",
     "Display original content": "Display original content",
     "Run": "Run",
     "Probe": "Probe",
@@ -385,5 +382,7 @@
     "Use a built-in camera or a connected webcam": "Use a built-in camera or a connected webcam",
     "Use a M-JPEG stream over HTTP": "Use a M-JPEG stream over HTTP",
     "Webcam is off": "Webcam is off",
-    "Crosshair": "Crosshair"
+    "Flip Horizontally": "Flip Horizontally",
+    "Flip Vertically": "Flip Vertically",
+    "Center Focus": "Center Focus"
 }

@@ -71,9 +71,8 @@
     "G-code: Pause": "G-code: megállítás",
     "G-code: Resume": "G-code: folytatás",
     "Feed Hold": "Előtolás tartás",
-    "Macro: Run": "",
-    "Macro: Load": "",
-    "Watch Directory: Load": "",
+    "Run Macro": "Macro futtatás",
+    "Load Macro": "Macro betöltés",
     "Trigger": "Kiváltó",
     "Choose an trigger": "Válasz egy kiváltót",
     "System": "Rendszer",
@@ -308,12 +307,10 @@
     "Are you sure you want to delete this macro?": "Biztos törölni akarod ezt a macro-t?",
     "Yes": "Igen",
     "No": "Nem",
-    "Load Macro": "Macro betöltés",
     "Are you sure you want to load this macro?": "Biztos be akarod tölteni ezt a macro-t?",
     "Macro": "Macro",
     "Total: {{total}}": "Teljes: {{total}}",
     "No macros": "nincs macro",
-    "Run Macro": "Macro futtatás",
     "Display original content": "",
     "Run": "Futtatás",
     "Probe": "Tapintó",
@@ -385,5 +382,7 @@
     "Use a built-in camera or a connected webcam": "Beépített Kamera vagy Csatlakoztatott Kamera",
     "Use a M-JPEG stream over HTTP": "Használj M-JPEG stream egy HTTP címen",
     "Webcam is off": "Webkamera Ki Van Kapcsolva",
-    "Crosshair": "Célkereszt"
+    "Flip Horizontally": "",
+    "Flip Vertically": "",
+    "Center Focus": ""
 }
