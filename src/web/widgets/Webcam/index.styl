@@ -30,7 +30,7 @@
 }
 
 .webcam-on-container {
-    background-color: #fafafa;
+    background-color: #000;
     min-height: 240px;
     text-align: center;
     overflow: hidden;
@@ -56,10 +56,12 @@
 
     .toolbar {
         position: absolute;
-        bottom: 5px;
-        left: 25px;
-        right: 25px;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 5px 20px;
         line-height: 18px;
+        background-color: #000;
 
         .scale-text {
             float: left;
@@ -94,9 +96,9 @@
 
     .icon-webcam {
         display: inline-block;
-        height: 64px;
-        width: 64px;
-        background: url("./images/64x64/webcam.png") no-repeat 0 0;
+        height: 128px;
+        width: 128px;
+        background: url("./images/webcam.svg") no-repeat 0 0;
     }
 }
 
@@ -110,13 +112,19 @@
     &.inverted {
         filter: invert(100%);
     }
+    &.icon-rotate-left {
+        background: url("./images/mono-rotate-left.svg") no-repeat 0 0;
+    }
+    &.icon-rotate-right {
+        background: url("./images/mono-rotate-right.svg") no-repeat 0 0;
+    }
     &.icon-flip-vertically {
         background: url("./images/flip-vertically.svg") no-repeat 0 0;
     }
     &.icon-flip-horizontally {
         background: url("./images/flip-horizontally.svg") no-repeat 0 0;
     }
-    &.icon-center-focus {
-        background: url("./images/center-focus.svg") no-repeat 0 0;
+    &.icon-crosshair {
+        background: url("./images/target.svg") no-repeat 0 0;
     }
 }

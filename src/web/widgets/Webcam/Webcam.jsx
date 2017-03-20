@@ -46,10 +46,11 @@ class Webcam extends Component {
             disabled,
             mediaSource,
             url,
-            centerFocus,
+            scale,
+            rotation,
             flipHorizontally,
             flipVertically,
-            scale
+            crosshair
         } = state;
 
         if (disabled) {
@@ -61,16 +62,20 @@ class Webcam extends Component {
             );
         }
 
+        const transformStyle = [
+            'translate(-50%, -50%)',
+            `rotateX(${flipVertically ? 180 : 0}deg)`,
+            `rotateY(${flipHorizontally ? 180 : 0}deg)`,
+            `rotate(${(rotation % 4) * 90}deg)`
+        ].join(' ');
+
         return (
             <div className={styles['webcam-on-container']}>
                 {mediaSource === MEDIA_SOURCE_LOCAL &&
                 <div style={{ width: '100%' }}>
                     <WebcamMedia
-                        className={classNames(
-                            styles.center,
-                            { [styles.flipHorizontally]: flipHorizontally },
-                            { [styles.flipVertically]: flipVertically }
-                        )}
+                        className={styles.center}
+                        style={{ transform: transformStyle }}
                         width={(100 * scale).toFixed(0) + '%'}
                         height="auto"
                     />
@@ -83,16 +88,13 @@ class Webcam extends Component {
                     }}
                     src={url}
                     style={{
-                        width: (100 * scale).toFixed(0) + '%'
+                        width: (100 * scale).toFixed(0) + '%',
+                        transform: transformStyle
                     }}
-                    className={classNames(
-                        styles.center,
-                        { [styles.flipHorizontally]: flipHorizontally },
-                        { [styles.flipVertically]: flipVertically }
-                    )}
+                    className={styles.center}
                 />
                 }
-                {centerFocus &&
+                {crosshair &&
                 <div>
                     <Line
                         className={classNames(
@@ -129,6 +131,40 @@ class Webcam extends Component {
                     <div className={styles['scale-text']}>{scale}x</div>
                     <div className="pull-right">
                         <OverlayTrigger
+                            overlay={<Tooltip>{i18n._('Rotate Left')}</Tooltip>}
+                            placement="top"
+                        >
+                            <Anchor
+                                className={styles.btnIcon}
+                                onClick={actions.rotateLeft}
+                            >
+                                <i
+                                    className={classNames(
+                                        styles.icon,
+                                        styles.inverted,
+                                        styles.iconRotateLeft
+                                    )}
+                                />
+                            </Anchor>
+                        </OverlayTrigger>
+                        <OverlayTrigger
+                            overlay={<Tooltip>{i18n._('Rotate Right')}</Tooltip>}
+                            placement="top"
+                        >
+                            <Anchor
+                                className={styles.btnIcon}
+                                onClick={actions.rotateRight}
+                            >
+                                <i
+                                    className={classNames(
+                                        styles.icon,
+                                        styles.inverted,
+                                        styles.iconRotateRight
+                                    )}
+                                />
+                            </Anchor>
+                        </OverlayTrigger>
+                        <OverlayTrigger
                             overlay={<Tooltip>{i18n._('Flip Horizontally')}</Tooltip>}
                             placement="top"
                         >
@@ -163,18 +199,18 @@ class Webcam extends Component {
                             </Anchor>
                         </OverlayTrigger>
                         <OverlayTrigger
-                            overlay={<Tooltip>{i18n._('Center Focus')}</Tooltip>}
+                            overlay={<Tooltip>{i18n._('Crosshair')}</Tooltip>}
                             placement="top"
                         >
                             <Anchor
                                 className={styles.btnIcon}
-                                onClick={actions.toggleCenterFocus}
+                                onClick={actions.toggleCrosshair}
                             >
                                 <i
                                     className={classNames(
                                         styles.icon,
                                         styles.inverted,
-                                        styles.iconCenterFocus
+                                        styles.iconCrosshair
                                     )}
                                 />
                             </Anchor>

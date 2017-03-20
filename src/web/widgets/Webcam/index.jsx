@@ -24,9 +24,19 @@ class WebcamWidget extends Component {
         changeImageScale: (value) => {
             this.setState({ scale: value });
         },
-        toggleCenterFocus: () => {
-            const { centerFocus } = this.state;
-            this.setState({ centerFocus: !centerFocus });
+        rotateLeft: () => {
+            const { flipHorizontally, flipVertically, rotation } = this.state;
+            const rotateLeft = (flipHorizontally && flipVertically) || (!flipHorizontally && !flipVertically);
+            const modulus = 4;
+            const i = rotateLeft ? -1 : 1;
+            this.setState({ rotation: (Math.abs(Number(rotation || 0)) + modulus + i) % modulus });
+        },
+        rotateRight: () => {
+            const { flipHorizontally, flipVertically, rotation } = this.state;
+            const rotateRight = (flipHorizontally && flipVertically) || (!flipHorizontally && !flipVertically);
+            const modulus = 4;
+            const i = rotateRight ? 1 : -1;
+            this.setState({ rotation: (Math.abs(Number(rotation || 0)) + modulus + i) % modulus });
         },
         toggleFlipHorizontally: () => {
             const { flipHorizontally } = this.state;
@@ -35,6 +45,10 @@ class WebcamWidget extends Component {
         toggleFlipVertically: () => {
             const { flipVertically } = this.state;
             this.setState({ flipVertically: !flipVertically });
+        },
+        toggleCrosshair: () => {
+            const { crosshair } = this.state;
+            this.setState({ crosshair: !crosshair });
         }
     };
 
@@ -51,20 +65,22 @@ class WebcamWidget extends Component {
             disabled,
             mediaSource,
             url,
-            centerFocus,
+            scale,
+            rotation,
             flipHorizontally,
             flipVertically,
-            scale
+            crosshair
         } = this.state;
 
         store.set('widgets.webcam.minimized', minimized);
         store.set('widgets.webcam.disabled', disabled);
         store.set('widgets.webcam.mediaSource', mediaSource);
         store.set('widgets.webcam.url', url);
-        store.set('widgets.webcam.centerFocus', centerFocus);
+        store.set('widgets.webcam.geometry.scale', scale);
+        store.set('widgets.webcam.geometry.rotation', rotation);
         store.set('widgets.webcam.geometry.flipHorizontally', flipHorizontally);
         store.set('widgets.webcam.geometry.flipVertically', flipVertically);
-        store.set('widgets.webcam.geometry.scale', scale);
+        store.set('widgets.webcam.crosshair', crosshair);
     }
     getInitialState() {
         return {
@@ -73,10 +89,11 @@ class WebcamWidget extends Component {
             disabled: store.get('widgets.webcam.disabled', true),
             mediaSource: store.get('widgets.webcam.mediaSource', MEDIA_SOURCE_LOCAL),
             url: store.get('widgets.webcam.url'),
-            centerFocus: store.get('widgets.webcam.centerFocus', false),
+            scale: store.get('widgets.webcam.geometry.scale', 1.0),
+            rotation: store.get('widgets.webcam.geometry.rotation', 0),
             flipHorizontally: store.get('widgets.webcam.geometry.flipHorizontally', false),
             flipVertically: store.get('widgets.webcam.geometry.flipVertically', false),
-            scale: store.get('widgets.webcam.geometry.scale', 1.0)
+            crosshair: store.get('widgets.webcam.crosshair', false)
         };
     }
     render() {
