@@ -1,10 +1,15 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
+import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
+import { Dropdown, MenuItem } from 'react-bootstrap';
 import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
 import Modal from '../../components/Modal';
 import Validation from '../../lib/react-validation';
+import insertAtCaret from './insertAtCaret';
+import variables from './variables';
+import styles from './index.styl';
 
 class EditMacro extends Component {
     static propTypes = {
@@ -20,7 +25,6 @@ class EditMacro extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     render() {
-        const sample = '; Traverse around the boundary\nG90\nG0 Z10 ; go to z-safe\nG0 X[xmin] Y[ymin]\nG0 X[xmax]\nG0 Y[ymax]\nG0 X[xmin]\nG0 Y[ymin]';
         const { state, actions } = this.props;
         const { modalParams } = state;
         const { id, name, content } = { ...modalParams };
@@ -52,27 +56,62 @@ class EditMacro extends Component {
                                 }}
                                 type="text"
                                 className="form-control"
-                                placeholder={i18n._('Macro Name')}
                                 errorClassName="is-invalid-input"
                                 containerClassName=""
-                                value={name}
                                 name="name"
+                                value={name}
                                 validations={['required']}
                             />
                         </div>
                         <div className="form-group">
-                            <label>{i18n._('G-code')}</label>
+                            <div>
+                                <label>{i18n._('Macro Commands')}</label>
+                                <Dropdown
+                                    id="edit-macro-dropdown"
+                                    className="pull-right"
+                                    onSelect={(eventKey) => {
+                                        const textarea = ReactDOM.findDOMNode(this.fields.content).querySelector('textarea');
+                                        if (textarea) {
+                                            insertAtCaret(textarea, eventKey);
+                                        }
+
+                                        actions.updateModalParams({
+                                            content: textarea.value
+                                        });
+                                    }}
+                                    pullRight
+                                >
+                                    <Dropdown.Toggle
+                                        className={styles.btnLink}
+                                        style={{ boxShadow: 'none' }}
+                                        useAnchor
+                                        noCaret
+                                    >
+                                        <i className="fa fa-plus" />
+                                        <span className="space" />
+                                        {i18n._('Macro Variables')}
+                                        <span className="space" />
+                                        <i className="fa fa-caret-down" />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {variables.map(v =>
+                                            <MenuItem eventKey={v} key={v}>
+                                                {v}
+                                            </MenuItem>
+                                        )}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </div>
                             <Validation.components.Textarea
                                 ref={c => {
                                     this.fields.content = c;
                                 }}
                                 rows="10"
                                 className="form-control"
-                                placeholder={sample}
                                 errorClassName="is-invalid-input"
                                 containerClassName=""
-                                value={content}
                                 name="content"
+                                value={content}
                                 validations={['required']}
                             />
                         </div>

@@ -46,9 +46,7 @@ class Macro extends Component {
                             className="btn btn-xs btn-default"
                             onClick={actions.openAddMacroModal}
                         >
-                            <i className="fa fa-plus" />
-                            <span className="space" />
-                            {i18n._('Create Macro')}
+                            {i18n._('New Macro')}
                         </button>
                     </div>
                     <div className={styles.toolbarRecords}>
