@@ -51,6 +51,25 @@ class ProbeWidget extends Component {
     };
 
     actions = {
+        getWorkCoordinateSystem: () => {
+            const controllerType = this.state.controller.type;
+            const controllerState = this.state.controller.state;
+            const defaultWCS = 'G54';
+
+            if (controllerType === GRBL) {
+                return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+            }
+
+            if (controllerType === SMOOTHIE) {
+                return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+            }
+
+            if (controllerType === TINYG) {
+                return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
+            }
+
+            return defaultWCS;
+        },
         changeProbeCommand: (value) => {
             this.setState({ probeCommand: value });
         },
@@ -74,6 +93,22 @@ class ProbeWidget extends Component {
             const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
             const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
 
+            // G10 L20 P- axes
+            // P - coordinate system (0-9)
+            const wcs = this.actions.getWorkCoordinateSystem() || '';
+            const coordinateSystem = [
+                '', // 0
+                'G54', // 1
+                'G55', // 2
+                'G56', // 3
+                'G57', // 4
+                'G58', // 5
+                'G59', // 6
+                'G59.1', // 7
+                'G59.2', // 8
+                'G59.3' // 9
+            ].indexOf(wcs);
+
             // Set relative distance mode
             this.sendCommand('G91');
 
@@ -89,7 +124,7 @@ class ProbeWidget extends Component {
             // Zero out work z axis
             this.sendCommand('G10', {
                 L: 20,
-                P: 1,
+                P: coordinateSystem,
                 Z: tlo
             });
 
