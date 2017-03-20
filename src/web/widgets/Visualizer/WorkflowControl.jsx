@@ -238,7 +238,6 @@ class WorkflowControl extends Component {
                             <MenuItem>
                                 <i className={classNames(styles.icon, styles.iconPerimeterTracingSquare)} />
                                 <span className="space space-sm" />
-                                {i18n._('Perimeter Tracing')}
                             </MenuItem>
                         </Dropdown.Menu>
                     </Dropdown>
