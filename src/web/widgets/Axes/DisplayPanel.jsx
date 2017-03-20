@@ -120,22 +120,6 @@ class DisplayPanel extends Component {
                                     pullRight
                                     disabled={!canClick}
                                 >
-                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G92 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Temporary X Axis (G92 X0)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        eventKey="G92.1 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
-                                    </MenuItem>
-                                    <MenuItem divider />
                                     {wcs === 'G54' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                                     }
@@ -224,6 +208,22 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Go To Machine Zero On X Axis (G53 G0 X0)')}
                                     </MenuItem>
+                                    <MenuItem divider />
+                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                    <MenuItem
+                                        eventKey="G92 X0"
+                                        onSelect={::this.handleSelect}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Zero Out Temporary X Axis (G92 X0)')}
+                                    </MenuItem>
+                                    <MenuItem
+                                        eventKey="G92.1 X0"
+                                        onSelect={::this.handleSelect}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
+                                    </MenuItem>
                                 </DropdownButton>
                             </td>
                         </tr>
@@ -283,22 +283,6 @@ class DisplayPanel extends Component {
                                     pullRight
                                     disabled={!canClick}
                                 >
-                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G92 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Temporary Y Axis (G92 Y0)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        eventKey="G92.1 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
-                                    </MenuItem>
-                                    <MenuItem divider />
                                     {wcs === 'G54' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                                     }
@@ -387,6 +371,22 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Go To Machine Zero On Y Axis (G53 G0 Y0)')}
                                     </MenuItem>
+                                    <MenuItem divider />
+                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                    <MenuItem
+                                        eventKey="G92 Y0"
+                                        onSelect={::this.handleSelect}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Zero Out Temporary Y Axis (G92 Y0)')}
+                                    </MenuItem>
+                                    <MenuItem
+                                        eventKey="G92.1 Y0"
+                                        onSelect={::this.handleSelect}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
+                                    </MenuItem>
                                 </DropdownButton>
                             </td>
                         </tr>
@@ -448,22 +448,6 @@ class DisplayPanel extends Component {
                                     pullRight
                                     disabled={!canClick}
                                 >
-                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G92 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Temporary Z Axis (G92 Z0)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        eventKey="G92.1 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
-                                    </MenuItem>
-                                    <MenuItem divider />
                                     {wcs === 'G54' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                                     }
@@ -552,6 +536,22 @@ class DisplayPanel extends Component {
                                     >
                                         {i18n._('Go To Machine Zero On Z Axis (G53 G0 Z0)')}
                                     </MenuItem>
+                                    <MenuItem divider />
+                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                    <MenuItem
+                                        eventKey="G92 Z0"
+                                        onSelect={::this.handleSelect}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Zero Out Temporary Z Axis (G92 Z0)')}
+                                    </MenuItem>
+                                    <MenuItem
+                                        eventKey="G92.1 Z0"
+                                        onSelect={::this.handleSelect}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
+                                    </MenuItem>
                                 </DropdownButton>
                             </td>
                         </tr>
@@ -631,22 +631,6 @@ class DisplayPanel extends Component {
                                     pullRight
                                     disabled={!canClick}
                                 >
-                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G92 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Temporary A Axis (G92 A0)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        eventKey="G92.1 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
-                                    </MenuItem>
-                                    <MenuItem divider />
                                     {wcs === 'G54' &&
                                     <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                                     }
@@ -734,6 +718,22 @@ class DisplayPanel extends Component {
                                         disabled={!canClick}
                                     >
                                         {i18n._('Go To Machine Zero On A Axis (G53 G0 A0)')}
+                                    </MenuItem>
+                                    <MenuItem divider />
+                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                    <MenuItem
+                                        eventKey="G92 A0"
+                                        onSelect={::this.handleSelect}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Zero Out Temporary A Axis (G92 A0)')}
+                                    </MenuItem>
+                                    <MenuItem
+                                        eventKey="G92.1 A0"
+                                        onSelect={::this.handleSelect}
+                                        disabled={!canClick}
+                                    >
+                                        {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
                                     </MenuItem>
                                 </DropdownButton>
                             </td>
