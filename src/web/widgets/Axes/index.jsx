@@ -104,6 +104,10 @@ class AxesWidget extends Component {
                 return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
             }
 
+            if (controllerType === SMOOTHIE) {
+                return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+            }
+
             if (controllerType === TINYG) {
                 return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
             }
