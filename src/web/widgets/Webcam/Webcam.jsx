@@ -5,8 +5,8 @@ import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
 import { OverlayTrigger, Tooltip } from 'react-bootstrap';
-import WebcamMedia from 'react-webcam';
 import Anchor from '../../components/Anchor';
+import WebcamComponent from '../../components/Webcam';
 import i18n from '../../lib/i18n';
 import Image from './Image';
 import Line from './Line';
@@ -23,6 +23,8 @@ class Webcam extends Component {
         actions: PropTypes.object
     };
 
+    mediaSource = null;
+
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
@@ -31,12 +33,12 @@ class Webcam extends Component {
         const { mediaSource } = state;
 
         if (mediaSource === MEDIA_SOURCE_MJPEG) {
-            const node = ReactDOM.findDOMNode(this.mjpegMediaSource);
-            node.src = '';
+            const el = ReactDOM.findDOMNode(this.mediaSource);
+            el.src = '';
 
             delay(10) // delay 10ms
                 .then(() => {
-                    node.src = state.url;
+                    el.src = state.url;
                 });
         }
     }
@@ -50,7 +52,8 @@ class Webcam extends Component {
             rotation,
             flipHorizontally,
             flipVertically,
-            crosshair
+            crosshair,
+            muted
         } = state;
 
         if (disabled) {
@@ -73,18 +76,22 @@ class Webcam extends Component {
             <div className={styles['webcam-on-container']}>
                 {mediaSource === MEDIA_SOURCE_LOCAL &&
                 <div style={{ width: '100%' }}>
-                    <WebcamMedia
+                    <WebcamComponent
+                        ref={node => {
+                            this.mediaSource = node;
+                        }}
                         className={styles.center}
                         style={{ transform: transformStyle }}
                         width={(100 * scale).toFixed(0) + '%'}
                         height="auto"
+                        muted={muted}
                     />
                 </div>
                 }
                 {mediaSource === MEDIA_SOURCE_MJPEG &&
                 <Image
                     ref={node => {
-                        this.mjpegMediaSource = node;
+                        this.mediaSource = node;
                     }}
                     src={url}
                     style={{
@@ -128,8 +135,23 @@ class Webcam extends Component {
                 </div>
                 }
                 <div className={styles.toolbar}>
-                    <div className={styles['scale-text']}>{scale}x</div>
+                    <div className={styles.scaleText}>{scale}x</div>
                     <div className="pull-right">
+                        {mediaSource === MEDIA_SOURCE_LOCAL &&
+                        <Anchor
+                            className={styles.btnIcon}
+                            onClick={actions.toggleMute}
+                        >
+                            <i
+                                className={classNames(
+                                    styles.icon,
+                                    styles.inverted,
+                                    { [styles.iconUnmute]: !muted },
+                                    { [styles.iconMute]: muted }
+                                )}
+                            />
+                        </Anchor>
+                        }
                         <OverlayTrigger
                             overlay={<Tooltip>{i18n._('Rotate Left')}</Tooltip>}
                             placement="top"

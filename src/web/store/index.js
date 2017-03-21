@@ -174,7 +174,8 @@ export const defaultState = {
                 flipHorizontally: false,
                 flipVertically: false
             },
-            crosshair: false
+            crosshair: false,
+            muted: false
         }
     }
 };

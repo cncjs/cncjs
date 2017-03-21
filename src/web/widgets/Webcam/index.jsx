@@ -49,6 +49,10 @@ class WebcamWidget extends Component {
         toggleCrosshair: () => {
             const { crosshair } = this.state;
             this.setState({ crosshair: !crosshair });
+        },
+        toggleMute: () => {
+            const { muted } = this.state;
+            this.setState({ muted: !muted });
         }
     };
 
@@ -69,7 +73,8 @@ class WebcamWidget extends Component {
             rotation,
             flipHorizontally,
             flipVertically,
-            crosshair
+            crosshair,
+            muted
         } = this.state;
 
         store.set('widgets.webcam.minimized', minimized);
@@ -81,6 +86,7 @@ class WebcamWidget extends Component {
         store.set('widgets.webcam.geometry.flipHorizontally', flipHorizontally);
         store.set('widgets.webcam.geometry.flipVertically', flipVertically);
         store.set('widgets.webcam.crosshair', crosshair);
+        store.set('widgets.webcam.muted', muted);
     }
     getInitialState() {
         return {
@@ -93,7 +99,8 @@ class WebcamWidget extends Component {
             rotation: store.get('widgets.webcam.geometry.rotation', 0),
             flipHorizontally: store.get('widgets.webcam.geometry.flipHorizontally', false),
             flipVertically: store.get('widgets.webcam.geometry.flipVertically', false),
-            crosshair: store.get('widgets.webcam.crosshair', false)
+            crosshair: store.get('widgets.webcam.crosshair', false),
+            muted: store.get('widgets.webcam.muted', false)
         };
     }
     render() {
