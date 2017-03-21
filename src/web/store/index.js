@@ -104,9 +104,10 @@ export const defaultState = {
         probe: {
             minimized: false,
             probeCommand: 'G38.2',
+            useTLO: false,
             probeDepth: 10,
             probeFeedrate: 20,
-            tlo: 10,
+            touchPlateHeight: 10,
             retractionDistance: 4
         },
         smoothie: {

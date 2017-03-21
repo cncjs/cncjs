@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
+import ToggleSwitch from '../../components/ToggleSwitch';
 import i18n from '../../lib/i18n';
-import Toolbar from './Toolbar';
 import {
     METRIC_UNITS
 } from '../../constants';
@@ -19,7 +19,16 @@ class Probe extends Component {
     }
     render() {
         const { state, actions } = this.props;
-        const { canClick, units, probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = state;
+        const {
+            canClick,
+            units,
+            probeCommand,
+            useTLO,
+            probeDepth,
+            probeFeedrate,
+            touchPlateHeight,
+            retractionDistance
+        } = state;
         const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
         const step = (units === METRIC_UNITS) ? 1 : 0.1;
@@ -48,7 +57,6 @@ class Probe extends Component {
 
         return (
             <div>
-                <Toolbar {...this.props} />
                 <div className="form-group">
                     <label className="control-label">{i18n._('Probe Command')}</label>
                     <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>
@@ -144,11 +152,11 @@ class Probe extends Component {
                                 <input
                                     type="number"
                                     className="form-control"
-                                    value={tlo}
+                                    value={touchPlateHeight}
                                     placeholder="0.00"
                                     min={0}
                                     step={step}
-                                    onChange={actions.handleTLOChange}
+                                    onChange={actions.handleTouchPlateHeightChange}
                                 />
                                 <span className="input-group-addon">{displayUnits}</span>
                             </div>
@@ -172,6 +180,21 @@ class Probe extends Component {
                         </div>
                     </div>
                 </div>
+                <div className="table-form" style={{ marginBottom: 15 }}>
+                    <div className="table-form-row">
+                        <div className="table-form-col table-form-col-label">
+                            <ToggleSwitch
+                                checked={useTLO}
+                                size="sm"
+                                style={{ marginRight: 0 }}
+                                onChange={actions.toggleUseTLO}
+                            />
+                        </div>
+                        <div className="table-form-col">
+                            {i18n._('Apply the tool length offset for the Z-axis')}
+                        </div>
+                    </div>
+                </div>
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <div className="btn-toolbar">
@@ -181,7 +204,6 @@ class Probe extends Component {
                                     className="btn btn-sm btn-default"
                                     onClick={actions.runZProbe}
                                     disabled={!canClick}
-                                    title={i18n._('Start')}
                                 >
                                     {i18n._('Run Z-probe')}
                                 </button>

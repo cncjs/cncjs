@@ -73,6 +73,10 @@ class ProbeWidget extends Component {
         changeProbeCommand: (value) => {
             this.setState({ probeCommand: value });
         },
+        toggleUseTLO: () => {
+            const { useTLO } = this.state;
+            this.setState({ useTLO: !useTLO });
+        },
         handleProbeDepthChange: (event) => {
             const probeDepth = event.target.value;
             this.setState({ probeDepth });
@@ -81,16 +85,23 @@ class ProbeWidget extends Component {
             const probeFeedrate = event.target.value;
             this.setState({ probeFeedrate });
         },
-        handleTLOChange: (event) => {
-            const tlo = event.target.value;
-            this.setState({ tlo });
+        handleTouchPlateHeightChange: (event) => {
+            const touchPlateHeight = event.target.value;
+            this.setState({ touchPlateHeight });
         },
         handleRetractionDistanceChange: (event) => {
             const retractionDistance = event.target.value;
             this.setState({ retractionDistance });
         },
         runZProbe: () => {
-            const { probeCommand, probeDepth, probeFeedrate, tlo, retractionDistance } = this.state;
+            const {
+                probeCommand,
+                useTLO,
+                probeDepth,
+                probeFeedrate,
+                touchPlateHeight,
+                retractionDistance
+            } = this.state;
             const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
 
             // G10 L20 P- axes
@@ -121,12 +132,25 @@ class ProbeWidget extends Component {
             // Set back to asolute distance mode
             this.sendCommand('G90');
 
-            // Zero out work z axis
-            this.sendCommand('G10', {
-                L: 20,
-                P: coordinateSystem,
-                Z: tlo
-            });
+            if (useTLO) {
+                // Zero out work Z axis
+                this.sendCommand('G10', {
+                    L: 20,
+                    P: coordinateSystem,
+                    Z: 0
+                });
+                // Apply touch plate height with tool length offset
+                this.sendCommand('G43.1', {
+                    Z: -touchPlateHeight
+                });
+            } else {
+                // Apply touch plate height for work Z axis
+                this.sendCommand('G10', {
+                    L: 20,
+                    P: coordinateSystem,
+                    Z: touchPlateHeight
+                });
+            }
 
             // Set relative distance mode
             this.sendCommand('G91');
@@ -152,19 +176,19 @@ class ProbeWidget extends Component {
             let {
                 probeDepth,
                 probeFeedrate,
-                tlo,
+                touchPlateHeight,
                 retractionDistance
             } = store.get('widgets.probe');
             if (units === IMPERIAL_UNITS) {
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                tlo = mm2in(tlo).toFixed(4) * 1;
+                touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
                 retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
             }
             if (units === METRIC_UNITS) {
                 probeDepth = Number(probeDepth).toFixed(3) * 1;
                 probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                tlo = Number(tlo).toFixed(3) * 1;
+                touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
                 retractionDistance = Number(retractionDistance).toFixed(3) * 1;
             }
 
@@ -181,7 +205,7 @@ class ProbeWidget extends Component {
                 },
                 probeDepth: probeDepth,
                 probeFeedrate: probeFeedrate,
-                tlo: tlo,
+                touchPlateHeight: touchPlateHeight,
                 retractionDistance: retractionDistance
             });
         },
@@ -196,19 +220,19 @@ class ProbeWidget extends Component {
             let {
                 probeDepth,
                 probeFeedrate,
-                tlo,
+                touchPlateHeight,
                 retractionDistance
             } = store.get('widgets.probe');
             if (units === IMPERIAL_UNITS) {
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                tlo = mm2in(tlo).toFixed(4) * 1;
+                touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
                 retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
             }
             if (units === METRIC_UNITS) {
                 probeDepth = Number(probeDepth).toFixed(3) * 1;
                 probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                tlo = Number(tlo).toFixed(3) * 1;
+                touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
                 retractionDistance = Number(retractionDistance).toFixed(3) * 1;
             }
 
@@ -225,7 +249,7 @@ class ProbeWidget extends Component {
                 },
                 probeDepth: probeDepth,
                 probeFeedrate: probeFeedrate,
-                tlo: tlo,
+                touchPlateHeight: touchPlateHeight,
                 retractionDistance: retractionDistance
             });
         },
@@ -240,19 +264,19 @@ class ProbeWidget extends Component {
             let {
                 probeDepth,
                 probeFeedrate,
-                tlo,
+                touchPlateHeight,
                 retractionDistance
             } = store.get('widgets.probe');
             if (units === IMPERIAL_UNITS) {
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                tlo = mm2in(tlo).toFixed(4) * 1;
+                touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
                 retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
             }
             if (units === METRIC_UNITS) {
                 probeDepth = Number(probeDepth).toFixed(3) * 1;
                 probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                tlo = Number(tlo).toFixed(3) * 1;
+                touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
                 retractionDistance = Number(retractionDistance).toFixed(3) * 1;
             }
 
@@ -269,7 +293,7 @@ class ProbeWidget extends Component {
                 },
                 probeDepth: probeDepth,
                 probeFeedrate: probeFeedrate,
-                tlo: tlo,
+                touchPlateHeight: touchPlateHeight,
                 retractionDistance: retractionDistance
             });
         }
@@ -279,7 +303,7 @@ class ProbeWidget extends Component {
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -305,29 +329,30 @@ class ProbeWidget extends Component {
             return;
         }
 
-        const { units, probeCommand } = this.state;
+        const { units, probeCommand, useTLO } = this.state;
+        store.set('widgets.probe.probeCommand', probeCommand);
+        store.set('widgets.probe.useTLO', useTLO);
+
         let {
             probeDepth,
             probeFeedrate,
-            tlo,
+            touchPlateHeight,
             retractionDistance
         } = this.state;
 
+        // To save in mm
         if (units === IMPERIAL_UNITS) {
             probeDepth = in2mm(probeDepth);
             probeFeedrate = in2mm(probeFeedrate);
-            tlo = in2mm(tlo);
+            touchPlateHeight = in2mm(touchPlateHeight);
             retractionDistance = in2mm(retractionDistance);
         }
-
-        // To save in mm
-        store.set('widgets.probe.probeCommand', probeCommand);
         store.set('widgets.probe.probeDepth', Number(probeDepth));
         store.set('widgets.probe.probeFeedrate', Number(probeFeedrate));
-        store.set('widgets.probe.tlo', Number(tlo));
+        store.set('widgets.probe.touchPlateHeight', Number(touchPlateHeight));
         store.set('widgets.probe.retractionDistance', Number(retractionDistance));
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.probe.minimized', false),
             isFullscreen: false,
@@ -340,9 +365,14 @@ class ProbeWidget extends Component {
             },
             workflowState: controller.workflowState,
             probeCommand: store.get('widgets.probe.probeCommand'),
+            useTLO: store.get('widgets.probe.useTLO'),
             probeDepth: toUnits(METRIC_UNITS, store.get('widgets.probe.probeDepth')),
             probeFeedrate: toUnits(METRIC_UNITS, store.get('widgets.probe.probeFeedrate')),
-            tlo: toUnits(METRIC_UNITS, store.get('widgets.probe.tlo')),
+            touchPlateHeight: toUnits(
+                METRIC_UNITS,
+                // widgets.probe.tlo is deprecated and will be removed in a future release`
+                store.get('widgets.probe.touchPlateHeight', store.get('widgets.probe.tlo'))
+            ),
             retractionDistance: toUnits(METRIC_UNITS, store.get('widgets.probe.retractionDistance'))
         };
     }
@@ -354,9 +384,9 @@ class ProbeWidget extends Component {
                 if (port) {
                     this.setState({ port: port });
                 } else {
-                    const defaultState = this.getDefaultState();
+                    const initialState = this.getInitialState();
                     this.setState({
-                        ...defaultState,
+                        ...initialState,
                         port: ''
                     });
                 }
