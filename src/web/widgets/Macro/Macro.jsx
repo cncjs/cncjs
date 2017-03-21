@@ -39,20 +39,6 @@ class Macro extends Component {
                 {modalState === MODAL_STATE_RUN_MACRO &&
                 <RunMacro {...this.props} />
                 }
-                <div className={styles.toolbar}>
-                    <div className={styles.toolbarButtonGroup}>
-                        <button
-                            type="button"
-                            className="btn btn-xs btn-default"
-                            onClick={actions.openAddMacroModal}
-                        >
-                            {i18n._('New Macro')}
-                        </button>
-                    </div>
-                    <div className={styles.toolbarRecords}>
-                        {i18n._('Total: {{total}}', { total: macros.length })}
-                    </div>
-                </div>
                 <div className={styles.tableContainer}>
                     <table className={styles.table}>
                         <tbody>

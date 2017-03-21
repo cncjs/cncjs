@@ -29,7 +29,7 @@
 
     display: block;
     margin: 0;
-    padding: 8px 10px;
+    padding: 5px 10px;
     background: #fafafa;
 
     .toolbar-button-group {
@@ -42,6 +42,7 @@
 }
 
 .table-container {
+    min-height: 80px;
     max-height: 180px;
     overflow-x: auto;
     overflow-y: scroll;
@@ -82,7 +83,10 @@
         border-top-width: 0;
     }
 
-    > tbody > tr:last-child > td {
+    > tbody > tr:first-child > td {
+        border-top-width: 0;
+    }
+    > tbody > tr:nth-child(1n+3) > td {
         border-bottom-width: 0;
     }
 

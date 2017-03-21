@@ -229,6 +229,12 @@ class MacroWidget extends Component {
                     <Widget.Title>{i18n._('Macro')}</Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
+                            title={i18n._('New Macro')}
+                            onClick={actions.openAddMacroModal}
+                        >
+                            <i className="fa fa-plus" />
+                        </Widget.Button>
+                        <Widget.Button
                             title={minimized ? i18n._('Open') : i18n._('Close')}
                             onClick={(event, val) => this.setState({ minimized: !minimized })}
                         >
