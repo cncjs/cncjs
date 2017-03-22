@@ -1,6 +1,7 @@
 import isElectron from 'is-electron';
 import path from 'path';
 import _ from 'lodash';
+import semver from 'semver';
 import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
 import log from '../lib/log';
@@ -263,5 +264,27 @@ store.on('change', (state) => {
         log.error(err);
     }
 });
+
+//
+// Migration
+//
+const migrateStore = () => {
+    // 1.9.0
+    // * Renamed "widgets.probe.tlo" to "widgets.probe.touchPlateHeight"
+    // * Removed "widgets.webcam.scale"
+    if (semver.lt(cnc.version, '1.9.0')) {
+        // Probe widget
+        const tlo = store.get('widgets.probe.tlo');
+        if (tlo !== undefined) {
+            store.set('widgets.probe.touchPlateHeight', Number(tlo));
+            store.unset('widgets.probe.tlo');
+        }
+
+        // Webcam widget
+        store.unset('widgets.webcam.scale');
+    }
+};
+
+migrateStore();
 
 export default store;
