@@ -1,6 +1,6 @@
 {
-    "Records: {{from}} - {{to}} / {{total}}": "",
-    "Records: {{total}}": "",
+    "Records: {{from}} - {{to}} / {{total}}": "Rekordy: {{from}} - {{to}} / {{total}}",
+    "Records: {{total}}": "Rekordy: {{total}}",
     "{{pageLength}} per page": "",
     "New update available": "K dispozici nová aktualizace",
     "Command succeeded": "",
