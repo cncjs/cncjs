@@ -12,7 +12,7 @@ export const TablePagination = (props) => {
                     return i18n._('Records: {{from}} - {{to}} / {{total}}', {
                         from,
                         to,
-                        total: total
+                        total: totalRecords
                     });
                 }
 
