@@ -10,7 +10,7 @@ class ImmutableStore extends events.EventEmitter {
         this.state = state;
     }
     get(key, defaultValue) {
-        return _.get(this.state, key, defaultValue);
+        return (key === undefined) ? this.state : _.get(this.state, key, defaultValue);
     }
     set(key, value) {
         const prevValue = this.get(key);
