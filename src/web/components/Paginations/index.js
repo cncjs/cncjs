@@ -9,10 +9,14 @@ export const TablePagination = (props) => {
             {...props}
             pageRecordsRenderer={({ totalRecords, from, to }) => {
                 if (totalRecords > 0) {
-                    return i18n._('Records: {{from}} - {{to}} / {{totalRecords}}', { totalRecords, from, to });
+                    return i18n._('Records: {{from}} - {{to}} / {{total}}', {
+                        from,
+                        to,
+                        total: total
+                    });
                 }
 
-                return i18n._('Records: {{totalRecords}}', { totalRecords });
+                return i18n._('Records: {{total}}', { total: totalRecords });
             }}
             pageLengthRenderer={({ pageLength }) => (
                 <span>
