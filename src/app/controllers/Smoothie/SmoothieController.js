@@ -670,6 +670,9 @@ class SmoothieController {
             'reset': () => {
                 this.workflow.stop();
 
+                // Feeder
+                this.feeder.clear();
+
                 this.write(socket, '\x18'); // ^x
             },
             'feedOverride': () => {

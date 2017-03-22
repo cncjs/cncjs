@@ -684,7 +684,11 @@ class TinyGController {
             },
             'reset': () => {
                 this.workflow.stop();
-                this.writeln(socket, '\x18'); // ^x
+
+                // Feeder
+                this.feeder.clear();
+
+                this.write(socket, '\x18'); // ^x
             },
             'feedOverride': () => {
                 // Not supported
