@@ -234,7 +234,7 @@ const getUserConfig = () => {
         }
 
         let json = JSON.parse(value) || {};
-        cnc.version = json.version;
+        cnc.version = json.version || settings.version; // fallback to current version
         cnc.state = json.state;
     } catch (err) {
         log.error(err);
@@ -285,6 +285,10 @@ const migrateStore = () => {
     }
 };
 
-migrateStore();
+try {
+    migrateStore();
+} catch (err) {
+    log.error(err);
+}
 
 export default store;
