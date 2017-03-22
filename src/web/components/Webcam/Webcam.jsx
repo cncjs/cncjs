@@ -97,7 +97,6 @@ class Webcam extends Component {
                             hasUserMedia: true,
                             src: window.URL.createObjectURL(stream)
                         });
-                        instance.props.onGetUserMedia();
                     });
                     Webcam.userMediaRequested = true;
                 },
