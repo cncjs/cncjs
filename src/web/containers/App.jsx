@@ -21,6 +21,7 @@ class App extends Component {
             '/workspace',
             '/settings',
             '/settings/general',
+            '/settings/workspace',
             '/settings/account',
             '/settings/commands',
             '/settings/events',

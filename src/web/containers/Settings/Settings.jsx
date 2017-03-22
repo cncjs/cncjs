@@ -13,6 +13,7 @@ import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
 import store from '../../store';
 import General from './General';
+import Workspace from './Workspace';
 import Account from './Account';
 import Commands from './Commands';
 import Events from './Events';
@@ -38,6 +39,12 @@ class Settings extends Component {
             path: 'general',
             title: i18n._('General'),
             component: (props) => <General {...props} />
+        },
+        {
+            id: 'workspace',
+            path: 'workspace',
+            title: i18n._('Workspace'),
+            component: (props) => <Workspace {...props} />
         },
         {
             id: 'account',
@@ -178,15 +185,6 @@ class Settings extends Component {
                     general: this.initialState.general
                 });
             },
-            restoreDefaults: (event) => {
-                confirm({
-                    title: i18n._('Restore Defaults'),
-                    body: i18n._('Are you sure you want to restore the default settings?')
-                }).then(() => {
-                    store.clear();
-                    window.location.reload();
-                });
-            },
             toggleCheckForUpdates: () => {
                 const { checkForUpdates } = this.state.general;
                 this.setState({
@@ -205,7 +203,19 @@ class Settings extends Component {
                 });
             }
         },
-        // Account
+        // Workspace
+        workspace: {
+            restoreDefaults: () => {
+                confirm({
+                    title: i18n._('Restore Defaults'),
+                    body: i18n._('Are you sure you want to restore the default settings?')
+                }).then(() => {
+                    store.clear();
+                    window.location.reload();
+                });
+            }
+        },
+        // My Account
         account: {
             fetchRecords: (options) => {
                 const state = this.state.account;
@@ -741,6 +751,9 @@ class Settings extends Component {
                 // followed by data
                 checkForUpdates: true,
                 lang: i18next.language
+            },
+            // Workspace
+            workspace: {
             },
             // My Account
             account: {

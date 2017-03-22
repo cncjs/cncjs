@@ -27,10 +27,6 @@ class General extends Component {
             const target = event.target;
             actions.changeLanguage(target.value);
         },
-        restoreDefaults: (event) => {
-            const { actions } = this.props;
-            actions.restoreDefaults();
-        },
         cancel: (event) => {
             const { actions } = this.props;
             actions.restoreSettings();
@@ -111,15 +107,6 @@ class General extends Component {
                 <div className={styles.formActions}>
                     <div className="row">
                         <div className="col-md-12">
-                            <div className="pull-left">
-                                <button
-                                    type="button"
-                                    className="btn btn-danger"
-                                    onClick={this.handlers.restoreDefaults}
-                                >
-                                    {i18n._('Restore Defaults')}
-                                </button>
-                            </div>
                             <button
                                 type="button"
                                 className="btn btn-default"
