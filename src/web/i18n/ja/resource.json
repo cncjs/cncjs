@@ -1,6 +1,6 @@
 {
-    "Records: {{from}} - {{to}} / {{totalRecords}}": "アカウント: {{from}} - {{to}} / {{totalRecords}}",
-    "Records: {{totalRecords}}": "レコード: {{totalRecords}}",
+    "Records: {{from}} - {{to}} / {{total}}": "レコード: {{from}}～{{to}} / {{total}}件",
+    "Records: {{total}}": "レコード: {{total}}",
     "{{pageLength}} per page": "{{pageLength}} / ページ",
     "New update available": "利用可能な新しいアップデート",
     "Command succeeded": "",

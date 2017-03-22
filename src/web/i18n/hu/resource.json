@@ -1,6 +1,6 @@
 {
-    "Records: {{from}} - {{to}} / {{totalRecords}}": "Rögzítés: {{from}} - {{to}} / {{totalRecords}}",
-    "Records: {{totalRecords}}": "Rögzítés: {{totalRecords}}",
+    "Records: {{from}} - {{to}} / {{total}}": "Rögzítés: {{from}} - {{to}} / {{total}}",
+    "Records: {{total}}": "Rögzítés: {{total}}",
     "{{pageLength}} per page": "{{pageLength}} per lap",
     "New update available": "Új Frissítés Érhető el",
     "Command succeeded": "Parancs Sikeres",

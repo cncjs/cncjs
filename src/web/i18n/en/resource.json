@@ -1,6 +1,6 @@
 {
-    "Records: {{from}} - {{to}} / {{totalRecords}}": "Records: {{from}} - {{to}} / {{totalRecords}}",
-    "Records: {{totalRecords}}": "Records: {{totalRecords}}",
+    "Records: {{from}} - {{to}} / {{total}}": "Records: {{from}} - {{to}} / {{total}}",
+    "Records: {{total}}": "Records: {{total}}",
     "{{pageLength}} per page": "{{pageLength}} per page",
     "New update available": "New update available",
     "Command succeeded": "Command succeeded",
