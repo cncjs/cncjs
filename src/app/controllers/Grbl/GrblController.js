@@ -787,6 +787,8 @@ class GrblController {
             'gcode': () => {
                 const [commands, params] = args;
                 const data = ensureArray(commands)
+                    .join('\n')
+                    .split('\n')
                     .filter(line => {
                         if (typeof line !== 'string') {
                             return false;
