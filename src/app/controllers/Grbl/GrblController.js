@@ -117,6 +117,13 @@ class GrblController {
         // Feeder
         this.feeder = new Feeder();
         this.feeder.on('data', (command = '') => {
+            if (this.grbl.isAlarm()) {
+                // Feeder
+                this.feeder.clear();
+                log.warn('[Grbl] Stopped sending G-code commands in Alarm mode');
+                return;
+            }
+
             if (this.isClose()) {
                 log.error(`[Grbl] Serial port "${this.options.port}" is not accessible`);
                 return;

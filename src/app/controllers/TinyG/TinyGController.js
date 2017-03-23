@@ -109,6 +109,13 @@ class TinyGController {
         // Feeder
         this.feeder = new Feeder();
         this.feeder.on('data', (command = '') => {
+            if (this.smoothie.isAlarm()) {
+                // Feeder
+                this.feeder.clear();
+                log.warn('[Smoothie] Stopped sending G-code commands in Alarm mode');
+                return;
+            }
+
             if (this.isClose()) {
                 log.error(`[TinyG] Serial port "${this.options.port}" is not accessible`);
                 return;

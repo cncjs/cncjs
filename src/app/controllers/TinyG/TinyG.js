@@ -2,6 +2,8 @@ import _ from 'lodash';
 import events from 'events';
 
 import {
+    TINYG_MACHINE_STATE_ALARM,
+
     // G-code Motion Mode
     TINYG_GCODE_MOTION_G0,
     TINYG_GCODE_MOTION_G1,
@@ -355,6 +357,10 @@ class TinyG extends events.EventEmitter {
                 this.emit('f', payload.f);
             }
         }
+    }
+    isAlarm() {
+        const machineState = _.get(this.state, 'sr.machineState');
+        return machineState === TINYG_MACHINE_STATE_ALARM;
     }
 }
 

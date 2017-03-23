@@ -3,6 +3,7 @@
 import _ from 'lodash';
 import events from 'events';
 import {
+    SMOOTHIE_ACTIVE_STATE_ALARM,
     SMOOTHIE_MODAL_GROUPS
 } from './constants';
 
@@ -555,6 +556,10 @@ class Smoothie extends events.EventEmitter {
             this.emit('others', payload);
             return;
         }
+    }
+    isAlarm() {
+        const activeState = _.get(this.state, 'status.activeState');
+        return activeState === SMOOTHIE_ACTIVE_STATE_ALARM;
     }
 }
 
