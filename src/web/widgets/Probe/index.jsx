@@ -27,6 +27,9 @@ import {
     // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
+import {
+    MODAL_NONE
+} from './constants';
 import styles from './index.styl';
 
 const toUnits = (units, val) => {
@@ -41,6 +44,11 @@ const toUnits = (units, val) => {
     return val;
 };
 
+const gcode = (cmd, params) => {
+    const s = _.map(params, (value, letter) => String(letter + value)).join(' ');
+    return (s.length > 0) ? (cmd + ' ' + s) : cmd;
+};
+
 class ProbeWidget extends Component {
     static propTypes = {
         onDelete: PropTypes.func,
@@ -51,24 +59,32 @@ class ProbeWidget extends Component {
     };
 
     actions = {
-        getWorkCoordinateSystem: () => {
-            const controllerType = this.state.controller.type;
-            const controllerState = this.state.controller.state;
-            const defaultWCS = 'G54';
-
-            if (controllerType === GRBL) {
-                return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
-            }
-
-            if (controllerType === SMOOTHIE) {
-                return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
-            }
-
-            if (controllerType === TINYG) {
-                return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
-            }
-
-            return defaultWCS;
+        openModal: (name = MODAL_NONE, params = {}) => {
+            this.setState({
+                modal: {
+                    name: name,
+                    params: params
+                }
+            });
+        },
+        closeModal: () => {
+            this.setState({
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
+            });
+        },
+        updateModalParams: (params = {}) => {
+            this.setState({
+                modal: {
+                    ...this.state.modal,
+                    params: {
+                        ...this.state.modal.params,
+                        ...params
+                    }
+                }
+            });
         },
         changeProbeCommand: (value) => {
             this.setState({ probeCommand: value });
@@ -93,7 +109,7 @@ class ProbeWidget extends Component {
             const retractionDistance = event.target.value;
             this.setState({ retractionDistance });
         },
-        runZProbe: () => {
+        populateProbeCommands: () => {
             const {
                 probeCommand,
                 useTLO,
@@ -103,70 +119,61 @@ class ProbeWidget extends Component {
                 retractionDistance
             } = this.state;
             const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
-
-            // G10 L20 P- axes
-            // P - coordinate system (0-9)
-            const wcs = this.actions.getWorkCoordinateSystem() || '';
-            const coordinateSystem = [
-                '', // 0
-                'G54', // 1
-                'G55', // 2
-                'G56', // 3
-                'G57', // 4
-                'G58', // 5
-                'G59', // 6
-                'G59.1', // 7
-                'G59.2', // 8
-                'G59.3' // 9
-            ].indexOf(wcs);
-
-            if (useTLO) {
+            const tloProbeCommands = [
                 // Cancel tool length offset
-                this.sendCommand('G49');
-            }
+                gcode('G49'),
 
-            // Set relative distance mode
-            this.sendCommand('G91');
+                // Zero out Z-axis
+                gcode('G92 Z0'),
 
-            // Start Z-probing
-            this.sendCommand(probeCommand, {
-                Z: towardWorkpiece ? -probeDepth : probeDepth,
-                F: probeFeedrate
-            });
+                // Start the Z-probe (use relative distance mode)
+                gcode(`G91 ${probeCommand}`, {
+                    Z: towardWorkpiece ? -probeDepth : probeDepth,
+                    F: probeFeedrate
+                }),
+                // Use absolute distance mode
+                gcode('G90'),
 
-            // Set back to asolute distance mode
-            this.sendCommand('G90');
-
-            if (useTLO) {
-                // Zero out work Z axis
-                this.sendCommand('G10', {
-                    L: 20,
-                    P: coordinateSystem,
-                    Z: 0
-                });
                 // Apply touch plate height with tool length offset
-                this.sendCommand('G43.1', {
+                gcode('G43.1', {
                     Z: -touchPlateHeight
-                });
-            } else {
+                }),
+
+                // Retract slightly from the touch plate (relative distance mode)
+                gcode('G91 G0', {
+                    Z: retractionDistance
+                }),
+                // Use asolute distance mode
+                gcode('G90')
+            ];
+            const wcsProbeCommands = [
+                // Start the Z-probe (use relative distance mode)
+                gcode(`G91 ${probeCommand}`, {
+                    Z: towardWorkpiece ? -probeDepth : probeDepth,
+                    F: probeFeedrate
+                }),
+                // Use absolute distance mode
+                gcode('G90'),
+
                 // Apply touch plate height for work Z axis
-                this.sendCommand('G10', {
+                gcode('G10', {
                     L: 20,
-                    P: coordinateSystem,
+                    P: 0, // Update the currently active coordinate system
                     Z: touchPlateHeight
-                });
-            }
+                }),
 
-            // Set relative distance mode
-            this.sendCommand('G91');
+                // Retract slightly from the touch plate (use relative distance mode)
+                gcode('G91 G0', {
+                    Z: retractionDistance
+                }),
+                // Use absolute distance mode
+                gcode('G90')
+            ];
 
-            // Retract slightly from the touch plate
-            this.sendCommand('G0', {
-                Z: retractionDistance
-            });
-
-            // Set back to asolute distance mode
-            this.sendCommand('G90');
+            return useTLO ? tloProbeCommands : wcsProbeCommands;
+        },
+        runProbeCommands: (commands) => {
+            controller.command('gcode', commands);
         }
     };
     controllerEvents = {
@@ -368,6 +375,10 @@ class ProbeWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
+            modal: {
+                name: MODAL_NONE,
+                params: {}
+            },
             workflowState: controller.workflowState,
             probeCommand: store.get('widgets.probe.probeCommand'),
             useTLO: store.get('widgets.probe.useTLO'),
@@ -464,11 +475,6 @@ class ProbeWidget extends Component {
         }
 
         return true;
-    }
-    sendCommand(cmd, params) {
-        const s = _.map(params, (value, letter) => String(letter + value)).join(' ');
-        const gcode = (s.length > 0) ? (cmd + ' ' + s) : cmd;
-        controller.command('gcode', gcode);
     }
     render() {
         const { minimized, isFullscreen } = this.state;

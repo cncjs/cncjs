@@ -1,11 +1,14 @@
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import ToggleSwitch from '../../components/ToggleSwitch';
 import i18n from '../../lib/i18n';
+import Preview from './Preview';
 import {
     METRIC_UNITS
 } from '../../constants';
+import {
+    MODAL_PREVIEW
+} from './constants';
 import styles from './index.styl';
 
 class Probe extends Component {
@@ -20,10 +23,10 @@ class Probe extends Component {
     render() {
         const { state, actions } = this.props;
         const {
+            modal,
             canClick,
             units,
             probeCommand,
-            useTLO,
             probeDepth,
             probeFeedrate,
             touchPlateHeight,
@@ -32,38 +35,23 @@ class Probe extends Component {
         const displayUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         const feedrateUnits = (units === METRIC_UNITS) ? i18n._('mm/min') : i18n._('in/min');
         const step = (units === METRIC_UNITS) ? 1 : 0.1;
-        const classes = {
-            'G38.2': classNames(
-                'btn',
-                'btn-default',
-                { 'btn-select': probeCommand === 'G38.2' }
-            ),
-            'G38.3': classNames(
-                'btn',
-                'btn-default',
-                { 'btn-select': probeCommand === 'G38.3' }
-            ),
-            'G38.4': classNames(
-                'btn',
-                'btn-default',
-                { 'btn-select': probeCommand === 'G38.4' }
-            ),
-            'G38.5': classNames(
-                'btn',
-                'btn-default',
-                { 'btn-select': probeCommand === 'G38.5' }
-            )
-        };
 
         return (
             <div>
+                {modal.name === MODAL_PREVIEW &&
+                <Preview state={state} actions={actions} />
+                }
                 <div className="form-group">
                     <label className="control-label">{i18n._('Probe Command')}</label>
                     <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>
                         <div className="btn-group btn-group-sm">
                             <button
                                 type="button"
-                                className={classes['G38.2']}
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': probeCommand === 'G38.2' }
+                                )}
                                 title={i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}
                                 onClick={() => actions.changeProbeCommand('G38.2')}
                             >
@@ -71,7 +59,11 @@ class Probe extends Component {
                             </button>
                             <button
                                 type="button"
-                                className={classes['G38.3']}
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': probeCommand === 'G38.3' }
+                                )}
                                 title={i18n._('G38.3 probe toward workpiece, stop on contact')}
                                 onClick={() => actions.changeProbeCommand('G38.3')}
                             >
@@ -79,7 +71,11 @@ class Probe extends Component {
                             </button>
                             <button
                                 type="button"
-                                className={classes['G38.4']}
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': probeCommand === 'G38.4' }
+                                )}
                                 title={i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}
                                 onClick={() => actions.changeProbeCommand('G38.4')}
                             >
@@ -87,7 +83,11 @@ class Probe extends Component {
                             </button>
                             <button
                                 type="button"
-                                className={classes['G38.5']}
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': probeCommand === 'G38.5' }
+                                )}
                                 title={i18n._('G38.5 probe away from workpiece, stop on loss of contact')}
                                 onClick={() => actions.changeProbeCommand('G38.5')}
                             >
@@ -95,7 +95,7 @@ class Probe extends Component {
                             </button>
                         </div>
                     </div>
-                    <p className={styles['probe-command-description']}>
+                    <p className={styles.probeCommandDescription}>
                         {probeCommand === 'G38.2' &&
                         <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
                         }
@@ -180,35 +180,18 @@ class Probe extends Component {
                         </div>
                     </div>
                 </div>
-                <div className="table-form" style={{ marginBottom: 15 }}>
-                    <div className="table-form-row">
-                        <div className="table-form-col table-form-col-label">
-                            <ToggleSwitch
-                                checked={useTLO}
-                                size="sm"
-                                style={{ marginRight: 0 }}
-                                onChange={actions.toggleUseTLO}
-                            />
-                        </div>
-                        <div className="table-form-col">
-                            {i18n._('Apply the tool length offset for the Z-axis')}
-                        </div>
-                    </div>
-                </div>
                 <div className="row no-gutters">
                     <div className="col-xs-12">
-                        <div className="btn-toolbar">
-                            <div className="btn-group" role="group">
-                                <button
-                                    type="button"
-                                    className="btn btn-sm btn-default"
-                                    onClick={actions.runZProbe}
-                                    disabled={!canClick}
-                                >
-                                    {i18n._('Run Z-probe')}
-                                </button>
-                            </div>
-                        </div>
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-default"
+                            onClick={() => {
+                                actions.openModal(MODAL_PREVIEW);
+                            }}
+                            disabled={!canClick}
+                        >
+                            {i18n._('Run Z-probe')}
+                        </button>
                     </div>
                 </div>
             </div>
