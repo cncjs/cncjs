@@ -120,6 +120,11 @@ class ProbeWidget extends Component {
                 'G59.3' // 9
             ].indexOf(wcs);
 
+            if (useTLO) {
+                // Cancel tool length offset
+                this.sendCommand('G49');
+            }
+
             // Set relative distance mode
             this.sendCommand('G91');
 
