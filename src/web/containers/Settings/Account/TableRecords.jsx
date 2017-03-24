@@ -161,7 +161,15 @@ class TableRecords extends Component {
                                         title={i18n._('Delete Account')}
                                         onClick={(event) => {
                                             confirm({
-                                                title: i18n._('Delete Account'),
+                                                title: (
+                                                    <div>
+                                                        {i18n._('My Account')}
+                                                        <span className="space" />
+                                                        &rsaquo;
+                                                        <span className="space" />
+                                                        {i18n._('Delete')}
+                                                    </div>
+                                                ),
                                                 body: i18n._('Are you sure you want to delete the account?')
                                             }).then(() => {
                                                 actions.deleteRecord(id);

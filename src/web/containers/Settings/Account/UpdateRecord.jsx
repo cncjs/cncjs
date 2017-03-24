@@ -45,7 +45,7 @@ class UpdateRecord extends Component {
             >
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('Account')}
+                        {i18n._('My Account')}
                         <span className="space" />
                         &rsaquo;
                         <span className="space" />
