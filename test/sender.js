@@ -16,13 +16,22 @@ test('send-response streaming protocol', (t) => {
 
     const file = path.resolve(__dirname, 'fixtures/jsdc.gcode');
     const content = fs.readFileSync(file, 'utf8');
-    const ok = sender.load(path.basename(file), content);
+    const context = {
+        xmin: 0,
+        xmax: 100,
+        ymin: 0,
+        ymax: 100,
+        zmin: -2,
+        zmax: 50
+    };
+    const ok = sender.load(path.basename(file), content, context);
     t.equal(ok, true, `Failed to load "${file}".`);
 
     const total = content.split('\n').filter(line => line.trim().length > 0).length;
     t.same(sender.toJSON(), {
         sp: SP_TYPE_SEND_RESPONSE,
         name: path.basename(file),
+        context: context,
         size: content.length,
         total: total,
         sent: 0,
@@ -42,6 +51,7 @@ test('send-response streaming protocol', (t) => {
         t.same(sender.toJSON(), {
             sp: SP_TYPE_SEND_RESPONSE,
             name: path.basename(file),
+            context: context,
             size: content.length,
             total: total,
             sent: total,
@@ -57,6 +67,7 @@ test('send-response streaming protocol', (t) => {
         t.equal(sender.sp.type, SP_TYPE_SEND_RESPONSE);
         t.same(sender.state, {
             name: '',
+            context: {},
             gcode: '',
             lines: [],
             total: 0,
@@ -71,6 +82,7 @@ test('send-response streaming protocol', (t) => {
         t.same(sender.toJSON(), {
             sp: SP_TYPE_SEND_RESPONSE,
             name: '',
+            context: {},
             size: 0,
             total: 0,
             sent: 0,
@@ -126,13 +138,22 @@ test('character-counting streaming protocol', (t) => {
 
     const file = path.resolve(__dirname, 'fixtures/jsdc.gcode');
     const content = fs.readFileSync(file, 'utf8');
-    const ok = sender.load(path.basename(file), content);
+    const context = {
+        xmin: 0,
+        xmax: 100,
+        ymin: 0,
+        ymax: 100,
+        zmin: -2,
+        zmax: 50
+    };
+    const ok = sender.load(path.basename(file), content, context);
     t.equal(ok, true, `Failed to load "${file}".`);
 
     const total = content.split('\n').filter(line => line.trim().length > 0).length;
     t.same(sender.toJSON(), {
         sp: SP_TYPE_CHAR_COUNTING,
         name: path.basename(file),
+        context: context,
         size: content.length,
         total: total,
         sent: 0,
@@ -152,6 +173,7 @@ test('character-counting streaming protocol', (t) => {
         t.same(sender.toJSON(), {
             sp: SP_TYPE_CHAR_COUNTING,
             name: path.basename(file),
+            context: context,
             size: content.length,
             total: total,
             sent: total,
@@ -168,6 +190,7 @@ test('character-counting streaming protocol', (t) => {
         t.same(sender.state, {
             name: '',
             gcode: '',
+            context: {},
             lines: [],
             total: 0,
             sent: 0,
@@ -181,6 +204,7 @@ test('character-counting streaming protocol', (t) => {
         t.same(sender.toJSON(), {
             sp: SP_TYPE_CHAR_COUNTING,
             name: '',
+            context: {},
             size: 0,
             total: 0,
             sent: 0,
