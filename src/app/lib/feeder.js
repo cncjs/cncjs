@@ -21,11 +21,11 @@ class Feeder extends events.EventEmitter {
             changed: this.state.changed
         };
     }
-    feed(data = [], params) {
+    feed(data = [], context = {}) {
         data = [].concat(data);
         if (data.length > 0) {
             this.state.queue = this.state.queue.concat(data.map(command => {
-                return { command: command, params: params };
+                return { command: command, context: context };
             }));
             this.emit('change');
         }
@@ -44,9 +44,9 @@ class Feeder extends events.EventEmitter {
             return false;
         }
 
-        const { command, params } = this.state.queue.shift();
+        const { command, context } = this.state.queue.shift();
         this.state.pending = true;
-        this.emit('data', command, params);
+        this.emit('data', command, context);
         this.emit('change');
 
         return true;

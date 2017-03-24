@@ -358,6 +358,12 @@ class TinyG extends events.EventEmitter {
             }
         }
     }
+    getMachinePosition() {
+        return _.get(this.state, 'sr.mpos', {});
+    }
+    getWorkPosition() {
+        return _.get(this.state, 'sr.wpos', {});
+    }
     isAlarm() {
         const machineState = _.get(this.state, 'sr.machineState');
         return machineState === TINYG_MACHINE_STATE_ALARM;

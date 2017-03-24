@@ -114,6 +114,7 @@ class Sender extends events.EventEmitter {
     state = {
         name: '',
         gcode: '',
+        context: {},
         lines: [],
         total: 0,
         sent: 0,
@@ -162,7 +163,7 @@ class Sender extends events.EventEmitter {
                     sp.line = '';
                     sp.dataLength += line.length;
                     sp.queue.push(line.length);
-                    this.emit('data', line);
+                    this.emit('data', line, this.state.context);
                 }
             });
         }
@@ -184,7 +185,7 @@ class Sender extends events.EventEmitter {
                         continue;
                     }
 
-                    this.emit('data', line + '\n');
+                    this.emit('data', line + '\n', this.state.context);
                     break;
                 }
             });
@@ -198,6 +199,7 @@ class Sender extends events.EventEmitter {
         return {
             sp: this.sp.type,
             name: this.state.name,
+            context: this.state.context,
             size: this.state.gcode.length,
             total: this.state.total,
             sent: this.state.sent,
@@ -209,7 +211,7 @@ class Sender extends events.EventEmitter {
         };
     }
     // @return {boolean} Returns true on success, false otherwise.
-    load(name, gcode = '') {
+    load(name, gcode = '', context = {}) {
         if (typeof gcode !== 'string' || !gcode) {
             return false;
         }
@@ -219,6 +221,7 @@ class Sender extends events.EventEmitter {
         }
         this.state.name = name;
         this.state.gcode = gcode;
+        this.state.context = context;
         this.state.lines = gcode.split('\n')
             .filter(line => (line.trim().length > 0));
         this.state.total = this.state.lines.length;
@@ -229,7 +232,7 @@ class Sender extends events.EventEmitter {
         this.state.elapsedTime = 0;
         this.state.remainingTime = 0;
 
-        this.emit('load', { name: name, gcode: gcode });
+        this.emit('load', { name, gcode, context });
         this.emit('change');
 
         return true;
@@ -240,6 +243,7 @@ class Sender extends events.EventEmitter {
         }
         this.state.name = '';
         this.state.gcode = '';
+        this.state.context = {};
         this.state.lines = [];
         this.state.total = 0;
         this.state.sent = 0;

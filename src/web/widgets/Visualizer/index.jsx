@@ -196,8 +196,8 @@ class VisualizerWidget extends Component {
 
             this.setState(nextState, () => {
                 // Clear gcode bounding box
-                controller.vars = {
-                    ...controller.vars,
+                controller.context = {
+                    ...controller.context,
                     xmin: 0,
                     xmax: 0,
                     ymin: 0,
@@ -213,8 +213,8 @@ class VisualizerWidget extends Component {
                 delay(0).then(() => {
                     this.visualizer.load(name, gcode, ({ bbox }) => {
                         // Set gcode bounding box
-                        controller.vars = {
-                            ...controller.vars,
+                        controller.context = {
+                            ...controller.context,
                             xmin: bbox.min.x,
                             xmax: bbox.max.x,
                             ymin: bbox.min.y,
@@ -245,8 +245,8 @@ class VisualizerWidget extends Component {
             }
 
             // Clear gcode bounding box
-            controller.vars = {
-                ...controller.vars,
+            controller.context = {
+                ...controller.context,
                 xmin: 0,
                 xmax: 0,
                 ymin: 0,

@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import ExpressionEvaluator from 'expr-eval';
 import SerialPort from 'serialport';
 import ensureArray from '../../lib/ensure-array';
 import EventTrigger from '../../lib/event-trigger';
@@ -27,26 +28,6 @@ const noop = _.noop;
 
 const dbg = (...args) => {
     log.raw.apply(log, ['silly'].concat(args));
-};
-
-const replaceVariables = (gcode = '', vars = {}) => {
-    const interpolationPrefix = '[';
-    const interpolationSuffix = ']';
-
-    if (typeof vars !== 'object') {
-        return gcode;
-    }
-
-    Object.keys(vars).forEach(key => {
-        const value = vars[key];
-        if (value === undefined || value === null) {
-            return;
-        }
-        const re = new RegExp(_.escapeRegExp(interpolationPrefix + key + interpolationSuffix), 'g');
-        gcode = gcode.replace(re, value);
-    });
-
-    return gcode;
 };
 
 class GrblController {
@@ -95,6 +76,46 @@ class GrblController {
     // Workflow
     workflow = null;
 
+    translateWithContext = (gcode, context = {}) => {
+        const { Parser } = ExpressionEvaluator;
+
+        // Work position
+        const { x: posx, y: posy, z: posz, a: posa, b: posb, c: posc } = this.grbl.getWorkPosition();
+
+        // Context
+        context = {
+            xmin: 0,
+            xmax: 0,
+            ymin: 0,
+            ymax: 0,
+            zmin: 0,
+            zmax: 0,
+            ...context,
+
+            // Work position cannot be overridden by context
+            posx,
+            posy,
+            posz,
+            posa,
+            posb,
+            posc
+        };
+
+        const re = new RegExp(/\[[^\]]+\]/, 'g');
+        gcode = gcode.replace(re, (match) => {
+            const expr = match.slice(1, -1);
+            let result = '[]';
+            try {
+                result = Parser.evaluate(expr, context);
+            } catch (e) {
+                // Ignore
+            }
+            return result;
+        });
+
+        return gcode;
+    };
+
     constructor(port, options) {
         const { baudrate } = { ...options };
 
@@ -116,7 +137,12 @@ class GrblController {
 
         // Feeder
         this.feeder = new Feeder();
-        this.feeder.on('data', (command = '') => {
+        this.feeder.on('data', (command = '', context = {}) => {
+            if (this.isClose()) {
+                log.error(`[Grbl] Serial port "${this.options.port}" is not accessible`);
+                return;
+            }
+
             if (this.grbl.isAlarm()) {
                 // Feeder
                 this.feeder.clear();
@@ -124,15 +150,14 @@ class GrblController {
                 return;
             }
 
-            if (this.isClose()) {
-                log.error(`[Grbl] Serial port "${this.options.port}" is not accessible`);
-                return;
-            }
-
-            const line = String(command).trim();
+            let line = String(command).trim();
             if (line.length === 0) {
                 return;
             }
+
+            // Example
+            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
+            line = this.translateWithContext(line, context);
 
             this.emitAll('serialport:write', line);
 
@@ -145,7 +170,7 @@ class GrblController {
             // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
             bufferSize: (128 - 8) // The default buffer size is 128 bytes
         });
-        this.sender.on('data', (gcode = '') => {
+        this.sender.on('data', (gcode = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`[Grbl] Serial port "${this.options.port}" is not accessible`);
                 return;
@@ -612,9 +637,20 @@ class GrblController {
     command(socket, cmd, ...args) {
         const handler = {
             'gcode:load': () => {
-                const [name, gcode, callback = noop] = args;
+                let [name, gcode, context = {}, callback = noop] = args;
+                if (typeof context === 'function') {
+                    callback = context;
+                    context = {};
+                }
 
-                const ok = this.sender.load(name, gcode);
+                // TODO: This will move to sender in a future release
+                if (Object.keys(context).length > 0) {
+                    // Example
+                    // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
+                    gcode = this.translateWithContext(gcode, context);
+                }
+
+                const ok = this.sender.load(name, gcode, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
                     return;
@@ -626,7 +662,7 @@ class GrblController {
 
                 this.workflow.stop();
 
-                callback(null, { name: name, gcode: gcode });
+                callback(null, { name, gcode, context });
             },
             'gcode:unload': () => {
                 this.workflow.stop();
@@ -792,7 +828,7 @@ class GrblController {
                 this.command(socket, 'gcode', commands.join('\n'));
             },
             'gcode': () => {
-                const [commands, params] = args;
+                const [commands, context] = args;
                 const data = ensureArray(commands)
                     .join('\n')
                     .split('\n')
@@ -804,17 +840,17 @@ class GrblController {
                         return line.trim().length > 0;
                     });
 
-                this.feeder.feed(data, params);
+                this.feeder.feed(data, context);
 
                 if (!this.feeder.isPending()) {
                     this.feeder.next();
                 }
             },
             'macro:run': () => {
-                let [id, vars = {}, callback = noop] = args;
-                if (typeof vars === 'function') {
-                    callback = vars;
-                    vars = {};
+                let [id, context = {}, callback = noop] = args;
+                if (typeof context === 'function') {
+                    callback = context;
+                    context = {};
                 }
 
                 const macros = config.get('macros');
@@ -824,22 +860,17 @@ class GrblController {
                     log.error(`[Grbl] Cannot find the macro: id=${id}`);
                     return;
                 }
-
-                // Replace variables
-                // G0 X[xmin] -> G0 X0.5
-                // G0 X[xmax] -> G0 X100.5
-                const gcode = replaceVariables(macro.content, vars);
 
                 this.event.trigger('macro:run');
 
-                this.command(socket, 'gcode', gcode);
+                this.command(socket, 'gcode', macro.content, context);
                 callback(null);
             },
             'macro:load': () => {
-                let [id, vars = {}, callback = noop] = args;
-                if (typeof vars === 'function') {
-                    callback = vars;
-                    vars = {};
+                let [id, context = {}, callback = noop] = args;
+                if (typeof context === 'function') {
+                    callback = context;
+                    context = {};
                 }
 
                 const macros = config.get('macros');
@@ -850,17 +881,13 @@ class GrblController {
                     return;
                 }
 
-                // Replace variables
-                // G0 X[xmin] -> G0 X0.5
-                // G0 X[xmax] -> G0 X100.5
-                const gcode = replaceVariables(macro.content, vars);
-
                 this.event.trigger('macro:load');
 
-                this.command(socket, 'gcode:load', macro.name, gcode, callback);
+                this.command(socket, 'gcode:load', macro.name, macro.content, context, callback);
             },
             'watchdir:load': () => {
                 const [file, callback = noop] = args;
+                const context = {}; // empty context
 
                 monitor.readFile(file, (err, data) => {
                     if (err) {
@@ -868,7 +895,7 @@ class GrblController {
                         return;
                     }
 
-                    this.command(socket, 'gcode:load', file, data, callback);
+                    this.command(socket, 'gcode:load', file, data, context, callback);
                 });
             }
         }[cmd];

@@ -92,7 +92,7 @@ class AddMacro extends Component {
                                         <span className="space space-sm" />
                                         <i className="fa fa-caret-down" />
                                     </Dropdown.Toggle>
-                                    <Dropdown.Menu>
+                                    <Dropdown.Menu className={styles.macroVariablesDropdown}>
                                         {variables.map(v =>
                                             <MenuItem eventKey={v} key={v}>
                                                 {v}

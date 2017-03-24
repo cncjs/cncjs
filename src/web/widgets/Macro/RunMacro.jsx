@@ -23,8 +23,8 @@ class RunMacro extends Component {
         // Replace variables
         let gcode = content || '';
         if (!displayOriginalContent) {
-            Object.keys(controller.vars).forEach(key => {
-                const value = controller.vars[key];
+            Object.keys(controller.context).forEach(key => {
+                const value = controller.context[key];
 
                 if (value === undefined || value === null) {
                     return;

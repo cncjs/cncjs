@@ -4,5 +4,9 @@ module.exports = [
     '[ymin]',
     '[ymax]',
     '[zmin]',
-    '[zmax]'
+    '[zmax]',
+    '[posx]',
+    '[posy]',
+    '[posz]',
+    '[posa]'
 ];

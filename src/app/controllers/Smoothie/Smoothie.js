@@ -557,6 +557,12 @@ class Smoothie extends events.EventEmitter {
             return;
         }
     }
+    getMachinePosition() {
+        return _.get(this.state, 'status.mpos', {});
+    }
+    getWorkPosition() {
+        return _.get(this.state, 'status.wpos', {});
+    }
     isAlarm() {
         const activeState = _.get(this.state, 'status.activeState');
         return activeState === SMOOTHIE_ACTIVE_STATE_ALARM;

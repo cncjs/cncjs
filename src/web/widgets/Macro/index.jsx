@@ -92,7 +92,7 @@ class MacroWidget extends Component {
             }
         },
         runMacro: (id, { name }) => {
-            controller.command('macro:run', id, controller.vars, (err, data) => {
+            controller.command('macro:run', id, controller.context, (err, data) => {
                 if (err) {
                     log.error(`Failed to run the macro: id=${id}, name="${name}"`);
                     return;
@@ -119,7 +119,7 @@ class MacroWidget extends Component {
                 let res;
                 res = await api.macros.read(id);
                 const { name } = res.body;
-                controller.command('macro:load', id, controller.vars, (err, data) => {
+                controller.command('macro:load', id, controller.context, (err, data) => {
                     if (err) {
                         log.error(`Failed to load the macro: id=${id}, name="${name}"`);
                         return;

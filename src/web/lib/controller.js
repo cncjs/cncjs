@@ -27,7 +27,7 @@ class CNCController {
         'Smoothie:state': [],
         'TinyG:state': []
     };
-    vars = { // FIXME
+    context = {
         xmin: 0,
         xmax: 0,
         ymin: 0,
@@ -140,7 +140,7 @@ class CNCController {
     // @param {string} cmd The command string
     // @example Example Usage
     // - Load G-code
-    //   controller.command('gcode:load', name, gcode, callback)
+    //   controller.command('gcode:load', name, gcode, context /* optional */, callback)
     // - Unload G-code
     //   controller.command('gcode:unload')
     // - Start sending G-code
@@ -172,11 +172,11 @@ class CNCController {
     // - Rapid Override
     //   controller.command('rapidOverride')
     // - G-code
-    //   controller.command('gcode', 'G0X0Y0')
+    //   controller.command('gcode', 'G0X0Y0', context /* optional */)
     // - Load a macro
-    //   controller.command('macro:load', '<macro-id>', { /* optional vars */ }, callback)
+    //   controller.command('macro:load', '<macro-id>', context /* optional */, callback)
     // - Run a macro
-    //   controller.command('macro:run', '<macro-id>', { /* optional vars */ }, callback)
+    //   controller.command('macro:run', '<macro-id>', context /* optional */, callback)
     // - Load file from a watch directory
     //   controller.command('watchdir:load', '/path/to/file', callback)
     command(cmd, ...args) {
