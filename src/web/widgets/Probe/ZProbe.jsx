@@ -53,7 +53,7 @@ class ZProbe extends Component {
                             actions.runProbeCommands(probeCommands);
                         }}
                     >
-                        {i18n._('Run')}
+                        {i18n._('Run Z-Probe')}
                     </button>
                 </Modal.Footer>
             </Modal>
