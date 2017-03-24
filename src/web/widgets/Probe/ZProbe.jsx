@@ -4,7 +4,7 @@ import Modal from '../../components/Modal';
 import ToggleSwitch from '../../components/ToggleSwitch';
 import i18n from '../../lib/i18n';
 
-class Preview extends Component {
+class ZProbe extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -20,9 +20,9 @@ class Preview extends Component {
         const content = probeCommands.join('\n');
 
         return (
-            <Modal onClose={actions.closeModal}>
+            <Modal size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
-                    <Modal.Title>{i18n._('Probe')}</Modal.Title>
+                    <Modal.Title>{i18n._('Z-Probe')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <p>
@@ -31,9 +31,9 @@ class Preview extends Component {
                             size="sm"
                             onChange={actions.toggleUseTLO}
                         />
-                        {i18n._('Apply the tool length offset for the Z-axis')}
+                        {i18n._('Apply tool length offset')}
                     </p>
-                    <pre style={{ minHeight: 150 }}>
+                    <pre style={{ minHeight: 240 }}>
                         <code>{content}</code>
                     </pre>
                 </Modal.Body>
@@ -53,7 +53,7 @@ class Preview extends Component {
                             actions.runProbeCommands(probeCommands);
                         }}
                     >
-                        {i18n._('Run Z-probe')}
+                        {i18n._('Run')}
                     </button>
                 </Modal.Footer>
             </Modal>
@@ -61,4 +61,4 @@ class Preview extends Component {
     }
 }
 
-export default Preview;
+export default ZProbe;

@@ -120,13 +120,12 @@ class ProbeWidget extends Component {
             } = this.state;
             const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
             const tloProbeCommands = [
+                gcode('; Cancel tool length offset'),
                 // Cancel tool length offset
                 gcode('G49'),
 
-                // Zero out Z-axis
-                gcode('G92 Z0'),
-
-                // Start the Z-probe (use relative distance mode)
+                // Z-Probe (use relative distance mode)
+                gcode('; Z-Probe'),
                 gcode(`G91 ${probeCommand}`, {
                     Z: towardWorkpiece ? -probeDepth : probeDepth,
                     F: probeFeedrate
@@ -134,12 +133,18 @@ class ProbeWidget extends Component {
                 // Use absolute distance mode
                 gcode('G90'),
 
+                // Dwell
+                gcode('; A dwell time of one second'),
+                gcode('G4 P1'),
+
                 // Apply touch plate height with tool length offset
+                gcode('; Set tool length offset'),
                 gcode('G43.1', {
-                    Z: -touchPlateHeight
+                    Z: towardWorkpiece ? `[posz-${touchPlateHeight}]` : `[posz+${touchPlateHeight}]`
                 }),
 
-                // Retract slightly from the touch plate (relative distance mode)
+                // Retract from the touch plate (use relative distance mode)
+                gcode('; Retract from the touch plate'),
                 gcode('G91 G0', {
                     Z: retractionDistance
                 }),
@@ -147,7 +152,8 @@ class ProbeWidget extends Component {
                 gcode('G90')
             ];
             const wcsProbeCommands = [
-                // Start the Z-probe (use relative distance mode)
+                // Z-Probe (use relative distance mode)
+                gcode('; Z-Probe'),
                 gcode(`G91 ${probeCommand}`, {
                     Z: towardWorkpiece ? -probeDepth : probeDepth,
                     F: probeFeedrate
@@ -155,14 +161,16 @@ class ProbeWidget extends Component {
                 // Use absolute distance mode
                 gcode('G90'),
 
-                // Apply touch plate height for work Z axis
+                // Set the WCS Z0
+                gcode('; Set the active WCS Z0'),
                 gcode('G10', {
                     L: 20,
                     P: 0, // Update the currently active coordinate system
                     Z: touchPlateHeight
                 }),
 
-                // Retract slightly from the touch plate (use relative distance mode)
+                // Retract from the touch plate (use relative distance mode)
+                gcode('; Retract from the touch plate'),
                 gcode('G91 G0', {
                     Z: retractionDistance
                 }),

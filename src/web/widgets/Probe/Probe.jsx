@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import i18n from '../../lib/i18n';
-import Preview from './Preview';
+import ZProbe from './ZProbe';
 import {
     METRIC_UNITS
 } from '../../constants';
@@ -39,7 +39,7 @@ class Probe extends Component {
         return (
             <div>
                 {modal.name === MODAL_PREVIEW &&
-                <Preview state={state} actions={actions} />
+                <ZProbe state={state} actions={actions} />
                 }
                 <div className="form-group">
                     <label className="control-label">{i18n._('Probe Command')}</label>
@@ -190,7 +190,7 @@ class Probe extends Component {
                             }}
                             disabled={!canClick}
                         >
-                            {i18n._('Run Z-probe')}
+                            {i18n._('Z-Probe')}
                         </button>
                     </div>
                 </div>
