@@ -42,7 +42,7 @@ class ModalHOC extends Component {
             <Modal
                 {...props}
                 show={show}
-                onHide={::this.handleClose}
+                onClose={::this.handleClose}
             >
                 {title &&
                 <Modal.Header>
