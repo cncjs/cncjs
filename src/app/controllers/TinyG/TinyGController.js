@@ -751,13 +751,13 @@ class TinyGController {
                     commands.push('G4P' + (duration / 1000));
                     commands.push('M5S0');
                 }
-                this.command(socket, 'gcode', commands.join('\n'));
+                this.command(socket, 'gcode', commands);
             },
             'lasertest:off': () => {
                 const commands = [
                     'M5S0'
                 ];
-                this.command(socket, 'gcode', commands.join('\n'));
+                this.command(socket, 'gcode', commands);
             },
             'gcode': () => {
                 const [commands, context] = args;
