@@ -556,7 +556,7 @@ class GrblLineParserResultSettings {
         const payload = {
             setting: r[1],
             value: r[2],
-            description: _.trim(r[3], '()')
+            message: _.trim(r[3], '()')
         };
 
         return {

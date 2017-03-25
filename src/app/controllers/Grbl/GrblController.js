@@ -262,7 +262,7 @@ class GrblController {
                 this.emitAll('serialport:read', `> ${line.trim()} (line=${received + 1})`);
                 if (error) {
                     // Grbl v1.1
-                    this.emitAll('serialport:read', `error:${code} (${error.description})`);
+                    this.emitAll('serialport:read', `error:${code} (${error.message})`);
                 } else {
                     // Grbl v0.9
                     this.emitAll('serialport:read', res.raw);
@@ -275,7 +275,7 @@ class GrblController {
 
             if (error) {
                 // Grbl v1.1
-                this.emitAll('serialport:read', `error:${code} (${error.description})`);
+                this.emitAll('serialport:read', `error:${code} (${error.message})`);
             } else {
                 // Grbl v0.9
                 this.emitAll('serialport:read', res.raw);
@@ -291,7 +291,7 @@ class GrblController {
 
             if (alarm) {
                 // Grbl v1.1
-                this.emitAll('serialport:read', `ALARM:${code} (${alarm.description})`);
+                this.emitAll('serialport:read', `ALARM:${code} (${alarm.message})`);
             } else {
                 // Grbl v0.9
                 this.emitAll('serialport:read', res.raw);
@@ -318,9 +318,9 @@ class GrblController {
         this.grbl.on('settings', (res) => {
             const setting = _.find(GRBL_SETTINGS, { setting: res.setting });
 
-            if (!res.description && setting) {
+            if (!res.message && setting) {
                 // Grbl v1.1
-                this.emitAll('serialport:read', `${res.setting}=${res.value} (${setting.description}, ${setting.units})`);
+                this.emitAll('serialport:read', `${res.setting}=${res.value} (${setting.message}, ${setting.units})`);
             } else {
                 // Grbl v0.9
                 this.emitAll('serialport:read', res.raw);

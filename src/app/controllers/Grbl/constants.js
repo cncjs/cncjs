@@ -66,178 +66,183 @@ export const GRBL_MODAL_GROUPS = [
 export const GRBL_ERRORS = [
     {
         code: 1,
-        description: 'Expected command letter',
-        help: 'G-code words consist of a letter and a value. Letter was not found.'
+        message: 'Expected command letter',
+        description: 'G-code words consist of a letter and a value. Letter was not found.'
     },
     {
         code: 2,
-        description: 'Bad number format',
-        help: 'Missing the expected G-code word value or numeric value format is not valid.'
+        message: 'Bad number format',
+        description: 'Missing the expected G-code word value or numeric value format is not valid.'
     },
     {
         code: 3,
-        description: 'Invalid statement',
-        help: 'Grbl \$\' system command was not recognized or supported.'
+        message: 'Invalid statement',
+        description: 'Grbl \$\' system command was not recognized or supported.'
     },
     {
         code: 4,
-        description: 'Value < 0',
-        help: 'Negative value received for an expected positive value.'
+        message: 'Value < 0',
+        description: 'Negative value received for an expected positive value.'
     },
     {
         code: 5,
-        description: 'Setting disabled',
-        help: 'Homing cycle failure. Homing is not enabled via settings.'
+        message: 'Setting disabled',
+        description: 'Homing cycle failure. Homing is not enabled via settings.'
     },
     {
         code: 6,
-        description: 'Value < 3 usec',
-        help: 'Minimum step pulse time must be greater than 3usec.'
+        message: 'Value < 3 usec',
+        description: 'Minimum step pulse time must be greater than 3usec.'
     },
     {
         code: 7,
-        description: 'EEPROM read fail. Using defaults',
-        help: 'An EEPROM read failed. Auto-restoring affected EEPROM to default values.'
+        message: 'EEPROM read fail. Using defaults',
+        description: 'An EEPROM read failed. Auto-restoring affected EEPROM to default values.'
     },
     {
         code: 8,
-        description: 'Not idle',
-        help: 'Grbl \'$\' command cannot be used unless Grbl is IDLE. Ensures smooth operation during a job.'
+        message: 'Not idle',
+        description: 'Grbl \'$\' command cannot be used unless Grbl is IDLE. Ensures smooth operation during a job.'
     },
     {
         code: 9,
-        description: 'G-code lock',
-        help: 'G-code commands are locked out during alarm or jog state.'
+        message: 'G-code lock',
+        description: 'G-code commands are locked out during alarm or jog state.'
     },
     {
         code: 10,
-        description: 'Homing not enabled',
-        help: 'Soft limits cannot be enabled without homing also enabled.'
+        message: 'Homing not enabled',
+        description: 'Soft limits cannot be enabled without homing also enabled.'
     },
     {
         code: 11,
-        description: 'Line overflow',
-        help: 'Max characters per line exceeded. Received command line was not executed.'
+        message: 'Line overflow',
+        description: 'Max characters per line exceeded. Received command line was not executed.'
     },
     {
         code: 12,
-        description: 'Step rate > 30kHz',
-        help: 'Grbl \'$\' setting value cause the step rate to exceed the maximum supported.'
+        message: 'Step rate > 30kHz',
+        description: 'Grbl \'$\' setting value cause the step rate to exceed the maximum supported.'
     },
     {
         code: 13,
-        description: 'Check Door',
-        help: 'Safety door detected as opened and door state initiated.'
+        message: 'Check Door',
+        description: 'Safety door detected as opened and door state initiated.'
     },
     {
         code: 14,
-        description: 'Line length exceeded',
-        help: 'Build info or startup line exceeded EEPROM line length limit. Line not stored.'
+        message: 'Line length exceeded',
+        description: 'Build info or startup line exceeded EEPROM line length limit. Line not stored.'
     },
     {
         code: 15,
-        description: 'Travel exceeded',
-        help: 'Jog target exceeds machine travel. Jog command has been ignored.'
+        message: 'Travel exceeded',
+        description: 'Jog target exceeds machine travel. Jog command has been ignored.'
     },
     {
         code: 16,
-        description: 'Invalid jog command',
-        help: 'Jog command has no \'=\' or contains prohibited g-code.'
+        message: 'Invalid jog command',
+        description: 'Jog command has no \'=\' or contains prohibited g-code.'
+    },
+    {
+        code: 17,
+        message: 'Setting disabled',
+        description: 'Laser mode requires PWM output.'
     },
     {
         code: 20,
-        description: 'Unsupported command',
-        help: 'Unsupported or invalid g-code command found in block.'
+        message: 'Unsupported command',
+        description: 'Unsupported or invalid g-code command found in block.'
     },
     {
         code: 21,
-        description: 'Modal group violation',
-        help: 'More than one g-code command from same modal group found in block.'
+        message: 'Modal group violation',
+        description: 'More than one g-code command from same modal group found in block.'
     },
     {
         code: 22,
-        description: 'Undefined feed rate',
-        help: 'Feed rate has not yet been set or is undefined.'
+        message: 'Undefined feed rate',
+        description: 'Feed rate has not yet been set or is undefined.'
     },
     {
         code: 23,
-        description: 'Invalid gcode ID:23',
-        help: 'G-code command in block requires an integer value.'
+        message: 'Invalid gcode ID:23',
+        description: 'G-code command in block requires an integer value.'
     },
     {
         code: 24,
-        description: 'Invalid gcode ID:24',
-        help: 'More than one g-code command that requires axis words found in block.'
+        message: 'Invalid gcode ID:24',
+        description: 'More than one g-code command that requires axis words found in block.'
     },
     {
         code: 25,
-        description: 'Invalid gcode ID:25',
-        help: 'Repeated g-code word found in block.'
+        message: 'Invalid gcode ID:25',
+        description: 'Repeated g-code word found in block.'
     },
     {
         code: 26,
-        description: 'Invalid gcode ID:26',
-        help: 'No axis words found in block for g-code command or current modal state which requires them.'
+        message: 'Invalid gcode ID:26',
+        description: 'No axis words found in block for g-code command or current modal state which requires them.'
     },
     {
         code: 27,
-        description: 'Invalid gcode ID:27',
-        help: 'Line number value is invalid.'
+        message: 'Invalid gcode ID:27',
+        description: 'Line number value is invalid.'
     },
     {
         code: 28,
-        description: 'Invalid gcode ID:28',
-        help: 'G-code command is missing a required value word.'
+        message: 'Invalid gcode ID:28',
+        description: 'G-code command is missing a required value word.'
     },
     {
         code: 29,
-        description: 'Invalid gcode ID:29',
-        help: 'G59.x work coordinate systems are not supported.'
+        message: 'Invalid gcode ID:29',
+        description: 'G59.x work coordinate systems are not supported.'
     },
     {
         code: 30,
-        description: 'Invalid gcode ID:30',
-        help: 'G53 only allowed with G0 and G1 motion modes.'
+        message: 'Invalid gcode ID:30',
+        description: 'G53 only allowed with G0 and G1 motion modes.'
     },
     {
         code: 31,
-        description: 'Invalid gcode ID:31',
-        help: 'Axis words found in block when no command or current modal state uses them.'
+        message: 'Invalid gcode ID:31',
+        description: 'Axis words found in block when no command or current modal state uses them.'
     },
     {
         code: 32,
-        description: 'Invalid gcode ID:32',
-        help: 'G2 and G3 arcs require at least one in-plane axis word.'
+        message: 'Invalid gcode ID:32',
+        description: 'G2 and G3 arcs require at least one in-plane axis word.'
     },
     {
         code: 33,
-        description: 'Invalid gcode ID:33',
-        help: 'Motion command target is invalid.'
+        message: 'Invalid gcode ID:33',
+        description: 'Motion command target is invalid.'
     },
     {
         code: 34,
-        description: 'Invalid gcode ID:34',
-        help: 'Arc radius value is invalid.'
+        message: 'Invalid gcode ID:34',
+        description: 'Arc radius value is invalid.'
     },
     {
         code: 35,
-        description: 'Invalid gcode ID:35',
-        help: 'G2 and G3 arcs require at least one in-plane offset word.'
+        message: 'Invalid gcode ID:35',
+        description: 'G2 and G3 arcs require at least one in-plane offset word.'
     },
     {
         code: 36,
-        description: 'Invalid gcode ID:36',
-        help: 'Unused value words found in block.'
+        message: 'Invalid gcode ID:36',
+        description: 'Unused value words found in block.'
     },
     {
         code: 37,
-        description: 'Invalid gcode ID:37',
-        help: 'G43.1 dynamic tool length offset is not assigned to configured tool length axis.'
+        message: 'Invalid gcode ID:37',
+        description: 'G43.1 dynamic tool length offset is not assigned to configured tool length axis.'
     },
     {
         code: 38,
-        description: 'Invalid gcode ID:38',
-        help: 'Tool number greater than max supported value.'
+        message: 'Invalid gcode ID:38',
+        description: 'Tool number greater than max supported value.'
     }
 ];
 
@@ -246,48 +251,48 @@ export const GRBL_ERRORS = [
 export const GRBL_ALARMS = [
     {
         code: 1,
-        description: 'Hard limit',
-        help: 'Hard limit has been triggered. Machine position is likely lost due to sudden halt. Re-homing is highly recommended.'
+        message: 'Hard limit',
+        description: 'Hard limit has been triggered. Machine position is likely lost due to sudden halt. Re-homing is highly recommended.'
     },
     {
         code: 2,
-        description: 'Soft limit',
-        help: 'Soft limit alarm. G-code motion target exceeds machine travel. Machine position retained. Alarm may be safely unlocked.'
+        message: 'Soft limit',
+        description: 'Soft limit alarm. G-code motion target exceeds machine travel. Machine position retained. Alarm may be safely unlocked.'
     },
     {
         code: 3,
-        description: 'Abort during cycle',
-        help: 'Reset while in motion. Machine position is likely lost due to sudden halt. Re-homing is highly recommended.'
+        message: 'Abort during cycle',
+        description: 'Reset while in motion. Machine position is likely lost due to sudden halt. Re-homing is highly recommended.'
     },
     {
         code: 4,
-        description: 'Probe fail',
-        help: 'Probe fail. Probe is not in the expected initial state before starting probe cycle when G38.2 and G38.3 is not triggered and G38.4 and G38.5 is triggered.'
+        message: 'Probe fail',
+        description: 'Probe fail. Probe is not in the expected initial state before starting probe cycle when G38.2 and G38.3 is not triggered and G38.4 and G38.5 is triggered.'
     },
     {
         code: 5,
-        description: 'Probe fail',
-        help: 'Probe fail. Probe did not contact the workpiece within the programmed travel for G38.2 and G38.4.'
+        message: 'Probe fail',
+        description: 'Probe fail. Probe did not contact the workpiece within the programmed travel for G38.2 and G38.4.'
     },
     {
         code: 6,
-        description: 'Homing fail',
-        help: 'Homing fail. The active homing cycle was reset.'
+        message: 'Homing fail',
+        description: 'Homing fail. The active homing cycle was reset.'
     },
     {
         code: 7,
-        description: 'Homing fail',
-        help: 'Homing fail. Safety door was opened during homing cycle.'
+        message: 'Homing fail',
+        description: 'Homing fail. Safety door was opened during homing cycle.'
     },
     {
         code: 8,
-        description: 'Homing fail',
-        help: 'Homing fail. Pull off travel failed to clear limit switch. Try increasing pull-off setting or check wiring.'
+        message: 'Homing fail',
+        description: 'Homing fail. Pull off travel failed to clear limit switch. Try increasing pull-off setting or check wiring.'
     },
     {
         code: 9,
-        description: 'Homing fail',
-        help: 'Homing fail. Could not find limit switch within search distances. Try increasing max travel, decreasing pull-off distance, or check wiring.'
+        message: 'Homing fail',
+        description: 'Homing fail. Could not find limit switch within search distances. Try increasing max travel, decreasing pull-off distance, or check wiring.'
     }
 ];
 
@@ -296,206 +301,206 @@ export const GRBL_ALARMS = [
 export const GRBL_SETTINGS = [
     {
         setting: '$0',
-        description: 'Step pulse time',
+        message: 'Step pulse time',
         units: 'microseconds',
-        help: 'Sets time length per step. Minimum 3usec.'
+        description: 'Sets time length per step. Minimum 3usec.'
     },
     {
         setting: '$1',
-        description: 'Step idle delay',
+        message: 'Step idle delay',
         units: 'milliseconds',
-        help: 'Sets a short hold delay when stopping to let dynamics settle before disabling steppers. Value 255 keeps motors enabled with no delay.'
+        description: 'Sets a short hold delay when stopping to let dynamics settle before disabling steppers. Value 255 keeps motors enabled with no delay.'
     },
     {
         setting: '$2',
-        description: 'Step pulse invert',
+        message: 'Step pulse invert',
         units: 'mask',
-        help: 'Inverts the step signal. Set axis bit to invert (00000ZYX).'
+        description: 'Inverts the step signal. Set axis bit to invert (00000ZYX).'
     },
     {
         setting: '$3',
-        description: 'Step direction invert',
+        message: 'Step direction invert',
         units: 'mask',
-        help: 'Inverts the direction signal. Set axis bit to invert (00000ZYX).'
+        description: 'Inverts the direction signal. Set axis bit to invert (00000ZYX).'
     },
     {
         setting: '$4',
-        description: 'Invert step enable pin',
+        message: 'Invert step enable pin',
         units: 'boolean',
-        help: 'Inverts the stepper driver enable pin signal.'
+        description: 'Inverts the stepper driver enable pin signal.'
     },
     {
         setting: '$5',
-        description: 'Invert limit pins',
+        message: 'Invert limit pins',
         units: 'boolean',
-        help: 'Inverts the all of the limit input pins.'
+        description: 'Inverts the all of the limit input pins.'
     },
     {
         setting: '$6',
-        description: 'Invert probe pin',
+        message: 'Invert probe pin',
         units: 'boolean',
-        help: 'Inverts the probe input pin signal.'
+        description: 'Inverts the probe input pin signal.'
     },
     {
         setting: '$10',
-        description: 'Status report options',
+        message: 'Status report options',
         units: 'mask',
-        help: 'Alters data included in status reports.'
+        description: 'Alters data included in status reports.'
     },
     {
         setting: '$11',
-        description: 'Junction deviation',
+        message: 'Junction deviation',
         units: 'millimeters',
-        help: 'Sets how fast Grbl travels through consecutive motions. Lower value slows it down.'
+        description: 'Sets how fast Grbl travels through consecutive motions. Lower value slows it down.'
     },
     {
         setting: '$12',
-        description: 'Arc tolerance',
+        message: 'Arc tolerance',
         units: 'millimeters',
-        help: 'Sets the G2 and G3 arc tracing accuracy based on radial error. Beware: A very small value may effect performance.'
+        description: 'Sets the G2 and G3 arc tracing accuracy based on radial error. Beware: A very small value may effect performance.'
     },
     {
         setting: '$13',
-        description: 'Report in inches',
+        message: 'Report in inches',
         units: 'boolean',
-        help: 'Enables inch units when returning any position and rate value that is not a settings value.'
+        description: 'Enables inch units when returning any position and rate value that is not a settings value.'
     },
     {
         setting: '$20',
-        description: 'Soft limits enable',
+        message: 'Soft limits enable',
         units: 'boolean',
-        help: 'Enables soft limits checks within machine travel and sets alarm when exceeded. Requires homing.'
+        description: 'Enables soft limits checks within machine travel and sets alarm when exceeded. Requires homing.'
     },
     {
         setting: '$21',
-        description: 'Hard limits enable',
+        message: 'Hard limits enable',
         units: 'boolean',
-        help: 'Enables hard limits. Immediately halts motion and throws an alarm when switch is triggered.'
+        description: 'Enables hard limits. Immediately halts motion and throws an alarm when switch is triggered.'
     },
     {
         setting: '$22',
-        description: 'Homing cycle enable',
+        message: 'Homing cycle enable',
         units: 'boolean',
-        help: 'Enables homing cycle. Requires limit switches on all axes.'
+        description: 'Enables homing cycle. Requires limit switches on all axes.'
     },
     {
         setting: '$23',
-        description: 'Homing direction invert',
+        message: 'Homing direction invert',
         units: 'mask',
-        help: 'Homing searches for a switch in the positive direction. Set axis bit (00000ZYX) to search in negative direction.'
+        description: 'Homing searches for a switch in the positive direction. Set axis bit (00000ZYX) to search in negative direction.'
     },
     {
         setting: '$24',
-        description: 'Homing locate feed rate',
+        message: 'Homing locate feed rate',
         units: 'mm/min',
-        help: 'Feed rate to slowly engage limit switch to determine its location accurately.'
+        description: 'Feed rate to slowly engage limit switch to determine its location accurately.'
     },
     {
         setting: '$25',
-        description: 'Homing search seek rate',
+        message: 'Homing search seek rate',
         units: 'mm/min',
-        help: 'Seek rate to quickly find the limit switch before the slower locating phase.'
+        description: 'Seek rate to quickly find the limit switch before the slower locating phase.'
     },
     {
         setting: '$26',
-        description: 'Homing switch debounce delay',
+        message: 'Homing switch debounce delay',
         units: 'milliseconds',
-        help: 'Sets a short delay between phases of homing cycle to let a switch debounce.'
+        description: 'Sets a short delay between phases of homing cycle to let a switch debounce.'
     },
     {
         setting: '$27',
-        description: 'Homing switch pull-off distance',
+        message: 'Homing switch pull-off distance',
         units: 'millimeters',
-        help: 'Retract distance after triggering switch to disengage it. Homing will fail if switch isn\'t cleared.'
+        description: 'Retract distance after triggering switch to disengage it. Homing will fail if switch isn\'t cleared.'
     },
     {
         setting: '$30',
-        description: 'Maximum spindle speed',
+        message: 'Maximum spindle speed',
         units: 'RPM',
-        help: 'Maximum spindle speed. Sets PWM to 100% duty cycle.'
+        description: 'Maximum spindle speed. Sets PWM to 100% duty cycle.'
     },
     {
         setting: '$31',
-        description: 'Minimum spindle speed',
+        message: 'Minimum spindle speed',
         units: 'RPM',
-        help: 'Minimum spindle speed. Sets PWM to 0.4% or lowest duty cycle.'
+        description: 'Minimum spindle speed. Sets PWM to 0.4% or lowest duty cycle.'
     },
     {
         setting: '$32',
-        description: 'Laser-mode enable',
+        message: 'Laser-mode enable',
         units: 'boolean',
-        help: 'Enables laser mode. Consecutive G1/2/3 commands will not halt when spindle speed is changed.'
+        description: 'Enables laser mode. Consecutive G1/2/3 commands will not halt when spindle speed is changed.'
     },
     {
         setting: '$100',
-        description: 'X-axis travel resolution',
+        message: 'X-axis travel resolution',
         units: 'step/mm',
-        help: 'X-axis travel resolution in steps per millimeter.'
+        description: 'X-axis travel resolution in steps per millimeter.'
     },
     {
         setting: '$101',
-        description: 'Y-axis travel resolution',
+        message: 'Y-axis travel resolution',
         units: 'step/mm',
-        help: 'Y-axis travel resolution in steps per millimeter.'
+        description: 'Y-axis travel resolution in steps per millimeter.'
     },
     {
         setting: '$102',
-        description: 'Z-axis travel resolution',
+        message: 'Z-axis travel resolution',
         units: 'step/mm',
-        help: 'Z-axis travel resolution in steps per millimeter.'
+        description: 'Z-axis travel resolution in steps per millimeter.'
     },
     {
         setting: '$110',
-        description: 'X-axis maximum rate',
+        message: 'X-axis maximum rate',
         units: 'mm/min',
-        help: 'X-axis maximum rate. Used as G0 rapid rate.'
+        description: 'X-axis maximum rate. Used as G0 rapid rate.'
     },
     {
         setting: '$111',
-        description: 'Y-axis maximum rate',
+        message: 'Y-axis maximum rate',
         units: 'mm/min',
-        help: 'Y-axis maximum rate. Used as G0 rapid rate.'
+        description: 'Y-axis maximum rate. Used as G0 rapid rate.'
     },
     {
         setting: '$112',
-        description: 'Z-axis maximum rate',
+        message: 'Z-axis maximum rate',
         units: 'mm/min',
-        help: 'Z-axis maximum rate. Used as G0 rapid rate.'
+        description: 'Z-axis maximum rate. Used as G0 rapid rate.'
     },
     {
         setting: '$120',
-        description: 'X-axis acceleration',
+        message: 'X-axis acceleration',
         units: 'mm/sec^2',
-        help: 'X-axis acceleration. Used for motion planning to not exceed motor torque and lose steps.'
+        description: 'X-axis acceleration. Used for motion planning to not exceed motor torque and lose steps.'
     },
     {
         setting: '$121',
-        description: 'Y-axis acceleration',
+        message: 'Y-axis acceleration',
         units: 'mm/sec^2',
-        help: 'Y-axis acceleration. Used for motion planning to not exceed motor torque and lose steps.'
+        description: 'Y-axis acceleration. Used for motion planning to not exceed motor torque and lose steps.'
     },
     {
         setting: '$122',
-        description: 'Z-axis acceleration',
+        message: 'Z-axis acceleration',
         units: 'mm/sec^2',
-        help: 'Z-axis acceleration. Used for motion planning to not exceed motor torque and lose steps.'
+        description: 'Z-axis acceleration. Used for motion planning to not exceed motor torque and lose steps.'
     },
     {
         setting: '$130',
-        description: 'X-axis maximum travel',
+        message: 'X-axis maximum travel',
         units: 'millimeters',
-        help: 'Maximum X-axis travel distance from homing switch. Determines valid machine space for soft-limits and homing search distances.'
+        description: 'Maximum X-axis travel distance from homing switch. Determines valid machine space for soft-limits and homing search distances.'
     },
     {
         setting: '$131',
-        description: 'Y-axis maximum travel',
+        message: 'Y-axis maximum travel',
         units: 'millimeters',
-        help: 'Maximum Y-axis travel distance from homing switch. Determines valid machine space for soft-limits and homing search distances.'
+        description: 'Maximum Y-axis travel distance from homing switch. Determines valid machine space for soft-limits and homing search distances.'
     },
     {
         setting: '$132',
-        description: 'Z-axis maximum travel',
+        message: 'Z-axis maximum travel',
         units: 'millimeters',
-        help: 'Maximum Z-axis travel distance from homing switch. Determines valid machine space for soft-limits and homing search distances.'
+        description: 'Maximum Z-axis travel distance from homing switch. Determines valid machine space for soft-limits and homing search distances.'
     }
 ];
