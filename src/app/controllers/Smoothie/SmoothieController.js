@@ -771,28 +771,26 @@ class SmoothieController {
             },
             'lasertest:on': () => {
                 const [power = 0, duration = 0] = args;
-                const commands = [
-                    'M3',
-                    'fire ' + Math.abs(power)
-                ];
+
+                this.writeln(socket, 'M3');
+                // Firing laser at <power>% power and entering manual mode
+                this.writeln(socket, 'fire ' + Math.abs(power));
                 if (duration > 0) {
                     // http://smoothieware.org/g4
                     // Dwell S<seconds> or P<milliseconds>
                     // Note that if `grbl_mode` is set to `true`, then the `P` parameter
                     // is the duration to wait in seconds, not milliseconds, as a float value.
                     // This is to confirm to G-code standards.
-                    commands.push('G4P' + (duration / 1000));
-                    commands.push('fire off');
-                    commands.push('M5');
+                    this.writeln(socket, 'G4P' + (duration / 1000));
+                    // Turning laser off and returning to auto mode
+                    this.writeln(socket, 'fire off');
+                    this.writeln(socket, 'M5');
                 }
-                this.command(socket, 'gcode', commands.join('\n'));
             },
             'lasertest:off': () => {
-                const commands = [
-                    'fire off',
-                    'M5'
-                ];
-                this.command(socket, 'gcode', commands.join('\n'));
+                // Turning laser off and returning to auto mode
+                this.writeln(socket, 'fire off');
+                this.writeln(socket, 'M5');
             },
             'gcode': () => {
                 const [commands, context] = args;
