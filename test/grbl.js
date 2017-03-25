@@ -331,13 +331,13 @@ test('GrblLineParserResultSettings', (t) => {
     ];
     const grbl = new Grbl();
     let i = 0;
-    grbl.on('settings', ({ raw, setting, value, description }) => {
+    grbl.on('settings', ({ raw, setting, value, message }) => {
         if (i < lines.length) {
             const r = raw.match(/^(\$[^=]+)=([^ ]*)\s*(.*)/);
             t.equal(raw, lines[i]);
             t.equal(setting, r[1]);
             t.equal(value, r[2]);
-            t.equal(description, trim(r[3], '()'));
+            t.equal(message, trim(r[3], '()'));
         }
 
         ++i;
