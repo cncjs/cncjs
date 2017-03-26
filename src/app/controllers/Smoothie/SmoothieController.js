@@ -110,7 +110,7 @@ class SmoothieController {
         try {
             gcode = gcode.replace(reExpressionContext, (match) => {
                 const expr = match.slice(1, -1);
-                return Parser.evaluate(expr, context) || '[]';
+                return Parser.evaluate(expr, context);
             });
         } catch (e) {
             log.error('[Smoothie] translateWithContext:', e);

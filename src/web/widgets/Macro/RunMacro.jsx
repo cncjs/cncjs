@@ -41,7 +41,7 @@ class RunMacro extends Component {
                 const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
                 gcode = gcode.replace(reExpressionContext, (match) => {
                     const expr = match.slice(1, -1);
-                    return Parser.evaluate(expr, context) || '[]';
+                    return Parser.evaluate(expr, context);
                 });
             } catch (e) {
                 log.error(e);
