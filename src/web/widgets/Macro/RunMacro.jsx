@@ -34,7 +34,15 @@ class RunMacro extends Component {
                 ymax: 0,
                 zmin: 0,
                 zmax: 0,
-                ...controller.context
+                ...controller.context,
+
+                // [TODO] Update work position
+                posx: 0,
+                posy: 0,
+                posz: 0,
+                posa: 0,
+                posb: 0,
+                posc: 0
             };
 
             try {
