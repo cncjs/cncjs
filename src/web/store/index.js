@@ -221,29 +221,35 @@ const normalizeState = (state) => {
 };
 
 const getUserConfig = () => {
-    const cnc = {};
+    const cnc = {
+        version: settings.version,
+        state: {}
+    };
 
     try {
-        let value;
+        let data;
 
         if (userData) {
             const fs = window.require('fs'); // Use window.require to require fs module in Electron
-            value = fs.readFileSync(userData.path, 'utf8');
+            if (fs.existsSync(userData.path)) {
+                data = JSON.parse(fs.readFileSync(userData.path, 'utf8') || '{}');
+            }
         } else {
-            value = localStorage.getItem('cnc');
+            data = JSON.parse(localStorage.getItem('cnc') || '{}');
         }
 
-        let json = JSON.parse(value) || {};
-        cnc.version = json.version || settings.version; // fallback to current version
-        cnc.state = json.state;
-    } catch (err) {
-        log.error(err);
+        if (typeof data === 'object') {
+            cnc.version = data.version || cnc.version; // fallback to current version
+            cnc.state = data.state || cnc.state;
+        }
+    } catch (e) {
+        log.error(e);
     }
 
     return cnc;
 };
 
-const cnc = getUserConfig();
+const cnc = getUserConfig() || {};
 const state = normalizeState(_.merge({}, defaultState, cnc.state || {}));
 const store = new ImmutableStore(state);
 
@@ -264,8 +270,8 @@ store.on('change', (state) => {
         }
 
         localStorage.setItem('cnc', value);
-    } catch (err) {
-        log.error(err);
+    } catch (e) {
+        log.error(e);
     }
 });
 
@@ -273,6 +279,10 @@ store.on('change', (state) => {
 // Migration
 //
 const migrateStore = () => {
+    if (!cnc.version) {
+        return;
+    }
+
     // 1.9.0
     // * Renamed "widgets.probe.tlo" to "widgets.probe.touchPlateHeight"
     // * Removed "widgets.webcam.scale"
