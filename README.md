@@ -8,6 +8,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 ![cnc.png](https://raw.githubusercontent.com/cncjs/cncjs/master/media/cnc.png)
 
 ## Features
+
 * Supported CNC controllers
     - [Grbl](https://github.com/gnea/grbl)
     - [Smoothieware](https://github.com/Smoothieware/Smoothieware)
@@ -17,13 +18,15 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 * Allows multiple HTTP connections at the same serial port
 * Responsive view for small screen display with device width less than 720px
     - <i>Safari on an iPhone 5S</i> [\[1\]](https://cloud.githubusercontent.com/assets/447801/15633749/b817cd4a-25e7-11e6-9beb-600c65ea1324.PNG) [\[2\]](https://cloud.githubusercontent.com/assets/447801/15633750/b819b5f6-25e7-11e6-8bfe-d3e6247e443b.PNG)
-* [Account Management](https://github.com/cncjs/cncjs/wiki/User-Guide#account-management)
 * [Widget Management](https://github.com/cncjs/cncjs/wiki/User-Guide#widget-management)
+* [Account Management](https://github.com/cncjs/cncjs/wiki/User-Guide#account-management)
 * [Keyboard Shortcuts](https://github.com/cncjs/cncjs/wiki/User-Guide#keyboard-shortcuts)
 * [Contour ShuttleXpress](https://github.com/cncjs/cncjs/wiki/User-Guide#contour-shuttlexpress)
+* Commands
+* Events
 * Multi-Language Support 
 * Watch Directory
-* Z-Probing
+* Z-Probe
 
 ## Ecosystem
 
@@ -31,6 +34,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 * [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb)
 
 ## Browser Support
+
 ![Chrome](https://raw.github.com/alrra/browser-logos/master/src/chrome/chrome_48x48.png)<br>Chrome | ![Edge](https://raw.github.com/alrra/browser-logos/master/src/edge/edge_48x48.png)<br>Edge | ![Firefox](https://raw.github.com/alrra/browser-logos/master/src/firefox/firefox_48x48.png)<br>Firefox | ![IE](https://raw.github.com/alrra/browser-logos/master/src/archive/internet-explorer_9-11/internet-explorer_9-11_48x48.png)<br>IE | ![Opera](https://raw.github.com/alrra/browser-logos/master/src/opera/opera_48x48.png)<br>Opera | ![Safari](https://raw.github.com/alrra/browser-logos/master/src/safari/safari_48x48.png)<br>Safari
 --- | --- | --- | --- | --- | --- |
  Yes | Yes | Yes| Not supported | Yes | Yes | 
