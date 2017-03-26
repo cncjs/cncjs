@@ -34,6 +34,8 @@ const dbg = (...args) => {
     log.raw.apply(log, ['silly'].concat(args));
 };
 
+const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
+
 class TinyGController {
     type = TINYG;
 
@@ -69,6 +71,11 @@ class TinyGController {
     workflow = null;
 
     translateWithContext = (gcode, context = {}) => {
+        if (typeof gcode !== 'string') {
+            log.error(`[TinyG] No valid G-code string: gcode=${gcode}`);
+            return '';
+        }
+
         const { Parser } = ExpressionEvaluator;
 
         // Work position
@@ -93,17 +100,14 @@ class TinyGController {
             posc
         };
 
-        const re = new RegExp(/\[[^\]]+\]/g);
-        gcode = gcode.replace(re, (match) => {
-            const expr = match.slice(1, -1);
-            let result = '[]';
-            try {
-                result = Parser.evaluate(expr, context);
-            } catch (e) {
-                // Ignore
-            }
-            return result;
-        });
+        try {
+            gcode = gcode.replace(reExpressionContext, (match) => {
+                const expr = match.slice(1, -1);
+                return Parser.evaluate(expr, context) || '[]';
+            });
+        } catch (e) {
+            log.error('[TinyG] translateWithContext:', e);
+        }
 
         return gcode;
     };

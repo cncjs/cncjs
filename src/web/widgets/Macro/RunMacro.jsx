@@ -1,8 +1,9 @@
-import escapeRegExp from 'lodash/escapeRegExp';
+import ExpressionEvaluator from 'expr-eval';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import Modal from '../../components/Modal';
 import ToggleSwitch from '../../components/ToggleSwitch';
 
@@ -23,15 +24,28 @@ class RunMacro extends Component {
         // Replace variables
         let gcode = content || '';
         if (!displayOriginalContent) {
-            Object.keys(controller.context).forEach(key => {
-                const value = controller.context[key];
+            const { Parser } = ExpressionEvaluator;
 
-                if (value === undefined || value === null) {
-                    return;
-                }
-                const re = new RegExp(escapeRegExp('[' + key + ']'), 'g');
-                gcode = gcode.replace(re, value);
-            });
+            // Context
+            const context = {
+                xmin: 0,
+                xmax: 0,
+                ymin: 0,
+                ymax: 0,
+                zmin: 0,
+                zmax: 0,
+                ...controller.context
+            };
+
+            try {
+                const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
+                gcode = gcode.replace(reExpressionContext, (match) => {
+                    const expr = match.slice(1, -1);
+                    return Parser.evaluate(expr, context) || '[]';
+                });
+            } catch (e) {
+                log.error(e);
+            }
         }
 
         return (
