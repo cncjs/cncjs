@@ -256,7 +256,11 @@ store.on('change', (state) => {
 
         if (userData) {
             const fs = window.require('fs'); // Use window.require to require fs module in Electron
-            fs.writeFile(userData.path, value);
+            fs.writeFile(userData.path, value, (err) => {
+                if (err) {
+                    throw err;
+                }
+            });
         }
 
         localStorage.setItem('cnc', value);
