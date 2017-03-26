@@ -101,7 +101,7 @@ class GrblController {
             posc
         };
 
-        const re = new RegExp(/\[[^\]]+\]/, 'g');
+        const re = new RegExp(/\[[^\]]+\]/g);
         gcode = gcode.replace(re, (match) => {
             const expr = match.slice(1, -1);
             let result = '[]';
