@@ -2,7 +2,6 @@ import classNames from 'classnames';
 import includes from 'lodash/includes';
 import get from 'lodash/get';
 import mapValues from 'lodash/mapValues';
-import delay from 'delay';
 import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -210,7 +209,7 @@ class VisualizerWidget extends Component {
                     return;
                 }
 
-                delay(0).then(() => {
+                setTimeout(() => {
                     this.visualizer.load(name, gcode, ({ bbox }) => {
                         // Set gcode bounding box
                         controller.context = {
@@ -235,7 +234,7 @@ class VisualizerWidget extends Component {
                             }
                         });
                     });
-                });
+                }, 0);
             });
         },
         unloadGCode: () => {
@@ -572,9 +571,9 @@ class VisualizerWidget extends Component {
         if (!Detector.webgl && !this.state.disabled) {
             displayWebGLErrorMessage();
 
-            delay(0).then(() => {
+            setTimeout(() => {
                 this.setState({ disabled: true });
-            });
+            }, 0);
         }
     }
     componentWillUnmount() {

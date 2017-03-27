@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import delay from 'delay';
 import Slider from 'rc-slider';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
@@ -36,10 +35,9 @@ class Webcam extends Component {
             const el = ReactDOM.findDOMNode(this.mediaSource);
             el.src = '';
 
-            delay(10) // delay 10ms
-                .then(() => {
-                    el.src = state.url;
-                });
+            setTimeout(() => {
+                el.src = state.url;
+            }, 10); // delay 10ms
         }
     }
     render() {
