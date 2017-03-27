@@ -391,9 +391,11 @@ class GrblController {
                 return;
             }
 
-            this.actionMask.queryStatusReport = true;
-            this.actionTime.queryStatusReport = now;
-            this.serialport.write('?');
+            if (this.isOpen()) {
+                this.actionMask.queryStatusReport = true;
+                this.actionTime.queryStatusReport = now;
+                this.serialport.write('?');
+            }
         };
 
         const queryParserState = _.throttle(() => {
@@ -416,10 +418,12 @@ class GrblController {
                 return;
             }
 
-            this.actionMask.queryParserState.state = true;
-            this.actionMask.queryParserState.reply = false;
-            this.actionTime.queryParserState = now;
-            this.serialport.write('$G\n');
+            if (this.isOpen()) {
+                this.actionMask.queryParserState.state = true;
+                this.actionMask.queryParserState.reply = false;
+                this.actionTime.queryParserState = now;
+                this.serialport.write('$G\n');
+            }
         }, 500);
 
         this.queryTimer = setInterval(() => {
