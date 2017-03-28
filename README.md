@@ -164,22 +164,23 @@ Check out an example configuration file [here](https://github.com/cncjs/cncjs/bl
   },
   "commands": [
     {
-      "text": "Update (root user)",
-      "command": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cnc"
+      "title": "Update (root user)",
+      "commands": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cnc"
     },
     {
-      "text": "Update (non-root user)",
-      "command": "npm install -g cncjs@latest; pkill -a -f cnc"
+      "title": "Update (non-root user)",
+      "commands": "npm install -g cncjs@latest; pkill -a -f cnc"
     },
     {
-      "text": "Reboot",
-      "command": "sudo /sbin/reboot"
+      "title": "Reboot",
+      "commands": "sudo /sbin/reboot"
     },
     {
-      "text": "Shutdown",
-      "command": "sudo /sbin/shutdown"
+      "title": "Shutdown",
+      "commands": "sudo /sbin/shutdown"
     }
   ],
+  "events": [],
   "macros": [],
   "users": []
 }
