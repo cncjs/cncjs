@@ -2,9 +2,6 @@
 
 version: "{build}-{branch}"
 
-cache:
-  - '%USERPROFILE%\.electron'
-
 init:
   - git --version
   - git config --global core.autocrlf false
