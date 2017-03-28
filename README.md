@@ -5,7 +5,7 @@
 
 A web-based interface for CNC milling controller running [Grbl](https://github.com/grbl/grbl), [Smoothieware](https://github.com/Smoothieware/Smoothieware), or [TinyG](https://github.com/synthetos/TinyG). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
 
-![cnc.png](https://raw.githubusercontent.com/cncjs/cncjs/master/media/cnc.png)
+![cncjs](https://cloud.githubusercontent.com/assets/447801/24392019/aa2d725e-13c4-11e7-9538-fd5f746a2130.png)
 
 ## Features
 
@@ -18,18 +18,19 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 * Allows multiple HTTP connections at the same serial port
 * Responsive view for small screen display with device width less than 720px
     - <i>Safari on an iPhone 5S</i> [\[1\]](https://cloud.githubusercontent.com/assets/447801/15633749/b817cd4a-25e7-11e6-9beb-600c65ea1324.PNG) [\[2\]](https://cloud.githubusercontent.com/assets/447801/15633750/b819b5f6-25e7-11e6-8bfe-d3e6247e443b.PNG)
-* [Widget Management](https://github.com/cncjs/cncjs/wiki/User-Guide#widget-management)
-* [Account Management](https://github.com/cncjs/cncjs/wiki/User-Guide#account-management)
-* [Keyboard Shortcuts](https://github.com/cncjs/cncjs/wiki/User-Guide#keyboard-shortcuts)
-* [Contour ShuttleXpress](https://github.com/cncjs/cncjs/wiki/User-Guide#contour-shuttlexpress)
+* Customizable workspace
+* My Account
 * Commands
 * Events
+* [Keyboard Shortcuts](https://cnc.js.org/docs/user-guide/#keyboard-shortcuts)
+* [Contour ShuttleXpress](https://cnc.js.org/docs/user-guide/#contour-shuttlexpress)
 * Multi-Language Support 
 * Watch Directory
 * Z-Probe
 
-## Ecosystem
+## Pendant
 
+* [cncjs-pendant-boilerplate](https://github.com/cncjs/cncjs-pendant-boilerplate)
 * [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3)
 * [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb)
 
@@ -152,6 +153,7 @@ The configuration file <b>.cncrc</b> contains settings that are equivalent to th
 Check out an example configuration file [here](https://github.com/cncjs/cncjs/blob/master/examples/.cncrc).
 
 ### File Format
+
 ```json
 {
   "watchDirectory": "/path/to/dir",
