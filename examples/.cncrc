@@ -23,6 +23,7 @@
       "commands": "sudo /sbin/shutdown"
     }
   ],
+  "events": [],
   "macros": [],
   "users": []
 }
