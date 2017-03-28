@@ -1,5 +1,4 @@
 /* eslint import/no-unresolved: 0 */
-import util from 'util';
 import { app } from 'electron';
 import fse from 'fs-extra';
 import { WindowManager, handleStartupEvent, setApplicationMenu } from './desktop';
@@ -55,8 +54,8 @@ const main = () => {
 
             windowManager = new WindowManager();
             windowManager.openWindow({
-                title: util.format('%s v%s', pkg.name, pkg.version),
-                url: 'http://' + address.address + ':' + address.port
+                title: `${pkg.name} ${pkg.version}`,
+                url: `http://${address.address}:${address.port}`
             });
         });
     });
