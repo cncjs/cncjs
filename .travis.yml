@@ -70,6 +70,7 @@ script:
     fi
 
 after_success:
+  - npm run coveralls
   - mkdir -p releases
   - PACKAGE_NAME=`scripts/package-name.sh src/package.json`
   - PACKAGE_VERSION=`scripts/package-version.sh src/package.json`
