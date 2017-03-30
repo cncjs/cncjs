@@ -394,7 +394,7 @@ class SmoothieController {
                 this.emitAll('Smoothie:state', this.state);
             }
 
-            // Do not send "?" and "$G" when Smoothie is not ready
+            // Wait for the bootloader to complete before sending commands
             if (!(this.ready)) {
                 // Not ready yet
                 return;
@@ -896,7 +896,7 @@ class SmoothieController {
     write(socket, data) {
         // Assertion check
         if (this.isClose()) {
-            log.error(`[Grbl] Serial port "${this.options.port}" is not accessible`);
+            log.error(`[Smoothie] Serial port "${this.options.port}" is not accessible`);
             return;
         }
 
