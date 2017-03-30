@@ -10,7 +10,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 ## Features
 
 * Supported CNC controllers
-    - [Grbl](https://github.com/gnea/grbl)
+    - [Grbl](https://github.com/gnea/grbl) and [Grbl-Mega](https://github.com/gnea/grbl-Mega)
     - [Smoothieware](https://github.com/Smoothieware/Smoothieware)
     - [TinyG](https://github.com/synthetos/TinyG) and [g2core](https://github.com/synthetos/g2)
 * [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cncjs/cncjs/wiki/Desktop-App)
