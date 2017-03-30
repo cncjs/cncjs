@@ -44,6 +44,26 @@ class GrblController {
         baudrate: 115200
     };
     serialport = null;
+    serialportListener = {
+        data: (data) => {
+            this.grbl.parse('' + data);
+            dbg(`[Grbl] < ${data}`);
+        },
+        disconnect: (err) => {
+            this.ready = false;
+            if (err) {
+                log.warn(`[Grbl] Disconnected from serial port "${this.options.port}":`, err);
+            }
+
+            this.close();
+        },
+        error: (err) => {
+            this.ready = false;
+            if (err) {
+                log.error(`[Grbl] Unexpected error while reading/writing serial port "${this.options.port}":`, err);
+            }
+        }
+    };
 
     // Grbl
     grbl = null;
@@ -334,6 +354,9 @@ class GrblController {
         this.grbl.on('startup', (res) => {
             this.emitAll('serialport:read', res.raw);
 
+            // Set ready flag to true when a Grbl start up message has arrived
+            this.ready = true;
+
             // The start up message always prints upon startup, after a reset, or at program end.
             // Setting the initial state when Grbl has completed re-initializing all systems.
 
@@ -342,34 +365,6 @@ class GrblController {
 
         this.grbl.on('others', (res) => {
             this.emitAll('serialport:read', res.raw);
-        });
-
-        // SerialPort
-        this.serialport = new SerialPort(this.options.port, {
-            autoOpen: false,
-            baudrate: this.options.baudrate,
-            parser: SerialPort.parsers.readline('\n')
-        });
-
-        this.serialport.on('data', (data) => {
-            this.grbl.parse('' + data);
-            dbg(`[Grbl] < ${data}`);
-        });
-
-        this.serialport.on('disconnect', (err) => {
-            this.ready = false;
-            if (err) {
-                log.warn(`[Grbl] Disconnected from serial port "${port}":`, err);
-            }
-
-            this.close();
-        });
-
-        this.serialport.on('error', (err) => {
-            this.ready = false;
-            if (err) {
-                log.error(`[Grbl] Unexpected error while reading/writing serial port "${port}":`, err);
-            }
         });
 
         const queryStatusReport = () => {
@@ -448,7 +443,7 @@ class GrblController {
                 this.emitAll('Grbl:state', this.state);
             }
 
-            // Do not send "?" and "$G" when Grbl is not ready
+            // Wait for the bootloader to complete before sending commands
             if (!(this.ready)) {
                 // Not ready yet
                 return;
@@ -472,6 +467,10 @@ class GrblController {
     }
     destroy() {
         this.connections = {};
+
+        if (this.serialport) {
+            this.serialport = null;
+        }
 
         if (this.event) {
             this.event = null;
@@ -499,27 +498,6 @@ class GrblController {
             this.grbl = null;
         }
     }
-    initController() {
-        const cmds = [
-            { pauseAfter: 500 }
-        ];
-
-        const sendInitCommands = (i = 0) => {
-            if (i >= cmds.length) {
-                this.ready = true;
-                return;
-            }
-            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
-            if (cmd) {
-                this.serialport.write(cmd + '\n');
-                dbg(`[Grbl] > ${cmd}`);
-            }
-            setTimeout(() => {
-                sendInitCommands(i + 1);
-            }, pauseAfter);
-        };
-        sendInitCommands();
-    }
     get status() {
         return {
             port: this.options.port,
@@ -544,6 +522,14 @@ class GrblController {
             return;
         }
 
+        this.serialport = new SerialPort(this.options.port, {
+            autoOpen: false,
+            baudRate: this.options.baudrate,
+            parser: SerialPort.parsers.readline('\n')
+        });
+        this.serialport.on('data', this.serialportListener.data);
+        this.serialport.on('disconnect', this.serialportListener.disconnect);
+        this.serialport.on('error', this.serialportListener.error);
         this.serialport.open((err) => {
             if (err) {
                 log.error(`[Grbl] Error opening serial port "${port}":`, err);
@@ -572,19 +558,19 @@ class GrblController {
                 // Unload G-code
                 this.command(null, 'unload');
             }
-
-            // Initialize controller
-            this.initController();
         });
     }
     close() {
         const { port } = this.options;
 
         // Assertion check
-        if (this.isClose()) {
-            log.error(`[Grbl] Serial port "${port}" was already closed`);
+        if (!this.serialport) {
+            log.error(`[Grbl] Serial port "${port}" is not available`);
             return;
         }
+
+        // Stop status query
+        this.ready = false;
 
         this.emitAll('serialport:close', {
             port: port,
@@ -592,17 +578,21 @@ class GrblController {
         });
         store.unset('controllers["' + port + '"]');
 
-        this.destroy();
+        if (this.isOpen()) {
+            this.serialport.removeListener('data', this.serialportListener.data);
+            this.serialport.removeListener('disconnect', this.serialportListener.disconnect);
+            this.serialport.removeListener('error', this.serialportListener.error);
+            this.serialport.close((err) => {
+                if (err) {
+                    log.error(`[Grbl] Error closing serial port "${port}":`, err);
+                }
+            });
+        }
 
-        this.serialport.close((err) => {
-            this.ready = false;
-            if (err) {
-                log.error(`[Grbl] Error closing serial port "${port}":`, err);
-            }
-        });
+        this.destroy();
     }
     isOpen() {
-        return this.serialport.isOpen();
+        return this.serialport && this.serialport.isOpen();
     }
     isClose() {
         return !(this.isOpen());
@@ -916,6 +906,12 @@ class GrblController {
         handler();
     }
     write(socket, data) {
+        // Assertion check
+        if (this.isClose()) {
+            log.error(`[Grbl] Serial port "${this.options.port}" is not accessible`);
+            return;
+        }
+
         const cmd = data.trim();
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;

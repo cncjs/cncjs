@@ -48,6 +48,26 @@ class TinyGController {
         baudrate: 115200
     };
     serialport = null;
+    serialportListener = {
+        data: (data) => {
+            this.tinyg.parse('' + data);
+            dbg(`[TinyG] < ${data}`);
+        },
+        disconnect: (err) => {
+            this.ready = false;
+            if (err) {
+                log.warn(`[TinyG] Disconnected from serial port "${this.options.port}":`, err);
+            }
+
+            this.close();
+        },
+        error: (err) => {
+            this.ready = false;
+            if (err) {
+                log.error(`[TinyG] Unexpected error while reading/writing serial port "${this.options.port}":`, err);
+            }
+        }
+    };
 
     // TinyG
     tinyg = null;
@@ -306,34 +326,6 @@ class TinyGController {
             }
         });
 
-        // SerialPort
-        this.serialport = new SerialPort(this.options.port, {
-            autoOpen: false,
-            baudrate: this.options.baudrate,
-            parser: SerialPort.parsers.readline('\n')
-        });
-
-        this.serialport.on('data', (data) => {
-            this.tinyg.parse('' + data);
-            dbg(`[TinyG] < ${data}`);
-        });
-
-        this.serialport.on('disconnect', (err) => {
-            this.ready = false;
-            if (err) {
-                log.warn(`[TinyG] Disconnected from serial port "${port}":`, err);
-            }
-
-            this.close();
-        });
-
-        this.serialport.on('error', (err) => {
-            this.ready = false;
-            if (err) {
-                log.error(`[TinyG] Unexpected error while reading/writing serial port "${port}":`, err);
-            }
-        });
-
         // Timer
         this.queryTimer = setInterval(() => {
             if (this.isClose()) {
@@ -361,6 +353,7 @@ class TinyGController {
     // https://github.com/synthetos/TinyG/wiki/TinyG-Configuration-for-Firmware-Version-0.97
     initController() {
         const cmds = [
+            // Wait for the bootloader to complete before sending commands
             { pauseAfter: 1000 },
 
             // Enable JSON mode
@@ -431,6 +424,7 @@ class TinyGController {
 
         const sendInitCommands = (i = 0) => {
             if (i >= cmds.length) {
+                // Set ready flag to true after sending initialization commands
                 this.ready = true;
                 return;
             }
@@ -453,6 +447,10 @@ class TinyGController {
     }
     destroy() {
         this.connections = {};
+
+        if (this.serialport) {
+            this.serialport = null;
+        }
 
         if (this.event) {
             this.event = null;
@@ -506,6 +504,14 @@ class TinyGController {
             return;
         }
 
+        this.serialport = new SerialPort(this.options.port, {
+            autoOpen: false,
+            baudRate: this.options.baudrate,
+            parser: SerialPort.parsers.readline('\n')
+        });
+        this.serialport.on('data', this.serialportListener.data);
+        this.serialport.on('disconnect', this.serialportListener.disconnect);
+        this.serialport.on('error', this.serialportListener.error);
         this.serialport.open((err) => {
             if (err) {
                 log.error(`[TinyG] Error opening serial port "${port}":`, err);
@@ -540,10 +546,13 @@ class TinyGController {
         const { port } = this.options;
 
         // Assertion check
-        if (this.isClose()) {
-            log.error(`[TinyG] Serial port "${port}" was already closed`);
+        if (!this.serialport) {
+            log.error(`[TinyG] Serial port "${port}" is not available`);
             return;
         }
+
+        // Stop status query
+        this.ready = false;
 
         this.emitAll('serialport:close', {
             port: port,
@@ -551,17 +560,21 @@ class TinyGController {
         });
         store.unset('controllers["' + port + '"]');
 
-        this.destroy();
+        if (this.isOpen()) {
+            this.serialport.removeListener('data', this.serialportListener.data);
+            this.serialport.removeListener('disconnect', this.serialportListener.disconnect);
+            this.serialport.removeListener('error', this.serialportListener.error);
+            this.serialport.close((err) => {
+                if (err) {
+                    log.error(`[TinyG] Error closing serial port "${port}":`, err);
+                }
+            });
+        }
 
-        this.serialport.close((err) => {
-            this.ready = false;
-            if (err) {
-                log.error(`[TinyG] Error closing serial port "${port}":`, err);
-            }
-        });
+        this.destroy();
     }
     isOpen() {
-        return this.serialport.isOpen();
+        return this.serialport && this.serialport.isOpen();
     }
     isClose() {
         return !(this.isOpen());
@@ -844,6 +857,12 @@ class TinyGController {
         handler();
     }
     write(socket, data) {
+        // Assertion check
+        if (this.isClose()) {
+            log.error(`[TinyG] Serial port "${this.options.port}" is not accessible`);
+            return;
+        }
+
         this.emitAll('serialport:write', data);
         this.serialport.write(data);
         dbg(`[TinyG] > ${data}`);
