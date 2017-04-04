@@ -19,7 +19,6 @@ class WatchDirectory extends Component {
     treeNode = null;
 
     componentDidMount() {
-        this.addColumnGroup();
         this.addResizeEventListener();
 
         api.watch.getFiles({ path: '' })
@@ -61,6 +60,10 @@ class WatchDirectory extends Component {
         window.removeEventListener('resize', this.fitHeaderColumns);
     }
     addColumnGroup() {
+        if (!this.treeNode) {
+            return;
+        }
+
         this.treeNode.tree.scrollElement.style.height = '240px';
         const table = this.treeNode.tree.contentElement.parentNode;
         const colgroup = document.createElement('colgroup');
@@ -112,7 +115,7 @@ class WatchDirectory extends Component {
                 </Modal.Header>
                 <Modal.Body>
                     <table
-                        ref={(node) => {
+                        ref={node => {
                             this.tableNode = node;
                         }}
                         style={{
@@ -130,9 +133,10 @@ class WatchDirectory extends Component {
                     </table>
                     <InfiniteTree
                         style={{ height: 240 }}
-                        ref={(node) => {
-                            if (node) {
+                        ref={node => {
+                            if (!this.treeNode) {
                                 this.treeNode = node;
+                                this.addColumnGroup();
                             }
                         }}
                         noDataClass={styles.noData}
