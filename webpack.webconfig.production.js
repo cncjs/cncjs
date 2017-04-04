@@ -118,10 +118,10 @@ var webpackConfig = Object.assign({}, baseConfig, {
              * <link href="/9b80ca13/[name]-2.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
              * <link href="/9b80ca13/[name].css?ff4bb41b7b5e61a63da54dff2e59581d" rel="stylesheet">
              */
-            afterHTMLProcessing: function(pluginData, next) {
+            afterHTMLProcessing: function(htmlPluginData, next) {
                 const re = new RegExp(/<link.* href="[^"]+\w+\-\d+\.css[^>]+>/);
-                pluginData.html = pluginData.html.replace(re, '');
-                next(null);
+                htmlPluginData.html = htmlPluginData.html.replace(re, '');
+                next(null, htmlPluginData);
             }
         }),
         new InlineChunkWebpackPlugin({
