@@ -39,7 +39,7 @@ const UpdateStatusContainer = (props) => {
                     <div className={styles.releaseLatest}>
                         {i18n._('Version {{version}}', { version: latest })}
                         <br />
-                        {moment(lastUpdate).format('L')}
+                        {moment(lastUpdate).format('LLL')}
                     </div>
                 </div>
                 <div className={styles.updateStatusActionContainer}>
