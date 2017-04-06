@@ -5,6 +5,7 @@ import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
+import { withRouter } from 'react-router-dom';
 import api from '../../api';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -27,6 +28,10 @@ const stopWaiting = () => {
 };
 
 class Workspace extends Component {
+    static propTypes = {
+        ...withRouter.propTypes
+    };
+
     state = {
         mounted: false,
         port: '',
@@ -92,7 +97,7 @@ class Workspace extends Component {
         this.resizeDefaultContainer();
     }
     addResizeEventListener() {
-        this.onResizeThrottled = _.throttle(::this.resizeDefaultContainer, 10);
+        this.onResizeThrottled = _.throttle(::this.resizeDefaultContainer, 50);
         window.addEventListener('resize', this.onResizeThrottled);
     }
     removeResizeEventListener() {
@@ -137,14 +142,29 @@ class Workspace extends Component {
         const primaryToggler = ReactDOM.findDOMNode(this.primaryToggler);
         const secondaryToggler = ReactDOM.findDOMNode(this.secondaryToggler);
         const defaultContainer = ReactDOM.findDOMNode(this.defaultContainer);
+        const { showPrimaryContainer, showSecondaryContainer } = this.state;
 
-        if (this.state.showPrimaryContainer) {
+        { // Mobile-Friendly View
+            const { location } = this.props;
+            const disableHorizontalScroll = !(showPrimaryContainer && showSecondaryContainer);
+
+            if (location.pathname === '/workspace' && disableHorizontalScroll) {
+                // Disable horizontal scroll
+                document.body.scrollLeft = 0;
+                document.body.style.overflowX = 'hidden';
+            } else {
+                // Enable horizontal scroll
+                document.body.style.overflowX = '';
+            }
+        }
+
+        if (showPrimaryContainer) {
             defaultContainer.style.left = primaryContainer.offsetWidth + sidebar.offsetWidth + 'px';
         } else {
             defaultContainer.style.left = primaryToggler.offsetWidth + sidebar.offsetWidth + 'px';
         }
 
-        if (this.state.showSecondaryContainer) {
+        if (showSecondaryContainer) {
             defaultContainer.style.right = secondaryContainer.offsetWidth + 'px';
         } else {
             defaultContainer.style.right = secondaryToggler.offsetWidth + 'px';
@@ -248,6 +268,7 @@ class Workspace extends Component {
         });
     }
     render() {
+        const { style, className } = this.props;
         const {
             port,
             isDraggingFile,
@@ -260,7 +281,7 @@ class Workspace extends Component {
         const hideSecondaryContainer = !showSecondaryContainer;
 
         return (
-            <div {...this.props} className={styles.workspace}>
+            <div style={style} className={classNames(className, styles.workspace)}>
                 <div
                     className={classNames(
                         styles.dropzoneOverlay,
@@ -435,4 +456,4 @@ class Workspace extends Component {
     }
 }
 
-export default Workspace;
+export default withRouter(Workspace);

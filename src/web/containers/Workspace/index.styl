@@ -32,7 +32,7 @@
 
     .workspace-table {
         display: table;
-        width: 100%;
+        width: 'calc(100vw - %s)' % ($sidebar-width);
         height: 'calc(100vh - %s)' % ($navbar-height);
     }
     .workspace-table-row {

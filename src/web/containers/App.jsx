@@ -50,6 +50,7 @@ class App extends Component {
                 <div className={styles.main}>
                     <div className={styles.content}>
                         <Workspace
+                            {...this.props}
                             style={{
                                 display: (location.pathname !== '/workspace') ? 'none' : 'block'
                             }}
