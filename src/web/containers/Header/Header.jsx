@@ -184,9 +184,17 @@ class Header extends Component {
         this.state = this.getInitialState();
     }
     getInitialState() {
+        let pushPermission = '';
+        try {
+            // Push.Permission.get() will throw an error if Push is not supported on this device
+            pushPermission = Push.Permission.get();
+        } catch (e) {
+            // Ignore
+        }
+
         return {
             workflowState: controller.workflowState,
-            pushPermission: Push.Permission.get(),
+            pushPermission: pushPermission,
             commands: [],
             runningTasks: [],
             currentVersion: settings.version,
