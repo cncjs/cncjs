@@ -18,12 +18,13 @@ export const getLatestVersion = (req, res) => {
     request
         .get(pkgUrl)
         .set(headers)
-        .end((err, { body: data = {} }) => {
+        .end((err, _res) => {
             if (err) {
                 res.status(err.statusCode).send({ err: err });
                 return;
             }
 
+            const { body: data = {} } = { ..._res };
             data.time = data.time || {};
             data['dist-tags'] = data['dist-tags'] || {};
             data.versions = data.versions || {};
