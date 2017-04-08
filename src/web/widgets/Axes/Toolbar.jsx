@@ -145,6 +145,7 @@ class ToolbarButton extends Component {
                 )}
             >
                 <div className="btn-group pull-left">
+                    {(canClick && keypadJogging) &&
                     <OverlayTrigger
                         overlay={keypadTooltip()}
                         placement="bottom"
@@ -166,6 +167,24 @@ class ToolbarButton extends Component {
                             {i18n._('Keypad')}
                         </button>
                     </OverlayTrigger>
+                    }
+                    {!(canClick && keypadJogging) &&
+                    <button
+                        type="button"
+                        className={classNames(
+                            'btn',
+                            'btn-xs',
+                            'btn-default',
+                            { 'btn-select': keypadJogging }
+                        )}
+                        onClick={actions.toggleKeypadJogging}
+                        disabled={!canClick}
+                    >
+                        <i className="fa fa-keyboard-o" />
+                        <span className="space" />
+                        {i18n._('Keypad')}
+                    </button>
+                    }
                 </div>
                 <div className="btn-group pull-right">
                     <DropdownButton
