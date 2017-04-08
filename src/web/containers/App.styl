@@ -2,10 +2,12 @@
 
 .sidebar {
     background-color: $sidebar-background-color;
-    position: absolute;
+    position: fixed;
     top: $navbar-height;
     left: 0;
+    bottom: 0;
     width: $sidebar-width;
+    z-index: 1000;
 }
 
 .main {
