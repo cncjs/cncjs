@@ -221,17 +221,56 @@ class Visualizer extends Component {
         });
         this.pubsubTokens = [];
     }
+    // https://tylercipriani.com/blog/2014/07/12/crossbrowser-javascript-scrollbar-detection/
+    hasVerticalScrollbar() {
+        return window.innerWidth > document.documentElement.clientWidth;
+    }
+    hasHorizontalScrollbar() {
+        return window.innerHeight > document.documentElement.clientHeight;
+    }
+    // http://www.alexandre-gomes.com/?p=115
+    getScrollbarWidth() {
+        const inner = document.createElement('p');
+        inner.style.width = '100%';
+        inner.style.height = '200px';
+
+        const outer = document.createElement('div');
+        outer.style.position = 'absolute';
+        outer.style.top = '0px';
+        outer.style.left = '0px';
+        outer.style.visibility = 'hidden';
+        outer.style.width = '200px';
+        outer.style.height = '150px';
+        outer.style.overflow = 'hidden';
+        outer.appendChild(inner);
+
+        document.body.appendChild(outer);
+        const w1 = inner.offsetWidth;
+        outer.style.overflow = 'scroll';
+        const w2 = (w1 === inner.offsetWidth) ? outer.clientWidth : inner.offsetWidth;
+        document.body.removeChild(outer);
+
+        return (w1 - w2);
+    }
     getVisibleWidth() {
         const el = ReactDOM.findDOMNode(this.node);
-        const sidebarWidth = 60; // TODO
+        const visibleWidth = Math.max(
+            Number(el && el.parentNode && el.parentNode.clientWidth) || 0,
+            360
+        );
 
-        return (el && el.parentNode && el.parentNode.clientWidth) || (window.innerWidth - sidebarWidth);
+        return visibleWidth;
     }
     getVisibleHeight() {
-        const el = ReactDOM.findDOMNode(this.node);
-        const navbarHeight = 50; // TODO
+        const clientHeight = document.documentElement.clientHeight;
+        const navbarHeight = 50;
+        const widgetHeaderHeight = 32;
+        const widgetFooterHeight = 32;
+        const visibleHeight = (
+            clientHeight - navbarHeight - widgetHeaderHeight - widgetFooterHeight - 1
+        );
 
-        return (el && el.parentNode && el.parentNode.clientHeight) || (window.innerHeight - navbarHeight);
+        return visibleHeight;
     }
     addResizeEventListener() {
         // handle resize event
