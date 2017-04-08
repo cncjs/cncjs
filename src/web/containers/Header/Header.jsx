@@ -286,6 +286,10 @@ class Header extends Component {
                 fixedTop
                 fluid
                 inverse
+                style={{
+                    border: 'none',
+                    margin: 0
+                }}
             >
                 <Navbar.Header>
                     <OverlayTrigger
