@@ -160,7 +160,7 @@ class SmoothieController {
 
         // Feeder
         this.feeder = new Feeder();
-        this.feeder.on('data', (command = '', context = {}) => {
+        this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`[Smoothie] Serial port "${this.options.port}" is not accessible`);
                 return;
@@ -173,7 +173,7 @@ class SmoothieController {
                 return;
             }
 
-            let line = String(command).trim();
+            line = String(line).trim();
             if (line.length === 0) {
                 return;
             }
@@ -193,7 +193,7 @@ class SmoothieController {
             // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
             bufferSize: (128 - 8) // The default buffer size is 128 bytes
         });
-        this.sender.on('data', (gcode = '', context = {}) => {
+        this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`[Smoothie] Serial port "${this.options.port}" is not accessible`);
                 return;
@@ -204,11 +204,18 @@ class SmoothieController {
                 return;
             }
 
-            gcode = ('' + gcode).trim();
-            if (gcode.length > 0) {
-                this.serialport.write(gcode + '\n');
-                dbg(`[Smoothie] > ${gcode}`);
+            line = String(line).trim();
+            if (line.length === 0) {
+                log.warn(`[Smoothie] Expected non-empty line: N=${this.sender.state.sent}`);
+                return;
             }
+
+            // Example
+            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
+            line = this.translateWithContext(line, context);
+
+            this.serialport.write(line + '\n');
+            dbg(`[Smoothie] > ${line}`);
         });
 
         // Workflow
@@ -619,13 +626,6 @@ class SmoothieController {
                 if (typeof context === 'function') {
                     callback = context;
                     context = {};
-                }
-
-                // TODO: This will move to sender in a future release
-                if (Object.keys(context).length > 0) {
-                    // Example
-                    // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-                    gcode = this.translateWithContext(gcode, context);
                 }
 
                 const ok = this.sender.load(name, gcode, context);

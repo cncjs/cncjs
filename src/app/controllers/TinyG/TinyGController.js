@@ -153,7 +153,7 @@ class TinyGController {
 
         // Feeder
         this.feeder = new Feeder();
-        this.feeder.on('data', (command = '', context = {}) => {
+        this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`[TinyG] Serial port "${this.options.port}" is not accessible`);
                 return;
@@ -166,7 +166,7 @@ class TinyGController {
                 return;
             }
 
-            let line = String(command).trim();
+            line = String(line).trim();
             if (line.length === 0) {
                 return;
             }
@@ -183,7 +183,7 @@ class TinyGController {
 
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE);
-        this.sender.on('data', (gcode = '', context = {}) => {
+        this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`[TinyG] Serial port "${this.options.port}" is not accessible`);
                 return;
@@ -194,16 +194,24 @@ class TinyGController {
                 return;
             }
 
+            // Remove blanks to reduce the amount of bandwidth
+            line = String(line).replace(/\s+/g, '');
+            if (line.length === 0) {
+                log.warn(`[TinyG] Expected non-empty line: N=${this.sender.state.sent}`);
+                return;
+            }
+
+            // Example
+            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
+            line = this.translateWithContext(line, context);
+
             // Replace line numbers with the number of lines sent
             const n = this.sender.state.sent;
-            gcode = ('' + gcode).replace(/^N[0-9]*/, '');
-            gcode = ('N' + n + ' ' + gcode);
+            line = ('' + line).replace(/^N[0-9]*/, '');
+            line = ('N' + n + line);
 
-            // Remove blanks to reduce the amount of bandwidth
-            gcode = ('' + gcode).replace(/\s+/g, '');
-
-            this.serialport.write(gcode + '\n');
-            dbg(`[TinyG] > SEND: n=${n}, gcode="${gcode}"`);
+            this.serialport.write(line + '\n');
+            dbg(`[TinyG] > SEND: n=${n}, line="${line}"`);
         });
 
         // Workflow
@@ -628,13 +636,6 @@ class TinyGController {
                 if (typeof context === 'function') {
                     callback = context;
                     context = {};
-                }
-
-                // TODO: This will move to sender in a future release
-                if (Object.keys(context).length > 0) {
-                    // Example
-                    // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-                    gcode = this.translateWithContext(gcode, context);
                 }
 
                 const ok = this.sender.load(name, gcode, context);
