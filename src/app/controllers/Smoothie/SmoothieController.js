@@ -17,6 +17,7 @@ import store from '../../store';
 import Smoothie from './Smoothie';
 import {
     SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_IDLE,
     SMOOTHIE_ACTIVE_STATE_HOLD,
     SMOOTHIE_REALTIME_COMMANDS
 } from './constants';
@@ -217,16 +218,28 @@ class SmoothieController {
             this.serialport.write(line + '\n');
             dbg(`[Smoothie] > ${line}`);
         });
+        this.sender.on('start', (startTime) => {
+            this.actionTime.senderFinishTime = 0;
+        });
+        this.sender.on('end', (finishTime) => {
+            this.actionTime.senderFinishTime = finishTime;
+        });
 
         // Workflow
         this.workflow = new Workflow();
         this.workflow.on('start', () => {
+            this.emitAll('workflow:state', this.workflow.state);
             this.sender.rewind();
         });
         this.workflow.on('stop', () => {
+            this.emitAll('workflow:state', this.workflow.state);
             this.sender.rewind();
         });
+        this.workflow.on('pause', () => {
+            this.emitAll('workflow:state', this.workflow.state);
+        });
         this.workflow.on('resume', () => {
+            this.emitAll('workflow:state', this.workflow.state);
             this.sender.next();
         });
 
@@ -412,6 +425,32 @@ class SmoothieController {
 
             // $G - Parser State
             queryParserState();
+
+            // Determine if the controller is completely idle
+            if (this.actionTime.senderFinishTime > 0) {
+                const now = new Date().getTime();
+                const timespan = Math.abs(now - this.actionTime.senderFinishTime);
+                const toleranceTime = 1000; // 1000ms
+                const activeState = _.get(this.state, 'status.activeState');
+                const isControllerIdle = _.includes([
+                    SMOOTHIE_ACTIVE_STATE_IDLE
+                ], activeState);
+
+                if (!isControllerIdle) {
+                    // Extend the sender finish time if the controller state is not idle
+                    this.actionTime.senderFinishTime = now;
+                    return;
+                }
+
+                if (timespan > toleranceTime) {
+                    log.debug(`[Smoothie] Stop workflow: activeState=${activeState}, timespan=${timespan}ms`);
+
+                    this.actionTime.senderFinishTime = 0;
+
+                    // Stop workflow
+                    this.command(null, 'gcode:stop');
+                }
+            }
         }, 250);
     }
     clearActionValues() {
@@ -422,6 +461,7 @@ class SmoothieController {
         this.actionMask.replyStatusReport = false;
         this.actionTime.queryParserState = 0;
         this.actionTime.queryStatusReport = 0;
+        this.actionTime.senderFinishTime = 0;
     }
     destroy() {
         this.connections = {};
@@ -593,13 +633,19 @@ class SmoothieController {
         log.debug(`[Smoothie] Add socket connection: id=${socket.id}`);
         this.connections[socket.id] = socket;
 
+        //
+        // Send data to newly connected client
+        //
         if (!_.isEmpty(this.state)) {
-            // Send controller state to a newly connected client
+            // controller state
             socket.emit('Smoothie:state', this.state);
         }
-
+        if (this.workflow) {
+            // workflow state
+            socket.emit('workflow:state', this.workflow.state);
+        }
         if (this.sender) {
-            // Send sender status to a newly connected client
+            // sender status
             socket.emit('sender:status', this.sender.toJSON());
         }
     }

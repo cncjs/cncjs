@@ -1,11 +1,6 @@
-import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import {
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_PAUSED
-} from '../../constants';
 import styles from './index.styl';
 
 class QuickAccessToolbar extends Component {
@@ -14,34 +9,27 @@ class QuickAccessToolbar extends Component {
         actions: PropTypes.object
     };
 
-    handleCycleStart() {
-        const { state } = this.props;
-
-        if (state.workflowState === WORKFLOW_STATE_PAUSED) {
-            pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
+    command = {
+        'cyclestart': () => {
+            controller.command('cyclestart');
+        },
+        'feedhold': () => {
+            controller.command('feedhold');
+        },
+        'homing': () => {
+            controller.command('homing');
+        },
+        'sleep': () => {
+            controller.command('sleep');
+        },
+        'unlock': () => {
+            controller.command('unlock');
+        },
+        'reset': () => {
+            controller.command('reset');
         }
-        controller.command('cyclestart');
-    }
-    handleFeedHold() {
-        const { state } = this.props;
+    };
 
-        if (state.workflowState === WORKFLOW_STATE_RUNNING) {
-            pubsub.publish('workflowState', WORKFLOW_STATE_PAUSED);
-        }
-        controller.command('feedhold');
-    }
-    handleHoming() {
-        controller.command('homing');
-    }
-    handleSleep() {
-        controller.command('sleep');
-    }
-    handleUnlock() {
-        controller.command('unlock');
-    }
-    handleReset() {
-        controller.command('reset');
-    }
     render() {
         return (
             <div className={styles.quickAccessToolbar}>
@@ -50,7 +38,7 @@ class QuickAccessToolbar extends Component {
                         <button
                             type="button"
                             className="btn btn-default"
-                            onClick={::this.handleCycleStart}
+                            onClick={this.command.cyclestart}
                             title={i18n._('Cycle Start')}
                         >
                             <i className="fa fa-repeat" />
@@ -60,7 +48,7 @@ class QuickAccessToolbar extends Component {
                         <button
                             type="button"
                             className="btn btn-default"
-                            onClick={::this.handleFeedHold}
+                            onClick={this.command.feedhold}
                             title={i18n._('Feedhold')}
                         >
                             <i className="fa fa-hand-paper-o" />
@@ -72,7 +60,7 @@ class QuickAccessToolbar extends Component {
                         <button
                             type="button"
                             className="btn btn-primary"
-                            onClick={::this.handleHoming}
+                            onClick={this.command.homing}
                             title={i18n._('Homing')}
                         >
                             <i className="fa fa-home" />
@@ -82,7 +70,7 @@ class QuickAccessToolbar extends Component {
                         <button
                             type="button"
                             className="btn btn-success"
-                            onClick={::this.handleSleep}
+                            onClick={this.command.sleep}
                             title={i18n._('Sleep')}
                         >
                             <i className="fa fa-bed" />
@@ -92,7 +80,7 @@ class QuickAccessToolbar extends Component {
                         <button
                             type="button"
                             className="btn btn-warning"
-                            onClick={::this.handleUnlock}
+                            onClick={this.command.unlock}
                             title={i18n._('Unlock')}
                         >
                             <i className="fa fa-unlock-alt" />
@@ -102,7 +90,7 @@ class QuickAccessToolbar extends Component {
                         <button
                             type="button"
                             className="btn btn-danger"
-                            onClick={::this.handleReset}
+                            onClick={this.command.reset}
                             title={i18n._('Reset')}
                         >
                             <i className="fa fa-undo" />

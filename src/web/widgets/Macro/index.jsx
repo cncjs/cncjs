@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import ExpressionEvaluator from 'expr-eval';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -17,6 +18,35 @@ import {
     MODAL_STATE_RUN_MACRO
 } from './constants';
 import styles from './index.styl';
+
+const translateWithContext = (function() {
+    const { Parser } = ExpressionEvaluator;
+    const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
+
+    return function __translateWithContext(gcode, context = controller.context) {
+        if (typeof gcode !== 'string') {
+            log.error(`Invalid parameter: gcode=${gcode}`);
+            return '';
+        }
+
+        // Context
+        context = {
+            ...controller.context,
+            ...context
+        };
+
+        try {
+            gcode = gcode.replace(reExpressionContext, (match) => {
+                const expr = match.slice(1, -1);
+                return Parser.evaluate(expr, context);
+            });
+        } catch (e) {
+            log.error('translateWithContext:', e);
+        }
+
+        return gcode;
+    };
+}());
 
 class MacroWidget extends Component {
     static propTypes = {
@@ -126,7 +156,10 @@ class MacroWidget extends Component {
                     }
 
                     const { gcode = '' } = { ...data };
-                    pubsub.publish('gcode:load', { name, gcode });
+                    pubsub.publish('gcode:load', {
+                        name,
+                        gcode: translateWithContext(gcode, controller.context)
+                    });
                 });
             } catch (err) {
                 // Ignore error
@@ -155,6 +188,13 @@ class MacroWidget extends Component {
                 });
         }
     };
+    controllerEvents = {
+        'workflow:state': (workflowState) => {
+            if (this.state.workflowState !== workflowState) {
+                this.setState({ workflowState: workflowState });
+            }
+        }
+    };
     pubsubTokens = [];
 
     constructor() {
@@ -163,12 +203,14 @@ class MacroWidget extends Component {
     }
     componentDidMount() {
         this.subscribe();
+        this.addControllerEvents();
 
         // Fetch the list of macros
         this.actions.fetchMacros();
     }
     componentWillUnmount() {
         this.unsubscribe();
+        this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
@@ -201,9 +243,6 @@ class MacroWidget extends Component {
                 } else {
                     this.setState({ port: '' });
                 }
-            }),
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                this.setState({ workflowState: workflowState });
             })
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
@@ -213,6 +252,18 @@ class MacroWidget extends Component {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
+    }
+    addControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.on(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.off(eventName, callback);
+        });
     }
     render() {
         const { minimized, isFullscreen } = this.state;

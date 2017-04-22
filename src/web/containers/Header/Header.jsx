@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import pubsub from 'pubsub-js';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
@@ -104,6 +103,9 @@ class Header extends Component {
         }
     };
     controllerEvents = {
+        'config:change': () => {
+            this.actions.fetchCommands();
+        },
         'task:start': (taskId) => {
             this.setState({
                 runningTasks: this.state.runningTasks.concat(taskId)
@@ -172,11 +174,10 @@ class Header extends Component {
                 });
             }
         },
-        'config:change': () => {
-            this.actions.fetchCommands();
+        'workflow:state': (workflowState) => {
+            this.setState({ workflowState: workflowState });
         }
     };
-    pubsubTokens = [];
     _isMounted = false;
 
     constructor() {
@@ -204,7 +205,6 @@ class Header extends Component {
     componentDidMount() {
         this._isMounted = true;
 
-        this.subscribe();
         this.addActionHandlers();
         this.addControllerEvents();
 
@@ -215,7 +215,6 @@ class Header extends Component {
     componentWillUnmount() {
         this._isMounted = false;
 
-        this.unsubscribe();
         this.removeActionHandlers();
         this.removeControllerEvents();
 
@@ -223,20 +222,6 @@ class Header extends Component {
     }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                this.setState({ workflowState: workflowState });
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     addActionHandlers() {
         Object.keys(this.actionHandlers).forEach(eventName => {

@@ -28,17 +28,12 @@ import {
     METRIC_UNITS,
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
     SMOOTHIE_ACTIVE_STATE_RUN,
     // TinyG
     TINYG,
-    TINYG_MACHINE_STATE_READY,
-    TINYG_MACHINE_STATE_STOP,
-    TINYG_MACHINE_STATE_END,
     TINYG_MACHINE_STATE_RUN,
     // Workflow
     WORKFLOW_STATE_RUNNING,
@@ -281,34 +276,23 @@ class VisualizerWidget extends Component {
             console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
 
             if (workflowState === WORKFLOW_STATE_IDLE) {
-                // All G-code data might be sent to Grbl at once while Grbl is running with
-                // character-counting streaming protocol, this will keep workflow in a running
-                // state if the controller state is not updated in time.
-                this.requestStart = true;
-
                 controller.command('gcode:start');
             }
             if (workflowState === WORKFLOW_STATE_PAUSED) {
                 controller.command('gcode:resume');
             }
-
-            pubsub.publish('workflowState', WORKFLOW_STATE_RUNNING);
         },
         handlePause: () => {
             const { workflowState } = this.state;
             console.assert(includes([WORKFLOW_STATE_RUNNING], workflowState));
 
             controller.command('gcode:pause');
-
-            pubsub.publish('workflowState', WORKFLOW_STATE_PAUSED);
         },
         handleStop: () => {
             const { workflowState } = this.state;
             console.assert(includes([WORKFLOW_STATE_PAUSED], workflowState));
 
             controller.command('gcode:stop');
-
-            pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
         },
         handleClose: () => {
             const { workflowState } = this.state;
@@ -434,30 +418,19 @@ class VisualizerWidget extends Component {
                 }
             });
         },
+        'workflow:state': (workflowState) => {
+            if (this.state.workflowState !== workflowState) {
+                this.setState({ workflowState: workflowState });
+            }
+        },
         'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
-            const { activeState, wpos } = status;
+            const { wpos } = status;
             const { modal = {} } = { ...parserstate };
             const units = {
                 'G20': IMPERIAL_UNITS,
                 'G21': METRIC_UNITS
             }[modal.units] || this.state.units;
-            const { workflowState, gcode } = this.state;
-            const { sent, total } = gcode;
-            const isControllerIdle = includes([
-                GRBL_ACTIVE_STATE_IDLE
-            ], activeState);
-
-            // Keep workflow in a running state if the controller state is not updated in time
-            if (this.requestStart && !isControllerIdle) {
-                this.requestStart = false;
-            }
-
-            const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
-            if (finishing) {
-                controller.command('gcode:stop');
-                pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
-            }
 
             this.setState({
                 units: units,
@@ -473,28 +446,12 @@ class VisualizerWidget extends Component {
         },
         'Smoothie:state': (state) => {
             const { status, parserstate } = { ...state };
-            const { activeState, wpos } = status;
+            const { wpos } = status;
             const { modal = {} } = { ...parserstate };
             const units = {
                 'G20': IMPERIAL_UNITS,
                 'G21': METRIC_UNITS
             }[modal.units] || this.state.units;
-            const { workflowState, gcode } = this.state;
-            const { sent, total } = gcode;
-            const isControllerIdle = includes([
-                SMOOTHIE_ACTIVE_STATE_IDLE
-            ], activeState);
-
-            // Keep workflow in a running state if the controller state is not updated in time
-            if (this.requestStart && !isControllerIdle) {
-                this.requestStart = false;
-            }
-
-            const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
-            if (finishing) {
-                controller.command('gcode:stop');
-                pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
-            }
 
             this.setState({
                 units: units,
@@ -510,29 +467,11 @@ class VisualizerWidget extends Component {
         },
         'TinyG:state': (state) => {
             const { sr } = { ...state };
-            const { machineState, wpos, modal = {} } = sr;
+            const { wpos, modal = {} } = sr;
             const units = {
                 'G20': IMPERIAL_UNITS,
                 'G21': METRIC_UNITS
             }[modal.units] || this.state.units;
-            const { workflowState, gcode } = this.state;
-            const { sent, total } = gcode;
-            const isControllerIdle = includes([
-                TINYG_MACHINE_STATE_READY,
-                TINYG_MACHINE_STATE_STOP,
-                TINYG_MACHINE_STATE_END
-            ], machineState);
-
-            // Keep workflow in a running state if the controller state is not updated in time
-            if (this.requestStart && !isControllerIdle) {
-                this.requestStart = false;
-            }
-
-            const finishing = (total > 0 && sent >= total) && (workflowState !== WORKFLOW_STATE_IDLE) && isControllerIdle && (this.requestStart === false);
-            if (finishing) {
-                controller.command('gcode:stop');
-                pubsub.publish('workflowState', WORKFLOW_STATE_IDLE);
-            }
 
             // https://github.com/synthetos/g2/wiki/Status-Reports
             // Work position are reported in current units, and also apply any offsets.
@@ -554,7 +493,6 @@ class VisualizerWidget extends Component {
         }
     };
     pubsubTokens = [];
-    requestStart = false;
 
     // refs
     widgetContent = null;
@@ -675,11 +613,6 @@ class VisualizerWidget extends Component {
                         ...initialState,
                         port: ''
                     });
-                }
-            }),
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                if (this.state.workflowState !== workflowState) {
-                    this.setState({ workflowState: workflowState });
                 }
             }),
             pubsub.subscribe('gcode:load', (msg, { name, gcode }) => {

@@ -23,6 +23,7 @@ class CNCController {
         'serialport:write': [],
         'feeder:status': [],
         'sender:status': [],
+        'workflow:state': [],
         'Grbl:state': [],
         'Smoothie:state': [],
         'TinyG:state': []
@@ -50,10 +51,6 @@ class CNCController {
                 this.type = '';
                 this.state = {};
             }
-        });
-
-        pubsub.subscribe('workflowState', (msg, workflowState) => {
-            this.workflowState = workflowState;
         });
     }
     connect() {
@@ -85,6 +82,9 @@ class CNCController {
             this.socket.on(eventName, (...args) => {
                 log.debug('socket.on("' + eventName + '"):', args);
 
+                if (eventName === 'workflow:state') {
+                    this.workflowState = args[0];
+                }
                 if (eventName === 'Grbl:state') {
                     this.type = GRBL;
                     this.state = { ...args[0] };

@@ -53,6 +53,11 @@ class GCodeWidget extends Component {
                 remainingTime
             });
         },
+        'workflow:state': (workflowState) => {
+            if (this.state.workflowState !== workflowState) {
+                this.setState({ workflowState: workflowState });
+            }
+        },
         'Grbl:state': (state) => {
             const { parserstate } = { ...state };
             const { modal = {} } = { ...parserstate };
@@ -187,9 +192,6 @@ class GCodeWidget extends Component {
                         }
                     }
                 });
-            }),
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                this.setState({ workflowState: workflowState });
             }),
             pubsub.subscribe('gcode:bbox', (msg, bbox) => {
                 const dX = bbox.max.x - bbox.min.x;

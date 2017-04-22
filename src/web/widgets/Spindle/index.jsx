@@ -45,6 +45,11 @@ class SpindleWidget extends Component {
         }
     };
     controllerEvents = {
+        'workflow:state': (workflowState) => {
+            if (this.state.workflowState !== workflowState) {
+                this.setState({ workflowState: workflowState });
+            }
+        },
         'Grbl:state': (state) => {
             const { parserstate } = { ...state };
             const { modal = {} } = { ...parserstate };
@@ -157,11 +162,6 @@ class SpindleWidget extends Component {
                         ...defaultState,
                         port: ''
                     });
-                }
-            }),
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                if (this.state.workflowState !== workflowState) {
-                    this.setState({ workflowState: workflowState });
                 }
             })
         ];

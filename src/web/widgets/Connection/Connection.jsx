@@ -207,7 +207,6 @@ class Connection extends React.Component {
             baudrate: baudrate
         });
 
-        let workflowState = '';
         let name = '';
         let gcode = '';
 
@@ -216,7 +215,6 @@ class Connection extends React.Component {
                 let next;
                 const c = _.find(res.body, { port: port });
                 if (c) {
-                    workflowState = _.get(c, 'workflowState');
                     next = api.fetchGCode({ port: port });
                 }
                 return next;
@@ -229,9 +227,6 @@ class Connection extends React.Component {
                 // Empty block
             })
             .then(() => {
-                if (workflowState) {
-                    pubsub.publish('workflowState', workflowState);
-                }
                 if (gcode) {
                     pubsub.publish('gcode:load', { name, gcode });
                 }

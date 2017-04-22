@@ -185,6 +185,11 @@ class ProbeWidget extends Component {
         }
     };
     controllerEvents = {
+        'workflow:state': (workflowState) => {
+            if (this.state.workflowState !== workflowState) {
+                this.setState({ workflowState: workflowState });
+            }
+        },
         'Grbl:state': (state) => {
             const { parserstate } = { ...state };
             const { modal = {} } = { ...parserstate };
@@ -413,11 +418,6 @@ class ProbeWidget extends Component {
                         ...initialState,
                         port: ''
                     });
-                }
-            }),
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                if (this.state.workflowState !== workflowState) {
-                    this.setState({ workflowState: workflowState });
                 }
             })
         ];

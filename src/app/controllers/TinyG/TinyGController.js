@@ -17,9 +17,12 @@ import store from '../../store';
 import TinyG from './TinyG';
 import {
     TINYG,
-    TINYG_SERIAL_BUFFER_LIMIT,
     TINYG_PLANNER_BUFFER_LOW_WATER_MARK,
     TINYG_PLANNER_BUFFER_HIGH_WATER_MARK,
+    TINYG_SERIAL_BUFFER_LIMIT,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
     TINYG_STATUS_CODES
 } from './constants';
 
@@ -74,9 +77,11 @@ class TinyGController {
     ready = false;
     state = {};
     queryTimer = null;
-
     blocked = false;
     sendResponseState = SEND_RESPONSE_STATE_NONE;
+    actionTime = {
+        senderFinishTime: 0
+    };
 
     // Event Trigger
     event = null;
@@ -213,18 +218,32 @@ class TinyGController {
             this.serialport.write(line + '\n');
             dbg(`[TinyG] > SEND: n=${n}, line="${line}"`);
         });
+        this.sender.on('start', (startTime) => {
+            this.actionTime.senderFinishTime = 0;
+        });
+        this.sender.on('end', (finishTime) => {
+            this.actionTime.senderFinishTime = finishTime;
+        });
 
         // Workflow
         this.workflow = new Workflow();
         this.workflow.on('start', () => {
+            this.emitAll('workflow:state', this.workflow.state);
             this.blocked = false;
             this.sendResponseState = SEND_RESPONSE_STATE_NONE;
             this.sender.rewind();
         });
         this.workflow.on('stop', () => {
+            this.emitAll('workflow:state', this.workflow.state);
             this.blocked = false;
             this.sendResponseState = SEND_RESPONSE_STATE_NONE;
             this.sender.rewind();
+        });
+        this.workflow.on('pause', () => {
+            this.emitAll('workflow:state', this.workflow.state);
+        });
+        this.workflow.on('resume', () => {
+            this.emitAll('workflow:state', this.workflow.state);
         });
 
         // TinyG
@@ -356,6 +375,34 @@ class TinyGController {
                 this.state = this.tinyg.state;
                 this.emitAll('TinyG:state', this.state);
             }
+
+            // Determine if the controller is completely idle
+            if (this.actionTime.senderFinishTime > 0) {
+                const now = new Date().getTime();
+                const timespan = Math.abs(now - this.actionTime.senderFinishTime);
+                const toleranceTime = 1000; // 1000ms
+                const activeState = _.get(this.state, 'status.activeState');
+                const isControllerIdle = _.includes([
+                    TINYG_MACHINE_STATE_READY,
+                    TINYG_MACHINE_STATE_STOP,
+                    TINYG_MACHINE_STATE_END
+                ], activeState);
+
+                if (!isControllerIdle) {
+                    // Extend the sender finish time if the controller state is not idle
+                    this.actionTime.senderFinishTime = now;
+                    return;
+                }
+
+                if (timespan > toleranceTime) {
+                    log.debug(`[TinyG] Stop workflow: activeState=${activeState}, timespan=${timespan}ms`);
+
+                    this.actionTime.senderFinishTime = 0;
+
+                    // Stop workflow
+                    this.command(null, 'gcode:stop');
+                }
+            }
         }, 250);
     }
     // https://github.com/synthetos/TinyG/wiki/TinyG-Configuration-for-Firmware-Version-0.97
@@ -453,6 +500,9 @@ class TinyGController {
         };
         sendInitCommands();
     }
+    clearActionValues() {
+        this.actionTime.senderFinishTime = 0;
+    }
     destroy() {
         this.connections = {};
 
@@ -541,6 +591,9 @@ class TinyGController {
 
             this.workflow.stop();
 
+            // Clear action values
+            this.clearActionValues();
+
             if (this.sender.state.gcode) {
                 // Unload G-code
                 this.command(null, 'unload');
@@ -596,13 +649,19 @@ class TinyGController {
         log.debug(`[TinyG] Add socket connection: id=${socket.id}`);
         this.connections[socket.id] = socket;
 
+        //
+        // Send data to newly connected client
+        //
         if (!_.isEmpty(this.state)) {
-            // Send controller state to a newly connected client
+            // controller state
             socket.emit('TinyG:state', this.state);
         }
-
+        if (this.workflow) {
+            // workflow state
+            socket.emit('workflow:state', this.workflow.state);
+        }
         if (this.sender) {
-            // Send sender status to a newly connected client
+            // sender status
             socket.emit('sender:status', this.sender.toJSON());
         }
     }

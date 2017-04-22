@@ -235,6 +235,19 @@ class AxesWidget extends Component {
         }
     };
     controllerEvents = {
+        'workflow:state': (workflowState) => {
+            if (this.state.workflowState !== workflowState) {
+                const { keypadJogging, selectedAxis } = this.state;
+
+                // Disable keypad jogging and shuttle wheel when the workflow is not in the idle state.
+                // This prevents accidental movement while sending G-code commands.
+                this.setState({
+                    keypadJogging: (workflowState === WORKFLOW_STATE_IDLE) ? keypadJogging : false,
+                    selectedAxis: (workflowState === WORKFLOW_STATE_IDLE) ? selectedAxis : '',
+                    workflowState: workflowState
+                });
+            }
+        },
         'Grbl:state': (state) => {
             const { status, parserstate } = { ...state };
             const { mpos, wpos } = status;
@@ -430,19 +443,6 @@ class AxesWidget extends Component {
                     this.setState({
                         ...defaultState,
                         port: ''
-                    });
-                }
-            }),
-            pubsub.subscribe('workflowState', (msg, workflowState) => {
-                if (this.state.workflowState !== workflowState) {
-                    const { keypadJogging, selectedAxis } = this.state;
-
-                    // Disable keypad jogging and shuttle wheel when the workflow is not in the idle state.
-                    // This prevents accidental movement while sending G-code commands.
-                    this.setState({
-                        keypadJogging: (workflowState === WORKFLOW_STATE_IDLE) ? keypadJogging : false,
-                        selectedAxis: (workflowState === WORKFLOW_STATE_IDLE) ? selectedAxis : '',
-                        workflowState: workflowState
                     });
                 }
             })

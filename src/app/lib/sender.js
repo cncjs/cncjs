@@ -232,7 +232,7 @@ class Sender extends events.EventEmitter {
         this.state.elapsedTime = 0;
         this.state.remainingTime = 0;
 
-        this.emit('load', { name, gcode, context });
+        this.emit('load', name, gcode, context);
         this.emit('change');
 
         return true;
@@ -282,7 +282,7 @@ class Sender extends events.EventEmitter {
             this.state.finishTime = 0;
             this.state.elapsedTime = 0;
             this.state.remainingTime = 0;
-            this.emit('start', { time: this.state.startTime });
+            this.emit('start', this.state.startTime);
             this.emit('change');
         }
 
@@ -301,7 +301,7 @@ class Sender extends events.EventEmitter {
 
         if (this.state.received >= this.state.total) {
             this.state.finishTime = now;
-            this.emit('end', { time: this.state.finishTime });
+            this.emit('end', this.state.finishTime);
             this.emit('change');
         }
 
