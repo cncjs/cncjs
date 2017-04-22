@@ -13,7 +13,9 @@ export const get = (req, res) => {
 
     const key = `state.${query.key}`;
     if (!config.has(key)) {
-        res.status(ERR_NOT_FOUND).send({ msg: 'Not found' });
+        res.status(ERR_NOT_FOUND).send({
+            msg: 'Not found'
+        });
         return;
     }
 
@@ -31,7 +33,9 @@ export const unset = (req, res) => {
 
     const key = `state.${query.key}`;
     if (!config.has(key)) {
-        res.status(ERR_NOT_FOUND).send({ msg: 'Not found' });
+        res.status(ERR_NOT_FOUND).send({
+            msg: 'Not found'
+        });
         return;
     }
 
