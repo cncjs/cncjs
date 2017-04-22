@@ -1,6 +1,6 @@
 /* eslint no-var: 0 */
-var path = require('path');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+const path = require('path');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 module.exports = {
     cache: true,

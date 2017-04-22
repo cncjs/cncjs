@@ -1,23 +1,25 @@
 /* eslint no-var: 0 */
 /* eslint prefer-arrow-callback: 0 */
-var without = require('lodash/without');
-var path = require('path');
-var webpack = require('webpack');
-var WriteFileWebpackPlugin = require('write-file-webpack-plugin');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
-var WebpackMd5HashPlugin = require('webpack-md5-hash');
-var ManifestPlugin = require('webpack-manifest-plugin');
-var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
-var nib = require('nib');
-var stylusLoader = require('stylus-loader');
-var baseConfig = require('./webpack.webconfig.base');
-var languages = require('./webpack.webconfig.i18n').languages;
-var pkg = require('./package.json');
+const without = require('lodash/without');
+const path = require('path');
+const webpack = require('webpack');
+const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
+const WebpackMd5HashPlugin = require('webpack-md5-hash');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
+const nib = require('nib');
+const stylusLoader = require('stylus-loader');
+const baseConfig = require('./webpack.webconfig.base');
+const languages = require('./webpack.webconfig.i18n').languages;
+const pkg = require('./package.json');
 
-var webpackConfig = Object.assign({}, baseConfig, {
+const timestamp = new Date().getTime();
+
+const webpackConfig = Object.assign({}, baseConfig, {
     devtool: 'eval',
     entry: {
         polyfill: [
@@ -37,8 +39,8 @@ var webpackConfig = Object.assign({}, baseConfig, {
     },
     output: {
         path: path.resolve(__dirname, 'output/web'),
-        chunkFilename: '[name].bundle.js?[hash]',
-        filename: '[name].bundle.js?[hash]',
+        chunkFilename: `[name].[hash].bundle.js?_=${timestamp}`,
+        filename: `[name].[hash].bundle.js?_=${timestamp}`,
         pathinfo: true,
         publicPath: ''
     },
@@ -74,7 +76,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
             // The order matters, the order should be reversed just like loader chain.
             // https://github.com/webpack/webpack/issues/1016
             names: ['vendor', 'polyfill', 'manifest'],
-            filename: '[name].js?[hash]',
+            filename: `[name].[hash].js?_=${timestamp}`,
             minChunks: Infinity
         }),
         new WebpackMd5HashPlugin(),

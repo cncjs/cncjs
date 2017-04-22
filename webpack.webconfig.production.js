@@ -1,33 +1,35 @@
 /* eslint no-var: 0 */
 /* eslint prefer-arrow-callback: 0 */
-var without = require('lodash/without');
-var crypto = require('crypto');
-var path = require('path');
-var findImports = require('find-imports');
-var webpack = require('webpack');
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
-var CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
-var WebpackMd5HashPlugin = require('webpack-md5-hash');
-var ManifestPlugin = require('webpack-manifest-plugin');
-var InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
-var nib = require('nib');
-var stylusLoader = require('stylus-loader');
-var baseConfig = require('./webpack.webconfig.base');
-var languages = require('./webpack.webconfig.i18n').languages;
-var pkg = require('./package.json');
+const without = require('lodash/without');
+const crypto = require('crypto');
+const path = require('path');
+const findImports = require('find-imports');
+const webpack = require('webpack');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
+const WebpackMd5HashPlugin = require('webpack-md5-hash');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
+const nib = require('nib');
+const stylusLoader = require('stylus-loader');
+const baseConfig = require('./webpack.webconfig.base');
+const languages = require('./webpack.webconfig.i18n').languages;
+const pkg = require('./package.json');
 
 // Use publicPath for production
-var payload = pkg.version;
-var publicPath = (function(payload) {
-    var algorithm = 'sha1';
-    var buf = String(payload);
-    var hash = crypto.createHash(algorithm).update(buf).digest('hex');
+const payload = pkg.version;
+const publicPath = (function(payload) {
+    const algorithm = 'sha1';
+    const buf = String(payload);
+    const hash = crypto.createHash(algorithm).update(buf).digest('hex');
     return '/' + hash.substr(0, 8) + '/'; // 8 digits
 }(payload));
 
-var webpackConfig = Object.assign({}, baseConfig, {
+const timestamp = new Date().getTime();
+
+const webpackConfig = Object.assign({}, baseConfig, {
     devtool: 'source-map',
     entry: {
         polyfill: [
@@ -45,8 +47,8 @@ var webpackConfig = Object.assign({}, baseConfig, {
     },
     output: {
         path: path.resolve(__dirname, 'dist/cnc/web'),
-        chunkFilename: '[name].[chunkhash].bundle.js',
-        filename: '[name].[chunkhash].bundle.js',
+        chunkFilename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
+        filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
         publicPath: publicPath
     },
     plugins: [
@@ -73,7 +75,7 @@ var webpackConfig = Object.assign({}, baseConfig, {
             // The order matters, the order should be reversed just like loader chain.
             // https://github.com/webpack/webpack/issues/1016
             names: ['vendor', 'polyfill', 'manifest'],
-            filename: '[name].[chunkhash].js',
+            filename: `[name].[chunkhash].js?_=${timestamp}`,
             minChunks: Infinity
         }),
         new WebpackMd5HashPlugin(),
