@@ -208,6 +208,7 @@ class Workspace extends Component {
 
             api.loadGCode({ port, name, gcode })
                 .then((res) => {
+                    const { name = '', gcode = '' } = { ...res.body };
                     pubsub.publish('gcode:load', { name, gcode });
                 })
                 .catch((res) => {

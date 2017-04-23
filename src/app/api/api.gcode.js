@@ -5,7 +5,7 @@ import {
 } from '../constants';
 
 export const set = (req, res) => {
-    const { port, meta, gcode } = req.body;
+    const { port, name, gcode, context = {} } = req.body;
 
     if (!port) {
         res.status(ERR_BAD_REQUEST).send({
@@ -29,8 +29,7 @@ export const set = (req, res) => {
     }
 
     // Load G-code
-    const { name = '', context = {} } = meta;
-    controller.command(null, 'gcode:load', name, gcode, context, (err) => {
+    controller.command(null, 'gcode:load', name, gcode, context, (err, data) => {
         if (err) {
             res.status(ERR_INTERNAL_SERVER_ERROR).send({
                 msg: 'Failed to load G-code: ' + err
@@ -38,7 +37,8 @@ export const set = (req, res) => {
             return;
         }
 
-        res.send({ err: false });
+        const { name, gcode, context } = data;
+        res.send({ name, gcode, context });
     });
 };
 

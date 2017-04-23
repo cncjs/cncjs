@@ -145,7 +145,7 @@ class VisualizerWidget extends Component {
 
             api.loadGCode({ port, name, gcode })
                 .then((res) => {
-                    // This will call loadGCode()
+                    const { name = '', gcode = '' } = { ...res.body };
                     pubsub.publish('gcode:load', { name, gcode });
                 })
                 .catch((res) => {

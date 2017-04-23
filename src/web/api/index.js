@@ -112,19 +112,11 @@ const unsetState = (options) => new Promise((resolve, reject) => {
 // G-code
 //
 const loadGCode = (options) => new Promise((resolve, reject) => {
-    const { port = '', name = '', gcode = '' } = { ...options };
-    const meta = {
-        name: name,
-        size: gcode.length
-    };
+    const { port = '', name = '', gcode = '', context = {} } = { ...options };
 
     authrequest
         .post('/api/gcode')
-        .send({
-            port: port,
-            meta: meta,
-            gcode: gcode
-        })
+        .send({ port, name, gcode, context })
         .end((err, res) => {
             if (err) {
                 reject(res);
