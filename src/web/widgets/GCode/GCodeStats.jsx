@@ -12,13 +12,16 @@ const formatISODateTime = (time) => {
 };
 
 const formatElapsedTime = (elapsedTime) => {
+    if (!elapsedTime) {
+        return '–';
+    }
     const d = moment.duration(elapsedTime, 'ms');
     return moment(d._data).format('HH:mm:ss');
 };
 
 const formatRemainingTime = (remainingTime) => {
     if (!remainingTime) {
-        return '––:––:––';
+        return '–';
     }
     const d = moment.duration(remainingTime, 'ms');
     return moment(d._data).format('HH:mm:ss');
