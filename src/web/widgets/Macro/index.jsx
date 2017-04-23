@@ -19,32 +19,36 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-const translateWithContext = (function() {
+const translateGCodeWithContext = (function() {
     const { Parser } = ExpressionEvaluator;
     const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
 
-    return function __translateWithContext(gcode, context = controller.context) {
+    return function fnTranslateGCodeWithContext(gcode, context = controller.context) {
         if (typeof gcode !== 'string') {
             log.error(`Invalid parameter: gcode=${gcode}`);
             return '';
         }
 
-        // Context
+        const lines = gcode.split('\n');
+
+        // The work position (i.e. posx, posy, posz) are not included in the context
         context = {
             ...controller.context,
             ...context
         };
 
-        try {
-            gcode = gcode.replace(reExpressionContext, (match) => {
-                const expr = match.slice(1, -1);
-                return Parser.evaluate(expr, context);
-            });
-        } catch (e) {
-            log.error('translateWithContext:', e);
-        }
+        return lines.map(line => {
+            try {
+                line = line.replace(reExpressionContext, (match) => {
+                    const expr = match.slice(1, -1);
+                    return Parser.evaluate(expr, context);
+                });
+            } catch (e) {
+                // Bypass unknown expression
+            }
 
-        return gcode;
+            return line;
+        }).join('\n');
     };
 }());
 
@@ -156,9 +160,10 @@ class MacroWidget extends Component {
                     }
 
                     const { gcode = '' } = { ...data };
+
                     pubsub.publish('gcode:load', {
                         name,
-                        gcode: translateWithContext(gcode, controller.context)
+                        gcode: translateGCodeWithContext(gcode, controller.context)
                     });
                 });
             } catch (err) {
