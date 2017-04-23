@@ -1,6 +1,5 @@
 import classNames from 'classnames';
 import get from 'lodash/get';
-import uniqueId from 'lodash/uniqueId';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { ProgressBar } from 'react-bootstrap';
