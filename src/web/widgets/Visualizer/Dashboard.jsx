@@ -4,11 +4,11 @@ import uniqueId from 'lodash/uniqueId';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import { ProgressBar } from 'react-bootstrap';
-import Clusterize from 'react-clusterize';
 import Anchor from '../../components/Anchor';
 import Panel from '../../components/Panel';
 import i18n from '../../lib/i18n';
 import { formatBytes } from '../../lib/numeral';
+import Clusterize from './Clusterize';
 import styles from './dashboard.styl';
 
 class Dashboard extends Component {
@@ -24,19 +24,7 @@ class Dashboard extends Component {
             this.lines = get(nextProps, 'state.gcode.content', '')
                 .split('\n')
                 .filter(line => line.trim().length > 0)
-                .map((line, index) => (
-                    <div key={uniqueId('gcode_')} className={styles.line}>
-                        <span
-                            className={classNames(
-                                styles.label,
-                                styles.labelDefault
-                            )}
-                        >
-                            {index + 1}
-                        </span>
-                        {line}
-                    </div>
-                ));
+                .map((line, index) => `<div class="${styles.line}"><span class="${styles.label} ${styles.labelDefault}">${index + 1}</span> ${line}</div>`); // Use pure HTML string to speed up rendering
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
