@@ -2,9 +2,9 @@ import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
 import settings from '../config/settings';
-import log from '../lib/log';
+import logger from '../lib/logger';
 
-const PREFIX = '[api.i18n]';
+const log = logger('[api.i18n]');
 
 export const getAcceptedLanguage = (req, res) => {
     let headers = req.headers || {};
@@ -73,7 +73,7 @@ export const getAcceptedLanguage = (req, res) => {
         preferred: preferred,
         match: match
     };
-    log.debug(`${PREFIX} getAcceptedLanguage: ${JSON.stringify(result)}`);
+    log.debug(`getAcceptedLanguage: ${JSON.stringify(result)}`);
 
     res.send(preferred);
 };
@@ -101,9 +101,9 @@ export const saveMissing = (req, res) => {
 
     fs.writeFile(savedMissingFile, prettyJSON, (err) => {
         if (err) {
-            log.error(`${PREFIX} err=${err}`);
+            log.error(`err=${err}`);
         } else {
-            log.debug(`${PREFIX} Saved missing ${JSON.stringify(savedMissingObject)} to "${savedMissingFile}"`);
+            log.debug(`Saved missing ${JSON.stringify(savedMissingObject)} to "${savedMissingFile}"`);
         }
     });
 

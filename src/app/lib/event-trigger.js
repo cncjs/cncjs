@@ -1,5 +1,7 @@
 import config from '../services/configstore';
-import log from './log';
+import logger from './logger';
+
+const log = logger('[event-trigger]');
 
 const noop = () => {};
 

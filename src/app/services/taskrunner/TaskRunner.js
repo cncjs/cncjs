@@ -2,9 +2,9 @@ import events from 'events';
 import defaultShell from 'spawn-default-shell';
 import without from 'lodash/without';
 import shortid from 'shortid';
-import log from '../../lib/log';
+import logger from '../../lib/logger';
 
-const PREFIX = '[taskrunner]';
+const log = logger('[TaskRunner]');
 
 class TaskRunner extends events.EventEmitter {
     tasks = [];
@@ -33,7 +33,7 @@ class TaskRunner extends events.EventEmitter {
         });
         child.on('error', (err) => {
             // Listen for error event can prevent from throwing an unhandled exception
-            log.error(`${PREFIX} Failed to start a child process: err=${JSON.stringify(err)}`);
+            log.error(`Failed to start a child process: err=${JSON.stringify(err)}`);
 
             this.tasks = without(this.tasks, taskId);
             this.emit('error', taskId, err);

@@ -3,7 +3,7 @@ import castArray from 'lodash/castArray';
 import isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
-import log from '../lib/log';
+import logger from '../lib/logger';
 import taskRunner from '../services/taskrunner';
 import config from '../services/configstore';
 import { getPagingRange } from './paging';
@@ -13,7 +13,7 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const PREFIX = '[api.commands]';
+const log = logger('[api.commands]');
 const CONFIG_KEY = 'commands';
 
 const getSanitizedRecords = () => {
@@ -45,7 +45,7 @@ const getSanitizedRecords = () => {
     }
 
     if (shouldUpdate) {
-        log.debug(`${PREFIX} update sanitized records: ${JSON.stringify(records)}`);
+        log.debug(`update sanitized records: ${JSON.stringify(records)}`);
 
         // Pass `{ silent changes }` will suppress the change event
         config.set(CONFIG_KEY, records, { silent: true });
@@ -214,7 +214,7 @@ export const run = (req, res) => {
     const title = record.title;
     const commands = record.commands;
 
-    log.info(`${PREFIX} run: title="${title}", commands="${commands}"`);
+    log.info(`run: title="${title}", commands="${commands}"`);
 
     const taskId = taskRunner.run(commands, title);
 

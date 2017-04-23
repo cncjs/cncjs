@@ -28,7 +28,7 @@ import {
     handle as i18nextHandle
 } from 'i18next-express-middleware';
 import urljoin from './lib/urljoin';
-import log from './lib/log';
+import logger from './lib/logger';
 import settings from './config/settings';
 import * as api from './api';
 import errclient from './lib/middleware/errclient';
@@ -41,6 +41,8 @@ import {
     ERR_UNAUTHORIZED,
     ERR_FORBIDDEN
 } from './constants';
+
+const log = logger('[app]');
 
 const renderPage = (view = 'index', cb = _.noop) => (req, res, next) => {
     // Override IE's Compatibility View Settings
@@ -120,7 +122,7 @@ const appMain = () => {
         if (forbiddenAccess) {
             const text = 'Access to the requested directory is only available from the local network.';
             res.status(ERR_FORBIDDEN).end(text);
-            log.warn(`[app] ERR_FORBIDDEN: ipaddr=${ipaddr}, message=${text}`);
+            log.warn(`ERR_FORBIDDEN: ipaddr=${ipaddr}, message=${text}`);
             return;
         }
 
@@ -235,7 +237,7 @@ const appMain = () => {
                 const ipaddr = req.ip || req.connection.remoteAddress;
                 const text = 'No Unauthorized Access';
                 res.status(ERR_UNAUTHORIZED).end(text);
-                log.warn(`[app] ERR_UNAUTHORIZED: ipaddr=${ipaddr}, code="${err.code}", message="${err.message}"`);
+                log.warn(`ERR_UNAUTHORIZED: ipaddr=${ipaddr}, code="${err.code}", message="${err.message}"`);
                 return;
             }
 

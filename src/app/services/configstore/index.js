@@ -3,9 +3,9 @@ import fs from 'fs';
 import _ from 'lodash';
 import chalk from 'chalk';
 import parseJSON from 'parse-json';
-import log from '../../lib/log';
+import logger from '../../lib/logger';
 
-const PREFIX = '[configstore]';
+const log = logger('[ConfigStore]');
 
 const defaultState = { // default state
     checkForUpdates: true
@@ -38,16 +38,16 @@ class ConfigStore extends events.EventEmitter {
             }
 
             this.watcher = fs.watch(this.file, (eventType, filename) => {
-                log.debug(`${PREFIX} fs.watch(eventType='${eventType}', filename='${filename}')`);
+                log.debug(`fs.watch(eventType='${eventType}', filename='${filename}')`);
 
                 if (eventType === 'change') {
-                    log.debug(`${PREFIX} "${filename}" has been changed`);
+                    log.debug(`"${filename}" has been changed`);
                     const ok = this.reload();
                     ok && this.emit('change', this.config); // it is ok to emit change event
                 }
             });
         } catch (err) {
-            log.error(`${PREFIX} err=${err}`);
+            log.error(`err=${err}`);
             this.emit('error', err); // emit error event
         }
 
@@ -61,14 +61,14 @@ class ConfigStore extends events.EventEmitter {
             }
         } catch (err) {
             err.fileName = this.file;
-            log.error(`${PREFIX} Unable to load data from "${this.file}"`);
+            log.error(`Unable to load data from "${this.file}"`);
             console.error(chalk.red(err));
             this.emit('error', err); // emit error event
             return false;
         }
 
         if (!_.isPlainObject(this.config)) {
-            log.error(`${PREFIX} "${this.file}" does not contain valid JSON`);
+            log.error(`"${this.file}" does not contain valid JSON`);
             this.config = {};
         }
 
@@ -84,7 +84,7 @@ class ConfigStore extends events.EventEmitter {
             const content = JSON.stringify(this.config, null, 4);
             fs.writeFileSync(this.file, content, 'utf8');
         } catch (err) {
-            log.error(`${PREFIX} Unable to write data to "${this.file}"`);
+            log.error(`Unable to write data to "${this.file}"`);
             this.emit('error', err); // emit error event
             return false;
         }

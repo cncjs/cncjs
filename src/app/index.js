@@ -11,8 +11,10 @@ import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
 import config from './services/configstore';
-import log from './lib/log';
+import logger from './lib/logger';
 import settings from './config/settings';
+
+const log = logger();
 
 const createServer = (options, callback) => {
     options = { ...options };
@@ -23,15 +25,15 @@ const createServer = (options, callback) => {
         // https://github.com/winstonjs/winston#logging-levels
         if (verbosity === 1) {
             _.set(settings, 'verbosity', verbosity);
-            log.logger.level = 'verbose';
+            logger.logger.level = 'verbose';
         }
         if (verbosity === 2) {
             _.set(settings, 'verbosity', verbosity);
-            log.logger.level = 'debug';
+            logger.logger.level = 'debug';
         }
         if (verbosity === 3) {
             _.set(settings, 'verbosity', verbosity);
-            log.logger.level = 'silly';
+            logger.logger.level = 'silly';
         }
     }
 

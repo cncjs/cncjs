@@ -4,14 +4,14 @@ import serialport from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
 import store from '../../store';
-import log from '../../lib/log';
+import logger from '../../lib/logger';
 import settings from '../../config/settings';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
 import { GrblController, SmoothieController, TinyGController } from '../../controllers';
 import { IP_WHITELIST } from '../../constants';
 
-const PREFIX = '[cncengine]';
+const log = logger('[CNCEngine]');
 
 class CNCEngine {
     listener = {
@@ -59,7 +59,7 @@ class CNCEngine {
             const deniedAccess = !allowedAccess;
 
             if (deniedAccess) {
-                log.warn(`${PREFIX} Forbidden: Deny connection from ${clientIp}`);
+                log.warn(`Forbidden: Deny connection from ${clientIp}`);
                 next(new Error('You are not allowed on this server!'));
                 return;
             }
@@ -70,13 +70,13 @@ class CNCEngine {
         this.io.on('connection', (socket) => {
             const address = socket.handshake.address;
             const token = socket.decoded_token || {};
-            log.debug(`${PREFIX} New connection from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
+            log.debug(`New connection from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
 
             // Add to the socket pool
             this.sockets.push(socket);
 
             socket.on('disconnect', () => {
-                log.debug(`${PREFIX} Disconnected from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
+                log.debug(`Disconnected from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
 
                 const controllers = store.get('controllers', {});
                 Object.keys(controllers).forEach(port => {
@@ -93,7 +93,7 @@ class CNCEngine {
 
             // Show available serial ports
             socket.on('list', () => {
-                log.debug(`${PREFIX} socket.list(): id=${socket.id}`);
+                log.debug(`socket.list(): id=${socket.id}`);
 
                 serialport.list((err, ports) => {
                     if (err) {
@@ -127,7 +127,7 @@ class CNCEngine {
 
             // Open serial port
             socket.on('open', (port, options) => {
-                log.debug(`${PREFIX} socket.open("${port}", ${JSON.stringify(options)}): id=${socket.id}`);
+                log.debug(`socket.open("${port}", ${JSON.stringify(options)}): id=${socket.id}`);
 
                 let controller = store.get(`controllers["${port}"]`);
                 if (!controller) {
@@ -165,7 +165,7 @@ class CNCEngine {
                     }
 
                     if (store.get(`controllers["${port}"]`)) {
-                        log.error(`${PREFIX} Serial port "${port}" was not properly closed`);
+                        log.error(`Serial port "${port}" was not properly closed`);
                     }
                     store.set(`controllers["${port}"]`, controller);
 
@@ -176,11 +176,11 @@ class CNCEngine {
 
             // Close serial port
             socket.on('close', (port) => {
-                log.debug(`${PREFIX} socket.close("${port}"): id=${socket.id}`);
+                log.debug(`socket.close("${port}"): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller) {
-                    log.error(`${PREFIX} Serial port "${port}" not accessible`);
+                    log.error(`Serial port "${port}" not accessible`);
                     return;
                 }
 
@@ -191,11 +191,11 @@ class CNCEngine {
             });
 
             socket.on('command', (port, cmd, ...args) => {
-                log.debug(`${PREFIX} socket.command("${port}", "${cmd}"): id=${socket.id}, args=${JSON.stringify(args)}`);
+                log.debug(`socket.command("${port}", "${cmd}"): id=${socket.id}, args=${JSON.stringify(args)}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
-                    log.error(`${PREFIX} Serial port "${port}" not accessible`);
+                    log.error(`Serial port "${port}" not accessible`);
                     return;
                 }
 
@@ -203,11 +203,11 @@ class CNCEngine {
             });
 
             socket.on('write', (port, data) => {
-                log.debug(`${PREFIX} socket.write("${port}", "${data}"): id=${socket.id}`);
+                log.debug(`socket.write("${port}", "${data}"): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
-                    log.error(`${PREFIX} Serial port "${port}" not accessible`);
+                    log.error(`Serial port "${port}" not accessible`);
                     return;
                 }
 
@@ -215,11 +215,11 @@ class CNCEngine {
             });
 
             socket.on('writeln', (port, data) => {
-                log.debug(`${PREFIX} socket.writeln("${port}", "${data}"): id=${socket.id}`);
+                log.debug(`socket.writeln("${port}", "${data}"): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
-                    log.error(`${PREFIX} Serial port "${port}" not accessible`);
+                    log.error(`Serial port "${port}" not accessible`);
                     return;
                 }
 

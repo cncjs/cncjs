@@ -4,7 +4,7 @@ import SerialPort from 'serialport';
 import ensureArray from '../../lib/ensure-array';
 import EventTrigger from '../../lib/event-trigger';
 import Feeder from '../../lib/feeder';
-import log from '../../lib/log';
+import logger from '../../lib/logger';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
 import Workflow, {
     WORKFLOW_STATE_IDLE,
@@ -24,9 +24,7 @@ import {
 
 const noop = _.noop;
 
-const dbg = (...args) => {
-    log.raw.apply(log, ['silly'].concat(args));
-};
+const log = logger('[Smoothie]');
 
 const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
 
@@ -45,12 +43,12 @@ class SmoothieController {
     serialportListener = {
         data: (data) => {
             this.smoothie.parse('' + data);
-            dbg(`[Smoothie] < ${data}`);
+            log.silly(`< ${data}`);
         },
         disconnect: (err) => {
             this.ready = false;
             if (err) {
-                log.warn(`[Smoothie] Disconnected from serial port "${this.options.port}":`, err);
+                log.warn(`Disconnected from serial port "${this.options.port}":`, err);
             }
 
             this.close();
@@ -58,7 +56,7 @@ class SmoothieController {
         error: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`[Smoothie] Unexpected error while reading/writing serial port "${this.options.port}":`, err);
+                log.error(`Unexpected error while reading/writing serial port "${this.options.port}":`, err);
             }
         }
     };
@@ -98,15 +96,15 @@ class SmoothieController {
     // Workflow
     workflow = null;
 
-    translateWithContext = (gcode, context = {}) => {
-        if (typeof gcode !== 'string') {
-            log.error(`[Smoothie] No valid G-code string: gcode=${gcode}`);
+    translateLineWithContext = (line, context = {}) => {
+        if (typeof line !== 'string') {
+            log.error(`Invalid parameter: line=${line}`);
             return '';
         }
 
         const { Parser } = ExpressionEvaluator;
 
-        // Work position
+        // Current work position
         const { x: posx, y: posy, z: posz, a: posa, b: posb, c: posc } = this.smoothie.getWorkPosition();
 
         // Context
@@ -119,7 +117,7 @@ class SmoothieController {
             zmax: 0,
             ...context,
 
-            // Work position cannot be overridden by context
+            // Current work position
             posx,
             posy,
             posz,
@@ -129,15 +127,15 @@ class SmoothieController {
         };
 
         try {
-            gcode = gcode.replace(reExpressionContext, (match) => {
+            line = line.replace(reExpressionContext, (match) => {
                 const expr = match.slice(1, -1);
                 return Parser.evaluate(expr, context);
             });
         } catch (e) {
-            log.error('[Smoothie] translateWithContext:', e);
+            log.error('translateLineWithContext:', e);
         }
 
-        return gcode;
+        return line;
     };
 
     constructor(port, options) {
@@ -151,7 +149,7 @@ class SmoothieController {
 
         // Event Trigger
         this.event = new EventTrigger((event, trigger, commands) => {
-            log.debug(`[Smoothie] EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
+            log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
             if (trigger === 'system') {
                 taskRunner.run(commands);
             } else {
@@ -163,14 +161,14 @@ class SmoothieController {
         this.feeder = new Feeder();
         this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
-                log.error(`[Smoothie] Serial port "${this.options.port}" is not accessible`);
+                log.error(`Serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
             if (this.smoothie.isAlarm()) {
                 // Feeder
                 this.feeder.clear();
-                log.warn('[Smoothie] Stopped sending G-code commands in Alarm mode');
+                log.warn('Stopped sending G-code commands in Alarm mode');
                 return;
             }
 
@@ -186,7 +184,7 @@ class SmoothieController {
             this.emitAll('serialport:write', line);
 
             this.serialport.write(line + '\n');
-            dbg(`[Smoothie] > ${line}`);
+            log.silly(`> ${line}`);
         });
 
         // Sender
@@ -196,18 +194,18 @@ class SmoothieController {
         });
         this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
-                log.error(`[Smoothie] Serial port "${this.options.port}" is not accessible`);
+                log.error(`Serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
             if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
-                log.error(`[Smoothie] Unexpected workflow state: ${this.workflow.state}`);
+                log.error(`Unexpected workflow state: ${this.workflow.state}`);
                 return;
             }
 
             line = String(line).trim();
             if (line.length === 0) {
-                log.warn(`[Smoothie] Expected non-empty line: N=${this.sender.state.sent}`);
+                log.warn(`Expected non-empty line: N=${this.sender.state.sent}`);
                 return;
             }
 
@@ -216,7 +214,7 @@ class SmoothieController {
             line = this.translateWithContext(line, context);
 
             this.serialport.write(line + '\n');
-            dbg(`[Smoothie] > ${line}`);
+            log.silly(`> ${line}`);
         });
         this.sender.on('start', (startTime) => {
             this.actionTime.senderFinishTime = 0;
@@ -348,7 +346,7 @@ class SmoothieController {
 
                 // Check if it has not been updated for a long time
                 if (timespan >= toleranceTime) {
-                    log.debug(`[Smoothie] Continue status report query: timespan=${timespan}ms`);
+                    log.debug(`Continue status report query: timespan=${timespan}ms`);
                     this.actionMask.queryStatusReport = false;
                 }
             }
@@ -374,7 +372,7 @@ class SmoothieController {
 
                 // Check if it has not been updated for a long time
                 if (timespan >= toleranceTime) {
-                    log.debug(`[Smoothie] Continue parser state query: timespan=${timespan}ms`);
+                    log.debug(`Continue parser state query: timespan=${timespan}ms`);
                     this.actionMask.queryParserState.state = false;
                     this.actionMask.queryParserState.reply = false;
                 }
@@ -443,7 +441,7 @@ class SmoothieController {
                 }
 
                 if (timespan > toleranceTime) {
-                    log.debug(`[Smoothie] Stop workflow: activeState=${activeState}, timespan=${timespan}ms`);
+                    log.debug(`Stop workflow: activeState=${activeState}, timespan=${timespan}ms`);
 
                     this.actionTime.senderFinishTime = 0;
 
@@ -514,7 +512,7 @@ class SmoothieController {
             const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
             if (cmd) {
                 this.serialport.write(cmd + '\n');
-                dbg(`[Smoothie] > ${cmd}`);
+                log.silly(`> ${cmd}`);
             }
             setTimeout(() => {
                 sendInitCommands(i + 1);
@@ -542,7 +540,7 @@ class SmoothieController {
 
         // Assertion check
         if (this.isOpen()) {
-            log.error(`[Smoothie] Cannot open serial port "${port}"`);
+            log.error(`Cannot open serial port "${port}"`);
             return;
         }
 
@@ -556,7 +554,7 @@ class SmoothieController {
         this.serialport.on('error', this.serialportListener.error);
         this.serialport.open((err) => {
             if (err) {
-                log.error(`[Smoothie] Error opening serial port "${port}":`, err);
+                log.error(`Error opening serial port "${port}":`, err);
                 this.emitAll('serialport:error', { port: port });
                 callback(err); // notify error
                 return;
@@ -571,7 +569,7 @@ class SmoothieController {
 
             callback(); // register controller
 
-            log.debug(`[Smoothie] Connected to serial port "${port}"`);
+            log.debug(`Connected to serial port "${port}"`);
 
             this.workflow.stop();
 
@@ -592,7 +590,7 @@ class SmoothieController {
 
         // Assertion check
         if (!this.serialport) {
-            log.error(`[Smoothie] Serial port "${port}" is not available`);
+            log.error(`Serial port "${port}" is not available`);
             return;
         }
 
@@ -611,7 +609,7 @@ class SmoothieController {
             this.serialport.removeListener('error', this.serialportListener.error);
             this.serialport.close((err) => {
                 if (err) {
-                    log.error(`[Smoothie] Error closing serial port "${port}":`, err);
+                    log.error(`Error closing serial port "${port}":`, err);
                 }
             });
         }
@@ -626,11 +624,11 @@ class SmoothieController {
     }
     addConnection(socket) {
         if (!socket) {
-            log.error('[Smoothie] The socket parameter is not specified');
+            log.error('The socket parameter is not specified');
             return;
         }
 
-        log.debug(`[Smoothie] Add socket connection: id=${socket.id}`);
+        log.debug(`Add socket connection: id=${socket.id}`);
         this.connections[socket.id] = socket;
 
         //
@@ -651,11 +649,11 @@ class SmoothieController {
     }
     removeConnection(socket) {
         if (!socket) {
-            log.error('[Smoothie] The socket parameter is not specified');
+            log.error('The socket parameter is not specified');
             return;
         }
 
-        log.debug(`[Smoothie] Remove socket connection: id=${socket.id}`);
+        log.debug(`Remove socket connection: id=${socket.id}`);
         this.connections[socket.id] = undefined;
         delete this.connections[socket.id];
     }
@@ -682,7 +680,7 @@ class SmoothieController {
 
                 this.event.trigger('gcode:load');
 
-                log.debug(`[Smoothie] Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
+                log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
                 this.workflow.stop();
 
@@ -697,7 +695,7 @@ class SmoothieController {
                 this.event.trigger('gcode:unload');
             },
             'start': () => {
-                log.warn(`[Smoothie] Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
                 this.command(socket, 'gcode:start');
             },
             'gcode:start': () => {
@@ -712,7 +710,7 @@ class SmoothieController {
                 this.sender.next();
             },
             'stop': () => {
-                log.warn(`[Smoothie] Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
                 this.command(socket, 'gcode:stop');
             },
             'gcode:stop': () => {
@@ -726,7 +724,7 @@ class SmoothieController {
                 }
             },
             'pause': () => {
-                log.warn(`[Smoothie] Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
                 this.command(socket, 'gcode:pause');
             },
             'gcode:pause': () => {
@@ -737,7 +735,7 @@ class SmoothieController {
                 this.write(socket, '!');
             },
             'resume': () => {
-                log.warn(`[Smoothie] Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
+                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
                 this.command(socket, 'gcode:resume');
             },
             'gcode:resume': () => {
@@ -889,7 +887,7 @@ class SmoothieController {
                 const macro = _.find(macros, { id: id });
 
                 if (!macro) {
-                    log.error(`[Smoothie] Cannot find the macro: id=${id}`);
+                    log.error(`Cannot find the macro: id=${id}`);
                     return;
                 }
 
@@ -909,7 +907,7 @@ class SmoothieController {
                 const macro = _.find(macros, { id: id });
 
                 if (!macro) {
-                    log.error(`[Smoothie] Cannot find the macro: id=${id}`);
+                    log.error(`Cannot find the macro: id=${id}`);
                     return;
                 }
 
@@ -933,7 +931,7 @@ class SmoothieController {
         }[cmd];
 
         if (!handler) {
-            log.error(`[Smoothie] Unknown command: ${cmd}`);
+            log.error(`Unknown command: ${cmd}`);
             return;
         }
 
@@ -942,7 +940,7 @@ class SmoothieController {
     write(socket, data) {
         // Assertion check
         if (this.isClose()) {
-            log.error(`[Smoothie] Serial port "${this.options.port}" is not accessible`);
+            log.error(`Serial port "${this.options.port}" is not accessible`);
             return;
         }
 
@@ -952,7 +950,7 @@ class SmoothieController {
 
         this.emitAll('serialport:write', data);
         this.serialport.write(data);
-        dbg(`[Smoothie] > ${data}`);
+        log.silly(`> ${data}`);
     }
     writeln(socket, data) {
         if (_.includes(SMOOTHIE_REALTIME_COMMANDS, data)) {

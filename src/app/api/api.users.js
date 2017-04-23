@@ -6,7 +6,7 @@ import find from 'lodash/find';
 import some from 'lodash/some';
 import uuid from 'uuid';
 import settings from '../config/settings';
-import log from '../lib/log';
+import logger from '../lib/logger';
 import config from '../services/configstore';
 import { getPagingRange } from './paging';
 import {
@@ -18,7 +18,7 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const PREFIX = '[api.users]';
+const log = logger('[api.users]');
 const CONFIG_KEY = 'users';
 
 // Generate access token
@@ -55,7 +55,7 @@ const getSanitizedRecords = () => {
     }
 
     if (shouldUpdate) {
-        log.debug(`${PREFIX} update sanitized records: ${JSON.stringify(records)}`);
+        log.debug(`update sanitized records: ${JSON.stringify(records)}`);
 
         // Pass `{ silent changes }` will suppress the change event
         config.set(CONFIG_KEY, records, { silent: true });
@@ -117,7 +117,7 @@ export const signin = (req, res) => {
 
         const iat = new Date(user.iat * 1000).toISOString();
         const exp = new Date(user.exp * 1000).toISOString();
-        log.debug(`${PREFIX} jwt.verify: id=${user.id}, name="${user.name}", iat=${iat}, exp=${exp}`);
+        log.debug(`jwt.verify: id=${user.id}, name="${user.name}", iat=${iat}, exp=${exp}`);
 
         user = find(enabledUsers, { id: user.id, name: user.name });
         if (!user) {

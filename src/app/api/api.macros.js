@@ -3,7 +3,7 @@ import castArray from 'lodash/castArray';
 import isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
-import log from '../lib/log';
+import logger from '../lib/logger';
 import config from '../services/configstore';
 import { getPagingRange } from './paging';
 import {
@@ -12,7 +12,7 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const PREFIX = '[api.macros]';
+const log = logger('[api.macros]');
 const CONFIG_KEY = 'macros';
 
 const getSanitizedRecords = () => {
@@ -33,7 +33,7 @@ const getSanitizedRecords = () => {
     }
 
     if (shouldUpdate) {
-        log.debug(`${PREFIX} update sanitized records: ${JSON.stringify(records)}`);
+        log.debug(`update sanitized records: ${JSON.stringify(records)}`);
 
         // Pass `{ silent changes }` will suppress the change event
         config.set(CONFIG_KEY, records, { silent: true });
