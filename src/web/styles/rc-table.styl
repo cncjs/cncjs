@@ -17,13 +17,15 @@
             border-bottom: none;
         }
         .rc-table-placeholder {
-            border: none;
+            border: 0;
         }
     }
 
     .overflow-ellipsis {
-        @extend .text-overflow-ellipsis;
-        display: block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        display: inline-block;
     }
 
     .rc-table-content {
@@ -49,7 +51,6 @@
         border-bottom: 2px solid #d0d0d0;
         color: #777;
         font-weight: 700;
-        vertical-align: top!important;
     }
     
     .rc-table-tbody tr:hover {
