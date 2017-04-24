@@ -56,10 +56,7 @@ class TinyGParser {
         for (let parser of parsers) {
             const result = parser.parse(data);
             if (result) {
-                if (process.env.NODE_ENV === 'development') {
-                    // Intended for development only
-                    _.set(result, 'payload.raw', data);
-                }
+                _.set(result, 'payload.raw', data);
                 _.set(result, 'payload.f', data.f || []); // footer
                 return result;
             }

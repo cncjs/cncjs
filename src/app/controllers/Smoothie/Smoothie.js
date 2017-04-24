@@ -60,10 +60,7 @@ class SmoothieLineParser {
         for (let parser of parsers) {
             const result = parser.parse(line);
             if (result) {
-                if (process.env.NODE_ENV === 'development') {
-                    // Intended for development only
-                    _.set(result, 'payload.raw', line);
-                }
+                _.set(result, 'payload.raw', line);
                 return result;
             }
         }
@@ -495,6 +492,10 @@ class Smoothie extends events.EventEmitter {
                     ...payload
                 }
             };
+
+            // Delete the raw key
+            delete nextState.status.raw;
+
             if (!_.isEqual(this.state.status, nextState.status)) {
                 this.state = nextState; // enforce state change
             }
@@ -516,11 +517,14 @@ class Smoothie extends events.EventEmitter {
             return;
         }
         if (type === SmoothieLineParserResultParserState) {
+            const { modal, tool, feedrate, spindle } = payload;
             const nextState = {
                 ...this.state,
                 parserstate: {
-                    ...this.state.parserstate,
-                    ...payload
+                    modal: modal,
+                    tool: tool,
+                    feedrate: feedrate,
+                    spindle: spindle
                 }
             };
             if (!_.isEqual(this.state.parserstate, nextState.parserstate)) {
@@ -545,9 +549,12 @@ class Smoothie extends events.EventEmitter {
             return;
         }
         if (type === SmoothieLineParserResultVersion) {
+            const { build, mcu, sysclk } = payload;
             const nextState = { // enforce state change
                 ...this.state,
-                ...payload
+                build: build,
+                mcu: mcu,
+                sysclk: sysclk
             };
             if (!_.isEqual(this.state.build, nextState.build)) {
                 this.state = nextState; // enforce state change

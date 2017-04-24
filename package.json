@@ -25,7 +25,7 @@
   "preferGlobal": true,
   "scripts": {
     "pkgsync": "babel-node scripts/pkgsync.js",
-    "prepare": "npm run clean && npm run lint && NODE_ENV=development npm run test && npm run build",
+    "prepare": "npm run clean && npm run lint && npm run test && npm run build",
     "prepublish": "npm run prepare",
     "prebuild": "npm run prebuild-prod",
     "prebuild-latest": "bash scripts/prebuild-latest.sh",
