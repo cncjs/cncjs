@@ -83,7 +83,10 @@ class GrblLineParser {
         for (let parser of parsers) {
             const result = parser.parse(line);
             if (result) {
-                _.set(result, 'payload.raw', line);
+                if (process.env.NODE_ENV === 'development') {
+                    // Intended for development only
+                    _.set(result, 'payload.raw', line);
+                }
                 return result;
             }
         }
