@@ -139,7 +139,6 @@
     "classnames": "~2.2.5",
     "clusterize.js": "~0.17.6",
     "colornames": "~1.1.1",
-    "colors": "~1.1.2",
     "commander": "~2.9.0",
     "compression": "~1.6.2",
     "connect-multiparty": "~2.0.0",

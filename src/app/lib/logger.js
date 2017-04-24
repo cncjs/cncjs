@@ -1,5 +1,5 @@
-import colors from 'colors/safe'; // Using string safe API
 import util from 'util';
+import chalk from 'chalk';
 import winston from 'winston';
 import settings from '../config/settings';
 
@@ -34,7 +34,7 @@ module.exports = (namespace = '') => {
                 args = args.concat(getStackTrace()[2]);
             }
             return (namespace.length > 0)
-                ? logger[level](colors.cyan(namespace), util.format(...args))
+                ? logger[level](chalk.cyan(namespace), util.format(...args))
                 : logger[level](util.format(...args));
         };
         return acc;
