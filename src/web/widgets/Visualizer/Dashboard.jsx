@@ -31,38 +31,33 @@ class Dashboard extends Component {
     }
     render() {
         const { show, state } = this.props;
-
-        if (!show) {
-            return null;
-        }
-
-        const filename = (function(state) {
-            if (state.gcode.ready) {
-                const url = `api/gcode/download?port=${state.port}`;
-                const defaultName = 'noname.nc';
-                return (
-                    <Anchor href={url}>
-                        <strong>{state.gcode.name || defaultName}</strong>
-                    </Anchor>
-                );
-            }
-
-            return i18n._('G-code not loaded');
-        }(state));
+        const style = {
+            display: show ? 'block' : 'none'
+        };
+        const downloadUrl = `api/gcode/download?port=${state.port}`;
+        const filename = state.gcode.name || 'noname.nc';
         const filesize = state.gcode.ready ? formatBytes(state.gcode.size, 0) : '';
         const { sent = 0, total = 0 } = state.gcode;
         const rowHeight = 20;
         const scrollTop = (sent > 0) ? (sent - 1) * rowHeight : 0;
 
         return (
-            <Panel className={styles.dashboard}>
+            <Panel
+                className={classNames(styles.dashboard)}
+                style={style}
+            >
                 <Panel.Heading>
                     {i18n._('G-code')}
                 </Panel.Heading>
                 <Panel.Body>
                     <div className="clearfix" style={{ marginBottom: 10 }}>
                         <div className="pull-left text-nowrap">
-                            {filename}
+                            {state.gcode.ready &&
+                            <Anchor href={downloadUrl}>
+                                <strong>{filename}</strong>
+                            </Anchor>
+                            }
+                            {!state.gcode.ready && i18n._('G-code not loaded')}
                         </div>
                         <div className="pull-right text-nowrap">
                             {filesize}
