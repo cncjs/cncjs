@@ -179,7 +179,7 @@ class SmoothieController {
 
             // Example
             // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-            line = this.translateWithContext(line, context);
+            line = this.translateLineWithContext(line, context);
 
             this.emitAll('serialport:write', line);
 
@@ -211,7 +211,7 @@ class SmoothieController {
 
             // Example
             // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-            line = this.translateWithContext(line, context);
+            line = this.translateLineWithContext(line, context);
 
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);

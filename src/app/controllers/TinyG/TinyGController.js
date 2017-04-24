@@ -379,12 +379,12 @@ class TinyGController {
                 const now = new Date().getTime();
                 const timespan = Math.abs(now - this.actionTime.senderFinishTime);
                 const toleranceTime = 1000; // 1000ms
-                const activeState = _.get(this.state, 'status.activeState');
+                const machineState = _.get(this.state, 'sr.machineState');
                 const isControllerIdle = _.includes([
                     TINYG_MACHINE_STATE_READY,
                     TINYG_MACHINE_STATE_STOP,
                     TINYG_MACHINE_STATE_END
-                ], activeState);
+                ], machineState);
 
                 if (!isControllerIdle) {
                     // Extend the sender finish time if the controller state is not idle
@@ -393,7 +393,7 @@ class TinyGController {
                 }
 
                 if (timespan > toleranceTime) {
-                    log.debug(`Stop workflow: activeState=${activeState}, timespan=${timespan}ms`);
+                    log.debug(`Stop workflow: machineState=${machineState}, timespan=${timespan}ms`);
 
                     this.actionTime.senderFinishTime = 0;
 
