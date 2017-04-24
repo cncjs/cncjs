@@ -8,6 +8,7 @@ import logger from '../../lib/logger';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
 import Workflow, {
     WORKFLOW_STATE_IDLE,
+    WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/workflow';
 import config from '../../services/configstore';
@@ -283,6 +284,13 @@ class SmoothieController {
                 this.sender.ack();
                 this.sender.next();
                 return;
+            }
+            if (this.workflow.state === WORKFLOW_STATE_PAUSED) {
+                const { sent, received } = this.sender.state;
+                if (sent > received) {
+                    this.sender.ack();
+                    return;
+                }
             }
 
             this.emitAll('serialport:read', res.raw);
