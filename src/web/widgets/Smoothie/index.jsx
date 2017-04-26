@@ -226,8 +226,10 @@ class SmoothieWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header className={this.props.sortable.handleClassName}>
+                <Widget.Header>
                     <Widget.Title>
+                        <Widget.Sortable className={this.props.sortable.handleClassName} />
+                        <span className="space" />
                         Smoothie
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>

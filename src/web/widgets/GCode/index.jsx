@@ -255,8 +255,12 @@ class GCodeWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header className={this.props.sortable.handleClassName}>
-                    <Widget.Title>{i18n._('G-code')}</Widget.Title>
+                <Widget.Header>
+                    <Widget.Title>
+                        <Widget.Sortable className={this.props.sortable.handleClassName} />
+                        <span className="space" />
+                        {i18n._('G-code')}
+                    </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={minimized ? i18n._('Open') : i18n._('Close')}

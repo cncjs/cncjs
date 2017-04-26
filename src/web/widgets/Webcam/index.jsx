@@ -122,8 +122,12 @@ class WebcamWidget extends Component {
 
         return (
             <Widget fullscreen={isFullscreen}>
-                <Widget.Header className={this.props.sortable.handleClassName}>
-                    <Widget.Title>{i18n._('Webcam')}</Widget.Title>
+                <Widget.Header>
+                    <Widget.Title>
+                        <Widget.Sortable className={this.props.sortable.handleClassName} />
+                        <span className="space" />
+                        {i18n._('Webcam')}
+                    </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={i18n._('Edit')}

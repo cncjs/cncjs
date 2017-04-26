@@ -45,11 +45,19 @@
     .widget-header {
         clearfix();
         background-color: #f6f7f8;
-        cursor: move;
         border: 1px solid #ccc;
     }
     .widget-header-fixed {
         cursor: default;
+    }
+
+    .widget-sortable {
+        display: inline-block;
+        cursor: move;
+
+        > a {
+            cursor: move;
+        }
     }
 
     .widget-title {

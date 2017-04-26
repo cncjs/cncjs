@@ -77,7 +77,7 @@ class PrimaryWidgets extends Component {
                 className={classNames(className, styles.widgets)}
                 options={{
                     animation: 150,
-                    delay: 300, // Touch and hold delay
+                    delay: 0, // Touch and hold delay
                     group: {
                         name: 'primary',
                         pull: true,
