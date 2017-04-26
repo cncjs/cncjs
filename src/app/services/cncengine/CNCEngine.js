@@ -3,9 +3,10 @@ import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
-import store from '../../store';
+import ensureArray from '../../lib/ensure-array';
 import logger from '../../lib/logger';
 import settings from '../../config/settings';
+import store from '../../store';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
 import { GrblController, SmoothieController, TinyGController } from '../../controllers';
@@ -101,7 +102,7 @@ class CNCEngine {
                         return;
                     }
 
-                    ports = ports.concat(_.get(settings, 'cnc.ports') || []);
+                    ports = ports.concat(ensureArray(config.get('ports', [])));
 
                     const controllers = store.get('controllers', {});
                     const portsInUse = _(controllers)
