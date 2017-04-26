@@ -180,6 +180,8 @@
     "Go To Machine Zero On A Axis (G53 G0 A0)": "A軸を機械原点へ移動 (G53 G0 A0)",
     "Zero Out Temporary A Axis (G92 A0)": "",
     "Un-Zero Out Temporary A Axis (G92.1 A0)": "",
+    "Delete Widget": "",
+    "Are you sure you want to delete this widget?": "",
     "Open": "開く",
     "Fullscreen": "全画面表示",
     "Remove": "削除",

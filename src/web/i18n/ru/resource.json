@@ -180,6 +180,8 @@
     "Go To Machine Zero On A Axis (G53 G0 A0)": "В машинный ноль по оси A (G53 G0 A0)",
     "Zero Out Temporary A Axis (G92 A0)": "Обнулить временное смещение по оси A (G92 A0)",
     "Un-Zero Out Temporary A Axis (G92.1 A0)": "Отменить обнуление оси A (G92.1 A0)",
+    "Delete Widget": "",
+    "Are you sure you want to delete this widget?": "",
     "Open": "Открыть",
     "Fullscreen": "Развернуть на полный экран",
     "Remove": "Удалить",

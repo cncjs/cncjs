@@ -180,6 +180,8 @@
     "Go To Machine Zero On A Axis (G53 G0 A0)": "Muovi a Zero l'asse macchina A (G53 G0 A0)",
     "Zero Out Temporary A Axis (G92 A0)": "",
     "Un-Zero Out Temporary A Axis (G92.1 A0)": "",
+    "Delete Widget": "",
+    "Are you sure you want to delete this widget?": "",
     "Open": "Apri",
     "Fullscreen": "Schermo intero",
     "Remove": "Rimuovi",

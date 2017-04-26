@@ -180,6 +180,8 @@
     "Go To Machine Zero On A Axis (G53 G0 A0)": "前往 A 轴机器原点 （G53 G0 A0）",
     "Zero Out Temporary A Axis (G92 A0)": "设置 A 轴临时原点 （G92 A0）",
     "Un-Zero Out Temporary A Axis (G92.1 A0)": "取消设置 A 轴临时原点 （G92.1 A0）",
+    "Delete Widget": "",
+    "Are you sure you want to delete this widget?": "",
     "Open": "打开",
     "Fullscreen": "全屏",
     "Remove": "删除",
