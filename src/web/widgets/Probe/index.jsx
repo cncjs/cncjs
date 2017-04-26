@@ -4,9 +4,10 @@ import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
+import confirm from '../../lib/confirm';
+import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
-import controller from '../../lib/controller';
 import store from '../../store';
 import Probe from './Probe';
 import {
@@ -59,6 +60,22 @@ class ProbeWidget extends Component {
     };
 
     actions = {
+        toggleFullscreen: () => {
+            const { isFullscreen } = this.state;
+            this.setState({ isFullscreen: !isFullscreen });
+        },
+        toggleMinimized: () => {
+            const { minimized } = this.state;
+            this.setState({ minimized: !minimized });
+        },
+        deleteWidget: () => {
+            confirm({
+                title: i18n._('Delete Widget'),
+                body: i18n._('Are you sure you want to delete this widget?')
+            }).then(() => {
+                this.props.onDelete();
+            });
+        },
         openModal: (name = MODAL_NONE, params = {}) => {
             this.setState({
                 modal: {
@@ -498,14 +515,16 @@ class ProbeWidget extends Component {
             <Widget fullscreen={isFullscreen}>
                 <Widget.Header>
                     <Widget.Title>
-                        <Widget.Sortable className={this.props.sortable.handleClassName} />
-                        <span className="space" />
+                        <Widget.Sortable className={this.props.sortable.handleClassName}>
+                            <i className="fa fa-bars" />
+                            <span className="space" />
+                        </Widget.Sortable>
                         {i18n._('Probe')}
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={minimized ? i18n._('Open') : i18n._('Close')}
-                            onClick={(event, val) => this.setState({ minimized: !minimized })}
+                            onClick={actions.toggleMinimized}
                         >
                             <i
                                 className={classNames(
@@ -517,7 +536,7 @@ class ProbeWidget extends Component {
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Fullscreen')}
-                            onClick={(event, val) => this.setState({ isFullscreen: !isFullscreen })}
+                            onClick={actions.toggleFullscreen}
                         >
                             <i
                                 className={classNames(
@@ -529,7 +548,7 @@ class ProbeWidget extends Component {
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Remove')}
-                            onClick={(event) => this.props.onDelete()}
+                            onClick={actions.deleteWidget}
                         >
                             <i className="fa fa-times" />
                         </Widget.Button>

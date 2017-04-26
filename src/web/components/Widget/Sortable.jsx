@@ -9,7 +9,7 @@ const Sortable = (props) => {
     return (
         <div className={classNames(className, styles.widgetSortable)} style={style}>
             <Anchor {...rest}>
-                {children || <i className="fa fa-bars" />}
+                {children}
             </Anchor>
         </div>
     );

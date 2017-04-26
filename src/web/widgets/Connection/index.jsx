@@ -16,6 +16,16 @@ class ConnectionWidget extends Component {
         minimized: store.get('widgets.connection.minimized', false),
         isFullscreen: false
     };
+    actions = {
+        toggleFullscreen: () => {
+            const { isFullscreen } = this.state;
+            this.setState({ isFullscreen: !isFullscreen });
+        },
+        toggleMinimized: () => {
+            const { minimized } = this.state;
+            this.setState({ minimized: !minimized });
+        }
+    };
 
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
@@ -29,19 +39,24 @@ class ConnectionWidget extends Component {
     }
     render() {
         const { minimized, isFullscreen } = this.state;
+        const actions = {
+            ...this.actions
+        };
 
         return (
             <Widget fullscreen={isFullscreen}>
                 <Widget.Header>
                     <Widget.Title>
-                        <Widget.Sortable className={this.props.sortable.handleClassName} />
-                        <span className="space" />
+                        <Widget.Sortable className={this.props.sortable.handleClassName}>
+                            <i className="fa fa-bars" />
+                            <span className="space" />
+                        </Widget.Sortable>
                         {i18n._('Connection')}
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
                             title={minimized ? i18n._('Open') : i18n._('Close')}
-                            onClick={(event, val) => this.setState({ minimized: !minimized })}
+                            onClick={actions.toggleMinimized}
                         >
                             <i
                                 className={classNames(
@@ -53,7 +68,7 @@ class ConnectionWidget extends Component {
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Fullscreen')}
-                            onClick={(event, val) => this.setState({ isFullscreen: !isFullscreen })}
+                            onClick={actions.toggleFullscreen}
                         >
                             <i
                                 className={classNames(

@@ -19,24 +19,29 @@
 
     &.widget-fullscreen {
         position: fixed;
-        top: 50px;
-        left: 0;
-        z-index: 100;
-        width: 100%;
-        height: 100%;
+        top: 50px; // navbar
+        left: 60px; // sidebar
+        right: 0;
+        bottom: 0;
+        margin: 0;
+        z-index: 1000;
+
+        .widget-sortable {
+            display: none;
+        }
     }
     &.widget-fullscreen {
         .widget-content {
             position: absolute;
             top: 0;
             right: 0;
-            bottom: 50px; // .navbar height
+            bottom: 0;
             left: 0;
         }
         .widget-header + .widget-content {
             position: absolute;
             top: 34px; // .widget-header height
-            bottom: 50px; // .navbar height
+            bottom: 0;
             left: 0;
             right: 0;
         }
