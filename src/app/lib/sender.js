@@ -7,8 +7,10 @@ export const SP_TYPE_CHAR_COUNTING = 1;
 const noop = () => {};
 
 const stripComments = (() => {
-    const re1 = new RegExp(/\s*[%#;].*/g); // Strip everything after %, #, or ; to the end of the line, including preceding spaces
-    const re2 = new RegExp(/\s*\([^\)]*\)/g); // Remove anything inside the parentheses
+    // Strip comments that follow the comment marker ';'
+    const re1 = new RegExp(/\s*;.*/g);
+    // Remove anything inside the parentheses '()'
+    const re2 = new RegExp(/\s*\([^\)]*\)/g);
     return line => line.replace(re1, '').replace(re2, '');
 })();
 
@@ -112,6 +114,7 @@ class SPCharCounting {
 class Sender extends events.EventEmitter {
     sp = null; // Streaming Protocol
     state = {
+        hold: false,
         name: '',
         gcode: '',
         context: {},
@@ -122,15 +125,21 @@ class Sender extends events.EventEmitter {
         startTime: 0,
         finishTime: 0,
         elapsedTime: 0,
-        remainingTime: 0,
-        changed: false
+        remainingTime: 0
     };
+    stateChanged = false;
+    dataFilter = null;
 
     // @param {number} [type] Streaming protocol type. 0 for send-response, 1 for character-counting.
     // @param {object} [options] The options object.
     // @param {number} [options.bufferSize] The buffer size used in character-counting streaming protocol. Defaults to 127.
+    // @param {function} [options.dataFilter] A function to be used to handle the data. The function accepts two arguments: The data to be sent to the controller, and the context.
     constructor(type = SP_TYPE_SEND_RESPONSE, options = {}) {
         super();
+
+        if (typeof options.dataFilter === 'function') {
+            this.dataFilter = options.dataFilter;
+        }
 
         // character-counting
         if (type === SP_TYPE_CHAR_COUNTING) {
@@ -140,7 +149,7 @@ class Sender extends events.EventEmitter {
                     sp.dataLength -= lineLength;
                 }
 
-                while (this.state.sent < this.state.total) {
+                while (!this.state.hold && (this.state.sent < this.state.total)) {
                     // Remove leading and trailing whitespace from both ends of a string
                     sp.line = sp.line || stripComments(this.state.lines[this.state.sent]).trim();
 
@@ -154,9 +163,15 @@ class Sender extends events.EventEmitter {
 
                     if (sp.line.length === 0) {
                         this.ack(); // ack empty line
-
-                        // continue to the next line if empty
                         continue;
+                    }
+
+                    if (this.dataFilter) {
+                        sp.line = this.dataFilter(sp.line, this.state.context) || '';
+                        if (sp.line.length === 0) {
+                            this.ack(); // ack empty line
+                            continue;
+                        }
                     }
 
                     const line = sp.line + '\n';
@@ -171,18 +186,24 @@ class Sender extends events.EventEmitter {
         // send-response
         if (type === SP_TYPE_SEND_RESPONSE) {
             this.sp = new SPSendResponse(options, (sp) => {
-                while (this.state.sent < this.state.total) {
+                while (!this.state.hold && (this.state.sent < this.state.total)) {
                     // Remove leading and trailing whitespace from both ends of a string
-                    const line = stripComments(this.state.lines[this.state.sent]).trim();
+                    let line = stripComments(this.state.lines[this.state.sent]).trim();
 
                     this.state.sent++;
                     this.emit('change');
 
                     if (line.length === 0) {
                         this.ack(); // ack empty line
-
-                        // continue to the next line if empty
                         continue;
+                    }
+
+                    if (this.dataFilter) {
+                        line = this.dataFilter(line, this.state.context) || '';
+                        if (line.length === 0) {
+                            this.ack(); // ack empty line
+                            continue;
+                        }
                     }
 
                     this.emit('data', line + '\n', this.state.context);
@@ -192,12 +213,13 @@ class Sender extends events.EventEmitter {
         }
 
         this.on('change', () => {
-            this.state.changed = true;
+            this.stateChanged = true;
         });
     }
     toJSON() {
         return {
             sp: this.sp.type,
+            hold: this.state.hold,
             name: this.state.name,
             context: this.state.context,
             size: this.state.gcode.length,
@@ -210,20 +232,39 @@ class Sender extends events.EventEmitter {
             remainingTime: this.state.remainingTime
         };
     }
+    hold() {
+        if (this.state.hold) {
+            return;
+        }
+        this.state.hold = true;
+        this.emit('hold');
+        this.emit('change');
+    }
+    unhold() {
+        if (!this.state.hold) {
+            return;
+        }
+        this.state.hold = false;
+        this.emit('unhold');
+        this.emit('change');
+    }
     // @return {boolean} Returns true on success, false otherwise.
     load(name, gcode = '', context = {}) {
         if (typeof gcode !== 'string' || !gcode) {
             return false;
         }
 
+        const lines = gcode.split('\n')
+            .filter(line => (line.trim().length > 0));
+
         if (this.sp) {
             this.sp.clear();
         }
+        this.state.hold = false;
         this.state.name = name;
         this.state.gcode = gcode;
         this.state.context = context;
-        this.state.lines = gcode.split('\n')
-            .filter(line => (line.trim().length > 0));
+        this.state.lines = lines;
         this.state.total = this.state.lines.length;
         this.state.sent = 0;
         this.state.received = 0;
@@ -241,6 +282,7 @@ class Sender extends events.EventEmitter {
         if (this.sp) {
             this.sp.clear();
         }
+        this.state.hold = false;
         this.state.name = '';
         this.state.gcode = '';
         this.state.context = {};
@@ -263,6 +305,10 @@ class Sender extends events.EventEmitter {
             return false;
         }
 
+        if (this.state.received >= this.state.sent) {
+            return false;
+        }
+
         this.state.received++;
         this.emit('change');
 
@@ -272,6 +318,11 @@ class Sender extends events.EventEmitter {
     // @return {boolean} Returns true on success, false otherwise.
     next() {
         if (!this.state.gcode) {
+            return false;
+        }
+
+        // Hold off
+        if (this.state.hold) {
             return false;
         }
 
@@ -317,18 +368,19 @@ class Sender extends events.EventEmitter {
         if (this.sp) {
             this.sp.clear();
         }
+        // Do not clear hold off state when calling rewind()
         this.state.sent = 0;
         this.state.received = 0;
         this.emit('change');
 
         return true;
     }
-    // Checks if there are any state changes. It also clears the changed flag.
+    // Checks if there are any state changes. It also clears the stateChanged flag.
     // @return {boolean} Returns true on state changes, false otherwise.
     peek() {
-        const changed = this.state.changed;
-        this.state.changed = false;
-        return changed;
+        const stateChanged = this.stateChanged;
+        this.stateChanged = false;
+        return stateChanged;
     }
 }
 

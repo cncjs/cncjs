@@ -1,16 +1,17 @@
 import _ from 'lodash';
-import ExpressionEvaluator from 'expr-eval';
 import SerialPort from 'serialport';
-import ensureArray from '../../lib/ensure-array';
-import EventTrigger from '../../lib/event-trigger';
-import Feeder from '../../lib/feeder';
-import logger from '../../lib/logger';
-import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
+import EventTrigger from '../../lib/EventTrigger';
+import Feeder from '../../lib/Feeder';
+import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/Sender';
 import Workflow, {
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
-} from '../../lib/workflow';
+} from '../../lib/Workflow';
+import ensureArray from '../../lib/ensure-array';
+import evaluateExpression from '../../lib/evaluateExpression';
+import logger from '../../lib/logger';
+import translateWithContext from '../../lib/translateWithContext';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
@@ -23,11 +24,8 @@ import {
     SMOOTHIE_REALTIME_COMMANDS
 } from './constants';
 
-const noop = _.noop;
-
 const log = logger('[Smoothie]');
-
-const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
+const noop = _.noop;
 
 class SmoothieController {
     type = SMOOTHIE;
@@ -43,7 +41,7 @@ class SmoothieController {
     serialport = null;
     serialportListener = {
         data: (data) => {
-            this.smoothie.parse('' + data);
+            this.controller.parse('' + data);
             log.silly(`< ${data}`);
         },
         disconnect: (err) => {
@@ -63,7 +61,7 @@ class SmoothieController {
     };
 
     // Smoothie
-    smoothie = null;
+    controller = null;
     ready = false;
     state = {};
     queryTimer = null;
@@ -97,46 +95,62 @@ class SmoothieController {
     // Workflow
     workflow = null;
 
-    translateLineWithContext = (line, context = {}) => {
-        if (typeof line !== 'string') {
-            log.error(`Invalid parameter: line=${line}`);
+    dataFilter = (line, context) => {
+        // Machine position
+        const {
+            x: mposx,
+            y: mposy,
+            z: mposz,
+            a: mposa,
+            b: mposb,
+            c: mposc
+        } = this.controller.getMachinePosition();
+
+        // Work position
+        const {
+            x: posx,
+            y: posy,
+            z: posz,
+            a: posa,
+            b: posb,
+            c: posc
+        } = this.controller.getWorkPosition();
+
+        // The context contains the bounding box, machine position, and work position
+        Object.assign(context || {}, {
+            // Bounding box
+            xmin: Number(context.xmin) || 0,
+            xmax: Number(context.xmax) || 0,
+            ymin: Number(context.ymin) || 0,
+            ymax: Number(context.ymax) || 0,
+            zmin: Number(context.zmin) || 0,
+            zmax: Number(context.zmax) || 0,
+            // Machine position
+            mposx: Number(mposx) || 0,
+            mposy: Number(mposy) || 0,
+            mposz: Number(mposz) || 0,
+            mposa: Number(mposa) || 0,
+            mposb: Number(mposb) || 0,
+            mposc: Number(mposc) || 0,
+            // Work position
+            posx: Number(posx) || 0,
+            posy: Number(posy) || 0,
+            posz: Number(posz) || 0,
+            posa: Number(posa) || 0,
+            posb: Number(posb) || 0,
+            posc: Number(posc) || 0
+        });
+
+        // Evaluate expression
+        if (line[0] === '%') {
+            // line="%_x=posx,_y=posy,_z=posz"
+            evaluateExpression(line.slice(1), context);
             return '';
         }
 
-        const { Parser } = ExpressionEvaluator;
-
-        // Current work position
-        const { x: posx, y: posy, z: posz, a: posa, b: posb, c: posc } = this.smoothie.getWorkPosition();
-
-        // Context
-        context = {
-            xmin: 0,
-            xmax: 0,
-            ymin: 0,
-            ymax: 0,
-            zmin: 0,
-            zmax: 0,
-            ...context,
-
-            // Current work position
-            posx,
-            posy,
-            posz,
-            posa,
-            posb,
-            posc
-        };
-
-        try {
-            line = line.replace(reExpressionContext, (match) => {
-                const expr = match.slice(1, -1);
-                return Parser.evaluate(expr, context);
-            });
-        } catch (e) {
-            log.error('translateLineWithContext:', e);
-        }
-
-        return line;
+        // line="G0 X[posx - 8] Y[ymax]"
+        // > "G0 X2 Y50"
+        return translateWithContext(line, context);
     };
 
     constructor(port, options) {
@@ -159,14 +173,16 @@ class SmoothieController {
         });
 
         // Feeder
-        this.feeder = new Feeder();
+        this.feeder = new Feeder({
+            dataFilter: this.dataFilter
+        });
         this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`Serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
-            if (this.smoothie.isAlarm()) {
+            if (this.controller.isAlarm()) {
                 // Feeder
                 this.feeder.clear();
                 log.warn('Stopped sending G-code commands in Alarm mode');
@@ -178,10 +194,6 @@ class SmoothieController {
                 return;
             }
 
-            // Example
-            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-            line = this.translateLineWithContext(line, context);
-
             this.emitAll('serialport:write', line);
 
             this.serialport.write(line + '\n');
@@ -191,7 +203,8 @@ class SmoothieController {
         // Sender
         this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
             // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
-            bufferSize: (128 - 8) // The default buffer size is 128 bytes
+            bufferSize: (128 - 8), // The default buffer size is 128 bytes
+            dataFilter: this.dataFilter
         });
         this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
@@ -210,12 +223,14 @@ class SmoothieController {
                 return;
             }
 
-            // Example
-            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-            line = this.translateLineWithContext(line, context);
-
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);
+        });
+        this.sender.on('hold', () => {
+            // TODO
+        });
+        this.sender.on('unhold', () => {
+            // TODO
         });
         this.sender.on('start', (startTime) => {
             this.actionTime.senderFinishTime = 0;
@@ -243,11 +258,11 @@ class SmoothieController {
         });
 
         // Smoothie
-        this.smoothie = new Smoothie();
+        this.controller = new Smoothie();
 
-        this.smoothie.on('raw', noop);
+        this.controller.on('raw', noop);
 
-        this.smoothie.on('status', (res) => {
+        this.controller.on('status', (res) => {
             this.actionMask.queryStatusReport = false;
 
             // Do not change buffer size during gcode sending (#133)
@@ -269,7 +284,7 @@ class SmoothieController {
             }
         });
 
-        this.smoothie.on('ok', (res) => {
+        this.controller.on('ok', (res) => {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
@@ -299,7 +314,7 @@ class SmoothieController {
             this.feeder.next();
         });
 
-        this.smoothie.on('error', (res) => {
+        this.controller.on('error', (res) => {
             // Sender
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 const { lines, received } = this.sender.state;
@@ -319,11 +334,11 @@ class SmoothieController {
             this.feeder.next();
         });
 
-        this.smoothie.on('alarm', (res) => {
+        this.controller.on('alarm', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
-        this.smoothie.on('parserstate', (res) => {
+        this.controller.on('parserstate', (res) => {
             this.actionMask.queryParserState.state = false;
             this.actionMask.queryParserState.reply = true;
 
@@ -332,15 +347,15 @@ class SmoothieController {
             }
         });
 
-        this.smoothie.on('parameters', (res) => {
+        this.controller.on('parameters', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
-        this.smoothie.on('version', (res) => {
+        this.controller.on('version', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
-        this.smoothie.on('others', (res) => {
+        this.controller.on('others', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
@@ -415,8 +430,8 @@ class SmoothieController {
             }
 
             // Smoothie state
-            if (this.state !== this.smoothie.state) {
-                this.state = this.smoothie.state;
+            if (this.state !== this.controller.state) {
+                this.state = this.controller.state;
                 this.emitAll('Smoothie:state', this.state);
             }
 
@@ -459,6 +474,51 @@ class SmoothieController {
             }
         }, 250);
     }
+    populateContext(context) {
+        // Machine position
+        const {
+            x: mposx,
+            y: mposy,
+            z: mposz,
+            a: mposa,
+            b: mposb,
+            c: mposc
+        } = this.controller.getMachinePosition();
+
+        // Work position
+        const {
+            x: posx,
+            y: posy,
+            z: posz,
+            a: posa,
+            b: posb,
+            c: posc
+        } = this.controller.getWorkPosition();
+
+        return Object.assign(context || {}, {
+            // Bounding box
+            xmin: Number(context.xmin) || 0,
+            xmax: Number(context.xmax) || 0,
+            ymin: Number(context.ymin) || 0,
+            ymax: Number(context.ymax) || 0,
+            zmin: Number(context.zmin) || 0,
+            zmax: Number(context.zmax) || 0,
+            // Machine position
+            mposx: Number(mposx) || 0,
+            mposy: Number(mposy) || 0,
+            mposz: Number(mposz) || 0,
+            mposa: Number(mposa) || 0,
+            mposb: Number(mposb) || 0,
+            mposc: Number(mposc) || 0,
+            // Work position
+            posx: Number(posx) || 0,
+            posy: Number(posy) || 0,
+            posz: Number(posz) || 0,
+            posa: Number(posa) || 0,
+            posb: Number(posb) || 0,
+            posc: Number(posc) || 0
+        });
+    }
     clearActionValues() {
         this.actionMask.queryParserState.state = false;
         this.actionMask.queryParserState.reply = false;
@@ -497,9 +557,9 @@ class SmoothieController {
             this.queryTimer = null;
         }
 
-        if (this.smoothie) {
-            this.smoothie.removeAllListeners();
-            this.smoothie = null;
+        if (this.controller) {
+            this.controller.removeAllListeners();
+            this.controller = null;
         }
     }
     initController() {
@@ -793,7 +853,7 @@ class SmoothieController {
             },
             'feedOverride': () => {
                 const [value] = args;
-                let feedOverride = this.smoothie.state.status.ovF;
+                let feedOverride = this.controller.state.status.ovF;
 
                 if (value === 0) {
                     feedOverride = 100;
@@ -807,17 +867,17 @@ class SmoothieController {
                 this.command(socket, 'gcode', 'M220S' + feedOverride);
 
                 // enforce state change
-                this.smoothie.state = {
-                    ...this.smoothie.state,
+                this.controller.state = {
+                    ...this.controller.state,
                     status: {
-                        ...this.smoothie.state.status,
+                        ...this.controller.state.status,
                         ovF: feedOverride
                     }
                 };
             },
             'spindleOverride': () => {
                 const [value] = args;
-                let spindleOverride = this.smoothie.state.status.ovS;
+                let spindleOverride = this.controller.state.status.ovS;
 
                 if (value === 0) {
                     spindleOverride = 100;
@@ -831,10 +891,10 @@ class SmoothieController {
                 this.command(socket, 'gcode', 'M221S' + spindleOverride);
 
                 // enforce state change
-                this.smoothie.state = {
-                    ...this.smoothie.state,
+                this.controller.state = {
+                    ...this.controller.state,
                     status: {
-                        ...this.smoothie.state.status,
+                        ...this.controller.state.status,
                         ovS: spindleOverride
                     }
                 };

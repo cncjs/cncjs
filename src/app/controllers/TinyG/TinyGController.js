@@ -1,15 +1,17 @@
 import _ from 'lodash';
-import ExpressionEvaluator from 'expr-eval';
 import SerialPort from 'serialport';
-import ensureArray from '../../lib/ensure-array';
-import EventTrigger from '../../lib/event-trigger';
-import Feeder from '../../lib/feeder';
-import logger from '../../lib/logger';
-import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/sender';
+import EventTrigger from '../../lib/EventTrigger';
+import Feeder from '../../lib/Feeder';
+import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
 import Workflow, {
-    WORKFLOW_STATE_RUNNING,
-    WORKFLOW_STATE_IDLE
-} from '../../lib/workflow';
+    WORKFLOW_STATE_IDLE,
+    WORKFLOW_STATE_PAUSED,
+    WORKFLOW_STATE_RUNNING
+} from '../../lib/Workflow';
+import ensureArray from '../../lib/ensure-array';
+import evaluateExpression from '../../lib/evaluateExpression';
+import logger from '../../lib/logger';
+import translateWithContext from '../../lib/translateWithContext';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
@@ -32,10 +34,7 @@ const SEND_RESPONSE_STATE_SEND = 1;
 const SEND_RESPONSE_STATE_ACK = 2;
 
 const log = logger('[TinyG]');
-
 const noop = () => {};
-
-const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
 
 class TinyGController {
     type = TINYG;
@@ -51,7 +50,7 @@ class TinyGController {
     serialport = null;
     serialportListener = {
         data: (data) => {
-            this.tinyg.parse('' + data);
+            this.controller.parse('' + data);
             log.silly(`< ${data}`);
         },
         disconnect: (err) => {
@@ -93,46 +92,62 @@ class TinyGController {
     // Workflow
     workflow = null;
 
-    translateLineWithContext = (line, context = {}) => {
-        if (typeof line !== 'string') {
-            log.error(`Invalid parameter: line=${line}`);
+    dataFilter = (line, context) => {
+        // Machine position
+        const {
+            x: mposx,
+            y: mposy,
+            z: mposz,
+            a: mposa,
+            b: mposb,
+            c: mposc
+        } = this.controller.getMachinePosition();
+
+        // Work position
+        const {
+            x: posx,
+            y: posy,
+            z: posz,
+            a: posa,
+            b: posb,
+            c: posc
+        } = this.controller.getWorkPosition();
+
+        // The context contains the bounding box, machine position, and work position
+        Object.assign(context || {}, {
+            // Bounding box
+            xmin: Number(context.xmin) || 0,
+            xmax: Number(context.xmax) || 0,
+            ymin: Number(context.ymin) || 0,
+            ymax: Number(context.ymax) || 0,
+            zmin: Number(context.zmin) || 0,
+            zmax: Number(context.zmax) || 0,
+            // Machine position
+            mposx: Number(mposx) || 0,
+            mposy: Number(mposy) || 0,
+            mposz: Number(mposz) || 0,
+            mposa: Number(mposa) || 0,
+            mposb: Number(mposb) || 0,
+            mposc: Number(mposc) || 0,
+            // Work position
+            posx: Number(posx) || 0,
+            posy: Number(posy) || 0,
+            posz: Number(posz) || 0,
+            posa: Number(posa) || 0,
+            posb: Number(posb) || 0,
+            posc: Number(posc) || 0
+        });
+
+        // Evaluate expression
+        if (line[0] === '%') {
+            // line="%_x=posx,_y=posy,_z=posz"
+            evaluateExpression(line.slice(1), context);
             return '';
         }
 
-        const { Parser } = ExpressionEvaluator;
-
-        // Current work position
-        const { x: posx, y: posy, z: posz, a: posa, b: posb, c: posc } = this.tinyg.getWorkPosition();
-
-        // Context
-        context = {
-            xmin: 0,
-            xmax: 0,
-            ymin: 0,
-            ymax: 0,
-            zmin: 0,
-            zmax: 0,
-            ...context,
-
-            // Current work position
-            posx,
-            posy,
-            posz,
-            posa,
-            posb,
-            posc
-        };
-
-        try {
-            line = line.replace(reExpressionContext, (match) => {
-                const expr = match.slice(1, -1);
-                return Parser.evaluate(expr, context);
-            });
-        } catch (e) {
-            log.error('translateLineWithContext:', e);
-        }
-
-        return line;
+        // line="G0 X[posx - 8] Y[ymax]"
+        // > "G0 X2 Y50"
+        return translateWithContext(line, context);
     };
 
     constructor(port, options) {
@@ -155,14 +170,16 @@ class TinyGController {
         });
 
         // Feeder
-        this.feeder = new Feeder();
+        this.feeder = new Feeder({
+            dataFilter: this.dataFilter
+        });
         this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`Serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
-            if (this.tinyg.isAlarm()) {
+            if (this.controller.isAlarm()) {
                 // Feeder
                 this.feeder.clear();
                 log.warn('Stopped sending G-code commands in Alarm mode');
@@ -174,10 +191,6 @@ class TinyGController {
                 return;
             }
 
-            // Example
-            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-            line = this.translateLineWithContext(line, context);
-
             this.emitAll('serialport:write', line);
 
             this.serialport.write(line + '\n');
@@ -185,7 +198,9 @@ class TinyGController {
         });
 
         // Sender
-        this.sender = new Sender(SP_TYPE_SEND_RESPONSE);
+        this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
+            dataFilter: this.dataFilter
+        });
         this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`Serial port "${this.options.port}" is not accessible`);
@@ -204,10 +219,6 @@ class TinyGController {
                 return;
             }
 
-            // Example
-            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-            line = this.translateLineWithContext(line, context);
-
             // Replace line numbers with the number of lines sent
             const n = this.sender.state.sent;
             line = ('' + line).replace(/^N[0-9]*/, '');
@@ -215,6 +226,12 @@ class TinyGController {
 
             this.serialport.write(line + '\n');
             log.silly(`> SEND: n=${n}, line="${line}"`);
+        });
+        this.sender.on('hold', () => {
+            // TODO
+        });
+        this.sender.on('unhold', () => {
+            // TODO
         });
         this.sender.on('start', (startTime) => {
             this.actionTime.senderFinishTime = 0;
@@ -245,16 +262,16 @@ class TinyGController {
         });
 
         // TinyG
-        this.tinyg = new TinyG();
+        this.controller = new TinyG();
 
-        this.tinyg.on('raw', (res) => {
+        this.controller.on('raw', (res) => {
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 this.emitAll('serialport:read', res.raw);
             }
         });
 
         // https://github.com/synthetos/g2/wiki/g2core-Communications
-        this.tinyg.on('r', (r) => {
+        this.controller.on('r', (r) => {
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 this.feeder.next();
                 return;
@@ -279,7 +296,7 @@ class TinyGController {
             }
         });
 
-        this.tinyg.on('qr', ({ qr, qi, qo }) => {
+        this.controller.on('qr', ({ qr, qi, qo }) => {
             this.state.qr = qr;
             this.state.qi = qi;
             this.state.qo = qo;
@@ -298,24 +315,36 @@ class TinyGController {
                 this.blocked = false;
             }
 
-            if ((this.workflow.state === WORKFLOW_STATE_RUNNING) && (this.sendResponseState === SEND_RESPONSE_STATE_ACK)) {
-                log.silly(`> NEXT: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
-                this.sender.ack();
-                this.sender.next();
-                this.sendResponseState = SEND_RESPONSE_STATE_SEND;
+            if (this.sendResponseState === SEND_RESPONSE_STATE_ACK) {
+                // running
+                if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                    log.silly(`> NEXT: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
+                    this.sender.ack();
+                    this.sender.next();
+                    this.sendResponseState = SEND_RESPONSE_STATE_SEND;
+                }
+
+                // paused
+                if (this.workflow.state === WORKFLOW_STATE_PAUSED) {
+                    log.silly(`> HOLD: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
+                    const { sent, received } = this.sender.state;
+                    if (sent > received) {
+                        this.sender.ack();
+                    }
+                }
             }
         });
 
-        this.tinyg.on('sr', (sr) => {
+        this.controller.on('sr', (sr) => {
         });
 
-        this.tinyg.on('fb', (fb) => {
+        this.controller.on('fb', (fb) => {
         });
 
-        this.tinyg.on('hp', (hp) => {
+        this.controller.on('hp', (hp) => {
         });
 
-        this.tinyg.on('f', (f) => {
+        this.controller.on('f', (f) => {
             // https://github.com/synthetos/g2/wiki/Status-Codes
             const statusCode = f[1] || 0;
 
@@ -369,8 +398,8 @@ class TinyGController {
             }
 
             // TinyG state
-            if (this.state !== this.tinyg.state) {
-                this.state = this.tinyg.state;
+            if (this.state !== this.controller.state) {
+                this.state = this.controller.state;
                 this.emitAll('TinyG:state', this.state);
             }
 
@@ -488,7 +517,7 @@ class TinyGController {
                     return;
                 }
 
-                log.silly(`> Init: ${cmd} ${cmd.length}`);
+                log.silly(`> INIT: ${cmd} ${cmd.length}`);
                 this.emitAll('serialport:write', cmd);
                 this.serialport.write(cmd + '\n');
             }
@@ -497,6 +526,51 @@ class TinyGController {
             }, pauseAfter);
         };
         sendInitCommands();
+    }
+    populateContext(context) {
+        // Machine position
+        const {
+            x: mposx,
+            y: mposy,
+            z: mposz,
+            a: mposa,
+            b: mposb,
+            c: mposc
+        } = this.controller.getMachinePosition();
+
+        // Work position
+        const {
+            x: posx,
+            y: posy,
+            z: posz,
+            a: posa,
+            b: posb,
+            c: posc
+        } = this.controller.getWorkPosition();
+
+        return Object.assign(context || {}, {
+            // Bounding box
+            xmin: Number(context.xmin) || 0,
+            xmax: Number(context.xmax) || 0,
+            ymin: Number(context.ymin) || 0,
+            ymax: Number(context.ymax) || 0,
+            zmin: Number(context.zmin) || 0,
+            zmax: Number(context.zmax) || 0,
+            // Machine position
+            mposx: Number(mposx) || 0,
+            mposy: Number(mposy) || 0,
+            mposz: Number(mposz) || 0,
+            mposa: Number(mposa) || 0,
+            mposb: Number(mposb) || 0,
+            mposc: Number(mposc) || 0,
+            // Work position
+            posx: Number(posx) || 0,
+            posy: Number(posy) || 0,
+            posz: Number(posz) || 0,
+            posa: Number(posa) || 0,
+            posb: Number(posb) || 0,
+            posc: Number(posc) || 0
+        });
     }
     clearActionValues() {
         this.actionTime.senderFinishTime = 0;
@@ -529,9 +603,9 @@ class TinyGController {
             this.queryTimer = null;
         }
 
-        if (this.tinyg) {
-            this.tinyg.removeAllListeners();
-            this.tinyg = null;
+        if (this.controller) {
+            this.controller.removeAllListeners();
+            this.controller = null;
         }
     }
     get status() {
@@ -543,8 +617,8 @@ class TinyGController {
             controller: {
                 type: this.type,
                 state: this.state,
-                ident: this.tinyg.ident,
-                footer: this.tinyg.footer
+                ident: this.controller.ident,
+                footer: this.controller.footer
             },
             workflowState: this.workflow.state,
             feeder: this.feeder.toJSON(),
@@ -756,7 +830,9 @@ class TinyGController {
                 this.event.trigger('gcode:pause');
 
                 this.workflow.pause();
+
                 this.writeln(socket, '!'); // feedhold
+
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'resume': () => {
@@ -767,22 +843,28 @@ class TinyGController {
                 this.event.trigger('gcode:resume');
 
                 this.writeln(socket, '~'); // cycle start
-                this.writeln(socket, '{"qr":""}'); // queue report
+
                 this.workflow.resume();
+
+                this.writeln(socket, '{"qr":""}'); // queue report
             },
             'feedhold': () => {
                 this.event.trigger('feedhold');
 
                 this.workflow.pause();
+
                 this.writeln(socket, '!'); // feedhold
+
                 this.writeln(socket, '{"qr":""}'); // queue report
             },
             'cyclestart': () => {
                 this.event.trigger('cyclestart');
 
                 this.writeln(socket, '~'); // cycle start
-                this.writeln(socket, '{"qr":""}'); // queue report
+
                 this.workflow.resume();
+
+                this.writeln(socket, '{"qr":""}'); // queue report
             },
             'statusreport': () => {
                 this.writeln(socket, '{"sr":null}');

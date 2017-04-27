@@ -1,16 +1,17 @@
 import _ from 'lodash';
-import ExpressionEvaluator from 'expr-eval';
 import SerialPort from 'serialport';
-import ensureArray from '../../lib/ensure-array';
-import EventTrigger from '../../lib/event-trigger';
-import Feeder from '../../lib/feeder';
-import logger from '../../lib/logger';
-import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/sender';
+import EventTrigger from '../../lib/EventTrigger';
+import Feeder from '../../lib/Feeder';
+import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/Sender';
 import Workflow, {
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
-} from '../../lib/workflow';
+} from '../../lib/Workflow';
+import ensureArray from '../../lib/ensure-array';
+import evaluateExpression from '../../lib/evaluateExpression';
+import logger from '../../lib/logger';
+import translateWithContext from '../../lib/translateWithContext';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
@@ -27,10 +28,7 @@ import {
 } from './constants';
 
 const log = logger('[Grbl]');
-
 const noop = _.noop;
-
-const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
 
 class GrblController {
     type = GRBL;
@@ -46,7 +44,7 @@ class GrblController {
     serialport = null;
     serialportListener = {
         data: (data) => {
-            this.grbl.parse('' + data);
+            this.controller.parse('' + data);
             log.silly(`< ${data}`);
         },
         disconnect: (err) => {
@@ -66,7 +64,7 @@ class GrblController {
     };
 
     // Grbl
-    grbl = null;
+    controller = null;
     ready = false;
     state = {};
     queryTimer = null;
@@ -99,46 +97,62 @@ class GrblController {
     // Workflow
     workflow = null;
 
-    translateLineWithContext = (line, context = {}) => {
-        if (typeof line !== 'string') {
-            log.error(`Invalid parameter: line=${line}`);
+    dataFilter = (line, context) => {
+        // Machine position
+        const {
+            x: mposx,
+            y: mposy,
+            z: mposz,
+            a: mposa,
+            b: mposb,
+            c: mposc
+        } = this.controller.getMachinePosition();
+
+        // Work position
+        const {
+            x: posx,
+            y: posy,
+            z: posz,
+            a: posa,
+            b: posb,
+            c: posc
+        } = this.controller.getWorkPosition();
+
+        // The context contains the bounding box, machine position, and work position
+        Object.assign(context || {}, {
+            // Bounding box
+            xmin: Number(context.xmin) || 0,
+            xmax: Number(context.xmax) || 0,
+            ymin: Number(context.ymin) || 0,
+            ymax: Number(context.ymax) || 0,
+            zmin: Number(context.zmin) || 0,
+            zmax: Number(context.zmax) || 0,
+            // Machine position
+            mposx: Number(mposx) || 0,
+            mposy: Number(mposy) || 0,
+            mposz: Number(mposz) || 0,
+            mposa: Number(mposa) || 0,
+            mposb: Number(mposb) || 0,
+            mposc: Number(mposc) || 0,
+            // Work position
+            posx: Number(posx) || 0,
+            posy: Number(posy) || 0,
+            posz: Number(posz) || 0,
+            posa: Number(posa) || 0,
+            posb: Number(posb) || 0,
+            posc: Number(posc) || 0
+        });
+
+        // Evaluate expression
+        if (line[0] === '%') {
+            // line="%_x=posx,_y=posy,_z=posz"
+            evaluateExpression(line.slice(1), context);
             return '';
         }
 
-        const { Parser } = ExpressionEvaluator;
-
-        // Current work position
-        const { x: posx, y: posy, z: posz, a: posa, b: posb, c: posc } = this.grbl.getWorkPosition();
-
-        // Context
-        context = {
-            xmin: 0,
-            xmax: 0,
-            ymin: 0,
-            ymax: 0,
-            zmin: 0,
-            zmax: 0,
-            ...context,
-
-            // Current work position
-            posx,
-            posy,
-            posz,
-            posa,
-            posb,
-            posc
-        };
-
-        try {
-            line = line.replace(reExpressionContext, (match) => {
-                const expr = match.slice(1, -1);
-                return Parser.evaluate(expr, context);
-            });
-        } catch (e) {
-            log.error('translateLineWithContext:', e);
-        }
-
-        return line;
+        // line="G0 X[posx - 8] Y[ymax]"
+        // > "G0 X2 Y50"
+        return translateWithContext(line, context);
     };
 
     constructor(port, options) {
@@ -161,14 +175,16 @@ class GrblController {
         });
 
         // Feeder
-        this.feeder = new Feeder();
+        this.feeder = new Feeder({
+            dataFilter: this.dataFilter
+        });
         this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
                 log.error(`Serial port "${this.options.port}" is not accessible`);
                 return;
             }
 
-            if (this.grbl.isAlarm()) {
+            if (this.controller.isAlarm()) {
                 // Feeder
                 this.feeder.clear();
                 log.warn('Stopped sending G-code commands in Alarm mode');
@@ -180,10 +196,6 @@ class GrblController {
                 return;
             }
 
-            // Example
-            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-            line = this.translateLineWithContext(line, context);
-
             this.emitAll('serialport:write', line);
 
             this.serialport.write(line + '\n');
@@ -193,7 +205,8 @@ class GrblController {
         // Sender
         this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
             // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
-            bufferSize: (128 - 8) // The default buffer size is 128 bytes
+            bufferSize: (128 - 8), // The default buffer size is 128 bytes
+            dataFilter: this.dataFilter
         });
         this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
@@ -212,12 +225,14 @@ class GrblController {
                 return;
             }
 
-            // Example
-            // "G0 X[posx - 8] Y[ymax]" -> "G0 X2 Y50"
-            line = this.translateLineWithContext(line, context);
-
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);
+        });
+        this.sender.on('hold', () => {
+            // TODO
+        });
+        this.sender.on('unhold', () => {
+            // TODO
         });
         this.sender.on('start', (startTime) => {
             this.actionTime.senderFinishTime = 0;
@@ -245,11 +260,11 @@ class GrblController {
         });
 
         // Grbl
-        this.grbl = new Grbl();
+        this.controller = new Grbl();
 
-        this.grbl.on('raw', noop);
+        this.controller.on('raw', noop);
 
-        this.grbl.on('status', (res) => {
+        this.controller.on('status', (res) => {
             this.actionMask.queryStatusReport = false;
 
             // Do not change buffer size during gcode sending (#133)
@@ -271,7 +286,7 @@ class GrblController {
             }
         });
 
-        this.grbl.on('ok', (res) => {
+        this.controller.on('ok', (res) => {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
@@ -301,7 +316,7 @@ class GrblController {
             this.feeder.next();
         });
 
-        this.grbl.on('error', (res) => {
+        this.controller.on('error', (res) => {
             const code = Number(res.message) || undefined;
             const error = _.find(GRBL_ERRORS, { code: code });
 
@@ -336,7 +351,7 @@ class GrblController {
             this.feeder.next();
         });
 
-        this.grbl.on('alarm', (res) => {
+        this.controller.on('alarm', (res) => {
             const code = Number(res.message) || undefined;
             const alarm = _.find(GRBL_ALARMS, { code: code });
 
@@ -349,7 +364,7 @@ class GrblController {
             }
         });
 
-        this.grbl.on('parserstate', (res) => {
+        this.controller.on('parserstate', (res) => {
             this.actionMask.queryParserState.state = false;
             this.actionMask.queryParserState.reply = true;
 
@@ -358,15 +373,15 @@ class GrblController {
             }
         });
 
-        this.grbl.on('parameters', (res) => {
+        this.controller.on('parameters', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
-        this.grbl.on('feedback', (res) => {
+        this.controller.on('feedback', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
-        this.grbl.on('settings', (res) => {
+        this.controller.on('settings', (res) => {
             const setting = _.find(GRBL_SETTINGS, { setting: res.setting });
 
             if (!res.message && setting) {
@@ -378,7 +393,7 @@ class GrblController {
             }
         });
 
-        this.grbl.on('startup', (res) => {
+        this.controller.on('startup', (res) => {
             this.emitAll('serialport:read', res.raw);
 
             // Set ready flag to true when a Grbl start up message has arrived
@@ -390,7 +405,7 @@ class GrblController {
             this.clearActionValues();
         });
 
-        this.grbl.on('others', (res) => {
+        this.controller.on('others', (res) => {
             this.emitAll('serialport:read', res.raw);
         });
 
@@ -465,8 +480,8 @@ class GrblController {
             }
 
             // Grbl state
-            if (this.state !== this.grbl.state) {
-                this.state = this.grbl.state;
+            if (this.state !== this.controller.state) {
+                this.state = this.controller.state;
                 this.emitAll('Grbl:state', this.state);
             }
 
@@ -547,9 +562,9 @@ class GrblController {
             this.queryTimer = null;
         }
 
-        if (this.grbl) {
-            this.grbl.removeAllListeners();
-            this.grbl = null;
+        if (this.controller) {
+            this.controller.removeAllListeners();
+            this.controller = null;
         }
     }
     get status() {
