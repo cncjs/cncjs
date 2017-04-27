@@ -3,6 +3,7 @@
 import _ from 'lodash';
 import events from 'events';
 import {
+    GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_ALARM,
     GRBL_MODAL_GROUPS
 } from './constants';
@@ -761,15 +762,19 @@ class Grbl extends events.EventEmitter {
             return;
         }
     }
-    getMachinePosition() {
-        return _.get(this.state, 'status.mpos', {});
+    getMachinePosition(state = this.state) {
+        return _.get(state, 'status.mpos', {});
     }
-    getWorkPosition() {
-        return _.get(this.state, 'status.wpos', {});
+    getWorkPosition(state = this.state) {
+        return _.get(state, 'status.wpos', {});
     }
     isAlarm() {
         const activeState = _.get(this.state, 'status.activeState');
         return activeState === GRBL_ACTIVE_STATE_ALARM;
+    }
+    isIdle() {
+        const activeState = _.get(this.state, 'status.activeState');
+        return activeState === GRBL_ACTIVE_STATE_IDLE;
     }
 }
 

@@ -2,7 +2,10 @@ import _ from 'lodash';
 import events from 'events';
 
 import {
+    TINYG_MACHINE_STATE_READY,
     TINYG_MACHINE_STATE_ALARM,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
 
     // G-code Motion Mode
     TINYG_GCODE_MOTION_G0,
@@ -358,15 +361,23 @@ class TinyG extends events.EventEmitter {
             }
         }
     }
-    getMachinePosition() {
-        return _.get(this.state, 'sr.mpos', {});
+    getMachinePosition(state = this.state) {
+        return _.get(state, 'sr.mpos', {});
     }
-    getWorkPosition() {
-        return _.get(this.state, 'sr.wpos', {});
+    getWorkPosition(state = this.state) {
+        return _.get(state, 'sr.wpos', {});
     }
     isAlarm() {
         const machineState = _.get(this.state, 'sr.machineState');
         return machineState === TINYG_MACHINE_STATE_ALARM;
+    }
+    isIdle() {
+        const machineState = _.get(this.state, 'sr.machineState');
+        return (
+            (machineState === TINYG_MACHINE_STATE_READY) ||
+            (machineState === TINYG_MACHINE_STATE_STOP) ||
+            (machineState === TINYG_MACHINE_STATE_END)
+        );
     }
 }
 
