@@ -380,7 +380,7 @@ class AxesWidget extends Component {
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -417,7 +417,7 @@ class AxesWidget extends Component {
             store.set('widgets.axes.jog.customDistance', Number(distance));
         }
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.axes.minimized', false),
             isFullscreen: false,
@@ -456,9 +456,9 @@ class AxesWidget extends Component {
                 if (port) {
                     this.setState({ port: port });
                 } else {
-                    const defaultState = this.getDefaultState();
+                    const initialState = this.getInitialState();
                     this.setState({
-                        ...defaultState,
+                        ...initialState,
                         port: ''
                     });
                 }

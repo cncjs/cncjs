@@ -116,7 +116,7 @@ class GCodeWidget extends Component {
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -136,7 +136,7 @@ class GCodeWidget extends Component {
 
         store.set('widgets.gcode.minimized', minimized);
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.gcode.minimized', false),
             isFullscreen: false,
@@ -182,9 +182,9 @@ class GCodeWidget extends Component {
                 if (port) {
                     this.setState({ port: port });
                 } else {
-                    const defaultState = this.getDefaultState();
+                    const initialState = this.getInitialState();
                     this.setState({
-                        ...defaultState,
+                        ...initialState,
                         port: ''
                     });
                 }

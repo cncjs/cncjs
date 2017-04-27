@@ -114,7 +114,7 @@ class LaserWidget extends Component {
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -139,7 +139,7 @@ class LaserWidget extends Component {
         store.set('widgets.laser.test.power', test.power);
         store.set('widgets.laser.test.duration', test.duration);
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.laser.minimized', false),
             isFullscreen: false,
@@ -168,9 +168,9 @@ class LaserWidget extends Component {
                 if (port) {
                     this.setState({ port: port });
                 } else {
-                    const defaultState = this.getDefaultState();
+                    const initialState = this.getInitialState();
                     this.setState({
-                        ...defaultState,
+                        ...initialState,
                         port: ''
                     });
                 }

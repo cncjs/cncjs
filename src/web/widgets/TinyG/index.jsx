@@ -130,7 +130,7 @@ class TinyGWidget extends Component {
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -154,7 +154,7 @@ class TinyGWidget extends Component {
         store.set('widgets.tinyg.panel.statusReports.expanded', panel.statusReports.expanded);
         store.set('widgets.tinyg.panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.tinyg.minimized', false),
             isFullscreen: false,
@@ -190,9 +190,9 @@ class TinyGWidget extends Component {
                 if (port) {
                     this.setState({ port: port });
                 } else {
-                    const defaultState = this.getDefaultState();
+                    const initialState = this.getInitialState();
                     this.setState({
-                        ...defaultState,
+                        ...initialState,
                         port: ''
                     });
                 }

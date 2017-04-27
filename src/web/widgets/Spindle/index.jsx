@@ -123,7 +123,7 @@ class SpindleWidget extends Component {
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -145,7 +145,7 @@ class SpindleWidget extends Component {
         store.set('widgets.spindle.minimized', minimized);
         store.set('widgets.spindle.speed', spindleSpeed);
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.spindle.minimized', false),
             isFullscreen: false,
@@ -174,9 +174,9 @@ class SpindleWidget extends Component {
                 if (port) {
                     this.setState({ port: port });
                 } else {
-                    const defaultState = this.getDefaultState();
+                    const initialState = this.getInitialState();
                     this.setState({
-                        ...defaultState,
+                        ...initialState,
                         port: ''
                     });
                 }

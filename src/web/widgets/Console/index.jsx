@@ -73,7 +73,7 @@ class ConsoleWidget extends Component {
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -103,7 +103,7 @@ class ConsoleWidget extends Component {
 
         store.set('widgets.console.minimized', minimized);
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.console.minimized', false),
             isFullscreen: false,
@@ -122,9 +122,9 @@ class ConsoleWidget extends Component {
                 } else {
                     this.clearAll();
 
-                    const defaultState = this.getDefaultState();
+                    const initialState = this.getInitialState();
                     this.setState({
-                        ...defaultState,
+                        ...initialState,
                         port: ''
                     });
                 }

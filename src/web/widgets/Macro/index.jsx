@@ -196,8 +196,7 @@ class MacroWidget extends Component {
                     this.actions.openModal(MODAL_STATE_RUN_MACRO, {
                         id,
                         name,
-                        content,
-                        displayOriginalContent: false
+                        content
                     });
                 });
         },
@@ -220,7 +219,7 @@ class MacroWidget extends Component {
 
     constructor() {
         super();
-        this.state = this.getDefaultState();
+        this.state = this.getInitialState();
     }
     componentDidMount() {
         this.subscribe();
@@ -243,7 +242,7 @@ class MacroWidget extends Component {
 
         store.set('widgets.macro.minimized', minimized);
     }
-    getDefaultState() {
+    getInitialState() {
         return {
             minimized: store.get('widgets.macro.minimized', false),
             isFullscreen: false,

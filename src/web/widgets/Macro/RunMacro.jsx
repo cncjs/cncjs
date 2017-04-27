@@ -1,11 +1,7 @@
-import ExpressionEvaluator from 'expr-eval';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import log from '../../lib/log';
 import Modal from '../../components/Modal';
-import ToggleSwitch from '../../components/ToggleSwitch';
 
 class RunMacro extends Component {
     static propTypes = {
@@ -19,42 +15,7 @@ class RunMacro extends Component {
     render() {
         const { state, actions } = this.props;
         const { modalParams } = state;
-        const { id, name, content, displayOriginalContent } = { ...modalParams };
-
-        // Replace variables
-        let gcode = content || '';
-        if (!displayOriginalContent) {
-            const { Parser } = ExpressionEvaluator;
-
-            // Context
-            const context = {
-                xmin: 0,
-                xmax: 0,
-                ymin: 0,
-                ymax: 0,
-                zmin: 0,
-                zmax: 0,
-                ...controller.context,
-
-                // [TODO] Update work position
-                posx: 0,
-                posy: 0,
-                posz: 0,
-                posa: 0,
-                posb: 0,
-                posc: 0
-            };
-
-            try {
-                const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
-                gcode = gcode.replace(reExpressionContext, (match) => {
-                    const expr = match.slice(1, -1);
-                    return Parser.evaluate(expr, context);
-                });
-            } catch (e) {
-                log.error(e);
-            }
-        }
+        const { id, name, content } = { ...modalParams };
 
         return (
             <Modal
@@ -73,20 +34,8 @@ class RunMacro extends Component {
                             readOnly
                             rows="10"
                             className="form-control"
-                            value={gcode}
+                            value={content}
                         />
-                    </div>
-                    <div>
-                        <ToggleSwitch
-                            checked={displayOriginalContent}
-                            onChange={() => {
-                                actions.updateModalParams({
-                                    displayOriginalContent: !displayOriginalContent
-                                });
-                            }}
-                            size="sm"
-                        />
-                        {i18n._('Display original content')}
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
