@@ -257,6 +257,13 @@ class Sender extends events.EventEmitter {
         const lines = gcode.split('\n')
             .filter(line => (line.trim().length > 0));
 
+        // https://github.com/grbl/grbl/issues/932
+        // G4 P0 or P with a very small value will empty the planner queue and then
+        // respond with an ok when the dwell is complete. At that instant, there will
+        // be no queued motions, as long as no more commands were sent after the G4.
+        // This is the fastest way to do it without having to check the status reports.
+        lines.push('G4P0');
+
         if (this.sp) {
             this.sp.clear();
         }
@@ -368,7 +375,7 @@ class Sender extends events.EventEmitter {
         if (this.sp) {
             this.sp.clear();
         }
-        // Do not clear hold off state when calling rewind()
+        this.state.hold = false; // clear hold off state
         this.state.sent = 0;
         this.state.received = 0;
         this.emit('change');

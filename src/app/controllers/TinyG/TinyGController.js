@@ -22,9 +22,6 @@ import {
     TINYG_PLANNER_BUFFER_LOW_WATER_MARK,
     TINYG_PLANNER_BUFFER_HIGH_WATER_MARK,
     TINYG_SERIAL_BUFFER_LIMIT,
-    TINYG_MACHINE_STATE_READY,
-    TINYG_MACHINE_STATE_STOP,
-    TINYG_MACHINE_STATE_END,
     TINYG_STATUS_CODES
 } from './constants';
 
@@ -171,7 +168,21 @@ class TinyGController {
 
         // Feeder
         this.feeder = new Feeder({
-            dataFilter: this.dataFilter
+            dataFilter: (line, context) => {
+                // Wait for commands to complete (status change to Idle)
+                if (line === '%wait') {
+                    // https://github.com/grbl/grbl/issues/932
+                    // G4 P0 or P with a very small value will empty the planner queue and then
+                    // respond with an ok when the dwell is complete. At that instant, there will
+                    // be no queued motions, as long as no more commands were sent after the G4.
+                    // This is the fastest way to do it without having to check the status reports.
+                    const dwell = 'G4P0';
+
+                    return dwell;
+                }
+
+                return this.dataFilter(line, context);
+            }
         });
         this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
@@ -199,7 +210,23 @@ class TinyGController {
 
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
-            dataFilter: this.dataFilter
+            dataFilter: (line, context) => {
+                // Wait for commands to complete (status change to Idle)
+                if (line === '%wait') {
+                    this.sender.hold();
+
+                    // https://github.com/grbl/grbl/issues/932
+                    // G4 P0 or P with a very small value will empty the planner queue and then
+                    // respond with an ok when the dwell is complete. At that instant, there will
+                    // be no queued motions, as long as no more commands were sent after the G4.
+                    // This is the fastest way to do it without having to check the status reports.
+                    const dwell = 'G4P0';
+
+                    return dwell;
+                }
+
+                return this.dataFilter(line, context);
+            }
         });
         this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
@@ -228,10 +255,10 @@ class TinyGController {
             log.silly(`> SEND: n=${n}, line="${line}"`);
         });
         this.sender.on('hold', () => {
-            // TODO
+            log.debug('hold');
         });
         this.sender.on('unhold', () => {
-            // TODO
+            log.debug('unhold');
         });
         this.sender.on('start', (startTime) => {
             this.actionTime.senderFinishTime = 0;
@@ -291,7 +318,18 @@ class TinyGController {
             // Continue to the next line if not blocked
             if (!this.blocked) {
                 this.sender.ack();
+
+                // Check hold state
+                if (this.sender.state.hold) {
+                    const { sent, received } = this.sender.state;
+                    if (received >= sent) {
+                        // Clear the hold state and continue sending the next command
+                        this.sender.unhold();
+                    }
+                }
+
                 this.sender.next();
+
                 this.sendResponseState = SEND_RESPONSE_STATE_SEND; // data sent
             }
         });
@@ -319,8 +357,20 @@ class TinyGController {
                 // running
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                     log.silly(`> NEXT: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
+
                     this.sender.ack();
+
+                    // Check hold state
+                    if (this.sender.state.hold) {
+                        const { sent, received } = this.sender.state;
+                        if (received >= sent) {
+                            // Clear the hold state and continue sending the next command
+                            this.sender.unhold();
+                        }
+                    }
+
                     this.sender.next();
+
                     this.sendResponseState = SEND_RESPONSE_STATE_SEND;
                 }
 
@@ -397,32 +447,29 @@ class TinyGController {
                 this.emitAll('sender:status', this.sender.toJSON());
             }
 
+            const zeroOffset = _.isEqual(
+                this.controller.getWorkPosition(this.state),
+                this.controller.getWorkPosition(this.controller.state)
+            );
+
             // TinyG state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
                 this.emitAll('TinyG:state', this.state);
             }
 
-            // Determine if the controller is completely idle
+            // Check if the machine has stopped movement after completion
             if (this.actionTime.senderFinishTime > 0) {
+                const machineIdle = zeroOffset && this.controller.isIdle();
                 const now = new Date().getTime();
                 const timespan = Math.abs(now - this.actionTime.senderFinishTime);
                 const toleranceTime = 1000; // 1000ms
-                const machineState = _.get(this.state, 'sr.machineState');
-                const isControllerIdle = _.includes([
-                    TINYG_MACHINE_STATE_READY,
-                    TINYG_MACHINE_STATE_STOP,
-                    TINYG_MACHINE_STATE_END
-                ], machineState);
 
-                if (!isControllerIdle) {
+                if (!machineIdle) {
                     // Extend the sender finish time if the controller state is not idle
                     this.actionTime.senderFinishTime = now;
-                    return;
-                }
-
-                if (timespan > toleranceTime) {
-                    log.debug(`Stop workflow: machineState=${machineState}, timespan=${timespan}ms`);
+                } else if (timespan > toleranceTime) {
+                    log.debug(`finish: timespan=${timespan}ms`);
 
                     this.actionTime.senderFinishTime = 0;
 

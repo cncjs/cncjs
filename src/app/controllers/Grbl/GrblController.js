@@ -19,7 +19,6 @@ import store from '../../store';
 import Grbl from './Grbl';
 import {
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
     GRBL_REALTIME_COMMANDS,
     GRBL_ALARMS,
@@ -176,7 +175,21 @@ class GrblController {
 
         // Feeder
         this.feeder = new Feeder({
-            dataFilter: this.dataFilter
+            dataFilter: (line, context) => {
+                // Wait for commands to complete (status change to Idle)
+                if (line === '%wait') {
+                    // https://github.com/grbl/grbl/issues/932
+                    // G4 P0 or P with a very small value will empty the planner queue and then
+                    // respond with an ok when the dwell is complete. At that instant, there will
+                    // be no queued motions, as long as no more commands were sent after the G4.
+                    // This is the fastest way to do it without having to check the status reports.
+                    const dwell = 'G4P0';
+
+                    return dwell;
+                }
+
+                return this.dataFilter(line, context);
+            }
         });
         this.feeder.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
@@ -206,7 +219,23 @@ class GrblController {
         this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
             // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
-            dataFilter: this.dataFilter
+            dataFilter: (line, context) => {
+                // Wait for commands to complete (status change to Idle)
+                if (line === '%wait') {
+                    this.sender.hold();
+
+                    // https://github.com/grbl/grbl/issues/932
+                    // G4 P0 or P with a very small value will empty the planner queue and then
+                    // respond with an ok when the dwell is complete. At that instant, there will
+                    // be no queued motions, as long as no more commands were sent after the G4.
+                    // This is the fastest way to do it without having to check the status reports.
+                    const dwell = 'G4P0';
+
+                    return dwell;
+                }
+
+                return this.dataFilter(line, context);
+            }
         });
         this.sender.on('data', (line = '', context = {}) => {
             if (this.isClose()) {
@@ -229,10 +258,10 @@ class GrblController {
             log.silly(`> ${line}`);
         });
         this.sender.on('hold', () => {
-            // TODO
+            log.debug('hold');
         });
         this.sender.on('unhold', () => {
-            // TODO
+            log.debug('unhold');
         });
         this.sender.on('start', (startTime) => {
             this.actionTime.senderFinishTime = 0;
@@ -299,6 +328,16 @@ class GrblController {
             // Sender
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 this.sender.ack();
+
+                // Check hold state
+                if (this.sender.state.hold) {
+                    const { sent, received } = this.sender.state;
+                    if (received >= sent) {
+                        // Clear the hold state and continue sending the next command
+                        this.sender.unhold();
+                    }
+                }
+
                 this.sender.next();
                 return;
             }
@@ -479,6 +518,11 @@ class GrblController {
                 this.emitAll('sender:status', this.sender.toJSON());
             }
 
+            const zeroOffset = _.isEqual(
+                this.controller.getWorkPosition(this.state),
+                this.controller.getWorkPosition(this.controller.state)
+            );
+
             // Grbl state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
@@ -497,24 +541,18 @@ class GrblController {
             // $G - Parser State
             queryParserState();
 
-            // Determine if the controller is completely idle
+            // Check if the machine has stopped movement after completion
             if (this.actionTime.senderFinishTime > 0) {
+                const machineIdle = zeroOffset && this.controller.isIdle();
                 const now = new Date().getTime();
                 const timespan = Math.abs(now - this.actionTime.senderFinishTime);
                 const toleranceTime = 1000; // 1000ms
-                const activeState = _.get(this.state, 'status.activeState');
-                const isControllerIdle = _.includes([
-                    GRBL_ACTIVE_STATE_IDLE
-                ], activeState);
 
-                if (!isControllerIdle) {
-                    // Extend the sender finish time if the controller state is not idle
+                if (!machineIdle) {
+                    // Extend the sender finish time
                     this.actionTime.senderFinishTime = now;
-                    return;
-                }
-
-                if (timespan > toleranceTime) {
-                    log.debug(`Stop workflow: activeState=${activeState}, timespan=${timespan}ms`);
+                } else if (timespan > toleranceTime) {
+                    log.debug(`finish: timespan=${timespan}ms`);
 
                     this.actionTime.senderFinishTime = 0;
 

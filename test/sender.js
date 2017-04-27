@@ -30,7 +30,12 @@ test('send-response streaming protocol', (t) => {
     const ok = sender.load(path.basename(file), content, context);
     t.equal(ok, true, `Failed to load "${file}".`);
 
-    const total = content.split('\n').filter(line => line.trim().length > 0).length;
+    let total = content
+        .split('\n')
+        .filter(line => line.trim().length > 0)
+        .length;
+    total = total + 1; // followed by a dwell comamnd G4P0
+
     t.same(sender.toJSON(), {
         sp: SP_TYPE_SEND_RESPONSE,
         hold: false,
@@ -155,7 +160,12 @@ test('character-counting streaming protocol', (t) => {
     const ok = sender.load(path.basename(file), content, context);
     t.equal(ok, true, `Failed to load "${file}".`);
 
-    const total = content.split('\n').filter(line => line.trim().length > 0).length;
+    let total = content
+        .split('\n')
+        .filter(line => line.trim().length > 0)
+        .length;
+    total = total + 1; // followed by a dwell comamnd G4P0
+
     t.same(sender.toJSON(), {
         sp: SP_TYPE_CHAR_COUNTING,
         hold: false,
