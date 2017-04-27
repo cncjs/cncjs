@@ -34,7 +34,7 @@ test('send-response streaming protocol', (t) => {
         .split('\n')
         .filter(line => line.trim().length > 0)
         .length;
-    total = total + 1; // followed by a dwell comamnd G4P0
+    total += 1; // followed by a dwell comamnd G4P0
 
     t.same(sender.toJSON(), {
         sp: SP_TYPE_SEND_RESPONSE,
@@ -164,7 +164,7 @@ test('character-counting streaming protocol', (t) => {
         .split('\n')
         .filter(line => line.trim().length > 0)
         .length;
-    total = total + 1; // followed by a dwell comamnd G4P0
+    total += 1; // followed by a dwell comamnd G4P0
 
     t.same(sender.toJSON(), {
         sp: SP_TYPE_CHAR_COUNTING,
