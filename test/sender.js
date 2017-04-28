@@ -30,19 +30,13 @@ test('send-response streaming protocol', (t) => {
     const ok = sender.load(path.basename(file), content, context);
     t.equal(ok, true, `Failed to load "${file}".`);
 
-    let total = content
-        .split('\n')
-        .filter(line => line.trim().length > 0)
-        .length;
-    total += 1; // followed by a dwell comamnd G4P0
-
     t.same(sender.toJSON(), {
         sp: SP_TYPE_SEND_RESPONSE,
         hold: false,
         name: path.basename(file),
         context: context,
-        size: content.length,
-        total: total,
+        size: sender.state.gcode.length,
+        total: sender.state.total,
         sent: 0,
         received: 0,
         startTime: sender.state.startTime,
@@ -62,10 +56,10 @@ test('send-response streaming protocol', (t) => {
             hold: false,
             name: path.basename(file),
             context: context,
-            size: content.length,
-            total: total,
-            sent: total,
-            received: total,
+            size: sender.state.gcode.length,
+            total: sender.state.total,
+            sent: sender.state.sent,
+            received: sender.state.received,
             startTime: sender.state.startTime,
             finishTime: sender.state.finishTime,
             elapsedTime: sender.state.elapsedTime,
@@ -160,19 +154,13 @@ test('character-counting streaming protocol', (t) => {
     const ok = sender.load(path.basename(file), content, context);
     t.equal(ok, true, `Failed to load "${file}".`);
 
-    let total = content
-        .split('\n')
-        .filter(line => line.trim().length > 0)
-        .length;
-    total += 1; // followed by a dwell comamnd G4P0
-
     t.same(sender.toJSON(), {
         sp: SP_TYPE_CHAR_COUNTING,
         hold: false,
         name: path.basename(file),
         context: context,
-        size: content.length,
-        total: total,
+        size: sender.state.gcode.length,
+        total: sender.state.total,
         sent: 0,
         received: 0,
         startTime: sender.state.startTime,
@@ -192,10 +180,10 @@ test('character-counting streaming protocol', (t) => {
             hold: false,
             name: path.basename(file),
             context: context,
-            size: content.length,
-            total: total,
-            sent: total,
-            received: total,
+            size: sender.state.gcode.length,
+            total: sender.state.total,
+            sent: sender.state.sent,
+            received: sender.state.received,
             startTime: sender.state.startTime,
             finishTime: sender.state.finishTime,
             elapsedTime: sender.state.elapsedTime,
