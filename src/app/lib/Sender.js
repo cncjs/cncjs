@@ -153,6 +153,10 @@ class Sender extends events.EventEmitter {
                     // Remove leading and trailing whitespace from both ends of a string
                     sp.line = sp.line || stripComments(this.state.lines[this.state.sent]).trim();
 
+                    if (this.dataFilter) {
+                        sp.line = this.dataFilter(sp.line, this.state.context) || '';
+                    }
+
                     // The newline character (\n) consumed the RX buffer space
                     if ((sp.line.length > 0) && ((sp.dataLength + sp.line.length + 1) >= sp.bufferSize)) {
                         break;
@@ -164,14 +168,6 @@ class Sender extends events.EventEmitter {
                     if (sp.line.length === 0) {
                         this.ack(); // ack empty line
                         continue;
-                    }
-
-                    if (this.dataFilter) {
-                        sp.line = this.dataFilter(sp.line, this.state.context) || '';
-                        if (sp.line.length === 0) {
-                            this.ack(); // ack empty line
-                            continue;
-                        }
                     }
 
                     const line = sp.line + '\n';
@@ -190,20 +186,16 @@ class Sender extends events.EventEmitter {
                     // Remove leading and trailing whitespace from both ends of a string
                     let line = stripComments(this.state.lines[this.state.sent]).trim();
 
+                    if (this.dataFilter) {
+                        line = this.dataFilter(line, this.state.context) || '';
+                    }
+
                     this.state.sent++;
                     this.emit('change');
 
                     if (line.length === 0) {
                         this.ack(); // ack empty line
                         continue;
-                    }
-
-                    if (this.dataFilter) {
-                        line = this.dataFilter(line, this.state.context) || '';
-                        if (line.length === 0) {
-                            this.ack(); // ack empty line
-                            continue;
-                        }
                     }
 
                     this.emit('data', line + '\n', this.state.context);
