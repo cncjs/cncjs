@@ -25,10 +25,12 @@ import {
     TINYG_STATUS_CODES
 } from './constants';
 
-// Send Response State
 const SEND_RESPONSE_STATE_NONE = 0;
 const SEND_RESPONSE_STATE_SEND = 1;
 const SEND_RESPONSE_STATE_ACK = 2;
+
+// % commands
+const WAIT = '%wait';
 
 const log = logger('[TinyG]');
 const noop = () => {};
@@ -169,15 +171,8 @@ class TinyGController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
-                // Wait for commands to complete (status change to Idle)
-                if (line === '%wait') {
-                    // G4 P0 or P with a very small value will empty the planner queue and then
-                    // respond with an ok when the dwell is complete. At that instant, there will
-                    // be no queued motions, as long as no more commands were sent after the G4.
-                    // This is the fastest way to do it without having to check the status reports.
-                    const dwell = 'G4P0 ; %wait';
-
-                    return dwell;
+                if (line === WAIT) {
+                    return `G4 P0.1 (${WAIT})`; // dwell
                 }
 
                 return this.dataFilter(line, context);
@@ -210,17 +205,13 @@ class TinyGController {
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
             dataFilter: (line, context) => {
-                // Wait for commands to complete (status change to Idle)
-                if (line === '%wait') {
+                if (line === WAIT) {
+                    const { sent, received } = this.sender.state;
+                    log.debug(`Wait for the planner queue to empty: sent=${sent}, received=${received}`);
+
                     this.sender.hold();
 
-                    // G4 P0 or P with a very small value will empty the planner queue and then
-                    // respond with an ok when the dwell is complete. At that instant, there will
-                    // be no queued motions, as long as no more commands were sent after the G4.
-                    // This is the fastest way to do it without having to check the status reports.
-                    const dwell = 'G4P0';
-
-                    return dwell;
+                    return 'G4 P0.1'; // dwell
                 }
 
                 return this.dataFilter(line, context);
@@ -252,12 +243,8 @@ class TinyGController {
             this.serialport.write(line + '\n');
             log.silly(`> SEND: n=${n}, line="${line}"`);
         });
-        this.sender.on('hold', () => {
-            log.debug('hold');
-        });
-        this.sender.on('unhold', () => {
-            log.debug('unhold');
-        });
+        this.sender.on('hold', noop);
+        this.sender.on('unhold', noop);
         this.sender.on('start', (startTime) => {
             this.actionTime.senderFinishTime = 0;
         });
@@ -321,7 +308,7 @@ class TinyGController {
                 if (this.sender.state.hold) {
                     const { sent, received } = this.sender.state;
                     if (received >= sent) {
-                        // Clear the hold state and continue sending the next command
+                        log.debug(`Continue sending G-code: sent=${sent}, received=${received}`);
                         this.sender.unhold();
                     }
                 }
@@ -362,7 +349,7 @@ class TinyGController {
                     if (this.sender.state.hold) {
                         const { sent, received } = this.sender.state;
                         if (received >= sent) {
-                            // Clear the hold state and continue sending the next command
+                            log.debug(`Continue sending G-code: sent=${sent}, received=${received}`);
                             this.sender.unhold();
                         }
                     }
@@ -467,7 +454,7 @@ class TinyGController {
                     // Extend the sender finish time if the controller state is not idle
                     this.actionTime.senderFinishTime = now;
                 } else if (timespan > toleranceTime) {
-                    log.debug(`Finished sending G-code: name=${this.sender.state.name}`);
+                    log.silly(`Finished sending G-code: timespan=${timespan}`);
 
                     this.actionTime.senderFinishTime = 0;
 
@@ -818,7 +805,7 @@ class TinyGController {
                 // respond with an ok when the dwell is complete. At that instant, there will
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
-                const dwell = 'G4P0 ; Wait for the planner queue to empty';
+                const dwell = 'G4 P0.1 ; Wait for the planner queue to empty';
                 gcode = gcode + '\n' + dwell;
 
                 const ok = this.sender.load(name, gcode, context);
