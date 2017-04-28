@@ -171,12 +171,11 @@ class TinyGController {
             dataFilter: (line, context) => {
                 // Wait for commands to complete (status change to Idle)
                 if (line === '%wait') {
-                    // https://github.com/grbl/grbl/issues/932
                     // G4 P0 or P with a very small value will empty the planner queue and then
                     // respond with an ok when the dwell is complete. At that instant, there will
                     // be no queued motions, as long as no more commands were sent after the G4.
                     // This is the fastest way to do it without having to check the status reports.
-                    const dwell = 'G4P0';
+                    const dwell = 'G4P0 ; %wait';
 
                     return dwell;
                 }
@@ -215,7 +214,6 @@ class TinyGController {
                 if (line === '%wait') {
                     this.sender.hold();
 
-                    // https://github.com/grbl/grbl/issues/932
                     // G4 P0 or P with a very small value will empty the planner queue and then
                     // respond with an ok when the dwell is complete. At that instant, there will
                     // be no queued motions, as long as no more commands were sent after the G4.
@@ -463,13 +461,13 @@ class TinyGController {
                 const machineIdle = zeroOffset && this.controller.isIdle();
                 const now = new Date().getTime();
                 const timespan = Math.abs(now - this.actionTime.senderFinishTime);
-                const toleranceTime = 1000; // 1000ms
+                const toleranceTime = 500; // in milliseconds
 
                 if (!machineIdle) {
                     // Extend the sender finish time if the controller state is not idle
                     this.actionTime.senderFinishTime = now;
                 } else if (timespan > toleranceTime) {
-                    log.debug(`finish: timespan=${timespan}ms`);
+                    log.debug(`Finished sending G-code: name=${this.sender.state.name}`);
 
                     this.actionTime.senderFinishTime = 0;
 
