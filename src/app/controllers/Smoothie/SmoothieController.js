@@ -777,6 +777,13 @@ class SmoothieController {
                     context = {};
                 }
 
+                // G4 P0 or P with a very small value will empty the planner queue and then
+                // respond with an ok when the dwell is complete. At that instant, there will
+                // be no queued motions, as long as no more commands were sent after the G4.
+                // This is the fastest way to do it without having to check the status reports.
+                const dwell = 'G4P0 ; Wait for the planner queue to empty';
+                gcode = gcode + '\n' + dwell;
+
                 const ok = this.sender.load(name, gcode, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
