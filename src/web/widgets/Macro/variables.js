@@ -1,12 +1,22 @@
 module.exports = [
+    { type: 'header', text: 'Wait for the planner queue to empty' },
+    '%wait\n',
+    { type: 'header', text: 'Specify the bounding box' },
+    '%xmin=0,xmax=100,ymin=0,ymax=100\n',
+    { type: 'header', text: 'Save work position' },
+    '%x0=posx,y0=posy,z0=posz\n',
+    { type: 'header', text: 'Move to saved position' },
+    'G0 X[x0] Y[y0]',
+    { type: 'header', text: 'Work position' },
+    '[posx]',
+    '[posy]',
+    '[posz]',
+    '[posa]',
+    { type: 'header', text: 'Bounding box' },
     '[xmin]',
     '[xmax]',
     '[ymin]',
     '[ymax]',
     '[zmin]',
-    '[zmax]',
-    '[posx]',
-    '[posy]',
-    '[posz]',
-    '[posa]'
+    '[zmax]'
 ];

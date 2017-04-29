@@ -1,5 +1,7 @@
-import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import get from 'lodash/get';
+import uniqueId from 'lodash/uniqueId';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
 import { Dropdown, MenuItem } from 'react-bootstrap';
@@ -94,11 +96,27 @@ class EditMacro extends Component {
                                         <i className="fa fa-caret-down" />
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu className={styles.macroVariablesDropdown}>
-                                        {variables.map(v =>
-                                            <MenuItem eventKey={v} key={v}>
-                                                {v}
-                                            </MenuItem>
-                                        )}
+                                        {variables.map(v => {
+                                            if (typeof v === 'object') {
+                                                return (
+                                                    <MenuItem
+                                                        header={v.type === 'header'}
+                                                        key={uniqueId()}
+                                                    >
+                                                        {v.text}
+                                                    </MenuItem>
+                                                );
+                                            }
+
+                                            return (
+                                                <MenuItem
+                                                    eventKey={v}
+                                                    key={uniqueId()}
+                                                >
+                                                    {v}
+                                                </MenuItem>
+                                            );
+                                        })}
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </div>
@@ -163,8 +181,8 @@ class EditMacro extends Component {
                                 return;
                             }
 
-                            const name = _.get(this.fields.name, 'state.value');
-                            const content = _.get(this.fields.content, 'state.value');
+                            const name = get(this.fields.name, 'state.value');
+                            const content = get(this.fields.content, 'state.value');
 
                             actions.updateMacro(id, { name, content });
                             actions.closeModal();
