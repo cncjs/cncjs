@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import parseJSON from 'parse-json';
 import logger from '../../lib/logger';
 
-const log = logger('[ConfigStore]');
+const log = logger('service:configstore');
 
 const defaultState = { // default state
     checkForUpdates: true
@@ -20,9 +20,7 @@ class ConfigStore extends events.EventEmitter {
     // @return {object} The config object.
     load(file) {
         this.file = file;
-        if (this.reload()) {
-            log.info(`Loaded configuration from "${this.file}"`);
-        }
+        this.reload();
         this.emit('load', this.config); // emit load event
 
         if (this.watcher) {
@@ -47,7 +45,7 @@ class ConfigStore extends events.EventEmitter {
                 }
             });
         } catch (err) {
-            log.error(`err=${err}`);
+            log.error(err);
             this.emit('error', err); // emit error event
         }
 
@@ -61,8 +59,7 @@ class ConfigStore extends events.EventEmitter {
             }
         } catch (err) {
             err.fileName = this.file;
-            log.error(`Unable to load data from "${this.file}"`);
-            console.error(chalk.red(err));
+            log.error(`Unable to load data from ${chalk.yellow(JSON.stringify(this.file))}: err=${err}`);
             this.emit('error', err); // emit error event
             return false;
         }

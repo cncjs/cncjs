@@ -4,7 +4,7 @@ import without from 'lodash/without';
 import shortid from 'shortid';
 import logger from '../../lib/logger';
 
-const log = logger('[TaskRunner]');
+const log = logger('service:taskrunner');
 
 class TaskRunner extends events.EventEmitter {
     tasks = [];

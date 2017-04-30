@@ -14,7 +14,7 @@ import config from './services/configstore';
 import logger from './lib/logger';
 import settings from './config/settings';
 
-const log = logger();
+const log = logger('init');
 
 const createServer = (options, callback) => {
     options = { ...options };
@@ -39,7 +39,8 @@ const createServer = (options, callback) => {
 
     const cncrc = path.resolve(options.configFile || settings.cncrc);
 
-    // Setup configstore service
+    // configstore service
+    log.info(`Loading configuration from ${chalk.yellow(JSON.stringify(cncrc))}`);
     config.load(cncrc);
 
     // cncrc
@@ -60,9 +61,9 @@ const createServer = (options, callback) => {
 
         if (watchDirectory) {
             if (fs.existsSync(watchDirectory)) {
-                log.info(`Start watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes.`);
+                log.info(`Watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes.`);
 
-                // Start monitor service
+                // monitor service
                 monitor.start({ watchDirectory: watchDirectory });
             } else {
                 log.error(`The directory ${chalk.yellow(JSON.stringify(watchDirectory))} does not exist.`);
@@ -108,14 +109,14 @@ const createServer = (options, callback) => {
 
     webappengine({ port, host, backlog, routes })
         .on('ready', (server) => {
-            // Start cncengine service
-            cncengine.start({ server: server });
+            // cncengine service
+            cncengine.start(server, options.controller);
             callback && callback(null, server);
 
             const address = server.address().address;
             const port = server.address().port;
             if (address !== '0.0.0.0') {
-                log.info('Started the server at ' + chalk.cyan(`http://${address}:${port}`));
+                log.info('Starting the server at ' + chalk.cyan(`http://${address}:${port}`));
                 return;
             }
 
@@ -126,7 +127,7 @@ const createServer = (options, callback) => {
                 }
 
                 addresses.forEach(({ address, family }) => {
-                    log.info('Started the server at ' + chalk.cyan(`http://${address}:${port}`));
+                    log.info('Starting the server at ' + chalk.cyan(`http://${address}:${port}`));
                 });
             });
         })

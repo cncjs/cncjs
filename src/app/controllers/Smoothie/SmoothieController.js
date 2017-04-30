@@ -26,7 +26,7 @@ import {
 // % commands
 const WAIT = '%wait';
 
-const log = logger('[Smoothie]');
+const log = logger('controller:Smoothie');
 const noop = _.noop;
 
 class SmoothieController {

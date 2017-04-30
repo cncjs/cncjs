@@ -32,7 +32,7 @@ const SEND_RESPONSE_STATE_ACK = 2;
 // % commands
 const WAIT = '%wait';
 
-const log = logger('[TinyG]');
+const log = logger('controller:TinyG');
 const noop = () => {};
 
 class TinyGController {

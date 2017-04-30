@@ -4,7 +4,7 @@ import path from 'path';
 import settings from '../config/settings';
 import logger from '../lib/logger';
 
-const log = logger('[api.i18n]');
+const log = logger('api:i18n');
 
 export const getAcceptedLanguage = (req, res) => {
     let headers = req.headers || {};

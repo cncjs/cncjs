@@ -29,7 +29,7 @@ import {
 // % commands
 const WAIT = '%wait';
 
-const log = logger('[Grbl]');
+const log = logger('controller:Grbl');
 const noop = _.noop;
 
 class GrblController {

@@ -1,7 +1,4 @@
 import config from '../services/configstore';
-import logger from './logger';
-
-const log = logger('[event-trigger]');
 
 const noop = () => {};
 
@@ -11,7 +8,6 @@ class EventTrigger {
     }
     trigger(eventKey, callback = null) {
         if (!eventKey) {
-            log.error('The event is undefined');
             return;
         }
 

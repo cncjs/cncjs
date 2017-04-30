@@ -42,7 +42,7 @@ import {
     ERR_FORBIDDEN
 } from './constants';
 
-const log = logger('[app]');
+const log = logger('app');
 
 const renderPage = (view = 'index', cb = _.noop) => (req, res, next) => {
     // Override IE's Compatibility View Settings

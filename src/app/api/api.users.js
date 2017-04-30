@@ -18,7 +18,7 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const log = logger('[api.users]');
+const log = logger('api:users');
 const CONFIG_KEY = 'users';
 
 // Generate access token

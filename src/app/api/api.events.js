@@ -12,7 +12,7 @@ import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-const log = logger('[api.events]');
+const log = logger('api:events');
 const CONFIG_KEY = 'events';
 
 const getSanitizedRecords = () => {
