@@ -10,6 +10,8 @@ const getStackTrace = () => {
     return (obj.stack || '').split('\n');
 };
 
+const VERBOSITY_MAX = 3; // -vvv
+
 const logger = new winston.Logger({
     exitOnError: false,
     level: settings.winston.level,
@@ -30,7 +32,7 @@ module.exports = (namespace = '') => {
 
     return levels.reduce((acc, level) => {
         acc[level] = function(...args) {
-            if ((logger.levels[logger.level] >= logger.levels.debug) && (level !== 'silly')) {
+            if ((settings.verbosity >= VERBOSITY_MAX) && (level !== 'silly')) {
                 args = args.concat(getStackTrace()[2]);
             }
             return (namespace.length > 0)
@@ -45,7 +47,7 @@ module.exports.logger = logger;
 
 levels.forEach(level => {
     module.exports[level] = function(...args) {
-        if ((logger.levels[logger.level] >= logger.levels.debug) && (level !== 'silly')) {
+        if ((settings.verbosity >= VERBOSITY_MAX) && (level !== 'silly')) {
             args = args.concat(getStackTrace()[2]);
         }
         return logger[level](util.format(...args));
