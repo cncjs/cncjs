@@ -180,7 +180,7 @@ class GrblController {
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
                 if (line === WAIT) {
-                    return `G4 P0.1 (${WAIT})`; // dwell
+                    return `G4 P0.5 (${WAIT})`; // dwell
                 }
 
                 return this.dataFilter(line, context);
@@ -221,7 +221,7 @@ class GrblController {
 
                     this.sender.hold();
 
-                    return 'G4 P0.1'; // dwell
+                    return `G4 P0.5 (${WAIT})`; // dwell
                 }
 
                 return this.dataFilter(line, context);
@@ -744,7 +744,7 @@ class GrblController {
                 // respond with an ok when the dwell is complete. At that instant, there will
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
-                const dwell = 'G4 P0.1 ; Wait for the planner queue to empty';
+                const dwell = '%wait ; Wait for the planner queue to empty';
                 gcode = gcode + '\n' + dwell;
 
                 const ok = this.sender.load(name, gcode, context);
