@@ -242,6 +242,7 @@
     "Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)": "Werkstück-Nullpunkte setzen (G10 L20 P5 X0 Y0 Z0)",
     "Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)": "Werkstück-Nullpunkte setzen (G10 L20 P6 X0 Y0 Z0)",
     "Go To Machine Zero (G53 G0 X0 Y0 Z0)": "Zum Maschinen-Nullpunkt (G53 G0 X0 Y0 Z0)",
+    "Error opening serial port '{{- port}}'": "",
     "Manufacturer: {{manufacturer}}": "Hersteller: {{manufacturer}}",
     "Port": "Schnittstelle",
     "No ports available": "Keine Schnittstelle verfügbar",

@@ -242,6 +242,7 @@
     "Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)": "設定工作原點 (G10 L20 P5 X0 Y0 Z0)",
     "Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)": "設定工作原點 (G10 L20 P6 X0 Y0 Z0)",
     "Go To Machine Zero (G53 G0 X0 Y0 Z0)": "返回機器原點 (G53 G0 X0 Y0 Z0)",
+    "Error opening serial port '{{- port}}'": "",
     "Manufacturer: {{manufacturer}}": "製造商：{{manufacturer}}",
     "Port": "序列埠",
     "No ports available": "找不到可用的序列埠",

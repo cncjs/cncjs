@@ -242,6 +242,7 @@
     "Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)": "ワークオフセットP5をゼロにする (G10 L20 P5 X0 Y0 Z0)",
     "Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)": "ワークオフセットP6をゼロにする (G10 L20 P6 X0 Y0 Z0)",
     "Go To Machine Zero (G53 G0 X0 Y0 Z0)": "機械原点に移動 (G53 G0 X0 Y0 Z0)",
+    "Error opening serial port '{{- port}}'": "",
     "Manufacturer: {{manufacturer}}": "メーカー: {{manufacturer}}",
     "Port": "ポート",
     "No ports available": "ポートが見つかりません",

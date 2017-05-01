@@ -242,6 +242,7 @@
     "Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)": "Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)",
     "Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)": "Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)",
     "Go To Machine Zero (G53 G0 X0 Y0 Z0)": "Menjen a Gépi nullpontra (G53 G0 X0 Y0 Z0)",
+    "Error opening serial port '{{- port}}'": "",
     "Manufacturer: {{manufacturer}}": "Gyártó: {{manufacturer}}",
     "Port": "Port",
     "No ports available": "Nincs elérhető port",
