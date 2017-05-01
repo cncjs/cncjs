@@ -172,7 +172,7 @@ class TinyGController {
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
                 if (line === WAIT) {
-                    return `G4 P0.1 (${WAIT})`; // dwell
+                    return `G4 P0.5 (${WAIT})`; // dwell
                 }
 
                 return this.dataFilter(line, context);
@@ -211,7 +211,7 @@ class TinyGController {
 
                     this.sender.hold();
 
-                    return 'G4 P0.1'; // dwell
+                    return `G4 P0.5 (${WAIT})`; // dwell
                 }
 
                 return this.dataFilter(line, context);
@@ -303,16 +303,6 @@ class TinyGController {
             // Continue to the next line if not blocked
             if (!this.blocked) {
                 this.sender.ack();
-
-                // Check hold state
-                if (this.sender.state.hold) {
-                    const { sent, received } = this.sender.state;
-                    if (received >= sent) {
-                        log.debug(`Continue sending G-code: sent=${sent}, received=${received}`);
-                        this.sender.unhold();
-                    }
-                }
-
                 this.sender.next();
 
                 this.sendResponseState = SEND_RESPONSE_STATE_SEND; // data sent
@@ -338,22 +328,25 @@ class TinyGController {
                 this.blocked = false;
             }
 
-            if (this.sendResponseState === SEND_RESPONSE_STATE_ACK) {
+            if (this.sendResponseState === SEND_RESPONSE_STATE_SEND) {
+                // Check hold state
+                if (this.sender.state.hold) {
+                    const { sent, received } = this.sender.state;
+                    const plannerBufferPoolSize = this.controller.plannerBufferPoolSize;
+
+                    if ((received >= sent) && (qr >= plannerBufferPoolSize)) {
+                        log.debug(`Continue sending G-code: sent=${sent}, received=${received}, qr=${qr}`);
+                        log.silly(`> NEXT: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
+                        this.sender.unhold();
+                        this.sender.next();
+                    }
+                }
+            } else if (this.sendResponseState === SEND_RESPONSE_STATE_ACK) {
                 // running
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                     log.silly(`> NEXT: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
 
                     this.sender.ack();
-
-                    // Check hold state
-                    if (this.sender.state.hold) {
-                        const { sent, received } = this.sender.state;
-                        if (received >= sent) {
-                            log.debug(`Continue sending G-code: sent=${sent}, received=${received}`);
-                            this.sender.unhold();
-                        }
-                    }
-
                     this.sender.next();
 
                     this.sendResponseState = SEND_RESPONSE_STATE_SEND;
@@ -532,16 +525,25 @@ class TinyGController {
             // Motor Timeout
             { cmd: '{"mt":null}' },
 
+            // Request queue report
+            { cmd: '{"qr":null}' },
+
             // Request status report
             { cmd: '{"sr":null}' }
         ];
 
         const sendInitCommands = (i = 0) => {
+            if (this.isClose()) {
+                // Serial port is closed
+                return;
+            }
+
             if (i >= cmds.length) {
                 // Set ready flag to true after sending initialization commands
                 this.ready = true;
                 return;
             }
+
             const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
             if (cmd) {
                 if (cmd.length >= TINYG_SERIAL_BUFFER_LIMIT) {
@@ -805,7 +807,7 @@ class TinyGController {
                 // respond with an ok when the dwell is complete. At that instant, there will
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
-                const dwell = 'G4 P0.1 ; Wait for the planner queue to empty';
+                const dwell = '%wait ; Wait for the planner queue to empty';
                 gcode = gcode + '\n' + dwell;
 
                 const ok = this.sender.load(name, gcode, context);
