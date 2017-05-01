@@ -86,9 +86,9 @@ class TinyGParserResultQueueReports {
         }
 
         const payload = {
-            qr: qr,
-            qi: qi,
-            qo: qo
+            qr: Number(qr) || 0,
+            qi: Number(qi) || 0,
+            qo: Number(qo) || 0
         };
 
         return {
@@ -179,6 +179,8 @@ class TinyG extends events.EventEmitter {
         statusCode: 0, // https://github.com/synthetos/g2/wiki/Status-Codes
         rxBufferInfo: 0
     };
+    plannerBufferPoolSize = 0; // Suggest 12 min. Limit is 255
+
     parser = new TinyGParser();
 
     parse(data) {
@@ -201,6 +203,12 @@ class TinyG extends events.EventEmitter {
 
             if (type === TinyGParserResultQueueReports) {
                 const { qr, qi, qo } = payload;
+
+                // The planner buffer pool size will be checked every time the planner buffer changes
+                if (qr > this.plannerBufferPoolSize) {
+                    this.plannerBufferPoolSize = qr;
+                }
+
                 if (this.state.qr !== qr ||
                     this.state.qi !== qi ||
                     this.state.qo !== qo) {
