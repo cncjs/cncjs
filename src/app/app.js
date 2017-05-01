@@ -265,7 +265,7 @@ const appMain = () => {
         app.get(urljoin(settings.route, 'api/gcode/download'), api.gcode.download);
 
         // Controllers
-        app.get(urljoin(settings.route, 'api/controllers'), api.controllers.getActiveControllers);
+        app.get(urljoin(settings.route, 'api/controllers'), api.controllers.get);
 
         // Commands
         app.get(urljoin(settings.route, 'api/commands'), api.commands.fetch);

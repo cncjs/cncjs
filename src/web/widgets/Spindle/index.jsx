@@ -1,7 +1,6 @@
 import classNames from 'classnames';
 import includes from 'lodash/includes';
 import get from 'lodash/get';
-import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
@@ -62,6 +61,14 @@ class SpindleWidget extends Component {
         }
     };
     controllerEvents = {
+        'serialport:open': (options) => {
+            const { port } = options;
+            this.setState({ port: port });
+        },
+        'serialport:close': (options) => {
+            const initialState = this.getInitialState();
+            this.setState({ ...initialState });
+        },
         'workflow:state': (workflowState) => {
             if (this.state.workflowState !== workflowState) {
                 this.setState({ workflowState: workflowState });
@@ -119,18 +126,15 @@ class SpindleWidget extends Component {
             });
         }
     };
-    pubsubTokens = [];
 
     constructor() {
         super();
         this.state = this.getInitialState();
     }
     componentDidMount() {
-        this.subscribe();
         this.addControllerEvents();
     }
     componentWillUnmount() {
-        this.unsubscribe();
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -165,30 +169,6 @@ class SpindleWidget extends Component {
             workflowState: controller.workflowState,
             spindleSpeed: store.get('widgets.spindle.speed', 1000)
         };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    const initialState = this.getInitialState();
-                    this.setState({
-                        ...initialState,
-                        port: ''
-                    });
-                }
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {

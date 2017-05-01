@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
@@ -111,11 +110,15 @@ class TinyGWidget extends Component {
     };
     controllerEvents = {
         'serialport:open': (options) => {
-            const { controllerType } = options;
-            this.setState({ isReady: controllerType === TINYG });
+            const { port, controllerType } = options;
+            this.setState({
+                isReady: controllerType === TINYG,
+                port: port
+            });
         },
         'serialport:close': (options) => {
-            this.setState({ isReady: true });
+            const initialState = this.getInitialState();
+            this.setState({ ...initialState });
         },
         'TinyG:state': (state) => {
             this.setState({
@@ -126,18 +129,15 @@ class TinyGWidget extends Component {
             });
         }
     };
-    pubsubTokens = [];
 
     constructor() {
         super();
         this.state = this.getInitialState();
     }
     componentDidMount() {
-        this.subscribe();
         this.addControllerEvents();
     }
     componentWillUnmount() {
-        this.unsubscribe();
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -158,7 +158,7 @@ class TinyGWidget extends Component {
         return {
             minimized: store.get('widgets.tinyg.minimized', false),
             isFullscreen: false,
-            isReady: controller.type === TINYG,
+            isReady: (controller.loadedControllers.length === 1) || (controller.type === TINYG),
             canClick: true, // Defaults to true
             port: controller.port,
             controller: {
@@ -181,30 +181,6 @@ class TinyGWidget extends Component {
                 }
             }
         };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    const initialState = this.getInitialState();
-                    this.setState({
-                        ...initialState,
-                        port: ''
-                    });
-                }
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {

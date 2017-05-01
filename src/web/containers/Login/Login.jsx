@@ -48,12 +48,14 @@ class Login extends Component {
                     }
 
                     log.debug('Create and establish a WebSocket connection');
-                    controller.connect(); // @see "src/web/index.jsx"
 
-                    this.setState({
-                        alertMessage: '',
-                        authenticating: false,
-                        redirectToReferrer: true
+                    controller.connect(() => {
+                        // @see "src/web/index.jsx"
+                        this.setState({
+                            alertMessage: '',
+                            authenticating: false,
+                            redirectToReferrer: true
+                        });
                     });
                 });
         }

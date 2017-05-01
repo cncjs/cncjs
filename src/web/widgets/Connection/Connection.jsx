@@ -10,29 +10,13 @@ import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import controller from '../../lib/controller';
 import store from '../../store';
+import {
+    GRBL,
+    SMOOTHIE,
+    TINYG
+} from '../../constants';
 
 class Connection extends React.Component {
-    state = {
-        loading: false,
-        connecting: false,
-        connected: false,
-        ports: [],
-        baudrates: [
-            115200,
-            57600,
-            38400,
-            19200,
-            9600,
-            4800,
-            2400
-        ],
-        controllerType: store.get('widgets.connection.controller.type'),
-        port: controller.port,
-        baudrate: store.get('widgets.connection.baudrate'),
-        autoReconnect: store.get('widgets.connection.autoReconnect'),
-        hasReconnected: false,
-        alertMessage: ''
-    };
     controllerEvents = {
         'serialport:list': (ports) => {
             log.debug('Received a list of serial ports:', ports);
@@ -75,11 +59,6 @@ class Connection extends React.Component {
 
             this.clearAlert();
 
-            // update controller type
-            controller.type = controllerType;
-
-            pubsub.publish('port', port);
-
             this.setState({
                 connecting: false,
                 connected: true,
@@ -96,9 +75,6 @@ class Connection extends React.Component {
 
             this.clearAlert();
 
-            // Close port
-            pubsub.publish('port', '');
-
             this.setState({
                 connecting: false,
                 connected: false
@@ -109,10 +85,7 @@ class Connection extends React.Component {
         'serialport:error': (options) => {
             const { port } = options;
 
-            this.showAlert('Error opening serial port \'' + port + '\'');
-
-            // Close port
-            pubsub.publish('port', '');
+            this.showAlert(i18n._('Error opening serial port \'{{- port}}\'', { port: port }));
 
             this.setState({
                 connecting: false,
@@ -123,6 +96,10 @@ class Connection extends React.Component {
         }
     };
 
+    constructor() {
+        super();
+        this.state = this.getInitialState();
+    }
     componentWillMount() {
         this.handleRefresh();
     }
@@ -148,6 +125,34 @@ class Connection extends React.Component {
             store.set('widgets.connection.baudrate', baudrate);
         }
         store.set('widgets.connection.autoReconnect', autoReconnect);
+    }
+    getInitialState() {
+        let controllerType = store.get('widgets.connection.controller.type');
+        if (!_.includes(controller.loadedControllers, controllerType)) {
+            controllerType = controller.loadedControllers[0];
+        }
+
+        return {
+            loading: false,
+            connecting: false,
+            connected: false,
+            ports: [],
+            baudrates: [
+                115200,
+                57600,
+                38400,
+                19200,
+                9600,
+                4800,
+                2400
+            ],
+            controllerType: controllerType,
+            port: controller.port,
+            baudrate: store.get('widgets.connection.baudrate'),
+            autoReconnect: store.get('widgets.connection.autoReconnect'),
+            hasReconnected: false,
+            alertMessage: ''
+        };
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
@@ -192,6 +197,7 @@ class Connection extends React.Component {
         return !!(o.inuse);
     }
     handleRefresh() {
+        // Refresh ports
         controller.listAllPorts();
         this.startLoading();
     }
@@ -205,45 +211,59 @@ class Connection extends React.Component {
         controller.openPort(port, {
             controllerType: this.state.controllerType,
             baudrate: baudrate
+        }, (err) => {
+            if (err) {
+                this.showAlert(i18n._('Error opening serial port \'{{- port}}\'', { port: port }));
+
+                this.setState({
+                    connecting: false,
+                    connected: false
+                });
+
+                log.error(err);
+                return;
+            }
+
+            let name = '';
+            let gcode = '';
+
+            api.controllers.get()
+                .then((res) => {
+                    let next;
+                    const c = _.find(res.body, { port: port });
+                    if (c) {
+                        next = api.fetchGCode({ port: port });
+                    }
+                    return next;
+                })
+                .then((res) => {
+                    name = _.get(res, 'body.name', '');
+                    gcode = _.get(res, 'body.data', '');
+                })
+                .catch((res) => {
+                    // Empty block
+                })
+                .then(() => {
+                    if (gcode) {
+                        pubsub.publish('gcode:load', { name, gcode });
+                    }
+                });
         });
-
-        let name = '';
-        let gcode = '';
-
-        api.listControllers()
-            .then((res) => {
-                let next;
-                const c = _.find(res.body, { port: port });
-                if (c) {
-                    next = api.fetchGCode({ port: port });
-                }
-                return next;
-            })
-            .then((res) => {
-                name = _.get(res, 'body.name', '');
-                gcode = _.get(res, 'body.data', '');
-            })
-            .catch((res) => {
-                // Empty block
-            })
-            .then(() => {
-                if (gcode) {
-                    pubsub.publish('gcode:load', { name, gcode });
-                }
-            });
     }
     closePort(port = this.state.port) {
-        // Close port
-        pubsub.publish('port', '');
-
         this.setState({
             connecting: false,
             connected: false
         });
-        controller.closePort(port);
+        controller.closePort(port, (err) => {
+            if (err) {
+                log.error(err);
+                return;
+            }
 
-        // Refresh ports
-        controller.listAllPorts();
+            // Refresh ports
+            controller.listAllPorts();
+        });
     }
     changeController(controllerType) {
         this.setState({ controllerType: controllerType });
@@ -336,6 +356,10 @@ class Connection extends React.Component {
             autoReconnect,
             alertMessage
         } = this.state;
+        const canSelectControllers = (controller.loadedControllers.length > 1);
+        const hasGrblController = _.includes(controller.loadedControllers, GRBL);
+        const hasSmoothieController = _.includes(controller.loadedControllers, SMOOTHIE);
+        const hasTinyGController = _.includes(controller.loadedControllers, TINYG);
         const notLoading = !loading;
         const notConnecting = !connecting;
         const notConnected = !connected;
@@ -353,54 +377,62 @@ class Connection extends React.Component {
                     {alertMessage}
                 </Notifications>
                 }
+                {canSelectControllers &&
                 <div className="form-group">
                     <div className="input-group input-group-sm">
                         <div className="input-group-btn">
+                            {hasGrblController &&
                             <button
                                 type="button"
                                 className={classNames(
                                     'btn',
                                     'btn-default',
-                                    { 'btn-select': controllerType === 'Grbl' }
+                                    { 'btn-select': controllerType === GRBL }
                                 )}
                                 disabled={!canChangeController}
                                 onClick={() => {
-                                    this.changeController('Grbl');
+                                    this.changeController(GRBL);
                                 }}
                             >
-                                Grbl
+                                {GRBL}
                             </button>
+                            }
+                            {hasSmoothieController &&
                             <button
                                 type="button"
                                 className={classNames(
                                     'btn',
                                     'btn-default',
-                                    { 'btn-select': controllerType === 'Smoothie' }
+                                    { 'btn-select': controllerType === SMOOTHIE }
                                 )}
                                 disabled={!canChangeController}
                                 onClick={() => {
-                                    this.changeController('Smoothie');
+                                    this.changeController(SMOOTHIE);
                                 }}
                             >
-                                Smoothie
+                                {SMOOTHIE}
                             </button>
+                            }
+                            {hasTinyGController &&
                             <button
                                 type="button"
                                 className={classNames(
                                     'btn',
                                     'btn-default',
-                                    { 'btn-select': controllerType === 'TinyG' }
+                                    { 'btn-select': controllerType === TINYG }
                                 )}
                                 disabled={!canChangeController}
                                 onClick={() => {
-                                    this.changeController('TinyG');
+                                    this.changeController(TINYG);
                                 }}
                             >
-                                TinyG
+                                {TINYG}
                             </button>
+                            }
                         </div>
                     </div>
                 </div>
+                }
                 <div className="form-group">
                     <label className="control-label">{i18n._('Port')}</label>
                     <div className="input-group input-group-sm">

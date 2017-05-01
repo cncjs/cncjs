@@ -3,6 +3,8 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import Sortable from 'react-sortablejs';
+import { GRBL, SMOOTHIE, TINYG } from '../../constants';
+import controller from '../../lib/controller';
 import store from '../../store';
 import Widget from './Widget';
 import styles from './widgets.styl';
@@ -58,19 +60,32 @@ class SecondaryWidgets extends Component {
     }
     render() {
         const { className } = this.props;
-        const widgets = _.map(this.state.widgets, (widgetid) => (
-            <Widget
-                widgetid={widgetid}
-                key={widgetid}
-                sortable={{
-                    handleClassName: 'sortable-handle',
-                    filterClassName: 'sortable-filter'
-                }}
-                onDelete={() => {
-                    this.handleDeleteWidget(widgetid);
-                }}
-            />
-        ));
+        const widgets = this.state.widgets
+            .filter(widgetid => {
+                if (widgetid === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+                    return false;
+                }
+                if (widgetid === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+                    return false;
+                }
+                if (widgetid === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+                    return false;
+                }
+                return true;
+            })
+            .map(widgetid => (
+                <Widget
+                    widgetid={widgetid}
+                    key={widgetid}
+                    sortable={{
+                        handleClassName: 'sortable-handle',
+                        filterClassName: 'sortable-filter'
+                    }}
+                    onDelete={() => {
+                        this.handleDeleteWidget(widgetid);
+                    }}
+                />
+            ));
 
         return (
             <Sortable

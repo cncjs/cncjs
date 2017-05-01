@@ -405,6 +405,16 @@ class VisualizerWidget extends Component {
         }
     };
     controllerEvents = {
+        'serialport:open': (options) => {
+            const { port } = options;
+            this.setState({ port: port });
+        },
+        'serialport:close': (options) => {
+            pubsub.publish('gcode:unload');
+
+            const initialState = this.getInitialState();
+            this.setState({ ...initialState });
+        },
         'sender:status': (data) => {
             const { name, size, total, sent, received } = data;
             this.setState({
@@ -600,21 +610,6 @@ class VisualizerWidget extends Component {
     }
     subscribe() {
         const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    pubsub.publish('gcode:unload');
-
-                    const initialState = this.getInitialState();
-                    this.setState({
-                        ...initialState,
-                        port: ''
-                    });
-                }
-            }),
             pubsub.subscribe('gcode:load', (msg, { name, gcode }) => {
                 const actions = this.actions;
                 actions.loadGCode(name, gcode);
@@ -658,6 +653,9 @@ class VisualizerWidget extends Component {
         }
         // Return false when toolhead is not visible
         if (!objects.toolhead.visible) {
+            return false;
+        }
+        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
             return false;
         }
         if (controllerType === GRBL) {

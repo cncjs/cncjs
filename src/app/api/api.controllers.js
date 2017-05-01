@@ -1,7 +1,7 @@
 import store from '../store';
 
-export const getActiveControllers = (req, res) => {
-    let list = [];
+export const get = (req, res) => {
+    const list = [];
 
     const controllers = store.get('controllers');
     Object.keys(controllers).forEach((port) => {

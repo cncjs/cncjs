@@ -12,10 +12,6 @@ class ConnectionWidget extends Component {
         sortable: PropTypes.object
     };
 
-    state = {
-        minimized: store.get('widgets.connection.minimized', false),
-        isFullscreen: false
-    };
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -27,6 +23,10 @@ class ConnectionWidget extends Component {
         }
     };
 
+    constructor() {
+        super();
+        this.state = this.getInitialState();
+    }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }
@@ -36,6 +36,12 @@ class ConnectionWidget extends Component {
         } = this.state;
 
         store.set('widgets.connection.minimized', minimized);
+    }
+    getInitialState() {
+        return {
+            minimized: store.get('widgets.connection.minimized', false),
+            isFullscreen: false
+        };
     }
     render() {
         const { minimized, isFullscreen } = this.state;

@@ -48,7 +48,9 @@ const getLatestVersion = () => new Promise((resolve, reject) => {
 //
 // Controllers
 //
-const listControllers = () => new Promise((resolve, reject) => {
+const controllers = {};
+
+controllers.get = () => new Promise((resolve, reject) => {
     authrequest
         .get('/api/controllers')
         .end((err, res) => {
@@ -458,16 +460,18 @@ watch.readFile = (options) => new Promise((resolve, reject) => {
 
 export default {
     getLatestVersion,
-    listControllers,
+
     // State
     getState,
     setState,
     unsetState,
+
     // G-code
     loadGCode,
     fetchGCode,
 
     signin,
+    controllers, // Controllers
     users, // Users
     events, // Events
     macros, // Macros

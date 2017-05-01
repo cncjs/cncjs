@@ -57,6 +57,14 @@ class GCodeWidget extends Component {
         }
     };
     controllerEvents = {
+        'serialport:open': (options) => {
+            const { port } = options;
+            this.setState({ port: port });
+        },
+        'serialport:close': (options) => {
+            const initialState = this.getInitialState();
+            this.setState({ ...initialState });
+        },
         'sender:status': (data) => {
             const { total, sent, received, startTime, finishTime, elapsedTime, remainingTime } = data;
 
@@ -176,19 +184,6 @@ class GCodeWidget extends Component {
     }
     subscribe() {
         const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    const initialState = this.getInitialState();
-                    this.setState({
-                        ...initialState,
-                        port: ''
-                    });
-                }
-            }),
             pubsub.subscribe('gcode:unload', (msg) => {
                 this.setState({
                     bbox: {

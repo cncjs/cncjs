@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import noop from 'lodash/noop';
 import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
@@ -10,11 +10,22 @@ import store from '../../store';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
 import { GrblController, SmoothieController, TinyGController } from '../../controllers';
+import { GRBL } from '../../controllers/Grbl/constants';
+import { SMOOTHIE } from '../../controllers/Smoothie/constants';
+import { TINYG } from '../../controllers/TinyG/constants';
 import { IP_WHITELIST } from '../../constants';
 
-const log = logger('[CNCEngine]');
+const log = logger('service:cncengine');
+
+// Returns true if the specified strings are equal, ignoring case; otherwise, false.
+const equals = (s1, s2) => {
+    s1 = s1 ? (s1 + '').toUpperCase() : '';
+    s2 = s2 ? (s2 + '').toUpperCase() : '';
+    return s1 === s2;
+};
 
 class CNCEngine {
+    controllerClass = {};
     listener = {
         taskStart: (...args) => {
             this.io.sockets.emit('task:start', ...args);
@@ -33,7 +44,28 @@ class CNCEngine {
     io = null;
     sockets = [];
 
-    start(server) {
+    // @param {object} server The HTTP server instance.
+    // @param {string} controller Specify CNC controller.
+    start(server, controller = '') {
+        // Grbl
+        if (!controller || equals(GRBL, controller)) {
+            this.controllerClass[GRBL] = GrblController;
+        }
+        // Smoothie
+        if (!controller || equals(SMOOTHIE, controller)) {
+            this.controllerClass[SMOOTHIE] = SmoothieController;
+        }
+        // TinyG
+        if (!controller || equals(TINYG, controller)) {
+            this.controllerClass[TINYG] = TinyGController;
+        }
+
+        if (Object.keys(this.controllerClass).length === 0) {
+            throw new Error(`No valid CNC controller specified (${controller})`);
+        }
+
+        log.debug(`Loaded controllers: ${Object.keys(this.controllerClass)}`);
+
         this.stop();
 
         taskRunner.on('start', this.listener.taskStart);
@@ -54,7 +86,7 @@ class CNCEngine {
 
         this.io.use((socket, next) => {
             const clientIp = socket.handshake.address;
-            const allowedAccess = _.some(IP_WHITELIST, (whitelist) => {
+            const allowedAccess = IP_WHITELIST.some(whitelist => {
                 return rangeCheck.inRange(clientIp, whitelist);
             }) || (settings.allowRemoteAccess);
             const deniedAccess = !allowedAccess;
@@ -76,6 +108,12 @@ class CNCEngine {
             // Add to the socket pool
             this.sockets.push(socket);
 
+            socket.on('startup', (callback) => {
+                callback && callback({
+                    loadedControllers: Object.keys(this.controllerClass)
+                });
+            });
+
             socket.on('disconnect', () => {
                 log.debug(`Disconnected from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
 
@@ -88,11 +126,11 @@ class CNCEngine {
                     controller.removeConnection(socket);
                 });
 
-                // Remove from the socket pool
+                // Remove from socket pool
                 this.sockets.splice(this.sockets.indexOf(socket), 1);
             });
 
-            // Show available serial ports
+            // List the available serial ports
             socket.on('list', () => {
                 log.debug(`socket.list(): id=${socket.id}`);
 
@@ -105,20 +143,17 @@ class CNCEngine {
                     ports = ports.concat(ensureArray(config.get('ports', [])));
 
                     const controllers = store.get('controllers', {});
-                    const portsInUse = _(controllers)
-                        .filter((controller) => {
+                    const portsInUse = Object.keys(controllers)
+                        .filter(port => {
+                            const controller = controllers[port];
                             return controller && controller.isOpen();
-                        })
-                        .map((controller) => {
-                            return controller.port;
-                        })
-                        .value();
+                        });
 
-                    ports = _.map(ports, (port) => {
+                    ports = ports.map(port => {
                         return {
                             port: port.comName,
                             manufacturer: port.manufacturer,
-                            inuse: _.includes(portsInUse, port.comName)
+                            inuse: portsInUse.indexOf(port.comName) >= 0
                         };
                     });
 
@@ -127,22 +162,31 @@ class CNCEngine {
             });
 
             // Open serial port
-            socket.on('open', (port, options) => {
+            socket.on('open', (port, options, callback = noop) => {
+                if (typeof callback !== 'function') {
+                    callback = noop;
+                }
+
                 log.debug(`socket.open("${port}", ${JSON.stringify(options)}): id=${socket.id}`);
 
                 let controller = store.get(`controllers["${port}"]`);
                 if (!controller) {
-                    const { controllerType = 'Grbl', baudrate } = { ...options };
+                    let { controllerType = GRBL, baudrate } = { ...options };
 
-                    if (controllerType === 'Grbl') {
-                        controller = new GrblController(port, { baudrate });
-                    } else if (controllerType === 'Smoothie') {
-                        controller = new SmoothieController(port, { baudrate });
-                    } else if (controllerType === 'TinyG' || controllerType === 'TinyG2') {
-                        controller = new TinyGController(port, { baudrate });
-                    } else {
-                        throw new Error('Not supported controller: ' + controllerType);
+                    if (controllerType === 'TinyG2') {
+                        // TinyG2 is deprecated and will be removed in a future release
+                        controllerType = TINYG;
                     }
+
+                    const Controller = this.controllerClass[controllerType];
+                    if (!Controller) {
+                        const err = `Not supported controller: ${controllerType}`;
+                        log.error(err);
+                        callback(new Error(err));
+                        return;
+                    }
+
+                    controller = new Controller(port, { baudrate: baudrate });
                 }
 
                 controller.addConnection(socket);
@@ -157,11 +201,14 @@ class CNCEngine {
 
                     // Join the room
                     socket.join(port); // FIXME
+
+                    callback(null);
                     return;
                 }
 
                 controller.open((err = null) => {
                     if (err) {
+                        callback(err);
                         return;
                     }
 
@@ -172,23 +219,33 @@ class CNCEngine {
 
                     // Join the room
                     socket.join(port); // FIXME
+
+                    callback(null);
                 });
             });
 
             // Close serial port
-            socket.on('close', (port) => {
+            socket.on('close', (port, callback = noop) => {
+                if (typeof callback !== 'function') {
+                    callback = noop;
+                }
+
                 log.debug(`socket.close("${port}"): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller) {
-                    log.error(`Serial port "${port}" not accessible`);
+                    const err = `Serial port "${port}" not accessible`;
+                    log.error(err);
+                    callback(new Error(err));
                     return;
                 }
+
+                controller.close();
 
                 // Leave the room
                 socket.leave(port); // FIXME
 
-                controller.close();
+                callback(null);
             });
 
             socket.on('command', (port, cmd, ...args) => {

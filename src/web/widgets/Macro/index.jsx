@@ -209,27 +209,31 @@ class MacroWidget extends Component {
         }
     };
     controllerEvents = {
+        'serialport:open': (options) => {
+            const { port } = options;
+            this.setState({ port: port });
+        },
+        'serialport:close': (options) => {
+            this.setState({ port: '' });
+        },
         'workflow:state': (workflowState) => {
             if (this.state.workflowState !== workflowState) {
                 this.setState({ workflowState: workflowState });
             }
         }
     };
-    pubsubTokens = [];
 
     constructor() {
         super();
         this.state = this.getInitialState();
     }
     componentDidMount() {
-        this.subscribe();
         this.addControllerEvents();
 
         // Fetch the list of macros
         this.actions.fetchMacros();
     }
     componentWillUnmount() {
-        this.unsubscribe();
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -252,26 +256,6 @@ class MacroWidget extends Component {
             modalState: MODAL_STATE_NONE,
             modalParams: {}
         };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    this.setState({ port: '' });
-                }
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {

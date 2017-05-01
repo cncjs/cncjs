@@ -1,6 +1,5 @@
 import _, { includes } from 'lodash';
 import classNames from 'classnames';
-import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
@@ -118,15 +117,15 @@ class AxesWidget extends Component {
             const defaultWCS = 'G54';
 
             if (controllerType === GRBL) {
-                return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+                return _.get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
             }
 
             if (controllerType === SMOOTHIE) {
-                return _.get(controllerState, 'parserstate.modal.coordinate', defaultWCS);
+                return _.get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
             }
 
             if (controllerType === TINYG) {
-                return _.get(controllerState, 'sr.modal.coordinate', defaultWCS);
+                return _.get(controllerState, 'sr.modal.coordinate') || defaultWCS;
             }
 
             return defaultWCS;
@@ -252,6 +251,14 @@ class AxesWidget extends Component {
         }
     };
     controllerEvents = {
+        'serialport:open': (options) => {
+            const { port } = options;
+            this.setState({ port: port });
+        },
+        'serialport:close': (options) => {
+            const initialState = this.getInitialState();
+            this.setState({ ...initialState });
+        },
         'workflow:state': (workflowState) => {
             if (this.state.workflowState !== workflowState) {
                 const { keypadJogging, selectedAxis } = this.state;
@@ -375,7 +382,6 @@ class AxesWidget extends Component {
             });
         }
     };
-    pubsubTokens = [];
     shuttleControl = null;
 
     constructor() {
@@ -383,12 +389,10 @@ class AxesWidget extends Component {
         this.state = this.getInitialState();
     }
     componentDidMount() {
-        this.subscribe();
         this.addControllerEvents();
         this.addShuttleControlEvents();
     }
     componentWillUnmount() {
-        this.unsubscribe();
         this.removeControllerEvents();
         this.removeShuttleControlEvents();
     }
@@ -447,30 +451,6 @@ class AxesWidget extends Component {
             selectedDistance: store.get('widgets.axes.jog.selectedDistance'),
             customDistance: toUnits(METRIC_UNITS, store.get('widgets.axes.jog.customDistance'))
         };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    const initialState = this.getInitialState();
-                    this.setState({
-                        ...initialState,
-                        port: ''
-                    });
-                }
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {

@@ -1,6 +1,8 @@
 import _ from 'lodash';
 import React, { Component, PropTypes } from 'react';
 import Modal from '../../../components/Modal';
+import { GRBL, SMOOTHIE, TINYG } from '../../../constants';
+import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
 import WidgetList from './WidgetList';
@@ -107,6 +109,22 @@ class WidgetManager extends Component {
         }
     ];
 
+    constructor() {
+        super();
+
+        this.widgetList = this.widgetList.filter(widgetItem => {
+            if (widgetItem.id === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+                return false;
+            }
+            if (widgetItem.id === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+                return false;
+            }
+            if (widgetItem.id === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+                return false;
+            }
+            return true;
+        });
+    }
     componentDidUpdate() {
         if (!(this.state.show)) {
             this.props.onClose();
@@ -115,7 +133,7 @@ class WidgetManager extends Component {
     handleSave() {
         this.setState({ show: false });
 
-        let activeWidgets = _(this.widgetList)
+        const activeWidgets = _(this.widgetList)
             .filter((item) => {
                 return item.visible;
             })
@@ -123,7 +141,7 @@ class WidgetManager extends Component {
                 return item.id;
             })
             .value();
-        let inactiveWidgets = _(this.widgetList)
+        const inactiveWidgets = _(this.widgetList)
             .map('id')
             .difference(activeWidgets)
             .value();

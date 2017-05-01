@@ -1,6 +1,6 @@
-import pubsub from 'pubsub-js';
 import io from 'socket.io-client';
 import store from '../store';
+import ensureArray from './ensure-array';
 import log from './log';
 import {
     GRBL,
@@ -37,41 +37,19 @@ class CNCController {
         zmax: 0
     };
 
+    loadedControllers = [GRBL, SMOOTHIE, TINYG];
     port = '';
-    workflowState = WORKFLOW_STATE_IDLE;
     type = '';
     state = {};
     socket = null;
+    workflowState = WORKFLOW_STATE_IDLE;
 
-    constructor() {
-        pubsub.subscribe('port', (msg, port) => {
-            this.port = port;
-            if (!this.port) {
-                this.workflowState = WORKFLOW_STATE_IDLE;
-                this.type = '';
-                this.state = {};
-            }
-        });
-    }
-    connect() {
+    connect(cb) {
         this.socket && this.socket.destroy();
 
         const token = store.get('session.token');
         this.socket = io.connect('', {
             query: 'token=' + token
-        });
-
-        this.socket.on('connect', () => {
-            log.debug('socket.io: connected');
-        });
-
-        this.socket.on('error', () => {
-            log.error('socket.io: error');
-            this.disconnect();
-        });
-
-        this.socket.on('close', () => {
-            log.debug('socket.io: closed');
         });
 
         Object.keys(this.callbacks).forEach((eventName) => {
@@ -82,6 +60,17 @@ class CNCController {
             this.socket.on(eventName, (...args) => {
                 log.debug('socket.on("' + eventName + '"):', args);
 
+                if (eventName === 'serialport:open') {
+                    const { controllerType, port } = { ...args[0] };
+                    this.port = port;
+                    this.type = controllerType;
+                }
+                if (eventName === 'serialport:close') {
+                    this.port = '';
+                    this.type = '';
+                    this.state = {};
+                    this.workflowState = WORKFLOW_STATE_IDLE;
+                }
                 if (eventName === 'workflow:state') {
                     this.workflowState = args[0];
                 }
@@ -102,6 +91,29 @@ class CNCController {
                     callback.apply(callback, args);
                 });
             });
+        });
+
+        this.socket.on('connect', () => {
+            log.debug('socket.io: connect');
+
+            this.socket.emit('startup', (data) => {
+                const { loadedControllers } = { ...data };
+                this.loadedControllers = ensureArray(loadedControllers);
+                log.debug(`Loaded controllers: ${this.loadedControllers}`);
+
+                if (typeof cb === 'function') {
+                    cb();
+                }
+            });
+        });
+
+        this.socket.on('error', () => {
+            log.error('socket.io: error');
+            this.disconnect();
+        });
+
+        this.socket.on('close', () => {
+            log.debug('socket.io: close');
         });
     }
     disconnect() {
@@ -128,11 +140,11 @@ class CNCController {
             callbacks.splice(callbacks.indexOf(callback), 1);
         }
     }
-    openPort(port, options) {
-        this.socket && this.socket.emit('open', port, options);
+    openPort(port, options, callback) {
+        this.socket && this.socket.emit('open', port, options, callback);
     }
-    closePort(port) {
-        this.socket && this.socket.emit('close', port);
+    closePort(port, callback) {
+        this.socket && this.socket.emit('close', port, callback);
     }
     listAllPorts() {
         this.socket && this.socket.emit('list');

@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
 import { withRouter } from 'react-router-dom';
 import api from '../../api';
+import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import store from '../../store';
@@ -51,6 +52,15 @@ class Workspace extends Component {
     primaryToggler = null;
     secondaryToggler = null;
     defaultContainer = null;
+    controllerEvents = {
+        'serialport:open': (options) => {
+            const { port } = options;
+            this.setState({ port: port });
+        },
+        'serialport:close': (options) => {
+            this.setState({ port: '' });
+        }
+    };
     widgetEventHandler = {
         onDelete: () => {
             const { inactiveCount } = this.state;
@@ -75,6 +85,7 @@ class Workspace extends Component {
     };
 
     componentDidMount() {
+        this.addControllerEvents();
         this.addResizeEventListener();
         this.subscribe();
 
@@ -84,7 +95,7 @@ class Workspace extends Component {
         }, 0);
     }
     componentWillUnmount() {
-        this.unsubscribe();
+        this.removeControllerEvents();
         this.removeResizeEventListener();
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -96,6 +107,18 @@ class Workspace extends Component {
 
         this.resizeDefaultContainer();
     }
+    addControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.on(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.off(eventName, callback);
+        });
+    }
     addResizeEventListener() {
         this.onResizeThrottled = _.throttle(::this.resizeDefaultContainer, 50);
         window.addEventListener('resize', this.onResizeThrottled);
@@ -103,23 +126,6 @@ class Workspace extends Component {
     removeResizeEventListener() {
         window.removeEventListener('resize', this.onResizeThrottled);
         this.onResizeThrottled = null;
-    }
-    subscribe() {
-        this.pubsubTokens = [];
-
-        { // port
-            let token = pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-                this.setState({ port: port });
-            });
-            this.pubsubTokens.push(token);
-        }
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     togglePrimaryContainer() {
         const { showPrimaryContainer } = this.state;

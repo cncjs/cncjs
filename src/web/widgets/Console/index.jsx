@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -54,6 +53,16 @@ class ConsoleWidget extends Component {
         }
     };
     controllerEvents = {
+        'serialport:open': (options) => {
+            const { port } = options;
+            this.setState({ port: port });
+        },
+        'serialport:close': (options) => {
+            this.clearAll();
+
+            const initialState = this.getInitialState();
+            this.setState({ ...initialState });
+        },
         'serialport:write': (data) => {
             const lines = data.split('\n');
             const values = _(lines)
@@ -66,7 +75,6 @@ class ConsoleWidget extends Component {
             this.appendLine(data);
         }
     };
-    pubsubTokens = [];
     lineBuffers = [];
     throttledTimer = null;
     container = null;
@@ -76,7 +84,6 @@ class ConsoleWidget extends Component {
         this.state = this.getInitialState();
     }
     componentDidMount() {
-        this.subscribe();
         this.addControllerEvents();
 
         this.throttledTimer = setInterval(() => {
@@ -90,7 +97,6 @@ class ConsoleWidget extends Component {
             clearInterval(this.throttledTimer);
             this.timer = null;
         }
-        this.unsubscribe();
         this.removeControllerEvents();
     }
     shouldComponentUpdate(nextProps, nextState) {
@@ -111,32 +117,6 @@ class ConsoleWidget extends Component {
             containerHeight: 240,
             lines: []
         };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('port', (msg, port) => {
-                port = port || '';
-
-                if (port) {
-                    this.setState({ port: port });
-                } else {
-                    this.clearAll();
-
-                    const initialState = this.getInitialState();
-                    this.setState({
-                        ...initialState,
-                        port: ''
-                    });
-                }
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {

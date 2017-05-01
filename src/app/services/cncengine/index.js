@@ -2,8 +2,8 @@ import CNCEngine from './CNCEngine';
 
 const cncengine = new CNCEngine();
 
-const start = ({ server }) => {
-    cncengine.start(server);
+const start = (server, controller) => {
+    cncengine.start(server, controller);
 };
 
 const stop = () => {

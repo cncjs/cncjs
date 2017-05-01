@@ -28,6 +28,16 @@ const parseMountPoint = (val) => {
     };
 };
 
+const parseController = (val) => {
+    val = val ? (val + '').toUpperCase() : '';
+
+    if (val === 'GRBL' || val === 'SMOOTHIE' || val === 'TINYG') {
+        return val;
+    } else {
+        return '';
+    }
+};
+
 program
     .version(pkg.version)
     .usage('[options]')
@@ -35,11 +45,12 @@ program
     .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)', '0.0.0.0')
     .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)', 511)
     .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
-    .option('-v, --verbose', 'increase the verbosity level', increaseVerbosityLevel, 0)
+    .option('-v, --verbose', 'increase the verbosity level (-v, -vv, -vvv)', increaseVerbosityLevel, 0)
     .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
     .option('-w, --watch-directory <path>', 'watch a directory for changes')
     .option('--access-token-lifetime <lifetime>', 'access token lifetime in seconds or a time span string (default: 30d)')
-    .option('--allow-remote-access', 'allow remote access to the server', false);
+    .option('--allow-remote-access', 'allow remote access to the server (default: false)')
+    .option('--controller <type>', 'specify CNC controller: Grbl|Smoothie|TinyG (default: all)', parseController, '');
 
 program.on('--help', () => {
     console.log('  Examples:');
@@ -49,6 +60,7 @@ program.on('--help', () => {
     console.log('    $ cnc --watch-directory /home/pi/watch');
     console.log('    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d');
     console.log('    $ cnc --allow-remote-access');
+    console.log('    $ cnc --controller Grbl');
     console.log('');
 });
 
@@ -71,7 +83,8 @@ const cnc = (options = {}, callback) => {
         mount: program.mount,
         watchDirectory: program.watchDirectory,
         accessTokenLifetime: program.accessTokenLifetime,
-        allowRemoteAccess: program.allowRemoteAccess,
+        allowRemoteAccess: !!program.allowRemoteAccess,
+        controller: program.controller,
         ...options // Override command-line options if specified
     }, callback);
 };
