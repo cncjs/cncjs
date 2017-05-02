@@ -216,7 +216,7 @@ class SmoothieController {
             dataFilter: (line, context) => {
                 if (line === WAIT) {
                     const { sent, received } = this.sender.state;
-                    log.debug(`Wait for the planner queue to empty: sent=${sent}, received=${received}`);
+                    log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
 
                     this.sender.hold();
 
