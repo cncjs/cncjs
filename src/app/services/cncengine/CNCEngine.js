@@ -24,6 +24,12 @@ const equals = (s1, s2) => {
     return s1 === s2;
 };
 
+const isValidController = (controller) => (
+    equals(GRBL, controller) ||
+    equals(SMOOTHIE, controller) ||
+    equals(TINYG, controller)
+);
+
 class CNCEngine {
     controllerClass = {};
     listener = {
@@ -47,6 +53,11 @@ class CNCEngine {
     // @param {object} server The HTTP server instance.
     // @param {string} controller Specify CNC controller.
     start(server, controller = '') {
+        // Fallback to an empty string if the controller is not valid
+        if (!isValidController(controller)) {
+            controller = '';
+        }
+
         // Grbl
         if (!controller || equals(GRBL, controller)) {
             this.controllerClass[GRBL] = GrblController;

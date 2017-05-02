@@ -50,7 +50,7 @@ program
     .option('-w, --watch-directory <path>', 'watch a directory for changes')
     .option('--access-token-lifetime <lifetime>', 'access token lifetime in seconds or a time span string (default: 30d)')
     .option('--allow-remote-access', 'allow remote access to the server (default: false)')
-    .option('--controller <type>', 'specify CNC controller: Grbl|Smoothie|TinyG (default: all)', parseController, '');
+    .option('--controller <type>', 'specify CNC controller: Grbl|Smoothie|TinyG (default: \'\')', parseController, '');
 
 program.on('--help', () => {
     console.log('  Examples:');
