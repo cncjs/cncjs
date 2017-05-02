@@ -64,12 +64,6 @@ program.on('--help', () => {
     console.log('');
 });
 
-// https://github.com/tj/commander.js/issues/512
-// Commander assumes that process.argv[0] is 'node' and argv[1] is script name
-if (process.argv.length > 1) {
-    program.parse(process.argv);
-}
-
 // Commander assumes that the first two values in argv are 'node' and appname, and then followed by the args.
 // This is not the case when running from a packaged Electron app. Here you have the first value appname and then args.
 const normalizedArgv = ('' + process.argv[0]).indexOf(pkg.name) >= 0
