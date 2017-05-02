@@ -87,7 +87,6 @@ class Workspace extends Component {
     componentDidMount() {
         this.addControllerEvents();
         this.addResizeEventListener();
-        this.subscribe();
 
         setTimeout(() => {
             // A workaround solution to trigger componentDidUpdate on initial render
