@@ -1,7 +1,14 @@
 {
+  "ports": [
+     {
+       "comName": "/dev/ttyAMA0",
+       "manufacturer": ""
+     }
+  ],
   "watchDirectory": "/path/to/dir",
   "accessTokenLifetime": "30d",
   "allowRemoteAccess": false,
+  "controller": "",
   "state": {
     "checkForUpdates": true
   },
