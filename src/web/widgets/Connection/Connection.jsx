@@ -483,6 +483,7 @@ class Connection extends React.Component {
                         className="sm"
                         clearable={false}
                         disabled={!canChangeBaudrate}
+                        menuContainerStyle={{ zIndex: 5 }}
                         name="baudrate"
                         onChange={::this.changeBaudrateOption}
                         options={_.map(baudrates, (value) => ({
