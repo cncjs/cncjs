@@ -24,15 +24,9 @@ import './styles/app.styl';
 
 series([
     (next) => {
-        const qp = toQueryObject(window.location.search);
-        const level = qp.log_level || settings.log.level;
-        const logger = qp.log_logger || settings.log.logger;
-        const prefix = qp.log_prefix || settings.log.prefix;
-
+        const queryparams = toQueryObject(window.location.search);
+        const level = queryparams.log_level || settings.log.level;
         log.setLevel(level);
-        log.setLogger(logger);
-        log.setPrefix(prefix);
-
         next();
     },
     (next) => {
