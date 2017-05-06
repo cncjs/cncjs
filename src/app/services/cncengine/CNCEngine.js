@@ -12,7 +12,7 @@ import taskRunner from '../taskrunner';
 import { GrblController, SmoothieController, TinyGController } from '../../controllers';
 import { GRBL } from '../../controllers/Grbl/constants';
 import { SMOOTHIE } from '../../controllers/Smoothie/constants';
-import { TINYG } from '../../controllers/TinyG/constants';
+import { G2CORE, TINYG } from '../../controllers/TinyG/constants';
 import { IP_WHITELIST } from '../../constants';
 
 const log = logger('service:cncengine');
@@ -25,8 +25,13 @@ const equals = (s1, s2) => {
 };
 
 const isValidController = (controller) => (
+    // Grbl
     equals(GRBL, controller) ||
+    // Smoothie
     equals(SMOOTHIE, controller) ||
+    // g2core
+    equals(G2CORE, controller) ||
+    // TinyG
     equals(TINYG, controller)
 );
 
@@ -66,8 +71,8 @@ class CNCEngine {
         if (!controller || equals(SMOOTHIE, controller)) {
             this.controllerClass[SMOOTHIE] = SmoothieController;
         }
-        // TinyG
-        if (!controller || equals(TINYG, controller)) {
+        // g2core & TinyG
+        if (!controller || equals(G2CORE, controller) || equals(TINYG, controller)) {
             this.controllerClass[TINYG] = TinyGController;
         }
 
@@ -75,7 +80,8 @@ class CNCEngine {
             throw new Error(`No valid CNC controller specified (${controller})`);
         }
 
-        log.debug(`Loaded controllers: ${Object.keys(this.controllerClass)}`);
+        const loadedControllers = Object.keys(this.controllerClass);
+        log.debug(`Loaded controllers: ${loadedControllers}`);
 
         this.stop();
 
@@ -119,10 +125,10 @@ class CNCEngine {
             // Add to the socket pool
             this.sockets.push(socket);
 
-            socket.on('startup', (callback) => {
-                callback && callback({
-                    loadedControllers: Object.keys(this.controllerClass)
-                });
+            socket.emit('startup', {
+                loadedControllers: Object.keys(this.controllerClass),
+                ports: ensureArray(config.get('ports', [])),
+                baudrates: ensureArray(config.get('baudrates', []))
             });
 
             socket.on('disconnect', () => {

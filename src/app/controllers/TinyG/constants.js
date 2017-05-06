@@ -1,3 +1,6 @@
+// g2core
+export const G2CORE = 'g2core';
+
 // TinyG
 export const TINYG = 'TinyG';
 
