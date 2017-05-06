@@ -1,4 +1,10 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import reverse from 'lodash/reverse';
+import sortBy from 'lodash/sortBy';
+import uniq from 'lodash/uniq';
+import find from 'lodash/find';
+import includes from 'lodash/includes';
+import map from 'lodash/map';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
 import React from 'react';
@@ -27,7 +33,7 @@ class Connection extends React.Component {
 
             const port = store.get('widgets.connection.port') || '';
 
-            if (_.includes(_.map(ports, 'port'), port)) {
+            if (includes(map(ports, 'port'), port)) {
                 this.setState({
                     port: port,
                     ports: ports
@@ -49,12 +55,14 @@ class Connection extends React.Component {
         },
         'serialport:open': (options) => {
             const { controllerType, port, baudrate, inuse } = options;
-            const ports = _.map(this.state.ports, (o) => {
+            const ports = map(this.state.ports, (o) => {
                 if (o.port !== port) {
                     return o;
                 }
 
-                return _.extend(o, { inuse });
+                o = { ...o, inuse };
+
+                return o;
             });
 
             this.clearAlert();
@@ -128,24 +136,24 @@ class Connection extends React.Component {
     }
     getInitialState() {
         let controllerType = store.get('widgets.connection.controller.type');
-        if (!_.includes(controller.loadedControllers, controllerType)) {
+        if (!includes(controller.loadedControllers, controllerType)) {
             controllerType = controller.loadedControllers[0];
         }
+
+        const defaultBaudrates = [
+            115200,
+            57600,
+            38400,
+            19200,
+            9600
+        ];
 
         return {
             loading: false,
             connecting: false,
             connected: false,
             ports: [],
-            baudrates: [
-                115200,
-                57600,
-                38400,
-                19200,
-                9600,
-                4800,
-                2400
-            ],
+            baudrates: reverse(sortBy(uniq(controller.baudrates.concat(defaultBaudrates)))),
             controllerType: controllerType,
             port: controller.port,
             baudrate: store.get('widgets.connection.baudrate'),
@@ -193,12 +201,12 @@ class Connection extends React.Component {
     }
     isPortInUse(port) {
         port = port || this.state.port;
-        const o = _.find(this.state.ports, { port }) || {};
+        const o = find(this.state.ports, { port }) || {};
         return !!(o.inuse);
     }
     handleRefresh() {
         // Refresh ports
-        controller.listAllPorts();
+        controller.listPorts();
         this.startLoading();
     }
     openPort(port, options) {
@@ -230,15 +238,15 @@ class Connection extends React.Component {
             api.controllers.get()
                 .then((res) => {
                     let next;
-                    const c = _.find(res.body, { port: port });
+                    const c = find(res.body, { port: port });
                     if (c) {
                         next = api.fetchGCode({ port: port });
                     }
                     return next;
                 })
                 .then((res) => {
-                    name = _.get(res, 'body.name', '');
-                    gcode = _.get(res, 'body.data', '');
+                    name = get(res, 'body.name', '');
+                    gcode = get(res, 'body.data', '');
                 })
                 .catch((res) => {
                     // Empty block
@@ -262,7 +270,7 @@ class Connection extends React.Component {
             }
 
             // Refresh ports
-            controller.listAllPorts();
+            controller.listPorts();
         });
     }
     changeController(controllerType) {
@@ -357,9 +365,9 @@ class Connection extends React.Component {
             alertMessage
         } = this.state;
         const canSelectControllers = (controller.loadedControllers.length > 1);
-        const hasGrblController = _.includes(controller.loadedControllers, GRBL);
-        const hasSmoothieController = _.includes(controller.loadedControllers, SMOOTHIE);
-        const hasTinyGController = _.includes(controller.loadedControllers, TINYG);
+        const hasGrblController = includes(controller.loadedControllers, GRBL);
+        const hasSmoothieController = includes(controller.loadedControllers, SMOOTHIE);
+        const hasTinyGController = includes(controller.loadedControllers, TINYG);
         const notLoading = !loading;
         const notConnecting = !connecting;
         const notConnected = !connected;
@@ -445,7 +453,7 @@ class Connection extends React.Component {
                             noResultsText={i18n._('No ports available')}
                             onChange={::this.changePortOption}
                             optionRenderer={::this.renderPortOption}
-                            options={_.map(ports, (o) => ({
+                            options={map(ports, (o) => ({
                                 value: o.port,
                                 label: o.port,
                                 manufacturer: o.manufacturer,
@@ -486,7 +494,7 @@ class Connection extends React.Component {
                         menuContainerStyle={{ zIndex: 5 }}
                         name="baudrate"
                         onChange={::this.changeBaudrateOption}
-                        options={_.map(baudrates, (value) => ({
+                        options={map(baudrates, (value) => ({
                             value: value,
                             label: Number(value).toString()
                         }))}

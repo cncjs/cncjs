@@ -1,3 +1,4 @@
+import noop from 'lodash/noop';
 import io from 'socket.io-client';
 import store from '../store';
 import ensureArray from './ensure-array';
@@ -37,6 +38,10 @@ class CNCController {
         zmax: 0
     };
 
+    // user-defined baud rates and ports
+    baudrates = [];
+    ports = [];
+
     loadedControllers = [GRBL, SMOOTHIE, TINYG];
     port = '';
     type = '';
@@ -44,7 +49,11 @@ class CNCController {
     socket = null;
     workflowState = WORKFLOW_STATE_IDLE;
 
-    connect(cb) {
+    connect(next = noop) {
+        if (typeof next !== 'function') {
+            next = noop;
+        }
+
         this.socket && this.socket.destroy();
 
         const token = store.get('session.token');
@@ -58,7 +67,7 @@ class CNCController {
             }
 
             this.socket.on(eventName, (...args) => {
-                log.debug('socket.on("' + eventName + '"):', args);
+                log.debug(`socket.on('${eventName}'):`, args);
 
                 if (eventName === 'serialport:open') {
                     const { controllerType, port } = { ...args[0] };
@@ -94,26 +103,26 @@ class CNCController {
         });
 
         this.socket.on('connect', () => {
-            log.debug('socket.io: connect');
-
-            this.socket.emit('startup', (data) => {
-                const { loadedControllers } = { ...data };
-                this.loadedControllers = ensureArray(loadedControllers);
-                log.debug(`Loaded controllers: ${this.loadedControllers}`);
-
-                if (typeof cb === 'function') {
-                    cb();
-                }
-            });
+            log.debug('socket.on(\'connect\')');
         });
-
         this.socket.on('error', () => {
-            log.error('socket.io: error');
+            log.error('socket.on(\'error\')');
             this.disconnect();
         });
-
         this.socket.on('close', () => {
-            log.debug('socket.io: close');
+            log.debug('socket.on(\'close\')');
+        });
+
+        this.socket.on('startup', (data) => {
+            const { loadedControllers, ports, baudrates } = { ...data };
+
+            this.loadedControllers = ensureArray(loadedControllers);
+            this.ports = ensureArray(ports);
+            this.baudrates = ensureArray(baudrates);
+
+            log.debug('socket.on(\'startup\'):', { loadedControllers, ports, baudrates });
+
+            next();
         });
     }
     disconnect() {
@@ -146,7 +155,7 @@ class CNCController {
     closePort(port, callback) {
         this.socket && this.socket.emit('close', port, callback);
     }
-    listAllPorts() {
+    listPorts() {
         this.socket && this.socket.emit('list');
     }
     // @param {string} cmd The command string
