@@ -15,7 +15,7 @@ export const SMOOTHIE_REALTIME_COMMANDS = [
     '~', // Cycle Start
     '!', // Feed Hold
     '?', // Current Status
-    '\x18' // Reset Grbl (Ctrl-X)
+    '\x18' // Reset (Ctrl-X)
 ];
 
 // http://linuxcnc.org/docs/html/gcode/overview.html#cap:modal-groups

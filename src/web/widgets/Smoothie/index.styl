@@ -5,31 +5,10 @@
     &.hidden {
         display: none;
     }
-
-    :global {
-        .row {
-            margin-bottom: 5px;
-        }
-        .row:last-child {
-            margin-bottom: 0;
-        }
-    }
 }
 
 .toolbar {
     margin-bottom: 10px;
-}
-
-.icon {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-    margin-bottom: 2px;
-
-    &.icon-status-report {
-        background: url("./icon-status-report-16.png") no-repeat 0 0;
-    }
 }
 
 .overrides {
@@ -69,6 +48,15 @@
 
     &:last-child {
         margin-bottom: 0;
+    }
+
+    :global {
+        .row {
+            margin-bottom: 5px;
+        }
+        .row:last-child {
+            margin-bottom: 0;
+        }
     }
 }
 .panel-heading:hover {

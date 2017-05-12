@@ -411,12 +411,6 @@ class SmoothieLineParserResultVersion {
 
 class Smoothie extends events.EventEmitter {
     state = {
-        build: {
-            version: '',
-            date: ''
-        },
-        mcu: '',
-        sysclk: '',
         status: {
             activeState: '',
             mpos: {
@@ -450,9 +444,21 @@ class Smoothie extends events.EventEmitter {
             tool: '',
             feedrate: '',
             spindle: ''
-        },
-        parameters: {}
+        }
     };
+    settings = {
+        parameters: {
+        },
+        build: {
+            version: '',
+            date: ''
+        },
+        hardware: {
+            mcu: '',
+            sysclk: ''
+        }
+    };
+
     parser = new SmoothieLineParser();
 
     parse(data) {
@@ -498,7 +504,7 @@ class Smoothie extends events.EventEmitter {
             delete nextState.status.raw;
 
             if (!_.isEqual(this.state.status, nextState.status)) {
-                this.state = nextState; // enforce state change
+                this.state = nextState; // enforce change
             }
             this.emit('status', payload);
             return;
@@ -529,37 +535,40 @@ class Smoothie extends events.EventEmitter {
                 }
             };
             if (!_.isEqual(this.state.parserstate, nextState.parserstate)) {
-                this.state = nextState; // enforce state change
+                this.state = nextState; // enforce change
             }
             this.emit('parserstate', payload);
             return;
         }
         if (type === SmoothieLineParserResultParameters) {
             const { name, value } = payload;
-            const { parameters } = this.state;
-            parameters[name] = value;
-
-            const nextState = {
-                ...this.state,
-                parameters: parameters
+            const nextSettings = {
+                ...this.settings,
+                parameters: {
+                    ...this.settings.parameters,
+                    [name]: value
+                }
             };
-            if (!_.isEqual(this.state.parameters, nextState.parameters)) {
-                this.state = nextState; // enforce state change
+            if (!_.isEqual(this.settings.parameters[name], nextSettings.parameters[name])) {
+                this.settings = nextSettings; // enforce change
             }
             this.emit('parameters', payload);
             return;
         }
         if (type === SmoothieLineParserResultVersion) {
             const { build, mcu, sysclk } = payload;
-            const nextState = { // enforce state change
-                ...this.state,
-                build: build,
-                mcu: mcu,
-                sysclk: sysclk
+            this.settings = { // enforce change
+                ...this.settings,
+                build: {
+                    ...this.settings.build,
+                    ...build
+                },
+                hardware: {
+                    ...this.settings.hardware,
+                    mcu,
+                    sysclk
+                }
             };
-            if (!_.isEqual(this.state.build, nextState.build)) {
-                this.state = nextState; // enforce state change
-            }
             this.emit('version', payload);
             return;
         }

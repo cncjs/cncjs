@@ -1,6 +1,6 @@
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import confirm from '../../lib/confirm';
@@ -15,7 +15,7 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class GrblWidget extends Component {
+class GrblWidget extends PureComponent {
     static propTypes = {
         onDelete: PropTypes.func,
         sortable: PropTypes.object
@@ -123,8 +123,18 @@ class GrblWidget extends Component {
         'Grbl:state': (state) => {
             this.setState({
                 controller: {
+                    ...this.state.controller,
                     type: GRBL,
                     state: state
+                }
+            });
+        },
+        'Grbl:settings': (settings) => {
+            this.setState({
+                controller: {
+                    ...this.state.controller,
+                    type: GRBL,
+                    settings: settings
                 }
             });
         }
@@ -139,9 +149,6 @@ class GrblWidget extends Component {
     }
     componentWillUnmount() {
         this.removeControllerEvents();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -163,7 +170,8 @@ class GrblWidget extends Component {
             port: controller.port,
             controller: {
                 type: controller.type,
-                state: controller.state
+                state: controller.state,
+                settings: controller.settings
             },
             modal: {
                 name: MODAL_NONE,

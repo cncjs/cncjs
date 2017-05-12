@@ -53,6 +53,7 @@ class TinyGParser {
         const parsers = [
             TinyGParserResultQueueReports,
             TinyGParserResultStatusReports,
+            TinyGParserResultSystemSettings,
             TinyGParserResultReceiveReports
         ];
 
@@ -116,6 +117,25 @@ class TinyGParserResultStatusReports {
     }
 }
 
+// https://github.com/synthetos/g2/wiki/Text-Mode#displaying-settings-and-groups
+class TinyGParserResultSystemSettings {
+    static parse(data) {
+        const sys = _.get(data, 'r.sys') || _.get(data, 'sys');
+        if (!sys) {
+            return null;
+        }
+
+        const payload = {
+            sys: sys
+        };
+
+        return {
+            type: TinyGParserResultSystemSettings,
+            payload: payload
+        };
+    }
+}
+
 class TinyGParserResultReceiveReports {
     static parse(data) {
         const r = _.get(data, 'r.r') || _.get(data, 'r');
@@ -138,8 +158,6 @@ class TinyG extends events.EventEmitter {
     state = {
         // Queue Reports
         qr: 0,
-        qi: 0,
-        qo: 0,
         // Status Reports
         sr: {
             machineState: '',
@@ -163,9 +181,9 @@ class TinyG extends events.EventEmitter {
             }
         }
     };
-    // Identification Parameters
-    // https://github.com/synthetos/g2/wiki/Configuring-0.99-System-Groups#identification-parameters
-    ident = {
+    settings = {
+        // Identification Parameters
+        // https://github.com/synthetos/g2/wiki/Configuring-0.99-System-Groups#identification-parameters
         fv: 0, // Firmware Version
         fb: 0, // Firmware Build
         fbs: '', // Firmware Build String
@@ -202,24 +220,20 @@ class TinyG extends events.EventEmitter {
             const { type, payload } = result;
 
             if (type === TinyGParserResultQueueReports) {
-                const { qr, qi, qo } = payload;
+                const { qr } = payload;
 
                 // The planner buffer pool size will be checked every time the planner buffer changes
                 if (qr > this.plannerBufferPoolSize) {
                     this.plannerBufferPoolSize = qr;
                 }
 
-                if (this.state.qr !== qr ||
-                    this.state.qi !== qi ||
-                    this.state.qo !== qo) {
-                    this.state = { // enforce state change
+                if (this.state.qr !== qr) {
+                    this.state = { // enforce change
                         ...this.state,
-                        qr,
-                        qi,
-                        qo
+                        qr
                     };
                 }
-                this.emit('qr', { qr, qi, qo });
+                this.emit('qr', { qr });
             } else if (type === TinyGParserResultStatusReports) {
                 // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
                 const keymaps = {
@@ -344,18 +358,31 @@ class TinyG extends events.EventEmitter {
                 });
 
                 if (!_.isEqual(this.state.sr, sr)) {
-                    this.state = { // enforce state change
+                    this.state = { // enforce change
                         ...this.state,
                         sr: sr
                     };
                 }
                 this.emit('sr', payload.sr);
+            } else if (type === TinyGParserResultSystemSettings) {
+                this.settings = { // enforce change
+                    ...this.settings,
+                    ...payload.sys
+                };
+
+                this.emit('sys', payload.sys);
             } else if (type === TinyGParserResultReceiveReports) {
-                // Identification Parameters
-                for (let setting of ['fv', 'fb', 'fbs', 'fbc', 'hp', 'hv', 'id']) {
-                    if (payload.r[setting]) {
-                        this.ident[setting] = payload.r[setting];
+                const settings = {};
+                for (let key in payload.r) {
+                    if (key in this.settings) {
+                        settings[key] = payload.r[key];
                     }
+                }
+                if (Object.keys(settings).length > 0) {
+                    this.settings = { // enforce change
+                        ...this.settings,
+                        ...settings
+                    };
                 }
 
                 this.emit('r', payload.r);

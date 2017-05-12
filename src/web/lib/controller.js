@@ -26,8 +26,11 @@ class CNCController {
         'sender:status': [],
         'workflow:state': [],
         'Grbl:state': [],
+        'Grbl:settings': [],
         'Smoothie:state': [],
-        'TinyG:state': []
+        'Smoothie:settings': [],
+        'TinyG:state': [],
+        'TinyG:settings': []
     };
     context = {
         xmin: 0,
@@ -46,6 +49,7 @@ class CNCController {
     port = '';
     type = '';
     state = {};
+    settings = {};
     socket = null;
     workflowState = WORKFLOW_STATE_IDLE;
 
@@ -78,6 +82,7 @@ class CNCController {
                     this.port = '';
                     this.type = '';
                     this.state = {};
+                    this.settings = {};
                     this.workflowState = WORKFLOW_STATE_IDLE;
                 }
                 if (eventName === 'workflow:state') {
@@ -87,13 +92,25 @@ class CNCController {
                     this.type = GRBL;
                     this.state = { ...args[0] };
                 }
+                if (eventName === 'Grbl:settings') {
+                    this.type = GRBL;
+                    this.settings = { ...args[0] };
+                }
                 if (eventName === 'Smoothie:state') {
                     this.type = SMOOTHIE;
                     this.state = { ...args[0] };
                 }
+                if (eventName === 'Smoothie:settings') {
+                    this.type = SMOOTHIE;
+                    this.settings = { ...args[0] };
+                }
                 if (eventName === 'TinyG:state') {
                     this.type = TINYG;
                     this.state = { ...args[0] };
+                }
+                if (eventName === 'TinyG:settings') {
+                    this.type = TINYG;
+                    this.settings = { ...args[0] };
                 }
 
                 this.callbacks[eventName].forEach((callback) => {

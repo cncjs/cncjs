@@ -6,8 +6,13 @@ import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
 import ControllerState from './ControllerState';
+import ControllerSettings from './ControllerSettings';
 import Toolbar from './Toolbar';
 import Overrides from './Overrides';
+import {
+    MODAL_CONTROLLER_STATE,
+    MODAL_CONTROLLER_SETTINGS
+} from './constants';
 import styles from './index.styl';
 
 class Smoothie extends Component {
@@ -26,8 +31,8 @@ class Smoothie extends Component {
         const controllerState = state.controller.state || {};
         const parserState = _.get(controllerState, 'parserstate', {});
         const activeState = _.get(controllerState, 'status.activeState', none);
-        const ovF = _.get(controllerState, 'status.ovF');
-        const ovS = _.get(controllerState, 'status.ovS');
+        const ovF = _.get(controllerState, 'status.ovF', 0);
+        const ovS = _.get(controllerState, 'status.ovS', 0);
         const feedrate = _.get(parserState, 'feedrate', none);
         const spindle = _.get(parserState, 'spindle', none);
         const tool = _.get(parserState, 'tool', none);
@@ -35,11 +40,14 @@ class Smoothie extends Component {
 
         return (
             <div>
+                {state.modal.name === MODAL_CONTROLLER_STATE &&
                 <ControllerState state={state} actions={actions} />
-                <Toolbar state={state} actions={actions} />
-                {(ovF !== undefined || ovS !== undefined) &&
-                <Overrides state={state} actions={actions} />
                 }
+                {state.modal.name === MODAL_CONTROLLER_SETTINGS &&
+                <ControllerSettings state={state} actions={actions} />
+                }
+                <Toolbar state={state} actions={actions} />
+                <Overrides ovF={ovF} ovS={ovS} />
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
                         <Toggler

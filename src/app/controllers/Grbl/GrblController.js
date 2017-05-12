@@ -69,6 +69,7 @@ class GrblController {
     controller = null;
     ready = false;
     state = {};
+    settings = {};
     queryTimer = null;
     actionMask = {
         queryParserState: {
@@ -515,6 +516,12 @@ class GrblController {
                 this.emitAll('Grbl:state', this.state);
             }
 
+            // Grbl settings
+            if (this.settings !== this.controller.settings) {
+                this.settings = this.controller.settings;
+                this.emitAll('Grbl:settings', this.settings);
+            }
+
             // Wait for the bootloader to complete before sending commands
             if (!(this.ready)) {
                 // Not ready yet
@@ -599,7 +606,8 @@ class GrblController {
             ready: this.ready,
             controller: {
                 type: this.type,
-                state: this.state
+                state: this.state,
+                settings: this.settings
             },
             workflowState: this.workflow.state,
             feeder: this.feeder.toJSON(),
@@ -705,6 +713,10 @@ class GrblController {
         if (!_.isEmpty(this.state)) {
             // controller state
             socket.emit('Grbl:state', this.state);
+        }
+        if (!_.isEmpty(this.settings)) {
+            // controller settings
+            socket.emit('Grbl:settings', this.settings);
         }
         if (this.workflow) {
             // workflow state

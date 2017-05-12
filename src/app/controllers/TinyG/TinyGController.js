@@ -72,6 +72,7 @@ class TinyGController {
     tinyg = null;
     ready = false;
     state = {};
+    settings = {};
     queryTimer = null;
     blocked = false;
     sendResponseState = SEND_RESPONSE_STATE_NONE;
@@ -309,10 +310,8 @@ class TinyGController {
             }
         });
 
-        this.controller.on('qr', ({ qr, qi, qo }) => {
+        this.controller.on('qr', ({ qr }) => {
             this.state.qr = qr;
-            this.state.qi = qi;
-            this.state.qo = qo;
 
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 this.feeder.next();
@@ -436,6 +435,12 @@ class TinyGController {
                 this.emitAll('TinyG:state', this.state);
             }
 
+            // TinyG settings
+            if (this.settings !== this.controller.settings) {
+                this.settings = this.controller.settings;
+                this.emitAll('TinyG:settings', this.settings);
+            }
+
             // Check if the machine has stopped movement after completion
             if (this.actionTime.senderFinishTime > 0) {
                 const machineIdle = zeroOffset && this.controller.isIdle();
@@ -465,23 +470,23 @@ class TinyGController {
 
             // Enable JSON mode
             // 0=text mode, 1=JSON mode
-            { cmd: '{"ej":1}', pauseAfter: 50 },
+            { cmd: '{ej:1}', pauseAfter: 50 },
 
             // JSON verbosity
             // 0=silent, 1=footer, 2=messages, 3=configs, 4=linenum, 5=verbose
-            { cmd: '{"jv":4}', pauseAfter: 50 },
+            { cmd: '{jv:4}', pauseAfter: 50 },
 
             // Queue report verbosity
             // 0=off, 1=filtered, 2=verbose
-            { cmd: '{"qv":1}', pauseAfter: 50 },
+            { cmd: '{qv:1}', pauseAfter: 50 },
 
             // Status report verbosity
             // 0=off, 1=filtered, 2=verbose
-            { cmd: '{"sv":1}', pauseAfter: 50 },
+            { cmd: '{sv:1}', pauseAfter: 50 },
 
             // Status report interval
             // in milliseconds (50ms minimum interval)
-            { cmd: '{"si":250}', pauseAfter: 50 },
+            { cmd: '{si:100}', pauseAfter: 50 },
 
             // Setting Status Report Fields
             // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports#setting-status-report-fields
@@ -516,20 +521,14 @@ class TinyGController {
                 pauseAfter: 50
             },
 
-            // Hardware Platform
-            { cmd: '{"hp":null}' },
-
-            // Firmware Build
-            { cmd: '{"fb":null}' },
-
-            // Motor Timeout
-            { cmd: '{"mt":null}' },
+            // System settings
+            { cmd: '{sys:n}' },
 
             // Request queue report
-            { cmd: '{"qr":null}' },
+            { cmd: '{qr:n}' },
 
             // Request status report
-            { cmd: '{"sr":null}' }
+            { cmd: '{sr:n}' }
         ];
 
         const sendInitCommands = (i = 0) => {
@@ -651,7 +650,7 @@ class TinyGController {
             controller: {
                 type: this.type,
                 state: this.state,
-                ident: this.controller.ident,
+                settings: this.settings,
                 footer: this.controller.footer
             },
             workflowState: this.workflow.state,
@@ -761,6 +760,10 @@ class TinyGController {
         if (!_.isEmpty(this.state)) {
             // controller state
             socket.emit('TinyG:state', this.state);
+        }
+        if (!_.isEmpty(this.settings)) {
+            // controller settings
+            socket.emit('TinyG:settings', this.settings);
         }
         if (this.workflow) {
             // workflow state

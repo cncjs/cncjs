@@ -66,6 +66,7 @@ class SmoothieController {
     controller = null;
     ready = false;
     state = {};
+    settings = {};
     queryTimer = null;
     actionMask = {
         queryParserState: {
@@ -466,6 +467,12 @@ class SmoothieController {
                 this.emitAll('Smoothie:state', this.state);
             }
 
+            // Smoothie settings
+            if (this.settings !== this.controller.settings) {
+                this.settings = this.controller.settings;
+                this.emitAll('Smoothie:settings', this.settings);
+            }
+
             // Wait for the bootloader to complete before sending commands
             if (!(this.ready)) {
                 // Not ready yet
@@ -627,7 +634,8 @@ class SmoothieController {
             ready: this.ready,
             controller: {
                 type: this.type,
-                state: this.state
+                state: this.state,
+                settings: this.settings
             },
             workflowState: this.workflow.state,
             feeder: this.feeder.toJSON(),
@@ -736,6 +744,10 @@ class SmoothieController {
         if (!_.isEmpty(this.state)) {
             // controller state
             socket.emit('Smoothie:state', this.state);
+        }
+        if (!_.isEmpty(this.settings)) {
+            // controller settings
+            socket.emit('Smoothie:settings', this.settings);
         }
         if (this.workflow) {
             // workflow state

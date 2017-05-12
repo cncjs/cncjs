@@ -1,17 +1,22 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
 import ControllerState from './ControllerState';
+import ControllerSettings from './ControllerSettings';
 import Toolbar from './Toolbar';
 import Overrides from './Overrides';
+import {
+    MODAL_CONTROLLER_STATE,
+    MODAL_CONTROLLER_SETTINGS
+} from './constants';
 import styles from './index.styl';
 
-class Grbl extends Component {
+class Grbl extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -25,9 +30,6 @@ class Grbl extends Component {
     receiveBufferMax = 128;
     receiveBufferMin = 0;
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
         const none = '–';
@@ -39,6 +41,7 @@ class Grbl extends Component {
         const spindle = _.get(controllerState, 'status.spindle', _.get(parserState, 'spindle', none));
         const tool = _.get(parserState, 'tool', none);
         const ov = _.get(controllerState, 'status.ov', []);
+        const [ovF = 0, ovS = 0, ovR = 0] = ov;
         const buf = _.get(controllerState, 'status.buf', {});
         const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
 
@@ -47,11 +50,14 @@ class Grbl extends Component {
 
         return (
             <div>
+                {state.modal.name === MODAL_CONTROLLER_STATE &&
                 <ControllerState state={state} actions={actions} />
-                <Toolbar state={state} actions={actions} />
-                {!_.isEmpty(ov) &&
-                <Overrides state={state} actions={actions} />
                 }
+                {state.modal.name === MODAL_CONTROLLER_SETTINGS &&
+                <ControllerSettings state={state} actions={actions} />
+                }
+                <Toolbar state={state} actions={actions} />
+                <Overrides ovF={ovF} ovS={ovS} ovR={ovR} />
                 {!_.isEmpty(buf) &&
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles['panel-heading']}>

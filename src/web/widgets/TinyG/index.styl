@@ -7,30 +7,37 @@
     }
 }
 
-.widget-content {
-    :global {
-        .row {
-            margin-bottom: 5px;
-        }
-        .row:last-child {
-            margin-bottom: 0;
-        }
-    }
-}
-
 .toolbar {
     margin-bottom: 10px;
 }
 
-.icon {
-    display: inline-block;
-    width: 16px;
-    height: 16px;
-    vertical-align: middle;
-    margin-bottom: 2px;
+.overrides {
+    .dro {
+        margin-bottom: 10px;
+    }
 
-    &.icon-status-report {
-        background: url("./icon-status-report-16.png") no-repeat 0 0;
+    .dro-label,
+    .dro-display,
+    .dro-btn-group {
+        height: 30px;
+    }
+    .dro-label {
+        font-size: 24px;
+        line-height: initial;
+        text-align: left;
+    }
+    .dro-display {
+        padding: 4px 6px;
+        text-align: right;
+        font-size: 14px;
+        text-overflow: initial;
+        margin-right: 5px;
+    }
+    .dro-btn-group {
+        margin-left: 5px;
+    }
+    .dro-btn {
+        padding: 5px 5px;
     }
 }
 
@@ -39,6 +46,15 @@
 
     &:last-child {
         margin-bottom: 0;
+    }
+
+    :global {
+        .row {
+            margin-bottom: 5px;
+        }
+        .row:last-child {
+            margin-bottom: 0;
+        }
     }
 }
 .panel-heading:hover {

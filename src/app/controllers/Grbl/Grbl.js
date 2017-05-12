@@ -555,7 +555,7 @@ class GrblLineParserResultSettings {
         }
 
         const payload = {
-            setting: r[1],
+            name: r[1],
             value: r[2],
             message: _.trim(r[3], '()')
         };
@@ -591,7 +591,6 @@ class GrblLineParserResultStartup {
 
 class Grbl extends events.EventEmitter {
     state = {
-        version: '',
         status: {
             activeState: '',
             mpos: {
@@ -603,7 +602,8 @@ class Grbl extends events.EventEmitter {
                 x: '0.000',
                 y: '0.000',
                 z: '0.000'
-            }
+            },
+            ov: []
         },
         parserstate: {
             modal: {
@@ -623,12 +623,16 @@ class Grbl extends events.EventEmitter {
             tool: '',
             feedrate: '',
             spindle: ''
-        },
+        }
+    };
+    settings = {
+        version: '',
         parameters: {
         },
         settings: {
         }
     };
+
     parser = new GrblLineParser();
 
     parse(data) {
@@ -675,7 +679,7 @@ class Grbl extends events.EventEmitter {
             delete nextState.status.raw;
 
             if (!_.isEqual(this.state.status, nextState.status)) {
-                this.state = nextState; // enforce state change
+                this.state = nextState; // enforce change
             }
             this.emit('status', payload);
             return;
@@ -706,22 +710,22 @@ class Grbl extends events.EventEmitter {
                 }
             };
             if (!_.isEqual(this.state.parserstate, nextState.parserstate)) {
-                this.state = nextState; // enforce state change
+                this.state = nextState; // enforce change
             }
             this.emit('parserstate', payload);
             return;
         }
         if (type === GrblLineParserResultParameters) {
             const { name, value } = payload;
-            const { parameters } = this.state;
-            parameters[name] = value;
-
-            const nextState = {
-                ...this.state,
-                parameters: parameters
+            const nextSettings = {
+                ...this.settings,
+                parameters: {
+                    ...this.settings.parameters,
+                    [name]: value
+                }
             };
-            if (!_.isEqual(this.state.parameters, nextState.parameters)) {
-                this.state = nextState; // enforce state change
+            if (!_.isEqual(this.settings.parameters[name], nextSettings.parameters[name])) {
+                this.settings = nextSettings; // enforce change
             }
             this.emit('parameters', payload);
             return;
@@ -731,28 +735,28 @@ class Grbl extends events.EventEmitter {
             return;
         }
         if (type === GrblLineParserResultSettings) {
-            const { setting, value } = payload;
-            const nextState = {
-                ...this.state,
+            const { name, value } = payload;
+            const nextSettings = {
+                ...this.settings,
                 settings: {
-                    ...this.state.settings,
-                    [setting]: value
+                    ...this.settings.settings,
+                    [name]: value
                 }
             };
-            if (!_.isEqual(this.state.settings, nextState.settings)) {
-                this.state = nextState; // enforce state change
+            if (this.settings.settings[name] !== nextSettings.settings[name]) {
+                this.settings = nextSettings; // enforce change
             }
             this.emit('settings', payload);
             return;
         }
         if (type === GrblLineParserResultStartup) {
             const { version } = payload;
-            const nextState = { // enforce state change
-                ...this.state,
+            const nextSettings = { // enforce change
+                ...this.settings,
                 version: version
             };
-            if (!_.isEqual(this.state.version, nextState.version)) {
-                this.state = nextState; // enforce state change
+            if (!_.isEqual(this.settings.version, nextSettings.version)) {
+                this.settings = nextSettings; // enforce change
             }
             this.emit('startup', payload);
             return;

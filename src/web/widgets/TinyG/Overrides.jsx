@@ -6,7 +6,7 @@ import DigitalReadout from './DigitalReadout';
 import styles from './index.styl';
 
 const Overrides = (props) => {
-    const { ovF, ovS, ovR } = props;
+    const { ovF, ovS, ovT } = props;
 
     return (
         <div className={styles.overrides}>
@@ -130,12 +130,12 @@ const Overrides = (props) => {
                         controller.command('spindleOverride', 0);
                     }}
                 >
-                    <i className="fa fa-undo fa-fw" />
+                    <i className="fa fa-fw fa-undo" />
                 </button>
             </DigitalReadout>
             }
-            {!!ovR &&
-            <DigitalReadout label="R" value={ovR + '%'}>
+            {!!ovT &&
+            <DigitalReadout label="T" value={ovT + '%'}>
                 <button
                     type="button"
                     className="btn btn-default"
@@ -178,7 +178,7 @@ const Overrides = (props) => {
 Overrides.propTypes = {
     ovF: PropTypes.number,
     ovS: PropTypes.number,
-    ovR: PropTypes.number
+    ovT: PropTypes.number
 };
 
 export default Overrides;

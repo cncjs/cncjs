@@ -3,7 +3,7 @@ import React from 'react';
 import Modal from '../../components/Modal';
 import i18n from '../../lib/i18n';
 
-const ControllerState = (props) => {
+const ControllerSettings = (props) => {
     const { state, actions } = props;
     const maxHeight = Math.max(window.innerHeight / 2, 200);
 
@@ -13,10 +13,10 @@ const ControllerState = (props) => {
             size="lg"
         >
             <Modal.Header>
-                <Modal.Title>{i18n._('Controller State')}</Modal.Title>
+                <Modal.Title>{i18n._('Controller Settings')}</Modal.Title>
             </Modal.Header>
             <Modal.Body style={{ maxHeight: maxHeight }}>
-                <pre><code>{JSON.stringify(state.controller.state, null, 2)}</code></pre>
+                <pre><code>{JSON.stringify(state.controller.settings, null, 2)}</code></pre>
             </Modal.Body>
             <Modal.Footer>
                 <button
@@ -31,9 +31,9 @@ const ControllerState = (props) => {
     );
 };
 
-ControllerState.propTypes = {
+ControllerSettings.propTypes = {
     state: PropTypes.object,
     actions: PropTypes.object
 };
 
-export default ControllerState;
+export default ControllerSettings;
