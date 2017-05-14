@@ -935,13 +935,47 @@ class TinyGController {
                 this.write(socket, '\x18'); // ^x
             },
             'feedOverride': () => {
-                // Not supported
+                const [value] = args;
+                let mfo = this.controller.settings.mfo;
+
+                if (value === 0) {
+                    mfo = 1;
+                } else if ((mfo * 100 + value) > 200) {
+                    mfo = 2;
+                } else if ((mfo * 100 + value) < 5) {
+                    mfo = 0.05;
+                } else {
+                    mfo = (mfo * 100 + value) / 100;
+                }
+
+                this.command(socket, 'gcode', `{mfo:${mfo}}`);
             },
             'spindleOverride': () => {
-                // Not supported
+                const [value] = args;
+                let sso = this.controller.settings.sso;
+
+                if (value === 0) {
+                    sso = 1;
+                } else if ((sso * 100 + value) > 200) {
+                    sso = 2;
+                } else if ((sso * 100 + value) < 5) {
+                    sso = 0.05;
+                } else {
+                    sso = (sso * 100 + value) / 100;
+                }
+
+                this.command(socket, 'gcode', `{sso:${sso}}`);
             },
             'rapidOverride': () => {
-                // Not supported
+                const [value] = args;
+
+                if (value === 0 || value === 100) {
+                    this.command(socket, 'gcode', '{mto:1}');
+                } else if (value === 50) {
+                    this.command(socket, 'gcode', '{mto:0.5}');
+                } else if (value === 25) {
+                    this.command(socket, 'gcode', '{mto:0.25}');
+                }
             },
             'lasertest:on': () => {
                 const [power = 0, duration = 0] = args;

@@ -54,6 +54,7 @@ class TinyGParser {
             TinyGParserResultQueueReports,
             TinyGParserResultStatusReports,
             TinyGParserResultSystemSettings,
+            TinyGParserResultOverrides,
             TinyGParserResultReceiveReports
         ];
 
@@ -136,6 +137,35 @@ class TinyGParserResultSystemSettings {
     }
 }
 
+class TinyGParserResultOverrides {
+    static parse(data) {
+        const mfo = _.get(data, 'r.mfo');
+        const mto = _.get(data, 'r.mto');
+        const sso = _.get(data, 'r.sso');
+
+        if (!mfo && !mto && !sso) {
+            return null;
+        }
+
+        const payload = {};
+
+        if (mfo) {
+            payload.mfo = mfo;
+        }
+        if (mto) {
+            payload.mto = mto;
+        }
+        if (sso) {
+            payload.sso = sso;
+        }
+
+        return {
+            type: TinyGParserResultOverrides,
+            payload: payload
+        };
+    }
+}
+
 class TinyGParserResultReceiveReports {
     static parse(data) {
         const r = _.get(data, 'r.r') || _.get(data, 'r');
@@ -184,13 +214,17 @@ class TinyG extends events.EventEmitter {
     settings = {
         // Identification Parameters
         // https://github.com/synthetos/g2/wiki/Configuring-0.99-System-Groups#identification-parameters
-        fv: 0, // Firmware Version
-        fb: 0, // Firmware Build
-        fbs: '', // Firmware Build String
-        fbc: '', // Firmware Build Config
-        hp: 0, // Hardware Platform: 1=Xmega, 2=Due, 3=v9(ARM)
-        hv: 0, // Hardware Version
-        id: '' // board ID
+        fb: 0, // firmware build
+        fbs: '', // firmware build string
+        fbc: '', // firmware build config
+        fv: 0, // firmware version
+        hp: 0, // hardware platform: 1=Xmega, 2=Due, 3=v9(ARM)
+        hv: 0, // hardware version
+        id: '', // board ID
+
+        mfo: 1, // manual feedrate override
+        mto: 1, // manual traverse override
+        sso: 1 // spindle speed override
     };
     footer = {
         revision: 0,
@@ -369,8 +403,20 @@ class TinyG extends events.EventEmitter {
                     ...this.settings,
                     ...payload.sys
                 };
-
                 this.emit('sys', payload.sys);
+            } else if (type === TinyGParserResultOverrides) {
+                const {
+                    mfo = this.settings.mfo,
+                    mto = this.settings.mto,
+                    sso = this.settings.sso
+                } = payload;
+                this.settings = { // enforce change
+                    ...this.settings,
+                    mfo,
+                    mto,
+                    sso
+                };
+                this.emit('ov', { mfo, mto, sso });
             } else if (type === TinyGParserResultReceiveReports) {
                 const settings = {};
                 for (let key in payload.r) {
