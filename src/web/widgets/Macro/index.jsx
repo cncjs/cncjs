@@ -54,6 +54,7 @@ const translateGCodeWithContext = (function() {
 
 class MacroWidget extends Component {
     static propTypes = {
+        widgetId: PropTypes.string.isRequired,
         onDelete: PropTypes.func,
         sortable: PropTypes.object
     };
@@ -61,6 +62,7 @@ class MacroWidget extends Component {
         onDelete: () => {}
     };
 
+    state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -223,10 +225,6 @@ class MacroWidget extends Component {
         }
     };
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentDidMount() {
         this.addControllerEvents();
 

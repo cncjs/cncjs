@@ -20,6 +20,7 @@ import styles from './index.styl';
 
 class LaserWidget extends Component {
     static propTypes = {
+        widgetId: PropTypes.string.isRequired,
         onDelete: PropTypes.func,
         sortable: PropTypes.object
     };
@@ -27,6 +28,7 @@ class LaserWidget extends Component {
         onDelete: () => {}
     };
 
+    state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -118,10 +120,6 @@ class LaserWidget extends Component {
         }
     };
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentDidMount() {
         this.addControllerEvents();
     }

@@ -51,6 +51,7 @@ const gcode = (cmd, params) => {
 
 class ProbeWidget extends Component {
     static propTypes = {
+        widgetId: PropTypes.string.isRequired,
         onDelete: PropTypes.func,
         sortable: PropTypes.object
     };
@@ -58,6 +59,7 @@ class ProbeWidget extends Component {
         onDelete: () => {}
     };
 
+    state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -349,10 +351,6 @@ class ProbeWidget extends Component {
     };
     unitsDidChange = false;
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentDidMount() {
         this.addControllerEvents();
     }

@@ -109,8 +109,8 @@ class WidgetManager extends Component {
         }
     ];
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
 
         this.widgetList = this.widgetList.filter(widgetItem => {
             if (widgetItem.id === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {

@@ -17,6 +17,7 @@ import styles from './index.styl';
 
 class GrblWidget extends PureComponent {
     static propTypes = {
+        widgetId: PropTypes.string.isRequired,
         onDelete: PropTypes.func,
         sortable: PropTypes.object
     };
@@ -24,6 +25,7 @@ class GrblWidget extends PureComponent {
         onDelete: () => {}
     };
 
+    state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -140,10 +142,6 @@ class GrblWidget extends PureComponent {
         }
     };
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentDidMount() {
         this.addControllerEvents();
     }

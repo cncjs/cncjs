@@ -37,6 +37,7 @@ class Header extends Component {
         ...withRouter.propTypes
     };
 
+    state = this.getInitialState();
     actions = {
         requestPushPermission: () => {
             const onGranted = () => {
@@ -180,10 +181,6 @@ class Header extends Component {
     };
     _isMounted = false;
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     getInitialState() {
         let pushPermission = '';
         try {

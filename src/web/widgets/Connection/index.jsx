@@ -9,9 +9,11 @@ import styles from './index.styl';
 
 class ConnectionWidget extends Component {
     static propTypes = {
+        widgetId: PropTypes.string.isRequired,
         sortable: PropTypes.object
     };
 
+    state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -23,10 +25,6 @@ class ConnectionWidget extends Component {
         }
     };
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     shouldComponentUpdate(nextProps, nextState) {
         return shallowCompare(this, nextProps, nextState);
     }

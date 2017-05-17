@@ -16,6 +16,7 @@ import styles from './index.styl';
 
 class ConsoleWidget extends Component {
     static propTypes = {
+        widgetId: PropTypes.string.isRequired,
         onDelete: PropTypes.func,
         sortable: PropTypes.object
     };
@@ -23,6 +24,7 @@ class ConsoleWidget extends Component {
         onDelete: () => {}
     };
 
+    state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -79,10 +81,6 @@ class ConsoleWidget extends Component {
     throttledTimer = null;
     container = null;
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentDidMount() {
         this.addControllerEvents();
 

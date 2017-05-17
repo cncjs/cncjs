@@ -31,6 +31,7 @@ const toFixedUnits = (units, val) => {
 
 class GCodeWidget extends Component {
     static propTypes = {
+        widgetId: PropTypes.string.isRequired,
         onDelete: PropTypes.func,
         sortable: PropTypes.object
     };
@@ -38,6 +39,7 @@ class GCodeWidget extends Component {
         onDelete: () => {}
     };
 
+    state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -122,10 +124,6 @@ class GCodeWidget extends Component {
     };
     pubsubTokens = [];
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();

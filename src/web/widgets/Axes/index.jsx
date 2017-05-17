@@ -78,6 +78,7 @@ const normalizeToRange = (n, min, max) => {
 
 class AxesWidget extends Component {
     static propTypes = {
+        widgetId: PropTypes.string.isRequired,
         onDelete: PropTypes.func,
         sortable: PropTypes.object
     };
@@ -85,6 +86,7 @@ class AxesWidget extends Component {
         onDelete: () => {}
     };
 
+    state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { isFullscreen } = this.state;
@@ -384,10 +386,6 @@ class AxesWidget extends Component {
     };
     shuttleControl = null;
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentDidMount() {
         this.addControllerEvents();
         this.addShuttleControlEvents();

@@ -7,7 +7,7 @@ import includes from 'lodash/includes';
 import map from 'lodash/map';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
-import React from 'react';
+import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Select from 'react-select';
 import Notifications from '../../components/Notifications';
@@ -22,7 +22,8 @@ import {
     TINYG
 } from '../../constants';
 
-class Connection extends React.Component {
+class Connection extends Component {
+    state = this.getInitialState();
     controllerEvents = {
         'serialport:list': (ports) => {
             log.debug('Received a list of serial ports:', ports);
@@ -104,10 +105,6 @@ class Connection extends React.Component {
         }
     };
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentWillMount() {
         this.handleRefresh();
     }
