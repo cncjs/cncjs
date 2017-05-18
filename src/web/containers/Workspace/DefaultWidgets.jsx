@@ -13,11 +13,12 @@ class DefaultWidgets extends Component {
     render() {
         const { className } = this.props;
         const defaultWidgets = store.get('workspace.container.default.widgets');
-        const widgets = _.map(defaultWidgets, (widgetid) => (
-            <Widget
-                widgetid={widgetid}
-                key={widgetid}
-            />
+        const widgets = _.map(defaultWidgets, (widgetId) => (
+            <div data-widget-id={widgetId} key={widgetId}>
+                <Widget
+                    widgetId={widgetId}
+                />
+            </div>
         ));
 
         return (

@@ -10,6 +10,8 @@ import styles from './index.styl';
 class ConnectionWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
+        onFork: PropTypes.func.isRequired,
+        onRemove: PropTypes.func.isRequired,
         sortable: PropTypes.object
     };
 

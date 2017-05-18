@@ -3,20 +3,60 @@ import _ from 'lodash';
 import pubsub from 'pubsub-js';
 import React, { Component, PropTypes } from 'react';
 import Sortable from 'react-sortablejs';
+import uuid from 'uuid';
 import { GRBL, SMOOTHIE, TINYG } from '../../constants';
+import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
+import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import store from '../../store';
 import Widget from './Widget';
 import styles from './widgets.styl';
 
 class SecondaryWidgets extends Component {
     static propTypes = {
-        onDelete: PropTypes.func.isRequired,
-        onSortStart: PropTypes.func.isRequired,
-        onSortEnd: PropTypes.func.isRequired
+        onForkWidget: PropTypes.func.isRequired,
+        onRemoveWidget: PropTypes.func.isRequired,
+        onDragStart: PropTypes.func.isRequired,
+        onDragEnd: PropTypes.func.isRequired
     };
     state = {
         widgets: store.get('workspace.container.secondary.widgets')
+    };
+    forkWidget = (widgetId) => () => {
+        confirm({
+            title: i18n._('Fork Widget'),
+            body: i18n._('Are you sure you want to fork this widget?')
+        }).then(() => {
+            const name = widgetId.split(':')[0];
+            if (!name) {
+                log.error(`Failed to fork widget: widgetId=${widgetId}`);
+                return;
+            }
+
+            const widgets = _.slice(this.state.widgets);
+            widgets.push(`${name}:${uuid.v4()}`);
+            this.setState({ widgets: widgets });
+
+            this.props.onForkWidget(widgetId);
+        });
+    };
+    removeWidget = (widgetId) => () => {
+        confirm({
+            title: i18n._('Remove Widget'),
+            body: i18n._('Are you sure you want to remove this widget?')
+        }).then(() => {
+            const widgets = _.slice(this.state.widgets);
+            _.remove(widgets, (n) => (n === widgetId));
+            this.setState({ widgets: widgets });
+
+            if (widgetId.match(/\w+:[\w\-]+/)) {
+                // Remove forked widget settings
+                store.unset(`widgets["${widgetId}"]`);
+            }
+
+            this.props.onRemoveWidget(widgetId);
+        });
     };
     pubsubTokens = [];
 
@@ -51,40 +91,35 @@ class SecondaryWidgets extends Component {
         });
         this.pubsubTokens = [];
     }
-    handleDeleteWidget(widgetid) {
-        let widgets = _.slice(this.state.widgets);
-        _.remove(widgets, (n) => (n === widgetid));
-        this.setState({ widgets: widgets });
-
-        this.props.onDelete();
-    }
     render() {
         const { className } = this.props;
         const widgets = this.state.widgets
-            .filter(widgetid => {
-                if (widgetid === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+            .filter(widgetId => {
+                // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
+                const name = widgetId.split(':')[0];
+                if (name === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
                     return false;
                 }
-                if (widgetid === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+                if (name === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
                     return false;
                 }
-                if (widgetid === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+                if (name === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
                     return false;
                 }
                 return true;
             })
-            .map(widgetid => (
-                <Widget
-                    widgetid={widgetid}
-                    key={widgetid}
-                    sortable={{
-                        handleClassName: 'sortable-handle',
-                        filterClassName: 'sortable-filter'
-                    }}
-                    onDelete={() => {
-                        this.handleDeleteWidget(widgetid);
-                    }}
-                />
+            .map(widgetId => (
+                <div data-widget-id={widgetId} key={widgetId}>
+                    <Widget
+                        widgetId={widgetId}
+                        onFork={this.forkWidget(widgetId)}
+                        onRemove={this.removeWidget(widgetId)}
+                        sortable={{
+                            handleClassName: 'sortable-handle',
+                            filterClassName: 'sortable-filter'
+                        }}
+                    />
+                </div>
             ));
 
         return (
@@ -102,13 +137,9 @@ class SecondaryWidgets extends Component {
                     filter: '.sortable-filter', // Selectors that do not lead to dragging
                     chosenClass: 'sortable-chosen', // Class name for the chosen item
                     ghostClass: 'sortable-ghost', // Class name for the drop placeholder
-                    dataIdAttr: 'data-widgetid',
-                    onStart: (event) => {
-                        this.props.onSortStart();
-                    },
-                    onEnd: (event) => {
-                        this.props.onSortEnd();
-                    }
+                    dataIdAttr: 'data-widget-id',
+                    onStart: this.props.onDragStart,
+                    onEnd: this.props.onDragEnd
                 }}
                 onChange={(order) => {
                     this.setState({ widgets: order });

@@ -134,12 +134,8 @@ class WidgetManager extends Component {
         this.setState({ show: false });
 
         const activeWidgets = _(this.widgetList)
-            .filter((item) => {
-                return item.visible;
-            })
-            .map((item) => {
-                return item.id;
-            })
+            .filter(item => item.visible)
+            .map(item => item.id)
             .value();
         const inactiveWidgets = _(this.widgetList)
             .map('id')

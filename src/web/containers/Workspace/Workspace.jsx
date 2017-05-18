@@ -62,22 +62,21 @@ class Workspace extends Component {
         }
     };
     widgetEventHandler = {
-        onDelete: () => {
-            const { inactiveCount } = this.state;
-
-            // Update inactive count
-            this.setState({ inactiveCount: inactiveCount + 1 });
+        onForkWidget: (widgetId) => {
+            // TODO
         },
-        onSortStart: () => {
+        onRemoveWidget: (widgetId) => {
+            const inactiveWidgets = widgetManager.getInactiveWidgets();
+            this.setState({ inactiveCount: inactiveWidgets.length });
+        },
+        onDragStart: () => {
             const { isDraggingWidget } = this.state;
-
             if (!isDraggingWidget) {
                 this.setState({ isDraggingWidget: true });
             }
         },
-        onSortEnd: () => {
+        onDragEnd: () => {
             const { isDraggingWidget } = this.state;
-
             if (isDraggingWidget) {
                 this.setState({ isDraggingWidget: false });
             }
@@ -233,18 +232,23 @@ class Workspace extends Component {
     }
     updateWidgetsForPrimaryContainer() {
         widgetManager.show((activeWidgets, inactiveWidgets) => {
+            const widgets = Object.keys(store.get('widgets', {}))
+                .filter(widgetId => {
+                    // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
+                    const name = widgetId.split(':')[0];
+                    return _.includes(activeWidgets, name);
+                });
+
             const defaultWidgets = store.get('workspace.container.default.widgets');
+            const sortableWidgets = _.difference(widgets, defaultWidgets);
             let primaryWidgets = store.get('workspace.container.primary.widgets');
             let secondaryWidgets = store.get('workspace.container.secondary.widgets');
 
-            // Return a new array of filtered values
-            activeWidgets = _.difference(activeWidgets, defaultWidgets);
-
-            primaryWidgets = activeWidgets.slice();
+            primaryWidgets = sortableWidgets.slice();
             _.pullAll(primaryWidgets, secondaryWidgets);
             pubsub.publish('updatePrimaryWidgets', primaryWidgets);
 
-            secondaryWidgets = activeWidgets.slice();
+            secondaryWidgets = sortableWidgets.slice();
             _.pullAll(secondaryWidgets, primaryWidgets);
             pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
 
@@ -254,18 +258,23 @@ class Workspace extends Component {
     }
     updateWidgetsForSecondaryContainer() {
         widgetManager.show((activeWidgets, inactiveWidgets) => {
+            const widgets = Object.keys(store.get('widgets', {}))
+                .filter(widgetId => {
+                    // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
+                    const name = widgetId.split(':')[0];
+                    return _.includes(activeWidgets, name);
+                });
+
             const defaultWidgets = store.get('workspace.container.default.widgets');
+            const sortableWidgets = _.difference(widgets, defaultWidgets);
             let primaryWidgets = store.get('workspace.container.primary.widgets');
             let secondaryWidgets = store.get('workspace.container.secondary.widgets');
 
-            // Return a new array of filtered values
-            activeWidgets = _.difference(activeWidgets, defaultWidgets);
-
-            secondaryWidgets = activeWidgets.slice();
+            secondaryWidgets = sortableWidgets.slice();
             _.pullAll(secondaryWidgets, primaryWidgets);
             pubsub.publish('updateSecondaryWidgets', secondaryWidgets);
 
-            primaryWidgets = activeWidgets.slice();
+            primaryWidgets = sortableWidgets.slice();
             _.pullAll(primaryWidgets, secondaryWidgets);
             pubsub.publish('updatePrimaryWidgets', primaryWidgets);
 
@@ -365,9 +374,10 @@ class Workspace extends Component {
                                     </div>
                                 </div>
                                 <PrimaryWidgets
-                                    onDelete={this.widgetEventHandler.onDelete}
-                                    onSortStart={this.widgetEventHandler.onSortStart}
-                                    onSortEnd={this.widgetEventHandler.onSortEnd}
+                                    onForkWidget={this.widgetEventHandler.onForkWidget}
+                                    onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
+                                    onDragStart={this.widgetEventHandler.onDragStart}
+                                    onDragEnd={this.widgetEventHandler.onDragEnd}
                                 />
                             </div>
                             {hidePrimaryContainer &&
@@ -449,9 +459,10 @@ class Workspace extends Component {
                                     </div>
                                 </div>
                                 <SecondaryWidgets
-                                    onDelete={this.widgetEventHandler.onDelete}
-                                    onSortStart={this.widgetEventHandler.onSortStart}
-                                    onSortEnd={this.widgetEventHandler.onSortEnd}
+                                    onForkWidget={this.widgetEventHandler.onForkWidget}
+                                    onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
+                                    onDragStart={this.widgetEventHandler.onDragStart}
+                                    onDragEnd={this.widgetEventHandler.onDragEnd}
                                 />
                             </div>
                         </div>

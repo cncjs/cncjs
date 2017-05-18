@@ -151,7 +151,7 @@ class Webcam extends Component {
                         </Anchor>
                         }
                         <OverlayTrigger
-                            overlay={<Tooltip>{i18n._('Rotate Left')}</Tooltip>}
+                            overlay={<Tooltip id="rotate-left">{i18n._('Rotate Left')}</Tooltip>}
                             placement="top"
                         >
                             <Anchor
@@ -168,7 +168,7 @@ class Webcam extends Component {
                             </Anchor>
                         </OverlayTrigger>
                         <OverlayTrigger
-                            overlay={<Tooltip>{i18n._('Rotate Right')}</Tooltip>}
+                            overlay={<Tooltip id="rotate-right">{i18n._('Rotate Right')}</Tooltip>}
                             placement="top"
                         >
                             <Anchor
@@ -185,7 +185,7 @@ class Webcam extends Component {
                             </Anchor>
                         </OverlayTrigger>
                         <OverlayTrigger
-                            overlay={<Tooltip>{i18n._('Flip Horizontally')}</Tooltip>}
+                            overlay={<Tooltip id="flip-horizontally">{i18n._('Flip Horizontally')}</Tooltip>}
                             placement="top"
                         >
                             <Anchor
@@ -202,7 +202,7 @@ class Webcam extends Component {
                             </Anchor>
                         </OverlayTrigger>
                         <OverlayTrigger
-                            overlay={<Tooltip>{i18n._('Flip Vertically')}</Tooltip>}
+                            overlay={<Tooltip id="flip-vertically">{i18n._('Flip Vertically')}</Tooltip>}
                             placement="top"
                         >
                             <Anchor
@@ -219,7 +219,7 @@ class Webcam extends Component {
                             </Anchor>
                         </OverlayTrigger>
                         <OverlayTrigger
-                            overlay={<Tooltip>{i18n._('Crosshair')}</Tooltip>}
+                            overlay={<Tooltip id="crosshair">{i18n._('Crosshair')}</Tooltip>}
                             placement="top"
                         >
                             <Anchor

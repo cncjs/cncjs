@@ -55,11 +55,9 @@ const translateGCodeWithContext = (function() {
 class MacroWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
-        onDelete: PropTypes.func,
+        onFork: PropTypes.func.isRequired,
+        onRemove: PropTypes.func.isRequired,
         sortable: PropTypes.object
-    };
-    static defaultProps = {
-        onDelete: () => {}
     };
 
     state = this.getInitialState();
@@ -71,14 +69,6 @@ class MacroWidget extends Component {
         toggleMinimized: () => {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
-        },
-        deleteWidget: () => {
-            confirm({
-                title: i18n._('Delete Widget'),
-                body: i18n._('Are you sure you want to delete this widget?')
-            }).then(() => {
-                this.props.onDelete();
-            });
         },
         openModal: (modalState = MODAL_STATE_NONE, modalParams = {}) => {
             this.setState({
@@ -318,8 +308,8 @@ class MacroWidget extends Component {
                             />
                         </Widget.Button>
                         <Widget.Button
-                            title={i18n._('Remove')}
-                            onClick={actions.deleteWidget}
+                            title={i18n._('Remove widget')}
+                            onClick={this.props.onRemove}
                         >
                             <i className="fa fa-times" />
                         </Widget.Button>

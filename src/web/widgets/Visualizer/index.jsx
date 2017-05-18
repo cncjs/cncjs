@@ -3,6 +3,7 @@ import includes from 'lodash/includes';
 import get from 'lodash/get';
 import mapValues from 'lodash/mapValues';
 import pubsub from 'pubsub-js';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Detector from 'three/examples/js/Detector';
@@ -72,6 +73,11 @@ const displayWebGLErrorMessage = () => {
 };
 
 class VisualizerWidget extends Component {
+    static propTypes = {
+        widgetId: PropTypes.string.isRequired
+    };
+
+    state = this.getInitialState();
     actions = {
         openModal: (name = '', params = {}) => {
             this.setState({
@@ -508,10 +514,6 @@ class VisualizerWidget extends Component {
     widgetContent = null;
     visualizer = null;
 
-    constructor() {
-        super();
-        this.state = this.getInitialState();
-    }
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();

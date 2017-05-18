@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
-import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import store from '../../store';
@@ -21,11 +20,9 @@ import styles from './index.styl';
 class LaserWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
-        onDelete: PropTypes.func,
+        onFork: PropTypes.func.isRequired,
+        onRemove: PropTypes.func.isRequired,
         sortable: PropTypes.object
-    };
-    static defaultProps = {
-        onDelete: () => {}
     };
 
     state = this.getInitialState();
@@ -37,14 +34,6 @@ class LaserWidget extends Component {
         toggleMinimized: () => {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
-        },
-        deleteWidget: () => {
-            confirm({
-                title: i18n._('Delete Widget'),
-                body: i18n._('Are you sure you want to delete this widget?')
-            }).then(() => {
-                this.props.onDelete();
-            });
         },
         toggleLaserTest: () => {
             const expanded = this.state.panel.laserTest.expanded;
@@ -233,8 +222,8 @@ class LaserWidget extends Component {
                             />
                         </Widget.Button>
                         <Widget.Button
-                            title={i18n._('Remove')}
-                            onClick={actions.deleteWidget}
+                            title={i18n._('Remove widget')}
+                            onClick={this.props.onRemove}
                         >
                             <i className="fa fa-times" />
                         </Widget.Button>
