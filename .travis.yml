@@ -162,6 +162,34 @@ after_success:
       fi
     fi
   - |
+    # build:linux-armv7l
+    if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+      npm run build:linux-armv7l;
+      ls -al output output/*;
+      cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_armv7l.deb" "releases/${RELEASE}-linux-armv7.deb";
+      pushd releases;
+      ln -sf ../output/linux-armv7l-unpacked "${RELEASE}-linux-armv7";
+      tar zcfh "${RELEASE}-linux-armv7.tar.gz" "${RELEASE}-linux-armv7";
+      rm -f "${RELEASE}-linux-armv7";
+      popd;
+      ls -al releases/*;
+      if [[ -z "$TRAVIS_TAG" ]]; then
+        npm run github-release -- delete \
+          --owner=cncjs \
+          --repo=cncjs \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="${TRAVIS_BRANCH}" \
+          "*-linux-armv7.deb" "*-linux-armv7.tar.gz";
+        npm run github-release -- upload \
+          --owner=cncjs \
+          --repo=cncjs \
+          --tag="${TRAVIS_BRANCH}-latest" \
+          --name="${TRAVIS_BRANCH}" \
+          --body="${COMMIT_LOG}" \
+          "releases/${RELEASE}-linux-armv7.deb" "releases/${RELEASE}-linux-armv7.tar.gz";
+      fi
+    fi
+  - |
     # docker image
     if [[ "$TRAVIS_NODE_VERSION" == "4" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       travis_wait scripts/travis-docker-build.sh;
