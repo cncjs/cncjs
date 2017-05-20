@@ -17,7 +17,7 @@ class Button extends Component {
         return (
             <Anchor
                 {...props}
-                className={classNames(className, styles.btnIcon)}
+                className={classNames(className, styles.widgetButton)}
                 onClick={onClick}
             />
         );

@@ -116,21 +116,29 @@
     }
 
     .widget-controls {
+        position: relative;
+        cursor: auto;
+        float: right;
+        width: auto;
+    }
+
+    .widget-button {
+        text-decoration: none;
+        font-size: 14px;
+        text-align: center;
+        display: inline-block;
+        line-height: 32px;
+        padding: 0;
+        margin: 0;
+    }
+
+    .widget-controls {
+        position: relative;
         cursor: auto;
         float: right;
         width: auto;
 
-        a {
-            text-decoration: none;
-            font-size: 14px;
-            text-align: center;
-            display: inline-block;
-            line-height: 32px;
-            padding: 0;
-            margin: 0;
-        }
-
-        .btn-icon {
+        .widget-button {
             min-width: 30px;
             height: 32px;
             float: left;
@@ -139,6 +147,7 @@
             font-family: Arial, Helvetica, sans-serif;
             border-left: 1px solid rgba(0, 0, 0, .09);
             margin: 0;
+            text-align: center;
 
             &:hover {
                 background-color: rgba(0, 0, 0, .05);
