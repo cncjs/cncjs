@@ -7,18 +7,21 @@ import store, { defaultState } from '../../../store';
 import WidgetManager from './WidgetManager';
 
 export const getActiveWidgets = () => {
-    const defaultWidgets = store.get('workspace.container.default.widgets');
-    const primaryWidgets = store.get('workspace.container.primary.widgets');
-    const secondaryWidgets = store.get('workspace.container.secondary.widgets');
-    const activeWidgets = _.concat(defaultWidgets, primaryWidgets, secondaryWidgets)
-        .filter(widgetid => {
-            if (widgetid === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+    const defaultWidgets = store.get('workspace.container.default.widgets', [])
+        .map(widgetId => widgetId.split(':')[0]);
+    const primaryWidgets = store.get('workspace.container.primary.widgets', [])
+        .map(widgetId => widgetId.split(':')[0]);
+    const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
+        .map(widgetId => widgetId.split(':')[0]);
+    const activeWidgets = _.union(defaultWidgets, primaryWidgets, secondaryWidgets)
+        .filter(widget => {
+            if (widget === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
                 return false;
             }
-            if (widgetid === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widget === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widgetid === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+            if (widget === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
                 return false;
             }
             return true;
@@ -29,9 +32,12 @@ export const getActiveWidgets = () => {
 
 export const getInactiveWidgets = () => {
     const allWidgets = Object.keys(defaultState.widgets);
-    const defaultWidgets = store.get('workspace.container.default.widgets');
-    const primaryWidgets = store.get('workspace.container.primary.widgets');
-    const secondaryWidgets = store.get('workspace.container.secondary.widgets');
+    const defaultWidgets = store.get('workspace.container.default.widgets', [])
+        .map(widgetId => widgetId.split(':')[0]);
+    const primaryWidgets = store.get('workspace.container.primary.widgets', [])
+        .map(widgetId => widgetId.split(':')[0]);
+    const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
+        .map(widgetId => widgetId.split(':')[0]);
     const inactiveWidgets = _.difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
             if (widget === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
