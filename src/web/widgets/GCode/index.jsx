@@ -242,8 +242,10 @@ class GCodeWidget extends Component {
         });
     }
     render() {
+        const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
         const { units, bbox } = this.state;
+        const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
             ...this.state,
             bbox: _.mapValues(bbox, (position) => {
@@ -264,6 +266,9 @@ class GCodeWidget extends Component {
                             <span className="space" />
                         </Widget.Sortable>
                         {i18n._('G-code')}
+                        {isForkedWidget &&
+                        <i className="fa fa-code-fork" style={{ marginLeft: 5 }} />
+                        }
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button

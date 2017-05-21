@@ -206,7 +206,9 @@ class TinyGWidget extends PureComponent {
         return true;
     }
     render() {
+        const { widgetId } = this.props;
         const { minimized, isFullscreen, isReady } = this.state;
+        const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
             ...this.state,
             canClick: this.canClick()
@@ -224,6 +226,9 @@ class TinyGWidget extends PureComponent {
                             <span className="space" />
                         </Widget.Sortable>
                         TinyG
+                        {isForkedWidget &&
+                        <i className="fa fa-code-fork" style={{ marginLeft: 5 }} />
+                        }
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         {isReady &&

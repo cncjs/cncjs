@@ -47,7 +47,9 @@ class ConnectionWidget extends Component {
         };
     }
     render() {
+        const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
+        const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const actions = {
             ...this.actions
         };
@@ -61,6 +63,9 @@ class ConnectionWidget extends Component {
                             <span className="space" />
                         </Widget.Sortable>
                         {i18n._('Connection')}
+                        {isForkedWidget &&
+                        <i className="fa fa-code-fork" style={{ marginLeft: 5 }} />
+                        }
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button

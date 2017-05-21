@@ -114,7 +114,9 @@ class WebcamWidget extends Component {
         };
     }
     render() {
+        const { widgetId } = this.props;
         const { disabled, minimized, isFullscreen } = this.state;
+        const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const classes = {
             webcamOnOff: classNames(
                 'fa',
@@ -122,7 +124,6 @@ class WebcamWidget extends Component {
                 { 'fa-toggle-off': disabled }
             )
         };
-
         const state = {
             ...this.state
         };
@@ -139,6 +140,9 @@ class WebcamWidget extends Component {
                             <span className="space" />
                         </Widget.Sortable>
                         {i18n._('Webcam')}
+                        {isForkedWidget &&
+                        <i className="fa fa-code-fork" style={{ marginLeft: 5 }} />
+                        }
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
