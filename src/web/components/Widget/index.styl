@@ -149,6 +149,14 @@
             margin: 0;
             text-align: center;
 
+            &.disabled {
+                color: #bbb;
+                cursor: not-allowed;
+            }
+
+            &.disabled:hover {
+                background-color: inherit;
+            }
             &:hover {
                 background-color: rgba(0, 0, 0, .05);
             }
