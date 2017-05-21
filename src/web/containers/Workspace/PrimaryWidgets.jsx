@@ -34,8 +34,14 @@ class PrimaryWidgets extends Component {
                 return;
             }
 
+            // Use the same widget settings in a new widget
+            const forkedWidgetId = `${name}:${uuid.v4()}`;
+            const defaultSettings = store.get(`widgets["${name}"]`);
+            const clonedSettings = store.get(`widgets["${widgetId}"]`, defaultSettings);
+            store.set(`widgets["${forkedWidgetId}"]`, clonedSettings);
+
             const widgets = _.slice(this.state.widgets);
-            widgets.push(`${name}:${uuid.v4()}`);
+            widgets.push(forkedWidgetId);
             this.setState({ widgets: widgets });
 
             this.props.onForkWidget(widgetId);
