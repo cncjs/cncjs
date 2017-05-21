@@ -1,24 +1,27 @@
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import Anchor from '../Anchor';
 import styles from './index.styl';
 
 class Button extends Component {
     static propTypes = {
-        onClick: PropTypes.func
+        ...Anchor.propTypes
     };
     static defaultProps = {
-        onClick: () => {}
+        ...Anchor.defaultProps
     };
 
     render() {
-        const { onClick, className, ...props } = this.props;
+        const { className, ...props } = this.props;
 
         return (
             <Anchor
                 {...props}
-                className={classNames(className, styles.widgetButton)}
-                onClick={onClick}
+                className={classNames(
+                    className,
+                    styles.widgetButton,
+                    { [styles.disabled]: !!props.disabled }
+                )}
             />
         );
     }
