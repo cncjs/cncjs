@@ -154,13 +154,16 @@ class WidgetManager extends Component {
         }
     }
     render() {
-        const widgets = _.concat(
-            store.get('workspace.container.default.widgets'),
-            store.get('workspace.container.primary.widgets'),
-            store.get('workspace.container.secondary.widgets')
-        );
-        _.each(this.widgetList, (widget) => {
-            if (_.includes(widgets, widget.id)) {
+        const defaultWidgets = store.get('workspace.container.default.widgets', [])
+            .map(widgetId => widgetId.split(':')[0]);
+        const primaryWidgets = store.get('workspace.container.primary.widgets', [])
+            .map(widgetId => widgetId.split(':')[0]);
+        const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
+            .map(widgetId => widgetId.split(':')[0]);
+        const activeWidgets = _.union(defaultWidgets, primaryWidgets, secondaryWidgets);
+
+        this.widgetList.forEach(widget => {
+            if (_.includes(activeWidgets, widget.id)) {
                 widget.visible = true;
             } else {
                 widget.visible = false;
