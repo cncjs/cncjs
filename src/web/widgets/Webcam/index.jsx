@@ -3,7 +3,7 @@ import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Webcam from './Webcam';
 import * as Settings from './Settings';
 import styles from './index.styl';
@@ -19,6 +19,7 @@ class WebcamWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -71,7 +72,6 @@ class WebcamWidget extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
-        const { widgetId } = this.props;
         const {
             minimized,
             disabled,
@@ -85,32 +85,30 @@ class WebcamWidget extends Component {
             muted
         } = this.state;
 
-        store.set(`widgets["${widgetId}"].minimized`, minimized);
-        store.set(`widgets["${widgetId}"].disabled`, disabled);
-        store.set(`widgets["${widgetId}"].mediaSource`, mediaSource);
-        store.set(`widgets["${widgetId}"].url`, url);
-        store.set(`widgets["${widgetId}"].geometry.scale`, scale);
-        store.set(`widgets["${widgetId}"].geometry.rotation`, rotation);
-        store.set(`widgets["${widgetId}"].geometry.flipHorizontally`, flipHorizontally);
-        store.set(`widgets["${widgetId}"].geometry.flipVertically`, flipVertically);
-        store.set(`widgets["${widgetId}"].crosshair`, crosshair);
-        store.set(`widgets["${widgetId}"].muted`, muted);
+        this.config.set('minimized', minimized);
+        this.config.set('disabled', disabled);
+        this.config.set('mediaSource', mediaSource);
+        this.config.set('url', url);
+        this.config.set('geometry.scale', scale);
+        this.config.set('geometry.rotation', rotation);
+        this.config.set('geometry.flipHorizontally', flipHorizontally);
+        this.config.set('geometry.flipVertically', flipVertically);
+        this.config.set('crosshair', crosshair);
+        this.config.set('muted', muted);
     }
     getInitialState() {
-        const { widgetId } = this.props;
-
         return {
-            minimized: store.get(`widgets["${widgetId}"].minimized`, false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            disabled: store.get(`widgets["${widgetId}"].disabled`, true),
-            mediaSource: store.get(`widgets["${widgetId}"].mediaSource`, MEDIA_SOURCE_LOCAL),
-            url: store.get(`widgets["${widgetId}"].url`, ''),
-            scale: store.get(`widgets["${widgetId}"].geometry.scale`, 1.0),
-            rotation: store.get(`widgets["${widgetId}"].geometry.rotation`, 0),
-            flipHorizontally: store.get(`widgets["${widgetId}"].geometry.flipHorizontally`, false),
-            flipVertically: store.get(`widgets["${widgetId}"].geometry.flipVertically`, false),
-            crosshair: store.get(`widgets["${widgetId}"].crosshair`, false),
-            muted: store.get(`widgets["${widgetId}"].muted`, false)
+            disabled: this.config.get('disabled', true),
+            mediaSource: this.config.get('mediaSource', MEDIA_SOURCE_LOCAL),
+            url: this.config.get('url', ''),
+            scale: this.config.get('geometry.scale', 1.0),
+            rotation: this.config.get('geometry.rotation', 0),
+            flipHorizontally: this.config.get('geometry.flipHorizontally', false),
+            flipVertically: this.config.get('geometry.flipVertically', false),
+            crosshair: this.config.get('crosshair', false),
+            muted: this.config.get('muted', false)
         };
     }
     render() {

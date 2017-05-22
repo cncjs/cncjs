@@ -7,7 +7,7 @@ import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import { mm2in } from '../../lib/units';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import GCode from './GCode';
 import {
     // Units
@@ -36,6 +36,7 @@ class GCodeWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -132,11 +133,11 @@ class GCodeWidget extends Component {
             minimized
         } = this.state;
 
-        store.set('widgets.gcode.minimized', minimized);
+        this.config.set('minimized', minimized);
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.gcode.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
 
             port: controller.port,

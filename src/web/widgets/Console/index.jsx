@@ -6,7 +6,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Console from './Console';
 import {
     SCROLL_BUFFER_SIZE
@@ -21,6 +21,7 @@ class ConsoleWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -97,11 +98,11 @@ class ConsoleWidget extends Component {
             minimized
         } = this.state;
 
-        store.set('widgets.console.minimized', minimized);
+        this.config.set('minimized', minimized);
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.console.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
             port: controller.port,
             containerHeight: 240,

@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import events from 'events';
-import store from '../../store';
 
 const HERTZ_LIMIT = 60; // 60 items per second
 const FLUSH_INTERVAL = 250; // milliseconds
@@ -12,33 +11,33 @@ const DEFAULT_HERTZ = 10; // 10 times per second
 const DEFAULT_OVERSHOOT = 1;
 
 class ShuttleControl extends events.EventEmitter {
+    zone = 0;
     axis = '';
-    value = 0;
     queue = [];
     timer = null;
 
-    accumulate(axis, value = 0, distance = 1) {
+    accumulate(zone = 0, { axis = '', distance = 1, feedrateMin, feedrateMax, hertz, overshoot }) {
+        zone = Number(zone) || 0;
         axis = ('' + axis).toUpperCase();
-        value = Number(value) || 0;
+        feedrateMin = Number(feedrateMin) || DEFAULT_FEEDRATE_MIN;
+        feedrateMax = Number(feedrateMax) || DEFAULT_FEEDRATE_MAX;
+        hertz = Number(hertz) || DEFAULT_HERTZ;
+        overshoot = Number(overshoot) || DEFAULT_OVERSHOOT;
 
-        if ((this.axis !== axis) ||
-            (this.value !== value) ||
+        if ((this.zone !== zone) ||
+            (this.axis !== axis) ||
             (this.queue.length >= QUEUE_LENGTH)) {
             this.flush();
         }
 
-        const valueMax = 7; // Shuttle Zone +7/-7
-        const valueMin = 1; // Shuttle Zone +1/-1
-        const feedrateMin = Number(store.get('widgets.axes.shuttle.feedrateMin')) || DEFAULT_FEEDRATE_MIN;
-        const feedrateMax = Number(store.get('widgets.axes.shuttle.feedrateMax')) || DEFAULT_FEEDRATE_MAX;
-        const hertz = Number(store.get('widgets.axes.shuttle.hertz')) || DEFAULT_HERTZ;
-        const overshoot = Number(store.get('widgets.axes.shuttle.overshoot')) || DEFAULT_OVERSHOOT;
-        const direction = (value < 0) ? -1 : 1;
-        const feedrate = ((feedrateMax - feedrateMin) * distance * ((Math.abs(value) - valueMin) / (valueMax - valueMin))) + feedrateMin;
+        const zoneMax = 7; // Shuttle Zone +7/-7
+        const zoneMin = 1; // Shuttle Zone +1/-1
+        const direction = (zone < 0) ? -1 : 1;
+        const feedrate = ((feedrateMax - feedrateMin) * distance * ((Math.abs(zone) - zoneMin) / (zoneMax - zoneMin))) + feedrateMin;
         const relativeDistance = direction * overshoot * (feedrate / 60.0) / hertz;
 
+        this.zone = zone;
         this.axis = axis;
-        this.value = value;
         this.queue.push({
             feedrate: feedrate,
             relativeDistance: relativeDistance

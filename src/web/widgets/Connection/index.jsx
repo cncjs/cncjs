@@ -1,13 +1,24 @@
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import get from 'lodash/get';
+import reverse from 'lodash/reverse';
+import sortBy from 'lodash/sortBy';
+import uniq from 'lodash/uniq';
+import find from 'lodash/find';
+import includes from 'lodash/includes';
+import map from 'lodash/map';
+import pubsub from 'pubsub-js';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
+import api from '../../api';
+import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import store from '../../store';
+import log from '../../lib/log';
+import WidgetConfig from '../WidgetConfig';
 import Connection from './Connection';
 import styles from './index.styl';
 
-class ConnectionWidget extends Component {
+class ConnectionWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -15,41 +26,310 @@ class ConnectionWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
-            this.setState({
+            this.setState(state => ({
                 minimized: isFullscreen ? minimized : false,
                 isFullscreen: !isFullscreen
-            });
+            }));
         },
         toggleMinimized: () => {
             const { minimized } = this.state;
-            this.setState({ minimized: !minimized });
+            this.setState(state => ({
+                minimized: !minimized
+            }));
+        },
+        clearAlert: () => {
+            this.setState(state => ({
+                alertMessage: ''
+            }));
+        },
+        changeController: (controllerType) => {
+            this.setState(state => ({
+                controllerType: controllerType
+            }));
+        },
+        onChangePortOption: (option) => {
+            this.setState(state => ({
+                alertMessage: '',
+                port: option.value
+            }));
+        },
+        onChangeBaudrateOption: (option) => {
+            this.setState(state => ({
+                alertMessage: '',
+                baudrate: option.value
+            }));
+        },
+        handleAutoReconnect: (event) => {
+            const checked = event.target.checked;
+            this.setState(state => ({
+                autoReconnect: checked
+            }));
+        },
+        handleRefreshPorts: (event) => {
+            this.refreshPorts();
+        },
+        handleOpenPort: (event) => {
+            const { port, baudrate } = this.state;
+            this.openPort(port, { baudrate: baudrate });
+        },
+        handleClosePort: (event) => {
+            const { port } = this.state;
+            this.closePort(port);
         }
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
+    controllerEvents = {
+        'serialport:list': (ports) => {
+            log.debug('Received a list of serial ports:', ports);
+
+            this.stopLoading();
+
+            const port = this.config.get('port') || '';
+
+            if (includes(map(ports, 'port'), port)) {
+                this.setState(state => ({
+                    alertMessage: '',
+                    port: port,
+                    ports: ports
+                }));
+
+                const { autoReconnect, hasReconnected } = this.state;
+
+                if (autoReconnect && !hasReconnected) {
+                    const { baudrate } = this.state;
+
+                    this.setState(state => ({
+                        hasReconnected: true
+                    }));
+                    this.openPort(port, {
+                        baudrate: baudrate
+                    });
+                }
+            } else {
+                this.setState(state => ({
+                    alertMessage: '',
+                    ports: ports
+                }));
+            }
+        },
+        'serialport:open': (options) => {
+            const { controllerType, port, baudrate, inuse } = options;
+            const ports = map(this.state.ports, (o) => {
+                if (o.port !== port) {
+                    return o;
+                }
+
+                o = { ...o, inuse };
+
+                return o;
+            });
+
+            this.setState(state => ({
+                alertMessage: '',
+                connecting: false,
+                connected: true,
+                controllerType: controllerType, // Grbl|Smoothie|TinyG
+                port: port,
+                baudrate: baudrate,
+                ports: ports
+            }));
+
+            log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
+        },
+        'serialport:close': (options) => {
+            const { port } = options;
+
+            this.setState(state => ({
+                alertMessage: '',
+                connecting: false,
+                connected: false
+            }));
+
+            log.debug('Disconnected from \'' + port + '\'.');
+        },
+        'serialport:error': (options) => {
+            const { port } = options;
+
+            this.setState(state => ({
+                alertMessage: i18n._('Error opening serial port \'{{- port}}\'', { port: port }),
+                connecting: false,
+                connected: false
+            }));
+
+            log.error('Error opening serial port \'' + port + '\'');
+        }
+    };
+
+    componentDidMount() {
+        this.addControllerEvents();
+        this.refreshPorts();
+    }
+    componentWillUnmount() {
+        this.removeControllerEvents();
     }
     componentDidUpdate(prevProps, prevState) {
         const {
-            minimized
+            minimized,
+            controllerType,
+            port,
+            baudrate,
+            autoReconnect
         } = this.state;
 
-        store.set('widgets.connection.minimized', minimized);
+        this.config.set('minimized', minimized);
+        if (controllerType) {
+            this.config.set('controller.type', controllerType);
+        }
+        if (port) {
+            this.config.set('port', port);
+        }
+        if (baudrate) {
+            this.config.set('baudrate', baudrate);
+        }
+        this.config.set('autoReconnect', autoReconnect);
     }
     getInitialState() {
+        let controllerType = this.config.get('controller.type');
+        if (!includes(controller.loadedControllers, controllerType)) {
+            controllerType = controller.loadedControllers[0];
+        }
+
+        const defaultBaudrates = [
+            115200,
+            57600,
+            38400,
+            19200,
+            9600
+        ];
+
         return {
-            minimized: store.get('widgets.connection.minimized', false),
-            isFullscreen: false
+            minimized: this.config.get('minimized', false),
+            isFullscreen: false,
+            loading: false,
+            connecting: false,
+            connected: false,
+            ports: [],
+            baudrates: reverse(sortBy(uniq(controller.baudrates.concat(defaultBaudrates)))),
+            controllerType: controllerType,
+            port: controller.port,
+            baudrate: this.config.get('baudrate'),
+            autoReconnect: this.config.get('autoReconnect'),
+            hasReconnected: false,
+            alertMessage: ''
         };
+    }
+    addControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.on(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.off(eventName, callback);
+        });
+    }
+    startLoading() {
+        const delay = 5 * 1000; // wait for 5 seconds
+
+        this.setState(state => ({
+            loading: true
+        }));
+        this._loadingTimer = setTimeout(() => {
+            this.setState(state => ({
+                loading: false
+            }));
+        }, delay);
+    }
+    stopLoading() {
+        if (this._loadingTimer) {
+            clearTimeout(this._loadingTimer);
+            this._loadingTimer = null;
+        }
+        this.setState(state => ({
+            loading: false
+        }));
+    }
+    refreshPorts() {
+        controller.listPorts();
+        this.startLoading();
+    }
+    openPort(port, options) {
+        const { baudrate } = { ...options };
+
+        this.setState(state => ({
+            connecting: true
+        }));
+
+        controller.openPort(port, {
+            controllerType: this.state.controllerType,
+            baudrate: baudrate
+        }, (err) => {
+            if (err) {
+                this.setState(state => ({
+                    alertMessage: i18n._('Error opening serial port \'{{- port}}\'', { port: port }),
+                    connecting: false,
+                    connected: false
+                }));
+
+                log.error(err);
+                return;
+            }
+
+            let name = '';
+            let gcode = '';
+
+            api.controllers.get()
+                .then((res) => {
+                    let next;
+                    const c = find(res.body, { port: port });
+                    if (c) {
+                        next = api.fetchGCode({ port: port });
+                    }
+                    return next;
+                })
+                .then((res) => {
+                    name = get(res, 'body.name', '');
+                    gcode = get(res, 'body.data', '');
+                })
+                .catch((res) => {
+                    // Empty block
+                })
+                .then(() => {
+                    if (gcode) {
+                        pubsub.publish('gcode:load', { name, gcode });
+                    }
+                });
+        });
+    }
+    closePort(port = this.state.port) {
+        this.setState(state => ({
+            connecting: false,
+            connected: false
+        }));
+        controller.closePort(port, (err) => {
+            if (err) {
+                log.error(err);
+                return;
+            }
+
+            // Refresh ports
+            controller.listPorts();
+        });
     }
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
+        const state = {
+            ...this.state
+        };
         const actions = {
             ...this.actions
         };
@@ -111,7 +391,7 @@ class ConnectionWidget extends Component {
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <Connection />
+                    <Connection state={state} actions={actions} />
                 </Widget.Content>
             </Widget>
         );

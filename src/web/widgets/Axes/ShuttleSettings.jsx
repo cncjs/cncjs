@@ -1,7 +1,7 @@
 import Slider from 'rc-slider';
+import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import i18n from '../../lib/i18n';
-import store from '../../store';
 
 const FEEDRATE_RANGE = [100, 2500];
 const FEEDRATE_STEP = 50;
@@ -9,13 +9,35 @@ const OVERSHOOT_RANGE = [1, 1.5];
 const OVERSHOOT_STEP = 0.01;
 
 class ShuttleSettings extends Component {
-    state = {
-        feedrateMin: store.get('widgets.axes.shuttle.feedrateMin'),
-        feedrateMax: store.get('widgets.axes.shuttle.feedrateMax'),
-        hertz: store.get('widgets.axes.shuttle.hertz'),
-        overshoot: store.get('widgets.axes.shuttle.overshoot')
+    static propTypes = {
+        feedrateMin: PropTypes.number,
+        feedrateMax: PropTypes.number,
+        hertz: PropTypes.number,
+        overshoot: PropTypes.number
     };
 
+    state = this.getInitialState();
+
+    getInitialState() {
+        const {
+            feedrateMin,
+            feedrateMax,
+            hertz,
+            overshoot
+        } = this.props;
+
+        return { feedrateMin, feedrateMax, hertz, overshoot };
+    }
+    componentWillReceiveProps(nextProps) {
+        const {
+            feedrateMin,
+            feedrateMax,
+            hertz,
+            overshoot
+        } = nextProps;
+
+        this.setState({ feedrateMin, feedrateMax, hertz, overshoot });
+    }
     onFeedrateSliderChange(value) {
         const [min, max] = value;
         this.setState({
@@ -31,12 +53,6 @@ class ShuttleSettings extends Component {
     onOvershootSliderChange(value) {
         const overshoot = value;
         this.setState({ overshoot });
-    }
-    save() {
-        store.set('widgets.axes.shuttle.feedrateMin', this.state.feedrateMin);
-        store.set('widgets.axes.shuttle.feedrateMax', this.state.feedrateMax);
-        store.set('widgets.axes.shuttle.hertz', this.state.hertz);
-        store.set('widgets.axes.shuttle.overshoot', this.state.overshoot);
     }
     render() {
         const { feedrateMin, feedrateMax, hertz, overshoot } = this.state;

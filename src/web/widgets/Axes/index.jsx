@@ -8,9 +8,8 @@ import controller from '../../lib/controller';
 import { preventDefault } from '../../lib/dom-events';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Axes from './Axes';
-import { show as showSettings } from './Settings';
 import ShuttleControl from './ShuttleControl';
 import {
     // Units
@@ -34,6 +33,8 @@ import {
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
+    MODAL_NONE,
+    MODAL_SETTINGS,
     DISTANCE_MIN,
     DISTANCE_MAX,
     DISTANCE_STEP,
@@ -83,6 +84,7 @@ class AxesWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -96,10 +98,64 @@ class AxesWidget extends Component {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
         },
+        openModal: (name = MODAL_NONE, params = {}) => {
+            this.setState({
+                modal: {
+                    name: name,
+                    params: params
+                }
+            });
+        },
+        closeModal: () => {
+            this.setState({
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
+            });
+        },
+        updateModalParams: (params = {}) => {
+            this.setState({
+                modal: {
+                    ...this.state.modal,
+                    params: {
+                        ...this.state.modal.params,
+                        ...params
+                    }
+                }
+            });
+        },
+        loadConfig: () => {
+            return {
+                axes: this.config.get('axes'),
+                feedrateMin: this.config.get('shuttle.feedrateMin'),
+                feedrateMax: this.config.get('shuttle.feedrateMax'),
+                hertz: this.config.get('shuttle.hertz'),
+                overshoot: this.config.get('shuttle.overshoot')
+            };
+        },
+        saveConfig: (data) => {
+            const {
+                axes,
+                feedrateMin,
+                feedrateMax,
+                hertz,
+                overshoot
+            } = { ...data };
+
+            this.config.replace('axes', axes); // array
+            this.config.set('shuttle.feedrateMin', feedrateMin);
+            this.config.set('shuttle.feedrateMax', feedrateMax);
+            this.config.set('shuttle.hertz', hertz);
+            this.config.set('shuttle.overshoot', overshoot);
+
+            // Update axes
+            this.setState({ axes: axes });
+        },
         getJogDistance: () => {
             const { units } = this.state;
-            const selectedDistance = store.get('widgets.axes.jog.selectedDistance');
-            const customDistance = store.get('widgets.axes.jog.customDistance');
+            const selectedDistance = this.config.get('jog.selectedDistance');
+            const customDistance = this.config.get('jog.customDistance');
             if (selectedDistance) {
                 return Number(selectedDistance) || 0;
             }
@@ -218,14 +274,14 @@ class AxesWidget extends Component {
             const distance = distances[(currentIndex + 1) % distances.length];
             this.actions.selectDistance(distance);
         },
-        SHUTTLE: (event, { value = 0 }) => {
+        SHUTTLE: (event, { zone = 0 }) => {
             const { canClick, selectedAxis } = this.state;
 
             if (!canClick) {
                 return;
             }
 
-            if (value === 0) {
+            if (zone === 0) {
                 // Clear accumulated result
                 this.shuttleControl.clear();
 
@@ -240,8 +296,19 @@ class AxesWidget extends Component {
             }
 
             const distance = Math.min(this.actions.getJogDistance(), 1);
+            const feedrateMin = this.config.get('shuttle.feedrateMin');
+            const feedrateMax = this.config.get('shuttle.feedrateMax');
+            const hertz = this.config.get('shuttle.hertz');
+            const overshoot = this.config.get('shuttle.overshoot');
 
-            this.shuttleControl.accumulate(selectedAxis, value, distance);
+            this.shuttleControl.accumulate(zone, {
+                axis: selectedAxis,
+                distance: distance,
+                feedrateMin: feedrateMin,
+                feedrateMax: feedrateMax,
+                hertz: hertz,
+                overshoot: overshoot
+            });
         }
     };
     controllerEvents = {
@@ -275,7 +342,7 @@ class AxesWidget extends Component {
                 'G21': METRIC_UNITS
             }[modal.units] || this.state.units;
 
-            let customDistance = store.get('widgets.axes.jog.customDistance');
+            let customDistance = this.config.get('jog.customDistance');
             if (units === IMPERIAL_UNITS) {
                 customDistance = mm2in(customDistance).toFixed(4) * 1;
             }
@@ -309,7 +376,7 @@ class AxesWidget extends Component {
                 'G21': METRIC_UNITS
             }[modal.units] || this.state.units;
 
-            let customDistance = store.get('widgets.axes.jog.customDistance');
+            let customDistance = this.config.get('jog.customDistance');
             if (units === IMPERIAL_UNITS) {
                 customDistance = mm2in(customDistance).toFixed(4) * 1;
             }
@@ -342,7 +409,7 @@ class AxesWidget extends Component {
                 'G21': METRIC_UNITS
             }[modal.units] || this.state.units;
 
-            let customDistance = store.get('widgets.axes.jog.customDistance');
+            let customDistance = this.config.get('jog.customDistance');
             if (units === IMPERIAL_UNITS) {
                 customDistance = mm2in(customDistance).toFixed(4) * 1;
             }
@@ -399,21 +466,21 @@ class AxesWidget extends Component {
             customDistance
         } = this.state;
 
-        store.set('widgets.axes.minimized', minimized);
-        store.set('widgets.axes.axes', axes);
-        store.set('widgets.axes.jog.keypad', keypadJogging);
-        store.set('widgets.axes.jog.selectedDistance', selectedDistance);
+        this.config.set('minimized', minimized);
+        this.config.set('axes', axes);
+        this.config.set('jog.keypad', keypadJogging);
+        this.config.set('jog.selectedDistance', selectedDistance);
 
-        // The custom distance will not persist to store while toggling between in and mm
+        // The custom distance will not persist while toggling between in and mm
         if ((prevState.customDistance !== customDistance) && (prevState.units === units)) {
             const distance = (units === IMPERIAL_UNITS) ? in2mm(customDistance) : customDistance;
             // Save customDistance in mm
-            store.set('widgets.axes.jog.customDistance', Number(distance));
+            this.config.set('jog.customDistance', Number(distance));
         }
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.axes.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -422,8 +489,12 @@ class AxesWidget extends Component {
                 type: controller.type,
                 state: controller.state
             },
+            modal: {
+                name: MODAL_NONE,
+                params: {}
+            },
             workflowState: controller.workflowState,
-            axes: store.get('widgets.axes.axes', DEFAULT_AXES),
+            axes: this.config.get('axes', DEFAULT_AXES),
             machinePosition: { // Machine position
                 x: '0.000',
                 y: '0.000',
@@ -436,10 +507,10 @@ class AxesWidget extends Component {
                 z: '0.000',
                 a: '0.000'
             },
-            keypadJogging: store.get('widgets.axes.jog.keypad'),
+            keypadJogging: this.config.get('jog.keypad'),
             selectedAxis: '', // Defaults to empty
-            selectedDistance: store.get('widgets.axes.jog.selectedDistance'),
-            customDistance: toUnits(METRIC_UNITS, store.get('widgets.axes.jog.customDistance'))
+            selectedDistance: this.config.get('jog.selectedDistance'),
+            customDistance: toUnits(METRIC_UNITS, this.config.get('jog.customDistance'))
         };
     }
     addControllerEvents() {
@@ -567,11 +638,8 @@ class AxesWidget extends Component {
                         <Widget.Button
                             title={i18n._('Edit')}
                             onClick={(event) => {
-                                showSettings(() => {
-                                    // Update axes
-                                    const axes = store.get('widgets.axes.axes', DEFAULT_AXES);
-                                    this.setState({ axes: axes });
-                                });
+                                const data = actions.loadConfig();
+                                actions.openModal(MODAL_SETTINGS, data);
                             }}
                         >
                             <i className="fa fa-cog" />
@@ -632,10 +700,7 @@ class AxesWidget extends Component {
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <Axes
-                        state={state}
-                        actions={actions}
-                    />
+                    <Axes state={state} actions={actions} />
                 </Widget.Content>
             </Widget>
         );

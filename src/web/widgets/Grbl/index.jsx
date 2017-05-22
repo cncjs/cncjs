@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Grbl from './Grbl';
 import {
     GRBL
@@ -22,6 +22,7 @@ class GrblWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -146,14 +147,14 @@ class GrblWidget extends PureComponent {
             panel
         } = this.state;
 
-        store.set('widgets.grbl.minimized', minimized);
-        store.set('widgets.grbl.panel.queueReports.expanded', panel.queueReports.expanded);
-        store.set('widgets.grbl.panel.statusReports.expanded', panel.statusReports.expanded);
-        store.set('widgets.grbl.panel.modalGroups.expanded', panel.modalGroups.expanded);
+        this.config.set('minimized', minimized);
+        this.config.set('panel.queueReports.expanded', panel.queueReports.expanded);
+        this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
+        this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.grbl.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
             isReady: (controller.loadedControllers.length === 1) || (controller.type === GRBL),
             canClick: true, // Defaults to true
@@ -169,13 +170,13 @@ class GrblWidget extends PureComponent {
             },
             panel: {
                 queueReports: {
-                    expanded: store.get('widgets.grbl.panel.queueReports.expanded')
+                    expanded: this.config.get('panel.queueReports.expanded')
                 },
                 statusReports: {
-                    expanded: store.get('widgets.grbl.panel.statusReports.expanded')
+                    expanded: this.config.get('panel.statusReports.expanded')
                 },
                 modalGroups: {
-                    expanded: store.get('widgets.grbl.panel.modalGroups.expanded')
+                    expanded: this.config.get('panel.modalGroups.expanded')
                 }
             }
         };

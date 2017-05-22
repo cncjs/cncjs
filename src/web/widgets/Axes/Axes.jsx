@@ -1,22 +1,31 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React from 'react';
+import Settings from './Settings';
 import Toolbar from './Toolbar';
 import DisplayPanel from './DisplayPanel';
 import ControlPanel from './ControlPanel';
+import {
+    MODAL_SETTINGS
+} from './constants';
 
-class Axes extends Component {
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
-    render() {
-        return (
-            <div>
-                <Toolbar {...this.props} />
-                <DisplayPanel {...this.props} />
-                <ControlPanel {...this.props} />
-            </div>
-        );
-    }
-}
+const Axes = (props) => {
+    const { state, actions } = props;
+
+    return (
+        <div>
+            {state.modal.name === MODAL_SETTINGS &&
+            <Settings state={state} actions={actions} />
+            }
+            <Toolbar state={state} actions={actions} />
+            <DisplayPanel state={state} actions={actions} />
+            <ControlPanel state={state} actions={actions} />
+        </div>
+    );
+};
+
+Axes.propTypes = {
+    state: PropTypes.object,
+    actions: PropTypes.object
+};
 
 export default Axes;

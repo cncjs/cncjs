@@ -14,7 +14,7 @@ import controller from '../../lib/controller';
 import modal from '../../lib/modal';
 import log from '../../lib/log';
 import { in2mm } from '../../lib/units';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import PrimaryToolbar from './PrimaryToolbar';
 import SecondaryToolbar from './SecondaryToolbar';
 import WorkflowControl from './WorkflowControl';
@@ -77,6 +77,7 @@ class VisualizerWidget extends Component {
         widgetId: PropTypes.string.isRequired
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         openModal: (name = '', params = {}) => {
@@ -535,22 +536,22 @@ class VisualizerWidget extends Component {
     }
     componentDidUpdate(prevProps, prevState) {
         if (this.state.disabled !== prevState.disabled) {
-            store.set('widgets.visualizer.disabled', this.state.disabled);
+            this.config.set('disabled', this.state.disabled);
         }
         if (this.state.projection !== prevState.projection) {
-            store.set('widgets.visualizer.projection', this.state.projection);
+            this.config.set('projection', this.state.projection);
         }
         if (this.state.cameraMode !== prevState.cameraMode) {
-            store.set('widgets.visualizer.cameraMode', this.state.cameraMode);
+            this.config.set('cameraMode', this.state.cameraMode);
         }
         if (this.state.gcode.displayName !== prevState.gcode.displayName) {
-            store.set('widgets.visualizer.gcode.displayName', this.state.gcode.displayName);
+            this.config.set('gcode.displayName', this.state.gcode.displayName);
         }
         if (this.state.objects.coordinateSystem.visible !== prevState.objects.coordinateSystem.visible) {
-            store.set('widgets.visualizer.objects.coordinateSystem.visible', this.state.objects.coordinateSystem.visible);
+            this.config.set('objects.coordinateSystem.visible', this.state.objects.coordinateSystem.visible);
         }
         if (this.state.objects.toolhead.visible !== prevState.objects.toolhead.visible) {
-            store.set('widgets.visualizer.objects.toolhead.visible', this.state.objects.toolhead.visible);
+            this.config.set('objects.toolhead.visible', this.state.objects.toolhead.visible);
         }
     }
     getInitialState() {
@@ -572,7 +573,7 @@ class VisualizerWidget extends Component {
                 z: '0.000'
             },
             gcode: {
-                displayName: store.get('widgets.visualizer.gcode.displayName', true),
+                displayName: this.config.get('gcode.displayName', true),
                 loading: false,
                 rendering: false,
                 ready: false,
@@ -596,17 +597,17 @@ class VisualizerWidget extends Component {
                 sent: 0,
                 received: 0
             },
-            disabled: store.get('widgets.visualizer.disabled', false),
-            projection: store.get('widgets.visualizer.projection', 'orthographic'),
+            disabled: this.config.get('disabled', false),
+            projection: this.config.get('projection', 'orthographic'),
             objects: {
                 coordinateSystem: {
-                    visible: store.get('widgets.visualizer.objects.coordinateSystem.visible', true)
+                    visible: this.config.get('objects.coordinateSystem.visible', true)
                 },
                 toolhead: {
-                    visible: store.get('widgets.visualizer.objects.toolhead.visible', true)
+                    visible: this.config.get('objects.toolhead.visible', true)
                 }
             },
-            cameraMode: store.get('widgets.visualizer.cameraMode', CAMERA_MODE_PAN),
+            cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
             isAgitated: false // Defaults to false
         };
     }

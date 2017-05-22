@@ -9,7 +9,7 @@ import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Macro from './Macro';
 import {
     MODAL_STATE_NONE,
@@ -60,6 +60,7 @@ class MacroWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -235,11 +236,11 @@ class MacroWidget extends Component {
             minimized
         } = this.state;
 
-        store.set('widgets.macro.minimized', minimized);
+        this.config.set('minimized', minimized);
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.macro.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
             port: controller.port,
             workflowState: controller.workflowState,

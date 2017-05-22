@@ -1,44 +1,35 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import Modal from '../../components/Modal';
 import i18n from '../../lib/i18n';
 import AxesSettings from './AxesSettings';
 import ShuttleSettings from './ShuttleSettings';
 
-const noop = () => {};
-
-class Settings extends React.Component {
+class Settings extends Component {
     static propTypes = {
-        onSave: React.PropTypes.func,
-        onClose: React.PropTypes.func.isRequired
-    };
-    state = {
-        show: true
+        state: PropTypes.object,
+        actions: PropTypes.object
     };
 
-    componentDidUpdate(prevProps, prevState) {
-        if (!(this.state.show)) {
-            this.props.onClose();
-        }
-    }
-    handleSave() {
-        this.axesSettings.save();
-        this.shuttleSettings.save();
-        this.setState({ show: false });
-        this.props.onSave();
-    }
-    handleCancel() {
-        this.setState({ show: false });
+    saveChanges() {
+        const { actions } = this.props;
+        const { axes } = this.axesSettings.state;
+        const { feedrateMin, feedrateMax, hertz, overshoot } = this.shuttleSettings.state;
+
+        actions.saveConfig({
+            axes,
+            feedrateMin,
+            feedrateMax,
+            hertz,
+            overshoot
+        });
     }
     render() {
-        const { show } = this.state;
+        const { state, actions } = this.props;
+        const { axes, feedrateMin, feedrateMax, hertz, overshoot } = state.modal.params;
 
         return (
-            <Modal
-                onClose={::this.handleCancel}
-                show={show}
-                size="sm"
-            >
+            <Modal size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>{i18n._('Axes Settings')}</Modal.Title>
                 </Modal.Header>
@@ -47,25 +38,33 @@ class Settings extends React.Component {
                         ref={node => {
                             this.axesSettings = node;
                         }}
+                        axes={axes}
                     />
                     <ShuttleSettings
                         ref={node => {
                             this.shuttleSettings = node;
                         }}
+                        feedrateMin={feedrateMin}
+                        feedrateMax={feedrateMax}
+                        hertz={hertz}
+                        overshoot={overshoot}
                     />
                 </Modal.Body>
                 <Modal.Footer>
                     <button
                         type="button"
                         className="btn btn-default"
-                        onClick={::this.handleCancel}
+                        onClick={actions.closeModal}
                     >
                         {i18n._('Cancel')}
                     </button>
                     <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={::this.handleSave}
+                        onClick={() => {
+                            actions.closeModal();
+                            this.saveChanges();
+                        }}
                     >
                         {i18n._('Save Changes')}
                     </button>
@@ -74,17 +73,5 @@ class Settings extends React.Component {
         );
     }
 }
-
-export const show = (callback = noop) => {
-    const el = document.body.appendChild(document.createElement('div'));
-    const handleClose = (e) => {
-        ReactDOM.unmountComponentAtNode(el);
-        setTimeout(() => {
-            el.remove();
-        }, 0);
-    };
-
-    ReactDOM.render(<Settings onSave={callback} onClose={handleClose} />, el);
-};
 
 export default Settings;

@@ -1,18 +1,30 @@
 import _ from 'lodash';
-import React from 'react';
+import PropTypes from 'prop-types';
+import React, { Component } from 'react';
 import i18n from '../../lib/i18n';
-import store from '../../store';
 import {
     DEFAULT_AXES
 } from './constants';
 
-class AxesSettings extends React.Component {
-    state = {
-        axes: store.get('widgets.axes.axes', DEFAULT_AXES)
+class AxesSettings extends Component {
+    static propTypes = {
+        axes: PropTypes.array
+    };
+    static defaultProps = {
+        axes: DEFAULT_AXES
     };
 
-    save() {
-        store.replace('widgets.axes.axes', this.state.axes);
+    state = this.getInitialState();
+
+    getInitialState() {
+        const { axes } = this.props;
+
+        return { axes };
+    }
+    componentWillReceiveProps(nextProps) {
+        const { axes } = nextProps;
+
+        this.setState({ axes });
     }
     render() {
         const axes = _(this.state.axes)

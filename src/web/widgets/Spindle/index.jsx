@@ -6,7 +6,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Spindle from './Spindle';
 import {
     // Grbl
@@ -36,6 +36,7 @@ class SpindleWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -136,12 +137,12 @@ class SpindleWidget extends Component {
             spindleSpeed
         } = this.state;
 
-        store.set('widgets.spindle.minimized', minimized);
-        store.set('widgets.spindle.speed', spindleSpeed);
+        this.config.set('minimized', minimized);
+        this.config.set('speed', spindleSpeed);
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.spindle.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -157,7 +158,7 @@ class SpindleWidget extends Component {
                 }
             },
             workflowState: controller.workflowState,
-            spindleSpeed: store.get('widgets.spindle.speed', 1000)
+            spindleSpeed: this.config.get('speed', 1000)
         };
     }
     addControllerEvents() {

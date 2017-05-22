@@ -4,7 +4,7 @@ import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Smoothie from './Smoothie';
 import {
     SMOOTHIE
@@ -22,6 +22,7 @@ class SmoothieWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -146,14 +147,14 @@ class SmoothieWidget extends PureComponent {
             panel
         } = this.state;
 
-        store.set('widgets.smoothie.minimized', minimized);
-        store.set('widgets.smoothie.panel.queueReports.expanded', panel.queueReports.expanded);
-        store.set('widgets.smoothie.panel.statusReports.expanded', panel.statusReports.expanded);
-        store.set('widgets.smoothie.panel.modalGroups.expanded', panel.modalGroups.expanded);
+        this.config.set('minimized', minimized);
+        this.config.set('panel.queueReports.expanded', panel.queueReports.expanded);
+        this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
+        this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.smoothie.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
             isReady: (controller.loadedControllers.length === 1) || (controller.type === SMOOTHIE),
             canClick: true, // Defaults to true
@@ -169,13 +170,13 @@ class SmoothieWidget extends PureComponent {
             },
             panel: {
                 queueReports: {
-                    expanded: store.get('widgets.smoothie.panel.queueReports.expanded')
+                    expanded: this.config.get('panel.queueReports.expanded')
                 },
                 statusReports: {
-                    expanded: store.get('widgets.smoothie.panel.statusReports.expanded')
+                    expanded: this.config.get('panel.statusReports.expanded')
                 },
                 modalGroups: {
-                    expanded: store.get('widgets.smoothie.panel.modalGroups.expanded')
+                    expanded: this.config.get('panel.modalGroups.expanded')
                 }
             }
         };

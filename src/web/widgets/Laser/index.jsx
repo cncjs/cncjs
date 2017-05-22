@@ -5,7 +5,7 @@ import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Laser from './Laser';
 import {
     // Grbl
@@ -25,6 +25,7 @@ class LaserWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -128,14 +129,14 @@ class LaserWidget extends Component {
             test
         } = this.state;
 
-        store.set('widgets.laser.minimized', minimized);
-        store.set('widgets.laser.panel.laserTest.expanded', panel.laserTest.expanded);
-        store.set('widgets.laser.test.power', test.power);
-        store.set('widgets.laser.test.duration', test.duration);
+        this.config.set('minimized', minimized);
+        this.config.set('panel.laserTest.expanded', panel.laserTest.expanded);
+        this.config.set('test.power', test.power);
+        this.config.set('test.duration', test.duration);
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.laser.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -145,12 +146,12 @@ class LaserWidget extends Component {
             },
             panel: {
                 laserTest: {
-                    expanded: store.get('widgets.laser.panel.laserTest.expanded')
+                    expanded: this.config.get('panel.laserTest.expanded')
                 }
             },
             test: {
-                power: store.get('widgets.laser.test.power', 0),
-                duration: store.get('widgets.laser.test.duration', 0)
+                power: this.config.get('test.power', 0),
+                duration: this.config.get('test.duration', 0)
             }
         };
     }

@@ -290,7 +290,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'shift', '7'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: -7
+            zone: -7
         },
         preventDefault: true
     },
@@ -298,7 +298,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'shift', '6'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: -6
+            zone: -6
         },
         preventDefault: true
     },
@@ -306,7 +306,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'shift', '5'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: -5
+            zone: -5
         },
         preventDefault: true
     },
@@ -314,7 +314,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'shift', '4'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: -4
+            zone: -4
         },
         preventDefault: true
     },
@@ -322,7 +322,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'shift', '3'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: -3
+            zone: -3
         },
         preventDefault: true
     },
@@ -330,7 +330,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'shift', '2'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: -2
+            zone: -2
         },
         preventDefault: true
     },
@@ -338,7 +338,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'shift', '1'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: -1
+            zone: -1
         },
         preventDefault: true
     },
@@ -346,7 +346,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'command', '0'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: 0
+            zone: 0
         },
         preventDefault: true
     },
@@ -354,7 +354,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'command', '1'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: 1
+            zone: 1
         },
         preventDefault: true
     },
@@ -362,7 +362,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'command', '2'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: 2
+            zone: 2
         },
         preventDefault: true
     },
@@ -370,7 +370,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'command', '3'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: 3
+            zone: 3
         },
         preventDefault: true
     },
@@ -378,7 +378,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'command', '4'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: 4
+            zone: 4
         },
         preventDefault: true
     },
@@ -386,7 +386,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'command', '5'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: 5
+            zone: 5
         },
         preventDefault: true
     },
@@ -394,7 +394,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'command', '6'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: 6
+            zone: 6
         },
         preventDefault: true
     },
@@ -402,7 +402,7 @@ const commandKeys = [
         keys: ['ctrl', 'alt', 'command', '7'].join('+'),
         cmd: 'SHUTTLE',
         payload: {
-            value: 7
+            zone: 7
         },
         preventDefault: true
     },

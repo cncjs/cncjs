@@ -6,7 +6,7 @@ import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
-import store from '../../store';
+import WidgetConfig from '../WidgetConfig';
 import Probe from './Probe';
 import {
     // Units
@@ -56,6 +56,7 @@ class ProbeWidget extends Component {
         sortable: PropTypes.object
     };
 
+    config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
@@ -221,7 +222,7 @@ class ProbeWidget extends Component {
                 probeFeedrate,
                 touchPlateHeight,
                 retractionDistance
-            } = store.get('widgets.probe');
+            } = this.config.get();
             if (units === IMPERIAL_UNITS) {
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
@@ -265,7 +266,7 @@ class ProbeWidget extends Component {
                 probeFeedrate,
                 touchPlateHeight,
                 retractionDistance
-            } = store.get('widgets.probe');
+            } = this.config.get();
             if (units === IMPERIAL_UNITS) {
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
@@ -309,7 +310,7 @@ class ProbeWidget extends Component {
                 probeFeedrate,
                 touchPlateHeight,
                 retractionDistance
-            } = store.get('widgets.probe');
+            } = this.config.get();
             if (units === IMPERIAL_UNITS) {
                 probeDepth = mm2in(probeDepth).toFixed(4) * 1;
                 probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
@@ -357,17 +358,17 @@ class ProbeWidget extends Component {
             minimized
         } = this.state;
 
-        store.set('widgets.probe.minimized', minimized);
+        this.config.set('minimized', minimized);
 
-        // Do not save to store if the units did change between in and mm
+        // Do not save config settings if the units did change between in and mm
         if (this.unitsDidChange) {
             this.unitsDidChange = false;
             return;
         }
 
         const { units, probeCommand, useTLO } = this.state;
-        store.set('widgets.probe.probeCommand', probeCommand);
-        store.set('widgets.probe.useTLO', useTLO);
+        this.config.set('probeCommand', probeCommand);
+        this.config.set('useTLO', useTLO);
 
         let {
             probeDepth,
@@ -383,14 +384,14 @@ class ProbeWidget extends Component {
             touchPlateHeight = in2mm(touchPlateHeight);
             retractionDistance = in2mm(retractionDistance);
         }
-        store.set('widgets.probe.probeDepth', Number(probeDepth));
-        store.set('widgets.probe.probeFeedrate', Number(probeFeedrate));
-        store.set('widgets.probe.touchPlateHeight', Number(touchPlateHeight));
-        store.set('widgets.probe.retractionDistance', Number(retractionDistance));
+        this.config.set('probeDepth', Number(probeDepth));
+        this.config.set('probeFeedrate', Number(probeFeedrate));
+        this.config.set('touchPlateHeight', Number(touchPlateHeight));
+        this.config.set('retractionDistance', Number(retractionDistance));
     }
     getInitialState() {
         return {
-            minimized: store.get('widgets.probe.minimized', false),
+            minimized: this.config.get('minimized', false),
             isFullscreen: false,
             canClick: true, // Defaults to true
             port: controller.port,
@@ -404,16 +405,16 @@ class ProbeWidget extends Component {
                 params: {}
             },
             workflowState: controller.workflowState,
-            probeCommand: store.get('widgets.probe.probeCommand'),
-            useTLO: store.get('widgets.probe.useTLO'),
-            probeDepth: toUnits(METRIC_UNITS, store.get('widgets.probe.probeDepth')),
-            probeFeedrate: toUnits(METRIC_UNITS, store.get('widgets.probe.probeFeedrate')),
+            probeCommand: this.config.get('probeCommand'),
+            useTLO: this.config.get('useTLO'),
+            probeDepth: toUnits(METRIC_UNITS, this.config.get('probeDepth')),
+            probeFeedrate: toUnits(METRIC_UNITS, this.config.get('probeFeedrate')),
             touchPlateHeight: toUnits(
                 METRIC_UNITS,
                 // widgets.probe.tlo is deprecated and will be removed in a future release`
-                store.get('widgets.probe.touchPlateHeight', store.get('widgets.probe.tlo'))
+                this.config.get('touchPlateHeight', this.config.get('tlo'))
             ),
-            retractionDistance: toUnits(METRIC_UNITS, store.get('widgets.probe.retractionDistance'))
+            retractionDistance: toUnits(METRIC_UNITS, this.config.get('retractionDistance'))
         };
     }
     addControllerEvents() {
