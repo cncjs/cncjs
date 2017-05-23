@@ -165,7 +165,7 @@ Check out an example configuration file [here](https://github.com/cncjs/cncjs/bl
        "manufacturer": ""
      }
   ],
-  "baudrates": [115200, 250000]
+  "baudrates": [115200, 250000],
   "watchDirectory": "/path/to/dir",
   "accessTokenLifetime": "30d",
   "allowRemoteAccess": false,
