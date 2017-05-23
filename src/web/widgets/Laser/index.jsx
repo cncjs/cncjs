@@ -90,24 +90,54 @@ class LaserWidget extends Component {
         'Grbl:state': (state) => {
             this.setState({
                 controller: {
+                    ...this.state.controller,
                     type: GRBL,
                     state: state
+                }
+            });
+        },
+        'Grbl:settings': (settings) => {
+            this.setState({
+                controller: {
+                    ...this.state.controller,
+                    type: GRBL,
+                    settings: settings
                 }
             });
         },
         'Smoothie:state': (state) => {
             this.setState({
                 controller: {
+                    ...this.state.controller,
                     type: SMOOTHIE,
                     state: state
+                }
+            });
+        },
+        'Smoothie:settings': (settings) => {
+            this.setState({
+                controller: {
+                    ...this.state.controller,
+                    type: SMOOTHIE,
+                    settings: settings
                 }
             });
         },
         'TinyG:state': (state) => {
             this.setState({
                 controller: {
+                    ...this.state.controller,
                     type: TINYG,
                     state: state
+                }
+            });
+        },
+        'TinyG:settings': (settings) => {
+            this.setState({
+                controller: {
+                    ...this.state.controller,
+                    type: TINYG,
+                    settings: settings
                 }
             });
         }
@@ -142,7 +172,8 @@ class LaserWidget extends Component {
             port: controller.port,
             controller: {
                 type: controller.type,
-                state: controller.state
+                state: controller.state,
+                settings: controller.settings
             },
             panel: {
                 laserTest: {

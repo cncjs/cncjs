@@ -28,27 +28,30 @@ class Laser extends Component {
         return shallowCompare(this, nextProps, nextState);
     }
     getLaserIntensityScale() {
-        let scale;
         const { state } = this.props;
         const controllerType = state.controller.type;
         const controllerState = state.controller.state || {};
+        const controllerSettings = state.controller.settings || {};
+        let scale = 0;
 
         if (controllerType === GRBL) {
-            const ov = _.get(controllerState, 'status.ov', []);
-            scale = ov[2];
+            const ovS = _.get(controllerState, 'status.ov[2]', []);
+            scale = Number(ovS) || 0;
         }
         if (controllerType === SMOOTHIE) {
             const ovS = _.get(controllerState, 'status.ovS');
-            scale = ovS;
+            scale = Number(ovS) || 0;
         }
         if (controllerType === TINYG) {
-            // Not supported
+            const ovS = _.get(controllerSettings, 'sso');
+            scale = Math.round((Number(ovS) || 0) * 100);
         }
 
         return scale;
     }
     render() {
         const { state, actions } = this.props;
+        const none = '–';
         const { canClick, panel, test } = state;
         const laserIntensityScale = this.getLaserIntensityScale();
 
@@ -61,7 +64,7 @@ class Laser extends Component {
                     <div className="row no-gutters">
                         <div className="col-xs-3">
                             <div className={styles.droDisplay}>
-                                {laserIntensityScale !== undefined ? laserIntensityScale + '%' : ''}
+                                {laserIntensityScale ? laserIntensityScale + '%' : none}
                             </div>
                         </div>
                         <div className="col-xs-9">
