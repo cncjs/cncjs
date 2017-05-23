@@ -10,6 +10,7 @@ import {
 import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
+import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import settings from './config/settings';
 import controller from './lib/controller';
 import log from './lib/log';
@@ -25,24 +26,15 @@ import './styles/app.styl';
 series([
     (next) => {
         const queryparams = toQueryObject(window.location.search);
-        const level = queryparams.log_level || settings.log.level;
+        const level = {
+            trace: TRACE,
+            debug: DEBUG,
+            info: INFO,
+            warn: WARN,
+            error: ERROR
+        }[queryparams.log_level || settings.log.level];
         log.setLevel(level);
         next();
-    },
-    (next) => {
-        const token = store.get('session.token');
-        user.signin({ token: token })
-            .then(({ authenticated, token }) => {
-                if (authenticated) {
-                    log.debug('Create and establish a WebSocket connection');
-                    controller.connect(() => {
-                        // @see "src/web/containers/Login/Login.jsx"
-                        next();
-                    });
-                    return;
-                }
-                next();
-            });
     },
     (next) => {
         i18next
@@ -64,6 +56,21 @@ series([
             moment().locale(locale);
             next();
         });
+    },
+    (next) => {
+        const token = store.get('session.token');
+        user.signin({ token: token })
+            .then(({ authenticated, token }) => {
+                if (authenticated) {
+                    log.debug('Create and establish a WebSocket connection');
+                    controller.connect(() => {
+                        // @see "src/web/containers/Login/Login.jsx"
+                        next();
+                    });
+                    return;
+                }
+                next();
+            });
     }
 ], (err, results) => {
     log.info(`${settings.name} v${settings.version}`);
