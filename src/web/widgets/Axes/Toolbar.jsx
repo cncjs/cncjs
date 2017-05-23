@@ -97,13 +97,13 @@ const keypadTooltip = () => {
                 <div className="row no-gutters">
                     <div className="col-xs-12">
                         <div className="table-form">
-                            <div className="table-form-row">
+                            <div className="table-form-row table-form-row-dense">
                                 <div className="table-form-col table-form-col-label">{i18n._('0.1x Move')}</div>
                                 <div className="table-form-col">
                                     <kbd style={styles.kbd}>{i18n._('Alt')}</kbd>
                                 </div>
                             </div>
-                            <div className="table-form-row">
+                            <div className="table-form-row table-form-row-dense">
                                 <div className="table-form-col table-form-col-label">{i18n._('10x Move')}</div>
                                 <div className="table-form-col">
                                     <kbd style={styles.kbd}>{i18n._('⇧ Shift')}</kbd>

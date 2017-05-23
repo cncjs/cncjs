@@ -1,23 +1,29 @@
+$padding-bottom = 12px;
+
 .table-form {
     display: table;
 
     .table-form-row {
         display: table-row;
     }
+
+    .table-form-row-dense,
     .table-form-row:last-child,
     .table-form-row.last {
-        .table-form-col-control {
+        .table-form-col,
+        .table-form-col-label {
             padding-bottom: 0;
         }
     }
+
     .table-form-col {
         display: table-cell;
-        line-height: 24px;
         text-align: left;
+        padding-bottom: $padding-bottom;
     }
     .table-form-col-label {
         cursor: default;
-        padding: 0 10px 0 0;
+        padding: 0 10px $padding-bottom 0;
         width: 1%;
         text-align: left;
         overflow: hidden;
