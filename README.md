@@ -112,7 +112,7 @@ pi@rpi3$ cnc -h
     -w, --watch-directory <path>        watch a directory for changes
     --access-token-lifetime <lifetime>  access token lifetime in seconds or a time span string (default: 30d)
     --allow-remote-access               allow remote access to the server
-    --controller <type>                 specify CNC controller: Grbl|Smoothie|TinyG (default: '')
+    --controller <type>                 specify CNC controller: Grbl|Smoothie|TinyG|g2core (default: '')
 
   Examples:
 
