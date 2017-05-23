@@ -5,7 +5,7 @@
        "manufacturer": ""
      }
   ],
-  "baudrates": [115200, 250000]
+  "baudrates": [115200, 250000],
   "watchDirectory": "/path/to/dir",
   "accessTokenLifetime": "30d",
   "allowRemoteAccess": false,
