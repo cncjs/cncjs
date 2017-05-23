@@ -1,9 +1,11 @@
 import includes from 'lodash/includes';
+import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
+import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import Laser from './Laser';
@@ -62,17 +64,44 @@ class LaserWidget extends Component {
             });
         },
         changeLaserTestDuration: (event) => {
-            const duration = Number(event.target.value) || 0;
-            this.setState({
-                test: {
-                    ...this.state.test,
-                    duration
-                }
-            });
+            const value = event.target.value;
+            if (typeof value === 'string' && value.trim() === '') {
+                this.setState({
+                    test: {
+                        ...this.state.test,
+                        duration: ''
+                    }
+                });
+            } else {
+                this.setState({
+                    test: {
+                        ...this.state.test,
+                        duration: ensurePositiveNumber(value)
+                    }
+                });
+            }
+        },
+        changeLaserTestMaxS: (event) => {
+            const value = event.target.value;
+            if (typeof value === 'string' && value.trim() === '') {
+                this.setState({
+                    test: {
+                        ...this.state.test,
+                        maxS: ''
+                    }
+                });
+            } else {
+                this.setState({
+                    test: {
+                        ...this.state.test,
+                        maxS: ensurePositiveNumber(value)
+                    }
+                });
+            }
         },
         laserTestOn: () => {
-            const { power, duration } = this.state.test;
-            controller.command('lasertest:on', power, duration);
+            const { power, duration, maxS } = this.state.test;
+            controller.command('lasertest:on', power, duration, maxS);
         },
         laserTestOff: () => {
             controller.command('lasertest:off');
@@ -161,8 +190,15 @@ class LaserWidget extends Component {
 
         this.config.set('minimized', minimized);
         this.config.set('panel.laserTest.expanded', panel.laserTest.expanded);
-        this.config.set('test.power', test.power);
-        this.config.set('test.duration', test.duration);
+        if (isNumber(test.power)) {
+            this.config.set('test.power', test.power);
+        }
+        if (isNumber(test.duration)) {
+            this.config.set('test.duration', test.duration);
+        }
+        if (isNumber(test.maxS)) {
+            this.config.set('test.maxS', test.maxS);
+        }
     }
     getInitialState() {
         return {
@@ -182,7 +218,8 @@ class LaserWidget extends Component {
             },
             test: {
                 power: this.config.get('test.power', 0),
-                duration: this.config.get('test.duration', 0)
+                duration: this.config.get('test.duration', 0),
+                maxS: this.config.get('test.maxS', 1000)
             }
         };
     }
@@ -199,13 +236,16 @@ class LaserWidget extends Component {
         });
     }
     canClick() {
-        const { port } = this.state;
-        const controllerType = this.state.controller.type;
+        const { port, controller, test } = this.state;
+        const controllerType = controller.type;
 
         if (!port) {
             return false;
         }
         if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+            return false;
+        }
+        if (!(isNumber(test.power) && isNumber(test.duration) && isNumber(test.maxS))) {
             return false;
         }
 
@@ -289,7 +329,7 @@ class LaserWidget extends Component {
                 </Widget.Header>
                 <Widget.Content
                     className={classNames(
-                        styles['widget-content'],
+                        styles.widgetContent,
                         { [styles.hidden]: minimized }
                     )}
                 >

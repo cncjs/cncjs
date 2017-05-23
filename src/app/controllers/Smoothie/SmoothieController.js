@@ -9,6 +9,7 @@ import Workflow, {
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
 import ensureArray from '../../lib/ensure-array';
+import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateExpression from '../../lib/evaluateExpression';
 import logger from '../../lib/logger';
 import translateWithContext from '../../lib/translateWithContext';
@@ -957,14 +958,14 @@ class SmoothieController {
 
                 this.writeln(socket, 'M3');
                 // Firing laser at <power>% power and entering manual mode
-                this.writeln(socket, 'fire ' + Math.abs(power));
+                this.writeln(socket, 'fire ' + ensurePositiveNumber(power));
                 if (duration > 0) {
                     // http://smoothieware.org/g4
                     // Dwell S<seconds> or P<milliseconds>
                     // Note that if `grbl_mode` is set to `true`, then the `P` parameter
                     // is the duration to wait in seconds, not milliseconds, as a float value.
                     // This is to confirm to G-code standards.
-                    this.writeln(socket, 'G4P' + (duration / 1000));
+                    this.writeln(socket, 'G4P' + ensurePositiveNumber(duration / 1000));
                     // Turning laser off and returning to auto mode
                     this.writeln(socket, 'fire off');
                     this.writeln(socket, 'M5');

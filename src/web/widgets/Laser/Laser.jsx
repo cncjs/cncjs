@@ -145,7 +145,7 @@ class Laser extends Component {
                         <div className="table-form" style={{ marginBottom: 15 }}>
                             <div className="table-form-row">
                                 <div className="table-form-col table-form-col-label middle">
-                                    {i18n._('Laser test power')}
+                                    {i18n._('Power (%)')}
                                 </div>
                                 <div className="table-form-col">
                                     <div className="text-center">{test.power}%</div>
@@ -161,21 +161,39 @@ class Laser extends Component {
                             </div>
                             <div className="table-form-row">
                                 <div className="table-form-col table-form-col-label middle">
-                                    {i18n._('Laser test duration')}
+                                    {i18n._('Test duration')}
                                 </div>
                                 <div className="table-form-col">
-                                    <div className="input-group input-group-sm">
+                                    <div className="input-group input-group-sm" style={{ width: '100%' }}>
                                         <input
                                             type="number"
                                             className="form-control"
                                             style={{ borderRadius: 0 }}
                                             value={test.duration}
-                                            placeholder="0"
                                             min={0}
                                             step={1}
                                             onChange={actions.changeLaserTestDuration}
                                         />
                                         <span className="input-group-addon">{i18n._('ms')}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="table-form-row">
+                                <div className="table-form-col table-form-col-label middle">
+                                    {i18n._('Maximum value')}
+                                </div>
+                                <div className="table-form-col">
+                                    <div className="input-group input-group-sm" style={{ width: '100%' }}>
+                                        <span className="input-group-addon">S</span>
+                                        <input
+                                            type="number"
+                                            className="form-control"
+                                            style={{ borderRadius: 0 }}
+                                            value={test.maxS}
+                                            min={0}
+                                            step={1}
+                                            onChange={actions.changeLaserTestMaxS}
+                                        />
                                     </div>
                                 </div>
                             </div>

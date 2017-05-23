@@ -96,7 +96,8 @@ export const defaultState = {
             },
             test: {
                 power: 0,
-                duration: 0
+                duration: 0,
+                maxS: 1000
             }
         },
         macro: {

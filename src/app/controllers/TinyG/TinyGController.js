@@ -9,6 +9,7 @@ import Workflow, {
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
 import ensureArray from '../../lib/ensure-array';
+import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateExpression from '../../lib/evaluateExpression';
 import logger from '../../lib/logger';
 import translateWithContext from '../../lib/translateWithContext';
@@ -978,12 +979,12 @@ class TinyGController {
                 }
             },
             'lasertest:on': () => {
-                const [power = 0, duration = 0] = args;
+                const [power = 0, duration = 0, maxS = 1000] = args;
                 const commands = [
-                    'M3S' + Math.abs(power)
+                    'M3S' + ensurePositiveNumber(maxS * (power / 100))
                 ];
                 if (duration > 0) {
-                    commands.push('G4P' + (duration / 1000));
+                    commands.push('G4P' + ensurePositiveNumber(duration / 1000));
                     commands.push('M5S0');
                 }
                 this.command(socket, 'gcode', commands);
