@@ -199,12 +199,15 @@ class ConnectionWidget extends PureComponent {
             controllerType = controller.loadedControllers[0];
         }
 
+        // Common baud rates
         const defaultBaudrates = [
+            250000,
             115200,
             57600,
             38400,
             19200,
-            9600
+            9600,
+            2400
         ];
 
         return {
