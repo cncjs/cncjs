@@ -16,6 +16,9 @@ import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
 import styles from './index.styl';
+import {
+    WORKFLOW_STATE_IDLE
+} from '../../constants';
 
 const startWaiting = () => {
     // Adds the 'wait' class to <html>
@@ -315,6 +318,9 @@ class Workspace extends Component {
                     onDragStart={(event) => {
                     }}
                     onDragEnter={(event) => {
+                        if (controller.workflowState !== WORKFLOW_STATE_IDLE) {
+                            return;
+                        }
                         if (isDraggingWidget) {
                             return;
                         }
@@ -323,6 +329,9 @@ class Workspace extends Component {
                         }
                     }}
                     onDragLeave={(event) => {
+                        if (controller.workflowState !== WORKFLOW_STATE_IDLE) {
+                            return;
+                        }
                         if (isDraggingWidget) {
                             return;
                         }
@@ -331,6 +340,9 @@ class Workspace extends Component {
                         }
                     }}
                     onDrop={(acceptedFiles, rejectedFiles) => {
+                        if (controller.workflowState !== WORKFLOW_STATE_IDLE) {
+                            return;
+                        }
                         if (isDraggingWidget) {
                             return;
                         }
