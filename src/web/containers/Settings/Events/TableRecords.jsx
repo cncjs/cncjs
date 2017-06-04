@@ -3,7 +3,7 @@ import take from 'lodash/take';
 import moment from 'moment';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
-import Table, { Toolbar } from '../../../components/Table';
+import Table from '../../../components/Table';
 import ToggleSwitch from '../../../components/ToggleSwitch';
 import { TablePagination } from '../../../components/Paginations';
 import confirm from '../../../lib/confirm';
@@ -12,6 +12,7 @@ import {
     MODAL_CREATE_RECORD,
     MODAL_UPDATE_RECORD
 } from './constants';
+import styles from './index.styl';
 
 class TableRecords extends Component {
     static propTypes = {
@@ -30,7 +31,7 @@ class TableRecords extends Component {
                 style={{
                     borderBottom: state.records.length > 0 ? '1px solid #ddd' : 'none'
                 }}
-                border={false}
+                bordered={false}
                 data={(state.api.err || state.api.fetching) ? [] : state.records}
                 rowKey={(record) => {
                     return record.id;
@@ -57,7 +58,7 @@ class TableRecords extends Component {
                     return i18n._('No data to display');
                 }}
                 title={() =>
-                    <Toolbar>
+                    <div className={styles.tableToolbar}>
                         <button
                             type="button"
                             className="btn btn-default"
@@ -69,25 +70,27 @@ class TableRecords extends Component {
                             <span className="space" />
                             {i18n._('New')}
                         </button>
-                        <div style={{ position: 'absolute', right: 0, top: 0 }}>
-                            <TablePagination
-                                page={state.pagination.page}
-                                pageLength={state.pagination.pageLength}
-                                totalRecords={state.pagination.totalRecords}
-                                onPageChange={({ page, pageLength }) => {
-                                    actions.fetchRecords({ page, pageLength });
-                                }}
-                                prevPageRenderer={() => <i className="fa fa-angle-left" />}
-                                nextPageRenderer={() => <i className="fa fa-angle-right" />}
-                            />
-                        </div>
-                    </Toolbar>
+                        <TablePagination
+                            style={{
+                                position: 'absolute',
+                                right: 0,
+                                top: 0
+                            }}
+                            page={state.pagination.page}
+                            pageLength={state.pagination.pageLength}
+                            totalRecords={state.pagination.totalRecords}
+                            onPageChange={({ page, pageLength }) => {
+                                actions.fetchRecords({ page, pageLength });
+                            }}
+                            prevPageRenderer={() => <i className="fa fa-angle-left" />}
+                            nextPageRenderer={() => <i className="fa fa-angle-right" />}
+                        />
+                    </div>
                 }
                 columns={[
                     {
                         title: i18n._('Enabled'),
                         key: 'enabled',
-                        width: '1%',
                         render: (value, row, index) => {
                             const { id, enabled } = row;
                             const title = enabled ? i18n._('Enabled') : i18n._('Disabled');
@@ -108,7 +111,6 @@ class TableRecords extends Component {
                         title: i18n._('Event'),
                         className: 'text-nowrap',
                         key: 'event',
-                        width: '1%',
                         render: (value, row, index) => {
                             const eventText = {
                                 'gcode:load': i18n._('G-code: Load'),
@@ -132,7 +134,6 @@ class TableRecords extends Component {
                         title: i18n._('Trigger'),
                         className: 'text-nowrap',
                         key: 'trigger',
-                        width: '1%',
                         render: (value, row, index) => {
                             const { trigger } = row;
 
@@ -180,7 +181,6 @@ class TableRecords extends Component {
                         title: i18n._('Date Modified'),
                         className: 'text-nowrap',
                         key: 'date-modified',
-                        width: '1%',
                         render: (value, row, index) => {
                             const { mtime } = row;
                             if (mtime) {
@@ -194,7 +194,6 @@ class TableRecords extends Component {
                         title: i18n._('Action'),
                         className: 'text-nowrap',
                         key: 'action',
-                        width: '1%',
                         render: (value, row, index) => {
                             const { id } = row;
 

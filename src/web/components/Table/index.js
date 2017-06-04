@@ -1,7 +1,4 @@
-import Table from './Table';
-import TableToolbar from './TableToolbar';
+import Table from '@trendmicro/react-table';
+import '@trendmicro/react-table/dist/react-table.css';
 
-Table.Toolbar = TableToolbar;
-
-export { TableToolbar as Toolbar };
 export default Table;
