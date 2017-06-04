@@ -409,11 +409,11 @@ class GrblController {
         });
 
         this.controller.on('settings', (res) => {
-            const setting = _.find(GRBL_SETTINGS, { setting: res.setting });
+            const setting = _.find(GRBL_SETTINGS, { setting: res.name });
 
             if (!res.message && setting) {
                 // Grbl v1.1
-                this.emitAll('serialport:read', `${res.setting}=${res.value} (${setting.message}, ${setting.units})`);
+                this.emitAll('serialport:read', `${res.name}=${res.value} (${setting.message}, ${setting.units})`);
             } else {
                 // Grbl v0.9
                 this.emitAll('serialport:read', res.raw);
