@@ -277,8 +277,8 @@ class CNCEngine {
                 controller.command.apply(controller, [socket, cmd].concat(args));
             });
 
-            socket.on('write', (port, data) => {
-                log.debug(`socket.write("${port}", "${data}"): id=${socket.id}`);
+            socket.on('write', (port, data, context = {}) => {
+                log.debug(`socket.write("${port}", "${data}", ${context}): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
@@ -286,11 +286,11 @@ class CNCEngine {
                     return;
                 }
 
-                controller.write(socket, data);
+                controller.write(socket, data, context);
             });
 
-            socket.on('writeln', (port, data) => {
-                log.debug(`socket.writeln("${port}", "${data}"): id=${socket.id}`);
+            socket.on('writeln', (port, data, context = {}) => {
+                log.debug(`socket.writeln("${port}", "${data}", ${context}): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
@@ -298,7 +298,7 @@ class CNCEngine {
                     return;
                 }
 
-                controller.writeln(socket, data);
+                controller.writeln(socket, data, context);
             });
         });
     }

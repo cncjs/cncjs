@@ -1,47 +1,25 @@
 .widget-content {
     position: relative;
-    padding: 10px;
 
     &.hidden {
         display: none;
     }
 
     &.fullscreen {
-        .console-container {
-            min-height: 100%;
-
-            .console-window {
-                height: auto;
-            }
+        .terminal-container {
+            height: 100%;
         }
     }
 }
 
-.console-container {
-    display: flex;
-    flex-direction: column;
+.no-serial-connection {
+    padding: 10px;
+    color: #333;
+    opacity: .65;
+}
 
-    > * {
-        flex-shrink: 0;
-    }
-
-    .console-input {
-        margin-bottom: 10px;
-    }
-
-    .console-window {
-        flex-grow: 1;
-        height: 240px;
-
-        font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
-        background-color: #000;
-        color: #FFF;
-
-        .infinite-list-item {
-            white-space: nowrap;
-            height: 20px;
-            text-overflow: ellipsis;
-            overflow-x: hidden;
-        }
-    }
+.terminal-container {
+    background: #000;
+    padding: 0 5px;
+    height: 240px;
 }

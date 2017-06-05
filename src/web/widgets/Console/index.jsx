@@ -1,19 +1,16 @@
-import _ from 'lodash';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import ReactDOM from 'react-dom';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import pubsub from 'pubsub-js';
+import React, { PureComponent } from 'react';
+import settings from '../../config/settings';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import Console from './Console';
-import {
-    SCROLL_BUFFER_SIZE
-} from './constants';
 import styles from './index.styl';
 
-class ConsoleWidget extends Component {
+class ConsoleWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -26,72 +23,74 @@ class ConsoleWidget extends Component {
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
-            this.setState({
+            this.setState(state => ({
                 minimized: isFullscreen ? minimized : false,
                 isFullscreen: !isFullscreen
-            });
+            }));
+
+            setTimeout(() => {
+                this.resizeTerminal();
+            }, 0);
         },
         toggleMinimized: () => {
             const { minimized } = this.state;
-            this.setState({ minimized: !minimized });
+            this.setState(state => ({
+                minimized: !minimized
+            }));
+
+            setTimeout(() => {
+                this.resizeTerminal();
+            }, 0);
         },
-        getContainerEl: () => {
-            return ReactDOM.findDOMNode(this.container);
+        clearConsole: () => {
+            this.terminal && this.terminal.clear();
         },
-        setContainerHeight: (containerHeight) => {
-            if (containerHeight > 0) {
-                this.setState({ containerHeight: containerHeight });
-            }
-        },
-        clearAll: () => {
-            this.clearAll();
+        onTerminalData: (data) => {
+            const context = {
+                __sender__: this.props.widgetId
+            };
+            controller.write(data, context);
         }
     };
     controllerEvents = {
         'serialport:open': (options) => {
-            const { port } = options;
+            const { port, baudrate } = options;
             this.setState({ port: port });
+
+            if (this.terminal) {
+                const { name, version } = settings;
+                this.terminal.writeln(`${name} ${version} [${controller.type}]`);
+                this.terminal.writeln(i18n._('Connected to {{-port}} with a baud rate of {{baudrate}}', { port, baudrate }));
+            }
         },
         'serialport:close': (options) => {
-            this.clearAll();
+            this.actions.clearConsole();
 
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'serialport:write': (data) => {
-            const lines = data.split('\n');
-            const values = _(lines)
-                .compact()
-                .map((line) => ('> ' + line))
-                .value();
-            this.appendLine(values);
+        'serialport:write': (data, context) => {
+            if ((typeof context === 'object') && (context.__sender__ === this.props.widgetId)) {
+                // Do not write to the terminal console if the sender is the widget itself
+                return;
+            }
+
+            this.terminal && this.terminal.writeln(data);
         },
         'serialport:read': (data) => {
-            this.appendLine(data);
+            this.terminal && this.terminal.writeln(data);
         }
     };
-    lineBuffers = [];
-    throttledTimer = null;
-    container = null;
+    terminal = null;
+    pubsubTokens = [];
 
     componentDidMount() {
         this.addControllerEvents();
-
-        this.throttledTimer = setInterval(() => {
-            if (this.state.lines !== this.lineBuffers) {
-                this.setState({ lines: this.lineBuffers });
-            }
-        }, 500);
+        this.subscribe();
     }
     componentWillUnmount() {
-        if (this.throttledTimer) {
-            clearInterval(this.throttledTimer);
-            this.timer = null;
-        }
         this.removeControllerEvents();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
+        this.unsubscribe();
     }
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -105,9 +104,29 @@ class ConsoleWidget extends Component {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
             port: controller.port,
-            containerHeight: 240,
-            lines: []
+
+            // Terminal
+            terminal: {
+                cols: 128,
+                cursorBlink: true,
+                scrollback: 1000,
+                tabStopWidth: 4
+            }
         };
+    }
+    subscribe() {
+        const tokens = [
+            pubsub.subscribe('resize', (msg) => {
+                this.resizeTerminal();
+            })
+        ];
+        this.pubsubTokens = this.pubsubTokens.concat(tokens);
+    }
+    unsubscribe() {
+        this.pubsubTokens.forEach((token) => {
+            pubsub.unsubscribe(token);
+        });
+        this.pubsubTokens = [];
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
@@ -121,14 +140,8 @@ class ConsoleWidget extends Component {
             controller.off(eventName, callback);
         });
     }
-    appendLine(line) {
-        this.lineBuffers = _(this.lineBuffers)
-            .concat(line)
-            .slice(0, SCROLL_BUFFER_SIZE)
-            .value();
-    }
-    clearAll() {
-        this.lineBuffers = [];
+    resizeTerminal() {
+        this.terminal && this.terminal.resize();
     }
     render() {
         const { widgetId } = this.props;
@@ -155,6 +168,12 @@ class ConsoleWidget extends Component {
                         }
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
+                        <Widget.Button
+                            title={i18n._('Clear console')}
+                            onClick={actions.clearConsole}
+                        >
+                            <i className="fa fa-ban fa-flip-horizontal" />
+                        </Widget.Button>
                         <Widget.Button
                             disabled={isFullscreen}
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
@@ -214,7 +233,9 @@ class ConsoleWidget extends Component {
                 >
                     <Console
                         ref={node => {
-                            this.container = node;
+                            if (node) {
+                                this.terminal = node.terminal;
+                            }
                         }}
                         state={state}
                         actions={actions}
