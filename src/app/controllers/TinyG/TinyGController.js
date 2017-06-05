@@ -198,7 +198,7 @@ class TinyGController {
                 return;
             }
 
-            this.emitAll('serialport:write', line);
+            this.emitAll('serialport:write', line, context);
 
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);
@@ -552,7 +552,9 @@ class TinyGController {
                 }
 
                 log.silly(`> INIT: ${cmd} ${cmd.length}`);
-                this.emitAll('serialport:write', cmd);
+
+                const context = {};
+                this.emitAll('serialport:write', cmd, context);
                 this.serialport.write(cmd + '\n');
             }
             setTimeout(() => {
@@ -1075,19 +1077,19 @@ class TinyGController {
 
         handler();
     }
-    write(socket, data) {
+    write(socket, data, context) {
         // Assertion check
         if (this.isClose()) {
             log.error(`Serial port "${this.options.port}" is not accessible`);
             return;
         }
 
-        this.emitAll('serialport:write', data);
+        this.emitAll('serialport:write', data, context);
         this.serialport.write(data);
         log.silly(`> ${data}`);
     }
-    writeln(socket, data) {
-        this.write(socket, data + '\n');
+    writeln(socket, data, context) {
+        this.write(socket, data + '\n', context);
     }
 }
 

@@ -206,7 +206,7 @@ class GrblController {
                 return;
             }
 
-            this.emitAll('serialport:write', line);
+            this.emitAll('serialport:write', line, context);
 
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);
@@ -1017,7 +1017,7 @@ class GrblController {
 
         handler();
     }
-    write(socket, data) {
+    write(socket, data, context) {
         // Assertion check
         if (this.isClose()) {
             log.error(`Serial port "${this.options.port}" is not accessible`);
@@ -1028,15 +1028,15 @@ class GrblController {
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
-        this.emitAll('serialport:write', data);
+        this.emitAll('serialport:write', data, context);
         this.serialport.write(data);
         log.silly(`> ${data}`);
     }
-    writeln(socket, data) {
+    writeln(socket, data, context) {
         if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
-            this.write(socket, data);
+            this.write(socket, data, context);
         } else {
-            this.write(socket, data + '\n');
+            this.write(socket, data + '\n', context);
         }
     }
 }
