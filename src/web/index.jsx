@@ -73,7 +73,7 @@ series([
             });
     }
 ], (err, results) => {
-    log.info(`${settings.name} v${settings.version}`);
+    log.info(`${settings.name} ${settings.version}`);
 
     { // Prevent browser from loading a drag-and-dropped file
       // http://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file
