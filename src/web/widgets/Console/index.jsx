@@ -42,7 +42,7 @@ class ConsoleWidget extends PureComponent {
                 this.resizeTerminal();
             }, 0);
         },
-        clearConsole: () => {
+        clearAll: () => {
             this.terminal && this.terminal.clear();
         },
         onTerminalData: (data) => {
@@ -64,7 +64,7 @@ class ConsoleWidget extends PureComponent {
             }
         },
         'serialport:close': (options) => {
-            this.actions.clearConsole();
+            this.actions.clearAll();
 
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
@@ -169,8 +169,8 @@ class ConsoleWidget extends PureComponent {
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
-                            title={i18n._('Clear console')}
-                            onClick={actions.clearConsole}
+                            title={i18n._('Clear all')}
+                            onClick={actions.clearAll}
                         >
                             <i className="fa fa-ban fa-flip-horizontal" />
                         </Widget.Button>
