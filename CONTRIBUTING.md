@@ -96,7 +96,7 @@ Now you're ready to go!
 
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run prepublish
+$ npm run prepare
 $ ./bin/cnc -vv
   :  :  :
 Server is listening on 0.0.0.0:8000
@@ -104,38 +104,38 @@ Server is listening on 0.0.0.0:8000
 
 ## Build Desktop Apps
 
-#### OS X
+#### Mac
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run prepublish && npm run build:osx-x64
+$ npm run prepare && npm run build:mac-x64
 $ ls -al output/osx/
 ```
 
 #### Windows x86
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run prepublish && npm run build:win-ia32
+$ npm run prepare && npm run build:win-ia32
 $ ls -al output/win-ia32/
 ```
 
 #### Windows x64
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run prepublish && npm run build:win-x64
+$ npm run prepare && npm run build:win-x64
 $ ls -al output/win/
 ```
 
 #### Linux x86
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run prepublish && npm run build:linux-ia32
+$ npm run prepare && npm run build:linux-ia32
 $ ls -al output/linux-ia32/
 ```
 
 #### Linux x64
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run prepublish && npm run build:linux-x64
+$ npm run prepare && npm run build:linux-x64
 $ ls -al output/linux/
 ```
 
