@@ -6,6 +6,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import shallowCompare from 'react-addons-shallow-compare';
 import { withRouter } from 'react-router-dom';
+import { Button } from '../../components/Buttons';
+import Modal from '../../components/Modal';
 import api from '../../api';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -30,6 +32,10 @@ const stopWaiting = () => {
     const root = document.documentElement;
     root.classList.remove('wait');
 };
+const reloadPage = (forcedReload = true) => {
+    // Reload the current page, without using the cache
+    window.location.reload(forcedReload);
+};
 
 class Workspace extends Component {
     static propTypes = {
@@ -37,6 +43,7 @@ class Workspace extends Component {
     };
 
     state = {
+        connected: controller.connected,
         mounted: false,
         port: '',
         isDraggingFile: false,
@@ -56,6 +63,15 @@ class Workspace extends Component {
     secondaryToggler = null;
     defaultContainer = null;
     controllerEvents = {
+        'connect': () => {
+            this.setState({ connected: controller.connected });
+        },
+        'connect_error': () => {
+            this.setState({ connected: controller.connected });
+        },
+        'disconnect': () => {
+            this.setState({ connected: controller.connected });
+        },
         'serialport:open': (options) => {
             const { port } = options;
             this.setState({ port: port });
@@ -288,6 +304,7 @@ class Workspace extends Component {
     render() {
         const { style, className } = this.props;
         const {
+            connected,
             port,
             isDraggingFile,
             isDraggingWidget,
@@ -300,6 +317,30 @@ class Workspace extends Component {
 
         return (
             <div style={style} className={classNames(className, styles.workspace)}>
+                {!connected &&
+                <Modal
+                    closeOnOverlayClick={false}
+                    showCloseButton={false}
+                >
+                    <Modal.Body>
+                        <div style={{ display: 'flex' }}>
+                            <i className="fa fa-exclamation-circle fa-4x text-danger" />
+                            <div style={{ marginLeft: 25 }}>
+                                <h5>{i18n._('Server has stopped working')}</h5>
+                                <p>{i18n._('A problem caused the server to stop working correctly. Check out the server status and try again.')}</p>
+                            </div>
+                        </div>
+                    </Modal.Body>
+                    <Modal.Footer>
+                        <Button
+                            btnStyle="primary"
+                            onClick={reloadPage}
+                        >
+                            {i18n._('Reload')}
+                        </Button>
+                    </Modal.Footer>
+                </Modal>
+                }
                 <div
                     className={classNames(
                         styles.dropzoneOverlay,
