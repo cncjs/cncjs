@@ -11,7 +11,37 @@ import {
 } from '../constants';
 
 class CNCController {
+    socket = null;
+
     callbacks = {
+        //
+        // Socket.IO Events
+        //
+        // Fired upon a connection including a successful reconnection.
+        'connect': [],
+        // Fired upon a connection error.
+        'connect_error': [],
+        // Fired upon a connection timeout.
+        'connect_timeout': [],
+        // Fired when an error occurs.
+        'error': [],
+        // Fired upon a disconnection.
+        'disconnect': [],
+        // Fired upon a successful reconnection.
+        'reconnect': [],
+        // Fired upon an attempt to reconnect.
+        'reconnect_attempt': [],
+        // Fired upon an attempt to reconnect.
+        'reconnecting': [],
+        // Fired upon a reconnection attempt error.
+        'reconnect_error': [],
+        // Fired when couldn't reconnect within reconnectionAttempts.
+        'reconnect_failed': [],
+
+        //
+        // System Events
+        //
+        'startup': [],
         'config:change': [],
         'task:start': [],
         'task:finish': [],
@@ -32,6 +62,7 @@ class CNCController {
         'TinyG:state': [],
         'TinyG:settings': []
     };
+
     context = {
         xmin: 0,
         xmax: 0,
@@ -50,9 +81,11 @@ class CNCController {
     type = '';
     state = {};
     settings = {};
-    socket = null;
     workflowState = WORKFLOW_STATE_IDLE;
 
+    get connected() {
+        return !!(this.socket && this.socket.connected);
+    }
     connect(next = noop) {
         if (typeof next !== 'function') {
             next = noop;
@@ -119,17 +152,6 @@ class CNCController {
             });
         });
 
-        this.socket.on('connect', () => {
-            log.debug('socket.on(\'connect\')');
-        });
-        this.socket.on('error', () => {
-            log.error('socket.on(\'error\')');
-            this.disconnect();
-        });
-        this.socket.on('close', () => {
-            log.debug('socket.on(\'close\')');
-        });
-
         this.socket.on('startup', (data) => {
             const { loadedControllers, ports, baudrates } = { ...data };
 
@@ -139,7 +161,12 @@ class CNCController {
 
             log.debug('socket.on(\'startup\'):', { loadedControllers, ports, baudrates });
 
-            next();
+            if (next) {
+                next();
+
+                // The callback can only be called once
+                next = null;
+            }
         });
     }
     disconnect() {
