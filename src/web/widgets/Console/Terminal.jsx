@@ -1,11 +1,12 @@
 import includes from 'lodash/includes';
 import classNames from 'classnames';
-import { code } from 'keycode';
+//import { code } from 'keycode';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import Xterm from 'xterm';
 import fit from 'xterm/lib/addons/fit/fit';
+import History from './History';
 import log from '../../lib/log';
 import styles from './index.styl';
 
@@ -26,6 +27,8 @@ class Terminal extends PureComponent {
         tabStopWidth: 4,
         onData: () => {}
     };
+    history = new History(1000);
+    historyCommand = '';
 
     eventHandler = {
         onResize: (size) => {
@@ -38,10 +41,13 @@ class Terminal extends PureComponent {
             return (key, event) => {
                 const { onData } = this.props;
                 const term = this.term;
-                const nonPrintable = (event.altKey || event.altGraphKey || event.ctrlKey || event.metaKey);
+                const nonPrintableKey = (event.altKey || event.altGraphKey || event.ctrlKey || event.metaKey);
 
                 // Enter
-                if (event.keyCode === code.enter) {
+                if (event.key === 'Enter') {
+                    if (buffer.length > 0) {
+                        this.history.push(buffer);
+                    }
                     buffer += key;
                     onData(buffer);
                     buffer = '';
@@ -49,8 +55,8 @@ class Terminal extends PureComponent {
                     return;
                 }
 
-                // Delete
-                if (event.keyCode === code.backspace) {
+                // Backspace
+                if (event.key === 'Backspace') {
                     let line = term.lines.get(term.ybase + term.y);
                     let x = term.x;
                     if (line && x > 0) {
@@ -72,8 +78,8 @@ class Terminal extends PureComponent {
                     return;
                 }
 
-                // Non-printable character (e.g. ctrl-x)
-                if (nonPrintable) {
+                // Non-printable keys (e.g. ctrl-x)
+                if (nonPrintableKey) {
                     onData(buffer);
                     buffer = '';
 
@@ -81,8 +87,26 @@ class Terminal extends PureComponent {
                     return;
                 }
 
-                // Up, Right, Down, Left
-                if (includes([code.up, code.right, code.down, code.left], event.keyCode)) {
+                // Left, Right
+                if (includes(['ArrowLeft', 'ArrowRight'], event.key)) {
+                    return;
+                }
+
+                // Up, Down
+                if (includes(['ArrowUp', 'ArrowDown'], event.key)) {
+                    if (event.key === 'ArrowUp') {
+                        if (!this.historyCommand) {
+                            this.historyCommand = this.history.current() || '';
+                        } else if (this.history.index > 0) {
+                            this.historyCommand = this.history.back() || '';
+                        }
+                    } else if (event.key === 'ArrowDown') {
+                        this.historyCommand = this.history.forward() || '';
+                    }
+
+                    term.eraseLine(term.y);
+                    term.x = 0;
+                    term.write(this.historyCommand);
                     return;
                 }
 
