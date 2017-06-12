@@ -1,6 +1,6 @@
 /* eslint import/no-unresolved: 0 */
 import { app } from 'electron';
-import fse from 'fs-extra';
+import mkdirp from 'mkdirp';
 import { WindowManager, handleStartupEvent, setApplicationMenu } from './desktop';
 import cnc from './cnc';
 import pkg from './package.json';
@@ -35,7 +35,7 @@ const main = () => {
 
     // Create the user data directory if it does not exist
     const userData = app.getPath('userData');
-    fse.mkdirsSync(userData);
+    mkdirp.sync(userData);
 
     app.on('ready', () => {
         cnc({ host: '127.0.0.1', port: 0 }, (err, server) => {
