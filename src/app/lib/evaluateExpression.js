@@ -1,5 +1,5 @@
 import get from 'lodash/get';
-import esprima from 'esprima';
+import { parse } from 'esprima';
 import evaluate from 'static-eval';
 import logger from './logger';
 
@@ -7,7 +7,7 @@ const log = logger('evaluateExpression');
 
 const evaluateExpression = (src, context) => {
     try {
-        const ast = esprima.parse(src).body[0].expression;
+        const ast = parse(src).body[0].expression;
 
         if (ast.type === 'SequenceExpression') {
             ast.expressions.forEach((expr) => {
