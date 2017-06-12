@@ -13,7 +13,7 @@ const WidgetList = (props) => {
     return (
         <div className="container-fluid" style={style}>
             <div className="row">
-                {_.map(list, (o, key) =>
+                {_.map(list, (o, key) => (
                     <div className="col-xs-6 col-md-4" key={key}>
                         <WidgetListItem
                             id={o.id}
@@ -24,7 +24,7 @@ const WidgetList = (props) => {
                             onChange={onChange}
                         />
                     </div>
-                )}
+                ))}
             </div>
         </div>
     );

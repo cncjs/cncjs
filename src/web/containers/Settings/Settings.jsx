@@ -843,7 +843,7 @@ class Settings extends Component {
         const sectionPath = pathname.replace(/^\/settings(\/)?/, ''); // TODO
         const id = mapSectionPathToId(sectionPath || initialSectionPath);
         const activeSection = _.find(this.sections, { id: id }) || this.sections[0];
-        const sectionItems = this.sections.map((section, index) =>
+        const sectionItems = this.sections.map((section, index) => (
             <li
                 key={section.id}
                 className={classNames(
@@ -854,7 +854,7 @@ class Settings extends Component {
                     {section.title}
                 </Link>
             </li>
-        );
+        ));
 
         // Section component
         const Section = activeSection.component;

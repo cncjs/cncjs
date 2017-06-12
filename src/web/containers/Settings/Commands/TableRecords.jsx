@@ -58,7 +58,7 @@ class TableRecords extends Component {
 
                     return i18n._('No data to display');
                 }}
-                title={() =>
+                title={() => (
                     <div className={styles.tableToolbar}>
                         <button
                             type="button"
@@ -87,7 +87,7 @@ class TableRecords extends Component {
                             nextPageRenderer={() => <i className="fa fa-angle-right" />}
                         />
                     </div>
-                }
+                )}
                 columns={[
                     {
                         title: i18n._('Enabled'),
