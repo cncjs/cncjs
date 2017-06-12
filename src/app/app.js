@@ -21,7 +21,7 @@ import session from 'express-session';
 import sessionFileStore from 'session-file-store';
 import i18next from 'i18next';
 import i18nextBackend from 'i18next-node-fs-backend';
-import del from 'del';
+import rimraf from 'rimraf';
 import rangeCheck from 'range_check';
 import {
     LanguageDetector as i18nextLanguageDetector,
@@ -141,7 +141,7 @@ const appMain = () => {
     { // https://github.com/valery-barysok/session-file-store
         const path = './sessions';
 
-        del.sync([path]);
+        rimraf.sync(path);
         fs.mkdirSync(path); // Defaults to ./sessions
 
         const FileStore = sessionFileStore(session);
