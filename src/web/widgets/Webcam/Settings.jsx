@@ -27,33 +27,35 @@ class Settings extends Component {
         mediaSource: this.props.mediaSource,
         url: this.props.url
     };
+    actions = {
+        handleChangeURL: (event) => {
+            const url = event.target.value;
+            this.setState({ url });
+        },
+        handleSave: () => {
+            this.setState({ show: false });
+
+            this.props.onSave({
+                mediaSource: this.state.mediaSource,
+                url: this.state.url
+            });
+        },
+        handleCancel: () => {
+            this.setState({ show: false });
+        }
+    };
 
     componentDidUpdate(prevProps, prevState) {
         if (!(this.state.show)) {
             this.props.onClose();
         }
     }
-    handleChangeURL(event) {
-        const url = event.target.value;
-        this.setState({ url });
-    }
-    handleSave() {
-        this.setState({ show: false });
-
-        this.props.onSave({
-            mediaSource: this.state.mediaSource,
-            url: this.state.url
-        });
-    }
-    handleCancel() {
-        this.setState({ show: false });
-    }
     render() {
         const { show, mediaSource, url } = this.state;
 
         return (
             <Modal
-                onClose={::this.handleCancel}
+                onClose={this.actions.handleCancel}
                 show={show}
                 size="sm"
             >
@@ -98,7 +100,7 @@ class Settings extends Component {
                                 disabled={mediaSource !== MEDIA_SOURCE_MJPEG}
                                 placeholder="http://raspberrypi:8080/?action=stream"
                                 defaultValue={url}
-                                onChange={::this.handleChangeURL}
+                                onChange={this.actions.handleChangeURL}
                             />
                         </div>
                     </div>
@@ -107,14 +109,14 @@ class Settings extends Component {
                     <button
                         type="button"
                         className="btn btn-default"
-                        onClick={::this.handleCancel}
+                        onClick={this.actions.handleCancel}
                     >
                         {i18n._('Cancel')}
                     </button>
                     <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={::this.handleSave}
+                        onClick={this.actions.handleSave}
                     >
                         {i18n._('Save Changes')}
                     </button>
