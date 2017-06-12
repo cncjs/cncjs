@@ -21,7 +21,6 @@ class DropdownButton extends PureComponent {
         noCaret: PropTypes.bool
     };
     static defaultProps = {
-        btnStyle: 'link',
         pullRight: true,
         noCaret: true
     };
