@@ -278,7 +278,7 @@ class CNCEngine {
             });
 
             socket.on('write', (port, data, context = {}) => {
-                log.debug(`socket.write("${port}", "${data}", ${context}): id=${socket.id}`);
+                log.debug(`socket.write("${port}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
@@ -290,7 +290,7 @@ class CNCEngine {
             });
 
             socket.on('writeln', (port, data, context = {}) => {
-                log.debug(`socket.writeln("${port}", "${data}", ${context}): id=${socket.id}`);
+                log.debug(`socket.writeln("${port}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
