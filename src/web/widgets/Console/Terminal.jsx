@@ -28,7 +28,6 @@ class Terminal extends PureComponent {
         onData: () => {}
     };
     history = new History(1000);
-    historyCommand = '';
 
     eventHandler = {
         onResize: (size) => {
@@ -37,6 +36,7 @@ class Terminal extends PureComponent {
         },
         onKey: (() => {
             let buffer = '';
+            let historyCommand = '';
 
             return (key, event) => {
                 const { onData } = this.props;
@@ -46,6 +46,13 @@ class Terminal extends PureComponent {
                 // Enter
                 if (event.key === 'Enter') {
                     if (buffer.length > 0) {
+                        // Clear history command
+                        historyCommand = '';
+
+                        // Reset the index to the last position of the history array
+                        this.history.resetIndex();
+
+                        // Push the buffer to the history list, not including the [Enter] key
                         this.history.push(buffer);
                     }
                     buffer += key;
@@ -95,18 +102,20 @@ class Terminal extends PureComponent {
                 // Up, Down
                 if (includes(['ArrowUp', 'ArrowDown'], event.key)) {
                     if (event.key === 'ArrowUp') {
-                        if (!this.historyCommand) {
-                            this.historyCommand = this.history.current() || '';
+                        if (!historyCommand) {
+                            historyCommand = this.history.current() || '';
                         } else if (this.history.index > 0) {
-                            this.historyCommand = this.history.back() || '';
+                            historyCommand = this.history.back() || '';
                         }
                     } else if (event.key === 'ArrowDown') {
-                        this.historyCommand = this.history.forward() || '';
+                        historyCommand = this.history.forward() || '';
                     }
+
+                    buffer = historyCommand;
 
                     term.eraseLine(term.y);
                     term.x = 0;
-                    term.write(this.historyCommand);
+                    term.write(buffer);
                     return;
                 }
 

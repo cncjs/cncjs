@@ -45,6 +45,14 @@ class History {
         const index = (this.start + this.index) % this.history.length;
         return this.history[index];
     }
+    // Reset the index to the last position of the history array
+    resetIndex() {
+        if (this.history.length > 0) {
+            this.index = this.history.length - 1;
+        } else {
+            this.index = -1;
+        }
+    }
     // 0 1 2 3 4 5 6 7 8 9      0 1 2 3 4 5 6 7 8 9
     // S x x x x x x x x x  >>  x S x x x x x x x x
     push(data) {
