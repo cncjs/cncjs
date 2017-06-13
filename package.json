@@ -57,7 +57,7 @@
     "eslint": "eslint --ext .js --ext .jsx *.js src bin gulp test",
     "eslint:debug": "echo \"Checking code style...\"; DEBUG=eslint:cli-engine eslint --ext .js --ext .jsx *.js src bin gulp test",
     "stylint": "stylint src/web",
-    "test": "tap test/*.js --coverage --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill",
+    "test": "tap test/*.js --node-arg=--require --node-arg=babel-register --node-arg=--require --node-arg=babel-polyfill",
     "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill | coveralls"
   },
   "build": {
@@ -128,7 +128,7 @@
     "@trendmicro/react-breadcrumbs": "~0.5.3",
     "@trendmicro/react-dropdown": "~0.6.13",
     "@trendmicro/react-interpolate": "~0.5.3",
-    "@trendmicro/react-modal": "~0.6.4",
+    "@trendmicro/react-modal": "~0.7.0",
     "@trendmicro/react-paginations": "~0.5.10",
     "@trendmicro/react-table": "~0.5.0",
     "@trendmicro/react-toggle-switch": "~0.5.4",
