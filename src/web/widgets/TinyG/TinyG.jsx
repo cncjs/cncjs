@@ -46,10 +46,17 @@ class TinyG extends PureComponent {
         const { state, actions } = this.props;
         const none = '–';
         const controllerState = state.controller.state;
-        const { mfo, mto, sso } = state.controller.settings;
-        const ovF = Math.round(mfo * 100) || 0;
-        const ovS = Math.round(sso * 100) || 0;
-        const ovT = Math.round(mto * 100) || 0;
+        const controllerSettings = state.controller.settings;
+        const { fv, mfo, mto, sso } = controllerSettings;
+        // https://github.com/cncjs/cncjs/issues/160
+        // Firmware | mfo | sso | mto
+        // -------- | --- | --- | ----
+        // 0.97     | No  | No  | No
+        // 0.98     | No  | Yes | No
+        // 0.99     | Yes | Yes | Yes
+        const ovF = (fv >= 0.99) ? Math.round(mfo * 100) || 0 : 0;
+        const ovS = (fv >= 0.98) ? Math.round(sso * 100) || 0 : 0;
+        const ovT = (fv >= 0.99) ? Math.round(mto * 100) || 0 : 0;
         const machineState = _.get(controllerState, 'sr.machineState');
         const machineStateText = {
             [TINYG_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG.machineState.initializing'),

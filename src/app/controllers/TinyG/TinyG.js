@@ -139,23 +139,24 @@ class TinyGParserResultSystemSettings {
 
 class TinyGParserResultOverrides {
     static parse(data) {
+        const footer = _.get(data, 'f') || [];
+        const statusCode = footer[1];
         const mfo = _.get(data, 'r.mfo');
         const mto = _.get(data, 'r.mto');
         const sso = _.get(data, 'r.sso');
+        const payload = {};
 
-        if (!mfo && !mto && !sso) {
+        if ((typeof mfo === 'undefined') && (typeof mto === 'undefined') && (typeof sso === 'undefined')) {
             return null;
         }
 
-        const payload = {};
-
-        if (mfo) {
+        if (mfo && statusCode === 0) {
             payload.mfo = mfo;
         }
-        if (mto) {
+        if (mto && statusCode === 0) {
             payload.mto = mto;
         }
-        if (sso) {
+        if (sso && statusCode === 0) {
             payload.sso = sso;
         }
 
@@ -410,6 +411,7 @@ class TinyG extends events.EventEmitter {
                     mto = this.settings.mto,
                     sso = this.settings.sso
                 } = payload;
+
                 this.settings = { // enforce change
                     ...this.settings,
                     mfo,
