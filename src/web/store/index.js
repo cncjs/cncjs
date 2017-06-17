@@ -130,6 +130,9 @@ export const defaultState = {
         tinyg: {
             minimized: false,
             panel: {
+                powerManagement: {
+                    expanded: false
+                },
                 queueReports: {
                     expanded: true
                 },

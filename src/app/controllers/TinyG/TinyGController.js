@@ -525,6 +525,9 @@ class TinyGController {
             // System settings
             { cmd: '{sys:n}' },
 
+            // Request motor states
+            { cmd: '{pwr:n}' },
+
             // Request queue report
             { cmd: '{qr:n}' },
 

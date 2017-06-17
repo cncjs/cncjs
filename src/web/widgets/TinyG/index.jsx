@@ -10,7 +10,8 @@ import {
     TINYG
 } from '../../constants';
 import {
-    MODAL_NONE
+    MODAL_NONE,
+    MODAL_CONTROLLER
 } from './constants';
 import styles from './index.styl';
 
@@ -59,6 +60,19 @@ class TinyGWidget extends PureComponent {
                     params: {
                         ...this.state.modal.params,
                         ...params
+                    }
+                }
+            });
+        },
+        togglePowerManagement: () => {
+            const expanded = this.state.panel.powerManagement.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    powerManagement: {
+                        ...this.state.panel.powerManagement,
+                        expanded: !expanded
                     }
                 }
             });
@@ -148,6 +162,7 @@ class TinyGWidget extends PureComponent {
         } = this.state;
 
         this.config.set('minimized', minimized);
+        this.config.set('panel.powerManagement.expanded', panel.powerManagement.expanded);
         this.config.set('panel.queueReports.expanded', panel.queueReports.expanded);
         this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
         this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
@@ -169,6 +184,9 @@ class TinyGWidget extends PureComponent {
                 params: {}
             },
             panel: {
+                powerManagement: {
+                    expanded: this.config.get('panel.powerManagement.expanded')
+                },
                 queueReports: {
                     expanded: this.config.get('panel.queueReports.expanded')
                 },
@@ -234,6 +252,80 @@ class TinyGWidget extends PureComponent {
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         {isReady &&
                         <Widget.Button
+                            onClick={(event) => {
+                                actions.openModal(MODAL_CONTROLLER);
+                            }}
+                        >
+                            <i className="fa fa-info" />
+                        </Widget.Button>
+                        }
+                        {isReady &&
+                        <Widget.DropdownButton
+                            title={<i className="fa fa-th-large" />}
+                        >
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('?')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Status Report (?)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => {
+                                    controller.writeln('!%'); // queue flush
+                                    controller.writeln('{"qr":""}'); // queue report
+                                }}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Queue Flush (%)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.write('\x04')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Kill Job (^d)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.command('unlock')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Clear Alarm ($clear)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem divider />
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('h')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Help')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$sys')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Show System Settings')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$$')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Show All Settings')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$test')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('List Self Tests')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem divider />
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$defa=1')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Restore Defaults')}
+                            </Widget.DropdownMenuItem>
+                        </Widget.DropdownButton>
+                        }
+                        {isReady &&
+                        <Widget.Button
                             disabled={isFullscreen}
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                             onClick={actions.toggleMinimized}
@@ -287,7 +379,7 @@ class TinyGWidget extends PureComponent {
                 {isReady &&
                 <Widget.Content
                     className={classNames(
-                        styles['widget-content'],
+                        styles.widgetContent,
                         { [styles.hidden]: minimized }
                     )}
                 >

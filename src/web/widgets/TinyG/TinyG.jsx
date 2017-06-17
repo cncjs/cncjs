@@ -1,14 +1,16 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import map from 'lodash/map';
+import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import mapGCodeToText from '../../lib/gcode-text';
+import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
-import ControllerState from './ControllerState';
-import ControllerSettings from './ControllerSettings';
-import Toolbar from './Toolbar';
+import Controller from './Controller';
+import { Button } from '../../components/Buttons';
 import Overrides from './Overrides';
 import {
     TINYG_MACHINE_STATE_INITIALIZING,
@@ -27,8 +29,7 @@ import {
     TINYG_MACHINE_STATE_PANIC
 } from '../../constants';
 import {
-    MODAL_CONTROLLER_STATE,
-    MODAL_CONTROLLER_SETTINGS
+    MODAL_CONTROLLER
 } from './constants';
 import styles from './index.styl';
 
@@ -57,7 +58,8 @@ class TinyG extends PureComponent {
         const ovF = (fv >= 0.99) ? Math.round(mfo * 100) || 0 : 0;
         const ovS = (fv >= 0.98) ? Math.round(sso * 100) || 0 : 0;
         const ovT = (fv >= 0.99) ? Math.round(mto * 100) || 0 : 0;
-        const machineState = _.get(controllerState, 'sr.machineState');
+        const pwr = get(controllerState, 'pwr');
+        const machineState = get(controllerState, 'sr.machineState');
         const machineStateText = {
             [TINYG_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG.machineState.initializing'),
             [TINYG_MACHINE_STATE_READY]: i18n.t('controller:TinyG.machineState.ready'),
@@ -74,25 +76,72 @@ class TinyG extends PureComponent {
             [TINYG_MACHINE_STATE_SHUTDOWN]: i18n.t('controller:TinyG.machineState.shutdown'),
             [TINYG_MACHINE_STATE_PANIC]: i18n.t('controller:TinyG.machineState.panic')
         }[machineState];
-        const plannerBuffer = _.get(controllerState, 'qr') || 0;
-        const feedrate = _.get(controllerState, 'sr.feedrate');
-        const velocity = _.get(controllerState, 'sr.velocity');
-        const line = _.get(controllerState, 'sr.line');
-        const modal = _.mapValues(_.get(controllerState, 'sr.modal', {}), mapGCodeToText);
+        const plannerBuffer = get(controllerState, 'qr') || 0;
+        const feedrate = get(controllerState, 'sr.feedrate');
+        const velocity = get(controllerState, 'sr.velocity');
+        const line = get(controllerState, 'sr.line');
+        const modal = mapValues(get(controllerState, 'sr.modal', {}), mapGCodeToText);
         const panel = state.panel;
 
         this.plannerBufferMax = Math.max(this.plannerBufferMax, plannerBuffer);
 
         return (
             <div>
-                {state.modal.name === MODAL_CONTROLLER_STATE &&
-                <ControllerState state={state} actions={actions} />
+                {state.modal.name === MODAL_CONTROLLER &&
+                <Controller state={state} actions={actions} />
                 }
-                {state.modal.name === MODAL_CONTROLLER_SETTINGS &&
-                <ControllerSettings state={state} actions={actions} />
-                }
-                <Toolbar state={state} actions={actions} />
                 <Overrides ovF={ovF} ovS={ovS} ovT={ovT} />
+                <Panel className={styles.panel}>
+                    <Panel.Heading className={styles.panelHeading}>
+                        <Toggler
+                            className="clearfix"
+                            onToggle={actions.togglePowerManagement}
+                            title={panel.powerManagement.expanded ? i18n._('Hide') : i18n._('Show')}
+                        >
+                            <div className="pull-left">{i18n._('Power Management')}</div>
+                            <Toggler.Icon
+                                className="pull-right"
+                                expanded={panel.powerManagement.expanded}
+                            />
+                        </Toggler>
+                    </Panel.Heading>
+                    {panel.powerManagement.expanded && pwr &&
+                    <Panel.Body>
+                        <div className="row no-gutters" style={{ marginBottom: 10 }}>
+                            <div className="col col-xs-12">
+                                <Button
+                                    btnStyle="flat"
+                                    onClick={() => {
+                                        controller.writeln('{me:0}');
+                                    }}
+                                >
+                                    <i className="fa fa-plug" />
+                                    {i18n._('Enable Motors')}
+                                </Button>
+                                <Button
+                                    btnStyle="flat"
+                                    onClick={() => {
+                                        controller.writeln('{md:0}');
+                                    }}
+                                >
+                                    <i className="fa fa-remove" />
+                                    {i18n._('Disable Motors')}
+                                </Button>
+                            </div>
+                        </div>
+                        {map(pwr, (value, key) => (
+                            <div key={key} className="row no-gutters">
+                                <div className="col col-xs-4">
+                                    {i18n._('Motor {{n}}', { n: key })}
+                                </div>
+                                <div className="col col-xs-8">
+                                    <div className={styles.well}>{value}</div>
+                                </div>
+                            </div>
+                        ))}
+                    </Panel.Body>
+                    }
+                </Panel>
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles['panel-heading']}>
                         <Toggler

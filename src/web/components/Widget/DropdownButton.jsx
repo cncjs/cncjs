@@ -26,7 +26,7 @@ class DropdownButton extends PureComponent {
     };
 
     render() {
-        const { btnSize, title, children, ...props } = this.props;
+        const { btnSize, title, style, children, ...props } = this.props;
 
         // Split component props
         const dropdownProps = {};
@@ -43,6 +43,10 @@ class DropdownButton extends PureComponent {
         return (
             <Dropdown
                 {...dropdownProps}
+                style={{
+                    ...style,
+                    float: 'left'
+                }}
                 btnSize={btnSize}
             >
                 <Dropdown.Toggle

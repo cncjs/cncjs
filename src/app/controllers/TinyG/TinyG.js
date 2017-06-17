@@ -51,6 +51,7 @@ import {
 class TinyGParser {
     parse(data) {
         const parsers = [
+            TinyGParserResultPowerManagement,
             TinyGParserResultQueueReports,
             TinyGParserResultStatusReports,
             TinyGParserResultSystemSettings,
@@ -73,6 +74,28 @@ class TinyGParser {
                 raw: data,
                 f: data.f || [] // footer
             }
+        };
+    }
+}
+
+// https://github.com/synthetos/TinyG/wiki/Power-Management
+class TinyGParserResultPowerManagement {
+    static parse(data) {
+        const pwr = _.get(data, 'r.pwr') || _.get(data, 'pwr');
+        if (typeof pwr === 'undefined') {
+            return null;
+        }
+
+        const footer = _.get(data, 'f') || [];
+        const statusCode = footer[1];
+        const payload = {};
+        if (pwr && statusCode === 0) {
+            payload.pwr = pwr;
+        }
+
+        return {
+            type: TinyGParserResultPowerManagement,
+            payload: payload
         };
     }
 }
@@ -187,6 +210,9 @@ class TinyGParserResultReceiveReports {
 
 class TinyG extends events.EventEmitter {
     state = {
+        // Power Management
+        // {"pwr":{"1":0,"2":0,"3":0,"4":0}}
+        pwr: {},
         // Queue Reports
         qr: 0,
         // Status Reports
@@ -254,7 +280,18 @@ class TinyG extends events.EventEmitter {
             const result = this.parser.parse(data) || {};
             const { type, payload } = result;
 
-            if (type === TinyGParserResultQueueReports) {
+            if (type === TinyGParserResultPowerManagement) {
+                const { pwr = this.state.pwr } = payload;
+
+                if (!_.isEqual(this.state.pwr, pwr)) {
+                    this.state = { // enforce change
+                        ...this.state,
+                        pwr: pwr
+                    };
+                }
+
+                this.emit('pwr', payload.pwr);
+            } else if (type === TinyGParserResultQueueReports) {
                 const { qr } = payload;
 
                 // The planner buffer pool size will be checked every time the planner buffer changes
