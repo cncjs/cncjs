@@ -10,7 +10,8 @@ import {
     GRBL
 } from '../../constants';
 import {
-    MODAL_NONE
+    MODAL_NONE,
+    MODAL_CONTROLLER
 } from './constants';
 import styles from './index.styl';
 
@@ -234,6 +235,88 @@ class GrblWidget extends PureComponent {
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         {isReady &&
                         <Widget.Button
+                            onClick={(event) => {
+                                actions.openModal(MODAL_CONTROLLER);
+                            }}
+                        >
+                            <i className="fa fa-info" />
+                        </Widget.Button>
+                        }
+                        {isReady &&
+                        <Widget.DropdownButton
+                            toggle={<i className="fa fa-th-large" />}
+                        >
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.write('?')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Status Report (?)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$C')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Check G-code Mode ($C)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.command('homing')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Homing ($H)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.command('unlock')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Kill Alarm Lock ($X)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.command('sleep')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Sleep ($SLP)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem divider />
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Help ($)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$$')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Settings ($$)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$#')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('View G-code Parameters ($#)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$G')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('View G-code Parser State ($G)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$I')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('View Build Info ($I)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('$N')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('View Startup Blocks ($N)')}
+                            </Widget.DropdownMenuItem>
+                        </Widget.DropdownButton>
+                        }
+                        {isReady &&
+                        <Widget.Button
                             disabled={isFullscreen}
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                             onClick={actions.toggleMinimized}
@@ -248,7 +331,8 @@ class GrblWidget extends PureComponent {
                         </Widget.Button>
                         }
                         <Widget.DropdownButton
-                            title={<i className="fa fa-ellipsis-v" />}
+                            title={i18n._('More')}
+                            toggle={<i className="fa fa-ellipsis-v" />}
                             onSelect={(eventKey) => {
                                 if (eventKey === 'fullscreen') {
                                     actions.toggleFullscreen();

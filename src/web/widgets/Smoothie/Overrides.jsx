@@ -8,6 +8,10 @@ import styles from './index.styl';
 const Overrides = (props) => {
     const { ovF, ovS } = props;
 
+    if (!ovF && !ovS) {
+        return null;
+    }
+
     return (
         <div className={styles.overrides}>
             {!!ovF &&

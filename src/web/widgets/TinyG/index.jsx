@@ -261,7 +261,7 @@ class TinyGWidget extends PureComponent {
                         }
                         {isReady &&
                         <Widget.DropdownButton
-                            title={<i className="fa fa-th-large" />}
+                            toggle={<i className="fa fa-th-large" />}
                         >
                             <Widget.DropdownMenuItem
                                 onSelect={() => controller.writeln('?')}
@@ -340,7 +340,8 @@ class TinyGWidget extends PureComponent {
                         </Widget.Button>
                         }
                         <Widget.DropdownButton
-                            title={<i className="fa fa-ellipsis-v" />}
+                            title={i18n._('More')}
+                            toggle={<i className="fa fa-ellipsis-v" />}
                             onSelect={(eventKey) => {
                                 if (eventKey === 'fullscreen') {
                                     actions.toggleFullscreen();

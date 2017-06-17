@@ -1,29 +1,23 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
-import ControllerState from './ControllerState';
-import ControllerSettings from './ControllerSettings';
-import Toolbar from './Toolbar';
+import Controller from './Controller';
 import Overrides from './Overrides';
 import {
-    MODAL_CONTROLLER_STATE,
-    MODAL_CONTROLLER_SETTINGS
+    MODAL_CONTROLLER
 } from './constants';
 import styles from './index.styl';
 
-class Smoothie extends Component {
+class Smoothie extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
         const none = '–';
@@ -40,13 +34,9 @@ class Smoothie extends Component {
 
         return (
             <div>
-                {state.modal.name === MODAL_CONTROLLER_STATE &&
-                <ControllerState state={state} actions={actions} />
+                {state.modal.name === MODAL_CONTROLLER &&
+                <Controller state={state} actions={actions} />
                 }
-                {state.modal.name === MODAL_CONTROLLER_SETTINGS &&
-                <ControllerSettings state={state} actions={actions} />
-                }
-                <Toolbar state={state} actions={actions} />
                 <Overrides ovF={ovF} ovS={ovS} />
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>

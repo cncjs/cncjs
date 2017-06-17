@@ -180,7 +180,8 @@ class WebcamWidget extends Component {
                             />
                         </Widget.Button>
                         <Widget.DropdownButton
-                            title={<i className="fa fa-ellipsis-v" />}
+                            title={i18n._('More')}
+                            toggle={<i className="fa fa-ellipsis-v" />}
                             onSelect={(eventKey) => {
                                 if (eventKey === 'fullscreen') {
                                     actions.toggleFullscreen();

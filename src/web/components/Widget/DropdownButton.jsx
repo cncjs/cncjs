@@ -14,8 +14,8 @@ class DropdownButton extends PureComponent {
         // One of: 'default', 'primary', 'emphasis', 'flat', 'link'
         btnStyle: Button.propTypes.btnStyle,
 
-        // Title content.
-        title: PropTypes.node.isRequired,
+        // toggle
+        toggle: PropTypes.node.isRequired,
 
         // Whether to prevent a caret from being rendered next to the title.
         noCaret: PropTypes.bool
@@ -26,7 +26,7 @@ class DropdownButton extends PureComponent {
     };
 
     render() {
-        const { btnSize, title, style, children, ...props } = this.props;
+        const { btnSize, toggle, style, children, ...props } = this.props;
 
         // Split component props
         const dropdownProps = {};
@@ -54,7 +54,7 @@ class DropdownButton extends PureComponent {
                     className={styles.widgetButton}
                     componentClass="a"
                 >
-                    {title}
+                    {toggle}
                 </Dropdown.Toggle>
                 <Dropdown.Menu>
                     {children}
