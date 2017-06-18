@@ -115,7 +115,7 @@ class TinyG extends PureComponent {
                                         controller.writeln('{me:0}');
                                     }}
                                 >
-                                    <i className="fa fa-plug" />
+                                    <i className="fa fa-flash" />
                                     {i18n._('Enable Motors')}
                                 </Button>
                                 <Button
