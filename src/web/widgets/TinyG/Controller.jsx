@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
 import { Nav, NavItem } from '../../components/Navs';
 import i18n from '../../lib/i18n';
@@ -41,13 +42,9 @@ const Controller = (props) => {
                 </div>
             </Modal.Body>
             <Modal.Footer>
-                <button
-                    type="button"
-                    className="btn btn-default"
-                    onClick={actions.closeModal}
-                >
+                <Button onClick={actions.closeModal}>
                     {i18n._('Close')}
-                </button>
+                </Button>
             </Modal.Footer>
         </Modal>
     );
