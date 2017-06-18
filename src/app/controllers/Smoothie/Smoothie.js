@@ -447,8 +447,6 @@ class Smoothie extends events.EventEmitter {
         }
     };
     settings = {
-        parameters: {
-        },
         build: {
             version: '',
             date: ''
@@ -456,6 +454,8 @@ class Smoothie extends events.EventEmitter {
         hardware: {
             mcu: '',
             sysclk: ''
+        },
+        parameters: {
         }
     };
 
