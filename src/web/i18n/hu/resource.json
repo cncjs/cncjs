@@ -349,6 +349,7 @@
     "Show All Settings": "Minden beállítás megjelenítése",
     "List Self Tests": "Ellenörző teszt lista",
     "Power Management": "",
+    "Motor Timeout: {{mt}} sec": "",
     "Enable Motors": "",
     "Disable Motors": "",
     "Motor {{n}}": "",
