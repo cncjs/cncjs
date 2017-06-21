@@ -58,6 +58,7 @@ class TinyG extends PureComponent {
         const ovF = (fv >= 0.99) ? Math.round(mfo * 100) || 0 : 0;
         const ovS = (fv >= 0.98) ? Math.round(sso * 100) || 0 : 0;
         const ovT = (fv >= 0.99) ? Math.round(mto * 100) || 0 : 0;
+        const mt = get(controllerState, 'mt');
         const pwr = get(controllerState, 'pwr');
         const machineState = get(controllerState, 'sr.machineState');
         const machineStateText = {
@@ -107,12 +108,17 @@ class TinyG extends PureComponent {
                     </Panel.Heading>
                     {panel.powerManagement.expanded && pwr &&
                     <Panel.Body>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-12">
+                                {i18n._('Motor Timeout: {{mt}} sec', { mt: mt })}
+                            </div>
+                        </div>
                         <div className="row no-gutters" style={{ marginBottom: 10 }}>
                             <div className="col col-xs-12">
                                 <Button
                                     btnStyle="flat"
                                     onClick={() => {
-                                        controller.writeln('{me:0}');
+                                        controller.command('motor:energize');
                                     }}
                                 >
                                     <i className="fa fa-flash" />
@@ -121,7 +127,7 @@ class TinyG extends PureComponent {
                                 <Button
                                     btnStyle="flat"
                                     onClick={() => {
-                                        controller.writeln('{md:0}');
+                                        controller.command('motor:deenergize');
                                     }}
                                 >
                                     <i className="fa fa-remove" />
@@ -135,7 +141,14 @@ class TinyG extends PureComponent {
                                     {i18n._('Motor {{n}}', { n: key })}
                                 </div>
                                 <div className="col col-xs-8">
-                                    <div className={styles.well}>{value}</div>
+                                    <ProgressBar
+                                        style={{ marginBottom: 0 }}
+                                        bsStyle="info"
+                                        min={0}
+                                        max={1}
+                                        now={value}
+                                        label={<span className={styles.progressbarLabel}>{value}</span>}
+                                    />
                                 </div>
                             </div>
                         ))}
@@ -169,11 +182,7 @@ class TinyG extends PureComponent {
                                     min={this.plannerBufferMin}
                                     max={this.plannerBufferMax}
                                     now={plannerBuffer}
-                                    label={
-                                        <span className={styles.progressbarLabel}>
-                                            {plannerBuffer}
-                                        </span>
-                                    }
+                                    label={<span className={styles.progressbarLabel}>{plannerBuffer}</span>}
                                 />
                             </div>
                         </div>

@@ -93,6 +93,10 @@ class TinyGController {
     // Workflow
     workflow = null;
 
+    // Power Management
+    motorEnergizeTimer = null;
+    motorEnergizeTimeout = null;
+
     dataFilter = (line, context) => {
         // Machine position
         const {
@@ -524,6 +528,9 @@ class TinyGController {
 
             // System settings
             { cmd: '{sys:n}' },
+
+            // Request motor timeout
+            { cmd: '{mt:n}' },
 
             // Request motor states
             { cmd: '{pwr:n}' },
@@ -982,6 +989,52 @@ class TinyGController {
                 } else if (value === 25) {
                     this.command(socket, 'gcode', '{mto:0.25}');
                 }
+            },
+            'motor:energize': () => {
+                const { mt = 0 } = this.state;
+
+                if (this.motorEnergizeTimer || !mt) {
+                    return;
+                }
+
+                this.command(socket, 'gcode', '{me:0}');
+                this.command(socket, 'gcode', '{pwr:n}');
+
+                // Setup a timer to keep motors energized indefinitely
+                this.motorEnergizeTimer = setInterval(() => {
+                    this.command(socket, 'gcode', '{me:0}');
+                    this.command(socket, 'gcode', '{pwr:n}');
+                }, mt * 1000 - 500);
+
+                // Set a timeout value so the motors will not run longer than 30 minutes
+                if (this.motorEnergizeTimeout) {
+                    clearTimeout(this.motorEnergizeTimeout);
+                    this.motorEnergizeTimeout = null;
+                }
+                this.motorEnergizeTimeout = setTimeout(() => {
+                    this.motorEnergizeTimeout = null;
+
+                    if (this.motorEnergizeTimer) {
+                        clearInterval(this.motorEnergizeTimer);
+                        this.motorEnergizeTimer = null;
+                    }
+
+                    this.command(socket, 'gcode', '{md:0}');
+                    this.command(socket, 'gcode', '{pwr:n}');
+                }, 30 * 60 * 1000);
+            },
+            'motor:deenergize': () => {
+                if (this.motorEnergizeTimer) {
+                    clearInterval(this.motorEnergizeTimer);
+                    this.motorEnergizeTimer = null;
+                }
+                if (this.motorEnergizeTimeout) {
+                    clearTimeout(this.motorEnergizeTimeout);
+                    this.motorEnergizeTimeout = null;
+                }
+
+                this.command(socket, 'gcode', '{md:0}');
+                this.command(socket, 'gcode', '{pwr:n}');
             },
             'lasertest:on': () => {
                 const [power = 0, duration = 0, maxS = 1000] = args;
