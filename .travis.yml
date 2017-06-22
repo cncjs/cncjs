@@ -13,6 +13,8 @@ os:
   - linux
   - osx
 
+osx_image: xcode8.3
+
 node_js:
   - '4'
   - '6'
