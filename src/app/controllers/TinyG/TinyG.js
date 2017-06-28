@@ -51,6 +51,7 @@ import {
 class TinyGParser {
     parse(data) {
         const parsers = [
+            TinyGParserResultMotorTimeout,
             TinyGParserResultPowerManagement,
             TinyGParserResultQueueReports,
             TinyGParserResultStatusReports,
@@ -78,10 +79,31 @@ class TinyGParser {
     }
 }
 
+class TinyGParserResultMotorTimeout {
+    static parse(data) {
+        const mt = _.get(data, 'r.mt');
+        if (typeof mt === 'undefined') {
+            return null;
+        }
+
+        const footer = _.get(data, 'f') || [];
+        const statusCode = footer[1];
+        const payload = {};
+        if (mt && statusCode === 0) {
+            payload.mt = mt;
+        }
+
+        return {
+            type: TinyGParserResultMotorTimeout,
+            payload: payload
+        };
+    }
+}
+
 // https://github.com/synthetos/TinyG/wiki/Power-Management
 class TinyGParserResultPowerManagement {
     static parse(data) {
-        const pwr = _.get(data, 'r.pwr') || _.get(data, 'pwr');
+        const pwr = _.get(data, 'r.pwr');
         if (typeof pwr === 'undefined') {
             return null;
         }
@@ -210,9 +232,12 @@ class TinyGParserResultReceiveReports {
 
 class TinyG extends events.EventEmitter {
     state = {
+        // Motor Timeout
+        mt: 0,
         // Power Management
-        // {"pwr":{"1":0,"2":0,"3":0,"4":0}}
-        pwr: {},
+        pwr: {
+            // {"1":0,"2":0,"3":0,"4":0}
+        },
         // Queue Reports
         qr: 0,
         // Status Reports
@@ -280,7 +305,18 @@ class TinyG extends events.EventEmitter {
             const result = this.parser.parse(data) || {};
             const { type, payload } = result;
 
-            if (type === TinyGParserResultPowerManagement) {
+            if (type === TinyGParserResultMotorTimeout) {
+                const { mt = this.state.mt } = payload;
+
+                if (this.state.mt !== mt) {
+                    this.state = { // enforce change
+                        ...this.state,
+                        mt: mt
+                    };
+                }
+
+                this.emit('mt', payload.mt);
+            } else if (type === TinyGParserResultPowerManagement) {
                 const { pwr = this.state.pwr } = payload;
 
                 if (!_.isEqual(this.state.pwr, pwr)) {

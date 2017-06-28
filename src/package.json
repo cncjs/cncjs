@@ -52,9 +52,9 @@
     "spawn-default-shell": "~2.0.0",
     "static-eval": "~1.1.1",
     "superagent": "~3.5.2",
-    "uuid": "~3.0.1",
+    "uuid": "~3.1.0",
     "watch": "~1.0.2",
-    "webappengine": "~1.1.3",
+    "webappengine": "~1.2.0",
     "winston": "~2.3.1"
   }
 }

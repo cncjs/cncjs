@@ -349,6 +349,7 @@
     "Show All Settings": "Show All Settings",
     "List Self Tests": "List Self Tests",
     "Power Management": "Power Management",
+    "Motor Timeout: {{mt}} sec": "Motor Timeout: {{mt}} sec",
     "Enable Motors": "Enable Motors",
     "Disable Motors": "Disable Motors",
     "Motor {{n}}": "Motor {{n}}",
