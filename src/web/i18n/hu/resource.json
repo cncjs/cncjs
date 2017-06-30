@@ -349,7 +349,6 @@
     "Show All Settings": "Minden beállítás megjelenítése",
     "List Self Tests": "Ellenörző teszt lista",
     "Power Management": "Energiagazdálkodás",
-    "Motor Timeout: {{mt}} sec": "",
     "Enable Motors": "Motorok engedélyezve",
     "Disable Motors": "Motorok tiltva",
     "Motor {{n}}": "Motor {{n}}",
