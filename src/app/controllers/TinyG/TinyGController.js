@@ -74,10 +74,15 @@ class TinyGController {
     ready = false;
     state = {};
     settings = {};
-    queryTimer = null;
+    timer = {
+        query: null,
+        energizeMotors: null
+    };
+    energizeMotorsTimer = null;
     blocked = false;
     sendResponseState = SEND_RESPONSE_STATE_NONE;
     actionTime = {
+        energizeMotors: 0,
         senderFinishTime: 0
     };
 
@@ -92,10 +97,6 @@ class TinyGController {
 
     // Workflow
     workflow = null;
-
-    // Power Management
-    motorEnergizeTimer = null;
-    motorEnergizeTimeout = null;
 
     dataFilter = (line, context) => {
         // Machine position
@@ -412,8 +413,8 @@ class TinyGController {
             }
         });
 
-        // Timer
-        this.queryTimer = setInterval(() => {
+        // Query Timer
+        this.timer.query = setInterval(() => {
             if (this.isClose()) {
                 // Serial port is closed
                 return;
@@ -619,6 +620,7 @@ class TinyGController {
         });
     }
     clearActionValues() {
+        this.actionTime.energizeMotors = 0;
         this.actionTime.senderFinishTime = 0;
     }
     destroy() {
@@ -644,9 +646,14 @@ class TinyGController {
             this.workflow = null;
         }
 
-        if (this.queryTimer) {
-            clearInterval(this.queryTimer);
-            this.queryTimer = null;
+        if (this.timer.query) {
+            clearInterval(this.timer.query);
+            this.timer.query = null;
+        }
+
+        if (this.timer.energizeMotors) {
+            clearInterval(this.timer.energizeMotors);
+            this.timer.energizeMotors = null;
         }
 
         if (this.controller) {
@@ -990,48 +997,40 @@ class TinyGController {
                     this.command(socket, 'gcode', '{mto:0.25}');
                 }
             },
-            'motor:energize': () => {
+            'energizeMotors:on': () => {
                 const { mt = 0 } = this.state;
 
-                if (this.motorEnergizeTimer || !mt) {
+                if (this.timer.energizeMotors || !mt) {
                     return;
                 }
 
                 this.command(socket, 'gcode', '{me:0}');
                 this.command(socket, 'gcode', '{pwr:n}');
 
-                // Setup a timer to keep motors energized indefinitely
-                this.motorEnergizeTimer = setInterval(() => {
+                // Setup a timer to energize motors up to 30 minutes
+                this.timer.energizeMotors = setInterval(() => {
+                    const now = new Date().getTime();
+                    if (this.actionTime.energizeMotors <= 0) {
+                        this.actionTime.energizeMotors = now;
+                    }
+
+                    const timespan = Math.abs(now - this.actionTime.energizeMotors);
+                    const toleranceTime = 30 * 60 * 1000; // 30 minutes
+                    if (timespan > toleranceTime) {
+                        this.command(socket, 'energizeMotors:off');
+                        return;
+                    }
+
                     this.command(socket, 'gcode', '{me:0}');
                     this.command(socket, 'gcode', '{pwr:n}');
                 }, mt * 1000 - 500);
-
-                // Set a timeout value so the motors will not run longer than 30 minutes
-                if (this.motorEnergizeTimeout) {
-                    clearTimeout(this.motorEnergizeTimeout);
-                    this.motorEnergizeTimeout = null;
-                }
-                this.motorEnergizeTimeout = setTimeout(() => {
-                    this.motorEnergizeTimeout = null;
-
-                    if (this.motorEnergizeTimer) {
-                        clearInterval(this.motorEnergizeTimer);
-                        this.motorEnergizeTimer = null;
-                    }
-
-                    this.command(socket, 'gcode', '{md:0}');
-                    this.command(socket, 'gcode', '{pwr:n}');
-                }, 30 * 60 * 1000);
             },
-            'motor:deenergize': () => {
-                if (this.motorEnergizeTimer) {
-                    clearInterval(this.motorEnergizeTimer);
-                    this.motorEnergizeTimer = null;
+            'energizeMotors:off': () => {
+                if (this.timer.energizeMotors) {
+                    clearInterval(this.timer.energizeMotors);
+                    this.timer.energizeMotors = null;
                 }
-                if (this.motorEnergizeTimeout) {
-                    clearTimeout(this.motorEnergizeTimeout);
-                    this.motorEnergizeTimeout = null;
-                }
+                this.actionTime.energizeMotors = 0;
 
                 this.command(socket, 'gcode', '{md:0}');
                 this.command(socket, 'gcode', '{pwr:n}');
