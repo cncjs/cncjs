@@ -149,6 +149,22 @@ class Terminal extends PureComponent {
         const focus = false;
         this.term.open(el, focus);
 
+        // Fix an issue that caused the vertical scrollbar unclickable
+        // @see https://github.com/sourcelair/xterm.js/issues/512
+        const viewport = el.querySelector('.terminal .xterm-viewport');
+        if (viewport) {
+            viewport.style.overflowY = 'scroll';
+        }
+        const rows = el.querySelector('.terminal .xterm-rows');
+        if (rows) {
+            const scrollbarWidth = this.getScrollbarWidth() || 0;
+            rows.style.position = 'absolute';
+            rows.style.top = '0px';
+            rows.style.right = `${scrollbarWidth}px`;
+            rows.style.left = '5px';
+            rows.style.overflow = 'hidden';
+        }
+
         setTimeout(() => {
             this.resize();
         }, 0);
@@ -174,6 +190,30 @@ class Terminal extends PureComponent {
         setTimeout(() => {
             this.resize();
         }, 0);
+    }
+    // http://www.alexandre-gomes.com/?p=115
+    getScrollbarWidth() {
+        const inner = document.createElement('p');
+        inner.style.width = '100%';
+        inner.style.height = '200px';
+
+        const outer = document.createElement('div');
+        outer.style.position = 'absolute';
+        outer.style.top = '0px';
+        outer.style.left = '0px';
+        outer.style.visibility = 'hidden';
+        outer.style.width = '200px';
+        outer.style.height = '150px';
+        outer.style.overflow = 'hidden';
+        outer.appendChild(inner);
+
+        document.body.appendChild(outer);
+        const w1 = inner.offsetWidth;
+        outer.style.overflow = 'scroll';
+        const w2 = (w1 === inner.offsetWidth) ? outer.clientWidth : inner.offsetWidth;
+        document.body.removeChild(outer);
+
+        return (w1 - w2);
     }
     resize() {
         if (!(this.term && this.term.element)) {
