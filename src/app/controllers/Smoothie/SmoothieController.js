@@ -934,8 +934,8 @@ class SmoothieController {
                     spindleOverride = 100;
                 } else if ((spindleOverride + value) > 200) {
                     spindleOverride = 200;
-                } else if ((spindleOverride + value) < 0) {
-                    spindleOverride = 0;
+                } else if ((spindleOverride + value) < 10) {
+                    spindleOverride = 10;
                 } else {
                     spindleOverride += value;
                 }
