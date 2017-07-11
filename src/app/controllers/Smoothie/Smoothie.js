@@ -116,7 +116,7 @@ class SmoothieLineParserResultStatus {
             }
         }
 
-        // Machine Position
+        // Machine Position - reported in current units
         if (_.has(result, 'MPos')) {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const mPos = _.get(result, 'MPos', ['0.000', '0.000', '0.000']); // Defaults to [x, y, z]
@@ -126,7 +126,7 @@ class SmoothieLineParserResultStatus {
             }
         }
 
-        // Work Position
+        // Work Position - reported in current units
         if (_.has(result, 'WPos')) {
             const axes = ['x', 'y', 'z', 'a', 'b', 'c'];
             const wPos = _.get(result, 'WPos', ['0.000', '0.000', '0.000']); // Defaults to [x, y, z]

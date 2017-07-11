@@ -1,4 +1,7 @@
-import _, { includes } from 'lodash';
+import get from 'lodash/get';
+import includes from 'lodash/includes';
+import map from 'lodash/map';
+import mapValues from 'lodash/mapValues';
 import classNames from 'classnames';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -167,26 +170,26 @@ class AxesWidget extends Component {
             const defaultWCS = 'G54';
 
             if (controllerType === GRBL) {
-                return _.get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
+                return get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
             }
 
             if (controllerType === SMOOTHIE) {
-                return _.get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
+                return get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
             }
 
             if (controllerType === TINYG) {
-                return _.get(controllerState, 'sr.modal.coordinate') || defaultWCS;
+                return get(controllerState, 'sr.modal.coordinate') || defaultWCS;
             }
 
             return defaultWCS;
         },
         jog: (params = {}) => {
-            const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
+            const s = map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
             controller.command('gcode', 'G91 G0 ' + s); // relative distance
             controller.command('gcode', 'G90'); // absolute distance
         },
         move: (params = {}) => {
-            const s = _.map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
+            const s = map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
             controller.command('gcode', 'G0 ' + s);
         },
         toggleKeypadJogging: () => {
@@ -384,20 +387,29 @@ class AxesWidget extends Component {
                 customDistance = Number(customDistance).toFixed(3) * 1;
             }
 
+            // Machine position are reported in current units
+            const machinePosition = mapValues({
+                ...this.state.machinePosition,
+                ...mpos
+            }, (val) => {
+                return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+            });
+            // Work position are reported in current units
+            const workPosition = mapValues({
+                ...this.state.workPosition,
+                ...wpos
+            }, (val) => {
+                return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+            });
+
             this.setState({
                 units: units,
                 controller: {
                     type: SMOOTHIE,
                     state: state
                 },
-                machinePosition: {
-                    ...this.state.machinePosition,
-                    ...mpos
-                },
-                workPosition: {
-                    ...this.state.workPosition,
-                    ...wpos
-                },
+                machinePosition: machinePosition,
+                workPosition: workPosition,
                 customDistance: customDistance
             });
         },
@@ -424,7 +436,7 @@ class AxesWidget extends Component {
                 ...mpos
             };
             // Work position are reported in current units, and also apply any offsets.
-            const workPosition = _.mapValues({
+            const workPosition = mapValues({
                 ...this.state.workPosition,
                 ...wpos
             }, (val) => {
@@ -565,7 +577,7 @@ class AxesWidget extends Component {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const activeState = get(controllerState, 'status.activeState');
             const states = [
                 GRBL_ACTIVE_STATE_IDLE,
                 GRBL_ACTIVE_STATE_RUN
@@ -575,7 +587,7 @@ class AxesWidget extends Component {
             }
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const activeState = get(controllerState, 'status.activeState');
             const states = [
                 SMOOTHIE_ACTIVE_STATE_IDLE,
                 SMOOTHIE_ACTIVE_STATE_RUN
@@ -585,7 +597,7 @@ class AxesWidget extends Component {
             }
         }
         if (controllerType === TINYG) {
-            const machineState = _.get(controllerState, 'sr.machineState');
+            const machineState = get(controllerState, 'sr.machineState');
             const states = [
                 TINYG_MACHINE_STATE_READY,
                 TINYG_MACHINE_STATE_STOP,
@@ -609,11 +621,11 @@ class AxesWidget extends Component {
             // Determine if the motion button is clickable
             canClick: this.canClick(),
             // Output machine position with the display units
-            machinePosition: _.mapValues(machinePosition, (pos, axis) => {
+            machinePosition: mapValues(machinePosition, (pos, axis) => {
                 return String(toFixedUnits(units, pos));
             }),
             // Output work position with the display units
-            workPosition: _.mapValues(workPosition, (pos, axis) => {
+            workPosition: mapValues(workPosition, (pos, axis) => {
                 return String(toFixedUnits(units, pos));
             })
         };

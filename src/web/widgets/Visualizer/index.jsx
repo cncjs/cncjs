@@ -470,16 +470,21 @@ class VisualizerWidget extends Component {
                 'G21': METRIC_UNITS
             }[modal.units] || this.state.units;
 
+            // Work position are reported in current units
+            const workPosition = mapValues({
+                ...this.state.workPosition,
+                ...wpos
+            }, (val) => {
+                return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+            });
+
             this.setState({
                 units: units,
                 controller: {
                     type: SMOOTHIE,
                     state: state
                 },
-                workPosition: {
-                    ...this.state.workPosition,
-                    ...wpos
-                }
+                workPosition: workPosition
             });
         },
         'TinyG:state': (state) => {
