@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import escape from 'lodash/escape';
 import get from 'lodash/get';
 import React, { Component, PropTypes } from 'react';
 import shallowCompare from 'react-addons-shallow-compare';
@@ -23,7 +24,7 @@ class Dashboard extends Component {
             this.lines = get(nextProps, 'state.gcode.content', '')
                 .split('\n')
                 .filter(line => line.trim().length > 0)
-                .map((line, index) => `<div class="${styles.line}"><span class="${styles.label} ${styles.labelDefault}">${index + 1}</span> ${line}</div>`); // Use pure HTML string to speed up rendering
+                .map((line, index) => `<div class="${styles.line}"><span class="${styles.label} ${styles.labelDefault}">${index + 1}</span> ${escape(line)}</div>`); // Use pure HTML string to speed up rendering
         }
     }
     shouldComponentUpdate(nextProps, nextState) {
