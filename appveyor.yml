@@ -12,6 +12,8 @@ environment:
   matrix:
   - nodejs_version: "6"
   global:
+    GH_TOKEN:
+      secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
     GITHUB_TOKEN:
       secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
 #    CSC_LINK:
