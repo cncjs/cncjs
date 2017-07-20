@@ -29,10 +29,8 @@ class TableRecords extends Component {
 
         return (
             <Table
-                style={{
-                    borderBottom: state.records.length > 0 ? '1px solid #ddd' : 'none'
-                }}
                 bordered={false}
+                justified={false}
                 data={(state.api.err || state.api.fetching) ? [] : state.records}
                 rowKey={(record) => {
                     return record.id;

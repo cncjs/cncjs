@@ -26,6 +26,7 @@ class TableRecords extends PureComponent {
         return (
             <Table
                 bordered={false}
+                justified={false}
                 data={(state.api.err || state.api.fetching) ? [] : state.records}
                 rowKey={(record) => {
                     return record.id;
