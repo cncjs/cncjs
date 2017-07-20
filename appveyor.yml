@@ -44,7 +44,7 @@ install:
   - ps: Install-Product node $env:nodejs_version $env:platform
   - npm install -g npm
   - npm --version
-  - npm config set loglevel warn
+  - npm config set loglevel error
   - npm install
 
 build_script:
