@@ -1,7 +1,8 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import includes from 'lodash/includes';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Modal from '../../../components/Modal';
 import Notifications from '../../../components/Notifications';
 import ToggleSwitch from '../../../components/ToggleSwitch';
@@ -9,7 +10,14 @@ import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
 import styles from '../form.styl';
 
-class CreateRecord extends Component {
+const SYSTEM_EVENTS = [
+    // The following events are only available with system trigger (i.e. scripts)
+    'startup',
+    'port:open',
+    'port:close'
+];
+
+class CreateRecord extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -22,21 +30,30 @@ class CreateRecord extends Component {
         commands: null
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     get value() {
         return {
-            enabled: !!_.get(this.fields.enabled, 'state.checked'),
-            event: _.get(this.fields.event, 'state.value'),
-            trigger: _.get(this.fields.trigger, 'state.value'),
-            commands: _.get(this.fields.commands, 'state.value')
+            enabled: !!get(this.fields.enabled, 'state.checked'),
+            event: get(this.fields.event, 'state.value'),
+            trigger: get(this.fields.trigger, 'state.value'),
+            commands: get(this.fields.commands, 'state.value')
         };
     }
     render() {
         const { state, actions } = this.props;
         const { modal } = state;
-        const { alertMessage, sampleCommands = '' } = modal.params;
+        const disableTriggerOptions = includes(SYSTEM_EVENTS, modal.params.event);
+        let sampleCommands = '';
+        if (modal.params.trigger === 'system') {
+            sampleCommands = [
+                'sleep 5'
+            ].join('\n');
+        } else if (modal.params.trigger === 'gcode') {
+            sampleCommands = [
+                'G21  ; Set units to mm',
+                'G90  ; Absolute positioning',
+                'G1 Z1 F500  ; Move to clearance level'
+            ].join('\n');
+        }
 
         return (
             <Modal
@@ -53,14 +70,14 @@ class CreateRecord extends Component {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {alertMessage &&
+                    {modal.params.alertMessage &&
                     <Notifications
                         bsStyle="danger"
                         onDismiss={() => {
                             actions.updateModalParams({ alertMessage: '' });
                         }}
                     >
-                        {alertMessage}
+                        {modal.params.alertMessage}
                     </Notifications>
                     }
                     <Validation.components.Form
@@ -91,15 +108,29 @@ class CreateRecord extends Component {
                                         this.fields.event = node;
                                     }}
                                     name="event"
-                                    value=""
+                                    value={modal.params.event}
                                     className={classNames(
                                         'form-control',
                                         styles.formControl,
                                         styles.short
                                     )}
+                                    onChange={(event) => {
+                                        const value = event.target.value;
+                                        let trigger = modal.params.trigger;
+                                        if (includes(SYSTEM_EVENTS, value)) {
+                                            trigger = 'system'; // system-only events
+                                        }
+                                        actions.updateModalParams({
+                                            event: value,
+                                            trigger: trigger
+                                        });
+                                    }}
                                     validations={['required']}
                                 >
                                     <option value="">{i18n._('Choose an event')}</option>
+                                    <option value="startup">{i18n._('Startup (System only)')}</option>
+                                    <option value="port:open">{i18n._('Open a serial port (System only)')}</option>
+                                    <option value="port:close">{i18n._('Close a serial port (System only)')}</option>
                                     <option value="gcode:load">{i18n._('G-code: Load')}</option>
                                     <option value="gcode:unload">{i18n._('G-code: Unload')}</option>
                                     <option value="gcode:start">{i18n._('G-code: Start')}</option>
@@ -121,28 +152,18 @@ class CreateRecord extends Component {
                                         this.fields.trigger = node;
                                     }}
                                     name="trigger"
-                                    value=""
+                                    value={modal.params.trigger}
                                     className={classNames(
                                         'form-control',
                                         styles.formControl,
                                         styles.short
                                     )}
+                                    disabled={disableTriggerOptions}
                                     onChange={(event) => {
                                         const value = event.target.value;
-                                        if (value === 'system') {
-                                            const sampleCommands = [
-                                                'sleep 5',
-                                                '/sbin/shutdown'
-                                            ].join('\n');
-                                            actions.updateModalParams({ sampleCommands: sampleCommands });
-                                        } else if (value === 'gcode') {
-                                            const sampleCommands = [
-                                                'G21  ; Set units to mm',
-                                                'G90  ; Absolute positioning',
-                                                'G1 Z1 F500  ; Move to clearance level'
-                                            ].join('\n');
-                                            actions.updateModalParams({ sampleCommands: sampleCommands });
-                                        }
+                                        actions.updateModalParams({
+                                            trigger: value
+                                        });
                                     }}
                                     validations={['required']}
                                 >

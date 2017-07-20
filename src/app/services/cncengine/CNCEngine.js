@@ -3,6 +3,7 @@ import rangeCheck from 'range_check';
 import serialport from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
+import EventTrigger from '../../lib/EventTrigger';
 import ensureArray from '../../lib/ensure-array';
 import logger from '../../lib/logger';
 import settings from '../../config/settings';
@@ -39,21 +40,37 @@ class CNCEngine {
     controllerClass = {};
     listener = {
         taskStart: (...args) => {
-            this.io.sockets.emit('task:start', ...args);
+            if (this.io && this.io.sockets) {
+                this.io.sockets.emit('task:start', ...args);
+            }
         },
         taskFinish: (...args) => {
-            this.io.sockets.emit('task:finish', ...args);
+            if (this.io && this.io.sockets) {
+                this.io.sockets.emit('task:finish', ...args);
+            }
         },
         taskError: (...args) => {
-            this.io.sockets.emit('task:error', ...args);
+            if (this.io && this.io.sockets) {
+                this.io.sockets.emit('task:error', ...args);
+            }
         },
         configChange: (...args) => {
-            this.io.sockets.emit('config:change', ...args);
+            if (this.io && this.io.sockets) {
+                this.io.sockets.emit('config:change', ...args);
+            }
         }
     };
     server = null;
     io = null;
     sockets = [];
+
+    // Event Trigger
+    event = new EventTrigger((event, trigger, commands) => {
+        log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
+        if (trigger === 'system') {
+            taskRunner.run(commands);
+        }
+    });
 
     // @param {object} server The HTTP server instance.
     // @param {string} controller Specify CNC controller.
@@ -89,6 +106,9 @@ class CNCEngine {
         taskRunner.on('finish', this.listener.taskFinish);
         taskRunner.on('error', this.listener.taskError);
         config.on('change', this.listener.configChange);
+
+        // System Trigger: Startup
+        this.event.trigger('startup');
 
         this.server = server;
         this.io = socketIO(this.server, {
@@ -229,6 +249,9 @@ class CNCEngine {
                         return;
                     }
 
+                    // System Trigger: Open a serial port
+                    this.event.trigger('port:open');
+
                     if (store.get(`controllers["${port}"]`)) {
                         log.error(`Serial port "${port}" was not properly closed`);
                     }
@@ -256,6 +279,9 @@ class CNCEngine {
                     callback(new Error(err));
                     return;
                 }
+
+                // System Trigger: Close a serial port
+                this.event.trigger('port:close');
 
                 controller.close();
 

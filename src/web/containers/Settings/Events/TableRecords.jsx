@@ -1,8 +1,8 @@
 /* eslint react/jsx-no-bind: 0 */
 import take from 'lodash/take';
 import moment from 'moment';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Table from '../../../components/Table';
 import ToggleSwitch from '../../../components/ToggleSwitch';
 import { TablePagination } from '../../../components/Paginations';
@@ -14,23 +14,17 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class TableRecords extends Component {
+class TableRecords extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
 
         return (
             <Table
-                style={{
-                    borderBottom: state.records.length > 0 ? '1px solid #ddd' : 'none'
-                }}
                 bordered={false}
                 data={(state.api.err || state.api.fetching) ? [] : state.records}
                 rowKey={(record) => {
@@ -113,6 +107,9 @@ class TableRecords extends Component {
                         key: 'event',
                         render: (value, row, index) => {
                             const eventText = {
+                                'startup': i18n._('Startup'),
+                                'port:open': i18n._('Open a serial port'),
+                                'port:close': i18n._('Close a serial port'),
                                 'gcode:load': i18n._('G-code: Load'),
                                 'gcode:unload': i18n._('G-code: Unload'),
                                 'gcode:start': i18n._('G-code: Start'),
