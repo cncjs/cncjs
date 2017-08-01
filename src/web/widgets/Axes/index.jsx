@@ -185,8 +185,9 @@ class AxesWidget extends Component {
         },
         jog: (params = {}) => {
             const s = map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
-            controller.command('gcode', 'G91 G0 ' + s); // relative distance
-            controller.command('gcode', 'G90'); // absolute distance
+            controller.command('gcode', 'G91'); // relative
+            controller.command('gcode', 'G0 ' + s);
+            controller.command('gcode', 'G90'); // absolute
         },
         move: (params = {}) => {
             const s = map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
@@ -549,8 +550,9 @@ class AxesWidget extends Component {
             feedrate = feedrate.toFixed(3) * 1;
             relativeDistance = relativeDistance.toFixed(4) * 1;
 
-            controller.command('gcode', 'G91 G1 F' + feedrate + ' ' + axis + relativeDistance);
-            controller.command('gcode', 'G90');
+            controller.command('gcode', 'G91'); // relative
+            controller.command('gcode', 'G1 F' + feedrate + ' ' + axis + relativeDistance);
+            controller.command('gcode', 'G90'); // absolute
         });
     }
     removeShuttleControlEvents() {
