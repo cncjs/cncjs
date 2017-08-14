@@ -211,7 +211,7 @@ class CNCController {
     // - Start sending G-code
     //   controller.command('gcode:start')
     // - Stop sending G-code
-    //   controller.command('gcode:stop')
+    //   controller.command('gcode:stop', { force: true })
     // - Pause
     //   controller.command('gcode:pause')
     // - Resume

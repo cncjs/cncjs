@@ -299,7 +299,7 @@ class VisualizerWidget extends Component {
             const { workflowState } = this.state;
             console.assert(includes([WORKFLOW_STATE_PAUSED], workflowState));
 
-            controller.command('gcode:stop');
+            controller.command('gcode:stop', { force: true });
         },
         handleClose: () => {
             const { workflowState } = this.state;

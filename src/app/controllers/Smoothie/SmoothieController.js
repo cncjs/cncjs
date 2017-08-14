@@ -832,6 +832,8 @@ class SmoothieController {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
                 this.command(socket, 'gcode:stop');
             },
+            // @param {object} options The options object.
+            // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
             'gcode:stop': () => {
                 this.event.trigger('gcode:stop');
 
@@ -902,6 +904,8 @@ class SmoothieController {
 
                 this.write(socket, '\x18'); // ^x
             },
+            // Feed Overrides
+            // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
             'feedOverride': () => {
                 const [value] = args;
                 let feedOverride = this.controller.state.status.ovF;
@@ -926,6 +930,8 @@ class SmoothieController {
                     }
                 };
             },
+            // Spindle Speed Overrides
+            // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
             'spindleOverride': () => {
                 const [value] = args;
                 let spindleOverride = this.controller.state.status.ovS;
@@ -950,6 +956,7 @@ class SmoothieController {
                     }
                 };
             },
+            // Rapid Overrides
             'rapidOverride': () => {
                 // Not supported
             },

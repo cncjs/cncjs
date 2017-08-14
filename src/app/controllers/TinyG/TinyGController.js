@@ -874,6 +874,8 @@ class TinyGController {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
                 this.command(socket, 'gcode:stop');
             },
+            // @param {object} options The options object.
+            // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
             'gcode:stop': () => {
                 this.event.trigger('gcode:stop');
 
@@ -954,6 +956,8 @@ class TinyGController {
 
                 this.write(socket, '\x18'); // ^x
             },
+            // Feed Overrides
+            // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
             'feedOverride': () => {
                 const [value] = args;
                 let mfo = this.controller.settings.mfo;
@@ -970,6 +974,8 @@ class TinyGController {
 
                 this.command(socket, 'gcode', `{mfo:${mfo}}`);
             },
+            // Spindle Speed Overrides
+            // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
             'spindleOverride': () => {
                 const [value] = args;
                 let sso = this.controller.settings.sso;
@@ -986,6 +992,7 @@ class TinyGController {
 
                 this.command(socket, 'gcode', `{sso:${sso}}`);
             },
+            // Rapid Overrides
             'rapidOverride': () => {
                 const [value] = args;
 

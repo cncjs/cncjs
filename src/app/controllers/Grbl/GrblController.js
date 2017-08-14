@@ -21,6 +21,7 @@ import Grbl from './Grbl';
 import {
     GRBL,
     GRBL_ACTIVE_STATE_RUN,
+    GRBL_ACTIVE_STATE_HOLD,
     GRBL_REALTIME_COMMANDS,
     GRBL_ALARMS,
     GRBL_ERRORS,
@@ -801,20 +802,27 @@ class GrblController {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
                 this.command(socket, 'gcode:stop');
             },
+            // @param {object} options The options object.
+            // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
             'gcode:stop': () => {
+                const { force = false } = { ...args[0] };
+
                 this.event.trigger('gcode:stop');
 
                 this.workflow.stop();
 
-                const activeState = _.get(this.state, 'status.activeState', '');
-                const delay = 500; // 500ms
-                if (activeState === GRBL_ACTIVE_STATE_RUN) {
-                    this.write(socket, '!'); // hold
+                if (force) {
+                    const activeState = _.get(this.state, 'status.activeState', '');
+                    if (activeState === GRBL_ACTIVE_STATE_RUN) {
+                        this.write(socket, '!'); // hold
+                    }
+                    setTimeout(() => {
+                        const activeState = _.get(this.state, 'status.activeState', '');
+                        if (activeState === GRBL_ACTIVE_STATE_HOLD) {
+                            this.write(socket, '\x18'); // ctrl-x
+                        }
+                    }, 500); // delay 500ms
                 }
-
-                setTimeout(() => {
-                    this.write(socket, '\x18'); // ctrl-x
-                }, delay);
             },
             'pause': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
@@ -876,6 +884,13 @@ class GrblController {
 
                 this.write(socket, '\x18'); // ^x
             },
+            // Feed Overrides
+            // @param {number} value The amount of percentage increase or decrease.
+            //   0: Set 100% of programmed rate.
+            //  10: Increase 10%
+            // -10: Decrease 10%
+            //   1: Increase 1%
+            //  -1: Decrease 1%
             'feedOverride': () => {
                 const [value] = args;
 
@@ -891,6 +906,13 @@ class GrblController {
                     this.write(socket, '\x94');
                 }
             },
+            // Spindle Speed Overrides
+            // @param {number} value The amount of percentage increase or decrease.
+            //   0: Set 100% of programmed spindle speed
+            //  10: Increase 10%
+            // -10: Decrease 10%
+            //   1: Increase 1%
+            //  -1: Decrease 1%
             'spindleOverride': () => {
                 const [value] = args;
 
@@ -906,6 +928,11 @@ class GrblController {
                     this.write(socket, '\x9d');
                 }
             },
+            // Rapid Overrides
+            // @param {number} value A percentage value of 25, 50, or 100. A value of zero will reset to 100%.
+            // 100: Set to 100% full rapid rate.
+            //  50: Set to 50% of rapid rate.
+            //  25: Set to 25% of rapid rate.
             'rapidOverride': () => {
                 const [value] = args;
 
