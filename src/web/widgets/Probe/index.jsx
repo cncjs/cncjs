@@ -137,7 +137,7 @@ class ProbeWidget extends Component {
 
                 // Z-Probe (use relative distance mode)
                 gcode('; Z-Probe'),
-                gcode('G91');
+                gcode('G91'),
                 gcode(probeCommand, {
                     Z: towardWorkpiece ? -probeDepth : probeDepth,
                     F: probeFeedrate
@@ -157,7 +157,7 @@ class ProbeWidget extends Component {
 
                 // Retract from the touch plate (use relative distance mode)
                 gcode('; Retract from the touch plate'),
-                gcode('G91');
+                gcode('G91'),
                 gcode('G0', {
                     Z: retractionDistance
                 }),
@@ -167,7 +167,7 @@ class ProbeWidget extends Component {
             const wcsProbeCommands = [
                 // Z-Probe (use relative distance mode)
                 gcode('; Z-Probe'),
-                gcode('G91');
+                gcode('G91'),
                 gcode(probeCommand, {
                     Z: towardWorkpiece ? -probeDepth : probeDepth,
                     F: probeFeedrate
@@ -185,7 +185,7 @@ class ProbeWidget extends Component {
 
                 // Retract from the touch plate (use relative distance mode)
                 gcode('; Retract from the touch plate'),
-                gcode('G91');
+                gcode('G91'),
                 gcode('G0', {
                     Z: retractionDistance
                 }),
