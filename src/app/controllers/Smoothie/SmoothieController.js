@@ -213,7 +213,7 @@ class SmoothieController {
 
         // Sender
         this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
-            // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
+            // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
                 if (line === WAIT) {
@@ -283,22 +283,36 @@ class SmoothieController {
         this.controller.on('status', (res) => {
             this.actionMask.queryStatusReport = false;
 
-            // Do not change buffer size during gcode sending (#133)
-            if (this.workflow.state === WORKFLOW_STATE_IDLE && this.sender.sp.dataLength === 0) {
-                // Check if Smoothie reported the rx buffer (#115)
-                if (res && res.buf && res.buf.rx) {
-                    const rx = Number(res.buf.rx) || 0;
-                    // Deduct the length of periodic commands ('$G\n', '?') to prevent from buffer overrun
-                    const bufferSize = (rx - 8);
-                    if (bufferSize > this.sender.sp.bufferSize) {
-                        this.sender.sp.bufferSize = bufferSize;
-                    }
-                }
-            }
-
             if (this.actionMask.replyStatusReport) {
                 this.actionMask.replyStatusReport = false;
                 this.emitAll('serialport:read', res.raw);
+            }
+
+            // Check if the receive buffer is available in the status report (#115)
+            // @see https://github.com/cncjs/cncjs/issues/115
+            // @see https://github.com/cncjs/cncjs/issues/133
+            const rx = Number(_.get(res, 'buf.rx', 0)) || 0;
+            if (rx > 0) {
+                // Do not modify the buffer size when running a G-code program
+                if (this.workflow.state !== WORKFLOW_STATE_IDLE) {
+                    return;
+                }
+
+                // Check if the streaming protocol is character-counting streaming protocol
+                if (this.sender.sp.type !== SP_TYPE_CHAR_COUNTING) {
+                    return;
+                }
+
+                // Check if the queue is empty
+                if (this.sender.sp.dataLength !== 0) {
+                    return;
+                }
+
+                // Deduct the receive buffer length to prevent from buffer overrun
+                const bufferSize = (rx - 8); // TODO
+                if (bufferSize > this.sender.sp.bufferSize) {
+                    this.sender.sp.bufferSize = bufferSize;
+                }
             }
         });
 
@@ -389,8 +403,9 @@ class SmoothieController {
 
         const queryStatusReport = () => {
             const now = new Date().getTime();
-            const lastQueryTime = this.actionTime.queryStatusReport;
 
+            // The status report query (?) is a realtime command, it does not consume the receive buffer.
+            const lastQueryTime = this.actionTime.queryStatusReport;
             if (lastQueryTime > 0) {
                 const timespan = Math.abs(now - lastQueryTime);
                 const toleranceTime = 5000; // 5 seconds
@@ -415,17 +430,23 @@ class SmoothieController {
 
         const queryParserState = _.throttle(() => {
             const now = new Date().getTime();
-            const lastQueryTime = this.actionTime.queryParserState;
 
-            if (lastQueryTime > 0) {
-                const timespan = Math.abs(now - lastQueryTime);
-                const toleranceTime = 10000; // 10 seconds
+            // Do not force query parser state ($G) when running a G-code program,
+            // it will consume 3 bytes from the receive buffer in each time period.
+            // @see https://github.com/cncjs/cncjs/issues/176
+            // @see https://github.com/cncjs/cncjs/issues/186
+            if ((this.workflow.state === WORKFLOW_STATE_IDLE) && this.controller.isIdle()) {
+                const lastQueryTime = this.actionTime.queryParserState;
+                if (lastQueryTime > 0) {
+                    const timespan = Math.abs(now - lastQueryTime);
+                    const toleranceTime = 10000; // 10 seconds
 
-                // Check if it has not been updated for a long time
-                if (timespan >= toleranceTime) {
-                    log.debug(`Continue parser state query: timespan=${timespan}ms`);
-                    this.actionMask.queryParserState.state = false;
-                    this.actionMask.queryParserState.reply = false;
+                    // Check if it has not been updated for a long time
+                    if (timespan >= toleranceTime) {
+                        log.debug(`Continue parser state query: timespan=${timespan}ms`);
+                        this.actionMask.queryParserState.state = false;
+                        this.actionMask.queryParserState.reply = false;
+                    }
                 }
             }
 
