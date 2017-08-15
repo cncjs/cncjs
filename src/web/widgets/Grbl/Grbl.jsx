@@ -41,6 +41,19 @@ class Grbl extends PureComponent {
         const [ovF = 0, ovR = 0, ovS = 0] = ov;
         const buf = _.get(controllerState, 'status.buf', {});
         const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
+        const receiveBufferStyle = ((rx) => {
+            // danger: 0-7
+            // warning: 8-15
+            // info: >=16
+            rx = Number(rx) || 0;
+            if (rx >= 16) {
+                return 'info';
+            }
+            if (rx >= 8) {
+                return 'warning';
+            }
+            return 'danger';
+        })(buf.rx);
 
         this.plannerBufferMax = Math.max(this.plannerBufferMax, buf.planner) || this.plannerBufferMax;
         this.receiveBufferMax = Math.max(this.receiveBufferMax, buf.rx) || this.receiveBufferMax;
@@ -94,7 +107,7 @@ class Grbl extends PureComponent {
                             <div className="col col-xs-8">
                                 <ProgressBar
                                     style={{ marginBottom: 0 }}
-                                    bsStyle="info"
+                                    bsStyle={receiveBufferStyle}
                                     min={this.receiveBufferMin}
                                     max={this.receiveBufferMax}
                                     now={buf.rx}
