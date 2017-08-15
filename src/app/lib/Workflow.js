@@ -8,6 +8,15 @@ export const WORKFLOW_STATE_IDLE = 'idle';
 class Workflow extends events.EventEmitter {
     state = WORKFLOW_STATE_IDLE;
 
+    isRunning() {
+        return this.state === WORKFLOW_STATE_RUNNING;
+    }
+    isPaused() {
+        return this.state === WORKFLOW_STATE_PAUSED;
+    }
+    isIdle() {
+        return this.state === WORKFLOW_STATE_IDLE;
+    }
     start() {
         if (this.state !== WORKFLOW_STATE_RUNNING) {
             this.state = WORKFLOW_STATE_RUNNING;
