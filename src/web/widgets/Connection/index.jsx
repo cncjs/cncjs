@@ -144,13 +144,15 @@ class ConnectionWidget extends PureComponent {
         'serialport:close': (options) => {
             const { port } = options;
 
+            log.debug('Disconnected from \'' + port + '\'.');
+
             this.setState(state => ({
                 alertMessage: '',
                 connecting: false,
                 connected: false
             }));
 
-            log.debug('Disconnected from \'' + port + '\'.');
+            this.refreshPorts();
         },
         'serialport:error': (options) => {
             const { port } = options;
@@ -260,8 +262,8 @@ class ConnectionWidget extends PureComponent {
         }));
     }
     refreshPorts() {
-        controller.listPorts();
         this.startLoading();
+        controller.listPorts();
     }
     openPort(port, options) {
         const { baudrate } = { ...options };
