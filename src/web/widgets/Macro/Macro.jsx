@@ -1,44 +1,24 @@
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import i18n from '../../lib/i18n';
-import AddMacro from './AddMacro';
-import EditMacro from './EditMacro';
-import RunMacro from './RunMacro';
-import {
-    MODAL_STATE_ADD_MACRO,
-    MODAL_STATE_EDIT_MACRO,
-    MODAL_STATE_RUN_MACRO
-} from './constants';
 import {
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import styles from './index.styl';
 
-class Macro extends Component {
+class Macro extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
-        const { port, workflowState, macros = [], modalState } = state;
+        const { port, workflowState, macros = [] } = state;
         const canClick = port && workflowState === WORKFLOW_STATE_IDLE;
 
         return (
             <div>
-                {modalState === MODAL_STATE_ADD_MACRO &&
-                <AddMacro {...this.props} />
-                }
-                {modalState === MODAL_STATE_EDIT_MACRO &&
-                <EditMacro {...this.props} />
-                }
-                {modalState === MODAL_STATE_RUN_MACRO &&
-                <RunMacro {...this.props} />
-                }
                 <div className={styles.tableContainer}>
                     <table className={styles.table}>
                         <tbody>

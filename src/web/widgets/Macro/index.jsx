@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import ExpressionEvaluator from 'expr-eval';
 import pubsub from 'pubsub-js';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import api from '../../api';
 import Widget from '../../components/Widget';
 import confirm from '../../lib/confirm';
@@ -11,11 +11,14 @@ import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import WidgetConfig from '../WidgetConfig';
 import Macro from './Macro';
+import AddMacro from './AddMacro';
+import EditMacro from './EditMacro';
+import RunMacro from './RunMacro';
 import {
-    MODAL_STATE_NONE,
-    MODAL_STATE_ADD_MACRO,
-    MODAL_STATE_EDIT_MACRO,
-    MODAL_STATE_RUN_MACRO
+    MODAL_NONE,
+    MODAL_ADD_MACRO,
+    MODAL_EDIT_MACRO,
+    MODAL_RUN_MACRO
 } from './constants';
 import styles from './index.styl';
 
@@ -52,7 +55,7 @@ const translateGCodeWithContext = (function() {
     };
 }());
 
-class MacroWidget extends Component {
+class MacroWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -74,23 +77,30 @@ class MacroWidget extends Component {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
         },
-        openModal: (modalState = MODAL_STATE_NONE, modalParams = {}) => {
+        openModal: (name = MODAL_NONE, params = {}) => {
             this.setState({
-                modalState: modalState,
-                modalParams: modalParams
+                modal: {
+                    name: name,
+                    params: params
+                }
             });
         },
         closeModal: () => {
             this.setState({
-                modalState: MODAL_STATE_NONE,
-                modalParams: {}
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
             });
         },
         updateModalParams: (params = {}) => {
             this.setState({
-                modalParams: {
-                    ...this.state.modalParams,
-                    ...params
+                modal: {
+                    ...this.state.modal,
+                    params: {
+                        ...this.state.modal.params,
+                        ...params
+                    }
                 }
             });
         },
@@ -183,24 +193,20 @@ class MacroWidget extends Component {
             }
         },
         openAddMacroModal: () => {
-            this.actions.openModal(MODAL_STATE_ADD_MACRO);
+            this.actions.openModal(MODAL_ADD_MACRO);
         },
         openRunMacroModal: (id) => {
             api.macros.read(id)
                 .then((res) => {
                     const { id, name, content } = res.body;
-                    this.actions.openModal(MODAL_STATE_RUN_MACRO, {
-                        id,
-                        name,
-                        content
-                    });
+                    this.actions.openModal(MODAL_RUN_MACRO, { id, name, content });
                 });
         },
         openEditMacroModal: (id) => {
             api.macros.read(id)
                 .then((res) => {
                     const { id, name, content } = res.body;
-                    this.actions.openModal(MODAL_STATE_EDIT_MACRO, { id, name, content });
+                    this.actions.openModal(MODAL_EDIT_MACRO, { id, name, content });
                 });
         }
     };
@@ -228,9 +234,6 @@ class MacroWidget extends Component {
     componentWillUnmount() {
         this.removeControllerEvents();
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized
@@ -244,9 +247,11 @@ class MacroWidget extends Component {
             isFullscreen: false,
             port: controller.port,
             workflowState: controller.workflowState,
-            macros: [],
-            modalState: MODAL_STATE_NONE,
-            modalParams: {}
+            modal: {
+                name: MODAL_NONE,
+                params: {}
+            },
+            macros: []
         };
     }
     addControllerEvents() {
@@ -349,10 +354,16 @@ class MacroWidget extends Component {
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <Macro
-                        state={state}
-                        actions={actions}
-                    />
+                    {state.modal.name === MODAL_ADD_MACRO &&
+                    <AddMacro state={state} actions={actions} />
+                    }
+                    {state.modal.name === MODAL_EDIT_MACRO &&
+                    <EditMacro state={state} actions={actions} />
+                    }
+                    {state.modal.name === MODAL_RUN_MACRO &&
+                    <RunMacro state={state} actions={actions} />
+                    }
+                    <Macro state={state} actions={actions} />
                 </Widget.Content>
             </Widget>
         );

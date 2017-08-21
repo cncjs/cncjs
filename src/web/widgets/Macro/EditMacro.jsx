@@ -1,9 +1,8 @@
 import get from 'lodash/get';
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
-import shallowCompare from 'react-addons-shallow-compare';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
@@ -13,7 +12,7 @@ import insertAtCaret from './insertAtCaret';
 import variables from './variables';
 import styles from './index.styl';
 
-class EditMacro extends Component {
+class EditMacro extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -23,13 +22,9 @@ class EditMacro extends Component {
         content: null
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
-        const { modalParams } = state;
-        const { id, name, content } = { ...modalParams };
+        const { id, name, content } = { ...state.modal.params };
 
         return (
             <Modal

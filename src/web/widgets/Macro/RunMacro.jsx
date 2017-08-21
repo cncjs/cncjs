@@ -1,21 +1,17 @@
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import i18n from '../../lib/i18n';
 import Modal from '../../components/Modal';
 
-class RunMacro extends Component {
+class RunMacro extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
-        const { modalParams } = state;
-        const { id, name, content } = { ...modalParams };
+        const { id, name, content } = { ...state.modal.params };
 
         return (
             <Modal
