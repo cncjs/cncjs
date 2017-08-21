@@ -11,7 +11,7 @@ import styles from './index.styl';
 
 class Keypad extends PureComponent {
     static propTypes = {
-        config: PropTypes.objct,
+        config: PropTypes.object,
         state: PropTypes.object,
         actions: PropTypes.object
     };
