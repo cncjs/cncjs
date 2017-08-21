@@ -1,8 +1,7 @@
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import i18n from '../../lib/i18n';
-import ZProbe from './ZProbe';
 import {
     METRIC_UNITS
 } from '../../constants';
@@ -11,19 +10,15 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class Probe extends Component {
+class Probe extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
         const {
-            modal,
             canClick,
             units,
             probeCommand,
@@ -38,9 +33,6 @@ class Probe extends Component {
 
         return (
             <div>
-                {modal.name === MODAL_PREVIEW &&
-                <ZProbe state={state} actions={actions} />
-                }
                 <div className="form-group">
                     <label className="control-label">{i18n._('Probe Command')}</label>
                     <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>

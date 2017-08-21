@@ -1,13 +1,16 @@
-import _, { includes } from 'lodash';
+import get from 'lodash/get';
+import includes from 'lodash/includes';
+import map from 'lodash/map';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
 import Probe from './Probe';
+import ZProbe from './ZProbe';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -27,7 +30,8 @@ import {
     WORKFLOW_STATE_IDLE
 } from '../../constants';
 import {
-    MODAL_NONE
+    MODAL_NONE,
+    MODAL_PREVIEW
 } from './constants';
 import styles from './index.styl';
 
@@ -44,11 +48,11 @@ const toUnits = (units, val) => {
 };
 
 const gcode = (cmd, params) => {
-    const s = _.map(params, (value, letter) => String(letter + value)).join(' ');
+    const s = map(params, (value, letter) => String(letter + value)).join(' ');
     return (s.length > 0) ? (cmd + ' ' + s) : cmd;
 };
 
-class ProbeWidget extends Component {
+class ProbeWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -129,7 +133,7 @@ class ProbeWidget extends Component {
                 touchPlateHeight,
                 retractionDistance
             } = this.state;
-            const towardWorkpiece = _.includes(['G38.2', 'G38.3'], probeCommand);
+            const towardWorkpiece = includes(['G38.2', 'G38.3'], probeCommand);
             const tloProbeCommands = [
                 gcode('; Cancel tool length offset'),
                 // Cancel tool length offset
@@ -354,9 +358,6 @@ class ProbeWidget extends Component {
     componentWillUnmount() {
         this.removeControllerEvents();
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized
@@ -448,7 +449,7 @@ class ProbeWidget extends Component {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const activeState = get(controllerState, 'status.activeState');
             const states = [
                 GRBL_ACTIVE_STATE_IDLE
             ];
@@ -457,7 +458,7 @@ class ProbeWidget extends Component {
             }
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const activeState = get(controllerState, 'status.activeState');
             const states = [
                 SMOOTHIE_ACTIVE_STATE_IDLE
             ];
@@ -466,7 +467,7 @@ class ProbeWidget extends Component {
             }
         }
         if (controllerType === TINYG) {
-            const machineState = _.get(controllerState, 'sr.machineState');
+            const machineState = get(controllerState, 'sr.machineState');
             const states = [
                 TINYG_MACHINE_STATE_READY,
                 TINYG_MACHINE_STATE_STOP,
@@ -562,6 +563,9 @@ class ProbeWidget extends Component {
                         { [styles.hidden]: minimized }
                     )}
                 >
+                    {state.modal.name === MODAL_PREVIEW &&
+                    <ZProbe state={state} actions={actions} />
+                    }
                     <Probe
                         state={state}
                         actions={actions}
