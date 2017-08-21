@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import ClusterizeJS from 'clusterize.js';
 
-class Clusterize extends Component {
+class Clusterize extends PureComponent {
     static propTypes = {
         rows: PropTypes.arrayOf(PropTypes.string),
         scrollTop: PropTypes.number

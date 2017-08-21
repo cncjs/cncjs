@@ -1,8 +1,8 @@
 import classNames from 'classnames';
 import escape from 'lodash/escape';
 import get from 'lodash/get';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import Anchor from '../../components/Anchor';
 import Panel from '../../components/Panel';
@@ -11,7 +11,7 @@ import { formatBytes } from '../../lib/numeral';
 import Clusterize from './Clusterize';
 import styles from './dashboard.styl';
 
-class Dashboard extends Component {
+class Dashboard extends PureComponent {
     static propTypes = {
         show: PropTypes.bool,
         state: PropTypes.object
@@ -26,9 +26,6 @@ class Dashboard extends Component {
                 .filter(line => line.trim().length > 0)
                 .map((line, index) => `<div class="${styles.line}"><span class="${styles.label} ${styles.labelDefault}">${index + 1}</span> ${escape(line)}</div>`); // Use pure HTML string to speed up rendering
         }
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { show, state } = this.props;

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import colornames from 'colornames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import Detector from 'three/examples/js/Detector';
 import controller from '../../lib/controller';
@@ -53,15 +53,12 @@ import {
 } from '../../constants';
 import styles from './primary-toolbar.styl';
 
-class PrimaryToolbar extends Component {
+class PrimaryToolbar extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     canSendCommand() {
         const { state } = this.props;
         const { port, controller, workflowState } = state;

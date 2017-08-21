@@ -4,7 +4,8 @@ import 'imports-loader?THREE=three!three/examples/js/cameras/CombinedCamera';
 import _ from 'lodash';
 import colornames from 'colornames';
 import pubsub from 'pubsub-js';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import Detector from 'three/examples/js/Detector';
@@ -48,7 +49,7 @@ const CAMERA_POSITION_Z = 200; // Move the camera out a bit from the origin (0, 
 const TRACKBALL_CONTROLS_MIN_DISTANCE = 1;
 const TRACKBALL_CONTROLS_MAX_DISTANCE = 2000;
 
-class Visualizer extends Component {
+class Visualizer extends PureComponent {
     static propTypes = {
         show: PropTypes.bool,
         state: PropTypes.object

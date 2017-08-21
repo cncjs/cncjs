@@ -1,7 +1,7 @@
 import path from 'path';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
-import shallowCompare from 'react-addons-shallow-compare';
 import InfiniteTree from 'react-infinite-tree';
 import renderer from './renderer';
 import api from '../../api';
@@ -9,7 +9,7 @@ import Modal from '../../components/Modal';
 import i18n from '../../lib/i18n';
 import styles from './renderer.styl';
 
-class WatchDirectory extends Component {
+class WatchDirectory extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -49,9 +49,6 @@ class WatchDirectory extends Component {
     }
     componentWillUnmount() {
         this.removeResizeEventListener();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     addResizeEventListener() {
         window.addEventListener('resize', this.fitHeaderColumns);

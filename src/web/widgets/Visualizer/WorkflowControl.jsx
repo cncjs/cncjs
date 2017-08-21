@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import {
     // Grbl
@@ -25,16 +25,13 @@ import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import styles from './workflow-control.styl';
 
-class WorkflowControl extends Component {
+class WorkflowControl extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
     fileInputEl = null;
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     onClickToUpload() {
         this.fileInputEl.value = null;
         this.fileInputEl.click();
