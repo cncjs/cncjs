@@ -1,6 +1,6 @@
 import moment from 'moment';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import i18n from '../../lib/i18n';
 import {
     METRIC_UNITS
@@ -27,14 +27,11 @@ const formatRemainingTime = (remainingTime) => {
     return moment(d._data).format('HH:mm:ss');
 };
 
-class GCodeStats extends Component {
+class GCodeStats extends PureComponent {
     static propTypes = {
         state: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state } = this.props;
         const { units, total, sent, received, bbox } = state;

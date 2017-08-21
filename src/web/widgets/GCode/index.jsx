@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import classNames from 'classnames';
 import pubsub from 'pubsub-js';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -28,7 +28,7 @@ const toFixedUnits = (units, val) => {
     return val;
 };
 
-class GCodeWidget extends Component {
+class GCodeWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -124,9 +124,6 @@ class GCodeWidget extends Component {
     componentWillUnmount() {
         this.removeControllerEvents();
         this.unsubscribe();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
