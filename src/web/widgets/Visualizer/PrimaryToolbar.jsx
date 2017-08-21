@@ -419,6 +419,20 @@ class PrimaryToolbar extends PureComponent {
                             </MenuItem>
                             <MenuItem
                                 disabled={!canToggleOptions}
+                                onSelect={actions.toggleGridLineNumbersVisibility}
+                            >
+                                {objects.gridLineNumbers.visible
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
+                                }
+                                <span className="space space-sm" />
+                                {objects.gridLineNumbers.visible
+                                    ? i18n._('Hide Grid Line Numbers')
+                                    : i18n._('Show Grid Line Numbers')
+                                }
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
                                 onSelect={actions.toggleToolheadVisibility}
                             >
                                 {objects.toolhead.visible

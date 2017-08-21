@@ -160,6 +160,9 @@ export const defaultState = {
                 coordinateSystem: {
                     visible: true
                 },
+                gridLineNumbers: {
+                    visible: true
+                },
                 toolhead: {
                     visible: true
                 }

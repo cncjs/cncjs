@@ -144,7 +144,7 @@ class Visualizer extends PureComponent {
             needUpdateScene = true;
         }
 
-        // Display the name of the G-code file
+        // Whether to show the name of the G-code file
         if (state.gcode.displayName !== nextState.gcode.displayName) {
             const gcodeDisplayName = this.group.getObjectByName('GCodeDisplayName');
             if (gcodeDisplayName) {
@@ -154,7 +154,7 @@ class Visualizer extends PureComponent {
             }
         }
 
-        // Display or hide coordinate system
+        // Whether to show coordinate system
         if ((nextState.units !== state.units) ||
             (nextState.objects.coordinateSystem.visible !== state.objects.coordinateSystem.visible)) {
             const visible = nextState.objects.coordinateSystem.visible;
@@ -174,7 +174,27 @@ class Visualizer extends PureComponent {
             needUpdateScene = true;
         }
 
-        // Display or hide toolhead
+        // Whether to show grid line numbers
+        if ((nextState.units !== state.units) ||
+            (nextState.objects.gridLineNumbers.visible !== state.objects.gridLineNumbers.visible)) {
+            const visible = nextState.objects.gridLineNumbers.visible;
+
+            // Imperial
+            const imperialGridLineNumbers = this.group.getObjectByName('ImperialGridLineNumbers');
+            if (imperialGridLineNumbers) {
+                imperialGridLineNumbers.visible = visible && (nextState.units === IMPERIAL_UNITS);
+            }
+
+            // Metric
+            const metricGridLineNumbers = this.group.getObjectByName('MetricGridLineNumbers');
+            if (metricGridLineNumbers) {
+                metricGridLineNumbers.visible = visible && (nextState.units === METRIC_UNITS);
+            }
+
+            needUpdateScene = true;
+        }
+
+        // Whether to show tool head
         if (this.toolhead && (this.toolhead.visible !== nextState.objects.toolhead.visible)) {
             this.toolhead.visible = nextState.objects.toolhead.visible;
 
@@ -388,34 +408,44 @@ class Visualizer extends PureComponent {
             group.add(axisXLabel);
             group.add(axisYLabel);
             group.add(axisZLabel);
+        }
 
-            for (let i = -gridCount; i <= gridCount; ++i) {
-                if (i !== 0) {
-                    const textLabel = new TextSprite({
-                        x: i * gridSpacing,
-                        y: 5,
-                        z: 0,
-                        size: 6,
-                        text: i,
-                        color: colornames('red'),
-                        opacity: 0.5
-                    });
-                    group.add(textLabel);
-                }
+        return group;
+    }
+    createGridLineNumbers(options) {
+        const {
+            gridCount = METRIC_GRID_COUNT,
+            gridSpacing = METRIC_GRID_SPACING
+        } = { ...options };
+
+        const group = new THREE.Group();
+
+        for (let i = -gridCount; i <= gridCount; ++i) {
+            if (i !== 0) {
+                const textLabel = new TextSprite({
+                    x: i * gridSpacing,
+                    y: 5,
+                    z: 0,
+                    size: 6,
+                    text: i,
+                    color: colornames('red'),
+                    opacity: 0.5
+                });
+                group.add(textLabel);
             }
-            for (let i = -gridCount; i <= gridCount; ++i) {
-                if (i !== 0) {
-                    const textLabel = new TextSprite({
-                        x: -5,
-                        y: i * gridSpacing,
-                        z: 0,
-                        size: 6,
-                        text: i,
-                        color: colornames('green'),
-                        opacity: 0.5
-                    });
-                    group.add(textLabel);
-                }
+        }
+        for (let i = -gridCount; i <= gridCount; ++i) {
+            if (i !== 0) {
+                const textLabel = new TextSprite({
+                    x: -5,
+                    y: i * gridSpacing,
+                    z: 0,
+                    size: 6,
+                    text: i,
+                    color: colornames('green'),
+                    opacity: 0.5
+                });
+                group.add(textLabel);
             }
         }
 
@@ -487,7 +517,7 @@ class Visualizer extends PureComponent {
             this.scene.add(light);
         }
 
-        { // Imperial
+        { // Imperial Coordinate System
             const visible = objects.coordinateSystem.visible;
             const imperialCoordinateSystem = this.createCoordinateSystem({
                 axisLength: IMPERIAL_AXIS_LENGTH,
@@ -499,7 +529,7 @@ class Visualizer extends PureComponent {
             this.group.add(imperialCoordinateSystem);
         }
 
-        { // Metric
+        { // Metric Coordinate System
             const visible = objects.coordinateSystem.visible;
             const metricCoordinateSystem = this.createCoordinateSystem({
                 axisLength: METRIC_AXIS_LENGTH,
@@ -509,6 +539,28 @@ class Visualizer extends PureComponent {
             metricCoordinateSystem.name = 'MetricCoordinateSystem';
             metricCoordinateSystem.visible = visible && (units === METRIC_UNITS);
             this.group.add(metricCoordinateSystem);
+        }
+
+        { // Imperial Grid Line Numbers
+            const visible = objects.gridLineNumbers.visible;
+            const imperialGridLineNumbers = this.createGridLineNumbers({
+                gridCount: IMPERIAL_GRID_COUNT,
+                gridSpacing: IMPERIAL_GRID_SPACING
+            });
+            imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
+            imperialGridLineNumbers.visible = visible && (units === IMPERIAL_UNITS);
+            this.group.add(imperialGridLineNumbers);
+        }
+
+        { // Metric Grid Line Numbers
+            const visible = objects.gridLineNumbers.visible;
+            const metricGridLineNumbers = this.createGridLineNumbers({
+                gridCount: METRIC_GRID_COUNT,
+                gridSpacing: METRIC_GRID_SPACING
+            });
+            metricGridLineNumbers.name = 'MetricGridLineNumbers';
+            metricGridLineNumbers.visible = visible && (units === METRIC_UNITS);
+            this.group.add(metricGridLineNumbers);
         }
 
         { // Tool Head
