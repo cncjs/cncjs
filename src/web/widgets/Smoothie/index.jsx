@@ -6,6 +6,7 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import Smoothie from './Smoothie';
+import Controller from './Controller';
 import {
     SMOOTHIE
 } from '../../constants';
@@ -345,6 +346,9 @@ class SmoothieWidget extends PureComponent {
                         { [styles.hidden]: minimized }
                     )}
                 >
+                    {state.modal.name === MODAL_CONTROLLER &&
+                    <Controller state={state} actions={actions} />
+                    }
                     <Smoothie
                         state={state}
                         actions={actions}
