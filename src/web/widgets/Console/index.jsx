@@ -70,7 +70,7 @@ class ConsoleWidget extends PureComponent {
             this.setState({ ...initialState });
         },
         'serialport:write': (data, context) => {
-            if ((typeof context === 'object') && (context.__sender__ === this.props.widgetId)) {
+            if (context && (context.__sender__ === this.props.widgetId)) {
                 // Do not write to the terminal console if the sender is the widget itself
                 return;
             }
