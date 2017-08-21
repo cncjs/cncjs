@@ -6,6 +6,7 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import TinyG from './TinyG';
+import Controller from './Controller';
 import {
     TINYG
 } from '../../constants';
@@ -384,6 +385,9 @@ class TinyGWidget extends PureComponent {
                         { [styles.hidden]: minimized }
                     )}
                 >
+                    {state.modal.name === MODAL_CONTROLLER &&
+                    <Controller state={state} actions={actions} />
+                    }
                     <TinyG
                         state={state}
                         actions={actions}

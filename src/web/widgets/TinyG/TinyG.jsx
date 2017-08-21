@@ -9,7 +9,6 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
-import Controller from './Controller';
 import { Button } from '../../components/Buttons';
 import Overrides from './Overrides';
 import {
@@ -28,9 +27,6 @@ import {
     TINYG_MACHINE_STATE_SHUTDOWN,
     TINYG_MACHINE_STATE_PANIC
 } from '../../constants';
-import {
-    MODAL_CONTROLLER
-} from './constants';
 import styles from './index.styl';
 
 class TinyG extends PureComponent {
@@ -87,9 +83,6 @@ class TinyG extends PureComponent {
 
         return (
             <div>
-                {state.modal.name === MODAL_CONTROLLER &&
-                <Controller state={state} actions={actions} />
-                }
                 <Overrides ovF={ovF} ovS={ovS} ovT={ovT} />
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
