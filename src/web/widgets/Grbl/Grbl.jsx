@@ -6,11 +6,7 @@ import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
-import Controller from './Controller';
 import Overrides from './Overrides';
-import {
-    MODAL_CONTROLLER
-} from './constants';
 import styles from './index.styl';
 
 class Grbl extends PureComponent {
@@ -60,9 +56,6 @@ class Grbl extends PureComponent {
 
         return (
             <div>
-                {state.modal.name === MODAL_CONTROLLER &&
-                <Controller state={state} actions={actions} />
-                }
                 <Overrides ovF={ovF} ovS={ovS} ovR={ovR} />
                 {!_.isEmpty(buf) &&
                 <Panel className={styles.panel}>

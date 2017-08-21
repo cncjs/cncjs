@@ -6,6 +6,7 @@ import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
 import WidgetConfig from '../WidgetConfig';
 import Grbl from './Grbl';
+import Controller from './Controller';
 import {
     GRBL
 } from '../../constants';
@@ -375,6 +376,9 @@ class GrblWidget extends PureComponent {
                         { [styles.hidden]: minimized }
                     )}
                 >
+                    {state.modal.name === MODAL_CONTROLLER &&
+                    <Controller state={state} actions={actions} />
+                    }
                     <Grbl
                         state={state}
                         actions={actions}
