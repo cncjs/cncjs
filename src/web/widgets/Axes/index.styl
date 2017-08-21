@@ -146,11 +146,11 @@
         line-height: 30px;
         text-align: center;
         vertical-align: middle;
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+        box-shadow: 1px 1px 2px rgba(0, 0, 0, .1);
 
         &:active,
         &.active {
-            box-shadow: 0 0 2px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 2px rgba(0, 0, 0, .1);
             transform: translate(1px, 1px);
         }
 
@@ -164,23 +164,23 @@
                 color: #333;
             }
         }
-    }
 
-    button.btn-keypad.highlight {
-        background-color: rgba(240, 240, 240, .8);
-        background-image: none;
-        box-shadow: 1px 1px 2px rgba(0, 0, 0, .2);
-        border-color: rgba(0, 0, 0, .4);
+        &.highlight {
+            background-color: rgba(240, 240, 240, .8);
+            background-image: none;
+            box-shadow: 1px 1px 2px rgba(0, 0, 0, .2);
+            border-color: rgba(0, 0, 0, .4);
 
-        &:hover,
-        &.hover {
-            background-color: rgba(0, 0, 0, .1);
-        }
+            &:hover,
+            &.hover {
+                background-color: rgba(0, 0, 0, .1);
+            }
 
-        &:active,
-        &.active {
-            box-shadow: 0 0 2px rgba(0, 0, 0, .2);
-            transform: translate(1px, 1px);
+            &:active,
+            &.active {
+                box-shadow: 0 0 2px rgba(0, 0, 0, .2);
+                transform: translate(1px, 1px);
+            }
         }
     }
 }
