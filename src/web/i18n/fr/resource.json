@@ -381,6 +381,8 @@
     "Display G-code Filename": "",
     "Hide Coordinate System": "",
     "Show Coordinate System": "",
+    "Hide Grid Line Numbers": "",
+    "Show Grid Line Numbers": "",
     "Hide Toolhead": "",
     "Show Toolhead": "",
     "File folder": "Dossier de fichiers",

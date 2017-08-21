@@ -381,6 +381,8 @@
     "Display G-code Filename": "",
     "Hide Coordinate System": "座標系を非表示にする",
     "Show Coordinate System": "座標系を表示する",
+    "Hide Grid Line Numbers": "",
+    "Show Grid Line Numbers": "",
     "Hide Toolhead": "ツールヘッドを非表示にする",
     "Show Toolhead": "ツールヘッドを表示する",
     "File folder": "ファイル フォルダー",
