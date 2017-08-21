@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Modal from '../../../components/Modal';
 import Notifications from '../../../components/Notifications';
 import ToggleSwitch from '../../../components/ToggleSwitch';
@@ -9,7 +9,7 @@ import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
 import styles from '../form.styl';
 
-class UpdateRecord extends Component {
+class UpdateRecord extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -21,9 +21,6 @@ class UpdateRecord extends Component {
         commands: null
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     get value() {
         return {
             enabled: !!_.get(this.fields.enabled, 'state.checked'),

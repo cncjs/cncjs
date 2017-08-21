@@ -1,12 +1,12 @@
 import classNames from 'classnames';
 import get from 'lodash/get';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import FacebookLoading from 'react-facebook-loading';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
-class General extends Component {
+class General extends PureComponent {
     static propTypes = {
         initialState: PropTypes.object,
         state: PropTypes.object,
@@ -40,9 +40,6 @@ class General extends Component {
     componentDidMount() {
         const { actions } = this.props;
         actions.load();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     render() {
         const { state, stateChanged } = this.props;

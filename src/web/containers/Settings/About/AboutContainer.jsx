@@ -1,4 +1,5 @@
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import Anchor from '../../../components/Anchor';
 import settings from '../../../config/settings';
 import i18n from '../../../lib/i18n';

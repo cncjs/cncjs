@@ -1,11 +1,10 @@
-//import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import store from '../../../store';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
-class Workspace extends Component {
+class Workspace extends PureComponent {
     static propTypes = {
         initialState: PropTypes.object,
         state: PropTypes.object,
@@ -13,9 +12,6 @@ class Workspace extends Component {
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { actions } = this.props;
         const workspaceSettings = store.get();

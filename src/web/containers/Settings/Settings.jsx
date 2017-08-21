@@ -3,8 +3,7 @@ import i18next from 'i18next';
 import _ from 'lodash';
 import camelCase from 'lodash/camelCase';
 import Uri from 'jsuri';
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import api from '../../api';
 import settings from '../../config/settings';
@@ -28,7 +27,7 @@ const mapSectionPathToId = (path = '') => {
     return camelCase(path.split('/')[0] || '');
 };
 
-class Settings extends Component {
+class Settings extends PureComponent {
     static propTypes = {
         ...withRouter.propTypes
     };
@@ -734,9 +733,6 @@ class Settings extends Component {
     }
     componentWillUnmount() {
         this.mounted = false;
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     getInitialState() {
         return {

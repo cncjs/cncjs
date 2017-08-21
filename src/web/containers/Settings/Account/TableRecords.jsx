@@ -1,7 +1,7 @@
 /* eslint react/jsx-no-bind: 0 */
 import moment from 'moment';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Anchor from '../../../components/Anchor';
 import Table from '../../../components/Table';
 import ToggleSwitch from '../../../components/ToggleSwitch';
@@ -14,15 +14,12 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class TableRecords extends Component {
+class TableRecords extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
 

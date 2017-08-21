@@ -1,6 +1,7 @@
 import moment from 'moment';
 import classNames from 'classnames';
-import React, { PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React from 'react';
 import semver from 'semver';
 import Anchor from '../../../components/Anchor';
 import settings from '../../../config/settings';
