@@ -1,6 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 
-class Image extends Component {
+class Image extends PureComponent {
     static propTypes = {
         src: PropTypes.string
     };

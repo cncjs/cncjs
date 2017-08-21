@@ -1,5 +1,6 @@
 import noop from 'lodash/noop';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import Modal from '../../components/Modal';
 import i18n from '../../lib/i18n';
@@ -8,7 +9,7 @@ import {
     MEDIA_SOURCE_MJPEG
 } from './constants';
 
-class Settings extends Component {
+class Settings extends PureComponent {
     static propTypes = {
         mediaSource: PropTypes.string,
         url: PropTypes.string,
@@ -63,37 +64,37 @@ class Settings extends Component {
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <h5>{i18n._('Media Source')}</h5>
-                    <div className="radio">
-                        <label>
-                            <input
-                                type="radio"
-                                name="mediaSource"
-                                value={MEDIA_SOURCE_LOCAL}
-                                checked={mediaSource === MEDIA_SOURCE_LOCAL}
-                                onChange={() => {
-                                    this.setState({ mediaSource: MEDIA_SOURCE_LOCAL });
-                                }}
-                            />
-                            {i18n._('Use a built-in camera or a connected webcam')}
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input
-                                type="radio"
-                                name="mediaSource"
-                                value={MEDIA_SOURCE_MJPEG}
-                                checked={mediaSource === MEDIA_SOURCE_MJPEG}
-                                onChange={() => {
-                                    this.setState({ mediaSource: MEDIA_SOURCE_MJPEG });
-                                }}
-                            />
-                            {i18n._('Use a M-JPEG stream over HTTP')}
-                        </label>
-                    </div>
-                    <div style={{ marginLeft: 20 }}>
-                        <div className="form-group">
+                    <div className="form-group">
+                        <label><strong>{i18n._('Media Source')}</strong></label>
+                        <div className="radio" style={{ marginTop: 0 }}>
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="mediaSource"
+                                    value={MEDIA_SOURCE_LOCAL}
+                                    checked={mediaSource === MEDIA_SOURCE_LOCAL}
+                                    onChange={() => {
+                                        this.setState({ mediaSource: MEDIA_SOURCE_LOCAL });
+                                    }}
+                                />
+                                {i18n._('Use a built-in camera or a connected webcam')}
+                            </label>
+                        </div>
+                        <div className="radio">
+                            <label>
+                                <input
+                                    type="radio"
+                                    name="mediaSource"
+                                    value={MEDIA_SOURCE_MJPEG}
+                                    checked={mediaSource === MEDIA_SOURCE_MJPEG}
+                                    onChange={() => {
+                                        this.setState({ mediaSource: MEDIA_SOURCE_MJPEG });
+                                    }}
+                                />
+                                {i18n._('Use a M-JPEG stream over HTTP')}
+                            </label>
+                        </div>
+                        <div style={{ marginLeft: 20 }}>
                             <input
                                 type="url"
                                 className="form-control"

@@ -1,6 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 
-class Line extends Component {
+class Line extends PureComponent {
     static propTypes = {
         style: PropTypes.object,
         vertical: PropTypes.bool,
