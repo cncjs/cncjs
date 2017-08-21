@@ -1,8 +1,7 @@
-//import classNames from 'classnames';
 import _ from 'lodash';
 import Slider from 'rc-slider';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
 import RepeatButton from '../../components/RepeatButton';
@@ -18,15 +17,12 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-class Laser extends Component {
+class Laser extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     getLaserIntensityScale() {
         const { state } = this.props;
         const controllerType = state.controller.type;

@@ -1,8 +1,8 @@
 import includes from 'lodash/includes';
 import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
@@ -19,7 +19,7 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-class LaserWidget extends Component {
+class LaserWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -177,9 +177,6 @@ class LaserWidget extends Component {
     }
     componentWillUnmount() {
         this.removeControllerEvents();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate(prevProps, prevState) {
         const {
