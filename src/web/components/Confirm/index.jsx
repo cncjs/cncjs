@@ -1,6 +1,7 @@
 import classNames from 'classnames';
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Modal from '../Modal';
 
 const defaultOrder = [
@@ -48,7 +49,7 @@ CancelButton.propTypes = {
     onClick: PropTypes.func
 };
 
-class Confirm extends Component {
+class Confirm extends PureComponent {
     static propTypes = {
         show: PropTypes.bool,
         title: PropTypes.node,

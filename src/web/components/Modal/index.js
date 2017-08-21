@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import Modal from '@trendmicro/react-modal';
 import '@trendmicro/react-modal/dist/react-modal.css';
 
-class ModalWrapper extends Component {
+class ModalWrapper extends PureComponent {
     static propTypes = {
         ...Modal.propTypes
     };

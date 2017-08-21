@@ -1,7 +1,8 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
 
-class Webcam extends Component {
+class Webcam extends PureComponent {
     static propTypes = {
         // Video props
         autoPlay: PropTypes.bool,

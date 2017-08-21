@@ -1,27 +1,29 @@
 import classNames from 'classnames';
-import React, { Component } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Anchor from '../Anchor';
 import styles from './index.styl';
 
-class Button extends Component {
+class Button extends PureComponent {
     static propTypes = {
-        ...Anchor.propTypes
+        ...Anchor.propTypes,
+        inverted: PropTypes.bool
     };
     static defaultProps = {
-        ...Anchor.defaultProps
+        ...Anchor.defaultProps,
+        inverted: false
     };
 
     render() {
-        const { className, ...props } = this.props;
+        const { inverted, className, ...props } = this.props;
 
         return (
             <Anchor
                 {...props}
-                className={classNames(
-                    className,
-                    styles.widgetButton,
-                    { [styles.disabled]: !!props.disabled }
-                )}
+                className={classNames(className, styles.widgetButton, {
+                    [styles.disabled]: !!props.disabled,
+                    [styles.inverted]: inverted
+                })}
             />
         );
     }
