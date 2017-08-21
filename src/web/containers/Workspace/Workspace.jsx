@@ -2,9 +2,8 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
-import React, { Component } from 'react';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
-import shallowCompare from 'react-addons-shallow-compare';
 import { withRouter } from 'react-router-dom';
 import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
@@ -37,7 +36,7 @@ const reloadPage = (forcedReload = true) => {
     window.location.reload(forcedReload);
 };
 
-class Workspace extends Component {
+class Workspace extends PureComponent {
     static propTypes = {
         ...withRouter.propTypes
     };
@@ -114,9 +113,6 @@ class Workspace extends Component {
     componentWillUnmount() {
         this.removeControllerEvents();
         this.removeResizeEventListener();
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     componentDidUpdate() {
         store.set('workspace.container.primary.show', this.state.showPrimaryContainer);

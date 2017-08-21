@@ -1,8 +1,9 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Toggle from 'react-toggle';
 import i18n from '../../../lib/i18n';
 
-class WidgetListItem extends Component {
+class WidgetListItem extends PureComponent {
     static propTypes = {
         id: PropTypes.string,
         caption: PropTypes.string,

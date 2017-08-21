@@ -1,7 +1,8 @@
 import classNames from 'classnames';
 import _ from 'lodash';
 import pubsub from 'pubsub-js';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Sortable from 'react-sortablejs';
 import uuid from 'uuid';
 import { GRBL, SMOOTHIE, TINYG } from '../../constants';
@@ -13,7 +14,7 @@ import store from '../../store';
 import Widget from './Widget';
 import styles from './widgets.styl';
 
-class PrimaryWidgets extends Component {
+class PrimaryWidgets extends PureComponent {
     static propTypes = {
         onForkWidget: PropTypes.func.isRequired,
         onRemoveWidget: PropTypes.func.isRequired,

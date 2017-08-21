@@ -1,5 +1,6 @@
 import _ from 'lodash';
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Modal from '../../../components/Modal';
 import { GRBL, SMOOTHIE, TINYG } from '../../../constants';
 import controller from '../../../lib/controller';
@@ -7,7 +8,7 @@ import i18n from '../../../lib/i18n';
 import store from '../../../store';
 import WidgetList from './WidgetList';
 
-class WidgetManager extends Component {
+class WidgetManager extends PureComponent {
     static propTypes = {
         onSave: PropTypes.func,
         onClose: PropTypes.func.isRequired
