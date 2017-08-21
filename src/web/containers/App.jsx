@@ -1,5 +1,4 @@
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import Header from './Header';
 import Sidebar from './Sidebar';
@@ -7,14 +6,11 @@ import Workspace from './Workspace';
 import Settings from './Settings';
 import styles from './App.styl';
 
-class App extends Component {
+class App extends PureComponent {
     static propTypes = {
         ...withRouter.propTypes
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { location } = this.props;
         const accepted = ([

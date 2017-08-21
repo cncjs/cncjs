@@ -1,9 +1,10 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
 
-class QuickAccessToolbar extends Component {
+class QuickAccessToolbar extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object

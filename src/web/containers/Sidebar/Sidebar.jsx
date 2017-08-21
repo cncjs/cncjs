@@ -1,18 +1,14 @@
 import classNames from 'classnames';
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
 
-class Sidebar extends Component {
+class Sidebar extends PureComponent {
     static propTypes = {
         ...withRouter.propTypes
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { pathname = '' } = this.props.location;
 

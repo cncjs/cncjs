@@ -1,6 +1,5 @@
 import classNames from 'classnames';
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import semver from 'semver';
@@ -32,7 +31,7 @@ const newUpdateAvailableTooltip = () => {
     );
 };
 
-class Header extends Component {
+class Header extends PureComponent {
     static propTypes = {
         ...withRouter.propTypes
     };
@@ -216,9 +215,6 @@ class Header extends Component {
         this.removeControllerEvents();
 
         this.runningTasks = [];
-    }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
     }
     addActionHandlers() {
         Object.keys(this.actionHandlers).forEach(eventName => {

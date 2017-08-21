@@ -1,10 +1,11 @@
 /* eslint react/no-set-state: 0 */
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import Confirm from '../components/Confirm';
 import i18n from './i18n';
 
-class ConfirmHOC extends Component {
+class ConfirmHOC extends PureComponent {
     static propTypes = {
         container: PropTypes.object,
         onConfirm: PropTypes.func,

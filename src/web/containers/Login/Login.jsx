@@ -1,6 +1,5 @@
 import classNames from 'classnames';
-import React, { Component } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import React, { PureComponent } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import Anchor from '../../components/Anchor';
 import Notifications from '../../components/Notifications';
@@ -11,7 +10,7 @@ import log from '../../lib/log';
 import user from '../../lib/user';
 import styles from './index.styl';
 
-class Login extends Component {
+class Login extends PureComponent {
     static propTypes = {
         ...withRouter.propTypes
     };
@@ -65,9 +64,6 @@ class Login extends Component {
         password: null
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     getDefaultState() {
         return {
             alertMessage: '',
