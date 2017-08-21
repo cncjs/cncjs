@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import i18n from '../../lib/i18n';
 import RepeatButton from '../../components/RepeatButton';
 import {
@@ -11,15 +11,12 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-class JogDistance extends Component {
+class JogDistance extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     render() {
         const { state, actions } = this.props;
         const { units, selectedDistance, customDistance } = state;
@@ -54,7 +51,7 @@ class JogDistance extends Component {
         };
 
         return (
-            <div className={styles.jogDistanceControl}>
+            <div className={styles.jogDistance}>
                 <div className="input-group input-group-sm">
                     <div className="input-group-btn">
                         <button

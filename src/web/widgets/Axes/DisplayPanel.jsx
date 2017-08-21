@@ -1,12 +1,13 @@
 import classNames from 'classnames';
 import includes from 'lodash/includes';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
-import { DropdownButton, MenuItem } from 'react-bootstrap';
-import { in2mm } from '../../lib/units';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Anchor from '../../components/Anchor';
-import i18n from '../../lib/i18n';
+import Dropdown, { MenuItem } from '../../components/Dropdown';
 import controller from '../../lib/controller';
+import ensureArray from '../../lib/ensure-array';
+import i18n from '../../lib/i18n';
+import { in2mm } from '../../lib/units';
 import PositionInput from './PositionInput';
 import {
     IMPERIAL_UNITS,
@@ -14,8 +15,9 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-class DisplayPanel extends Component {
+class DisplayPanel extends PureComponent {
     static propTypes = {
+        config: PropTypes.object,
         state: PropTypes.object,
         actions: PropTypes.object
     };
@@ -27,15 +29,11 @@ class DisplayPanel extends Component {
         showAPositionInput: false
     };
 
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
-    handleSelect(eventKey) {
-        const data = eventKey;
-        if (data) {
-            controller.command('gcode', data);
-        }
-    }
+    handleSelect = (eventKey) => {
+        const commands = ensureArray(eventKey);
+        commands.forEach(command => controller.command('gcode', command));
+    };
+
     render() {
         const { state, actions } = this.props;
         const { units, canClick, axes, machinePosition, workPosition } = state;
@@ -61,7 +59,119 @@ class DisplayPanel extends Component {
                             <th className="nowrap" title={i18n._('Axis')}>{i18n._('Axis')}</th>
                             <th title={i18n._('Machine Position')}>{i18n._('Machine Position')}</th>
                             <th title={i18n._('Work Position')}>{i18n._('Work Position')}</th>
-                            <th className="nowrap" title={i18n._('Action')}>{i18n._('Action')}</th>
+                            <th className={classNames('nowrap', styles.action)}>
+                                <Dropdown
+                                    id="axes-dropdown"
+                                    pullRight
+                                    disabled={!canClick}
+                                    onSelect={this.handleSelect}
+                                >
+                                    <Dropdown.Toggle
+                                        className={styles.actionDropdown}
+                                        btnStyle="link"
+                                        compact
+                                        noCaret
+                                    >
+                                        <i className="fa fa-fw fa-caret-down" />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
+                                        {wcs === 'G54' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
+                                        }
+                                        <MenuItem
+                                            eventKey="G0 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        {wcs === 'G54' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P1 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Offsets (G10 L20 P1 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P2 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Offsets (G10 L20 P2 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P3 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Offsets (G10 L20 P3 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P4 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Offsets (G10 L20 P4 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P5 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P6 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G53 G0 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Machine Zero (G53 G0 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -112,119 +222,118 @@ class DisplayPanel extends Component {
                                 }
                             </td>
                             <td className={styles.action}>
-                                <DropdownButton
-                                    bsSize="xs"
-                                    bsStyle="default"
-                                    title="X"
+                                <Dropdown
                                     id="axis-x-dropdown"
                                     pullRight
                                     disabled={!canClick}
+                                    onSelect={this.handleSelect}
                                 >
-                                    {wcs === 'G54' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                                    }
-                                    {wcs === 'G55' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-                                    }
-                                    {wcs === 'G56' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-                                    }
-                                    {wcs === 'G57' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-                                    }
-                                    {wcs === 'G58' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-                                    }
-                                    {wcs === 'G59' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-                                    }
-                                    <MenuItem
-                                        eventKey="G0 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
+                                    <Dropdown.Toggle
+                                        className={styles.actionDropdown}
+                                        style={{ lineHeight: '32px' }}
+                                        btnStyle="link"
+                                        compact
+                                        noCaret
                                     >
-                                        {i18n._('Go To Work Zero On X Axis (G0 X0)')}
-                                    </MenuItem>
-                                    {wcs === 'G54' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P1 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work X Axis (G10 L20 P1 X0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G55' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P2 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work X Axis (G10 L20 P2 X0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G56' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P3 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work X Axis (G10 L20 P3 X0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G57' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P4 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work X Axis (G10 L20 P4 X0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G58' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P5 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work X Axis (G10 L20 P5 X0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G59' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P6 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work X Axis (G10 L20 P6 X0)')}
-                                    </MenuItem>
-                                    }
-                                    <MenuItem divider />
-                                    <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G53 G0 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Go To Machine Zero On X Axis (G53 G0 X0)')}
-                                    </MenuItem>
-                                    <MenuItem divider />
-                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G92 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Temporary X Axis (G92 X0)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        eventKey="G92.1 X0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
-                                    </MenuItem>
-                                </DropdownButton>
+                                        <i className="fa fa-fw fa-ellipsis-v" />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {wcs === 'G54' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
+                                        }
+                                        <MenuItem
+                                            eventKey="G0 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Work Zero On X Axis (G0 X0)')}
+                                        </MenuItem>
+                                        {wcs === 'G54' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P1 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work X Axis (G10 L20 P1 X0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P2 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work X Axis (G10 L20 P2 X0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P3 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work X Axis (G10 L20 P3 X0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P4 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work X Axis (G10 L20 P4 X0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P5 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work X Axis (G10 L20 P5 X0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P6 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work X Axis (G10 L20 P6 X0)')}
+                                        </MenuItem>
+                                        }
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G53 G0 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Machine Zero On X Axis (G53 G0 X0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary X Axis (G92 X0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </td>
                         </tr>
                         }
@@ -275,119 +384,118 @@ class DisplayPanel extends Component {
                                 }
                             </td>
                             <td className={styles.action}>
-                                <DropdownButton
-                                    bsSize="xs"
-                                    bsStyle="default"
-                                    title="Y"
+                                <Dropdown
                                     id="axis-y-dropdown"
                                     pullRight
                                     disabled={!canClick}
+                                    onSelect={this.handleSelect}
                                 >
-                                    {wcs === 'G54' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                                    }
-                                    {wcs === 'G55' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-                                    }
-                                    {wcs === 'G56' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-                                    }
-                                    {wcs === 'G57' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-                                    }
-                                    {wcs === 'G58' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-                                    }
-                                    {wcs === 'G59' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-                                    }
-                                    <MenuItem
-                                        eventKey="G0 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
+                                    <Dropdown.Toggle
+                                        className={styles.actionDropdown}
+                                        style={{ lineHeight: '32px' }}
+                                        btnStyle="link"
+                                        compact
+                                        noCaret
                                     >
-                                        {i18n._('Go To Work Zero On Y Axis (G0 Y0)')}
-                                    </MenuItem>
-                                    {wcs === 'G54' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P1 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Y Axis (G10 L20 P1 Y0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G55' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P2 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Y Axis (G10 L20 P2 Y0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G56' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P3 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Y Axis (G10 L20 P3 Y0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G57' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P4 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Y Axis (G10 L20 P4 Y0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G58' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P5 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Y Axis (G10 L20 P5 Y0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G59' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P6 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Y Axis (G10 L20 P6 Y0)')}
-                                    </MenuItem>
-                                    }
-                                    <MenuItem divider />
-                                    <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G53 G0 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Go To Machine Zero On Y Axis (G53 G0 Y0)')}
-                                    </MenuItem>
-                                    <MenuItem divider />
-                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G92 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Temporary Y Axis (G92 Y0)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        eventKey="G92.1 Y0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
-                                    </MenuItem>
-                                </DropdownButton>
+                                        <i className="fa fa-fw fa-ellipsis-v" />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {wcs === 'G54' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
+                                        }
+                                        <MenuItem
+                                            eventKey="G0 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Work Zero On Y Axis (G0 Y0)')}
+                                        </MenuItem>
+                                        {wcs === 'G54' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P1 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Y Axis (G10 L20 P1 Y0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P2 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Y Axis (G10 L20 P2 Y0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P3 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Y Axis (G10 L20 P3 Y0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P4 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Y Axis (G10 L20 P4 Y0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P5 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Y Axis (G10 L20 P5 Y0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P6 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Y Axis (G10 L20 P6 Y0)')}
+                                        </MenuItem>
+                                        }
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G53 G0 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Machine Zero On Y Axis (G53 G0 Y0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary Y Axis (G92 Y0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </td>
                         </tr>
                         }
@@ -440,145 +548,124 @@ class DisplayPanel extends Component {
                                 }
                             </td>
                             <td className={styles.action}>
-                                <DropdownButton
-                                    bsSize="xs"
-                                    bsStyle="default"
-                                    title="Z"
+                                <Dropdown
                                     id="axis-z-dropdown"
                                     pullRight
                                     disabled={!canClick}
+                                    onSelect={this.handleSelect}
                                 >
-                                    {wcs === 'G54' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                                    }
-                                    {wcs === 'G55' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-                                    }
-                                    {wcs === 'G56' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-                                    }
-                                    {wcs === 'G57' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-                                    }
-                                    {wcs === 'G58' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-                                    }
-                                    {wcs === 'G59' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-                                    }
-                                    <MenuItem
-                                        eventKey="G0 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
+                                    <Dropdown.Toggle
+                                        className={styles.actionDropdown}
+                                        style={{ lineHeight: '32px' }}
+                                        btnStyle="link"
+                                        compact
+                                        noCaret
                                     >
-                                        {i18n._('Go To Work Zero On Z Axis (G0 Z0)')}
-                                    </MenuItem>
-                                    {wcs === 'G54' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P1 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Z Axis (G10 L20 P1 Z0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G55' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P2 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Z Axis (G10 L20 P2 Z0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G56' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P3 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Z Axis (G10 L20 P3 Z0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G57' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P4 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Z Axis (G10 L20 P4 Z0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G58' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P5 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Z Axis (G10 L20 P5 Z0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G59' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P6 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work Z Axis (G10 L20 P6 Z0)')}
-                                    </MenuItem>
-                                    }
-                                    <MenuItem divider />
-                                    <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G53 G0 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Go To Machine Zero On Z Axis (G53 G0 Z0)')}
-                                    </MenuItem>
-                                    <MenuItem divider />
-                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G92 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Temporary Z Axis (G92 Z0)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        eventKey="G92.1 Z0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
-                                    </MenuItem>
-                                </DropdownButton>
+                                        <i className="fa fa-fw fa-ellipsis-v" />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {wcs === 'G54' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
+                                        }
+                                        <MenuItem
+                                            eventKey="G0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Work Zero On Z Axis (G0 Z0)')}
+                                        </MenuItem>
+                                        {wcs === 'G54' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P1 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Z Axis (G10 L20 P1 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P2 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Z Axis (G10 L20 P2 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P3 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Z Axis (G10 L20 P3 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P4 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Z Axis (G10 L20 P4 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P5 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Z Axis (G10 L20 P5 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P6 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work Z Axis (G10 L20 P6 Z0)')}
+                                        </MenuItem>
+                                        }
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G53 G0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Machine Zero On Z Axis (G53 G0 Z0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary Z Axis (G92 Z0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </td>
                         </tr>
                         }
                         {includes(axes, 'a') &&
                         <tr>
-                            <td className={classNames(styles.coordinate, styles.top)}>
-                                <div>A</div>
-                                <Anchor
-                                    className={styles.moveBackward}
-                                    onClick={() => {
-                                        const distance = actions.getJogDistance();
-                                        actions.jog({ A: -distance });
-                                    }}
-                                >
-                                    <i className="fa fa-fw fa-minus" />
-                                </Anchor>
-                                <Anchor
-                                    className={styles.moveForward}
-                                    onClick={() => {
-                                        const distance = actions.getJogDistance();
-                                        actions.jog({ A: distance });
-                                    }}
-                                >
-                                    <i className="fa fa-fw fa-plus" />
-                                </Anchor>
-                            </td>
+                            <td className={styles.coordinate}>A</td>
                             <td className={styles.machinePosition}>
                                 <span className={styles.integerPart}>{machinePosition.a.split('.')[0]}</span>
                                 <span className={styles.decimalPoint}>.</span>
@@ -623,119 +710,118 @@ class DisplayPanel extends Component {
                                 }
                             </td>
                             <td className={styles.action}>
-                                <DropdownButton
-                                    bsSize="xs"
-                                    bsStyle="default"
-                                    title="A"
+                                <Dropdown
                                     id="axis-a-dropdown"
                                     pullRight
                                     disabled={!canClick}
+                                    onSelect={this.handleSelect}
                                 >
-                                    {wcs === 'G54' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
-                                    }
-                                    {wcs === 'G55' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
-                                    }
-                                    {wcs === 'G56' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
-                                    }
-                                    {wcs === 'G57' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
-                                    }
-                                    {wcs === 'G58' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
-                                    }
-                                    {wcs === 'G59' &&
-                                    <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
-                                    }
-                                    <MenuItem
-                                        eventKey="G0 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
+                                    <Dropdown.Toggle
+                                        className={styles.actionDropdown}
+                                        style={{ lineHeight: '32px' }}
+                                        btnStyle="link"
+                                        compact
+                                        noCaret
                                     >
-                                        {i18n._('Go To Work Zero On A Axis (G0 A0)')}
-                                    </MenuItem>
-                                    {wcs === 'G54' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P1 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work A Axis (G10 L20 P1 A0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G55' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P2 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work A Axis (G10 L20 P2 A0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G56' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P3 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work A Axis (G10 L20 P3 A0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G57' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P4 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work A Axis (G10 L20 P4 A0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G58' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P5 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work A Axis (G10 L20 P5 A0)')}
-                                    </MenuItem>
-                                    }
-                                    {wcs === 'G59' &&
-                                    <MenuItem
-                                        eventKey="G10 L20 P6 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Work A Axis (G10 L20 P6 A0)')}
-                                    </MenuItem>
-                                    }
-                                    <MenuItem divider />
-                                    <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G53 G0 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Go To Machine Zero On A Axis (G53 G0 A0)')}
-                                    </MenuItem>
-                                    <MenuItem divider />
-                                    <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                    <MenuItem
-                                        eventKey="G92 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Zero Out Temporary A Axis (G92 A0)')}
-                                    </MenuItem>
-                                    <MenuItem
-                                        eventKey="G92.1 A0"
-                                        onSelect={::this.handleSelect}
-                                        disabled={!canClick}
-                                    >
-                                        {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
-                                    </MenuItem>
-                                </DropdownButton>
+                                        <i className="fa fa-fw fa-ellipsis-v" />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {wcs === 'G54' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G55)')}</MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G56)')}</MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G57)')}</MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G58)')}</MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem header>{i18n._('Work Coordinate System (G59)')}</MenuItem>
+                                        }
+                                        <MenuItem
+                                            eventKey="G0 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Work Zero On A Axis (G0 A0)')}
+                                        </MenuItem>
+                                        {wcs === 'G54' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P1 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work A Axis (G10 L20 P1 A0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G55' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P2 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work A Axis (G10 L20 P2 A0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G56' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P3 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work A Axis (G10 L20 P3 A0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G57' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P4 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work A Axis (G10 L20 P4 A0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G58' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P5 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work A Axis (G10 L20 P5 A0)')}
+                                        </MenuItem>
+                                        }
+                                        {wcs === 'G59' &&
+                                        <MenuItem
+                                            eventKey="G10 L20 P6 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Work A Axis (G10 L20 P6 A0)')}
+                                        </MenuItem>
+                                        }
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G53 G0 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Go To Machine Zero On A Axis (G53 G0 A0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary A Axis (G92 A0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
                             </td>
                         </tr>
                         }

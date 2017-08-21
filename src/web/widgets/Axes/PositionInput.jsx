@@ -1,6 +1,7 @@
-import React, { Component, PropTypes } from 'react';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 
-class PositionInput extends Component {
+class PositionInput extends PureComponent {
     static propTypes = {
         defaultValue: PropTypes.string,
         onOK: PropTypes.func.isRequired,

@@ -3,8 +3,8 @@ import includes from 'lodash/includes';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
 import classNames from 'classnames';
-import React, { Component, PropTypes } from 'react';
-import shallowCompare from 'react-addons-shallow-compare';
+import PropTypes from 'prop-types';
+import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
 import combokeys from '../../lib/combokeys';
 import controller from '../../lib/controller';
@@ -13,6 +13,8 @@ import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
 import Axes from './Axes';
+import KeypadOverlay from './KeypadOverlay';
+import Settings from './Settings';
 import ShuttleControl from './ShuttleControl';
 import {
     // Units
@@ -79,7 +81,7 @@ const normalizeToRange = (n, min, max) => {
     return n;
 };
 
-class AxesWidget extends Component {
+class AxesWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -127,33 +129,6 @@ class AxesWidget extends Component {
                     }
                 }
             });
-        },
-        loadConfig: () => {
-            return {
-                axes: this.config.get('axes'),
-                feedrateMin: this.config.get('shuttle.feedrateMin'),
-                feedrateMax: this.config.get('shuttle.feedrateMax'),
-                hertz: this.config.get('shuttle.hertz'),
-                overshoot: this.config.get('shuttle.overshoot')
-            };
-        },
-        saveConfig: (data) => {
-            const {
-                axes,
-                feedrateMin,
-                feedrateMax,
-                hertz,
-                overshoot
-            } = { ...data };
-
-            this.config.replace('axes', axes); // array
-            this.config.set('shuttle.feedrateMin', feedrateMin);
-            this.config.set('shuttle.feedrateMax', feedrateMax);
-            this.config.set('shuttle.hertz', hertz);
-            this.config.set('shuttle.overshoot', overshoot);
-
-            // Update axes
-            this.setState({ axes: axes });
         },
         getJogDistance: () => {
             const { units } = this.state;
@@ -466,9 +441,6 @@ class AxesWidget extends Component {
         this.removeControllerEvents();
         this.removeShuttleControlEvents();
     }
-    shouldComponentUpdate(nextProps, nextState) {
-        return shallowCompare(this, nextProps, nextState);
-    }
     componentDidUpdate(prevProps, prevState) {
         const {
             units,
@@ -618,6 +590,7 @@ class AxesWidget extends Component {
         const { minimized, isFullscreen } = this.state;
         const { units, machinePosition, workPosition } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
+        const config = this.config;
         const state = {
             ...this.state,
             // Determine if the motion button is clickable
@@ -649,11 +622,22 @@ class AxesWidget extends Component {
                         }
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
+                        <KeypadOverlay
+                            show={state.canClick && state.keypadJogging}
+                        >
+                            <Widget.Button
+                                title={i18n._('Keypad jogging')}
+                                onClick={actions.toggleKeypadJogging}
+                                inverted={state.keypadJogging}
+                                disabled={!state.canClick}
+                            >
+                                <i className="fa fa-keyboard-o" />
+                            </Widget.Button>
+                        </KeypadOverlay>
                         <Widget.Button
                             title={i18n._('Edit')}
                             onClick={(event) => {
-                                const data = actions.loadConfig();
-                                actions.openModal(MODAL_SETTINGS, data);
+                                actions.openModal(MODAL_SETTINGS);
                             }}
                         >
                             <i className="fa fa-cog" />
@@ -715,7 +699,18 @@ class AxesWidget extends Component {
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <Axes state={state} actions={actions} />
+                    {state.modal.name === MODAL_SETTINGS &&
+                    <Settings
+                        config={config}
+                        onSave={() => {
+                            const axes = config.get('axes', DEFAULT_AXES);
+                            this.setState({ axes: axes });
+                            actions.closeModal();
+                        }}
+                        onCancel={actions.closeModal}
+                    />
+                    }
+                    <Axes config={config} state={state} actions={actions} />
                 </Widget.Content>
             </Widget>
         );

@@ -6,6 +6,7 @@ import { preventDefault } from './dom-events';
 const AXIS_X = 'x';
 const AXIS_Y = 'y';
 const AXIS_Z = 'z';
+const AXIS_A = 'a';
 const FORWARD = 1;
 const BACKWARD = -1;
 const OVERSHOOT_FACTOR = 10; // 10x
@@ -281,6 +282,66 @@ const commandKeys = [
         cmd: 'JOG',
         payload: {
             axis: AXIS_Z,
+            direction: BACKWARD,
+            factor: OVERSHOOT_FACTOR
+        },
+        preventDefault: false
+    },
+    { // Jog A+
+        keys: ']',
+        cmd: 'JOG',
+        payload: {
+            axis: AXIS_A,
+            direction: FORWARD,
+            factor: 1
+        },
+        preventDefault: false
+    },
+    { // Jog A+ (undershoot)
+        keys: 'alt+]',
+        cmd: 'JOG',
+        payload: {
+            axis: AXIS_A,
+            direction: FORWARD,
+            factor: UNDERSHOOT_FACTOR
+        },
+        preventDefault: false
+    },
+    { // Jog A+ (overshoot)
+        keys: 'shift+]',
+        cmd: 'JOG',
+        payload: {
+            axis: AXIS_A,
+            direction: FORWARD,
+            factor: OVERSHOOT_FACTOR
+        },
+        preventDefault: false
+    },
+    { // Jog A-
+        keys: '[',
+        cmd: 'JOG',
+        payload: {
+            axis: AXIS_A,
+            direction: BACKWARD,
+            factor: 1
+        },
+        preventDefault: false
+    },
+    { // Jog A- (undershoot)
+        keys: 'alt+[',
+        cmd: 'JOG',
+        payload: {
+            axis: AXIS_A,
+            direction: BACKWARD,
+            factor: UNDERSHOOT_FACTOR
+        },
+        preventDefault: false
+    },
+    { // Jog A- (overshoot)
+        keys: 'shift+[',
+        cmd: 'JOG',
+        payload: {
+            axis: AXIS_A,
             direction: BACKWARD,
             factor: OVERSHOOT_FACTOR
         },
