@@ -53,7 +53,14 @@ class SmoothieController {
                 log.warn(`Disconnected from serial port "${this.options.port}":`, err);
             }
 
-            this.close();
+            this.close(err => {
+                // Remove controller from store
+                const port = this.options.port;
+                store.unset(`controllers[${JSON.stringify(port)}]`);
+
+                // Destroy controller
+                this.destroy();
+            });
         },
         error: (err) => {
             this.ready = false;
@@ -402,6 +409,11 @@ class SmoothieController {
         });
 
         const queryStatusReport = () => {
+            // Check the ready flag
+            if (!(this.ready)) {
+                return;
+            }
+
             const now = new Date().getTime();
 
             // The status report query (?) is a realtime command, it does not consume the receive buffer.
@@ -428,7 +440,14 @@ class SmoothieController {
             }
         };
 
+        // The throttle function is executed on the trailing edge of the timeout,
+        // the function might be executed even if the query timer has been destroyed.
         const queryParserState = _.throttle(() => {
+            // Check the ready flag
+            if (!(this.ready)) {
+                return;
+            }
+
             const now = new Date().getTime();
 
             // Do not force query parser state ($G) when running a G-code program,
@@ -495,9 +514,9 @@ class SmoothieController {
                 this.emitAll('Smoothie:settings', this.settings);
             }
 
-            // Wait for the bootloader to complete before sending commands
+            // Check the ready flag
             if (!(this.ready)) {
-                // Not ready yet
+                // Wait for the bootloader to complete before sending commands
                 return;
             }
 
@@ -714,12 +733,13 @@ class SmoothieController {
             this.initController();
         });
     }
-    close() {
+    close(callback) {
         const { port } = this.options;
 
         // Assertion check
         if (!this.serialport) {
-            log.error(`Serial port "${port}" is not available`);
+            const err = `Serial port "${port}" is not available`;
+            callback(new Error(err));
             return;
         }
 
@@ -730,20 +750,24 @@ class SmoothieController {
             port: port,
             inuse: false
         });
-        store.unset('controllers["' + port + '"]');
 
-        if (this.isOpen()) {
-            this.serialport.removeListener('data', this.serialportListener.data);
-            this.serialport.removeListener('disconnect', this.serialportListener.disconnect);
-            this.serialport.removeListener('error', this.serialportListener.error);
-            this.serialport.close((err) => {
-                if (err) {
-                    log.error(`Error closing serial port "${port}":`, err);
-                }
-            });
+        if (this.isClose()) {
+            callback(null);
+            return;
         }
 
-        this.destroy();
+        this.serialport.removeListener('data', this.serialportListener.data);
+        this.serialport.removeListener('disconnect', this.serialportListener.disconnect);
+        this.serialport.removeListener('error', this.serialportListener.error);
+        this.serialport.close((err) => {
+            if (err) {
+                log.error(`Error closing serial port "${port}":`, err);
+                callback(err);
+                return;
+            }
+
+            callback(null);
+        });
     }
     isOpen() {
         return this.serialport && this.serialport.isOpen();

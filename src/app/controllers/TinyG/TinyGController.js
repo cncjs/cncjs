@@ -59,7 +59,14 @@ class TinyGController {
                 log.warn(`Disconnected from serial port "${this.options.port}":`, err);
             }
 
-            this.close();
+            this.close(err => {
+                // Remove controller from store
+                const port = this.options.port;
+                store.unset(`controllers[${JSON.stringify(port)}]`);
+
+                // Destroy controller
+                this.destroy();
+            });
         },
         error: (err) => {
             this.ready = false;
@@ -447,6 +454,12 @@ class TinyGController {
                 this.emitAll('TinyG:settings', this.settings);
             }
 
+            // Check the ready flag
+            if (!(this.ready)) {
+                // Wait for the bootloader to complete before sending commands
+                return;
+            }
+
             // Check if the machine has stopped movement after completion
             if (this.actionTime.senderFinishTime > 0) {
                 const machineIdle = zeroOffset && this.controller.isIdle();
@@ -728,12 +741,13 @@ class TinyGController {
             this.initController();
         });
     }
-    close() {
+    close(callback) {
         const { port } = this.options;
 
         // Assertion check
         if (!this.serialport) {
-            log.error(`Serial port "${port}" is not available`);
+            const err = `Serial port "${port}" is not available`;
+            callback(new Error(err));
             return;
         }
 
@@ -744,20 +758,24 @@ class TinyGController {
             port: port,
             inuse: false
         });
-        store.unset('controllers["' + port + '"]');
 
-        if (this.isOpen()) {
-            this.serialport.removeListener('data', this.serialportListener.data);
-            this.serialport.removeListener('disconnect', this.serialportListener.disconnect);
-            this.serialport.removeListener('error', this.serialportListener.error);
-            this.serialport.close((err) => {
-                if (err) {
-                    log.error(`Error closing serial port "${port}":`, err);
-                }
-            });
+        if (this.isClose()) {
+            callback(null);
+            return;
         }
 
-        this.destroy();
+        this.serialport.removeListener('data', this.serialportListener.data);
+        this.serialport.removeListener('disconnect', this.serialportListener.disconnect);
+        this.serialport.removeListener('error', this.serialportListener.error);
+        this.serialport.close((err) => {
+            if (err) {
+                log.error(`Error closing serial port "${port}":`, err);
+                callback(err);
+                return;
+            }
+
+            callback(null);
+        });
     }
     isOpen() {
         return this.serialport && this.serialport.isOpen();

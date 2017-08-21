@@ -237,7 +237,7 @@ class CNCEngine {
                     });
 
                     // Join the room
-                    socket.join(port); // FIXME
+                    socket.join(port);
 
                     callback(null);
                     return;
@@ -255,10 +255,10 @@ class CNCEngine {
                     if (store.get(`controllers["${port}"]`)) {
                         log.error(`Serial port "${port}" was not properly closed`);
                     }
-                    store.set(`controllers["${port}"]`, controller);
+                    store.set(`controllers[${JSON.stringify(port)}]`, controller);
 
                     // Join the room
-                    socket.join(port); // FIXME
+                    socket.join(port);
 
                     callback(null);
                 });
@@ -283,12 +283,18 @@ class CNCEngine {
                 // System Trigger: Close a serial port
                 this.event.trigger('port:close');
 
-                controller.close();
-
                 // Leave the room
-                socket.leave(port); // FIXME
+                socket.leave(port);
 
-                callback(null);
+                controller.close(err => {
+                    // Remove controller from store
+                    store.unset(`controllers[${JSON.stringify(port)}]`);
+
+                    // Destroy controller
+                    controller.destroy();
+
+                    callback(null);
+                });
             });
 
             socket.on('command', (port, cmd, ...args) => {
