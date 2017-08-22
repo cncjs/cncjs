@@ -2,7 +2,6 @@ import events from 'events';
 import fs from 'fs';
 import _ from 'lodash';
 import chalk from 'chalk';
-import parseJSON from 'parse-json';
 import logger from '../../lib/logger';
 
 const log = logger('service:configstore');
@@ -54,8 +53,7 @@ class ConfigStore extends events.EventEmitter {
     reload() {
         try {
             if (fs.existsSync(this.file)) {
-                const content = fs.readFileSync(this.file, 'utf8');
-                this.config = parseJSON(content);
+                this.config = JSON.parse(fs.readFileSync(this.file, 'utf8'));
             }
         } catch (err) {
             err.fileName = this.file;
