@@ -63,6 +63,12 @@ class ProbeWidget extends PureComponent {
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
+        collapse: () => {
+            this.setState({ minimized: true });
+        },
+        expand: () => {
+            this.setState({ minimized: false });
+        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState({
