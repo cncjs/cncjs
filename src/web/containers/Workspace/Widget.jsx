@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, { PureComponent } from 'react';
 import AxesWidget from '../../widgets/Axes';
 import ConnectionWidget from '../../widgets/Connection';
 import ConsoleWidget from '../../widgets/Console';
@@ -32,24 +32,33 @@ const getWidgetByName = (name) => {
     }[name] || null;
 };
 
-const Widget = (props) => {
-    const { widgetId } = { ...props };
+class WidgetWrapper extends PureComponent {
+    widget = null;
 
-    if (typeof widgetId !== 'string') {
-        return null;
+    render() {
+        const { widgetId } = this.props;
+
+        if (typeof widgetId !== 'string') {
+            return null;
+        }
+
+        // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
+        const name = widgetId.split(':')[0];
+        const Widget = getWidgetByName(name);
+
+        return (
+            <Widget
+                {...this.props}
+                ref={node => {
+                    this.widget = node;
+                }}
+            />
+        );
     }
+}
 
-    // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
-    const name = widgetId.split(':')[0];
-    const Component = getWidgetByName(name);
-
-    return (
-        <Component {...props} />
-    );
-};
-
-Widget.propTypes = {
+WidgetWrapper.propTypes = {
     widgetId: PropTypes.string.isRequired
 };
 
-export default Widget;
+export default WidgetWrapper;

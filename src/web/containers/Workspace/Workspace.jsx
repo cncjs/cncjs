@@ -5,7 +5,7 @@ import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
-import { Button } from '../../components/Buttons';
+import { Button, ButtonGroup, ButtonToolbar } from '../../components/Buttons';
 import Modal from '../../components/Modal';
 import api from '../../api';
 import controller from '../../lib/controller';
@@ -60,6 +60,8 @@ class Workspace extends PureComponent {
     secondaryContainer = null;
     primaryToggler = null;
     secondaryToggler = null;
+    primaryWidgets = null;
+    secondaryWidgets = null;
     defaultContainer = null;
     controllerEvents = {
         'connect': () => {
@@ -349,6 +351,7 @@ class Workspace extends PureComponent {
                 </div>
                 <Dropzone
                     className={styles.dropzone}
+                    disabled={controller.workflowState !== WORKFLOW_STATE_IDLE}
                     disableClick={true}
                     disablePreview={true}
                     multiple={false}
@@ -400,29 +403,59 @@ class Workspace extends PureComponent {
                                     { [styles.hidden]: hidePrimaryContainer }
                                 )}
                             >
-                                <div className={styles.toolbar} role="toolbar">
-                                    <div className="btn-group btn-group-xs pull-left" role="group">
-                                        <button
-                                            type="button"
-                                            className="btn btn-default"
-                                            onClick={::this.updateWidgetsForPrimaryContainer}
+                                <ButtonToolbar style={{ margin: '5px 0' }}>
+                                    <div className="pull-left">
+                                        <ButtonGroup
+                                            btnSize="xs"
+                                            btnStyle="flat"
                                         >
-                                            <i className="fa fa-list-alt" style={{ verticalAlign: 'middle' }} />
-                                            <span className="space" />
-                                            {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
-                                        </button>
+                                            <Button
+                                                style={{ minWidth: 22 }}
+                                                compact
+                                                onClick={::this.togglePrimaryContainer}
+                                            >
+                                                <i className="fa fa-chevron-left" />
+                                            </Button>
+                                            <Button
+                                                onClick={::this.updateWidgetsForPrimaryContainer}
+                                            >
+                                                <i className="fa fa-list-alt" />
+                                                {i18n._('Manage Widgets ({{inactiveCount}})', {
+                                                    inactiveCount: inactiveCount
+                                                })}
+                                            </Button>
+                                        </ButtonGroup>
                                     </div>
-                                    <div className="btn-group btn-group-xs pull-right" role="group">
-                                        <button
-                                            type="button"
-                                            className="btn btn-default"
-                                            onClick={::this.togglePrimaryContainer}
+                                    <div className="pull-right">
+                                        <ButtonGroup
+                                            btnSize="xs"
+                                            btnStyle="flat"
                                         >
-                                            <i className="fa fa-chevron-left" style={{ verticalAlign: 'middle' }} />
-                                        </button>
+                                            <Button
+                                                compact
+                                                title={i18n._('Collapse All')}
+                                                onClick={event => {
+                                                    this.primaryWidgets.collapseAll();
+                                                }}
+                                            >
+                                                <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
+                                            </Button>
+                                            <Button
+                                                compact
+                                                title={i18n._('Expand All')}
+                                                onClick={event => {
+                                                    this.primaryWidgets.expandAll();
+                                                }}
+                                            >
+                                                <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
+                                            </Button>
+                                        </ButtonGroup>
                                     </div>
-                                </div>
+                                </ButtonToolbar>
                                 <PrimaryWidgets
+                                    ref={node => {
+                                        this.primaryWidgets = node;
+                                    }}
                                     onForkWidget={this.widgetEventHandler.onForkWidget}
                                     onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
                                     onDragStart={this.widgetEventHandler.onDragStart}
@@ -436,15 +469,18 @@ class Workspace extends PureComponent {
                                 }}
                                 className={styles.primaryToggler}
                             >
-                                <div className="btn-group btn-group-xs">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
+                                <ButtonGroup
+                                    btnSize="xs"
+                                    btnStyle="flat"
+                                >
+                                    <Button
+                                        style={{ minWidth: 22 }}
+                                        compact
                                         onClick={::this.togglePrimaryContainer}
                                     >
-                                        <i className="fa fa-chevron-right" style={{ verticalAlign: 'middle' }} />
-                                    </button>
-                                </div>
+                                        <i className="fa fa-chevron-right" />
+                                    </Button>
+                                </ButtonGroup>
                             </div>
                             }
                             <div
@@ -465,15 +501,18 @@ class Workspace extends PureComponent {
                                 }}
                                 className={styles.secondaryToggler}
                             >
-                                <div className="btn-group btn-group-xs">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
+                                <ButtonGroup
+                                    btnSize="xs"
+                                    btnStyle="flat"
+                                >
+                                    <Button
+                                        style={{ minWidth: 22 }}
+                                        compact
                                         onClick={::this.toggleSecondaryContainer}
                                     >
-                                        <i className="fa fa-chevron-left" style={{ verticalAlign: 'middle' }} />
-                                    </button>
-                                </div>
+                                        <i className="fa fa-chevron-left" />
+                                    </Button>
+                                </ButtonGroup>
                             </div>
                             }
                             <div
@@ -485,29 +524,59 @@ class Workspace extends PureComponent {
                                     { [styles.hidden]: hideSecondaryContainer }
                                 )}
                             >
-                                <div className={styles.toolbar} role="toolbar">
-                                    <div className="btn-group btn-group-xs pull-left" role="group">
-                                        <button
-                                            type="button"
-                                            className="btn btn-default"
-                                            onClick={::this.toggleSecondaryContainer}
+                                <ButtonToolbar style={{ margin: '5px 0' }}>
+                                    <div className="pull-left">
+                                        <ButtonGroup
+                                            btnSize="xs"
+                                            btnStyle="flat"
                                         >
-                                            <i className="fa fa-chevron-right" style={{ verticalAlign: 'middle' }} />
-                                        </button>
+                                            <Button
+                                                compact
+                                                title={i18n._('Collapse All')}
+                                                onClick={event => {
+                                                    this.secondaryWidgets.collapseAll();
+                                                }}
+                                            >
+                                                <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
+                                            </Button>
+                                            <Button
+                                                compact
+                                                title={i18n._('Expand All')}
+                                                onClick={event => {
+                                                    this.secondaryWidgets.expandAll();
+                                                }}
+                                            >
+                                                <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
+                                            </Button>
+                                        </ButtonGroup>
                                     </div>
-                                    <div className="btn-group btn-group-xs pull-right" role="group">
-                                        <button
-                                            type="button"
-                                            className="btn btn-default"
-                                            onClick={::this.updateWidgetsForSecondaryContainer}
+                                    <div className="pull-right">
+                                        <ButtonGroup
+                                            btnSize="xs"
+                                            btnStyle="flat"
                                         >
-                                            <i className="fa fa-list-alt" style={{ verticalAlign: 'middle' }} />
-                                            <span className="space" />
-                                            {i18n._('Manage Widgets ({{inactiveCount}})', { inactiveCount: inactiveCount })}
-                                        </button>
+                                            <Button
+                                                onClick={::this.updateWidgetsForSecondaryContainer}
+                                            >
+                                                <i className="fa fa-list-alt" />
+                                                {i18n._('Manage Widgets ({{inactiveCount}})', {
+                                                    inactiveCount: inactiveCount
+                                                })}
+                                            </Button>
+                                            <Button
+                                                style={{ minWidth: 22 }}
+                                                compact
+                                                onClick={::this.toggleSecondaryContainer}
+                                            >
+                                                <i className="fa fa-chevron-right" />
+                                            </Button>
+                                        </ButtonGroup>
                                     </div>
-                                </div>
+                                </ButtonToolbar>
                                 <SecondaryWidgets
+                                    ref={node => {
+                                        this.secondaryWidgets = node;
+                                    }}
                                     onForkWidget={this.widgetEventHandler.onForkWidget}
                                     onRemoveWidget={this.widgetEventHandler.onRemoveWidget}
                                     onDragStart={this.widgetEventHandler.onDragStart}

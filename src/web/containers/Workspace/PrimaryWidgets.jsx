@@ -1,8 +1,10 @@
 import classNames from 'classnames';
-import _ from 'lodash';
+import get from 'lodash/get';
+import includes from 'lodash/includes';
+import isEqual from 'lodash/isEqual';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
 import Sortable from 'react-sortablejs';
 import uuid from 'uuid';
 import { GRBL, SMOOTHIE, TINYG } from '../../constants';
@@ -14,13 +16,14 @@ import store from '../../store';
 import Widget from './Widget';
 import styles from './widgets.styl';
 
-class PrimaryWidgets extends PureComponent {
+class PrimaryWidgets extends Component {
     static propTypes = {
         onForkWidget: PropTypes.func.isRequired,
         onRemoveWidget: PropTypes.func.isRequired,
         onDragStart: PropTypes.func.isRequired,
         onDragEnd: PropTypes.func.isRequired
     };
+
     state = {
         widgets: store.get('workspace.container.primary.widgets')
     };
@@ -41,8 +44,7 @@ class PrimaryWidgets extends PureComponent {
             const clonedSettings = store.get(`widgets["${widgetId}"]`, defaultSettings);
             store.set(`widgets["${forkedWidgetId}"]`, clonedSettings);
 
-            const widgets = _.slice(this.state.widgets);
-            widgets.push(forkedWidgetId);
+            const widgets = [...this.state.widgets, forkedWidgetId];
             this.setState({ widgets: widgets });
 
             this.props.onForkWidget(widgetId);
@@ -53,8 +55,7 @@ class PrimaryWidgets extends PureComponent {
             title: i18n._('Remove Widget'),
             body: i18n._('Are you sure you want to remove this widget?')
         }).then(() => {
-            const widgets = _.slice(this.state.widgets);
-            _.remove(widgets, (n) => (n === widgetId));
+            const widgets = this.state.widgets.filter(n => n !== widgetId);
             this.setState({ widgets: widgets });
 
             if (widgetId.match(/\w+:[\w\-]+/)) {
@@ -66,6 +67,7 @@ class PrimaryWidgets extends PureComponent {
         });
     };
     pubsubTokens = [];
+    widgetMap = {};
 
     componentDidMount() {
         this.subscribe();
@@ -75,7 +77,7 @@ class PrimaryWidgets extends PureComponent {
     }
     shouldComponentUpdate(nextProps, nextState) {
         // Do not compare props for performance considerations
-        return !_.isEqual(nextState, this.state);
+        return !isEqual(nextState, this.state);
     }
     componentDidUpdate() {
         const { widgets } = this.state;
@@ -86,7 +88,7 @@ class PrimaryWidgets extends PureComponent {
     }
     subscribe() {
         { // updatePrimaryWidgets
-            let token = pubsub.subscribe('updatePrimaryWidgets', (msg, widgets) => {
+            const token = pubsub.subscribe('updatePrimaryWidgets', (msg, widgets) => {
                 this.setState({ widgets: widgets });
             });
             this.pubsubTokens.push(token);
@@ -98,19 +100,39 @@ class PrimaryWidgets extends PureComponent {
         });
         this.pubsubTokens = [];
     }
+    expandAll() {
+        const len = this.state.widgets.length;
+        for (let i = 0; i < len; ++i) {
+            const widget = this.widgetMap[this.state.widgets[i]];
+            const expand = get(widget, 'actions.expand');
+            if (typeof expand === 'function') {
+                expand();
+            }
+        }
+    }
+    collapseAll() {
+        const len = this.state.widgets.length;
+        for (let i = 0; i < len; ++i) {
+            const widget = this.widgetMap[this.state.widgets[i]];
+            const collapse = get(widget, 'actions.collapse');
+            if (typeof collapse === 'function') {
+                collapse();
+            }
+        }
+    }
     render() {
         const { className } = this.props;
         const widgets = this.state.widgets
             .filter(widgetId => {
                 // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
                 const name = widgetId.split(':')[0];
-                if (name === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+                if (name === 'grbl' && !includes(controller.loadedControllers, GRBL)) {
                     return false;
                 }
-                if (name === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+                if (name === 'smoothie' && !includes(controller.loadedControllers, SMOOTHIE)) {
                     return false;
                 }
-                if (name === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+                if (name === 'tinyg' && !includes(controller.loadedControllers, TINYG)) {
                     return false;
                 }
                 return true;
@@ -118,6 +140,11 @@ class PrimaryWidgets extends PureComponent {
             .map(widgetId => (
                 <div data-widget-id={widgetId} key={widgetId}>
                     <Widget
+                        ref={node => {
+                            if (node && node.widget) {
+                                this.widgetMap[widgetId] = node.widget;
+                            }
+                        }}
                         widgetId={widgetId}
                         onFork={this.forkWidget(widgetId)}
                         onRemove={this.removeWidget(widgetId)}

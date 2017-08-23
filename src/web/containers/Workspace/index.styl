@@ -65,19 +65,13 @@
         &.hidden {
             display: none;
         }
-
-        .toolbar {
-            clearfix();
-            margin-top: 5px;
-            margin-bottom: 5px;
-        }
     }
     .primary-toggler,
     .secondary-toggler {
         background-color: #f6f7f8;
         padding-top: 5px;
         text-align: center;
-        width: 32px;
+        width: $toggler-width;
 
         // http://stackoverflow.com/questions/32272158/how-to-use-a-stylus-variable-in-calc
         height: 'calc(100vh - %s)' % ($navbar-height);
