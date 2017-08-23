@@ -130,6 +130,8 @@
     "Reload": "",
     "Drop G-code file here": "Перетащите G-код сюда",
     "Manage Widgets ({{inactiveCount}})": "Управление виджетами ({{inactiveCount}})",
+    "Collapse All": "",
+    "Expand All": "",
     "Close": "Закрыть",
     "This field is required.": "Это поле обязательно.",
     "Passwords should be equal.": "",

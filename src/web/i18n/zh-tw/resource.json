@@ -130,6 +130,8 @@
     "Reload": "",
     "Drop G-code file here": "將 G-code 檔案拖曳至此處",
     "Manage Widgets ({{inactiveCount}})": "管理元件 ({{inactiveCount}})",
+    "Collapse All": "",
+    "Expand All": "",
     "Close": "關閉",
     "This field is required.": "這是必填欄位。",
     "Passwords should be equal.": "密碼必須一致。",

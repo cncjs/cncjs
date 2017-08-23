@@ -130,6 +130,8 @@
     "Reload": "",
     "Drop G-code file here": "Solte o arquivo G-code aqui",
     "Manage Widgets ({{inactiveCount}})": "Gerenciar Módulos ({{inactiveCount}})",
+    "Collapse All": "",
+    "Expand All": "",
     "Close": "Fechar",
     "This field is required.": "Este campo é obrigatório.",
     "Passwords should be equal.": "",

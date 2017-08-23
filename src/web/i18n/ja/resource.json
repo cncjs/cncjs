@@ -130,6 +130,8 @@
     "Reload": "",
     "Drop G-code file here": "G-codeをここにドラッグ＆ドロップ",
     "Manage Widgets ({{inactiveCount}})": "ウィジェットの管理 ({{inactiveCount}})",
+    "Collapse All": "",
+    "Expand All": "",
     "Close": "閉じる",
     "This field is required.": "この情報は必須です。",
     "Passwords should be equal.": "パスワードが一致する必要があります。",

@@ -130,6 +130,8 @@
     "Reload": "",
     "Drop G-code file here": "Húzd ide a G-codot",
     "Manage Widgets ({{inactiveCount}})": "Widget menedzser ({{inactiveCount}})",
+    "Collapse All": "",
+    "Expand All": "",
     "Close": "bezár",
     "This field is required.": "Ez a mező nem maradhat üresen",
     "Passwords should be equal.": "A jelszavak nem eggyeznek.",

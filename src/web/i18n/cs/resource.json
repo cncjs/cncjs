@@ -130,6 +130,8 @@
     "Reload": "",
     "Drop G-code file here": "Vložte zde soubor s G-code",
     "Manage Widgets ({{inactiveCount}})": "Spravovat Widgety ({{inactiveCount}})",
+    "Collapse All": "",
+    "Expand All": "",
     "Close": "Zavřít",
     "This field is required.": "Toto pole je vyžadováno.",
     "Passwords should be equal.": "",

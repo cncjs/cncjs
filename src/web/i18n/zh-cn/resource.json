@@ -130,6 +130,8 @@
     "Reload": "",
     "Drop G-code file here": "将 G-code 文档拖拽至此处上传",
     "Manage Widgets ({{inactiveCount}})": "管理组件（{{inactiveCount}}）",
+    "Collapse All": "",
+    "Expand All": "",
     "Close": "关闭",
     "This field is required.": "这个字段是必填项。",
     "Passwords should be equal.": "",

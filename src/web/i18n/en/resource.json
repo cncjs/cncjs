@@ -130,6 +130,8 @@
     "Reload": "Reload",
     "Drop G-code file here": "Drop G-code file here",
     "Manage Widgets ({{inactiveCount}})": "Manage Widgets ({{inactiveCount}})",
+    "Collapse All": "Collapse All",
+    "Expand All": "Expand All",
     "Close": "Close",
     "This field is required.": "This field is required.",
     "Passwords should be equal.": "Passwords should be equal.",
