@@ -62,7 +62,7 @@
     "appId": "org.cncjs",
     "asar": false,
     "asarUnpack": [],
-    "productName": "cncjs",
+    "productName": "CNCjs",
     "directories": {
       "buildResources": "build",
       "output": "output",
@@ -248,7 +248,7 @@
     "css-loader": "~0.28.5",
     "css-split-webpack-plugin": "~0.2.3",
     "electron": "~1.4.16",
-    "electron-builder": "~19.24.1",
+    "electron-builder": "~18.8.1",
     "eslint": "~3.19.0",
     "eslint-config-trendmicro": "~0.5.1",
     "eslint-import-resolver-webpack": "~0.8.3",
