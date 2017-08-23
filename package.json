@@ -68,6 +68,7 @@
       "output": "output",
       "app": "dist/cnc"
     },
+    "publish": [],
     "mac": {
       "category": "public.app-category.productivity",
       "target": [
