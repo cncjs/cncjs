@@ -122,6 +122,8 @@
     "This widget helps you use a touch plate to set your Z zero offset.": "Этот виджет позволяет вам использовать пробник, чтобы настроить ноль и смещение по оси Z.",
     "Spindle Widget": "Виджет шпинделя",
     "This widget provides the spindle control.": "Этот виджет позволяет управлять шпинделем.",
+    "Template Widget": "",
+    "This widget gives you a communication interface for creating your own widget.": "",
     "Webcam Widget": "Виджет камеры",
     "This widget lets you monitor a webcam.": "Этот виджет позволяет вам следить за камерой.",
     "Widgets": "Виджеты",

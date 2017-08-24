@@ -122,6 +122,8 @@
     "This widget helps you use a touch plate to set your Z zero offset.": "Ce module vous aide à palper le plateau pour définir le décalage en Z.",
     "Spindle Widget": "Module Broche",
     "This widget provides the spindle control.": "Ce module fournit le contrôle de la broche.",
+    "Template Widget": "",
+    "This widget gives you a communication interface for creating your own widget.": "",
     "Webcam Widget": "Module webcam",
     "This widget lets you monitor a webcam.": "Ce module vous permet de gérer une webcam",
     "Widgets": "Modules",

@@ -122,6 +122,8 @@
     "This widget helps you use a touch plate to set your Z zero offset.": "Tento widget umožňuje použití dotykové desky k nastavení offsetu osy Z.",
     "Spindle Widget": "Widget motoru nástroje",
     "This widget provides the spindle control.": "Tento widget poskytuje ovládání motoru nástroje.",
+    "Template Widget": "",
+    "This widget gives you a communication interface for creating your own widget.": "",
     "Webcam Widget": "Widget Webkamery",
     "This widget lets you monitor a webcam.": "Tento widget umožňuje náhled webové kamery.",
     "Widgets": "Widgets",

@@ -122,6 +122,8 @@
     "This widget helps you use a touch plate to set your Z zero offset.": "Ez a widget segít az felületen a Z nulla eltolás beállítani",
     "Spindle Widget": "Főorsó Widget",
     "This widget provides the spindle control.": "Ez a widget a főorsót vezérli.",
+    "Template Widget": "",
+    "This widget gives you a communication interface for creating your own widget.": "",
     "Webcam Widget": "Webcam Widget",
     "This widget lets you monitor a webcam.": "Ennek a widgetnek a segítségével webkamerát csatlakoztathatsz.",
     "Widgets": "Widgetek",

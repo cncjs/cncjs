@@ -122,6 +122,8 @@
     "This widget helps you use a touch plate to set your Z zero offset.": "",
     "Spindle Widget": "",
     "This widget provides the spindle control.": "",
+    "Template Widget": "",
+    "This widget gives you a communication interface for creating your own widget.": "",
     "Webcam Widget": "",
     "This widget lets you monitor a webcam.": "",
     "Widgets": "",

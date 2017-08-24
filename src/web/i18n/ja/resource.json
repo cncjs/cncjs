@@ -122,6 +122,8 @@
     "This widget helps you use a touch plate to set your Z zero offset.": "このウィジェットは、タッチプレートを使用してZ軸のゼロオフセットを設定するのに役立ちます。",
     "Spindle Widget": "スピンドル ウィジェット",
     "This widget provides the spindle control.": "このウィジェットはスピンドル制御を提供します。",
+    "Template Widget": "",
+    "This widget gives you a communication interface for creating your own widget.": "",
     "Webcam Widget": "ウェブカム ウィジェット",
     "This widget lets you monitor a webcam.": "このウィジェットを使用すると、ウェブカメラを監視できます。",
     "Widgets": "ウィジェット",

@@ -122,6 +122,8 @@
     "This widget helps you use a touch plate to set your Z zero offset.": "這個元件可協助使用對刀儀去設定Ｚ軸原點。",
     "Spindle Widget": "主軸元件",
     "This widget provides the spindle control.": "這個元件提供主軸相關的控制。",
+    "Template Widget": "",
+    "This widget gives you a communication interface for creating your own widget.": "",
     "Webcam Widget": "網路攝影機元件",
     "This widget lets you monitor a webcam.": "這個元件可用來遠端監控網路攝影機。",
     "Widgets": "元件",

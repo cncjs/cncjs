@@ -122,6 +122,8 @@
     "This widget helps you use a touch plate to set your Z zero offset.": "Questo widget consente di utilizzare una piastra di tocco per impostare la Z spostamento di origine.",
     "Spindle Widget": "Widget elettromandrino",
     "This widget provides the spindle control.": "",
+    "Template Widget": "",
+    "This widget gives you a communication interface for creating your own widget.": "",
     "Webcam Widget": "Widget webcam",
     "This widget lets you monitor a webcam.": "Questo widget consente di monitorare una webcam.",
     "Widgets": "Widgets",
