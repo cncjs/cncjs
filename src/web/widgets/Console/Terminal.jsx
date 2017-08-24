@@ -64,15 +64,15 @@ class Terminal extends PureComponent {
 
                 // Backspace
                 if (event.key === 'Backspace') {
-                    let line = term.lines.get(term.ybase + term.y);
-                    let x = term.x;
+                    let line = term.buffer.lines.get(term.buffer.ybase + term.buffer.y);
+                    let x = term.buffer.x;
                     if (line && x > 0) {
                         for (; x < term.cols; ++x) {
                             line[x - 1] = line[x];
                         }
                         line[term.cols - 1] = [term.eraseAttr(), ' ', 1];
-                        term.updateRange(term.y);
-                        term.refresh(term.y, term.y);
+                        term.updateRange(term.buffer.y);
+                        term.refresh(term.buffer.y, term.buffer.y);
                     }
                     term.write('\b');
 
@@ -113,14 +113,14 @@ class Terminal extends PureComponent {
 
                     buffer = historyCommand;
 
-                    term.eraseLine(term.y);
-                    term.x = 0;
+                    term.eraseLine(term.buffer.y);
+                    term.buffer.x = 0;
                     term.write(buffer);
                     return;
                 }
 
                 // Check if cursor position is at the end of the window
-                if (term.x >= term.cols) {
+                if (term.buffer.x >= term.cols) {
                     return;
                 }
 
