@@ -129,6 +129,11 @@ export const defaultState = {
             minimized: false,
             speed: 1000
         },
+        /* TODO
+        template: {
+            minimized: false
+        },
+        */
         tinyg: {
             minimized: false,
             panel: {
