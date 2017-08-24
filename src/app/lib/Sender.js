@@ -313,11 +313,6 @@ class Sender extends events.EventEmitter {
             return false;
         }
 
-        // Hold off
-        if (this.state.hold) {
-            return false;
-        }
-
         const now = new Date().getTime();
 
         if (this.state.total > 0 && this.state.sent === 0) {
