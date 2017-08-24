@@ -44,8 +44,8 @@ class SmoothieController {
     serialport = null;
     serialportListener = {
         data: (data) => {
-            this.controller.parse('' + data);
             log.silly(`< ${data}`);
+            this.controller.parse('' + data);
         },
         disconnect: (err) => {
             this.ready = false;
