@@ -139,6 +139,15 @@ class ProbeWidget extends PureComponent {
                 touchPlateHeight,
                 retractionDistance
             } = this.state;
+            const wcs = this.getWorkCoordinateSystem();
+            const mapWCSToP = (wcs) => ({
+                'G54': 1,
+                'G55': 2,
+                'G56': 3,
+                'G57': 4,
+                'G58': 5,
+                'G59': 6
+            }[wcs] || 0);
             const towardWorkpiece = includes(['G38.2', 'G38.3'], probeCommand);
             const tloProbeCommands = [
                 gcode('; Cancel tool length offset'),
@@ -189,7 +198,7 @@ class ProbeWidget extends PureComponent {
                 gcode('; Set the active WCS Z0'),
                 gcode('G10', {
                     L: 20,
-                    P: 0, // Update the currently active coordinate system
+                    P: mapWCSToP(wcs),
                     Z: touchPlateHeight
                 }),
 
@@ -439,6 +448,25 @@ class ProbeWidget extends PureComponent {
             const callback = this.controllerEvents[eventName];
             controller.off(eventName, callback);
         });
+    }
+    getWorkCoordinateSystem() {
+        const controllerType = this.state.controller.type;
+        const controllerState = this.state.controller.state;
+        const defaultWCS = 'G54';
+
+        if (controllerType === GRBL) {
+            return get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
+        }
+
+        if (controllerType === SMOOTHIE) {
+            return get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
+        }
+
+        if (controllerType === TINYG) {
+            return get(controllerState, 'sr.modal.coordinate') || defaultWCS;
+        }
+
+        return defaultWCS;
     }
     canClick() {
         const { port, workflowState } = this.state;
