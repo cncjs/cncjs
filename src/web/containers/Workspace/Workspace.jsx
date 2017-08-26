@@ -404,53 +404,60 @@ class Workspace extends PureComponent {
                                 )}
                             >
                                 <ButtonToolbar style={{ margin: '5px 0' }}>
-                                    <div className="pull-left">
-                                        <ButtonGroup
-                                            btnSize="xs"
-                                            btnStyle="flat"
+                                    <ButtonGroup
+                                        style={{ marginLeft: 0, marginRight: 10 }}
+                                        btnSize="xs"
+                                        btnStyle="flat"
+                                    >
+                                        <Button
+                                            style={{ minWidth: 30 }}
+                                            compact
+                                            onClick={::this.togglePrimaryContainer}
                                         >
-                                            <Button
-                                                style={{ minWidth: 22 }}
-                                                compact
-                                                onClick={::this.togglePrimaryContainer}
-                                            >
-                                                <i className="fa fa-chevron-left" />
-                                            </Button>
-                                            <Button
-                                                onClick={::this.updateWidgetsForPrimaryContainer}
-                                            >
-                                                <i className="fa fa-list-alt" />
-                                                {i18n._('Manage Widgets ({{inactiveCount}})', {
-                                                    inactiveCount: inactiveCount
-                                                })}
-                                            </Button>
-                                        </ButtonGroup>
-                                    </div>
-                                    <div className="pull-right">
-                                        <ButtonGroup
-                                            btnSize="xs"
-                                            btnStyle="flat"
+                                            <i className="fa fa-chevron-left" />
+                                        </Button>
+                                    </ButtonGroup>
+                                    <ButtonGroup
+                                        style={{ marginLeft: 0, marginRight: 10 }}
+                                        btnSize="xs"
+                                        btnStyle="flat"
+                                    >
+                                        <Button
+                                            style={{ width: 230 }}
+                                            onClick={::this.updateWidgetsForPrimaryContainer}
                                         >
-                                            <Button
-                                                compact
-                                                title={i18n._('Collapse All')}
-                                                onClick={event => {
-                                                    this.primaryWidgets.collapseAll();
-                                                }}
-                                            >
-                                                <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
-                                            </Button>
-                                            <Button
-                                                compact
-                                                title={i18n._('Expand All')}
-                                                onClick={event => {
-                                                    this.primaryWidgets.expandAll();
-                                                }}
-                                            >
-                                                <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
-                                            </Button>
-                                        </ButtonGroup>
-                                    </div>
+                                            <i className="fa fa-list-alt" />
+                                            {i18n._('Manage Widgets ({{inactiveCount}})', {
+                                                inactiveCount: inactiveCount
+                                            })}
+                                        </Button>
+                                    </ButtonGroup>
+                                    <ButtonGroup
+                                        style={{ marginLeft: 0, marginRight: 0 }}
+                                        btnSize="xs"
+                                        btnStyle="flat"
+                                    >
+                                        <Button
+                                            style={{ minWidth: 30 }}
+                                            compact
+                                            title={i18n._('Collapse All')}
+                                            onClick={event => {
+                                                this.primaryWidgets.collapseAll();
+                                            }}
+                                        >
+                                            <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
+                                        </Button>
+                                        <Button
+                                            style={{ minWidth: 30 }}
+                                            compact
+                                            title={i18n._('Expand All')}
+                                            onClick={event => {
+                                                this.primaryWidgets.expandAll();
+                                            }}
+                                        >
+                                            <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
+                                        </Button>
+                                    </ButtonGroup>
                                 </ButtonToolbar>
                                 <PrimaryWidgets
                                     ref={node => {
@@ -474,7 +481,7 @@ class Workspace extends PureComponent {
                                     btnStyle="flat"
                                 >
                                     <Button
-                                        style={{ minWidth: 22 }}
+                                        style={{ minWidth: 30 }}
                                         compact
                                         onClick={::this.togglePrimaryContainer}
                                     >
@@ -506,7 +513,7 @@ class Workspace extends PureComponent {
                                     btnStyle="flat"
                                 >
                                     <Button
-                                        style={{ minWidth: 22 }}
+                                        style={{ minWidth: 30 }}
                                         compact
                                         onClick={::this.toggleSecondaryContainer}
                                     >
@@ -527,10 +534,12 @@ class Workspace extends PureComponent {
                                 <ButtonToolbar style={{ margin: '5px 0' }}>
                                     <div className="pull-left">
                                         <ButtonGroup
+                                            style={{ marginLeft: 0, marginRight: 10 }}
                                             btnSize="xs"
                                             btnStyle="flat"
                                         >
                                             <Button
+                                                style={{ minWidth: 30 }}
                                                 compact
                                                 title={i18n._('Collapse All')}
                                                 onClick={event => {
@@ -540,6 +549,7 @@ class Workspace extends PureComponent {
                                                 <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
                                             </Button>
                                             <Button
+                                                style={{ minWidth: 30 }}
                                                 compact
                                                 title={i18n._('Expand All')}
                                                 onClick={event => {
@@ -549,13 +559,13 @@ class Workspace extends PureComponent {
                                                 <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
                                             </Button>
                                         </ButtonGroup>
-                                    </div>
-                                    <div className="pull-right">
                                         <ButtonGroup
+                                            style={{ marginLeft: 0, marginRight: 10 }}
                                             btnSize="xs"
                                             btnStyle="flat"
                                         >
                                             <Button
+                                                style={{ width: 230 }}
                                                 onClick={::this.updateWidgetsForSecondaryContainer}
                                             >
                                                 <i className="fa fa-list-alt" />
@@ -563,8 +573,14 @@ class Workspace extends PureComponent {
                                                     inactiveCount: inactiveCount
                                                 })}
                                             </Button>
+                                        </ButtonGroup>
+                                        <ButtonGroup
+                                            style={{ marginLeft: 0, marginRight: 0 }}
+                                            btnSize="xs"
+                                            btnStyle="flat"
+                                        >
                                             <Button
-                                                style={{ minWidth: 22 }}
+                                                style={{ minWidth: 30 }}
                                                 compact
                                                 onClick={::this.toggleSecondaryContainer}
                                             >
