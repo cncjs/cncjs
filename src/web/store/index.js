@@ -277,7 +277,7 @@ store.on('change', debounce((state) => {
         const value = JSON.stringify({
             version: settings.version,
             state: state
-        }, null, 4);
+        }, null, 2);
 
         if (userData) {
             const fs = window.require('fs'); // Use window.require to require fs module in Electron
