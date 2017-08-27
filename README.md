@@ -40,6 +40,17 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 --- | --- | --- | --- | --- | --- |
  Yes | Yes | Yes| Not supported | Yes | Yes | 
 
+## Supported Node.js Versions
+
+Version | Supported Level
+------- | ---
+<=0.12 | Unsupported
+4 | <b>Recommended for production use</b>
+5 | Supported
+6 | <b>Recommended for production use</b>
+7 | Supported
+8 | Unsupported<br>Note. Will be supported in CNCjs 2.0
+
 ## Getting Started
 
 ### Node.js Installation
