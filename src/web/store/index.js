@@ -19,7 +19,7 @@ if (isElectron()) {
     const electron = window.require('electron');
     const app = electron.remote.app;
     userData = {
-        path: path.resolve(app.getPath('userData'), 'cnc.json')
+        path: path.join(app.getPath('userData'), 'cnc.json')
     };
 }
 
