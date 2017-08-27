@@ -49,7 +49,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
  5       | Supported
  6       | <b>Recommended for production use</b>
  7       | Supported
- 8       | Unsupported<br>Note. Will be supported in CNCjs 2.0
+ 8       | Unsupported<br>Note: Will be supported in CNCjs 2.0
 
 ## Getting Started
 
