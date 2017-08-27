@@ -1,9 +1,15 @@
 import isElectron from 'is-electron';
 import path from 'path';
-import _ from 'lodash';
+import debounce from 'lodash/debounce';
+import difference from 'lodash/difference';
+import get from 'lodash/get';
+import set from 'lodash/set';
+import merge from 'lodash/merge';
+import uniq from 'lodash/uniq';
 import semver from 'semver';
 import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
+import ensureArray from '../lib/ensure-array';
 import log from '../lib/log';
 
 let userData = null;
@@ -13,7 +19,7 @@ if (isElectron()) {
     const electron = window.require('electron');
     const app = electron.remote.app;
     userData = {
-        path: path.join(app.getPath('userData'), 'cnc.json')
+        path: path.resolve(app.getPath('userData'), 'cnc.json')
     };
 }
 
@@ -198,38 +204,34 @@ export const defaultState = {
 
 const normalizeState = (state) => {
     // Keep default widgets unchanged
-    const defaultList = _.get(defaultState, 'workspace.container.default.widgets');
-    _.set(state, 'workspace.container.default.widgets', defaultList);
+    const defaultList = get(defaultState, 'workspace.container.default.widgets');
+    set(state, 'workspace.container.default.widgets', defaultList);
 
     // Update primary widgets
-    let primaryList = _.get(cnc.state, 'workspace.container.primary.widgets');
+    let primaryList = get(cnc.state, 'workspace.container.primary.widgets');
     if (primaryList) {
-        _.set(state, 'workspace.container.primary.widgets', primaryList);
+        set(state, 'workspace.container.primary.widgets', primaryList);
     } else {
-        primaryList = _.get(state, 'workspace.container.primary.widgets');
+        primaryList = get(state, 'workspace.container.primary.widgets');
     }
 
     // Update secondary widgets
-    let secondaryList = _.get(cnc.state, 'workspace.container.secondary.widgets');
+    let secondaryList = get(cnc.state, 'workspace.container.secondary.widgets');
     if (secondaryList) {
-        _.set(state, 'workspace.container.secondary.widgets', secondaryList);
+        set(state, 'workspace.container.secondary.widgets', secondaryList);
     } else {
-        secondaryList = _.get(state, 'workspace.container.secondary.widgets');
+        secondaryList = get(state, 'workspace.container.secondary.widgets');
     }
 
-    primaryList = _(primaryList) // Keep the order of primaryList
-        .uniq()
-        .difference(defaultList) // exclude defaultList
-        .value();
+    primaryList = uniq(ensureArray(primaryList)); // Use the same order in primaryList
+    primaryList = difference(primaryList, defaultList); // Exclude defaultList
 
-    secondaryList = _(secondaryList) // Keep the order of secondaryList
-        .uniq()
-        .difference(primaryList) // exclude primaryList
-        .difference(defaultList) // exclude defaultList
-        .value();
+    secondaryList = uniq(ensureArray(secondaryList)); // Use the same order in secondaryList
+    secondaryList = difference(secondaryList, primaryList); // Exclude primaryList
+    secondaryList = difference(secondaryList, defaultList); // Exclude defaultList
 
-    _.set(state, 'workspace.container.primary.widgets', primaryList);
-    _.set(state, 'workspace.container.secondary.widgets', secondaryList);
+    set(state, 'workspace.container.primary.widgets', primaryList);
+    set(state, 'workspace.container.secondary.widgets', secondaryList);
 
     return state;
 };
@@ -246,10 +248,12 @@ const getUserConfig = () => {
         if (userData) {
             const fs = window.require('fs'); // Use window.require to require fs module in Electron
             if (fs.existsSync(userData.path)) {
-                data = JSON.parse(fs.readFileSync(userData.path, 'utf8') || '{}');
+                const content = fs.readFileSync(userData.path, 'utf8') || '{}';
+                data = JSON.parse(content);
             }
         } else {
-            data = JSON.parse(localStorage.getItem('cnc') || '{}');
+            const content = localStorage.getItem('cnc') || '{}';
+            data = JSON.parse(content);
         }
 
         if (typeof data === 'object') {
@@ -264,10 +268,11 @@ const getUserConfig = () => {
 };
 
 const cnc = getUserConfig() || {};
-const state = normalizeState(_.merge({}, defaultState, cnc.state || {}));
+const state = normalizeState(merge({}, defaultState, cnc.state || {}));
 const store = new ImmutableStore(state);
 
-store.on('change', (state) => {
+// Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
+store.on('change', debounce((state) => {
     try {
         const value = JSON.stringify({
             version: settings.version,
@@ -276,18 +281,14 @@ store.on('change', (state) => {
 
         if (userData) {
             const fs = window.require('fs'); // Use window.require to require fs module in Electron
-            fs.writeFile(userData.path, value, (err) => {
-                if (err) {
-                    throw err;
-                }
-            });
+            fs.writeFileSync(userData.path, value);
         }
 
         localStorage.setItem('cnc', value);
     } catch (e) {
         log.error(e);
     }
-});
+}, 100));
 
 //
 // Migration
