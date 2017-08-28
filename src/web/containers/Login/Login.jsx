@@ -79,7 +79,9 @@ class Login extends PureComponent {
         const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
 
         if (state.redirectToReferrer) {
-            log.debug('Redirect to referrer:', from);
+            const redirectFrom = '/login';
+            const redirectTo = from.pathname;
+            log.debug(`Redirect from "${redirectFrom}" to "${redirectTo}"`);
             return (
                 <Redirect to={from} />
             );

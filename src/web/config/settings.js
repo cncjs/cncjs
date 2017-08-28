@@ -7,6 +7,11 @@ import log from '../lib/log';
 const webroot = '/';
 
 const settings = {
+    error: {
+        // The flag is set to true if the workspace settings have become corrupted or invalid.
+        // @see store/index.js
+        corruptedWorkspaceSettings: false
+    },
     name: pkg.name,
     version: pkg.version,
     webroot: webroot,

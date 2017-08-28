@@ -12,16 +12,34 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import settings from './config/settings';
+import alert from './lib/alert';
 import controller from './lib/controller';
+import i18n from './lib/i18n';
 import log from './lib/log';
 import { toQueryObject } from './lib/query';
 import user from './lib/user';
-import store from './store';
+import store, { defaultState, loadConfig, persistState } from './store';
 import App from './containers/App';
 import Login from './containers/Login';
+import Anchor from './components/Anchor';
 import ProtectedRoute from './components/ProtectedRoute';
 import './styles/vendor.styl';
 import './styles/app.styl';
+
+const renderPage = () => {
+    const container = document.createElement('div');
+    document.body.appendChild(container);
+
+    ReactDOM.render(
+        <Router>
+            <div>
+                <Route path="/login" component={Login} />
+                <ProtectedRoute path="/" component={App} />
+            </div>
+        </Router>,
+        container
+    );
+};
 
 series([
     (next) => {
@@ -98,16 +116,43 @@ series([
         body.style.backgroundColor = '#222'; // sidebar background color
     }
 
-    const container = document.createElement('div');
-    document.body.appendChild(container);
+    if (settings.error.corruptedWorkspaceSettings) {
+        const text = loadConfig();
+        const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
+        const filename = 'cnc.json';
 
-    ReactDOM.render(
-        <Router>
-            <div>
-                <Route path="/login" component={Login} />
-                <ProtectedRoute path="/" component={App} />
-            </div>
-        </Router>,
-        container
-    );
+        alert({
+            title: i18n._('Corrupted workspace settings'),
+            message: (
+                <div style={{ display: 'flex' }}>
+                    <i className="fa fa-exclamation-circle fa-4x" style={{ color: '#faca2a' }} />
+                    <div style={{ marginLeft: 25 }}>
+                        <p>{i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}</p>
+                        <div>
+                            <Anchor
+                                href={url}
+                                download={filename}
+                            >
+                                <i className="fa fa-download" />
+                                <span className="space space-sm" />
+                                {i18n._('Download workspace settings')}
+                            </Anchor>
+                        </div>
+                    </div>
+                </div>
+            ),
+            btnStyle: 'danger',
+            btnText: i18n._('Restore Defaults'),
+            onClick: () => {
+                // Restore Defaults
+                persistState(defaultState);
+            }
+        })
+        .then(() => {
+            renderPage();
+        });
+        return;
+    }
+
+    renderPage();
 });

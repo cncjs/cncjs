@@ -1,6 +1,7 @@
 import React from 'react';
 import { Route, Redirect, withRouter } from 'react-router-dom';
 import user from '../../lib/user';
+import log from '../../lib/log';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
     <Route
@@ -9,6 +10,14 @@ const ProtectedRoute = ({ component: Component, ...rest }) => (
             if (user.authenticated()) {
                 return Component ? <Component {...rest} /> : null;
             }
+
+            const redirectFrom = props.location.pathname;
+            const redirectTo = '/login';
+            if (redirectFrom === redirectTo) {
+                return null;
+            }
+
+            log.debug(`Redirect from "${redirectFrom}" to "${redirectTo}"`);
 
             return (
                 <Redirect

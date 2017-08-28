@@ -13,7 +13,7 @@ import log from '../lib/log';
 
 let userData = null;
 
-// Check if code is running in Electron renderer process
+// Check whether the code is running in Electron renderer process
 if (isElectron()) {
     const electron = window.require('electron');
     const path = window.require('path'); // Require the path module within Electron
@@ -202,6 +202,41 @@ export const defaultState = {
     }
 };
 
+export const loadConfig = () => {
+    let content = '';
+
+    // Check whether the code is running in Electron renderer process
+    if (isElectron()) {
+        const fs = window.require('fs'); // Require the fs module within Electron
+        if (fs.existsSync(userData.path)) {
+            content = fs.readFileSync(userData.path, 'utf8') || '{}';
+        }
+    } else {
+        content = localStorage.getItem('cnc') || '{}';
+    }
+
+    return content;
+};
+
+export const persistState = (state) => {
+    try {
+        const value = JSON.stringify({
+            version: settings.version,
+            state: state || defaultState
+        }, null, 2);
+
+        // Check whether the code is running in Electron renderer process
+        if (isElectron()) {
+            const fs = window.require('fs'); // Use window.require to require fs module in Electron
+            fs.writeFileSync(userData.path, value);
+        } else {
+            localStorage.setItem('cnc', value);
+        }
+    } catch (e) {
+        log.error(e);
+    }
+};
+
 const normalizeState = (state) => {
     // Keep default widgets unchanged
     const defaultList = get(defaultState, 'workspace.container.default.widgets');
@@ -236,59 +271,26 @@ const normalizeState = (state) => {
     return state;
 };
 
-const getUserConfig = () => {
-    const cnc = {
-        version: settings.version,
-        state: {}
-    };
-
-    try {
-        let data;
-
-        if (userData) {
-            const fs = window.require('fs'); // Require the fs module within Electron
-            if (fs.existsSync(userData.path)) {
-                const content = fs.readFileSync(userData.path, 'utf8') || '{}';
-                data = JSON.parse(content);
-            }
-        } else {
-            const content = localStorage.getItem('cnc') || '{}';
-            data = JSON.parse(content);
-        }
-
-        if (typeof data === 'object') {
-            cnc.version = data.version || cnc.version; // fallback to current version
-            cnc.state = data.state || cnc.state;
-        }
-    } catch (e) {
-        log.error(e);
-    }
-
-    return cnc;
+const cnc = {
+    version: settings.version,
+    state: {}
 };
 
-const cnc = getUserConfig() || {};
+try {
+    const text = loadConfig();
+    const data = JSON.parse(text);
+    cnc.version = get(data, 'version', settings.version);
+    cnc.state = get(data, 'state', {});
+} catch (e) {
+    set(settings, 'error.corruptedWorkspaceSettings', true);
+    log.error(e);
+}
+
 const state = normalizeState(merge({}, defaultState, cnc.state || {}));
 const store = new ImmutableStore(state);
 
 // Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
-store.on('change', debounce((state) => {
-    try {
-        const value = JSON.stringify({
-            version: settings.version,
-            state: state
-        }, null, 2);
-
-        if (userData) {
-            const fs = window.require('fs'); // Use window.require to require fs module in Electron
-            fs.writeFileSync(userData.path, value);
-        }
-
-        localStorage.setItem('cnc', value);
-    } catch (e) {
-        log.error(e);
-    }
-}, 100));
+store.on('change', debounce(persistState, 100));
 
 //
 // Migration
