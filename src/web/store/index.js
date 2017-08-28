@@ -1,5 +1,4 @@
 import isElectron from 'is-electron';
-import path from 'path';
 import debounce from 'lodash/debounce';
 import difference from 'lodash/difference';
 import get from 'lodash/get';
@@ -17,6 +16,7 @@ let userData = null;
 // Check if code is running in Electron renderer process
 if (isElectron()) {
     const electron = window.require('electron');
+    const path = window.require('path'); // Require the path module within Electron
     const app = electron.remote.app;
     userData = {
         path: path.join(app.getPath('userData'), 'cnc.json')
@@ -246,7 +246,7 @@ const getUserConfig = () => {
         let data;
 
         if (userData) {
-            const fs = window.require('fs'); // Use window.require to require fs module in Electron
+            const fs = window.require('fs'); // Require the fs module within Electron
             if (fs.existsSync(userData.path)) {
                 const content = fs.readFileSync(userData.path, 'utf8') || '{}';
                 data = JSON.parse(content);
