@@ -1,5 +1,8 @@
 # http://www.appveyor.com/docs/appveyor-yml
 
+# https://www.appveyor.com/docs/build-environment/#build-worker-images
+image: Visual Studio 2017
+
 version: "{build}-{branch}"
 
 init:
