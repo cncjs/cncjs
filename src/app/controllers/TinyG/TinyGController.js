@@ -956,7 +956,7 @@ class TinyGController {
             'homing': () => {
                 this.event.trigger('homing');
 
-                this.writeln(socket, '{home:1}');
+                this.writeln(socket, 'G28.2 X0 Y0 Z0');
             },
             'sleep': () => {
                 this.event.trigger('sleep');
