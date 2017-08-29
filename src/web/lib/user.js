@@ -16,8 +16,7 @@ module.exports = {
                 resolve({ authenticated: true, token: token });
             })
             .catch((res) => {
-                // Keep session.name if a login failure occurred
-                store.unset('session.token');
+                // Do not unset session token so it won't trigger an update to the store
                 authenticated = false;
                 resolve({ authenticated: false, token: null });
             });
