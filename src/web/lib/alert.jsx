@@ -9,19 +9,17 @@ import i18n from './i18n';
 class Alert extends PureComponent {
     static propTypes = {
         onClose: PropTypes.func,
-        onClick: PropTypes.func,
-        btnStyle: PropTypes.string,
-        btnText: PropTypes.string
+        message: PropTypes.oneOfType([PropTypes.node, PropTypes.string]),
+        button: PropTypes.func
     };
 
     render() {
-        const {
-            title,
-            message,
-            onClick,
-            btnStyle,
-            btnText = i18n._('OK')
-        } = this.props;
+        let DismissButton = this.props.button;
+        if (!DismissButton) {
+            DismissButton = (props) => (
+                <Button {...props}>{i18n._('OK')}</Button>
+            );
+        }
 
         return (
             <Modal
@@ -29,49 +27,34 @@ class Alert extends PureComponent {
                 showCloseButton={false}
                 onClose={() => {
                     setTimeout(() => {
-                        this.props.onClose();
+                        this.props.onClose && this.props.onClose();
                     }, 0);
                 }}
             >
-                {title &&
-                <Modal.Header>
-                    <Modal.Title>
-                        {title}
-                    </Modal.Title>
-                </Modal.Header>
-                }
                 <Modal.Body>
-                    {message}
+                    {this.props.message}
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button
-                        btnStyle={btnStyle}
-                        onClick={event => {
-                            onClick && onClick(event);
+                    <DismissButton
+                        onClick={(event) => {
                             setTimeout(() => {
-                                this.props.onClose();
+                                this.props.onClose && this.props.onClose();
                             }, 0);
                         }}
-                    >
-                        {btnText}
-                    </Button>
+                    />
                 </Modal.Footer>
             </Modal>
         );
     }
 }
 
-export default (options) => new Promise((resolve, reject) => {
-    if (typeof options === 'string') {
-        options = {
-            message: options
-        };
-    }
+export default (message, props) => new Promise((resolve, reject) => {
     const container = document.createElement('div');
     document.body.appendChild(container);
 
-    const props = {
-        ...options,
+    props = {
+        message: message,
+        ...props,
         onClose: () => {
             ReactDOM.unmountComponentAtNode(container);
             container.remove();

@@ -1,5 +1,6 @@
 /* eslint import/no-dynamic-require: 0 */
 import series from 'async/series';
+import chainedFunction from 'chained-function';
 import moment from 'moment';
 import React from 'react';
 import ReactDOM from 'react-dom';
@@ -22,6 +23,7 @@ import store, { defaultState, loadConfig, persistState } from './store';
 import App from './containers/App';
 import Login from './containers/Login';
 import Anchor from './components/Anchor';
+import { Button } from './components/Buttons';
 import ProtectedRoute from './components/ProtectedRoute';
 import './styles/vendor.styl';
 import './styles/app.styl';
@@ -120,37 +122,50 @@ series([
         const text = loadConfig();
         const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
         const filename = 'cnc.json';
-
-        alert({
-            title: i18n._('Corrupted workspace settings'),
-            message: (
-                <div style={{ display: 'flex' }}>
-                    <i className="fa fa-exclamation-circle fa-4x" style={{ color: '#faca2a' }} />
-                    <div style={{ marginLeft: 25 }}>
-                        <p>{i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}</p>
-                        <div>
-                            <Anchor
-                                href={url}
-                                download={filename}
-                            >
-                                <i className="fa fa-download" />
-                                <span className="space space-sm" />
-                                {i18n._('Download workspace settings')}
-                            </Anchor>
-                        </div>
+        const message = (
+            <div style={{ display: 'flex' }}>
+                <i className="fa fa-exclamation-circle fa-4x" style={{ color: '#faca2a' }} />
+                <div style={{ marginLeft: 25 }}>
+                    <h5>{i18n._('Corrupted workspace settings')}</h5>
+                    <p>{i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}</p>
+                    <div>
+                        <Anchor
+                            href={url}
+                            download={filename}
+                        >
+                            <i className="fa fa-download" />
+                            <span className="space space-sm" />
+                            {i18n._('Download workspace settings')}
+                        </Anchor>
                     </div>
                 </div>
-            ),
-            btnStyle: 'danger',
-            btnText: i18n._('Restore Defaults'),
-            onClick: () => {
-                // Restore Defaults
-                persistState(defaultState);
+            </div>
+        );
+        const props = {
+            button: (props) => {
+                const onClick = chainedFunction(
+                    // Restore Defaults
+                    () => {
+                        persistState(defaultState);
+                    },
+                    // Dismiss
+                    props.onClick
+                );
+
+                return (
+                    <Button
+                        btnStyle="danger"
+                        onClick={onClick}
+                    >
+                        {i18n._('Restore Defaults')}
+                    </Button>
+                );
             }
-        })
-        .then(() => {
-            renderPage();
-        });
+        };
+
+        alert(message, props)
+            .then(renderPage);
+
         return;
     }
 
