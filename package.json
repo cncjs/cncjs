@@ -138,6 +138,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.17.2",
     "bootstrap": "~3.3.7",
+    "chained-function": "~0.5.0",
     "chalk": "~2.1.0",
     "classnames": "~2.2.5",
     "clusterize.js": "~0.17.6",
