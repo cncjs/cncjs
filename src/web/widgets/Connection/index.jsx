@@ -119,16 +119,26 @@ class ConnectionWidget extends PureComponent {
                 }));
             }
         },
-        'serialport:open': (options) => {
-            const { controllerType, port, baudrate, inuse } = options;
-            const ports = map(this.state.ports, (o) => {
+        'serialport:change': (options) => {
+            const { port, inuse } = options;
+            const ports = this.state.ports.map((o) => {
                 if (o.port !== port) {
                     return o;
                 }
+                return { ...o, inuse };
+            });
 
-                o = { ...o, inuse };
-
-                return o;
+            this.setState(state => ({
+                ports: ports
+            }));
+        },
+        'serialport:open': (options) => {
+            const { controllerType, port, baudrate, inuse } = options;
+            const ports = this.state.ports.map((o) => {
+                if (o.port !== port) {
+                    return o;
+                }
+                return { ...o, inuse };
             });
 
             this.setState(state => ({

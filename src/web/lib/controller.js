@@ -47,6 +47,7 @@ class CNCController {
         'task:finish': [],
         'task:error': [],
         'serialport:list': [],
+        'serialport:change': [],
         'serialport:open': [],
         'serialport:close': [],
         'serialport:error': [],
