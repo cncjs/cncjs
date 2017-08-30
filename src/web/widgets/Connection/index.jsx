@@ -1,16 +1,12 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
 import reverse from 'lodash/reverse';
 import sortBy from 'lodash/sortBy';
 import uniq from 'lodash/uniq';
-import find from 'lodash/find';
 import includes from 'lodash/includes';
 import map from 'lodash/map';
-import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
-import api from '../../api';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -292,31 +288,6 @@ class ConnectionWidget extends PureComponent {
                 log.error(err);
                 return;
             }
-
-            let name = '';
-            let gcode = '';
-
-            api.controllers.get()
-                .then((res) => {
-                    let next;
-                    const c = find(res.body, { port: port });
-                    if (c) {
-                        next = api.fetchGCode({ port: port });
-                    }
-                    return next;
-                })
-                .then((res) => {
-                    name = get(res, 'body.name', '');
-                    gcode = get(res, 'body.data', '');
-                })
-                .catch((res) => {
-                    // Empty block
-                })
-                .then(() => {
-                    if (gcode) {
-                        pubsub.publish('gcode:load', { name, gcode });
-                    }
-                });
         });
     }
     closePort(port = this.state.port) {

@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import ExpressionEvaluator from 'expr-eval';
 import includes from 'lodash/includes';
 import get from 'lodash/get';
 import mapValues from 'lodash/mapValues';
@@ -6,7 +7,6 @@ import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Detector from 'three/examples/js/Detector';
-import api from '../../api';
 import Anchor from '../../components/Anchor';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
@@ -47,6 +47,39 @@ import {
 } from './constants';
 import styles from './index.styl';
 
+const translateGCodeWithContext = (function() {
+    const { Parser } = ExpressionEvaluator;
+    const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
+
+    return function fnTranslateGCodeWithContext(gcode, context = controller.context) {
+        if (typeof gcode !== 'string') {
+            log.error(`Invalid parameter: gcode=${gcode}`);
+            return '';
+        }
+
+        const lines = gcode.split('\n');
+
+        // The work position (i.e. posx, posy, posz) are not included in the context
+        context = {
+            ...controller.context,
+            ...context
+        };
+
+        return lines.map(line => {
+            try {
+                line = line.replace(reExpressionContext, (match) => {
+                    const expr = match.slice(1, -1);
+                    return Parser.evaluate(expr, context);
+                });
+            } catch (e) {
+                // Bypass unknown expression
+            }
+
+            return line;
+        }).join('\n');
+    };
+}());
+
 const displayWebGLErrorMessage = () => {
     modal({
         title: 'WebGL Error Message',
@@ -80,101 +113,100 @@ class VisualizerWidget extends PureComponent {
     state = this.getInitialState();
     actions = {
         openModal: (name = '', params = {}) => {
-            this.setState({
+            this.setState((state) => ({
                 modal: {
                     name: name,
                     params: params
                 }
-            });
+            }));
         },
         closeModal: () => {
-            this.setState({
+            this.setState((state) => ({
                 modal: {
                     name: '',
                     params: {}
                 }
-            });
+            }));
         },
         updateModalParams: (params = {}) => {
-            this.setState({
+            this.setState((state) => ({
                 modal: {
-                    ...this.state.modal,
+                    ...state.modal,
                     params: {
-                        ...this.state.modal.params,
+                        ...state.modal.params,
                         ...params
                     }
                 }
-            });
+            }));
         },
         // Load file from watch directory
         loadFile: (file) => {
-            this.setState({
+            this.setState((state) => ({
                 gcode: {
-                    ...this.state.gcode,
+                    ...state.gcode,
                     loading: true,
                     rendering: false,
                     ready: false
                 }
-            });
+            }));
 
             controller.command('watchdir:load', file, (err, data) => {
                 if (err) {
-                    this.setState({
+                    this.setState((state) => ({
                         gcode: {
-                            ...this.state.gcode,
+                            ...state.gcode,
                             loading: false,
                             rendering: false,
                             ready: false
                         }
-                    });
+                    }));
 
                     log.error(err);
                     return;
                 }
 
-                const { name = '', gcode = '' } = { ...data };
-                pubsub.publish('gcode:load', { name, gcode });
+                log.debug(data); // TODO
             });
         },
         uploadFile: (gcode, meta) => {
             const { name } = { ...meta };
-            const { port } = this.state;
+            const context = {};
 
-            this.setState({
+            this.setState((state) => ({
                 gcode: {
-                    ...this.state.gcode,
+                    ...state.gcode,
                     loading: true,
                     rendering: false,
                     ready: false
                 }
-            });
+            }));
 
-            api.loadGCode({ port, name, gcode })
-                .then((res) => {
-                    const { name = '', gcode = '' } = { ...res.body };
-                    pubsub.publish('gcode:load', { name, gcode });
-                })
-                .catch((res) => {
-                    this.setState({
+            controller.command('gcode:load', name, gcode, context, (err, data) => {
+                if (err) {
+                    this.setState((state) => ({
                         gcode: {
-                            ...this.state.gcode,
+                            ...state.gcode,
                             loading: false,
                             rendering: false,
                             ready: false
                         }
-                    });
+                    }));
 
-                    log.error('Failed to upload G-code file');
-                });
+                    log.error(err);
+                    return;
+                }
+
+                log.debug(data); // TODO
+            });
         },
         loadGCode: (name, gcode) => {
             const capable = {
                 view3D: !!this.visualizer
             };
 
-            const nextState = {
+            const updater = (state) => ({
                 gcode: {
-                    ...this.state.gcode,
+                    ...state.gcode,
                     loading: false,
                     rendering: capable.view3D,
                     ready: !capable.view3D,
@@ -192,9 +224,8 @@ class VisualizerWidget extends PureComponent {
                         }
                     }
                 }
-            };
-
-            this.setState(nextState, () => {
+            });
+            const callback = () => {
                 // Clear gcode bounding box
                 controller.context = {
                     ...controller.context,
@@ -225,18 +256,20 @@ class VisualizerWidget extends PureComponent {
 
                         pubsub.publish('gcode:bbox', bbox);
 
-                        this.setState({
+                        this.setState((state) => ({
                             gcode: {
-                                ...this.state.gcode,
+                                ...state.gcode,
                                 loading: false,
                                 rendering: false,
                                 ready: true,
                                 bbox: bbox
                             }
-                        });
+                        }));
                     });
                 }, 0);
-            });
+            };
+
+            this.setState(updater, callback);
         },
         unloadGCode: () => {
             const visualizer = this.visualizer;
@@ -255,9 +288,9 @@ class VisualizerWidget extends PureComponent {
                 zmax: 0
             };
 
-            this.setState({
+            this.setState((state) => ({
                 gcode: {
-                    ...this.state.gcode,
+                    ...state.gcode,
                     loading: false,
                     rendering: false,
                     ready: false,
@@ -275,7 +308,7 @@ class VisualizerWidget extends PureComponent {
                         }
                     }
                 }
-            });
+            }));
         },
         handleRun: () => {
             const { workflowState } = this.state;
@@ -309,12 +342,12 @@ class VisualizerWidget extends PureComponent {
             pubsub.publish('gcode:unload'); // Unload the G-code
         },
         setBoundingBox: (bbox) => {
-            this.setState({
+            this.setState((state) => ({
                 gcode: {
-                    ...this.state.gcode,
+                    ...state.gcode,
                     bbox: bbox
                 }
-            });
+            }));
         },
         toggle3DView: () => {
             if (!Detector.webgl && this.state.disabled) {
@@ -322,67 +355,71 @@ class VisualizerWidget extends PureComponent {
                 return;
             }
 
-            this.setState({
-                disabled: !this.state.disabled
-            });
+            this.setState((state) => ({
+                disabled: !state.disabled
+            }));
         },
         toPerspectiveProjection: (projection) => {
-            this.setState({
+            this.setState((state) => ({
                 projection: 'perspective'
-            });
+            }));
         },
         toOrthographicProjection: (projection) => {
-            this.setState({
+            this.setState((state) => ({
                 projection: 'orthographic'
-            });
+            }));
         },
         toggleGCodeFilename: () => {
-            this.setState({
+            this.setState((state) => ({
                 gcode: {
-                    ...this.state.gcode,
-                    displayName: !this.state.gcode.displayName
+                    ...state.gcode,
+                    displayName: !state.gcode.displayName
                 }
-            });
+            }));
         },
         toggleCoordinateSystemVisibility: () => {
-            this.setState({
+            this.setState((state) => ({
                 objects: {
-                    ...this.state.objects,
+                    ...state.objects,
                     coordinateSystem: {
-                        ...this.state.objects.coordinateSystem,
-                        visible: !this.state.objects.coordinateSystem.visible
+                        ...state.objects.coordinateSystem,
+                        visible: !state.objects.coordinateSystem.visible
                     }
                 }
-            });
+            }));
         },
         toggleGridLineNumbersVisibility: () => {
-            this.setState({
+            this.setState((state) => ({
                 objects: {
-                    ...this.state.objects,
+                    ...state.objects,
                     gridLineNumbers: {
-                        ...this.state.objects.gridLineNumbers,
-                        visible: !this.state.objects.gridLineNumbers.visible
+                        ...state.objects.gridLineNumbers,
+                        visible: !state.objects.gridLineNumbers.visible
                     }
                 }
-            });
+            }));
         },
         toggleToolheadVisibility: () => {
-            this.setState({
+            this.setState((state) => ({
                 objects: {
-                    ...this.state.objects,
+                    ...state.objects,
                     toolhead: {
-                        ...this.state.objects.toolhead,
-                        visible: !this.state.objects.toolhead.visible
+                        ...state.objects.toolhead,
+                        visible: !state.objects.toolhead.visible
                     }
                 }
-            });
+            }));
         },
         camera: {
             toRotateMode: () => {
-                this.setState({ cameraMode: CAMERA_MODE_ROTATE });
+                this.setState((state) => ({
+                    cameraMode: CAMERA_MODE_ROTATE
+                }));
             },
             toPanMode: () => {
-                this.setState({ cameraMode: CAMERA_MODE_PAN });
+                this.setState((state) => ({
+                    cameraMode: CAMERA_MODE_PAN
+                }));
             },
             zoomIn: () => {
                 if (this.visualizer) {
@@ -424,34 +461,41 @@ class VisualizerWidget extends PureComponent {
     controllerEvents = {
         'serialport:open': (options) => {
             const { port } = options;
-            this.setState({ port: port });
+            this.setState((state) => ({ port: port }));
         },
         'serialport:close': (options) => {
-            pubsub.publish('gcode:unload');
+            this.actions.unloadGCode();
 
             const initialState = this.getInitialState();
-            this.setState({ ...initialState });
+            this.setState((state) => ({ ...initialState }));
+        },
+        'gcode:load': (name, gcode, context) => {
+            gcode = translateGCodeWithContext(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
+            this.actions.loadGCode(name, gcode);
+        },
+        'gcode:unload': () => {
+            this.actions.unloadGCode();
         },
         'sender:status': (data) => {
             const { name, size, total, sent, received } = data;
-            this.setState({
+            this.setState((state) => ({
                 gcode: {
-                    ...this.state.gcode,
+                    ...state.gcode,
                     name,
                     size,
                     total,
                     sent,
                     received
                 }
-            });
+            }));
         },
         'workflow:state': (workflowState) => {
             if (this.state.workflowState !== workflowState) {
-                this.setState({ workflowState: workflowState });
+                this.setState((state) => ({ workflowState: workflowState }));
             }
         },
-        'Grbl:state': (state) => {
-            const { status, parserstate } = { ...state };
+        'Grbl:state': (controllerState) => {
+            const { status, parserstate } = { ...controllerState };
             const { wpos } = status;
             const { modal = {} } = { ...parserstate };
             const units = {
@@ -459,20 +503,20 @@ class VisualizerWidget extends PureComponent {
                 'G21': METRIC_UNITS
             }[modal.units] || this.state.units;
 
-            this.setState({
+            this.setState((state) => ({
                 units: units,
                 controller: {
                     type: GRBL,
-                    state: state
+                    state: controllerState
                 },
                 workPosition: {
-                    ...this.state.workPosition,
+                    ...state.workPosition,
                     ...wpos
                 }
-            });
+            }));
         },
-        'Smoothie:state': (state) => {
-            const { status, parserstate } = { ...state };
+        'Smoothie:state': (controllerState) => {
+            const { status, parserstate } = { ...controllerState };
             const { wpos } = status;
             const { modal = {} } = { ...parserstate };
             const units = {
@@ -488,17 +532,17 @@ class VisualizerWidget extends PureComponent {
                 return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
             });
 
-            this.setState({
+            this.setState((state) => ({
                 units: units,
                 controller: {
                     type: SMOOTHIE,
-                    state: state
+                    state: controllerState
                 },
                 workPosition: workPosition
-            });
+            }));
         },
-        'TinyG:state': (state) => {
-            const { sr } = { ...state };
+        'TinyG:state': (controllerState) => {
+            const { sr } = { ...controllerState };
             const { wpos, modal = {} } = sr;
             const units = {
                 'G20': IMPERIAL_UNITS,
@@ -514,14 +558,14 @@ class VisualizerWidget extends PureComponent {
                 return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
             });
 
-            this.setState({
+            this.setState((state) => ({
                 units: units,
                 controller: {
                     type: TINYG,
-                    state: state
+                    state: controllerState
                 },
                 workPosition: workPosition
-            });
+            }));
         }
     };
     pubsubTokens = [];
@@ -531,19 +575,19 @@ class VisualizerWidget extends PureComponent {
     visualizer = null;
 
     componentDidMount() {
-        this.subscribe();
         this.addControllerEvents();
 
         if (!Detector.webgl && !this.state.disabled) {
             displayWebGLErrorMessage();
 
             setTimeout(() => {
-                this.setState({ disabled: true });
+                this.setState((state) => ({
+                    disabled: true
+                }));
             }, 0);
         }
     }
     componentWillUnmount() {
-        this.unsubscribe();
         this.removeControllerEvents();
     }
     componentDidUpdate(prevProps, prevState) {
@@ -628,25 +672,6 @@ class VisualizerWidget extends PureComponent {
             cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
             isAgitated: false // Defaults to false
         };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('gcode:load', (msg, { name, gcode }) => {
-                const actions = this.actions;
-                actions.loadGCode(name, gcode);
-            }),
-            pubsub.subscribe('gcode:unload', (msg) => {
-                const actions = this.actions;
-                actions.unloadGCode();
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {

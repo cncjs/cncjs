@@ -223,7 +223,10 @@ class CNCEngine {
                         return;
                     }
 
-                    controller = new Controller(port, { baudrate: baudrate });
+                    controller = new Controller(this.io, {
+                        port: port,
+                        baudrate: baudrate
+                    });
                 }
 
                 controller.addConnection(socket);

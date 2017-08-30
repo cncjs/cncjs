@@ -66,6 +66,27 @@ class GCodeWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
+        'gcode:unload': () => {
+            this.setState({
+                bbox: {
+                    min: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    },
+                    max: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    },
+                    delta: {
+                        x: 0,
+                        y: 0,
+                        z: 0
+                    }
+                }
+            });
+        },
         'sender:status': (data) => {
             const { total, sent, received, startTime, finishTime, elapsedTime, remainingTime } = data;
 
@@ -178,27 +199,6 @@ class GCodeWidget extends PureComponent {
     }
     subscribe() {
         const tokens = [
-            pubsub.subscribe('gcode:unload', (msg) => {
-                this.setState({
-                    bbox: {
-                        min: {
-                            x: 0,
-                            y: 0,
-                            z: 0
-                        },
-                        max: {
-                            x: 0,
-                            y: 0,
-                            z: 0
-                        },
-                        delta: {
-                            x: 0,
-                            y: 0,
-                            z: 0
-                        }
-                    }
-                });
-            }),
             pubsub.subscribe('gcode:bbox', (msg, bbox) => {
                 const dX = bbox.max.x - bbox.min.x;
                 const dY = bbox.max.y - bbox.min.y;

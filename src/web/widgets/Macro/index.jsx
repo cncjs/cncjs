@@ -1,6 +1,4 @@
 import classNames from 'classnames';
-import ExpressionEvaluator from 'expr-eval';
-import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import api from '../../api';
@@ -21,39 +19,6 @@ import {
     MODAL_RUN_MACRO
 } from './constants';
 import styles from './index.styl';
-
-const translateGCodeWithContext = (function() {
-    const { Parser } = ExpressionEvaluator;
-    const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
-
-    return function fnTranslateGCodeWithContext(gcode, context = controller.context) {
-        if (typeof gcode !== 'string') {
-            log.error(`Invalid parameter: gcode=${gcode}`);
-            return '';
-        }
-
-        const lines = gcode.split('\n');
-
-        // The work position (i.e. posx, posy, posz) are not included in the context
-        context = {
-            ...controller.context,
-            ...context
-        };
-
-        return lines.map(line => {
-            try {
-                line = line.replace(reExpressionContext, (match) => {
-                    const expr = match.slice(1, -1);
-                    return Parser.evaluate(expr, context);
-                });
-            } catch (e) {
-                // Bypass unknown expression
-            }
-
-            return line;
-        }).join('\n');
-    };
-}());
 
 class MacroWidget extends PureComponent {
     static propTypes = {
@@ -187,12 +152,7 @@ class MacroWidget extends PureComponent {
                         return;
                     }
 
-                    const { gcode = '' } = { ...data };
-
-                    pubsub.publish('gcode:load', {
-                        name,
-                        gcode: translateGCodeWithContext(gcode, controller.context)
-                    });
+                    log.debug(data); // TODO
                 });
             } catch (err) {
                 // Ignore error

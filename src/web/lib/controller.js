@@ -52,6 +52,8 @@ class CNCController {
         'serialport:error': [],
         'serialport:read': [],
         'serialport:write': [],
+        'gcode:load': [],
+        'gcode:unload': [],
         'feeder:status': [],
         'sender:status': [],
         'workflow:state': [],

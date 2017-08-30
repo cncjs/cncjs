@@ -29,7 +29,7 @@ export const set = (req, res) => {
     }
 
     // Load G-code
-    controller.command(null, 'gcode:load', name, gcode, context, (err, data) => {
+    controller.command(null, 'gcode:load', name, gcode, context, (err, state) => {
         if (err) {
             res.status(ERR_INTERNAL_SERVER_ERROR).send({
                 msg: 'Failed to load G-code: ' + err
@@ -37,8 +37,7 @@ export const set = (req, res) => {
             return;
         }
 
-        const { name, gcode, context } = data;
-        res.send({ name, gcode, context });
+        res.send({ ...state });
     });
 };
 

@@ -39,6 +39,9 @@ const noop = () => {};
 class TinyGController {
     type = TINYG;
 
+    // Socket.IO
+    io = null;
+
     // Connections
     connections = {};
 
@@ -163,9 +166,10 @@ class TinyGController {
         return translateWithContext(line, context);
     };
 
-    constructor(port, options) {
-        const { baudrate } = { ...options };
+    constructor(io, options) {
+        this.io = io;
 
+        const { port, baudrate } = { ...options };
         this.options = {
             ...this.options,
             port: port,
@@ -810,6 +814,11 @@ class TinyGController {
         if (this.sender) {
             // sender status
             socket.emit('sender:status', this.sender.toJSON());
+
+            const { name, gcode, context } = this.sender.state;
+            if (gcode) {
+                socket.emit('gcode:load', name, gcode, context);
+            }
         }
     }
     removeConnection(socket) {
@@ -823,10 +832,10 @@ class TinyGController {
         delete this.connections[socket.id];
     }
     emitAll(eventName, ...args) {
-        Object.keys(this.connections).forEach(id => {
-            const socket = this.connections[id];
-            socket.emit.apply(socket, [eventName].concat(args));
-        });
+        const room = this.options.port;
+        if (this.io) {
+            this.io.to(room).emit(eventName, ...args);
+        }
     }
     // https://github.com/synthetos/g2/wiki/Job-Exception-Handling
     // Character    Operation       Description
@@ -849,21 +858,20 @@ class TinyGController {
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
                 const dwell = '%wait ; Wait for the planner queue to empty';
-                gcode = gcode + '\n' + dwell;
-
-                const ok = this.sender.load(name, gcode, context);
+                const ok = this.sender.load(name, gcode + '\n' + dwell, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
                     return;
                 }
 
+                this.emitAll('gcode:load', name, gcode, context);
                 this.event.trigger('gcode:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
                 this.workflow.stop();
 
-                callback(null, { name, gcode, context });
+                callback(null, this.sender.toJSON());
             },
             'gcode:unload': () => {
                 this.workflow.stop();
@@ -871,6 +879,7 @@ class TinyGController {
                 // Sender
                 this.sender.unload();
 
+                this.emitAll('gcode:unload');
                 this.event.trigger('gcode:unload');
             },
             'start': () => {
