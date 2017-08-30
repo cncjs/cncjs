@@ -824,10 +824,10 @@ class SmoothieController {
         delete this.connections[socket.id];
     }
     emitAll(eventName, ...args) {
-        const room = this.options.port;
-        if (this.io) {
-            this.io.to(room).emit(eventName, ...args);
-        }
+        Object.keys(this.connections).forEach(id => {
+            const socket = this.connections[id];
+            socket.emit(eventName, ...args);
+        });
     }
     command(socket, cmd, ...args) {
         const handler = {
