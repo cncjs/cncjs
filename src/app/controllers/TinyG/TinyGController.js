@@ -39,8 +39,8 @@ const noop = () => {};
 class TinyGController {
     type = TINYG;
 
-    // Socket.IO
-    io = null;
+    // CNCEngine
+    engine = null;
 
     // Connections
     connections = {};
@@ -166,8 +166,11 @@ class TinyGController {
         return translateWithContext(line, context);
     };
 
-    constructor(io, options) {
-        this.io = io;
+    constructor(engine, options) {
+        if (!engine) {
+            throw new Error('engine must be specified');
+        }
+        this.engine = engine;
 
         const { port, baudrate } = { ...options };
         this.options = {
@@ -214,7 +217,7 @@ class TinyGController {
                 return;
             }
 
-            this.emitAll('serialport:write', line, context);
+            this.emit('serialport:write', line, context);
 
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);
@@ -273,22 +276,22 @@ class TinyGController {
         // Workflow
         this.workflow = new Workflow();
         this.workflow.on('start', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
             this.blocked = false;
             this.sendResponseState = SEND_RESPONSE_STATE_NONE;
             this.sender.rewind();
         });
         this.workflow.on('stop', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
             this.blocked = false;
             this.sendResponseState = SEND_RESPONSE_STATE_NONE;
             this.sender.rewind();
         });
         this.workflow.on('pause', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
         });
         this.workflow.on('resume', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
         });
 
         // TinyG
@@ -296,7 +299,7 @@ class TinyGController {
 
         this.controller.on('raw', (res) => {
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', res.raw);
             }
         });
 
@@ -400,8 +403,8 @@ class TinyGController {
                     const { lines, received } = this.sender.state;
                     const line = lines[received] || '';
 
-                    this.emitAll('serialport:read', `> ${line}`);
-                    this.emitAll('serialport:read', JSON.stringify({
+                    this.emit('serialport:read', `> ${line}`);
+                    this.emit('serialport:read', JSON.stringify({
                         err: {
                             code: code,
                             msg: err.msg,
@@ -410,7 +413,7 @@ class TinyGController {
                         }
                     }));
                 } else {
-                    this.emitAll('serialport:read', JSON.stringify({
+                    this.emit('serialport:read', JSON.stringify({
                         err: {
                             code: code,
                             msg: err.msg
@@ -433,12 +436,12 @@ class TinyGController {
 
             // Feeder
             if (this.feeder.peek()) {
-                this.emitAll('feeder:status', this.feeder.toJSON());
+                this.emit('feeder:status', this.feeder.toJSON());
             }
 
             // Sender
             if (this.sender.peek()) {
-                this.emitAll('sender:status', this.sender.toJSON());
+                this.emit('sender:status', this.sender.toJSON());
             }
 
             const zeroOffset = _.isEqual(
@@ -449,13 +452,13 @@ class TinyGController {
             // TinyG state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
-                this.emitAll('TinyG:state', this.state);
+                this.emit('TinyG:state', this.state);
             }
 
             // TinyG settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
-                this.emitAll('TinyG:settings', this.settings);
+                this.emit('TinyG:settings', this.settings);
             }
 
             // Check the ready flag
@@ -582,7 +585,7 @@ class TinyGController {
                 log.silly(`> INIT: ${cmd} ${cmd.length}`);
 
                 const context = {};
-                this.emitAll('serialport:write', cmd, context);
+                this.emit('serialport:write', cmd, context);
                 this.serialport.write(cmd + '\n');
             }
             setTimeout(() => {
@@ -715,17 +718,25 @@ class TinyGController {
         this.serialport.open((err) => {
             if (err) {
                 log.error(`Error opening serial port "${port}":`, err);
-                this.emitAll('serialport:error', { port: port });
+                this.emit('serialport:error', { port: port });
                 callback(err); // notify error
                 return;
             }
 
-            this.emitAll('serialport:open', {
+            this.emit('serialport:open', {
                 port: port,
                 baudrate: baudrate,
                 controllerType: this.type,
                 inuse: true
             });
+
+            // Emit a change event to all connected sockets
+            if (this.engine.io) {
+                this.engine.io.emit('serialport:change', {
+                    port: port,
+                    inuse: true
+                });
+            }
 
             callback(); // register controller
 
@@ -758,10 +769,18 @@ class TinyGController {
         // Stop status query
         this.ready = false;
 
-        this.emitAll('serialport:close', {
+        this.emit('serialport:close', {
             port: port,
             inuse: false
         });
+
+        // Emit a change event to all connected sockets
+        if (this.engine.io) {
+            this.engine.io.emit('serialport:change', {
+                port: port,
+                inuse: false
+            });
+        }
 
         if (this.isClose()) {
             callback(null);
@@ -799,6 +818,14 @@ class TinyGController {
         //
         // Send data to newly connected client
         //
+        if (this.isOpen()) {
+            socket.emit('serialport:open', {
+                port: this.options.port,
+                baudrate: this.options.baudrate,
+                controllerType: this.type,
+                inuse: true
+            });
+        }
         if (!_.isEmpty(this.state)) {
             // controller state
             socket.emit('TinyG:state', this.state);
@@ -831,7 +858,7 @@ class TinyGController {
         this.connections[socket.id] = undefined;
         delete this.connections[socket.id];
     }
-    emitAll(eventName, ...args) {
+    emit(eventName, ...args) {
         Object.keys(this.connections).forEach(id => {
             const socket = this.connections[id];
             socket.emit(eventName, ...args);
@@ -864,7 +891,7 @@ class TinyGController {
                     return;
                 }
 
-                this.emitAll('gcode:load', name, gcode, context);
+                this.emit('gcode:load', name, gcode, context);
                 this.event.trigger('gcode:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
@@ -879,7 +906,7 @@ class TinyGController {
                 // Sender
                 this.sender.unload();
 
-                this.emitAll('gcode:unload');
+                this.emit('gcode:unload');
                 this.event.trigger('gcode:unload');
             },
             'start': () => {
@@ -1173,7 +1200,7 @@ class TinyGController {
             return;
         }
 
-        this.emitAll('serialport:write', data, context);
+        this.emit('serialport:write', data, context);
         this.serialport.write(data);
         log.silly(`> ${data}`);
     }

@@ -37,8 +37,8 @@ const noop = _.noop;
 class GrblController {
     type = GRBL;
 
-    // Socket.IO
-    io = null;
+    // CNCEngine
+    engine = null;
 
     // Connections
     connections = {};
@@ -170,8 +170,11 @@ class GrblController {
         return translateWithContext(line, context);
     };
 
-    constructor(io, options) {
-        this.io = io;
+    constructor(engine, options) {
+        if (!engine) {
+            throw new Error('engine must be specified');
+        }
+        this.engine = engine;
 
         const { port, baudrate } = { ...options };
         this.options = {
@@ -218,7 +221,7 @@ class GrblController {
                 return;
             }
 
-            this.emitAll('serialport:write', line, context);
+            this.emit('serialport:write', line, context);
 
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);
@@ -273,18 +276,18 @@ class GrblController {
         // Workflow
         this.workflow = new Workflow();
         this.workflow.on('start', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
             this.sender.rewind();
         });
         this.workflow.on('stop', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
             this.sender.rewind();
         });
         this.workflow.on('pause', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
         });
         this.workflow.on('resume', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
             this.sender.next();
         });
 
@@ -298,7 +301,7 @@ class GrblController {
 
             if (this.actionMask.replyStatusReport) {
                 this.actionMask.replyStatusReport = false;
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', res.raw);
             }
 
             // Check if the receive buffer is available in the status report
@@ -333,7 +336,7 @@ class GrblController {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
-                    this.emitAll('serialport:read', res.raw);
+                    this.emit('serialport:read', res.raw);
                 }
                 this.actionMask.queryParserState.reply = false;
                 return;
@@ -363,7 +366,7 @@ class GrblController {
                 }
             }
 
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
 
             // Feeder
             this.feeder.next();
@@ -378,13 +381,13 @@ class GrblController {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
-                this.emitAll('serialport:read', `> ${line.trim()} (line=${received + 1})`);
+                this.emit('serialport:read', `> ${line.trim()} (line=${received + 1})`);
                 if (error) {
                     // Grbl v1.1
-                    this.emitAll('serialport:read', `error:${code} (${error.message})`);
+                    this.emit('serialport:read', `error:${code} (${error.message})`);
                 } else {
                     // Grbl v0.9
-                    this.emitAll('serialport:read', res.raw);
+                    this.emit('serialport:read', res.raw);
                 }
 
                 this.sender.ack();
@@ -394,10 +397,10 @@ class GrblController {
 
             if (error) {
                 // Grbl v1.1
-                this.emitAll('serialport:read', `error:${code} (${error.message})`);
+                this.emit('serialport:read', `error:${code} (${error.message})`);
             } else {
                 // Grbl v0.9
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', res.raw);
             }
 
             // Feeder
@@ -410,10 +413,10 @@ class GrblController {
 
             if (alarm) {
                 // Grbl v1.1
-                this.emitAll('serialport:read', `ALARM:${code} (${alarm.message})`);
+                this.emit('serialport:read', `ALARM:${code} (${alarm.message})`);
             } else {
                 // Grbl v0.9
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', res.raw);
             }
         });
 
@@ -422,16 +425,16 @@ class GrblController {
             this.actionMask.queryParserState.reply = true;
 
             if (this.actionMask.replyParserState) {
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', res.raw);
             }
         });
 
         this.controller.on('parameters', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
         });
 
         this.controller.on('feedback', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
         });
 
         this.controller.on('settings', (res) => {
@@ -439,15 +442,15 @@ class GrblController {
 
             if (!res.message && setting) {
                 // Grbl v1.1
-                this.emitAll('serialport:read', `${res.name}=${res.value} (${setting.message}, ${setting.units})`);
+                this.emit('serialport:read', `${res.name}=${res.value} (${setting.message}, ${setting.units})`);
             } else {
                 // Grbl v0.9
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', res.raw);
             }
         });
 
         this.controller.on('startup', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
 
             // Set ready flag to true when a Grbl start up message has arrived
             this.ready = true;
@@ -459,7 +462,7 @@ class GrblController {
         });
 
         this.controller.on('others', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
         });
 
         const queryStatusReport = () => {
@@ -541,12 +544,12 @@ class GrblController {
 
             // Feeder
             if (this.feeder.peek()) {
-                this.emitAll('feeder:status', this.feeder.toJSON());
+                this.emit('feeder:status', this.feeder.toJSON());
             }
 
             // Sender
             if (this.sender.peek()) {
-                this.emitAll('sender:status', this.sender.toJSON());
+                this.emit('sender:status', this.sender.toJSON());
             }
 
             const zeroOffset = _.isEqual(
@@ -557,13 +560,13 @@ class GrblController {
             // Grbl state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
-                this.emitAll('Grbl:state', this.state);
+                this.emit('Grbl:state', this.state);
             }
 
             // Grbl settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
-                this.emitAll('Grbl:settings', this.settings);
+                this.emit('Grbl:settings', this.settings);
             }
 
             // Check the ready flag
@@ -678,17 +681,25 @@ class GrblController {
         this.serialport.open((err) => {
             if (err) {
                 log.error(`Error opening serial port "${port}":`, err);
-                this.emitAll('serialport:error', { err: err, port: port });
+                this.emit('serialport:error', { err: err, port: port });
                 callback(err); // notify error
                 return;
             }
 
-            this.emitAll('serialport:open', {
+            this.emit('serialport:open', {
                 port: port,
                 baudrate: baudrate,
                 controllerType: this.type,
                 inuse: true
             });
+
+            // Emit a change event to all connected sockets
+            if (this.engine.io) {
+                this.engine.io.emit('serialport:change', {
+                    port: port,
+                    inuse: true
+                });
+            }
 
             callback(); // register controller
 
@@ -718,10 +729,18 @@ class GrblController {
         // Stop status query
         this.ready = false;
 
-        this.emitAll('serialport:close', {
+        this.emit('serialport:close', {
             port: port,
             inuse: false
         });
+
+        // Emit a change event to all connected sockets
+        if (this.engine.io) {
+            this.engine.io.emit('serialport:change', {
+                port: port,
+                inuse: false
+            });
+        }
 
         if (this.isClose()) {
             callback(null);
@@ -759,6 +778,14 @@ class GrblController {
         //
         // Send data to newly connected client
         //
+        if (this.isOpen()) {
+            socket.emit('serialport:open', {
+                port: this.options.port,
+                baudrate: this.options.baudrate,
+                controllerType: this.type,
+                inuse: true
+            });
+        }
         if (!_.isEmpty(this.state)) {
             // controller state
             socket.emit('Grbl:state', this.state);
@@ -791,7 +818,7 @@ class GrblController {
         this.connections[socket.id] = undefined;
         delete this.connections[socket.id];
     }
-    emitAll(eventName, ...args) {
+    emit(eventName, ...args) {
         Object.keys(this.connections).forEach(id => {
             const socket = this.connections[id];
             socket.emit(eventName, ...args);
@@ -817,7 +844,7 @@ class GrblController {
                     return;
                 }
 
-                this.emitAll('gcode:load', name, gcode, context);
+                this.emit('gcode:load', name, gcode, context);
                 this.event.trigger('gcode:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
@@ -832,7 +859,7 @@ class GrblController {
                 // Sender
                 this.sender.unload();
 
-                this.emitAll('gcode:unload');
+                this.emit('gcode:unload');
                 this.event.trigger('gcode:unload');
             },
             'start': () => {
@@ -1107,7 +1134,7 @@ class GrblController {
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
-        this.emitAll('serialport:write', data, context);
+        this.emit('serialport:write', data, context);
         this.serialport.write(data);
         log.silly(`> ${data}`);
     }

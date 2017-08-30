@@ -33,8 +33,8 @@ const noop = _.noop;
 class SmoothieController {
     type = SMOOTHIE;
 
-    // Socket.IO
-    io = null;
+    // CNCEngine
+    engine = null;
 
     // Connections
     connections = {};
@@ -168,8 +168,11 @@ class SmoothieController {
         return translateWithContext(line, context);
     };
 
-    constructor(io, options) {
-        this.io = io;
+    constructor(engine, options) {
+        if (!engine) {
+            throw new Error('engine must be specified');
+        }
+        this.engine = engine;
 
         const { port, baudrate } = { ...options };
         this.options = {
@@ -216,7 +219,7 @@ class SmoothieController {
                 return;
             }
 
-            this.emitAll('serialport:write', line, context);
+            this.emit('serialport:write', line, context);
 
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);
@@ -271,18 +274,18 @@ class SmoothieController {
         // Workflow
         this.workflow = new Workflow();
         this.workflow.on('start', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
             this.sender.rewind();
         });
         this.workflow.on('stop', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
             this.sender.rewind();
         });
         this.workflow.on('pause', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
         });
         this.workflow.on('resume', () => {
-            this.emitAll('workflow:state', this.workflow.state);
+            this.emit('workflow:state', this.workflow.state);
             this.sender.next();
         });
 
@@ -296,7 +299,7 @@ class SmoothieController {
 
             if (this.actionMask.replyStatusReport) {
                 this.actionMask.replyStatusReport = false;
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', res.raw);
             }
 
             // Check if the receive buffer is available in the status report (#115)
@@ -331,7 +334,7 @@ class SmoothieController {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
-                    this.emitAll('serialport:read', res.raw);
+                    this.emit('serialport:read', res.raw);
                 }
                 this.actionMask.queryParserState.reply = false;
                 return;
@@ -361,7 +364,7 @@ class SmoothieController {
                 }
             }
 
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
 
             // Feeder
             this.feeder.next();
@@ -373,22 +376,22 @@ class SmoothieController {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
-                this.emitAll('serialport:read', `> ${line.trim()} (line=${received + 1})`);
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', `> ${line.trim()} (line=${received + 1})`);
+                this.emit('serialport:read', res.raw);
 
                 this.sender.ack();
                 this.sender.next();
                 return;
             }
 
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
 
             // Feeder
             this.feeder.next();
         });
 
         this.controller.on('alarm', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
         });
 
         this.controller.on('parserstate', (res) => {
@@ -396,20 +399,20 @@ class SmoothieController {
             this.actionMask.queryParserState.reply = true;
 
             if (this.actionMask.replyParserState) {
-                this.emitAll('serialport:read', res.raw);
+                this.emit('serialport:read', res.raw);
             }
         });
 
         this.controller.on('parameters', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
         });
 
         this.controller.on('version', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
         });
 
         this.controller.on('others', (res) => {
-            this.emitAll('serialport:read', res.raw);
+            this.emit('serialport:read', res.raw);
         });
 
         const queryStatusReport = () => {
@@ -493,12 +496,12 @@ class SmoothieController {
 
             // Feeder
             if (this.feeder.peek()) {
-                this.emitAll('feeder:status', this.feeder.toJSON());
+                this.emit('feeder:status', this.feeder.toJSON());
             }
 
             // Sender
             if (this.sender.peek()) {
-                this.emitAll('sender:status', this.sender.toJSON());
+                this.emit('sender:status', this.sender.toJSON());
             }
 
             const zeroOffset = _.isEqual(
@@ -509,13 +512,13 @@ class SmoothieController {
             // Smoothie state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
-                this.emitAll('Smoothie:state', this.state);
+                this.emit('Smoothie:state', this.state);
             }
 
             // Smoothie settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
-                this.emitAll('Smoothie:settings', this.settings);
+                this.emit('Smoothie:settings', this.settings);
             }
 
             // Check the ready flag
@@ -707,17 +710,25 @@ class SmoothieController {
         this.serialport.open((err) => {
             if (err) {
                 log.error(`Error opening serial port "${port}":`, err);
-                this.emitAll('serialport:error', { port: port });
+                this.emit('serialport:error', { port: port });
                 callback(err); // notify error
                 return;
             }
 
-            this.emitAll('serialport:open', {
+            this.emit('serialport:open', {
                 port: port,
                 baudrate: baudrate,
                 controllerType: this.type,
                 inuse: true
             });
+
+            // Emit a change event to all connected sockets
+            if (this.engine.io) {
+                this.engine.io.emit('serialport:change', {
+                    port: port,
+                    inuse: true
+                });
+            }
 
             callback(); // register controller
 
@@ -750,10 +761,18 @@ class SmoothieController {
         // Stop status query
         this.ready = false;
 
-        this.emitAll('serialport:close', {
+        this.emit('serialport:close', {
             port: port,
             inuse: false
         });
+
+        // Emit a change event to all connected sockets
+        if (this.engine.io) {
+            this.engine.io.emit('serialport:change', {
+                port: port,
+                inuse: false
+            });
+        }
 
         if (this.isClose()) {
             callback(null);
@@ -791,6 +810,14 @@ class SmoothieController {
         //
         // Send data to newly connected client
         //
+        if (this.isOpen()) {
+            socket.emit('serialport:open', {
+                port: this.options.port,
+                baudrate: this.options.baudrate,
+                controllerType: this.type,
+                inuse: true
+            });
+        }
         if (!_.isEmpty(this.state)) {
             // controller state
             socket.emit('Smoothie:state', this.state);
@@ -823,7 +850,7 @@ class SmoothieController {
         this.connections[socket.id] = undefined;
         delete this.connections[socket.id];
     }
-    emitAll(eventName, ...args) {
+    emit(eventName, ...args) {
         Object.keys(this.connections).forEach(id => {
             const socket = this.connections[id];
             socket.emit(eventName, ...args);
@@ -849,7 +876,7 @@ class SmoothieController {
                     return;
                 }
 
-                this.emitAll('gcode:load', name, gcode, context);
+                this.emit('gcode:load', name, gcode, context);
                 this.event.trigger('gcode:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
@@ -864,7 +891,7 @@ class SmoothieController {
                 // Sender
                 this.sender.unload();
 
-                this.emitAll('gcode:unload');
+                this.emit('gcode:unload');
                 this.event.trigger('gcode:unload');
             },
             'start': () => {
@@ -1128,7 +1155,7 @@ class SmoothieController {
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
-        this.emitAll('serialport:write', data, context);
+        this.emit('serialport:write', data, context);
         this.serialport.write(data);
         log.silly(`> ${data}`);
     }

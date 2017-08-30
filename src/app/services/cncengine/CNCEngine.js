@@ -40,23 +40,23 @@ class CNCEngine {
     controllerClass = {};
     listener = {
         taskStart: (...args) => {
-            if (this.io && this.io.sockets) {
-                this.io.sockets.emit('task:start', ...args);
+            if (this.io) {
+                this.io.emit('task:start', ...args);
             }
         },
         taskFinish: (...args) => {
-            if (this.io && this.io.sockets) {
-                this.io.sockets.emit('task:finish', ...args);
+            if (this.io) {
+                this.io.emit('task:finish', ...args);
             }
         },
         taskError: (...args) => {
-            if (this.io && this.io.sockets) {
-                this.io.sockets.emit('task:error', ...args);
+            if (this.io) {
+                this.io.emit('task:error', ...args);
             }
         },
         configChange: (...args) => {
-            if (this.io && this.io.sockets) {
-                this.io.sockets.emit('config:change', ...args);
+            if (this.io) {
+                this.io.emit('config:change', ...args);
             }
         }
     };
@@ -223,7 +223,8 @@ class CNCEngine {
                         return;
                     }
 
-                    controller = new Controller(this.io, {
+                    const engine = this;
+                    controller = new Controller(engine, {
                         port: port,
                         baudrate: baudrate
                     });
@@ -232,13 +233,6 @@ class CNCEngine {
                 controller.addConnection(socket);
 
                 if (controller.isOpen()) {
-                    socket.emit('serialport:open', {
-                        port: port,
-                        baudrate: controller.options.baudrate,
-                        controllerType: controller.type,
-                        inuse: true
-                    });
-
                     // Join the room
                     socket.join(port);
 
