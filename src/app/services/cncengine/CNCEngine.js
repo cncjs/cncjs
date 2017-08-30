@@ -295,7 +295,7 @@ class CNCEngine {
             });
 
             socket.on('command', (port, cmd, ...args) => {
-                log.debug(`socket.command("${port}", "${cmd}"): id=${socket.id}, args=${JSON.stringify(args)}`);
+                log.debug(`socket.command("${port}", "${cmd}"): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
                 if (!controller || controller.isClose()) {
