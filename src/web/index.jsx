@@ -19,7 +19,8 @@ import i18n from './lib/i18n';
 import log from './lib/log';
 import { toQueryObject } from './lib/query';
 import user from './lib/user';
-import store, { defaultState, loadConfig, persistState } from './store';
+import store from './store';
+import defaultState from './store/defaultState';
 import App from './containers/App';
 import Login from './containers/Login';
 import Anchor from './components/Anchor';
@@ -119,9 +120,9 @@ series([
     }
 
     if (settings.error.corruptedWorkspaceSettings) {
-        const text = loadConfig();
+        const text = store.getConfig();
         const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
-        const filename = 'cnc.json';
+        const filename = `${settings.name}-${settings.version}.json`;
         const message = (
             <div style={{ display: 'flex' }}>
                 <i className="fa fa-exclamation-circle fa-4x" style={{ color: '#faca2a' }} />
@@ -144,9 +145,12 @@ series([
         const props = {
             button: (props) => {
                 const onClick = chainedFunction(
-                    // Restore Defaults
                     () => {
-                        persistState(defaultState);
+                        // Reset to default state
+                        store.state = defaultState;
+
+                        // Persist data locally
+                        store.persist();
                     },
                     // Dismiss
                     props.onClick

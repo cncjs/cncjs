@@ -1,16 +1,16 @@
 import classNames from 'classnames';
 import i18next from 'i18next';
-import _ from 'lodash';
 import camelCase from 'lodash/camelCase';
+import find from 'lodash/find';
+import findIndex from 'lodash/findIndex';
+import isEqual from 'lodash/isEqual';
 import Uri from 'jsuri';
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import api from '../../api';
 import settings from '../../config/settings';
 import Breadcrumbs from '../../components/Breadcrumbs';
-import confirm from '../../lib/confirm';
 import i18n from '../../lib/i18n';
-import store from '../../store';
 import General from './General';
 import Workspace from './Workspace';
 import Account from './Account';
@@ -204,13 +204,26 @@ class Settings extends PureComponent {
         },
         // Workspace
         workspace: {
-            restoreDefaults: () => {
-                confirm({
-                    title: i18n._('Restore Defaults'),
-                    body: i18n._('Are you sure you want to restore the default settings?')
-                }).then(() => {
-                    store.clear();
-                    window.location.reload();
+            openModal: (name = '', params = {}) => {
+                this.setState({
+                    workspace: {
+                        ...this.state.workspace,
+                        modal: {
+                            name: name,
+                            params: params
+                        }
+                    }
+                });
+            },
+            closeModal: () => {
+                this.setState({
+                    workspace: {
+                        ...this.state.workspace,
+                        modal: {
+                            name: '',
+                            params: {}
+                        }
+                    }
                 });
             }
         },
@@ -299,7 +312,7 @@ class Settings extends PureComponent {
                         }
 
                         const records = this.state.account.records;
-                        const index = _.findIndex(records, { id: id });
+                        const index = findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -458,7 +471,7 @@ class Settings extends PureComponent {
                         }
 
                         const records = this.state.commands.records;
-                        const index = _.findIndex(records, { id: id });
+                        const index = findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -616,7 +629,7 @@ class Settings extends PureComponent {
                         }
 
                         const records = this.state.events.records;
-                        const index = _.findIndex(records, { id: id });
+                        const index = findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -750,6 +763,12 @@ class Settings extends PureComponent {
             },
             // Workspace
             workspace: {
+                // Modal
+                modal: {
+                    name: '',
+                    params: {
+                    }
+                }
             },
             // My Account
             account: {
@@ -838,7 +857,7 @@ class Settings extends PureComponent {
         const initialSectionPath = this.sections[0].path;
         const sectionPath = pathname.replace(/^\/settings(\/)?/, ''); // TODO
         const id = mapSectionPathToId(sectionPath || initialSectionPath);
-        const activeSection = _.find(this.sections, { id: id }) || this.sections[0];
+        const activeSection = find(this.sections, { id: id }) || this.sections[0];
         const sectionItems = this.sections.map((section, index) => (
             <li
                 key={section.id}
@@ -856,7 +875,7 @@ class Settings extends PureComponent {
         const Section = activeSection.component;
         const sectionInitialState = this.initialState[activeSection.id];
         const sectionState = state[activeSection.id];
-        const sectionStateChanged = !_.isEqual(sectionInitialState, sectionState);
+        const sectionStateChanged = !isEqual(sectionInitialState, sectionState);
         const sectionActions = actions[activeSection.id];
 
         return (

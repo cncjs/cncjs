@@ -10,6 +10,9 @@ import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
 import ensureArray from '../lib/ensure-array';
 import log from '../lib/log';
+import defaultState from './defaultState';
+
+const store = new ImmutableStore(defaultState);
 
 let userData = null;
 
@@ -23,186 +26,7 @@ if (isElectron()) {
     };
 }
 
-// Also see "containers/Workspace/WidgetManager/index.jsx"
-export const defaultState = {
-    session: {
-        name: '',
-        token: ''
-    },
-    workspace: {
-        container: {
-            default: {
-                widgets: ['visualizer']
-            },
-            primary: {
-                show: true,
-                widgets: [
-                    'connection', 'console', 'grbl', 'smoothie', 'tinyg', 'webcam'
-                ]
-            },
-            secondary: {
-                show: true,
-                widgets: [
-                    'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser'
-                ]
-            }
-        }
-    },
-    widgets: {
-        axes: {
-            minimized: false,
-            axes: ['x', 'y', 'z'],
-            jog: {
-                keypad: false,
-                selectedDistance: '1',
-                customDistance: 10
-            },
-            wzero: 'G0 X0 Y0 Z0', // Go To Work Zero
-            mzero: 'G53 G0 X0 Y0 Z0', // Go To Machine Zero
-            shuttle: {
-                feedrateMin: 500,
-                feedrateMax: 2000,
-                hertz: 10,
-                overshoot: 1
-            }
-        },
-        connection: {
-            minimized: false,
-            controller: {
-                type: 'Grbl' // Grbl|Smoothie|TinyG
-            },
-            port: '',
-            baudrate: 115200,
-            autoReconnect: true
-        },
-        console: {
-            minimized: false
-        },
-        gcode: {
-            minimized: false
-        },
-        grbl: {
-            minimized: false,
-            panel: {
-                queueReports: {
-                    expanded: true
-                },
-                statusReports: {
-                    expanded: true
-                },
-                modalGroups: {
-                    expanded: true
-                }
-            }
-        },
-        laser: {
-            minimized: false,
-            panel: {
-                laserTest: {
-                    expanded: true
-                }
-            },
-            test: {
-                power: 0,
-                duration: 0,
-                maxS: 1000
-            }
-        },
-        macro: {
-            minimized: false
-        },
-        probe: {
-            minimized: false,
-            probeCommand: 'G38.2',
-            useTLO: false,
-            probeDepth: 10,
-            probeFeedrate: 20,
-            touchPlateHeight: 10,
-            retractionDistance: 4
-        },
-        smoothie: {
-            minimized: false,
-            panel: {
-                statusReports: {
-                    expanded: true
-                },
-                modalGroups: {
-                    expanded: true
-                }
-            }
-        },
-        spindle: {
-            minimized: false,
-            speed: 1000
-        },
-        /* TODO
-        template: {
-            minimized: false
-        },
-        */
-        tinyg: {
-            minimized: false,
-            panel: {
-                powerManagement: {
-                    expanded: false
-                },
-                queueReports: {
-                    expanded: true
-                },
-                statusReports: {
-                    expanded: true
-                },
-                modalGroups: {
-                    expanded: true
-                }
-            }
-        },
-        visualizer: {
-            minimized: false,
-
-            // 3D View
-            disabled: false,
-            projection: 'orthographic', // 'perspective' or 'orthographic'
-            cameraMode: 'pan', // 'pan' or 'rotate'
-            gcode: {
-                displayName: true
-            },
-            objects: {
-                coordinateSystem: {
-                    visible: true
-                },
-                gridLineNumbers: {
-                    visible: true
-                },
-                toolhead: {
-                    visible: true
-                }
-            }
-        },
-        webcam: {
-            minimized: false,
-            disabled: true,
-
-            // local - Use a built-in camera or a connected webcam
-            // mjpeg - M-JPEG stream over HTTP
-            mediaSource: 'local',
-
-            // The URL field is required for the M-JPEG stream
-            url: '',
-
-            geometry: {
-                scale: 1.0,
-                rotation: 0, // 0: 0, 1: 90, 2: 180, 3: 270
-                flipHorizontally: false,
-                flipVertically: false
-            },
-            crosshair: false,
-            muted: false
-        }
-    }
-};
-
-export const loadConfig = () => {
+const getConfig = () => {
     let content = '';
 
     // Check whether the code is running in Electron renderer process
@@ -218,12 +42,19 @@ export const loadConfig = () => {
     return content;
 };
 
-export const persistState = (state) => {
+const persist = (data) => {
+    const { version, state } = { ...data };
+
+    data = {
+        version: version || settings.version,
+        state: {
+            ...store.state,
+            ...state
+        }
+    };
+
     try {
-        const value = JSON.stringify({
-            version: settings.version,
-            state: state || defaultState
-        }, null, 2);
+        const value = JSON.stringify(data, null, 2);
 
         // Check whether the code is running in Electron renderer process
         if (isElectron()) {
@@ -277,7 +108,7 @@ const cnc = {
 };
 
 try {
-    const text = loadConfig();
+    const text = getConfig();
     const data = JSON.parse(text);
     cnc.version = get(data, 'version', settings.version);
     cnc.state = get(data, 'state', {});
@@ -286,11 +117,12 @@ try {
     log.error(e);
 }
 
-const state = normalizeState(merge({}, defaultState, cnc.state || {}));
-const store = new ImmutableStore(state);
+store.state = normalizeState(merge({}, defaultState, cnc.state || {}));
 
 // Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
-store.on('change', debounce(persistState, 100));
+store.on('change', debounce((state) => {
+    persist({ state: state });
+}, 100));
 
 //
 // Migration
@@ -321,5 +153,8 @@ try {
 } catch (err) {
     log.error(err);
 }
+
+store.getConfig = getConfig;
+store.persist = persist;
 
 export default store;
