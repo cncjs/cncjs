@@ -56,7 +56,7 @@ module.exports = {
     },
     externals: externals,
     resolve: {
-        extensions: ['.js', '.json', '.jsx']
+        extensions: ['.js', '.jsx']
     },
     resolveLoader: {
         modules: [NODE_MODULES]
