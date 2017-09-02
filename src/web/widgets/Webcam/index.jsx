@@ -73,6 +73,7 @@ class WebcamWidget extends PureComponent {
             this.setState({ muted: !muted });
         }
     };
+    webcam = null;
 
     componentDidUpdate(prevProps, prevState) {
         const {
@@ -147,6 +148,13 @@ class WebcamWidget extends PureComponent {
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
+                            title={disabled ? i18n._('Enable') : i18n._('Disable')}
+                            type="default"
+                            onClick={(event) => this.setState({ disabled: !disabled })}
+                        >
+                            <i className={classes.webcamOnOff} />
+                        </Widget.Button>
+                        <Widget.Button
                             title={i18n._('Edit')}
                             onClick={(event) => {
                                 const options = {
@@ -219,15 +227,6 @@ class WebcamWidget extends PureComponent {
                             </Widget.DropdownMenuItem>
                         </Widget.DropdownButton>
                     </Widget.Controls>
-                    <Widget.Toolbar>
-                        <Widget.Button
-                            title={disabled ? i18n._('Enable') : i18n._('Disable')}
-                            type="default"
-                            onClick={(event) => this.setState({ disabled: !disabled })}
-                        >
-                            <i className={classes.webcamOnOff} />
-                        </Widget.Button>
-                    </Widget.Toolbar>
                 </Widget.Header>
                 <Widget.Content
                     className={classNames(
