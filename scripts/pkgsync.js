@@ -19,7 +19,7 @@ var deps = [
     'debug' // 'debug' is required for desktop app
 ].concat(findImports(files, { flatten: true })).sort();
 
-pkgApp.name = pkg.name;
+//pkgApp.name = pkg.name; // Exclude the name field
 pkgApp.version = pkg.version;
 pkgApp.homepage = pkg.homepage;
 pkgApp.author = pkg.author;
