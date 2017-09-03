@@ -101,15 +101,13 @@ class WidgetManager extends PureComponent {
             visible: true,
             disabled: false
         },
-        /*
         {
-            id: 'template',
-            caption: i18n._('Template Widget'),
+            id: 'custom',
+            caption: i18n._('Custom Widget'),
             details: i18n._('This widget gives you a communication interface for creating your own widget.'),
             visible: true,
             disabled: false
         },
-        */
         {
             id: 'webcam',
             caption: i18n._('Webcam Widget'),

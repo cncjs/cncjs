@@ -1,34 +1,27 @@
-import classNames from 'classnames';
-import includes from 'lodash/includes';
-import get from 'lodash/get';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
-import Template from './Template';
+import Custom from './Custom';
+import Settings from './Settings';
 import {
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_HOLD,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_HOLD,
     // TinyG
-    TINYG,
-    TINYG_MACHINE_STATE_READY,
-    TINYG_MACHINE_STATE_STOP,
-    TINYG_MACHINE_STATE_END,
-    TINYG_MACHINE_STATE_HOLD,
-    // Workflow
-    WORKFLOW_STATE_RUN
+    TINYG
 } from '../../constants';
+import {
+    MODAL_NONE,
+    MODAL_SETTINGS
+} from './constants';
 import styles from './index.styl';
 
-class TemplateWidget extends PureComponent {
+class CustomWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -38,12 +31,16 @@ class TemplateWidget extends PureComponent {
 
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
-    actions = {
+    action = {
         collapse: () => {
             this.setState({ minimized: true });
         },
         expand: () => {
             this.setState({ minimized: false });
+        },
+        toggleDisabled: () => {
+            const { disabled } = this.state;
+            this.setState({ disabled: !disabled });
         },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -55,6 +52,27 @@ class TemplateWidget extends PureComponent {
         toggleMinimized: () => {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
+        },
+        openModal: (name = MODAL_NONE, params = {}) => {
+            this.setState({
+                modal: {
+                    name: name,
+                    params: params
+                }
+            });
+        },
+        closeModal: () => {
+            this.setState({
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
+            });
+        },
+        refreshContent: () => {
+            if (this.content) {
+                this.content.refresh();
+            }
         }
     };
     controllerEvents = {
@@ -96,6 +114,7 @@ class TemplateWidget extends PureComponent {
             });
         }
     };
+    content = null;
 
     componentDidMount() {
         this.addControllerEvents();
@@ -103,26 +122,34 @@ class TemplateWidget extends PureComponent {
     componentWillUnmount() {
         this.removeControllerEvents();
     }
-    /*
     componentDidUpdate(prevProps, prevState) {
         const {
+            disabled,
             minimized,
-            spindleSpeed
+            title,
+            url
         } = this.state;
 
+        this.config.set('disabled', disabled);
         this.config.set('minimized', minimized);
-        this.config.set('speed', spindleSpeed);
+        this.config.set('title', title);
+        this.config.set('url', url);
     }
-    */
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: true, // Defaults to true
+            disabled: this.config.get('disabled'),
+            title: this.config.get('title', ''),
+            url: this.config.get('url', ''),
             port: controller.port,
             controller: {
                 type: controller.type,
                 state: controller.state
+            },
+            modal: {
+                name: MODAL_NONE,
+                params: {}
             },
             workflowState: controller.workflowState
         };
@@ -139,89 +166,71 @@ class TemplateWidget extends PureComponent {
             controller.off(eventName, callback);
         });
     }
-    canClick() {
-        const { port, workflowState } = this.state;
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
-
-        if (!port) {
-            return false;
-        }
-        if (workflowState === WORKFLOW_STATE_RUN) {
-            return false;
-        }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
-            return false;
-        }
-        if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                GRBL_ACTIVE_STATE_IDLE,
-                GRBL_ACTIVE_STATE_HOLD
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
-        }
-        if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                SMOOTHIE_ACTIVE_STATE_IDLE,
-                SMOOTHIE_ACTIVE_STATE_HOLD
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
-        }
-        if (controllerType === TINYG) {
-            const machineState = get(controllerState, 'sr.machineState');
-            const states = [
-                TINYG_MACHINE_STATE_READY,
-                TINYG_MACHINE_STATE_STOP,
-                TINYG_MACHINE_STATE_END,
-                TINYG_MACHINE_STATE_HOLD
-            ];
-            if (!includes(states, machineState)) {
-                return false;
-            }
-        }
-
-        return true;
-    }
     render() {
         const { widgetId } = this.props;
-        const { minimized, isFullscreen } = this.state;
+        const { minimized, isFullscreen, disabled, title } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-        const widgetTitle = this.config.get('title');
+        const config = this.config;
         const state = {
-            ...this.state,
-            canClick: this.canClick()
+            ...this.state
         };
-        const actions = {
-            ...this.actions
+        const action = {
+            ...this.action
         };
+        const buttonWidth = 30;
+        const buttonCount = 5; // [Disabled] [Refresh] [Edit] [Toggle] [More]
 
         return (
             <Widget fullscreen={isFullscreen}>
                 <Widget.Header>
-                    <Widget.Title>
+                    <Widget.Title
+                        style={{ width: `calc(100% - ${buttonWidth * buttonCount}px)` }}
+                        title={title}
+                    >
                         <Widget.Sortable className={this.props.sortable.handleClassName}>
                             <i className="fa fa-bars" />
                             <span className="space" />
                         </Widget.Sortable>
-                        {widgetTitle}
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginLeft: 5 }} />
+                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
+                        {title}
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
-                            disabled={isFullscreen}
-                            title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                            onClick={actions.toggleMinimized}
+                            title={disabled ? i18n._('Enable') : i18n._('Disable')}
+                            type="default"
+                            onClick={action.toggleDisabled}
                         >
                             <i
-                                className={classNames(
+                                className={cx('fa', {
+                                    'fa-toggle-on': !disabled,
+                                    'fa-toggle-off': disabled
+                                })}
+                            />
+                        </Widget.Button>
+                        <Widget.Button
+                            disabled={disabled}
+                            title={i18n._('Refresh')}
+                            onClick={action.refreshContent}
+                        >
+                            <i className="fa fa-refresh" />
+                        </Widget.Button>
+                        <Widget.Button
+                            title={i18n._('Edit')}
+                            onClick={() => {
+                                action.openModal(MODAL_SETTINGS);
+                            }}
+                        >
+                            <i className="fa fa-cog" />
+                        </Widget.Button>
+                        <Widget.Button
+                            disabled={isFullscreen}
+                            title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                            onClick={action.toggleMinimized}
+                        >
+                            <i
+                                className={cx(
                                     'fa',
                                     { 'fa-chevron-up': !minimized },
                                     { 'fa-chevron-down': minimized }
@@ -233,7 +242,7 @@ class TemplateWidget extends PureComponent {
                             toggle={<i className="fa fa-ellipsis-v" />}
                             onSelect={(eventKey) => {
                                 if (eventKey === 'fullscreen') {
-                                    actions.toggleFullscreen();
+                                    action.toggleFullscreen();
                                 } else if (eventKey === 'fork') {
                                     this.props.onFork();
                                 } else if (eventKey === 'remove') {
@@ -243,7 +252,7 @@ class TemplateWidget extends PureComponent {
                         >
                             <Widget.DropdownMenuItem eventKey="fullscreen">
                                 <i
-                                    className={classNames(
+                                    className={cx(
                                         'fa',
                                         'fa-fw',
                                         { 'fa-expand': !isFullscreen },
@@ -267,14 +276,33 @@ class TemplateWidget extends PureComponent {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    className={classNames(
-                        styles['widget-content'],
-                        { [styles.hidden]: minimized }
-                    )}
+                    className={cx(styles.widgetContent, {
+                        [styles.hidden]: minimized,
+                        [styles.fullscreen]: isFullscreen
+                    })}
                 >
-                    <Template
+                    {state.modal.name === MODAL_SETTINGS &&
+                    <Settings
+                        config={config}
+                        onSave={() => {
+                            const title = config.get('title');
+                            const url = config.get('url');
+                            this.setState({
+                                title: title,
+                                url: url
+                            });
+                            action.closeModal();
+                        }}
+                        onCancel={action.closeModal}
+                    />
+                    }
+                    <Custom
+                        ref={node => {
+                            this.content = node;
+                        }}
+                        config={config}
                         state={state}
-                        actions={actions}
+                        action={action}
                     />
                 </Widget.Content>
             </Widget>
@@ -282,4 +310,4 @@ class TemplateWidget extends PureComponent {
     }
 }
 
-export default TemplateWidget;
+export default CustomWidget;

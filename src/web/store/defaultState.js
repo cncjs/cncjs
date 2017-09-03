@@ -52,6 +52,12 @@ const defaultState = {
         console: {
             minimized: false
         },
+        custom: {
+            disabled: true,
+            minimized: false,
+            title: '',
+            url: ''
+        },
         gcode: {
             minimized: false
         },
@@ -109,11 +115,6 @@ const defaultState = {
             minimized: false,
             speed: 1000
         },
-        /* TODO
-        template: {
-            minimized: false
-        },
-        */
         tinyg: {
             minimized: false,
             panel: {
@@ -154,8 +155,8 @@ const defaultState = {
             }
         },
         webcam: {
-            minimized: false,
             disabled: true,
+            minimized: false,
 
             // local - Use a built-in camera or a connected webcam
             // mjpeg - M-JPEG stream over HTTP

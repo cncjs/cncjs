@@ -10,7 +10,7 @@ import MacroWidget from '../../widgets/Macro';
 import ProbeWidget from '../../widgets/Probe';
 import SmoothieWidget from '../../widgets/Smoothie';
 import SpindleWidget from '../../widgets/Spindle';
-//import TemplateWidget from '../../widgets/Template';
+import CustomWidget from '../../widgets/Custom';
 import TinyGWidget from '../../widgets/TinyG';
 import VisualizerWidget from '../../widgets/Visualizer';
 import WebcamWidget from '../../widgets/Webcam';
@@ -27,7 +27,7 @@ const getWidgetByName = (name) => {
         'probe': ProbeWidget,
         'smoothie': SmoothieWidget,
         'spindle': SpindleWidget,
-        //'template': TemplateWidget,
+        'custom': CustomWidget,
         'tinyg': TinyGWidget,
         'visualizer': VisualizerWidget,
         'webcam': WebcamWidget
