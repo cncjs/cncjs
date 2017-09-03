@@ -55,7 +55,10 @@ class Iframe extends PureComponent {
 
     reload() {
         const el = ReactDOM.findDOMNode(this);
-        el.src = this.props.src;
+        el.src = '';
+        setTimeout(() => {
+            el.src = this.props.src;
+        }, 0);
     }
     render() {
         const { style, ...props } = this.props;

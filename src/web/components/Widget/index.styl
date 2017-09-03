@@ -51,6 +51,7 @@
         clearfix();
         background-color: #f6f7f8;
         border: 1px solid #ccc;
+        position: relative;
     }
     .widget-header-fixed {
         cursor: default;
@@ -66,60 +67,27 @@
     }
 
     .widget-title {
-        margin-top: 0;
         font-size: 14px;
         font-weight: 400;
         line-height: 32px;
         display: inline-block;
         vertical-align: middle;
+        margin-top: 0;
         margin-bottom: 0;
         padding: 0 10px;
 
-        .glyphicon {
-            font-size: 14px;
-            top: 0;
-            vertical-align: middle;
-            margin-right: 5px;
-        }
+        // Truncate string with ellipsis
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        width: 100%;
+        max-width: 100%;
     }
 
     .widget-content,
     .widget-footer {
         border: 1px solid #CCC;
         border-top: none;
-    }
-
-    .widget-toolbar {
-        cursor: auto;
-        float: right;
-        width: auto;
-        height: 32px;
-        line-height: 32px;
-        position: relative;
-        border-left: 1px solid rgba(0, 0, 0, .09);
-        padding: 0 8px;
-        text-align: center;
-        white-space: nowrap;
-
-        a {
-            text-decoration: none;
-            font-size: 12px;
-            text-align: center;
-            display: inline-block;
-            line-height: 32px;
-            padding: 0;
-            margin: 0;
-        }
-        i {
-            font-size: 14px;
-        }
-    }
-
-    .widget-controls {
-        position: relative;
-        cursor: auto;
-        float: right;
-        width: auto;
     }
 
     .widget-button {
@@ -133,9 +101,10 @@
     }
 
     .widget-controls {
-        position: relative;
+        position: absolute;
+        top: 0;
+        right: 0;
         cursor: auto;
-        float: right;
         width: auto;
 
         .widget-button {

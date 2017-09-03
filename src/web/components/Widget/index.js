@@ -8,7 +8,6 @@ import Title from './Title';
 import Button from './Button';
 import DropdownButton from './DropdownButton';
 import Controls from './Controls';
-import Toolbar from './Toolbar';
 
 Widget.Header = Header;
 Widget.Content = Content;
@@ -19,6 +18,5 @@ Widget.Button = Button;
 Widget.DropdownButton = DropdownButton;
 Widget.DropdownMenuItem = DropdownMenuItem;
 Widget.Controls = Controls;
-Widget.Toolbar = Toolbar;
 
 export default Widget;
