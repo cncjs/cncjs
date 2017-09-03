@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
@@ -77,8 +77,8 @@ class WebcamWidget extends PureComponent {
 
     componentDidUpdate(prevProps, prevState) {
         const {
-            minimized,
             disabled,
+            minimized,
             mediaSource,
             url,
             scale,
@@ -89,8 +89,8 @@ class WebcamWidget extends PureComponent {
             muted
         } = this.state;
 
-        this.config.set('minimized', minimized);
         this.config.set('disabled', disabled);
+        this.config.set('minimized', minimized);
         this.config.set('mediaSource', mediaSource);
         this.config.set('url', url);
         this.config.set('geometry.scale', scale);
@@ -102,9 +102,9 @@ class WebcamWidget extends PureComponent {
     }
     getInitialState() {
         return {
+            disabled: this.config.get('disabled', true),
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            disabled: this.config.get('disabled', true),
             mediaSource: this.config.get('mediaSource', MEDIA_SOURCE_LOCAL),
             url: this.config.get('url', ''),
             scale: this.config.get('geometry.scale', 1.0),
@@ -119,13 +119,6 @@ class WebcamWidget extends PureComponent {
         const { widgetId } = this.props;
         const { disabled, minimized, isFullscreen } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
-        const classes = {
-            webcamOnOff: classNames(
-                'fa',
-                { 'fa-toggle-on': !disabled },
-                { 'fa-toggle-off': disabled }
-            )
-        };
         const state = {
             ...this.state
         };
@@ -141,10 +134,10 @@ class WebcamWidget extends PureComponent {
                             <i className="fa fa-bars" />
                             <span className="space" />
                         </Widget.Sortable>
-                        {i18n._('Webcam')}
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginLeft: 5 }} />
+                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
+                        {i18n._('Webcam')}
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
@@ -152,7 +145,19 @@ class WebcamWidget extends PureComponent {
                             type="default"
                             onClick={(event) => this.setState({ disabled: !disabled })}
                         >
-                            <i className={classes.webcamOnOff} />
+                            <i
+                                className={cx('fa', 'fa-fw', {
+                                    'fa-toggle-on': !disabled,
+                                    'fa-toggle-off': disabled
+                                })}
+                            />
+                        </Widget.Button>
+                        <Widget.Button
+                            disabled={disabled}
+                            title={i18n._('Refresh')}
+                            onClick={(event) => this.webcam.refresh()}
+                        >
+                            <i className="fa fa-refresh" />
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Edit')}
@@ -172,22 +177,15 @@ class WebcamWidget extends PureComponent {
                             <i className="fa fa-cog" />
                         </Widget.Button>
                         <Widget.Button
-                            title={i18n._('Refresh')}
-                            onClick={(event) => this.webcam.refresh()}
-                        >
-                            <i className="fa fa-refresh" />
-                        </Widget.Button>
-                        <Widget.Button
                             disabled={isFullscreen}
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                             onClick={actions.toggleMinimized}
                         >
                             <i
-                                className={classNames(
-                                    'fa',
-                                    { 'fa-chevron-up': !minimized },
-                                    { 'fa-chevron-down': minimized }
-                                )}
+                                className={cx('fa', 'fa-fw', {
+                                    'fa-chevron-up': !minimized,
+                                    'fa-chevron-down': minimized
+                                })}
                             />
                         </Widget.Button>
                         <Widget.DropdownButton
@@ -205,12 +203,10 @@ class WebcamWidget extends PureComponent {
                         >
                             <Widget.DropdownMenuItem eventKey="fullscreen">
                                 <i
-                                    className={classNames(
-                                        'fa',
-                                        'fa-fw',
-                                        { 'fa-expand': !isFullscreen },
-                                        { 'fa-compress': isFullscreen }
-                                    )}
+                                    className={cx('fa', 'fa-fw', {
+                                        'fa-expand': !isFullscreen,
+                                        'fa-compress': isFullscreen
+                                    })}
                                 />
                                 <span className="space space-sm" />
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
@@ -229,11 +225,10 @@ class WebcamWidget extends PureComponent {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    className={classNames(
-                        styles['widget-content'],
-                        { [styles.hidden]: minimized },
-                        { [styles.fullscreen]: isFullscreen }
-                    )}
+                    className={cx(styles.widgetContent, {
+                        [styles.hidden]: minimized,
+                        [styles.fullscreen]: isFullscreen
+                    })}
                 >
                     <Webcam
                         ref={node => {

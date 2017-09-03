@@ -234,10 +234,10 @@ class SmoothieWidget extends PureComponent {
                             <i className="fa fa-bars" />
                             <span className="space" />
                         </Widget.Sortable>
-                        Smoothie
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginLeft: 5 }} />
+                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
+                        Smoothie
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         {isReady &&

@@ -274,10 +274,10 @@ class LaserWidget extends PureComponent {
                             <i className="fa fa-bars" />
                             <span className="space" />
                         </Widget.Sortable>
-                        {i18n._('Laser')}
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginLeft: 5 }} />
+                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
+                        {i18n._('Laser')}
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
