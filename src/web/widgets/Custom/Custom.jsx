@@ -1,3 +1,4 @@
+import { iframeResizer } from 'iframe-resizer';
 import Uri from 'jsuri';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -15,24 +16,7 @@ class Custom extends PureComponent {
     };
 
     iframe = null;
-    eventListener = {
-        load: () => {
-            // TODO
-        }
-    };
 
-    componentDidMount() {
-        const el = ReactDOM.findDOMNode(this.iframe);
-        if (el && el.contentWindow) {
-            el.contentWindow.addEventListener('load', this.eventListener.load);
-        }
-    }
-    componentWillUnmount() {
-        const el = ReactDOM.findDOMNode(this.iframe);
-        if (el && el.contentWindow) {
-            el.contentWindow.removeEventListener('load', this.eventListener.load);
-        }
-    }
     refresh() {
         if (this.iframe) {
             this.iframe.reload();
@@ -57,16 +41,25 @@ class Custom extends PureComponent {
             .toString();
 
         return (
-            <div style={{ height: 300 }}>
-                <Iframe
-                    ref={node => {
-                        this.iframe = node;
-                    }}
-                    width="100%"
-                    height="100%"
-                    src={iframeSrc}
-                />
-            </div>
+            <Iframe
+                ref={node => {
+                    if (!node) {
+                        this.iframe = null;
+                        return;
+                    }
+
+                    this.iframe = node;
+                    const el = ReactDOM.findDOMNode(this.iframe);
+
+                    // https://github.com/davidjbradshaw/iframe-resizer
+                    iframeResizer({
+                        log: false,
+                        autoResize: true,
+                        minHeight: 40
+                    }, el);
+                }}
+                src={iframeSrc}
+            />
         );
     }
 }
