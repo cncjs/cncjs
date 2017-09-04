@@ -61,7 +61,7 @@ class Iframe extends PureComponent {
         }, 0);
     }
     render() {
-        const { style, ...props } = this.props;
+        const props = { ...this.props };
         const sandbox = mapSandboxFromObjectToString(props.sandbox);
         delete props.sandbox;
 
@@ -69,15 +69,6 @@ class Iframe extends PureComponent {
             <iframe
                 frameBorder="0"
                 sandbox={sandbox}
-                style={{
-                    overflow: 'hidden',
-                    position: 'absolute',
-                    top: 0,
-                    left: 0,
-                    right: 0,
-                    bottom: 0,
-                    ...style
-                }}
                 {...props}
             />
         );
