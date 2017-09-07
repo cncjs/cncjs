@@ -2,6 +2,7 @@
 /* eslint no-console: 0 */
 import path from 'path';
 import program from 'commander';
+import expandTilde from 'expand-tilde';
 import pkg from './package.json';
 
 // Defaults to 'production'
@@ -11,21 +12,26 @@ const increaseVerbosityLevel = (val, total) => {
     return total + 1;
 };
 
-const parseMountPoint = (val) => {
+const parseMountPoint = (val, acc) => {
     val = val || '';
 
+    const mount = {
+        route: '/',
+        directory: val
+    };
+
     if (val.indexOf(':') >= 0) {
-        let r = val.match(/(?:([^:]*)(?::(.*)))/);
-        return {
-            url: r[1] || '/static',
-            path: r[2]
-        };
+        const r = val.match(/(?:([^:]*)(?::(.*)))/);
+        mount.route = r[1];
+        mount.directory = r[2];
     }
 
-    return {
-        url: '/static',
-        path: val
-    };
+    mount.route = path.join('/', mount.route || ''); // path.join('/', 'pendant') => '/pendant'
+    mount.directory = expandTilde(mount.directory || ''); // expandTilde('~') => '/Users/<userhome>'
+
+    acc.push(mount);
+
+    return acc;
 };
 
 const parseController = (val) => {
@@ -46,17 +52,19 @@ program
     .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)', 511)
     .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
     .option('-v, --verbose', 'increase the verbosity level (-v, -vv, -vvv)', increaseVerbosityLevel, 0)
-    .option('-m, --mount [<url>:]<path>', 'set the mount point for serving static files (default: /static:static)', parseMountPoint, { url: '/static', path: 'static' })
+    .option('-m, --mount <route-path>:<directory-path>', 'add a mount point for serving static files', parseMountPoint, [])
     .option('-w, --watch-directory <path>', 'watch a directory for changes')
     .option('--access-token-lifetime <lifetime>', 'access token lifetime in seconds or a time span string (default: 30d)')
     .option('--allow-remote-access', 'allow remote access to the server (default: false)')
     .option('--controller <type>', 'specify CNC controller: Grbl|Smoothie|TinyG|g2core (default: \'\')', parseController, '');
 
 program.on('--help', () => {
+    console.log('');
     console.log('  Examples:');
     console.log('');
     console.log('    $ cnc -vv');
     console.log('    $ cnc --mount /pendant:/home/pi/tinyweb');
+    console.log('    $ cnc --mount /widgets:~/widgets --mount /pendant:~/pendant');
     console.log('    $ cnc --watch-directory /home/pi/watch');
     console.log('    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d');
     console.log('    $ cnc --allow-remote-access');
@@ -83,7 +91,7 @@ const cnc = (options = {}, callback) => {
         backlog: program.backlog,
         configFile: program.config,
         verbosity: program.verbose,
-        mount: program.mount,
+        mountPoints: program.mount,
         watchDirectory: program.watchDirectory,
         accessTokenLifetime: program.accessTokenLifetime,
         allowRemoteAccess: !!program.allowRemoteAccess,

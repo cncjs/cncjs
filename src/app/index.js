@@ -11,6 +11,7 @@ import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
 import config from './services/configstore';
+import ensureArray from './lib/ensure-array';
 import logger from './lib/logger';
 import settings from './config/settings';
 
@@ -61,7 +62,7 @@ const createServer = (options, callback) => {
 
         if (watchDirectory) {
             if (fs.existsSync(watchDirectory)) {
-                log.info(`Watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes.`);
+                log.info(`Watching ${chalk.yellow(JSON.stringify(watchDirectory))} for file changes`);
 
                 // monitor service
                 monitor.start({ watchDirectory: watchDirectory });
@@ -94,13 +95,39 @@ const createServer = (options, callback) => {
     const { port = 0, host, backlog } = options;
     const routes = [];
 
-    if (typeof options.mount === 'object') {
+    ensureArray(options.mountPoints).forEach(mount => {
+        const { route = '', directory = '' } = mount;
+        const cjs = {
+            route: chalk.yellow(JSON.stringify(route)),
+            directory: chalk.yellow(JSON.stringify(directory))
+        };
+
+        log.info(`Mounting a directory ${cjs.directory} for the route ${cjs.route}`);
+
+        if (!route) {
+            log.error(`Must specify a valid route path ${cjs.route}.`);
+            return;
+        }
+        if (!directory) {
+            log.error(`The directory path ${cjs.directory} must not be empty.`);
+            return;
+        }
+        if (!path.isAbsolute(directory)) {
+            log.error(`The directory path ${cjs.directory} must be absolute.`);
+            return;
+        }
+        if (!fs.existsSync(directory)) {
+            log.error(`The directory path ${cjs.directory} does not exist.`);
+            return;
+        }
+
         routes.push({
             type: 'static',
-            route: options.mount.url,
-            directory: options.mount.path
+            route: route,
+            directory: directory
         });
-    }
+    });
+
     routes.push({
         type: 'server',
         route: '/',
