@@ -1,4 +1,3 @@
-import { iframeResizer } from 'iframe-resizer';
 import Uri from 'jsuri';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -11,20 +10,20 @@ import styles from './index.styl';
 class Custom extends PureComponent {
     static propTypes = {
         config: PropTypes.object,
-        state: PropTypes.object,
-        action: PropTypes.object
+        disabled: PropTypes.bool,
+        url: PropTypes.string
     };
 
     iframe = null;
+    observer = null;
 
-    refresh() {
+    reload(forceGet = false) {
         if (this.iframe) {
-            this.iframe.reload();
+            this.iframe.contentWindow.location.reload(forceGet);
         }
     }
     render() {
-        const { state } = this.props;
-        const { disabled, url } = state;
+        const { disabled, url } = this.props;
 
         if (disabled) {
             return (
@@ -43,22 +42,46 @@ class Custom extends PureComponent {
         return (
             <Iframe
                 ref={node => {
+                    if (this.observer) {
+                        this.observer.disconnect();
+                        this.observer = null;
+                    }
+
                     if (!node) {
                         this.iframe = null;
                         return;
                     }
 
-                    this.iframe = node;
-                    const el = ReactDOM.findDOMNode(this.iframe);
+                    this.iframe = ReactDOM.findDOMNode(node);
+                    this.iframe.addEventListener('load', () => {
+                        const target = this.iframe.contentDocument.body;
+                        const config = {
+                            attributes: true,
+                            attributeOldValue: false,
+                            characterData: true,
+                            characterDataOldValue: false,
+                            childList: true,
+                            subtree: true
+                        };
 
-                    // https://github.com/davidjbradshaw/iframe-resizer
-                    iframeResizer({
-                        log: false,
-                        autoResize: true,
-                        minHeight: 40
-                    }, el);
+                        // Recalculate the height of the content
+                        this.iframe.style.height = 0;
+                        const nextHeight = target.scrollHeight;
+                        this.iframe.style.height = `${nextHeight}px`;
+
+                        this.observer = new MutationObserver(mutations => {
+                            // Recalculate the height of the content
+                            this.iframe.style.height = 0;
+                            const nextHeight = target.scrollHeight;
+                            this.iframe.style.height = `${nextHeight}px`;
+                        });
+                        this.observer.observe(target, config);
+                    });
                 }}
                 src={iframeSrc}
+                style={{
+                    verticalAlign: 'top'
+                }}
             />
         );
     }

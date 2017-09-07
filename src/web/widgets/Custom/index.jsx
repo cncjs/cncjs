@@ -71,7 +71,8 @@ class CustomWidget extends PureComponent {
         },
         refreshContent: () => {
             if (this.content) {
-                this.content.refresh();
+                const forceGet = true;
+                this.content.reload(forceGet);
             }
         }
     };
@@ -115,6 +116,7 @@ class CustomWidget extends PureComponent {
         }
     };
     content = null;
+    component = null;
 
     componentDidMount() {
         this.addControllerEvents();
@@ -301,8 +303,8 @@ class CustomWidget extends PureComponent {
                             this.content = node;
                         }}
                         config={config}
-                        state={state}
-                        action={action}
+                        disabled={state.disabled}
+                        url={state.url}
                     />
                 </Widget.Content>
             </Widget>
