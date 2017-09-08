@@ -147,8 +147,10 @@ class CNCEngine {
 
             socket.emit('startup', {
                 loadedControllers: Object.keys(this.controllerClass),
-                ports: ensureArray(config.get('ports', [])),
-                baudrates: ensureArray(config.get('baudrates', []))
+
+                // User-defined baud rates and ports
+                baudrates: ensureArray(config.get('baudrates', [])),
+                ports: ensureArray(config.get('ports', []))
             });
 
             socket.on('disconnect', () => {
