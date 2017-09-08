@@ -2,6 +2,7 @@
 import series from 'async/series';
 import chainedFunction from 'chained-function';
 import moment from 'moment';
+import pubsub from 'pubsub-js';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
@@ -95,6 +96,26 @@ series([
     }
 ], (err, results) => {
     log.info(`${settings.name} ${settings.version}`);
+
+    // Cross-origin communication
+    window.addEventListener('message', (event) => {
+        // TODO: event.origin
+
+        const { token = '', action } = { ...event.data };
+
+        // Token authentication
+        if (token !== store.get('session.token')) {
+            log.warn(`Received a message with an unauthorized token (${token}).`);
+            return;
+        }
+
+        const { type, payload } = { ...action };
+        if (type === 'connect') {
+            pubsub.publish('message:connect', payload);
+        } else {
+            log.warn(`No valid action type (${type}) specified in the message.`);
+        }
+    }, false);
 
     { // Prevent browser from loading a drag-and-dropped file
       // http://stackoverflow.com/questions/6756583/prevent-browser-from-loading-a-drag-and-dropped-file

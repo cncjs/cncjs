@@ -8,14 +8,6 @@ import WidgetConfig from '../WidgetConfig';
 import Custom from './Custom';
 import Settings from './Settings';
 import {
-    // Grbl
-    GRBL,
-    // Smoothie
-    SMOOTHIE,
-    // TinyG
-    TINYG
-} from '../../constants';
-import {
     MODAL_NONE,
     MODAL_SETTINGS
 } from './constants';
@@ -89,30 +81,6 @@ class CustomWidget extends PureComponent {
             if (this.state.workflowState !== workflowState) {
                 this.setState({ workflowState: workflowState });
             }
-        },
-        'Grbl:state': (state) => {
-            this.setState({
-                controller: {
-                    type: GRBL,
-                    state: state
-                }
-            });
-        },
-        'Smoothie:state': (state) => {
-            this.setState({
-                controller: {
-                    type: SMOOTHIE,
-                    state: state
-                }
-            });
-        },
-        'TinyG:state': (state) => {
-            this.setState({
-                controller: {
-                    type: TINYG,
-                    state: state
-                }
-            });
         }
     };
     content = null;
@@ -305,6 +273,7 @@ class CustomWidget extends PureComponent {
                         config={config}
                         disabled={state.disabled}
                         url={state.url}
+                        port={state.port}
                     />
                 </Widget.Content>
             </Widget>
