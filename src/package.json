@@ -32,7 +32,7 @@
     "i18next": "~9.0.0",
     "i18next-express-middleware": "~1.0.5",
     "i18next-node-fs-backend": "~1.0.0",
-    "jsonwebtoken": "~7.4.3",
+    "jsonwebtoken": "~8.0.0",
     "lodash": "~4.17.4",
     "method-override": "~2.3.9",
     "minimatch": "~3.0.4",
