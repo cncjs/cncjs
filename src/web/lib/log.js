@@ -1,11 +1,11 @@
 import browser from 'detect-browser';
-import includes from 'lodash/includes';
 import logger from 'universal-logger';
 import { styleable } from 'universal-logger-browser';
 
+const colorized = browser && (['ie', 'edge'].indexOf(browser.name) < 0);
 const log = logger()
     .use(styleable({
-        colorized: browser && !includes(['ie', 'edge'], browser.name),
+        colorized: colorized,
         showSource: true,
         showTimestamp: true
     }));
