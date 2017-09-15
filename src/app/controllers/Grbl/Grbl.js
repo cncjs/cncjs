@@ -568,18 +568,19 @@ class GrblLineParserResultSettings {
 }
 
 class GrblLineParserResultStartup {
-    // * Grbl v0.9
-    //   Grbl 0.9j ['$' for help]
-    // * Grbl v1.1
-    //   Grbl 1.1d ['$' for help]
+    // Grbl 0.9j ['$' for help]
+    // Grbl 1.1d ['$' for help]
+    // gCarvin 2.0.0 ['$' for help]
     static parse(line) {
-        const r = line.match(/^Grbl\s*(\d+\.\d+[a-zA-Z]?)/);
+        const r = line.match(/^([a-zA-Z0-9]+)\s+((?:\d+\.){1,2}\d+[a-zA-Z0-9\-\.]*)\s+(\[[^\]]+\])/);
         if (!r) {
             return null;
         }
 
         const payload = {
-            version: r[1]
+            firmware: r[1],
+            version: r[2],
+            message: r[3]
         };
 
         return {
