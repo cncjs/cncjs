@@ -3,7 +3,7 @@ import series from 'async/series';
 import chainedFunction from 'chained-function';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
-import qs from 'querystring';
+import qs from 'qs';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
