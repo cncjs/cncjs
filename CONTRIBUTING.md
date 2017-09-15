@@ -7,7 +7,7 @@
 * [Running Production Build](CONTRIBUTING.md#running-production-build)
 * [Build Desktop Apps](CONTRIBUTING.md#build-desktop-apps)
 * [Localization](CONTRIBUTING.md#localization)
-* [Translation Validation](CONTRIBUTING.md#translationvalidation)
+* [Translation Validation](CONTRIBUTING.md#translation-validation)
 
 ## Troubleshooting
 
@@ -193,7 +193,7 @@ $ pwd
 /home/cheton/.nvm/versions/node/v4.4.3/lib/node_modules/cncjs/dist/web/i18n
 ```
 
-To verify your changes during runtime, it's recommended that you open Developer Tools and disable browser cache. For example:
+To verify your changes during runtime, it's recommended that you open <b>Developer Tools</b> and disable browser cache. For example:
 
 ##### Step 1: Open Developer Tools and click [Settings]
 ![image](https://cloud.githubusercontent.com/assets/447801/16014196/cc4b730c-31c2-11e6-9f78-c84347d12190.png)
@@ -201,6 +201,6 @@ To verify your changes during runtime, it's recommended that you open Developer 
 ##### Step 2: Disable cache
 ![image](https://cloud.githubusercontent.com/assets/447801/16014264/1d32e872-31c3-11e6-9178-6cc06bd0f6b5.png)
 
-Now you can modify resource strings in the <b>dist/cnc/web/i18n</b> directory and refresh your browser to see the updates.
+Now you can copy resource files to the <b>dist/cnc/web/i18n</b> directory and refresh your browser to see new updates.
 
 <b>Note that you should not close DevTools to make sure your browser won't cache anything.</b>
