@@ -7,6 +7,7 @@
 * [Running Production Build](CONTRIBUTING.md#running-production-build)
 * [Build Desktop Apps](CONTRIBUTING.md#build-desktop-apps)
 * [Localization](CONTRIBUTING.md#localization)
+* [Translation Validation](CONTRIBUTING.md#translationvalidation)
 
 ## Troubleshooting
 
@@ -146,11 +147,46 @@ $ ls -al output/linux/
 
 ## Localization
 
-### Static Translations 
-Find all resource files in the [src/web/i18n](https://github.com/cheton/cnc/tree/master/src/web/i18n) directory. You can create a pull request to submit your changes.
+If you'd like to help contribute translations, you can fork the repository, update resource files in the [src/web/i18n](https://github.com/cncjs/cncjs/tree/master/src/web/i18n) directory, and create a pull request to submit your changes.
 
-### Runtime Translations
-Moreover, you can make translations during runtime by modifying resource files from the installed directory. Note that your path may differ based on the Node installation path you have in place.
+### Fork the repository
+
+To fork the cncjs repository, click the <b>Fork</b> button in the header of the repository.
+
+![image](https://user-images.githubusercontent.com/447801/30472117-d757e742-9a2d-11e7-80f8-4ba9ffba97d8.png)
+
+When it’s finished, you’ll be taken to your copy of the cncjs repository. Now you can update the resource files on GitHub, or clone it to your computer.
+
+If you're using <b>GitHub for Desktop</b> application, navigate over to the toolbar, open the <b>Clone or download</b> dropdown, and click <b>Open in Desktop</b> to clone cncjs/cncjs to your computer and use it in GitHub Desktop.
+
+![image](https://user-images.githubusercontent.com/447801/30471510-956b51fe-9a2b-11e7-9e43-c5e3fa19e0cb.png)
+
+### Making and pushing changes
+
+Go ahead and make a few changes to the project using your favorite text editor. When you’re ready to submit your changes, type up a commit summary in <b>GitHub for Desktop</b>, and click <b>Commit to master</b>.
+
+![image](https://user-images.githubusercontent.com/447801/30475410-568ff97c-9a39-11e7-9e25-a924ad910deb.png)
+
+You can continue to make more changes and create new commits. When you’re ready to push your changes, click on the <b>Sync</b> button to synchronize master with the remote server.
+
+![image](https://user-images.githubusercontent.com/447801/30475598-f5b90a34-9a39-11e7-870a-2517f124dbba.png)
+
+### Creating the pull request
+
+1. Head on over to the repository on GitHub.com where your project lives. For your example, it would be at `https://www.github.com/<your_username>/cncjs`.
+  ![image](https://user-images.githubusercontent.com/447801/30475866-ce417044-9a3a-11e7-814f-c991a92a3be3.png)
+
+2. To the right of the branch menu, click <b>New pull request</b>.<br>
+  ![image](https://user-images.githubusercontent.com/447801/30476056-66f33548-9a3b-11e7-9d9a-e2d010cbc379.png)
+
+3. Click <b>Create pull request</b>.
+  ![image](https://user-images.githubusercontent.com/447801/30476803-bd3b1428-9a3d-11e7-8588-90d77f3680b5.png)
+
+4. That's done.
+
+## Translation Validation
+
+You can validate the translation by copying translated resource files to the installed directory. Note that your path may differ based on the Node installation path you have in place.
 ```bash
 $ cd $(dirname `which cnc`)/../lib/node_modules/cncjs/dist/web/i18n/
 $ pwd
