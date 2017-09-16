@@ -512,13 +512,15 @@ class SmoothieController {
             // Smoothie state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
-                this.emit('Smoothie:state', this.state);
+                this.emit('controller:state', SMOOTHIE, this.state);
+                this.emit('Smoothie:state', this.state); // Backward compatibility
             }
 
             // Smoothie settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
-                this.emit('Smoothie:settings', this.settings);
+                this.emit('controller:settings', SMOOTHIE, this.settings);
+                this.emit('Smoothie:settings', this.settings); // Backward compatibility
             }
 
             // Check the ready flag
@@ -820,11 +822,13 @@ class SmoothieController {
         }
         if (!_.isEmpty(this.state)) {
             // controller state
-            socket.emit('Smoothie:state', this.state);
+            socket.emit('controller:state', SMOOTHIE, this.state);
+            socket.emit('Smoothie:state', this.state); // Backward compatibility
         }
         if (!_.isEmpty(this.settings)) {
             // controller settings
-            socket.emit('Smoothie:settings', this.settings);
+            socket.emit('controller:settings', SMOOTHIE, this.settings);
+            socket.emit('Smoothie:settings', this.settings); // Backward compatibility
         }
         if (this.workflow) {
             // workflow state

@@ -136,23 +136,27 @@ class TinyGWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'TinyG:state': (state) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: TINYG,
-                    state: state
-                }
-            });
+        'controller:state': (type, state) => {
+            if (type === TINYG) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        state: state
+                    }
+                });
+            }
         },
-        'TinyG:settings': (settings) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: TINYG,
-                    settings: settings
-                }
-            });
+        'controller:settings': (type, settings) => {
+            if (type === TINYG) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        settings: settings
+                    }
+                });
+            }
         }
     };
 

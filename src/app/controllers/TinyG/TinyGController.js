@@ -452,13 +452,15 @@ class TinyGController {
             // TinyG state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
-                this.emit('TinyG:state', this.state);
+                this.emit('controller:state', TINYG, this.state);
+                this.emit('TinyG:state', this.state); // Backward compatibility
             }
 
             // TinyG settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
-                this.emit('TinyG:settings', this.settings);
+                this.emit('controller:settings', TINYG, this.settigns);
+                this.emit('TinyG:settings', this.settings); // Backward compatibility
             }
 
             // Check the ready flag
@@ -828,11 +830,13 @@ class TinyGController {
         }
         if (!_.isEmpty(this.state)) {
             // controller state
-            socket.emit('TinyG:state', this.state);
+            socket.emit('controller:state', TINYG, this.state);
+            socket.emit('TinyG:state', this.state); // Backward compatibility
         }
         if (!_.isEmpty(this.settings)) {
             // controller settings
-            socket.emit('TinyG:settings', this.settings);
+            socket.emit('controller:settings', TINYG, this.settings);
+            socket.emit('TinyG:settings', this.settings); // Backward compatibility
         }
         if (this.workflow) {
             // workflow state

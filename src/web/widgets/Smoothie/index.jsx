@@ -123,23 +123,27 @@ class SmoothieWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'Smoothie:state': (state) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: SMOOTHIE,
-                    state: state
-                }
-            });
+        'controller:state': (type, state) => {
+            if (type === SMOOTHIE) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        state: state
+                    }
+                });
+            }
         },
-        'Smoothie:settings': (settings) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: SMOOTHIE,
-                    settings: settings
-                }
-            });
+        'controller:settings': (type, settings) => {
+            if (type === SMOOTHIE) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        settings: settings
+                    }
+                });
+            }
         }
     };
 

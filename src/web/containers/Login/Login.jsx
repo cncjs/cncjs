@@ -8,6 +8,7 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import user from '../../lib/user';
+import store from '../../store';
 import styles from './index.styl';
 
 class Login extends PureComponent {
@@ -48,7 +49,12 @@ class Login extends PureComponent {
 
                     log.debug('Create and establish a WebSocket connection');
 
-                    controller.connect(() => {
+                    const token = store.get('session.token');
+                    const host = '';
+                    const options = {
+                        query: 'token=' + token
+                    };
+                    controller.connect(host, options, () => {
                         // @see "src/web/index.jsx"
                         this.setState({
                             alertMessage: '',

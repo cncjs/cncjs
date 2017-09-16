@@ -151,12 +151,12 @@ class ConnectionWidget extends PureComponent {
                 ports: ports
             }));
 
-            log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
+            log.debug(`Established a connection to the serial port "${port}"`);
         },
         'serialport:close': (options) => {
             const { port } = options;
 
-            log.debug('Disconnected from \'' + port + '\'.');
+            log.debug(`The serial port "${port}" is disconected`);
 
             this.setState(state => ({
                 alertMessage: '',
@@ -175,7 +175,7 @@ class ConnectionWidget extends PureComponent {
                 connected: false
             }));
 
-            log.error('Error opening serial port \'' + port + '\'');
+            log.error(`Error opening serial port "${port}"`);
         }
     };
 
