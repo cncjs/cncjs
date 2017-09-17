@@ -457,7 +457,6 @@ class GrblController {
 
             // The start up message always prints upon startup, after a reset, or at program end.
             // Setting the initial state when Grbl has completed re-initializing all systems.
-
             this.clearActionValues();
         });
 
@@ -560,13 +559,15 @@ class GrblController {
             // Grbl state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
-                this.emit('Grbl:state', this.state);
+                this.emit('controller:state', GRBL, this.state);
+                this.emit('Grbl:state', this.state); // Backward compatibility
             }
 
             // Grbl settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
-                this.emit('Grbl:settings', this.settings);
+                this.emit('controller:settings', GRBL, this.settings);
+                this.emit('Grbl:settings', this.settings); // Backward compatibility
             }
 
             // Check the ready flag
@@ -645,6 +646,36 @@ class GrblController {
             this.controller = null;
         }
     }
+    initController() {
+        const cmds = [
+            // https://github.com/cncjs/cncjs/issues/151#issuecomment-290354356
+            // The Grbl startup message might delay up to 900ms on Arduino Mega 2560
+            { pauseAfter: 1000 }
+        ];
+
+        const sendInitCommands = (i = 0) => {
+            if (this.isClose()) {
+                // Serial port is closed
+                return;
+            }
+
+            if (i >= cmds.length) {
+                // Set ready flag to true after the delay
+                this.ready = true;
+                return;
+            }
+
+            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
+            if (cmd) {
+                this.serialport.write(cmd + '\n');
+                log.silly(`> ${cmd}`);
+            }
+            setTimeout(() => {
+                sendInitCommands(i + 1);
+            }, pauseAfter);
+        };
+        sendInitCommands();
+    }
     get status() {
         return {
             port: this.options.port,
@@ -714,6 +745,9 @@ class GrblController {
                 // Unload G-code
                 this.command(null, 'unload');
             }
+
+            // Initialize controller
+            this.initController();
         });
     }
     close(callback) {
@@ -788,11 +822,13 @@ class GrblController {
         }
         if (!_.isEmpty(this.state)) {
             // controller state
-            socket.emit('Grbl:state', this.state);
+            socket.emit('controller:state', GRBL, this.state);
+            socket.emit('Grbl:state', this.state); // Backward compatibility
         }
         if (!_.isEmpty(this.settings)) {
             // controller settings
-            socket.emit('Grbl:settings', this.settings);
+            socket.emit('controller:settings', GRBL, this.settings);
+            socket.emit('Grbl:settings', this.settings); // Backward compatibility
         }
         if (this.workflow) {
             // workflow state

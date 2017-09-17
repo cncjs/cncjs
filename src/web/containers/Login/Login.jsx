@@ -2,12 +2,13 @@ import classNames from 'classnames';
 import React, { PureComponent } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import Anchor from '../../components/Anchor';
-import Notifications from '../../components/Notifications';
+import { Notification } from '../../components/Notifications';
 import settings from '../../config/settings';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import user from '../../lib/user';
+import store from '../../store';
 import styles from './index.styl';
 
 class Login extends PureComponent {
@@ -48,7 +49,12 @@ class Login extends PureComponent {
 
                     log.debug('Create and establish a WebSocket connection');
 
-                    controller.connect(() => {
+                    const token = store.get('session.token');
+                    const host = '';
+                    const options = {
+                        query: 'token=' + token
+                    };
+                    controller.connect(host, options, () => {
                         // @see "src/web/index.jsx"
                         this.setState({
                             alertMessage: '',
@@ -89,6 +95,16 @@ class Login extends PureComponent {
 
         return (
             <div className={styles.container}>
+                {alertMessage &&
+                <Notification
+                    style={{ marginBottom: 10 }}
+                    type="error"
+                    onDismiss={actions.clearAlertMessage}
+                >
+                    <div><strong>{i18n._('Error')}</strong></div>
+                    <div>{alertMessage}</div>
+                </Notification>
+                }
                 <div className={styles.login}>
                     <div className={styles.logo}>
                         <img src="images/logo-square-256x256.png" role="presentation" />
@@ -96,11 +112,6 @@ class Login extends PureComponent {
                     <div className={styles.title}>
                         {i18n._('Sign in to {{name}}', { name: settings.name })}
                     </div>
-                    {alertMessage &&
-                    <Notifications bsStyle="danger" onDismiss={actions.clearAlertMessage}>
-                        {alertMessage}
-                    </Notifications>
-                    }
                     <form className={styles.form}>
                         <div className="form-group">
                             <input

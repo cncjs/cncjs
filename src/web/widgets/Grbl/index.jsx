@@ -123,23 +123,27 @@ class GrblWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'Grbl:state': (state) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: GRBL,
-                    state: state
-                }
-            });
+        'controller:state': (type, state) => {
+            if (type === GRBL) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        state: state
+                    }
+                });
+            }
         },
-        'Grbl:settings': (settings) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: GRBL,
-                    settings: settings
-                }
-            });
+        'controller:settings': (type, settings) => {
+            if (type === GRBL) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        settings: settings
+                    }
+                });
+            }
         }
     };
 

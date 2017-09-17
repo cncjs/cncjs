@@ -168,6 +168,7 @@ class CustomWidget extends PureComponent {
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
+                            disabled={!state.url}
                             title={disabled ? i18n._('Enable') : i18n._('Disable')}
                             type="default"
                             onClick={action.toggleDisabled}

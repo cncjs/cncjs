@@ -232,137 +232,144 @@ class ProbeWidget extends PureComponent {
                 this.setState({ workflowState: workflowState });
             }
         },
-        'Grbl:state': (state) => {
-            const { parserstate } = { ...state };
-            const { modal = {} } = { ...parserstate };
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
+        'controller:state': (type, state) => {
+            // Grbl
+            if (type === GRBL) {
+                const { parserstate } = { ...state };
+                const { modal = {} } = { ...parserstate };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
 
-            let {
-                probeDepth,
-                probeFeedrate,
-                touchPlateHeight,
-                retractionDistance
-            } = this.config.get();
-            if (units === IMPERIAL_UNITS) {
-                probeDepth = mm2in(probeDepth).toFixed(4) * 1;
-                probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
-                retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
-            }
-            if (units === METRIC_UNITS) {
-                probeDepth = Number(probeDepth).toFixed(3) * 1;
-                probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
-                retractionDistance = Number(retractionDistance).toFixed(3) * 1;
-            }
+                let {
+                    probeDepth,
+                    probeFeedrate,
+                    touchPlateHeight,
+                    retractionDistance
+                } = this.config.get();
+                if (units === IMPERIAL_UNITS) {
+                    probeDepth = mm2in(probeDepth).toFixed(4) * 1;
+                    probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
+                    touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
+                    retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
+                }
+                if (units === METRIC_UNITS) {
+                    probeDepth = Number(probeDepth).toFixed(3) * 1;
+                    probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
+                    touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
+                    retractionDistance = Number(retractionDistance).toFixed(3) * 1;
+                }
 
-            if (this.state.units !== units) {
-                // Set `this.unitsDidChange` to true if the unit has changed
-                this.unitsDidChange = true;
-            }
+                if (this.state.units !== units) {
+                    // Set `this.unitsDidChange` to true if the unit has changed
+                    this.unitsDidChange = true;
+                }
 
-            this.setState({
-                units: units,
-                controller: {
-                    type: GRBL,
-                    state: state
-                },
-                probeDepth: probeDepth,
-                probeFeedrate: probeFeedrate,
-                touchPlateHeight: touchPlateHeight,
-                retractionDistance: retractionDistance
-            });
-        },
-        'Smoothie:state': (state) => {
-            const { parserstate } = { ...state };
-            const { modal = {} } = { ...parserstate };
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
-
-            let {
-                probeDepth,
-                probeFeedrate,
-                touchPlateHeight,
-                retractionDistance
-            } = this.config.get();
-            if (units === IMPERIAL_UNITS) {
-                probeDepth = mm2in(probeDepth).toFixed(4) * 1;
-                probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
-                retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
-            }
-            if (units === METRIC_UNITS) {
-                probeDepth = Number(probeDepth).toFixed(3) * 1;
-                probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
-                retractionDistance = Number(retractionDistance).toFixed(3) * 1;
+                this.setState({
+                    units: units,
+                    controller: {
+                        type: type,
+                        state: state
+                    },
+                    probeDepth: probeDepth,
+                    probeFeedrate: probeFeedrate,
+                    touchPlateHeight: touchPlateHeight,
+                    retractionDistance: retractionDistance
+                });
             }
 
-            if (this.state.units !== units) {
-                // Set `this.unitsDidChange` to true if the unit has changed
-                this.unitsDidChange = true;
+            // Smoothie
+            if (type === SMOOTHIE) {
+                const { parserstate } = { ...state };
+                const { modal = {} } = { ...parserstate };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
+
+                let {
+                    probeDepth,
+                    probeFeedrate,
+                    touchPlateHeight,
+                    retractionDistance
+                } = this.config.get();
+                if (units === IMPERIAL_UNITS) {
+                    probeDepth = mm2in(probeDepth).toFixed(4) * 1;
+                    probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
+                    touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
+                    retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
+                }
+                if (units === METRIC_UNITS) {
+                    probeDepth = Number(probeDepth).toFixed(3) * 1;
+                    probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
+                    touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
+                    retractionDistance = Number(retractionDistance).toFixed(3) * 1;
+                }
+
+                if (this.state.units !== units) {
+                    // Set `this.unitsDidChange` to true if the unit has changed
+                    this.unitsDidChange = true;
+                }
+
+                this.setState({
+                    units: units,
+                    controller: {
+                        type: type,
+                        state: state
+                    },
+                    probeDepth: probeDepth,
+                    probeFeedrate: probeFeedrate,
+                    touchPlateHeight: touchPlateHeight,
+                    retractionDistance: retractionDistance
+                });
             }
 
-            this.setState({
-                units: units,
-                controller: {
-                    type: SMOOTHIE,
-                    state: state
-                },
-                probeDepth: probeDepth,
-                probeFeedrate: probeFeedrate,
-                touchPlateHeight: touchPlateHeight,
-                retractionDistance: retractionDistance
-            });
-        },
-        'TinyG:state': (state) => {
-            const { sr } = { ...state };
-            const { modal = {} } = sr;
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
+            // TinyG
+            if (type === TINYG) {
+                const { sr } = { ...state };
+                const { modal = {} } = sr;
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
 
-            let {
-                probeDepth,
-                probeFeedrate,
-                touchPlateHeight,
-                retractionDistance
-            } = this.config.get();
-            if (units === IMPERIAL_UNITS) {
-                probeDepth = mm2in(probeDepth).toFixed(4) * 1;
-                probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
-                retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
-            }
-            if (units === METRIC_UNITS) {
-                probeDepth = Number(probeDepth).toFixed(3) * 1;
-                probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
-                retractionDistance = Number(retractionDistance).toFixed(3) * 1;
-            }
+                let {
+                    probeDepth,
+                    probeFeedrate,
+                    touchPlateHeight,
+                    retractionDistance
+                } = this.config.get();
+                if (units === IMPERIAL_UNITS) {
+                    probeDepth = mm2in(probeDepth).toFixed(4) * 1;
+                    probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
+                    touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
+                    retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
+                }
+                if (units === METRIC_UNITS) {
+                    probeDepth = Number(probeDepth).toFixed(3) * 1;
+                    probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
+                    touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
+                    retractionDistance = Number(retractionDistance).toFixed(3) * 1;
+                }
 
-            if (this.state.units !== units) {
-                // Set `this.unitsDidChange` to true if the unit has changed
-                this.unitsDidChange = true;
-            }
+                if (this.state.units !== units) {
+                    // Set `this.unitsDidChange` to true if the unit has changed
+                    this.unitsDidChange = true;
+                }
 
-            this.setState({
-                units: units,
-                controller: {
-                    type: TINYG,
-                    state: state
-                },
-                probeDepth: probeDepth,
-                probeFeedrate: probeFeedrate,
-                touchPlateHeight: touchPlateHeight,
-                retractionDistance: retractionDistance
-            });
+                this.setState({
+                    units: units,
+                    controller: {
+                        type: type,
+                        state: state
+                    },
+                    probeDepth: probeDepth,
+                    probeFeedrate: probeFeedrate,
+                    touchPlateHeight: touchPlateHeight,
+                    retractionDistance: retractionDistance
+                });
+            }
         }
     };
     unitsDidChange = false;

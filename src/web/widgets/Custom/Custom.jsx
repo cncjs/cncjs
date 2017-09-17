@@ -90,10 +90,18 @@ class Custom extends PureComponent {
     render() {
         const { disabled, url } = this.props;
 
+        if (!url) {
+            return (
+                <div className={styles.inactiveContent}>
+                    {i18n._('URL not configured')}
+                </div>
+            );
+        }
+
         if (disabled) {
             return (
                 <div className={styles.inactiveContent}>
-                    {i18n._('Widget is not enabled')}
+                    {i18n._('The widget is currently disabled')}
                 </div>
             );
         }
