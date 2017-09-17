@@ -459,7 +459,7 @@ class TinyGController {
             // TinyG settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
-                this.emit('controller:settings', TINYG, this.settigns);
+                this.emit('controller:settings', TINYG, this.settings);
                 this.emit('TinyG:settings', this.settings); // Backward compatibility
             }
 
