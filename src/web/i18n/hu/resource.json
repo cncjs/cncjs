@@ -23,6 +23,7 @@
     "Unlock": "Feloldás",
     "Reset": "Reset",
     "Authentication failed.": "A hitelesítés sikertelen.",
+    "Error": "",
     "Sign in to {{name}}": "Bejelentkezés a {{name}}-be",
     "Username": "Felhasználó",
     "Password": "Jelszó",

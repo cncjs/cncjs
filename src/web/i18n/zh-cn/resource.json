@@ -23,6 +23,7 @@
     "Unlock": "解除锁定",
     "Reset": "重置",
     "Authentication failed.": "",
+    "Error": "",
     "Sign in to {{name}}": "",
     "Username": "用户名",
     "Password": "密码",

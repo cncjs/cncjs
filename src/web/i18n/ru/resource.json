@@ -23,6 +23,7 @@
     "Unlock": "Разблокировать",
     "Reset": "Сброс",
     "Authentication failed.": "",
+    "Error": "",
     "Sign in to {{name}}": "",
     "Username": "Имя пользователя",
     "Password": "Пароль",

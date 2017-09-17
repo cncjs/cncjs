@@ -23,6 +23,7 @@
     "Unlock": "アンロック",
     "Reset": "リセット",
     "Authentication failed.": "認証失敗.",
+    "Error": "",
     "Sign in to {{name}}": "{{name}}にサインイン",
     "Username": "ユーザ名",
     "Password": "パスワード",

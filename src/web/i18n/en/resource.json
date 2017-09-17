@@ -23,6 +23,7 @@
     "Unlock": "Unlock",
     "Reset": "Reset",
     "Authentication failed.": "Authentication failed.",
+    "Error": "Error",
     "Sign in to {{name}}": "Sign in to {{name}}",
     "Username": "Username",
     "Password": "Password",
