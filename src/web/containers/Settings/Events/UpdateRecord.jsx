@@ -4,7 +4,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Modal from '../../../components/Modal';
-import Notifications from '../../../components/Notifications';
+import { ToastNotification } from '../../../components/Notifications';
 import ToggleSwitch from '../../../components/ToggleSwitch';
 import i18n from '../../../lib/i18n';
 import Validation from '../../../lib/react-validation';
@@ -71,14 +71,15 @@ class UpdateRecord extends PureComponent {
                 </Modal.Header>
                 <Modal.Body>
                     {modal.params.alertMessage &&
-                    <Notifications
-                        bsStyle="danger"
+                    <ToastNotification
+                        style={{ margin: '-16px -24px 10px -24px' }}
+                        type="error"
                         onDismiss={() => {
                             actions.updateModalParams({ alertMessage: '' });
                         }}
                     >
                         {modal.params.alertMessage}
-                    </Notifications>
+                    </ToastNotification>
                     }
                     <Validation.components.Form
                         ref={node => {

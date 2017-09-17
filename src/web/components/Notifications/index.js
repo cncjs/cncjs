@@ -1,3 +1,5 @@
-import Notifications from './Notifications';
+import '@trendmicro/react-notifications/dist/react-notifications.css';
 
-export default Notifications;
+export {
+    Notification, ToastNotification
+} from '@trendmicro/react-notifications';

@@ -5,7 +5,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
-import Notifications from '../../components/Notifications';
+import { ToastNotification } from '../../components/Notifications';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import {
@@ -116,9 +116,13 @@ class Connection extends PureComponent {
         return (
             <div>
                 {alertMessage &&
-                <Notifications bsStyle="danger" onDismiss={actions.clearAlert}>
+                <ToastNotification
+                    style={{ margin: '-10px -10px 10px -10px' }}
+                    type="error"
+                    onDismiss={actions.clearAlert}
+                >
                     {alertMessage}
-                </Notifications>
+                </ToastNotification>
                 }
                 {canSelectControllers &&
                 <div className="form-group">
