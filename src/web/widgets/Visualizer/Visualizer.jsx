@@ -346,13 +346,10 @@ class Visualizer extends PureComponent {
         // Update the scene
         this.updateScene();
     }
-    createCoordinateSystem(options) {
-        const {
-            axisLength = METRIC_AXIS_LENGTH,
-            gridCount = METRIC_GRID_COUNT,
-            gridSpacing = METRIC_GRID_SPACING
-        } = { ...options };
-
+    createCoordinateSystem(units) {
+        const axisLength = (units === IMPERIAL_UNITS) ? IMPERIAL_AXIS_LENGTH : METRIC_AXIS_LENGTH;
+        const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
+        const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
         const group = new THREE.Group();
 
         { // Coordinate Grid
@@ -412,22 +409,23 @@ class Visualizer extends PureComponent {
 
         return group;
     }
-    createGridLineNumbers(options) {
-        const {
-            gridCount = METRIC_GRID_COUNT,
-            gridSpacing = METRIC_GRID_SPACING
-        } = { ...options };
-
+    createGridLineNumbers(units) {
+        const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
+        const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
+        const textSize = (units === IMPERIAL_UNITS) ? (25.4 / 3) : (10 / 3);
+        const textOffset = (units === IMPERIAL_UNITS) ? (25.4 / 5) : (10 / 5);
         const group = new THREE.Group();
 
         for (let i = -gridCount; i <= gridCount; ++i) {
             if (i !== 0) {
                 const textLabel = new TextSprite({
                     x: i * gridSpacing,
-                    y: 5,
+                    y: textOffset,
                     z: 0,
-                    size: 6,
-                    text: i,
+                    size: textSize,
+                    text: (units === IMPERIAL_UNITS) ? i : i * 10,
+                    textAlign: 'center',
+                    textBaseline: 'bottom',
                     color: colornames('red'),
                     opacity: 0.5
                 });
@@ -437,11 +435,13 @@ class Visualizer extends PureComponent {
         for (let i = -gridCount; i <= gridCount; ++i) {
             if (i !== 0) {
                 const textLabel = new TextSprite({
-                    x: -5,
+                    x: -textOffset,
                     y: i * gridSpacing,
                     z: 0,
-                    size: 6,
-                    text: i,
+                    size: textSize,
+                    text: (units === IMPERIAL_UNITS) ? i : i * 10,
+                    textAlign: 'right',
+                    textBaseline: 'middle',
                     color: colornames('green'),
                     opacity: 0.5
                 });
@@ -519,11 +519,7 @@ class Visualizer extends PureComponent {
 
         { // Imperial Coordinate System
             const visible = objects.coordinateSystem.visible;
-            const imperialCoordinateSystem = this.createCoordinateSystem({
-                axisLength: IMPERIAL_AXIS_LENGTH,
-                gridCount: IMPERIAL_GRID_COUNT,
-                gridSpacing: IMPERIAL_GRID_SPACING
-            });
+            const imperialCoordinateSystem = this.createCoordinateSystem(IMPERIAL_UNITS);
             imperialCoordinateSystem.name = 'ImperialCoordinateSystem';
             imperialCoordinateSystem.visible = visible && (units === IMPERIAL_UNITS);
             this.group.add(imperialCoordinateSystem);
@@ -531,11 +527,7 @@ class Visualizer extends PureComponent {
 
         { // Metric Coordinate System
             const visible = objects.coordinateSystem.visible;
-            const metricCoordinateSystem = this.createCoordinateSystem({
-                axisLength: METRIC_AXIS_LENGTH,
-                gridCount: METRIC_GRID_COUNT,
-                gridSpacing: METRIC_GRID_SPACING
-            });
+            const metricCoordinateSystem = this.createCoordinateSystem(METRIC_UNITS);
             metricCoordinateSystem.name = 'MetricCoordinateSystem';
             metricCoordinateSystem.visible = visible && (units === METRIC_UNITS);
             this.group.add(metricCoordinateSystem);
@@ -543,10 +535,7 @@ class Visualizer extends PureComponent {
 
         { // Imperial Grid Line Numbers
             const visible = objects.gridLineNumbers.visible;
-            const imperialGridLineNumbers = this.createGridLineNumbers({
-                gridCount: IMPERIAL_GRID_COUNT,
-                gridSpacing: IMPERIAL_GRID_SPACING
-            });
+            const imperialGridLineNumbers = this.createGridLineNumbers(IMPERIAL_UNITS);
             imperialGridLineNumbers.name = 'ImperialGridLineNumbers';
             imperialGridLineNumbers.visible = visible && (units === IMPERIAL_UNITS);
             this.group.add(imperialGridLineNumbers);
@@ -554,10 +543,7 @@ class Visualizer extends PureComponent {
 
         { // Metric Grid Line Numbers
             const visible = objects.gridLineNumbers.visible;
-            const metricGridLineNumbers = this.createGridLineNumbers({
-                gridCount: METRIC_GRID_COUNT,
-                gridSpacing: METRIC_GRID_SPACING
-            });
+            const metricGridLineNumbers = this.createGridLineNumbers(METRIC_UNITS);
             metricGridLineNumbers.name = 'MetricGridLineNumbers';
             metricGridLineNumbers.visible = visible && (units === METRIC_UNITS);
             this.group.add(metricGridLineNumbers);
