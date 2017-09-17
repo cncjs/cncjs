@@ -164,6 +164,22 @@ class AxesWidget extends PureComponent {
 
             return defaultWCS;
         },
+        setWorkOffsets: (axis, value) => {
+            const wcs = this.actions.getWorkCoordinateSystem();
+            const p = {
+                'G54': 1,
+                'G55': 2,
+                'G56': 3,
+                'G57': 4,
+                'G58': 5,
+                'G59': 6
+            }[wcs] || 0;
+            axis = (axis || '').toUpperCase();
+            value = Number(value) || 0;
+
+            const gcode = `G10 L20 P${p} ${axis}${value}`;
+            controller.command('gcode', gcode);
+        },
         jog: (params = {}) => {
             const s = map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
             controller.command('gcode', 'G91'); // relative
