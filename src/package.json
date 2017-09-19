@@ -1,6 +1,6 @@
 {
   "name": "CNCjs",
-  "version": "1.9.9",
+  "version": "1.9.10",
   "description": "CNC Milling Controller",
   "homepage": "https://github.com/cncjs/cncjs",
   "author": "Cheton Wu <cheton@gmail.com>",
