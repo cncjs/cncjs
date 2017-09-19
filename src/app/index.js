@@ -3,7 +3,8 @@ import dns from 'dns';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import _ from 'lodash';
+import set from 'lodash/set';
+import size from 'lodash/size';
 import bcrypt from 'bcrypt-nodejs';
 import chalk from 'chalk';
 import webappengine from 'webappengine';
@@ -25,15 +26,15 @@ const createServer = (options, callback) => {
 
         // https://github.com/winstonjs/winston#logging-levels
         if (verbosity === 1) {
-            _.set(settings, 'verbosity', verbosity);
+            set(settings, 'verbosity', verbosity);
             logger.logger.level = 'verbose';
         }
         if (verbosity === 2) {
-            _.set(settings, 'verbosity', verbosity);
+            set(settings, 'verbosity', verbosity);
             logger.logger.level = 'debug';
         }
         if (verbosity === 3) {
-            _.set(settings, 'verbosity', verbosity);
+            set(settings, 'verbosity', verbosity);
             logger.logger.level = 'silly';
         }
     }
@@ -76,7 +77,7 @@ const createServer = (options, callback) => {
         const accessTokenLifetime = options.accessTokenLifetime || config.get('accessTokenLifetime');
 
         if (accessTokenLifetime) {
-            _.set(settings, 'accessTokenLifetime', accessTokenLifetime);
+            set(settings, 'accessTokenLifetime', accessTokenLifetime);
         }
     }
 
@@ -84,11 +85,11 @@ const createServer = (options, callback) => {
         const allowRemoteAccess = options.allowRemoteAccess || config.get('allowRemoteAccess', false);
 
         if (allowRemoteAccess) {
-            if (_.size(config.get('users')) === 0) {
+            if (size(config.get('users')) === 0) {
                 log.warn('You\'ve enabled remote access to the server. It\'s recommended to create an user account to protect against malicious attacks.');
             }
 
-            _.set(settings, 'allowRemoteAccess', allowRemoteAccess);
+            set(settings, 'allowRemoteAccess', allowRemoteAccess);
         }
     }
 
@@ -138,10 +139,26 @@ const createServer = (options, callback) => {
         .on('ready', (server) => {
             // cncengine service
             cncengine.start(server, options.controller || config.get('controller', ''));
-            callback && callback(null, server);
 
             const address = server.address().address;
             const port = server.address().port;
+            const filteredRoutes = routes.reduce((acc, r) => {
+                const { type, route, directory } = r;
+                if (type === 'static') {
+                    acc.push({
+                        path: route,
+                        directory: directory
+                    });
+                }
+                return acc;
+            }, []);
+
+            callback && callback(null, {
+                address: address,
+                port: port,
+                routes: filteredRoutes
+            });
+
             if (address !== '0.0.0.0') {
                 log.info('Starting the server at ' + chalk.cyan(`http://${address}:${port}`));
                 return;

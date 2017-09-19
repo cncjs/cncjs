@@ -47,16 +47,16 @@ const parseController = (val) => {
 program
     .version(pkg.version)
     .usage('[options]')
-    .option('-p, --port <port>', 'set listen port (default: 8000)', 8000)
-    .option('-H, --host <host>', 'set listen address or hostname (default: 0.0.0.0)', '0.0.0.0')
-    .option('-b, --backlog <backlog>', 'set listen backlog (default: 511)', 511)
-    .option('-c, --config <filename>', 'set config file (default: ~/.cncrc)')
-    .option('-v, --verbose', 'increase the verbosity level (-v, -vv, -vvv)', increaseVerbosityLevel, 0)
-    .option('-m, --mount <route-path>:<directory-path>', 'add a mount point for serving static files', parseMountPoint, [])
-    .option('-w, --watch-directory <path>', 'watch a directory for changes')
-    .option('--access-token-lifetime <lifetime>', 'access token lifetime in seconds or a time span string (default: 30d)')
-    .option('--allow-remote-access', 'allow remote access to the server (default: false)')
-    .option('--controller <type>', 'specify CNC controller: Grbl|Smoothie|TinyG|g2core (default: \'\')', parseController, '');
+    .option('-p, --port <port>', 'Set listen port (default: 8000)', 8000)
+    .option('-H, --host <host>', 'Set listen address or hostname (default: 0.0.0.0)', '0.0.0.0')
+    .option('-b, --backlog <backlog>', 'Set listen backlog (default: 511)', 511)
+    .option('-c, --config <filename>', 'Set config file (default: ~/.cncrc)')
+    .option('-v, --verbose', 'Increase the verbosity level (-v, -vv, -vvv)', increaseVerbosityLevel, 0)
+    .option('-m, --mount <route-path>:<directory-path>', 'Add a mount point for serving static files', parseMountPoint, [])
+    .option('-w, --watch-directory <path>', 'Watch a directory for changes')
+    .option('--access-token-lifetime <lifetime>', 'Access token lifetime in seconds or a time span string (default: 30d)')
+    .option('--allow-remote-access', 'Allow remote access to the server (default: false)')
+    .option('--controller <type>', 'Specify CNC controller: Grbl|Smoothie|TinyG|g2core (default: \'\')', parseController, '');
 
 program.on('--help', () => {
     console.log('');

@@ -1,17 +1,15 @@
 /* eslint import/no-unresolved: 0 */
-import { app } from 'electron';
+import { app, Menu } from 'electron';
+import chalk from 'chalk';
 import mkdirp from 'mkdirp';
-import { WindowManager, handleStartupEvent, setApplicationMenu } from './desktop';
+import menuTemplate from './desktop/menu-template';
+import WindowManager from './desktop/WindowManager';
 import cnc from './cnc';
 import pkg from './package.json';
 
 let windowManager = null;
 
 const main = () => {
-    if (handleStartupEvent()) {
-        return;
-    }
-
     // https://github.com/electron/electron/blob/master/docs/api/app.md#appmakesingleinstancecallback
     const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
         // Someone tried to run a second instance, we should focus our window.
@@ -38,24 +36,25 @@ const main = () => {
     mkdirp.sync(userData);
 
     app.on('ready', () => {
-        cnc({ host: '127.0.0.1', port: 0 }, (err, server) => {
+        cnc({ host: '127.0.0.1', port: 0 }, (err, data) => {
             if (err) {
                 console.error('Error:', err);
                 return;
             }
 
-            const address = server.address();
-            if (!address) {
-                console.error('Unable to start the server:', address);
+            const { address, port, routes } = { ...data };
+            if (!(address && port)) {
+                console.error('Unable to start the server at ' + chalk.cyan(`http://${address}:${port}`));
                 return;
             }
 
-            setApplicationMenu();
+            const menu = Menu.buildFromTemplate(menuTemplate({ address, port, routes }));
+            Menu.setApplicationMenu(menu);
 
             windowManager = new WindowManager();
             windowManager.openWindow({
                 title: `${pkg.name} ${pkg.version}`,
-                url: `http://${address.address}:${address.port}`
+                url: `http://${address}:${port}`
             });
         });
     });
