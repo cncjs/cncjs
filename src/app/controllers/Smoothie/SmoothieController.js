@@ -660,7 +660,7 @@ class SmoothieController {
             }
 
             if (i >= cmds.length) {
-                // Set ready flag to true after sending initialization commands
+                // Set the ready flag to true after sending initialization commands
                 this.ready = true;
                 return;
             }
@@ -926,7 +926,7 @@ class SmoothieController {
 
                 const activeState = _.get(this.state, 'status.activeState', '');
                 if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
-                    this.write(socket, '~'); // resume
+                    this.write('~'); // resume
                 }
             },
             'pause': () => {
@@ -938,7 +938,7 @@ class SmoothieController {
 
                 this.workflow.pause();
 
-                this.write(socket, '!');
+                this.write('!');
             },
             'resume': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
@@ -947,7 +947,7 @@ class SmoothieController {
             'gcode:resume': () => {
                 this.event.trigger('gcode:resume');
 
-                this.write(socket, '~');
+                this.write('~');
 
                 this.workflow.resume();
             },
@@ -956,22 +956,22 @@ class SmoothieController {
 
                 this.workflow.pause();
 
-                this.write(socket, '!');
+                this.write('!');
             },
             'cyclestart': () => {
                 this.event.trigger('cyclestart');
 
-                this.write(socket, '~');
+                this.write('~');
 
                 this.workflow.resume();
             },
             'statusreport': () => {
-                this.write(socket, '?');
+                this.write('?');
             },
             'homing': () => {
                 this.event.trigger('homing');
 
-                this.writeln(socket, '$H');
+                this.writeln('$H');
             },
             'sleep': () => {
                 this.event.trigger('sleep');
@@ -979,7 +979,7 @@ class SmoothieController {
                 // Not supported
             },
             'unlock': () => {
-                this.writeln(socket, '$X');
+                this.writeln('$X');
             },
             'reset': () => {
                 this.workflow.stop();
@@ -987,7 +987,7 @@ class SmoothieController {
                 // Feeder
                 this.feeder.clear();
 
-                this.write(socket, '\x18'); // ^x
+                this.write('\x18'); // ^x
             },
             // Feed Overrides
             // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
@@ -1048,25 +1048,25 @@ class SmoothieController {
             'lasertest:on': () => {
                 const [power = 0, duration = 0] = args;
 
-                this.writeln(socket, 'M3');
+                this.writeln('M3');
                 // Firing laser at <power>% power and entering manual mode
-                this.writeln(socket, 'fire ' + ensurePositiveNumber(power));
+                this.writeln('fire ' + ensurePositiveNumber(power));
                 if (duration > 0) {
                     // http://smoothieware.org/g4
                     // Dwell S<seconds> or P<milliseconds>
                     // Note that if `grbl_mode` is set to `true`, then the `P` parameter
                     // is the duration to wait in seconds, not milliseconds, as a float value.
                     // This is to confirm to G-code standards.
-                    this.writeln(socket, 'G4P' + ensurePositiveNumber(duration / 1000));
+                    this.writeln('G4P' + ensurePositiveNumber(duration / 1000));
                     // Turning laser off and returning to auto mode
-                    this.writeln(socket, 'fire off');
-                    this.writeln(socket, 'M5');
+                    this.writeln('fire off');
+                    this.writeln('M5');
                 }
             },
             'lasertest:off': () => {
                 // Turning laser off and returning to auto mode
-                this.writeln(socket, 'fire off');
-                this.writeln(socket, 'M5');
+                this.writeln('fire off');
+                this.writeln('M5');
             },
             'gcode': () => {
                 const [commands, context] = args;
@@ -1148,7 +1148,7 @@ class SmoothieController {
 
         handler();
     }
-    write(socket, data, context) {
+    write(data, context) {
         // Assertion check
         if (this.isClose()) {
             log.error(`Serial port "${this.options.port}" is not accessible`);
@@ -1163,11 +1163,11 @@ class SmoothieController {
         this.serialport.write(data);
         log.silly(`> ${data}`);
     }
-    writeln(socket, data, context) {
+    writeln(data, context) {
         if (_.includes(SMOOTHIE_REALTIME_COMMANDS, data)) {
-            this.write(socket, data, context);
+            this.write(data, context);
         } else {
-            this.write(socket, data + '\n', context);
+            this.write(data + '\n', context);
         }
     }
 }

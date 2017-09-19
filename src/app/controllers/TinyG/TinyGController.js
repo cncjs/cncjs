@@ -572,7 +572,7 @@ class TinyGController {
             }
 
             if (i >= cmds.length) {
-                // Set ready flag to true after sending initialization commands
+                // Set the ready flag to true after sending initialization commands
                 this.ready = true;
                 return;
             }
@@ -939,11 +939,11 @@ class TinyGController {
 
                 this.workflow.stop();
 
-                this.writeln(socket, '!%'); // feedhold and queue flush
+                this.writeln('!%'); // feedhold and queue flush
 
                 setTimeout(() => {
-                    this.writeln(socket, '{clear:null}');
-                    this.writeln(socket, '{"qr":""}'); // queue report
+                    this.writeln('{clear:null}');
+                    this.writeln('{"qr":""}'); // queue report
                 }, 250); // delay 250ms
             },
             'pause': () => {
@@ -955,9 +955,9 @@ class TinyGController {
 
                 this.workflow.pause();
 
-                this.writeln(socket, '!'); // feedhold
+                this.writeln('!'); // feedhold
 
-                this.writeln(socket, '{"qr":""}'); // queue report
+                this.writeln('{"qr":""}'); // queue report
             },
             'resume': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
@@ -966,37 +966,37 @@ class TinyGController {
             'gcode:resume': () => {
                 this.event.trigger('gcode:resume');
 
-                this.writeln(socket, '~'); // cycle start
+                this.writeln('~'); // cycle start
 
                 this.workflow.resume();
 
-                this.writeln(socket, '{"qr":""}'); // queue report
+                this.writeln('{"qr":""}'); // queue report
             },
             'feedhold': () => {
                 this.event.trigger('feedhold');
 
                 this.workflow.pause();
 
-                this.writeln(socket, '!'); // feedhold
+                this.writeln('!'); // feedhold
 
-                this.writeln(socket, '{"qr":""}'); // queue report
+                this.writeln('{"qr":""}'); // queue report
             },
             'cyclestart': () => {
                 this.event.trigger('cyclestart');
 
-                this.writeln(socket, '~'); // cycle start
+                this.writeln('~'); // cycle start
 
                 this.workflow.resume();
 
-                this.writeln(socket, '{"qr":""}'); // queue report
+                this.writeln('{"qr":""}'); // queue report
             },
             'statusreport': () => {
-                this.writeln(socket, '{"sr":null}');
+                this.writeln('{"sr":null}');
             },
             'homing': () => {
                 this.event.trigger('homing');
 
-                this.writeln(socket, 'G28.2 X0 Y0 Z0');
+                this.writeln('G28.2 X0 Y0 Z0');
             },
             'sleep': () => {
                 this.event.trigger('sleep');
@@ -1004,7 +1004,7 @@ class TinyGController {
                 // Not supported
             },
             'unlock': () => {
-                this.writeln(socket, '{clear:null}');
+                this.writeln('{clear:null}');
             },
             'reset': () => {
                 this.workflow.stop();
@@ -1012,7 +1012,7 @@ class TinyGController {
                 // Feeder
                 this.feeder.clear();
 
-                this.write(socket, '\x18'); // ^x
+                this.write('\x18'); // ^x
             },
             // Feed Overrides
             // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
@@ -1197,7 +1197,7 @@ class TinyGController {
 
         handler();
     }
-    write(socket, data, context) {
+    write(data, context) {
         // Assertion check
         if (this.isClose()) {
             log.error(`Serial port "${this.options.port}" is not accessible`);
@@ -1208,8 +1208,8 @@ class TinyGController {
         this.serialport.write(data);
         log.silly(`> ${data}`);
     }
-    writeln(socket, data, context) {
-        this.write(socket, data + '\n', context);
+    writeln(data, context) {
+        this.write(data + '\n', context);
     }
 }
 

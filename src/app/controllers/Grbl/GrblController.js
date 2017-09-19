@@ -80,6 +80,7 @@ class GrblController {
     // Grbl
     controller = null;
     ready = false;
+    initialized = false;
     state = {};
     settings = {};
     queryTimer = null;
@@ -452,10 +453,20 @@ class GrblController {
         this.controller.on('startup', (res) => {
             this.emit('serialport:read', res.raw);
 
-            // Set ready flag to true when a Grbl start up message has arrived
+            // Check the initialized flag
+            if (!this.initialized) {
+                this.initialized = true;
+
+                // https://github.com/cncjs/cncjs/issues/206
+                // $13=0 (report in mm)
+                // $13=1 (report in inches)
+                this.writeln('$$');
+            }
+
+            // Set the ready flag to true when a startup message has arrived
             this.ready = true;
 
-            // The start up message always prints upon startup, after a reset, or at program end.
+            // The startup message always prints upon startup, after a reset, or at program end.
             // Setting the initial state when Grbl has completed re-initializing all systems.
             this.clearActionValues();
         });
@@ -646,36 +657,6 @@ class GrblController {
             this.controller = null;
         }
     }
-    initController() {
-        const cmds = [
-            // https://github.com/cncjs/cncjs/issues/151#issuecomment-290354356
-            // The Grbl startup message might delay up to 900ms on Arduino Mega 2560
-            { pauseAfter: 1000 }
-        ];
-
-        const sendInitCommands = (i = 0) => {
-            if (this.isClose()) {
-                // Serial port is closed
-                return;
-            }
-
-            if (i >= cmds.length) {
-                // Set ready flag to true after the delay
-                this.ready = true;
-                return;
-            }
-
-            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
-            if (cmd) {
-                this.serialport.write(cmd + '\n');
-                log.silly(`> ${cmd}`);
-            }
-            setTimeout(() => {
-                sendInitCommands(i + 1);
-            }, pauseAfter);
-        };
-        sendInitCommands();
-    }
     get status() {
         return {
             port: this.options.port,
@@ -745,9 +726,6 @@ class GrblController {
                 // Unload G-code
                 this.command(null, 'unload');
             }
-
-            // Initialize controller
-            this.initController();
         });
     }
     close(callback) {
@@ -762,6 +740,9 @@ class GrblController {
 
         // Stop status query
         this.ready = false;
+
+        // Clear initialized flag
+        this.initialized = false;
 
         this.emit('serialport:close', {
             port: port,
@@ -929,12 +910,12 @@ class GrblController {
                 if (force) {
                     const activeState = _.get(this.state, 'status.activeState', '');
                     if (activeState === GRBL_ACTIVE_STATE_RUN) {
-                        this.write(socket, '!'); // hold
+                        this.write('!'); // hold
                     }
                     setTimeout(() => {
                         const activeState = _.get(this.state, 'status.activeState', '');
                         if (activeState === GRBL_ACTIVE_STATE_HOLD) {
-                            this.write(socket, '\x18'); // ctrl-x
+                            this.write('\x18'); // ctrl-x
                         }
                     }, 500); // delay 500ms
                 }
@@ -948,7 +929,7 @@ class GrblController {
 
                 this.workflow.pause();
 
-                this.write(socket, '!');
+                this.write('!');
             },
             'resume': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
@@ -957,7 +938,7 @@ class GrblController {
             'gcode:resume': () => {
                 this.event.trigger('gcode:resume');
 
-                this.write(socket, '~');
+                this.write('~');
 
                 this.workflow.resume();
             },
@@ -966,30 +947,30 @@ class GrblController {
 
                 this.workflow.pause();
 
-                this.write(socket, '!');
+                this.write('!');
             },
             'cyclestart': () => {
                 this.event.trigger('cyclestart');
 
-                this.write(socket, '~');
+                this.write('~');
 
                 this.workflow.resume();
             },
             'statusreport': () => {
-                this.write(socket, '?');
+                this.write('?');
             },
             'homing': () => {
                 this.event.trigger('homing');
 
-                this.writeln(socket, '$H');
+                this.writeln('$H');
             },
             'sleep': () => {
                 this.event.trigger('sleep');
 
-                this.writeln(socket, '$SLP');
+                this.writeln('$SLP');
             },
             'unlock': () => {
-                this.writeln(socket, '$X');
+                this.writeln('$X');
             },
             'reset': () => {
                 this.workflow.stop();
@@ -997,7 +978,7 @@ class GrblController {
                 // Feeder
                 this.feeder.clear();
 
-                this.write(socket, '\x18'); // ^x
+                this.write('\x18'); // ^x
             },
             // Feed Overrides
             // @param {number} value The amount of percentage increase or decrease.
@@ -1010,15 +991,15 @@ class GrblController {
                 const [value] = args;
 
                 if (value === 0) {
-                    this.write(socket, '\x90');
+                    this.write('\x90');
                 } else if (value === 10) {
-                    this.write(socket, '\x91');
+                    this.write('\x91');
                 } else if (value === -10) {
-                    this.write(socket, '\x92');
+                    this.write('\x92');
                 } else if (value === 1) {
-                    this.write(socket, '\x93');
+                    this.write('\x93');
                 } else if (value === -1) {
-                    this.write(socket, '\x94');
+                    this.write('\x94');
                 }
             },
             // Spindle Speed Overrides
@@ -1032,15 +1013,15 @@ class GrblController {
                 const [value] = args;
 
                 if (value === 0) {
-                    this.write(socket, '\x99');
+                    this.write('\x99');
                 } else if (value === 10) {
-                    this.write(socket, '\x9a');
+                    this.write('\x9a');
                 } else if (value === -10) {
-                    this.write(socket, '\x9b');
+                    this.write('\x9b');
                 } else if (value === 1) {
-                    this.write(socket, '\x9c');
+                    this.write('\x9c');
                 } else if (value === -1) {
-                    this.write(socket, '\x9d');
+                    this.write('\x9d');
                 }
             },
             // Rapid Overrides
@@ -1052,11 +1033,11 @@ class GrblController {
                 const [value] = args;
 
                 if (value === 0 || value === 100) {
-                    this.write(socket, '\x95');
+                    this.write('\x95');
                 } else if (value === 50) {
-                    this.write(socket, '\x96');
+                    this.write('\x96');
                 } else if (value === 25) {
-                    this.write(socket, '\x97');
+                    this.write('\x97');
                 }
             },
             'lasertest:on': () => {
@@ -1159,7 +1140,7 @@ class GrblController {
 
         handler();
     }
-    write(socket, data, context) {
+    write(data, context) {
         // Assertion check
         if (this.isClose()) {
             log.error(`Serial port "${this.options.port}" is not accessible`);
@@ -1174,11 +1155,11 @@ class GrblController {
         this.serialport.write(data);
         log.silly(`> ${data}`);
     }
-    writeln(socket, data, context) {
+    writeln(data, context) {
         if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
-            this.write(socket, data, context);
+            this.write(data, context);
         } else {
-            this.write(socket, data + '\n', context);
+            this.write(data + '\n', context);
         }
     }
 }
