@@ -1,7 +1,7 @@
 {
     "TinyG": {
         "machineState": {
-            "initializing": "",
+            "initializing": "Inicializando",
             "ready": "Listo",
             "alarm": "Alarma",
             "stop": "Detener",
@@ -22,7 +22,7 @@
             "idle": "Parado",
             "run": "Iniciar",
             "hold": "Pausar",
-            "door": "",
+            "door": "Entrada",
             "home": "Home",
             "sleep": "Dormir",
             "alarm": "Alarma",
@@ -34,7 +34,7 @@
             "idle": "Parado",
             "run": "Iniciar",
             "hold": "Pausar",
-            "door": "",
+            "door": "Entrada",
             "home": "Home",
             "sleep": "Dormir",
             "alarm": "Alarma",
