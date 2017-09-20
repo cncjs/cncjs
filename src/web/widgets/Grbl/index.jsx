@@ -24,15 +24,17 @@ class GrblWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState({
@@ -123,23 +125,27 @@ class GrblWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'Grbl:state': (state) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: GRBL,
-                    state: state
-                }
-            });
+        'controller:state': (type, state) => {
+            if (type === GRBL) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        state: state
+                    }
+                });
+            }
         },
-        'Grbl:settings': (settings) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: GRBL,
-                    settings: settings
-                }
-            });
+        'controller:settings': (type, settings) => {
+            if (type === GRBL) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        settings: settings
+                    }
+                });
+            }
         }
     };
 

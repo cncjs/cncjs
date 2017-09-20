@@ -103,7 +103,7 @@ class SecondaryWidgets extends Component {
         const len = this.state.widgets.length;
         for (let i = 0; i < len; ++i) {
             const widget = this.widgetMap[this.state.widgets[i]];
-            const expand = get(widget, 'actions.expand');
+            const expand = get(widget, 'expand');
             if (typeof expand === 'function') {
                 expand();
             }
@@ -113,7 +113,7 @@ class SecondaryWidgets extends Component {
         const len = this.state.widgets.length;
         for (let i = 0; i < len; ++i) {
             const widget = this.widgetMap[this.state.widgets[i]];
-            const collapse = get(widget, 'actions.collapse');
+            const collapse = get(widget, 'collapse');
             if (typeof collapse === 'function') {
                 collapse();
             }

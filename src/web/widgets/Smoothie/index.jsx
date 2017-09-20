@@ -24,15 +24,17 @@ class SmoothieWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState({
@@ -123,23 +125,27 @@ class SmoothieWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'Smoothie:state': (state) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: SMOOTHIE,
-                    state: state
-                }
-            });
+        'controller:state': (type, state) => {
+            if (type === SMOOTHIE) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        state: state
+                    }
+                });
+            }
         },
-        'Smoothie:settings': (settings) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: SMOOTHIE,
-                    settings: settings
-                }
-            });
+        'controller:settings': (type, settings) => {
+            if (type === SMOOTHIE) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        settings: settings
+                    }
+                });
+            }
         }
     };
 

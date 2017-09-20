@@ -352,15 +352,49 @@ test('GrblLineParserResultSettings', (t) => {
 });
 
 test('GrblLineParserResultStartup', (t) => {
-    const grbl = new Grbl();
-    grbl.on('startup', ({ raw, version }) => {
-        t.equal(raw, 'Grbl 0.9j [\'$\' for help]');
-        t.equal(version, '0.9j');
-        t.end();
+    test('Grbl 0.9j', (t) => {
+        const grbl = new Grbl();
+        grbl.on('startup', ({ raw, firmware, version, message }) => {
+            t.equal(raw, 'Grbl 0.9j [\'$\' for help]');
+            t.equal(firmware, 'Grbl');
+            t.equal(version, '0.9j');
+            t.equal(message, '[\'$\' for help]');
+            t.end();
+        });
+
+        const line = 'Grbl 0.9j [\'$\' for help]';
+        grbl.parse(line);
     });
 
-    const line = 'Grbl 0.9j [\'$\' for help]';
-    grbl.parse(line);
+    test('Grbl 1.1f', (t) => {
+        const grbl = new Grbl();
+        grbl.on('startup', ({ raw, firmware, version, message }) => {
+            t.equal(raw, 'Grbl 1.1f [\'$\' for help]');
+            t.equal(firmware, 'Grbl');
+            t.equal(version, '1.1f');
+            t.equal(message, '[\'$\' for help]');
+            t.end();
+        });
+
+        const line = 'Grbl 1.1f [\'$\' for help]';
+        grbl.parse(line);
+    });
+
+    test('vCarvin 2.0.0', (t) => {
+        const grbl = new Grbl();
+        grbl.on('startup', ({ raw, firmware, version, message }) => {
+            t.equal(raw, 'vCarvin 2.0.0 [\'$\' for help]');
+            t.equal(firmware, 'vCarvin');
+            t.equal(version, '2.0.0');
+            t.equal(message, '[\'$\' for help]');
+            t.end();
+        });
+
+        const line = 'vCarvin 2.0.0 [\'$\' for help]';
+        grbl.parse(line);
+    });
+
+    t.end();
 });
 
 test('Not supported output format', (t) => {

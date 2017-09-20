@@ -27,15 +27,17 @@ class LaserWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState({
@@ -122,56 +124,20 @@ class LaserWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'Grbl:state': (state) => {
+        'controller:state': (type, state) => {
             this.setState({
                 controller: {
                     ...this.state.controller,
-                    type: GRBL,
+                    type: type,
                     state: state
                 }
             });
         },
-        'Grbl:settings': (settings) => {
+        'controller:settings': (type, settings) => {
             this.setState({
                 controller: {
                     ...this.state.controller,
-                    type: GRBL,
-                    settings: settings
-                }
-            });
-        },
-        'Smoothie:state': (state) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: SMOOTHIE,
-                    state: state
-                }
-            });
-        },
-        'Smoothie:settings': (settings) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: SMOOTHIE,
-                    settings: settings
-                }
-            });
-        },
-        'TinyG:state': (state) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: TINYG,
-                    state: state
-                }
-            });
-        },
-        'TinyG:settings': (settings) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: TINYG,
+                    type: type,
                     settings: settings
                 }
             });

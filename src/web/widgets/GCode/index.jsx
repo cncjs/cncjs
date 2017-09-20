@@ -10,6 +10,9 @@ import { mm2in } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
 import GCode from './GCode';
 import {
+    GRBL,
+    SMOOTHIE,
+    TINYG,
     // Units
     IMPERIAL_UNITS,
     METRIC_UNITS
@@ -36,15 +39,17 @@ class GCodeWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState({
@@ -105,40 +110,47 @@ class GCodeWidget extends PureComponent {
                 this.setState({ workflowState: workflowState });
             }
         },
-        'Grbl:state': (state) => {
-            const { parserstate } = { ...state };
-            const { modal = {} } = { ...parserstate };
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
+        'controller:state': (type, state) => {
+            // Grbl
+            if (type === GRBL) {
+                const { parserstate } = { ...state };
+                const { modal = {} } = { ...parserstate };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
 
-            if (this.state.units !== units) {
-                this.setState({ units: units });
+                if (this.state.units !== units) {
+                    this.setState({ units: units });
+                }
             }
-        },
-        'Smoothie:state': (state) => {
-            const { parserstate } = { ...state };
-            const { modal = {} } = { ...parserstate };
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
 
-            if (this.state.units !== units) {
-                this.setState({ units: units });
+            // Smoothie
+            if (type === SMOOTHIE) {
+                const { parserstate } = { ...state };
+                const { modal = {} } = { ...parserstate };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
+
+                if (this.state.units !== units) {
+                    this.setState({ units: units });
+                }
             }
-        },
-        'TinyG:state': (state) => {
-            const { sr } = { ...state };
-            const { modal = {} } = sr;
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
 
-            if (this.state.units !== units) {
-                this.setState({ units: units });
+            // TinyG
+            if (type === TINYG) {
+                const { sr } = { ...state };
+                const { modal = {} } = sr;
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
+
+                if (this.state.units !== units) {
+                    this.setState({ units: units });
+                }
             }
         }
     };

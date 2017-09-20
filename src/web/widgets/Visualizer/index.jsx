@@ -494,78 +494,85 @@ class VisualizerWidget extends PureComponent {
                 this.setState((state) => ({ workflowState: workflowState }));
             }
         },
-        'Grbl:state': (controllerState) => {
-            const { status, parserstate } = { ...controllerState };
-            const { wpos } = status;
-            const { modal = {} } = { ...parserstate };
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
+        'controller:state': (type, controllerState) => {
+            // Grbl
+            if (type === GRBL) {
+                const { status, parserstate } = { ...controllerState };
+                const { wpos } = status;
+                const { modal = {} } = { ...parserstate };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
 
-            this.setState((state) => ({
-                units: units,
-                controller: {
-                    type: GRBL,
-                    state: controllerState
-                },
-                workPosition: {
-                    ...state.workPosition,
+                this.setState((state) => ({
+                    units: units,
+                    controller: {
+                        type: type,
+                        state: controllerState
+                    },
+                    workPosition: {
+                        ...state.workPosition,
+                        ...wpos
+                    }
+                }));
+            }
+
+            // Smoothie
+            if (type === SMOOTHIE) {
+                const { status, parserstate } = { ...controllerState };
+                const { wpos } = status;
+                const { modal = {} } = { ...parserstate };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
+
+                // Work position are reported in current units
+                const workPosition = mapValues({
+                    ...this.state.workPosition,
                     ...wpos
-                }
-            }));
-        },
-        'Smoothie:state': (controllerState) => {
-            const { status, parserstate } = { ...controllerState };
-            const { wpos } = status;
-            const { modal = {} } = { ...parserstate };
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
+                }, (val) => {
+                    return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                });
 
-            // Work position are reported in current units
-            const workPosition = mapValues({
-                ...this.state.workPosition,
-                ...wpos
-            }, (val) => {
-                return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-            });
+                this.setState((state) => ({
+                    units: units,
+                    controller: {
+                        type: type,
+                        state: controllerState
+                    },
+                    workPosition: workPosition
+                }));
+            }
 
-            this.setState((state) => ({
-                units: units,
-                controller: {
-                    type: SMOOTHIE,
-                    state: controllerState
-                },
-                workPosition: workPosition
-            }));
-        },
-        'TinyG:state': (controllerState) => {
-            const { sr } = { ...controllerState };
-            const { wpos, modal = {} } = sr;
-            const units = {
-                'G20': IMPERIAL_UNITS,
-                'G21': METRIC_UNITS
-            }[modal.units] || this.state.units;
+            // TinyG
+            if (type === TINYG) {
+                const { sr } = { ...controllerState };
+                const { wpos, modal = {} } = sr;
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
 
-            // https://github.com/synthetos/g2/wiki/Status-Reports
-            // Work position are reported in current units, and also apply any offsets.
-            const workPosition = mapValues({
-                ...this.state.workPosition,
-                ...wpos
-            }, (val) => {
-                return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-            });
+                // https://github.com/synthetos/g2/wiki/Status-Reports
+                // Work position are reported in current units, and also apply any offsets.
+                const workPosition = mapValues({
+                    ...this.state.workPosition,
+                    ...wpos
+                }, (val) => {
+                    return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                });
 
-            this.setState((state) => ({
-                units: units,
-                controller: {
-                    type: TINYG,
-                    state: controllerState
-                },
-                workPosition: workPosition
-            }));
+                this.setState((state) => ({
+                    units: units,
+                    controller: {
+                        type: type,
+                        state: controllerState
+                    },
+                    workPosition: workPosition
+                }));
+            }
         }
     };
     pubsubTokens = [];

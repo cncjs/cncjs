@@ -36,15 +36,17 @@ class SpindleWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState({
@@ -75,56 +77,63 @@ class SpindleWidget extends PureComponent {
                 this.setState({ workflowState: workflowState });
             }
         },
-        'Grbl:state': (state) => {
-            const { parserstate } = { ...state };
-            const { modal = {} } = { ...parserstate };
+        'controller:state': (type, state) => {
+            // Grbl
+            if (type === GRBL) {
+                const { parserstate } = { ...state };
+                const { modal = {} } = { ...parserstate };
 
-            this.setState({
-                controller: {
-                    type: GRBL,
-                    state: state,
-                    modal: {
-                        spindle: modal.spindle || '',
-                        coolant: {
-                            mist: get(modal, 'coolant.mist', false),
-                            flood: get(modal, 'coolant.flood', false)
+                this.setState({
+                    controller: {
+                        type: type,
+                        state: state,
+                        modal: {
+                            spindle: modal.spindle || '',
+                            coolant: {
+                                mist: get(modal, 'coolant.mist', false),
+                                flood: get(modal, 'coolant.flood', false)
+                            }
                         }
                     }
-                }
-            });
-        },
-        'Smoothie:state': (state) => {
-            const { parserstate } = { ...state };
-            const { modal = {} } = { ...parserstate };
+                });
+            }
 
-            this.setState({
-                controller: {
-                    type: SMOOTHIE,
-                    state: state,
-                    modal: {
-                        spindle: modal.spindle || '',
-                        coolant: {
-                            mist: get(modal, 'coolant.mist', false),
-                            flood: get(modal, 'coolant.flood', false)
+            // Smoothie
+            if (type === SMOOTHIE) {
+                const { parserstate } = { ...state };
+                const { modal = {} } = { ...parserstate };
+
+                this.setState({
+                    controller: {
+                        type: type,
+                        state: state,
+                        modal: {
+                            spindle: modal.spindle || '',
+                            coolant: {
+                                mist: get(modal, 'coolant.mist', false),
+                                flood: get(modal, 'coolant.flood', false)
+                            }
                         }
                     }
-                }
-            });
-        },
-        'TinyG:state': (state) => {
-            this.setState({
-                controller: {
-                    type: TINYG,
-                    state: state,
-                    modal: { // Not supported yet
-                        spindle: '',
-                        coolant: {
-                            mist: false,
-                            flood: false
+                });
+            }
+
+            // TinyG
+            if (type === TINYG) {
+                this.setState({
+                    controller: {
+                        type: type,
+                        state: state,
+                        modal: { // Not supported yet
+                            spindle: '',
+                            coolant: {
+                                mist: false,
+                                flood: false
+                            }
                         }
                     }
-                }
-            });
+                });
+            }
         }
     };
 

@@ -3,6 +3,7 @@ import series from 'async/series';
 import chainedFunction from 'chained-function';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
+import qs from 'qs';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import {
@@ -18,7 +19,6 @@ import alert from './lib/alert';
 import controller from './lib/controller';
 import i18n from './lib/i18n';
 import log from './lib/log';
-import { toQueryObject } from './lib/query';
 import user from './lib/user';
 import store from './store';
 import defaultState from './store/defaultState';
@@ -47,14 +47,14 @@ const renderPage = () => {
 
 series([
     (next) => {
-        const queryparams = toQueryObject(window.location.search);
+        const obj = qs.parse(window.location.search.slice(1));
         const level = {
             trace: TRACE,
             debug: DEBUG,
             info: INFO,
             warn: WARN,
             error: ERROR
-        }[queryparams.log_level || settings.log.level];
+        }[obj.log_level || settings.log.level];
         log.setLevel(level);
         next();
     },
@@ -85,7 +85,12 @@ series([
             .then(({ authenticated, token }) => {
                 if (authenticated) {
                     log.debug('Create and establish a WebSocket connection');
-                    controller.connect(() => {
+
+                    const host = '';
+                    const options = {
+                        query: 'token=' + token
+                    };
+                    controller.connect(host, options, () => {
                         // @see "src/web/containers/Login/Login.jsx"
                         next();
                     });

@@ -24,15 +24,17 @@ class TinyGWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState({
@@ -136,23 +138,27 @@ class TinyGWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'TinyG:state': (state) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: TINYG,
-                    state: state
-                }
-            });
+        'controller:state': (type, state) => {
+            if (type === TINYG) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        state: state
+                    }
+                });
+            }
         },
-        'TinyG:settings': (settings) => {
-            this.setState({
-                controller: {
-                    ...this.state.controller,
-                    type: TINYG,
-                    settings: settings
-                }
-            });
+        'controller:settings': (type, settings) => {
+            if (type === TINYG) {
+                this.setState({
+                    controller: {
+                        ...this.state.controller,
+                        type: type,
+                        settings: settings
+                    }
+                });
+            }
         }
     };
 

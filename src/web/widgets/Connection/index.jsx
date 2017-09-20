@@ -22,15 +22,17 @@ class ConnectionWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState(state => ({
@@ -151,12 +153,12 @@ class ConnectionWidget extends PureComponent {
                 ports: ports
             }));
 
-            log.debug('Connected to \'' + port + '\' at ' + baudrate + '.');
+            log.debug(`Established a connection to the serial port "${port}"`);
         },
         'serialport:close': (options) => {
             const { port } = options;
 
-            log.debug('Disconnected from \'' + port + '\'.');
+            log.debug(`The serial port "${port}" is disconected`);
 
             this.setState(state => ({
                 alertMessage: '',
@@ -175,7 +177,7 @@ class ConnectionWidget extends PureComponent {
                 connected: false
             }));
 
-            log.error('Error opening serial port \'' + port + '\'');
+            log.error(`Error opening serial port "${port}"`);
         }
     };
 

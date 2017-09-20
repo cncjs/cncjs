@@ -317,7 +317,7 @@ class CNCEngine {
                     return;
                 }
 
-                controller.write(socket, data, context);
+                controller.write(data, context);
             });
 
             socket.on('writeln', (port, data, context = {}) => {
@@ -329,7 +329,7 @@ class CNCEngine {
                     return;
                 }
 
-                controller.writeln(socket, data, context);
+                controller.writeln(data, context);
             });
         });
     }

@@ -21,15 +21,17 @@ class CustomWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     action = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleDisabled: () => {
             const { disabled } = this.state;
             this.setState({ disabled: !disabled });
@@ -168,6 +170,7 @@ class CustomWidget extends PureComponent {
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <Widget.Button
+                            disabled={!state.url}
                             title={disabled ? i18n._('Enable') : i18n._('Disable')}
                             type="default"
                             onClick={action.toggleDisabled}

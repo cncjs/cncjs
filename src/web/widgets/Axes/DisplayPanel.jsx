@@ -7,10 +7,8 @@ import Dropdown, { MenuItem } from '../../components/Dropdown';
 import controller from '../../lib/controller';
 import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
-import { in2mm } from '../../lib/units';
 import PositionInput from './PositionInput';
 import {
-    IMPERIAL_UNITS,
     METRIC_UNITS
 } from '../../constants';
 import styles from './index.styl';
@@ -201,10 +199,7 @@ class DisplayPanel extends PureComponent {
                                 {showXPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
-                                        if (units === IMPERIAL_UNITS) {
-                                            value = in2mm(value);
-                                        }
-                                        controller.command('gcode', 'G10 L20 P1 X' + value);
+                                        actions.setWorkOffsets('x', value);
                                         this.setState({ showXPositionInput: false });
                                     }}
                                     onCancel={() => {
@@ -375,10 +370,7 @@ class DisplayPanel extends PureComponent {
                                 {showYPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
-                                        if (units === IMPERIAL_UNITS) {
-                                            value = in2mm(value);
-                                        }
-                                        controller.command('gcode', 'G10 L20 P1 Y' + value);
+                                        actions.setWorkOffsets('y', value);
                                         this.setState({ showYPositionInput: false });
                                     }}
                                     onCancel={() => {
@@ -549,10 +541,7 @@ class DisplayPanel extends PureComponent {
                                 {showZPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
-                                        if (units === IMPERIAL_UNITS) {
-                                            value = in2mm(value);
-                                        }
-                                        controller.command('gcode', 'G10 L20 P1 Z' + value);
+                                        actions.setWorkOffsets('z', value);
                                         this.setState({ showZPositionInput: false });
                                     }}
                                     onCancel={() => {
@@ -725,8 +714,7 @@ class DisplayPanel extends PureComponent {
                                 {showAPositionInput &&
                                 <PositionInput
                                     onOK={(value) => {
-                                        // units of degree
-                                        controller.command('gcode', 'G10 L20 P1 A' + value);
+                                        actions.setWorkOffsets('a', value);
                                         this.setState({ showAPositionInput: false });
                                     }}
                                     onCancel={() => {
