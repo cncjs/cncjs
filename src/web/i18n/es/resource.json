@@ -23,7 +23,7 @@
     "Unlock": "Desbloquear",
     "Reset": "Resetear",
     "Authentication failed.": "Fallo de autenticación",
-    "Error": "",
+    "Error": "Error",
     "Sign in to {{name}}": "Conectarse a {{name}}",
     "Username": "Nombre de usuario",
     "Password": "Contraseña",
