@@ -27,15 +27,17 @@ class LaserWidget extends PureComponent {
         sortable: PropTypes.object
     };
 
+    // Public methods
+    collapse = () => {
+        this.setState({ minimized: true });
+    };
+    expand = () => {
+        this.setState({ minimized: false });
+    };
+
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
-        collapse: () => {
-            this.setState({ minimized: true });
-        },
-        expand: () => {
-            this.setState({ minimized: false });
-        },
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
             this.setState({
