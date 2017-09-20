@@ -217,7 +217,7 @@ class TinyGController {
                 return;
             }
 
-            this.emit('serialport:write', line, context);
+            this.emit('serialport:write', line + '\n', context);
 
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);

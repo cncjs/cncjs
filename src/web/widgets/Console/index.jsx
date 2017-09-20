@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import trimEnd from 'lodash/trimEnd';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
@@ -86,8 +85,12 @@ class ConsoleWidget extends PureComponent {
                 return;
             }
 
-            data = trimEnd(data, '\r\n');
-            this.terminal.writeln(data);
+            data = String(data);
+            if (data.charAt(data.length - 1) !== '\n') {
+                data += '\n';
+            }
+            data = data.replace(/\r?\n/g, '\r\n');
+            this.terminal.write(data);
         },
         'serialport:read': (data) => {
             if (!this.terminal) {
