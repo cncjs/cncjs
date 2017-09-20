@@ -125,13 +125,13 @@ class Workspace extends PureComponent {
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
-            controller.on(eventName, callback);
+            controller.addListener(eventName, callback);
         });
     }
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
-            controller.off(eventName, callback);
+            controller.removeListener(eventName, callback);
         });
     }
     addResizeEventListener() {
