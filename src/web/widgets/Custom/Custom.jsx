@@ -21,6 +21,7 @@ class Custom extends PureComponent {
     pubsubTokens = [];
     iframe = null;
     observer = null;
+    timer = null;
 
     componentDidMount() {
         this.subscribe();
@@ -34,17 +35,28 @@ class Custom extends PureComponent {
         }
         if (nextProps.port !== this.props.port) {
             // Post a message to the iframe window
-            this.postMessage('update', {
+            this.postMessage('change', {
                 port: controller.port,
                 controller: controller.type
             });
+
+            // Detect iframe content height change every 100ms, but shorter than 2000ms
+            this.timer = setInterval(() => {
+                this.resize();
+            }, 100);
+            setTimeout(() => {
+                if (this.timer) {
+                    clearInterval(this.timer);
+                    this.timer = null;
+                }
+            }, 2000);
         }
     }
     subscribe() {
         const tokens = [
             pubsub.subscribe('message:connect', () => {
                 // Post a message to the iframe window
-                this.postMessage('update', {
+                this.postMessage('change', {
                     port: controller.port,
                     controller: controller.type
                 });
@@ -85,6 +97,16 @@ class Custom extends PureComponent {
 
             // Reload
             this.iframe.contentWindow.location.reload(forceGet);
+        }
+    }
+    resize() {
+        if (this.iframe) {
+            const target = this.iframe.contentDocument.body;
+
+            // Recalculate the height of the content
+            this.iframe.style.height = 0;
+            const nextHeight = target.scrollHeight;
+            this.iframe.style.height = `${nextHeight}px`;
         }
     }
     render() {
@@ -136,16 +158,10 @@ class Custom extends PureComponent {
                             subtree: true
                         };
 
-                        // Recalculate the height of the content
-                        this.iframe.style.height = 0;
-                        const nextHeight = target.scrollHeight;
-                        this.iframe.style.height = `${nextHeight}px`;
+                        this.resize();
 
                         this.observer = new MutationObserver(mutations => {
-                            // Recalculate the height of the content
-                            this.iframe.style.height = 0;
-                            const nextHeight = target.scrollHeight;
-                            this.iframe.style.height = `${nextHeight}px`;
+                            this.resize();
                         });
                         this.observer.observe(target, config);
                     });
