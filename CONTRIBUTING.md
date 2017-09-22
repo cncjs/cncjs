@@ -24,7 +24,7 @@ Fork the project [on GitHub](https://github.com/cheton/cnc) and check out your c
 ```bash
 $ git clone git@github.com:yourusername/cnc.git
 $ cd cnc
-$ git remote add upstream git://github.com/cheton/cnc.git
+$ git remote add upstream git://github.com/cncjs/cncjs.git
 ```
 
 ### Step 2: Branch
@@ -38,7 +38,7 @@ $ git checkout -b my-feature-branch -t origin/master
 
 Run `npm install` to install the dependencies in the local node_modules folder:
 ```bash
-$ npm install -g npm  # Install npm v3
+$ npm install -g npm
 $ npm install
 ```
 
