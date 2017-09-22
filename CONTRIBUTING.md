@@ -17,13 +17,13 @@ https://github.com/cncjs/cncjs/wiki/Troubleshooting
 
 ### Step 1: Fork
 
-Fork the project [on GitHub](https://github.com/cheton/cnc) and check out your copy locally. 
+Fork the project [on GitHub](https://github.com/cncjs/cncjs) and check out your copy locally. 
 
 ![image](https://cloud.githubusercontent.com/assets/447801/16153930/28241308-34db-11e6-81b6-dd8222f044b4.png)
 
 ```bash
-$ git clone git@github.com:yourusername/cnc.git
-$ cd cnc
+$ git clone git@github.com:username/cncjs.git
+$ cd cncjs
 $ git remote add upstream git://github.com/cncjs/cncjs.git
 ```
 
@@ -62,9 +62,9 @@ $ git rebase upstream/master
 
 ### Step 6: Build
 
-Run `npm run build` to make sure the build succeed:
+Run `npm run prepublish` to make sure the build succeed:
 ```bash
-$ npm run build
+$ npm run prepublish
 ```
 
 ### Step 7: Push
@@ -73,7 +73,7 @@ $ npm run build
 $ git push origin my-feature-branch
 ```
 
-Go to https://github.com/yourusername/cnc and select your feature branch. Click on the <kbd>New pull request</kbd> button and fill out the form.
+Go to https://github.com/username/cncjs and select your feature branch. Click on the <kbd>New pull request</kbd> button and fill out the form.
 
 ![image](https://cloud.githubusercontent.com/assets/447801/16153975/6a41541c-34db-11e6-997c-5781b8fa8f68.png)
 
@@ -102,7 +102,7 @@ Now you're ready to go!
 
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run build
+$ npm run prepublish
 $ ./bin/cnc -vv
   :  :  :
 Server is listening on 0.0.0.0:8000
@@ -113,35 +113,35 @@ Server is listening on 0.0.0.0:8000
 #### Mac
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run build && npm run build:mac-x64
+$ npm run prepublish && npm run build:mac-x64
 $ ls -al output/osx/
 ```
 
 #### Windows x86
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run build && npm run build:win-ia32
+$ npm run prepublish && npm run build:win-ia32
 $ ls -al output/win-ia32/
 ```
 
 #### Windows x64
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run build && npm run build:win-x64
+$ npm run prepublish && npm run build:win-x64
 $ ls -al output/win/
 ```
 
 #### Linux x86
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run build && npm run build:linux-ia32
+$ npm run prepublish && npm run build:linux-ia32
 $ ls -al output/linux-ia32/
 ```
 
 #### Linux x64
 ```bash
 $ npm install  # Ensure that packages are installed
-$ npm run build && npm run build:linux-x64
+$ npm run prepublish && npm run build:linux-x64
 $ ls -al output/linux/
 ```
 
