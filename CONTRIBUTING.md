@@ -3,6 +3,7 @@
 ## Index
 * [Troubleshooting](CONTRIBUTING.md#troubleshooting)
 * [Code Contributions](CONTRIBUTING.md#code-contributions)
+* [Keeping a Fork Up-to-date](CONTRIBUTING.md#keeping-a-fork-up-to-date)
 * [Running Local Development Server](CONTRIBUTING.md#running-local-development-server)
 * [Running Production Build](CONTRIBUTING.md#running-production-build)
 * [Build Desktop Apps](CONTRIBUTING.md#build-desktop-apps)
@@ -77,6 +78,30 @@ Go to https://github.com/username/cncjs and select your feature branch. Click on
 
 ![image](https://cloud.githubusercontent.com/assets/447801/16153975/6a41541c-34db-11e6-997c-5781b8fa8f68.png)
 
+## Keeping a Fork Up-to-date
+
+### Clone your fork
+```bash
+git clone git@github.com:USERNAME/cncjs.git
+```
+
+### Add remote from original repository in your forked repository
+```bash
+cd cncjs
+git remote add upstream git://github.com/cncjs/cncjs.git
+git fetch upstream
+```
+
+### Updating your fork from original repo to keep up with their changes
+```bash
+git pull upstream master
+```
+
+### Push the local branch to the remote repository
+```bash
+git pull origin master
+git push origin master
+```
 
 ## Running Local Development Server
 
