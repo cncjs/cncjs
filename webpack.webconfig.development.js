@@ -14,7 +14,7 @@ const HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
 const nib = require('nib');
 const stylusLoader = require('stylus-loader');
 const baseConfig = require('./webpack.webconfig.base');
-const languages = require('./webpack.webconfig.i18n').languages;
+const languages = require('./i18n.config').languages;
 const pkg = require('./package.json');
 
 const timestamp = new Date().getTime();
@@ -48,7 +48,10 @@ const webpackConfig = Object.assign({}, baseConfig, {
         new webpack.DefinePlugin({
             'process.env': {
                 // This has effect on the react lib size
-                NODE_ENV: JSON.stringify('development')
+                NODE_ENV: JSON.stringify('development'),
+                I18N: JSON.stringify({
+                    languages: languages
+                })
             }
         }),
         new webpack.HotModuleReplacementPlugin(),

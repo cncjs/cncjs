@@ -301,10 +301,6 @@ const appMain = () => {
         app.post(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
         app.get(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
         app.post(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
-
-        // I18n
-        app.get(urljoin(settings.route, 'api/i18n/acceptedLng'), api.i18n.getAcceptedLanguage);
-        app.post(urljoin(settings.route, 'api/i18n/sendMissing/:__lng__/:__ns__'), api.i18n.saveMissing);
     }
 
     // page

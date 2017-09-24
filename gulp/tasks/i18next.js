@@ -1,10 +1,10 @@
-import _ from 'lodash';
 import fs from 'fs';
 import gulp from 'gulp';
 import gutil from 'gulp-util';
 import sort from 'gulp-sort';
 import i18nextScanner from 'i18next-scanner';
 import table from 'text-table';
+import { languages } from '../../i18n.config';
 
 const appConfig = {
     src: [
@@ -57,20 +57,7 @@ const webConfig = {
         debug: false,
         sort: false,
         removeUnusedKeys: true,
-        lngs: [
-            'en', // English (default)
-            'cs', // Czech
-            'de', // German
-            'es', // Spanish
-            'fr', // French
-            'hu', // Hungarian
-            'it', // Italian
-            'ja', // Japanese
-            'pt-br', // Portuguese (Brazil)
-            'ru', // Russian
-            'zh-cn', // Simplified Chinese
-            'zh-tw' // Traditional Chinese
-        ],
+        lngs: languages,
         defaultValue: (lng, ns, key) => {
             if (lng === 'en') {
                 return key; // Use key as value for base language
@@ -100,7 +87,7 @@ const webConfig = {
 function customTransform(file, enc, done) {
     const parser = this.parser;
     const content = fs.readFileSync(file.path, enc);
-    let tableData = [
+    const tableData = [
         ['Key', 'Value']
     ];
 
@@ -115,7 +102,7 @@ function customTransform(file, enc, done) {
         });
     }
 
-    if (_.size(tableData) > 1) {
+    if (tableData.length > 1) {
         const text = table(tableData, { 'hsep': ' | ' });
         gutil.log('i18next-scanner:', file.relative + '\n' + text);
     } else {

@@ -1,5 +1,6 @@
 import path from 'path';
 import pkg from '../../package.json';
+import { languages } from '../../../i18n.config';
 
 // RCFile
 const RCFILE = '.cncrc';
@@ -95,21 +96,6 @@ export default {
             saveUninitialized: true
         }
     },
-    // Supported languages
-    supportedLngs: [
-        'en', // English (default)
-        'cs', // Czech
-        'de', // German
-        'es', // Spanish
-        'fr', // French
-        'hu', // Hungarian
-        'it', // Italian
-        'ja', // Japanese
-        'pt-br', // Portuguese (Brazil)
-        'ru', // Russian
-        'zh-cn', // Simplified Chinese
-        'zh-tw' // Traditional Chinese
-    ],
     siofu: { // SocketIOFileUploader
         dir: './tmp/siofu'
     },
@@ -131,20 +117,7 @@ export default {
         // default namespace used if not passed to translation function
         defaultNS: 'resource',
 
-        whitelist: [
-            'en', // English (default)
-            'cs', // Czech
-            'de', // German
-            'es', // Spanish
-            'fr', // French
-            'hu', // Hungarian
-            'it', // Italian
-            'ja', // Japanese
-            'pt-br', // Portuguese (Brazil)
-            'ru', // Russian
-            'zh-cn', // Simplified Chinese
-            'zh-tw' // Traditional Chinese
-        ],
+        whitelist: languages,
 
         // array of languages to preload
         preload: [],

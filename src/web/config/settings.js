@@ -36,20 +36,8 @@ const settings = {
         // default namespace used if not passed to translation function
         defaultNS: 'resource',
 
-        whitelist: [
-            'en', // English (default)
-            'cs', // Czech
-            'de', // German
-            'es', // Spanish
-            'fr', // French
-            'hu', // Hungarian
-            'it', // Italian
-            'ja', // Japanese
-            'pt-br', // Portuguese (Brazil)
-            'ru', // Russian
-            'zh-cn', // Simplified Chinese
-            'zh-tw' // Traditional Chinese
-        ],
+        // @see webpack.config.i18n.js
+        whitelist: process.env.I18N.languages,
 
         // array of languages to preload
         preload: [],
