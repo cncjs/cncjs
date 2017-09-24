@@ -8,6 +8,7 @@ module.exports = {
         'hu', // Hungarian
         'it', // Italian
         'ja', // Japanese
+        'nl', // Nederlands
         'pt-br', // Portuguese (Brazil)
         'ru', // Russian
         'zh-cn', // Simplified Chinese
