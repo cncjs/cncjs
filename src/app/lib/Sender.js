@@ -6,14 +6,6 @@ export const SP_TYPE_CHAR_COUNTING = 1;
 
 const noop = () => {};
 
-const stripComments = (() => {
-    // Strip comments that follow the comment marker ';'
-    const re1 = new RegExp(/\s*;.*/g);
-    // Remove anything inside the parentheses '()'
-    const re2 = new RegExp(/\s*\([^\)]*\)/g);
-    return line => line.replace(re1, '').replace(re2, '');
-})();
-
 class SPSendResponse {
     callback = null;
 
@@ -151,7 +143,7 @@ class Sender extends events.EventEmitter {
 
                 while (!this.state.hold && (this.state.sent < this.state.total)) {
                     // Remove leading and trailing whitespace from both ends of a string
-                    sp.line = sp.line || stripComments(this.state.lines[this.state.sent]).trim();
+                    sp.line = sp.line || this.state.lines[this.state.sent].trim();
 
                     if (this.dataFilter) {
                         sp.line = this.dataFilter(sp.line, this.state.context) || '';
@@ -184,7 +176,7 @@ class Sender extends events.EventEmitter {
             this.sp = new SPSendResponse(options, (sp) => {
                 while (!this.state.hold && (this.state.sent < this.state.total)) {
                     // Remove leading and trailing whitespace from both ends of a string
-                    let line = stripComments(this.state.lines[this.state.sent]).trim();
+                    let line = this.state.lines[this.state.sent].trim();
 
                     if (this.dataFilter) {
                         line = this.dataFilter(line, this.state.context) || '';

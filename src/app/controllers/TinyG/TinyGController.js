@@ -108,6 +108,20 @@ class TinyGController {
     // Workflow
     workflow = null;
 
+    // Do not remove text inside the parentheses (#210) for g2core.
+    // https://github.com/synthetos/g2/wiki/Mcodes
+    // M-code | Parameter           | Command
+    // +----- | +------------------ | +----------------------------------------
+    // M100   | active comment ({}) | Run active comment in sync with motion
+    // M100.1 | active comment ({}) | Run active comment as soon as it's parsed
+    // M101   | active comment ({}) | Delay motion in this point in the program
+    //        |                     | until the active comment evaluates true
+    stripComment = (() => {
+        // Strip comment that follows a semicolon
+        const re = new RegExp(/\s*;.*/g);
+        return (line) => String(line).replace(re, '');
+    })();
+
     dataFilter = (line, context) => {
         // Machine position
         const {
@@ -192,6 +206,8 @@ class TinyGController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
+                line = this.stripComment(line);
+
                 if (line === WAIT) {
                     return `G4 P0.5 (${WAIT})`; // dwell
                 }
@@ -226,6 +242,8 @@ class TinyGController {
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
             dataFilter: (line, context) => {
+                line = this.stripComment(line);
+
                 if (line === WAIT) {
                     const { sent, received } = this.sender.state;
                     log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);

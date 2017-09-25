@@ -113,6 +113,14 @@ class GrblController {
     // Workflow
     workflow = null;
 
+    stripComment = (() => {
+        // Strip comment that follows a semicolon
+        const re1 = new RegExp(/\s*;.*/g);
+        // Remove text inside the parentheses
+        const re2 = new RegExp(/\s*\([^\)]*\)/g);
+        return (line) => String(line).replace(re1, '').replace(re2, '');
+    })();
+
     dataFilter = (line, context) => {
         // Machine position
         const {
@@ -197,6 +205,8 @@ class GrblController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
+                line = this.stripComment(line);
+
                 if (line === WAIT) {
                     return `G4 P0.5 (${WAIT})`; // dwell
                 }
@@ -233,6 +243,8 @@ class GrblController {
             // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
+                line = this.stripComment(line);
+
                 if (line === WAIT) {
                     const { sent, received } = this.sender.state;
                     log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
