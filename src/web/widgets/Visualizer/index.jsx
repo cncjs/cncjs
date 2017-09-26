@@ -494,6 +494,15 @@ class VisualizerWidget extends PureComponent {
                 this.setState((state) => ({ workflowState: workflowState }));
             }
         },
+        'controller:settings': (type, controllerSettings) => {
+            this.setState(state => ({
+                controller: {
+                    ...state.controller,
+                    type: type,
+                    settings: controllerSettings
+                }
+            }));
+        },
         'controller:state': (type, controllerState) => {
             // Grbl
             if (type === GRBL) {
@@ -504,17 +513,22 @@ class VisualizerWidget extends PureComponent {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
                 }[modal.units] || this.state.units;
+                const $13 = Number(get(controller.settings, 'settings.$13', 0)) || 0;
 
-                this.setState((state) => ({
+                this.setState(state => ({
                     units: units,
                     controller: {
+                        ...state.controller,
                         type: type,
                         state: controllerState
                     },
-                    workPosition: {
+                    // Work position are reported in mm ($13=0) or inches ($13=1)
+                    workPosition: mapValues({
                         ...state.workPosition,
                         ...wpos
-                    }
+                    }, val => {
+                        return ($13 > 0) ? in2mm(val) : val;
+                    })
                 }));
             }
 
@@ -528,21 +542,20 @@ class VisualizerWidget extends PureComponent {
                     'G21': METRIC_UNITS
                 }[modal.units] || this.state.units;
 
-                // Work position are reported in current units
-                const workPosition = mapValues({
-                    ...this.state.workPosition,
-                    ...wpos
-                }, (val) => {
-                    return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                });
-
-                this.setState((state) => ({
+                this.setState(state => ({
                     units: units,
                     controller: {
+                        ...state.controller,
                         type: type,
                         state: controllerState
                     },
-                    workPosition: workPosition
+                    // Work position are reported in current units
+                    workPosition: mapValues({
+                        ...state.workPosition,
+                        ...wpos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    })
                 }));
             }
 
@@ -555,22 +568,21 @@ class VisualizerWidget extends PureComponent {
                     'G21': METRIC_UNITS
                 }[modal.units] || this.state.units;
 
-                // https://github.com/synthetos/g2/wiki/Status-Reports
-                // Work position are reported in current units, and also apply any offsets.
-                const workPosition = mapValues({
-                    ...this.state.workPosition,
-                    ...wpos
-                }, (val) => {
-                    return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                });
-
-                this.setState((state) => ({
+                this.setState(state => ({
                     units: units,
                     controller: {
+                        ...state.controller,
                         type: type,
                         state: controllerState
                     },
-                    workPosition: workPosition
+                    // https://github.com/synthetos/g2/wiki/Status-Reports
+                    // Work position are reported in current units, and also apply any offsets.
+                    workPosition: mapValues({
+                        ...state.workPosition,
+                        ...wpos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    })
                 }));
             }
         }
@@ -626,6 +638,7 @@ class VisualizerWidget extends PureComponent {
             units: METRIC_UNITS,
             controller: {
                 type: controller.type,
+                settings: controller.settings,
                 state: controller.state
             },
             modal: {

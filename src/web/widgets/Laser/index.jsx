@@ -124,23 +124,23 @@ class LaserWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'controller:state': (type, state) => {
-            this.setState({
+        'controller:settings': (type, controllerSettings) => {
+            this.setState(state => ({
                 controller: {
-                    ...this.state.controller,
+                    ...state.controller,
                     type: type,
-                    state: state
+                    settings: controllerSettings
                 }
-            });
+            }));
         },
-        'controller:settings': (type, settings) => {
-            this.setState({
+        'controller:state': (type, controllerState) => {
+            this.setState(state => ({
                 controller: {
-                    ...this.state.controller,
+                    ...state.controller,
                     type: type,
-                    settings: settings
+                    state: controllerState
                 }
-            });
+            }));
         }
     };
 
@@ -177,8 +177,8 @@ class LaserWidget extends PureComponent {
             port: controller.port,
             controller: {
                 type: controller.type,
-                state: controller.state,
-                settings: controller.settings
+                settings: controller.settings,
+                state: controller.state
             },
             panel: {
                 laserTest: {

@@ -125,26 +125,26 @@ class GrblWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'controller:state': (type, state) => {
+        'controller:settings': (type, controllerSettings) => {
             if (type === GRBL) {
-                this.setState({
+                this.setState(state => ({
                     controller: {
-                        ...this.state.controller,
+                        ...state.controller,
                         type: type,
-                        state: state
+                        settings: controllerSettings
                     }
-                });
+                }));
             }
         },
-        'controller:settings': (type, settings) => {
+        'controller:state': (type, controllerState) => {
             if (type === GRBL) {
-                this.setState({
+                this.setState(state => ({
                     controller: {
-                        ...this.state.controller,
+                        ...state.controller,
                         type: type,
-                        settings: settings
+                        state: controllerState
                     }
-                });
+                }));
             }
         }
     };
@@ -175,8 +175,8 @@ class GrblWidget extends PureComponent {
             port: controller.port,
             controller: {
                 type: controller.type,
-                state: controller.state,
-                settings: controller.settings
+                settings: controller.settings,
+                state: controller.state
             },
             modal: {
                 name: MODAL_NONE,

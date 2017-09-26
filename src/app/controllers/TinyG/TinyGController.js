@@ -467,18 +467,18 @@ class TinyGController {
                 this.controller.getWorkPosition(this.controller.state)
             );
 
-            // TinyG state
-            if (this.state !== this.controller.state) {
-                this.state = this.controller.state;
-                this.emit('controller:state', TINYG, this.state);
-                this.emit('TinyG:state', this.state); // Backward compatibility
-            }
-
             // TinyG settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
                 this.emit('controller:settings', TINYG, this.settings);
                 this.emit('TinyG:settings', this.settings); // Backward compatibility
+            }
+
+            // TinyG state
+            if (this.state !== this.controller.state) {
+                this.state = this.controller.state;
+                this.emit('controller:state', TINYG, this.state);
+                this.emit('TinyG:state', this.state); // Backward compatibility
             }
 
             // Check the ready flag
@@ -709,8 +709,8 @@ class TinyGController {
             ready: this.ready,
             controller: {
                 type: this.type,
-                state: this.state,
                 settings: this.settings,
+                state: this.state,
                 footer: this.controller.footer
             },
             workflowState: this.workflow.state,
@@ -846,15 +846,15 @@ class TinyGController {
                 inuse: true
             });
         }
-        if (!_.isEmpty(this.state)) {
-            // controller state
-            socket.emit('controller:state', TINYG, this.state);
-            socket.emit('TinyG:state', this.state); // Backward compatibility
-        }
         if (!_.isEmpty(this.settings)) {
             // controller settings
             socket.emit('controller:settings', TINYG, this.settings);
             socket.emit('TinyG:settings', this.settings); // Backward compatibility
+        }
+        if (!_.isEmpty(this.state)) {
+            // controller state
+            socket.emit('controller:state', TINYG, this.state);
+            socket.emit('TinyG:state', this.state); // Backward compatibility
         }
         if (this.workflow) {
             // workflow state

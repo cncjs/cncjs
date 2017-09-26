@@ -336,16 +336,26 @@ class AxesWidget extends PureComponent {
                 });
             }
         },
-        'controller:state': (type, state) => {
+        'controller:settings': (type, controllerSettings) => {
+            this.setState(state => ({
+                controller: {
+                    ...state.controller,
+                    type: type,
+                    settings: controllerSettings
+                }
+            }));
+        },
+        'controller:state': (type, controllerState) => {
             // Grbl
             if (type === GRBL) {
-                const { status, parserstate } = { ...state };
+                const { status, parserstate } = { ...controllerState };
                 const { mpos, wpos } = status;
                 const { modal = {} } = { ...parserstate };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
                 }[modal.units] || this.state.units;
+                const $13 = Number(get(controller.settings, 'settings.$13', 0)) || 0;
 
                 let customDistance = this.config.get('jog.customDistance');
                 if (units === IMPERIAL_UNITS) {
@@ -355,27 +365,34 @@ class AxesWidget extends PureComponent {
                     customDistance = Number(customDistance).toFixed(3) * 1;
                 }
 
-                this.setState({
+                this.setState(state => ({
                     units: units,
                     controller: {
+                        ...state.controller,
                         type: type,
-                        state: state
+                        state: controllerState
                     },
-                    machinePosition: {
-                        ...this.state.machinePosition,
+                    // Machine position are reported in mm ($13=0) or inches ($13=1)
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
                         ...mpos
-                    },
-                    workPosition: {
-                        ...this.state.workPosition,
+                    }, (val) => {
+                        return ($13 > 0) ? in2mm(val) : val;
+                    }),
+                    // Work position are reported in mm ($13=0) or inches ($13=1)
+                    workPosition: mapValues({
+                        ...state.workPosition,
                         ...wpos
-                    },
+                    }, val => {
+                        return ($13 > 0) ? in2mm(val) : val;
+                    }),
                     customDistance: customDistance
-                });
+                }));
             }
 
             // Smoothie
             if (type === SMOOTHIE) {
-                const { status, parserstate } = { ...state };
+                const { status, parserstate } = { ...controllerState };
                 const { mpos, wpos } = status;
                 const { modal = {} } = { ...parserstate };
                 const units = {
@@ -391,36 +408,34 @@ class AxesWidget extends PureComponent {
                     customDistance = Number(customDistance).toFixed(3) * 1;
                 }
 
-                // Machine position are reported in current units
-                const machinePosition = mapValues({
-                    ...this.state.machinePosition,
-                    ...mpos
-                }, (val) => {
-                    return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                });
-                // Work position are reported in current units
-                const workPosition = mapValues({
-                    ...this.state.workPosition,
-                    ...wpos
-                }, (val) => {
-                    return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                });
-
-                this.setState({
+                this.setState(state => ({
                     units: units,
                     controller: {
+                        ...state.controller,
                         type: type,
-                        state: state
+                        state: controllerState
                     },
-                    machinePosition: machinePosition,
-                    workPosition: workPosition,
+                    // Machine position are reported in current units
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
+                        ...mpos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
+                    // Work position are reported in current units
+                    workPosition: mapValues({
+                        ...state.workPosition,
+                        ...wpos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
                     customDistance: customDistance
-                });
+                }));
             }
 
             // TinyG
             if (type === TINYG) {
-                const { sr } = { ...state };
+                const { sr } = { ...controllerState };
                 const { mpos, wpos, modal = {} } = sr;
                 const units = {
                     'G20': IMPERIAL_UNITS,
@@ -435,30 +450,28 @@ class AxesWidget extends PureComponent {
                     customDistance = Number(customDistance).toFixed(3) * 1;
                 }
 
-                // https://github.com/synthetos/g2/wiki/Status-Reports
-                // Canonical machine position are always reported in millimeters with no offsets.
-                const machinePosition = {
-                    ...this.state.machinePosition,
-                    ...mpos
-                };
-                // Work position are reported in current units, and also apply any offsets.
-                const workPosition = mapValues({
-                    ...this.state.workPosition,
-                    ...wpos
-                }, (val) => {
-                    return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                });
-
-                this.setState({
+                this.setState(state => ({
                     units: units,
                     controller: {
+                        ...state.controller,
                         type: type,
-                        state: state
+                        state: controllerState
                     },
-                    machinePosition: machinePosition,
-                    workPosition: workPosition,
+                    // https://github.com/synthetos/g2/wiki/Status-Reports
+                    // Canonical machine position are always reported in millimeters with no offsets.
+                    machinePosition: {
+                        ...state.machinePosition,
+                        ...mpos
+                    },
+                    // Work position are reported in current units, and also apply any offsets.
+                    workPosition: mapValues({
+                        ...state.workPosition,
+                        ...wpos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
                     customDistance: customDistance
-                });
+                }));
             }
         }
     };
@@ -503,6 +516,7 @@ class AxesWidget extends PureComponent {
             units: METRIC_UNITS,
             controller: {
                 type: controller.type,
+                settings: controller.settings,
                 state: controller.state
             },
             modal: {

@@ -579,18 +579,18 @@ class GrblController {
                 this.controller.getWorkPosition(this.controller.state)
             );
 
-            // Grbl state
-            if (this.state !== this.controller.state) {
-                this.state = this.controller.state;
-                this.emit('controller:state', GRBL, this.state);
-                this.emit('Grbl:state', this.state); // Backward compatibility
-            }
-
             // Grbl settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
                 this.emit('controller:settings', GRBL, this.settings);
                 this.emit('Grbl:settings', this.settings); // Backward compatibility
+            }
+
+            // Grbl state
+            if (this.state !== this.controller.state) {
+                this.state = this.controller.state;
+                this.emit('controller:state', GRBL, this.state);
+                this.emit('Grbl:state', this.state); // Backward compatibility
             }
 
             // Check the ready flag
@@ -677,8 +677,8 @@ class GrblController {
             ready: this.ready,
             controller: {
                 type: this.type,
-                state: this.state,
-                settings: this.settings
+                settings: this.settings,
+                state: this.state
             },
             workflowState: this.workflow.state,
             feeder: this.feeder.toJSON(),
@@ -813,15 +813,15 @@ class GrblController {
                 inuse: true
             });
         }
-        if (!_.isEmpty(this.state)) {
-            // controller state
-            socket.emit('controller:state', GRBL, this.state);
-            socket.emit('Grbl:state', this.state); // Backward compatibility
-        }
         if (!_.isEmpty(this.settings)) {
             // controller settings
             socket.emit('controller:settings', GRBL, this.settings);
             socket.emit('Grbl:settings', this.settings); // Backward compatibility
+        }
+        if (!_.isEmpty(this.state)) {
+            // controller state
+            socket.emit('controller:state', GRBL, this.state);
+            socket.emit('Grbl:state', this.state); // Backward compatibility
         }
         if (this.workflow) {
             // workflow state
@@ -1166,6 +1166,23 @@ class GrblController {
         this.emit('serialport:write', data, context);
         this.serialport.write(data);
         log.silly(`> ${data}`);
+
+        // Grbl settings: $0-$255
+        const r = cmd.match(/^(\$\d{1,3})=([\d\.]+)$/);
+        if (r) {
+            const name = r[1];
+            const value = Number(r[2]);
+            if ((name === '$13') && (value >= 0) && (value <= 65535)) {
+                const nextSettings = {
+                    ...this.controller.settings,
+                    settings: {
+                        ...this.controller.settings.settings,
+                        [name]: value ? '1' : '0'
+                    }
+                };
+                this.controller.settings = nextSettings; // enforce change
+            }
+        }
     }
     writeln(data, context) {
         if (_.includes(GRBL_REALTIME_COMMANDS, data)) {

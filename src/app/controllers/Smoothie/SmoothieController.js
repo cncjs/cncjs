@@ -521,18 +521,18 @@ class SmoothieController {
                 this.controller.getWorkPosition(this.controller.state)
             );
 
-            // Smoothie state
-            if (this.state !== this.controller.state) {
-                this.state = this.controller.state;
-                this.emit('controller:state', SMOOTHIE, this.state);
-                this.emit('Smoothie:state', this.state); // Backward compatibility
-            }
-
             // Smoothie settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
                 this.emit('controller:settings', SMOOTHIE, this.settings);
                 this.emit('Smoothie:settings', this.settings); // Backward compatibility
+            }
+
+            // Smoothie state
+            if (this.state !== this.controller.state) {
+                this.state = this.controller.state;
+                this.emit('controller:state', SMOOTHIE, this.state);
+                this.emit('Smoothie:state', this.state); // Backward compatibility
             }
 
             // Check the ready flag
@@ -696,8 +696,8 @@ class SmoothieController {
             ready: this.ready,
             controller: {
                 type: this.type,
-                state: this.state,
-                settings: this.settings
+                settings: this.settings,
+                state: this.state
             },
             workflowState: this.workflow.state,
             feeder: this.feeder.toJSON(),
@@ -832,15 +832,15 @@ class SmoothieController {
                 inuse: true
             });
         }
-        if (!_.isEmpty(this.state)) {
-            // controller state
-            socket.emit('controller:state', SMOOTHIE, this.state);
-            socket.emit('Smoothie:state', this.state); // Backward compatibility
-        }
         if (!_.isEmpty(this.settings)) {
             // controller settings
             socket.emit('controller:settings', SMOOTHIE, this.settings);
             socket.emit('Smoothie:settings', this.settings); // Backward compatibility
+        }
+        if (!_.isEmpty(this.state)) {
+            // controller state
+            socket.emit('controller:state', SMOOTHIE, this.state);
+            socket.emit('Smoothie:state', this.state); // Backward compatibility
         }
         if (this.workflow) {
             // workflow state
