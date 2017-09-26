@@ -4,6 +4,7 @@ import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
+import api from '../../api';
 import Anchor from '../../components/Anchor';
 import Panel from '../../components/Panel';
 import i18n from '../../lib/i18n';
@@ -32,7 +33,6 @@ class Dashboard extends PureComponent {
         const style = {
             display: show ? 'block' : 'none'
         };
-        const downloadUrl = `api/gcode/download?port=${state.port}`;
         const filename = state.gcode.name || 'noname.nc';
         const filesize = state.gcode.ready ? formatBytes(state.gcode.size, 0) : '';
         const { sent = 0, total = 0 } = state.gcode;
@@ -51,7 +51,11 @@ class Dashboard extends PureComponent {
                     <div className="clearfix" style={{ marginBottom: 10 }}>
                         <div className="pull-left text-nowrap">
                             {state.gcode.ready &&
-                            <Anchor href={downloadUrl}>
+                            <Anchor
+                                onClick={() => {
+                                    api.downloadGCode({ port: state.port });
+                                }}
+                            >
                                 <strong>{filename}</strong>
                             </Anchor>
                             }

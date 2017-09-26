@@ -1,7 +1,9 @@
 /* eslint callback-return: 0 */
-import _ from 'lodash';
 import fs from 'fs';
 import path from 'path';
+import get from 'lodash/get';
+import noop from 'lodash/noop';
+import some from 'lodash/some';
 import express from 'express';
 import expressJwt from 'express-jwt';
 import jwt from 'jsonwebtoken';
@@ -44,7 +46,7 @@ import {
 
 const log = logger('app');
 
-const renderPage = (view = 'index', cb = _.noop) => (req, res, next) => {
+const renderPage = (view = 'index', cb = noop) => (req, res, next) => {
     // Override IE's Compatibility View Settings
     // http://stackoverflow.com/questions/6156639/x-ua-compatible-is-set-to-ie-edge-but-it-still-doesnt-stop-compatibility-mode
     res.set({ 'X-UA-Compatible': 'IE=edge' });
@@ -114,7 +116,7 @@ const appMain = () => {
     // Check if client's IP address is in the whitelist
     app.use((req, res, next) => {
         const ipaddr = req.ip || req.connection.remoteAddress;
-        const allowedAccess = _.some(IP_WHITELIST, (whitelist) => {
+        const allowedAccess = some(IP_WHITELIST, (whitelist) => {
             return rangeCheck.inRange(ipaddr, whitelist);
         }) || (settings.allowRemoteAccess);
         const forbiddenAccess = !allowedAccess;
@@ -221,7 +223,7 @@ const appMain = () => {
             bypass = bypass || (process.env.NODE_ENV === 'development');
 
             // Check if the provided credentials are correct
-            const token = req.query && req.query.token;
+            const token = get(req, 'query.token') || get(req, 'body.token');
             bypass = bypass || (token && verifyToken(token));
 
             // Check white list
@@ -229,7 +231,7 @@ const appMain = () => {
                 // Also see "src/app/api/index.js"
                 urljoin(settings.route, 'api/signin')
             ];
-            bypass = bypass || _.some(whitelist, (path) => {
+            bypass = bypass || some(whitelist, (path) => {
                 return req.path.indexOf(path) === 0;
             });
 
@@ -260,9 +262,10 @@ const appMain = () => {
         app.delete(urljoin(settings.route, 'api/state'), api.state.unset);
 
         // G-code
-        app.get(urljoin(settings.route, 'api/gcode'), api.gcode.get);
-        app.post(urljoin(settings.route, 'api/gcode'), api.gcode.set);
+        app.get(urljoin(settings.route, 'api/gcode'), api.gcode.fetch);
+        app.post(urljoin(settings.route, 'api/gcode'), api.gcode.upload);
         app.get(urljoin(settings.route, 'api/gcode/download'), api.gcode.download);
+        app.post(urljoin(settings.route, 'api/gcode/download'), api.gcode.download); // Alias
 
         // Controllers
         app.get(urljoin(settings.route, 'api/controllers'), api.controllers.get);

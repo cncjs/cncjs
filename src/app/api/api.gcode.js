@@ -1,10 +1,11 @@
+import get from 'lodash/get';
 import store from '../store';
 import {
     ERR_BAD_REQUEST,
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
-export const set = (req, res) => {
+export const upload = (req, res) => {
     const { port, name, gcode, context = {} } = req.body;
 
     if (!port) {
@@ -41,7 +42,7 @@ export const set = (req, res) => {
     });
 };
 
-export const get = (req, res) => {
+export const fetch = (req, res) => {
     const port = req.query.port;
 
     if (!port) {
@@ -68,7 +69,7 @@ export const get = (req, res) => {
 };
 
 export const download = (req, res) => {
-    const port = req.query.port;
+    const port = get(req, 'query.port') || get(req, 'body.port');
 
     if (!port) {
         res.status(ERR_BAD_REQUEST).send({

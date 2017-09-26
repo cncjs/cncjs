@@ -158,6 +158,31 @@ const fetchGCode = (options) => new Promise((resolve, reject) => {
         });
 });
 
+const downloadGCode = (options) => {
+    const { port = '' } = { ...options };
+
+    const $form = document.createElement('form');
+    $form.setAttribute('id', 'export');
+    $form.setAttribute('method', 'POST');
+    $form.setAttribute('enctype', 'multipart/form-data');
+    $form.setAttribute('action', 'api/gcode/download');
+
+    const $port = document.createElement('input');
+    $port.setAttribute('name', 'port');
+    $port.setAttribute('value', port);
+
+    const $token = document.createElement('input');
+    $token.setAttribute('name', 'token');
+    $token.setAttribute('value', store.get('session.token'));
+
+    $form.appendChild($port);
+    $form.appendChild($token);
+
+    document.body.append($form);
+    $form.submit();
+    document.body.removeChild($form);
+};
+
 //
 // Users
 //
@@ -484,6 +509,7 @@ export default {
     // G-code
     loadGCode,
     fetchGCode,
+    downloadGCode,
 
     signin,
     controllers, // Controllers
