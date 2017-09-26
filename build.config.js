@@ -13,5 +13,8 @@ module.exports = {
         'ru', // Russian
         'zh-cn', // Simplified Chinese
         'zh-tw' // Traditional Chinese
-    ]
+    ],
+    analytics: {
+        trackingId: 'UA-107017110-1'
+    }
 };

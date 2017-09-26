@@ -4,7 +4,7 @@ import gutil from 'gulp-util';
 import sort from 'gulp-sort';
 import i18nextScanner from 'i18next-scanner';
 import table from 'text-table';
-import { languages } from '../../i18n.config';
+import { languages } from '../../build.config';
 
 const appConfig = {
     src: [

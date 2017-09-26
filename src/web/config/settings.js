@@ -18,6 +18,9 @@ const settings = {
     log: {
         level: 'warn' // trace, debug, info, warn, error
     },
+    analytics: {
+        trackingId: process.env.TRACKING_ID
+    },
     i18next: {
         lowerCaseLng: true,
 
@@ -36,8 +39,8 @@ const settings = {
         // default namespace used if not passed to translation function
         defaultNS: 'resource',
 
-        // @see webpack.config.i18n.js
-        whitelist: process.env.I18N.languages,
+        // @see webpack.webconfig.xxx.js
+        whitelist: process.env.LANGUAGES,
 
         // array of languages to preload
         preload: [],

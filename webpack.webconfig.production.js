@@ -15,7 +15,7 @@ const HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
 const nib = require('nib');
 const stylusLoader = require('stylus-loader');
 const baseConfig = require('./webpack.webconfig.base');
-const languages = require('./i18n.config').languages;
+const buildConfig = require('./build.config');
 const pkg = require('./package.json');
 
 // Use publicPath for production
@@ -56,9 +56,8 @@ const webpackConfig = Object.assign({}, baseConfig, {
             'process.env': {
                 // This has effect on the react lib size
                 NODE_ENV: JSON.stringify('production'),
-                I18N: JSON.stringify({
-                    languages: languages
-                })
+                LANGUAGES: JSON.stringify(buildConfig.languages),
+                TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
             }
         }),
         new webpack.NoEmitOnErrorsPlugin(),
@@ -72,7 +71,7 @@ const webpackConfig = Object.assign({}, baseConfig, {
         }),
         new webpack.ContextReplacementPlugin(
             /moment[\/\\]locale$/,
-            new RegExp('^\./(' + without(languages, 'en').join('|') + ')$')
+            new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
         ),
         new webpack.optimize.CommonsChunkPlugin({
             // The order matters, the order should be reversed just like loader chain.

@@ -1,6 +1,6 @@
 import path from 'path';
 import pkg from '../../package.json';
-import { languages } from '../../../i18n.config';
+import { languages } from '../../../build.config';
 
 // RCFile
 const RCFILE = '.cncrc';
