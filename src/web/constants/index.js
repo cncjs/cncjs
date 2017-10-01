@@ -8,9 +8,9 @@ export const SMOOTHIE = 'Smoothie';
 export const TINYG = 'TinyG';
 
 // Workflow State
-export const WORKFLOW_STATE_RUNNING = 'running';
-export const WORKFLOW_STATE_PAUSED = 'paused';
 export const WORKFLOW_STATE_IDLE = 'idle';
+export const WORKFLOW_STATE_PAUSED = 'paused';
+export const WORKFLOW_STATE_RUNNING = 'running';
 
 // Grbl Active State
 export const GRBL_ACTIVE_STATE_IDLE = 'Idle';
