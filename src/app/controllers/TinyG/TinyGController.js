@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as parser from 'gcode-parser';
 import SerialPort from 'serialport';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
@@ -26,9 +27,9 @@ import {
     TINYG_STATUS_CODES
 } from './constants';
 
-const SEND_RESPONSE_STATE_NONE = 0;
-const SEND_RESPONSE_STATE_SEND = 1;
-const SEND_RESPONSE_STATE_ACK = 2;
+const SENDER_STATUS_NONE = 'none';
+const SENDER_STATUS_NEXT = 'next';
+const SENDER_STATUS_ACK = 'ack';
 
 // % commands
 const WAIT = '%wait';
@@ -90,7 +91,7 @@ class TinyGController {
     };
     energizeMotorsTimer = null;
     blocked = false;
-    sendResponseState = SEND_RESPONSE_STATE_NONE;
+    senderStatus = SENDER_STATUS_NONE;
     actionTime = {
         energizeMotors: 0,
         senderFinishTime: 0
@@ -107,20 +108,6 @@ class TinyGController {
 
     // Workflow
     workflow = null;
-
-    // Do not remove text inside the parentheses (#210) for g2core.
-    // https://github.com/synthetos/g2/wiki/Mcodes
-    // M-code | Parameter           | Command
-    // +----- | +------------------ | +----------------------------------------
-    // M100   | active comment ({}) | Run active comment in sync with motion
-    // M100.1 | active comment ({}) | Run active comment as soon as it's parsed
-    // M101   | active comment ({}) | Delay motion in this point in the program
-    //        |                     | until the active comment evaluates true
-    stripComment = (() => {
-        // Strip comment that follows a semicolon
-        const re = new RegExp(/\s*;.*/g);
-        return (line) => String(line).replace(re, '');
-    })();
 
     dataFilter = (line, context) => {
         // Machine position
@@ -206,9 +193,11 @@ class TinyGController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
-                line = this.stripComment(line);
+                const data = parser.parseLine(line, { flatten: true });
+                const cmds = ensureArray(data.cmds);
 
-                if (line === WAIT) {
+                // %wait
+                if (cmds[0] === WAIT) {
                     return `G4 P0.5 (${WAIT})`; // dwell
                 }
 
@@ -242,15 +231,39 @@ class TinyGController {
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
             dataFilter: (line, context) => {
-                line = this.stripComment(line);
+                const data = parser.parseLine(line, { flatten: true });
+                const words = ensureArray(data.words);
+                const cmds = ensureArray(data.cmds);
+                const { sent, received } = this.sender.state;
 
-                if (line === WAIT) {
-                    const { sent, received } = this.sender.state;
+                // %wait
+                if (cmds[0] === WAIT) {
                     log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
 
                     this.sender.hold();
 
                     return `G4 P0.5 (${WAIT})`; // dwell
+                }
+
+                // M0, M1 Program Pause
+                if (words.includes('M0') || words.includes('M1')) {
+                    log.debug(`Program Pause: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
+
+                    this.workflow.pause();
+                }
+
+                // M2, M30 Program End
+                if (words.includes('M2') || words.includes('M30')) {
+                    log.debug(`Program End: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
+
+                    this.workflow.pause();
+                }
+
+                // M6 Tool Change
+                if (words.includes('M6')) {
+                    log.debug(`Tool Change: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
+
+                    this.workflow.pause();
                 }
 
                 return this.dataFilter(line, context);
@@ -262,7 +275,7 @@ class TinyGController {
                 return;
             }
 
-            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
+            if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 log.error(`Unexpected workflow state: ${this.workflow.state}`);
                 return;
             }
@@ -280,7 +293,7 @@ class TinyGController {
             line = ('N' + n + line);
 
             this.serialport.write(line + '\n');
-            log.silly(`> SEND: n=${n}, line="${line}"`);
+            log.silly(`data: n=${n}, line="${line}"`);
         });
         this.sender.on('hold', noop);
         this.sender.on('unhold', noop);
@@ -296,20 +309,23 @@ class TinyGController {
         this.workflow.on('start', () => {
             this.emit('workflow:state', this.workflow.state);
             this.blocked = false;
-            this.sendResponseState = SEND_RESPONSE_STATE_NONE;
+            this.senderStatus = SENDER_STATUS_NONE;
             this.sender.rewind();
         });
         this.workflow.on('stop', () => {
             this.emit('workflow:state', this.workflow.state);
             this.blocked = false;
-            this.sendResponseState = SEND_RESPONSE_STATE_NONE;
+            this.senderStatus = SENDER_STATUS_NONE;
             this.sender.rewind();
         });
         this.workflow.on('pause', () => {
             this.emit('workflow:state', this.workflow.state);
+            this.sender.hold();
         });
         this.workflow.on('resume', () => {
             this.emit('workflow:state', this.workflow.state);
+            this.sender.unhold();
+            this.sender.next();
         });
 
         // TinyG
@@ -323,38 +339,52 @@ class TinyGController {
 
         // https://github.com/synthetos/g2/wiki/g2core-Communications
         this.controller.on('r', (r) => {
-            if (this.workflow.state === WORKFLOW_STATE_IDLE) {
-                this.feeder.next();
+            const { hold, sent, received } = this.sender.state;
+
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                const n = _.get(r, 'r.n') || _.get(r, 'n');
+                console.assert(n === sent, `n (${n}) === sent (${sent})`);
+                log.silly(`ack: n=${n}, blocked=${this.blocked}, hold=${hold}, sent=${sent}, received=${received}`);
+                this.senderStatus = SENDER_STATUS_ACK;
+                if (!this.blocked) {
+                    this.sender.ack();
+                    this.sender.next();
+                    this.senderStatus = SENDER_STATUS_NEXT;
+                }
                 return;
             }
 
-            this.sendResponseState = SEND_RESPONSE_STATE_ACK; // ACK received
-
-            const n = _.get(r, 'r.n') || _.get(r, 'n');
-            const { sent } = this.sender.state;
-
-            if (n !== sent) {
-                log.error(`Assertion failed: n (${n}) is not equal to sent (${sent})`);
-            }
-
-            log.silly(`< ACK: n=${n}, sent=${sent}, blocked=${this.blocked}`);
-
-            // Continue to the next line if not blocked
-            if (!this.blocked) {
+            // The execution can be manually paused or issue a M0 command to pause
+            // * M0, M1 Program Pause
+            // * M2, M30 Program End
+            // * M6 Tool Change
+            if ((this.workflow.state === WORKFLOW_STATE_PAUSED) && (received < sent)) {
+                if (!hold) {
+                    log.error('The sender does not hold off during the paused state');
+                }
+                if (received + 1 >= sent) {
+                    log.debug(`Stop sending G-code: hold=${hold}, sent=${sent}, received=${received + 1}`);
+                }
+                const n = _.get(r, 'r.n') || _.get(r, 'n');
+                console.assert(n === sent, `n (${n}) === sent (${sent})`);
+                log.silly(`ack: n=${n}, blocked=${this.blocked}, hold=${hold}, sent=${sent}, received=${received}`);
+                this.senderStatus = SENDER_STATUS_ACK;
                 this.sender.ack();
                 this.sender.next();
-
-                this.sendResponseState = SEND_RESPONSE_STATE_SEND; // data sent
+                this.senderStatus = SENDER_STATUS_NEXT;
+                return;
             }
+
+            console.assert(this.workflow.state !== WORKFLOW_STATE_RUNNING, `workflow.state !== '${WORKFLOW_STATE_RUNNING}'`);
+
+            // Feeder
+            this.feeder.next();
         });
 
         this.controller.on('qr', ({ qr }) => {
-            this.state.qr = qr;
+            log.silly(`planner queue: qr=${qr}, lw=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}, hw=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}`);
 
-            if (this.workflow.state === WORKFLOW_STATE_IDLE) {
-                this.feeder.next();
-                return;
-            }
+            this.state.qr = qr;
 
             if (qr <= TINYG_PLANNER_BUFFER_LOW_WATER_MARK) {
                 this.blocked = true;
@@ -365,39 +395,45 @@ class TinyGController {
                 this.blocked = false;
             }
 
-            if (this.sendResponseState === SEND_RESPONSE_STATE_SEND) {
-                // Check hold state
-                if (this.sender.state.hold) {
-                    const { sent, received } = this.sender.state;
-                    const plannerBufferPoolSize = this.controller.plannerBufferPoolSize;
-
-                    if ((received >= sent) && (qr >= plannerBufferPoolSize)) {
-                        log.debug(`Continue sending G-code: sent=${sent}, received=${received}, qr=${qr}`);
-                        log.silly(`> NEXT: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                const { hold, sent, received } = this.sender.state;
+                log.silly(`sender: status=${this.senderStatus}, hold=${hold}, sent=${sent}, received=${received}`);
+                if (this.senderStatus === SENDER_STATUS_NEXT) {
+                    if (hold && (received >= sent) && (qr >= this.controller.plannerBufferPoolSize)) {
+                        log.debug(`Continue sending G-code: hold=${hold}, sent=${sent}, received=${received}, qr=${qr}`);
                         this.sender.unhold();
                         this.sender.next();
+                        this.senderStatus = SENDER_STATUS_NEXT;
                     }
-                }
-            } else if (this.sendResponseState === SEND_RESPONSE_STATE_ACK) {
-                // running
-                if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
-                    log.silly(`> NEXT: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
-
+                } else if (this.senderStatus === SENDER_STATUS_ACK) {
                     this.sender.ack();
                     this.sender.next();
-
-                    this.sendResponseState = SEND_RESPONSE_STATE_SEND;
+                    this.senderStatus = SENDER_STATUS_NEXT;
                 }
-
-                // paused
-                if (this.workflow.state === WORKFLOW_STATE_PAUSED) {
-                    log.silly(`> HOLD: qr=${qr}, high=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}, low=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}`);
-                    const { sent, received } = this.sender.state;
-                    if (sent > received) {
-                        this.sender.ack();
-                    }
-                }
+                return;
             }
+
+            // The execution is manually paused
+            if ((this.workflow.state === WORKFLOW_STATE_PAUSED) && (this.senderStatus === SENDER_STATUS_ACK)) {
+                const { hold, sent, received } = this.sender.state;
+                log.silly(`sender: status=${this.senderStatus}, hold=${hold}, sent=${sent}, received=${received}`);
+                console.assert(received < sent, `received (${received}) < sent (${sent})`);
+                if (!hold) {
+                    log.error('The sender does not hold off during the paused state');
+                }
+                if (received + 1 >= sent) {
+                    log.debug(`Stop sending G-code: hold=${hold}, sent=${sent}, received=${received + 1}`);
+                }
+                this.sender.ack();
+                this.sender.next();
+                this.senderStatus = SENDER_STATUS_NEXT;
+                return;
+            }
+
+            console.assert(this.workflow.state !== WORKFLOW_STATE_RUNNING, `workflow.state !== '${WORKFLOW_STATE_RUNNING}'`);
+
+            // Feeder
+            this.feeder.next();
         });
 
         this.controller.on('sr', (sr) => {
@@ -602,7 +638,7 @@ class TinyGController {
                     return;
                 }
 
-                log.silly(`> INIT: ${cmd} ${cmd.length}`);
+                log.silly(`init: ${cmd} ${cmd.length}`);
 
                 const context = {};
                 this.emit('serialport:write', cmd, context);

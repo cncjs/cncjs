@@ -35,7 +35,7 @@ import {
     TINYG_MACHINE_STATE_END,
     TINYG_MACHINE_STATE_RUN,
     // Workflow
-    WORKFLOW_STATE_IDLE
+    WORKFLOW_STATE_RUNNING
 } from '../../constants';
 import {
     MODAL_NONE,
@@ -326,12 +326,13 @@ class AxesWidget extends PureComponent {
         'workflow:state': (workflowState) => {
             if (this.state.workflowState !== workflowState) {
                 const { keypadJogging, selectedAxis } = this.state;
+                const canJog = workflowState !== WORKFLOW_STATE_RUNNING;
 
-                // Disable keypad jogging and shuttle wheel when the workflow is not in the idle state.
+                // Disable keypad jogging and shuttle wheel when the workflow state is 'running'.
                 // This prevents accidental movement while sending G-code commands.
                 this.setState({
-                    keypadJogging: (workflowState === WORKFLOW_STATE_IDLE) ? keypadJogging : false,
-                    selectedAxis: (workflowState === WORKFLOW_STATE_IDLE) ? selectedAxis : '',
+                    keypadJogging: canJog ? keypadJogging : false,
+                    selectedAxis: canJog ? selectedAxis : '',
                     workflowState: workflowState
                 });
             }
@@ -589,7 +590,7 @@ class AxesWidget extends PureComponent {
         if (!port) {
             return false;
         }
-        if (workflowState !== WORKFLOW_STATE_IDLE) {
+        if (workflowState === WORKFLOW_STATE_RUNNING) {
             return false;
         }
         if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {

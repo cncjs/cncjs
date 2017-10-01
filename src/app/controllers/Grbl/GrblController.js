@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import * as parser from 'gcode-parser';
 import SerialPort from 'serialport';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
@@ -113,14 +114,6 @@ class GrblController {
     // Workflow
     workflow = null;
 
-    stripComment = (() => {
-        // Strip comment that follows a semicolon
-        const re1 = new RegExp(/\s*;.*/g);
-        // Remove text inside the parentheses
-        const re2 = new RegExp(/\s*\([^\)]*\)/g);
-        return (line) => String(line).replace(re1, '').replace(re2, '');
-    })();
-
     dataFilter = (line, context) => {
         // Machine position
         const {
@@ -205,9 +198,11 @@ class GrblController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
-                line = this.stripComment(line);
+                const data = parser.parseLine(line, { flatten: true });
+                const cmds = ensureArray(data.cmds);
 
-                if (line === WAIT) {
+                // %wait
+                if (cmds[0] === WAIT) {
                     return `G4 P0.5 (${WAIT})`; // dwell
                 }
 
@@ -243,15 +238,42 @@ class GrblController {
             // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
-                line = this.stripComment(line);
+                const data = parser.parseLine(line, { flatten: true });
+                const words = ensureArray(data.words);
+                const cmds = ensureArray(data.cmds);
+                const { sent, received } = this.sender.state;
 
-                if (line === WAIT) {
-                    const { sent, received } = this.sender.state;
+                // %wait
+                if (cmds[0] === WAIT) {
                     log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
 
                     this.sender.hold();
 
                     return `G4 P0.5 (${WAIT})`; // dwell
+                }
+
+                // M0, M1 Program Pause
+                if (words.includes('M0') || words.includes('M1')) {
+                    log.debug(`Program Pause: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
+
+                    this.workflow.pause();
+                }
+
+                // M2, M30 Program End
+                if (words.includes('M2') || words.includes('M30')) {
+                    log.debug(`Program End: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
+
+                    this.workflow.pause();
+                }
+
+                // M6 Tool Change
+                if (words.includes('M6')) {
+                    log.debug(`Tool Change: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
+
+                    this.workflow.pause();
+
+                    // Surround M6 with parentheses to ignore unsupported command error
+                    line = '(M6)';
                 }
 
                 return this.dataFilter(line, context);
@@ -263,7 +285,7 @@ class GrblController {
                 return;
             }
 
-            if (this.workflow.state !== WORKFLOW_STATE_RUNNING) {
+            if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 log.error(`Unexpected workflow state: ${this.workflow.state}`);
                 return;
             }
@@ -298,9 +320,11 @@ class GrblController {
         });
         this.workflow.on('pause', () => {
             this.emit('workflow:state', this.workflow.state);
+            this.sender.hold();
         });
         this.workflow.on('resume', () => {
             this.emit('workflow:state', this.workflow.state);
+            this.sender.unhold();
             this.sender.next();
         });
 
@@ -355,28 +379,28 @@ class GrblController {
                 return;
             }
 
-            // Sender
+            const { hold, sent, received } = this.sender.state;
+
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 this.sender.ack();
-
-                // Check hold state
-                if (this.sender.state.hold) {
-                    const { sent, received } = this.sender.state;
-                    if (received >= sent) {
-                        log.debug(`Continue sending G-code: sent=${sent}, received=${received}`);
-                        this.sender.unhold();
-                    }
+                if (hold && (received >= sent)) {
+                    log.debug(`Continue sending G-code: hold=${hold}, sent=${sent}, received=${received}`);
+                    this.sender.unhold();
                 }
-
                 this.sender.next();
                 return;
             }
-            if (this.workflow.state === WORKFLOW_STATE_PAUSED) {
-                const { sent, received } = this.sender.state;
-                if (sent > received) {
-                    this.sender.ack();
-                    return;
+
+            if ((this.workflow.state === WORKFLOW_STATE_PAUSED) && (received < sent)) {
+                if (!hold) {
+                    log.error('The sender does not hold off during the paused state');
                 }
+                if (received + 1 >= sent) {
+                    log.debug(`Stop sending G-code: hold=${hold}, sent=${sent}, received=${received + 1}`);
+                }
+                this.sender.ack();
+                this.sender.next();
+                return;
             }
 
             this.emit('serialport:read', res.raw);
