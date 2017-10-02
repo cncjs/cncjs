@@ -1029,8 +1029,6 @@ class TinyGController {
             'feedhold': () => {
                 this.event.trigger('feedhold');
 
-                this.workflow.pause();
-
                 this.writeln('!'); // feedhold
 
                 this.writeln('{"qr":""}'); // queue report
@@ -1039,8 +1037,6 @@ class TinyGController {
                 this.event.trigger('cyclestart');
 
                 this.writeln('~'); // cycle start
-
-                this.workflow.resume();
 
                 this.writeln('{"qr":""}'); // queue report
             },

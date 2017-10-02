@@ -987,16 +987,12 @@ class SmoothieController {
             'feedhold': () => {
                 this.event.trigger('feedhold');
 
-                this.workflow.pause();
-
                 this.write('!');
             },
             'cyclestart': () => {
                 this.event.trigger('cyclestart');
 
                 this.write('~');
-
-                this.workflow.resume();
             },
             'statusreport': () => {
                 this.write('?');
