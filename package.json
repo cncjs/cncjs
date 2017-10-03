@@ -229,6 +229,7 @@
     "sortablejs": "~1.6.1",
     "spawn-default-shell": "~2.0.0",
     "static-eval": "~1.1.1",
+    "styled-components": "~2.2.0",
     "superagent": "~3.6.1",
     "superagent-use": "~0.1.0",
     "three": "~0.87.1",
