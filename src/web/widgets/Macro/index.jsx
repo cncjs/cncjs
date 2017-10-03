@@ -215,8 +215,13 @@ class MacroWidget extends PureComponent {
                 }
             }));
         },
-        'workflow:state': (workflowState) => {
-            this.setState({ workflowState: workflowState });
+        'workflow:state': (state, context) => {
+            this.setState({
+                workflow: {
+                    state: state,
+                    context: context
+                }
+            });
         }
     };
 
@@ -245,11 +250,14 @@ class MacroWidget extends PureComponent {
                 type: controller.type,
                 state: controller.state
             },
+            workflow: {
+                state: controller.workflow.state,
+                context: controller.workflow.context
+            },
             modal: {
                 name: MODAL_NONE,
                 params: {}
             },
-            workflowState: controller.workflowState,
             macros: []
         };
     }
@@ -266,14 +274,14 @@ class MacroWidget extends PureComponent {
         });
     }
     canClick() {
-        const { port, workflowState } = this.state;
+        const { port, workflow } = this.state;
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
 
         if (!port) {
             return false;
         }
-        if (workflowState === WORKFLOW_STATE_RUNNING) {
+        if (workflow.state === WORKFLOW_STATE_RUNNING) {
             return false;
         }
         if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {

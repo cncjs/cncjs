@@ -76,7 +76,7 @@ class WorkflowControl extends PureComponent {
     }
     canRun() {
         const { state } = this.props;
-        const { port, gcode, workflowState } = state;
+        const { port, gcode, workflow } = state;
         const controllerType = state.controller.type;
         const controllerState = state.controller.state;
 
@@ -86,7 +86,7 @@ class WorkflowControl extends PureComponent {
         if (!gcode.ready) {
             return false;
         }
-        if (!includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState)) {
+        if (!includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state)) {
             return false;
         }
         if (controllerType === GRBL) {
@@ -121,13 +121,13 @@ class WorkflowControl extends PureComponent {
     }
     render() {
         const { state, actions } = this.props;
-        const { port, gcode, workflowState } = state;
+        const { port, gcode, workflow } = state;
         const canClick = !!port;
         const isReady = canClick && gcode.ready;
         const canRun = this.canRun();
-        const canPause = isReady && includes([WORKFLOW_STATE_RUNNING], workflowState);
-        const canStop = isReady && includes([WORKFLOW_STATE_PAUSED], workflowState);
-        const canClose = isReady && includes([WORKFLOW_STATE_IDLE], workflowState);
+        const canPause = isReady && includes([WORKFLOW_STATE_RUNNING], workflow.state);
+        const canStop = isReady && includes([WORKFLOW_STATE_PAUSED], workflow.state);
+        const canClose = isReady && includes([WORKFLOW_STATE_IDLE], workflow.state);
         const canUpload = isReady ? canClose : (canClick && !gcode.loading);
 
         return (
@@ -184,7 +184,7 @@ class WorkflowControl extends PureComponent {
                         <button
                             type="button"
                             className="btn btn-default"
-                            title={workflowState === WORKFLOW_STATE_PAUSED ? i18n._('Resume') : i18n._('Run')}
+                            title={workflow.state === WORKFLOW_STATE_PAUSED ? i18n._('Resume') : i18n._('Run')}
                             onClick={actions.handleRun}
                             disabled={!canRun}
                         >

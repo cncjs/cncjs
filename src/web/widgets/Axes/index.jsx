@@ -323,16 +323,19 @@ class AxesWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'workflow:state': (workflowState) => {
+        'workflow:state': (state, context) => {
             const { keypadJogging, selectedAxis } = this.state;
-            const canJog = workflowState !== WORKFLOW_STATE_RUNNING;
+            const canJog = state !== WORKFLOW_STATE_RUNNING;
 
             // Disable keypad jogging and shuttle wheel when the workflow state is 'running'.
             // This prevents accidental movement while sending G-code commands.
             this.setState({
                 keypadJogging: canJog ? keypadJogging : false,
                 selectedAxis: canJog ? selectedAxis : '',
-                workflowState: workflowState
+                workflow: {
+                    state: state,
+                    context: context
+                }
             });
         },
         'controller:settings': (type, controllerSettings) => {
@@ -518,11 +521,14 @@ class AxesWidget extends PureComponent {
                 settings: controller.settings,
                 state: controller.state
             },
+            workflow: {
+                state: controller.workflow.state,
+                context: controller.workflow.context
+            },
             modal: {
                 name: MODAL_NONE,
                 params: {}
             },
-            workflowState: controller.workflowState,
             axes: this.config.get('axes', DEFAULT_AXES),
             machinePosition: { // Machine position
                 x: '0.000',
@@ -581,14 +587,14 @@ class AxesWidget extends PureComponent {
         this.shuttleControl = null;
     }
     canClick() {
-        const { port, workflowState } = this.state;
+        const { port, workflow } = this.state;
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
 
         if (!port) {
             return false;
         }
-        if (workflowState === WORKFLOW_STATE_RUNNING) {
+        if (workflow.state === WORKFLOW_STATE_RUNNING) {
             return false;
         }
         if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {

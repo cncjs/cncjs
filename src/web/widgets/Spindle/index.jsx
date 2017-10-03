@@ -72,8 +72,13 @@ class SpindleWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'workflow:state': (workflowState) => {
-            this.setState({ workflowState: workflowState });
+        'workflow:state': (state, context) => {
+            this.setState({
+                workflow: {
+                    state: state,
+                    context: context
+                }
+            });
         },
         'controller:state': (type, state) => {
             // Grbl
@@ -167,7 +172,10 @@ class SpindleWidget extends PureComponent {
                     }
                 }
             },
-            workflowState: controller.workflowState,
+            workflow: {
+                state: controller.workflow.state,
+                context: controller.workflow.context
+            },
             spindleSpeed: this.config.get('speed', 1000)
         };
     }
@@ -184,14 +192,14 @@ class SpindleWidget extends PureComponent {
         });
     }
     canClick() {
-        const { port, workflowState } = this.state;
+        const { port, workflow } = this.state;
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
 
         if (!port) {
             return false;
         }
-        if (workflowState === WORKFLOW_STATE_RUN) {
+        if (workflow.state === WORKFLOW_STATE_RUN) {
             return false;
         }
         if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {

@@ -61,7 +61,7 @@ class PrimaryToolbar extends PureComponent {
 
     canSendCommand() {
         const { state } = this.props;
-        const { port, controller, workflowState } = state;
+        const { port, controller, workflow } = state;
 
         if (!port) {
             return false;
@@ -69,7 +69,7 @@ class PrimaryToolbar extends PureComponent {
         if (!controller.type || !controller.state) {
             return false;
         }
-        if (workflowState !== WORKFLOW_STATE_IDLE) {
+        if (workflow.state !== WORKFLOW_STATE_IDLE) {
             return false;
         }
 

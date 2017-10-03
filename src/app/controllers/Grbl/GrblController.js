@@ -704,7 +704,10 @@ class GrblController {
                 settings: this.settings,
                 state: this.state
             },
-            workflowState: this.workflow.state,
+            workflow: {
+                state: this.workflow.state,
+                context: this.workflow.context
+            },
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON()
         };

@@ -749,7 +749,10 @@ class TinyGController {
                 state: this.state,
                 footer: this.controller.footer
             },
-            workflowState: this.workflow.state,
+            workflow: {
+                state: this.workflow.state,
+                context: this.workflow.context
+            },
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON()
         };

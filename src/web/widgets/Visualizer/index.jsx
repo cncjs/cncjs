@@ -9,9 +9,11 @@ import React, { PureComponent } from 'react';
 import Detector from 'three/examples/js/Detector';
 import Anchor from '../../components/Anchor';
 import Widget from '../../components/Widget';
+import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
-import modal from '../../lib/modal';
+import i18n from '../../lib/i18n';
 import log from '../../lib/log';
+import modal from '../../lib/modal';
 import { in2mm } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
 import PrimaryToolbar from './PrimaryToolbar';
@@ -323,31 +325,54 @@ class VisualizerWidget extends PureComponent {
             }));
         },
         handleRun: () => {
-            const { workflowState } = this.state;
-            console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState));
+            const { workflow } = this.state;
+            console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state));
 
-            if (workflowState === WORKFLOW_STATE_IDLE) {
+            if (workflow.state === WORKFLOW_STATE_IDLE) {
                 controller.command('gcode:start');
+                return;
             }
-            if (workflowState === WORKFLOW_STATE_PAUSED) {
+
+            if (workflow.state === WORKFLOW_STATE_PAUSED) {
+                const { reason } = { ...workflow.context };
+
+                // M6 Tool Change
+                if (reason === 'M6') {
+                    confirm({
+                        title: i18n._('M6 Tool Change'),
+                        body: i18n._('Are you sure you want to resume program execution?'),
+                        btnConfirm: {
+                            btnStyle: 'danger',
+                            text: i18n._('Yes')
+                        },
+                        btnCancel: {
+                            text: i18n._('No')
+                        }
+                    }).then(() => {
+                        controller.command('gcode:resume');
+                    });
+
+                    return;
+                }
+
                 controller.command('gcode:resume');
             }
         },
         handlePause: () => {
-            const { workflowState } = this.state;
-            console.assert(includes([WORKFLOW_STATE_RUNNING], workflowState));
+            const { workflow } = this.state;
+            console.assert(includes([WORKFLOW_STATE_RUNNING], workflow.state));
 
             controller.command('gcode:pause');
         },
         handleStop: () => {
-            const { workflowState } = this.state;
-            console.assert(includes([WORKFLOW_STATE_PAUSED], workflowState));
+            const { workflow } = this.state;
+            console.assert(includes([WORKFLOW_STATE_PAUSED], workflow.state));
 
             controller.command('gcode:stop', { force: true });
         },
         handleClose: () => {
-            const { workflowState } = this.state;
-            console.assert(includes([WORKFLOW_STATE_IDLE], workflowState));
+            const { workflow } = this.state;
+            console.assert(includes([WORKFLOW_STATE_IDLE], workflow.state));
 
             controller.command('gcode:unload');
 
@@ -501,11 +526,11 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
         },
-        'workflow:state': (workflowState, context) => {
-            this.setState((state) => {
+        'workflow:state': (state, context) => {
+            this.setState(prevState => {
                 let category = '';
 
-                if (workflowState === WORKFLOW_STATE_PAUSED) {
+                if (state === WORKFLOW_STATE_PAUSED) {
                     const { reason } = { ...context };
 
                     // Program Pause
@@ -526,10 +551,13 @@ class VisualizerWidget extends PureComponent {
 
                 return {
                     notification: {
-                        ...state.notification,
+                        ...prevState.notification,
                         category: category
                     },
-                    workflowState: workflowState
+                    workflow: {
+                        state: state,
+                        context: context
+                    }
                 };
             });
         },
@@ -680,6 +708,10 @@ class VisualizerWidget extends PureComponent {
                 settings: controller.settings,
                 state: controller.state
             },
+            workflow: {
+                state: controller.workflow.state,
+                context: controller.workflow.context
+            },
             notification: {
                 category: ''
             },
@@ -687,7 +719,6 @@ class VisualizerWidget extends PureComponent {
                 name: '',
                 params: {}
             },
-            workflowState: controller.workflowState,
             workPosition: { // Work position
                 x: '0.000',
                 y: '0.000',
@@ -748,11 +779,11 @@ class VisualizerWidget extends PureComponent {
         });
     }
     isAgitated() {
-        const { workflowState, disabled, objects } = this.state;
+        const { workflow, disabled, objects } = this.state;
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
 
-        if (workflowState !== WORKFLOW_STATE_RUNNING) {
+        if (workflow.state !== WORKFLOW_STATE_RUNNING) {
             return false;
         }
         // Return false when 3D view is disabled
@@ -801,7 +832,7 @@ class VisualizerWidget extends PureComponent {
         };
         const showDashboard = !capable.view3D && !showLoader;
         const showVisualizer = capable.view3D && !showLoader;
-        const showNotifications = showVisualizer && state.notification.category;
+        const showNotifications = !!(showVisualizer && state.notification.category);
 
         return (
             <Widget borderless>

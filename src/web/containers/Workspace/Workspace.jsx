@@ -351,14 +351,14 @@ class Workspace extends PureComponent {
                 </div>
                 <Dropzone
                     className={styles.dropzone}
-                    disabled={controller.workflowState !== WORKFLOW_STATE_IDLE}
+                    disabled={controller.workflow.state !== WORKFLOW_STATE_IDLE}
                     disableClick={true}
                     disablePreview={true}
                     multiple={false}
                     onDragStart={(event) => {
                     }}
                     onDragEnter={(event) => {
-                        if (controller.workflowState !== WORKFLOW_STATE_IDLE) {
+                        if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
                             return;
                         }
                         if (isDraggingWidget) {
@@ -369,7 +369,7 @@ class Workspace extends PureComponent {
                         }
                     }}
                     onDragLeave={(event) => {
-                        if (controller.workflowState !== WORKFLOW_STATE_IDLE) {
+                        if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
                             return;
                         }
                         if (isDraggingWidget) {
@@ -380,7 +380,7 @@ class Workspace extends PureComponent {
                         }
                     }}
                     onDrop={(acceptedFiles, rejectedFiles) => {
-                        if (controller.workflowState !== WORKFLOW_STATE_IDLE) {
+                        if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
                             return;
                         }
                         if (isDraggingWidget) {

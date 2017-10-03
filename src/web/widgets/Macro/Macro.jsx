@@ -19,11 +19,11 @@ class Macro extends PureComponent {
         const { state, actions } = this.props;
         const {
             canClick,
-            workflowState,
+            workflow,
             macros = []
         } = state;
-        const canRunMacro = canClick && includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState);
-        const canLoadMacro = canClick && includes([WORKFLOW_STATE_IDLE], workflowState);
+        const canRunMacro = canClick && includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state);
+        const canLoadMacro = canClick && includes([WORKFLOW_STATE_IDLE], workflow.state);
 
         return (
             <div>

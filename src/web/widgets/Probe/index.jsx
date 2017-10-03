@@ -229,8 +229,13 @@ class ProbeWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'workflow:state': (workflowState) => {
-            this.setState({ workflowState: workflowState });
+        'workflow:state': (state, context) => {
+            this.setState({
+                workflow: {
+                    state: state,
+                    context: context
+                }
+            });
         },
         'controller:state': (type, state) => {
             // Grbl
@@ -427,11 +432,14 @@ class ProbeWidget extends PureComponent {
                 type: controller.type,
                 state: controller.state
             },
+            workflow: {
+                state: controller.workflow.state,
+                context: controller.workflow.context
+            },
             modal: {
                 name: MODAL_NONE,
                 params: {}
             },
-            workflowState: controller.workflowState,
             probeCommand: this.config.get('probeCommand', 'G38.2'),
             useTLO: this.config.get('useTLO'),
             probeDepth: toUnits(METRIC_UNITS, this.config.get('probeDepth')),
@@ -476,14 +484,14 @@ class ProbeWidget extends PureComponent {
         return defaultWCS;
     }
     canClick() {
-        const { port, workflowState } = this.state;
+        const { port, workflow } = this.state;
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
 
         if (!port) {
             return false;
         }
-        if (workflowState !== WORKFLOW_STATE_IDLE) {
+        if (workflow.state !== WORKFLOW_STATE_IDLE) {
             return false;
         }
         if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
