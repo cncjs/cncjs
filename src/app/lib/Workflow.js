@@ -7,6 +7,7 @@ export const WORKFLOW_STATE_IDLE = 'idle';
 
 class Workflow extends events.EventEmitter {
     state = WORKFLOW_STATE_IDLE;
+    context = {};
 
     isRunning() {
         return this.state === WORKFLOW_STATE_RUNNING;
@@ -20,25 +21,29 @@ class Workflow extends events.EventEmitter {
     start(context) {
         if (this.state !== WORKFLOW_STATE_RUNNING) {
             this.state = WORKFLOW_STATE_RUNNING;
-            this.emit('start', context);
+            this.context = { ...context };
+            this.emit('start', this.context);
         }
     }
     stop(context) {
         if (this.state !== WORKFLOW_STATE_IDLE) {
             this.state = WORKFLOW_STATE_IDLE;
-            this.emit('stop', context);
+            this.context = { ...context };
+            this.emit('stop', this.context);
         }
     }
     pause(context) {
         if (this.state === WORKFLOW_STATE_RUNNING) {
             this.state = WORKFLOW_STATE_PAUSED;
-            this.emit('pause', context);
+            this.context = { ...context };
+            this.emit('pause', this.context);
         }
     }
     resume(context) {
         if (this.state === WORKFLOW_STATE_PAUSED) {
             this.state = WORKFLOW_STATE_RUNNING;
-            this.emit('resume', context);
+            this.context = { ...context };
+            this.emit('resume', this.context);
         }
     }
 }

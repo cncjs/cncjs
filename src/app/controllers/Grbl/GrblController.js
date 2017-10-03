@@ -310,20 +310,20 @@ class GrblController {
 
         // Workflow
         this.workflow = new Workflow();
-        this.workflow.on('start', (context) => {
-            this.emit('workflow:state', this.workflow.state, context);
+        this.workflow.on('start', () => {
+            this.emit('workflow:state', this.workflow.state, this.workflow.context);
             this.sender.rewind();
         });
-        this.workflow.on('stop', (context) => {
-            this.emit('workflow:state', this.workflow.state, context);
+        this.workflow.on('stop', () => {
+            this.emit('workflow:state', this.workflow.state, this.workflow.context);
             this.sender.rewind();
         });
-        this.workflow.on('pause', (context) => {
-            this.emit('workflow:state', this.workflow.state, context);
+        this.workflow.on('pause', () => {
+            this.emit('workflow:state', this.workflow.state, this.workflow.context);
             this.sender.hold();
         });
-        this.workflow.on('resume', (context) => {
-            this.emit('workflow:state', this.workflow.state, context);
+        this.workflow.on('resume', () => {
+            this.emit('workflow:state', this.workflow.state, this.workflow.context);
             this.sender.unhold();
             this.sender.next();
         });
@@ -849,7 +849,7 @@ class GrblController {
         }
         if (this.workflow) {
             // workflow state
-            socket.emit('workflow:state', this.workflow.state);
+            socket.emit('workflow:state', this.workflow.state, this.workflow.context);
         }
         if (this.sender) {
             // sender status
