@@ -116,6 +116,14 @@ class VisualizerWidget extends PureComponent {
     config = new WidgetConfig(this.props.widgetId);
     state = this.getInitialState();
     actions = {
+        dismissNotification: () => {
+            this.setState((state) => ({
+                notification: {
+                    ...state.notification,
+                    category: ''
+                }
+            }));
+        },
         openModal: (name = '', params = {}) => {
             this.setState((state) => ({
                 modal: {
@@ -791,6 +799,9 @@ class VisualizerWidget extends PureComponent {
         const capable = {
             view3D: Detector.webgl && !state.disabled
         };
+        const showDashboard = !capable.view3D && !showLoader;
+        const showVisualizer = capable.view3D && !showLoader;
+        const showNotifications = showVisualizer && state.notification.category;
 
         return (
             <Widget borderless>
@@ -826,24 +837,24 @@ class VisualizerWidget extends PureComponent {
                         actions={actions}
                     />
                     <Dashboard
-                        show={!capable.view3D && !showLoader}
+                        show={showDashboard}
                         state={state}
                     />
                     {Detector.webgl &&
                     <Visualizer
-                        show={capable.view3D && !showLoader}
+                        show={showVisualizer}
                         ref={node => {
                             this.visualizer = node;
                         }}
                         state={state}
                     />
                     }
-                    {state.notification.category &&
                     <Notifications
                         className={styles.notifications}
+                        show={showNotifications}
                         category={state.notification.category}
+                        onDismiss={actions.dismissNotification}
                     />
-                    }
                 </Widget.Content>
                 {capable.view3D &&
                 <Widget.Footer className={styles.widgetFooter}>

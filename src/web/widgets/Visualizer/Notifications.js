@@ -9,13 +9,17 @@ import {
     NOTIFICATION_CATEGORY_TOOL_CHANGE
 } from './constants';
 
-const Notifications = ({ category, ...props }) => {
+const Notifications = ({ show, category, onDismiss, ...props }) => {
+    if (!show || !category) {
+        return null;
+    }
+
     return (
         <div {...props}>
             {category === NOTIFICATION_CATEGORY_PROGRAM_PAUSE &&
             <ToastNotification
                 type="info"
-                onDismiss={() => {}}
+                onDismiss={onDismiss}
             >
                 <div><strong>{i18n._('M0, M1 Program Pause')}</strong></div>
                 <div>{i18n._('Click the Resume button to resume program execution.')}</div>
@@ -24,7 +28,7 @@ const Notifications = ({ category, ...props }) => {
             {category === NOTIFICATION_CATEGORY_PROGRAM_END &&
             <ToastNotification
                 type="info"
-                onDismiss={() => {}}
+                onDismiss={onDismiss}
             >
                 <div><strong>{i18n._('M2, M30 Program End')}</strong></div>
                 <div>{i18n._('Click the Stop button to stop program execution.')}</div>
@@ -33,17 +37,17 @@ const Notifications = ({ category, ...props }) => {
             {category === NOTIFICATION_CATEGORY_TOOL_CHANGE &&
             <ToastNotification
                 type="info"
-                onDismiss={() => {}}
+                onDismiss={onDismiss}
             >
                 <div><strong>{i18n._('M6 Tool Change')}</strong></div>
                 <div>
                     {i18n._('Run a tool change macro to change the tool and adjust the Z-axis offset. Afterwards, click the Resume button to resume program execution.')}
-                    <span style={{ marginLeft: 8 }} />
+                    <span className="space space-sm" />
                     <Anchor
                         target="_blank"
                         href="https://github.com/cncjs/cncjs/wiki/M6-Tool-Change"
                     >
-                        {i18n._('Learn More')}
+                        {i18n._('Learn more')}
                     </Anchor>
                 </div>
             </ToastNotification>
@@ -53,7 +57,9 @@ const Notifications = ({ category, ...props }) => {
 };
 
 Notifications.propTypes = {
-    category: PropTypes.string
+    show: PropTypes.bool,
+    category: PropTypes.string,
+    onDismiss: PropTypes.func
 };
 
 export default Notifications;
