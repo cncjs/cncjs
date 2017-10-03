@@ -19,9 +19,10 @@ import SecondaryToolbar from './SecondaryToolbar';
 import WorkflowControl from './WorkflowControl';
 import Visualizer from './Visualizer';
 import Dashboard from './Dashboard';
-import WatchDirectory from './WatchDirectory';
+import Notifications from './Notifications';
 import Loading from './Loading';
 import Rendering from './Rendering';
+import WatchDirectory from './WatchDirectory';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -43,7 +44,10 @@ import {
 import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE,
-    MODAL_WATCH_DIRECTORY
+    MODAL_WATCH_DIRECTORY,
+    NOTIFICATION_CATEGORY_PROGRAM_PAUSE,
+    NOTIFICATION_CATEGORY_PROGRAM_END,
+    NOTIFICATION_CATEGORY_TOOL_CHANGE
 } from './constants';
 import styles from './index.styl';
 
@@ -489,10 +493,37 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
         },
-        'workflow:state': (workflowState) => {
-            if (this.state.workflowState !== workflowState) {
-                this.setState((state) => ({ workflowState: workflowState }));
-            }
+        'workflow:state': (workflowState, context) => {
+            this.setState((state) => {
+                let category = '';
+
+                if (workflowState === WORKFLOW_STATE_PAUSED) {
+                    const { reason } = { ...context };
+
+                    // Program Pause
+                    if (reason === 'M0' || reason === 'M1') {
+                        category = NOTIFICATION_CATEGORY_PROGRAM_PAUSE;
+                    }
+
+                    // Program End
+                    if (reason === 'M2' || reason === 'M30') {
+                        category = NOTIFICATION_CATEGORY_PROGRAM_END;
+                    }
+
+                    // M6 Tool Change
+                    if (reason === 'M6') {
+                        category = NOTIFICATION_CATEGORY_TOOL_CHANGE;
+                    }
+                }
+
+                return {
+                    notification: {
+                        ...state.notification,
+                        category: category
+                    },
+                    workflowState: workflowState
+                };
+            });
         },
         'controller:settings': (type, controllerSettings) => {
             this.setState(state => ({
@@ -640,6 +671,9 @@ class VisualizerWidget extends PureComponent {
                 type: controller.type,
                 settings: controller.settings,
                 state: controller.state
+            },
+            notification: {
+                category: ''
             },
             modal: {
                 name: '',
@@ -802,6 +836,12 @@ class VisualizerWidget extends PureComponent {
                             this.visualizer = node;
                         }}
                         state={state}
+                    />
+                    }
+                    {state.notification.category &&
+                    <Notifications
+                        className={styles.notifications}
+                        category={state.notification.category}
                     />
                     }
                 </Widget.Content>

@@ -1,5 +1,7 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
+import get from 'lodash/get';
+import includes from 'lodash/includes';
 import React, { PureComponent } from 'react';
 import api from '../../api';
 import Widget from '../../components/Widget';
@@ -12,6 +14,24 @@ import Macro from './Macro';
 import AddMacro from './AddMacro';
 import EditMacro from './EditMacro';
 import RunMacro from './RunMacro';
+import {
+    // Grbl
+    GRBL,
+    GRBL_ACTIVE_STATE_IDLE,
+    GRBL_ACTIVE_STATE_RUN,
+    // Smoothie
+    SMOOTHIE,
+    SMOOTHIE_ACTIVE_STATE_IDLE,
+    SMOOTHIE_ACTIVE_STATE_RUN,
+    // TinyG
+    TINYG,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
+    TINYG_MACHINE_STATE_RUN,
+    // Workflow
+    WORKFLOW_STATE_RUNNING
+} from '../../constants';
 import {
     MODAL_NONE,
     MODAL_ADD_MACRO,
@@ -186,10 +206,17 @@ class MacroWidget extends PureComponent {
         'serialport:close': (options) => {
             this.setState({ port: '' });
         },
+        'controller:state': (type, controllerState) => {
+            this.setState(state => ({
+                controller: {
+                    ...state.controller,
+                    type: type,
+                    state: controllerState
+                }
+            }));
+        },
         'workflow:state': (workflowState) => {
-            if (this.state.workflowState !== workflowState) {
-                this.setState({ workflowState: workflowState });
-            }
+            this.setState({ workflowState: workflowState });
         }
     };
 
@@ -214,11 +241,15 @@ class MacroWidget extends PureComponent {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
             port: controller.port,
-            workflowState: controller.workflowState,
+            controller: {
+                type: controller.type,
+                state: controller.state
+            },
             modal: {
                 name: MODAL_NONE,
                 params: {}
             },
+            workflowState: controller.workflowState,
             macros: []
         };
     }
@@ -234,12 +265,62 @@ class MacroWidget extends PureComponent {
             controller.removeListener(eventName, callback);
         });
     }
+    canClick() {
+        const { port, workflowState } = this.state;
+        const controllerType = this.state.controller.type;
+        const controllerState = this.state.controller.state;
+
+        if (!port) {
+            return false;
+        }
+        if (workflowState === WORKFLOW_STATE_RUNNING) {
+            return false;
+        }
+        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+            return false;
+        }
+        if (controllerType === GRBL) {
+            const activeState = get(controllerState, 'status.activeState');
+            const states = [
+                GRBL_ACTIVE_STATE_IDLE,
+                GRBL_ACTIVE_STATE_RUN
+            ];
+            if (!includes(states, activeState)) {
+                return false;
+            }
+        }
+        if (controllerType === SMOOTHIE) {
+            const activeState = get(controllerState, 'status.activeState');
+            const states = [
+                SMOOTHIE_ACTIVE_STATE_IDLE,
+                SMOOTHIE_ACTIVE_STATE_RUN
+            ];
+            if (!includes(states, activeState)) {
+                return false;
+            }
+        }
+        if (controllerType === TINYG) {
+            const machineState = get(controllerState, 'sr.machineState');
+            const states = [
+                TINYG_MACHINE_STATE_READY,
+                TINYG_MACHINE_STATE_STOP,
+                TINYG_MACHINE_STATE_END,
+                TINYG_MACHINE_STATE_RUN
+            ];
+            if (!includes(states, machineState)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
-            ...this.state
+            ...this.state,
+            canClick: this.canClick()
         };
         const actions = {
             ...this.actions

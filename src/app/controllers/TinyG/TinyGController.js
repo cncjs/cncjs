@@ -239,31 +239,31 @@ class TinyGController {
                 // %wait
                 if (cmds[0] === WAIT) {
                     log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-
                     this.sender.hold();
-
                     return `G4 P0.5 (${WAIT})`; // dwell
                 }
 
-                // M0, M1 Program Pause
-                if (words.includes('M0') || words.includes('M1')) {
-                    log.debug(`Program Pause: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
-
-                    this.workflow.pause();
-                }
-
-                // M2, M30 Program End
-                if (words.includes('M2') || words.includes('M30')) {
-                    log.debug(`Program End: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
-
-                    this.workflow.pause();
+                { // Program Mode: M0, M1, M2, M30
+                    const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
+                    if (programMode === 'M0') {
+                        log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+                        this.workflow.pause({ reason: 'M0' });
+                    } else if (programMode === 'M1') {
+                        log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
+                        this.workflow.pause({ reason: 'M1' });
+                    } else if (programMode === 'M2') {
+                        log.debug(`M2 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
+                        this.workflow.pause({ reason: 'M2' });
+                    } else if (programMode === 'M30') {
+                        log.debug(`M30 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
+                        this.workflow.pause({ reason: 'M30' });
+                    }
                 }
 
                 // M6 Tool Change
                 if (words.includes('M6')) {
                     log.debug(`Tool Change: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
-
-                    this.workflow.pause();
+                    this.workflow.pause({ reason: 'M6' });
                 }
 
                 return this.dataFilter(line, context);
@@ -306,24 +306,24 @@ class TinyGController {
 
         // Workflow
         this.workflow = new Workflow();
-        this.workflow.on('start', () => {
-            this.emit('workflow:state', this.workflow.state);
+        this.workflow.on('start', (context) => {
+            this.emit('workflow:state', this.workflow.state, context);
             this.blocked = false;
             this.senderStatus = SENDER_STATUS_NONE;
             this.sender.rewind();
         });
-        this.workflow.on('stop', () => {
-            this.emit('workflow:state', this.workflow.state);
+        this.workflow.on('stop', (context) => {
+            this.emit('workflow:state', this.workflow.state, context);
             this.blocked = false;
             this.senderStatus = SENDER_STATUS_NONE;
             this.sender.rewind();
         });
-        this.workflow.on('pause', () => {
-            this.emit('workflow:state', this.workflow.state);
+        this.workflow.on('pause', (context) => {
+            this.emit('workflow:state', this.workflow.state, context);
             this.sender.hold();
         });
-        this.workflow.on('resume', () => {
-            this.emit('workflow:state', this.workflow.state);
+        this.workflow.on('resume', (context) => {
+            this.emit('workflow:state', this.workflow.state, context);
             this.sender.unhold();
             this.sender.next();
         });

@@ -184,7 +184,7 @@ class WorkflowControl extends PureComponent {
                         <button
                             type="button"
                             className="btn btn-default"
-                            title={i18n._('Run')}
+                            title={workflowState === WORKFLOW_STATE_PAUSED ? i18n._('Resume') : i18n._('Run')}
                             onClick={actions.handleRun}
                             disabled={!canRun}
                         >
