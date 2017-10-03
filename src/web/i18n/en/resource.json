@@ -396,6 +396,8 @@
     "Line": "Line",
     "Path": "Path",
     "G-code not loaded": "G-code not loaded",
+    "Tool Change": "Tool Change",
+    "Are you sure you want to resume program execution?": "Are you sure you want to resume program execution?",
     "M0, M1 Program Pause": "M0, M1 Program Pause",
     "Click the Resume button to resume program execution.": "Click the Resume button to resume program execution.",
     "M2, M30 Program End": "M2, M30 Program End",

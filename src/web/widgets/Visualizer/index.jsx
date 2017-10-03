@@ -339,7 +339,7 @@ class VisualizerWidget extends PureComponent {
                 // M6 Tool Change
                 if (reason === 'M6') {
                     confirm({
-                        title: i18n._('M6 Tool Change'),
+                        title: i18n._('Tool Change'),
                         body: i18n._('Are you sure you want to resume program execution?'),
                         btnConfirm: {
                             btnStyle: 'danger',

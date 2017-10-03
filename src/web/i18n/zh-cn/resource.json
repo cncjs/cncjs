@@ -396,6 +396,8 @@
     "Line": "行数",
     "Path": "路径",
     "G-code not loaded": "",
+    "Tool Change": "",
+    "Are you sure you want to resume program execution?": "",
     "M0, M1 Program Pause": "",
     "Click the Resume button to resume program execution.": "",
     "M2, M30 Program End": "",
