@@ -106,9 +106,7 @@ class GCodeWidget extends PureComponent {
             });
         },
         'workflow:state': (workflowState) => {
-            if (this.state.workflowState !== workflowState) {
-                this.setState({ workflowState: workflowState });
-            }
+            this.setState({ workflowState: workflowState });
         },
         'controller:state': (type, state) => {
             // Grbl

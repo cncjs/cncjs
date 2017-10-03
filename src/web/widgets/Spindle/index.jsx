@@ -73,9 +73,7 @@ class SpindleWidget extends PureComponent {
             this.setState({ ...initialState });
         },
         'workflow:state': (workflowState) => {
-            if (this.state.workflowState !== workflowState) {
-                this.setState({ workflowState: workflowState });
-            }
+            this.setState({ workflowState: workflowState });
         },
         'controller:state': (type, state) => {
             // Grbl

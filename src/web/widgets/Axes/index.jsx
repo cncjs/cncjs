@@ -324,18 +324,16 @@ class AxesWidget extends PureComponent {
             this.setState({ ...initialState });
         },
         'workflow:state': (workflowState) => {
-            if (this.state.workflowState !== workflowState) {
-                const { keypadJogging, selectedAxis } = this.state;
-                const canJog = workflowState !== WORKFLOW_STATE_RUNNING;
+            const { keypadJogging, selectedAxis } = this.state;
+            const canJog = workflowState !== WORKFLOW_STATE_RUNNING;
 
-                // Disable keypad jogging and shuttle wheel when the workflow state is 'running'.
-                // This prevents accidental movement while sending G-code commands.
-                this.setState({
-                    keypadJogging: canJog ? keypadJogging : false,
-                    selectedAxis: canJog ? selectedAxis : '',
-                    workflowState: workflowState
-                });
-            }
+            // Disable keypad jogging and shuttle wheel when the workflow state is 'running'.
+            // This prevents accidental movement while sending G-code commands.
+            this.setState({
+                keypadJogging: canJog ? keypadJogging : false,
+                selectedAxis: canJog ? selectedAxis : '',
+                workflowState: workflowState
+            });
         },
         'controller:settings': (type, controllerSettings) => {
             this.setState(state => ({
