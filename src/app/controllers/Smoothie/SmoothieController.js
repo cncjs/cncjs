@@ -111,64 +111,6 @@ class SmoothieController {
     // Workflow
     workflow = null;
 
-    dataFilter = (line, context) => {
-        // Machine position
-        const {
-            x: mposx,
-            y: mposy,
-            z: mposz,
-            a: mposa,
-            b: mposb,
-            c: mposc
-        } = this.controller.getMachinePosition();
-
-        // Work position
-        const {
-            x: posx,
-            y: posy,
-            z: posz,
-            a: posa,
-            b: posb,
-            c: posc
-        } = this.controller.getWorkPosition();
-
-        // The context contains the bounding box, machine position, and work position
-        Object.assign(context || {}, {
-            // Bounding box
-            xmin: Number(context.xmin) || 0,
-            xmax: Number(context.xmax) || 0,
-            ymin: Number(context.ymin) || 0,
-            ymax: Number(context.ymax) || 0,
-            zmin: Number(context.zmin) || 0,
-            zmax: Number(context.zmax) || 0,
-            // Machine position
-            mposx: Number(mposx) || 0,
-            mposy: Number(mposy) || 0,
-            mposz: Number(mposz) || 0,
-            mposa: Number(mposa) || 0,
-            mposb: Number(mposb) || 0,
-            mposc: Number(mposc) || 0,
-            // Work position
-            posx: Number(posx) || 0,
-            posy: Number(posy) || 0,
-            posz: Number(posz) || 0,
-            posa: Number(posa) || 0,
-            posb: Number(posb) || 0,
-            posc: Number(posc) || 0
-        });
-
-        // Evaluate expression
-        if (line[0] === '%') {
-            // line="%_x=posx,_y=posy,_z=posz"
-            evaluateExpression(line.slice(1), context);
-            return '';
-        }
-
-        // line="G0 X[posx - 8] Y[ymax]"
-        // > "G0 X2 Y50"
-        return translateWithContext(line, context);
-    };
-
     constructor(engine, options) {
         if (!engine) {
             throw new Error('engine must be specified');
@@ -195,15 +137,59 @@ class SmoothieController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
-                const data = parser.parseLine(line, { flatten: true });
-                const cmds = ensureArray(data.cmds);
+                context = this.populateContext(context);
 
-                // %wait
-                if (cmds[0] === WAIT) {
-                    return `G4 P0.5 (${WAIT})`; // dwell
+                const data = parser.parseLine(line, { flatten: true });
+                const words = ensureArray(data.words);
+
+                if (line[0] === '%') {
+                    // Remove characters after ";"
+                    const re = new RegExp(/\s*;.*/g);
+                    line = line.replace(re, '');
+
+                    // %wait
+                    if (line === WAIT) {
+                        log.debug('Wait for the planner queue to empty');
+                        return `G4 P0.5 (${WAIT})`; // dwell
+                    }
+
+                    // Expression
+                    // %_x=posx,_y=posy,_z=posz
+                    evaluateExpression(line.slice(1), context);
+                    return '';
                 }
 
-                return this.dataFilter(line, context);
+                { // Program Mode: M0, M1, M2, M30
+                    const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
+                    if (programMode === 'M0') {
+                        log.debug('M0 Program Pause');
+                        this.feeder.hold();
+                        this.emit('message', { cmd: 'M0' });
+                    } else if (programMode === 'M1') {
+                        log.debug('M1 Program Pause');
+                        this.feeder.hold();
+                        this.emit('message', { cmd: 'M1' });
+                    } else if (programMode === 'M2') {
+                        log.debug('M2 Program End');
+                        this.feeder.hold();
+                        this.emit('message', { cmd: 'M2' });
+                    } else if (programMode === 'M30') {
+                        log.debug('M30 Program End');
+                        this.feeder.hold();
+                        this.emit('message', { cmd: 'M30' });
+                    }
+                }
+
+                // M6 Tool Change
+                if (words.includes('M6')) {
+                    log.debug('M6 Tool Change');
+                    this.feeder.hold();
+                    this.emit('message', { cmd: 'M6' });
+                }
+
+                // line="G0 X[posx - 8] Y[ymax]"
+                // > "G0 X2 Y50"
+                return translateWithContext(line, context);
             }
         });
         this.feeder.on('data', (line = '', context = {}) => {
@@ -229,48 +215,64 @@ class SmoothieController {
             this.serialport.write(line + '\n');
             log.silly(`> ${line}`);
         });
+        this.feeder.on('hold', noop);
+        this.feeder.on('unhold', noop);
 
         // Sender
         this.sender = new Sender(SP_TYPE_CHAR_COUNTING, {
             // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
+                context = this.populateContext(context);
+
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
-                const cmds = ensureArray(data.cmds);
                 const { sent, received } = this.sender.state;
 
-                // %wait
-                if (cmds[0] === WAIT) {
-                    log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-                    this.sender.hold();
-                    return `G4 P0.5 (${WAIT})`; // dwell
+                if (line[0] === '%') {
+                    // Remove characters after ";"
+                    const re = new RegExp(/\s*;.*/g);
+                    line = line.replace(re, '');
+
+                    // %wait
+                    if (line === WAIT) {
+                        log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
+                        this.sender.hold();
+                        return `G4 P0.5 (${WAIT})`; // dwell
+                    }
+
+                    // Expression
+                    // %_x=posx,_y=posy,_z=posz
+                    evaluateExpression(line.slice(1), context);
+                    return '';
                 }
 
                 { // Program Mode: M0, M1, M2, M30
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
                     if (programMode === 'M0') {
                         log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ reason: 'M0' });
+                        this.workflow.pause({ cmd: 'M0' });
                     } else if (programMode === 'M1') {
                         log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ reason: 'M1' });
+                        this.workflow.pause({ cmd: 'M1' });
                     } else if (programMode === 'M2') {
                         log.debug(`M2 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ reason: 'M2' });
+                        this.workflow.pause({ cmd: 'M2' });
                     } else if (programMode === 'M30') {
                         log.debug(`M30 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ reason: 'M30' });
+                        this.workflow.pause({ cmd: 'M30' });
                     }
                 }
 
                 // M6 Tool Change
                 if (words.includes('M6')) {
-                    log.debug(`Tool Change: words=${words}, line=${sent + 1}, sent=${sent}, received=${received}`);
-                    this.workflow.pause({ reason: 'M6' });
+                    log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
+                    this.workflow.pause({ cmd: 'M6' });
                 }
 
-                return this.dataFilter(line, context);
+                // line="G0 X[posx - 8] Y[ymax]"
+                // > "G0 X2 Y50"
+                return translateWithContext(line, context);
             }
         });
         this.sender.on('data', (line = '', context = {}) => {
@@ -318,6 +320,12 @@ class SmoothieController {
         });
         this.workflow.on('resume', (context) => {
             this.emit('workflow:state', this.workflow.state, this.workflow.context);
+
+            // Clear feeder queue prior to resume program execution
+            this.feeder.clear();
+            this.feeder.unhold();
+
+            // Resume program execution
             this.sender.unhold();
             this.sender.next();
         });
@@ -996,6 +1004,11 @@ class SmoothieController {
                 this.event.trigger('cyclestart');
 
                 this.write('~');
+
+                if ((this.workflow.state !== WORKFLOW_STATE_RUNNING) && this.feeder.state.hold) {
+                    this.feeder.unhold();
+                    this.feeder.next();
+                }
             },
             'statusreport': () => {
                 this.write('?');

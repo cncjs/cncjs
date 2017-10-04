@@ -3,6 +3,7 @@ import events from 'events';
 
 class Feeder extends events.EventEmitter {
     state = {
+        hold: false,
         queue: [],
         pending: false,
         changed: false
@@ -38,6 +39,22 @@ class Feeder extends events.EventEmitter {
             this.emit('change');
         }
     }
+    hold() {
+        if (this.state.hold) {
+            return;
+        }
+        this.state.hold = true;
+        this.emit('hold');
+        this.emit('change');
+    }
+    unhold() {
+        if (!this.state.hold) {
+            return;
+        }
+        this.state.hold = false;
+        this.emit('unhold');
+        this.emit('change');
+    }
     clear() {
         this.state.queue = [];
         this.state.pending = false;
@@ -52,7 +69,7 @@ class Feeder extends events.EventEmitter {
             return false;
         }
 
-        while (this.state.queue.length > 0) {
+        while (!this.state.hold && this.state.queue.length > 0) {
             let { command, context } = this.state.queue.shift();
 
             if (this.dataFilter) {

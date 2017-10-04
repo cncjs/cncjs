@@ -30,6 +30,7 @@ const evaluateExpression = (src, context) => {
             }
         }
     } catch (e) {
+        log.error(`evaluateExpression: src="${src}", context=${context}`);
         log.error(e);
     }
 };

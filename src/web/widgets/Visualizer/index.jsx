@@ -8,7 +8,9 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Detector from 'three/examples/js/Detector';
 import Anchor from '../../components/Anchor';
+import { Button } from '../../components/Buttons';
 import Widget from '../../components/Widget';
+import alert from '../../lib/alert';
 import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -47,9 +49,11 @@ import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE,
     MODAL_WATCH_DIRECTORY,
-    NOTIFICATION_CATEGORY_PROGRAM_PAUSE,
-    NOTIFICATION_CATEGORY_PROGRAM_END,
-    NOTIFICATION_CATEGORY_TOOL_CHANGE
+    NOTIFICATION_CATEGORY_M0_PROGRAM_PAUSE,
+    NOTIFICATION_CATEGORY_M1_PROGRAM_PAUSE,
+    NOTIFICATION_CATEGORY_M2_PROGRAM_END,
+    NOTIFICATION_CATEGORY_M30_PROGRAM_END,
+    NOTIFICATION_CATEGORY_M6_TOOL_CHANGE
 } from './constants';
 import styles from './index.styl';
 
@@ -334,10 +338,10 @@ class VisualizerWidget extends PureComponent {
             }
 
             if (workflow.state === WORKFLOW_STATE_PAUSED) {
-                const { reason } = { ...workflow.context };
+                const { cmd } = { ...workflow.context };
 
                 // M6 Tool Change
-                if (reason === 'M6') {
+                if (cmd === 'M6') {
                     confirm({
                         title: i18n._('Tool Change'),
                         body: i18n._('Are you sure you want to resume program execution?'),
@@ -531,21 +535,31 @@ class VisualizerWidget extends PureComponent {
                 let category = '';
 
                 if (state === WORKFLOW_STATE_PAUSED) {
-                    const { reason } = { ...context };
+                    const { cmd } = { ...context };
 
-                    // Program Pause
-                    if (reason === 'M0' || reason === 'M1') {
-                        category = NOTIFICATION_CATEGORY_PROGRAM_PAUSE;
+                    // M0 Program Pause
+                    if (cmd === 'M0') {
+                        category = NOTIFICATION_CATEGORY_M0_PROGRAM_PAUSE;
                     }
 
-                    // Program End
-                    if (reason === 'M2' || reason === 'M30') {
-                        category = NOTIFICATION_CATEGORY_PROGRAM_END;
+                    // M1 Program Pause
+                    if (cmd === 'M1') {
+                        category = NOTIFICATION_CATEGORY_M1_PROGRAM_PAUSE;
+                    }
+
+                    // M2 Program End
+                    if (cmd === 'M2') {
+                        category = NOTIFICATION_CATEGORY_M2_PROGRAM_END;
+                    }
+
+                    // M30 Program End
+                    if (cmd === 'M30') {
+                        category = NOTIFICATION_CATEGORY_M30_PROGRAM_END;
                     }
 
                     // M6 Tool Change
-                    if (reason === 'M6') {
-                        category = NOTIFICATION_CATEGORY_TOOL_CHANGE;
+                    if (cmd === 'M6') {
+                        category = NOTIFICATION_CATEGORY_M6_TOOL_CHANGE;
                     }
                 }
 
@@ -652,6 +666,53 @@ class VisualizerWidget extends PureComponent {
                     })
                 }));
             }
+        },
+        'message': (data) => {
+            const { cmd } = data;
+            const title = {
+                M0: i18n._('M0 Program Pause'),
+                M1: i18n._('M1 Program Pause'),
+                M2: i18n._('M2 Program End'),
+                M30: i18n._('M30 Program End'),
+                M6: i18n._('M6 Tool Change')
+            }[cmd];
+            const content = {
+                M0: i18n._('Click the "Cycle Start" button to resume the execution.'),
+                M1: i18n._('Click the "Cycle Start" button to resume the execution.'),
+                M2: i18n._('Click the "Cycle Start" button to resume the execution.'),
+                M30: i18n._('Click the "Cycle Start" button to resume the execution.'),
+                M6: i18n._('Click the "Cycle Start" button to resume the execution.')
+            }[cmd];
+
+            if (!title || !content) {
+                // TODO
+                return;
+            }
+
+            const message = (
+                <div style={{ display: 'flex' }}>
+                    <i className="fa fa-exclamation-circle fa-4x" style={{ color: '#faca2a' }} />
+                    <div style={{ marginLeft: 25 }}>
+                        <h5>{title}</h5>
+                        <p>{content}</p>
+                    </div>
+                </div>
+            );
+            const props = {
+                button: (props) => (
+                    <Button
+                        {...props}
+                        btnStyle="primary"
+                    >
+                        {i18n._('Cycle Start')}
+                    </Button>
+                )
+            };
+
+            alert(message, props)
+                .then(() => {
+                    controller.command('cyclestart');
+                });
         }
     };
     pubsubTokens = [];
