@@ -1,8 +1,11 @@
+import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import i18n from '../../lib/i18n';
 import {
-    WORKFLOW_STATE_IDLE
+    // Workflow
+    WORKFLOW_STATE_IDLE,
+    WORKFLOW_STATE_PAUSED
 } from '../../constants';
 import styles from './index.styl';
 
@@ -14,8 +17,13 @@ class Macro extends PureComponent {
 
     render() {
         const { state, actions } = this.props;
-        const { port, workflowState, macros = [] } = state;
-        const canClick = port && workflowState === WORKFLOW_STATE_IDLE;
+        const {
+            canClick,
+            workflow,
+            macros = []
+        } = state;
+        const canRunMacro = canClick && includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state);
+        const canLoadMacro = canClick && includes([WORKFLOW_STATE_IDLE], workflow.state);
 
         return (
             <div>
@@ -37,7 +45,7 @@ class Macro extends PureComponent {
                                         <button
                                             type="button"
                                             className="btn btn-xs btn-default"
-                                            disabled={!canClick}
+                                            disabled={!canRunMacro}
                                             onClick={() => {
                                                 const { id } = macro;
                                                 actions.openRunMacroModal(id);
@@ -54,7 +62,7 @@ class Macro extends PureComponent {
                                             <button
                                                 type="button"
                                                 className="btn btn-xs btn-default"
-                                                disabled={!canClick}
+                                                disabled={!canLoadMacro}
                                                 onClick={() => {
                                                     const { id, name } = macro;
                                                     actions.confirmLoadMacro({ name })

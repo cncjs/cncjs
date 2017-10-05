@@ -173,9 +173,6 @@ class Header extends PureComponent {
                     }
                 });
             }
-        },
-        'workflow:state': (workflowState) => {
-            this.setState({ workflowState: workflowState });
         }
     };
     _isMounted = false;
@@ -190,7 +187,6 @@ class Header extends PureComponent {
         }
 
         return {
-            workflowState: controller.workflowState,
             pushPermission: pushPermission,
             commands: [],
             runningTasks: [],

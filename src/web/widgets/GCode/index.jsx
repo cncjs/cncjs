@@ -105,11 +105,6 @@ class GCodeWidget extends PureComponent {
                 remainingTime
             });
         },
-        'workflow:state': (workflowState) => {
-            if (this.state.workflowState !== workflowState) {
-                this.setState({ workflowState: workflowState });
-            }
-        },
         'controller:state': (type, state) => {
             // Grbl
             if (type === GRBL) {
@@ -178,7 +173,6 @@ class GCodeWidget extends PureComponent {
 
             port: controller.port,
             units: METRIC_UNITS,
-            workflowState: controller.workflowState,
 
             // G-code Status (from server)
             total: 0,

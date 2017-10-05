@@ -18,6 +18,7 @@ const translateWithContext = (data, context = {}) => {
             return value !== undefined ? value : match;
         });
     } catch (e) {
+        log.error(`translateWithContext: data="${data}", context=${context}`);
         log.error(e);
     }
 

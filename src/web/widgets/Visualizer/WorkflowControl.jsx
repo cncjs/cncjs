@@ -1,5 +1,7 @@
 import classNames from 'classnames';
-import _ from 'lodash';
+import get from 'lodash/get';
+import includes from 'lodash/includes';
+import pick from 'lodash/pick';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
@@ -14,9 +16,9 @@ import {
     TINYG,
     TINYG_MACHINE_STATE_ALARM,
     // Workflow
-    WORKFLOW_STATE_RUNNING,
+    WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED,
-    WORKFLOW_STATE_IDLE
+    WORKFLOW_STATE_RUNNING
 } from '../../constants';
 import {
     MODAL_WATCH_DIRECTORY
@@ -50,7 +52,7 @@ class WorkflowControl extends PureComponent {
                 return;
             }
 
-            log.debug('FileReader:', _.pick(file, [
+            log.debug('FileReader:', pick(file, [
                 'lastModified',
                 'lastModifiedDate',
                 'meta',
@@ -74,7 +76,7 @@ class WorkflowControl extends PureComponent {
     }
     canRun() {
         const { state } = this.props;
-        const { port, gcode, workflowState } = state;
+        const { port, gcode, workflow } = state;
         const controllerType = state.controller.type;
         const controllerState = state.controller.state;
 
@@ -84,33 +86,33 @@ class WorkflowControl extends PureComponent {
         if (!gcode.ready) {
             return false;
         }
-        if (!_.includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflowState)) {
+        if (!includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state)) {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const activeState = get(controllerState, 'status.activeState');
             const states = [
                 GRBL_ACTIVE_STATE_ALARM
             ];
-            if (_.includes(states, activeState)) {
+            if (includes(states, activeState)) {
                 return false;
             }
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const activeState = get(controllerState, 'status.activeState');
             const states = [
                 SMOOTHIE_ACTIVE_STATE_ALARM
             ];
-            if (_.includes(states, activeState)) {
+            if (includes(states, activeState)) {
                 return false;
             }
         }
         if (controllerType === TINYG) {
-            const machineState = _.get(controllerState, 'sr.machineState');
+            const machineState = get(controllerState, 'sr.machineState');
             const states = [
                 TINYG_MACHINE_STATE_ALARM
             ];
-            if (_.includes(states, machineState)) {
+            if (includes(states, machineState)) {
                 return false;
             }
         }
@@ -119,13 +121,13 @@ class WorkflowControl extends PureComponent {
     }
     render() {
         const { state, actions } = this.props;
-        const { port, gcode, workflowState } = state;
+        const { port, gcode, workflow } = state;
         const canClick = !!port;
         const isReady = canClick && gcode.ready;
         const canRun = this.canRun();
-        const canPause = isReady && _.includes([WORKFLOW_STATE_RUNNING], workflowState);
-        const canStop = isReady && _.includes([WORKFLOW_STATE_PAUSED], workflowState);
-        const canClose = isReady && _.includes([WORKFLOW_STATE_IDLE], workflowState);
+        const canPause = isReady && includes([WORKFLOW_STATE_RUNNING], workflow.state);
+        const canStop = isReady && includes([WORKFLOW_STATE_PAUSED], workflow.state);
+        const canClose = isReady && includes([WORKFLOW_STATE_IDLE], workflow.state);
         const canUpload = isReady ? canClose : (canClick && !gcode.loading);
 
         return (
@@ -182,7 +184,7 @@ class WorkflowControl extends PureComponent {
                         <button
                             type="button"
                             className="btn btn-default"
-                            title={i18n._('Run')}
+                            title={workflow.state === WORKFLOW_STATE_PAUSED ? i18n._('Resume') : i18n._('Run')}
                             onClick={actions.handleRun}
                             disabled={!canRun}
                         >
