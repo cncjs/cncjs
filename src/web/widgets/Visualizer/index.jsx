@@ -677,11 +677,11 @@ class VisualizerWidget extends PureComponent {
                 M6: i18n._('M6 Tool Change')
             }[cmd];
             const content = {
-                M0: i18n._('Click the "Cycle Start" button to resume the execution.'),
-                M1: i18n._('Click the "Cycle Start" button to resume the execution.'),
-                M2: i18n._('Click the "Cycle Start" button to resume the execution.'),
-                M30: i18n._('Click the "Cycle Start" button to resume the execution.'),
-                M6: i18n._('Click the "Cycle Start" button to resume the execution.')
+                M0: i18n._('Click the Continue button to resume execution.'),
+                M1: i18n._('Click the Continue button to resume execution.'),
+                M2: i18n._('Click the Continue button to resume execution.'),
+                M30: i18n._('Click the Continue button to resume execution.'),
+                M6: i18n._('Click the Continue button to resume execution.')
             }[cmd];
 
             if (!title || !content) {
@@ -704,7 +704,7 @@ class VisualizerWidget extends PureComponent {
                         {...props}
                         btnStyle="primary"
                     >
-                        {i18n._('Cycle Start')}
+                        {i18n._('Continue')}
                     </Button>
                 )
             };
