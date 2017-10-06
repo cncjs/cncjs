@@ -995,6 +995,25 @@ class SmoothieController {
 
                 this.workflow.resume();
             },
+            'feeder:feed': () => {
+                const [commands, context = {}] = args;
+                this.command(socket, 'gcode', commands, context);
+            },
+            'feeder:start': () => {
+                if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                    return;
+                }
+                this.write('~');
+                this.feeder.unhold();
+                this.feeder.next();
+            },
+            'feeder:pause': () => {
+                this.feeder.hold();
+            },
+            'feeder:stop': () => {
+                this.feeder.clear();
+                this.feeder.unhold();
+            },
             'feedhold': () => {
                 this.event.trigger('feedhold');
 
@@ -1004,11 +1023,6 @@ class SmoothieController {
                 this.event.trigger('cyclestart');
 
                 this.write('~');
-
-                if ((this.workflow.state !== WORKFLOW_STATE_RUNNING) && this.feeder.state.hold) {
-                    this.feeder.unhold();
-                    this.feeder.next();
-                }
             },
             'statusreport': () => {
                 this.write('?');
@@ -1117,7 +1131,7 @@ class SmoothieController {
                 const [commands, context] = args;
                 const data = ensureArray(commands)
                     .join('\n')
-                    .split('\n')
+                    .split(/\r?\n/)
                     .filter(line => {
                         if (typeof line !== 'string') {
                             return false;

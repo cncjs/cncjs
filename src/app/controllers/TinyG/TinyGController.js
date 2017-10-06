@@ -1037,6 +1037,26 @@ class TinyGController {
 
                 this.writeln('{"qr":""}'); // queue report
             },
+            'feeder:feed': () => {
+                const [commands, context = {}] = args;
+                this.command(socket, 'gcode', commands, context);
+            },
+            'feeder:start': () => {
+                if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                    return;
+                }
+                this.writeln('~'); // cycle start
+                this.writeln('{"qr":""}'); // queue report
+                this.feeder.unhold();
+                this.feeder.next();
+            },
+            'feeder:pause': () => {
+                this.feeder.hold();
+            },
+            'feeder:stop': () => {
+                this.feeder.clear();
+                this.feeder.unhold();
+            },
             'feedhold': () => {
                 this.event.trigger('feedhold');
 
@@ -1048,11 +1068,6 @@ class TinyGController {
 
                 this.writeln('~'); // cycle start
                 this.writeln('{"qr":""}'); // queue report
-
-                if ((this.workflow.state !== WORKFLOW_STATE_RUNNING) && this.feeder.state.hold) {
-                    this.feeder.unhold();
-                    this.feeder.next();
-                }
             },
             'statusreport': () => {
                 this.writeln('{"sr":null}');
@@ -1185,7 +1200,7 @@ class TinyGController {
                 const [commands, context] = args;
                 const data = ensureArray(commands)
                     .join('\n')
-                    .split('\n')
+                    .split(/\r?\n/)
                     .filter(line => {
                         if (typeof line !== 'string') {
                             return false;
