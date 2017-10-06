@@ -4,11 +4,11 @@ import Anchor from '../../components/Anchor';
 import { ToastNotification } from '../../components/Notifications';
 import i18n from '../../lib/i18n';
 import {
-    NOTIFICATION_CATEGORY_M0_PROGRAM_PAUSE,
-    NOTIFICATION_CATEGORY_M1_PROGRAM_PAUSE,
-    NOTIFICATION_CATEGORY_M2_PROGRAM_END,
-    NOTIFICATION_CATEGORY_M30_PROGRAM_END,
-    NOTIFICATION_CATEGORY_M6_TOOL_CHANGE
+    M0_PROGRAM_PAUSE,
+    M1_PROGRAM_PAUSE,
+    M2_PROGRAM_END,
+    M6_TOOL_CHANGE,
+    M30_PROGRAM_END
 } from './constants';
 
 const Notifications = ({ show, category, onDismiss, ...props }) => {
@@ -18,7 +18,7 @@ const Notifications = ({ show, category, onDismiss, ...props }) => {
 
     return (
         <div {...props}>
-            {category === NOTIFICATION_CATEGORY_M0_PROGRAM_PAUSE &&
+            {category === M0_PROGRAM_PAUSE &&
             <ToastNotification
                 type="info"
                 onDismiss={onDismiss}
@@ -27,7 +27,7 @@ const Notifications = ({ show, category, onDismiss, ...props }) => {
                 <div>{i18n._('Click the Resume button to resume program execution.')}</div>
             </ToastNotification>
             }
-            {category === NOTIFICATION_CATEGORY_M1_PROGRAM_PAUSE &&
+            {category === M1_PROGRAM_PAUSE &&
             <ToastNotification
                 type="info"
                 onDismiss={onDismiss}
@@ -36,7 +36,7 @@ const Notifications = ({ show, category, onDismiss, ...props }) => {
                 <div>{i18n._('Click the Resume button to resume program execution.')}</div>
             </ToastNotification>
             }
-            {category === NOTIFICATION_CATEGORY_M2_PROGRAM_END &&
+            {category === M2_PROGRAM_END &&
             <ToastNotification
                 type="info"
                 onDismiss={onDismiss}
@@ -45,16 +45,7 @@ const Notifications = ({ show, category, onDismiss, ...props }) => {
                 <div>{i18n._('Click the Stop button to stop program execution.')}</div>
             </ToastNotification>
             }
-            {category === NOTIFICATION_CATEGORY_M30_PROGRAM_END &&
-            <ToastNotification
-                type="info"
-                onDismiss={onDismiss}
-            >
-                <div><strong>{i18n._('M30 Program End')}</strong></div>
-                <div>{i18n._('Click the Stop button to stop program execution.')}</div>
-            </ToastNotification>
-            }
-            {category === NOTIFICATION_CATEGORY_M6_TOOL_CHANGE &&
+            {category === M6_TOOL_CHANGE &&
             <ToastNotification
                 type="info"
                 onDismiss={onDismiss}
@@ -70,6 +61,15 @@ const Notifications = ({ show, category, onDismiss, ...props }) => {
                         {i18n._('Learn more')}
                     </Anchor>
                 </div>
+            </ToastNotification>
+            }
+            {category === M30_PROGRAM_END &&
+            <ToastNotification
+                type="info"
+                onDismiss={onDismiss}
+            >
+                <div><strong>{i18n._('M30 Program End')}</strong></div>
+                <div>{i18n._('Click the Stop button to stop program execution.')}</div>
             </ToastNotification>
             }
         </div>

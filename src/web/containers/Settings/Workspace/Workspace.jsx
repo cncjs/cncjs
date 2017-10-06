@@ -1,10 +1,12 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from '../../../components/Buttons';
+import MessageTemplate from '../../../components/MessageTemplate';
+import Modal from '../../../components/Modal';
 import settings from '../../../config/settings';
-import alert from '../../../lib/alert';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
+import portal from '../../../lib/portal';
 import store from '../../../store';
 import RestoreDefaults from './RestoreDefaults';
 import ImportSettings from './ImportSettings';
@@ -48,15 +50,30 @@ class Workspace extends PureComponent {
             // TODO: Sanitization
             const { version, state } = { ...data };
             if (typeof version !== 'string' && typeof state !== 'object') {
-                alert(
-                    <div style={{ display: 'flex' }}>
-                        <i className="fa fa-exclamation-circle fa-4x" style={{ color: '#faca2a' }} />
-                        <div style={{ marginLeft: 25 }}>
-                            <h5>{i18n._('Import Error')}</h5>
-                            <p>{i18n._('Invalid file format.')}</p>
-                        </div>
-                    </div>
-                );
+                portal(({ onClose }) => (
+                    <Modal onClose={onClose}>
+                        <Modal.Header>
+                            <Modal.Title>
+                                {i18n._('Settings')}
+                                <span className="space" />
+                                &rsaquo;
+                                <span className="space" />
+                                {i18n._('Workspace')}
+                            </Modal.Title>
+                        </Modal.Header>
+                        <Modal.Body>
+                            <MessageTemplate type="error">
+                                <div><strong>{i18n._('Import Error')}</strong></div>
+                                <p>{i18n._('Invalid file format.')}</p>
+                            </MessageTemplate>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button onClick={onClose}>
+                                {i18n._('Close')}
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                ));
                 return;
             }
 

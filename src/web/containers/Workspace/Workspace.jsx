@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import chainedFunction from 'chained-function';
 import classNames from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
@@ -6,8 +7,10 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { Button, ButtonGroup, ButtonToolbar } from '../../components/Buttons';
+import MessageTemplate from '../../components/MessageTemplate';
 import Modal from '../../components/Modal';
 import api from '../../api';
+import portal from '../../lib/portal';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -79,6 +82,60 @@ class Workspace extends PureComponent {
         },
         'serialport:close': (options) => {
             this.setState({ port: '' });
+        },
+        'message': (data) => {
+            const { cmd } = data;
+
+            if (_.includes(['M0', 'M1', 'M2', 'M6', 'M30'], cmd)) {
+                const title = {
+                    M0: i18n._('M0 Program Pause'),
+                    M1: i18n._('M1 Program Pause'),
+                    M2: i18n._('M2 Program End'),
+                    M6: i18n._('M6 Tool Change'),
+                    M30: i18n._('M30 Program End')
+                }[cmd];
+
+                portal(({ onClose }) => (
+                    <Modal
+                        closeOnOverlayClick={false}
+                        showCloseButton={false}
+                        onClose={onClose}
+                    >
+                        <Modal.Body>
+                            <MessageTemplate type="warning">
+                                <h5>{title}</h5>
+                                <p>{i18n._('Click the Continue button to resume execution.')}</p>
+                            </MessageTemplate>
+                        </Modal.Body>
+                        <Modal.Footer>
+                            <Button
+                                className="pull-left"
+                                btnStyle="danger"
+                                onClick={chainedFunction(
+                                    () => {
+                                        controller.command('feeder:stop');
+                                    },
+                                    onClose
+                                )}
+                            >
+                                {i18n._('Stop')}
+                            </Button>
+                            <Button
+                                onClick={chainedFunction(
+                                    () => {
+                                        controller.command('feeder:start');
+                                    },
+                                    onClose
+                                )}
+                            >
+                                {i18n._('Continue')}
+                            </Button>
+                        </Modal.Footer>
+                    </Modal>
+                ));
+
+                return;
+            }
         }
     };
     widgetEventHandler = {
@@ -321,13 +378,10 @@ class Workspace extends PureComponent {
                     showCloseButton={false}
                 >
                     <Modal.Body>
-                        <div style={{ display: 'flex' }}>
-                            <i className="fa fa-exclamation-circle fa-4x text-danger" />
-                            <div style={{ marginLeft: 25 }}>
-                                <h5>{i18n._('Server has stopped working')}</h5>
-                                <p>{i18n._('A problem caused the server to stop working correctly. Check out the server status and try again.')}</p>
-                            </div>
-                        </div>
+                        <MessageTemplate type="error">
+                            <h5>{i18n._('Server has stopped working')}</h5>
+                            <p>{i18n._('A problem caused the server to stop working correctly. Check out the server status and try again.')}</p>
+                        </MessageTemplate>
                     </Modal.Body>
                     <Modal.Footer>
                         <Button

@@ -1,6 +1,7 @@
-import React, { PureComponent } from 'react';
-import Modal from '@trendmicro/react-modal';
 import '@trendmicro/react-modal/dist/react-modal.css';
+import Modal from '@trendmicro/react-modal';
+import chainedFunction from 'chained-function';
+import React, { PureComponent } from 'react';
 
 class ModalWrapper extends PureComponent {
     static propTypes = {
@@ -10,37 +11,25 @@ class ModalWrapper extends PureComponent {
         ...Modal.defaultProps
     };
 
-    bodyStyle = null;
-
     componentWillReceiveProps(nextProps) {
         if (nextProps.show !== this.props.show) {
             if (nextProps.show) {
-                this.changeBodyStyle();
+                this.blockScrolling();
             } else {
-                this.restoreBodyStyle();
+                this.unblockScrolling();
             }
         }
     }
     componentWillUnmount() {
-        this.restoreBodyStyle();
+        this.unblockScrolling();
     }
-    changeBodyStyle() {
-        if (this.bodyStyle) {
-            return;
-        }
-        // Prevent body from scrolling when a modal is opened
+    blockScrolling() {
         const body = document.querySelector('body');
-        this.bodyStyle = {
-            overflowY: body.style.overflowY
-        };
         body.style.overflowY = 'hidden';
     }
-    restoreBodyStyle() {
-        if (this.bodyStyle) {
-            const body = document.querySelector('body');
-            body.style.overflowY = this.bodyStyle.overflowY;
-            this.bodyStyle = null;
-        }
+    unblockScrolling() {
+        const body = document.querySelector('body');
+        body.style.overflowY = 'auto';
     }
     render() {
         const { onOpen, onClose, ...props } = this.props;
@@ -48,14 +37,8 @@ class ModalWrapper extends PureComponent {
         return (
             <Modal
                 {...props}
-                onOpen={() => {
-                    this.changeBodyStyle();
-                    onOpen();
-                }}
-                onClose={() => {
-                    this.restoreBodyStyle();
-                    onClose();
-                }}
+                onOpen={chainedFunction(this.blockScrolling, onOpen)}
+                onClose={chainedFunction(onClose, this.unblockScrolling)}
             />
         );
     }

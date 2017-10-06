@@ -1,12 +1,14 @@
+import chainedFunction from 'chained-function';
 import get from 'lodash/get';
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import confirm from '../../lib/confirm';
-import i18n from '../../lib/i18n';
+import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
+import i18n from '../../lib/i18n';
+import portal from '../../lib/portal';
 import Validation from '../../lib/react-validation';
 import insertAtCaret from './insertAtCaret';
 import variables from './variables';
@@ -135,20 +137,38 @@ class EditMacro extends PureComponent {
                         type="button"
                         className="btn btn-danger pull-left"
                         onClick={() => {
-                            confirm({
-                                title: i18n._('Delete Macro'),
-                                body: i18n._('Are you sure you want to delete this macro?'),
-                                btnConfirm: {
-                                    btnStyle: 'danger',
-                                    text: i18n._('Yes')
-                                },
-                                btnCancel: {
-                                    text: i18n._('No')
-                                }
-                            }).then(() => {
-                                actions.deleteMacro(id);
-                                actions.closeModal();
-                            });
+                            const name = get(this.fields.name, 'state.value');
+
+                            portal(({ onClose }) => (
+                                <Modal onClose={onClose}>
+                                    <Modal.Header>
+                                        <Modal.Title>
+                                            {i18n._('Delete Macro')}
+                                        </Modal.Title>
+                                    </Modal.Header>
+                                    <Modal.Body>
+                                        {i18n._('Are you sure you want to delete this macro?')}
+                                        <p><strong>{name}</strong></p>
+                                    </Modal.Body>
+                                    <Modal.Footer>
+                                        <Button onClick={onClose}>
+                                            {i18n._('No')}
+                                        </Button>
+                                        <Button
+                                            btnStyle="danger"
+                                            onClick={chainedFunction(
+                                                () => {
+                                                    actions.deleteMacro(id);
+                                                    actions.closeModal();
+                                                },
+                                                onClose
+                                            )}
+                                        >
+                                            {i18n._('Yes')}
+                                        </Button>
+                                    </Modal.Footer>
+                                </Modal>
+                            ));
                         }}
                     >
                         {i18n._('Delete')}

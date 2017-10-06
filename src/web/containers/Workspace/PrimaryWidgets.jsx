@@ -1,3 +1,4 @@
+import chainedFunction from 'chained-function';
 import classNames from 'classnames';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
@@ -8,7 +9,9 @@ import React, { Component } from 'react';
 import Sortable from 'react-sortablejs';
 import uuid from 'uuid';
 import { GRBL, SMOOTHIE, TINYG } from '../../constants';
-import confirm from '../../lib/confirm';
+import { Button } from '../../components/Buttons';
+import Modal from '../../components/Modal';
+import portal from '../../lib/portal';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -28,43 +31,91 @@ class PrimaryWidgets extends Component {
         widgets: store.get('workspace.container.primary.widgets')
     };
     forkWidget = (widgetId) => () => {
-        confirm({
-            title: i18n._('Fork Widget'),
-            body: i18n._('Are you sure you want to fork this widget?')
-        }).then(() => {
-            const name = widgetId.split(':')[0];
-            if (!name) {
-                log.error(`Failed to fork widget: widgetId=${widgetId}`);
-                return;
-            }
+        portal(({ onClose }) => (
+            <Modal onClose={onClose}>
+                <Modal.Header>
+                    <Modal.Title>
+                        {i18n._('Fork Widget')}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {i18n._('Are you sure you want to fork this widget?')}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        onClick={onClose}
+                    >
+                        {i18n._('Cancel')}
+                    </Button>
+                    <Button
+                        btnStyle="primary"
+                        onClick={chainedFunction(
+                            () => {
+                                const name = widgetId.split(':')[0];
+                                if (!name) {
+                                    log.error(`Failed to fork widget: widgetId=${widgetId}`);
+                                    return;
+                                }
 
-            // Use the same widget settings in a new widget
-            const forkedWidgetId = `${name}:${uuid.v4()}`;
-            const defaultSettings = store.get(`widgets["${name}"]`);
-            const clonedSettings = store.get(`widgets["${widgetId}"]`, defaultSettings);
-            store.set(`widgets["${forkedWidgetId}"]`, clonedSettings);
+                                // Use the same widget settings in a new widget
+                                const forkedWidgetId = `${name}:${uuid.v4()}`;
+                                const defaultSettings = store.get(`widgets["${name}"]`);
+                                const clonedSettings = store.get(`widgets["${widgetId}"]`, defaultSettings);
+                                store.set(`widgets["${forkedWidgetId}"]`, clonedSettings);
 
-            const widgets = [...this.state.widgets, forkedWidgetId];
-            this.setState({ widgets: widgets });
+                                const widgets = [...this.state.widgets, forkedWidgetId];
+                                this.setState({ widgets: widgets });
 
-            this.props.onForkWidget(widgetId);
-        });
+                                this.props.onForkWidget(widgetId);
+                            },
+                            onClose
+                        )}
+                    >
+                        {i18n._('OK')}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        ));
     };
     removeWidget = (widgetId) => () => {
-        confirm({
-            title: i18n._('Remove Widget'),
-            body: i18n._('Are you sure you want to remove this widget?')
-        }).then(() => {
-            const widgets = this.state.widgets.filter(n => n !== widgetId);
-            this.setState({ widgets: widgets });
+        portal(({ onClose }) => (
+            <Modal onClose={onClose}>
+                <Modal.Header>
+                    <Modal.Title>
+                        {i18n._('Remove Widget')}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {i18n._('Are you sure you want to remove this widget?')}
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        onClick={onClose}
+                    >
+                        {i18n._('Cancel')}
+                    </Button>
+                    <Button
+                        btnStyle="primary"
+                        onClick={chainedFunction(
+                            () => {
+                                const widgets = this.state.widgets.filter(n => n !== widgetId);
+                                this.setState({ widgets: widgets });
 
-            if (widgetId.match(/\w+:[\w\-]+/)) {
-                // Remove forked widget settings
-                store.unset(`widgets["${widgetId}"]`);
-            }
+                                if (widgetId.match(/\w+:[\w\-]+/)) {
+                                    // Remove forked widget settings
+                                    store.unset(`widgets["${widgetId}"]`);
+                                }
 
-            this.props.onRemoveWidget(widgetId);
-        });
+                                this.props.onRemoveWidget(widgetId);
+                            },
+                            onClose
+                        )}
+                    >
+                        {i18n._('OK')}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        ));
     };
     pubsubTokens = [];
     widgetMap = {};
