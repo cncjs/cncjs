@@ -50,11 +50,12 @@ import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE,
     MODAL_WATCH_DIRECTORY,
-    M0_PROGRAM_PAUSE,
-    M1_PROGRAM_PAUSE,
-    M2_PROGRAM_END,
-    M6_TOOL_CHANGE,
-    M30_PROGRAM_END
+    NOTIFICATION_PROGRAM_ERROR,
+    NOTIFICATION_M0_PROGRAM_PAUSE,
+    NOTIFICATION_M1_PROGRAM_PAUSE,
+    NOTIFICATION_M2_PROGRAM_END,
+    NOTIFICATION_M6_TOOL_CHANGE,
+    NOTIFICATION_M30_PROGRAM_END
 } from './constants';
 import styles from './index.styl';
 
@@ -140,7 +141,8 @@ class VisualizerWidget extends PureComponent {
             this.setState((state) => ({
                 notification: {
                     ...state.notification,
-                    category: ''
+                    type: '',
+                    data: ''
                 }
             }));
         },
@@ -352,10 +354,10 @@ class VisualizerWidget extends PureComponent {
             }
 
             if (workflow.state === WORKFLOW_STATE_PAUSED) {
-                const { cmd } = { ...workflow.context };
+                const { notification } = this.state;
 
                 // M6 Tool Change
-                if (cmd === 'M6') {
+                if (notification.type === NOTIFICATION_M6_TOOL_CHANGE) {
                     portal(({ onClose }) => (
                         <Modal onClose={onClose}>
                             <Modal.Header>
@@ -561,45 +563,43 @@ class VisualizerWidget extends PureComponent {
         },
         'workflow:state': (state, context) => {
             this.setState(prevState => {
-                let category = '';
+                const notification = {
+                    type: '',
+                    data: ''
+                };
 
                 if (state === WORKFLOW_STATE_PAUSED) {
-                    const { cmd } = { ...context };
+                    const { err, data } = { ...context };
 
-                    // M0 Program Pause
-                    if (cmd === 'M0') {
-                        category = M0_PROGRAM_PAUSE;
-                    }
-
-                    // M1 Program Pause
-                    if (cmd === 'M1') {
-                        category = M1_PROGRAM_PAUSE;
-                    }
-
-                    // M2 Program End
-                    if (cmd === 'M2') {
-                        category = M2_PROGRAM_END;
-                    }
-
-                    // M30 Program End
-                    if (cmd === 'M30') {
-                        category = M30_PROGRAM_END;
-                    }
-
-                    // M6 Tool Change
-                    if (cmd === 'M6') {
-                        category = M6_TOOL_CHANGE;
+                    if (err) {
+                        notification.type = NOTIFICATION_PROGRAM_ERROR;
+                        notification.data = err;
+                    } else if (data === 'M0') {
+                        // M0 Program Pause
+                        notification.type = NOTIFICATION_M0_PROGRAM_PAUSE;
+                    } else if (data === 'M1') {
+                        // M1 Program Pause
+                        notification.type = NOTIFICATION_M1_PROGRAM_PAUSE;
+                    } else if (data === 'M2') {
+                        // M2 Program End
+                        notification.type = NOTIFICATION_M2_PROGRAM_END;
+                    } else if (data === 'M30') {
+                        // M30 Program End
+                        notification.type = NOTIFICATION_M30_PROGRAM_END;
+                    } else if (data === 'M6') {
+                        // M6 Tool Change
+                        notification.type = NOTIFICATION_M6_TOOL_CHANGE;
                     }
                 }
 
                 return {
-                    notification: {
-                        ...prevState.notification,
-                        category: category
-                    },
                     workflow: {
                         state: state,
                         context: context
+                    },
+                    notification: {
+                        ...prevState.notification,
+                        ...notification
                     }
                 };
             });
@@ -756,7 +756,8 @@ class VisualizerWidget extends PureComponent {
                 context: controller.workflow.context
             },
             notification: {
-                category: ''
+                type: '',
+                data: ''
             },
             modal: {
                 name: '',
@@ -875,7 +876,7 @@ class VisualizerWidget extends PureComponent {
         };
         const showDashboard = !capable.view3D && !showLoader;
         const showVisualizer = capable.view3D && !showLoader;
-        const showNotifications = !!(showVisualizer && state.notification.category);
+        const showNotifications = showVisualizer && !!state.notification.type;
 
         return (
             <Widget borderless>
@@ -923,12 +924,14 @@ class VisualizerWidget extends PureComponent {
                         state={state}
                     />
                     }
+                    {showNotifications &&
                     <Notifications
-                        className={styles.notifications}
                         show={showNotifications}
-                        category={state.notification.category}
+                        type={state.notification.type}
+                        data={state.notification.data}
                         onDismiss={actions.dismissNotification}
                     />
+                    }
                 </Widget.Content>
                 {capable.view3D &&
                 <Widget.Footer className={styles.widgetFooter}>
