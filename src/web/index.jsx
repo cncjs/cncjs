@@ -15,7 +15,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import settings from './config/settings';
-import alert from './lib/alert';
+import portal from './lib/portal';
 import controller from './lib/controller';
 import i18n from './lib/i18n';
 import log from './lib/log';
@@ -26,6 +26,8 @@ import App from './containers/App';
 import Login from './containers/Login';
 import Anchor from './components/Anchor';
 import { Button } from './components/Buttons';
+import MessageTemplate from './components/MessageTemplate';
+import Modal from './components/Modal';
 import ProtectedRoute from './components/ProtectedRoute';
 import './styles/vendor.styl';
 import './styles/app.styl';
@@ -99,7 +101,7 @@ series([
                 next();
             });
     }
-], (err, results) => {
+], async (err, results) => {
     log.info(`${settings.name} ${settings.version}`);
 
     // Cross-origin communication
@@ -149,54 +151,48 @@ series([
         const text = store.getConfig();
         const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
         const filename = `${settings.name}-${settings.version}.json`;
-        const message = (
-            <div style={{ display: 'flex' }}>
-                <i className="fa fa-exclamation-circle fa-4x" style={{ color: '#faca2a' }} />
-                <div style={{ marginLeft: 25 }}>
-                    <h5>{i18n._('Corrupted workspace settings')}</h5>
-                    <p>{i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}</p>
-                    <div>
-                        <Anchor
-                            href={url}
-                            download={filename}
-                        >
-                            <i className="fa fa-download" />
-                            <span className="space space-sm" />
-                            {i18n._('Download workspace settings')}
-                        </Anchor>
-                    </div>
-                </div>
-            </div>
-        );
-        const props = {
-            button: (props) => {
-                const onClick = chainedFunction(
-                    () => {
-                        // Reset to default state
-                        store.state = defaultState;
 
-                        // Persist data locally
-                        store.persist();
-                    },
-                    // Dismiss
-                    props.onClick
-                );
-
-                return (
+        await portal(({ onClose }) => (
+            <Modal
+                closeOnOverlayClick={false}
+                showCloseButton={false}
+                onClose={onClose}
+            >
+                <Modal.Body>
+                    <MessageTemplate type="error">
+                        <h5>{i18n._('Corrupted workspace settings')}</h5>
+                        <p>{i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}</p>
+                        <div>
+                            <Anchor
+                                href={url}
+                                download={filename}
+                            >
+                                <i className="fa fa-download" />
+                                <span className="space space-sm" />
+                                {i18n._('Download workspace settings')}
+                            </Anchor>
+                        </div>
+                    </MessageTemplate>
+                </Modal.Body>
+                <Modal.Footer>
                     <Button
                         btnStyle="danger"
-                        onClick={onClick}
+                        onClick={chainedFunction(
+                            () => {
+                                // Reset to default state
+                                store.state = defaultState;
+
+                                // Persist data locally
+                                store.persist();
+                            },
+                            onClose
+                        )}
                     >
                         {i18n._('Restore Defaults')}
                     </Button>
-                );
-            }
-        };
-
-        alert(message, props)
-            .then(renderPage);
-
-        return;
+                </Modal.Footer>
+            </Modal>
+        ));
     }
 
     renderPage();

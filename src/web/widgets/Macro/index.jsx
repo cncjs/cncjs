@@ -5,7 +5,6 @@ import includes from 'lodash/includes';
 import React, { PureComponent } from 'react';
 import api from '../../api';
 import Widget from '../../components/Widget';
-import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -148,21 +147,6 @@ class MacroWidget extends PureComponent {
                 }
             });
         },
-        confirmLoadMacro: ({ name }) => confirm({
-            title: i18n._('Load Macro'),
-            body: (
-                <div className={styles.macroLoad}>
-                    <p>{i18n._('Are you sure you want to load this macro?')}</p>
-                    <p>{name}</p>
-                </div>
-            ),
-            btnConfirm: {
-                text: i18n._('Yes')
-            },
-            btnCancel: {
-                text: i18n._('No')
-            }
-        }),
         loadMacro: async (id, { name }) => {
             try {
                 let res;

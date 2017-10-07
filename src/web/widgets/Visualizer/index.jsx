@@ -1,3 +1,4 @@
+import chainedFunction from 'chained-function';
 import classNames from 'classnames';
 import ExpressionEvaluator from 'expr-eval';
 import includes from 'lodash/includes';
@@ -9,13 +10,13 @@ import React, { PureComponent } from 'react';
 import Detector from 'three/examples/js/Detector';
 import Anchor from '../../components/Anchor';
 import { Button } from '../../components/Buttons';
+import MessageTemplate from '../../components/MessageTemplate';
+import Modal from '../../components/Modal';
 import Widget from '../../components/Widget';
-import alert from '../../lib/alert';
-import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
-import modal from '../../lib/modal';
+import portal from '../../lib/portal';
 import { in2mm } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
 import PrimaryToolbar from './PrimaryToolbar';
@@ -49,11 +50,12 @@ import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE,
     MODAL_WATCH_DIRECTORY,
-    NOTIFICATION_CATEGORY_M0_PROGRAM_PAUSE,
-    NOTIFICATION_CATEGORY_M1_PROGRAM_PAUSE,
-    NOTIFICATION_CATEGORY_M2_PROGRAM_END,
-    NOTIFICATION_CATEGORY_M30_PROGRAM_END,
-    NOTIFICATION_CATEGORY_M6_TOOL_CHANGE
+    NOTIFICATION_PROGRAM_ERROR,
+    NOTIFICATION_M0_PROGRAM_PAUSE,
+    NOTIFICATION_M1_PROGRAM_PAUSE,
+    NOTIFICATION_M2_PROGRAM_END,
+    NOTIFICATION_M6_TOOL_CHANGE,
+    NOTIFICATION_M30_PROGRAM_END
 } from './constants';
 import styles from './index.styl';
 
@@ -91,27 +93,40 @@ const translateGCodeWithContext = (function() {
 }());
 
 const displayWebGLErrorMessage = () => {
-    modal({
-        title: 'WebGL Error Message',
-        body: (
-            <div>
-                {window.WebGLRenderingContext &&
-                <div>
-                    Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
-                    <br />
-                    Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
-                </div>
-                }
-                {!window.WebGLRenderingContext &&
-                <div>
-                    Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
-                    <br />
-                    Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
-                </div>
-                }
-            </div>
-        )
-    });
+    portal(({ onClose }) => (
+        <Modal onClose={onClose}>
+            <Modal.Header>
+                <Modal.Title>
+                    WebGL Error Message
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
+                <MessageTemplate type="warning">
+                    {window.WebGLRenderingContext &&
+                    <div>
+                        Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+                        <br />
+                        Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+                    </div>
+                    }
+                    {!window.WebGLRenderingContext &&
+                    <div>
+                        Your browser does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
+                        <br />
+                        Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
+                    </div>
+                    }
+                </MessageTemplate>
+            </Modal.Body>
+            <Modal.Footer>
+                <Button
+                    onClick={onClose}
+                >
+                    {i18n._('OK')}
+                </Button>
+            </Modal.Footer>
+        </Modal>
+    ));
 };
 
 class VisualizerWidget extends PureComponent {
@@ -126,7 +141,8 @@ class VisualizerWidget extends PureComponent {
             this.setState((state) => ({
                 notification: {
                     ...state.notification,
-                    category: ''
+                    type: '',
+                    data: ''
                 }
             }));
         },
@@ -338,23 +354,38 @@ class VisualizerWidget extends PureComponent {
             }
 
             if (workflow.state === WORKFLOW_STATE_PAUSED) {
-                const { cmd } = { ...workflow.context };
+                const { notification } = this.state;
 
                 // M6 Tool Change
-                if (cmd === 'M6') {
-                    confirm({
-                        title: i18n._('Tool Change'),
-                        body: i18n._('Are you sure you want to resume program execution?'),
-                        btnConfirm: {
-                            btnStyle: 'danger',
-                            text: i18n._('Yes')
-                        },
-                        btnCancel: {
-                            text: i18n._('No')
-                        }
-                    }).then(() => {
-                        controller.command('gcode:resume');
-                    });
+                if (notification.type === NOTIFICATION_M6_TOOL_CHANGE) {
+                    portal(({ onClose }) => (
+                        <Modal onClose={onClose}>
+                            <Modal.Header>
+                                <Modal.Title>
+                                    {i18n._('Tool Change')}
+                                </Modal.Title>
+                            </Modal.Header>
+                            <Modal.Body>
+                                {i18n._('Are you sure you want to resume program execution?')}
+                            </Modal.Body>
+                            <Modal.Footer>
+                                <Button onClick={onClose}>
+                                    {i18n._('No')}
+                                </Button>
+                                <Button
+                                    btnStyle="primary"
+                                    onClick={chainedFunction(
+                                        () => {
+                                            controller.command('gcode:resume');
+                                        },
+                                        onClose
+                                    )}
+                                >
+                                    {i18n._('Yes')}
+                                </Button>
+                            </Modal.Footer>
+                        </Modal>
+                    ));
 
                     return;
                 }
@@ -532,45 +563,43 @@ class VisualizerWidget extends PureComponent {
         },
         'workflow:state': (state, context) => {
             this.setState(prevState => {
-                let category = '';
+                const notification = {
+                    type: '',
+                    data: ''
+                };
 
                 if (state === WORKFLOW_STATE_PAUSED) {
-                    const { cmd } = { ...context };
+                    const { err, data } = { ...context };
 
-                    // M0 Program Pause
-                    if (cmd === 'M0') {
-                        category = NOTIFICATION_CATEGORY_M0_PROGRAM_PAUSE;
-                    }
-
-                    // M1 Program Pause
-                    if (cmd === 'M1') {
-                        category = NOTIFICATION_CATEGORY_M1_PROGRAM_PAUSE;
-                    }
-
-                    // M2 Program End
-                    if (cmd === 'M2') {
-                        category = NOTIFICATION_CATEGORY_M2_PROGRAM_END;
-                    }
-
-                    // M30 Program End
-                    if (cmd === 'M30') {
-                        category = NOTIFICATION_CATEGORY_M30_PROGRAM_END;
-                    }
-
-                    // M6 Tool Change
-                    if (cmd === 'M6') {
-                        category = NOTIFICATION_CATEGORY_M6_TOOL_CHANGE;
+                    if (err) {
+                        notification.type = NOTIFICATION_PROGRAM_ERROR;
+                        notification.data = err;
+                    } else if (data === 'M0') {
+                        // M0 Program Pause
+                        notification.type = NOTIFICATION_M0_PROGRAM_PAUSE;
+                    } else if (data === 'M1') {
+                        // M1 Program Pause
+                        notification.type = NOTIFICATION_M1_PROGRAM_PAUSE;
+                    } else if (data === 'M2') {
+                        // M2 Program End
+                        notification.type = NOTIFICATION_M2_PROGRAM_END;
+                    } else if (data === 'M30') {
+                        // M30 Program End
+                        notification.type = NOTIFICATION_M30_PROGRAM_END;
+                    } else if (data === 'M6') {
+                        // M6 Tool Change
+                        notification.type = NOTIFICATION_M6_TOOL_CHANGE;
                     }
                 }
 
                 return {
-                    notification: {
-                        ...prevState.notification,
-                        category: category
-                    },
                     workflow: {
                         state: state,
                         context: context
+                    },
+                    notification: {
+                        ...prevState.notification,
+                        ...notification
                     }
                 };
             });
@@ -666,53 +695,6 @@ class VisualizerWidget extends PureComponent {
                     })
                 }));
             }
-        },
-        'message': (data) => {
-            const { cmd } = data;
-            const title = {
-                M0: i18n._('M0 Program Pause'),
-                M1: i18n._('M1 Program Pause'),
-                M2: i18n._('M2 Program End'),
-                M30: i18n._('M30 Program End'),
-                M6: i18n._('M6 Tool Change')
-            }[cmd];
-            const content = {
-                M0: i18n._('Click the Continue button to resume execution.'),
-                M1: i18n._('Click the Continue button to resume execution.'),
-                M2: i18n._('Click the Continue button to resume execution.'),
-                M30: i18n._('Click the Continue button to resume execution.'),
-                M6: i18n._('Click the Continue button to resume execution.')
-            }[cmd];
-
-            if (!title || !content) {
-                // TODO
-                return;
-            }
-
-            const message = (
-                <div style={{ display: 'flex' }}>
-                    <i className="fa fa-exclamation-circle fa-4x" style={{ color: '#faca2a' }} />
-                    <div style={{ marginLeft: 25 }}>
-                        <h5>{title}</h5>
-                        <p>{content}</p>
-                    </div>
-                </div>
-            );
-            const props = {
-                button: (props) => (
-                    <Button
-                        {...props}
-                        btnStyle="primary"
-                    >
-                        {i18n._('Continue')}
-                    </Button>
-                )
-            };
-
-            alert(message, props)
-                .then(() => {
-                    controller.command('cyclestart');
-                });
         }
     };
     pubsubTokens = [];
@@ -774,7 +756,8 @@ class VisualizerWidget extends PureComponent {
                 context: controller.workflow.context
             },
             notification: {
-                category: ''
+                type: '',
+                data: ''
             },
             modal: {
                 name: '',
@@ -893,7 +876,7 @@ class VisualizerWidget extends PureComponent {
         };
         const showDashboard = !capable.view3D && !showLoader;
         const showVisualizer = capable.view3D && !showLoader;
-        const showNotifications = !!(showVisualizer && state.notification.category);
+        const showNotifications = showVisualizer && !!state.notification.type;
 
         return (
             <Widget borderless>
@@ -941,12 +924,14 @@ class VisualizerWidget extends PureComponent {
                         state={state}
                     />
                     }
+                    {showNotifications &&
                     <Notifications
-                        className={styles.notifications}
                         show={showNotifications}
-                        category={state.notification.category}
+                        type={state.notification.type}
+                        data={state.notification.data}
                         onDismiss={actions.dismissNotification}
                     />
+                    }
                 </Widget.Content>
                 {capable.view3D &&
                 <Widget.Footer className={styles.widgetFooter}>

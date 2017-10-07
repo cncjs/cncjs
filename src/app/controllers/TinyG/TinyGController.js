@@ -247,23 +247,23 @@ class TinyGController {
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
                     if (programMode === 'M0') {
                         log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ cmd: 'M0' });
+                        this.workflow.pause({ err: null, data: 'M0' });
                     } else if (programMode === 'M1') {
                         log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ cmd: 'M1' });
+                        this.workflow.pause({ err: null, data: 'M1' });
                     } else if (programMode === 'M2') {
                         log.debug(`M2 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ cmd: 'M2' });
+                        this.workflow.pause({ err: null, data: 'M2' });
                     } else if (programMode === 'M30') {
                         log.debug(`M30 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ cmd: 'M30' });
+                        this.workflow.pause({ err: null, data: 'M30' });
                     }
                 }
 
                 // M6 Tool Change
                 if (words.includes('M6')) {
                     log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-                    this.workflow.pause({ cmd: 'M6' });
+                    this.workflow.pause({ err: null, data: 'M6' });
                 }
 
                 // line="G0 X[posx - 8] Y[ymax]"
@@ -461,7 +461,7 @@ class TinyGController {
                 const code = Number(statusCode);
                 const err = _.find(TINYG_STATUS_CODES, { code: code }) || {};
 
-                if (this.workflow.state !== WORKFLOW_STATE_IDLE) {
+                if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                     const { lines, received } = this.sender.state;
                     const line = lines[received] || '';
 
@@ -474,14 +474,18 @@ class TinyGController {
                             data: line.trim()
                         }
                     }));
-                } else {
-                    this.emit('serialport:read', JSON.stringify({
-                        err: {
-                            code: code,
-                            msg: err.msg
-                        }
-                    }));
+
+                    this.workflow.pause({ err: err.msg });
+
+                    return;
                 }
+
+                this.emit('serialport:read', JSON.stringify({
+                    err: {
+                        code: code,
+                        msg: err.msg
+                    }
+                }));
             }
 
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
@@ -1037,6 +1041,26 @@ class TinyGController {
 
                 this.writeln('{"qr":""}'); // queue report
             },
+            'feeder:feed': () => {
+                const [commands, context = {}] = args;
+                this.command(socket, 'gcode', commands, context);
+            },
+            'feeder:start': () => {
+                if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                    return;
+                }
+                this.writeln('~'); // cycle start
+                this.writeln('{"qr":""}'); // queue report
+                this.feeder.unhold();
+                this.feeder.next();
+            },
+            'feeder:pause': () => {
+                this.feeder.hold();
+            },
+            'feeder:stop': () => {
+                this.feeder.clear();
+                this.feeder.unhold();
+            },
             'feedhold': () => {
                 this.event.trigger('feedhold');
 
@@ -1048,11 +1072,6 @@ class TinyGController {
 
                 this.writeln('~'); // cycle start
                 this.writeln('{"qr":""}'); // queue report
-
-                if ((this.workflow.state !== WORKFLOW_STATE_RUNNING) && this.feeder.state.hold) {
-                    this.feeder.unhold();
-                    this.feeder.next();
-                }
             },
             'statusreport': () => {
                 this.writeln('{"sr":null}');
@@ -1185,7 +1204,7 @@ class TinyGController {
                 const [commands, context] = args;
                 const data = ensureArray(commands)
                     .join('\n')
-                    .split('\n')
+                    .split(/\r?\n/)
                     .filter(line => {
                         if (typeof line !== 'string') {
                             return false;

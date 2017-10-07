@@ -9,7 +9,6 @@ import api from '../../api';
 import Anchor from '../../components/Anchor';
 import settings from '../../config/settings';
 import combokeys from '../../lib/combokeys';
-import confirm from '../../lib/confirm';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -234,15 +233,6 @@ class Header extends PureComponent {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
-        });
-    }
-    handleRestoreDefaults() {
-        confirm({
-            title: i18n._('Restore Defaults'),
-            body: i18n._('Are you sure you want to restore the default settings?')
-        }).then(() => {
-            store.clear();
-            window.location.reload();
         });
     }
     render() {

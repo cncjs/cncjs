@@ -1,7 +1,11 @@
+import chainedFunction from 'chained-function';
 import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Button } from '../../components/Buttons';
+import Modal from '../../components/Modal';
 import i18n from '../../lib/i18n';
+import portal from '../../lib/portal';
 import {
     // Workflow
     WORKFLOW_STATE_IDLE,
@@ -65,10 +69,38 @@ class Macro extends PureComponent {
                                                 disabled={!canLoadMacro}
                                                 onClick={() => {
                                                     const { id, name } = macro;
-                                                    actions.confirmLoadMacro({ name })
-                                                        .then(() => {
-                                                            actions.loadMacro(id, { name });
-                                                        });
+
+                                                    portal(({ onClose }) => (
+                                                        <Modal onClose={onClose}>
+                                                            <Modal.Header>
+                                                                <Modal.Title>
+                                                                    {i18n._('Load Macro')}
+                                                                </Modal.Title>
+                                                            </Modal.Header>
+                                                            <Modal.Body>
+                                                                {i18n._('Are you sure you want to load this macro?')}
+                                                                <p><strong>{name}</strong></p>
+                                                            </Modal.Body>
+                                                            <Modal.Footer>
+                                                                <Button
+                                                                    onClick={onClose}
+                                                                >
+                                                                    {i18n._('No')}
+                                                                </Button>
+                                                                <Button
+                                                                    btnStyle="primary"
+                                                                    onClick={chainedFunction(
+                                                                        () => {
+                                                                            actions.loadMacro(id, { name });
+                                                                        },
+                                                                        onClose
+                                                                    )}
+                                                                >
+                                                                    {i18n._('Yes')}
+                                                                </Button>
+                                                            </Modal.Footer>
+                                                        </Modal>
+                                                    ));
                                                 }}
                                                 title={i18n._('Load Macro')}
                                             >
