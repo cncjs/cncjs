@@ -201,15 +201,15 @@ class PrimaryToolbar extends PureComponent {
         const defaultWCS = 'G54';
 
         if (controllerType === GRBL) {
-            return _.get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
+            return _.get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
         }
 
         if (controllerType === SMOOTHIE) {
-            return _.get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
+            return _.get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
         }
 
         if (controllerType === TINYG) {
-            return _.get(controllerState, 'sr.modal.coordinate') || defaultWCS;
+            return _.get(controllerState, 'sr.modal.wcs') || defaultWCS;
         }
 
         return defaultWCS;

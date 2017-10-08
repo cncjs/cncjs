@@ -125,8 +125,8 @@ class Smoothie extends PureComponent {
                                 {i18n._('Coordinate')}
                             </div>
                             <div className="col col-xs-8">
-                                <div className={styles.well} title={modal.coordinate}>
-                                    {modal.coordinate || none}
+                                <div className={styles.well} title={modal.wcs}>
+                                    {modal.wcs || none}
                                 </div>
                             </div>
                         </div>

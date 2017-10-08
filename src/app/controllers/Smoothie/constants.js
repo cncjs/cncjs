@@ -24,8 +24,8 @@ export const SMOOTHIE_MODAL_GROUPS = [
         group: 'motion',
         modes: ['G0', 'G1', 'G2', 'G3', 'G38.2', 'G38.3', 'G38.4', 'G38.5', 'G80']
     },
-    { // Coordinate System Select (Defaults to G54)
-        group: 'coordinate',
+    { // Work Coordinate System Select (Defaults to G54)
+        group: 'wcs',
         modes: ['G54', 'G55', 'G56', 'G57', 'G58', 'G59']
     },
     { // Plane Select (Defaults to G17)

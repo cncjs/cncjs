@@ -255,7 +255,7 @@ class TinyG extends events.EventEmitter {
             },
             modal: {
                 motion: '', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
-                coordinate: '', // G54, G55, G56, G57, G58, G59
+                wcs: '', // G54, G55, G56, G57, G58, G59
                 plane: '', // G17: xy-plane, G18: xz-plane, G19: yz-plane
                 units: '', // G20: Inches, G21: Millimeters
                 distance: '', // G90: Absolute, G91: Relative
@@ -372,7 +372,7 @@ class TinyG extends events.EventEmitter {
                             [TINYG_GCODE_COORDINATE_G58]: 'G58', // Coordinate system 5
                             [TINYG_GCODE_COORDINATE_G59]: 'G59' // Coordinate system 6
                         }[val] || '';
-                        _.set(target, 'modal.coordinate', gcode);
+                        _.set(target, 'modal.wcs', gcode);
                     },
                     'plan': (target, val) => {
                         const gcode = {

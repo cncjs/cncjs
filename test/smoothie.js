@@ -151,7 +151,7 @@ test('SmoothieLineParserResultParserState', (t) => {
         t.same(parserstate, {
             modal: {
                 motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
-                coordinate: 'G54', // G54, G55, G56, G57, G58, G59
+                wcs: 'G54', // G54, G55, G56, G57, G58, G59
                 plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
                 units: 'G21', // G20: Inches, G21: Millimeters
                 distance: 'G90', // G90: Absolute, G91: Relative

@@ -153,15 +153,15 @@ class AxesWidget extends PureComponent {
             const defaultWCS = 'G54';
 
             if (controllerType === GRBL) {
-                return get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
+                return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
             }
 
             if (controllerType === SMOOTHIE) {
-                return get(controllerState, 'parserstate.modal.coordinate') || defaultWCS;
+                return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
             }
 
             if (controllerType === TINYG) {
-                return get(controllerState, 'sr.modal.coordinate') || defaultWCS;
+                return get(controllerState, 'sr.modal.wcs') || defaultWCS;
             }
 
             return defaultWCS;
