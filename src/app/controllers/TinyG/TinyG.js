@@ -1,5 +1,6 @@
-import _ from 'lodash';
 import events from 'events';
+import _ from 'lodash';
+import ensureArray from '../../lib/ensure-array';
 
 import {
     TINYG_MACHINE_STATE_READY,
@@ -253,13 +254,19 @@ class TinyG extends events.EventEmitter {
                 y: '0.000',
                 z: '0.000'
             },
+            spe: 0, // Spindle enable
+            spd: 0, // Spindle direction
+            sps: 0, // Spindle speed
             modal: {
                 motion: '', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
                 wcs: '', // G54, G55, G56, G57, G58, G59
                 plane: '', // G17: xy-plane, G18: xz-plane, G19: yz-plane
                 units: '', // G20: Inches, G21: Millimeters
                 distance: '', // G90: Absolute, G91: Relative
-                feedrate: '' // G93: Inverse Time Mode, G94: Units Per Minutes
+                feedrate: '', // G93: Inverse time mode, G94: Units per minute
+                path: '', // G61: Exact path mode, G61.1: Exact stop mode, G64: Continuous mode
+                spindle: '', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
+                coolant: '' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
             }
         }
     };
@@ -411,6 +418,68 @@ class TinyG extends events.EventEmitter {
                             [TINYG_GCODE_PATH_G64]: 'G64' // Continuous mode
                         }[val] || '';
                         _.set(target, 'modal.path', gcode);
+                    },
+                    // Spindle enable
+                    'spe': (target, val) => {
+                        _.set(target, 'spe', val);
+
+                        const spe = _.get(target, 'spe', 0);
+                        const spd = _.get(target, 'spd', 0);
+                        if (!spe) {
+                            _.set(target, 'modal.spindle', 'M5');
+                        } else {
+                            _.set(target, 'modal.spindle', (spd === 0) ? 'M3' : 'M4');
+                        }
+                    },
+                    // Spindle direction
+                    'spd': (target, val) => {
+                        _.set(target, 'spd', val);
+
+                        const spe = _.get(target, 'spe', 0);
+                        const spd = _.get(target, 'spd', 0);
+                        if (!spe) {
+                            _.set(target, 'modal.spindle', 'M5');
+                        } else {
+                            _.set(target, 'modal.spindle', (spd === 0) ? 'M3' : 'M4');
+                        }
+                    },
+                    // Spindle speed
+                    'sps': (target, val) => {
+                        _.set(target, 'sps', val);
+                    },
+                    // Mist coolant
+                    'com': (target, val) => {
+                        if (val === 0) { // Coolant Off
+                            _.set(target, 'modal.coolant', 'M9');
+                            return;
+                        }
+
+                        const data = ensureArray(_.get(target, 'modal.coolant', ''));
+                        if (data.indexOf('M8') >= 0) {
+                            // Mist + Flood
+                            _.set(target, 'modal.coolant', ['M7', 'M8']);
+                            return;
+                        }
+
+                        // Mist
+                        _.set(target, 'modal.coolant', 'M7');
+                    },
+                    // Flood coolant
+                    'cof': (target, val) => {
+                        if (val === 0) { // Coolant Off
+                            _.set(target, 'modal.coolant', 'M9');
+                            return;
+                        }
+
+                        const data = ensureArray(_.get(target, 'modal.coolant', ''));
+                        if (data.indexOf('M7') >= 0) {
+                            // Mist + Flood
+                            _.set(target, 'modal.coolant', ['M7', 'M8']);
+                            return;
+                        }
+
+                        // Flood
+                        _.set(target, 'modal.coolant', 'M8');
                     },
 
                     // Work Position

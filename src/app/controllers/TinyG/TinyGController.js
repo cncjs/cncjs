@@ -602,6 +602,11 @@ class TinyGController {
                         dist: true,
                         frmo: true,
                         path: true,
+                        spe: true, // Spindle enable (edge-082.10)
+                        spd: true, // Spindle direction (edge-082.10)
+                        sps: true, // Spindle speed (edge-082.10)
+                        cof: true, // Flood coolant (edge-082.10)
+                        com: true, // Mist coolant (edge-082.10)
                         posx: true,
                         posy: true,
                         posz: true,

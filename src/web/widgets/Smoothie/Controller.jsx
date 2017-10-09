@@ -17,7 +17,12 @@ const Controller = (props) => {
             onClose={actions.closeModal}
             size="lg"
         >
-            <Modal.Body style={{ paddingTop: 24 }}>
+            <Modal.Header>
+                <Modal.Title>
+                    Smoothie
+                </Modal.Title>
+            </Modal.Header>
+            <Modal.Body>
                 <Nav
                     navStyle="tabs"
                     activeKey={activeTab}

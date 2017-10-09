@@ -1,7 +1,8 @@
 /* eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
 /* eslint no-continue: 0 */
-import _ from 'lodash';
 import events from 'events';
+import _ from 'lodash';
+import ensureArray from '../../lib/ensure-array';
 import {
     SMOOTHIE_ACTIVE_STATE_IDLE,
     SMOOTHIE_ACTIVE_STATE_ALARM,
@@ -263,15 +264,9 @@ class SmoothieLineParserResultParserState {
                     continue;
                 }
 
-                if (r.group === 'coolant') {
-                    if (word === 'M7') {
-                        _.set(payload, 'modal.coolant.mist', true);
-                    } else if (word === 'M8') {
-                        _.set(payload, 'modal.coolant.flood', true);
-                    } else { // M9
-                        _.set(payload, 'modal.coolant.mist', false);
-                        _.set(payload, 'modal.coolant.flood', false);
-                    }
+                const prevWord = _.get(payload, 'modal.' + r.group, '');
+                if (prevWord) {
+                    _.set(payload, 'modal.' + r.group, ensureArray(prevWord).concat(word));
                 } else {
                     _.set(payload, 'modal.' + r.group, word);
                 }
@@ -433,13 +428,10 @@ class Smoothie extends events.EventEmitter {
                 plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
                 units: 'G21', // G20: Inches, G21: Millimeters
                 distance: 'G90', // G90: Absolute, G91: Relative
-                feedrate: 'G94', // G93: Inverse Time Mode, G94: Units Per Minutes
+                feedrate: 'G94', // G93: Inverse time mode, G94: Units per minute
                 program: 'M0', // M0, M1, M2, M30
-                spindle: 'M5', // M3, M4, M5
-                coolant: { // M7, M8, M9
-                    mist: false, // M7
-                    flood: false // M8
-                }
+                spindle: 'M5', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
+                coolant: 'M9' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
             },
             tool: '',
             feedrate: '',

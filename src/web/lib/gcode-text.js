@@ -1,8 +1,8 @@
-import isPlainObject from 'lodash/isPlainObject';
+import ensureArray from './ensure-array';
 import i18n from './i18n';
 
 export default (word, group, object) => {
-    const wordText = {
+    const resText = {
         // Motion
         'G0': i18n._('Rapid Move (G0)', { ns: 'gcode' }),
         'G1': i18n._('Linear Move (G1)', { ns: 'gcode' }),
@@ -65,22 +65,8 @@ export default (word, group, object) => {
         'M9': i18n._('Coolant Off (M9)', { ns: 'gcode' })
     };
 
-    if (group === 'coolant') {
-        if (!isPlainObject(object.coolant)) {
-            return '';
-        }
-        if (object.coolant.mist) {
-            object.coolant.mist = wordText.M7;
-        }
-        if (object.coolant.flood) {
-            object.coolant.flood = wordText.M8;
-        }
-        if (!object.coolant.mist && !object.coolant.flood) {
-            object.coolant = wordText.M9;
-        }
+    const words = ensureArray(word)
+        .map(word => (resText[word] || word));
 
-        return object.coolant;
-    }
-
-    return (wordText[word] || word);
+    return (words.length > 1) ? words : words[0];
 };

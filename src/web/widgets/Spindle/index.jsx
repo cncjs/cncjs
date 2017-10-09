@@ -92,10 +92,7 @@ class SpindleWidget extends PureComponent {
                         state: state,
                         modal: {
                             spindle: modal.spindle || '',
-                            coolant: {
-                                mist: get(modal, 'coolant.mist', false),
-                                flood: get(modal, 'coolant.flood', false)
-                            }
+                            coolant: modal.coolant || ''
                         }
                     }
                 });
@@ -112,10 +109,7 @@ class SpindleWidget extends PureComponent {
                         state: state,
                         modal: {
                             spindle: modal.spindle || '',
-                            coolant: {
-                                mist: get(modal, 'coolant.mist', false),
-                                flood: get(modal, 'coolant.flood', false)
-                            }
+                            coolant: modal.coolant || ''
                         }
                     }
                 });
@@ -123,16 +117,16 @@ class SpindleWidget extends PureComponent {
 
             // TinyG
             if (type === TINYG) {
+                const { sr } = { ...state };
+                const { modal = {} } = { ...sr };
+
                 this.setState({
                     controller: {
                         type: type,
                         state: state,
-                        modal: { // Not supported yet
-                            spindle: '',
-                            coolant: {
-                                mist: false,
-                                flood: false
-                            }
+                        modal: {
+                            spindle: modal.spindle || '',
+                            coolant: modal.coolant || ''
                         }
                     }
                 });
@@ -166,10 +160,7 @@ class SpindleWidget extends PureComponent {
                 state: controller.state,
                 modal: {
                     spindle: '',
-                    coolant: {
-                        mist: false,
-                        flood: false
-                    }
+                    coolant: ''
                 }
             },
             workflow: {

@@ -4,8 +4,9 @@ import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
-import mapGCodeToText from '../../lib/gcode-text';
 import controller from '../../lib/controller';
+import ensureArray from '../../lib/ensure-array';
+import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
@@ -38,6 +39,13 @@ class TinyG extends PureComponent {
     // See src/app/controllers/TinyG/constants.js
     plannerBufferMax = 28; // default pool size
     plannerBufferMin = 0;
+
+    enableMotors = () => {
+        controller.command('energizeMotors:on');
+    };
+    disableMotors = () => {
+        controller.command('energizeMotors:off');
+    };
 
     render() {
         const { state, actions } = this.props;
@@ -104,18 +112,14 @@ class TinyG extends PureComponent {
                             <div className="col col-xs-12">
                                 <Button
                                     btnStyle="flat"
-                                    onClick={() => {
-                                        controller.command('energizeMotors:on');
-                                    }}
+                                    onClick={this.enableMotors}
                                 >
                                     <i className="fa fa-flash" />
                                     {i18n._('Enable Motors')}
                                 </Button>
                                 <Button
                                     btnStyle="flat"
-                                    onClick={() => {
-                                        controller.command('energizeMotors:off');
-                                    }}
+                                    onClick={this.disableMotors}
                                 >
                                     <i className="fa fa-remove" />
                                     {i18n._('Disable Motors')}
@@ -310,6 +314,28 @@ class TinyG extends PureComponent {
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.path}>
                                     {modal.path || none}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Spindle')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className={styles.well} title={modal.spindle}>
+                                    {modal.spindle || none}
+                                </div>
+                            </div>
+                        </div>
+                        <div className="row no-gutters">
+                            <div className="col col-xs-4">
+                                {i18n._('Coolant')}
+                            </div>
+                            <div className="col col-xs-8">
+                                <div className={styles.well}>
+                                    {ensureArray(modal.coolant).map(coolant => (
+                                        <div title={coolant} key={coolant}>{coolant || none}</div>
+                                    ))}
                                 </div>
                             </div>
                         </div>

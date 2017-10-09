@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import controller from '../../lib/controller';
+import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
 
@@ -16,8 +17,9 @@ class Spindle extends PureComponent {
         const { state, actions } = this.props;
         const { canClick, spindleSpeed } = state;
         const spindle = get(state, 'controller.modal.spindle');
-        const mistCoolant = get(state, 'controller.modal.coolant.mist');
-        const floodCoolant = get(state, 'controller.modal.coolant.flood');
+        const coolant = ensureArray(get(state, 'controller.modal.coolant'));
+        const mistCoolant = coolant.indexOf('M7') >= 0;
+        const floodCoolant = coolant.indexOf('M8') >= 0;
 
         return (
             <div>

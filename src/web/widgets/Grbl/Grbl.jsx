@@ -2,6 +2,7 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
+import ensureArray from '../../lib/ensure-array';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
 import Panel from '../../components/Panel';
@@ -280,17 +281,11 @@ class Grbl extends PureComponent {
                                 {i18n._('Coolant')}
                             </div>
                             <div className="col col-xs-8">
-                                {!_.isPlainObject(modal.coolant) &&
-                                <div className={styles.well} title={modal.coolant}>
-                                    {modal.coolant || none}
-                                </div>
-                                }
-                                {_.isPlainObject(modal.coolant) &&
                                 <div className={styles.well}>
-                                    <div title={modal.coolant.mist}>{modal.coolant.mist}</div>
-                                    <div title={modal.coolant.flood}>{modal.coolant.flood}</div>
+                                    {ensureArray(modal.coolant).map(coolant => (
+                                        <div title={coolant} key={coolant}>{coolant || none}</div>
+                                    ))}
                                 </div>
-                                }
                             </div>
                         </div>
                     </Panel.Body>
