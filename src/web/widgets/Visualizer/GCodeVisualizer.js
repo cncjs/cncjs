@@ -1,5 +1,5 @@
 import colornames from 'colornames';
-import { GCodeToolpath } from 'gcode-toolpath';
+import Toolpath from 'gcode-toolpath';
 import * as THREE from 'three';
 import log from '../../lib/log';
 
@@ -11,8 +11,12 @@ const motionColor = {
     'G3': new THREE.Color(colornames('deepskyblue'))
 };
 
-const addLine = (modalState, v1, v2) => {
-    const { motion } = modalState;
+// @param {object} modal The modal object.
+// @param {object} v1 A 3D vector of the start point.
+// @param {object} v2 A 3D vector of the end point.
+// @return {object} Returns an object including vertices and colors to insert.
+const addLine = (modal, v1, v2) => {
+    const { motion } = modal;
     const color = motionColor[motion] || defaultColor;
     const vertices = [
         new THREE.Vector3(v1.x, v1.y, v1.z),
@@ -23,13 +27,13 @@ const addLine = (modalState, v1, v2) => {
     return { vertices, colors };
 };
 
-// Parameters
-//   modalState The modal state
-//   v1 The start point
-//   v2 The end point
-//   v0 The fixed point
-const addArcCurve = (modalState, v1, v2, v0) => {
-    const { motion, plane } = modalState;
+// @param {object} modal The modal object.
+// @param {object} v1 A 3D vector of the start point.
+// @param {object} v2 A 3D vector of the end point.
+// @param {object} v0 A 3D vector of the fixed point.
+// @return {object} Returns an object including vertices and colors to insert.
+const addArcCurve = (modal, v1, v2, v0) => {
+    const { motion, plane } = modal;
     const isClockwise = (motion === 'G2');
     const radius = Math.sqrt(
         ((v1.x - v0.x) ** 2) + ((v1.y - v0.y) ** 2)
@@ -91,14 +95,14 @@ class GCodeVisualizer {
         return this;
     }
     render(gcode) {
-        const toolpath = new GCodeToolpath({
-            addLine: (modalState, v1, v2) => {
-                const path = addLine(modalState, v1, v2);
+        const toolpath = new Toolpath({
+            addLine: (modal, v1, v2) => {
+                const path = addLine(modal, v1, v2);
                 Array.prototype.push.apply(this.geometry.vertices, path.vertices);
                 Array.prototype.push.apply(this.geometry.colors, path.colors);
             },
-            addArcCurve: (modalState, v1, v2, v0) => {
-                const path = addArcCurve(modalState, v1, v2, v0);
+            addArcCurve: (modal, v1, v2, v0) => {
+                const path = addArcCurve(modal, v1, v2, v0);
                 Array.prototype.push.apply(this.geometry.vertices, path.vertices);
                 Array.prototype.push.apply(this.geometry.colors, path.colors);
             }

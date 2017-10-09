@@ -672,7 +672,7 @@ class VisualizerWidget extends PureComponent {
             // TinyG
             if (type === TINYG) {
                 const { sr } = { ...controllerState };
-                const { wpos, modal = {} } = sr;
+                const { wpos, modal = {} } = { ...sr };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
