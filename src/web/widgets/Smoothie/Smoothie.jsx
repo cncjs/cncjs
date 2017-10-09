@@ -52,7 +52,9 @@ class Smoothie extends PureComponent {
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('State')}
+                                <div className={styles.textEllipsis} title={i18n._('State')}>
+                                    {i18n._('State')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>
@@ -62,7 +64,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Feed Rate')}
+                                <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                    {i18n._('Feed Rate')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>
@@ -72,7 +76,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Spindle')}
+                                <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                    {i18n._('Spindle')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>
@@ -82,7 +88,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Tool Number')}
+                                <div className={styles.textEllipsis} title={i18n._('Tool Number')}>
+                                    {i18n._('Tool Number')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>
@@ -113,7 +121,9 @@ class Smoothie extends PureComponent {
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Motion')}
+                                <div className={styles.textEllipsis} title={i18n._('Motion')}>
+                                    {i18n._('Motion')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.motion}>
@@ -123,7 +133,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Coordinate')}
+                                <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
+                                    {i18n._('Coordinate')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.wcs}>
@@ -133,7 +145,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Plane')}
+                                <div className={styles.textEllipsis} title={i18n._('Plane')}>
+                                    {i18n._('Plane')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.plane}>
@@ -143,7 +157,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Distance')}
+                                <div className={styles.textEllipsis} title={i18n._('Distance')}>
+                                    {i18n._('Distance')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.distance}>
@@ -153,7 +169,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Feed Rate')}
+                                <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                    {i18n._('Feed Rate')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.feedrate}>
@@ -163,7 +181,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Units')}
+                                <div className={styles.textEllipsis} title={i18n._('Units')}>
+                                    {i18n._('Units')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.units}>
@@ -173,7 +193,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Program')}
+                                <div className={styles.textEllipsis} title={i18n._('Program')}>
+                                    {i18n._('Program')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.program}>
@@ -183,7 +205,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Spindle')}
+                                <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                    {i18n._('Spindle')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.spindle}>
@@ -193,7 +217,9 @@ class Smoothie extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Coolant')}
+                                <div className={styles.textEllipsis} title={i18n._('Coolant')}>
+                                    {i18n._('Coolant')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>

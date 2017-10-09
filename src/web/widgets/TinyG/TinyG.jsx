@@ -109,17 +109,23 @@ class TinyG extends PureComponent {
                     {panel.powerManagement.expanded && pwr &&
                     <Panel.Body>
                         <div className="row no-gutters" style={{ marginBottom: 10 }}>
-                            <div className="col col-xs-12">
+                            <div className="col col-xs-6" style={{ paddingRight: 5 }}>
                                 <Button
+                                    className={styles.textEllipsis}
                                     btnStyle="flat"
                                     onClick={this.enableMotors}
+                                    title={i18n._('Enable Motors')}
                                 >
                                     <i className="fa fa-flash" />
                                     {i18n._('Enable Motors')}
                                 </Button>
+                            </div>
+                            <div className="col col-xs-6" style={{ paddingLeft: 5 }}>
                                 <Button
+                                    className={styles.textEllipsis}
                                     btnStyle="flat"
                                     onClick={this.disableMotors}
+                                    title={i18n._('Disable Motors')}
                                 >
                                     <i className="fa fa-remove" />
                                     {i18n._('Disable Motors')}
@@ -129,7 +135,9 @@ class TinyG extends PureComponent {
                         {map(pwr, (value, key) => (
                             <div key={key} className="row no-gutters">
                                 <div className="col col-xs-4">
-                                    {i18n._('Motor {{n}}', { n: key })}
+                                    <div className={styles.textEllipsis} title={i18n._('Motor {{n}}', { n: key })}>
+                                        {i18n._('Motor {{n}}', { n: key })}
+                                    </div>
                                 </div>
                                 <div className="col col-xs-8">
                                     <ProgressBar
@@ -164,7 +172,9 @@ class TinyG extends PureComponent {
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Planner Buffer')}
+                                <span className="text-ellipsis" title={i18n._('Planner Buffer')}>
+                                    {i18n._('Planner Buffer')}
+                                </span>
                             </div>
                             <div className="col col-xs-8">
                                 <ProgressBar
@@ -198,7 +208,9 @@ class TinyG extends PureComponent {
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('State')}
+                                <div className={styles.textEllipsis} title={i18n._('State')}>
+                                    {i18n._('State')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>{machineStateText || none}</div>
@@ -206,7 +218,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Feed Rate')}
+                                <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                    {i18n._('Feed Rate')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>{Number(feedrate) || 0}</div>
@@ -214,7 +228,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Velocity')}
+                                <div className={styles.textEllipsis} title={i18n._('Velocity')}>
+                                    {i18n._('Velocity')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>{Number(velocity) || 0}</div>
@@ -222,7 +238,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Line')}
+                                <div className={styles.textEllipsis} title={i18n._('Line')}>
+                                    {i18n._('Line')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>{Number(line) || 0}</div>
@@ -249,7 +267,9 @@ class TinyG extends PureComponent {
                     <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Motion')}
+                                <div className={styles.textEllipsis} title={i18n._('Motion')}>
+                                    {i18n._('Motion')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.motion}>
@@ -259,7 +279,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Coordinate')}
+                                <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
+                                    {i18n._('Coordinate')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.wcs}>
@@ -269,7 +291,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Plane')}
+                                <div className={styles.textEllipsis} title={i18n._('Plane')}>
+                                    {i18n._('Plane')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.plane}>
@@ -279,7 +303,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Distance')}
+                                <div className={styles.textEllipsis} title={i18n._('Distance')}>
+                                    {i18n._('Distance')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.distance}>
@@ -289,7 +315,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Feed Rate')}
+                                <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                    {i18n._('Feed Rate')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.feedrate}>
@@ -299,7 +327,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Units')}
+                                <div className={styles.textEllipsis} title={i18n._('Units')}>
+                                    {i18n._('Units')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.units}>
@@ -309,7 +339,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Path')}
+                                <div className={styles.textEllipsis} title={i18n._('Path')}>
+                                    {i18n._('Path')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.path}>
@@ -319,7 +351,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Spindle')}
+                                <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                    {i18n._('Spindle')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well} title={modal.spindle}>
@@ -329,7 +363,9 @@ class TinyG extends PureComponent {
                         </div>
                         <div className="row no-gutters">
                             <div className="col col-xs-4">
-                                {i18n._('Coolant')}
+                                <div className={styles.textEllipsis} title={i18n._('Coolant')}>
+                                    {i18n._('Coolant')}
+                                </div>
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>
