@@ -438,7 +438,7 @@ class AxesWidget extends PureComponent {
             // TinyG
             if (type === TINYG) {
                 const { sr } = { ...controllerState };
-                const { mpos, wpos, modal = {} } = sr;
+                const { mpos, wpos, modal = {} } = { ...sr };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS

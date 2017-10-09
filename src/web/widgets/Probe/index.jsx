@@ -333,7 +333,7 @@ class ProbeWidget extends PureComponent {
             // TinyG
             if (type === TINYG) {
                 const { sr } = { ...state };
-                const { modal = {} } = sr;
+                const { modal = {} } = { ...sr };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
