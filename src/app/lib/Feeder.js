@@ -4,6 +4,7 @@ import events from 'events';
 class Feeder extends events.EventEmitter {
     state = {
         hold: false,
+        holdReason: null,
         queue: [],
         pending: false,
         changed: false
@@ -25,6 +26,8 @@ class Feeder extends events.EventEmitter {
     }
     toJSON() {
         return {
+            hold: this.state.hold,
+            holdReason: this.state.holdReason,
             queue: this.state.queue.length,
             pending: this.state.pending,
             changed: this.state.changed
@@ -39,11 +42,12 @@ class Feeder extends events.EventEmitter {
             this.emit('change');
         }
     }
-    hold() {
+    hold(reason) {
         if (this.state.hold) {
             return;
         }
         this.state.hold = true;
+        this.state.holdReason = reason;
         this.emit('hold');
         this.emit('change');
     }
@@ -52,6 +56,7 @@ class Feeder extends events.EventEmitter {
             return;
         }
         this.state.hold = false;
+        this.state.holdReason = null;
         this.emit('unhold');
         this.emit('change');
     }

@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import chainedFunction from 'chained-function';
 import classNames from 'classnames';
 import Dropzone from 'react-dropzone';
 import pubsub from 'pubsub-js';
@@ -7,10 +6,7 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import { Button, ButtonGroup, ButtonToolbar } from '../../components/Buttons';
-import MessageTemplate from '../../components/MessageTemplate';
-import Modal from '../../components/Modal';
 import api from '../../api';
-import portal from '../../lib/portal';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -19,10 +15,17 @@ import * as widgetManager from './WidgetManager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
+import FeederPaused from './modals/FeederPaused';
+import ServerDisconnected from './modals/ServerDisconnected';
 import styles from './index.styl';
 import {
     WORKFLOW_STATE_IDLE
 } from '../../constants';
+import {
+    MODAL_NONE,
+    MODAL_FEEDER_PAUSED,
+    MODAL_SERVER_DISCONNECTED
+} from './constants';
 
 const startWaiting = () => {
     // Adds the 'wait' class to <html>
@@ -34,10 +37,6 @@ const stopWaiting = () => {
     const root = document.documentElement;
     root.classList.remove('wait');
 };
-const reloadPage = (forcedReload = true) => {
-    // Reload the current page, without using the cache
-    window.location.reload(forcedReload);
-};
 
 class Workspace extends PureComponent {
     static propTypes = {
@@ -45,15 +44,47 @@ class Workspace extends PureComponent {
     };
 
     state = {
-        connected: controller.connected,
         mounted: false,
         port: '',
+        modal: {
+            name: MODAL_NONE,
+            params: {}
+        },
         isDraggingFile: false,
         isDraggingWidget: false,
         isUploading: false,
         showPrimaryContainer: store.get('workspace.container.primary.show'),
         showSecondaryContainer: store.get('workspace.container.secondary.show'),
         inactiveCount: _.size(widgetManager.getInactiveWidgets())
+    };
+    action = {
+        openModal: (name = MODAL_NONE, params = {}) => {
+            this.setState(state => ({
+                modal: {
+                    name: name,
+                    params: params
+                }
+            }));
+        },
+        closeModal: () => {
+            this.setState(state => ({
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
+            }));
+        },
+        updateModalParams: (params = {}) => {
+            this.setState(state => ({
+                modal: {
+                    ...state.modal,
+                    params: {
+                        ...state.modal.params,
+                        ...params
+                    }
+                }
+            }));
+        }
     };
     sortableGroup = {
         primary: null,
@@ -68,13 +99,25 @@ class Workspace extends PureComponent {
     defaultContainer = null;
     controllerEvents = {
         'connect': () => {
-            this.setState({ connected: controller.connected });
+            if (controller.connected) {
+                this.action.closeModal();
+            } else {
+                this.action.openModal(MODAL_SERVER_DISCONNECTED);
+            }
         },
         'connect_error': () => {
-            this.setState({ connected: controller.connected });
+            if (controller.connected) {
+                this.action.closeModal();
+            } else {
+                this.action.openModal(MODAL_SERVER_DISCONNECTED);
+            }
         },
         'disconnect': () => {
-            this.setState({ connected: controller.connected });
+            if (controller.connected) {
+                this.action.closeModal();
+            } else {
+                this.action.openModal(MODAL_SERVER_DISCONNECTED);
+            }
         },
         'serialport:open': (options) => {
             const { port } = options;
@@ -83,59 +126,37 @@ class Workspace extends PureComponent {
         'serialport:close': (options) => {
             this.setState({ port: '' });
         },
-        'message': (data) => {
-            const { cmd } = data;
+        'feeder:status': (status) => {
+            const { modal } = this.state;
+            const { hold, holdReason } = { ...status };
 
-            if (_.includes(['M0', 'M1', 'M2', 'M6', 'M30'], cmd)) {
-                const title = {
-                    M0: i18n._('M0 Program Pause'),
-                    M1: i18n._('M1 Program Pause'),
-                    M2: i18n._('M2 Program End'),
-                    M6: i18n._('M6 Tool Change'),
-                    M30: i18n._('M30 Program End')
-                }[cmd];
-
-                portal(({ onClose }) => (
-                    <Modal
-                        closeOnOverlayClick={false}
-                        showCloseButton={false}
-                        onClose={onClose}
-                    >
-                        <Modal.Body>
-                            <MessageTemplate type="warning">
-                                <h5>{title}</h5>
-                                <p>{i18n._('Click the Continue button to resume execution.')}</p>
-                            </MessageTemplate>
-                        </Modal.Body>
-                        <Modal.Footer>
-                            <Button
-                                className="pull-left"
-                                btnStyle="danger"
-                                onClick={chainedFunction(
-                                    () => {
-                                        controller.command('feeder:stop');
-                                    },
-                                    onClose
-                                )}
-                            >
-                                {i18n._('Stop')}
-                            </Button>
-                            <Button
-                                onClick={chainedFunction(
-                                    () => {
-                                        controller.command('feeder:start');
-                                    },
-                                    onClose
-                                )}
-                            >
-                                {i18n._('Continue')}
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                ));
-
+            if (!hold) {
+                if (modal.name === MODAL_FEEDER_PAUSED) {
+                    this.action.closeModal();
+                }
                 return;
             }
+
+            const { err, data } = { ...holdReason };
+
+            if (err) {
+                this.action.openModal(MODAL_FEEDER_PAUSED, {
+                    title: i18n._('Error')
+                });
+                return;
+            }
+
+            const title = {
+                M0: i18n._('M0 Program Pause'),
+                M1: i18n._('M1 Program Pause'),
+                M2: i18n._('M2 Program End'),
+                M6: i18n._('M6 Tool Change'),
+                M30: i18n._('M30 Program End')
+            }[data] || data;
+
+            this.action.openModal(MODAL_FEEDER_PAUSED, {
+                title: title
+            });
         }
     };
     widgetEventHandler = {
@@ -359,8 +380,8 @@ class Workspace extends PureComponent {
     render() {
         const { style, className } = this.props;
         const {
-            connected,
             port,
+            modal,
             isDraggingFile,
             isDraggingWidget,
             showPrimaryContainer,
@@ -372,26 +393,14 @@ class Workspace extends PureComponent {
 
         return (
             <div style={style} className={classNames(className, styles.workspace)}>
-                {!connected &&
-                <Modal
-                    closeOnOverlayClick={false}
-                    showCloseButton={false}
-                >
-                    <Modal.Body>
-                        <MessageTemplate type="error">
-                            <h5>{i18n._('Server has stopped working')}</h5>
-                            <p>{i18n._('A problem caused the server to stop working correctly. Check out the server status and try again.')}</p>
-                        </MessageTemplate>
-                    </Modal.Body>
-                    <Modal.Footer>
-                        <Button
-                            btnStyle="primary"
-                            onClick={reloadPage}
-                        >
-                            {i18n._('Reload')}
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
+                {modal.name === MODAL_FEEDER_PAUSED &&
+                <FeederPaused
+                    title={modal.params.title}
+                    onClose={this.action.closeModal}
+                />
+                }
+                {modal.name === MODAL_SERVER_DISCONNECTED &&
+                <ServerDisconnected />
                 }
                 <div
                     className={classNames(

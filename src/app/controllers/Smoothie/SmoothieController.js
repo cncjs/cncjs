@@ -163,28 +163,23 @@ class SmoothieController {
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
                     if (programMode === 'M0') {
                         log.debug('M0 Program Pause');
-                        this.feeder.hold();
-                        this.emit('message', { cmd: 'M0' });
+                        this.feeder.hold({ err: null, data: 'M0' }); // Hold reason
                     } else if (programMode === 'M1') {
                         log.debug('M1 Program Pause');
-                        this.feeder.hold();
-                        this.emit('message', { cmd: 'M1' });
+                        this.feeder.hold({ err: null, data: 'M1' }); // Hold reason
                     } else if (programMode === 'M2') {
                         log.debug('M2 Program End');
-                        this.feeder.hold();
-                        this.emit('message', { cmd: 'M2' });
+                        this.feeder.hold({ err: null, data: 'M2' }); // Hold reason
                     } else if (programMode === 'M30') {
                         log.debug('M30 Program End');
-                        this.feeder.hold();
-                        this.emit('message', { cmd: 'M30' });
+                        this.feeder.hold({ err: null, data: 'M30' }); // Hold reason
                     }
                 }
 
                 // M6 Tool Change
                 if (words.includes('M6')) {
                     log.debug('M6 Tool Change');
-                    this.feeder.hold();
-                    this.emit('message', { cmd: 'M6' });
+                    this.feeder.hold({ err: null, data: 'M6' }); // Hold reason
                 }
 
                 // line="G0 X[posx - 8] Y[ymax]"
@@ -730,12 +725,12 @@ class SmoothieController {
                 settings: this.settings,
                 state: this.state
             },
+            feeder: this.feeder.toJSON(),
+            sender: this.sender.toJSON(),
             workflow: {
                 state: this.workflow.state,
                 context: this.workflow.context
-            },
-            feeder: this.feeder.toJSON(),
-            sender: this.sender.toJSON()
+            }
         };
     }
     open(callback = noop) {
@@ -876,9 +871,9 @@ class SmoothieController {
             socket.emit('controller:state', SMOOTHIE, this.state);
             socket.emit('Smoothie:state', this.state); // Backward compatibility
         }
-        if (this.workflow) {
-            // workflow state
-            socket.emit('workflow:state', this.workflow.state, this.workflow.context);
+        if (this.feeder) {
+            // feeder status
+            socket.emit('feeder:status', this.feeder.toJSON());
         }
         if (this.sender) {
             // sender status
@@ -888,6 +883,10 @@ class SmoothieController {
             if (gcode) {
                 socket.emit('gcode:load', name, gcode, context);
             }
+        }
+        if (this.workflow) {
+            // workflow state
+            socket.emit('workflow:state', this.workflow.state, this.workflow.context);
         }
     }
     removeConnection(socket) {
