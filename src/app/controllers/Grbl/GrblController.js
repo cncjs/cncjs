@@ -722,8 +722,8 @@ class GrblController {
                 feedrate: modal.feedrate,
                 program: modal.program,
                 spindle: modal.spindle,
-                // Note. Grbl may report a "Modal group violation" error when using M7 and M8 on the same line
-                coolant: ensureArray(modal.coolant).join('\n') // e.g. "M7\nM8"
+                // M7 and M8 may be active at the same time, but a modal group violation might occur when issuing M7 and M8 together on the same line. Using the new line character (\n) to separate lines can avoid this issue.
+                coolant: ensureArray(modal.coolant).join('\n')
             }
         });
     }

@@ -737,7 +737,8 @@ class TinyGController {
                 feedrate: modal.feedrate,
                 path: modal.path,
                 spindle: modal.spindle,
-                coolant: ensureArray(modal.coolant).join('\n') // e.g. "M7\nM8"
+                // M7 and M8 may be active at the same time, but a modal group violation might occur when issuing M7 and M8 together on the same line. Using the new line character (\n) to separate lines can avoid this issue.
+                coolant: ensureArray(modal.coolant).join('\n')
             }
         });
     }
