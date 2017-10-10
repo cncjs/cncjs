@@ -687,6 +687,9 @@ class GrblController {
             c: posc
         } = this.controller.getWorkPosition();
 
+        // Modal group
+        const modal = this.controller.getModalGroup();
+
         return Object.assign(context || {}, {
             // Bounding box
             xmin: Number(context.xmin) || 0,
@@ -708,7 +711,20 @@ class GrblController {
             posz: Number(posz) || 0,
             posa: Number(posa) || 0,
             posb: Number(posb) || 0,
-            posc: Number(posc) || 0
+            posc: Number(posc) || 0,
+            // Modal group
+            modal: {
+                motion: modal.motion,
+                wcs: modal.wcs,
+                plane: modal.plane,
+                units: modal.units,
+                distance: modal.distance,
+                feedrate: modal.feedrate,
+                program: modal.program,
+                spindle: modal.spindle,
+                // Note. Grbl may report a "Modal group violation" error when using M7 and M8 on the same line
+                coolant: ensureArray(modal.coolant).join('\n') // e.g. "M7\nM8"
+            }
         });
     }
     clearActionValues() {

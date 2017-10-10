@@ -575,6 +575,9 @@ class Smoothie extends events.EventEmitter {
     getWorkPosition(state = this.state) {
         return _.get(state, 'status.wpos', {});
     }
+    getModalGroup(state = this.state) {
+        return _.get(state, 'parserstate.modal', {});
+    }
     isAlarm() {
         const activeState = _.get(this.state, 'status.activeState');
         return activeState === SMOOTHIE_ACTIVE_STATE_ALARM;

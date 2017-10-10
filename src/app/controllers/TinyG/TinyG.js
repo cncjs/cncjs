@@ -592,6 +592,9 @@ class TinyG extends events.EventEmitter {
     getWorkPosition(state = this.state) {
         return _.get(state, 'sr.wpos', {});
     }
+    getModalGroup(state = this.state) {
+        return _.get(state, 'sr.modal', {});
+    }
     isAlarm() {
         const machineState = _.get(this.state, 'sr.machineState');
         return machineState === TINYG_MACHINE_STATE_ALARM;
