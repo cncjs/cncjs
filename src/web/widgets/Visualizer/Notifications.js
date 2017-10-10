@@ -74,7 +74,7 @@ const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
                     <span className="space space-sm" />
                     <Anchor
                         target="_blank"
-                        href="https://github.com/cncjs/cncjs/wiki/M6-Tool-Change"
+                        href="https://github.com/cncjs/cncjs/wiki/Tool-Change"
                     >
                         {i18n._('Learn more')}
                     </Anchor>
