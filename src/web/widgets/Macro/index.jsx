@@ -199,13 +199,12 @@ class MacroWidget extends PureComponent {
                 }
             }));
         },
-        'workflow:state': (state, context) => {
-            this.setState({
+        'workflow:state': (workflowState) => {
+            this.setState(state => ({
                 workflow: {
-                    state: state,
-                    context: context
+                    state: workflowState
                 }
-            });
+            }));
         }
     };
 
@@ -235,8 +234,7 @@ class MacroWidget extends PureComponent {
                 state: controller.state
             },
             workflow: {
-                state: controller.workflow.state,
-                context: controller.workflow.context
+                state: controller.workflow.state
             },
             modal: {
                 name: MODAL_NONE,

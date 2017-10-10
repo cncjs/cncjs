@@ -549,8 +549,37 @@ class VisualizerWidget extends PureComponent {
             this.actions.unloadGCode();
         },
         'sender:status': (data) => {
-            const { name, size, total, sent, received } = data;
-            this.setState((state) => ({
+            const { hold, holdReason, name, size, total, sent, received } = data;
+            const notification = {
+                type: '',
+                data: ''
+            };
+
+            if (hold) {
+                const { err, data } = { ...holdReason };
+
+                if (err) {
+                    notification.type = NOTIFICATION_PROGRAM_ERROR;
+                    notification.data = err;
+                } else if (data === 'M0') {
+                    // M0 Program Pause
+                    notification.type = NOTIFICATION_M0_PROGRAM_PAUSE;
+                } else if (data === 'M1') {
+                    // M1 Program Pause
+                    notification.type = NOTIFICATION_M1_PROGRAM_PAUSE;
+                } else if (data === 'M2') {
+                    // M2 Program End
+                    notification.type = NOTIFICATION_M2_PROGRAM_END;
+                } else if (data === 'M30') {
+                    // M30 Program End
+                    notification.type = NOTIFICATION_M30_PROGRAM_END;
+                } else if (data === 'M6') {
+                    // M6 Tool Change
+                    notification.type = NOTIFICATION_M6_TOOL_CHANGE;
+                }
+            }
+
+            this.setState(state => ({
                 gcode: {
                     ...state.gcode,
                     name,
@@ -558,51 +587,20 @@ class VisualizerWidget extends PureComponent {
                     total,
                     sent,
                     received
+                },
+                notification: {
+                    ...state.notification,
+                    ...notification
                 }
             }));
         },
-        'workflow:state': (state, context) => {
-            this.setState(prevState => {
-                const notification = {
-                    type: '',
-                    data: ''
-                };
-
-                if (state === WORKFLOW_STATE_PAUSED) {
-                    const { err, data } = { ...context };
-
-                    if (err) {
-                        notification.type = NOTIFICATION_PROGRAM_ERROR;
-                        notification.data = err;
-                    } else if (data === 'M0') {
-                        // M0 Program Pause
-                        notification.type = NOTIFICATION_M0_PROGRAM_PAUSE;
-                    } else if (data === 'M1') {
-                        // M1 Program Pause
-                        notification.type = NOTIFICATION_M1_PROGRAM_PAUSE;
-                    } else if (data === 'M2') {
-                        // M2 Program End
-                        notification.type = NOTIFICATION_M2_PROGRAM_END;
-                    } else if (data === 'M30') {
-                        // M30 Program End
-                        notification.type = NOTIFICATION_M30_PROGRAM_END;
-                    } else if (data === 'M6') {
-                        // M6 Tool Change
-                        notification.type = NOTIFICATION_M6_TOOL_CHANGE;
-                    }
+        'workflow:state': (workflowState) => {
+            this.setState(state => ({
+                workflow: {
+                    ...state.workflow,
+                    state: workflowState
                 }
-
-                return {
-                    workflow: {
-                        state: state,
-                        context: context
-                    },
-                    notification: {
-                        ...prevState.notification,
-                        ...notification
-                    }
-                };
-            });
+            }));
         },
         'controller:settings': (type, controllerSettings) => {
             this.setState(state => ({
@@ -752,8 +750,7 @@ class VisualizerWidget extends PureComponent {
                 state: controller.state
             },
             workflow: {
-                state: controller.workflow.state,
-                context: controller.workflow.context
+                state: controller.workflow.state
             },
             notification: {
                 type: '',

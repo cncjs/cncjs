@@ -79,13 +79,12 @@ class CustomWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'workflow:state': (state, context) => {
-            this.setState({
+        'workflow:state': (workflowState) => {
+            this.setState(state => ({
                 workflow: {
-                    state: state,
-                    context: context
+                    state: workflowState
                 }
-            });
+            }));
         }
     };
     content = null;
@@ -123,8 +122,7 @@ class CustomWidget extends PureComponent {
                 state: controller.state
             },
             workflow: {
-                state: controller.workflow.state,
-                context: controller.workflow.context
+                state: controller.workflow.state
             },
             modal: {
                 name: MODAL_NONE,

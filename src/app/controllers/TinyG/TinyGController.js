@@ -161,23 +161,23 @@ class TinyGController {
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
                     if (programMode === 'M0') {
                         log.debug('M0 Program Pause');
-                        this.feeder.hold({ err: null, data: 'M0' }); // Hold reason
+                        this.feeder.hold({ data: 'M0' }); // Hold reason
                     } else if (programMode === 'M1') {
                         log.debug('M1 Program Pause');
-                        this.feeder.hold({ err: null, data: 'M1' }); // Hold reason
+                        this.feeder.hold({ data: 'M1' }); // Hold reason
                     } else if (programMode === 'M2') {
                         log.debug('M2 Program End');
-                        this.feeder.hold({ err: null, data: 'M2' }); // Hold reason
+                        this.feeder.hold({ data: 'M2' }); // Hold reason
                     } else if (programMode === 'M30') {
                         log.debug('M30 Program End');
-                        this.feeder.hold({ err: null, data: 'M30' }); // Hold reason
+                        this.feeder.hold({ data: 'M30' }); // Hold reason
                     }
                 }
 
                 // M6 Tool Change
                 if (words.includes('M6')) {
                     log.debug('M6 Tool Change');
-                    this.feeder.hold({ err: null, data: 'M6' }); // Hold reason
+                    this.feeder.hold({ data: 'M6' }); // Hold reason
                 }
 
                 // line="G0 X[posx - 8] Y[ymax]"
@@ -228,7 +228,7 @@ class TinyGController {
                     // %wait
                     if (line === WAIT) {
                         log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.sender.hold();
+                        this.sender.hold({ data: WAIT }); // Hold reason
                         return `G4 P0.5 (${WAIT})`; // dwell
                     }
 
@@ -242,23 +242,23 @@ class TinyGController {
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
                     if (programMode === 'M0') {
                         log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ err: null, data: 'M0' });
+                        this.workflow.pause({ data: 'M0' });
                     } else if (programMode === 'M1') {
                         log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ err: null, data: 'M1' });
+                        this.workflow.pause({ data: 'M1' });
                     } else if (programMode === 'M2') {
                         log.debug(`M2 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ err: null, data: 'M2' });
+                        this.workflow.pause({ data: 'M2' });
                     } else if (programMode === 'M30') {
                         log.debug(`M30 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ err: null, data: 'M30' });
+                        this.workflow.pause({ data: 'M30' });
                     }
                 }
 
                 // M6 Tool Change
                 if (words.includes('M6')) {
                     log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-                    this.workflow.pause({ err: null, data: 'M6' });
+                    this.workflow.pause({ data: 'M6' });
                 }
 
                 // line="G0 X[posx - 8] Y[ymax]"
@@ -303,24 +303,30 @@ class TinyGController {
 
         // Workflow
         this.workflow = new Workflow();
-        this.workflow.on('start', () => {
-            this.emit('workflow:state', this.workflow.state, this.workflow.context);
+        this.workflow.on('start', (...args) => {
+            this.emit('workflow:state', this.workflow.state);
             this.blocked = false;
             this.senderStatus = SENDER_STATUS_NONE;
             this.sender.rewind();
         });
-        this.workflow.on('stop', () => {
-            this.emit('workflow:state', this.workflow.state, this.workflow.context);
+        this.workflow.on('stop', (...args) => {
+            this.emit('workflow:state', this.workflow.state);
             this.blocked = false;
             this.senderStatus = SENDER_STATUS_NONE;
             this.sender.rewind();
         });
-        this.workflow.on('pause', () => {
-            this.emit('workflow:state', this.workflow.state, this.workflow.context);
-            this.sender.hold();
+        this.workflow.on('pause', (...args) => {
+            this.emit('workflow:state', this.workflow.state);
+
+            if (args.length > 0) {
+                const reason = { ...args[0] };
+                this.sender.hold(reason); // Hold reason
+            } else {
+                this.sender.hold();
+            }
         });
-        this.workflow.on('resume', () => {
-            this.emit('workflow:state', this.workflow.state, this.workflow.context);
+        this.workflow.on('resume', (...args) => {
+            this.emit('workflow:state', this.workflow.state);
 
             // Clear feeder queue prior to resume program execution
             this.feeder.clear();
@@ -346,7 +352,9 @@ class TinyGController {
 
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 const n = _.get(r, 'r.n') || _.get(r, 'n');
-                console.assert(n === sent, `n (${n}) === sent (${sent})`);
+                if (n !== sent) {
+                    log.warn(`Expression: n (${n}) === sent (${sent})`);
+                }
                 log.silly(`ack: n=${n}, blocked=${this.blocked}, hold=${hold}, sent=${sent}, received=${received}`);
                 this.senderStatus = SENDER_STATUS_ACK;
                 if (!this.blocked) {
@@ -369,7 +377,9 @@ class TinyGController {
                     log.debug(`Stop sending G-code: hold=${hold}, sent=${sent}, received=${received + 1}`);
                 }
                 const n = _.get(r, 'r.n') || _.get(r, 'n');
-                console.assert(n === sent, `n (${n}) === sent (${sent})`);
+                if (n !== sent) {
+                    log.warn(`Expression: n (${n}) === sent (${sent})`);
+                }
                 log.silly(`ack: n=${n}, blocked=${this.blocked}, hold=${hold}, sent=${sent}, received=${received}`);
                 this.senderStatus = SENDER_STATUS_ACK;
                 this.sender.ack();
@@ -420,7 +430,9 @@ class TinyGController {
             if ((this.workflow.state === WORKFLOW_STATE_PAUSED) && (this.senderStatus === SENDER_STATUS_ACK)) {
                 const { hold, sent, received } = this.sender.state;
                 log.silly(`sender: status=${this.senderStatus}, hold=${hold}, sent=${sent}, received=${received}`);
-                console.assert(received < sent, `received (${received}) < sent (${sent})`);
+                if (received >= sent) {
+                    log.error(`Expression: received (${received}) < sent (${sent})`);
+                }
                 if (!hold) {
                     log.error('The sender does not hold off during the paused state');
                 }
@@ -458,17 +470,24 @@ class TinyGController {
 
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                     const { lines, received } = this.sender.state;
-                    const line = lines[received] || '';
+                    const line = lines[received - 1] || '';
 
                     this.emit('serialport:read', `> ${line}`);
                     this.emit('serialport:read', JSON.stringify({
                         err: {
                             code: code,
                             msg: err.msg,
-                            line: received + 1,
+                            line: received,
                             data: line.trim()
                         }
                     }));
+
+                    log.error('Error:', {
+                        code: code,
+                        msg: err.msg,
+                        line: received,
+                        data: line.trim()
+                    });
 
                     this.workflow.pause({ err: err.msg });
 
@@ -764,8 +783,7 @@ class TinyGController {
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON(),
             workflow: {
-                state: this.workflow.state,
-                context: this.workflow.context
+                state: this.workflow.state
             }
         };
     }
@@ -922,7 +940,7 @@ class TinyGController {
         }
         if (this.workflow) {
             // workflow state
-            socket.emit('workflow:state', this.workflow.state, this.workflow.context);
+            socket.emit('workflow:state', this.workflow.state);
         }
     }
     removeConnection(socket) {

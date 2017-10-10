@@ -33,6 +33,7 @@ test('send-response streaming protocol', (t) => {
     t.same(sender.toJSON(), {
         sp: SP_TYPE_SEND_RESPONSE,
         hold: false,
+        holdReason: null,
         name: path.basename(file),
         context: context,
         size: sender.state.gcode.length,
@@ -54,6 +55,7 @@ test('send-response streaming protocol', (t) => {
         t.same(sender.toJSON(), {
             sp: SP_TYPE_SEND_RESPONSE,
             hold: false,
+            holdReason: null,
             name: path.basename(file),
             context: context,
             size: sender.state.gcode.length,
@@ -72,6 +74,7 @@ test('send-response streaming protocol', (t) => {
         t.same(sender.state, {
             name: '',
             hold: false,
+            holdReason: null,
             context: {},
             gcode: '',
             lines: [],
@@ -86,6 +89,7 @@ test('send-response streaming protocol', (t) => {
         t.same(sender.toJSON(), {
             sp: SP_TYPE_SEND_RESPONSE,
             hold: false,
+            holdReason: null,
             name: '',
             context: {},
             size: 0,
@@ -157,6 +161,7 @@ test('character-counting streaming protocol', (t) => {
     t.same(sender.toJSON(), {
         sp: SP_TYPE_CHAR_COUNTING,
         hold: false,
+        holdReason: null,
         name: path.basename(file),
         context: context,
         size: sender.state.gcode.length,
@@ -178,6 +183,7 @@ test('character-counting streaming protocol', (t) => {
         t.same(sender.toJSON(), {
             sp: SP_TYPE_CHAR_COUNTING,
             hold: false,
+            holdReason: null,
             name: path.basename(file),
             context: context,
             size: sender.state.gcode.length,
@@ -195,6 +201,7 @@ test('character-counting streaming protocol', (t) => {
         t.equal(sender.sp.type, SP_TYPE_CHAR_COUNTING);
         t.same(sender.state, {
             hold: false,
+            holdReason: null,
             name: '',
             gcode: '',
             context: {},
@@ -210,6 +217,7 @@ test('character-counting streaming protocol', (t) => {
         t.same(sender.toJSON(), {
             sp: SP_TYPE_CHAR_COUNTING,
             hold: false,
+            holdReason: null,
             name: '',
             context: {},
             size: 0,

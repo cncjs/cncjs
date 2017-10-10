@@ -107,6 +107,7 @@ class Sender extends events.EventEmitter {
     sp = null; // Streaming Protocol
     state = {
         hold: false,
+        holdReason: null,
         name: '',
         gcode: '',
         context: {},
@@ -204,6 +205,7 @@ class Sender extends events.EventEmitter {
         return {
             sp: this.sp.type,
             hold: this.state.hold,
+            holdReason: this.state.holdReason,
             name: this.state.name,
             context: this.state.context,
             size: this.state.gcode.length,
@@ -216,11 +218,12 @@ class Sender extends events.EventEmitter {
             remainingTime: this.state.remainingTime
         };
     }
-    hold() {
+    hold(reason) {
         if (this.state.hold) {
             return;
         }
         this.state.hold = true;
+        this.state.holdReason = reason;
         this.emit('hold');
         this.emit('change');
     }
@@ -229,6 +232,7 @@ class Sender extends events.EventEmitter {
             return;
         }
         this.state.hold = false;
+        this.state.holdReason = null;
         this.emit('unhold');
         this.emit('change');
     }
@@ -245,6 +249,7 @@ class Sender extends events.EventEmitter {
             this.sp.clear();
         }
         this.state.hold = false;
+        this.state.holdReason = null;
         this.state.name = name;
         this.state.gcode = gcode;
         this.state.context = context;
@@ -267,6 +272,7 @@ class Sender extends events.EventEmitter {
             this.sp.clear();
         }
         this.state.hold = false;
+        this.state.holdReason = null;
         this.state.name = '';
         this.state.gcode = '';
         this.state.context = {};
@@ -348,6 +354,7 @@ class Sender extends events.EventEmitter {
             this.sp.clear();
         }
         this.state.hold = false; // clear hold off state
+        this.state.holdReason = null;
         this.state.sent = 0;
         this.state.received = 0;
         this.emit('change');

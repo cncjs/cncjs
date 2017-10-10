@@ -166,23 +166,23 @@ class GrblController {
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
                     if (programMode === 'M0') {
                         log.debug('M0 Program Pause');
-                        this.feeder.hold({ err: null, data: 'M0' }); // Hold reason
+                        this.feeder.hold({ data: 'M0' }); // Hold reason
                     } else if (programMode === 'M1') {
                         log.debug('M1 Program Pause');
-                        this.feeder.hold({ err: null, data: 'M1' }); // Hold reason
+                        this.feeder.hold({ data: 'M1' }); // Hold reason
                     } else if (programMode === 'M2') {
                         log.debug('M2 Program End');
-                        this.feeder.hold({ err: null, data: 'M2' }); // Hold reason
+                        this.feeder.hold({ data: 'M2' }); // Hold reason
                     } else if (programMode === 'M30') {
                         log.debug('M30 Program End');
-                        this.feeder.hold({ err: null, data: 'M30' }); // Hold reason
+                        this.feeder.hold({ data: 'M30' }); // Hold reason
                     }
                 }
 
                 // M6 Tool Change
                 if (words.includes('M6')) {
                     log.debug('M6 Tool Change');
-                    this.feeder.hold({ err: null, data: 'M6' }); // Hold reason
+                    this.feeder.hold({ data: 'M6' }); // Hold reason
 
                     // [Grbl] Surround M6 with parentheses to ignore unsupported command error
                     line = '(M6)';
@@ -238,7 +238,7 @@ class GrblController {
                     // %wait
                     if (line === WAIT) {
                         log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.sender.hold();
+                        this.sender.hold({ data: WAIT }); // Hold reason
                         return `G4 P0.5 (${WAIT})`; // dwell
                     }
 
@@ -252,23 +252,23 @@ class GrblController {
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
                     if (programMode === 'M0') {
                         log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ err: null, data: 'M0' });
+                        this.workflow.pause({ data: 'M0' });
                     } else if (programMode === 'M1') {
                         log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ err: null, data: 'M1' });
+                        this.workflow.pause({ data: 'M1' });
                     } else if (programMode === 'M2') {
                         log.debug(`M2 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ err: null, data: 'M2' });
+                        this.workflow.pause({ data: 'M2' });
                     } else if (programMode === 'M30') {
                         log.debug(`M30 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ err: null, data: 'M30' });
+                        this.workflow.pause({ data: 'M30' });
                     }
                 }
 
                 // M6 Tool Change
                 if (words.includes('M6')) {
                     log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
-                    this.workflow.pause({ err: null, data: 'M6' });
+                    this.workflow.pause({ data: 'M6' });
 
                     // Surround M6 with parentheses to ignore unsupported command error
                     line = '(M6)';
@@ -310,20 +310,26 @@ class GrblController {
 
         // Workflow
         this.workflow = new Workflow();
-        this.workflow.on('start', () => {
-            this.emit('workflow:state', this.workflow.state, this.workflow.context);
+        this.workflow.on('start', (...args) => {
+            this.emit('workflow:state', this.workflow.state);
             this.sender.rewind();
         });
-        this.workflow.on('stop', () => {
-            this.emit('workflow:state', this.workflow.state, this.workflow.context);
+        this.workflow.on('stop', (...args) => {
+            this.emit('workflow:state', this.workflow.state);
             this.sender.rewind();
         });
-        this.workflow.on('pause', () => {
-            this.emit('workflow:state', this.workflow.state, this.workflow.context);
-            this.sender.hold();
+        this.workflow.on('pause', (...args) => {
+            this.emit('workflow:state', this.workflow.state);
+
+            if (args.length > 0) {
+                const reason = { ...args[0] };
+                this.sender.hold(reason); // Hold reason
+            } else {
+                this.sender.hold();
+            }
         });
-        this.workflow.on('resume', () => {
-            this.emit('workflow:state', this.workflow.state, this.workflow.context);
+        this.workflow.on('resume', (...args) => {
+            this.emit('workflow:state', this.workflow.state);
 
             // Clear feeder queue prior to resume program execution
             this.feeder.clear();
@@ -762,8 +768,7 @@ class GrblController {
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON(),
             workflow: {
-                state: this.workflow.state,
-                context: this.workflow.context
+                state: this.workflow.state
             }
         };
     }
@@ -920,7 +925,7 @@ class GrblController {
         }
         if (this.workflow) {
             // workflow state
-            socket.emit('workflow:state', this.workflow.state, this.workflow.context);
+            socket.emit('workflow:state', this.workflow.state);
         }
     }
     removeConnection(socket) {
