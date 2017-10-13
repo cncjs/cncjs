@@ -30,12 +30,18 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 * [Tool Change](https://github.com/cncjs/cncjs/wiki/Tool-Change) (since 1.9.11)
 * Z-Probe
 
-## Pendant
+## Custom Widgets
 
-* [cncjs-pendant-boilerplate](https://github.com/cncjs/cncjs-pendant-boilerplate)
-* [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3)
-* [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb)
-* [cncjs-pendant-keyboard](https://github.com/cncjs/cncjs-pendant-keyboard)
+* [cncjs-widget-boilerplate](https://github.com/cncjs/cncjs-widget-boilerplate) - Creating custom widgets for CNCjs.
+
+## Pendants
+
+* [cncjs-pendant-boilerplate](https://github.com/cncjs/cncjs-pendant-boilerplate) - A bare minimum example to develop a cncjs pendant.
+* [cncjs-pendant-keyboard](https://github.com/cncjs/cncjs-pendant-keyboard) - A simple pendant (using wireless keyboard or usb) to CNCJS.
+* [cncjs-pendant-lcd](https://github.com/cncjs/cncjs-pendant-lcd) - CNCjs Web Kiosk for Raspberry Pi Touch Displays.
+* [cncjs-pendant-ps3](https://github.com/cncjs/cncjs-pendant-ps3) - Dual Shock / PS3 Bluetooth Remote Pendant for CNCjs.
+* [cncjs-pendant-raspi-gpio](https://github.com/cncjs/cncjs-pendant-raspi-gpio) - Simple Raspberry Pi GPIO Pendant control for CNCjs.
+* [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb) - A tiny web console for small 320x240 LCD display.
 
 ## Browser Support
 
