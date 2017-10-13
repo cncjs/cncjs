@@ -15,10 +15,11 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
     - [TinyG](https://github.com/synthetos/TinyG) and [g2core](https://github.com/synthetos/g2)
 * [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cncjs/cncjs/wiki/Desktop-App)
 * 3D Visualizer
-* Allows multiple HTTP connections at the same serial port
+* Allows multiple clients using the same serial port
 * Responsive view for small screen display with device width less than 720px
     - <i>Safari on an iPhone 5S</i> [\[1\]](https://cloud.githubusercontent.com/assets/447801/15633749/b817cd4a-25e7-11e6-9beb-600c65ea1324.PNG) [\[2\]](https://cloud.githubusercontent.com/assets/447801/15633750/b819b5f6-25e7-11e6-8bfe-d3e6247e443b.PNG)
 * Customizable workspace
+* [Custom widget](https://github.com/cncjs/cncjs-widget-boilerplate) (since 1.9.10)
 * My Account
 * Commands
 * Events
@@ -26,6 +27,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 * [Contour ShuttleXpress](https://cnc.js.org/docs/user-guide/#contour-shuttlexpress)
 * Multi-Language Support 
 * Watch Directory
+* [Tool Change](https://github.com/cncjs/cncjs/wiki/Tool-Change) (since 1.9.11)
 * Z-Probe
 
 ## Pendant
