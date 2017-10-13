@@ -30,7 +30,7 @@ export const upload = (req, res) => {
     }
 
     // Load G-code
-    controller.command(null, 'gcode:load', name, gcode, context, (err, state) => {
+    controller.command('gcode:load', name, gcode, context, (err, state) => {
         if (err) {
             res.status(ERR_INTERNAL_SERVER_ERROR).send({
                 msg: 'Failed to load G-code: ' + err

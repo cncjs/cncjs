@@ -65,6 +65,13 @@ class Feeder extends events.EventEmitter {
         this.state.pending = false;
         this.emit('change');
     }
+    reset() {
+        this.state.hold = false;
+        this.state.holdReason = null;
+        this.state.queue = [];
+        this.state.pending = false;
+        this.emit('change');
+    }
     size() {
         return this.state.queue.length;
     }

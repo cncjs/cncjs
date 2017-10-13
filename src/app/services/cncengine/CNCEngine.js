@@ -305,7 +305,7 @@ class CNCEngine {
                     return;
                 }
 
-                controller.command.apply(controller, [socket, cmd].concat(args));
+                controller.command.apply(controller, [cmd].concat(args));
             });
 
             socket.on('write', (port, data, context = {}) => {

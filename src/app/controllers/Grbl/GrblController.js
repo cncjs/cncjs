@@ -133,7 +133,7 @@ class GrblController {
             if (trigger === 'system') {
                 taskRunner.run(commands);
             } else {
-                this.command(null, 'gcode', commands);
+                this.command('gcode', commands);
             }
         });
 
@@ -200,8 +200,7 @@ class GrblController {
             }
 
             if (this.controller.isAlarm()) {
-                // Feeder
-                this.feeder.clear();
+                this.feeder.reset();
                 log.warn('Stopped sending G-code commands in Alarm mode');
                 return;
             }
@@ -331,9 +330,8 @@ class GrblController {
         this.workflow.on('resume', (...args) => {
             this.emit('workflow:state', this.workflow.state);
 
-            // Clear feeder queue prior to resume program execution
-            this.feeder.clear();
-            this.feeder.unhold();
+            // Reset feeder prior to resume program execution
+            this.feeder.reset();
 
             // Resume program execution
             this.sender.unhold();
@@ -661,7 +659,7 @@ class GrblController {
                     this.actionTime.senderFinishTime = 0;
 
                     // Stop workflow
-                    this.command(null, 'gcode:stop');
+                    this.command('gcode:stop');
                 }
             }
         }, 250);
@@ -839,7 +837,7 @@ class GrblController {
 
             if (this.sender.state.gcode) {
                 // Unload G-code
-                this.command(null, 'unload');
+                this.command('unload');
             }
         });
     }
@@ -960,7 +958,7 @@ class GrblController {
             socket.emit(eventName, ...args);
         });
     }
-    command(socket, cmd, ...args) {
+    command(cmd, ...args) {
         const handler = {
             'gcode:load': () => {
                 let [name, gcode, context = {}, callback = noop] = args;
@@ -1000,7 +998,7 @@ class GrblController {
             },
             'start': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command(socket, 'gcode:start');
+                this.command('gcode:start');
             },
             'gcode:start': () => {
                 this.event.trigger('gcode:start');
@@ -1008,14 +1006,14 @@ class GrblController {
                 this.workflow.start();
 
                 // Feeder
-                this.feeder.clear();
+                this.feeder.reset();
 
                 // Sender
                 this.sender.next();
             },
             'stop': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command(socket, 'gcode:stop');
+                this.command('gcode:stop');
             },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
@@ -1041,7 +1039,7 @@ class GrblController {
             },
             'pause': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command(socket, 'gcode:pause');
+                this.command('gcode:pause');
             },
             'gcode:pause': () => {
                 this.event.trigger('gcode:pause');
@@ -1052,7 +1050,7 @@ class GrblController {
             },
             'resume': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command(socket, 'gcode:resume');
+                this.command('gcode:resume');
             },
             'gcode:resume': () => {
                 this.event.trigger('gcode:resume');
@@ -1063,7 +1061,7 @@ class GrblController {
             },
             'feeder:feed': () => {
                 const [commands, context = {}] = args;
-                this.command(socket, 'gcode', commands, context);
+                this.command('gcode', commands, context);
             },
             'feeder:start': () => {
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -1073,12 +1071,8 @@ class GrblController {
                 this.feeder.unhold();
                 this.feeder.next();
             },
-            'feeder:pause': () => {
-                this.feeder.hold();
-            },
             'feeder:stop': () => {
-                this.feeder.clear();
-                this.feeder.unhold();
+                this.feeder.reset();
             },
             'feedhold': () => {
                 this.event.trigger('feedhold');
@@ -1109,8 +1103,7 @@ class GrblController {
             'reset': () => {
                 this.workflow.stop();
 
-                // Feeder
-                this.feeder.clear();
+                this.feeder.reset();
 
                 this.write('\x18'); // ^x
             },
@@ -1186,13 +1179,13 @@ class GrblController {
                     commands.push('G4P' + ensurePositiveNumber(duration / 1000));
                     commands.push('M5S0');
                 }
-                this.command(socket, 'gcode', commands);
+                this.command('gcode', commands);
             },
             'lasertest:off': () => {
                 const commands = [
                     'M5S0'
                 ];
-                this.command(socket, 'gcode', commands);
+                this.command('gcode', commands);
             },
             'gcode': () => {
                 const [commands, context] = args;
@@ -1230,7 +1223,7 @@ class GrblController {
 
                 this.event.trigger('macro:run');
 
-                this.command(socket, 'gcode', macro.content, context);
+                this.command('gcode', macro.content, context);
                 callback(null);
             },
             'macro:load': () => {
@@ -1250,7 +1243,7 @@ class GrblController {
 
                 this.event.trigger('macro:load');
 
-                this.command(socket, 'gcode:load', macro.name, macro.content, context, callback);
+                this.command('gcode:load', macro.name, macro.content, context, callback);
             },
             'watchdir:load': () => {
                 const [file, callback = noop] = args;
@@ -1262,7 +1255,7 @@ class GrblController {
                         return;
                     }
 
-                    this.command(socket, 'gcode:load', file, data, context, callback);
+                    this.command('gcode:load', file, data, context, callback);
                 });
             }
         }[cmd];
