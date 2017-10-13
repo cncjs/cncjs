@@ -2,15 +2,16 @@ import url from 'url';
 import registryUrl from 'registry-url';
 import registryAuthToken from 'registry-auth-token';
 import request from 'superagent';
-import pkg from '../../package.json';
 import {
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
+const pkgName = 'cncjs';
+
 export const getLatestVersion = (req, res) => {
-    const scope = pkg.name.split('/')[0];
+    const scope = pkgName.split('/')[0];
     const regUrl = registryUrl(scope);
-    const pkgUrl = url.resolve(regUrl, encodeURIComponent(pkg.name).replace(/^%40/, '@'));
+    const pkgUrl = url.resolve(regUrl, encodeURIComponent(pkgName).replace(/^%40/, '@'));
     const authInfo = registryAuthToken(regUrl);
     const headers = {};
 
