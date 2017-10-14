@@ -1,6 +1,6 @@
 import noop from 'lodash/noop';
 import rangeCheck from 'range_check';
-import serialport from 'serialport';
+import SerialPort from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
 import EventTrigger from '../../lib/EventTrigger';
@@ -173,31 +173,30 @@ class CNCEngine {
             socket.on('list', () => {
                 log.debug(`socket.list(): id=${socket.id}`);
 
-                serialport.list((err, ports) => {
-                    if (err) {
-                        log.error(err);
-                        return;
-                    }
+                SerialPort.list()
+                    .then(ports => {
+                        ports = ports.concat(ensureArray(config.get('ports', [])));
 
-                    ports = ports.concat(ensureArray(config.get('ports', [])));
+                        const controllers = store.get('controllers', {});
+                        const portsInUse = Object.keys(controllers)
+                            .filter(port => {
+                                const controller = controllers[port];
+                                return controller && controller.isOpen();
+                            });
 
-                    const controllers = store.get('controllers', {});
-                    const portsInUse = Object.keys(controllers)
-                        .filter(port => {
-                            const controller = controllers[port];
-                            return controller && controller.isOpen();
+                        ports = ports.map(port => {
+                            return {
+                                port: port.comName,
+                                manufacturer: port.manufacturer,
+                                inuse: portsInUse.indexOf(port.comName) >= 0
+                            };
                         });
 
-                    ports = ports.map(port => {
-                        return {
-                            port: port.comName,
-                            manufacturer: port.manufacturer,
-                            inuse: portsInUse.indexOf(port.comName) >= 0
-                        };
+                        socket.emit('serialport:list', ports);
+                    })
+                    .catch(err => {
+                        log.error(err);
                     });
-
-                    socket.emit('serialport:list', ports);
-                });
             });
 
             // Open serial port

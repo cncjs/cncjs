@@ -45,13 +45,9 @@ class SmoothieController {
         port: '',
         baudrate: 115200
     };
-    serialport = null;
-    serialportListener = {
-        data: (data) => {
-            log.silly(`< ${data}`);
-            this.controller.parse('' + data);
-        },
-        disconnect: (err) => {
+    serialPort = null;
+    serialPortListener = {
+        close: (err) => {
             this.ready = false;
             if (err) {
                 log.warn(`Disconnected from serial port "${this.options.port}":`, err);
@@ -206,7 +202,7 @@ class SmoothieController {
 
             this.emit('serialport:write', line + '\n', context);
 
-            this.serialport.write(line + '\n');
+            this.serialPort.write(line + '\n');
             log.silly(`> ${line}`);
         });
         this.feeder.on('hold', noop);
@@ -286,7 +282,7 @@ class SmoothieController {
                 return;
             }
 
-            this.serialport.write(line + '\n');
+            this.serialPort.write(line + '\n');
             log.silly(`> ${line}`);
         });
         this.sender.on('hold', noop);
@@ -485,7 +481,7 @@ class SmoothieController {
             if (this.isOpen()) {
                 this.actionMask.queryStatusReport = true;
                 this.actionTime.queryStatusReport = now;
-                this.serialport.write('?');
+                this.serialPort.write('?');
             }
         };
 
@@ -526,7 +522,7 @@ class SmoothieController {
                 this.actionMask.queryParserState.state = true;
                 this.actionMask.queryParserState.reply = false;
                 this.actionTime.queryParserState = now;
-                this.serialport.write('$G\n');
+                this.serialPort.write('$G\n');
             }
         }, 500);
 
@@ -672,8 +668,8 @@ class SmoothieController {
     destroy() {
         this.connections = {};
 
-        if (this.serialport) {
-            this.serialport = null;
+        if (this.serialPort) {
+            this.serialPort = null;
         }
 
         if (this.event) {
@@ -725,7 +721,7 @@ class SmoothieController {
 
             const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
             if (cmd) {
-                this.serialport.write(cmd + '\n');
+                this.serialPort.write(cmd + '\n');
                 log.silly(`> ${cmd}`);
             }
             setTimeout(() => {
@@ -761,18 +757,23 @@ class SmoothieController {
             return;
         }
 
-        this.serialport = new SerialPort(this.options.port, {
+        this.serialPort = new SerialPort(this.options.port, {
             autoOpen: false,
-            baudRate: this.options.baudrate,
-            parser: SerialPort.parsers.readline('\n')
+            baudRate: this.options.baudrate
         });
-        this.serialport.on('data', this.serialportListener.data);
-        this.serialport.on('disconnect', this.serialportListener.disconnect);
-        this.serialport.on('error', this.serialportListener.error);
-        this.serialport.open((err) => {
+        const Readline = SerialPort.parsers.Readline;
+        const parser = this.serialPort.pipe(new Readline({ delimiter: '\n' }));
+        parser.on('data', (data) => {
+            log.silly(`< ${data}`);
+            this.controller.parse('' + data);
+        });
+
+        this.serialPort.on('close', this.serialPortListener.close);
+        this.serialPort.on('error', this.serialPortListener.error);
+        this.serialPort.open((err) => {
             if (err) {
                 log.error(`Error opening serial port "${port}":`, err);
-                this.emit('serialport:error', { port: port });
+                this.emit('serialport:error', { err: err, port: port });
                 callback(err); // notify error
                 return;
             }
@@ -814,7 +815,7 @@ class SmoothieController {
         const { port } = this.options;
 
         // Assertion check
-        if (!this.serialport) {
+        if (!this.serialPort) {
             const err = `Serial port "${port}" is not available`;
             callback(new Error(err));
             return;
@@ -841,10 +842,9 @@ class SmoothieController {
             return;
         }
 
-        this.serialport.removeListener('data', this.serialportListener.data);
-        this.serialport.removeListener('disconnect', this.serialportListener.disconnect);
-        this.serialport.removeListener('error', this.serialportListener.error);
-        this.serialport.close((err) => {
+        this.serialPort.removeListener('close', this.serialPortListener.close);
+        this.serialPort.removeListener('error', this.serialPortListener.error);
+        this.serialPort.close((err) => {
             if (err) {
                 log.error(`Error closing serial port "${port}":`, err);
                 callback(err);
@@ -855,7 +855,7 @@ class SmoothieController {
         });
     }
     isOpen() {
-        return this.serialport && this.serialport.isOpen();
+        return this.serialPort && this.serialPort.isOpen;
     }
     isClose() {
         return !(this.isOpen());
@@ -1234,7 +1234,7 @@ class SmoothieController {
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
         this.emit('serialport:write', data, context);
-        this.serialport.write(data);
+        this.serialPort.write(data);
         log.silly(`> ${data}`);
     }
     writeln(data, context) {

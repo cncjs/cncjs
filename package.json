@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "1.9.11",
+  "version": "1.9.12",
   "description": "A web-based interface for CNC milling controller running Grbl, Smoothieware, or TinyG",
   "homepage": "https://github.com/cncjs/cncjs",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -217,7 +217,7 @@
     "registry-url": "~3.1.0",
     "rimraf": "~2.6.2",
     "semver": "~5.4.1",
-    "serialport": "~4.0.7",
+    "serialport": "~6.0.0",
     "serve-favicon": "~2.4.5",
     "serve-static": "~1.13.1",
     "session-file-store": "~1.1.2",
