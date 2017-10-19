@@ -12,24 +12,24 @@ export const WORKFLOW_STATE_IDLE = 'idle';
 export const WORKFLOW_STATE_PAUSED = 'paused';
 export const WORKFLOW_STATE_RUNNING = 'running';
 
-// Grbl Active State
-export const GRBL_ACTIVE_STATE_IDLE = 'Idle';
-export const GRBL_ACTIVE_STATE_RUN = 'Run';
-export const GRBL_ACTIVE_STATE_HOLD = 'Hold';
-export const GRBL_ACTIVE_STATE_DOOR = 'Door';
-export const GRBL_ACTIVE_STATE_HOME = 'Home';
-export const GRBL_ACTIVE_STATE_SLEEP = 'Sleep';
-export const GRBL_ACTIVE_STATE_ALARM = 'Alarm';
-export const GRBL_ACTIVE_STATE_CHECK = 'Check';
+// Grbl Machine State
+export const GRBL_MACHINE_STATE_IDLE = 'Idle';
+export const GRBL_MACHINE_STATE_RUN = 'Run';
+export const GRBL_MACHINE_STATE_HOLD = 'Hold';
+export const GRBL_MACHINE_STATE_DOOR = 'Door';
+export const GRBL_MACHINE_STATE_HOME = 'Home';
+export const GRBL_MACHINE_STATE_SLEEP = 'Sleep';
+export const GRBL_MACHINE_STATE_ALARM = 'Alarm';
+export const GRBL_MACHINE_STATE_CHECK = 'Check';
 
-// Smoothie Active State
-export const SMOOTHIE_ACTIVE_STATE_IDLE = 'Idle';
-export const SMOOTHIE_ACTIVE_STATE_RUN = 'Run';
-export const SMOOTHIE_ACTIVE_STATE_HOLD = 'Hold';
-export const SMOOTHIE_ACTIVE_STATE_DOOR = 'Door';
-export const SMOOTHIE_ACTIVE_STATE_HOME = 'Home';
-export const SMOOTHIE_ACTIVE_STATE_ALARM = 'Alarm';
-export const SMOOTHIE_ACTIVE_STATE_CHECK = 'Check';
+// Smoothie Machine State
+export const SMOOTHIE_MACHINE_STATE_IDLE = 'Idle';
+export const SMOOTHIE_MACHINE_STATE_RUN = 'Run';
+export const SMOOTHIE_MACHINE_STATE_HOLD = 'Hold';
+export const SMOOTHIE_MACHINE_STATE_DOOR = 'Door';
+export const SMOOTHIE_MACHINE_STATE_HOME = 'Home';
+export const SMOOTHIE_MACHINE_STATE_ALARM = 'Alarm';
+export const SMOOTHIE_MACHINE_STATE_CHECK = 'Check';
 
 // TinyG Machine State
 // https://github.com/synthetos/g2/wiki/Status-Reports#stat-values

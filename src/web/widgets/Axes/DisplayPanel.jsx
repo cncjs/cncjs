@@ -37,7 +37,7 @@ class DisplayPanel extends PureComponent {
         const { units, canClick, axes, machinePosition, workPosition } = state;
         const lengthUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         const degreeUnits = i18n._('deg');
-        const wcs = actions.getWorkCoordinateSystem();
+        const wcs = controller.getWorkCoordinateSystem();
         const {
             showXPositionInput,
             showYPositionInput,

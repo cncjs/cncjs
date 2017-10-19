@@ -20,14 +20,13 @@ class Smoothie extends PureComponent {
         const none = '–';
         const panel = state.panel;
         const controllerState = state.controller.state || {};
-        const parserState = _.get(controllerState, 'parserstate', {});
-        const activeState = _.get(controllerState, 'status.activeState', none);
-        const ovF = _.get(controllerState, 'status.ovF', 0);
-        const ovS = _.get(controllerState, 'status.ovS', 0);
-        const feedrate = _.get(parserState, 'feedrate', none);
-        const spindle = _.get(parserState, 'spindle', none);
-        const tool = _.get(parserState, 'tool', none);
-        const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
+        const machineState = _.get(controllerState, 'machineState', none);
+        const ovF = _.get(controllerState, 'ovF', 0);
+        const ovS = _.get(controllerState, 'ovS', 0);
+        const feedrate = _.get(controllerState, 'feedrate', none);
+        const spindle = _.get(controllerState, 'spindle', none);
+        const tool = _.get(controllerState, 'tool', none);
+        const modal = _.mapValues(controllerState.modal || {}, mapGCodeToText);
 
         return (
             <div>
@@ -58,7 +57,7 @@ class Smoothie extends PureComponent {
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>
-                                    {activeState}
+                                    {machineState}
                                 </div>
                             </div>
                         </div>

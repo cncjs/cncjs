@@ -4,8 +4,8 @@ import events from 'events';
 import _ from 'lodash';
 import ensureArray from '../../lib/ensure-array';
 import {
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_ALARM,
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_ALARM,
     SMOOTHIE_MODAL_GROUPS
 } from './constants';
 
@@ -93,19 +93,10 @@ class SmoothieLineParserResultStatus {
         const params = r[1].match(pattern);
         const result = {};
 
-        { // Active State (Grbl v0.9, v1.1)
+        { // Machine State
             // * Valid states types: Idle, Run, Hold, Jog, Alarm, Door, Check, Home, Sleep
-            // * Sub-states may be included via : a colon delimiter and numeric code.
-            // * Current sub-states are:
-            //   - Hold:0 Hold complete. Ready to resume.
-            //   - Hold:1 Hold in-progress. Reset will throw an alarm.
-            //   - Door:0 Door closed. Ready to resume.
-            //   - Door:1 Machine stopped. Door still ajar. Can't resume until closed.
-            //   - Door:2 Door opened. Hold (or parking retract) in-progress. Reset will throw an alarm.
-            //   - Door:3 Door closed and resuming. Restoring from park, if applicable. Reset will throw an alarm.
             const states = (params.shift() || '').split(':');
-            payload.activeState = states[0] || '';
-            payload.subState = Number(states[1] || '');
+            payload.machineState = states[0] || '';
         }
 
         for (let param of params) {
@@ -406,37 +397,33 @@ class SmoothieLineParserResultVersion {
 
 class Smoothie extends events.EventEmitter {
     state = {
-        status: {
-            activeState: '',
-            mpos: {
-                x: '0.0000',
-                y: '0.0000',
-                z: '0.0000'
-            },
-            wpos: {
-                x: '0.0000',
-                y: '0.0000',
-                z: '0.0000'
-            },
-            ovF: 100,
-            ovS: 100
+        machineState: '',
+        mpos: {
+            x: '0.0000',
+            y: '0.0000',
+            z: '0.0000'
         },
-        parserstate: {
-            modal: {
-                motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
-                wcs: 'G54', // G54, G55, G56, G57, G58, G59
-                plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
-                units: 'G21', // G20: Inches, G21: Millimeters
-                distance: 'G90', // G90: Absolute, G91: Relative
-                feedrate: 'G94', // G93: Inverse time mode, G94: Units per minute
-                program: 'M0', // M0, M1, M2, M30
-                spindle: 'M5', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
-                coolant: 'M9' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
-            },
-            tool: '',
-            feedrate: '',
-            spindle: ''
-        }
+        wpos: {
+            x: '0.0000',
+            y: '0.0000',
+            z: '0.0000'
+        },
+        modal: {
+            motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+            wcs: 'G54', // G54, G55, G56, G57, G58, G59
+            plane: 'G17', // G17: xy-plane, G18: xz-plane, G19: yz-plane
+            units: 'G21', // G20: Inches, G21: Millimeters
+            distance: 'G90', // G90: Absolute, G91: Relative
+            feedrate: 'G94', // G93: Inverse time mode, G94: Units per minute
+            program: 'M0', // M0, M1, M2, M30
+            spindle: 'M5', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
+            coolant: 'M9' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
+        },
+        ovF: 100,
+        ovS: 100,
+        tool: '',
+        feedrate: '',
+        spindle: ''
     };
     settings = {
         build: {
@@ -472,30 +459,27 @@ class Smoothie extends events.EventEmitter {
                 payload.wpos = payload.wpos || {};
                 _.each(payload.mpos, (mpos, axis) => {
                     const digits = decimalPlaces(mpos);
-                    const wco = _.get((payload.wco || this.state.status.wco), axis, 0);
+                    const wco = _.get((payload.wco || this.state.wco), axis, 0);
                     payload.wpos[axis] = (Number(mpos) - Number(wco)).toFixed(digits);
                 });
             } else if (_.has(payload, 'wpos') && !_.has(payload, 'mpos')) {
                 payload.mpos = payload.mpos || {};
                 _.each(payload.wpos, (wpos, axis) => {
                     const digits = decimalPlaces(wpos);
-                    const wco = _.get((payload.wco || this.state.status.wco), axis, 0);
+                    const wco = _.get((payload.wco || this.state.wco), axis, 0);
                     payload.mpos[axis] = (Number(wpos) + Number(wco)).toFixed(digits);
                 });
             }
 
             const nextState = {
                 ...this.state,
-                status: {
-                    ...this.state.status,
-                    ...payload
-                }
+                ...payload
             };
 
             // Delete the raw key
-            delete nextState.status.raw;
+            delete nextState.raw;
 
-            if (!_.isEqual(this.state.status, nextState.status)) {
+            if (!_.isEqual(this.state, nextState)) {
                 this.state = nextState; // enforce change
             }
             this.emit('status', payload);
@@ -519,14 +503,12 @@ class Smoothie extends events.EventEmitter {
             const { modal, tool, feedrate, spindle } = payload;
             const nextState = {
                 ...this.state,
-                parserstate: {
-                    modal: modal,
-                    tool: tool,
-                    feedrate: feedrate,
-                    spindle: spindle
-                }
+                modal: modal,
+                tool: tool,
+                feedrate: feedrate,
+                spindle: spindle
             };
-            if (!_.isEqual(this.state.parserstate, nextState.parserstate)) {
+            if (!_.isEqual(this.state, nextState)) {
                 this.state = nextState; // enforce change
             }
             this.emit('parserstate', payload);
@@ -570,21 +552,21 @@ class Smoothie extends events.EventEmitter {
         }
     }
     getMachinePosition(state = this.state) {
-        return _.get(state, 'status.mpos', {});
+        return _.get(state, 'mpos', {});
     }
     getWorkPosition(state = this.state) {
-        return _.get(state, 'status.wpos', {});
+        return _.get(state, 'wpos', {});
     }
     getModalGroup(state = this.state) {
-        return _.get(state, 'parserstate.modal', {});
+        return _.get(state, 'modal', {});
     }
     isAlarm() {
-        const activeState = _.get(this.state, 'status.activeState');
-        return activeState === SMOOTHIE_ACTIVE_STATE_ALARM;
+        const machineState = _.get(this.state, 'machineState');
+        return machineState === SMOOTHIE_MACHINE_STATE_ALARM;
     }
     isIdle() {
-        const activeState = _.get(this.state, 'status.activeState');
-        return activeState === SMOOTHIE_ACTIVE_STATE_IDLE;
+        const machineState = _.get(this.state, 'machineState');
+        return machineState === SMOOTHIE_MACHINE_STATE_IDLE;
     }
 }
 

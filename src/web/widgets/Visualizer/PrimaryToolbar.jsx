@@ -14,24 +14,24 @@ import {
     METRIC_UNITS,
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_RUN,
-    GRBL_ACTIVE_STATE_HOLD,
-    GRBL_ACTIVE_STATE_DOOR,
-    GRBL_ACTIVE_STATE_HOME,
-    GRBL_ACTIVE_STATE_SLEEP,
-    GRBL_ACTIVE_STATE_ALARM,
-    GRBL_ACTIVE_STATE_CHECK,
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_RUN,
+    GRBL_MACHINE_STATE_HOLD,
+    GRBL_MACHINE_STATE_DOOR,
+    GRBL_MACHINE_STATE_HOME,
+    GRBL_MACHINE_STATE_SLEEP,
+    GRBL_MACHINE_STATE_ALARM,
+    GRBL_MACHINE_STATE_CHECK,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_RUN,
-    SMOOTHIE_ACTIVE_STATE_HOLD,
-    SMOOTHIE_ACTIVE_STATE_DOOR,
-    SMOOTHIE_ACTIVE_STATE_HOME,
-    SMOOTHIE_ACTIVE_STATE_SLEEP,
-    SMOOTHIE_ACTIVE_STATE_ALARM,
-    SMOOTHIE_ACTIVE_STATE_CHECK,
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_RUN,
+    SMOOTHIE_MACHINE_STATE_HOLD,
+    SMOOTHIE_MACHINE_STATE_DOOR,
+    SMOOTHIE_MACHINE_STATE_HOME,
+    SMOOTHIE_MACHINE_STATE_SLEEP,
+    SMOOTHIE_MACHINE_STATE_ALARM,
+    SMOOTHIE_MACHINE_STATE_CHECK,
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_INITIALIZING,
@@ -60,16 +60,11 @@ class PrimaryToolbar extends PureComponent {
     };
 
     canSendCommand() {
-        const { state } = this.props;
-        const { port, controller, workflow } = state;
+        if (!controller.connection.ident) {
+            return false;
+        }
 
-        if (!port) {
-            return false;
-        }
-        if (!controller.type || !controller.state) {
-            return false;
-        }
-        if (workflow.state !== WORKFLOW_STATE_IDLE) {
+        if (controller.workflow.state !== WORKFLOW_STATE_IDLE) {
             return false;
         }
 
@@ -93,59 +88,59 @@ class PrimaryToolbar extends PureComponent {
         let stateText = '';
 
         if (controllerType === GRBL) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const machineState = _.get(controllerState, 'machineState');
 
             stateStyle = {
-                [GRBL_ACTIVE_STATE_IDLE]: 'controller-state-default',
-                [GRBL_ACTIVE_STATE_RUN]: 'controller-state-primary',
-                [GRBL_ACTIVE_STATE_HOLD]: 'controller-state-warning',
-                [GRBL_ACTIVE_STATE_DOOR]: 'controller-state-warning',
-                [GRBL_ACTIVE_STATE_HOME]: 'controller-state-primary',
-                [GRBL_ACTIVE_STATE_SLEEP]: 'controller-state-success',
-                [GRBL_ACTIVE_STATE_ALARM]: 'controller-state-danger',
-                [GRBL_ACTIVE_STATE_CHECK]: 'controller-state-info'
-            }[activeState];
+                [GRBL_MACHINE_STATE_IDLE]: 'controller-state-default',
+                [GRBL_MACHINE_STATE_RUN]: 'controller-state-primary',
+                [GRBL_MACHINE_STATE_HOLD]: 'controller-state-warning',
+                [GRBL_MACHINE_STATE_DOOR]: 'controller-state-warning',
+                [GRBL_MACHINE_STATE_HOME]: 'controller-state-primary',
+                [GRBL_MACHINE_STATE_SLEEP]: 'controller-state-success',
+                [GRBL_MACHINE_STATE_ALARM]: 'controller-state-danger',
+                [GRBL_MACHINE_STATE_CHECK]: 'controller-state-info'
+            }[machineState];
 
             stateText = {
-                [GRBL_ACTIVE_STATE_IDLE]: i18n.t('controller:Grbl.activeState.idle'),
-                [GRBL_ACTIVE_STATE_RUN]: i18n.t('controller:Grbl.activeState.run'),
-                [GRBL_ACTIVE_STATE_HOLD]: i18n.t('controller:Grbl.activeState.hold'),
-                [GRBL_ACTIVE_STATE_DOOR]: i18n.t('controller:Grbl.activeState.door'),
-                [GRBL_ACTIVE_STATE_HOME]: i18n.t('controller:Grbl.activeState.home'),
-                [GRBL_ACTIVE_STATE_SLEEP]: i18n.t('controller:Grbl.activeState.sleep'),
-                [GRBL_ACTIVE_STATE_ALARM]: i18n.t('controller:Grbl.activeState.alarm'),
-                [GRBL_ACTIVE_STATE_CHECK]: i18n.t('controller:Grbl.activeState.check')
-            }[activeState];
+                [GRBL_MACHINE_STATE_IDLE]: i18n.t('controller:Grbl.machineState.idle'),
+                [GRBL_MACHINE_STATE_RUN]: i18n.t('controller:Grbl.machineState.run'),
+                [GRBL_MACHINE_STATE_HOLD]: i18n.t('controller:Grbl.machineState.hold'),
+                [GRBL_MACHINE_STATE_DOOR]: i18n.t('controller:Grbl.machineState.door'),
+                [GRBL_MACHINE_STATE_HOME]: i18n.t('controller:Grbl.machineState.home'),
+                [GRBL_MACHINE_STATE_SLEEP]: i18n.t('controller:Grbl.machineState.sleep'),
+                [GRBL_MACHINE_STATE_ALARM]: i18n.t('controller:Grbl.machineState.alarm'),
+                [GRBL_MACHINE_STATE_CHECK]: i18n.t('controller:Grbl.machineState.check')
+            }[machineState];
         }
 
         if (controllerType === SMOOTHIE) {
-            const activeState = _.get(controllerState, 'status.activeState');
+            const machineState = _.get(controllerState, 'machineState');
 
             stateStyle = {
-                [SMOOTHIE_ACTIVE_STATE_IDLE]: 'controller-state-default',
-                [SMOOTHIE_ACTIVE_STATE_RUN]: 'controller-state-primary',
-                [SMOOTHIE_ACTIVE_STATE_HOLD]: 'controller-state-warning',
-                [SMOOTHIE_ACTIVE_STATE_DOOR]: 'controller-state-warning',
-                [SMOOTHIE_ACTIVE_STATE_HOME]: 'controller-state-primary',
-                [SMOOTHIE_ACTIVE_STATE_SLEEP]: 'controller-state-success',
-                [SMOOTHIE_ACTIVE_STATE_ALARM]: 'controller-state-danger',
-                [SMOOTHIE_ACTIVE_STATE_CHECK]: 'controller-state-info'
-            }[activeState];
+                [SMOOTHIE_MACHINE_STATE_IDLE]: 'controller-state-default',
+                [SMOOTHIE_MACHINE_STATE_RUN]: 'controller-state-primary',
+                [SMOOTHIE_MACHINE_STATE_HOLD]: 'controller-state-warning',
+                [SMOOTHIE_MACHINE_STATE_DOOR]: 'controller-state-warning',
+                [SMOOTHIE_MACHINE_STATE_HOME]: 'controller-state-primary',
+                [SMOOTHIE_MACHINE_STATE_SLEEP]: 'controller-state-success',
+                [SMOOTHIE_MACHINE_STATE_ALARM]: 'controller-state-danger',
+                [SMOOTHIE_MACHINE_STATE_CHECK]: 'controller-state-info'
+            }[machineState];
 
             stateText = {
-                [SMOOTHIE_ACTIVE_STATE_IDLE]: i18n.t('controller:Smoothie.activeState.idle'),
-                [SMOOTHIE_ACTIVE_STATE_RUN]: i18n.t('controller:Smoothie.activeState.run'),
-                [SMOOTHIE_ACTIVE_STATE_HOLD]: i18n.t('controller:Smoothie.activeState.hold'),
-                [SMOOTHIE_ACTIVE_STATE_DOOR]: i18n.t('controller:Smoothie.activeState.door'),
-                [SMOOTHIE_ACTIVE_STATE_HOME]: i18n.t('controller:Smoothie.activeState.home'),
-                [SMOOTHIE_ACTIVE_STATE_SLEEP]: i18n.t('controller:Smoothie.activeState.sleep'),
-                [SMOOTHIE_ACTIVE_STATE_ALARM]: i18n.t('controller:Smoothie.activeState.alarm'),
-                [SMOOTHIE_ACTIVE_STATE_CHECK]: i18n.t('controller:Smoothie.activeState.check')
-            }[activeState];
+                [SMOOTHIE_MACHINE_STATE_IDLE]: i18n.t('controller:Smoothie.machineState.idle'),
+                [SMOOTHIE_MACHINE_STATE_RUN]: i18n.t('controller:Smoothie.machineState.run'),
+                [SMOOTHIE_MACHINE_STATE_HOLD]: i18n.t('controller:Smoothie.machineState.hold'),
+                [SMOOTHIE_MACHINE_STATE_DOOR]: i18n.t('controller:Smoothie.machineState.door'),
+                [SMOOTHIE_MACHINE_STATE_HOME]: i18n.t('controller:Smoothie.machineState.home'),
+                [SMOOTHIE_MACHINE_STATE_SLEEP]: i18n.t('controller:Smoothie.machineState.sleep'),
+                [SMOOTHIE_MACHINE_STATE_ALARM]: i18n.t('controller:Smoothie.machineState.alarm'),
+                [SMOOTHIE_MACHINE_STATE_CHECK]: i18n.t('controller:Smoothie.machineState.check')
+            }[machineState];
         }
 
         if (controllerType === TINYG) {
-            const machineState = _.get(controllerState, 'sr.machineState');
+            const machineState = _.get(controllerState, 'machineState');
 
             // https://github.com/synthetos/g2/wiki/Alarm-Processing
             stateStyle = {
@@ -194,26 +189,6 @@ class PrimaryToolbar extends PureComponent {
             </div>
         );
     }
-    getWorkCoordinateSystem() {
-        const { state } = this.props;
-        const controllerType = state.controller.type;
-        const controllerState = state.controller.state;
-        const defaultWCS = 'G54';
-
-        if (controllerType === GRBL) {
-            return _.get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
-        }
-
-        if (controllerType === SMOOTHIE) {
-            return _.get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
-        }
-
-        if (controllerType === TINYG) {
-            return _.get(controllerState, 'sr.modal.wcs') || defaultWCS;
-        }
-
-        return defaultWCS;
-    }
     render() {
         const { state, actions } = this.props;
         const { units, disabled, gcode, projection, objects } = state;
@@ -221,7 +196,7 @@ class PrimaryToolbar extends PureComponent {
         const controllerState = this.renderControllerState();
         const canSendCommand = this.canSendCommand();
         const canToggleOptions = Detector.webgl && !disabled;
-        const wcs = this.getWorkCoordinateSystem();
+        const wcs = controller.getWorkCoordinateSystem();
 
         return (
             <div>

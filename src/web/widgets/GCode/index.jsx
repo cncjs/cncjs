@@ -63,14 +63,6 @@ class GCodeWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
-        },
-        'serialport:close': (options) => {
-            const initialState = this.getInitialState();
-            this.setState({ ...initialState });
-        },
         'gcode:unload': () => {
             this.setState({
                 bbox: {
@@ -108,8 +100,7 @@ class GCodeWidget extends PureComponent {
         'controller:state': (type, state) => {
             // Grbl
             if (type === GRBL) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
+                const { modal = {} } = { ...state };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -122,8 +113,7 @@ class GCodeWidget extends PureComponent {
 
             // Smoothie
             if (type === SMOOTHIE) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
+                const { modal = {} } = { ...state };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -136,8 +126,7 @@ class GCodeWidget extends PureComponent {
 
             // TinyG
             if (type === TINYG) {
-                const { sr } = { ...state };
-                const { modal = {} } = { ...sr };
+                const { modal = {} } = { ...state };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -170,8 +159,6 @@ class GCodeWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-
-            port: controller.port,
             units: METRIC_UNITS,
 
             // G-code Status (from server)

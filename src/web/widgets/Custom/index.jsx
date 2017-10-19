@@ -71,11 +71,18 @@ class CustomWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
+        'connection:open': (options) => {
+            const { ident, type, settings } = options;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    ident: ident,
+                    type: type,
+                    settings: settings
+                }
+            }));
         },
-        'serialport:close': (options) => {
+        'connection:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
@@ -116,10 +123,14 @@ class CustomWidget extends PureComponent {
             disabled: this.config.get('disabled'),
             title: this.config.get('title', ''),
             url: this.config.get('url', ''),
-            port: controller.port,
             controller: {
                 type: controller.type,
                 state: controller.state
+            },
+            connection: {
+                ident: controller.connection.ident,
+                type: controller.connection.type,
+                settings: controller.connection.settings
             },
             workflow: {
                 state: controller.workflow.state
@@ -280,7 +291,7 @@ class CustomWidget extends PureComponent {
                         config={config}
                         disabled={state.disabled}
                         url={state.url}
-                        port={state.port}
+                        connection={state.connection}
                     />
                 </Widget.Content>
             </Widget>

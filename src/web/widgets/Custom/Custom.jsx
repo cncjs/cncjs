@@ -15,7 +15,7 @@ class Custom extends PureComponent {
         config: PropTypes.object,
         disabled: PropTypes.bool,
         url: PropTypes.string,
-        port: PropTypes.string
+        connection: PropTypes.object
     };
 
     pubsubTokens = [];
@@ -33,11 +33,11 @@ class Custom extends PureComponent {
         if (nextProps.url !== this.props.url) {
             this.reload();
         }
-        if (nextProps.port !== this.props.port) {
+        if (nextProps.connection.ident !== this.props.connection.ident) {
             // Post a message to the iframe window
             this.postMessage('change', {
-                port: controller.port,
-                controller: controller.type
+                controller: controller.type,
+                connection: { ...controller.connection }
             });
 
             // Detect iframe content height change every 100ms, but shorter than 2000ms
@@ -57,8 +57,14 @@ class Custom extends PureComponent {
             pubsub.subscribe('message:connect', () => {
                 // Post a message to the iframe window
                 this.postMessage('change', {
-                    port: controller.port,
-                    controller: controller.type
+                    controller: {
+                        type: controller.type
+                    },
+                    connection: {
+                        ident: controller.connection.ident,
+                        type: controller.connection.type,
+                        settings: controller.connection.settings
+                    }
                 });
             })
         ];

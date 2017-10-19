@@ -31,11 +31,11 @@ class Laser extends PureComponent {
         let scale = 0;
 
         if (controllerType === GRBL) {
-            const ovS = _.get(controllerState, 'status.ov[2]', []);
+            const ovS = _.get(controllerState, 'ov[2]', []);
             scale = Number(ovS) || 0;
         }
         if (controllerType === SMOOTHIE) {
-            const ovS = _.get(controllerState, 'status.ovS');
+            const ovS = _.get(controllerState, 'ovS');
             scale = Number(ovS) || 0;
         }
         if (controllerType === TINYG) {

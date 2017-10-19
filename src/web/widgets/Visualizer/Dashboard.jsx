@@ -53,7 +53,8 @@ class Dashboard extends PureComponent {
                             {state.gcode.ready &&
                             <Anchor
                                 onClick={() => {
-                                    api.downloadGCode({ port: state.port });
+                                    const ident = state.connection.ident;
+                                    api.downloadGCode({ ident: ident });
                                 }}
                             >
                                 <strong>{filename}</strong>

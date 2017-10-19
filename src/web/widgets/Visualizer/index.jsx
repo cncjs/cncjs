@@ -34,10 +34,10 @@ import {
     METRIC_UNITS,
     // Grbl
     GRBL,
-    GRBL_ACTIVE_STATE_RUN,
+    GRBL_MACHINE_STATE_RUN,
     // Smoothie
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_RUN,
+    SMOOTHIE_MACHINE_STATE_RUN,
     // TinyG
     TINYG,
     TINYG_MACHINE_STATE_RUN,
@@ -531,15 +531,19 @@ class VisualizerWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState((state) => ({ port: port }));
+        'connection:open': (options) => {
+            const { ident } = options;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    ident: ident
+                }
+            }));
         },
-        'serialport:close': (options) => {
-            this.actions.unloadGCode();
-
+        'connection:close': (options) => {
             const initialState = this.getInitialState();
-            this.setState((state) => ({ ...initialState }));
+            this.setState({ ...initialState });
+            this.actions.unloadGCode();
         },
         'gcode:load': (name, gcode, context) => {
             gcode = translateGCodeWithContext(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
@@ -614,9 +618,7 @@ class VisualizerWidget extends PureComponent {
         'controller:state': (type, controllerState) => {
             // Grbl
             if (type === GRBL) {
-                const { status, parserstate } = { ...controllerState };
-                const { wpos } = status;
-                const { modal = {} } = { ...parserstate };
+                const { wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -642,9 +644,7 @@ class VisualizerWidget extends PureComponent {
 
             // Smoothie
             if (type === SMOOTHIE) {
-                const { status, parserstate } = { ...controllerState };
-                const { wpos } = status;
-                const { modal = {} } = { ...parserstate };
+                const { wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -669,8 +669,7 @@ class VisualizerWidget extends PureComponent {
 
             // TinyG
             if (type === TINYG) {
-                const { sr } = { ...controllerState };
-                const { wpos, modal = {} } = { ...sr };
+                const { wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -742,12 +741,14 @@ class VisualizerWidget extends PureComponent {
     }
     getInitialState() {
         return {
-            port: controller.port,
             units: METRIC_UNITS,
             controller: {
                 type: controller.type,
                 settings: controller.settings,
                 state: controller.state
+            },
+            connection: {
+                ident: controller.connection.ident
             },
             workflow: {
                 state: controller.workflow.state
@@ -839,19 +840,19 @@ class VisualizerWidget extends PureComponent {
             return false;
         }
         if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
-            if (activeState !== GRBL_ACTIVE_STATE_RUN) {
+            const machineState = get(controllerState, 'machineState');
+            if (machineState !== GRBL_MACHINE_STATE_RUN) {
                 return false;
             }
         }
         if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
-            if (activeState !== SMOOTHIE_ACTIVE_STATE_RUN) {
+            const machineState = get(controllerState, 'machineState');
+            if (machineState !== SMOOTHIE_MACHINE_STATE_RUN) {
                 return false;
             }
         }
         if (controllerType === TINYG) {
-            const machineState = get(controllerState, 'sr.machineState');
+            const machineState = get(controllerState, 'machineState');
             if (machineState !== TINYG_MACHINE_STATE_RUN) {
                 return false;
             }

@@ -20,15 +20,13 @@ import {
     // Units
     IMPERIAL_UNITS,
     METRIC_UNITS,
-    // Grbl
+    // Controller
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_RUN,
-    // Smoothie
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_RUN,
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_RUN,
-    // TinyG
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_RUN,
     TINYG,
     TINYG_MACHINE_STATE_READY,
     TINYG_MACHINE_STATE_STOP,
@@ -147,27 +145,8 @@ class AxesWidget extends PureComponent {
             }
             return toUnits(units, customDistance);
         },
-        getWorkCoordinateSystem: () => {
-            const controllerType = this.state.controller.type;
-            const controllerState = this.state.controller.state;
-            const defaultWCS = 'G54';
-
-            if (controllerType === GRBL) {
-                return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
-            }
-
-            if (controllerType === SMOOTHIE) {
-                return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
-            }
-
-            if (controllerType === TINYG) {
-                return get(controllerState, 'sr.modal.wcs') || defaultWCS;
-            }
-
-            return defaultWCS;
-        },
         setWorkOffsets: (axis, value) => {
-            const wcs = this.actions.getWorkCoordinateSystem();
+            const wcs = controller.getWorkCoordinateSystem();
             const p = {
                 'G54': 1,
                 'G55': 2,
@@ -230,7 +209,8 @@ class AxesWidget extends PureComponent {
     };
     shuttleControlEvents = {
         SELECT_AXIS: (event, { axis }) => {
-            const { canClick, selectedAxis } = this.state;
+            const canClick = this.canClick();
+            const { selectedAxis } = this.state;
 
             if (!canClick) {
                 return;
@@ -243,7 +223,8 @@ class AxesWidget extends PureComponent {
             }
         },
         JOG: (event, { axis = null, direction = 1, factor = 1 }) => {
-            const { canClick, keypadJogging, selectedAxis } = this.state;
+            const canClick = this.canClick();
+            const { keypadJogging, selectedAxis } = this.state;
 
             if (!canClick) {
                 return;
@@ -278,7 +259,8 @@ class AxesWidget extends PureComponent {
             this.actions.selectDistance(distance);
         },
         SHUTTLE: (event, { zone = 0 }) => {
-            const { canClick, selectedAxis } = this.state;
+            const canClick = this.canClick();
+            const { selectedAxis } = this.state;
 
             if (!canClick) {
                 return;
@@ -315,11 +297,16 @@ class AxesWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
+        'connection:open': (options) => {
+            const { ident } = options;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    ident: ident
+                }
+            }));
         },
-        'serialport:close': (options) => {
+        'connection:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
@@ -348,9 +335,7 @@ class AxesWidget extends PureComponent {
         'controller:state': (type, controllerState) => {
             // Grbl
             if (type === GRBL) {
-                const { status, parserstate } = { ...controllerState };
-                const { mpos, wpos } = status;
-                const { modal = {} } = { ...parserstate };
+                const { mpos, wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -392,9 +377,7 @@ class AxesWidget extends PureComponent {
 
             // Smoothie
             if (type === SMOOTHIE) {
-                const { status, parserstate } = { ...controllerState };
-                const { mpos, wpos } = status;
-                const { modal = {} } = { ...parserstate };
+                const { mpos, wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -435,8 +418,7 @@ class AxesWidget extends PureComponent {
 
             // TinyG
             if (type === TINYG) {
-                const { sr } = { ...controllerState };
-                const { mpos, wpos, modal = {} } = { ...sr };
+                const { mpos, wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -511,13 +493,15 @@ class AxesWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: true, // Defaults to true
-            port: controller.port,
+            canClick: false,
             units: METRIC_UNITS,
             controller: {
                 type: controller.type,
                 settings: controller.settings,
                 state: controller.state
+            },
+            connection: {
+                ident: controller.connection.ident
             },
             workflow: {
                 state: controller.workflow.state
@@ -584,50 +568,37 @@ class AxesWidget extends PureComponent {
         this.shuttleControl = null;
     }
     canClick() {
-        const { port, workflow } = this.state;
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
+        const machineState = controller.getMachineState();
 
-        if (!port) {
+        if (!controller.connection.ident) {
             return false;
         }
-        if (workflow.state === WORKFLOW_STATE_RUNNING) {
+
+        if (controller.type === GRBL && !includes([
+            GRBL_MACHINE_STATE_IDLE,
+            GRBL_MACHINE_STATE_RUN
+        ], machineState)) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+
+        if (controller.type === SMOOTHIE && !includes([
+            SMOOTHIE_MACHINE_STATE_IDLE,
+            SMOOTHIE_MACHINE_STATE_RUN
+        ], machineState)) {
             return false;
         }
-        if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                GRBL_ACTIVE_STATE_IDLE,
-                GRBL_ACTIVE_STATE_RUN
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
+
+        if (controller.type === TINYG && !includes([
+            TINYG_MACHINE_STATE_READY,
+            TINYG_MACHINE_STATE_STOP,
+            TINYG_MACHINE_STATE_END,
+            TINYG_MACHINE_STATE_RUN
+        ], machineState)) {
+            return false;
         }
-        if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                SMOOTHIE_ACTIVE_STATE_IDLE,
-                SMOOTHIE_ACTIVE_STATE_RUN
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
-        }
-        if (controllerType === TINYG) {
-            const machineState = get(controllerState, 'sr.machineState');
-            const states = [
-                TINYG_MACHINE_STATE_READY,
-                TINYG_MACHINE_STATE_STOP,
-                TINYG_MACHINE_STATE_END,
-                TINYG_MACHINE_STATE_RUN
-            ];
-            if (!includes(states, machineState)) {
-                return false;
-            }
+
+        if (controller.workflow.state === WORKFLOW_STATE_RUNNING) {
+            return false;
         }
 
         return true;

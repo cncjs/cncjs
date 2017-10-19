@@ -18,7 +18,7 @@
         }
     },
     "Grbl": {
-        "activeState": {
+        "machineState": {
             "idle": "Inativo",
             "run": "Rodar",
             "hold": "Manter",
@@ -30,7 +30,7 @@
         }
     },
     "Smoothie": {
-        "activeState": {
+        "machineState": {
             "idle": "Inativo",
             "run": "Rodar",
             "hold": "Manter",

@@ -129,11 +129,11 @@ const unsetState = (options) => new Promise((resolve, reject) => {
 // G-code
 //
 const loadGCode = (options) => new Promise((resolve, reject) => {
-    const { port = '', name = '', gcode = '', context = {} } = { ...options };
+    const { ident = '', name = '', gcode = '', context = {} } = { ...options };
 
     authrequest
         .post('/api/gcode')
-        .send({ port, name, gcode, context })
+        .send({ ident, name, gcode, context })
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -144,11 +144,11 @@ const loadGCode = (options) => new Promise((resolve, reject) => {
 });
 
 const fetchGCode = (options) => new Promise((resolve, reject) => {
-    const { port = '' } = { ...options };
+    const { ident = '' } = { ...options };
 
     authrequest
         .get('/api/gcode')
-        .query({ port: port })
+        .query({ ident: ident })
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -159,7 +159,7 @@ const fetchGCode = (options) => new Promise((resolve, reject) => {
 });
 
 const downloadGCode = (options) => {
-    const { port = '' } = { ...options };
+    const { ident = '' } = { ...options };
 
     const $form = document.createElement('form');
     $form.setAttribute('id', 'export');
@@ -167,15 +167,15 @@ const downloadGCode = (options) => {
     $form.setAttribute('enctype', 'multipart/form-data');
     $form.setAttribute('action', 'api/gcode/download');
 
-    const $port = document.createElement('input');
-    $port.setAttribute('name', 'port');
-    $port.setAttribute('value', port);
+    const $ident = document.createElement('input');
+    $ident.setAttribute('name', 'ident');
+    $ident.setAttribute('value', ident);
 
     const $token = document.createElement('input');
     $token.setAttribute('name', 'token');
     $token.setAttribute('value', store.get('session.token'));
 
-    $form.appendChild($port);
+    $form.appendChild($ident);
     $form.appendChild($token);
 
     document.body.append($form);

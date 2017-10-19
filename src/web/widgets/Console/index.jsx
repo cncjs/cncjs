@@ -10,6 +10,9 @@ import WidgetConfig from '../WidgetConfig';
 import Console from './Console';
 import styles from './index.styl';
 
+const appName = settings.name;
+const appVersion = settings.version;
+
 class ConsoleWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
@@ -61,23 +64,36 @@ class ConsoleWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port, baudrate } = options;
-            this.setState({ port: port });
+        'connection:open': (options) => {
+            const { ident } = options;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    ident: ident
+                }
+            }));
 
-            if (this.terminal) {
-                const { name, version } = settings;
-                this.terminal.writeln(`${name} ${version} [${controller.type}]`);
-                this.terminal.writeln(i18n._('Connected to {{-port}} with a baud rate of {{baudrate}}', { port, baudrate }));
+            if (!this.terminal) {
+                return;
+            }
+
+            this.terminal.writeln(`${appName} ${appVersion} [${controller.type}]`);
+
+            const { type, settings } = options;
+            if (type === 'serial') {
+                const { path, baudRate } = { ...settings };
+                this.terminal.writeln(i18n._('Connected to {{-path}} with a baud rate of {{baudRate}}', { path, baudRate }));
+            } else if (type === 'socket') {
+                const { host, port } = { ...settings };
+                this.terminal.writeln(i18n._('Connected to {{host}}:{{port}}', { host, port }));
             }
         },
-        'serialport:close': (options) => {
-            this.actions.clearAll();
-
+        'connection:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
+            this.actions.clearAll();
         },
-        'serialport:write': (data, context) => {
+        'connection:write': (data, context) => {
             if (context && (context.__sender__ === this.props.widgetId)) {
                 // Do not write to the terminal console if the sender is the widget itself
                 return;
@@ -94,7 +110,7 @@ class ConsoleWidget extends PureComponent {
             data = data.replace(/\r?\n/g, '\r\n');
             this.terminal.write(data);
         },
-        'serialport:read': (data) => {
+        'connection:read': (data) => {
             if (!this.terminal) {
                 return;
             }
@@ -124,7 +140,9 @@ class ConsoleWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            port: controller.port,
+            connection: {
+                ident: controller.connection.ident
+            },
 
             // Terminal
             terminal: {

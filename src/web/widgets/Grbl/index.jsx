@@ -114,14 +114,17 @@ class GrblWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port, controllerType } = options;
-            this.setState({
-                isReady: controllerType === GRBL,
-                port: port
-            });
+        'connection:open': (options) => {
+            const { ident } = options;
+            this.setState(state => ({
+                isReady: controller.type === GRBL,
+                connection: {
+                    ...state.connection,
+                    ident: ident
+                }
+            }));
         },
-        'serialport:close': (options) => {
+        'connection:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
@@ -171,12 +174,14 @@ class GrblWidget extends PureComponent {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
             isReady: (controller.loadedControllers.length === 1) || (controller.type === GRBL),
-            canClick: true, // Defaults to true
-            port: controller.port,
+            canClick: false,
             controller: {
                 type: controller.type,
                 settings: controller.settings,
                 state: controller.state
+            },
+            connection: {
+                ident: controller.connection.ident
             },
             modal: {
                 name: MODAL_NONE,
@@ -208,13 +213,10 @@ class GrblWidget extends PureComponent {
         });
     }
     canClick() {
-        const { port } = this.state;
-        const { type } = this.state.controller;
-
-        if (!port) {
+        if (controller.type !== GRBL) {
             return false;
         }
-        if (type !== GRBL) {
+        if (!controller.connection.ident) {
             return false;
         }
 

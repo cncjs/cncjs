@@ -303,6 +303,7 @@
     "Connection": "Verbinding",
     "No serial connection": "Geen seriële verbinding",
     "Connected to {{-path}} with a baud rate of {{baudRate}}": "Verbind met {{-port}} met een verbindingssnelheid van {{baudRate}}",
+    "Connected to {{host}}:{{port}}": "",
     "Console": "Console",
     "Clear all": "Wis alles",
     "URL not configured": "URL is niet geconfigureerd",

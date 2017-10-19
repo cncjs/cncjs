@@ -1,4 +1,3 @@
-import get from 'lodash/get';
 import includes from 'lodash/includes';
 import map from 'lodash/map';
 import classNames from 'classnames';
@@ -15,19 +14,17 @@ import {
     // Units
     IMPERIAL_UNITS,
     METRIC_UNITS,
-    // Grbl
+    // Controller
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    // Smoothie
+    GRBL_MACHINE_STATE_IDLE,
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    // TinyG
+    SMOOTHIE_MACHINE_STATE_IDLE,
     TINYG,
     TINYG_MACHINE_STATE_READY,
     TINYG_MACHINE_STATE_STOP,
     TINYG_MACHINE_STATE_END,
     // Workflow
-    WORKFLOW_STATE_IDLE
+    WORKFLOW_STATE_RUNNING
 } from '../../constants';
 import {
     MODAL_NONE,
@@ -141,7 +138,7 @@ class ProbeWidget extends PureComponent {
                 touchPlateHeight,
                 retractionDistance
             } = this.state;
-            const wcs = this.getWorkCoordinateSystem();
+            const wcs = controller.getWorkCoordinateSystem();
             const mapWCSToP = (wcs) => ({
                 'G54': 1,
                 'G55': 2,
@@ -221,11 +218,16 @@ class ProbeWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
+        'connection:open': (options) => {
+            const { ident } = options;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    ident: ident
+                }
+            }));
         },
-        'serialport:close': (options) => {
+        'connection:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
@@ -239,8 +241,7 @@ class ProbeWidget extends PureComponent {
         'controller:state': (type, state) => {
             // Grbl
             if (type === GRBL) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
+                const { modal = {} } = { ...state };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -285,8 +286,7 @@ class ProbeWidget extends PureComponent {
 
             // Smoothie
             if (type === SMOOTHIE) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
+                const { modal = {} } = { ...state };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -331,8 +331,7 @@ class ProbeWidget extends PureComponent {
 
             // TinyG
             if (type === TINYG) {
-                const { sr } = { ...state };
-                const { modal = {} } = { ...sr };
+                const { modal = {} } = { ...state };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -424,12 +423,14 @@ class ProbeWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: true, // Defaults to true
-            port: controller.port,
+            canClick: false,
             units: METRIC_UNITS,
             controller: {
                 type: controller.type,
                 state: controller.state
+            },
+            connection: {
+                ident: controller.connection.ident
             },
             workflow: {
                 state: controller.workflow.state
@@ -462,67 +463,35 @@ class ProbeWidget extends PureComponent {
             controller.removeListener(eventName, callback);
         });
     }
-    getWorkCoordinateSystem() {
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
-        const defaultWCS = 'G54';
-
-        if (controllerType === GRBL) {
-            return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
-        }
-
-        if (controllerType === SMOOTHIE) {
-            return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
-        }
-
-        if (controllerType === TINYG) {
-            return get(controllerState, 'sr.modal.wcs') || defaultWCS;
-        }
-
-        return defaultWCS;
-    }
     canClick() {
-        const { port, workflow } = this.state;
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
+        const machineState = controller.getMachineState();
 
-        if (!port) {
+        if (!controller.connection.ident) {
             return false;
         }
-        if (workflow.state !== WORKFLOW_STATE_IDLE) {
+
+        if (controller.type === GRBL && !includes([
+            GRBL_MACHINE_STATE_IDLE
+        ], machineState)) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+
+        if (controller.type === SMOOTHIE && !includes([
+            SMOOTHIE_MACHINE_STATE_IDLE
+        ], machineState)) {
             return false;
         }
-        if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                GRBL_ACTIVE_STATE_IDLE
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
+
+        if (controller.type === TINYG && !includes([
+            TINYG_MACHINE_STATE_READY,
+            TINYG_MACHINE_STATE_STOP,
+            TINYG_MACHINE_STATE_END
+        ], machineState)) {
+            return false;
         }
-        if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                SMOOTHIE_ACTIVE_STATE_IDLE
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
-        }
-        if (controllerType === TINYG) {
-            const machineState = get(controllerState, 'sr.machineState');
-            const states = [
-                TINYG_MACHINE_STATE_READY,
-                TINYG_MACHINE_STATE_STOP,
-                TINYG_MACHINE_STATE_END
-            ];
-            if (!includes(states, machineState)) {
-                return false;
-            }
+
+        if (controller.workflow.state === WORKFLOW_STATE_RUNNING) {
+            return false;
         }
 
         return true;

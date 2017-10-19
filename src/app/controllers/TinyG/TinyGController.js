@@ -1,9 +1,10 @@
 import _ from 'lodash';
 import * as parser from 'gcode-parser';
-import SerialPort from 'serialport';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
+import SerialConnection from '../../lib/SerialConnection';
+import SocketConnection from '../../lib/SocketConnection';
 import Workflow, {
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED,
@@ -17,7 +18,7 @@ import translateWithContext from '../../lib/translateWithContext';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
-import store from '../../store';
+import controllers from '../../store/controllers';
 import TinyG from './TinyG';
 import {
     TINYG,
@@ -43,26 +44,28 @@ class TinyGController {
     // CNCEngine
     engine = null;
 
-    // Connections
-    connections = {};
+    // Sockets
+    sockets = {};
 
-    // SerialPort
-    options = {
-        port: '',
-        baudrate: 115200
-    };
-    serialPort = null;
-    serialPortListener = {
+    // Connection
+    connection = null;
+    connectionEventListener = {
+        data: (data) => {
+            log.silly(`< ${data}`);
+            this.controller.parse('' + data);
+        },
         close: (err) => {
             this.ready = false;
             if (err) {
-                log.warn(`Disconnected from serial port "${this.options.port}":`, err);
+                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
             }
 
             this.close(err => {
-                // Remove controller from store
-                const port = this.options.port;
-                store.unset(`controllers[${JSON.stringify(port)}]`);
+                // Remove controller
+                const ident = this.connection.ident;
+                delete controllers[ident];
+                controllers[ident] = undefined;
 
                 // Destroy controller
                 this.destroy();
@@ -71,7 +74,8 @@ class TinyGController {
         error: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`Unexpected error while reading/writing serial port "${this.options.port}":`, err);
+                log.error(`An unexpected error occurred: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
             }
         }
     };
@@ -105,18 +109,50 @@ class TinyGController {
     // Workflow
     workflow = null;
 
-    constructor(engine, options) {
+    get isOpen() {
+        return this.connection && this.connection.isOpen;
+    }
+    get isClose() {
+        return !this.isOpen;
+    }
+    get status() {
+        return {
+            type: this.type,
+            connection: {
+                type: _.get(this.connection, 'type', ''),
+                settings: _.get(this.connection, 'settings', {})
+            },
+            sockets: Object.keys(this.sockets).length,
+            ready: this.ready,
+            settings: this.settings,
+            state: this.state,
+            footer: this.controller.footer,
+            feeder: this.feeder.toJSON(),
+            sender: this.sender.toJSON(),
+            workflow: {
+                state: this.workflow.state
+            }
+        };
+    }
+
+    constructor(engine, connectionType = 'serial', options) {
         if (!engine) {
-            throw new Error('engine must be specified');
+            throw new TypeError(`"engine" must be specified: ${engine}`);
         }
+
+        if (!_.includes(['serial', 'socket'], connectionType)) {
+            throw new TypeError(`"connectionType" is invalid: ${connectionType}`);
+        }
+
+        // Engine
         this.engine = engine;
 
-        const { port, baudrate } = { ...options };
-        this.options = {
-            ...this.options,
-            port: port,
-            baudrate: baudrate
-        };
+        // Connection
+        if (connectionType === 'serial') {
+            this.connection = new SerialConnection(options);
+        } else if (connectionType === 'socket') {
+            this.connection = new SocketConnection(options);
+        }
 
         // Event Trigger
         this.event = new EventTrigger((event, trigger, commands) => {
@@ -182,8 +218,8 @@ class TinyGController {
             }
         });
         this.feeder.on('data', (line = '', context = {}) => {
-            if (this.isClose()) {
-                log.error(`Serial port "${this.options.port}" is not accessible`);
+            if (this.isClose) {
+                log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
                 return;
             }
 
@@ -198,9 +234,9 @@ class TinyGController {
                 return;
             }
 
-            this.emit('serialport:write', line + '\n', context);
+            this.emit('connection:write', line + '\n', context);
 
-            this.serialPort.write(line + '\n');
+            this.connection.write(line + '\n');
             log.silly(`> ${line}`);
         });
         this.feeder.on('hold', noop);
@@ -262,8 +298,8 @@ class TinyGController {
             }
         });
         this.sender.on('data', (line = '', context = {}) => {
-            if (this.isClose()) {
-                log.error(`Serial port "${this.options.port}" is not accessible`);
+            if (this.isClose) {
+                log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
                 return;
             }
 
@@ -284,7 +320,7 @@ class TinyGController {
             line = ('' + line).replace(/^N[0-9]*/, '');
             line = ('N' + n + line);
 
-            this.serialPort.write(line + '\n');
+            this.connection.write(line + '\n');
             log.silly(`data: n=${n}, line="${line}"`);
         });
         this.sender.on('hold', noop);
@@ -336,7 +372,7 @@ class TinyGController {
 
         this.controller.on('raw', (res) => {
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
-                this.emit('serialport:read', res.raw);
+                this.emit('connection:read', res.raw);
             }
         });
 
@@ -466,8 +502,8 @@ class TinyGController {
                     const { lines, received } = this.sender.state;
                     const line = lines[received - 1] || '';
 
-                    this.emit('serialport:read', `> ${line}`);
-                    this.emit('serialport:read', JSON.stringify({
+                    this.emit('connection:read', `> ${line}`);
+                    this.emit('connection:read', JSON.stringify({
                         err: {
                             code: code,
                             msg: err.msg,
@@ -488,7 +524,7 @@ class TinyGController {
                     return;
                 }
 
-                this.emit('serialport:read', JSON.stringify({
+                this.emit('connection:read', JSON.stringify({
                     err: {
                         code: code,
                         msg: err.msg
@@ -503,8 +539,7 @@ class TinyGController {
 
         // Query Timer
         this.timer.query = setInterval(() => {
-            if (this.isClose()) {
-                // Serial port is closed
+            if (this.isClose) {
                 return;
             }
 
@@ -526,14 +561,14 @@ class TinyGController {
             // TinyG settings
             if (this.settings !== this.controller.settings) {
                 this.settings = this.controller.settings;
-                this.emit('controller:settings', TINYG, this.settings);
+                this.emit('controller:settings', this.type, this.settings);
                 this.emit('TinyG:settings', this.settings); // Backward compatibility
             }
 
             // TinyG state
             if (this.state !== this.controller.state) {
                 this.state = this.controller.state;
-                this.emit('controller:state', TINYG, this.state);
+                this.emit('controller:state', this.type, this.state);
                 this.emit('TinyG:state', this.state); // Backward compatibility
             }
 
@@ -645,8 +680,7 @@ class TinyGController {
         ];
 
         const sendInitCommands = (i = 0) => {
-            if (this.isClose()) {
-                // Serial port is closed
+            if (this.isClose) {
                 return;
             }
 
@@ -666,8 +700,8 @@ class TinyGController {
                 log.silly(`init: ${cmd} ${cmd.length}`);
 
                 const context = {};
-                this.emit('serialport:write', cmd, context);
-                this.serialPort.write(cmd + '\n');
+                this.emit('connection:write', cmd, context);
+                this.connection.write(cmd + '\n');
             }
             setTimeout(() => {
                 sendInitCommands(i + 1);
@@ -741,10 +775,25 @@ class TinyGController {
         this.actionTime.senderFinishTime = 0;
     }
     destroy() {
-        this.connections = {};
+        if (this.timer.query) {
+            clearInterval(this.timer.query);
+            this.timer.query = null;
+        }
 
-        if (this.serialPort) {
-            this.serialPort = null;
+        if (this.timer.energizeMotors) {
+            clearInterval(this.timer.energizeMotors);
+            this.timer.energizeMotors = null;
+        }
+
+        if (this.controller) {
+            this.controller.removeAllListeners();
+            this.controller = null;
+        }
+
+        this.sockets = {};
+
+        if (this.connection) {
+            this.connection = null;
         }
 
         if (this.event) {
@@ -762,89 +811,49 @@ class TinyGController {
         if (this.workflow) {
             this.workflow = null;
         }
-
-        if (this.timer.query) {
-            clearInterval(this.timer.query);
-            this.timer.query = null;
-        }
-
-        if (this.timer.energizeMotors) {
-            clearInterval(this.timer.energizeMotors);
-            this.timer.energizeMotors = null;
-        }
-
-        if (this.controller) {
-            this.controller.removeAllListeners();
-            this.controller = null;
-        }
-    }
-    get status() {
-        return {
-            port: this.options.port,
-            baudrate: this.options.baudrate,
-            connections: Object.keys(this.connections),
-            ready: this.ready,
-            controller: {
-                type: this.type,
-                settings: this.settings,
-                state: this.state,
-                footer: this.controller.footer
-            },
-            feeder: this.feeder.toJSON(),
-            sender: this.sender.toJSON(),
-            workflow: {
-                state: this.workflow.state
-            }
-        };
     }
     open(callback = noop) {
-        const { port, baudrate } = this.options;
-
         // Assertion check
-        if (this.isOpen()) {
-            log.error(`Cannot open serial port "${port}"`);
+        if (this.isOpen) {
+            log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
             return;
         }
 
-        this.serialPort = new SerialPort(this.options.port, {
-            autoOpen: false,
-            baudRate: this.options.baudrate
-        });
-        const Readline = SerialPort.parsers.Readline;
-        const parser = this.serialPort.pipe(new Readline({ delimiter: '\n' }));
-        parser.on('data', (data) => {
-            log.silly(`< ${data}`);
-            this.controller.parse('' + data);
-        });
+        this.connection.on('data', this.connectionEventListener.data);
+        this.connection.on('close', this.connectionEventListener.close);
+        this.connection.on('error', this.connectionEventListener.error);
 
-        this.serialPort.on('close', this.serialPortListener.close);
-        this.serialPort.on('error', this.serialPortListener.error);
-        this.serialPort.open((err) => {
+        this.connection.open(err => {
             if (err) {
-                log.error(`Error opening serial port "${port}":`, err);
-                this.emit('serialport:error', { err: err, port: port });
-                callback(err); // notify error
+                log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
+                this.emit('connection:error', {
+                    err: err,
+                    type: this.connection.type,
+                    settings: this.connection.settings
+                });
+                callback && callback(err);
                 return;
             }
 
-            this.emit('serialport:open', {
-                port: port,
-                baudrate: baudrate,
-                controllerType: this.type,
-                inuse: true
+            this.emit('connection:open', {
+                ident: this.connection.ident,
+                type: this.connection.type,
+                settings: this.connection.settings
             });
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('serialport:change', {
-                    port: port,
-                    inuse: true
+                this.engine.io.emit('connection:change', {
+                    type: this.connection.type,
+                    settings: this.connection.settings,
+                    isOpen: true
                 });
             }
 
-            callback(); // register controller
+            callback && callback();
 
-            log.debug(`Connected to serial port "${port}"`);
+            log.debug(`Connection established: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
 
             this.workflow.stop();
 
@@ -861,90 +870,66 @@ class TinyGController {
         });
     }
     close(callback) {
-        const { port } = this.options;
-
-        // Assertion check
-        if (!this.serialPort) {
-            const err = `Serial port "${port}" is not available`;
-            callback(new Error(err));
-            return;
-        }
-
         // Stop status query
         this.ready = false;
 
-        this.emit('serialport:close', {
-            port: port,
-            inuse: false
+        this.emit('connection:close', {
+            type: this.connection.type,
+            settings: this.connection.settings
         });
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('serialport:change', {
-                port: port,
-                inuse: false
+            this.engine.io.emit('connection:change', {
+                type: this.connection.type,
+                settings: this.connection.settings,
+                isOpen: false
             });
         }
 
-        if (this.isClose()) {
-            callback(null);
-            return;
-        }
-
-        this.serialPort.removeListener('close', this.serialPortListener.close);
-        this.serialPort.removeListener('error', this.serialPortListener.error);
-        this.serialPort.close((err) => {
-            if (err) {
-                log.error(`Error closing serial port "${port}":`, err);
-                callback(err);
-                return;
-            }
-
-            callback(null);
-        });
+        this.connection.removeAllListeners();
+        this.connection.close(callback);
     }
-    isOpen() {
-        return this.serialPort && this.serialPort.isOpen;
-    }
-    isClose() {
-        return !(this.isOpen());
-    }
-    addConnection(socket) {
+    addSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
             return;
         }
 
         log.debug(`Add socket connection: id=${socket.id}`);
-        this.connections[socket.id] = socket;
+        this.sockets[socket.id] = socket;
 
-        //
-        // Send data to newly connected client
-        //
-        if (this.isOpen()) {
-            socket.emit('serialport:open', {
-                port: this.options.port,
-                baudrate: this.options.baudrate,
-                controllerType: this.type,
-                inuse: true
+        // Controller type
+        socket.emit('controller:type', this.type);
+
+        // Connection
+        if (this.isOpen) {
+            socket.emit('connection:open', {
+                ident: this.connection.ident,
+                type: this.connection.type,
+                settings: this.connection.settings
             });
         }
+
+        // Controller settings
         if (!_.isEmpty(this.settings)) {
-            // controller settings
-            socket.emit('controller:settings', TINYG, this.settings);
+            socket.emit('controller:settings', this.type, this.settings);
             socket.emit('TinyG:settings', this.settings); // Backward compatibility
         }
+
+        // Controller state
         if (!_.isEmpty(this.state)) {
-            // controller state
-            socket.emit('controller:state', TINYG, this.state);
+            socket.emit('controller:state', this.type, this.state);
             socket.emit('TinyG:state', this.state); // Backward compatibility
         }
+
+        // Feeder status
         if (this.feeder) {
-            // feeder status
             socket.emit('feeder:status', this.feeder.toJSON());
         }
+
+        // Sender status
         if (this.sender) {
-            // sender status
             socket.emit('sender:status', this.sender.toJSON());
 
             const { name, gcode, context } = this.sender.state;
@@ -952,24 +937,25 @@ class TinyGController {
                 socket.emit('gcode:load', name, gcode, context);
             }
         }
+
+        // Workflow state
         if (this.workflow) {
-            // workflow state
             socket.emit('workflow:state', this.workflow.state);
         }
     }
-    removeConnection(socket) {
+    removeSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
             return;
         }
 
         log.debug(`Remove socket connection: id=${socket.id}`);
-        this.connections[socket.id] = undefined;
-        delete this.connections[socket.id];
+        this.sockets[socket.id] = undefined;
+        delete this.sockets[socket.id];
     }
     emit(eventName, ...args) {
-        Object.keys(this.connections).forEach(id => {
-            const socket = this.connections[id];
+        Object.keys(this.sockets).forEach(id => {
+            const socket = this.sockets[id];
             socket.emit(eventName, ...args);
         });
     }
@@ -1313,13 +1299,13 @@ class TinyGController {
     }
     write(data, context) {
         // Assertion check
-        if (this.isClose()) {
-            log.error(`Serial port "${this.options.port}" is not accessible`);
+        if (this.isClose) {
+            log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
             return;
         }
 
-        this.emit('serialport:write', data, context);
-        this.serialPort.write(data);
+        this.emit('connection:write', data, context);
+        this.connection.write(data);
         log.silly(`> ${data}`);
     }
     writeln(data, context) {

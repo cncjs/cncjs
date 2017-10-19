@@ -3,18 +3,20 @@ import rangeCheck from 'range_check';
 import SerialPort from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
+import settings from '../../config/settings';
+import { IP_WHITELIST } from '../../constants';
 import EventTrigger from '../../lib/EventTrigger';
 import ensureArray from '../../lib/ensure-array';
 import logger from '../../lib/logger';
-import settings from '../../config/settings';
-import store from '../../store';
-import config from '../configstore';
-import taskRunner from '../taskrunner';
+import { toIdent as toSerialIdent } from '../../lib/SerialConnection';
+import { toIdent as toSocketIdent } from '../../lib/SocketConnection';
 import { GrblController, SmoothieController, TinyGController } from '../../controllers';
 import { GRBL } from '../../controllers/Grbl/constants';
 import { SMOOTHIE } from '../../controllers/Smoothie/constants';
 import { G2CORE, TINYG } from '../../controllers/TinyG/constants';
-import { IP_WHITELIST } from '../../constants';
+import controllers from '../../store/controllers';
+import config from '../configstore';
+import taskRunner from '../taskrunner';
 
 const log = logger('service:cncengine');
 
@@ -148,69 +150,80 @@ class CNCEngine {
             socket.emit('startup', {
                 loadedControllers: Object.keys(this.controllerClass),
 
-                // User-defined baud rates and ports
-                baudrates: ensureArray(config.get('baudrates', [])),
-                ports: ensureArray(config.get('ports', []))
+                // User-defined baud rates
+                baudRates: ensureArray(config.get('baudRates', []))
             });
 
             socket.on('disconnect', () => {
                 log.debug(`Disconnected from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
 
-                const controllers = store.get('controllers', {});
-                Object.keys(controllers).forEach(port => {
-                    const controller = controllers[port];
+                Object.keys(controllers).forEach(ident => {
+                    const controller = controllers[ident];
                     if (!controller) {
                         return;
                     }
-                    controller.removeConnection(socket);
+                    controller.removeSocket(socket);
                 });
 
                 // Remove from socket pool
                 this.sockets.splice(this.sockets.indexOf(socket), 1);
             });
 
-            // List the available serial ports
-            socket.on('list', () => {
-                log.debug(`socket.list(): id=${socket.id}`);
+            // Get a list of available serial ports
+            socket.on('getPorts', async () => {
+                log.debug(`socket.getPorts(): id=${socket.id}`);
 
-                SerialPort.list()
-                    .then(ports => {
-                        ports = ports.concat(ensureArray(config.get('ports', [])));
-
-                        const controllers = store.get('controllers', {});
-                        const portsInUse = Object.keys(controllers)
-                            .filter(port => {
-                                const controller = controllers[port];
-                                return controller && controller.isOpen();
-                            });
-
-                        ports = ports.map(port => {
-                            return {
-                                port: port.comName,
-                                manufacturer: port.manufacturer,
-                                inuse: portsInUse.indexOf(port.comName) >= 0
-                            };
+                try {
+                    const activeControllers = Object.keys(controllers)
+                        .filter(ident => {
+                            const controller = controllers[ident];
+                            return controller && controller.isOpen;
                         });
+                    const availablePorts = ensureArray(await SerialPort.list());
+                    const customPorts = ensureArray(config.get('ports', []));
+                    const ports = [].concat(availablePorts).concat(customPorts)
+                        .map(port => {
+                            const { comName, manufacturer } = { ...port };
+                            return {
+                                comName: comName,
+                                manufacturer: manufacturer,
+                                isOpen: activeControllers.indexOf(comName) >= 0
+                            };
+                        })
+                        .filter(port => !!(port.comName));
 
-                        socket.emit('serialport:list', ports);
-                    })
-                    .catch(err => {
-                        log.error(err);
-                    });
+                    socket.emit('ports', ports);
+                } catch (err) {
+                    log.error(err);
+                }
             });
 
-            // Open serial port
-            socket.on('open', (port, options, callback = noop) => {
+            socket.on('open', (controllerType = GRBL, connectionType = 'serial', options, callback = noop) => {
                 if (typeof callback !== 'function') {
                     callback = noop;
                 }
 
-                log.debug(`socket.open("${port}", ${JSON.stringify(options)}): id=${socket.id}`);
+                options = { ...options };
 
-                let controller = store.get(`controllers["${port}"]`);
+                log.debug(`socket.open("${controllerType}", "${connectionType}", ${JSON.stringify(options)}): id=${socket.id}`);
+
+                let ident = '';
+
+                if (connectionType === 'serial') {
+                    ident = toSerialIdent(options);
+                } else if (connectionType === 'socket') {
+                    ident = toSocketIdent(options);
+                }
+
+                if (!ident) {
+                    const err = new Error('Invalid connection identifier');
+                    log.error(err);
+                    callback(err);
+                    return;
+                }
+
+                let controller = controllers[ident];
                 if (!controller) {
-                    let { controllerType = GRBL, baudrate } = { ...options };
-
                     if (controllerType === 'TinyG2') {
                         // TinyG2 is deprecated and will be removed in a future release
                         controllerType = TINYG;
@@ -225,19 +238,16 @@ class CNCEngine {
                     }
 
                     const engine = this;
-                    controller = new Controller(engine, {
-                        port: port,
-                        baudrate: baudrate
-                    });
+                    controller = new Controller(engine, connectionType, options);
                 }
 
-                controller.addConnection(socket);
+                controller.addSocket(socket);
 
-                if (controller.isOpen()) {
+                if (controller.isOpen) {
                     // Join the room
-                    socket.join(port);
+                    socket.join(ident);
 
-                    callback(null);
+                    callback(null, ident);
                     return;
                 }
 
@@ -247,84 +257,84 @@ class CNCEngine {
                         return;
                     }
 
-                    // System Trigger: Open a serial port
-                    this.event.trigger('port:open');
+                    // System Trigger: Open connection
+                    this.event.trigger('connection:open');
 
-                    if (store.get(`controllers["${port}"]`)) {
-                        log.error(`Serial port "${port}" was not properly closed`);
+                    if (controllers[ident]) {
+                        log.error(`The connection was not properly closed: ident=${ident}`);
+                        delete controllers[ident];
                     }
-                    store.set(`controllers[${JSON.stringify(port)}]`, controller);
+                    controllers[ident] = controller;
 
                     // Join the room
-                    socket.join(port);
+                    socket.join(ident);
 
-                    callback(null);
+                    callback(null, ident);
                 });
             });
 
-            // Close serial port
-            socket.on('close', (port, callback = noop) => {
+            socket.on('close', (ident, callback = noop) => {
                 if (typeof callback !== 'function') {
                     callback = noop;
                 }
 
-                log.debug(`socket.close("${port}"): id=${socket.id}`);
+                log.debug(`socket.close("${ident}"): id=${socket.id}`);
 
-                const controller = store.get(`controllers["${port}"]`);
+                const controller = controllers[ident];
                 if (!controller) {
-                    const err = `Serial port "${port}" not accessible`;
-                    log.error(err);
-                    callback(new Error(err));
+                    log.error(`The connection is not accessible: ident=${ident}`);
+                    callback(new Error(`The connection is not accessible: ident=${ident}`));
                     return;
                 }
 
-                // System Trigger: Close a serial port
-                this.event.trigger('port:close');
+                // System Trigger: Close connection
+                this.event.trigger('connection:close');
 
                 // Leave the room
-                socket.leave(port);
+                socket.leave(ident);
 
-                controller.close(err => {
+                controller.close(() => {
                     // Remove controller from store
-                    store.unset(`controllers[${JSON.stringify(port)}]`);
+                    delete controllers[ident];
+                    controllers[ident] = undefined;
 
                     // Destroy controller
                     controller.destroy();
 
-                    callback(null);
+                    callback();
                 });
             });
 
-            socket.on('command', (port, cmd, ...args) => {
-                log.debug(`socket.command("${port}", "${cmd}"): id=${socket.id}`);
+            socket.on('command', (ident, cmd, ...args) => {
+                log.debug(`socket.command("${ident}", "${cmd}"): id=${socket.id}`);
 
-                const controller = store.get(`controllers["${port}"]`);
-                if (!controller || controller.isClose()) {
-                    log.error(`Serial port "${port}" not accessible`);
+                const controller = controllers[ident];
+                if (!controller || controller.isClose) {
+                    log.error(`The connection is not accessible: ident=${ident}`);
                     return;
                 }
 
                 controller.command.apply(controller, [cmd].concat(args));
             });
 
-            socket.on('write', (port, data, context = {}) => {
-                log.debug(`socket.write("${port}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
+            socket.on('write', (ident, data, context = {}) => {
+                log.debug(`socket.write("${ident}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
 
-                const controller = store.get(`controllers["${port}"]`);
-                if (!controller || controller.isClose()) {
-                    log.error(`Serial port "${port}" not accessible`);
+                const controller = controllers[ident];
+                if (!controller || controller.isClose) {
+                    log.error(`The connection is not accessible: ${ident}`);
                     return;
                 }
 
                 controller.write(data, context);
             });
 
-            socket.on('writeln', (port, data, context = {}) => {
-                log.debug(`socket.writeln("${port}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
+            socket.on('writeln', (ident, data, context = {}) => {
+                log.debug(`socket.writeln("${ident}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
 
-                const controller = store.get(`controllers["${port}"]`);
-                if (!controller || controller.isClose()) {
-                    log.error(`Serial port "${port}" not accessible`);
+                const controller = controllers[ident];
+                if (!controller || controller.isClose) {
+                    log.error(`The connection is not accessible: ${ident}`);
                     return;
                 }
 

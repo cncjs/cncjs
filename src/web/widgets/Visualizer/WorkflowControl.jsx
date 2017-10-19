@@ -1,18 +1,18 @@
 import classNames from 'classnames';
-import get from 'lodash/get';
 import includes from 'lodash/includes';
 import pick from 'lodash/pick';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import controller from '../../lib/controller';
+import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import {
-    // Grbl
+    // Controller
     GRBL,
-    GRBL_ACTIVE_STATE_ALARM,
-    // Smoothie
+    GRBL_MACHINE_STATE_ALARM,
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_ALARM,
-    // TinyG
+    SMOOTHIE_MACHINE_STATE_ALARM,
     TINYG,
     TINYG_MACHINE_STATE_ALARM,
     // Workflow
@@ -23,8 +23,6 @@ import {
 import {
     MODAL_WATCH_DIRECTORY
 } from './constants';
-import i18n from '../../lib/i18n';
-import log from '../../lib/log';
 import styles from './workflow-control.styl';
 
 class WorkflowControl extends PureComponent {
@@ -75,54 +73,45 @@ class WorkflowControl extends PureComponent {
         }
     }
     canRun() {
+        const machineState = controller.getMachineState();
         const { state } = this.props;
-        const { port, gcode, workflow } = state;
-        const controllerType = state.controller.type;
-        const controllerState = state.controller.state;
 
-        if (!port) {
+        if (!controller.connection.ident) {
             return false;
         }
-        if (!gcode.ready) {
+
+        if (controller.type === GRBL && includes([
+            GRBL_MACHINE_STATE_ALARM
+        ], machineState)) {
             return false;
         }
-        if (!includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state)) {
+
+        if (controller.type === SMOOTHIE && includes([
+            SMOOTHIE_MACHINE_STATE_ALARM
+        ], machineState)) {
             return false;
         }
-        if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                GRBL_ACTIVE_STATE_ALARM
-            ];
-            if (includes(states, activeState)) {
-                return false;
-            }
+
+        if (controller.type === TINYG && includes([
+            TINYG_MACHINE_STATE_ALARM
+        ], machineState)) {
+            return false;
         }
-        if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                SMOOTHIE_ACTIVE_STATE_ALARM
-            ];
-            if (includes(states, activeState)) {
-                return false;
-            }
+
+        if (!includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], controller.workflow.state)) {
+            return false;
         }
-        if (controllerType === TINYG) {
-            const machineState = get(controllerState, 'sr.machineState');
-            const states = [
-                TINYG_MACHINE_STATE_ALARM
-            ];
-            if (includes(states, machineState)) {
-                return false;
-            }
+
+        if (!state.gcode.ready) {
+            return false;
         }
 
         return true;
     }
     render() {
         const { state, actions } = this.props;
-        const { port, gcode, workflow } = state;
-        const canClick = !!port;
+        const { connection, gcode, workflow } = state;
+        const canClick = !!connection.ident;
         const isReady = canClick && gcode.ready;
         const canRun = this.canRun();
         const canPause = isReady && includes([WORKFLOW_STATE_RUNNING], workflow.state);

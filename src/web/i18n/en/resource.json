@@ -303,6 +303,7 @@
     "Connection": "Connection",
     "No serial connection": "No serial connection",
     "Connected to {{-path}} with a baud rate of {{baudRate}}": "Connected to {{-path}} with a baud rate of {{baudRate}}",
+    "Connected to {{host}}:{{port}}": "Connected to {{host}}:{{port}}",
     "Console": "Console",
     "Clear all": "Clear all",
     "URL not configured": "URL not configured",

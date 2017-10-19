@@ -124,9 +124,7 @@ store.on('change', debounce((state) => {
     persist({ state: state });
 }, 100));
 
-//
-// Migration
-//
+// Store migration
 const migrateStore = () => {
     if (!cnc.version) {
         return;
@@ -145,6 +143,18 @@ const migrateStore = () => {
 
         // Webcam widget
         store.unset('widgets.webcam.scale');
+    }
+
+    // 2.0.0
+    // * Renamed "widgets.connection.port" to "widgets.connection.connection.serial.path"
+    // * Renamed "widgets.connection.baudrate" to "widgets.connection.connection.serial.baudRate"
+    if (semver.lt(cnc.version, '2.0.0')) {
+        const path = store.get('widgets.connection.port');
+        const baudRate = store.get('widgets.connection.baudRate');
+        store.set('widgets.connection.connection.serial.path', path);
+        store.set('widgets.connection.connection.serial.baudRate', baudRate);
+        store.unset('widgets.connection.port');
+        store.unset('widgets.connection.baudRate');
     }
 };
 

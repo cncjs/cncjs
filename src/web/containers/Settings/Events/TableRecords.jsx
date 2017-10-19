@@ -112,8 +112,8 @@ class TableRecords extends PureComponent {
                         render: (value, row, index) => {
                             const eventText = {
                                 'startup': i18n._('Startup'),
-                                'port:open': i18n._('Open a serial port'),
-                                'port:close': i18n._('Close a serial port'),
+                                'connection:open': i18n._('Open'),
+                                'connection:close': i18n._('Close'),
                                 'gcode:load': i18n._('G-code: Load'),
                                 'gcode:unload': i18n._('G-code: Unload'),
                                 'gcode:start': i18n._('G-code: Start'),

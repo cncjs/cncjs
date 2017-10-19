@@ -45,8 +45,17 @@ const defaultState = {
             controller: {
                 type: 'Grbl' // Grbl|Smoothie|TinyG
             },
-            port: '',
-            baudrate: 115200,
+            connection: {
+                type: 'serial', // serial|socket
+                serial: {
+                    path: '',
+                    baudRate: 115200
+                },
+                socket: {
+                    host: '',
+                    port: 23
+                }
+            },
             autoReconnect: true
         },
         console: {

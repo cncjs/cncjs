@@ -29,15 +29,14 @@ class Grbl extends PureComponent {
         const none = '–';
         const panel = state.panel;
         const controllerState = state.controller.state || {};
-        const parserState = _.get(controllerState, 'parserstate', {});
-        const activeState = _.get(controllerState, 'status.activeState') || none;
-        const feedrate = _.get(controllerState, 'status.feedrate', _.get(parserState, 'feedrate', none));
-        const spindle = _.get(controllerState, 'status.spindle', _.get(parserState, 'spindle', none));
-        const tool = _.get(parserState, 'tool', none);
-        const ov = _.get(controllerState, 'status.ov', []);
+        const machineState = _.get(controllerState, 'machineState') || none;
+        const feedrate = _.get(controllerState, 'feedrate', none);
+        const spindle = _.get(controllerState, 'spindle', none);
+        const tool = _.get(controllerState, 'tool', none);
+        const ov = _.get(controllerState, 'ov', []);
         const [ovF = 0, ovR = 0, ovS = 0] = ov;
-        const buf = _.get(controllerState, 'status.buf', {});
-        const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
+        const buf = _.get(controllerState, 'buf', {});
+        const modal = _.mapValues(controllerState.modal || {}, mapGCodeToText);
         const receiveBufferStyle = ((rx) => {
             // danger: 0-7
             // warning: 8-15
@@ -147,7 +146,7 @@ class Grbl extends PureComponent {
                             </div>
                             <div className="col col-xs-8">
                                 <div className={styles.well}>
-                                    {activeState}
+                                    {machineState}
                                 </div>
                             </div>
                         </div>

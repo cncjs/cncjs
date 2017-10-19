@@ -14,9 +14,9 @@ class Console extends PureComponent {
 
     render() {
         const { state, actions } = this.props;
-        const { port } = state;
+        const { connection } = state;
 
-        if (!port) {
+        if (!connection.ident) {
             return (
                 <div className={styles.noSerialConnection}>
                     {i18n._('No serial connection')}

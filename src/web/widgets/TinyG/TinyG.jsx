@@ -63,7 +63,7 @@ class TinyG extends PureComponent {
         const ovS = (fv >= 0.98) ? Math.round(sso * 100) || 0 : 0;
         const ovT = (fv >= 0.99) ? Math.round(mto * 100) || 0 : 0;
         const pwr = get(controllerState, 'pwr');
-        const machineState = get(controllerState, 'sr.machineState');
+        const machineState = get(controllerState, 'machineState');
         const machineStateText = {
             [TINYG_MACHINE_STATE_INITIALIZING]: i18n.t('controller:TinyG.machineState.initializing'),
             [TINYG_MACHINE_STATE_READY]: i18n.t('controller:TinyG.machineState.ready'),
@@ -81,10 +81,10 @@ class TinyG extends PureComponent {
             [TINYG_MACHINE_STATE_PANIC]: i18n.t('controller:TinyG.machineState.panic')
         }[machineState];
         const plannerBuffer = get(controllerState, 'qr') || 0;
-        const feedrate = get(controllerState, 'sr.feedrate');
-        const velocity = get(controllerState, 'sr.velocity');
-        const line = get(controllerState, 'sr.line');
-        const modal = mapValues(get(controllerState, 'sr.modal', {}), mapGCodeToText);
+        const feedrate = get(controllerState, 'feedrate');
+        const velocity = get(controllerState, 'velocity');
+        const line = get(controllerState, 'line');
+        const modal = mapValues(get(controllerState, 'modal', {}), mapGCodeToText);
         const panel = state.panel;
 
         this.plannerBufferMax = Math.max(this.plannerBufferMax, plannerBuffer);

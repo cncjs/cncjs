@@ -53,19 +53,34 @@ class ConnectionWidget extends PureComponent {
         },
         changeController: (controllerType) => {
             this.setState(state => ({
-                controllerType: controllerType
+                controller: {
+                    ...state.controller,
+                    type: controllerType
+                }
             }));
         },
         onChangePortOption: (option) => {
             this.setState(state => ({
                 alertMessage: '',
-                port: option.value
+                connection: {
+                    ...state.connection,
+                    serial: {
+                        ...state.connection.serial,
+                        path: option.value
+                    }
+                }
             }));
         },
-        onChangeBaudrateOption: (option) => {
+        onChangeBaudRateOption: (option) => {
             this.setState(state => ({
                 alertMessage: '',
-                baudrate: option.value
+                connection: {
+                    ...state.connection,
+                    serial: {
+                        ...state.connection.serial,
+                        baudRate: option.value
+                    }
+                }
             }));
         },
         handleAutoReconnect: (event) => {
@@ -78,41 +93,41 @@ class ConnectionWidget extends PureComponent {
             this.refreshPorts();
         },
         handleOpenPort: (event) => {
-            const { port, baudrate } = this.state;
-            this.openPort(port, { baudrate: baudrate });
+            this.openPort();
         },
         handleClosePort: (event) => {
-            const { port } = this.state;
-            this.closePort(port);
+            this.closePort();
         }
     };
 
     controllerEvents = {
-        'serialport:list': (ports) => {
+        'ports': (ports) => {
             log.debug('Received a list of serial ports:', ports);
 
             this.stopLoading();
 
-            const port = this.config.get('port') || '';
+            const path = this.config.get('connection.serial.path');
 
-            if (includes(map(ports, 'port'), port)) {
+            if (includes(map(ports, 'comName'), path)) {
                 this.setState(state => ({
                     alertMessage: '',
-                    port: port,
-                    ports: ports
+                    ports: ports,
+                    connection: {
+                        ...state.connection,
+                        serial: {
+                            ...state.connection.serial,
+                            path: path
+                        }
+                    }
                 }));
 
                 const { autoReconnect, hasReconnected } = this.state;
-
                 if (autoReconnect && !hasReconnected) {
-                    const { baudrate } = this.state;
-
                     this.setState(state => ({
                         hasReconnected: true
                     }));
-                    this.openPort(port, {
-                        baudrate: baudrate
-                    });
+
+                    this.openPort(path);
                 }
             } else {
                 this.setState(state => ({
@@ -121,63 +136,72 @@ class ConnectionWidget extends PureComponent {
                 }));
             }
         },
-        'serialport:change': (options) => {
-            const { port, inuse } = options;
-            const ports = this.state.ports.map((o) => {
-                if (o.port !== port) {
-                    return o;
-                }
-                return { ...o, inuse };
-            });
+        'connection:open': (options) => {
+            const { type, settings } = options;
 
-            this.setState(state => ({
-                ports: ports
-            }));
+            if (type === 'serial') {
+                log.debug(`A new connection was established: type=${type}, settings=${settings}`);
+
+                this.setState(state => ({
+                    alertMessage: '',
+                    connecting: false,
+                    connected: true,
+                    ports: state.ports.map(port => {
+                        if (port.comName !== settings.path) {
+                            return port;
+                        }
+                        return { ...port, isOpen: true };
+                    })
+                }));
+            }
         },
-        'serialport:open': (options) => {
-            const { controllerType, port, baudrate, inuse } = options;
-            const ports = this.state.ports.map((o) => {
-                if (o.port !== port) {
-                    return o;
-                }
-                return { ...o, inuse };
-            });
+        'connection:close': (options) => {
+            const { type, settings } = options;
 
-            this.setState(state => ({
-                alertMessage: '',
-                connecting: false,
-                connected: true,
-                controllerType: controllerType, // Grbl|Smoothie|TinyG
-                port: port,
-                baudrate: baudrate,
-                ports: ports
-            }));
+            if (type === 'serial') {
+                log.debug(`The connection was closed: type=${type}, settings=${settings}`);
 
-            log.debug(`Established a connection to the serial port "${port}"`);
+                this.setState(state => ({
+                    alertMessage: '',
+                    connecting: false,
+                    connected: false,
+                    ports: state.ports.map(port => {
+                        if (port.comName !== settings.path) {
+                            return port;
+                        }
+                        return { ...port, isOpen: false };
+                    })
+                }));
+
+                this.refreshPorts();
+            }
         },
-        'serialport:close': (options) => {
-            const { port } = options;
+        'connection:change': (options) => {
+            const { type, settings, isOpen } = options;
 
-            log.debug(`The serial port "${port}" is disconected`);
-
-            this.setState(state => ({
-                alertMessage: '',
-                connecting: false,
-                connected: false
-            }));
-
-            this.refreshPorts();
+            if (type === 'serial') {
+                this.setState(state => ({
+                    ports: state.ports.map(port => {
+                        if (port.comName !== settings.path) {
+                            return port;
+                        }
+                        return { ...port, isOpen: isOpen };
+                    })
+                }));
+            }
         },
-        'serialport:error': (options) => {
-            const { port } = options;
+        'connection:error': (options) => {
+            const { type, settings } = options;
 
-            this.setState(state => ({
-                alertMessage: i18n._('Error opening serial port \'{{- port}}\'', { port: port }),
-                connecting: false,
-                connected: false
-            }));
+            if (type === 'serial') {
+                log.error(`Error opening serial port: type=${type}, settings=${settings}`);
 
-            log.error(`Error opening serial port "${port}"`);
+                this.setState(state => ({
+                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: settings.path }),
+                    connecting: false,
+                    connected: false
+                }));
+            }
         }
     };
 
@@ -189,25 +213,30 @@ class ConnectionWidget extends PureComponent {
         this.removeControllerEvents();
     }
     componentDidUpdate(prevProps, prevState) {
-        const {
-            minimized,
-            controllerType,
-            port,
-            baudrate,
-            autoReconnect
-        } = this.state;
+        this.config.set('minimized', this.state.minimized);
 
-        this.config.set('minimized', minimized);
-        if (controllerType) {
-            this.config.set('controller.type', controllerType);
+        // Controller
+        if (this.state.controller.type) {
+            this.config.set('controller.type', this.state.controller.type);
         }
-        if (port) {
-            this.config.set('port', port);
+
+        // Serial connection
+        if (this.state.connection.serial.path) {
+            this.config.set('connection.serial.path', this.state.connection.serial.path);
         }
-        if (baudrate) {
-            this.config.set('baudrate', baudrate);
+        if (this.state.connection.serial.baudRate) {
+            this.config.set('connection.serial.baudRate', this.state.connection.serial.baudRate);
         }
-        this.config.set('autoReconnect', autoReconnect);
+
+        // Socket connection
+        if (this.state.connection.socket.host) {
+            this.config.set('connection.socket.host', this.state.connection.socket.host);
+        }
+        if (this.state.connection.socket.port) {
+            this.config.set('connection.socket.port', this.state.connection.socket.port);
+        }
+
+        this.config.set('autoReconnect', this.state.autoReconnect);
     }
     getInitialState() {
         let controllerType = this.config.get('controller.type');
@@ -216,7 +245,7 @@ class ConnectionWidget extends PureComponent {
         }
 
         // Common baud rates
-        const defaultBaudrates = [
+        const defaultBaudRates = [
             250000,
             115200,
             57600,
@@ -233,10 +262,21 @@ class ConnectionWidget extends PureComponent {
             connecting: false,
             connected: false,
             ports: [],
-            baudrates: reverse(sortBy(uniq(controller.baudrates.concat(defaultBaudrates)))),
-            controllerType: controllerType,
-            port: controller.port,
-            baudrate: this.config.get('baudrate'),
+            baudRates: reverse(sortBy(uniq(controller.baudRates.concat(defaultBaudRates)))),
+            controller: {
+                type: this.config.get('controller.type')
+            },
+            connection: {
+                type: this.config.get('connection.type'),
+                serial: {
+                    path: this.config.get('connection.serial.path'),
+                    baudRate: this.config.get('connection.serial.baudRate')
+                },
+                socket: {
+                    host: this.config.get('connection.socket.host'),
+                    port: this.config.get('connection.socket.port')
+                }
+            },
             autoReconnect: this.config.get('autoReconnect'),
             hasReconnected: false,
             alertMessage: ''
@@ -277,44 +317,47 @@ class ConnectionWidget extends PureComponent {
     }
     refreshPorts() {
         this.startLoading();
-        controller.listPorts();
+        controller.getPorts();
     }
-    openPort(port, options) {
-        const { baudrate } = { ...options };
-
+    openPort(path, baudRate) {
         this.setState(state => ({
             connecting: true
         }));
 
-        controller.openPort(port, {
-            controllerType: this.state.controllerType,
-            baudrate: baudrate
-        }, (err) => {
+        path = path || this.state.connection.serial.path;
+        baudRate = baudRate || this.state.connection.serial.baudRate;
+
+        const controllerType = this.state.controller.type;
+        const connectionType = this.state.connection.type;
+        const options = {
+            path: path,
+            baudRate: baudRate
+        };
+        controller.open(controllerType, connectionType, options, (err) => {
             if (err) {
+                log.error(err);
                 this.setState(state => ({
-                    alertMessage: i18n._('Error opening serial port \'{{- port}}\'', { port: port }),
+                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: path }),
                     connecting: false,
                     connected: false
                 }));
-
-                log.error(err);
                 return;
             }
         });
     }
-    closePort(port = this.state.port) {
+    closePort() {
         this.setState(state => ({
             connecting: false,
             connected: false
         }));
-        controller.closePort(port, (err) => {
+        controller.close(err => {
             if (err) {
                 log.error(err);
                 return;
             }
 
             // Refresh ports
-            controller.listPorts();
+            controller.getPorts();
         });
     }
     render() {

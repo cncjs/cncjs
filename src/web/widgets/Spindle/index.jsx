@@ -1,6 +1,5 @@
-import classNames from 'classnames';
 import includes from 'lodash/includes';
-import get from 'lodash/get';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
@@ -9,22 +8,20 @@ import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import Spindle from './Spindle';
 import {
-    // Grbl
+    // Controller
     GRBL,
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_HOLD,
-    // Smoothie
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_RUN,
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_HOLD,
-    // TinyG
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_RUN,
     TINYG,
     TINYG_MACHINE_STATE_READY,
     TINYG_MACHINE_STATE_STOP,
     TINYG_MACHINE_STATE_END,
-    TINYG_MACHINE_STATE_HOLD,
+    TINYG_MACHINE_STATE_RUN,
     // Workflow
-    WORKFLOW_STATE_RUN
+    WORKFLOW_STATE_RUNNING
 } from '../../constants';
 import styles from './index.styl';
 
@@ -64,11 +61,16 @@ class SpindleWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
+        'connection:open': (options) => {
+            const { ident } = options;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    ident: ident
+                }
+            }));
         },
-        'serialport:close': (options) => {
+        'connection:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
@@ -82,8 +84,7 @@ class SpindleWidget extends PureComponent {
         'controller:state': (type, state) => {
             // Grbl
             if (type === GRBL) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
+                const { modal = {} } = { ...state };
 
                 this.setState({
                     controller: {
@@ -99,8 +100,7 @@ class SpindleWidget extends PureComponent {
 
             // Smoothie
             if (type === SMOOTHIE) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
+                const { modal = {} } = { ...state };
 
                 this.setState({
                     controller: {
@@ -116,8 +116,7 @@ class SpindleWidget extends PureComponent {
 
             // TinyG
             if (type === TINYG) {
-                const { sr } = { ...state };
-                const { modal = {} } = { ...sr };
+                const { modal = {} } = { ...state };
 
                 this.setState({
                     controller: {
@@ -152,8 +151,7 @@ class SpindleWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: true, // Defaults to true
-            port: controller.port,
+            canClick: false,
             controller: {
                 type: controller.type,
                 state: controller.state,
@@ -161,6 +159,9 @@ class SpindleWidget extends PureComponent {
                     spindle: '',
                     coolant: ''
                 }
+            },
+            connection: {
+                ident: controller.connection.ident
             },
             workflow: {
                 state: controller.workflow.state
@@ -181,50 +182,37 @@ class SpindleWidget extends PureComponent {
         });
     }
     canClick() {
-        const { port, workflow } = this.state;
-        const controllerType = this.state.controller.type;
-        const controllerState = this.state.controller.state;
+        const machineState = controller.getMachineState();
 
-        if (!port) {
+        if (!controller.connection.ident) {
             return false;
         }
-        if (workflow.state === WORKFLOW_STATE_RUN) {
+
+        if (controller.type === GRBL && !includes([
+            GRBL_MACHINE_STATE_IDLE,
+            GRBL_MACHINE_STATE_RUN
+        ], machineState)) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+
+        if (controller.type === SMOOTHIE && !includes([
+            SMOOTHIE_MACHINE_STATE_IDLE,
+            SMOOTHIE_MACHINE_STATE_RUN
+        ], machineState)) {
             return false;
         }
-        if (controllerType === GRBL) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                GRBL_ACTIVE_STATE_IDLE,
-                GRBL_ACTIVE_STATE_HOLD
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
+
+        if (controller.type === TINYG && !includes([
+            TINYG_MACHINE_STATE_READY,
+            TINYG_MACHINE_STATE_STOP,
+            TINYG_MACHINE_STATE_END,
+            TINYG_MACHINE_STATE_RUN
+        ], machineState)) {
+            return false;
         }
-        if (controllerType === SMOOTHIE) {
-            const activeState = get(controllerState, 'status.activeState');
-            const states = [
-                SMOOTHIE_ACTIVE_STATE_IDLE,
-                SMOOTHIE_ACTIVE_STATE_HOLD
-            ];
-            if (!includes(states, activeState)) {
-                return false;
-            }
-        }
-        if (controllerType === TINYG) {
-            const machineState = get(controllerState, 'sr.machineState');
-            const states = [
-                TINYG_MACHINE_STATE_READY,
-                TINYG_MACHINE_STATE_STOP,
-                TINYG_MACHINE_STATE_END,
-                TINYG_MACHINE_STATE_HOLD
-            ];
-            if (!includes(states, machineState)) {
-                return false;
-            }
+
+        if (controller.workflow.state === WORKFLOW_STATE_RUNNING) {
+            return false;
         }
 
         return true;

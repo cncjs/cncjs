@@ -43,20 +43,7 @@ class Workspace extends PureComponent {
         ...withRouter.propTypes
     };
 
-    state = {
-        mounted: false,
-        port: '',
-        modal: {
-            name: MODAL_NONE,
-            params: {}
-        },
-        isDraggingFile: false,
-        isDraggingWidget: false,
-        isUploading: false,
-        showPrimaryContainer: store.get('workspace.container.primary.show'),
-        showSecondaryContainer: store.get('workspace.container.secondary.show'),
-        inactiveCount: _.size(widgetManager.getInactiveWidgets())
-    };
+    state = this.getInitialState();
     action = {
         openModal: (name = MODAL_NONE, params = {}) => {
             this.setState(state => ({
@@ -119,12 +106,18 @@ class Workspace extends PureComponent {
                 this.action.openModal(MODAL_SERVER_DISCONNECTED);
             }
         },
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
+        'connection:open': (options) => {
+            const { ident } = options;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    ident: ident
+                }
+            }));
         },
-        'serialport:close': (options) => {
-            this.setState({ port: '' });
+        'connection:close': (options) => {
+            const initialState = this.getInitialState();
+            this.setState({ ...initialState });
         },
         'feeder:status': (status) => {
             const { modal } = this.state;
@@ -200,6 +193,24 @@ class Workspace extends PureComponent {
 
         this.resizeDefaultContainer();
     }
+    getInitialState() {
+        return {
+            mounted: false,
+            connection: {
+                ident: controller.connection.ident
+            },
+            modal: {
+                name: MODAL_NONE,
+                params: {}
+            },
+            isDraggingFile: false,
+            isDraggingWidget: false,
+            isUploading: false,
+            showPrimaryContainer: store.get('workspace.container.primary.show'),
+            showSecondaryContainer: store.get('workspace.container.secondary.show'),
+            inactiveCount: _.size(widgetManager.getInactiveWidgets())
+        };
+    }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
@@ -273,9 +284,9 @@ class Workspace extends PureComponent {
         pubsub.publish('resize'); // Also see "widgets/Visualizer"
     }
     onDrop(files) {
-        const { port } = this.state;
+        const { connection } = this.state;
 
-        if (!port) {
+        if (!connection.ident) {
             return;
         }
 
@@ -302,10 +313,11 @@ class Workspace extends PureComponent {
             startWaiting();
             this.setState({ isUploading: true });
 
+            const ident = connection.ident;
             const name = file.name;
             const gcode = result;
 
-            api.loadGCode({ port, name, gcode })
+            api.loadGCode({ ident, name, gcode })
                 .then((res) => {
                     const { name = '', gcode = '' } = { ...res.body };
                     pubsub.publish('gcode:load', { name, gcode });
@@ -380,7 +392,7 @@ class Workspace extends PureComponent {
     render() {
         const { style, className } = this.props;
         const {
-            port,
+            connection,
             modal,
             isDraggingFile,
             isDraggingWidget,
@@ -405,7 +417,7 @@ class Workspace extends PureComponent {
                 <div
                     className={classNames(
                         styles.dropzoneOverlay,
-                        { [styles.hidden]: !(port && isDraggingFile) }
+                        { [styles.hidden]: !(connection.ident && isDraggingFile) }
                     )}
                 >
                     <div className={styles.textBlock}>

@@ -303,6 +303,7 @@
     "Connection": "Kapcsolat",
     "No serial connection": "",
     "Connected to {{-path}} with a baud rate of {{baudRate}}": "",
+    "Connected to {{host}}:{{port}}": "",
     "Console": "Konzol",
     "Clear all": "Mindent töröl",
     "URL not configured": "",

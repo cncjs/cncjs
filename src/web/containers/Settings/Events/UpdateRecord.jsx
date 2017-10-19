@@ -13,8 +13,8 @@ import styles from '../form.styl';
 const SYSTEM_EVENTS = [
     // The following events are only available with system trigger (i.e. scripts)
     'startup',
-    'port:open',
-    'port:close'
+    'connection:open',
+    'connection:close'
 ];
 
 class UpdateRecord extends PureComponent {
@@ -130,8 +130,8 @@ class UpdateRecord extends PureComponent {
                                 >
                                     <option value="">{i18n._('Choose an event')}</option>
                                     <option value="startup">{i18n._('Startup (System only)')}</option>
-                                    <option value="port:open">{i18n._('Open a serial port (System only)')}</option>
-                                    <option value="port:close">{i18n._('Close a serial port (System only)')}</option>
+                                    <option value="connection:open">{i18n._('Open (System only)')}</option>
+                                    <option value="connection:close">{i18n._('Close (System only)')}</option>
                                     <option value="gcode:load">{i18n._('G-code: Load')}</option>
                                     <option value="gcode:unload">{i18n._('G-code: Unload')}</option>
                                     <option value="gcode:start">{i18n._('G-code: Start')}</option>

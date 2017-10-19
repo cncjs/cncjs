@@ -303,6 +303,7 @@
     "Connection": "連線",
     "No serial connection": "",
     "Connected to {{-path}} with a baud rate of {{baudRate}}": "",
+    "Connected to {{host}}:{{port}}": "",
     "Console": "控制台",
     "Clear all": "全部清除",
     "URL not configured": "",

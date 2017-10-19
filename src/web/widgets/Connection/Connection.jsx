@@ -20,14 +20,12 @@ class Connection extends PureComponent {
         actions: PropTypes.object
     };
 
-    isPortInUse(port) {
-        const { state } = this.props;
-        port = port || state.port;
-        const o = find(state.ports, { port }) || {};
-        return !!(o.inuse);
+    isPortOpen(path) {
+        const port = find(this.props.state.ports, { comName: path }) || {};
+        return !!(port.isOpen);
     }
-    renderPortOption(option) {
-        const { label, inuse, manufacturer } = option;
+    renderPortOption = (option) => {
+        const { label, isOpen, manufacturer } = option;
         const styles = {
             option: {
                 whiteSpace: 'nowrap',
@@ -39,7 +37,7 @@ class Connection extends PureComponent {
         return (
             <div style={styles.option} title={label}>
                 <div>
-                    {inuse &&
+                    {isOpen &&
                     <span>
                         <i className="fa fa-lock" />
                         <span className="space" />
@@ -52,10 +50,10 @@ class Connection extends PureComponent {
                 }
             </div>
         );
-    }
-    renderPortValue(option) {
+    };
+    renderPortValue = (option) => {
         const { state } = this.props;
-        const { label, inuse } = option;
+        const { label, isOpen } = option;
         const notLoading = !(state.loading);
         const canChangePort = notLoading;
         const style = {
@@ -65,7 +63,7 @@ class Connection extends PureComponent {
         };
         return (
             <div style={style} title={label}>
-                {inuse &&
+                {isOpen &&
                 <span>
                     <i className="fa fa-lock" />
                     <span className="space" />
@@ -74,31 +72,33 @@ class Connection extends PureComponent {
                 {label}
             </div>
         );
-    }
-    renderBaudrateValue(option) {
+    };
+    renderBaudRateValue = (option) => {
         const { state } = this.props;
-        const notLoading = !(state.loading);
-        const notInUse = !(this.isPortInUse(state.port));
-        const canChangeBaudrate = notLoading && notInUse;
+        const { connection, loading, connected } = state;
+        const notLoading = !loading;
+        const notConnected = !connected;
+        const canChangeBaudRate = notLoading && notConnected && !this.isPortOpen(connection.serial.path);
+
         const style = {
-            color: canChangeBaudrate ? '#333' : '#ccc',
+            color: canChangeBaudRate ? '#333' : '#ccc',
             textOverflow: 'ellipsis',
             overflow: 'hidden'
         };
         return (
             <div style={style} title={option.label}>{option.label}</div>
         );
-    }
+    };
     render() {
         const { state, actions } = this.props;
         const {
+            connection,
             loading, connecting, connected,
-            controllerType,
-            ports, baudrates,
-            port, baudrate,
+            ports, baudRates,
             autoReconnect,
             alertMessage
         } = state;
+        const controllerType = state.controller.type;
         const canSelectControllers = (controller.loadedControllers.length > 1);
         const hasGrblController = includes(controller.loadedControllers, GRBL);
         const hasSmoothieController = includes(controller.loadedControllers, SMOOTHIE);
@@ -109,8 +109,8 @@ class Connection extends PureComponent {
         const canRefresh = notLoading && notConnected;
         const canChangeController = notLoading && notConnected;
         const canChangePort = notLoading && notConnected;
-        const canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(port)));
-        const canOpenPort = port && baudrate && notConnecting && notConnected;
+        const canChangeBaudRate = notLoading && notConnected && !this.isPortOpen(connection.serial.path);
+        const canOpenPort = notConnecting && notConnected && connection.serial.path && connection.serial.baudRate;
         const canClosePort = connected;
 
         return (
@@ -191,17 +191,17 @@ class Connection extends PureComponent {
                             name="port"
                             noResultsText={i18n._('No ports available')}
                             onChange={actions.onChangePortOption}
-                            optionRenderer={::this.renderPortOption}
-                            options={map(ports, (o) => ({
-                                value: o.port,
-                                label: o.port,
-                                manufacturer: o.manufacturer,
-                                inuse: o.inuse
+                            optionRenderer={this.renderPortOption}
+                            options={map(ports, (port) => ({
+                                value: port.comName,
+                                label: port.comName,
+                                manufacturer: port.manufacturer,
+                                isOpen: port.isOpen
                             }))}
                             placeholder={i18n._('Choose a port')}
                             searchable={false}
-                            value={port}
-                            valueRenderer={::this.renderPortValue}
+                            value={connection.serial.path}
+                            valueRenderer={this.renderPortValue}
                         />
                         <div className="input-group-btn">
                             <button
@@ -229,18 +229,18 @@ class Connection extends PureComponent {
                         backspaceRemoves={false}
                         className="sm"
                         clearable={false}
-                        disabled={!canChangeBaudrate}
+                        disabled={!canChangeBaudRate}
                         menuContainerStyle={{ zIndex: 5 }}
-                        name="baudrate"
-                        onChange={actions.onChangeBaudrateOption}
-                        options={map(baudrates, (value) => ({
+                        name="baudRate"
+                        onChange={actions.onChangeBaudRateOption}
+                        options={map(baudRates, (value) => ({
                             value: value,
                             label: Number(value).toString()
                         }))}
                         placeholder={i18n._('Choose a baud rate')}
                         searchable={false}
-                        value={baudrate}
-                        valueRenderer={::this.renderBaudrateValue}
+                        value={connection.serial.baudRate}
+                        valueRenderer={this.renderBaudRateValue}
                     />
                 </div>
                 <div className="checkbox">

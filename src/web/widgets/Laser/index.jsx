@@ -10,12 +10,20 @@ import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import Laser from './Laser';
 import {
-    // Grbl
+    // Controller
     GRBL,
-    // Smoothie
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_RUN,
     SMOOTHIE,
-    // TinyG
-    TINYG
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_RUN,
+    TINYG,
+    TINYG_MACHINE_STATE_READY,
+    TINYG_MACHINE_STATE_STOP,
+    TINYG_MACHINE_STATE_END,
+    TINYG_MACHINE_STATE_RUN,
+    // Workflow
+    WORKFLOW_STATE_RUNNING
 } from '../../constants';
 import styles from './index.styl';
 
@@ -116,11 +124,16 @@ class LaserWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
+        'connection:open': (options) => {
+            const { ident } = options;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    ident: ident
+                }
+            }));
         },
-        'serialport:close': (options) => {
+        'connection:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
@@ -173,12 +186,14 @@ class LaserWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: true, // Defaults to true
-            port: controller.port,
+            canClick: false,
             controller: {
                 type: controller.type,
                 settings: controller.settings,
                 state: controller.state
+            },
+            connection: {
+                ident: controller.connection.ident
             },
             panel: {
                 laserTest: {
@@ -205,16 +220,41 @@ class LaserWidget extends PureComponent {
         });
     }
     canClick() {
-        const { port, controller, test } = this.state;
-        const controllerType = controller.type;
+        const machineState = controller.getMachineState();
+        const state = this.state;
 
-        if (!port) {
+        if (!controller.connection.ident) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+
+        if (controller.type === GRBL && !includes([
+            GRBL_MACHINE_STATE_IDLE,
+            GRBL_MACHINE_STATE_RUN
+        ], machineState)) {
             return false;
         }
-        if (!(isNumber(test.power) && isNumber(test.duration) && isNumber(test.maxS))) {
+
+        if (controller.type === SMOOTHIE && !includes([
+            SMOOTHIE_MACHINE_STATE_IDLE,
+            SMOOTHIE_MACHINE_STATE_RUN
+        ], machineState)) {
+            return false;
+        }
+
+        if (controller.type === TINYG && !includes([
+            TINYG_MACHINE_STATE_READY,
+            TINYG_MACHINE_STATE_STOP,
+            TINYG_MACHINE_STATE_END,
+            TINYG_MACHINE_STATE_RUN
+        ], machineState)) {
+            return false;
+        }
+
+        if (controller.workflow.state === WORKFLOW_STATE_RUNNING) {
+            return false;
+        }
+
+        if (!(isNumber(state.test.power) && isNumber(state.test.duration) && isNumber(state.test.maxS))) {
             return false;
         }
 
