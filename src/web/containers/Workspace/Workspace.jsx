@@ -319,8 +319,7 @@ class Workspace extends PureComponent {
 
             api.loadGCode({ ident, name, gcode })
                 .then((res) => {
-                    const { name = '', gcode = '' } = { ...res.body };
-                    pubsub.publish('gcode:load', { name, gcode });
+                    // TODO
                 })
                 .catch((res) => {
                     log.error('Failed to upload G-code file');

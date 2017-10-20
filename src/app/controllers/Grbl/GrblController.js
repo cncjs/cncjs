@@ -689,7 +689,7 @@ class GrblController {
                     this.actionTime.senderFinishTime = 0;
 
                     // Stop workflow
-                    this.command('gcode:stop');
+                    this.command('sender:stop');
                 }
             }
         }, 250);
@@ -715,8 +715,8 @@ class GrblController {
             c: posc
         } = this.controller.getWorkPosition();
 
-        // Modal group
-        const modal = this.controller.getModalGroup();
+        // Modal state
+        const modal = this.controller.getModalState();
 
         return Object.assign(context || {}, {
             // Bounding box
@@ -740,7 +740,7 @@ class GrblController {
             posa: Number(posa) || 0,
             posb: Number(posb) || 0,
             posc: Number(posc) || 0,
-            // Modal group
+            // Modal state
             modal: {
                 motion: modal.motion,
                 wcs: modal.wcs,
@@ -920,7 +920,7 @@ class GrblController {
 
             const { name, gcode, context } = this.sender.state;
             if (gcode) {
-                socket.emit('gcode:load', name, gcode, context);
+                socket.emit('sender:load', name, gcode, context);
             }
         }
 
@@ -947,7 +947,7 @@ class GrblController {
     }
     command(cmd, ...args) {
         const handler = {
-            'gcode:load': () => {
+            'sender:load': () => {
                 let [name, gcode, context = {}, callback = noop] = args;
                 if (typeof context === 'function') {
                     callback = context;
@@ -965,8 +965,8 @@ class GrblController {
                     return;
                 }
 
-                this.emit('gcode:load', name, gcode, context);
-                this.event.trigger('gcode:load');
+                this.emit('sender:load', name, gcode, context);
+                this.event.trigger('sender:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
@@ -974,21 +974,17 @@ class GrblController {
 
                 callback(null, this.sender.toJSON());
             },
-            'gcode:unload': () => {
+            'sender:unload': () => {
                 this.workflow.stop();
 
                 // Sender
                 this.sender.unload();
 
-                this.emit('gcode:unload');
-                this.event.trigger('gcode:unload');
+                this.emit('sender:unload');
+                this.event.trigger('sender:unload');
             },
-            'start': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:start');
-            },
-            'gcode:start': () => {
-                this.event.trigger('gcode:start');
+            'sender:start': () => {
+                this.event.trigger('sender:start');
 
                 this.workflow.start();
 
@@ -998,16 +994,12 @@ class GrblController {
                 // Sender
                 this.sender.next();
             },
-            'stop': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:stop');
-            },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'gcode:stop': () => {
+            'sender:stop': () => {
                 const { force = false } = { ...args[0] };
 
-                this.event.trigger('gcode:stop');
+                this.event.trigger('sender:stop');
 
                 this.workflow.stop();
 
@@ -1024,31 +1016,19 @@ class GrblController {
                     }, 500); // delay 500ms
                 }
             },
-            'pause': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:pause');
-            },
-            'gcode:pause': () => {
-                this.event.trigger('gcode:pause');
+            'sender:pause': () => {
+                this.event.trigger('sender:pause');
 
                 this.workflow.pause();
 
                 this.write('!');
             },
-            'resume': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:resume');
-            },
-            'gcode:resume': () => {
-                this.event.trigger('gcode:resume');
+            'sender:resume': () => {
+                this.event.trigger('sender:resume');
 
                 this.write('~');
 
                 this.workflow.resume();
-            },
-            'feeder:feed': () => {
-                const [commands, context = {}] = args;
-                this.command('gcode', commands, context);
             },
             'feeder:start': () => {
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -1070,9 +1050,6 @@ class GrblController {
                 this.event.trigger('cyclestart');
 
                 this.write('~');
-            },
-            'statusreport': () => {
-                this.write('?');
             },
             'homing': () => {
                 this.event.trigger('homing');
@@ -1101,7 +1078,7 @@ class GrblController {
             // -10: Decrease 10%
             //   1: Increase 1%
             //  -1: Decrease 1%
-            'feedOverride': () => {
+            'override:feed': () => {
                 const [value] = args;
 
                 if (value === 0) {
@@ -1123,7 +1100,7 @@ class GrblController {
             // -10: Decrease 10%
             //   1: Increase 1%
             //  -1: Decrease 1%
-            'spindleOverride': () => {
+            'override:spindle': () => {
                 const [value] = args;
 
                 if (value === 0) {
@@ -1143,7 +1120,7 @@ class GrblController {
             // 100: Set to 100% full rapid rate.
             //  50: Set to 50% of rapid rate.
             //  25: Set to 25% of rapid rate.
-            'rapidOverride': () => {
+            'override:rapid': () => {
                 const [value] = args;
 
                 if (value === 0 || value === 100) {
@@ -1154,25 +1131,23 @@ class GrblController {
                     this.write('\x97');
                 }
             },
-            'lasertest:on': () => {
+            'lasertest': () => {
                 const [power = 0, duration = 0, maxS = 1000] = args;
-                const commands = [
-                    // https://github.com/gnea/grbl/wiki/Grbl-v1.1-Laser-Mode
-                    // The laser will only turn on when Grbl is in a G1, G2, or G3 motion mode.
-                    'G1F1',
-                    'M3S' + ensurePositiveNumber(maxS * (power / 100))
-                ];
-                if (duration > 0) {
-                    commands.push('G4P' + ensurePositiveNumber(duration / 1000));
-                    commands.push('M5S0');
+
+                if (!power) {
+                    this.command('gcode', 'M5S0');
+                    return;
                 }
-                this.command('gcode', commands);
-            },
-            'lasertest:off': () => {
-                const commands = [
-                    'M5S0'
-                ];
-                this.command('gcode', commands);
+
+                // https://github.com/gnea/grbl/wiki/Grbl-v1.1-Laser-Mode
+                // The laser will only turn on when Grbl is in a G1, G2, or G3 motion mode.
+                this.command('gcode', 'G1F1');
+                this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
+
+                if (duration > 0) {
+                    this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
+                    this.command('gcode', 'M5S0');
+                }
             },
             'gcode': () => {
                 const [commands, context] = args;
@@ -1230,7 +1205,7 @@ class GrblController {
 
                 this.event.trigger('macro:load');
 
-                this.command('gcode:load', macro.name, macro.content, context, callback);
+                this.command('sender:load', macro.name, macro.content, context, callback);
             },
             'watchdir:load': () => {
                 const [file, callback = noop] = args;
@@ -1242,7 +1217,7 @@ class GrblController {
                         return;
                     }
 
-                    this.command('gcode:load', file, data, context, callback);
+                    this.command('sender:load', file, data, context, callback);
                 });
             }
         }[cmd];

@@ -117,10 +117,10 @@ class LaserWidget extends PureComponent {
         },
         laserTestOn: () => {
             const { power, duration, maxS } = this.state.test;
-            controller.command('lasertest:on', power, duration, maxS);
+            controller.command('lasertest', power, duration, maxS);
         },
         laserTestOff: () => {
-            controller.command('lasertest:off');
+            controller.command('lasertest', 0);
         }
     };
     controllerEvents = {

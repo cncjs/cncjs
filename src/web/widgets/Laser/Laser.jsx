@@ -71,7 +71,7 @@ class Laser extends PureComponent {
                                         style={{ padding: 5 }}
                                         disabled={!canClick}
                                         onClick={() => {
-                                            controller.command('spindleOverride', 10);
+                                            controller.command('override:spindle', 10);
                                         }}
                                     >
                                         <i className="fa fa-arrow-up fa-fw" />10%
@@ -81,7 +81,7 @@ class Laser extends PureComponent {
                                         style={{ padding: 5 }}
                                         disabled={!canClick}
                                         onClick={() => {
-                                            controller.command('spindleOverride', -10);
+                                            controller.command('override:spindle', -10);
                                         }}
                                     >
                                         <i className="fa fa-arrow-down fa-fw" />10%
@@ -91,7 +91,7 @@ class Laser extends PureComponent {
                                         style={{ padding: 5 }}
                                         disabled={!canClick}
                                         onClick={() => {
-                                            controller.command('spindleOverride', 1);
+                                            controller.command('override:spindle', 1);
                                         }}
                                     >
                                         <i className="fa fa-arrow-up fa-fw" />1%
@@ -101,7 +101,7 @@ class Laser extends PureComponent {
                                         style={{ padding: 5 }}
                                         disabled={!canClick}
                                         onClick={() => {
-                                            controller.command('spindleOverride', -1);
+                                            controller.command('override:spindle', -1);
                                         }}
                                     >
                                         <i className="fa fa-arrow-down fa-fw" />1%
@@ -112,7 +112,7 @@ class Laser extends PureComponent {
                                         style={{ padding: 5 }}
                                         disabled={!canClick}
                                         onClick={() => {
-                                            controller.command('spindleOverride', 0);
+                                            controller.command('override:spindle', 0);
                                         }}
                                     >
                                         <i className="fa fa-undo fa-fw" />

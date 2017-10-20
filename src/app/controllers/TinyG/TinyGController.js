@@ -86,14 +86,11 @@ class TinyGController {
     state = {};
     settings = {};
     timer = {
-        query: null,
-        energizeMotors: null
+        query: null
     };
-    energizeMotorsTimer = null;
     blocked = false;
     senderStatus = SENDER_STATUS_NONE;
     actionTime = {
-        energizeMotors: 0,
         senderFinishTime: 0
     };
 
@@ -594,7 +591,7 @@ class TinyGController {
                     this.actionTime.senderFinishTime = 0;
 
                     // Stop workflow
-                    this.command('gcode:stop');
+                    this.command('sender:stop');
                 }
             }
         }, 250);
@@ -730,8 +727,8 @@ class TinyGController {
             c: posc
         } = this.controller.getWorkPosition();
 
-        // Modal group
-        const modal = this.controller.getModalGroup();
+        // Modal state
+        const modal = this.controller.getModalState();
 
         return Object.assign(context || {}, {
             // Bounding box
@@ -755,7 +752,7 @@ class TinyGController {
             posa: Number(posa) || 0,
             posb: Number(posb) || 0,
             posc: Number(posc) || 0,
-            // Modal group
+            // Modal state
             modal: {
                 motion: modal.motion,
                 wcs: modal.wcs,
@@ -771,18 +768,12 @@ class TinyGController {
         });
     }
     clearActionValues() {
-        this.actionTime.energizeMotors = 0;
         this.actionTime.senderFinishTime = 0;
     }
     destroy() {
         if (this.timer.query) {
             clearInterval(this.timer.query);
             this.timer.query = null;
-        }
-
-        if (this.timer.energizeMotors) {
-            clearInterval(this.timer.energizeMotors);
-            this.timer.energizeMotors = null;
         }
 
         if (this.controller) {
@@ -934,7 +925,7 @@ class TinyGController {
 
             const { name, gcode, context } = this.sender.state;
             if (gcode) {
-                socket.emit('gcode:load', name, gcode, context);
+                socket.emit('sender:load', name, gcode, context);
             }
         }
 
@@ -968,7 +959,7 @@ class TinyGController {
     // ^x           Reset Board     Perform hardware reset to restart the board
     command(cmd, ...args) {
         const handler = {
-            'gcode:load': () => {
+            'sender:load': () => {
                 let [name, gcode, context = {}, callback = noop] = args;
                 if (typeof context === 'function') {
                     callback = context;
@@ -986,8 +977,8 @@ class TinyGController {
                     return;
                 }
 
-                this.emit('gcode:load', name, gcode, context);
-                this.event.trigger('gcode:load');
+                this.emit('sender:load', name, gcode, context);
+                this.event.trigger('sender:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
@@ -995,21 +986,17 @@ class TinyGController {
 
                 callback(null, this.sender.toJSON());
             },
-            'gcode:unload': () => {
+            'sender:unload': () => {
                 this.workflow.stop();
 
                 // Sender
                 this.sender.unload();
 
-                this.emit('gcode:unload');
-                this.event.trigger('gcode:unload');
+                this.emit('sender:unload');
+                this.event.trigger('sender:unload');
             },
-            'start': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:start');
-            },
-            'gcode:start': () => {
-                this.event.trigger('gcode:start');
+            'sender:start': () => {
+                this.event.trigger('sender:start');
 
                 this.workflow.start();
 
@@ -1019,14 +1006,10 @@ class TinyGController {
                 // Sender
                 this.sender.next();
             },
-            'stop': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:stop');
-            },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'gcode:stop': () => {
-                this.event.trigger('gcode:stop');
+            'sender:stop': () => {
+                this.event.trigger('sender:stop');
 
                 this.workflow.stop();
 
@@ -1037,12 +1020,8 @@ class TinyGController {
                     this.writeln('{"qr":""}'); // queue report
                 }, 250); // delay 250ms
             },
-            'pause': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:pause');
-            },
-            'gcode:pause': () => {
-                this.event.trigger('gcode:pause');
+            'sender:pause': () => {
+                this.event.trigger('sender:pause');
 
                 this.workflow.pause();
 
@@ -1050,22 +1029,14 @@ class TinyGController {
 
                 this.writeln('{"qr":""}'); // queue report
             },
-            'resume': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:resume');
-            },
-            'gcode:resume': () => {
-                this.event.trigger('gcode:resume');
+            'sender:resume': () => {
+                this.event.trigger('sender:resume');
 
                 this.writeln('~'); // cycle start
 
                 this.workflow.resume();
 
                 this.writeln('{"qr":""}'); // queue report
-            },
-            'feeder:feed': () => {
-                const [commands, context = {}] = args;
-                this.command('gcode', commands, context);
             },
             'feeder:start': () => {
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -1091,9 +1062,6 @@ class TinyGController {
                 this.writeln('~'); // cycle start
                 this.writeln('{"qr":""}'); // queue report
             },
-            'statusreport': () => {
-                this.writeln('{"sr":null}');
-            },
             'homing': () => {
                 this.event.trigger('homing');
 
@@ -1116,7 +1084,7 @@ class TinyGController {
             },
             // Feed Overrides
             // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
-            'feedOverride': () => {
+            'override:feed': () => {
                 const [value] = args;
                 let mfo = this.controller.settings.mfo;
 
@@ -1134,7 +1102,7 @@ class TinyGController {
             },
             // Spindle Speed Overrides
             // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
-            'spindleOverride': () => {
+            'override:spindle': () => {
                 const [value] = args;
                 let sso = this.controller.settings.sso;
 
@@ -1151,7 +1119,7 @@ class TinyGController {
                 this.command('gcode', `{sso:${sso}}`);
             },
             // Rapid Overrides
-            'rapidOverride': () => {
+            'override:rapid': () => {
                 const [value] = args;
 
                 if (value === 0 || value === 100) {
@@ -1162,60 +1130,50 @@ class TinyGController {
                     this.command('gcode', '{mto:0.25}');
                 }
             },
-            'energizeMotors:on': () => {
-                const { mt = 0 } = this.state;
+            // Turn on any motor that is not disabled.
+            // @param {number} [value] Enable the motors with a specified timeout value in seconds. Defaults to 3600 seconds.
+            'motor:enable': () => {
+                let [mt = this.state.mt] = args;
+                mt = Number(mt) || 0;
 
-                if (this.timer.energizeMotors || !mt) {
+                if (mt <= 0) {
+                    this.command('motor:disable');
                     return;
                 }
 
-                this.command('gcode', '{me:0}');
+                // Providing {me:0} will enable the motors for the timeout specified in the mt value.
+                this.command('gcode', `{me:${mt}}`);
                 this.command('gcode', '{pwr:n}');
-
-                // Setup a timer to energize motors up to 30 minutes
-                this.timer.energizeMotors = setInterval(() => {
-                    const now = new Date().getTime();
-                    if (this.actionTime.energizeMotors <= 0) {
-                        this.actionTime.energizeMotors = now;
-                    }
-
-                    const timespan = Math.abs(now - this.actionTime.energizeMotors);
-                    const toleranceTime = 30 * 60 * 1000; // 30 minutes
-                    if (timespan > toleranceTime) {
-                        this.command('energizeMotors:off');
-                        return;
-                    }
-
-                    this.command('gcode', '{me:0}');
-                    this.command('gcode', '{pwr:n}');
-                }, mt * 1000 - 500);
             },
-            'energizeMotors:off': () => {
-                if (this.timer.energizeMotors) {
-                    clearInterval(this.timer.energizeMotors);
-                    this.timer.energizeMotors = null;
-                }
-                this.actionTime.energizeMotors = 0;
-
+            // Disable all motors that are not permanently enabled.
+            'motor:disable': () => {
                 this.command('gcode', '{md:0}');
                 this.command('gcode', '{pwr:n}');
             },
-            'lasertest:on': () => {
-                const [power = 0, duration = 0, maxS = 1000] = args;
-                const commands = [
-                    'M3S' + ensurePositiveNumber(maxS * (power / 100))
-                ];
-                if (duration > 0) {
-                    commands.push('G4P' + ensurePositiveNumber(duration / 1000));
-                    commands.push('M5S0');
+            // Sets the number of seconds before a motor will shut off automatically.
+            // @param {number} value The default timeout in seconds.
+            'motor:timeout': () => {
+                let [mt] = args;
+                mt = Number(mt) || 0;
+
+                if (mt >= 0) {
+                    this.command('gcode', `{mt:${mt}}`);
                 }
-                this.command('gcode', commands);
             },
-            'lasertest:off': () => {
-                const commands = [
-                    'M5S0'
-                ];
-                this.command('gcode', commands);
+            'lasertest': () => {
+                const [power = 0, duration = 0, maxS = 1000] = args;
+
+                if (!power) {
+                    this.command('gcode', 'M5S0');
+                    return;
+                }
+
+                this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
+
+                if (duration > 0) {
+                    this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
+                    this.command('gcode', 'M5S0');
+                }
             },
             'gcode': () => {
                 const [commands, context] = args;
@@ -1273,7 +1231,7 @@ class TinyGController {
 
                 this.event.trigger('macro:load');
 
-                this.command('gcode:load', macro.name, macro.content, context, callback);
+                this.command('sender:load', macro.name, macro.content, context, callback);
             },
             'watchdir:load': () => {
                 const [file, callback = noop] = args;
@@ -1285,7 +1243,7 @@ class TinyGController {
                         return;
                     }
 
-                    this.command('gcode:load', file, data, context, callback);
+                    this.command('sender:load', file, data, context, callback);
                 });
             }
         }[cmd];

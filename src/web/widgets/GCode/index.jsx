@@ -63,7 +63,7 @@ class GCodeWidget extends PureComponent {
         }
     };
     controllerEvents = {
-        'gcode:unload': () => {
+        'sender:unload': () => {
             this.setState({
                 bbox: {
                     min: {

@@ -623,7 +623,7 @@ class SmoothieController {
                     this.actionTime.senderFinishTime = 0;
 
                     // Stop workflow
-                    this.command('gcode:stop');
+                    this.command('sender:stop');
                 }
             }
         }, 250);
@@ -649,8 +649,8 @@ class SmoothieController {
             c: posc
         } = this.controller.getWorkPosition();
 
-        // Modal group
-        const modal = this.controller.getModalGroup();
+        // Modal state
+        const modal = this.controller.getModalState();
 
         return Object.assign(context || {}, {
             // Bounding box
@@ -674,7 +674,7 @@ class SmoothieController {
             posa: Number(posa) || 0,
             posb: Number(posb) || 0,
             posc: Number(posc) || 0,
-            // Modal group
+            // Modal state
             modal: {
                 motion: modal.motion,
                 wcs: modal.wcs,
@@ -885,7 +885,7 @@ class SmoothieController {
 
             const { name, gcode, context } = this.sender.state;
             if (gcode) {
-                socket.emit('gcode:load', name, gcode, context);
+                socket.emit('sender:load', name, gcode, context);
             }
         }
 
@@ -912,7 +912,7 @@ class SmoothieController {
     }
     command(cmd, ...args) {
         const handler = {
-            'gcode:load': () => {
+            'sender:load': () => {
                 let [name, gcode, context = {}, callback = noop] = args;
                 if (typeof context === 'function') {
                     callback = context;
@@ -930,8 +930,8 @@ class SmoothieController {
                     return;
                 }
 
-                this.emit('gcode:load', name, gcode, context);
-                this.event.trigger('gcode:load');
+                this.emit('sender:load', name, gcode, context);
+                this.event.trigger('sender:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
@@ -939,21 +939,17 @@ class SmoothieController {
 
                 callback(null, this.sender.toJSON());
             },
-            'gcode:unload': () => {
+            'sender:unload': () => {
                 this.workflow.stop();
 
                 // Sender
                 this.sender.unload();
 
-                this.emit('gcode:unload');
-                this.event.trigger('gcode:unload');
+                this.emit('sender:unload');
+                this.event.trigger('sender:unload');
             },
-            'start': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:start');
-            },
-            'gcode:start': () => {
-                this.event.trigger('gcode:start');
+            'sender:start': () => {
+                this.event.trigger('sender:start');
 
                 this.workflow.start();
 
@@ -963,14 +959,10 @@ class SmoothieController {
                 // Sender
                 this.sender.next();
             },
-            'stop': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:stop');
-            },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'gcode:stop': () => {
-                this.event.trigger('gcode:stop');
+            'sender:stop': () => {
+                this.event.trigger('sender:stop');
 
                 this.workflow.stop();
 
@@ -979,31 +971,19 @@ class SmoothieController {
                     this.write('~'); // resume
                 }
             },
-            'pause': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:pause');
-            },
-            'gcode:pause': () => {
-                this.event.trigger('gcode:pause');
+            'sender:pause': () => {
+                this.event.trigger('sender:pause');
 
                 this.workflow.pause();
 
                 this.write('!');
             },
-            'resume': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:resume');
-            },
-            'gcode:resume': () => {
-                this.event.trigger('gcode:resume');
+            'sender:resume': () => {
+                this.event.trigger('sender:resume');
 
                 this.write('~');
 
                 this.workflow.resume();
-            },
-            'feeder:feed': () => {
-                const [commands, context = {}] = args;
-                this.command('gcode', commands, context);
             },
             'feeder:start': () => {
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -1025,9 +1005,6 @@ class SmoothieController {
                 this.event.trigger('cyclestart');
 
                 this.write('~');
-            },
-            'statusreport': () => {
-                this.write('?');
             },
             'homing': () => {
                 this.event.trigger('homing');
@@ -1051,7 +1028,7 @@ class SmoothieController {
             },
             // Feed Overrides
             // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
-            'feedOverride': () => {
+            'override:feed': () => {
                 const [value] = args;
                 let feedOverride = this.controller.state.ovF;
 
@@ -1077,7 +1054,7 @@ class SmoothieController {
             },
             // Spindle Speed Overrides
             // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
-            'spindleOverride': () => {
+            'override:spindle': () => {
                 const [value] = args;
                 let spindleOverride = this.controller.state.ovS;
 
@@ -1102,31 +1079,33 @@ class SmoothieController {
                 };
             },
             // Rapid Overrides
-            'rapidOverride': () => {
+            'override:rapid': () => {
                 // Not supported
             },
-            'lasertest:on': () => {
+            'lasertest': () => {
                 const [power = 0, duration = 0] = args;
 
-                this.writeln('M3');
+                if (!power) {
+                    // Turning laser off and returning to auto mode
+                    this.command('gcode', 'fire off');
+                    this.command('gcode', 'M5');
+                    return;
+                }
+
+                this.command('gcode', 'M3');
                 // Firing laser at <power>% power and entering manual mode
-                this.writeln('fire ' + ensurePositiveNumber(power));
+                this.command('gcode', 'fire ' + ensurePositiveNumber(power));
                 if (duration > 0) {
                     // http://smoothieware.org/g4
                     // Dwell S<seconds> or P<milliseconds>
                     // Note that if `grbl_mode` is set to `true`, then the `P` parameter
                     // is the duration to wait in seconds, not milliseconds, as a float value.
                     // This is to confirm to G-code standards.
-                    this.writeln('G4P' + ensurePositiveNumber(duration / 1000));
+                    this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
                     // Turning laser off and returning to auto mode
-                    this.writeln('fire off');
-                    this.writeln('M5');
+                    this.command('gcode', 'fire off');
+                    this.command('gcode', 'M5');
                 }
-            },
-            'lasertest:off': () => {
-                // Turning laser off and returning to auto mode
-                this.writeln('fire off');
-                this.writeln('M5');
             },
             'gcode': () => {
                 const [commands, context] = args;
@@ -1184,7 +1163,7 @@ class SmoothieController {
 
                 this.event.trigger('macro:load');
 
-                this.command('gcode:load', macro.name, macro.content, context, callback);
+                this.command('sender:load', macro.name, macro.content, context, callback);
             },
             'watchdir:load': () => {
                 const [file, callback = noop] = args;
@@ -1196,7 +1175,7 @@ class SmoothieController {
                         return;
                     }
 
-                    this.command('gcode:load', file, data, context, callback);
+                    this.command('sender:load', file, data, context, callback);
                 });
             }
         }[cmd];

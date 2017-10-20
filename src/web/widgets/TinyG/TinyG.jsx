@@ -41,10 +41,12 @@ class TinyG extends PureComponent {
     plannerBufferMin = 0;
 
     enableMotors = () => {
-        controller.command('energizeMotors:on');
+        // Energize motors up to 60 minutes
+        const mt = 60 * 60 * 1000;
+        controller.command('motor:enable', mt);
     };
     disableMotors = () => {
-        controller.command('energizeMotors:off');
+        controller.command('motor:disable');
     };
 
     render() {

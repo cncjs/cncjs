@@ -215,7 +215,7 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
 
-            controller.command('gcode:load', name, gcode, context, (err, data) => {
+            controller.command('sender:load', name, gcode, context, (err, data) => {
                 if (err) {
                     this.setState((state) => ({
                         gcode: {
@@ -349,7 +349,7 @@ class VisualizerWidget extends PureComponent {
             console.assert(includes([WORKFLOW_STATE_IDLE, WORKFLOW_STATE_PAUSED], workflow.state));
 
             if (workflow.state === WORKFLOW_STATE_IDLE) {
-                controller.command('gcode:start');
+                controller.command('sender:start');
                 return;
             }
 
@@ -376,7 +376,7 @@ class VisualizerWidget extends PureComponent {
                                     btnStyle="primary"
                                     onClick={chainedFunction(
                                         () => {
-                                            controller.command('gcode:resume');
+                                            controller.command('sender:resume');
                                         },
                                         onClose
                                     )}
@@ -390,28 +390,26 @@ class VisualizerWidget extends PureComponent {
                     return;
                 }
 
-                controller.command('gcode:resume');
+                controller.command('sender:resume');
             }
         },
         handlePause: () => {
             const { workflow } = this.state;
             console.assert(includes([WORKFLOW_STATE_RUNNING], workflow.state));
 
-            controller.command('gcode:pause');
+            controller.command('sender:pause');
         },
         handleStop: () => {
             const { workflow } = this.state;
             console.assert(includes([WORKFLOW_STATE_PAUSED], workflow.state));
 
-            controller.command('gcode:stop', { force: true });
+            controller.command('sender:stop', { force: true });
         },
         handleClose: () => {
             const { workflow } = this.state;
             console.assert(includes([WORKFLOW_STATE_IDLE], workflow.state));
 
-            controller.command('gcode:unload');
-
-            pubsub.publish('gcode:unload'); // Unload the G-code
+            controller.command('sender:unload');
         },
         setBoundingBox: (bbox) => {
             this.setState((state) => ({
@@ -545,11 +543,11 @@ class VisualizerWidget extends PureComponent {
             this.setState({ ...initialState });
             this.actions.unloadGCode();
         },
-        'gcode:load': (name, gcode, context) => {
+        'sender:load': (name, gcode, context) => {
             gcode = translateGCodeWithContext(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
             this.actions.loadGCode(name, gcode);
         },
-        'gcode:unload': () => {
+        'sender:unload': () => {
             this.actions.unloadGCode();
         },
         'sender:status': (data) => {
