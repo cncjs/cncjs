@@ -99,10 +99,10 @@ class Connection extends PureComponent {
             alertMessage
         } = state;
         const controllerType = state.controller.type;
-        const canSelectControllers = (controller.loadedControllers.length > 1);
-        const hasGrblController = includes(controller.loadedControllers, GRBL);
-        const hasSmoothieController = includes(controller.loadedControllers, SMOOTHIE);
-        const hasTinyGController = includes(controller.loadedControllers, TINYG);
+        const canSelectControllers = (controller.availableControllers.length > 1);
+        const hasGrblController = includes(controller.availableControllers, GRBL);
+        const hasSmoothieController = includes(controller.availableControllers, SMOOTHIE);
+        const hasTinyGController = includes(controller.availableControllers, TINYG);
         const notLoading = !loading;
         const notConnecting = !connecting;
         const notConnected = !connected;
@@ -209,7 +209,7 @@ class Connection extends PureComponent {
                                 className="btn btn-default"
                                 name="btn-refresh"
                                 title={i18n._('Refresh')}
-                                onClick={actions.handleRefreshPorts}
+                                onClick={actions.handleRefresh}
                                 disabled={!canRefresh}
                             >
                                 <i

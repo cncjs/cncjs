@@ -16,13 +16,13 @@ export const getActiveWidgets = () => {
         .map(widgetId => widgetId.split(':')[0]);
     const activeWidgets = _.union(defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
-            if (widget === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+            if (widget === 'grbl' && !_.includes(controller.availableControllers, GRBL)) {
                 return false;
             }
-            if (widget === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widget === 'smoothie' && !_.includes(controller.availableControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widget === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+            if (widget === 'tinyg' && !_.includes(controller.availableControllers, TINYG)) {
                 return false;
             }
             return true;
@@ -41,13 +41,13 @@ export const getInactiveWidgets = () => {
         .map(widgetId => widgetId.split(':')[0]);
     const inactiveWidgets = _.difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
-            if (widget === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+            if (widget === 'grbl' && !_.includes(controller.availableControllers, GRBL)) {
                 return false;
             }
-            if (widget === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widget === 'smoothie' && !_.includes(controller.availableControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widget === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+            if (widget === 'tinyg' && !_.includes(controller.availableControllers, TINYG)) {
                 return false;
             }
             return true;

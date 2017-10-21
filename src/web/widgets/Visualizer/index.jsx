@@ -543,7 +543,8 @@ class VisualizerWidget extends PureComponent {
             this.setState({ ...initialState });
             this.actions.unloadGCode();
         },
-        'sender:load': (name, gcode, context) => {
+        'sender:load': (data, context) => {
+            let { name, gcode } = data;
             gcode = translateGCodeWithContext(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
             this.actions.loadGCode(name, gcode);
         },

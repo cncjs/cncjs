@@ -1,4 +1,7 @@
 import noop from 'lodash/noop';
+import reverse from 'lodash/reverse';
+import sortBy from 'lodash/sortBy';
+import uniq from 'lodash/uniq';
 import rangeCheck from 'range_check';
 import SerialPort from 'serialport';
 import socketIO from 'socket.io';
@@ -58,7 +61,7 @@ class CNCEngine {
         },
         configChange: (...args) => {
             if (this.io) {
-                this.io.emit('config:change', ...args);
+                this.io.emit('config:change');
             }
         }
     };
@@ -99,8 +102,8 @@ class CNCEngine {
             throw new Error(`No valid CNC controller specified (${controller})`);
         }
 
-        const loadedControllers = Object.keys(this.controllerClass);
-        log.debug(`Loaded controllers: ${loadedControllers}`);
+        const availableControllers = Object.keys(this.controllerClass);
+        log.debug(`Available controllers: ${availableControllers}`);
 
         this.stop();
 
@@ -148,10 +151,7 @@ class CNCEngine {
             this.sockets.push(socket);
 
             socket.emit('startup', {
-                loadedControllers: Object.keys(this.controllerClass),
-
-                // User-defined baud rates
-                baudRates: ensureArray(config.get('baudRates', []))
+                availableControllers: Object.keys(this.controllerClass)
             });
 
             socket.on('disconnect', () => {
@@ -169,8 +169,13 @@ class CNCEngine {
                 this.sockets.splice(this.sockets.indexOf(socket), 1);
             });
 
-            // Get a list of available serial ports
-            socket.on('getPorts', async () => {
+            // Gets a list of available serial ports
+            // @param {function} callback The error-first callback.
+            socket.on('getPorts', async (callback = noop) => {
+                if (typeof callback !== 'function') {
+                    callback = noop;
+                }
+
                 log.debug(`socket.getPorts(): id=${socket.id}`);
 
                 try {
@@ -192,10 +197,32 @@ class CNCEngine {
                         })
                         .filter(port => !!(port.comName));
 
-                    socket.emit('ports', ports);
+                    callback(null, ports);
                 } catch (err) {
                     log.error(err);
+                    callback(err);
                 }
+            });
+
+            // Gets a list of supported baud rates
+            // @param {function} callback The error-first callback.
+            socket.on('getBaudRates', (callback = noop) => {
+                if (typeof callback !== 'function') {
+                    callback = noop;
+                }
+
+                const defaultBaudRates = [
+                    250000,
+                    115200,
+                    57600,
+                    38400,
+                    19200,
+                    9600,
+                    2400
+                ];
+                const customBaudRates = ensureArray(config.get('baudRates', []));
+                const baudRates = reverse(sortBy(uniq(customBaudRates.concat(defaultBaudRates))));
+                callback(null, baudRates);
             });
 
             socket.on('open', (controllerType = GRBL, connectionType = 'serial', options, callback = noop) => {

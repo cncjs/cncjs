@@ -187,7 +187,7 @@ class TinyGWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            isReady: (controller.loadedControllers.length === 1) || (controller.type === TINYG),
+            isReady: (controller.availableControllers.length === 1) || (controller.type === TINYG),
             canClick: false,
             controller: {
                 type: controller.type,

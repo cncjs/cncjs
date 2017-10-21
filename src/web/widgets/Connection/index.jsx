@@ -89,8 +89,8 @@ class ConnectionWidget extends PureComponent {
                 autoReconnect: checked
             }));
         },
-        handleRefreshPorts: (event) => {
-            this.refreshPorts();
+        handleRefresh: (event) => {
+            this.refresh();
         },
         handleOpenPort: (event) => {
             this.openPort();
@@ -173,7 +173,7 @@ class ConnectionWidget extends PureComponent {
                     })
                 }));
 
-                this.refreshPorts();
+                this.refresh();
             }
         },
         'connection:change': (options, isOpen) => {
@@ -207,7 +207,7 @@ class ConnectionWidget extends PureComponent {
 
     componentDidMount() {
         this.addControllerEvents();
-        this.refreshPorts();
+        this.refresh();
     }
     componentWillUnmount() {
         this.removeControllerEvents();
@@ -240,11 +240,11 @@ class ConnectionWidget extends PureComponent {
     }
     getInitialState() {
         let controllerType = this.config.get('controller.type');
-        if (!includes(controller.loadedControllers, controllerType)) {
-            controllerType = controller.loadedControllers[0];
+        if (!includes(controller.availableControllers, controllerType)) {
+            controllerType = controller.availableControllers[0];
         }
 
-        // Common baud rates
+        // Default baud rates
         const defaultBaudRates = [
             250000,
             115200,
@@ -262,7 +262,7 @@ class ConnectionWidget extends PureComponent {
             connecting: false,
             connected: false,
             ports: [],
-            baudRates: reverse(sortBy(uniq(controller.baudRates.concat(defaultBaudRates)))),
+            baudRates: defaultBaudRates,
             controller: {
                 type: this.config.get('controller.type')
             },
@@ -315,9 +315,75 @@ class ConnectionWidget extends PureComponent {
             loading: false
         }));
     }
-    refreshPorts() {
+    fetchBaudRates() {
+        return new Promise((resolve, reject) => {
+            controller.getBaudRates((err, baudRates) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve(baudRates);
+            });
+        });
+    }
+    fetchPorts() {
+        return new Promise((resolve, reject) => {
+            controller.getPorts((err, ports) => {
+                if (err) {
+                    reject(err);
+                    return;
+                }
+
+                resolve(ports);
+            });
+        });
+    }
+    async refresh() {
         this.startLoading();
-        controller.getPorts();
+
+        try {
+            const baudRates = await this.fetchBaudRates();
+            log.debug('Received a list of supported baud rates:', baudRates);
+            this.setState(state => ({
+                baudRates: reverse(sortBy(uniq(baudRates.concat(state.baudRates))))
+            }));
+
+            const ports = await this.fetchPorts();
+            log.debug('Received a list of available serial ports:', ports);
+            const path = this.config.get('connection.serial.path');
+            if (includes(map(ports, 'comName'), path)) {
+                this.setState(state => ({
+                    alertMessage: '',
+                    ports: ports,
+                    connection: {
+                        ...state.connection,
+                        serial: {
+                            ...state.connection.serial,
+                            path: path
+                        }
+                    }
+                }));
+
+                const { autoReconnect, hasReconnected } = this.state;
+                if (autoReconnect && !hasReconnected) {
+                    this.setState(state => ({
+                        hasReconnected: true
+                    }));
+
+                    this.openPort(path);
+                }
+            } else {
+                this.setState(state => ({
+                    alertMessage: '',
+                    ports: ports
+                }));
+            }
+        } catch (err) {
+            log.error(err);
+        }
+
+        this.stopLoading();
     }
     openPort(path, baudRate) {
         this.setState(state => ({
@@ -356,8 +422,7 @@ class ConnectionWidget extends PureComponent {
                 return;
             }
 
-            // Refresh ports
-            controller.getPorts();
+            this.refresh();
         });
     }
     render() {

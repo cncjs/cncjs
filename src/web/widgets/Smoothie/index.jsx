@@ -173,7 +173,7 @@ class SmoothieWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            isReady: (controller.loadedControllers.length === 1) || (controller.type === SMOOTHIE),
+            isReady: (controller.availableControllers.length === 1) || (controller.type === SMOOTHIE),
             canClick: false,
             controller: {
                 type: controller.type,

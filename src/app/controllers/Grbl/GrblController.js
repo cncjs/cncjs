@@ -902,9 +902,17 @@ class GrblController {
         if (this.sender) {
             socket.emit('sender:status', this.sender.toJSON());
 
-            const { name, gcode, context } = this.sender.state;
-            if (gcode) {
-                socket.emit('sender:load', name, gcode, context);
+            const {
+                name,
+                gcode: content,
+                context
+            } = this.sender.state;
+
+            if (content) {
+                socket.emit('sender:load', {
+                    name: name,
+                    content: content
+                }, context);
             }
         }
 
@@ -932,7 +940,7 @@ class GrblController {
     command(cmd, ...args) {
         const handler = {
             'sender:load': () => {
-                let [name, gcode, context = {}, callback = noop] = args;
+                let [name, content, context = {}, callback = noop] = args;
                 if (typeof context === 'function') {
                     callback = context;
                     context = {};
@@ -943,13 +951,17 @@ class GrblController {
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
                 const dwell = '%wait ; Wait for the planner queue to empty';
-                const ok = this.sender.load(name, gcode + '\n' + dwell, context);
+                const ok = this.sender.load(name, content + '\n' + dwell, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
                     return;
                 }
 
-                this.emit('sender:load', name, gcode, context);
+                this.emit('sender:load', {
+                    name: name,
+                    content: content
+                }, context);
+
                 this.event.trigger('sender:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
