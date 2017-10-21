@@ -81,11 +81,11 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
-nvm install 4
-nvm use 4
+nvm install 6
+nvm use 6
 ```
 
-If you're using Node.js 4 or earlier versions, it's recommended that you upgrade npm to the latest version. To upgrade, run:
+It's also recommended that you upgrade npm to the latest version. To upgrade, run:
 ```
 npm install npm@latest -g
 ```
