@@ -13,8 +13,7 @@ test('SmoothieLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
     smoothie.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle>');
         t.same(status, {
-            activeState: 'Idle',
-            subState: 0
+            machineState: 'Idle'
         });
         t.end();
     });
@@ -28,8 +27,7 @@ test('SmoothieLineParserResultStatus: default ($10=3)', (t) => {
     smoothie.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>');
         t.same(status, {
-            activeState: 'Idle',
-            subState: 0,
+            machineState: 'Idle',
             mpos: {
                 x: '5.529',
                 y: '0.560',
@@ -53,8 +51,7 @@ test('SmoothieLineParserResultStatus: 6-axis', (t) => {
     smoothie.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>');
         t.same(status, {
-            activeState: 'Idle',
-            subState: 0,
+            machineState: 'Idle',
             mpos: {
                 x: '5.529',
                 y: '0.560',
@@ -84,8 +81,7 @@ test('SmoothieLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
     smoothie.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>');
         t.same(status, {
-            activeState: 'Idle',
-            subState: 0,
+            machineState: 'Idle',
             mpos: {
                 x: '5.529',
                 y: '0.560',

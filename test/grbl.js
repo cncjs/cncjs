@@ -14,7 +14,7 @@ test('GrblLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
     grbl.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle>');
         t.same(status, {
-            activeState: 'Idle',
+            machineState: 'Idle',
             subState: 0
         });
         t.end();
@@ -29,7 +29,7 @@ test('GrblLineParserResultStatus: default ($10=3)', (t) => {
     grbl.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>');
         t.same(status, {
-            activeState: 'Idle',
+            machineState: 'Idle',
             subState: 0,
             mpos: {
                 x: '5.529',
@@ -54,7 +54,7 @@ test('GrblLineParserResultStatus: 6-axis', (t) => {
     grbl.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>');
         t.same(status, {
-            activeState: 'Idle',
+            machineState: 'Idle',
             subState: 0,
             mpos: {
                 x: '5.529',
@@ -85,7 +85,7 @@ test('GrblLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
     grbl.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>');
         t.same(status, {
-            activeState: 'Idle',
+            machineState: 'Idle',
             subState: 0,
             mpos: {
                 x: '5.529',
