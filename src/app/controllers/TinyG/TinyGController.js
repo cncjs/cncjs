@@ -106,6 +106,13 @@ class TinyGController {
     // Workflow
     workflow = null;
 
+    get connectionOptions() {
+        return {
+            ident: this.connection.ident,
+            type: this.connection.type,
+            settings: this.connection.settings
+        };
+    }
     get isOpen() {
         return this.connection && this.connection.isOpen;
     }
@@ -231,7 +238,7 @@ class TinyGController {
                 return;
             }
 
-            this.emit('connection:write', line + '\n', context);
+            this.emit('connection:write', this.connectionOptions, line + '\n', context);
 
             this.connection.write(line + '\n');
             log.silly(`> ${line}`);
@@ -369,7 +376,7 @@ class TinyGController {
 
         this.controller.on('raw', (res) => {
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
-                this.emit('connection:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
         });
 
@@ -499,8 +506,8 @@ class TinyGController {
                     const { lines, received } = this.sender.state;
                     const line = lines[received - 1] || '';
 
-                    this.emit('connection:read', `> ${line}`);
-                    this.emit('connection:read', JSON.stringify({
+                    this.emit('connection:read', this.connectionOptions, `> ${line}`);
+                    this.emit('connection:read', this.connectionOptions, JSON.stringify({
                         err: {
                             code: code,
                             msg: err.msg,
@@ -521,7 +528,7 @@ class TinyGController {
                     return;
                 }
 
-                this.emit('connection:read', JSON.stringify({
+                this.emit('connection:read', this.connectionOptions, JSON.stringify({
                     err: {
                         code: code,
                         msg: err.msg
@@ -697,7 +704,7 @@ class TinyGController {
                 log.silly(`init: ${cmd} ${cmd.length}`);
 
                 const context = {};
-                this.emit('connection:write', cmd, context);
+                this.emit('connection:write', this.connectionOptions, cmd, context);
                 this.connection.write(cmd + '\n');
             }
             setTimeout(() => {
@@ -818,28 +825,16 @@ class TinyGController {
             if (err) {
                 log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
                 log.error(err);
-                this.emit('connection:error', {
-                    err: err,
-                    type: this.connection.type,
-                    settings: this.connection.settings
-                });
+                this.emit('connection:error', this.connectionOptions, err);
                 callback && callback(err);
                 return;
             }
 
-            this.emit('connection:open', {
-                ident: this.connection.ident,
-                type: this.connection.type,
-                settings: this.connection.settings
-            });
+            this.emit('connection:open', this.connectionOptions);
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('connection:change', {
-                    type: this.connection.type,
-                    settings: this.connection.settings,
-                    isOpen: true
-                });
+                this.engine.io.emit('connection:change', this.connectionOptions, true);
             }
 
             callback && callback();
@@ -864,18 +859,11 @@ class TinyGController {
         // Stop status query
         this.ready = false;
 
-        this.emit('connection:close', {
-            type: this.connection.type,
-            settings: this.connection.settings
-        });
+        this.emit('connection:close', this.connectionOptions);
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('connection:change', {
-                type: this.connection.type,
-                settings: this.connection.settings,
-                isOpen: false
-            });
+            this.engine.io.emit('connection:change', this.connectionOptions, false);
         }
 
         this.connection.removeAllListeners();
@@ -895,11 +883,7 @@ class TinyGController {
 
         // Connection
         if (this.isOpen) {
-            socket.emit('connection:open', {
-                ident: this.connection.ident,
-                type: this.connection.type,
-                settings: this.connection.settings
-            });
+            socket.emit('connection:open', this.connectionOptions);
         }
 
         // Controller settings
@@ -1262,7 +1246,7 @@ class TinyGController {
             return;
         }
 
-        this.emit('connection:write', data, context);
+        this.emit('connection:write', this.connectionOptions, data, context);
         this.connection.write(data);
         log.silly(`> ${data}`);
     }

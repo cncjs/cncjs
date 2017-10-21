@@ -176,8 +176,8 @@ class ConnectionWidget extends PureComponent {
                 this.refreshPorts();
             }
         },
-        'connection:change': (options) => {
-            const { type, settings, isOpen } = options;
+        'connection:change': (options, isOpen) => {
+            const { type, settings } = options;
 
             if (type === 'serial') {
                 this.setState(state => ({
@@ -190,7 +190,7 @@ class ConnectionWidget extends PureComponent {
                 }));
             }
         },
-        'connection:error': (options) => {
+        'connection:error': (options, err) => {
             const { type, settings } = options;
 
             if (type === 'serial') {

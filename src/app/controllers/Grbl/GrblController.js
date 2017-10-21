@@ -114,6 +114,13 @@ class GrblController {
     // Workflow
     workflow = null;
 
+    get connectionOptions() {
+        return {
+            ident: this.connection.ident,
+            type: this.connection.type,
+            settings: this.connection.settings
+        };
+    }
     get isOpen() {
         return this.connection && this.connection.isOpen;
     }
@@ -241,7 +248,7 @@ class GrblController {
                 return;
             }
 
-            this.emit('connection:write', line + '\n', context);
+            this.emit('connection:write', this.connectionOptions, line + '\n', context);
 
             this.connection.write(line + '\n');
             log.silly(`> ${line}`);
@@ -379,7 +386,7 @@ class GrblController {
 
             if (this.actionMask.replyStatusReport) {
                 this.actionMask.replyStatusReport = false;
-                this.emit('connection:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
 
             // Check if the receive buffer is available in the status report
@@ -414,7 +421,7 @@ class GrblController {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
-                    this.emit('connection:read', res.raw);
+                    this.emit('connection:read', this.connectionOptions, res.raw);
                 }
                 this.actionMask.queryParserState.reply = false;
                 return;
@@ -444,7 +451,7 @@ class GrblController {
                 return;
             }
 
-            this.emit('connection:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
 
             // Feeder
             this.feeder.next();
@@ -458,15 +465,15 @@ class GrblController {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
-                this.emit('connection:read', `> ${line.trim()} (line=${received + 1})`);
+                this.emit('connection:read', this.connectionOptions, `> ${line.trim()} (line=${received + 1})`);
                 if (error) {
                     // Grbl v1.1
-                    this.emit('connection:read', `error:${code} (${error.message})`);
+                    this.emit('connection:read', this.connectionOptions, `error:${code} (${error.message})`);
 
                     this.workflow.pause({ err: `error:${code} (${error.message})` });
                 } else {
                     // Grbl v0.9
-                    this.emit('connection:read', res.raw);
+                    this.emit('connection:read', this.connectionOptions, res.raw);
 
                     this.workflow.pause({ err: res.raw });
                 }
@@ -479,10 +486,10 @@ class GrblController {
 
             if (error) {
                 // Grbl v1.1
-                this.emit('connection:read', `error:${code} (${error.message})`);
+                this.emit('connection:read', this.connectionOptions, `error:${code} (${error.message})`);
             } else {
                 // Grbl v0.9
-                this.emit('connection:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
 
             // Feeder
@@ -495,10 +502,10 @@ class GrblController {
 
             if (alarm) {
                 // Grbl v1.1
-                this.emit('connection:read', `ALARM:${code} (${alarm.message})`);
+                this.emit('connection:read', this.connectionOptions, `ALARM:${code} (${alarm.message})`);
             } else {
                 // Grbl v0.9
-                this.emit('connection:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
         });
 
@@ -507,16 +514,16 @@ class GrblController {
             this.actionMask.queryParserState.reply = true;
 
             if (this.actionMask.replyParserState) {
-                this.emit('connection:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
         });
 
         this.controller.on('parameters', (res) => {
-            this.emit('connection:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         this.controller.on('feedback', (res) => {
-            this.emit('connection:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         this.controller.on('settings', (res) => {
@@ -524,15 +531,15 @@ class GrblController {
 
             if (!res.message && setting) {
                 // Grbl v1.1
-                this.emit('connection:read', `${res.name}=${res.value} (${setting.message}, ${setting.units})`);
+                this.emit('connection:read', this.connectionOptions, `${res.name}=${res.value} (${setting.message}, ${setting.units})`);
             } else {
                 // Grbl v0.9
-                this.emit('connection:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
         });
 
         this.controller.on('startup', (res) => {
-            this.emit('connection:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
 
             // Check the initialized flag
             if (!this.initialized) {
@@ -553,7 +560,7 @@ class GrblController {
         });
 
         this.controller.on('others', (res) => {
-            this.emit('connection:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         const queryStatusReport = () => {
@@ -813,28 +820,16 @@ class GrblController {
             if (err) {
                 log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
                 log.error(err);
-                this.emit('connection:error', {
-                    err: err,
-                    type: this.connection.type,
-                    settings: this.connection.settings
-                });
+                this.emit('connection:error', this.connectionOptions, err);
                 callback && callback(err);
                 return;
             }
 
-            this.emit('connection:open', {
-                ident: this.connection.ident,
-                type: this.connection.type,
-                settings: this.connection.settings
-            });
+            this.emit('connection:open', this.connectionOptions);
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('connection:change', {
-                    type: this.connection.type,
-                    settings: this.connection.settings,
-                    isOpen: true
-                });
+                this.engine.io.emit('connection:change', this.connectionOptions, true);
             }
 
             callback && callback();
@@ -859,18 +854,11 @@ class GrblController {
         // Clear initialized flag
         this.initialized = false;
 
-        this.emit('connection:close', {
-            type: this.connection.type,
-            settings: this.connection.settings
-        });
+        this.emit('connection:close', this.connectionOptions);
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('connection:change', {
-                type: this.connection.type,
-                settings: this.connection.settings,
-                isOpen: false
-            });
+            this.engine.io.emit('connection:change', this.connectionOptions, false);
         }
 
         this.connection.removeAllListeners();
@@ -890,11 +878,7 @@ class GrblController {
 
         // Connection
         if (this.isOpen) {
-            socket.emit('connection:open', {
-                ident: this.connection.ident,
-                type: this.connection.type,
-                settings: this.connection.settings
-            });
+            socket.emit('connection:open', this.connectionOptions);
         }
 
         // Controller settings
@@ -1240,7 +1224,7 @@ class GrblController {
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
-        this.emit('connection:write', data, context);
+        this.emit('connection:write', this.connectionOptions, data, context);
         this.connection.write(data);
         log.silly(`> ${data}`);
 

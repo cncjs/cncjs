@@ -93,7 +93,7 @@ class ConsoleWidget extends PureComponent {
             this.setState({ ...initialState });
             this.actions.clearAll();
         },
-        'connection:write': (data, context) => {
+        'connection:write': (options, data, context) => {
             if (context && (context.__sender__ === this.props.widgetId)) {
                 // Do not write to the terminal console if the sender is the widget itself
                 return;
@@ -110,7 +110,7 @@ class ConsoleWidget extends PureComponent {
             data = data.replace(/\r?\n/g, '\r\n');
             this.terminal.write(data);
         },
-        'connection:read': (data) => {
+        'connection:read': (options, data) => {
             if (!this.terminal) {
                 return;
             }
