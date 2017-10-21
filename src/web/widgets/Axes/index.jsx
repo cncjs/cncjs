@@ -146,7 +146,7 @@ class AxesWidget extends PureComponent {
             return toUnits(units, customDistance);
         },
         setWorkOffsets: (axis, value) => {
-            const wcs = controller.getWorkCoordinateSystem();
+            const { wcs } = controller.getModalState();
             const p = {
                 'G54': 1,
                 'G55': 2,

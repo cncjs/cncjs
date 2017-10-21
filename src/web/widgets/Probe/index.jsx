@@ -138,7 +138,7 @@ class ProbeWidget extends PureComponent {
                 touchPlateHeight,
                 retractionDistance
             } = this.state;
-            const wcs = controller.getWorkCoordinateSystem();
+            const { wcs } = controller.getModalState();
             const mapWCSToP = (wcs) => ({
                 'G54': 1,
                 'G55': 2,

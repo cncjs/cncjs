@@ -625,6 +625,7 @@ class VisualizerWidget extends PureComponent {
 
                 this.setState(state => ({
                     units: units,
+                    wcs: modal.wcs || state.wcs,
                     controller: {
                         ...state.controller,
                         type: type,
@@ -650,6 +651,7 @@ class VisualizerWidget extends PureComponent {
 
                 this.setState(state => ({
                     units: units,
+                    wcs: modal.wcs || state.wcs,
                     controller: {
                         ...state.controller,
                         type: type,
@@ -675,6 +677,7 @@ class VisualizerWidget extends PureComponent {
 
                 this.setState(state => ({
                     units: units,
+                    wcs: modal.wcs || state.wcs,
                     controller: {
                         ...state.controller,
                         type: type,
@@ -740,6 +743,7 @@ class VisualizerWidget extends PureComponent {
     getInitialState() {
         return {
             units: METRIC_UNITS,
+            wcs: 'G54', // Work Coordinate System (G54 through G59)
             controller: {
                 type: controller.type,
                 settings: controller.settings,

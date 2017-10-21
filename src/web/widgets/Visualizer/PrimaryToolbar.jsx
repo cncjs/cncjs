@@ -191,12 +191,11 @@ class PrimaryToolbar extends PureComponent {
     }
     render() {
         const { state, actions } = this.props;
-        const { units, disabled, gcode, projection, objects } = state;
+        const { units, wcs, disabled, gcode, projection, objects } = state;
         const controllerType = this.renderControllerType();
         const controllerState = this.renderControllerState();
         const canSendCommand = this.canSendCommand();
         const canToggleOptions = Detector.webgl && !disabled;
-        const wcs = controller.getWorkCoordinateSystem();
 
         return (
             <div>
