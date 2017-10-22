@@ -9,13 +9,18 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 
 ## Features
 
-* Supported CNC controllers
-    - [Grbl](https://github.com/gnea/grbl) and [Grbl-Mega](https://github.com/gnea/grbl-Mega)
+* Serial and TCP socket connection
+    - Serial connection over USB (for all controllers)
+    - TCP socket connection over Ethernet (for Smoothieware only)
+* Supported controllers
+    - [Grbl](https://github.com/gnea/grbl)
+    - [Grbl-Mega](https://github.com/gnea/grbl-Mega)
     - [Smoothieware](https://github.com/Smoothieware/Smoothieware)
-    - [TinyG](https://github.com/synthetos/TinyG) and [g2core](https://github.com/synthetos/g2)
+    - [TinyG](https://github.com/synthetos/TinyG)
+    - [g2core](https://github.com/synthetos/g2)
 * [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cncjs/cncjs/wiki/Desktop-App)
 * 3D Visualizer
-* Allows multiple clients using the same serial port
+* Simultaneously communicate with multiple clients
 * Responsive view for small screen display with device width less than 720px
     - <i>Safari on an iPhone 5S</i> [\[1\]](https://cloud.githubusercontent.com/assets/447801/15633749/b817cd4a-25e7-11e6-9beb-600c65ea1324.PNG) [\[2\]](https://cloud.githubusercontent.com/assets/447801/15633750/b819b5f6-25e7-11e6-8bfe-d3e6247e443b.PNG)
 * Customizable workspace
