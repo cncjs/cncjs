@@ -173,7 +173,7 @@ class ConnectionWidget extends PureComponent {
 
     componentDidMount() {
         this.addControllerEvents();
-        this.refresh();
+        this.refresh({ autoConnect: true });
     }
     componentWillUnmount() {
         this.removeControllerEvents();
@@ -224,11 +224,13 @@ class ConnectionWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            loading: false,
-            connecting: false,
-            connected: false,
             ports: [],
             baudRates: defaultBaudRates,
+            alertMessage: '',
+            autoReconnect: this.config.get('autoReconnect'),
+            connecting: false,
+            connected: false,
+            loading: false,
             controller: {
                 type: this.config.get('controller.type')
             },
@@ -242,10 +244,7 @@ class ConnectionWidget extends PureComponent {
                     host: this.config.get('connection.socket.host'),
                     port: this.config.get('connection.socket.port')
                 }
-            },
-            autoReconnect: this.config.get('autoReconnect'),
-            hasReconnected: false,
-            alertMessage: ''
+            }
         };
     }
     addControllerEvents() {
@@ -260,7 +259,9 @@ class ConnectionWidget extends PureComponent {
             controller.removeListener(eventName, callback);
         });
     }
-    async refresh() {
+    async refresh(options) {
+        const { autoConnect = false } = { ...options };
+
         let loadingTimer = null;
 
         // Start loading
@@ -310,12 +311,7 @@ class ConnectionWidget extends PureComponent {
                     }
                 }));
 
-                const { autoReconnect, hasReconnected } = this.state;
-                if (autoReconnect && !hasReconnected) {
-                    this.setState(state => ({
-                        hasReconnected: true
-                    }));
-
+                if (this.state.autoReconnect && autoConnect) {
                     this.openPort(path);
                 }
             } else {
