@@ -10,6 +10,7 @@ import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
+import promisify from '../../lib/promisify';
 import WidgetConfig from '../WidgetConfig';
 import Connection from './Connection';
 import styles from './index.styl';
@@ -101,41 +102,6 @@ class ConnectionWidget extends PureComponent {
     };
 
     controllerEvents = {
-        'ports': (ports) => {
-            log.debug('Received a list of serial ports:', ports);
-
-            this.stopLoading();
-
-            const path = this.config.get('connection.serial.path');
-
-            if (includes(map(ports, 'comName'), path)) {
-                this.setState(state => ({
-                    alertMessage: '',
-                    ports: ports,
-                    connection: {
-                        ...state.connection,
-                        serial: {
-                            ...state.connection.serial,
-                            path: path
-                        }
-                    }
-                }));
-
-                const { autoReconnect, hasReconnected } = this.state;
-                if (autoReconnect && !hasReconnected) {
-                    this.setState(state => ({
-                        hasReconnected: true
-                    }));
-
-                    this.openPort(path);
-                }
-            } else {
-                this.setState(state => ({
-                    alertMessage: '',
-                    ports: ports
-                }));
-            }
-        },
         'connection:open': (options) => {
             const { type, settings } = options;
 
@@ -294,62 +260,41 @@ class ConnectionWidget extends PureComponent {
             controller.removeListener(eventName, callback);
         });
     }
-    startLoading() {
-        const delay = 5 * 1000; // wait for 5 seconds
+    async refresh() {
+        let loadingTimer = null;
 
+        // Start loading
         this.setState(state => ({
             loading: true
         }));
-        this._loadingTimer = setTimeout(() => {
+
+        // Create a timer to stop loading
+        const delay = 5000; // up to 5 seconds
+        loadingTimer = setTimeout(() => {
+            loadingTimer = null;
+
             this.setState(state => ({
                 loading: false
             }));
         }, delay);
-    }
-    stopLoading() {
-        if (this._loadingTimer) {
-            clearTimeout(this._loadingTimer);
-            this._loadingTimer = null;
-        }
-        this.setState(state => ({
-            loading: false
-        }));
-    }
-    fetchBaudRates() {
-        return new Promise((resolve, reject) => {
-            controller.getBaudRates((err, baudRates) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
 
-                resolve(baudRates);
-            });
+        const fetchBaudRates = promisify(controller.getBaudRates, {
+            errorFirst: true,
+            thisArg: controller
         });
-    }
-    fetchPorts() {
-        return new Promise((resolve, reject) => {
-            controller.getPorts((err, ports) => {
-                if (err) {
-                    reject(err);
-                    return;
-                }
-
-                resolve(ports);
-            });
+        const fetchPorts = promisify(controller.getPorts, {
+            errorFirst: true,
+            thisArg: controller
         });
-    }
-    async refresh() {
-        this.startLoading();
 
         try {
-            const baudRates = await this.fetchBaudRates();
+            const baudRates = await fetchBaudRates();
             log.debug('Received a list of supported baud rates:', baudRates);
             this.setState(state => ({
                 baudRates: reverse(sortBy(uniq(baudRates.concat(state.baudRates))))
             }));
 
-            const ports = await this.fetchPorts();
+            const ports = await fetchPorts();
             log.debug('Received a list of available serial ports:', ports);
             const path = this.config.get('connection.serial.path');
             if (includes(map(ports, 'comName'), path)) {
@@ -383,27 +328,32 @@ class ConnectionWidget extends PureComponent {
             log.error(err);
         }
 
-        this.stopLoading();
+        // Stop loading
+        if (loadingTimer) {
+            clearTimeout(loadingTimer);
+            loadingTimer = null;
+        }
+        this.setState(state => ({
+            loading: false
+        }));
     }
     openPort(path, baudRate) {
+        const controllerType = this.state.controller.type;
+        const connectionType = this.state.connection.type;
+        const options = {
+            path: path || this.state.connection.serial.path,
+            baudRate: baudRate || this.state.connection.serial.baudRate
+        };
+
         this.setState(state => ({
             connecting: true
         }));
 
-        path = path || this.state.connection.serial.path;
-        baudRate = baudRate || this.state.connection.serial.baudRate;
-
-        const controllerType = this.state.controller.type;
-        const connectionType = this.state.connection.type;
-        const options = {
-            path: path,
-            baudRate: baudRate
-        };
         controller.open(controllerType, connectionType, options, (err) => {
             if (err) {
                 log.error(err);
                 this.setState(state => ({
-                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: path }),
+                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: options.path }),
                     connecting: false,
                     connected: false
                 }));
@@ -416,6 +366,7 @@ class ConnectionWidget extends PureComponent {
             connecting: false,
             connected: false
         }));
+
         controller.close(err => {
             if (err) {
                 log.error(err);
