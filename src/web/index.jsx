@@ -119,6 +119,8 @@ series([
         const { type, payload } = { ...action };
         if (type === 'connect') {
             pubsub.publish('message:connect', payload);
+        } else if (type === 'resize') {
+            pubsub.publish('message:resize', payload);
         } else {
             log.warn(`No valid action type (${type}) specified in the message.`);
         }
