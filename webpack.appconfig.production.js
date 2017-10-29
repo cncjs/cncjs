@@ -1,4 +1,3 @@
-/* eslint no-var: 0 */
 /* eslint prefer-arrow-callback: 0 */
 const crypto = require('crypto');
 const fs = require('fs');
