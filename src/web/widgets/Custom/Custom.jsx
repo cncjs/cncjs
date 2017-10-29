@@ -6,6 +6,7 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import store from '../../store';
 import Iframe from '../../components/Iframe';
+import ResizeObserver from '../../lib/ResizeObserver';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -22,7 +23,6 @@ class Custom extends PureComponent {
     pubsubTokens = [];
     iframe = null;
     observer = null;
-    timer = null;
 
     componentDidMount() {
         this.subscribe();
@@ -40,17 +40,6 @@ class Custom extends PureComponent {
                 port: controller.port,
                 controller: controller.type
             });
-
-            // Detect iframe content height change every 100ms, but shorter than 2000ms
-            this.timer = setInterval(() => {
-                this.resize();
-            }, 100);
-            setTimeout(() => {
-                if (this.timer) {
-                    clearInterval(this.timer);
-                    this.timer = null;
-                }
-            }, 2000);
         }
     }
     subscribe() {
@@ -61,6 +50,10 @@ class Custom extends PureComponent {
                     port: controller.port,
                     controller: controller.type
                 });
+            }),
+            pubsub.subscribe('message:resize', (type, payload) => {
+                const { scrollHeight } = { ...payload };
+                this.resize({ height: scrollHeight });
             })
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
@@ -105,24 +98,35 @@ class Custom extends PureComponent {
             }
         }
     }
-    resize() {
+    resize(options) {
         if (!this.iframe) {
             return;
         }
 
-        try {
-            const target = this.iframe.contentDocument.body;
-            if (!target) {
-                return;
-            }
+        let { width = 0, height = 0 } = { ...options };
+        width = Number(width) || 0;
+        height = Number(height) || 0;
 
-            // Recalculate the height of the content
+        if (!height) {
+            try {
+                const target = this.iframe.contentDocument.body;
+                if (target) {
+                    height = target.scrollHeight;
+                }
+            } catch (err) {
+                // Catch DOMException when accessing the 'contentDocument' property from a cross-origin frame
+            }
+        }
+
+        if (width > 0) {
+            // Recalculate the width
+            this.iframe.style.width = 0;
+            this.iframe.style.width = `${width}px`;
+        }
+        if (height > 0) {
+            // Recalculate the height
             this.iframe.style.height = 0;
-            const nextHeight = target.scrollHeight;
-            this.iframe.style.height = `${nextHeight}px`;
-        } catch (err) {
-            // Catch DOMException when accessing the 'contentDocument' property from a cross-origin frame
-            log.error(err);
+            this.iframe.style.height = `${height}px`;
         }
     }
     render() {
@@ -163,27 +167,17 @@ class Custom extends PureComponent {
                     }
 
                     this.iframe = ReactDOM.findDOMNode(node);
+
+                    // Use ResizeObserver to detect DOM changes within the iframe window
                     this.iframe.addEventListener('load', () => {
                         try {
                             const target = this.iframe.contentDocument.body;
-                            const config = {
-                                attributes: true,
-                                attributeOldValue: false,
-                                characterData: true,
-                                characterDataOldValue: false,
-                                childList: true,
-                                subtree: true
-                            };
-
-                            this.resize();
-
-                            this.observer = new MutationObserver(mutations => {
+                            this.observer = new ResizeObserver(() => {
                                 this.resize();
                             });
-                            this.observer.observe(target, config);
+                            this.observer.observe(target);
                         } catch (err) {
                             // Catch DOMException when accessing the 'contentDocument' property from a cross-origin frame
-                            log.error(err);
                         }
                     });
                 }}
