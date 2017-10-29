@@ -8,6 +8,7 @@ import store from '../../store';
 import Iframe from '../../components/Iframe';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import styles from './index.styl';
 
 class Custom extends PureComponent {
@@ -95,18 +96,33 @@ class Custom extends PureComponent {
                 .addQueryParam('token', token)
                 .toString();
 
-            // Reload
-            this.iframe.contentWindow.location.reload(forceGet);
+            try {
+                // Reload
+                this.iframe.contentWindow.location.reload(forceGet);
+            } catch (err) {
+                // Catch DOMException when accessing the 'contentDocument' property from a cross-origin frame
+                log.error(err);
+            }
         }
     }
     resize() {
-        if (this.iframe) {
+        if (!this.iframe) {
+            return;
+        }
+
+        try {
             const target = this.iframe.contentDocument.body;
+            if (!target) {
+                return;
+            }
 
             // Recalculate the height of the content
             this.iframe.style.height = 0;
             const nextHeight = target.scrollHeight;
             this.iframe.style.height = `${nextHeight}px`;
+        } catch (err) {
+            // Catch DOMException when accessing the 'contentDocument' property from a cross-origin frame
+            log.error(err);
         }
     }
     render() {
@@ -148,22 +164,27 @@ class Custom extends PureComponent {
 
                     this.iframe = ReactDOM.findDOMNode(node);
                     this.iframe.addEventListener('load', () => {
-                        const target = this.iframe.contentDocument.body;
-                        const config = {
-                            attributes: true,
-                            attributeOldValue: false,
-                            characterData: true,
-                            characterDataOldValue: false,
-                            childList: true,
-                            subtree: true
-                        };
+                        try {
+                            const target = this.iframe.contentDocument.body;
+                            const config = {
+                                attributes: true,
+                                attributeOldValue: false,
+                                characterData: true,
+                                characterDataOldValue: false,
+                                childList: true,
+                                subtree: true
+                            };
 
-                        this.resize();
-
-                        this.observer = new MutationObserver(mutations => {
                             this.resize();
-                        });
-                        this.observer.observe(target, config);
+
+                            this.observer = new MutationObserver(mutations => {
+                                this.resize();
+                            });
+                            this.observer.observe(target, config);
+                        } catch (err) {
+                            // Catch DOMException when accessing the 'contentDocument' property from a cross-origin frame
+                            log.error(err);
+                        }
                     });
                 }}
                 src={iframeSrc}
