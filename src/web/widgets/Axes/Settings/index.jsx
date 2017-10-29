@@ -125,15 +125,16 @@ class Settings extends PureComponent {
                         onClick={event => {
                             const { general } = this.node;
 
-                            general.form.validateAll();
-                            if (Object.keys(general.form.state.errors).length > 0) {
-                                return;
-                            }
+                            general.form.validate(err => {
+                                if (err) {
+                                    return;
+                                }
 
-                            this.save();
+                                this.save();
 
-                            // Update parent state
-                            this.props.onSave(event);
+                                // Update parent state
+                                this.props.onSave(event);
+                            });
                         }}
                     >
                         {i18n._('Save Changes')}

@@ -2,11 +2,12 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Form, Input, Textarea } from '../../../components/Validation';
 import Modal from '../../../components/Modal';
 import { ToastNotification } from '../../../components/Notifications';
 import ToggleSwitch from '../../../components/ToggleSwitch';
 import i18n from '../../../lib/i18n';
-import Validation from '../../../lib/react-validation';
+import * as validations from '../../../lib/validations';
 import styles from '../form.styl';
 
 class UpdateRecord extends PureComponent {
@@ -22,10 +23,16 @@ class UpdateRecord extends PureComponent {
     };
 
     get value() {
+        const {
+            title,
+            commands
+        } = this.form.getValues();
+
+
         return {
             enabled: !!_.get(this.fields.enabled, 'state.checked'),
-            title: _.get(this.fields.title, 'state.value'),
-            commands: _.get(this.fields.commands, 'state.value')
+            title: title,
+            commands: commands
         };
     }
     render() {
@@ -64,7 +71,7 @@ class UpdateRecord extends PureComponent {
                         {alertMessage}
                     </ToastNotification>
                     }
-                    <Validation.components.Form
+                    <Form
                         ref={node => {
                             this.form = node;
                         }}
@@ -87,10 +94,7 @@ class UpdateRecord extends PureComponent {
                             </div>
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Title')}</label>
-                                <Validation.components.Input
-                                    ref={node => {
-                                        this.fields.title = node;
-                                    }}
+                                <Input
                                     type="text"
                                     name="title"
                                     value={title}
@@ -99,15 +103,12 @@ class UpdateRecord extends PureComponent {
                                         styles.formControl,
                                         styles.short
                                     )}
-                                    validations={['required']}
+                                    validations={[validations.required]}
                                 />
                             </div>
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Commands')}</label>
-                                <Validation.components.Textarea
-                                    ref={node => {
-                                        this.fields.commands = node;
-                                    }}
+                                <Textarea
                                     name="commands"
                                     value={commands}
                                     rows="5"
@@ -116,11 +117,11 @@ class UpdateRecord extends PureComponent {
                                         styles.formControl,
                                         styles.long
                                     )}
-                                    validations={['required']}
+                                    validations={[validations.required]}
                                 />
                             </div>
                         </div>
-                    </Validation.components.Form>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
@@ -134,17 +135,17 @@ class UpdateRecord extends PureComponent {
                         type="button"
                         className="btn btn-primary"
                         onClick={() => {
-                            this.form.validateAll();
+                            this.form.validate(err => {
+                                if (err) {
+                                    return;
+                                }
 
-                            if (Object.keys(this.form.state.errors).length > 0) {
-                                return;
-                            }
+                                const { id } = modal.params;
+                                const { enabled, title, commands } = this.value;
+                                const forceReload = true;
 
-                            const { id } = modal.params;
-                            const { enabled, title, commands } = this.value;
-                            const forceReload = true;
-
-                            actions.updateRecord(id, { enabled, title, commands }, forceReload);
+                                actions.updateRecord(id, { enabled, title, commands }, forceReload);
+                            });
                         }}
                     >
                         {i18n._('OK')}

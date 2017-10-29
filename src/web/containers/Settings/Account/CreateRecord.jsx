@@ -2,11 +2,12 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Form, Input } from '../../../components/Validation';
 import Modal from '../../../components/Modal';
 import { ToastNotification } from '../../../components/Notifications';
 import ToggleSwitch from '../../../components/ToggleSwitch';
 import i18n from '../../../lib/i18n';
-import Validation from '../../../lib/react-validation';
+import * as validations from '../../../lib/validations';
 import styles from '../form.styl';
 
 class CreateRecord extends PureComponent {
@@ -22,12 +23,18 @@ class CreateRecord extends PureComponent {
     };
 
     get value() {
+        const {
+            name,
+            password
+        } = this.form.getValues();
+
         return {
             enabled: !!_.get(this.fields.enabled, 'state.checked'),
-            name: _.get(this.fields.name, 'state.value'),
-            password: _.get(this.fields.password, 'state.value')
+            name: name,
+            password: password
         };
     }
+
     render() {
         const { state, actions } = this.props;
         const { modal } = state;
@@ -59,7 +66,7 @@ class CreateRecord extends PureComponent {
                         {alertMessage}
                     </ToastNotification>
                     }
-                    <Validation.components.Form
+                    <Form
                         ref={node => {
                             this.form = node;
                         }}
@@ -82,7 +89,7 @@ class CreateRecord extends PureComponent {
                             </div>
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Name')}</label>
-                                <Validation.components.Input
+                                <Input
                                     ref={node => {
                                         this.fields.name = node;
                                     }}
@@ -94,12 +101,12 @@ class CreateRecord extends PureComponent {
                                         styles.formControl,
                                         styles.short
                                     )}
-                                    validations={['required']}
+                                    validations={[validations.required]}
                                 />
                             </div>
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Password')}</label>
-                                <Validation.components.Input
+                                <Input
                                     ref={node => {
                                         this.fields.password = node;
                                     }}
@@ -111,25 +118,25 @@ class CreateRecord extends PureComponent {
                                         styles.formControl,
                                         styles.short
                                     )}
-                                    validations={['required', 'password']}
+                                    validations={[validations.required, validations.password]}
                                 />
                             </div>
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Confirm Password')}</label>
-                                <Validation.components.Input
+                                <Input
                                     type="password"
-                                    name="passwordConfirm"
+                                    name="confirm"
                                     value=""
                                     className={classNames(
                                         'form-control',
                                         styles.formControl,
                                         styles.short
                                     )}
-                                    validations={['required']}
+                                    validations={[validations.required]}
                                 />
                             </div>
                         </div>
-                    </Validation.components.Form>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
@@ -143,15 +150,15 @@ class CreateRecord extends PureComponent {
                         type="button"
                         className="btn btn-primary"
                         onClick={(event) => {
-                            this.form.validateAll();
+                            this.form.validate(err => {
+                                if (err) {
+                                    return;
+                                }
 
-                            if (Object.keys(this.form.state.errors).length > 0) {
-                                return;
-                            }
+                                const { enabled, name, password } = this.value;
 
-                            const { enabled, name, password } = this.value;
-
-                            actions.createRecord({ enabled, name, password });
+                                actions.createRecord({ enabled, name, password });
+                            });
                         }}
                     >
                         {i18n._('OK')}
