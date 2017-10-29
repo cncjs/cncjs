@@ -1,12 +1,12 @@
-import get from 'lodash/get';
 import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import i18n from '../../lib/i18n';
 import Modal from '../../components/Modal';
-import Validation from '../../lib/react-validation';
+import { Form, Input, Textarea } from '../../components/Validation';
+import i18n from '../../lib/i18n';
+import * as validations from '../../lib/validations';
 import insertAtCaret from './insertAtCaret';
 import variables from './variables';
 import styles from './index.styl';
@@ -16,10 +16,23 @@ class AddMacro extends PureComponent {
         state: PropTypes.object,
         actions: PropTypes.object
     };
+
     fields = {
         name: null,
         content: null
     };
+
+    get value() {
+        const {
+            name,
+            content
+        } = this.form.getValues();
+
+        return {
+            name: name,
+            content: content
+        };
+    }
 
     render() {
         const { state, actions } = this.props;
@@ -36,7 +49,7 @@ class AddMacro extends PureComponent {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Validation.components.Form
+                    <Form
                         ref={c => {
                             this.form = c;
                         }}
@@ -46,17 +59,15 @@ class AddMacro extends PureComponent {
                     >
                         <div className="form-group">
                             <label>{i18n._('Macro Name')}</label>
-                            <Validation.components.Input
+                            <Input
                                 ref={c => {
                                     this.fields.name = c;
                                 }}
                                 type="text"
                                 className="form-control"
-                                errorClassName="is-invalid-input"
-                                containerClassName=""
                                 name="name"
                                 value=""
-                                validations={['required']}
+                                validations={[validations.required]}
                             />
                         </div>
                         <div className="form-group">
@@ -114,20 +125,18 @@ class AddMacro extends PureComponent {
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </div>
-                            <Validation.components.Textarea
+                            <Textarea
                                 ref={c => {
                                     this.fields.content = c;
                                 }}
                                 rows="10"
                                 className="form-control"
-                                errorClassName="is-invalid-input"
-                                containerClassName=""
                                 name="content"
                                 value={content}
-                                validations={['required']}
+                                validations={[validations.required]}
                             />
                         </div>
-                    </Validation.components.Form>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
@@ -141,17 +150,16 @@ class AddMacro extends PureComponent {
                         type="button"
                         className="btn btn-primary"
                         onClick={() => {
-                            this.form.validateAll();
+                            this.form.validate(err => {
+                                if (err) {
+                                    return;
+                                }
 
-                            if (Object.keys(this.form.state.errors).length > 0) {
-                                return;
-                            }
+                                const { name, content } = this.value;
 
-                            const name = get(this.fields.name, 'state.value');
-                            const content = get(this.fields.content, 'state.value');
-
-                            actions.addMacro({ name, content });
-                            actions.closeModal();
+                                actions.addMacro({ name, content });
+                                actions.closeModal();
+                            });
                         }}
                     >
                         {i18n._('OK')}

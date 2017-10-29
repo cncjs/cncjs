@@ -3,11 +3,12 @@ import includes from 'lodash/includes';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Form, Select, Textarea } from '../../../components/Validation';
 import Modal from '../../../components/Modal';
 import { ToastNotification } from '../../../components/Notifications';
 import ToggleSwitch from '../../../components/ToggleSwitch';
 import i18n from '../../../lib/i18n';
-import Validation from '../../../lib/react-validation';
+import * as validations from '../../../lib/validations';
 import styles from '../form.styl';
 
 const SYSTEM_EVENTS = [
@@ -31,11 +32,17 @@ class UpdateRecord extends PureComponent {
     };
 
     get value() {
+        const {
+            event,
+            trigger,
+            commands
+        } = this.form.getValues();
+
         return {
             enabled: !!get(this.fields.enabled, 'state.checked'),
-            event: get(this.fields.event, 'state.value'),
-            trigger: get(this.fields.trigger, 'state.value'),
-            commands: get(this.fields.commands, 'state.value')
+            event: event,
+            trigger: trigger,
+            commands: commands
         };
     }
     render() {
@@ -81,7 +88,7 @@ class UpdateRecord extends PureComponent {
                         {modal.params.alertMessage}
                     </ToastNotification>
                     }
-                    <Validation.components.Form
+                    <Form
                         ref={node => {
                             this.form = node;
                         }}
@@ -104,10 +111,7 @@ class UpdateRecord extends PureComponent {
                             </div>
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Event')}</label>
-                                <Validation.components.Select
-                                    ref={node => {
-                                        this.fields.event = node;
-                                    }}
+                                <Select
                                     name="event"
                                     value={modal.params.event}
                                     className={classNames(
@@ -126,7 +130,7 @@ class UpdateRecord extends PureComponent {
                                             trigger: trigger
                                         });
                                     }}
-                                    validations={['required']}
+                                    validations={[validations.required]}
                                 >
                                     <option value="">{i18n._('Choose an event')}</option>
                                     <option value="startup">{i18n._('Startup (System only)')}</option>
@@ -144,14 +148,11 @@ class UpdateRecord extends PureComponent {
                                     <option value="sleep">{i18n._('Sleep')}</option>
                                     <option value="macro:run">{i18n._('Run Macro')}</option>
                                     <option value="macro:load">{i18n._('Load Macro')}</option>
-                                </Validation.components.Select>
+                                </Select>
                             </div>
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Trigger')}</label>
-                                <Validation.components.Select
-                                    ref={node => {
-                                        this.fields.trigger = node;
-                                    }}
+                                <Select
                                     name="trigger"
                                     value={modal.params.trigger}
                                     className={classNames(
@@ -166,19 +167,16 @@ class UpdateRecord extends PureComponent {
                                             trigger: value
                                         });
                                     }}
-                                    validations={['required']}
+                                    validations={[validations.required]}
                                 >
                                     <option value="">{i18n._('Choose an trigger')}</option>
                                     <option value="system">{i18n._('System')}</option>
                                     <option value="gcode">{i18n._('G-code')}</option>
-                                </Validation.components.Select>
+                                </Select>
                             </div>
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Commands')}</label>
-                                <Validation.components.Textarea
-                                    ref={node => {
-                                        this.fields.commands = node;
-                                    }}
+                                <Textarea
                                     name="commands"
                                     value={modal.params.commands}
                                     rows="5"
@@ -188,11 +186,11 @@ class UpdateRecord extends PureComponent {
                                         styles.long
                                     )}
                                     placeholder={sampleCommands}
-                                    validations={['required']}
+                                    validations={[validations.required]}
                                 />
                             </div>
                         </div>
-                    </Validation.components.Form>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
@@ -206,17 +204,17 @@ class UpdateRecord extends PureComponent {
                         type="button"
                         className="btn btn-primary"
                         onClick={() => {
-                            this.form.validateAll();
+                            this.form.validate(err => {
+                                if (err) {
+                                    return;
+                                }
 
-                            if (Object.keys(this.form.state.errors).length > 0) {
-                                return;
-                            }
+                                const { id } = modal.params;
+                                const { enabled, event, trigger, commands } = this.value;
+                                const forceReload = true;
 
-                            const { id } = modal.params;
-                            const { enabled, event, trigger, commands } = this.value;
-                            const forceReload = true;
-
-                            actions.updateRecord(id, { enabled, event, trigger, commands }, forceReload);
+                                actions.updateRecord(id, { enabled, event, trigger, commands }, forceReload);
+                            });
                         }}
                     >
                         {i18n._('OK')}

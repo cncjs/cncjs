@@ -1,9 +1,9 @@
-import get from 'lodash/get';
 import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Form, Textarea } from '../../../components/Validation';
 import i18n from '../../../lib/i18n';
-import Validation from '../../../lib/react-validation';
+import * as validations from '../../../lib/validations';
 
 class General extends PureComponent {
     static propTypes = {
@@ -26,16 +26,21 @@ class General extends PureComponent {
     };
 
     get value() {
+        const {
+            wzero,
+            mzero
+        } = this.form.getValues();
+
         const axes = [];
-        this.fields.axisX.checked && axes.push('x');
-        this.fields.axisY.checked && axes.push('y');
+        axes.push('x');
+        axes.push('y');
         this.fields.axisZ.checked && axes.push('z');
         this.fields.axisA.checked && axes.push('a');
 
         return {
             axes: axes,
-            wzero: get(this.fields.wzero, 'state.value'),
-            mzero: get(this.fields.mzero, 'state.value')
+            wzero: wzero,
+            mzero: mzero
         };
     }
     render() {
@@ -103,7 +108,7 @@ class General extends PureComponent {
                     </div>
                 </div>
                 <div className="form-group">
-                    <Validation.components.Form
+                    <Form
                         ref={node => {
                             this.form = node;
                         }}
@@ -114,33 +119,27 @@ class General extends PureComponent {
                         <label><strong>{i18n._('Custom Commands')}</strong></label>
                         <div style={{ marginBottom: 10 }}>
                             <label>{i18n._('Go To Work Zero')}</label>
-                            <Validation.components.Textarea
-                                ref={node => {
-                                    this.fields.wzero = node;
-                                }}
-                                className="form-control"
-                                rows="2"
+                            <Textarea
                                 name="wzero"
                                 value={wzero}
+                                rows="2"
+                                className="form-control"
                                 placeholder="G0 X0 Y0 Z0"
-                                validations={['required']}
+                                validations={[validations.required]}
                             />
                         </div>
                         <div>
                             <label>{i18n._('Go To Machine Zero')}</label>
-                            <Validation.components.Textarea
-                                ref={node => {
-                                    this.fields.mzero = node;
-                                }}
-                                className="form-control"
-                                rows="2"
+                            <Textarea
                                 name="mzero"
                                 value={mzero}
+                                rows="2"
+                                className="form-control"
                                 placeholder="G53 G0 X0 Y0 Z0"
-                                validations={['required']}
+                                validations={[validations.required]}
                             />
                         </div>
-                    </Validation.components.Form>
+                    </Form>
                 </div>
             </div>
         );

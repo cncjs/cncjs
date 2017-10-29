@@ -7,9 +7,10 @@ import ReactDOM from 'react-dom';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
+import { Form, Input, Textarea } from '../../components/Validation';
 import i18n from '../../lib/i18n';
 import portal from '../../lib/portal';
-import Validation from '../../lib/react-validation';
+import * as validations from '../../lib/validations';
 import insertAtCaret from './insertAtCaret';
 import variables from './variables';
 import styles from './index.styl';
@@ -19,10 +20,23 @@ class EditMacro extends PureComponent {
         state: PropTypes.object,
         actions: PropTypes.object
     };
+
     fields = {
         name: null,
         content: null
     };
+
+    get value() {
+        const {
+            name,
+            content
+        } = this.form.getValues();
+
+        return {
+            name: name,
+            content: content
+        };
+    }
 
     render() {
         const { state, actions } = this.props;
@@ -39,7 +53,7 @@ class EditMacro extends PureComponent {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Validation.components.Form
+                    <Form
                         ref={c => {
                             this.form = c;
                         }}
@@ -49,17 +63,15 @@ class EditMacro extends PureComponent {
                     >
                         <div className="form-group">
                             <label>{i18n._('Macro Name')}</label>
-                            <Validation.components.Input
+                            <Input
                                 ref={c => {
                                     this.fields.name = c;
                                 }}
                                 type="text"
                                 className="form-control"
-                                errorClassName="is-invalid-input"
-                                containerClassName=""
                                 name="name"
                                 value={name}
-                                validations={['required']}
+                                validations={[validations.required]}
                             />
                         </div>
                         <div className="form-group">
@@ -117,27 +129,25 @@ class EditMacro extends PureComponent {
                                     </Dropdown.Menu>
                                 </Dropdown>
                             </div>
-                            <Validation.components.Textarea
+                            <Textarea
                                 ref={c => {
                                     this.fields.content = c;
                                 }}
                                 rows="10"
                                 className="form-control"
-                                errorClassName="is-invalid-input"
-                                containerClassName=""
                                 name="content"
                                 value={content}
-                                validations={['required']}
+                                validations={[validations.required]}
                             />
                         </div>
-                    </Validation.components.Form>
+                    </Form>
                 </Modal.Body>
                 <Modal.Footer>
                     <button
                         type="button"
                         className="btn btn-danger pull-left"
                         onClick={() => {
-                            const name = get(this.fields.name, 'state.value');
+                            const name = get(this.fields.name, 'value');
 
                             portal(({ onClose }) => (
                                 <Modal onClose={onClose}>
@@ -186,21 +196,16 @@ class EditMacro extends PureComponent {
                         type="button"
                         className="btn btn-primary"
                         onClick={() => {
-                            if (Object.keys(this.form.state.errors).length > 0) {
-                                return;
-                            }
+                            this.form.validate(err => {
+                                if (err) {
+                                    return;
+                                }
 
-                            this.form.validateAll();
+                                const { name, content } = this.value;
 
-                            if (Object.keys(this.form.state.errors).length > 0) {
-                                return;
-                            }
-
-                            const name = get(this.fields.name, 'state.value');
-                            const content = get(this.fields.content, 'state.value');
-
-                            actions.updateMacro(id, { name, content });
-                            actions.closeModal();
+                                actions.updateMacro(id, { name, content });
+                                actions.closeModal();
+                            });
                         }}
                     >
                         {i18n._('Save Changes')}
