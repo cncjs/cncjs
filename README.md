@@ -145,7 +145,7 @@ pi@rpi3$ cnc -h
     $ cnc -vv
     $ cnc --mount /pendant:/home/pi/tinyweb
     $ cnc --mount /widget:~+/widget --mount /pendant:~/pendant
-    $ cnc --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/
+    $ cnc --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/
     $ cnc --watch-directory /home/pi/watch
     $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d
     $ cnc --allow-remote-access
