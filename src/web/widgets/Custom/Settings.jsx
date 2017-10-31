@@ -73,7 +73,7 @@ class Settings extends PureComponent {
                                 }}
                                 type="url"
                                 className="form-control"
-                                placeholder="/widget"
+                                placeholder="/widget/"
                                 defaultValue={url}
                             />
                         </div>

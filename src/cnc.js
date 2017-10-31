@@ -2,7 +2,6 @@
 /* eslint no-console: 0 */
 import path from 'path';
 import program from 'commander';
-import expandTilde from 'expand-tilde';
 import pkg from './package.json';
 
 // Defaults to 'production'
@@ -17,17 +16,17 @@ const parseMountPoint = (val, acc) => {
 
     const mount = {
         route: '/',
-        directory: val
+        target: val
     };
 
     if (val.indexOf(':') >= 0) {
         const r = val.match(/(?:([^:]*)(?::(.*)))/);
         mount.route = r[1];
-        mount.directory = r[2];
+        mount.target = r[2];
     }
 
-    mount.route = path.join('/', mount.route || ''); // path.join('/', 'pendant') => '/pendant'
-    mount.directory = expandTilde(mount.directory || ''); // expandTilde('~') => '/Users/<userhome>'
+    mount.route = path.join('/', mount.route || '').trim(); // path.join('/', 'pendant') => '/pendant'
+    mount.target = (mount.target || '').trim();
 
     acc.push(mount);
 
@@ -52,7 +51,7 @@ program
     .option('-b, --backlog <backlog>', 'Set listen backlog (default: 511)', 511)
     .option('-c, --config <filename>', 'Set config file (default: ~/.cncrc)')
     .option('-v, --verbose', 'Increase the verbosity level (-v, -vv, -vvv)', increaseVerbosityLevel, 0)
-    .option('-m, --mount <route-path>:<directory-path>', 'Add a mount point for serving static files', parseMountPoint, [])
+    .option('-m, --mount <route-path>:<target>', 'Add a mount point for serving static files', parseMountPoint, [])
     .option('-w, --watch-directory <path>', 'Watch a directory for changes')
     .option('--access-token-lifetime <lifetime>', 'Access token lifetime in seconds or a time span string (default: 30d)')
     .option('--allow-remote-access', 'Allow remote access to the server (default: false)')
@@ -64,7 +63,8 @@ program.on('--help', () => {
     console.log('');
     console.log('    $ cnc -vv');
     console.log('    $ cnc --mount /pendant:/home/pi/tinyweb');
-    console.log('    $ cnc --mount /widgets:~/widgets --mount /pendant:~/pendant');
+    console.log('    $ cnc --mount /widget:~+/widget --mount /pendant:~/pendant');
+    console.log('    $ cnc --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/');
     console.log('    $ cnc --watch-directory /home/pi/watch');
     console.log('    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d');
     console.log('    $ cnc --allow-remote-access');

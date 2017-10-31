@@ -3,18 +3,25 @@ import dns from 'dns';
 import fs from 'fs';
 import os from 'os';
 import path from 'path';
-import set from 'lodash/set';
-import size from 'lodash/size';
+import url from 'url';
 import bcrypt from 'bcrypt-nodejs';
 import chalk from 'chalk';
+import expandTilde from 'expand-tilde';
+import express from 'express';
+import httpProxy from 'http-proxy';
+import escapeRegExp from 'lodash/escapeRegExp';
+import set from 'lodash/set';
+import size from 'lodash/size';
+import trimEnd from 'lodash/trimEnd';
 import webappengine from 'webappengine';
+import settings from './config/settings';
 import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
 import config from './services/configstore';
 import ensureArray from './lib/ensure-array';
 import logger from './lib/logger';
-import settings from './config/settings';
+import urljoin from './lib/urljoin';
 
 const log = logger('init');
 
@@ -97,36 +104,97 @@ const createServer = (options, callback) => {
     const routes = [];
 
     ensureArray(options.mountPoints).forEach(mount => {
-        const { route = '', directory = '' } = mount;
-        const cjs = {
-            route: chalk.yellow(JSON.stringify(route)),
-            directory: chalk.yellow(JSON.stringify(directory))
-        };
-
-        log.info(`Mounting a directory ${cjs.directory} for the route ${cjs.route}`);
-
-        if (!route) {
-            log.error(`Must specify a valid route path ${cjs.route}.`);
-            return;
-        }
-        if (!directory) {
-            log.error(`The directory path ${cjs.directory} must not be empty.`);
-            return;
-        }
-        if (!path.isAbsolute(directory)) {
-            log.error(`The directory path ${cjs.directory} must be absolute.`);
-            return;
-        }
-        if (!fs.existsSync(directory)) {
-            log.error(`The directory path ${cjs.directory} does not exist.`);
+        if (!mount || !mount.route || mount.route === '/') {
+            log.error(`Must specify a valid route path ${JSON.stringify(mount.route)}.`);
             return;
         }
 
-        routes.push({
-            type: 'static',
-            route: route,
-            directory: directory
-        });
+        if (mount.target.match(/^(http|https):\/\//i)) {
+            log.info(`Starting a proxy server to proxy all requests starting with ${chalk.yellow(mount.route)} to ${chalk.yellow(mount.target)}`);
+
+            routes.push({
+                type: 'server',
+                route: mount.route,
+                server: (options) => {
+                    // route
+                    // > '/custom-widget/'
+                    // routeWithoutTrailingSlash
+                    // > '/custom-widget'
+                    // target
+                    // > 'https://cncjs.github.io/cncjs-widget-boilerplate/'
+                    // targetPathname
+                    // > '/cncjs-widget-boilerplate/'
+                    // proxyPathPattern
+                    // > RegExp('^/cncjs-widget-boilerplate/custom-widget')
+                    const { route = '/' } = { ...options };
+                    const routeWithoutTrailingSlash = trimEnd(route, '/');
+                    const target = mount.target;
+                    const targetPathname = url.parse(target).pathname;
+                    const proxyPathPattern = new RegExp('^' + escapeRegExp(urljoin(targetPathname, routeWithoutTrailingSlash)), 'i');
+
+                    log.debug(`> route=${chalk.yellow(route)}`);
+                    log.debug(`> routeWithoutTrailingSlash=${chalk.yellow(routeWithoutTrailingSlash)}`);
+                    log.debug(`> target=${chalk.yellow(target)}`);
+                    log.debug(`> targetPathname=${chalk.yellow(targetPathname)}`);
+                    log.debug(`> proxyPathPattern=RegExp(${chalk.yellow(proxyPathPattern)})`);
+
+                    const proxy = httpProxy.createProxyServer({
+                        // Change the origin of the host header to the target URL
+                        changeOrigin: true,
+
+                        // Do not verify the SSL certificate for self-signed certs
+                        //secure: false,
+
+                        target: target
+                    });
+
+                    proxy.on('proxyReq', (proxyReq, req, res, options) => {
+                        const originalPath = proxyReq.path || '';
+                        proxyReq.path = originalPath
+                            .replace(proxyPathPattern, targetPathname)
+                            .replace('//', '/');
+
+                        log.debug(`proxy.on('proxyReq'): modifiedPath=${chalk.yellow(proxyReq.path)}, originalPath=${chalk.yellow(originalPath)}`);
+                    });
+
+                    proxy.on('proxyRes', (proxyRes, req, res) => {
+                        log.debug(`proxy.on('proxyRes'): headers=${JSON.stringify(proxyRes.headers, true, 2)}`);
+                    });
+
+                    const app = express();
+                    app.all(urljoin(routeWithoutTrailingSlash, '*'), (req, res) => {
+                        log.debug(`proxy.web(): req.url=${chalk.yellow(req.url)}`);
+                        proxy.web(req, res);
+                    });
+
+                    return app;
+                }
+            });
+        } else {
+            // expandTilde('~') => '/Users/<userhome>'
+            const directory = expandTilde(mount.target || '').trim();
+
+            log.info(`Mounting a directory ${chalk.yellow(JSON.stringify(directory))} to serve requests starting with ${chalk.yellow(mount.route)}`);
+
+            if (!directory) {
+                log.error(`The directory path ${chalk.yellow(JSON.stringify(directory))} must not be empty.`);
+                return;
+            }
+            if (!path.isAbsolute(directory)) {
+                log.error(`The directory path ${chalk.yellow(JSON.stringify(directory))} must be absolute.`);
+                return;
+            }
+            if (!fs.existsSync(directory)) {
+                log.error(`The directory path ${chalk.yellow(JSON.stringify(directory))} does not exist.`);
+                return;
+            }
+
+            routes.push({
+                type: 'static',
+                route: mount.route,
+                directory: directory
+            });
+        }
     });
 
     routes.push({
@@ -160,7 +228,7 @@ const createServer = (options, callback) => {
             });
 
             if (address !== '0.0.0.0') {
-                log.info('Starting the server at ' + chalk.cyan(`http://${address}:${port}`));
+                log.info('Starting the server at ' + chalk.yellow(`http://${address}:${port}`));
                 return;
             }
 
@@ -171,7 +239,7 @@ const createServer = (options, callback) => {
                 }
 
                 addresses.forEach(({ address, family }) => {
-                    log.info('Starting the server at ' + chalk.cyan(`http://${address}:${port}`));
+                    log.info('Starting the server at ' + chalk.yellow(`http://${address}:${port}`));
                 });
             });
         })
