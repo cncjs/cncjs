@@ -4,6 +4,7 @@ import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
+import settings from '../../config/settings';
 import store from '../../store';
 import Iframe from '../../components/Iframe';
 import ResizeObserver from '../../lib/ResizeObserver';
@@ -69,6 +70,7 @@ class Custom extends PureComponent {
         const target = get(this.iframe, 'contentWindow');
         const message = {
             token: token,
+            version: settings.version,
             action: {
                 type: type,
                 payload: {

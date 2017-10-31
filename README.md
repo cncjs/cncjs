@@ -118,26 +118,29 @@ Run `cnc` to start the server, and visit `http://yourhostname:8000/` to view the
 pi@rpi3$ cnc -h
 
   Usage: cnc [options]
-  
+
+
   Options:
 
-    -h, --help                          output usage information
     -V, --version                       output the version number
-    -p, --port                          set listen port (default: 8000)
-    -l, --host                          set listen address or hostname (default: 0.0.0.0)
-    -b, --backlog                       set listen backlog (default: 511)
-    -c, --config <filename>             set config file (default: ~/.cncrc)
-    -v, --verbose                       increase the verbosity level
-    -m, --mount [<url>:]<path>          set the mount point for serving static files (default: /static:static)
-    -w, --watch-directory <path>        watch a directory for changes
-    --access-token-lifetime <lifetime>  access token lifetime in seconds or a time span string (default: 30d)
-    --allow-remote-access               allow remote access to the server
-    --controller <type>                 specify CNC controller: Grbl|Smoothie|TinyG|g2core (default: '')
+    -p, --port <port>                   Set listen port (default: 8000)
+    -H, --host <host>                   Set listen address or hostname (default: 0.0.0.0)
+    -b, --backlog <backlog>             Set listen backlog (default: 511)
+    -c, --config <filename>             Set config file (default: ~/.cncrc)
+    -v, --verbose                       Increase the verbosity level (-v, -vv, -vvv)
+    -m, --mount <route-path>:<target>   Add a mount point for serving static files
+    -w, --watch-directory <path>        Watch a directory for changes
+    --access-token-lifetime <lifetime>  Access token lifetime in seconds or a time span string (default: 30d)
+    --allow-remote-access               Allow remote access to the server (default: false)
+    --controller <type>                 Specify CNC controller: Grbl|Smoothie|TinyG|g2core (default: '')
+    -h, --help                          output usage information
 
   Examples:
 
     $ cnc -vv
     $ cnc --mount /pendant:/home/pi/tinyweb
+    $ cnc --mount /widget:~+/widget --mount /pendant:~/pendant
+    $ cnc --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/
     $ cnc --watch-directory /home/pi/watch
     $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d
     $ cnc --allow-remote-access
