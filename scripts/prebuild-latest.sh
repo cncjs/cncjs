@@ -5,7 +5,7 @@ abbrev_commit=`git log -1 --format=%h --abbrev=8`
 mkdir -p output
 rm -rf output/*
 
-npm run pkgsync
+npm run package-sync
 
 pushd src
 npm version ${npm_package_version}-latest-${abbrev_commit}

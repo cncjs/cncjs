@@ -3,7 +3,7 @@
 mkdir -p output
 rm -rf output/*
 
-npm run pkgsync
+npm run package-sync
 
 pushd src
 cp -af package.json ../output/
