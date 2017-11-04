@@ -162,9 +162,30 @@ const createServer = (options, callback) => {
                     });
 
                     const app = express();
+
+                    // Matched routes:
+                    //   /widget/
+                    //   /widget/v1/
                     app.all(urljoin(routeWithoutTrailingSlash, '*'), (req, res) => {
-                        log.debug(`proxy.web(): req.url=${chalk.yellow(req.url)}`);
+                        const url = req.url;
+                        log.debug(`proxy.web(): url=${chalk.yellow(url)}`);
                         proxy.web(req, res);
+                    });
+
+                    // Matched routes:
+                    //   /widget
+                    app.all(routeWithoutTrailingSlash, (req, res, next) => {
+                        const url = req.url;
+                        // Redirect URL with a trailing slash
+                        if (url.indexOf(routeWithoutTrailingSlash) === 0 &&
+                            url.indexOf(routeWithoutTrailingSlash + '/') < 0) {
+                            const redirectUrl = routeWithoutTrailingSlash + '/' + url.slice(routeWithoutTrailingSlash.length);
+                            log.debug(`redirect: url=${chalk.yellow(url)}, redirectUrl=${chalk.yellow(redirectUrl)}`);
+                            res.redirect(301, redirectUrl);
+                            return;
+                        }
+
+                        next();
                     });
 
                     return app;
