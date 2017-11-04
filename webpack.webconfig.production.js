@@ -1,4 +1,5 @@
-/* eslint no-var: 0 */
+process.env.NODE_ENV = 'production';
+
 /* eslint prefer-arrow-callback: 0 */
 const without = require('lodash/without');
 const crypto = require('crypto');

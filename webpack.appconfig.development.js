@@ -1,4 +1,5 @@
-/* eslint no-var: 0 */
+process.env.NODE_ENV = 'development';
+
 /* eslint prefer-arrow-callback: 0 */
 const crypto = require('crypto');
 const fs = require('fs');
@@ -50,6 +51,12 @@ module.exports = {
     ],
     module: {
         rules: [
+            {
+                test: /\.jsx?$/,
+                loader: 'eslint-loader',
+                enforce: 'pre',
+                exclude: /node_modules/
+            },
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',

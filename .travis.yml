@@ -72,8 +72,8 @@ script:
 after_success:
   - npm run coveralls
   - mkdir -p releases
-  - PACKAGE_NAME=`scripts/package-name.sh src/package.json`
-  - PACKAGE_VERSION=`scripts/package-version.sh src/package.json`
+  - PACKAGE_NAME=`node -e "console.log(require('./package.json').name)"`
+  - PACKAGE_VERSION=`node -e "console.log(require('./package.json').version)"`
   - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
