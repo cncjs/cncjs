@@ -1,6 +1,6 @@
 import _ from 'lodash';
 import * as parser from 'gcode-parser';
-import SerialPort from 'serialport';
+import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/Sender';
@@ -40,13 +40,13 @@ class SmoothieController {
     // Sockets
     sockets = {};
 
-    // SerialPort
-    options = {
-        port: '',
-        baudrate: 115200
-    };
-    serialPort = null;
-    serialPortListener = {
+    // Connection
+    connection = null;
+    connectionEventListener = {
+        data: (data) => {
+            log.silly(`< ${data}`);
+            this.controller.parse('' + data);
+        },
         close: (err) => {
             this.ready = false;
             if (err) {
@@ -119,6 +119,15 @@ class SmoothieController {
             port: port,
             baudrate: baudrate
         };
+
+        // Connection
+        this.connection = new SerialConnection({
+            path: port,
+            baudRate: baudrate,
+            writeFilter: (data) => {
+                return data;
+            }
+        });
 
         // Event Trigger
         this.event = new EventTrigger((event, trigger, commands) => {
@@ -202,7 +211,7 @@ class SmoothieController {
 
             this.emit('serialport:write', line + '\n', context);
 
-            this.serialPort.write(line + '\n');
+            this.connection.write(line + '\n');
             log.silly(`> ${line}`);
         });
         this.feeder.on('hold', noop);
@@ -282,7 +291,7 @@ class SmoothieController {
                 return;
             }
 
-            this.serialPort.write(line + '\n');
+            this.connection.write(line + '\n');
             log.silly(`> ${line}`);
         });
         this.sender.on('hold', noop);
@@ -481,7 +490,7 @@ class SmoothieController {
             if (this.isOpen()) {
                 this.actionMask.queryStatusReport = true;
                 this.actionTime.queryStatusReport = now;
-                this.serialPort.write('?');
+                this.connection.write('?');
             }
         };
 
@@ -522,7 +531,7 @@ class SmoothieController {
                 this.actionMask.queryParserState.state = true;
                 this.actionMask.queryParserState.reply = false;
                 this.actionTime.queryParserState = now;
-                this.serialPort.write('$G\n');
+                this.connection.write('$G\n');
             }
         }, 500);
 
@@ -666,10 +675,20 @@ class SmoothieController {
         this.actionTime.senderFinishTime = 0;
     }
     destroy() {
+        if (this.queryTimer) {
+            clearInterval(this.queryTimer);
+            this.queryTimer = null;
+        }
+
+        if (this.controller) {
+            this.controller.removeAllListeners();
+            this.controller = null;
+        }
+
         this.sockets = {};
 
-        if (this.serialPort) {
-            this.serialPort = null;
+        if (this.connection) {
+            this.connection = null;
         }
 
         if (this.event) {
@@ -686,16 +705,6 @@ class SmoothieController {
 
         if (this.workflow) {
             this.workflow = null;
-        }
-
-        if (this.queryTimer) {
-            clearInterval(this.queryTimer);
-            this.queryTimer = null;
-        }
-
-        if (this.controller) {
-            this.controller.removeAllListeners();
-            this.controller = null;
         }
     }
     initController() {
@@ -721,7 +730,7 @@ class SmoothieController {
 
             const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
             if (cmd) {
-                this.serialPort.write(cmd + '\n');
+                this.connection.write(cmd + '\n');
                 log.silly(`> ${cmd}`);
             }
             setTimeout(() => {
@@ -757,20 +766,11 @@ class SmoothieController {
             return;
         }
 
-        this.serialPort = new SerialPort(this.options.port, {
-            autoOpen: false,
-            baudRate: this.options.baudrate
-        });
-        const Readline = SerialPort.parsers.Readline;
-        const parser = this.serialPort.pipe(new Readline({ delimiter: '\n' }));
-        parser.on('data', (data) => {
-            log.silly(`< ${data}`);
-            this.controller.parse('' + data);
-        });
+        this.connection.on('data', this.connectionEventListener.data);
+        this.connection.on('close', this.connectionEventListener.close);
+        this.connection.on('error', this.connectionEventListener.error);
 
-        this.serialPort.on('close', this.serialPortListener.close);
-        this.serialPort.on('error', this.serialPortListener.error);
-        this.serialPort.open((err) => {
+        this.connection.open((err) => {
             if (err) {
                 log.error(`Error opening serial port "${port}":`, err);
                 this.emit('serialport:error', { err: err, port: port });
@@ -815,7 +815,7 @@ class SmoothieController {
         const { port } = this.options;
 
         // Assertion check
-        if (!this.serialPort) {
+        if (!this.connection) {
             const err = `Serial port "${port}" is not available`;
             callback(new Error(err));
             return;
@@ -842,20 +842,11 @@ class SmoothieController {
             return;
         }
 
-        this.serialPort.removeListener('close', this.serialPortListener.close);
-        this.serialPort.removeListener('error', this.serialPortListener.error);
-        this.serialPort.close((err) => {
-            if (err) {
-                log.error(`Error closing serial port "${port}":`, err);
-                callback(err);
-                return;
-            }
-
-            callback(null);
-        });
+        this.connection.removeAllListeners();
+        this.connection.close(callback);
     }
     isOpen() {
-        return this.serialPort && this.serialPort.isOpen;
+        return this.connection && this.connection.isOpen;
     }
     isClose() {
         return !(this.isOpen());
@@ -1234,7 +1225,7 @@ class SmoothieController {
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
         this.emit('serialport:write', data, context);
-        this.serialPort.write(data);
+        this.connection.write(data);
         log.silly(`> ${data}`);
     }
     writeln(data, context) {
