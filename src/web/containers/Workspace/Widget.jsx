@@ -48,6 +48,10 @@ class WidgetWrapper extends PureComponent {
         const name = widgetId.split(':')[0];
         const Widget = getWidgetByName(name);
 
+        if (!Widget) {
+            return null;
+        }
+
         return (
             <Widget
                 {...this.props}
