@@ -158,17 +158,40 @@ class GrblController {
         // Engine
         this.engine = engine;
 
+        options = {
+            ...options,
+            writeFilter: (data) => {
+                if (!(data.trim())) {
+                    return data;
+                }
+
+                { // Grbl settings: $0-$255
+                    const r = data.match(/^(\$\d{1,3})=([\d\.]+)$/);
+                    if (r) {
+                        const name = r[1];
+                        const value = Number(r[2]);
+                        if ((name === '$13') && (value >= 0) && (value <= 65535)) {
+                            const nextSettings = {
+                                ...this.controller.settings,
+                                settings: {
+                                    ...this.controller.settings.settings,
+                                    [name]: value ? '1' : '0'
+                                }
+                            };
+                            this.controller.settings = nextSettings; // enforce change
+                        }
+                    }
+                }
+
+                return data;
+            }
+        };
+
         // Connection
         if (connectionType === 'serial') {
-            this.connection = new SerialConnection({
-                ...options,
-                writeFilter: (data) => data
-            });
+            this.connection = new SerialConnection(options);
         } else if (connectionType === 'socket') {
-            this.connection = new SocketConnection({
-                ...options,
-                writeFilter: (data) => data
-            });
+            this.connection = new SocketConnection(options);
         }
 
         // Event Trigger
@@ -1245,23 +1268,6 @@ class GrblController {
         this.emit('connection:write', this.connectionOptions, data, context);
         this.connection.write(data);
         log.silly(`> ${data}`);
-
-        // Grbl settings: $0-$255
-        const r = cmd.match(/^(\$\d{1,3})=([\d\.]+)$/);
-        if (r) {
-            const name = r[1];
-            const value = Number(r[2]);
-            if ((name === '$13') && (value >= 0) && (value <= 65535)) {
-                const nextSettings = {
-                    ...this.controller.settings,
-                    settings: {
-                        ...this.controller.settings.settings,
-                        [name]: value ? '1' : '0'
-                    }
-                };
-                this.controller.settings = nextSettings; // enforce change
-            }
-        }
     }
     writeln(data, context) {
         if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
