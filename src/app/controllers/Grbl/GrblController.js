@@ -41,8 +41,8 @@ class GrblController {
     // CNCEngine
     engine = null;
 
-    // Connections
-    connections = {};
+    // Sockets
+    sockets = {};
 
     // SerialPort
     options = {
@@ -732,7 +732,7 @@ class GrblController {
         this.actionTime.senderFinishTime = 0;
     }
     destroy() {
-        this.connections = {};
+        this.sockets = {};
 
         if (this.serialPort) {
             this.serialPort = null;
@@ -768,7 +768,7 @@ class GrblController {
         return {
             port: this.options.port,
             baudrate: this.options.baudrate,
-            connections: Object.keys(this.connections),
+            sockets: Object.keys(this.sockets),
             ready: this.ready,
             controller: {
                 type: this.type,
@@ -901,7 +901,7 @@ class GrblController {
         }
 
         log.debug(`Add socket connection: id=${socket.id}`);
-        this.connections[socket.id] = socket;
+        this.sockets[socket.id] = socket;
 
         //
         // Send data to newly connected client
@@ -949,12 +949,12 @@ class GrblController {
         }
 
         log.debug(`Remove socket connection: id=${socket.id}`);
-        this.connections[socket.id] = undefined;
-        delete this.connections[socket.id];
+        this.sockets[socket.id] = undefined;
+        delete this.sockets[socket.id];
     }
     emit(eventName, ...args) {
-        Object.keys(this.connections).forEach(id => {
-            const socket = this.connections[id];
+        Object.keys(this.sockets).forEach(id => {
+            const socket = this.sockets[id];
             socket.emit(eventName, ...args);
         });
     }
