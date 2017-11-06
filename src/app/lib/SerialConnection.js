@@ -16,8 +16,9 @@ const toIdent = (options) => {
 
 class SerialConnection extends EventEmitter {
     type = 'serial';
-    parser = null; // Readline parser
     port = null; // SerialPort
+    parser = null; // Readline parser
+    writeFilter = (data) => data;
 
     eventListener = {
         data: (data) => {
@@ -40,6 +41,16 @@ class SerialConnection extends EventEmitter {
 
     constructor(options) {
         super();
+
+        const { writeFilter } = { ...options };
+
+        if (writeFilter) {
+            if (typeof writeFilter !== 'function') {
+                throw new TypeError(`"writeFilter" must be a function: ${writeFilter}`);
+            }
+
+            this.writeFilter = writeFilter;
+        }
 
         const settings = Object.assign({}, defaultSettings, options);
 
@@ -118,7 +129,13 @@ class SerialConnection extends EventEmitter {
         this.parser = null;
     }
     write(data) {
-        this.port && this.port.write(data);
+        if (!this.port) {
+            return;
+        }
+
+        data = this.writeFilter(data);
+
+        this.port.write(data);
     }
 }
 

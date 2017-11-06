@@ -18,6 +18,7 @@ class SocketConnection extends EventEmitter {
     type = 'socket';
     socket = null; // Socket
     parser = null; // Readline parser
+    writeFilter = (data) => data;
 
     eventListener = {
         data: (data) => {
@@ -40,6 +41,16 @@ class SocketConnection extends EventEmitter {
 
     constructor(options) {
         super();
+
+        const { writeFilter } = { ...options };
+
+        if (writeFilter) {
+            if (typeof writeFilter !== 'function') {
+                throw new TypeError(`"writeFilter" must be a function: ${writeFilter}`);
+            }
+
+            this.writeFilter = writeFilter;
+        }
 
         const settings = Object.assign({}, defaultSettings, options);
 
@@ -126,7 +137,13 @@ class SocketConnection extends EventEmitter {
         this.parser = null;
     }
     write(data) {
-        this.socket && this.socket.write(data);
+        if (!this.socket) {
+            return;
+        }
+
+        data = this.writeFilter(data);
+
+        this.socket.write(data);
     }
 }
 

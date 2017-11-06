@@ -153,9 +153,15 @@ class TinyGController {
 
         // Connection
         if (connectionType === 'serial') {
-            this.connection = new SerialConnection(options);
+            this.connection = new SerialConnection({
+                ...options,
+                writeFilter: (data) => data
+            });
         } else if (connectionType === 'socket') {
-            this.connection = new SocketConnection(options);
+            this.connection = new SocketConnection({
+                ...options,
+                writeFilter: (data) => data
+            });
         }
 
         // Event Trigger
