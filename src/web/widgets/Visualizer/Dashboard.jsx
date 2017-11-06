@@ -1,15 +1,17 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import escape from 'lodash/escape';
 import get from 'lodash/get';
+import throttle from 'lodash/throttle';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import ReactDOM from 'react-dom';
 import { ProgressBar } from 'react-bootstrap';
+import VirtualList from 'react-tiny-virtual-list';
 import api from '../../api';
 import Anchor from '../../components/Anchor';
 import Panel from '../../components/Panel';
 import i18n from '../../lib/i18n';
 import { formatBytes } from '../../lib/numeral';
-import Clusterize from './Clusterize';
 import styles from './dashboard.styl';
 
 class Dashboard extends PureComponent {
@@ -18,14 +20,64 @@ class Dashboard extends PureComponent {
         state: PropTypes.object
     };
 
+    node = {
+        virtualList: null
+    };
+
+    state = {
+        virtualList: {
+            visibleHeight: 0
+        }
+    };
+
     lines = [];
 
+    renderItem = ({ index, style }) => (
+        <div key={index} style={style}>
+            <div className={styles.line}>
+                <span className={cx(styles.label, styles.labelDefault)}>
+                    {index + 1}
+                </span>
+                {escape(this.lines[index])}
+            </div>
+        </div>
+    );
+
+    resizeVirtualList = throttle(() => {
+        if (!this.node.virtualList) {
+            return;
+        }
+
+        const el = ReactDOM.findDOMNode(this.node.virtualList);
+        const clientHeight = Number(el.clientHeight) || 0;
+
+        if (clientHeight > 0) {
+            this.setState(state => ({
+                virtualList: {
+                    ...state.virtualList,
+                    visibleHeight: el.clientHeight
+                }
+            }));
+        }
+    }, 32); // 60hz
+
+    componentDidMount() {
+        this.resizeVirtualList();
+        window.addEventListener('resize', this.resizeVirtualList);
+    }
+    componentWillUnmount() {
+        window.removeEventListener('resize', this.resizeVirtualList);
+    }
     componentWillReceiveProps(nextProps) {
         if (nextProps.state.gcode.content !== this.props.state.gcode.content) {
             this.lines = get(nextProps, 'state.gcode.content', '')
                 .split('\n')
-                .filter(line => line.trim().length > 0)
-                .map((line, index) => `<div class="${styles.line}"><span class="${styles.label} ${styles.labelDefault}">${index + 1}</span> ${escape(line)}</div>`); // Use pure HTML string to speed up rendering
+                .filter(line => line.trim().length > 0);
+        }
+    }
+    componentDidUpdate(prevProps) {
+        if ((this.props.show !== prevProps.show) && this.props.show) {
+            this.resizeVirtualList();
         }
     }
     render() {
@@ -36,18 +88,20 @@ class Dashboard extends PureComponent {
         const filename = state.gcode.name || 'noname.nc';
         const filesize = state.gcode.ready ? formatBytes(state.gcode.size, 0) : '';
         const { sent = 0, total = 0 } = state.gcode;
+        const { virtualList } = this.state;
         const rowHeight = 20;
-        const scrollTop = (sent > 0) ? (sent - 1) * rowHeight : 0;
 
         return (
             <Panel
-                className={classNames(styles.dashboard)}
+                className={cx(styles.dashboard)}
                 style={style}
             >
-                <Panel.Heading>
+                <Panel.Heading style={{ height: 30 }}>
                     {i18n._('G-code')}
                 </Panel.Heading>
-                <Panel.Body>
+                <Panel.Body
+                    style={{ height: 'calc(100% - 30px)' }}
+                >
                     <div className="clearfix" style={{ marginBottom: 10 }}>
                         <div className="pull-left text-nowrap">
                             {state.gcode.ready &&
@@ -81,16 +135,25 @@ class Dashboard extends PureComponent {
                         />
                     </div>
                     <div
-                        className={classNames(
+                        ref={node => {
+                            this.node.virtualList = node;
+                        }}
+                        className={cx(
                             styles.gcodeViewer,
                             { [styles.gcodeViewerDisabled]: this.lines.length === 0 }
                         )}
                     >
                         {this.lines.length > 0 &&
-                        <Clusterize
-                            style={{ padding: '0 5px' }}
-                            rows={this.lines}
-                            scrollTop={scrollTop}
+                        <VirtualList
+                            width="100%"
+                            height={virtualList.visibleHeight}
+                            style={{
+                                padding: '0 5px'
+                            }}
+                            itemCount={this.lines.length}
+                            itemSize={rowHeight}
+                            renderItem={this.renderItem}
+                            scrollToIndex={sent}
                         />
                         }
                         {this.lines.length === 0 &&
