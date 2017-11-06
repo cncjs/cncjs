@@ -1,7 +1,10 @@
 /* eslint-disable import/no-unresolved */
 import 'imports-loader?THREE=three!three/examples/js/cameras/CombinedCamera';
 /* eslint-enable */
-import _ from 'lodash';
+import each from 'lodash/each';
+import isEqual from 'lodash/isEqual';
+import tail from 'lodash/tail';
+import throttle from 'lodash/throttle';
 import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
@@ -64,7 +67,7 @@ class Visualizer extends PureComponent {
     };
     group = new THREE.Group();
     pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
-        _.each(this.group.children, (o) => {
+        each(this.group.children, (o) => {
             o.translateX(x);
             o.translateY(y);
             o.translateZ(z);
@@ -73,6 +76,10 @@ class Visualizer extends PureComponent {
         // Update the scene
         this.updateScene();
     });
+
+    throttledResize = throttle(() => {
+        this.resizeRenderer();
+    }, 32); // 60hz
 
     componentWillMount() {
         // Three.js
@@ -202,7 +209,7 @@ class Visualizer extends PureComponent {
         }
 
         // Update work position
-        if (!_.isEqual(this.workPosition, nextState.workPosition)) {
+        if (!isEqual(this.workPosition, nextState.workPosition)) {
             this.workPosition = nextState.workPosition;
             this.setWorkPosition(this.workPosition);
 
@@ -294,20 +301,10 @@ class Visualizer extends PureComponent {
         return visibleHeight;
     }
     addResizeEventListener() {
-        // handle resize event
-        if (!(this.onResize)) {
-            this.onResize = () => {
-                this.resizeRenderer();
-            };
-        }
-        this.onResize();
-        this.onResizeThrottled = _.throttle(::this.onResize, 10);
-        window.addEventListener('resize', this.onResizeThrottled);
+        window.addEventListener('resize', this.throttledResize);
     }
     removeResizeEventListener() {
-        // handle resize event
-        window.removeEventListener('resize', this.onResizeThrottled);
-        this.onResizeThrottled = null;
+        window.removeEventListener('resize', this.throttledResize);
     }
     resizeRenderer() {
         if (!(this.camera && this.renderer)) {
@@ -361,7 +358,7 @@ class Visualizer extends PureComponent {
                 colornames('blue'), // center line
                 colornames('gray 44') // grid
             );
-            _.each(gridLine.children, (o) => {
+            each(gridLine.children, (o) => {
                 o.material.opacity = 0.15;
                 o.material.transparent = true;
                 o.material.depthWrite = false;
@@ -587,8 +584,8 @@ class Visualizer extends PureComponent {
     }
     clearScene() {
         // to iterrate over all children (except the first) in a scene
-        const objsToRemove = _.tail(this.scene.children);
-        _.each(objsToRemove, (obj) => {
+        const objsToRemove = tail(this.scene.children);
+        each(objsToRemove, (obj) => {
             this.scene.remove(obj);
         });
 
