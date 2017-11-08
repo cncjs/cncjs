@@ -161,12 +161,14 @@ class GrblController {
         options = {
             ...options,
             writeFilter: (data) => {
-                if (!(data.trim())) {
+                const line = data.trim();
+
+                if (!line) {
                     return data;
                 }
 
                 { // Grbl settings: $0-$255
-                    const r = data.match(/^(\$\d{1,3})=([\d\.]+)$/);
+                    const r = line.match(/^(\$\d{1,3})=([\d\.]+)$/);
                     if (r) {
                         const name = r[1];
                         const value = Number(r[2]);
@@ -207,16 +209,15 @@ class GrblController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
+                // Remove comments that start with a semicolon `;`
+                line = line.replace(/\s*;.*/g, '');
+
                 context = this.populateContext(context);
 
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
                 if (line[0] === '%') {
-                    // Remove characters after ";"
-                    const re = new RegExp(/\s*;.*/g);
-                    line = line.replace(re, '');
-
                     // %wait
                     if (line === WAIT) {
                         log.debug('Wait for the planner queue to empty');
@@ -251,7 +252,7 @@ class GrblController {
                     log.debug('M6 Tool Change');
                     this.feeder.hold({ data: 'M6' }); // Hold reason
 
-                    // [Grbl] Surround M6 with parentheses to ignore unsupported command error
+                    // Surround M6 with parentheses to ignore unsupported command error
                     line = '(M6)';
                 }
 
@@ -290,6 +291,9 @@ class GrblController {
             // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
+                // Remove comments that start with a semicolon `;`
+                line = line.replace(/\s*;.*/g, '');
+
                 context = this.populateContext(context);
 
                 const data = parser.parseLine(line, { flatten: true });
@@ -297,10 +301,6 @@ class GrblController {
                 const { sent, received } = this.sender.state;
 
                 if (line[0] === '%') {
-                    // Remove characters after ";"
-                    const re = new RegExp(/\s*;.*/g);
-                    line = line.replace(re, '');
-
                     // %wait
                     if (line === WAIT) {
                         log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);

@@ -181,16 +181,15 @@ class SmoothieController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
+                // Remove comments that start with a semicolon `;`
+                line = line.replace(/\s*;.*/g, '');
+
                 context = this.populateContext(context);
 
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
                 if (line[0] === '%') {
-                    // Remove characters after ";"
-                    const re = new RegExp(/\s*;.*/g);
-                    line = line.replace(re, '');
-
                     // %wait
                     if (line === WAIT) {
                         log.debug('Wait for the planner queue to empty');
@@ -261,6 +260,9 @@ class SmoothieController {
             // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
+                // Remove comments that start with a semicolon `;`
+                line = line.replace(/\s*;.*/g, '');
+
                 context = this.populateContext(context);
 
                 const data = parser.parseLine(line, { flatten: true });
@@ -268,10 +270,6 @@ class SmoothieController {
                 const { sent, received } = this.sender.state;
 
                 if (line[0] === '%') {
-                    // Remove characters after ";"
-                    const re = new RegExp(/\s*;.*/g);
-                    line = line.replace(re, '');
-
                     // %wait
                     if (line === WAIT) {
                         log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);

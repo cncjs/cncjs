@@ -177,16 +177,16 @@ class TinyGController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
+                // Remove comments that start with a semicolon `;`
+                // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
+                line = line.replace(/\s*;.*/g, '');
+
                 context = this.populateContext(context);
 
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
                 if (line[0] === '%') {
-                    // Remove characters after ";"
-                    const re = new RegExp(/\s*;.*/g);
-                    line = line.replace(re, '');
-
                     // %wait
                     if (line === WAIT) {
                         log.debug('Wait for the planner queue to empty');
@@ -255,6 +255,10 @@ class TinyGController {
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
             dataFilter: (line, context) => {
+                // Remove comments that start with a semicolon `;`
+                // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
+                line = line.replace(/\s*;.*/g, '');
+
                 context = this.populateContext(context);
 
                 const data = parser.parseLine(line, { flatten: true });
@@ -262,10 +266,6 @@ class TinyGController {
                 const { sent, received } = this.sender.state;
 
                 if (line[0] === '%') {
-                    // Remove characters after ";"
-                    const re = new RegExp(/\s*;.*/g);
-                    line = line.replace(re, '');
-
                     // %wait
                     if (line === WAIT) {
                         log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
