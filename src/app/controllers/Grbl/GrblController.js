@@ -128,6 +128,30 @@ class GrblController {
             path: port,
             baudRate: baudrate,
             writeFilter: (data) => {
+                const line = data.trim();
+
+                if (!line) {
+                    return data;
+                }
+
+                { // Grbl settings: $0-$255
+                    const r = line.match(/^(\$\d{1,3})=([\d\.]+)$/);
+                    if (r) {
+                        const name = r[1];
+                        const value = Number(r[2]);
+                        if ((name === '$13') && (value >= 0) && (value <= 65535)) {
+                            const nextSettings = {
+                                ...this.controller.settings,
+                                settings: {
+                                    ...this.controller.settings.settings,
+                                    [name]: value ? '1' : '0'
+                                }
+                            };
+                            this.controller.settings = nextSettings; // enforce change
+                        }
+                    }
+                }
+
                 return data;
             }
         });
@@ -145,16 +169,15 @@ class GrblController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
+                // Remove comments that start with a semicolon `;`
+                line = line.replace(/\s*;.*/g, '');
+
                 context = this.populateContext(context);
 
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
                 if (line[0] === '%') {
-                    // Remove characters after ";"
-                    const re = new RegExp(/\s*;.*/g);
-                    line = line.replace(re, '');
-
                     // %wait
                     if (line === WAIT) {
                         log.debug('Wait for the planner queue to empty');
@@ -189,7 +212,7 @@ class GrblController {
                     log.debug('M6 Tool Change');
                     this.feeder.hold({ data: 'M6' }); // Hold reason
 
-                    // [Grbl] Surround M6 with parentheses to ignore unsupported command error
+                    // Surround M6 with parentheses to ignore unsupported command error
                     line = '(M6)';
                 }
 
@@ -228,6 +251,9 @@ class GrblController {
             // Deduct the buffer size to prevent from buffer overrun
             bufferSize: (128 - 8), // The default buffer size is 128 bytes
             dataFilter: (line, context) => {
+                // Remove comments that start with a semicolon `;`
+                line = line.replace(/\s*;.*/g, '');
+
                 context = this.populateContext(context);
 
                 const data = parser.parseLine(line, { flatten: true });
@@ -235,10 +261,6 @@ class GrblController {
                 const { sent, received } = this.sender.state;
 
                 if (line[0] === '%') {
-                    // Remove characters after ";"
-                    const re = new RegExp(/\s*;.*/g);
-                    line = line.replace(re, '');
-
                     // %wait
                     if (line === WAIT) {
                         log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
@@ -1272,23 +1294,6 @@ class GrblController {
         this.emit('serialport:write', data, context);
         this.connection.write(data);
         log.silly(`> ${data}`);
-
-        // Grbl settings: $0-$255
-        const r = cmd.match(/^(\$\d{1,3})=([\d\.]+)$/);
-        if (r) {
-            const name = r[1];
-            const value = Number(r[2]);
-            if ((name === '$13') && (value >= 0) && (value <= 65535)) {
-                const nextSettings = {
-                    ...this.controller.settings,
-                    settings: {
-                        ...this.controller.settings.settings,
-                        [name]: value ? '1' : '0'
-                    }
-                };
-                this.controller.settings = nextSettings; // enforce change
-            }
-        }
     }
     writeln(data, context) {
         if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
