@@ -111,7 +111,6 @@ const webpackConfig = Object.assign({}, baseConfig, {
             }
         }),
         new HtmlWebpackPlugin({
-            title: `cnc ${pkg.version}`,
             filename: 'index.hbs',
             template: path.resolve(__dirname, 'src/web/assets/index.hbs'),
             chunksSortMode: 'dependency' // Sort chunks by dependency
