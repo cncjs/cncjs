@@ -1,5 +1,7 @@
 #!/usr/bin/env node
 
+require('babel-polyfill');
+
 var cnc;
 
 if (process.env.NODE_ENV === 'development') {
