@@ -220,7 +220,7 @@ class SmoothieController {
                 }
 
                 // M6 Tool Change
-                if (words.includes('M6')) {
+                if (_.includes(words, 'M6')) {
                     log.debug('M6 Tool Change');
                     this.feeder.hold({ data: 'M6' }); // Hold reason
                 }
@@ -301,7 +301,7 @@ class SmoothieController {
                 }
 
                 // M6 Tool Change
-                if (words.includes('M6')) {
+                if (_.includes(words, 'M6')) {
                     log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
                     this.workflow.pause({ data: 'M6' });
                 }
