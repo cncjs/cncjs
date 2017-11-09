@@ -9,6 +9,8 @@ import {
     // Grbl
     GRBL,
     GRBL_ACTIVE_STATE_ALARM,
+    // Marlin
+    MARLIN,
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_ALARM,
@@ -97,6 +99,9 @@ class WorkflowControl extends PureComponent {
             if (includes(states, activeState)) {
                 return false;
             }
+        }
+        if (controllerType === MARLIN) {
+            // Marlin does not have machine state
         }
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');

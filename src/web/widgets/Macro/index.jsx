@@ -18,6 +18,8 @@ import {
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    // Marlin
+    MARLIN,
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_IDLE,
@@ -266,7 +268,7 @@ class MacroWidget extends PureComponent {
         if (workflow.state === WORKFLOW_STATE_RUNNING) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+        if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
             return false;
         }
         if (controllerType === GRBL) {
@@ -278,6 +280,9 @@ class MacroWidget extends PureComponent {
             if (!includes(states, activeState)) {
                 return false;
             }
+        }
+        if (controllerType === MARLIN) {
+            // Marlin does not have machine state
         }
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');

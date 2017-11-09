@@ -22,6 +22,8 @@ import {
     GRBL_ACTIVE_STATE_SLEEP,
     GRBL_ACTIVE_STATE_ALARM,
     GRBL_ACTIVE_STATE_CHECK,
+    // Marlin
+    MARLIN,
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_IDLE,
@@ -118,6 +120,10 @@ class PrimaryToolbar extends PureComponent {
             }[activeState];
         }
 
+        if (controllerType === MARLIN) {
+            // Marlin does not have machine state
+        }
+
         if (controllerType === SMOOTHIE) {
             const activeState = _.get(controllerState, 'status.activeState');
 
@@ -202,6 +208,10 @@ class PrimaryToolbar extends PureComponent {
 
         if (controllerType === GRBL) {
             return _.get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
+        }
+
+        if (controllerType === MARLIN) {
+            return _.get(controllerState, 'modal.wcs') || defaultWCS;
         }
 
         if (controllerType === SMOOTHIE) {

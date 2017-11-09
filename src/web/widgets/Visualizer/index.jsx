@@ -35,6 +35,8 @@ import {
     // Grbl
     GRBL,
     GRBL_ACTIVE_STATE_RUN,
+    // Marlin
+    MARLIN,
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_RUN,
@@ -640,6 +642,31 @@ class VisualizerWidget extends PureComponent {
                 }));
             }
 
+            // Marlin
+            if (type === MARLIN) {
+                const { pos, modal = {} } = { ...controllerState };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
+
+                this.setState(state => ({
+                    units: units,
+                    controller: {
+                        ...state.controller,
+                        type: type,
+                        state: controllerState
+                    },
+                    // Work position are reported in current units
+                    workPosition: mapValues({
+                        ...state.workPosition,
+                        ...pos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    })
+                }));
+            }
+
             // Smoothie
             if (type === SMOOTHIE) {
                 const { status, parserstate } = { ...controllerState };
@@ -835,7 +862,7 @@ class VisualizerWidget extends PureComponent {
         if (!objects.toolhead.visible) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+        if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
             return false;
         }
         if (controllerType === GRBL) {
@@ -843,6 +870,10 @@ class VisualizerWidget extends PureComponent {
             if (activeState !== GRBL_ACTIVE_STATE_RUN) {
                 return false;
             }
+        }
+        if (controllerType === MARLIN) {
+            // Marlin does not have machine state
+            return false;
         }
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');

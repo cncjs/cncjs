@@ -1,7 +1,9 @@
-import _ from 'lodash';
+import difference from 'lodash/difference';
+import includes from 'lodash/includes';
+import union from 'lodash/union';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { GRBL, SMOOTHIE, TINYG } from '../../../constants';
+import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../../constants';
 import controller from '../../../lib/controller';
 import store from '../../../store';
 import defaultState from '../../../store/defaultState';
@@ -14,15 +16,18 @@ export const getActiveWidgets = () => {
         .map(widgetId => widgetId.split(':')[0]);
     const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
         .map(widgetId => widgetId.split(':')[0]);
-    const activeWidgets = _.union(defaultWidgets, primaryWidgets, secondaryWidgets)
+    const activeWidgets = union(defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
-            if (widget === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+            if (widget === 'grbl' && !includes(controller.loadedControllers, GRBL)) {
                 return false;
             }
-            if (widget === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widget === 'marlin' && !includes(controller.loadedControllers, MARLIN)) {
                 return false;
             }
-            if (widget === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+            if (widget === 'smoothie' && !includes(controller.loadedControllers, SMOOTHIE)) {
+                return false;
+            }
+            if (widget === 'tinyg' && !includes(controller.loadedControllers, TINYG)) {
                 return false;
             }
             return true;
@@ -39,15 +44,18 @@ export const getInactiveWidgets = () => {
         .map(widgetId => widgetId.split(':')[0]);
     const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
         .map(widgetId => widgetId.split(':')[0]);
-    const inactiveWidgets = _.difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets)
+    const inactiveWidgets = difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
-            if (widget === 'grbl' && !_.includes(controller.loadedControllers, GRBL)) {
+            if (widget === 'grbl' && !includes(controller.loadedControllers, GRBL)) {
                 return false;
             }
-            if (widget === 'smoothie' && !_.includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widget === 'marlin' && !includes(controller.loadedControllers, MARLIN)) {
                 return false;
             }
-            if (widget === 'tinyg' && !_.includes(controller.loadedControllers, TINYG)) {
+            if (widget === 'smoothie' && !includes(controller.loadedControllers, SMOOTHIE)) {
+                return false;
+            }
+            if (widget === 'tinyg' && !includes(controller.loadedControllers, TINYG)) {
                 return false;
             }
             return true;

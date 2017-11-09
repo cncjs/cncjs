@@ -13,6 +13,8 @@ import {
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_HOLD,
+    // Marlin
+    MARLIN,
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_IDLE,
@@ -84,6 +86,22 @@ class SpindleWidget extends PureComponent {
             if (type === GRBL) {
                 const { parserstate } = { ...state };
                 const { modal = {} } = { ...parserstate };
+
+                this.setState({
+                    controller: {
+                        type: type,
+                        state: state,
+                        modal: {
+                            spindle: modal.spindle || '',
+                            coolant: modal.coolant || ''
+                        }
+                    }
+                });
+            }
+
+            // Marlin
+            if (type === MARLIN) {
+                const { modal = {} } = { ...state };
 
                 this.setState({
                     controller: {
@@ -191,7 +209,7 @@ class SpindleWidget extends PureComponent {
         if (workflow.state === WORKFLOW_STATE_RUN) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+        if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
             return false;
         }
         if (controllerType === GRBL) {
@@ -203,6 +221,9 @@ class SpindleWidget extends PureComponent {
             if (!includes(states, activeState)) {
                 return false;
             }
+        }
+        if (controllerType === MARLIN) {
+            // Marlin does not have machine state
         }
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');

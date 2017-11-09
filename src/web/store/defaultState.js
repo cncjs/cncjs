@@ -11,7 +11,7 @@ const defaultState = {
             primary: {
                 show: true,
                 widgets: [
-                    'connection', 'console', 'grbl', 'smoothie', 'tinyg', 'webcam'
+                    'connection', 'console', 'grbl', 'marlin', 'smoothie', 'tinyg', 'webcam'
                 ]
             },
             secondary: {
@@ -90,6 +90,14 @@ const defaultState = {
         },
         macro: {
             minimized: false
+        },
+        marlin: {
+            minimized: false,
+            panel: {
+                modalGroups: {
+                    expanded: true
+                }
+            }
         },
         probe: {
             minimized: false,

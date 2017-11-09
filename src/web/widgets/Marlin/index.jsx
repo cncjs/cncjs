@@ -1,38 +1,22 @@
-import _ from 'lodash';
 import classNames from 'classnames';
-import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import { mm2in } from '../../lib/units';
+import controller from '../../lib/controller';
 import WidgetConfig from '../WidgetConfig';
-import GCode from './GCode';
+import Marlin from './Marlin';
+import Controller from './Controller';
 import {
-    GRBL,
-    MARLIN,
-    SMOOTHIE,
-    TINYG,
-    // Units
-    IMPERIAL_UNITS,
-    METRIC_UNITS
+    MARLIN
 } from '../../constants';
+import {
+    MODAL_NONE,
+    MODAL_CONTROLLER
+} from './constants';
 import styles from './index.styl';
 
-const toFixedUnits = (units, val) => {
-    val = Number(val) || 0;
-    if (units === IMPERIAL_UNITS) {
-        val = mm2in(val).toFixed(4);
-    }
-    if (units === METRIC_UNITS) {
-        val = val.toFixed(3);
-    }
-
-    return val;
-};
-
-class GCodeWidget extends PureComponent {
+class MarlinWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -61,197 +45,121 @@ class GCodeWidget extends PureComponent {
         toggleMinimized: () => {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
+        },
+        openModal: (name = MODAL_NONE, params = {}) => {
+            this.setState({
+                modal: {
+                    name: name,
+                    params: params
+                }
+            });
+        },
+        closeModal: () => {
+            this.setState({
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
+            });
+        },
+        updateModalParams: (params = {}) => {
+            this.setState({
+                modal: {
+                    ...this.state.modal,
+                    params: {
+                        ...this.state.modal.params,
+                        ...params
+                    }
+                }
+            });
+        },
+        toggleModalGroups: () => {
+            const expanded = this.state.panel.modalGroups.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    modalGroups: {
+                        ...this.state.panel.modalGroups,
+                        expanded: !expanded
+                    }
+                }
+            });
         }
     };
     controllerEvents = {
         'serialport:open': (options) => {
-            const { port } = options;
-            this.setState({ port: port });
+            const { port, controllerType } = options;
+            this.setState({
+                isReady: controllerType === MARLIN,
+                port: port
+            });
         },
         'serialport:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
-        'gcode:unload': () => {
-            this.setState({
-                bbox: {
-                    min: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    },
-                    max: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    },
-                    delta: {
-                        x: 0,
-                        y: 0,
-                        z: 0
-                    }
-                }
-            });
-        },
-        'sender:status': (data) => {
-            const { total, sent, received, startTime, finishTime, elapsedTime, remainingTime } = data;
-
-            this.setState({
-                total,
-                sent,
-                received,
-                startTime,
-                finishTime,
-                elapsedTime,
-                remainingTime
-            });
-        },
-        'controller:state': (type, state) => {
-            // Grbl
-            if (type === GRBL) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
-                const units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                if (this.state.units !== units) {
-                    this.setState({ units: units });
-                }
-            }
-
-            // Marlin
+        'controller:settings': (type, controllerSettings) => {
             if (type === MARLIN) {
-                const { modal = {} } = { ...state };
-                const units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                if (this.state.units !== units) {
-                    this.setState({ units: units });
-                }
+                this.setState(state => ({
+                    controller: {
+                        ...state.controller,
+                        type: type,
+                        settings: controllerSettings
+                    }
+                }));
             }
-
-            // Smoothie
-            if (type === SMOOTHIE) {
-                const { parserstate } = { ...state };
-                const { modal = {} } = { ...parserstate };
-                const units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                if (this.state.units !== units) {
-                    this.setState({ units: units });
-                }
-            }
-
-            // TinyG
-            if (type === TINYG) {
-                const { sr } = { ...state };
-                const { modal = {} } = { ...sr };
-                const units = {
-                    'G20': IMPERIAL_UNITS,
-                    'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                if (this.state.units !== units) {
-                    this.setState({ units: units });
-                }
+        },
+        'controller:state': (type, controllerState) => {
+            if (type === MARLIN) {
+                this.setState(state => ({
+                    controller: {
+                        ...state.controller,
+                        type: type,
+                        state: controllerState
+                    }
+                }));
             }
         }
     };
-    pubsubTokens = [];
 
     componentDidMount() {
-        this.subscribe();
         this.addControllerEvents();
     }
     componentWillUnmount() {
         this.removeControllerEvents();
-        this.unsubscribe();
     }
     componentDidUpdate(prevProps, prevState) {
         const {
-            minimized
+            minimized,
+            panel
         } = this.state;
 
         this.config.set('minimized', minimized);
+        this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-
+            isReady: (controller.loadedControllers.length === 1) || (controller.type === MARLIN),
+            canClick: true, // Defaults to true
             port: controller.port,
-            units: METRIC_UNITS,
-
-            // G-code Status (from server)
-            total: 0,
-            sent: 0,
-            received: 0,
-            startTime: 0,
-            finishTime: 0,
-            elapsedTime: 0,
-            remainingTime: 0,
-
-            // Bounding box
-            bbox: {
-                min: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                max: {
-                    x: 0,
-                    y: 0,
-                    z: 0
-                },
-                delta: {
-                    x: 0,
-                    y: 0,
-                    z: 0
+            controller: {
+                type: controller.type,
+                settings: controller.settings,
+                state: controller.state
+            },
+            modal: {
+                name: MODAL_NONE,
+                params: {}
+            },
+            panel: {
+                modalGroups: {
+                    expanded: this.config.get('panel.modalGroups.expanded')
                 }
             }
         };
-    }
-    subscribe() {
-        const tokens = [
-            pubsub.subscribe('gcode:bbox', (msg, bbox) => {
-                const dX = bbox.max.x - bbox.min.x;
-                const dY = bbox.max.y - bbox.min.y;
-                const dZ = bbox.max.z - bbox.min.z;
-
-                this.setState({
-                    bbox: {
-                        min: {
-                            x: bbox.min.x,
-                            y: bbox.min.y,
-                            z: bbox.min.z
-                        },
-                        max: {
-                            x: bbox.max.x,
-                            y: bbox.max.y,
-                            z: bbox.max.z
-                        },
-                        delta: {
-                            x: dX,
-                            y: dY,
-                            z: dZ
-                        }
-                    }
-                });
-            })
-        ];
-        this.pubsubTokens = this.pubsubTokens.concat(tokens);
-    }
-    unsubscribe() {
-        this.pubsubTokens.forEach((token) => {
-            pubsub.unsubscribe(token);
-        });
-        this.pubsubTokens = [];
     }
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
@@ -265,17 +173,26 @@ class GCodeWidget extends PureComponent {
             controller.removeListener(eventName, callback);
         });
     }
+    canClick() {
+        const { port } = this.state;
+        const { type } = this.state.controller;
+
+        if (!port) {
+            return false;
+        }
+        if (type !== MARLIN) {
+            return false;
+        }
+
+        return true;
+    }
     render() {
         const { widgetId } = this.props;
-        const { minimized, isFullscreen } = this.state;
-        const { units, bbox } = this.state;
+        const { minimized, isFullscreen, isReady } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
             ...this.state,
-            bbox: _.mapValues(bbox, (position) => {
-                position = _.mapValues(position, (val, axis) => toFixedUnits(units, val));
-                return position;
-            })
+            canClick: this.canClick()
         };
         const actions = {
             ...this.actions
@@ -292,9 +209,43 @@ class GCodeWidget extends PureComponent {
                         {isForkedWidget &&
                         <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
-                        {i18n._('G-code')}
+                        Marlin
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
+                        {isReady &&
+                        <Widget.Button
+                            onClick={(event) => {
+                                actions.openModal(MODAL_CONTROLLER);
+                            }}
+                        >
+                            <i className="fa fa-info" />
+                        </Widget.Button>
+                        }
+                        {isReady &&
+                        <Widget.DropdownButton
+                            toggle={<i className="fa fa-th-large" />}
+                        >
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('M105')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Get Extruder Temperature (M105)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('M114')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Get Current Position (M114)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('M115')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Get Firmware Version and Capabilities (M115)')}
+                            </Widget.DropdownMenuItem>
+                        </Widget.DropdownButton>
+                        }
+                        {isReady &&
                         <Widget.Button
                             disabled={isFullscreen}
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
@@ -308,6 +259,7 @@ class GCodeWidget extends PureComponent {
                                 )}
                             />
                         </Widget.Button>
+                        }
                         <Widget.DropdownButton
                             title={i18n._('More')}
                             toggle={<i className="fa fa-ellipsis-v" />}
@@ -321,7 +273,7 @@ class GCodeWidget extends PureComponent {
                                 }
                             }}
                         >
-                            <Widget.DropdownMenuItem eventKey="fullscreen">
+                            <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
                                 <i
                                     className={classNames(
                                         'fa',
@@ -346,20 +298,25 @@ class GCodeWidget extends PureComponent {
                         </Widget.DropdownButton>
                     </Widget.Controls>
                 </Widget.Header>
+                {isReady &&
                 <Widget.Content
                     className={classNames(
                         styles['widget-content'],
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <GCode
+                    {state.modal.name === MODAL_CONTROLLER &&
+                    <Controller state={state} actions={actions} />
+                    }
+                    <Marlin
                         state={state}
                         actions={actions}
                     />
                 </Widget.Content>
+                }
             </Widget>
         );
     }
 }
 
-export default GCodeWidget;
+export default MarlinWidget;

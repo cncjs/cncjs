@@ -12,6 +12,8 @@ import Laser from './Laser';
 import {
     // Grbl
     GRBL,
+    // Marlin
+    MARLIN,
     // Smoothie
     SMOOTHIE,
     // TinyG
@@ -211,7 +213,7 @@ class LaserWidget extends PureComponent {
         if (!port) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+        if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
             return false;
         }
         if (!(isNumber(test.power) && isNumber(test.duration) && isNumber(test.maxS))) {

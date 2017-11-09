@@ -147,7 +147,7 @@ class ConnectionWidget extends PureComponent {
                 alertMessage: '',
                 connecting: false,
                 connected: true,
-                controllerType: controllerType, // Grbl|Smoothie|TinyG
+                controllerType: controllerType, // Grbl|Marlin|Smoothie|TinyG
                 port: port,
                 baudrate: baudrate,
                 ports: ports

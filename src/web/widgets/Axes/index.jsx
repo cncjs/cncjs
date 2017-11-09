@@ -24,6 +24,8 @@ import {
     GRBL,
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_RUN,
+    // Marlin
+    MARLIN,
     // Smoothie
     SMOOTHIE,
     SMOOTHIE_ACTIVE_STATE_IDLE,
@@ -154,6 +156,10 @@ class AxesWidget extends PureComponent {
 
             if (controllerType === GRBL) {
                 return get(controllerState, 'parserstate.modal.wcs') || defaultWCS;
+            }
+
+            if (controllerType === MARLIN) {
+                return get(controllerState, 'modal.wcs') || defaultWCS;
             }
 
             if (controllerType === SMOOTHIE) {
@@ -390,6 +396,47 @@ class AxesWidget extends PureComponent {
                 }));
             }
 
+            // Marlin
+            if (type === MARLIN) {
+                const { pos, modal = {} } = { ...controllerState };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
+
+                let customDistance = this.config.get('jog.customDistance');
+                if (units === IMPERIAL_UNITS) {
+                    customDistance = mm2in(customDistance).toFixed(4) * 1;
+                }
+                if (units === METRIC_UNITS) {
+                    customDistance = Number(customDistance).toFixed(3) * 1;
+                }
+
+                this.setState(state => ({
+                    units: units,
+                    controller: {
+                        ...state.controller,
+                        type: type,
+                        state: controllerState
+                    },
+                    // Machine position are reported in current units
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
+                        ...pos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
+                    // Work position are reported in current units
+                    workPosition: mapValues({
+                        ...state.workPosition,
+                        ...pos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
+                    customDistance: customDistance
+                }));
+            }
+
             // Smoothie
             if (type === SMOOTHIE) {
                 const { status, parserstate } = { ...controllerState };
@@ -594,7 +641,7 @@ class AxesWidget extends PureComponent {
         if (workflow.state === WORKFLOW_STATE_RUNNING) {
             return false;
         }
-        if (!includes([GRBL, SMOOTHIE, TINYG], controllerType)) {
+        if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {
             return false;
         }
         if (controllerType === GRBL) {
@@ -606,6 +653,9 @@ class AxesWidget extends PureComponent {
             if (!includes(states, activeState)) {
                 return false;
             }
+        }
+        if (controllerType === MARLIN) {
+            // Ignore
         }
         if (controllerType === SMOOTHIE) {
             const activeState = get(controllerState, 'status.activeState');
