@@ -11,6 +11,7 @@ import {
     // Controller
     GRBL,
     GRBL_MACHINE_STATE_ALARM,
+    MARLIN,
     SMOOTHIE,
     SMOOTHIE_MACHINE_STATE_ALARM,
     TINYG,
@@ -84,6 +85,10 @@ class WorkflowControl extends PureComponent {
             GRBL_MACHINE_STATE_ALARM
         ], machineState)) {
             return false;
+        }
+
+        if (controller.type === MARLIN) {
+            // Marlin does not have machine state
         }
 
         if (controller.type === SMOOTHIE && includes([

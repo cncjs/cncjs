@@ -10,12 +10,14 @@ import { mm2in } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
 import GCode from './GCode';
 import {
-    GRBL,
-    SMOOTHIE,
-    TINYG,
     // Units
     IMPERIAL_UNITS,
-    METRIC_UNITS
+    METRIC_UNITS,
+    // Controller
+    GRBL,
+    MARLIN,
+    SMOOTHIE,
+    TINYG
 } from '../../constants';
 import styles from './index.styl';
 
@@ -100,6 +102,19 @@ class GCodeWidget extends PureComponent {
         'controller:state': (type, state) => {
             // Grbl
             if (type === GRBL) {
+                const { modal = {} } = { ...state };
+                const units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || this.state.units;
+
+                if (this.state.units !== units) {
+                    this.setState({ units: units });
+                }
+            }
+
+            // Marlin
+            if (type === MARLIN) {
                 const { modal = {} } = { ...state };
                 const units = {
                     'G20': IMPERIAL_UNITS,

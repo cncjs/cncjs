@@ -17,6 +17,7 @@ import {
     // Controller
     GRBL,
     GRBL_MACHINE_STATE_IDLE,
+    MARLIN,
     SMOOTHIE,
     SMOOTHIE_MACHINE_STATE_IDLE,
     TINYG,
@@ -474,6 +475,10 @@ class ProbeWidget extends PureComponent {
             GRBL_MACHINE_STATE_IDLE
         ], machineState)) {
             return false;
+        }
+
+        if (controller.type === MARLIN) {
+            // Marlin does not have machine state
         }
 
         if (controller.type === SMOOTHIE && !includes([

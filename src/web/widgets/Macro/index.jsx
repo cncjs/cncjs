@@ -17,6 +17,7 @@ import {
     GRBL,
     GRBL_MACHINE_STATE_IDLE,
     GRBL_MACHINE_STATE_RUN,
+    MARLIN,
     SMOOTHIE,
     SMOOTHIE_MACHINE_STATE_IDLE,
     SMOOTHIE_MACHINE_STATE_RUN,
@@ -275,6 +276,10 @@ class MacroWidget extends PureComponent {
             GRBL_MACHINE_STATE_RUN
         ], machineState)) {
             return false;
+        }
+
+        if (controller.type === MARLIN) {
+            // Marlin does not have machine state
         }
 
         if (controller.type === SMOOTHIE && !includes([

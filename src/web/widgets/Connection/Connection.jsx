@@ -10,6 +10,7 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import {
     GRBL,
+    MARLIN,
     SMOOTHIE,
     TINYG
 } from '../../constants';
@@ -101,6 +102,7 @@ class Connection extends PureComponent {
         const controllerType = state.controller.type;
         const canSelectControllers = (controller.availableControllers.length > 1);
         const hasGrblController = includes(controller.availableControllers, GRBL);
+        const hasMarlinController = includes(controller.availableControllers, MARLIN);
         const hasSmoothieController = includes(controller.availableControllers, SMOOTHIE);
         const hasTinyGController = includes(controller.availableControllers, TINYG);
         const notLoading = !loading;
@@ -142,6 +144,22 @@ class Connection extends PureComponent {
                                 }}
                             >
                                 {GRBL}
+                            </button>
+                            }
+                            {hasMarlinController &&
+                            <button
+                                type="button"
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': controllerType === MARLIN }
+                                )}
+                                disabled={!canChangeController}
+                                onClick={() => {
+                                    actions.changeController(MARLIN);
+                                }}
+                            >
+                                {MARLIN}
                             </button>
                             }
                             {hasSmoothieController &&

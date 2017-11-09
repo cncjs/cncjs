@@ -12,6 +12,7 @@ import {
     GRBL,
     GRBL_MACHINE_STATE_IDLE,
     GRBL_MACHINE_STATE_RUN,
+    MARLIN,
     SMOOTHIE,
     SMOOTHIE_MACHINE_STATE_IDLE,
     SMOOTHIE_MACHINE_STATE_RUN,
@@ -84,6 +85,22 @@ class SpindleWidget extends PureComponent {
         'controller:state': (type, state) => {
             // Grbl
             if (type === GRBL) {
+                const { modal = {} } = { ...state };
+
+                this.setState({
+                    controller: {
+                        type: type,
+                        state: state,
+                        modal: {
+                            spindle: modal.spindle || '',
+                            coolant: modal.coolant || ''
+                        }
+                    }
+                });
+            }
+
+            // Marlin
+            if (type === MARLIN) {
                 const { modal = {} } = { ...state };
 
                 this.setState({
@@ -193,6 +210,10 @@ class SpindleWidget extends PureComponent {
             GRBL_MACHINE_STATE_RUN
         ], machineState)) {
             return false;
+        }
+
+        if (controller.type === MARLIN) {
+            // Marlin does not have machine state
         }
 
         if (controller.type === SMOOTHIE && !includes([

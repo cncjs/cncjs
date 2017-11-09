@@ -12,7 +12,7 @@ import {
     // Units
     IMPERIAL_UNITS,
     METRIC_UNITS,
-    // Grbl
+    // Controller
     GRBL,
     GRBL_MACHINE_STATE_IDLE,
     GRBL_MACHINE_STATE_RUN,
@@ -22,7 +22,7 @@ import {
     GRBL_MACHINE_STATE_SLEEP,
     GRBL_MACHINE_STATE_ALARM,
     GRBL_MACHINE_STATE_CHECK,
-    // Smoothie
+    MARLIN,
     SMOOTHIE,
     SMOOTHIE_MACHINE_STATE_IDLE,
     SMOOTHIE_MACHINE_STATE_RUN,
@@ -32,7 +32,6 @@ import {
     SMOOTHIE_MACHINE_STATE_SLEEP,
     SMOOTHIE_MACHINE_STATE_ALARM,
     SMOOTHIE_MACHINE_STATE_CHECK,
-    // TinyG
     TINYG,
     TINYG_MACHINE_STATE_INITIALIZING,
     TINYG_MACHINE_STATE_READY,
@@ -111,6 +110,10 @@ class PrimaryToolbar extends PureComponent {
                 [GRBL_MACHINE_STATE_ALARM]: i18n.t('controller:Grbl.machineState.alarm'),
                 [GRBL_MACHINE_STATE_CHECK]: i18n.t('controller:Grbl.machineState.check')
             }[machineState];
+        }
+
+        if (controllerType === MARLIN) {
+            // Marlin does not have machine state
         }
 
         if (controllerType === SMOOTHIE) {

@@ -10,6 +10,8 @@ import i18n from '../../lib/i18n';
 import {
     // Grbl
     GRBL,
+    // Marlin
+    MARLIN,
     // Smoothie
     SMOOTHIE,
     // TinyG
@@ -32,6 +34,10 @@ class Laser extends PureComponent {
 
         if (controllerType === GRBL) {
             const ovS = _.get(controllerState, 'ov[2]', []);
+            scale = Number(ovS) || 0;
+        }
+        if (controllerType === MARLIN) {
+            const ovS = _.get(controllerState, 'ovS');
             scale = Number(ovS) || 0;
         }
         if (controllerType === SMOOTHIE) {
@@ -74,7 +80,10 @@ class Laser extends PureComponent {
                                             controller.command('override:spindle', 10);
                                         }}
                                     >
-                                        <i className="fa fa-arrow-up fa-fw" />10%
+                                        <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
+                                        <span style={{ marginLeft: 5 }}>
+                                            -10%
+                                        </span>
                                     </RepeatButton>
                                     <RepeatButton
                                         className="btn btn-default"
@@ -84,7 +93,10 @@ class Laser extends PureComponent {
                                             controller.command('override:spindle', -10);
                                         }}
                                     >
-                                        <i className="fa fa-arrow-down fa-fw" />10%
+                                        <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
+                                        <span style={{ marginLeft: 5 }}>
+                                            -1%
+                                        </span>
                                     </RepeatButton>
                                     <RepeatButton
                                         className="btn btn-default"
@@ -94,7 +106,10 @@ class Laser extends PureComponent {
                                             controller.command('override:spindle', 1);
                                         }}
                                     >
-                                        <i className="fa fa-arrow-up fa-fw" />1%
+                                        <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
+                                        <span style={{ marginLeft: 5 }}>
+                                            1%
+                                        </span>
                                     </RepeatButton>
                                     <RepeatButton
                                         className="btn btn-default"
@@ -104,7 +119,10 @@ class Laser extends PureComponent {
                                             controller.command('override:spindle', -1);
                                         }}
                                     >
-                                        <i className="fa fa-arrow-down fa-fw" />1%
+                                        <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
+                                        <span style={{ marginLeft: 5 }}>
+                                            10%
+                                        </span>
                                     </RepeatButton>
                                     <button
                                         type="button"

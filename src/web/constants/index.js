@@ -4,6 +4,7 @@ export const METRIC_UNITS = 'mm';
 
 // Controller
 export const GRBL = 'Grbl';
+export const MARLIN = 'Marlin';
 export const SMOOTHIE = 'Smoothie';
 export const TINYG = 'TinyG';
 

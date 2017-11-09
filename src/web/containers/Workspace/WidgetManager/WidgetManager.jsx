@@ -1,8 +1,11 @@
-import _ from 'lodash';
+import difference from 'lodash/difference';
+import find from 'lodash/find';
+import includes from 'lodash/includes';
+import union from 'lodash/union';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Modal from '../../../components/Modal';
-import { GRBL, SMOOTHIE, TINYG } from '../../../constants';
+import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../../constants';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
@@ -42,6 +45,13 @@ class WidgetManager extends PureComponent {
             id: 'grbl',
             caption: i18n._('Grbl Widget'),
             details: i18n._('This widget shows the Grbl state and provides Grbl specific features.'),
+            visible: true,
+            disabled: false
+        },
+        {
+            id: 'marlin',
+            caption: i18n._('Marlin Widget'),
+            details: i18n._('This widget shows the Marlin state and provides Marlin specific features.'),
             visible: true,
             disabled: false
         },
@@ -124,6 +134,9 @@ class WidgetManager extends PureComponent {
             if (widgetItem.id === 'grbl' && !_.includes(controller.availableControllers, GRBL)) {
                 return false;
             }
+            if (widgetItem.id === 'marlin' && !includes(controller.availableControllers, MARLIN)) {
+                return false;
+            }
             if (widgetItem.id === 'smoothie' && !_.includes(controller.availableControllers, SMOOTHIE)) {
                 return false;
             }
@@ -141,14 +154,11 @@ class WidgetManager extends PureComponent {
     handleSave() {
         this.setState({ show: false });
 
-        const activeWidgets = _(this.widgetList)
+        const allWidgets = this.widgetList.map(item => item.id);
+        const activeWidgets = this.widgetList
             .filter(item => item.visible)
-            .map(item => item.id)
-            .value();
-        const inactiveWidgets = _(this.widgetList)
-            .map('id')
-            .difference(activeWidgets)
-            .value();
+            .map(item => item.id);
+        const inactiveWidgets = difference(allWidgets, activeWidgets);
 
         this.props.onSave(activeWidgets, inactiveWidgets);
     }
@@ -156,7 +166,7 @@ class WidgetManager extends PureComponent {
         this.setState({ show: false });
     }
     handleChange(id, checked) {
-        let o = _.find(this.widgetList, { id: id });
+        let o = find(this.widgetList, { id: id });
         if (o) {
             o.visible = checked;
         }
@@ -168,10 +178,10 @@ class WidgetManager extends PureComponent {
             .map(widgetId => widgetId.split(':')[0]);
         const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
             .map(widgetId => widgetId.split(':')[0]);
-        const activeWidgets = _.union(defaultWidgets, primaryWidgets, secondaryWidgets);
+        const activeWidgets = union(defaultWidgets, primaryWidgets, secondaryWidgets);
 
         this.widgetList.forEach(widget => {
-            if (_.includes(activeWidgets, widget.id)) {
+            if (includes(activeWidgets, widget.id)) {
                 widget.visible = true;
             } else {
                 widget.visible = false;

@@ -8,13 +8,14 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import Sortable from 'react-sortablejs';
 import uuid from 'uuid';
-import { GRBL, SMOOTHIE, TINYG } from '../../constants';
+import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../constants';
 import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
-import portal from '../../lib/portal';
 import controller from '../../lib/controller';
+import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
+import portal from '../../lib/portal';
 import store from '../../store';
 import Widget from './Widget';
 import styles from './widgets.styl';
@@ -179,6 +180,9 @@ class SecondaryWidgets extends Component {
                 if (name === 'grbl' && !includes(controller.availableControllers, GRBL)) {
                     return false;
                 }
+                if (name === 'marlin' && !includes(controller.availableControllers, MARLIN)) {
+                    return false;
+                }
                 if (name === 'smoothie' && !includes(controller.availableControllers, SMOOTHIE)) {
                     return false;
                 }
@@ -226,7 +230,7 @@ class SecondaryWidgets extends Component {
                     onEnd: this.props.onDragEnd
                 }}
                 onChange={(order) => {
-                    this.setState({ widgets: order });
+                    this.setState({ widgets: ensureArray(order) });
                 }}
             >
                 {widgets}

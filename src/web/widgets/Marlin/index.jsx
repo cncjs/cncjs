@@ -1,34 +1,22 @@
-import includes from 'lodash/includes';
-import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import i18n from '../../lib/i18n';
+import controller from '../../lib/controller';
 import WidgetConfig from '../WidgetConfig';
-import Laser from './Laser';
+import Marlin from './Marlin';
+import Controller from './Controller';
 import {
-    // Controller
-    GRBL,
-    GRBL_MACHINE_STATE_IDLE,
-    GRBL_MACHINE_STATE_RUN,
-    MARLIN,
-    SMOOTHIE,
-    SMOOTHIE_MACHINE_STATE_IDLE,
-    SMOOTHIE_MACHINE_STATE_RUN,
-    TINYG,
-    TINYG_MACHINE_STATE_READY,
-    TINYG_MACHINE_STATE_STOP,
-    TINYG_MACHINE_STATE_END,
-    TINYG_MACHINE_STATE_RUN,
-    // Workflow
-    WORKFLOW_STATE_RUNNING
+    MARLIN
 } from '../../constants';
+import {
+    MODAL_NONE,
+    MODAL_CONTROLLER
+} from './constants';
 import styles from './index.styl';
 
-class LaserWidget extends PureComponent {
+class MarlinWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -58,103 +46,80 @@ class LaserWidget extends PureComponent {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
         },
-        toggleLaserTest: () => {
-            const expanded = this.state.panel.laserTest.expanded;
+        openModal: (name = MODAL_NONE, params = {}) => {
+            this.setState({
+                modal: {
+                    name: name,
+                    params: params
+                }
+            });
+        },
+        closeModal: () => {
+            this.setState({
+                modal: {
+                    name: MODAL_NONE,
+                    params: {}
+                }
+            });
+        },
+        updateModalParams: (params = {}) => {
+            this.setState({
+                modal: {
+                    ...this.state.modal,
+                    params: {
+                        ...this.state.modal.params,
+                        ...params
+                    }
+                }
+            });
+        },
+        toggleModalGroups: () => {
+            const expanded = this.state.panel.modalGroups.expanded;
 
             this.setState({
                 panel: {
                     ...this.state.panel,
-                    laserTest: {
-                        ...this.state.panel.laserTest,
+                    modalGroups: {
+                        ...this.state.panel.modalGroups,
                         expanded: !expanded
                     }
                 }
             });
-        },
-        changeLaserTestPower: (value) => {
-            const power = Number(value) || 0;
-            this.setState({
-                test: {
-                    ...this.state.test,
-                    power
-                }
-            });
-        },
-        changeLaserTestDuration: (event) => {
-            const value = event.target.value;
-            if (typeof value === 'string' && value.trim() === '') {
-                this.setState({
-                    test: {
-                        ...this.state.test,
-                        duration: ''
-                    }
-                });
-            } else {
-                this.setState({
-                    test: {
-                        ...this.state.test,
-                        duration: ensurePositiveNumber(value)
-                    }
-                });
-            }
-        },
-        changeLaserTestMaxS: (event) => {
-            const value = event.target.value;
-            if (typeof value === 'string' && value.trim() === '') {
-                this.setState({
-                    test: {
-                        ...this.state.test,
-                        maxS: ''
-                    }
-                });
-            } else {
-                this.setState({
-                    test: {
-                        ...this.state.test,
-                        maxS: ensurePositiveNumber(value)
-                    }
-                });
-            }
-        },
-        laserTestOn: () => {
-            const { power, duration, maxS } = this.state.test;
-            controller.command('lasertest', power, duration, maxS);
-        },
-        laserTestOff: () => {
-            controller.command('lasertest', 0);
         }
     };
     controllerEvents = {
-        'connection:open': (options) => {
-            const { ident } = options;
-            this.setState(state => ({
-                connection: {
-                    ...state.connection,
-                    ident: ident
-                }
-            }));
+        'serialport:open': (options) => {
+            const { port, controllerType } = options;
+            this.setState({
+                isReady: controllerType === MARLIN,
+                port: port
+            });
         },
-        'connection:close': (options) => {
+        'serialport:close': (options) => {
             const initialState = this.getInitialState();
             this.setState({ ...initialState });
         },
         'controller:settings': (type, controllerSettings) => {
-            this.setState(state => ({
-                controller: {
-                    ...state.controller,
-                    type: type,
-                    settings: controllerSettings
-                }
-            }));
+            if (type === MARLIN) {
+                this.setState(state => ({
+                    controller: {
+                        ...state.controller,
+                        type: type,
+                        settings: controllerSettings
+                    }
+                }));
+            }
         },
         'controller:state': (type, controllerState) => {
-            this.setState(state => ({
-                controller: {
-                    ...state.controller,
-                    type: type,
-                    state: controllerState
-                }
-            }));
+            if (type === MARLIN) {
+                this.setState(state => ({
+                    controller: {
+                        ...state.controller,
+                        type: type,
+                        state: controllerState
+                    }
+                }));
+            }
         }
     };
 
@@ -167,44 +132,32 @@ class LaserWidget extends PureComponent {
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
-            panel,
-            test
+            panel
         } = this.state;
 
         this.config.set('minimized', minimized);
-        this.config.set('panel.laserTest.expanded', panel.laserTest.expanded);
-        if (isNumber(test.power)) {
-            this.config.set('test.power', test.power);
-        }
-        if (isNumber(test.duration)) {
-            this.config.set('test.duration', test.duration);
-        }
-        if (isNumber(test.maxS)) {
-            this.config.set('test.maxS', test.maxS);
-        }
+        this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            canClick: false,
+            isReady: (controller.loadedControllers.length === 1) || (controller.type === MARLIN),
+            canClick: true, // Defaults to true
+            port: controller.port,
             controller: {
                 type: controller.type,
                 settings: controller.settings,
                 state: controller.state
             },
-            connection: {
-                ident: controller.connection.ident
+            modal: {
+                name: MODAL_NONE,
+                params: {}
             },
             panel: {
-                laserTest: {
-                    expanded: this.config.get('panel.laserTest.expanded')
+                modalGroups: {
+                    expanded: this.config.get('panel.modalGroups.expanded')
                 }
-            },
-            test: {
-                power: this.config.get('test.power', 0),
-                duration: this.config.get('test.duration', 0),
-                maxS: this.config.get('test.maxS', 1000)
             }
         };
     }
@@ -221,45 +174,13 @@ class LaserWidget extends PureComponent {
         });
     }
     canClick() {
-        const machineState = controller.getMachineState();
-        const state = this.state;
+        const { port } = this.state;
+        const { type } = this.state.controller;
 
-        if (!controller.connection.ident) {
+        if (!port) {
             return false;
         }
-
-        if (controller.type === GRBL && !includes([
-            GRBL_MACHINE_STATE_IDLE,
-            GRBL_MACHINE_STATE_RUN
-        ], machineState)) {
-            return false;
-        }
-
-        if (controller.type === MARLIN) {
-            // Marlin does not have machine state
-        }
-
-        if (controller.type === SMOOTHIE && !includes([
-            SMOOTHIE_MACHINE_STATE_IDLE,
-            SMOOTHIE_MACHINE_STATE_RUN
-        ], machineState)) {
-            return false;
-        }
-
-        if (controller.type === TINYG && !includes([
-            TINYG_MACHINE_STATE_READY,
-            TINYG_MACHINE_STATE_STOP,
-            TINYG_MACHINE_STATE_END,
-            TINYG_MACHINE_STATE_RUN
-        ], machineState)) {
-            return false;
-        }
-
-        if (controller.workflow.state === WORKFLOW_STATE_RUNNING) {
-            return false;
-        }
-
-        if (!(isNumber(state.test.power) && isNumber(state.test.duration) && isNumber(state.test.maxS))) {
+        if (type !== MARLIN) {
             return false;
         }
 
@@ -267,7 +188,7 @@ class LaserWidget extends PureComponent {
     }
     render() {
         const { widgetId } = this.props;
-        const { minimized, isFullscreen } = this.state;
+        const { minimized, isFullscreen, isReady } = this.state;
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
             ...this.state,
@@ -288,9 +209,43 @@ class LaserWidget extends PureComponent {
                         {isForkedWidget &&
                         <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
-                        {i18n._('Laser')}
+                        Marlin
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
+                        {isReady &&
+                        <Widget.Button
+                            onClick={(event) => {
+                                actions.openModal(MODAL_CONTROLLER);
+                            }}
+                        >
+                            <i className="fa fa-info" />
+                        </Widget.Button>
+                        }
+                        {isReady &&
+                        <Widget.DropdownButton
+                            toggle={<i className="fa fa-th-large" />}
+                        >
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('M105')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Get Extruder Temperature (M105)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('M114')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Get Current Position (M114)')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem
+                                onSelect={() => controller.writeln('M115')}
+                                disabled={!state.canClick}
+                            >
+                                {i18n._('Get Firmware Version and Capabilities (M115)')}
+                            </Widget.DropdownMenuItem>
+                        </Widget.DropdownButton>
+                        }
+                        {isReady &&
                         <Widget.Button
                             disabled={isFullscreen}
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
@@ -304,6 +259,7 @@ class LaserWidget extends PureComponent {
                                 )}
                             />
                         </Widget.Button>
+                        }
                         <Widget.DropdownButton
                             title={i18n._('More')}
                             toggle={<i className="fa fa-ellipsis-v" />}
@@ -317,7 +273,7 @@ class LaserWidget extends PureComponent {
                                 }
                             }}
                         >
-                            <Widget.DropdownMenuItem eventKey="fullscreen">
+                            <Widget.DropdownMenuItem eventKey="fullscreen" disabled={!isReady}>
                                 <i
                                     className={classNames(
                                         'fa',
@@ -342,20 +298,25 @@ class LaserWidget extends PureComponent {
                         </Widget.DropdownButton>
                     </Widget.Controls>
                 </Widget.Header>
+                {isReady &&
                 <Widget.Content
                     className={classNames(
-                        styles.widgetContent,
+                        styles['widget-content'],
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    <Laser
+                    {state.modal.name === MODAL_CONTROLLER &&
+                    <Controller state={state} actions={actions} />
+                    }
+                    <Marlin
                         state={state}
                         actions={actions}
                     />
                 </Widget.Content>
+                }
             </Widget>
         );
     }
 }
 
-export default LaserWidget;
+export default MarlinWidget;
