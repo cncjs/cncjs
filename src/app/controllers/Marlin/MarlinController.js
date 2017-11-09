@@ -128,7 +128,10 @@ class MarlinController {
                 }
 
                 const nextState = {
-                    ...this.controller.state
+                    ...this.controller.state,
+                    modal: {
+                        ...this.controller.state.modal
+                    }
                 };
 
                 interpret(line, (cmd, params) => {
@@ -199,14 +202,13 @@ class MarlinController {
                         const coolant = nextState.modal.coolant;
 
                         // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
-                        if (cmd === 'M9') {
+                        if (cmd === 'M9' || coolant === 'M9') {
                             nextState.modal.coolant = cmd;
-                        } else if (Array.isArray(coolant)) {
-                            nextState.modal.coolant = _.intersection(['M7', 'M8'], coolant);
-                        } else if (cmd !== coolant) {
-                            nextState.modal.coolant = _.intersection(['M7', 'M8'], [coolant, cmd]);
                         } else {
-                            nextState.modal.coolant = cmd;
+                            nextState.modal.coolant = _.uniq(ensureArray(coolant).concat(cmd)).sort();
+                            if (nextState.modal.coolant.length === 1) {
+                                nextState.modal.coolant = nextState.modal.coolant[0];
+                            }
                         }
                     }
                 });
