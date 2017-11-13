@@ -52,7 +52,7 @@
     "socketio-jwt": "~4.5.0",
     "spawn-default-shell": "~2.0.0",
     "static-eval": "~2.0.0",
-    "superagent": "~3.8.0",
+    "superagent": "~3.8.1",
     "uuid": "~3.1.0",
     "watch": "~1.0.2",
     "webappengine": "~1.2.0",
