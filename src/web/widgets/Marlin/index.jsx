@@ -73,6 +73,19 @@ class MarlinWidget extends PureComponent {
                 }
             });
         },
+        toggleStatusReports: () => {
+            const expanded = this.state.panel.statusReports.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    statusReports: {
+                        ...this.state.panel.statusReports,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
         toggleModalGroups: () => {
             const expanded = this.state.panel.modalGroups.expanded;
 
@@ -155,6 +168,9 @@ class MarlinWidget extends PureComponent {
                 params: {}
             },
             panel: {
+                statusReports: {
+                    expanded: this.config.get('panel.statusReports.expanded')
+                },
                 modalGroups: {
                     expanded: this.config.get('panel.modalGroups.expanded')
                 }

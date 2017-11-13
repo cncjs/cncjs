@@ -143,8 +143,10 @@ class Workspace extends PureComponent {
                 M0: i18n._('M0 Program Pause'),
                 M1: i18n._('M1 Program Pause'),
                 M2: i18n._('M2 Program End'),
+                M30: i18n._('M30 Program End'),
                 M6: i18n._('M6 Tool Change'),
-                M30: i18n._('M30 Program End')
+                M109: i18n._('M109 Set Extruder Temperature'),
+                M190: i18n._('M190 Set Heated Bed Temperature')
             }[data] || data;
 
             this.action.openModal(MODAL_FEEDER_PAUSED, {

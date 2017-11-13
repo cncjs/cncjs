@@ -1,3 +1,4 @@
+/* eslint no-continue: 0 */
 import isEqual from 'lodash/isEqual';
 import get from 'lodash/get';
 import set from 'lodash/set';
@@ -39,8 +40,9 @@ class MarlinLineParser {
             // Error:Printer halted. kill() called!
             MarlinLineParserResultError,
 
-            // ok T:293.0 /0.0 B:25.9 /0.0 B@:0 @:0
-            MarlinLineParserResultTemperature
+            // ok T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
+            //  T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
+            MarlinLineParserResultHeater
         ];
 
         for (let parser of parsers) {
@@ -215,31 +217,67 @@ class MarlinLineParserResultError {
     }
 }
 
-class MarlinLineParserResultTemperature {
-    // ok T:293.0 /0.0 B:25.9 /0.0 B@:0 @:0
+class MarlinLineParserResultHeater {
+    // ok T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
+    // ok T:293.0 /0.0 B:25.9 /0.0 T0:293.0 /0.0 T1:100.0 /0.0 @:0 B@:0 @0:0 @1:0
+    // ok T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0
+    // ok T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0 W:?
+    // ok T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0 W:0
+    //  T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
+    //  T:293.0 /0.0 B:25.9 /0.0 T0:293.0 /0.0 T1:100.0 /0.0 @:0 B@:0 @0:0 @1:0
+    //  T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0
     static parse(line) {
-        const r = line.match(/ok (T:[0-9\.\-]+).*(B:[0-9\.\-]+)/i);
+        let r = line.match(/^(?:ok)?\s*(?:(?:(T|B|T\d+):([0-9\.\-]+)\s+\/([0-9\.\-]+)(?:\s+\((?:[0-9\.\-]+)\))?)|(?:(@|B@|@\d+):([0-9\.\-]+))|(?:(W):(\?|[0-9]+)))/i);
         if (!r) {
             return null;
         }
 
-        const payload = {
-            temperature: {}
+        const heater = {
+            extruder: {},
+            bed: {}
         };
+        const re = /(?:(?:(T|B|T\d+):([0-9\.\-]+)\s+\/([0-9\.\-]+)(?:\s+\((?:[0-9\.\-]+)\))?)|(?:(@|B@|@\d+):([0-9\.\-]+))|(?:(W):(\?|[0-9]+)))/ig;
 
-        const params = [r[1], r[2]];
-        for (let param of params) {
-            const nv = param.match(/^(.+):(.+)/);
-            if (nv) {
-                const key = nv[1].toLowerCase();
-                const value = nv[2];
-                const digits = decimalPlaces(value);
-                payload.temperature[key] = Number(value).toFixed(digits);
+        while ((r = re.exec(line))) {
+            const key = r[1] || r[4] || r[6];
+
+            if (key === 'T') { // T:293.0 /0.0
+                heater.extruder.deg = r[2];
+                heater.extruder.degTarget = r[3];
+                continue;
             }
+
+            if (key === 'B') { // B:60.0 /0.0
+                heater.bed.deg = r[2];
+                heater.bed.degTarget = r[3];
+                continue;
+            }
+
+            if (key === '@') { // @:127
+                heater.extruder.power = r[5];
+                continue;
+            }
+
+            if (key === 'B@') { // B@:127
+                heater.bed.power = r[5];
+                continue;
+            }
+
+            // M109, M190: Print temp & remaining time every 1s while waiting
+            if (key === 'W') { // W:?, W:9, ..., W:0
+                heater.wait = r[7];
+                continue;
+            }
+
+            // Hotends: T0, T1, ...
+            // TODO
         }
+
         return {
-            type: MarlinLineParserResultTemperature,
-            payload: payload
+            type: MarlinLineParserResultHeater,
+            payload: {
+                heater
+            }
         };
     }
 }
@@ -265,14 +303,13 @@ class Marlin extends events.EventEmitter {
         },
         ovF: 100,
         ovS: 100,
-        temperature: {
-            b: '0.0',
-            t: '0.0'
+        heater: {
+            extruder: {}, // { deg, degTarget, power }
+            bed: {} // { deg, degTarget, power }
         },
-        jogFeedrate: 0, // G0
-        feedrate: 0, // G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
-        headStatus: 'off', // M3, M4, M5
-        headPower: 0
+        rapidFeedrate: 0, // Related to G0
+        feedrate: 0, // Related to G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+        spindle: 0 // Related to M3, M4, M5
     };
     settings = {
     };
@@ -344,18 +381,17 @@ class Marlin extends events.EventEmitter {
             this.emit('echo', payload);
             return;
         }
-        if (type === MarlinLineParserResultTemperature) {
+        if (type === MarlinLineParserResultHeater) {
             const nextState = {
                 ...this.state,
-                temperature: {
-                    ...this.state.temperature,
-                    ...payload.temperature
+                heater: {
+                    ...payload.heater
                 }
             };
-            if (!isEqual(this.state.temperature, nextState.temperature)) {
+            if (!isEqual(this.state.heater, nextState.heater)) {
                 this.state = nextState; // enforce change
             }
-            this.emit('temperature', payload);
+            this.emit('heater', payload);
             return;
         }
         if (data.length > 0) {
@@ -387,6 +423,6 @@ export {
     MarlinLineParserResultOk,
     MarlinLineParserResultEcho,
     MarlinLineParserResultError,
-    MarlinLineParserResultTemperature
+    MarlinLineParserResultHeater
 };
 export default Marlin;
