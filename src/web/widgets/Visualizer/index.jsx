@@ -56,8 +56,10 @@ import {
     NOTIFICATION_M0_PROGRAM_PAUSE,
     NOTIFICATION_M1_PROGRAM_PAUSE,
     NOTIFICATION_M2_PROGRAM_END,
+    NOTIFICATION_M30_PROGRAM_END,
     NOTIFICATION_M6_TOOL_CHANGE,
-    NOTIFICATION_M30_PROGRAM_END
+    NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE,
+    NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE
 } from './constants';
 import styles from './index.styl';
 
@@ -578,6 +580,12 @@ class VisualizerWidget extends PureComponent {
                 } else if (data === 'M6') {
                     // M6 Tool Change
                     notification.type = NOTIFICATION_M6_TOOL_CHANGE;
+                } else if (data === 'M109') {
+                    // M109 Set Extruder Temperature
+                    notification.type = NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE;
+                } else if (data === 'M190') {
+                    // M190 Set Heated Bed Temperature
+                    notification.type = NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE;
                 }
             }
 

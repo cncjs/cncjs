@@ -9,7 +9,9 @@ import {
     NOTIFICATION_M1_PROGRAM_PAUSE,
     NOTIFICATION_M2_PROGRAM_END,
     NOTIFICATION_M30_PROGRAM_END,
-    NOTIFICATION_M6_TOOL_CHANGE
+    NOTIFICATION_M6_TOOL_CHANGE,
+    NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE,
+    NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE
 } from './constants';
 
 const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
@@ -32,7 +34,9 @@ const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
                 [NOTIFICATION_M1_PROGRAM_PAUSE]: 'info',
                 [NOTIFICATION_M2_PROGRAM_END]: 'success',
                 [NOTIFICATION_M30_PROGRAM_END]: 'success',
-                [NOTIFICATION_M6_TOOL_CHANGE]: 'info'
+                [NOTIFICATION_M6_TOOL_CHANGE]: 'info',
+                [NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE]: 'warning',
+                [NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE]: 'warning'
             }[type]}
             onDismiss={onDismiss}
         >
@@ -79,6 +83,18 @@ const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
                         {i18n._('Learn more')}
                     </Anchor>
                 </div>
+            </div>
+            }
+            {type === NOTIFICATION_M109_SET_EXTRUDER_TEMPERATURE &&
+            <div>
+                <div><strong>{i18n._('M109 Set Extruder Temperature')}</strong></div>
+                <div>{i18n._('Waiting for the target temperature to be reached...')}</div>
+            </div>
+            }
+            {type === NOTIFICATION_M190_SET_HEATED_BED_TEMPERATURE &&
+            <div>
+                <div><strong>{i18n._('M190 Set Heated Bed Temperature')}</strong></div>
+                <div>{i18n._('Waiting for the target temperature to be reached...')}</div>
             </div>
             }
         </ToastNotification>

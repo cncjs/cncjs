@@ -141,7 +141,7 @@ class MarlinController {
 
                         if (params.F !== undefined) {
                             if (cmd === 'G0') {
-                                nextState.jogFeedrate = params.F;
+                                nextState.rapidFeedrate = params.F;
                             } else {
                                 nextState.feedrate = params.F;
                             }
@@ -188,12 +188,9 @@ class MarlinController {
                         nextState.modal.spindle = cmd;
 
                         if (cmd === 'M3' || cmd === 'M4') {
-                            nextState.headStatus = 'on';
-                            if (params.F !== undefined) {
-                                nextState.headPower = params.F;
+                            if (params.S !== undefined) {
+                                nextState.spindle = params.S;
                             }
-                        } else {
-                            nextState.headStatus = 'off';
                         }
                     }
 
@@ -254,7 +251,19 @@ class MarlinController {
                     // Expression
                     // %_x=posx,_y=posy,_z=posz
                     evaluateExpression(line.slice(1), context);
-                    return '';
+                    return '(NONE)'; // Return a non-empty inline comment for Marlin
+                }
+
+                // M109 Set extruder temperature and wait for the target temperature to be reached
+                if (_.includes(words, 'M109')) {
+                    log.debug(`Wait for extruder temperature to reach target temperature (${line})`);
+                    this.feeder.hold({ data: 'M109' }); // Hold reason
+                }
+
+                // M190 Set heated bed temperature and wait for the target temperature to be reached
+                if (_.includes(words, 'M190')) {
+                    log.debug(`Wait for heated bed temperature to reach target temperature (${line})`);
+                    this.feeder.hold({ data: 'M190' }); // Hold reason
                 }
 
                 { // Program Mode: M0, M1, M2, M30
@@ -339,7 +348,21 @@ class MarlinController {
                     // Expression
                     // %_x=posx,_y=posy,_z=posz
                     evaluateExpression(line.slice(1), context);
-                    return '';
+                    return '(NONE)'; // Return a non-empty inline comment for Marlin
+                }
+
+                // M109 Set extruder temperature and wait for the target temperature to be reached
+                if (_.includes(words, 'M109')) {
+                    log.debug(`Wait for extruder temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
+                    const reason = { data: 'M109' };
+                    this.sender.hold(reason); // Hold reason
+                }
+
+                // M190 Set heated bed temperature and wait for the target temperature to be reached
+                if (_.includes(words, 'M190')) {
+                    log.debug(`Wait for heated bed temperature to reach target temperature (${line}): line=${sent + 1}, sent=${sent}, received=${received}`);
+                    const reason = { data: 'M190' };
+                    this.sender.hold(reason); // Hold reason
                 }
 
                 { // Program Mode: M0, M1, M2, M30
@@ -451,40 +474,6 @@ class MarlinController {
             this.writeln('M105');
         });
 
-        const moveOn = (res, output) => {
-            // Sender
-            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
-                this.sender.ack();
-
-                // Check hold state
-                if (this.sender.state.hold) {
-                    const { sent, received } = this.sender.state;
-                    if (received >= sent) {
-                        log.debug(`Continue sending G-code: sent=${sent}, received=${received}`);
-                        this.sender.unhold();
-                    }
-                }
-
-                this.sender.next();
-                return;
-            }
-
-            if (this.workflow.state === WORKFLOW_STATE_PAUSED) {
-                const { sent, received } = this.sender.state;
-                if (sent > received) {
-                    this.sender.ack();
-                    return;
-                }
-            }
-
-            if (output) {
-                this.emit('serialport:read', res.raw);
-            }
-
-            // Feeder
-            this.feeder.next();
-        };
-
         this.controller.on('echo', (res) => {
             this.emit('serialport:read', res.raw);
         });
@@ -502,7 +491,7 @@ class MarlinController {
             }
         });
 
-        this.controller.on('temperature', (res) => {
+        this.controller.on('heater', (res) => {
             this.emit('serialport:read', res.raw);
         });
 
@@ -516,7 +505,34 @@ class MarlinController {
                 return;
             }
 
-            moveOn(res, true);
+            const { hold, sent, received } = this.sender.state;
+
+            if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                if (hold && (received + 1 >= sent)) {
+                    log.debug(`Continue sending G-code: hold=${hold}, sent=${sent}, received=${received + 1}`);
+                    this.sender.unhold();
+                }
+                this.sender.ack();
+                this.sender.next();
+                return;
+            }
+
+            if ((this.workflow.state === WORKFLOW_STATE_PAUSED) && (received < sent)) {
+                if (!hold) {
+                    log.error('The sender does not hold off during the paused state');
+                }
+                if (received + 1 >= sent) {
+                    log.debug(`Stop sending G-code: hold=${hold}, sent=${sent}, received=${received + 1}`);
+                }
+                this.sender.ack();
+                this.sender.next();
+                return;
+            }
+
+            this.emit('serialport:read', res.raw);
+
+            // Feeder
+            this.feeder.next();
         });
 
         this.controller.on('error', (res) => {
@@ -544,8 +560,6 @@ class MarlinController {
 
         this.controller.on('others', (res) => {
             this.emit('serialport:read', res.raw);
-
-            moveOn(res, false);
         });
 
         // Get the current position of the active nozzle and stepper values.

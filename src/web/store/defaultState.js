@@ -94,6 +94,9 @@ const defaultState = {
         marlin: {
             minimized: false,
             panel: {
+                statusReports: {
+                    expanded: true
+                },
                 modalGroups: {
                     expanded: true
                 }
