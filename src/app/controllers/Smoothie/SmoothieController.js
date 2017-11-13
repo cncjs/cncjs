@@ -386,11 +386,11 @@ class SmoothieController {
             const { hold, sent, received } = this.sender.state;
 
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
-                this.sender.ack();
-                if (hold && (received >= sent)) {
-                    log.debug(`Continue sending G-code: hold=${hold}, sent=${sent}, received=${received}`);
+                if (hold && (received + 1 >= sent)) {
+                    log.debug(`Continue sending G-code: hold=${hold}, sent=${sent}, received=${received + 1}`);
                     this.sender.unhold();
                 }
+                this.sender.ack();
                 this.sender.next();
                 return;
             }
