@@ -1,5 +1,4 @@
 /* eslint import/no-dynamic-require: 0 */
-import series from 'async/series';
 import chainedFunction from 'chained-function';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
@@ -19,6 +18,8 @@ import portal from './lib/portal';
 import controller from './lib/controller';
 import i18n from './lib/i18n';
 import log from './lib/log';
+import series from './lib/promise-series';
+import promisify from './lib/promisify';
 import user from './lib/user';
 import store from './store';
 import defaultState from './store/defaultState';
@@ -48,7 +49,7 @@ const renderPage = () => {
 };
 
 series([
-    (next) => {
+    () => {
         const obj = qs.parse(window.location.search.slice(1));
         const level = {
             trace: TRACE,
@@ -58,17 +59,16 @@ series([
             error: ERROR
         }[obj.log_level || settings.log.level];
         log.setLevel(level);
-        next();
     },
-    (next) => {
+    () => promisify(next => {
         i18next
             .use(XHR)
             .use(LanguageDetector)
             .init(settings.i18next, (t) => {
                 next();
             });
-    },
-    (next) => {
+    })(),
+    () => promisify(next => {
         const locale = i18next.language;
         if (locale === 'en') {
             next();
@@ -80,8 +80,8 @@ series([
             moment().locale(locale);
             next();
         });
-    },
-    (next) => {
+    })(),
+    () => promisify(next => {
         const token = store.get('session.token');
         user.signin({ token: token })
             .then(({ authenticated, token }) => {
@@ -100,8 +100,8 @@ series([
                 }
                 next();
             });
-    }
-], async (err, results) => {
+    })()
+]).then(async () => {
     log.info(`${settings.name} ${settings.version}`);
 
     // Cross-origin communication
@@ -198,4 +198,6 @@ series([
     }
 
     renderPage();
+}).catch(err => {
+    log.error(err);
 });
