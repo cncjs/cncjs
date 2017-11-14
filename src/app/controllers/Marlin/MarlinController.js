@@ -1,9 +1,10 @@
 import _ from 'lodash';
 import * as parser from 'gcode-parser';
-import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_SEND_RESPONSE } from '../../lib/Sender';
+import SerialConnection from '../../lib/SerialConnection';
+import SocketConnection from '../../lib/SocketConnection';
 import Workflow, {
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED,
@@ -17,7 +18,7 @@ import translateWithContext from '../../lib/translateWithContext';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
-import store from '../../store';
+import controllers from '../../store/controllers';
 import Marlin from './Marlin';
 import interpret from './interpret';
 import {
@@ -49,13 +50,15 @@ class MarlinController {
         close: (err) => {
             this.ready = false;
             if (err) {
-                log.warn(`Disconnected from serial port "${this.options.port}":`, err);
+                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
             }
 
             this.close(err => {
-                // Remove controller from store
-                const port = this.options.port;
-                store.unset(`controllers[${JSON.stringify(port)}]`);
+                // Remove controller
+                const ident = this.connection.ident;
+                delete controllers[ident];
+                controllers[ident] = undefined;
 
                 // Destroy controller
                 this.destroy();
@@ -64,7 +67,8 @@ class MarlinController {
         error: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`Unexpected error while reading/writing serial port "${this.options.port}":`, err);
+                log.error(`An unexpected error occurred: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
             }
         }
     };
@@ -103,23 +107,52 @@ class MarlinController {
     // Workflow
     workflow = null;
 
-    constructor(engine, options) {
+    get connectionOptions() {
+        return {
+            ident: this.connection.ident,
+            type: this.connection.type,
+            settings: this.connection.settings
+        };
+    }
+    get isOpen() {
+        return this.connection && this.connection.isOpen;
+    }
+    get isClose() {
+        return !this.isOpen;
+    }
+    get status() {
+        return {
+            type: this.type,
+            connection: {
+                type: _.get(this.connection, 'type', ''),
+                settings: _.get(this.connection, 'settings', {})
+            },
+            sockets: Object.keys(this.sockets).length,
+            ready: this.ready,
+            settings: this.settings,
+            state: this.state,
+            feeder: this.feeder.toJSON(),
+            sender: this.sender.toJSON(),
+            workflow: {
+                state: this.workflow.state
+            }
+        };
+    }
+
+    constructor(engine, connectionType = 'serial', options) {
         if (!engine) {
-            throw new Error('engine must be specified');
+            throw new TypeError(`"engine" must be specified: ${engine}`);
         }
+
+        if (!_.includes(['serial', 'socket'], connectionType)) {
+            throw new TypeError(`"connectionType" is invalid: ${connectionType}`);
+        }
+
+        // Engine
         this.engine = engine;
 
-        const { port, baudrate } = { ...options };
-        this.options = {
-            ...this.options,
-            port: port,
-            baudrate: baudrate
-        };
-
-        // Connection
-        this.connection = new SerialConnection({
-            path: port,
-            baudRate: baudrate,
+        options = {
+            ...options,
             writeFilter: (data) => {
                 const line = data.trim();
 
@@ -216,7 +249,14 @@ class MarlinController {
 
                 return data;
             }
-        });
+        };
+
+        // Connection
+        if (connectionType === 'serial') {
+            this.connection = new SerialConnection(options);
+        } else if (connectionType === 'socket') {
+            this.connection = new SocketConnection(options);
+        }
 
         // Event Trigger
         this.event = new EventTrigger((event, trigger, commands) => {
@@ -741,30 +781,10 @@ class MarlinController {
             this.workflow = null;
         }
     }
-    get status() {
-        return {
-            port: this.options.port,
-            baudrate: this.options.baudrate,
-            sockets: Object.keys(this.sockets),
-            ready: this.ready,
-            controller: {
-                type: this.type,
-                settings: this.settings,
-                state: this.state
-            },
-            feeder: this.feeder.toJSON(),
-            sender: this.sender.toJSON(),
-            workflow: {
-                state: this.workflow.state
-            }
-        };
-    }
     open(callback = noop) {
-        const { port, baudrate } = this.options;
-
         // Assertion check
-        if (this.isOpen()) {
-            log.error(`Cannot open serial port "${port}"`);
+        if (this.isOpen) {
+            log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
             return;
         }
 
@@ -772,32 +792,25 @@ class MarlinController {
         this.connection.on('close', this.connectionEventListener.close);
         this.connection.on('error', this.connectionEventListener.error);
 
-        this.connection.open((err) => {
+        this.connection.open(err => {
             if (err) {
-                log.error(`Error opening serial port "${port}":`, err);
-                this.emit('serialport:error', { err: err, port: port });
-                callback(err); // notify error
+                log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
+                this.emit('connection:error', this.connectionOptions, err);
+                callback && callback(err);
                 return;
             }
 
-            this.emit('serialport:open', {
-                port: port,
-                baudrate: baudrate,
-                controllerType: this.type,
-                inuse: true
-            });
+            this.emit('connection:open', this.connectionOptions);
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('serialport:change', {
-                    port: port,
-                    inuse: true
-                });
+                this.engine.io.emit('connection:change', this.connectionOptions, true);
             }
 
-            callback(); // register controller
+            callback && callback();
 
-            log.debug(`Connected to serial port "${port}"`);
+            log.debug(`Connection established: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
 
             this.workflow.stop();
 
@@ -811,46 +824,20 @@ class MarlinController {
         });
     }
     close(callback) {
-        const { port } = this.options;
-
-        // Assertion check
-        if (!this.connection) {
-            const err = `Serial port "${port}" is not available`;
-            callback(new Error(err));
-            return;
-        }
-
         // Stop status query
         this.ready = false;
 
-        this.emit('serialport:close', {
-            port: port,
-            inuse: false
-        });
+        this.emit('connection:close', this.connectionOptions);
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('serialport:change', {
-                port: port,
-                inuse: false
-            });
-        }
-
-        if (this.isClose()) {
-            callback(null);
-            return;
+            this.engine.io.emit('connection:change', this.connectionOptions, false);
         }
 
         this.connection.removeAllListeners();
         this.connection.close(callback);
     }
-    isOpen() {
-        return this.connection && this.connection.isOpen;
-    }
-    isClose() {
-        return !(this.isOpen());
-    }
-    addConnection(socket) {
+    addSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
             return;
@@ -859,46 +846,55 @@ class MarlinController {
         log.debug(`Add socket connection: id=${socket.id}`);
         this.sockets[socket.id] = socket;
 
-        //
-        // Send data to newly connected client
-        //
-        if (this.isOpen()) {
-            socket.emit('serialport:open', {
-                port: this.options.port,
-                baudrate: this.options.baudrate,
-                controllerType: this.type,
-                inuse: true
-            });
+        // Controller type
+        socket.emit('controller:type', this.type);
+
+        // Connection
+        if (this.isOpen) {
+            socket.emit('connection:open', this.connectionOptions);
         }
+
+        // Controller settings
         if (!_.isEmpty(this.settings)) {
-            // controller settings
-            socket.emit('controller:settings', MARLIN, this.settings);
+            socket.emit('controller:settings', this.type, this.settings);
             socket.emit('Marlin:settings', this.settings); // Backward compatibility
         }
+
+        // Controller state
         if (!_.isEmpty(this.state)) {
-            // controller state
-            socket.emit('controller:state', MARLIN, this.state);
+            socket.emit('controller:state', this.type, this.state);
             socket.emit('Marlin:state', this.state); // Backward compatibility
         }
+
+        // Feeder status
         if (this.feeder) {
-            // feeder status
             socket.emit('feeder:status', this.feeder.toJSON());
         }
+
+        // Sender status
         if (this.sender) {
-            // sender status
             socket.emit('sender:status', this.sender.toJSON());
 
-            const { name, gcode, context } = this.sender.state;
-            if (gcode) {
-                socket.emit('gcode:load', name, gcode, context);
+            const {
+                name,
+                gcode: content,
+                context
+            } = this.sender.state;
+
+            if (content) {
+                socket.emit('sender:load', {
+                    name: name,
+                    content: content
+                }, context);
             }
         }
+
+        // Workflow state
         if (this.workflow) {
-            // workflow state
             socket.emit('workflow:state', this.workflow.state);
         }
     }
-    removeConnection(socket) {
+    removeSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
             return;
@@ -911,13 +907,13 @@ class MarlinController {
     emit(eventName, ...args) {
         Object.keys(this.sockets).forEach(id => {
             const socket = this.sockets[id];
-            socket.emit.apply(socket, [eventName].concat(args));
+            socket.emit(eventName, ...args);
         });
     }
     command(cmd, ...args) {
         const handler = {
-            'gcode:load': () => {
-                let [name, gcode, context = {}, callback = noop] = args;
+            'sender:load': () => {
+                let [name, content, context = {}, callback = noop] = args;
                 if (typeof context === 'function') {
                     callback = context;
                     context = {};
@@ -928,14 +924,18 @@ class MarlinController {
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
                 const dwell = '%wait ; Wait for the planner queue to empty';
-                const ok = this.sender.load(name, gcode + '\n' + dwell, context);
+                const ok = this.sender.load(name, content + '\n' + dwell, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
                     return;
                 }
 
-                this.emit('gcode:load', name, gcode, context);
-                this.event.trigger('gcode:load');
+                this.emit('sender:load', {
+                    name: name,
+                    content: content
+                }, context);
+
+                this.event.trigger('sender:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
@@ -943,21 +943,17 @@ class MarlinController {
 
                 callback(null, this.sender.toJSON());
             },
-            'gcode:unload': () => {
+            'sender:unload': () => {
                 this.workflow.stop();
 
                 // Sender
                 this.sender.unload();
 
-                this.emit('gcode:unload');
-                this.event.trigger('gcode:unload');
+                this.emit('sender:unload');
+                this.event.trigger('sender:unload');
             },
-            'start': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:start');
-            },
-            'gcode:start': () => {
-                this.event.trigger('gcode:start');
+            'sender:start': () => {
+                this.event.trigger('sender:start');
 
                 this.workflow.start();
 
@@ -967,38 +963,22 @@ class MarlinController {
                 // Sender
                 this.sender.next();
             },
-            'stop': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:stop');
-            },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'gcode:stop': () => {
-                this.event.trigger('gcode:stop');
+            'sender:stop': () => {
+                this.event.trigger('sender:stop');
 
                 this.workflow.stop();
             },
-            'pause': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:pause');
-            },
-            'gcode:pause': () => {
-                this.event.trigger('gcode:pause');
+            'sender:pause': () => {
+                this.event.trigger('sender:pause');
 
                 this.workflow.pause();
             },
-            'resume': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:resume');
-            },
-            'gcode:resume': () => {
-                this.event.trigger('gcode:resume');
+            'sender:resume': () => {
+                this.event.trigger('sender:resume');
 
                 this.workflow.resume();
-            },
-            'feeder:feed': () => {
-                const [commands, context = {}] = args;
-                this.command('gcode', commands, context);
             },
             'feeder:start': () => {
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -1039,7 +1019,7 @@ class MarlinController {
             },
             // Feed Overrides
             // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
-            'feedOverride': () => {
+            'override:feed': () => {
                 const [value] = args;
                 let feedOverride = this.controller.state.ovF;
 
@@ -1063,7 +1043,7 @@ class MarlinController {
             },
             // Spindle Speed Overrides
             // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
-            'spindleOverride': () => {
+            'override:spindle': () => {
                 const [value] = args;
                 let spindleOverride = this.controller.state.ovS;
 
@@ -1085,32 +1065,24 @@ class MarlinController {
                     ovS: spindleOverride
                 };
             },
-            'rapidOverride': () => {
+            'override:rapid': () => {
                 // Unsupported
             },
-            'laser:on': () => {
-                const [power = 0, maxS = 255] = args;
-                const commands = [
-                    'M3S' + ensurePositiveNumber(maxS * (power / 100))
-                ];
-
-                this.command('gcode', commands);
-            },
-            'lasertest:on': () => {
+            'lasertest': () => {
                 const [power = 0, duration = 0, maxS = 255] = args;
-                const commands = [
-                    'M3S' + ensurePositiveNumber(maxS * (power / 100))
-                ];
+
+                if (!power) {
+                    this.command('gcode', 'M5');
+                }
+
+                this.command('gcode', 'M3S' + ensurePositiveNumber(maxS * (power / 100)));
+
                 if (duration > 0) {
                     // G4 [P<time in ms>] [S<time in sec>]
                     // If both S and P are included, S takes precedence.
-                    commands.push('G4 P' + ensurePositiveNumber(duration));
-                    commands.push('M5');
+                    this.command('gcode', 'G4 P' + ensurePositiveNumber(duration));
+                    this.command('gcode', 'M5');
                 }
-                this.command('gcode', commands);
-            },
-            'lasertest:off': () => {
-                this.writeln('M5');
             },
             'gcode': () => {
                 const [commands, context] = args;
@@ -1194,8 +1166,8 @@ class MarlinController {
     }
     write(data, context) {
         // Assertion check
-        if (this.isClose()) {
-            log.error(`Serial port "${this.options.port}" is not accessible`);
+        if (this.isClose) {
+            log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
             return;
         }
 
