@@ -18,16 +18,16 @@ export const getActiveWidgets = () => {
         .map(widgetId => widgetId.split(':')[0]);
     const activeWidgets = union(defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
-            if (widget === 'grbl' && !_.includes(controller.availableControllers, GRBL)) {
+            if (widget === 'grbl' && !includes(controller.availableControllers, GRBL)) {
                 return false;
             }
             if (widget === 'marlin' && !includes(controller.availableControllers, MARLIN)) {
                 return false;
             }
-            if (widget === 'smoothie' && !_.includes(controller.availableControllers, SMOOTHIE)) {
+            if (widget === 'smoothie' && !includes(controller.availableControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widget === 'tinyg' && !_.includes(controller.availableControllers, TINYG)) {
+            if (widget === 'tinyg' && !includes(controller.availableControllers, TINYG)) {
                 return false;
             }
             return true;
@@ -46,26 +46,16 @@ export const getInactiveWidgets = () => {
         .map(widgetId => widgetId.split(':')[0]);
     const inactiveWidgets = difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
-<<<<<<< HEAD
-            if (widget === 'grbl' && !_.includes(controller.availableControllers, GRBL)) {
+            if (widget === 'grbl' && !includes(controller.availableControllers, GRBL)) {
                 return false;
             }
-            if (widget === 'smoothie' && !_.includes(controller.availableControllers, SMOOTHIE)) {
+            if (widget === 'marlin' && !includes(controller.availableControllers, MARLIN)) {
                 return false;
             }
-            if (widget === 'tinyg' && !_.includes(controller.availableControllers, TINYG)) {
-=======
-            if (widget === 'grbl' && !includes(controller.loadedControllers, GRBL)) {
+            if (widget === 'smoothie' && !includes(controller.availableControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widget === 'marlin' && !includes(controller.loadedControllers, MARLIN)) {
-                return false;
-            }
-            if (widget === 'smoothie' && !includes(controller.loadedControllers, SMOOTHIE)) {
-                return false;
-            }
-            if (widget === 'tinyg' && !includes(controller.loadedControllers, TINYG)) {
->>>>>>> 67114e1... Add basic support for Marlin 3D printer firmware
+            if (widget === 'tinyg' && !includes(controller.availableControllers, TINYG)) {
                 return false;
             }
             return true;

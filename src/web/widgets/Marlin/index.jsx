@@ -155,7 +155,7 @@ class MarlinWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            isReady: (controller.loadedControllers.length === 1) || (controller.type === MARLIN),
+            isReady: (controller.availableControllers.length === 1) || (controller.type === MARLIN),
             canClick: true, // Defaults to true
             port: controller.port,
             controller: {
