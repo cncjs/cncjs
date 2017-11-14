@@ -193,7 +193,7 @@ class ConsoleWidget extends PureComponent {
                             title={i18n._('Clear all')}
                             onClick={actions.clearAll}
                         >
-                            <i className="fa fa-ban fa-flip-horizontal" />
+                            <i className="fa fa-eraser" />
                         </Widget.Button>
                         <Widget.Button
                             disabled={isFullscreen}
