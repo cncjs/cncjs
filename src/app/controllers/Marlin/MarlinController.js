@@ -327,9 +327,6 @@ class MarlinController {
                 if (_.includes(words, 'M6')) {
                     log.debug('M6 Tool Change');
                     this.feeder.hold({ data: 'M6' }); // Hold reason
-
-                    // Surround M6 with parentheses to ignore unsupported command error
-                    line = '(M6)';
                 }
 
                 // line="G0 X[posx - 8] Y[ymax]"
@@ -426,9 +423,6 @@ class MarlinController {
                 if (_.includes(words, 'M6')) {
                     log.debug(`M6 Tool Change: line=${sent + 1}, sent=${sent}, received=${received}`);
                     this.workflow.pause({ data: 'M6' });
-
-                    // Surround M6 with parentheses to ignore unsupported command error
-                    line = '(M6)';
                 }
 
                 // line="G0 X[posx - 8] Y[ymax]"
@@ -505,13 +499,8 @@ class MarlinController {
             this.emit('serialport:read', res.raw);
 
             // Set ready flag to true when receiving a start message
+            // Note: It might have chance of receiving garbage characters on startup due to electronic noise.
             this.ready = true;
-
-            // M115: Get Firmware Version and Capabilities
-            this.writeln('M115');
-
-            // M105: Get Extruder Temperature
-            this.writeln('M105');
         });
 
         this.controller.on('echo', (res) => {
@@ -781,6 +770,59 @@ class MarlinController {
             this.workflow = null;
         }
     }
+    initController() {
+        const cmds = [
+            // Wait for the bootloader to complete before sending commands
+            { pauseAfter: 1000 },
+
+            // M115: Get Firmware Version and Capabilities
+            { cmd: 'M115', pauseAfter: 50 },
+
+            // M105: Get Extruder Temperature
+            { cmd: 'M105', pauseAfter: 50 }
+        ];
+
+        const sendInitCommands = (i = 0) => {
+            if (this.isClose()) {
+                // Serial port is closed
+                return;
+            }
+
+            if (i >= cmds.length) {
+                // Set the ready flag to true after sending initialization commands
+                this.ready = true;
+                return;
+            }
+
+            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
+            if (cmd) {
+                this.connection.write(cmd + '\n');
+                log.silly(`> ${cmd}`);
+            }
+            setTimeout(() => {
+                sendInitCommands(i + 1);
+            }, pauseAfter);
+        };
+        sendInitCommands();
+    }
+    get status() {
+        return {
+            port: this.options.port,
+            baudrate: this.options.baudrate,
+            sockets: Object.keys(this.sockets),
+            ready: this.ready,
+            controller: {
+                type: this.type,
+                settings: this.settings,
+                state: this.state
+            },
+            feeder: this.feeder.toJSON(),
+            sender: this.sender.toJSON(),
+            workflow: {
+                state: this.workflow.state
+            }
+        };
+    }
     open(callback = noop) {
         // Assertion check
         if (this.isOpen) {
@@ -821,6 +863,9 @@ class MarlinController {
                 // Unload G-code
                 this.command('unload');
             }
+
+            // Initialize controller
+            this.initController();
         });
     }
     close(callback) {
