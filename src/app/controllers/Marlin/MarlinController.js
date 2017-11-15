@@ -538,6 +538,9 @@ class MarlinController {
         this.controller.on('ok', (res) => {
             // M105 will emit an 'ok' event (w/ empty response) prior to the 'heater' event
             if (!res && this.actionMask.queryTemperatureReport) {
+                if (this.actionMask.replyTemperatureReport) {
+                    this.emit('serialport:read', res.raw);
+                }
                 return;
             }
 
@@ -611,7 +614,7 @@ class MarlinController {
         });
 
         // Get the current position of the active nozzle and stepper values.
-        const queryPosition = () => {
+        const queryPosition = _.throttle(() => {
             // Check the ready flag
             if (!(this.ready)) {
                 return;
@@ -619,6 +622,7 @@ class MarlinController {
 
             const now = new Date().getTime();
 
+            /*
             const lastQueryTime = this.actionTime.queryPosition;
             if (lastQueryTime > 0) {
                 const timespan = Math.abs(now - lastQueryTime);
@@ -631,6 +635,7 @@ class MarlinController {
                     this.actionMask.queryPosition.reply = false;
                 }
             }
+            */
 
             if (this.actionMask.queryPosition.state || this.actionMask.queryPosition.reply) {
                 return;
@@ -642,7 +647,7 @@ class MarlinController {
                 this.actionTime.queryPosition = now;
                 this.connection.write('M114\n');
             }
-        };
+        }, 1000);
 
         // Request a temperature report to be sent to the host at some point in the future.
         const queryTemperatureReport = _.throttle(() => {
@@ -653,6 +658,7 @@ class MarlinController {
 
             const now = new Date().getTime();
 
+            /*
             const lastQueryTime = this.actionTime.queryTemperatureReport;
             if (lastQueryTime > 0) {
                 const timespan = Math.abs(now - lastQueryTime);
@@ -664,6 +670,7 @@ class MarlinController {
                     this.actionMask.queryTemperatureReport = false;
                 }
             }
+            */
 
             if (this.actionMask.queryTemperatureReport) {
                 return;
