@@ -405,6 +405,9 @@ class Marlin extends events.EventEmitter {
             }
 
             this.emit('heater', payload);
+            if (payload.heater.reply) {
+                this.emit('ok', 'temp ok');
+            }
             return;
         }
         if (data.length > 0) {
