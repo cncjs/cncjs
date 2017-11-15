@@ -472,8 +472,10 @@ class MarlinController {
         });
 
         this.controller.on('pos', (res) => {
-            this.actionMask.queryPosition.state = false;
-            this.actionMask.queryPosition.reply = true;
+            if (this.actionMask.queryPosition.state) {
+                this.actionMask.queryPosition.state = false;
+                this.actionMask.queryPosition.reply = true;
+            }
 
             if (this.actionMask.replyPosition) {
                 this.emit('serialport:read', res.raw);

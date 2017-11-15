@@ -234,7 +234,8 @@ class MarlinLineParserResultHeater {
 
         const heater = {
             extruder: {},
-            bed: {}
+            bed: {},
+            reply: line.startsWith('ok')
         };
         const re = /(?:(?:(T|B|T\d+):([0-9\.\-]+)\s+\/([0-9\.\-]+)(?:\s+\((?:[0-9\.\-]+)\))?)|(?:(@|B@|@\d+):([0-9\.\-]+))|(?:(W):(\?|[0-9]+)))/ig;
 
@@ -392,6 +393,10 @@ class Marlin extends events.EventEmitter {
                 this.state = nextState; // enforce change
             }
             this.emit('heater', payload);
+            console.log(payload);
+            if (payload.heater.reply) {
+                this.emit('ok', 'temp ok');
+            }
             return;
         }
         if (data.length > 0) {
