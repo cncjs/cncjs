@@ -527,13 +527,16 @@ class MarlinController {
         });
 
         this.controller.on('ok', (res) => {
-            if (this.actionMask.queryPosition.reply) {
-                if (this.actionMask.replyPosition) {
-                    this.actionMask.replyPosition = false;
-                    this.emit('serialport:read', res.raw);
+            // M105 will emit an 'ok' event with empty raw
+            if (res.raw) {
+                if (this.actionMask.queryPosition.reply) {
+                    if (this.actionMask.replyPosition) {
+                        this.actionMask.replyPosition = false;
+                        this.emit('serialport:read', res.raw);
+                    }
+                    this.actionMask.queryPosition.reply = false;
+                    return;
                 }
-                this.actionMask.queryPosition.reply = false;
-                return;
             }
 
             const { hold, sent, received } = this.sender.state;
@@ -560,7 +563,9 @@ class MarlinController {
                 return;
             }
 
-            this.emit('serialport:read', res.raw);
+            if (res.raw) {
+                this.emit('serialport:read', res.raw);
+            }
 
             // Feeder
             this.feeder.next();
