@@ -389,14 +389,18 @@ class Marlin extends events.EventEmitter {
                     ...payload.heater
                 }
             };
+
             if (!isEqual(this.state.heater, nextState.heater)) {
                 this.state = nextState; // enforce change
             }
+
+            // > M105
+            // < ok T:27.0 /0.0 B:26.8 /0.0 B@:0 @:0
             if (payload.ok) {
-                // > M105
-                // < ok T:27.0 /0.0 B:26.8 /0.0 B@:0 @:0
-                this.emit('ok', { raw: '' });
+                // Emit an 'ok' event with empty response
+                this.emit('ok');
             }
+
             this.emit('heater', payload);
             return;
         }
