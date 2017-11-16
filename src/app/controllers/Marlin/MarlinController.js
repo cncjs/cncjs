@@ -531,6 +531,7 @@ class MarlinController {
             }
 
             if (this.actionMask.replyTemperatureReport) {
+                this.actionMask.replyTemperatureReport = false;
                 this.emit('serialport:read', res.raw);
             }
         });
