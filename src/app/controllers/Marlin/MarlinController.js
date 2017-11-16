@@ -813,24 +813,6 @@ class MarlinController {
         };
         sendInitCommands();
     }
-    get status() {
-        return {
-            port: this.options.port,
-            baudrate: this.options.baudrate,
-            sockets: Object.keys(this.sockets),
-            ready: this.ready,
-            controller: {
-                type: this.type,
-                settings: this.settings,
-                state: this.state
-            },
-            feeder: this.feeder.toJSON(),
-            sender: this.sender.toJSON(),
-            workflow: {
-                state: this.workflow.state
-            }
-        };
-    }
     open(callback = noop) {
         // Assertion check
         if (this.isOpen) {
