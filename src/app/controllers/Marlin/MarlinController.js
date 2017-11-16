@@ -527,8 +527,9 @@ class MarlinController {
         });
 
         this.controller.on('ok', (res) => {
-            // M105 will emit an 'ok' event with empty raw
-            if (res.raw) {
+            // Do not change position query state for empty response
+            // Note: M105 will emit an 'ok' event with empty response
+            if (res) {
                 if (this.actionMask.queryPosition.reply) {
                     if (this.actionMask.replyPosition) {
                         this.actionMask.replyPosition = false;
@@ -563,7 +564,7 @@ class MarlinController {
                 return;
             }
 
-            if (res.raw) {
+            if (res) {
                 this.emit('serialport:read', res.raw);
             }
 
