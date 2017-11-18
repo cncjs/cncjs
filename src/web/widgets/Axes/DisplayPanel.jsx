@@ -185,6 +185,24 @@ class DisplayPanel extends PureComponent {
                         </tr>
                     </thead>
                     <tbody>
+                        {(machinePosition.e !== undefined && workPosition.e !== undefined) &&
+                        <tr>
+                            <td className={styles.coordinate}>E</td>
+                            <td className={styles.machinePosition}>
+                                <span className={styles.integerPart}>{machinePosition.e.split('.')[0]}</span>
+                                <span className={styles.decimalPoint}>.</span>
+                                <span className={styles.fractionalPart}>{machinePosition.e.split('.')[1]}</span>
+                                <span className={styles.dimensionUnits}>{lengthUnits}</span>
+                            </td>
+                            <td className={styles.workPosition}>
+                                <span className={styles.integerPart}>{workPosition.x.split('.')[0]}</span>
+                                <span className={styles.decimalPoint}>.</span>
+                                <span className={styles.fractionalPart}>{workPosition.x.split('.')[1]}</span>
+                                <span className={styles.dimensionUnits}>{lengthUnits}</span>
+                            </td>
+                            <td className={styles.action} />
+                        </tr>
+                        }
                         {includes(axes, 'x') &&
                         <tr>
                             <td className={styles.coordinate}>X</td>
