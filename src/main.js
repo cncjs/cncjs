@@ -1,4 +1,4 @@
-/* eslint import/no-unresolved: 0 */
+import 'babel-polyfill';
 import { app, Menu } from 'electron';
 import chalk from 'chalk';
 import mkdirp from 'mkdirp';
@@ -35,12 +35,9 @@ const main = () => {
     const userData = app.getPath('userData');
     mkdirp.sync(userData);
 
-    app.on('ready', () => {
-        cnc({ host: '127.0.0.1', port: 0 }, (err, data) => {
-            if (err) {
-                console.error('Error:', err);
-                return;
-            }
+    app.on('ready', async () => {
+        try {
+            const data = await cnc();
 
             const { address, port, routes } = { ...data };
             if (!(address && port)) {
@@ -56,7 +53,9 @@ const main = () => {
                 title: `${pkg.name} ${pkg.version}`,
                 url: `http://${address}:${port}`
             });
-        });
+        } catch (err) {
+            console.error('Error:', err);
+        }
     });
 };
 

@@ -10,4 +10,6 @@ if (process.env.NODE_ENV === 'development') {
     cnc = require('../dist/cnc/cnc').default;
 }
 
-cnc();
+cnc().catch(err => {
+    console.error('Error:', err);
+});
