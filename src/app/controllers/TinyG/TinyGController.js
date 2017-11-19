@@ -179,12 +179,8 @@ class TinyGController {
             dataFilter: (line, context) => {
                 // Remove comments that start with a semicolon `;`
                 // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
-                line = line.replace(/\s*;.*/g, '');
-
+                line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
-
-                const data = parser.parseLine(line, { flatten: true });
-                const words = ensureArray(data.words);
 
                 if (line[0] === '%') {
                     // %wait
@@ -198,6 +194,12 @@ class TinyGController {
                     evaluateExpression(line.slice(1), context);
                     return '';
                 }
+
+                // line="G0 X[posx - 8] Y[ymax]"
+                // > "G0 X2 Y50"
+                line = translateWithContext(line, context);
+                const data = parser.parseLine(line, { flatten: true });
+                const words = ensureArray(data.words);
 
                 { // Program Mode: M0, M1, M2, M30
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
@@ -222,9 +224,7 @@ class TinyGController {
                     this.feeder.hold({ data: 'M6' }); // Hold reason
                 }
 
-                // line="G0 X[posx - 8] Y[ymax]"
-                // > "G0 X2 Y50"
-                return translateWithContext(line, context);
+                return line;
             }
         });
         this.feeder.on('data', (line = '', context = {}) => {
@@ -257,12 +257,9 @@ class TinyGController {
             dataFilter: (line, context) => {
                 // Remove comments that start with a semicolon `;`
                 // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
-                line = line.replace(/\s*;.*/g, '');
-
+                line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
 
-                const data = parser.parseLine(line, { flatten: true });
-                const words = ensureArray(data.words);
                 const { sent, received } = this.sender.state;
 
                 if (line[0] === '%') {
@@ -278,6 +275,12 @@ class TinyGController {
                     evaluateExpression(line.slice(1), context);
                     return '';
                 }
+
+                // line="G0 X[posx - 8] Y[ymax]"
+                // > "G0 X2 Y50"
+                line = translateWithContext(line, context);
+                const data = parser.parseLine(line, { flatten: true });
+                const words = ensureArray(data.words);
 
                 { // Program Mode: M0, M1, M2, M30
                     const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
@@ -302,9 +305,7 @@ class TinyGController {
                     this.workflow.pause({ data: 'M6' });
                 }
 
-                // line="G0 X[posx - 8] Y[ymax]"
-                // > "G0 X2 Y50"
-                return translateWithContext(line, context);
+                return line;
             }
         });
         this.sender.on('data', (line = '', context = {}) => {

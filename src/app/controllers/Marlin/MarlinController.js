@@ -271,13 +271,9 @@ class MarlinController {
         // Feeder
         this.feeder = new Feeder({
             dataFilter: (line, context) => {
-                // Remove characters after ";"
+                // Remove comments that start with a semicolon `;`
                 line = line.replace(/\s*;.*/g, '').trim();
-
                 context = this.populateContext(context);
-
-                const data = parser.parseLine(line, { flatten: true });
-                const words = ensureArray(data.words);
 
                 if (line[0] === '%') {
                     // %wait
@@ -291,8 +287,14 @@ class MarlinController {
                     // Expression
                     // %_x=posx,_y=posy,_z=posz
                     evaluateExpression(line.slice(1), context);
-                    return '(NONE)'; // Return a non-empty inline comment for Marlin
+                    return '';
                 }
+
+                // line="G0 X[posx - 8] Y[ymax]"
+                // > "G0 X2 Y50"
+                line = translateWithContext(line, context);
+                const data = parser.parseLine(line, { flatten: true });
+                const words = ensureArray(data.words);
 
                 // M109 Set extruder temperature and wait for the target temperature to be reached
                 if (_.includes(words, 'M109')) {
@@ -329,9 +331,7 @@ class MarlinController {
                     this.feeder.hold({ data: 'M6' }); // Hold reason
                 }
 
-                // line="G0 X[posx - 8] Y[ymax]"
-                // > "G0 X2 Y50"
-                return translateWithContext(line, context);
+                return line;
             }
         });
         this.feeder.on('data', (line = '', context = {}) => {
@@ -362,13 +362,10 @@ class MarlinController {
         // Sender
         this.sender = new Sender(SP_TYPE_SEND_RESPONSE, {
             dataFilter: (line, context) => {
-                // Remove characters after ";"
+                // Remove comments that start with a semicolon `;`
                 line = line.replace(/\s*;.*/g, '').trim();
-
                 context = this.populateContext(context);
 
-                const data = parser.parseLine(line, { flatten: true });
-                const words = ensureArray(data.words);
                 const { sent, received } = this.sender.state;
 
                 if (line[0] === '%') {
@@ -385,8 +382,14 @@ class MarlinController {
                     // Expression
                     // %_x=posx,_y=posy,_z=posz
                     evaluateExpression(line.slice(1), context);
-                    return '(NONE)'; // Return a non-empty inline comment for Marlin
+                    return '';
                 }
+
+                // line="G0 X[posx - 8] Y[ymax]"
+                // > "G0 X2 Y50"
+                line = translateWithContext(line, context);
+                const data = parser.parseLine(line, { flatten: true });
+                const words = ensureArray(data.words);
 
                 // M109 Set extruder temperature and wait for the target temperature to be reached
                 if (_.includes(words, 'M109')) {
@@ -425,9 +428,7 @@ class MarlinController {
                     this.workflow.pause({ data: 'M6' });
                 }
 
-                // line="G0 X[posx - 8] Y[ymax]"
-                // > "G0 X2 Y50"
-                return translateWithContext(line, context);
+                return line;
             }
         });
         this.sender.on('data', (line = '', context = {}) => {
@@ -1102,6 +1103,14 @@ class MarlinController {
             },
             'override:rapid': () => {
                 // Unsupported
+            },
+            'motor:enable': () => {
+                // M17 Enable all stepper motors
+                this.command('gcode', 'M17');
+            },
+            'motor:disable': () => {
+                // M18/M84 Disable steppers immediately (until the next move)
+                this.command('gcode', 'M18');
             },
             'lasertest': () => {
                 const [power = 0, duration = 0, maxS = 255] = args;
