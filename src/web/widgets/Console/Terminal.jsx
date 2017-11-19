@@ -127,7 +127,10 @@ class Terminal extends PureComponent {
                 term.write(key);
                 buffer += key;
             };
-        })()
+        })(),
+        onPaste: (data, event) => {
+            this.term.write(data);
+        }
     };
     term = null;
 
@@ -144,6 +147,7 @@ class Terminal extends PureComponent {
     componentDidMount() {
         this.term.on('resize', this.eventHandler.onResize);
         this.term.on('key', this.eventHandler.onKey);
+        this.term.on('paste', this.eventHandler.onPaste);
 
         const el = ReactDOM.findDOMNode(this);
         const focus = false;
@@ -172,6 +176,7 @@ class Terminal extends PureComponent {
     componentWillUnmount() {
         this.term.off('resize', this.eventHandler.onResize);
         this.term.off('key', this.eventHandler.onKey);
+        this.term.off('paste', this.eventHandler.onPaste);
     }
     componentWillReceiveProps(nextProps) {
         // The new column width is determined in componentDidUpdate()
