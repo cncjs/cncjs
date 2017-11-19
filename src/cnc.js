@@ -1,6 +1,7 @@
 /* eslint max-len: 0 */
 /* eslint no-console: 0 */
 import path from 'path';
+import isElectron from 'is-electron';
 import program from 'commander';
 import pkg from './package.json';
 
@@ -43,11 +44,14 @@ const parseController = (val) => {
     }
 };
 
+const defaultHost = isElectron() ? '127.0.0.1' : '0.0.0.0';
+const defaultPort = isElectron() ? 0 : 8000;
+
 program
     .version(pkg.version)
     .usage('[options]')
-    .option('-p, --port <port>', 'Set listen port (default: 8000)', 8000)
-    .option('-H, --host <host>', 'Set listen address or hostname (default: 0.0.0.0)', '0.0.0.0')
+    .option('-p, --port <port>', `Set listen port (default: ${defaultPort})`, defaultPort)
+    .option('-H, --host <host>', `Set listen address or hostname (default: ${defaultHost})`, defaultHost)
     .option('-b, --backlog <backlog>', 'Set listen backlog (default: 511)', 511)
     .option('-c, --config <filename>', 'Set config file (default: ~/.cncrc)')
     .option('-v, --verbose', 'Increase the verbosity level (-v, -vv, -vvv)', increaseVerbosityLevel, 0)
@@ -81,7 +85,7 @@ if (normalizedArgv.length > 1) {
     program.parse(normalizedArgv);
 }
 
-const cnc = (options = {}, callback) => {
+const cnc = () => new Promise((resolve, reject) => {
     // Change working directory to 'app' before require('./app')
     process.chdir(path.resolve(__dirname, 'app'));
 
@@ -95,9 +99,15 @@ const cnc = (options = {}, callback) => {
         watchDirectory: program.watchDirectory,
         accessTokenLifetime: program.accessTokenLifetime,
         allowRemoteAccess: !!program.allowRemoteAccess,
-        controller: program.controller,
-        ...options // Override command-line options if specified
-    }, callback);
-};
+        controller: program.controller
+    }, (err, data) => {
+        if (err) {
+            reject(err);
+            return;
+        }
+
+        resolve(data);
+    });
+});
 
 export default cnc;
