@@ -214,6 +214,7 @@
     "react-dropzone": "~4.2.3",
     "react-facebook-loading": "~0.6.2",
     "react-ga": "~2.3.5",
+    "react-icon-base": "~2.1.1",
     "react-infinite-tree": "~0.7.1",
     "react-redux": "~5.0.6",
     "react-router": "~4.2.0",
