@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import Space from '../../components/Space';
 import RepeatButton from '../../components/RepeatButton';
 import controller from '../../lib/controller';
 import DigitalReadout from './DigitalReadout';
@@ -148,7 +149,7 @@ const Overrides = (props) => {
                     }}
                 >
                     <i className="fa fa-battery-full" />
-                    <span className="space" />
+                    <Space width="8" />
                     100%
                 </button>
                 <button
@@ -159,7 +160,7 @@ const Overrides = (props) => {
                     }}
                 >
                     <i className="fa fa-battery-half" />
-                    <span className="space" />
+                    <Space width="8" />
                     50%
                 </button>
                 <button
@@ -170,7 +171,7 @@ const Overrides = (props) => {
                     }}
                 >
                     <i className="fa fa-battery-quarter" />
-                    <span className="space" />
+                    <Space width="8" />
                     25%
                 </button>
             </DigitalReadout>

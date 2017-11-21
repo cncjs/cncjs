@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { Button } from '../../../components/Buttons';
 import MessageTemplate from '../../../components/MessageTemplate';
 import Modal from '../../../components/Modal';
+import Space from '../../../components/Space';
 import settings from '../../../config/settings';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
@@ -55,9 +56,9 @@ class Workspace extends PureComponent {
                         <Modal.Header>
                             <Modal.Title>
                                 {i18n._('Settings')}
-                                <span className="space" />
+                                <Space width="8" />
                                 &rsaquo;
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('Workspace')}
                             </Modal.Title>
                         </Modal.Header>

@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import Anchor from '../../components/Anchor';
 import { ToastNotification } from '../../components/Notifications';
+import Space from '../../components/Space';
 import i18n from '../../lib/i18n';
 import {
     NOTIFICATION_PROGRAM_ERROR,
@@ -75,7 +76,7 @@ const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
                 <div><strong>{i18n._('M6 Tool Change')}</strong></div>
                 <div>
                     {i18n._('Run a tool change macro to change the tool and adjust the Z-axis offset. Afterwards, click the Resume button to resume program execution.')}
-                    <span className="space space-sm" />
+                    <Space width="4" />
                     <Anchor
                         target="_blank"
                         href="https://github.com/cncjs/cncjs/wiki/Tool-Change"

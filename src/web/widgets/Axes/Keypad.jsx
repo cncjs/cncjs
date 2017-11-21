@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from '../../components/Buttons';
 import Dropdown, { MenuItem } from '../../components/Dropdown';
+import Space from '../../components/Space';
 import controller from '../../lib/controller';
 import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
@@ -401,7 +402,7 @@ class Keypad extends PureComponent {
                                         noCaret
                                     >
                                         <i className="fa fa-navicon" />
-                                        <span className="space space-sm" />
+                                        <Space width="4" />
                                         <i className="fa fa-caret-up" />
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>

@@ -1,6 +1,7 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Space from '../../components/Space';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
@@ -134,7 +135,7 @@ class WebcamWidget extends PureComponent {
                     <Widget.Title>
                         <Widget.Sortable className={this.props.sortable.handleClassName}>
                             <i className="fa fa-bars" />
-                            <span className="space" />
+                            <Space width="8" />
                         </Widget.Sortable>
                         {isForkedWidget &&
                         <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
@@ -210,17 +211,17 @@ class WebcamWidget extends PureComponent {
                                         'fa-compress': isFullscreen
                                     })}
                                 />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="fork">
                                 <i className="fa fa-fw fa-code-fork" />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Fork Widget')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="remove">
                                 <i className="fa fa-fw fa-times" />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Remove Widget')}
                             </Widget.DropdownMenuItem>
                         </Widget.DropdownButton>

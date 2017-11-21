@@ -3,6 +3,7 @@ import React, { PureComponent } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import Anchor from '../../components/Anchor';
 import { Notification } from '../../components/Notifications';
+import Space from '../../components/Space';
 import settings from '../../config/settings';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -148,7 +149,7 @@ class Login extends PureComponent {
                                         { 'fa-sign-in': !authenticating }
                                     )}
                                 />
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('Sign In')}
                             </button>
                         </div>

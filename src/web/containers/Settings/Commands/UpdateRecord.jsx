@@ -2,10 +2,11 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Form, Input, Textarea } from '../../../components/Validation';
 import Modal from '../../../components/Modal';
+import Space from '../../../components/Space';
 import { ToastNotification } from '../../../components/Notifications';
 import ToggleSwitch from '../../../components/ToggleSwitch';
+import { Form, Input, Textarea } from '../../../components/Validation';
 import i18n from '../../../lib/i18n';
 import * as validations from '../../../lib/validations';
 import styles from '../form.styl';
@@ -53,9 +54,9 @@ class UpdateRecord extends PureComponent {
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Commands')}
-                        <span className="space" />
+                        <Space width="8" />
                         &rsaquo;
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Update')}
                     </Modal.Title>
                 </Modal.Header>

@@ -3,7 +3,9 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
+import Space from '../../components/Space';
 import { Form, Input, Textarea } from '../../components/Validation';
 import i18n from '../../lib/i18n';
 import * as validations from '../../lib/validations';
@@ -95,9 +97,9 @@ class AddMacro extends PureComponent {
                                         noCaret
                                     >
                                         <i className="fa fa-plus" />
-                                        <span className="space" />
+                                        <Space width="8" />
                                         {i18n._('Macro Variables')}
-                                        <span className="space space-sm" />
+                                        <Space width="4" />
                                         <i className="fa fa-caret-down" />
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu className={styles.macroVariablesDropdown}>
@@ -139,16 +141,13 @@ class AddMacro extends PureComponent {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    <Button
                         onClick={actions.closeModal}
                     >
                         {i18n._('Cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
+                    </Button>
+                    <Button
+                        btnStyle="primary"
                         onClick={() => {
                             this.form.validate(err => {
                                 if (err) {
@@ -163,7 +162,7 @@ class AddMacro extends PureComponent {
                         }}
                     >
                         {i18n._('OK')}
-                    </button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );

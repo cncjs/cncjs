@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Space from '../../components/Space';
 import controller from '../../lib/controller';
 import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
@@ -50,7 +51,7 @@ class Spindle extends PureComponent {
                                                 { 'fa-spin': spindle === 'M3' }
                                             )}
                                         />
-                                        <span className="space space-sm" />
+                                        <Space width="4" />
                                         M3
                                     </button>
                                 </div>
@@ -76,7 +77,7 @@ class Spindle extends PureComponent {
                                                 { 'fa-spin-reverse': spindle === 'M4' }
                                             )}
                                         />
-                                        <span className="space space-sm" />
+                                        <Space width="4" />
                                         M4
                                     </button>
                                 </div>
@@ -90,7 +91,7 @@ class Spindle extends PureComponent {
                                         disabled={!canClick}
                                     >
                                         <i className="fa fa-power-off" />
-                                        <span className="space space-sm" />
+                                        <Space width="4" />
                                         M5
                                     </button>
                                 </div>
@@ -117,7 +118,7 @@ class Spindle extends PureComponent {
                                                 { 'fa-spin': mistCoolant }
                                             )}
                                         />
-                                        <span className="space space-sm" />
+                                        <Space width="4" />
                                         M7
                                     </button>
                                 </div>
@@ -139,7 +140,7 @@ class Spindle extends PureComponent {
                                                 { 'fa-spin': floodCoolant }
                                             )}
                                         />
-                                        <span className="space space-sm" />
+                                        <Space width="4" />
                                         M8
                                     </button>
                                 </div>
@@ -155,7 +156,7 @@ class Spindle extends PureComponent {
                                         disabled={!canClick}
                                     >
                                         <i className="fa fa-power-off" />
-                                        <span className="space space-sm" />
+                                        <Space width="4" />
                                         M9
                                     </button>
                                 </div>

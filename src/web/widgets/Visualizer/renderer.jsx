@@ -4,6 +4,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
+import Space from '../../components/Space';
 import i18n from '../../lib/i18n';
 import { formatBytes } from '../../lib/numeral';
 import styles from './renderer.styl';
@@ -178,7 +179,7 @@ const renderer = (node, treeOptions) => {
                             { 'fa-file-o': !more }
                         )}
                     />
-                    <span className="space" />
+                    <Space width="8" />
                     {node.name}
                     <TreeNodeLoader show={loading} />
                 </div>

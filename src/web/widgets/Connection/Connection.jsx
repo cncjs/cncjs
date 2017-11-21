@@ -5,6 +5,7 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
+import Space from '../../components/Space';
 import { ToastNotification } from '../../components/Notifications';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -43,7 +44,7 @@ class Connection extends PureComponent {
                     {inuse &&
                     <span>
                         <i className="fa fa-lock" />
-                        <span className="space" />
+                        <Space width="8" />
                     </span>
                     }
                     {label}
@@ -69,7 +70,7 @@ class Connection extends PureComponent {
                 {inuse &&
                 <span>
                     <i className="fa fa-lock" />
-                    <span className="space" />
+                    <Space width="8" />
                 </span>
                 }
                 {label}
@@ -276,7 +277,7 @@ class Connection extends PureComponent {
                             onClick={actions.handleOpenPort}
                         >
                             <i className="fa fa-toggle-off" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('Open')}
                         </button>
                     }
@@ -288,7 +289,7 @@ class Connection extends PureComponent {
                             onClick={actions.handleClosePort}
                         >
                             <i className="fa fa-toggle-on" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('Close')}
                         </button>
                     }

@@ -6,6 +6,7 @@ import React, { PureComponent } from 'react';
 import { Form, Select, Textarea } from '../../../components/Validation';
 import Modal from '../../../components/Modal';
 import { ToastNotification } from '../../../components/Notifications';
+import Space from '../../../components/Space';
 import ToggleSwitch from '../../../components/ToggleSwitch';
 import i18n from '../../../lib/i18n';
 import * as validations from '../../../lib/validations';
@@ -70,9 +71,9 @@ class UpdateRecord extends PureComponent {
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Events')}
-                        <span className="space" />
+                        <Space width="8" />
                         &rsaquo;
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Update')}
                     </Modal.Title>
                 </Modal.Header>
