@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 const Space = ({ componentClass: Component, width, ...props }) => {
+    if ((typeof width === 'string') && width.match(/^\d+$/)) {
+        width += 'px';
+    }
+
     props.style = {
         display: 'inline-block',
         width: width,
@@ -17,7 +21,10 @@ Space.propTypes = {
         PropTypes.node,
         PropTypes.string
     ]),
-    width: PropTypes.number
+    width: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string
+    ])
 };
 
 Space.defaultProps = {
