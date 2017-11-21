@@ -7,6 +7,7 @@ import without from 'lodash/without';
 import Push from 'push.js';
 import api from '../../api';
 import Anchor from '../../components/Anchor';
+import Space from '../../components/Space';
 import settings from '../../config/settings';
 import combokeys from '../../lib/combokeys';
 import controller from '../../lib/controller';
@@ -327,7 +328,7 @@ class Header extends PureComponent {
                                 href="#/settings/account"
                             >
                                 <i className="fa fa-fw fa-user" />
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('Account')}
                             </MenuItem>
                             <MenuItem
@@ -344,7 +345,7 @@ class Header extends PureComponent {
                                 }}
                             >
                                 <i className="fa fa-fw fa-sign-out" />
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('Sign Out')}
                             </MenuItem>
                         </NavDropdown>

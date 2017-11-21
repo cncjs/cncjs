@@ -4,6 +4,7 @@ import pick from 'lodash/pick';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
+import Space from '../../components/Space';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -168,7 +169,7 @@ class WorkflowControl extends PureComponent {
                                     }}
                                 >
                                     <i className="fa fa-search" />
-                                    <span className="space space-sm" />
+                                    <Space width="4" />
                                     {i18n._('Browse...')}
                                 </MenuItem>
                             </Dropdown.Menu>
@@ -230,7 +231,7 @@ class WorkflowControl extends PureComponent {
                         <Dropdown.Menu>
                             <MenuItem>
                                 <i className={classNames(styles.icon, styles.iconPerimeterTracingSquare)} />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                             </MenuItem>
                         </Dropdown.Menu>
                     </Dropdown>

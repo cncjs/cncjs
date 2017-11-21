@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import React from 'react';
 import semver from 'semver';
 import Anchor from '../../../components/Anchor';
+import Space from '../../../components/Space';
 import settings from '../../../config/settings';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
@@ -50,7 +51,7 @@ const UpdateStatusContainer = (props) => {
                     >
                         <span className={styles.label}>
                             {i18n._('Latest version')}
-                            <span className="space" />
+                            <Space width="8" />
                             <i className="fa fa-external-link fa-fw" />
                         </span>
                     </Anchor>

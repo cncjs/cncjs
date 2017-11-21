@@ -2,6 +2,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from '../../../components/Buttons';
 import Modal from '../../../components/Modal';
+import Space from '../../../components/Space';
 import i18n from '../../../lib/i18n';
 import store from '../../../store';
 
@@ -24,9 +25,9 @@ class ImportSettings extends PureComponent {
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Workspace')}
-                        <span className="space" />
+                        <Space width="8" />
                         &rsaquo;
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Import')}
                     </Modal.Title>
                 </Modal.Header>

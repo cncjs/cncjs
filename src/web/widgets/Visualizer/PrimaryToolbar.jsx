@@ -7,6 +7,7 @@ import { Dropdown, MenuItem } from 'react-bootstrap';
 import Detector from 'three/examples/js/Detector';
 import controller from '../../lib/controller';
 import Interpolate from '../../components/Interpolate';
+import Space from '../../components/Space';
 import i18n from '../../lib/i18n';
 import {
     // Units
@@ -322,7 +323,7 @@ class PrimaryToolbar extends PureComponent {
                                 ? <i className="fa fa-toggle-off" />
                                 : <i className="fa fa-toggle-on" />
                             }
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('3D View')}
                         </button>
                         <Dropdown.Toggle
@@ -354,7 +355,7 @@ class PrimaryToolbar extends PureComponent {
                                 onSelect={actions.toPerspectiveProjection}
                             >
                                 <i className={classNames('fa', 'fa-fw', { 'fa-check': projection !== 'orthographic' })} />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Perspective Projection')}
                             </MenuItem>
                             <MenuItem
@@ -362,7 +363,7 @@ class PrimaryToolbar extends PureComponent {
                                 onSelect={actions.toOrthographicProjection}
                             >
                                 <i className={classNames('fa', 'fa-fw', { 'fa-check': projection === 'orthographic' })} />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Orthographic Projection')}
                             </MenuItem>
                             <MenuItem divider />
@@ -377,7 +378,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Display G-code Filename')}
                             </MenuItem>
                             <MenuItem
@@ -388,7 +389,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {objects.coordinateSystem.visible
                                     ? i18n._('Hide Coordinate System')
                                     : i18n._('Show Coordinate System')
@@ -402,7 +403,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {objects.gridLineNumbers.visible
                                     ? i18n._('Hide Grid Line Numbers')
                                     : i18n._('Show Grid Line Numbers')
@@ -416,7 +417,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {objects.toolhead.visible
                                     ? i18n._('Hide Toolhead')
                                     : i18n._('Show Toolhead')

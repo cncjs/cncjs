@@ -6,6 +6,7 @@ import React, { PureComponent } from 'react';
 import Anchor from '../../../components/Anchor';
 import { Button } from '../../../components/Buttons';
 import Modal from '../../../components/Modal';
+import Space from '../../../components/Space';
 import Table from '../../../components/Table';
 import ToggleSwitch from '../../../components/ToggleSwitch';
 import { TablePagination } from '../../../components/Paginations';
@@ -47,7 +48,7 @@ class TableRecords extends PureComponent {
                         return (
                             <span>
                                 <i className="fa fa-fw fa-spin fa-circle-o-notch" />
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('Loading...')}
                             </span>
                         );
@@ -65,7 +66,7 @@ class TableRecords extends PureComponent {
                             }}
                         >
                             <i className="fa fa-plus" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('New')}
                         </button>
                         <TablePagination
@@ -164,9 +165,9 @@ class TableRecords extends PureComponent {
                                                     <Modal.Header>
                                                         <Modal.Title>
                                                             {i18n._('Settings')}
-                                                            <span className="space" />
+                                                            <Space width="8" />
                                                             &rsaquo;
-                                                            <span className="space" />
+                                                            <Space width="8" />
                                                             {i18n._('My Account')}
                                                         </Modal.Title>
                                                     </Modal.Header>

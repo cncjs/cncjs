@@ -30,6 +30,7 @@ import { Button } from './components/Buttons';
 import MessageTemplate from './components/MessageTemplate';
 import Modal from './components/Modal';
 import ProtectedRoute from './components/ProtectedRoute';
+import Space from './components/Space';
 import './styles/vendor.styl';
 import './styles/app.styl';
 
@@ -170,7 +171,7 @@ series([
                                 download={filename}
                             >
                                 <i className="fa fa-download" />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Download workspace settings')}
                             </Anchor>
                         </div>

@@ -8,9 +8,9 @@ import controller from '../../lib/controller';
 import ensureArray from '../../lib/ensure-array';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
+import { Button } from '../../components/Buttons';
 import Panel from '../../components/Panel';
 import Toggler from '../../components/Toggler';
-import { Button } from '../../components/Buttons';
 import Overrides from './Overrides';
 import {
     TINYG_MACHINE_STATE_INITIALIZING,

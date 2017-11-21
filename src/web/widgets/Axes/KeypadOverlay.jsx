@@ -1,5 +1,6 @@
 import React from 'react';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
+import Space from '../../components/Space';
 import i18n from '../../lib/i18n';
 
 const keypadTooltip = () => {
@@ -43,7 +44,7 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             <i className="fa fa-angle-right" style={styles.icon} />
                         </kbd>
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Right')}
                     </div>
                     <div className="col-xs-12">
@@ -51,7 +52,7 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             <i className="fa fa-angle-left" style={styles.icon} />
                         </kbd>
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Left')}
                     </div>
                     <div className="col-xs-12">
@@ -59,7 +60,7 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             <i className="fa fa-angle-up" style={styles.icon} />
                         </kbd>
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Up')}
                     </div>
                     <div className="col-xs-12">
@@ -67,7 +68,7 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             <i className="fa fa-angle-down" style={styles.icon} />
                         </kbd>
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Down')}
                     </div>
                     <div className="col-xs-12">
@@ -75,7 +76,7 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             <i className="fa fa-long-arrow-up" style={styles.icon} />
                         </kbd>
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Page Up')}
                     </div>
                     <div className="col-xs-12">
@@ -83,7 +84,7 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             <i className="fa fa-long-arrow-down" style={styles.icon} />
                         </kbd>
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Page Down')}
                     </div>
                     <div className="col-xs-12">
@@ -91,7 +92,7 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             {' ] '}
                         </kbd>
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Right Square Bracket')}
                     </div>
                     <div className="col-xs-12">
@@ -99,7 +100,7 @@ const keypadTooltip = () => {
                         <kbd style={styles.kbd}>
                             {' [ '}
                         </kbd>
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('Left Square Bracket')}
                     </div>
                 </div>

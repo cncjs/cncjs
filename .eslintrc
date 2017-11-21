@@ -11,5 +11,12 @@
                 "config": "../webpack.webconfig.base.js"
             }
         }
+    },
+    "rules": {
+        'react/jsx-no-bind': [1, {
+            'ignoreRefs': true,
+            'allowArrowFunctions': true,
+            'allowBind': true
+        }]
     }
 }

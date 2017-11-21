@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import i18n from '../../lib/i18n';
+import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
 
 class RunMacro extends PureComponent {
@@ -35,23 +36,20 @@ class RunMacro extends PureComponent {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    <Button
                         onClick={actions.closeModal}
                     >
                         {i18n._('Cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
+                    </Button>
+                    <Button
+                        btnStyle="primary"
                         onClick={() => {
                             actions.runMacro(id, { name });
                             actions.closeModal();
                         }}
                     >
                         {i18n._('Run')}
-                    </button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );

@@ -7,6 +7,7 @@ import ReactDOM from 'react-dom';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
+import Space from '../../components/Space';
 import { Form, Input, Textarea } from '../../components/Validation';
 import i18n from '../../lib/i18n';
 import portal from '../../lib/portal';
@@ -99,9 +100,9 @@ class EditMacro extends PureComponent {
                                         noCaret
                                     >
                                         <i className="fa fa-plus" />
-                                        <span className="space" />
+                                        <Space width="8" />
                                         {i18n._('Macro Variables')}
-                                        <span className="space" />
+                                        <Space width="4" />
                                         <i className="fa fa-caret-down" />
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu className={styles.macroVariablesDropdown}>
@@ -143,9 +144,9 @@ class EditMacro extends PureComponent {
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-danger pull-left"
+                    <Button
+                        btnStyle="danger"
+                        className="pull-left"
                         onClick={() => {
                             const name = get(this.fields.name, 'value');
 
@@ -182,19 +183,16 @@ class EditMacro extends PureComponent {
                         }}
                     >
                         {i18n._('Delete')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    </Button>
+                    <Button
                         onClick={() => {
                             actions.closeModal();
                         }}
                     >
                         {i18n._('Cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
+                    </Button>
+                    <Button
+                        btnStyle="primary"
                         onClick={() => {
                             this.form.validate(err => {
                                 if (err) {
@@ -209,7 +207,7 @@ class EditMacro extends PureComponent {
                         }}
                     >
                         {i18n._('Save Changes')}
-                    </button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );

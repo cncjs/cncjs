@@ -3,6 +3,7 @@ import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import FacebookLoading from 'react-facebook-loading';
+import Space from '../../../components/Space';
 import i18n from '../../../lib/i18n';
 import styles from './index.styl';
 
@@ -122,7 +123,7 @@ class General extends PureComponent {
                                     ? <i className="fa fa-circle-o-notch fa-spin" />
                                     : <i className="fa fa-save" />
                                 }
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('Save Changes')}
                             </button>
                         </div>

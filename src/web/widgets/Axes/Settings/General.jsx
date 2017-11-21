@@ -1,6 +1,7 @@
 import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Space from '../../../components/Space';
 import { Form, Textarea } from '../../../components/Validation';
 import i18n from '../../../lib/i18n';
 import * as validations from '../../../lib/validations';
@@ -61,7 +62,7 @@ class General extends PureComponent {
                                     checked
                                     disabled
                                 />
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('X-axis')}
                             </label>
                         </div>
@@ -75,7 +76,7 @@ class General extends PureComponent {
                                     checked
                                     disabled
                                 />
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('Y-axis')}
                             </label>
                         </div>
@@ -88,7 +89,7 @@ class General extends PureComponent {
                                     type="checkbox"
                                     defaultChecked={includes(axes, 'z')}
                                 />
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('Z-axis')}
                             </label>
                         </div>
@@ -101,7 +102,7 @@ class General extends PureComponent {
                                     type="checkbox"
                                     defaultChecked={includes(axes, 'a')}
                                 />
-                                <span className="space" />
+                                <Space width="8" />
                                 {i18n._('A-axis')}
                             </label>
                         </div>

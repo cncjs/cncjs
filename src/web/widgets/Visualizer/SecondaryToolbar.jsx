@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
 import RepeatButton from '../../components/RepeatButton';
+import Space from '../../components/Space';
 import i18n from '../../lib/i18n';
 import styles from './secondary-toolbar.styl';
 import {
@@ -74,7 +75,7 @@ class SecondaryToolbar extends PureComponent {
                                 )}
                                 style={{ fontSize: 16, verticalAlign: 'top' }}
                             />
-                            <span className="space space-xs" />
+                            <Space width="2" />
                             <i
                                 className="fa fa-caret-up"
                                 style={{ verticalAlign: 'top' }}
@@ -83,12 +84,12 @@ class SecondaryToolbar extends PureComponent {
                         <Dropdown.Menu>
                             <MenuItem eventKey={CAMERA_MODE_PAN}>
                                 <i className="fa fa-fw fa-arrows" />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Move the camera')}
                             </MenuItem>
                             <MenuItem eventKey={CAMERA_MODE_ROTATE}>
                                 <i className="fa fa-fw fa-rotate-right" />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Rotate the camera')}
                             </MenuItem>
                         </Dropdown.Menu>

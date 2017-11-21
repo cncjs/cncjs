@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Space from '../../components/Space';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
@@ -43,7 +44,7 @@ class QuickAccessToolbar extends PureComponent {
                             title={i18n._('Cycle Start')}
                         >
                             <i className="fa fa-repeat" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('Cycle Start')}
                         </button>
                         <button
@@ -53,7 +54,7 @@ class QuickAccessToolbar extends PureComponent {
                             title={i18n._('Feedhold')}
                         >
                             <i className="fa fa-hand-paper-o" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('Feedhold')}
                         </button>
                     </li>
@@ -65,7 +66,7 @@ class QuickAccessToolbar extends PureComponent {
                             title={i18n._('Homing')}
                         >
                             <i className="fa fa-home" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('Homing')}
                         </button>
                         <button
@@ -75,7 +76,7 @@ class QuickAccessToolbar extends PureComponent {
                             title={i18n._('Sleep')}
                         >
                             <i className="fa fa-bed" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('Sleep')}
                         </button>
                         <button
@@ -85,7 +86,7 @@ class QuickAccessToolbar extends PureComponent {
                             title={i18n._('Unlock')}
                         >
                             <i className="fa fa-unlock-alt" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('Unlock')}
                         </button>
                         <button
@@ -95,7 +96,7 @@ class QuickAccessToolbar extends PureComponent {
                             title={i18n._('Reset')}
                         >
                             <i className="fa fa-undo" />
-                            <span className="space" />
+                            <Space width="8" />
                             {i18n._('Reset')}
                         </button>
                     </li>

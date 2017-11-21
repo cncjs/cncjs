@@ -274,7 +274,7 @@
     "electron-builder": "~19.45.5",
     "electron-rebuild": "~1.6.0",
     "eslint": "~3.19.0",
-    "eslint-config-trendmicro": "~0.5.1",
+    "eslint-config-trendmicro": "~0.6.0",
     "eslint-import-resolver-webpack": "~0.8.3",
     "eslint-loader": "~1.9.0",
     "eslint-plugin-import": "~2.7.0",

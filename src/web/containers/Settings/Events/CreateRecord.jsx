@@ -3,10 +3,11 @@ import includes from 'lodash/includes';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Form, Select, Textarea } from '../../../components/Validation';
 import Modal from '../../../components/Modal';
+import Space from '../../../components/Space';
 import { ToastNotification } from '../../../components/Notifications';
 import ToggleSwitch from '../../../components/ToggleSwitch';
+import { Form, Select, Textarea } from '../../../components/Validation';
 import i18n from '../../../lib/i18n';
 import * as validations from '../../../lib/validations';
 import styles from '../form.styl';
@@ -70,9 +71,9 @@ class CreateRecord extends PureComponent {
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Events')}
-                        <span className="space" />
+                        <Space width="8" />
                         &rsaquo;
-                        <span className="space" />
+                        <Space width="8" />
                         {i18n._('New')}
                     </Modal.Title>
                 </Modal.Header>

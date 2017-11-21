@@ -4,6 +4,8 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
+import Space from '../../components/Space';
+import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
 import portal from '../../lib/portal';
 import {
@@ -19,8 +21,52 @@ class Macro extends PureComponent {
         actions: PropTypes.object
     };
 
+    handleRunMacro = (macro) => (event) => {
+        const { actions } = this.props;
+        actions.openRunMacroModal(macro.id);
+    };
+    handleLoadMacro = (macro) => (event) => {
+        const { id, name } = macro;
+        portal(({ onClose }) => (
+            <Modal onClose={onClose}>
+                <Modal.Header>
+                    <Modal.Title>
+                        {i18n._('Load Macro')}
+                    </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    {i18n._('Are you sure you want to load this macro?')}
+                    <p><strong>{name}</strong></p>
+                </Modal.Body>
+                <Modal.Footer>
+                    <Button
+                        onClick={onClose}
+                    >
+                        {i18n._('No')}
+                    </Button>
+                    <Button
+                        btnStyle="primary"
+                        onClick={chainedFunction(
+                            () => {
+                                const { actions } = this.props;
+                                actions.loadMacro(id, { name });
+                            },
+                            onClose
+                        )}
+                    >
+                        {i18n._('Yes')}
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        ));
+    };
+    handleEditMacro = (macro) => (event) => {
+        const { actions } = this.props;
+        actions.openEditMacroModal(macro.id);
+    };
+
     render() {
-        const { state, actions } = this.props;
+        const { state } = this.props;
         const {
             canClick,
             workflow,
@@ -35,86 +81,50 @@ class Macro extends PureComponent {
                     <table className={styles.table}>
                         <tbody>
                             {macros.length === 0 &&
-                                <tr>
-                                    <td colSpan="2">
-                                        <div className={styles.emptyResult}>
-                                            {i18n._('No macros')}
-                                        </div>
-                                    </td>
-                                </tr>
+                            <tr>
+                                <td colSpan="2">
+                                    <div className={styles.emptyResult}>
+                                        {i18n._('No macros')}
+                                    </div>
+                                </td>
+                            </tr>
                             }
-                            {macros.length > 0 && macros.map((macro, index) => (
+                            {ensureArray(macros).map((macro, index) => (
                                 <tr key={macro.id}>
                                     <td>
-                                        <button
-                                            type="button"
-                                            className="btn btn-xs btn-default"
+                                        <Button
+                                            compact
+                                            btnSize="xs"
+                                            btnStyle="flat"
                                             disabled={!canRunMacro}
-                                            onClick={() => {
-                                                const { id } = macro;
-                                                actions.openRunMacroModal(id);
-                                            }}
+                                            onClick={this.handleRunMacro(macro)}
                                             title={i18n._('Run Macro')}
                                         >
                                             <i className="fa fa-play" />
-                                        </button>
-                                        <span className="space" />
+                                        </Button>
+                                        <Space width="8" />
                                         {macro.name}
                                     </td>
                                     <td style={{ width: '1%' }}>
                                         <div className="nowrap">
-                                            <button
-                                                type="button"
-                                                className="btn btn-xs btn-default"
+                                            <Button
+                                                compact
+                                                btnSize="xs"
+                                                btnStyle="flat"
                                                 disabled={!canLoadMacro}
-                                                onClick={() => {
-                                                    const { id, name } = macro;
-
-                                                    portal(({ onClose }) => (
-                                                        <Modal onClose={onClose}>
-                                                            <Modal.Header>
-                                                                <Modal.Title>
-                                                                    {i18n._('Load Macro')}
-                                                                </Modal.Title>
-                                                            </Modal.Header>
-                                                            <Modal.Body>
-                                                                {i18n._('Are you sure you want to load this macro?')}
-                                                                <p><strong>{name}</strong></p>
-                                                            </Modal.Body>
-                                                            <Modal.Footer>
-                                                                <Button
-                                                                    onClick={onClose}
-                                                                >
-                                                                    {i18n._('No')}
-                                                                </Button>
-                                                                <Button
-                                                                    btnStyle="primary"
-                                                                    onClick={chainedFunction(
-                                                                        () => {
-                                                                            actions.loadMacro(id, { name });
-                                                                        },
-                                                                        onClose
-                                                                    )}
-                                                                >
-                                                                    {i18n._('Yes')}
-                                                                </Button>
-                                                            </Modal.Footer>
-                                                        </Modal>
-                                                    ));
-                                                }}
+                                                onClick={this.handleLoadMacro(macro)}
                                                 title={i18n._('Load Macro')}
                                             >
                                                 <i className="fa fa-chevron-up" />
-                                            </button>
-                                            <button
-                                                type="button"
-                                                className="btn btn-xs btn-default"
-                                                onClick={() => {
-                                                    actions.openEditMacroModal(macro.id);
-                                                }}
+                                            </Button>
+                                            <Button
+                                                compact
+                                                btnSize="xs"
+                                                btnStyle="flat"
+                                                onClick={this.handleEditMacro(macro)}
                                             >
                                                 <i className="fa fa-edit" />
-                                            </button>
+                                            </Button>
                                         </div>
                                     </td>
                                 </tr>
