@@ -86,9 +86,11 @@ class MarlinController {
             state: false, // wait for current position
             reply: false // wait for ok response
         },
+        queryTemperatureReport: false,
 
         // Respond to user input
-        replyPosition: false // M114
+        replyPosition: false, // M114
+        replyTemperatureReport: false // M105
     };
     actionTime = {
         queryPosition: 0,
@@ -524,7 +526,13 @@ class MarlinController {
         });
 
         this.controller.on('heater', (res) => {
-            this.emit('serialport:read', res.raw);
+            if (this.actionMask.queryTemperatureReport) {
+                this.actionMask.queryTemperatureReport = false;
+            }
+
+            if (this.actionMask.replyTemperatureReport) {
+                this.emit('serialport:read', res.raw);
+            }
         });
 
         this.controller.on('ok', (res) => {
@@ -634,6 +642,38 @@ class MarlinController {
             }
         };
 
+        // Request a temperature report to be sent to the host at some point in the future.
+        const queryTemperatureReport = _.throttle(() => {
+            // Check the ready flag
+            if (!(this.ready)) {
+                return;
+            }
+
+            const now = new Date().getTime();
+
+            const lastQueryTime = this.actionTime.queryTemperatureReport;
+            if (lastQueryTime > 0) {
+                const timespan = Math.abs(now - lastQueryTime);
+                const toleranceTime = 5000; // 5 seconds
+
+                // Check if it has not been updated for a long time
+                if (timespan >= toleranceTime) {
+                    log.debug(`Continue the temperature report query: timespan=${timespan}ms`);
+                    this.actionMask.queryTemperatureReport = false;
+                }
+            }
+
+            if (this.actionMask.queryTemperatureReport) {
+                return;
+            }
+
+            if (this.isOpen()) {
+                this.actionMask.queryTemperatureReport = true;
+                this.actionTime.queryTemperatureReport = now;
+                this.connection.write('M105\n');
+            }
+        }, 1000);
+
         this.queryTimer = setInterval(() => {
             if (this.isClose()) {
                 // Serial port is closed
@@ -677,6 +717,9 @@ class MarlinController {
 
             // M114: Get Current Position
             queryPosition();
+
+            // M105: Report Temperatures
+            queryTemperatureReport();
 
             // Check if the machine has stopped movement after completion
             if (this.actionTime.senderFinishTime > 0) {
@@ -1217,6 +1260,7 @@ class MarlinController {
 
         const cmd = data.trim();
         this.actionMask.replyPosition = (cmd === 'M114') || this.actionMask.replyPosition;
+        this.actionMask.replyTemperatureReport = (cmd === 'M105') || this.actionMask.replyTemperatureReport;
 
         this.emit('serialport:write', data, context);
         this.connection.write(data);
