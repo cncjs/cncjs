@@ -20,16 +20,7 @@ $padding-bottom = 12px;
         display: table-cell;
         text-align: left;
         padding-bottom: $padding-bottom;
-    }
-    .table-form-col-label {
-        cursor: default;
-        padding: 0 10px $padding-bottom 0;
-        width: 1%;
-        text-align: left;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
-        vertical-align: top;
+        vertical-align: middle;
 
         &.top {
             vertical-align: top;
@@ -40,5 +31,14 @@ $padding-bottom = 12px;
         &.bottom {
             vertical-align: bottom;
         }
+    }
+    .table-form-col-label {
+        cursor: default;
+        padding: 0 10px $padding-bottom 0;
+        width: 1%;
+        text-align: left;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
