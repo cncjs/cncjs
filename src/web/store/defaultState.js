@@ -103,12 +103,27 @@ const defaultState = {
         marlin: {
             minimized: false,
             panel: {
-                statusReports: {
+                heaterControl: {
                     expanded: true
                 },
+                statusReports: {
+                    expanded: false
+                },
                 modalGroups: {
-                    expanded: true
+                    expanded: false
                 }
+            },
+            heater: {
+                // Filament          | PLA                | ABS
+                // ----------------- | ------------------ | --------------------
+                // Uses              | Consumer Products  | Functional Parts
+                // Strength          | Medium             | Medium
+                // Flexibility       | Low                | Medium
+                // Durability        | Medium             | High
+                // Print Temperature | 180-230°C          | 210-250°C
+                // Bed Temperature   | 20-60°C (optional) | 80-110°C (mandatory)
+                extruder: 180,
+                bed: 60
             }
         },
         probe: {
