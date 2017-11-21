@@ -1,13 +1,21 @@
-import _ from 'lodash';
+import get from 'lodash/get';
+import isNumber from 'lodash/isNumber';
+import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import controller from '../../lib/controller';
 import ensureArray from '../../lib/ensure-array';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
+import Blink from '../../components/Blink';
+import { Button } from '../../components/Buttons';
 import Panel from '../../components/Panel';
+import Space from '../../components/Space';
 import Toggler from '../../components/Toggler';
 import Overrides from './Overrides';
 import styles from './index.styl';
+import IconExtruder from './icons/extruder';
+import IconHeatedBed from './icons/heated-bed';
 
 class Marlin extends PureComponent {
     static propTypes = {
@@ -15,23 +23,43 @@ class Marlin extends PureComponent {
         actions: PropTypes.object
     };
 
+    // M104 Set the target temperature for a hotend.
+    setExtruderTemperature = (deg) => () => {
+        controller.command('gcode', `M104 S${deg}`);
+        controller.command('gcode', 'M105');
+    };
+    // M140 Set the target temperature for the heated bed.
+    setHeatedBedTemperature = (deg) => () => {
+        controller.command('gcode', `M140 S${deg}`);
+        controller.command('gcode', 'M105');
+    };
+
     render() {
         const { state, actions } = this.props;
         const none = '–';
         const panel = state.panel;
         const controllerState = state.controller.state || {};
-        const ovF = _.get(controllerState, 'ovF', 0);
-        const ovS = _.get(controllerState, 'ovS', 0);
-        const feedrate = _.get(controllerState, 'feedrate') || none;
-        const spindle = _.get(controllerState, 'spindle') || none;
-        const heater = _.get(controllerState, 'heater');
-        const extruder = _.get(heater, 'extruder') || {};
-        const bed = _.get(heater, 'bed') || {};
+        const ovF = get(controllerState, 'ovF', 0);
+        const ovS = get(controllerState, 'ovS', 0);
+        const feedrate = get(controllerState, 'feedrate') || none;
+        const spindle = get(controllerState, 'spindle') || none;
+        const extruder = get(controllerState, 'heater.extruder') || {};
+        const bed = get(controllerState, 'heater.bed') || {};
         const showExtruderTemperature = (extruder.deg !== undefined && extruder.degTarget !== undefined);
         const showExtruderPower = (extruder.power !== undefined);
         const showBedTemperature = (bed.deg !== undefined && bed.degTarget !== undefined);
         const showBedPower = (bed.power !== undefined);
-        const modal = _.mapValues(controllerState.modal || {}, mapGCodeToText);
+        const showHeaterStatus = [
+            showExtruderTemperature,
+            showExtruderPower,
+            showBedTemperature,
+            showBedPower
+        ].some(x => !!x);
+        const canSetExtruderTemperature = isNumber(state.heater.extruder);
+        const canSetHeatedBedTemperature = isNumber(state.heater.bed);
+        const modal = mapValues(controllerState.modal || {}, mapGCodeToText);
+        const extruderIsHeating = (Number(extruder.degTarget) > 0) && (Number(extruder.degTarget) >= Number(extruder.deg));
+        const heatedBedIsHeating = (Number(bed.degTarget) > 0) && (Number(bed.degTarget) >= Number(bed.deg));
 
         return (
             <div>
@@ -40,20 +68,139 @@ class Marlin extends PureComponent {
                     <Panel.Heading className={styles.panelHeading}>
                         <Toggler
                             className="clearfix"
-                            onToggle={() => {
-                                actions.toggleStatusReports();
-                            }}
-                            title={panel.statusReports.expanded ? i18n._('Hide') : i18n._('Show')}
+                            onToggle={actions.toggleHeaterControl}
+                            title={panel.heaterControl.expanded ? i18n._('Hide') : i18n._('Show')}
                         >
-                            <div className="pull-left">{i18n._('Status Reports')}</div>
+                            <div className="pull-left">{i18n._('Heater Control')}</div>
                             <Toggler.Icon
                                 className="pull-right"
-                                expanded={panel.statusReports.expanded}
+                                expanded={panel.heaterControl.expanded}
                             />
                         </Toggler>
                     </Panel.Heading>
-                    {panel.statusReports.expanded &&
+                    {panel.heaterControl.expanded &&
                     <Panel.Body>
+                        <div
+                            className="table-form"
+                            style={{
+                                marginBottom: showHeaterStatus ? 15 : 0
+                            }}
+                        >
+                            <div className="table-form-row">
+                                <div className="table-form-col table-form-col-label">
+                                    <Blink rate={extruderIsHeating ? 530 : 0}>
+                                        <IconExtruder width="24" height="24" />
+                                    </Blink>
+                                    <Space width="4" />
+                                    {i18n._('Extruder')}
+                                </div>
+                                <div className="table-form-col">
+                                    <div className="input-group input-group-sm">
+                                        <input
+                                            type="number"
+                                            value={state.heater.extruder}
+                                            step="1"
+                                            min="0"
+                                            className="form-control"
+                                            onChange={actions.changeExtruderTemperature}
+                                        />
+                                        <span className="input-group-addon">{i18n._('°C')}</span>
+                                    </div>
+                                </div>
+                                <div className="table-form-col">
+                                    <Space width="8" />
+                                </div>
+                                <div className="table-form-col">
+                                    <Button
+                                        compact
+                                        btnSize="xs"
+                                        btnStyle="danger"
+                                        disabled={!canSetExtruderTemperature}
+                                        onClick={this.setExtruderTemperature(state.heater.extruder)}
+                                        title={i18n._('Set the target temperature for the extruder')}
+                                    >
+                                        <i
+                                            className="fa fa-fw fa-check"
+                                            style={{ fontSize: 16 }}
+                                        />
+                                    </Button>
+                                </div>
+                                <div className="table-form-col">
+                                    <Space width="8" />
+                                </div>
+                                <div className="table-form-col">
+                                    <Button
+                                        compact
+                                        btnSize="xs"
+                                        btnStyle="flat"
+                                        title={i18n._('Cancel')}
+                                        onClick={this.setExtruderTemperature(0)}
+                                    >
+                                        <i
+                                            className="fa fa-fw fa-close"
+                                            style={{ fontSize: 16 }}
+                                        />
+                                    </Button>
+                                </div>
+                            </div>
+                            <div className="table-form-row">
+                                <div className="table-form-col table-form-col-label">
+                                    <Blink rate={heatedBedIsHeating ? 530 : 0}>
+                                        <IconHeatedBed width="24" height="24" />
+                                    </Blink>
+                                    <Space width="4" />
+                                    {i18n._('Heated Bed')}
+                                </div>
+                                <div className="table-form-col">
+                                    <div className="input-group input-group-sm">
+                                        <input
+                                            type="number"
+                                            value={state.heater.bed}
+                                            step="1"
+                                            min="0"
+                                            className="form-control"
+                                            onChange={actions.changeHeatedBedTemperature}
+                                        />
+                                        <span className="input-group-addon">{i18n._('°C')}</span>
+                                    </div>
+                                </div>
+                                <div className="table-form-col">
+                                    <Space width="8" />
+                                </div>
+                                <div className="table-form-col">
+                                    <Button
+                                        compact
+                                        btnSize="xs"
+                                        btnStyle="danger"
+                                        disabled={!canSetHeatedBedTemperature}
+                                        onClick={this.setHeatedBedTemperature(state.heater.bed)}
+                                        title={i18n._('Set the target temperature for the heated bed')}
+                                    >
+                                        <i
+                                            className="fa fa-fw fa-check"
+                                            style={{ fontSize: 16 }}
+                                        />
+                                    </Button>
+                                </div>
+                                <div className="table-form-col">
+                                    <Space width="8" />
+                                </div>
+                                <div className="table-form-col">
+                                    <Button
+                                        compact
+                                        btnSize="xs"
+                                        btnStyle="flat"
+                                        onClick={this.setHeatedBedTemperature(0)}
+                                        title={i18n._('Cancel')}
+                                    >
+                                        <i
+                                            className="fa fa-fw fa-close"
+                                            style={{ fontSize: 16 }}
+                                        />
+                                    </Button>
+                                </div>
+                            </div>
+                        </div>
                         {showExtruderTemperature &&
                         <div className="row no-gutters">
                             <div className="col col-xs-6">
@@ -110,6 +257,27 @@ class Marlin extends PureComponent {
                             </div>
                         </div>
                         }
+                    </Panel.Body>
+                    }
+                </Panel>
+                <Panel className={styles.panel}>
+                    <Panel.Heading className={styles.panelHeading}>
+                        <Toggler
+                            className="clearfix"
+                            onToggle={() => {
+                                actions.toggleStatusReports();
+                            }}
+                            title={panel.statusReports.expanded ? i18n._('Hide') : i18n._('Show')}
+                        >
+                            <div className="pull-left">{i18n._('Status Reports')}</div>
+                            <Toggler.Icon
+                                className="pull-right"
+                                expanded={panel.statusReports.expanded}
+                            />
+                        </Toggler>
+                    </Panel.Heading>
+                    {panel.statusReports.expanded &&
+                    <Panel.Body>
                         <div className="row no-gutters">
                             <div className="col col-xs-6">
                                 <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>

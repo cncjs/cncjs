@@ -1,9 +1,12 @@
+import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Space from '../../components/Space';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
 import controller from '../../lib/controller';
+import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import WidgetConfig from '../WidgetConfig';
 import Marlin from './Marlin';
 import Controller from './Controller';
@@ -73,6 +76,19 @@ class MarlinWidget extends PureComponent {
                 }
             });
         },
+        toggleHeaterControl: () => {
+            const expanded = this.state.panel.heaterControl.expanded;
+
+            this.setState({
+                panel: {
+                    ...this.state.panel,
+                    heaterControl: {
+                        ...this.state.panel.heaterControl,
+                        expanded: !expanded
+                    }
+                }
+            });
+        },
         toggleStatusReports: () => {
             const expanded = this.state.panel.statusReports.expanded;
 
@@ -98,6 +114,33 @@ class MarlinWidget extends PureComponent {
                     }
                 }
             });
+        },
+        changeExtruderTemperature: (event) => {
+            const value = event.target.value;
+            if (typeof value === 'string' && value.trim() === '') {
+                this.setState(state => ({
+                    heater: {
+                        ...state.heater,
+                        extruder: value
+                    }
+                }));
+            } else {
+                this.setState(state => ({
+                    heater: {
+                        ...state.heater,
+                        extruder: ensurePositiveNumber(value)
+                    }
+                }));
+            }
+        },
+        changeHeatedBedTemperature: (event) => {
+            const value = event.target.value;
+            this.setState(state => ({
+                heater: {
+                    ...state.heater,
+                    bed: value
+                }
+            }));
         }
     };
     controllerEvents = {
@@ -145,11 +188,20 @@ class MarlinWidget extends PureComponent {
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
-            panel
+            panel,
+            heater
         } = this.state;
 
         this.config.set('minimized', minimized);
+        this.config.set('panel.heaterControl.expanded', panel.heaterControl.expanded);
+        this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
         this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
+        if (isNumber(heater.extruder)) {
+            this.config.set('heater.extruder', heater.extruder);
+        }
+        if (isNumber(heater.bed)) {
+            this.config.set('heater.bed', heater.bed);
+        }
     }
     getInitialState() {
         return {
@@ -168,12 +220,19 @@ class MarlinWidget extends PureComponent {
                 params: {}
             },
             panel: {
+                heaterControl: {
+                    expanded: this.config.get('panel.heaterControl.expanded')
+                },
                 statusReports: {
                     expanded: this.config.get('panel.statusReports.expanded')
                 },
                 modalGroups: {
                     expanded: this.config.get('panel.modalGroups.expanded')
                 }
+            },
+            heater: {
+                extruder: this.config.get('heater.extruder', 0),
+                bed: this.config.get('heater.bed', 0)
             }
         };
     }
@@ -220,7 +279,7 @@ class MarlinWidget extends PureComponent {
                     <Widget.Title>
                         <Widget.Sortable className={this.props.sortable.handleClassName}>
                             <i className="fa fa-bars" />
-                            <span className="space" />
+                            <Space width="8" />
                         </Widget.Sortable>
                         {isForkedWidget &&
                         <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
@@ -298,17 +357,17 @@ class MarlinWidget extends PureComponent {
                                         { 'fa-compress': isFullscreen }
                                     )}
                                 />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="fork">
                                 <i className="fa fa-fw fa-code-fork" />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Fork Widget')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="remove">
                                 <i className="fa fa-fw fa-times" />
-                                <span className="space space-sm" />
+                                <Space width="4" />
                                 {i18n._('Remove Widget')}
                             </Widget.DropdownMenuItem>
                         </Widget.DropdownButton>

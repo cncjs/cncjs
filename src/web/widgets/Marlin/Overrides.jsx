@@ -77,7 +77,7 @@ const Overrides = (props) => {
             </DigitalReadout>
             }
             {!!ovS &&
-            <DigitalReadout label="S" value={ovS + '%'}>
+            <DigitalReadout label="E" value={ovS + '%'}>
                 <RepeatButton
                     className="btn btn-default"
                     style={{ padding: 5 }}
