@@ -496,17 +496,19 @@ class MarlinController {
         });
 
         this.controller.on('ok', (res) => {
+            // M105 will emit an 'ok' event (w/ empty response) prior to the 'heater' event
+            if (!res && this.actionMask.queryTemperatureReport) {
+                return;
+            }
+
             // Do not change position query state for empty response
-            // Note: M105 will emit an 'ok' event with empty response
-            if (res) {
-                if (this.actionMask.queryPosition.reply) {
-                    if (this.actionMask.replyPosition) {
-                        this.actionMask.replyPosition = false;
-                        this.emit('serialport:read', res.raw);
-                    }
-                    this.actionMask.queryPosition.reply = false;
-                    return;
+            if (res && this.actionMask.queryPosition.reply) {
+                if (this.actionMask.replyPosition) {
+                    this.actionMask.replyPosition = false;
+                    this.emit('serialport:read', res.raw);
                 }
+                this.actionMask.queryPosition.reply = false;
+                return;
             }
 
             const { hold, sent, received } = this.sender.state;

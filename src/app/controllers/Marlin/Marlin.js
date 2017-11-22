@@ -394,6 +394,9 @@ class Marlin extends events.EventEmitter {
                 this.state = nextState; // enforce change
             }
 
+            // Important Note:
+            // Emit an 'ok' event (w/ empty response) prior to the 'heater' event
+
             // > M105
             // < ok T:27.0 /0.0 B:26.8 /0.0 B@:0 @:0
             if (payload.ok) {
