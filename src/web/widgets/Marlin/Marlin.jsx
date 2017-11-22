@@ -58,8 +58,8 @@ class Marlin extends PureComponent {
         const canSetExtruderTemperature = isNumber(state.heater.extruder);
         const canSetHeatedBedTemperature = isNumber(state.heater.bed);
         const modal = mapValues(controllerState.modal || {}, mapGCodeToText);
-        const extruderIsHeating = (Number(extruder.degTarget) > 0) && (Number(extruder.degTarget) >= Number(extruder.deg));
-        const heatedBedIsHeating = (Number(bed.degTarget) > 0) && (Number(bed.degTarget) >= Number(bed.deg));
+        const extruderIsHeating = (Number(extruder.degTarget) > Number(extruder.deg));
+        const heatedBedIsHeating = (Number(bed.degTarget) > Number(bed.deg));
 
         return (
             <div>
