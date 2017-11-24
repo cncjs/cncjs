@@ -135,12 +135,21 @@ class MarlinWidget extends PureComponent {
         },
         changeHeatedBedTemperature: (event) => {
             const value = event.target.value;
-            this.setState(state => ({
-                heater: {
-                    ...state.heater,
-                    heatedBed: value
-                }
-            }));
+            if (typeof value === 'string' && value.trim() === '') {
+                this.setState(state => ({
+                    heater: {
+                        ...state.heater,
+                        heatedBed: value
+                    }
+                }));
+            } else {
+                this.setState(state => ({
+                    heater: {
+                        ...state.heater,
+                        heatedBed: ensurePositiveNumber(value)
+                    }
+                }));
+            }
         }
     };
     controllerEvents = {
