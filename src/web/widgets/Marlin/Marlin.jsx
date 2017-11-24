@@ -64,9 +64,11 @@ class Marlin extends PureComponent {
         const modal = mapValues(controllerState.modal || {}, mapGCodeToText);
         const extruderIsHeating = (Number(extruder.degTarget) > Number(extruder.deg));
         const heatedBedIsHeating = (Number(heatedBed.degTarget) > Number(heatedBed.deg));
+        const extruderPower = Number(extruder.power) || 0;
+        const heatedBedPower = Number(heatedBed.power) || 0;
 
-        this.extruderPowerMax = Math.max(this.extruderPowerMax, Number(extruder.power) || 0);
-        this.heatedBedPowerMax = Math.max(this.heatedBedPowerMax, Number(heatedBed.power) || 0);
+        this.extruderPowerMax = Math.max(this.extruderPowerMax, extruderPower);
+        this.heatedBedPowerMax = Math.max(this.heatedBedPowerMax, heatedBedPower);
 
         return (
             <div>
@@ -95,7 +97,7 @@ class Marlin extends PureComponent {
                         >
                             <div className="table-form-row">
                                 <div className="table-form-col table-form-col-label">
-                                    <FadeInOut disabled={!extruderIsHeating} from={0.5} to={1}>
+                                    <FadeInOut disabled={!extruderIsHeating} from={0.3} to={1}>
                                         <IconExtruder
                                             color={extruderIsHeating ? '#000' : '#666'}
                                             size={24}
@@ -155,7 +157,7 @@ class Marlin extends PureComponent {
                             </div>
                             <div className="table-form-row">
                                 <div className="table-form-col table-form-col-label">
-                                    <FadeInOut disabled={!heatedBedIsHeating} from={0.5} to={1}>
+                                    <FadeInOut disabled={!heatedBedIsHeating} from={0.3} to={1}>
                                         <IconHeatedBed
                                             color={heatedBedIsHeating ? '#000' : '#666'}
                                             size={24}
@@ -255,8 +257,12 @@ class Marlin extends PureComponent {
                                     bsStyle="info"
                                     min={0}
                                     max={this.extruderPowerMax}
-                                    now={extruder.power}
-                                    label={<span className={styles.progressbarLabel}>{extruder.power}</span>}
+                                    now={extruderPower}
+                                    label={(
+                                        <span className={styles.progressbarLabel}>
+                                            {extruderPower}
+                                        </span>
+                                    )}
                                 />
                             </div>
                         </div>
@@ -274,8 +280,12 @@ class Marlin extends PureComponent {
                                     bsStyle="info"
                                     min={0}
                                     max={this.heatedBedPowerMax}
-                                    now={heatedBed.power}
-                                    label={<span className={styles.progressbarLabel}>{heatedBed.power}</span>}
+                                    now={heatedBedPower}
+                                    label={(
+                                        <span className={styles.progressbarLabel}>
+                                            {heatedBedPower}
+                                        </span>
+                                    )}
                                 />
                             </div>
                         </div>

@@ -22,13 +22,14 @@ class Connection extends PureComponent {
         actions: PropTypes.object
     };
 
-    isPortInUse(port) {
+    isPortInUse = (port) => {
         const { state } = this.props;
         port = port || state.port;
         const o = find(state.ports, { port }) || {};
         return !!(o.inuse);
-    }
-    renderPortOption(option) {
+    };
+
+    renderPortOption = (option) => {
         const { label, inuse, manufacturer } = option;
         const styles = {
             option: {
@@ -54,8 +55,9 @@ class Connection extends PureComponent {
                 }
             </div>
         );
-    }
-    renderPortValue(option) {
+    };
+
+    renderPortValue = (option) => {
         const { state } = this.props;
         const { label, inuse } = option;
         const notLoading = !(state.loading);
@@ -76,8 +78,9 @@ class Connection extends PureComponent {
                 {label}
             </div>
         );
-    }
-    renderBaudrateValue(option) {
+    };
+
+    renderBaudrateValue = (option) => {
         const { state } = this.props;
         const notLoading = !(state.loading);
         const notInUse = !(this.isPortInUse(state.port));
@@ -90,7 +93,8 @@ class Connection extends PureComponent {
         return (
             <div style={style} title={option.label}>{option.label}</div>
         );
-    }
+    };
+
     render() {
         const { state, actions } = this.props;
         const {
@@ -210,7 +214,7 @@ class Connection extends PureComponent {
                             name="port"
                             noResultsText={i18n._('No ports available')}
                             onChange={actions.onChangePortOption}
-                            optionRenderer={::this.renderPortOption}
+                            optionRenderer={this.renderPortOption}
                             options={map(ports, (o) => ({
                                 value: o.port,
                                 label: o.port,
@@ -220,7 +224,7 @@ class Connection extends PureComponent {
                             placeholder={i18n._('Choose a port')}
                             searchable={false}
                             value={port}
-                            valueRenderer={::this.renderPortValue}
+                            valueRenderer={this.renderPortValue}
                         />
                         <div className="input-group-btn">
                             <button
@@ -259,7 +263,7 @@ class Connection extends PureComponent {
                         placeholder={i18n._('Choose a baud rate')}
                         searchable={false}
                         value={baudrate}
-                        valueRenderer={::this.renderBaudrateValue}
+                        valueRenderer={this.renderBaudrateValue}
                     />
                 </div>
                 <div className="checkbox">

@@ -16,11 +16,12 @@ class WidgetListItem extends PureComponent {
         checked: this.props.checked
     };
 
-    handleChange(event) {
+    handleChange = (event) => {
         const checked = event.target.checked;
         this.setState({ checked: checked });
         this.props.onChange(this.props.id, checked);
-    }
+    };
+
     render() {
         const { checked } = this.state;
         const styles = {
@@ -61,7 +62,7 @@ class WidgetListItem extends PureComponent {
                                 <Toggle
                                     disabled={this.props.disabled}
                                     defaultChecked={checked}
-                                    onChange={::this.handleChange}
+                                    onChange={this.handleChange}
                                 />
                             </span>
                         </div>

@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import React from 'react';
 import Icon from 'react-icon-base';
 
@@ -43,6 +44,10 @@ const HeatedBed = ({ color = '#000', ...props }) => {
             />
         </Icon>
     );
+};
+
+HeatedBed.propTypes = {
+    color: PropTypes.string
 };
 
 export default HeatedBed;
