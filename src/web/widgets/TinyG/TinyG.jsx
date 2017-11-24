@@ -89,7 +89,7 @@ class TinyG extends PureComponent {
         const modal = mapValues(get(controllerState, 'modal', {}), mapGCodeToText);
         const panel = state.panel;
 
-        this.plannerBufferMax = Math.max(this.plannerBufferMax, plannerBuffer);
+        this.plannerBufferMax = Math.max(this.plannerBufferMax, Number(plannerBuffer) || 0);
 
         return (
             <div>

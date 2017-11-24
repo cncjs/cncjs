@@ -3,15 +3,16 @@ import isNumber from 'lodash/isNumber';
 import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { ProgressBar } from 'react-bootstrap';
 import controller from '../../lib/controller';
 import ensureArray from '../../lib/ensure-array';
 import mapGCodeToText from '../../lib/gcode-text';
 import i18n from '../../lib/i18n';
-import Blink from '../../components/Blink';
 import { Button } from '../../components/Buttons';
 import Panel from '../../components/Panel';
 import Space from '../../components/Space';
 import Toggler from '../../components/Toggler';
+import FadeInOut from './FadeInOut';
 import Overrides from './Overrides';
 import styles from './index.styl';
 import IconExtruder from './icons/extruder';
@@ -22,6 +23,9 @@ class Marlin extends PureComponent {
         state: PropTypes.object,
         actions: PropTypes.object
     };
+
+    extruderPowerMax = 127;
+    heatedBedPowerMax = 127;
 
     // M104 Set the target temperature for a hotend.
     setExtruderTemperature = (deg) => () => {
@@ -44,22 +48,25 @@ class Marlin extends PureComponent {
         const feedrate = get(controllerState, 'feedrate') || none;
         const spindle = get(controllerState, 'spindle') || none;
         const extruder = get(controllerState, 'heater.extruder') || {};
-        const bed = get(controllerState, 'heater.bed') || {};
+        const heatedBed = get(controllerState, 'heater.heatedBed') || {};
         const showExtruderTemperature = (extruder.deg !== undefined && extruder.degTarget !== undefined);
         const showExtruderPower = (extruder.power !== undefined);
-        const showBedTemperature = (bed.deg !== undefined && bed.degTarget !== undefined);
-        const showBedPower = (bed.power !== undefined);
+        const showHeatedBedTemperature = (heatedBed.deg !== undefined && heatedBed.degTarget !== undefined);
+        const showHeatedBedPower = (heatedBed.power !== undefined);
         const showHeaterStatus = [
             showExtruderTemperature,
             showExtruderPower,
-            showBedTemperature,
-            showBedPower
+            showHeatedBedTemperature,
+            showHeatedBedPower
         ].some(x => !!x);
         const canSetExtruderTemperature = isNumber(state.heater.extruder);
-        const canSetHeatedBedTemperature = isNumber(state.heater.bed);
+        const canSetHeatedBedTemperature = isNumber(state.heater.heatedBed);
         const modal = mapValues(controllerState.modal || {}, mapGCodeToText);
         const extruderIsHeating = (Number(extruder.degTarget) > Number(extruder.deg));
-        const heatedBedIsHeating = (Number(bed.degTarget) > Number(bed.deg));
+        const heatedBedIsHeating = (Number(heatedBed.degTarget) > Number(heatedBed.deg));
+
+        this.extruderPowerMax = Math.max(this.extruderPowerMax, Number(extruder.power) || 0);
+        this.heatedBedPowerMax = Math.max(this.heatedBedPowerMax, Number(heatedBed.power) || 0);
 
         return (
             <div>
@@ -88,9 +95,12 @@ class Marlin extends PureComponent {
                         >
                             <div className="table-form-row">
                                 <div className="table-form-col table-form-col-label">
-                                    <Blink rate={extruderIsHeating ? 530 : 0}>
-                                        <IconExtruder width="24" height="24" />
-                                    </Blink>
+                                    <FadeInOut disabled={!extruderIsHeating} from={0.5} to={1}>
+                                        <IconExtruder
+                                            color={extruderIsHeating ? '#000' : '#666'}
+                                            size={24}
+                                        />
+                                    </FadeInOut>
                                     <Space width="4" />
                                     {i18n._('Extruder')}
                                 </div>
@@ -145,9 +155,12 @@ class Marlin extends PureComponent {
                             </div>
                             <div className="table-form-row">
                                 <div className="table-form-col table-form-col-label">
-                                    <Blink rate={heatedBedIsHeating ? 530 : 0}>
-                                        <IconHeatedBed width="24" height="24" />
-                                    </Blink>
+                                    <FadeInOut disabled={!heatedBedIsHeating} from={0.5} to={1}>
+                                        <IconHeatedBed
+                                            color={heatedBedIsHeating ? '#000' : '#666'}
+                                            size={24}
+                                        />
+                                    </FadeInOut>
                                     <Space width="4" />
                                     {i18n._('Heated Bed')}
                                 </div>
@@ -155,7 +168,7 @@ class Marlin extends PureComponent {
                                     <div className="input-group input-group-sm">
                                         <input
                                             type="number"
-                                            value={state.heater.bed}
+                                            value={state.heater.heatedBed}
                                             step="1"
                                             min="0"
                                             className="form-control"
@@ -173,7 +186,7 @@ class Marlin extends PureComponent {
                                         btnSize="xs"
                                         btnStyle="danger"
                                         disabled={!canSetHeatedBedTemperature}
-                                        onClick={this.setHeatedBedTemperature(state.heater.bed)}
+                                        onClick={this.setHeatedBedTemperature(state.heater.heatedBed)}
                                         title={i18n._('Set the target temperature for the heated bed')}
                                     >
                                         <i
@@ -215,16 +228,16 @@ class Marlin extends PureComponent {
                             </div>
                         </div>
                         }
-                        {showBedTemperature &&
+                        {showHeatedBedTemperature &&
                         <div className="row no-gutters">
                             <div className="col col-xs-6">
-                                <div className={styles.textEllipsis} title={i18n._('Bed Temperature')}>
-                                    {i18n._('Bed Temperature')}
+                                <div className={styles.textEllipsis} title={i18n._('Heated Bed Temperature')}>
+                                    {i18n._('Heated Bed Temperature')}
                                 </div>
                             </div>
                             <div className="col col-xs-6">
                                 <div className={styles.well}>
-                                    {`${bed.deg}°C / ${bed.degTarget}°C`}
+                                    {`${heatedBed.deg}°C / ${heatedBed.degTarget}°C`}
                                 </div>
                             </div>
                         </div>
@@ -237,23 +250,33 @@ class Marlin extends PureComponent {
                                 </div>
                             </div>
                             <div className="col col-xs-6">
-                                <div className={styles.well}>
-                                    {extruder.power}
-                                </div>
+                                <ProgressBar
+                                    style={{ marginBottom: 0 }}
+                                    bsStyle="info"
+                                    min={0}
+                                    max={this.extruderPowerMax}
+                                    now={extruder.power}
+                                    label={<span className={styles.progressbarLabel}>{extruder.power}</span>}
+                                />
                             </div>
                         </div>
                         }
-                        {showBedPower &&
+                        {showHeatedBedPower &&
                         <div className="row no-gutters">
                             <div className="col col-xs-6">
-                                <div className={styles.textEllipsis} title={i18n._('Bed Power')}>
-                                    {i18n._('Bed Power')}
+                                <div className={styles.textEllipsis} title={i18n._('Heated Bed Power')}>
+                                    {i18n._('Heated Bed Power')}
                                 </div>
                             </div>
                             <div className="col col-xs-6">
-                                <div className={styles.well}>
-                                    {bed.power}
-                                </div>
+                                <ProgressBar
+                                    style={{ marginBottom: 0 }}
+                                    bsStyle="info"
+                                    min={0}
+                                    max={this.heatedBedPowerMax}
+                                    now={heatedBed.power}
+                                    label={<span className={styles.progressbarLabel}>{heatedBed.power}</span>}
+                                />
                             </div>
                         </div>
                         }

@@ -674,7 +674,7 @@ class MarlinController {
                 this.actionTime.queryTemperatureReport = now;
                 this.connection.write('M105\n');
             }
-        }, 1000);
+        }, 2000);
 
         this.queryTimer = setInterval(() => {
             if (this.isClose()) {

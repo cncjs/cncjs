@@ -138,7 +138,7 @@ class MarlinWidget extends PureComponent {
             this.setState(state => ({
                 heater: {
                     ...state.heater,
-                    bed: value
+                    heatedBed: value
                 }
             }));
         }
@@ -199,8 +199,8 @@ class MarlinWidget extends PureComponent {
         if (isNumber(heater.extruder)) {
             this.config.set('heater.extruder', heater.extruder);
         }
-        if (isNumber(heater.bed)) {
-            this.config.set('heater.bed', heater.bed);
+        if (isNumber(heater.heatedBed)) {
+            this.config.set('heater.heatedBed', heater.heatedBed);
         }
     }
     getInitialState() {
@@ -232,7 +232,7 @@ class MarlinWidget extends PureComponent {
             },
             heater: {
                 extruder: this.config.get('heater.extruder', 0),
-                bed: this.config.get('heater.bed', 0)
+                heatedBed: this.config.get('heater.heatedBed', 0)
             }
         };
     }

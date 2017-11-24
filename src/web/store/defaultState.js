@@ -123,7 +123,7 @@ const defaultState = {
                 // Print Temperature | 180-230°C          | 210-250°C
                 // Bed Temperature   | 20-60°C (optional) | 80-110°C (mandatory)
                 extruder: 180,
-                bed: 60
+                heatedBed: 60
             }
         },
         probe: {
