@@ -22,6 +22,25 @@ class ShuttleXpress extends PureComponent {
 
     state = this.getInitialState();
 
+    onChangeFeedrateSlider = (value) => {
+        const [min, max] = value;
+        this.setState({
+            feedrateMin: min,
+            feedrateMax: max
+        });
+    };
+
+    onChangeHertz = (event) => {
+        const { value } = event.target;
+        const hertz = Number(value);
+        this.setState({ hertz });
+    };
+
+    onChangeOvershootSlider = (value) => {
+        const overshoot = value;
+        this.setState({ overshoot });
+    };
+
     getInitialState() {
         const {
             feedrateMin,
@@ -42,22 +61,6 @@ class ShuttleXpress extends PureComponent {
 
         this.setState({ feedrateMin, feedrateMax, hertz, overshoot });
     }
-    onFeedrateSliderChange(value) {
-        const [min, max] = value;
-        this.setState({
-            feedrateMin: min,
-            feedrateMax: max
-        });
-    }
-    onHertzChange(event) {
-        const { value } = event.target;
-        const hertz = Number(value);
-        this.setState({ hertz });
-    }
-    onOvershootSliderChange(value) {
-        const overshoot = value;
-        this.setState({ overshoot });
-    }
     render() {
         const { show } = this.props;
         const { feedrateMin, feedrateMax, hertz, overshoot } = this.state;
@@ -74,14 +77,18 @@ class ShuttleXpress extends PureComponent {
                         min={FEEDRATE_RANGE[0]}
                         max={FEEDRATE_RANGE[1]}
                         step={FEEDRATE_STEP}
-                        onChange={::this.onFeedrateSliderChange}
+                        onChange={this.onChangeFeedrateSlider}
                     />
                 </div>
                 <div className="form-group form-group-sm">
                     <label>
                         {i18n._('Repeat Rate: {{hertz}}Hz', { hertz: hertz })}
                     </label>
-                    <select className="form-control" defaultValue={hertz} onChange={::this.onHertzChange}>
+                    <select
+                        className="form-control"
+                        defaultValue={hertz}
+                        onChange={this.onChangeHertz}
+                    >
                         <option value="60">{i18n._('60 Times per Second')}</option>
                         <option value="45">{i18n._('45 Times per Second')}</option>
                         <option value="30">{i18n._('30 Times per Second')}</option>
@@ -99,7 +106,7 @@ class ShuttleXpress extends PureComponent {
                         min={OVERSHOOT_RANGE[0]}
                         max={OVERSHOOT_RANGE[1]}
                         step={OVERSHOOT_STEP}
-                        onChange={::this.onOvershootSliderChange}
+                        onChange={this.onChangeOvershootSlider}
                     />
                 </div>
             </div>

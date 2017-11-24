@@ -34,11 +34,12 @@ class WorkflowControl extends PureComponent {
     };
     fileInputEl = null;
 
-    onClickToUpload() {
+    handleClickUpload = (event) => {
         this.fileInputEl.value = null;
         this.fileInputEl.click();
-    }
-    onChangeFile(event) {
+    };
+
+    handleChangeFile = (event) => {
         const { actions } = this.props;
         const files = event.target.files;
         const file = files[0];
@@ -73,7 +74,8 @@ class WorkflowControl extends PureComponent {
         } catch (err) {
             // Ignore error
         }
-    }
+    };
+
     canRun() {
         const machineState = controller.getMachineState();
         const { state } = this.props;
@@ -136,7 +138,7 @@ class WorkflowControl extends PureComponent {
                     type="file"
                     style={{ display: 'none' }}
                     multiple={false}
-                    onChange={::this.onChangeFile}
+                    onChange={this.handleChangeFile}
                 />
                 <div className="btn-toolbar">
                     <div className="btn-group btn-group-sm">
@@ -144,7 +146,7 @@ class WorkflowControl extends PureComponent {
                             type="button"
                             className="btn btn-primary"
                             title={i18n._('Upload G-code')}
-                            onClick={::this.onClickToUpload}
+                            onClick={this.handleClickUpload}
                             disabled={!canUpload}
                         >
                             {i18n._('Upload G-code')}

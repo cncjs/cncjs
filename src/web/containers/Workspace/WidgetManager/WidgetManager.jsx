@@ -127,6 +127,22 @@ class WidgetManager extends PureComponent {
         }
     ];
 
+    handleSave = () => {
+        this.setState({ show: false });
+
+        const allWidgets = this.widgetList.map(item => item.id);
+        const activeWidgets = this.widgetList
+            .filter(item => item.visible)
+            .map(item => item.id);
+        const inactiveWidgets = difference(allWidgets, activeWidgets);
+
+        this.props.onSave(activeWidgets, inactiveWidgets);
+    };
+
+    handleCancel = () => {
+        this.setState({ show: false });
+    };
+
     constructor(props) {
         super(props);
 
@@ -151,26 +167,6 @@ class WidgetManager extends PureComponent {
             this.props.onClose();
         }
     }
-    handleSave() {
-        this.setState({ show: false });
-
-        const allWidgets = this.widgetList.map(item => item.id);
-        const activeWidgets = this.widgetList
-            .filter(item => item.visible)
-            .map(item => item.id);
-        const inactiveWidgets = difference(allWidgets, activeWidgets);
-
-        this.props.onSave(activeWidgets, inactiveWidgets);
-    }
-    handleCancel() {
-        this.setState({ show: false });
-    }
-    handleChange(id, checked) {
-        let o = find(this.widgetList, { id: id });
-        if (o) {
-            o.visible = checked;
-        }
-    }
     render() {
         const defaultWidgets = store.get('workspace.container.default.widgets', [])
             .map(widgetId => widgetId.split(':')[0]);
@@ -190,7 +186,7 @@ class WidgetManager extends PureComponent {
 
         return (
             <Modal
-                onClose={::this.handleCancel}
+                onClose={this.handleCancel}
                 show={this.state.show}
                 size="md"
             >
@@ -198,20 +194,28 @@ class WidgetManager extends PureComponent {
                     <Modal.Title>{i18n._('Widgets')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body style={{ padding: 0 }}>
-                    <WidgetList list={this.widgetList} onChange={::this.handleChange} />
+                    <WidgetList
+                        list={this.widgetList}
+                        onChange={(id, checked) => {
+                            const o = find(this.widgetList, { id: id });
+                            if (o) {
+                                o.visible = checked;
+                            }
+                        }}
+                    />
                 </Modal.Body>
                 <Modal.Footer>
                     <button
                         type="button"
                         className="btn btn-default"
-                        onClick={::this.handleCancel}
+                        onClick={this.handleCancel}
                     >
                         {i18n._('Cancel')}
                     </button>
                     <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={::this.handleSave}
+                        onClick={this.handleSave}
                     >
                         {i18n._('OK')}
                     </button>
