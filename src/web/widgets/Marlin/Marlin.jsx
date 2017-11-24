@@ -218,12 +218,12 @@ class Marlin extends PureComponent {
                         </div>
                         {showExtruderTemperature &&
                         <div className="row no-gutters">
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-7">
                                 <div className={styles.textEllipsis} title={i18n._('Extruder Temperature')}>
                                     {i18n._('Extruder Temperature')}
                                 </div>
                             </div>
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-5">
                                 <div className={styles.well}>
                                     {`${extruder.deg}°C / ${extruder.degTarget}°C`}
                                 </div>
@@ -232,12 +232,12 @@ class Marlin extends PureComponent {
                         }
                         {showHeatedBedTemperature &&
                         <div className="row no-gutters">
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-7">
                                 <div className={styles.textEllipsis} title={i18n._('Heated Bed Temperature')}>
                                     {i18n._('Heated Bed Temperature')}
                                 </div>
                             </div>
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-5">
                                 <div className={styles.well}>
                                     {`${heatedBed.deg}°C / ${heatedBed.degTarget}°C`}
                                 </div>
@@ -246,12 +246,12 @@ class Marlin extends PureComponent {
                         }
                         {showExtruderPower &&
                         <div className="row no-gutters">
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-7">
                                 <div className={styles.textEllipsis} title={i18n._('Extruder Power')}>
                                     {i18n._('Extruder Power')}
                                 </div>
                             </div>
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-5">
                                 <ProgressBar
                                     style={{ marginBottom: 0 }}
                                     bsStyle="info"
@@ -269,12 +269,12 @@ class Marlin extends PureComponent {
                         }
                         {showHeatedBedPower &&
                         <div className="row no-gutters">
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-7">
                                 <div className={styles.textEllipsis} title={i18n._('Heated Bed Power')}>
                                     {i18n._('Heated Bed Power')}
                                 </div>
                             </div>
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-5">
                                 <ProgressBar
                                     style={{ marginBottom: 0 }}
                                     bsStyle="info"
@@ -312,24 +312,24 @@ class Marlin extends PureComponent {
                     {panel.statusReports.expanded &&
                     <Panel.Body>
                         <div className="row no-gutters">
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-4">
                                 <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
                                     {i18n._('Feed Rate')}
                                 </div>
                             </div>
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-8">
                                 <div className={styles.well}>
                                     {feedrate}
                                 </div>
                             </div>
                         </div>
                         <div className="row no-gutters">
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-4">
                                 <div className={styles.textEllipsis} title={i18n._('Spindle')}>
                                     {i18n._('Spindle')}
                                 </div>
                             </div>
-                            <div className="col col-xs-6">
+                            <div className="col col-xs-8">
                                 <div className={styles.well}>
                                     {spindle}
                                 </div>
