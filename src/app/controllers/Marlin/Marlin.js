@@ -234,7 +234,7 @@ class MarlinLineParserResultHeater {
 
         const heater = {
             extruder: {},
-            bed: {}
+            heatedBed: {}
         };
         const re = /(?:(?:(T|B|T\d+):([0-9\.\-]+)\s+\/([0-9\.\-]+)(?:\s+\((?:[0-9\.\-]+)\))?)|(?:(@|B@|@\d+):([0-9\.\-]+))|(?:(W):(\?|[0-9]+)))/ig;
 
@@ -248,8 +248,8 @@ class MarlinLineParserResultHeater {
             }
 
             if (key === 'B') { // B:60.0 /0.0
-                heater.bed.deg = r[2];
-                heater.bed.degTarget = r[3];
+                heater.heatedBed.deg = r[2];
+                heater.heatedBed.degTarget = r[3];
                 continue;
             }
 
@@ -259,7 +259,7 @@ class MarlinLineParserResultHeater {
             }
 
             if (key === 'B@') { // B@:127
-                heater.bed.power = r[5];
+                heater.heatedBed.power = r[5];
                 continue;
             }
 
@@ -306,7 +306,7 @@ class Marlin extends events.EventEmitter {
         ovS: 100,
         heater: {
             extruder: {}, // { deg, degTarget, power }
-            bed: {} // { deg, degTarget, power }
+            heatedBed: {} // { deg, degTarget, power }
         },
         rapidFeedrate: 0, // Related to G0
         feedrate: 0, // Related to G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
