@@ -176,78 +176,23 @@ class Workspace extends PureComponent {
         }
     };
 
-    componentDidMount() {
-        this.addControllerEvents();
-        this.addResizeEventListener();
-
-        setTimeout(() => {
-            // A workaround solution to trigger componentDidUpdate on initial render
-            this.setState({ mounted: true });
-        }, 0);
-    }
-    componentWillUnmount() {
-        this.removeControllerEvents();
-        this.removeResizeEventListener();
-    }
-    componentDidUpdate() {
-        store.set('workspace.container.primary.show', this.state.showPrimaryContainer);
-        store.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
-
-        this.resizeDefaultContainer();
-    }
-    getInitialState() {
-        return {
-            mounted: false,
-            connection: {
-                ident: controller.connection.ident
-            },
-            modal: {
-                name: MODAL_NONE,
-                params: {}
-            },
-            isDraggingFile: false,
-            isDraggingWidget: false,
-            isUploading: false,
-            showPrimaryContainer: store.get('workspace.container.primary.show'),
-            showSecondaryContainer: store.get('workspace.container.secondary.show'),
-            inactiveCount: _.size(widgetManager.getInactiveWidgets())
-        };
-    }
-    addControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.addListener(eventName, callback);
-        });
-    }
-    removeControllerEvents() {
-        Object.keys(this.controllerEvents).forEach(eventName => {
-            const callback = this.controllerEvents[eventName];
-            controller.removeListener(eventName, callback);
-        });
-    }
-    addResizeEventListener() {
-        this.onResizeThrottled = _.throttle(::this.resizeDefaultContainer, 50);
-        window.addEventListener('resize', this.onResizeThrottled);
-    }
-    removeResizeEventListener() {
-        window.removeEventListener('resize', this.onResizeThrottled);
-        this.onResizeThrottled = null;
-    }
-    togglePrimaryContainer() {
+    togglePrimaryContainer = () => {
         const { showPrimaryContainer } = this.state;
         this.setState({ showPrimaryContainer: !showPrimaryContainer });
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/Visualizer"
-    }
-    toggleSecondaryContainer() {
+    };
+
+    toggleSecondaryContainer = () => {
         const { showSecondaryContainer } = this.state;
         this.setState({ showSecondaryContainer: !showSecondaryContainer });
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/Visualizer"
-    }
-    resizeDefaultContainer() {
+    };
+
+    resizeDefaultContainer = () => {
         const sidebar = document.querySelector('#sidebar');
         const primaryContainer = ReactDOM.findDOMNode(this.primaryContainer);
         const secondaryContainer = ReactDOM.findDOMNode(this.secondaryContainer);
@@ -284,8 +229,9 @@ class Workspace extends PureComponent {
 
         // Publish a 'resize' event
         pubsub.publish('resize'); // Also see "widgets/Visualizer"
-    }
-    onDrop(files) {
+    };
+
+    onDrop = (files) => {
         const { connection } = this.state;
 
         if (!connection.ident) {
@@ -337,8 +283,9 @@ class Workspace extends PureComponent {
         } catch (err) {
             // Ignore error
         }
-    }
-    updateWidgetsForPrimaryContainer() {
+    };
+
+    updateWidgetsForPrimaryContainer = () => {
         widgetManager.show((activeWidgets, inactiveWidgets) => {
             const widgets = Object.keys(store.get('widgets', {}))
                 .filter(widgetId => {
@@ -363,8 +310,9 @@ class Workspace extends PureComponent {
             // Update inactive count
             this.setState({ inactiveCount: _.size(inactiveWidgets) });
         });
-    }
-    updateWidgetsForSecondaryContainer() {
+    };
+
+    updateWidgetsForSecondaryContainer = () => {
         widgetManager.show((activeWidgets, inactiveWidgets) => {
             const widgets = Object.keys(store.get('widgets', {}))
                 .filter(widgetId => {
@@ -389,6 +337,64 @@ class Workspace extends PureComponent {
             // Update inactive count
             this.setState({ inactiveCount: _.size(inactiveWidgets) });
         });
+    };
+
+    componentDidMount() {
+        this.addControllerEvents();
+        this.addResizeEventListener();
+
+        setTimeout(() => {
+            // A workaround solution to trigger componentDidUpdate on initial render
+            this.setState({ mounted: true });
+        }, 0);
+    }
+    componentWillUnmount() {
+        this.removeControllerEvents();
+        this.removeResizeEventListener();
+    }
+    componentDidUpdate() {
+        store.set('workspace.container.primary.show', this.state.showPrimaryContainer);
+        store.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
+
+        this.resizeDefaultContainer();
+    }
+    getInitialState() {
+        return {
+            mounted: false,
+            connection: {
+                ident: controller.connection.ident
+            },
+            modal: {
+                name: MODAL_NONE,
+                params: {}
+            },
+            isDraggingFile: false,
+            isDraggingWidget: false,
+            isUploading: false,
+            showPrimaryContainer: store.get('workspace.container.primary.show'),
+            showSecondaryContainer: store.get('workspace.container.secondary.show'),
+            inactiveCount: _.size(widgetManager.getInactiveWidgets())
+        };
+    }
+    addControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.addListener(eventName, callback);
+        });
+    }
+    removeControllerEvents() {
+        Object.keys(this.controllerEvents).forEach(eventName => {
+            const callback = this.controllerEvents[eventName];
+            controller.removeListener(eventName, callback);
+        });
+    }
+    addResizeEventListener() {
+        this.onResizeThrottled = _.throttle(this.resizeDefaultContainer, 50);
+        window.addEventListener('resize', this.onResizeThrottled);
+    }
+    removeResizeEventListener() {
+        window.removeEventListener('resize', this.onResizeThrottled);
+        this.onResizeThrottled = null;
     }
     render() {
         const { style, className } = this.props;
@@ -488,7 +494,7 @@ class Workspace extends PureComponent {
                                         <Button
                                             style={{ minWidth: 30 }}
                                             compact
-                                            onClick={::this.togglePrimaryContainer}
+                                            onClick={this.togglePrimaryContainer}
                                         >
                                             <i className="fa fa-chevron-left" />
                                         </Button>
@@ -500,7 +506,7 @@ class Workspace extends PureComponent {
                                     >
                                         <Button
                                             style={{ width: 230 }}
-                                            onClick={::this.updateWidgetsForPrimaryContainer}
+                                            onClick={this.updateWidgetsForPrimaryContainer}
                                         >
                                             <i className="fa fa-list-alt" />
                                             {i18n._('Manage Widgets ({{inactiveCount}})', {
@@ -559,7 +565,7 @@ class Workspace extends PureComponent {
                                     <Button
                                         style={{ minWidth: 30 }}
                                         compact
-                                        onClick={::this.togglePrimaryContainer}
+                                        onClick={this.togglePrimaryContainer}
                                     >
                                         <i className="fa fa-chevron-right" />
                                     </Button>
@@ -591,7 +597,7 @@ class Workspace extends PureComponent {
                                     <Button
                                         style={{ minWidth: 30 }}
                                         compact
-                                        onClick={::this.toggleSecondaryContainer}
+                                        onClick={this.toggleSecondaryContainer}
                                     >
                                         <i className="fa fa-chevron-left" />
                                     </Button>
@@ -642,7 +648,7 @@ class Workspace extends PureComponent {
                                         >
                                             <Button
                                                 style={{ width: 230 }}
-                                                onClick={::this.updateWidgetsForSecondaryContainer}
+                                                onClick={this.updateWidgetsForSecondaryContainer}
                                             >
                                                 <i className="fa fa-list-alt" />
                                                 {i18n._('Manage Widgets ({{inactiveCount}})', {
@@ -658,7 +664,7 @@ class Workspace extends PureComponent {
                                             <Button
                                                 style={{ minWidth: 30 }}
                                                 compact
-                                                onClick={::this.toggleSecondaryContainer}
+                                                onClick={this.toggleSecondaryContainer}
                                             >
                                                 <i className="fa fa-chevron-right" />
                                             </Button>
