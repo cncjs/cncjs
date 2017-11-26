@@ -128,12 +128,12 @@ class SerialConnection extends EventEmitter {
         this.port = null;
         this.parser = null;
     }
-    write(data) {
+    write(data, context) {
         if (!this.port) {
             return;
         }
 
-        data = this.writeFilter(data);
+        data = this.writeFilter(data, context);
 
         this.port.write(data);
     }
