@@ -195,9 +195,9 @@ class DisplayPanel extends PureComponent {
                                 <span className={styles.dimensionUnits}>{lengthUnits}</span>
                             </td>
                             <td className={styles.workPosition}>
-                                <span className={styles.integerPart}>{workPosition.x.split('.')[0]}</span>
+                                <span className={styles.integerPart}>{workPosition.e.split('.')[0]}</span>
                                 <span className={styles.decimalPoint}>.</span>
-                                <span className={styles.fractionalPart}>{workPosition.x.split('.')[1]}</span>
+                                <span className={styles.fractionalPart}>{workPosition.e.split('.')[1]}</span>
                                 <span className={styles.dimensionUnits}>{lengthUnits}</span>
                             </td>
                             <td className={styles.action} />
