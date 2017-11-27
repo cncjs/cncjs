@@ -608,7 +608,7 @@ class MarlinController {
             // Perform preemptive query to prevent starvation
             const now = new Date().getTime();
             const timespan = Math.abs(now - this.query.lastQueryTime);
-            if (timespan > 2000) {
+            if (this.query.type && timespan > 2000) {
                 this.query.issue();
                 return;
             }
