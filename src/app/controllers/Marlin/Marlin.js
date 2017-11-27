@@ -394,8 +394,8 @@ class Marlin extends events.EventEmitter {
                 this.state = nextState; // enforce change
             }
 
-            // Important Note:
-            // Emit an 'ok' event (w/ empty response) prior to the 'heater' event
+            // The 'ok' event (w/ empty response) should follow the 'heater' event
+            this.emit('heater', payload);
 
             // > M105
             // < ok T:27.0 /0.0 B:26.8 /0.0 B@:0 @:0
@@ -404,7 +404,6 @@ class Marlin extends events.EventEmitter {
                 this.emit('ok');
             }
 
-            this.emit('heater', payload);
             return;
         }
         if (data.length > 0) {

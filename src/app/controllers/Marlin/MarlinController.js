@@ -21,7 +21,13 @@ import store from '../../store';
 import Marlin from './Marlin';
 import interpret from './interpret';
 import {
-    MARLIN
+    MARLIN,
+    QUERY_TYPE_POSITION,
+    QUERY_TYPE_TEMPERATURE,
+    WRITE_SOURCE_CLIENT,
+    WRITE_SOURCE_FEEDER,
+    WRITE_SOURCE_SENDER,
+    WRITE_SOURCE_TIMER
 } from './constants';
 
 // % commands
@@ -74,23 +80,18 @@ class MarlinController {
     ready = false;
     state = {};
     settings = {};
-    queryTimer = null;
     feedOverride = 100;
     spindleOverride = 100;
-    actionMask = {
-        queryPosition: {
-            state: false, // wait for current position
-            reply: false // wait for ok response
-        },
-        queryTemperatureReport: false,
 
-        // Respond to user input
-        replyPosition: false, // M114
-        replyTemperatureReport: false // M105
-    };
-    actionTime = {
-        queryPosition: 0,
-        senderFinishTime: 0
+    writeHistory = {
+        // The write source is one of the following:
+        // * WRITE_SOURCE_CLIENT
+        // * WRITE_SOURCE_FEEDER
+        // * WRITE_SOURCE_SENDER
+        // * WRITE_SOURCE_TIMER
+        source: null,
+
+        line: ''
     };
 
     // Event Trigger
@@ -101,9 +102,95 @@ class MarlinController {
 
     // Sender
     sender = null;
+    senderFinishTime = 0;
 
     // Workflow
     workflow = null;
+
+    // Query
+    queryTimer = null;
+    query = {
+        // state
+        type: null,
+        lastQueryTime: 0,
+
+        // action
+        issue: () => {
+            const now = new Date().getTime();
+
+            if (this.query.type === QUERY_TYPE_POSITION) {
+                this.connection.write('M114\n', {
+                    source: WRITE_SOURCE_TIMER
+                });
+                this.lastQueryTime = now;
+            } else if (this.query.type === QUERY_TYPE_TEMPERATURE) {
+                this.connection.write('M105\n', {
+                    source: WRITE_SOURCE_TIMER
+                });
+                this.lastQueryTime = now;
+            } else {
+                log.error('Invalid query type:', this.query.type);
+            }
+
+            this.query.type = null;
+        }
+    };
+
+    // Get the current position of the active nozzle and stepper values.
+    queryPosition = (() => {
+        let lastQueryTime = 0;
+
+        return _.throttle(() => {
+            // Check the ready flag
+            if (!(this.ready)) {
+                return;
+            }
+
+            const now = new Date().getTime();
+
+            if (!this.query.type) {
+                this.query.type = QUERY_TYPE_POSITION;
+                lastQueryTime = now;
+            } else if (lastQueryTime > 0) {
+                const timespan = Math.abs(now - lastQueryTime);
+                const toleranceTime = 5000; // 5 seconds
+
+                if (timespan >= toleranceTime) {
+                    log.silly(`Reschedule current position query: now=${now}ms, timespan=${timespan}ms`);
+                    this.query.type = QUERY_TYPE_POSITION;
+                    lastQueryTime = now;
+                }
+            }
+        }, 500);
+    })();
+
+    // Request a temperature report to be sent to the host at some point in the future.
+    queryTemperature = (() => {
+        let lastQueryTime = 0;
+
+        return _.throttle(() => {
+            // Check the ready flag
+            if (!(this.ready)) {
+                return;
+            }
+
+            const now = new Date().getTime();
+
+            if (!this.query.type) {
+                this.query.type = QUERY_TYPE_TEMPERATURE;
+                lastQueryTime = now;
+            } else if (lastQueryTime > 0) {
+                const timespan = Math.abs(now - lastQueryTime);
+                const toleranceTime = 10000; // 10 seconds
+
+                if (timespan >= toleranceTime) {
+                    log.silly(`Reschedule temperture report query: now=${now}ms, timespan=${timespan}ms`);
+                    this.query.type = QUERY_TYPE_TEMPERATURE;
+                    lastQueryTime = now;
+                }
+            }
+        }, 1000);
+    })();
 
     constructor(engine, options) {
         if (!engine) {
@@ -122,8 +209,13 @@ class MarlinController {
         this.connection = new SerialConnection({
             path: port,
             baudRate: baudrate,
-            writeFilter: (data) => {
+            writeFilter: (data, context) => {
+                const { source = '' } = { ...context };
                 const line = data.trim();
+
+                // Update write history
+                this.writeHistory.source = source;
+                this.writeHistory.line = line;
 
                 if (!line) {
                     return data;
@@ -315,7 +407,9 @@ class MarlinController {
 
             this.emit('serialport:write', line + '\n', context);
 
-            this.connection.write(line + '\n');
+            this.connection.write(line + '\n', {
+                source: WRITE_SOURCE_FEEDER
+            });
             log.silly(`> ${line}`);
         });
         this.feeder.on('hold', noop);
@@ -410,16 +504,18 @@ class MarlinController {
                 return;
             }
 
-            this.connection.write(line + '\n');
+            this.connection.write(line + '\n', {
+                source: WRITE_SOURCE_SENDER
+            });
             log.silly(`> ${line}`);
         });
         this.sender.on('hold', noop);
         this.sender.on('unhold', noop);
         this.sender.on('start', (startTime) => {
-            this.actionTime.senderFinishTime = 0;
+            this.senderFinishTime = 0;
         });
         this.sender.on('end', (finishTime) => {
-            this.actionTime.senderFinishTime = finishTime;
+            this.senderFinishTime = finishTime;
         });
 
         // Workflow
@@ -475,43 +571,40 @@ class MarlinController {
         });
 
         this.controller.on('pos', (res) => {
-            if (this.actionMask.queryPosition.state) {
-                this.actionMask.queryPosition.state = false;
-                this.actionMask.queryPosition.reply = true;
-            }
+            log.silly(`controller.on('pos'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
 
-            if (this.actionMask.replyPosition) {
+            if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
                 this.emit('serialport:read', res.raw);
             }
         });
 
         this.controller.on('heater', (res) => {
-            if (this.actionMask.queryTemperatureReport) {
-                this.actionMask.queryTemperatureReport = false;
-            }
+            log.silly(`controller.on('heater'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
 
-            if (this.actionMask.replyTemperatureReport) {
-                this.actionMask.replyTemperatureReport = false;
+            if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
                 this.emit('serialport:read', res.raw);
             }
         });
 
         this.controller.on('ok', (res) => {
-            // M105 will emit an 'ok' event (w/ empty response) prior to the 'heater' event
-            if (!res && this.actionMask.queryTemperatureReport) {
-                if (this.actionMask.replyTemperatureReport) {
-                    this.emit('serialport:read', res.raw);
-                }
-                return;
+            log.silly(`controller.on('ok'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
+
+            if (!this.writeHistory.source) {
+                log.error('The write source should not be empty');
             }
 
-            // Do not change position query state for empty response
-            if (res && this.actionMask.queryPosition.reply) {
-                if (this.actionMask.replyPosition) {
-                    this.actionMask.replyPosition = false;
-                    this.emit('serialport:read', res.raw);
-                }
-                this.actionMask.queryPosition.reply = false;
+            if (res && _.includes(['client', 'feeder'], this.writeHistory.source)) {
+                this.emit('serialport:read', res.raw);
+            }
+
+            this.writeHistory.source = null;
+            this.writeHistory.line = '';
+
+            // Perform preemptive query to prevent starvation
+            const now = new Date().getTime();
+            const timespan = Math.abs(now - this.query.lastQueryTime);
+            if (this.query.type && (timespan > 2000)) {
+                this.query.issue();
                 return;
             }
 
@@ -539,12 +632,13 @@ class MarlinController {
                 return;
             }
 
-            if (res) {
-                this.emit('serialport:read', res.raw);
-            }
-
             // Feeder
             this.feeder.next();
+
+            // Query
+            if (this.query.type) {
+                this.query.issue();
+            }
         });
 
         this.controller.on('error', (res) => {
@@ -573,76 +667,6 @@ class MarlinController {
         this.controller.on('others', (res) => {
             this.emit('serialport:read', res.raw);
         });
-
-        // Get the current position of the active nozzle and stepper values.
-        const queryPosition = _.throttle(() => {
-            // Check the ready flag
-            if (!(this.ready)) {
-                return;
-            }
-
-            const now = new Date().getTime();
-
-            /*
-            const lastQueryTime = this.actionTime.queryPosition;
-            if (lastQueryTime > 0) {
-                const timespan = Math.abs(now - lastQueryTime);
-                const toleranceTime = 5000; // 5 seconds
-
-                // Check if it has not been updated for a long time
-                if (timespan >= toleranceTime) {
-                    log.debug(`Continue the current position query: timespan=${timespan}ms`);
-                    this.actionMask.queryPosition.state = false;
-                    this.actionMask.queryPosition.reply = false;
-                }
-            }
-            */
-
-            if (this.actionMask.queryPosition.state || this.actionMask.queryPosition.reply) {
-                return;
-            }
-
-            if (this.isOpen()) {
-                this.actionMask.queryPosition.state = true;
-                this.actionMask.queryPosition.reply = false;
-                this.actionTime.queryPosition = now;
-                this.connection.write('M114\n');
-            }
-        }, 1000);
-
-        // Request a temperature report to be sent to the host at some point in the future.
-        const queryTemperatureReport = _.throttle(() => {
-            // Check the ready flag
-            if (!(this.ready)) {
-                return;
-            }
-
-            const now = new Date().getTime();
-
-            /*
-            const lastQueryTime = this.actionTime.queryTemperatureReport;
-            if (lastQueryTime > 0) {
-                const timespan = Math.abs(now - lastQueryTime);
-                const toleranceTime = 5000; // 5 seconds
-
-                // Check if it has not been updated for a long time
-                if (timespan >= toleranceTime) {
-                    log.debug(`Continue the temperature report query: timespan=${timespan}ms`);
-                    this.actionMask.queryTemperatureReport = false;
-                }
-            }
-            */
-
-            if (this.actionMask.queryTemperatureReport) {
-                return;
-            }
-
-            if (this.isOpen()) {
-                this.actionMask.queryTemperatureReport = true;
-                this.actionTime.queryTemperatureReport = now;
-                this.connection.write('M105\n');
-            }
-        }, 2000);
 
         this.queryTimer = setInterval(() => {
             if (this.isClose()) {
@@ -686,25 +710,37 @@ class MarlinController {
             }
 
             // M114: Get Current Position
-            queryPosition();
+            this.queryPosition();
 
             // M105: Report Temperatures
-            queryTemperatureReport();
+            this.queryTemperature();
+
+            // Issue a query when the following criteria are met:
+            // * The value of `writeHistory.source` is empty
+            // * The query type is not empty (e.g. 'position', 'temperature')
+            // * No pending commands in the sender queue
+            // * No pending commands in the feeder queue
+            if (!this.writeHistory.source &&
+                (this.query.type) &&
+                (this.sender.state.received >= this.sender.state.sent) &&
+                (this.feeder.size() === 0)) {
+                this.query.issue();
+            }
 
             // Check if the machine has stopped movement after completion
-            if (this.actionTime.senderFinishTime > 0) {
+            if (this.senderFinishTime > 0) {
                 const machineIdle = zeroOffset;
                 const now = new Date().getTime();
-                const timespan = Math.abs(now - this.actionTime.senderFinishTime);
+                const timespan = Math.abs(now - this.senderFinishTime);
                 const toleranceTime = 500; // in milliseconds
 
                 if (!machineIdle) {
                     // Extend the sender finish time
-                    this.actionTime.senderFinishTime = now;
+                    this.senderFinishTime = now;
                 } else if (timespan > toleranceTime) {
                     log.silly(`Finished sending G-code: timespan=${timespan}`);
 
-                    this.actionTime.senderFinishTime = 0;
+                    this.senderFinishTime = 0;
 
                     // Stop workflow
                     this.command('gcode:stop');
@@ -752,13 +788,6 @@ class MarlinController {
             }
         });
     }
-    clearActionValues() {
-        this.actionMask.queryPosition.state = false;
-        this.actionMask.queryPosition.reply = false;
-        this.actionMask.replyPosition = false;
-        this.actionTime.queryPosition = 0;
-        this.actionTime.senderFinishTime = 0;
-    }
     destroy() {
         if (this.queryTimer) {
             clearInterval(this.queryTimer);
@@ -793,39 +822,19 @@ class MarlinController {
         }
     }
     initController() {
-        const cmds = [
-            // Wait for the bootloader to complete before sending commands
-            { pauseAfter: 1000 },
+        // Wait for the bootloader to complete before sending commands
+        const delay = 1000;
 
+        setTimeout(() => {
             // M115: Get Firmware Version and Capabilities
-            { cmd: 'M115', pauseAfter: 50 },
+            this.command('gcode', 'M115');
 
             // M105: Get Extruder Temperature
-            { cmd: 'M105', pauseAfter: 50 }
-        ];
+            this.command('gcode', 'M105');
 
-        const sendInitCommands = (i = 0) => {
-            if (this.isClose()) {
-                // Serial port is closed
-                return;
-            }
-
-            if (i >= cmds.length) {
-                // Set the ready flag to true after sending initialization commands
-                this.ready = true;
-                return;
-            }
-
-            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
-            if (cmd) {
-                this.connection.write(cmd + '\n');
-                log.silly(`> ${cmd}`);
-            }
-            setTimeout(() => {
-                sendInitCommands(i + 1);
-            }, pauseAfter);
-        };
-        sendInitCommands();
+            // Set the ready flag to true after sending initialization commands
+            this.ready = true;
+        }, delay);
     }
     get status() {
         return {
@@ -886,9 +895,6 @@ class MarlinController {
             log.debug(`Connected to serial port "${port}"`);
 
             this.workflow.stop();
-
-            // Clear action values
-            this.clearActionValues();
 
             if (this.sender.state.gcode) {
                 // Unload G-code
@@ -1296,12 +1302,10 @@ class MarlinController {
             return;
         }
 
-        const cmd = data.trim();
-        this.actionMask.replyPosition = (cmd === 'M114') || this.actionMask.replyPosition;
-        this.actionMask.replyTemperatureReport = (cmd === 'M105') || this.actionMask.replyTemperatureReport;
-
         this.emit('serialport:write', data, context);
-        this.connection.write(data);
+        this.connection.write(data, {
+            source: WRITE_SOURCE_CLIENT
+        });
         log.silly(`> ${data}`);
     }
     writeln(data, context) {
