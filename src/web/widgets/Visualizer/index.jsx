@@ -203,7 +203,7 @@ class VisualizerWidget extends PureComponent {
                 log.debug(data); // TODO
             });
         },
-        uploadFile: (gcode, meta) => {
+        uploadFile: (content, meta) => {
             const { name } = { ...meta };
             const context = {};
 
@@ -216,7 +216,7 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
 
-            controller.command('sender:load', name, gcode, context, (err, data) => {
+            controller.command('sender:load', name, content, context, (err, senderState) => {
                 if (err) {
                     this.setState((state) => ({
                         gcode: {
@@ -231,7 +231,7 @@ class VisualizerWidget extends PureComponent {
                     return;
                 }
 
-                log.debug(data); // TODO
+                log.debug(senderState);
             });
         },
         loadGCode: (name, gcode) => {
@@ -545,8 +545,8 @@ class VisualizerWidget extends PureComponent {
             this.actions.unloadGCode();
         },
         'sender:load': (data, context) => {
-            let { name, gcode } = data;
-            gcode = translateGCodeWithContext(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
+            const { name, content } = data;
+            const gcode = translateGCodeWithContext(content, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
             this.actions.loadGCode(name, gcode);
         },
         'sender:unload': () => {
