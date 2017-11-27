@@ -429,7 +429,7 @@ class MarlinController {
             }
         });
         this.feeder.on('data', (line = '', context = {}) => {
-            if (this.isClose()) {
+            if (this.isClose) {
                 log.error(`Serial port "${this.options.port}" is not accessible`);
                 return;
             }
@@ -445,7 +445,7 @@ class MarlinController {
                 return;
             }
 
-            this.emit('serialport:write', line + '\n', context);
+            this.emit('connection:write', this.connectionOptions, line + '\n', context);
 
             this.connection.write(line + '\n', {
                 source: WRITE_SOURCE_FEEDER
@@ -528,7 +528,7 @@ class MarlinController {
             }
         });
         this.sender.on('data', (line = '', context = {}) => {
-            if (this.isClose()) {
+            if (this.isClose) {
                 log.error(`Serial port "${this.options.port}" is not accessible`);
                 return;
             }
@@ -595,7 +595,7 @@ class MarlinController {
         this.controller.on('raw', noop);
 
         this.controller.on('start', (res) => {
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
 
             // Set ready flag to true when receiving a start message
             // Note: It might have chance of receiving garbage characters on startup due to electronic noise.
@@ -603,38 +603,38 @@ class MarlinController {
         });
 
         this.controller.on('echo', (res) => {
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         this.controller.on('firmware', (res) => {
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         this.controller.on('pos', (res) => {
-            log.silly(`controller.on('pos'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('pos'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
 
             if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
-                this.emit('serialport:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
         });
 
         this.controller.on('heater', (res) => {
-            log.silly(`controller.on('heater'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('heater'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
 
             if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
-                this.emit('serialport:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
         });
 
         this.controller.on('ok', (res) => {
-            log.silly(`controller.on('ok'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('ok'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
 
             if (!this.writeHistory.source) {
                 log.error('The write source should not be empty');
             }
 
             if (res && _.includes(['client', 'feeder'], this.writeHistory.source)) {
-                this.emit('serialport:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
 
             this.writeHistory.source = null;
@@ -687,8 +687,8 @@ class MarlinController {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
-                this.emit('serialport:read', `> ${line.trim()} (line=${received + 1})`);
-                this.emit('serialport:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, `> ${line.trim()} (line=${received + 1})`);
+                this.emit('connection:read', this.connectionOptions, res.raw);
 
                 this.workflow.pause({ err: res.raw });
 
@@ -698,19 +698,18 @@ class MarlinController {
                 return;
             }
 
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
 
             // Feeder
             this.feeder.next();
         });
 
         this.controller.on('others', (res) => {
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         this.queryTimer = setInterval(() => {
-            if (this.isClose()) {
-                // Serial port is closed
+            if (this.isClose) {
                 return;
             }
 
@@ -1274,7 +1273,7 @@ class MarlinController {
             return;
         }
 
-        this.emit('serialport:write', data, context);
+        this.emit('connection:write', this.connectionOptions, data, context);
         this.connection.write(data, {
             source: WRITE_SOURCE_CLIENT
         });
