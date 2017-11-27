@@ -27,7 +27,7 @@ import {
     WRITE_SOURCE_CLIENT,
     WRITE_SOURCE_FEEDER,
     WRITE_SOURCE_SENDER,
-    WRITE_SOURCE_TIMER
+    WRITE_SOURCE_QUERY
 } from './constants';
 
 // % commands
@@ -88,7 +88,7 @@ class MarlinController {
         // * WRITE_SOURCE_CLIENT
         // * WRITE_SOURCE_FEEDER
         // * WRITE_SOURCE_SENDER
-        // * WRITE_SOURCE_TIMER
+        // * WRITE_SOURCE_QUERY
         source: null,
 
         line: ''
@@ -116,20 +116,24 @@ class MarlinController {
 
         // action
         issue: () => {
+            if (!this.query.type) {
+                return;
+            }
+
             const now = new Date().getTime();
 
             if (this.query.type === QUERY_TYPE_POSITION) {
                 this.connection.write('M114\n', {
-                    source: WRITE_SOURCE_TIMER
+                    source: WRITE_SOURCE_QUERY
                 });
                 this.lastQueryTime = now;
             } else if (this.query.type === QUERY_TYPE_TEMPERATURE) {
                 this.connection.write('M105\n', {
-                    source: WRITE_SOURCE_TIMER
+                    source: WRITE_SOURCE_QUERY
                 });
                 this.lastQueryTime = now;
             } else {
-                log.error('Invalid query type:', this.query.type);
+                log.error('Unsupported query type:', this.query.type);
             }
 
             this.query.type = null;
@@ -210,7 +214,7 @@ class MarlinController {
             path: port,
             baudRate: baudrate,
             writeFilter: (data, context) => {
-                const { source = '' } = { ...context };
+                const { source = null } = { ...context };
                 const line = data.trim();
 
                 // Update write history
@@ -571,7 +575,7 @@ class MarlinController {
         });
 
         this.controller.on('pos', (res) => {
-            log.silly(`controller.on('pos'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('pos'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
 
             if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
                 this.emit('serialport:read', res.raw);
@@ -579,7 +583,7 @@ class MarlinController {
         });
 
         this.controller.on('heater', (res) => {
-            log.silly(`controller.on('heater'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('heater'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
 
             if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
                 this.emit('serialport:read', res.raw);
@@ -587,14 +591,15 @@ class MarlinController {
         });
 
         this.controller.on('ok', (res) => {
-            log.silly(`controller.on('ok'): source=${this.writeHistory.source}, line=${this.writeHistory.line}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('ok'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
 
-            if (!this.writeHistory.source) {
-                log.error('The write source should not be empty');
-            }
-
-            if (res && _.includes(['client', 'feeder'], this.writeHistory.source)) {
-                this.emit('serialport:read', res.raw);
+            if (res) {
+                if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
+                    this.emit('serialport:read', res.raw);
+                } else if (!this.writeHistory.source) {
+                    this.emit('serialport:read', res.raw);
+                    log.error('"writeHistory.source" should not be empty');
+                }
             }
 
             this.writeHistory.source = null;
@@ -603,7 +608,7 @@ class MarlinController {
             // Perform preemptive query to prevent starvation
             const now = new Date().getTime();
             const timespan = Math.abs(now - this.query.lastQueryTime);
-            if (this.query.type && (timespan > 2000)) {
+            if (timespan > 2000) {
                 this.query.issue();
                 return;
             }
@@ -633,12 +638,11 @@ class MarlinController {
             }
 
             // Feeder
-            this.feeder.next();
-
-            // Query
-            if (this.query.type) {
-                this.query.issue();
+            if (this.feeder.next()) {
+                return;
             }
+
+            this.query.issue();
         });
 
         this.controller.on('error', (res) => {
@@ -715,16 +719,14 @@ class MarlinController {
             // M105: Report Temperatures
             this.queryTemperature();
 
-            // Issue a query when the following criteria are met:
-            // * The value of `writeHistory.source` is empty
-            // * The query type is not empty (e.g. 'position', 'temperature')
-            // * No pending commands in the sender queue
-            // * No pending commands in the feeder queue
-            if (!this.writeHistory.source &&
-                (this.query.type) &&
-                (this.sender.state.received >= this.sender.state.sent) &&
-                (this.feeder.size() === 0)) {
-                this.query.issue();
+            { // The following criteria must be met to issue a query
+                const notBusy = !(this.writeHistory.source);
+                const senderIdle = (this.sender.state.sent === this.sender.state.received);
+                const feederEmpty = (this.feeder.size() === 0);
+
+                if (notBusy && senderIdle && feederEmpty) {
+                    this.query.issue();
+                }
             }
 
             // Check if the machine has stopped movement after completion
@@ -826,14 +828,11 @@ class MarlinController {
         const delay = 1000;
 
         setTimeout(() => {
+            // Set ready flag to true
+            this.ready = true;
+
             // M115: Get Firmware Version and Capabilities
             this.command('gcode', 'M115');
-
-            // M105: Get Extruder Temperature
-            this.command('gcode', 'M105');
-
-            // Set the ready flag to true after sending initialization commands
-            this.ready = true;
         }, delay);
     }
     get status() {
@@ -1230,8 +1229,14 @@ class MarlinController {
 
                 this.feeder.feed(data, context);
 
-                if (!this.feeder.isPending()) {
-                    this.feeder.next();
+                { // The following criteria must be met to trigger the feeder
+                    const notBusy = !(this.writeHistory.source);
+                    const senderIdle = (this.sender.state.sent === this.sender.state.received);
+                    const feederIdle = !(this.feeder.isPending());
+
+                    if (notBusy && senderIdle && feederIdle) {
+                        this.feeder.next();
+                    }
                 }
             },
             'macro:run': () => {
