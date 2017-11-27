@@ -136,12 +136,12 @@ class SocketConnection extends EventEmitter {
         this.socket = null;
         this.parser = null;
     }
-    write(data) {
+    write(data, context) {
         if (!this.socket) {
             return;
         }
 
-        data = this.writeFilter(data);
+        data = this.writeFilter(data, context);
 
         this.socket.write(data);
     }
