@@ -83,15 +83,15 @@ class MarlinController {
     feedOverride = 100;
     spindleOverride = 100;
 
-    writeHistory = {
+    history = {
         // The write source is one of the following:
         // * WRITE_SOURCE_CLIENT
         // * WRITE_SOURCE_FEEDER
         // * WRITE_SOURCE_SENDER
         // * WRITE_SOURCE_QUERY
-        source: null,
+        writeSource: null,
 
-        line: ''
+        writeLine: ''
     };
 
     // Event Trigger
@@ -218,8 +218,8 @@ class MarlinController {
                 const line = data.trim();
 
                 // Update write history
-                this.writeHistory.source = source;
-                this.writeHistory.line = line;
+                this.history.writeSource = source;
+                this.history.writeLine = line;
 
                 if (!line) {
                     return data;
@@ -575,35 +575,35 @@ class MarlinController {
         });
 
         this.controller.on('pos', (res) => {
-            log.silly(`controller.on('pos'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('pos'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
-            if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
+            if (_.includes(['client', 'feeder'], this.history.writeSource)) {
                 this.emit('serialport:read', res.raw);
             }
         });
 
         this.controller.on('temperature', (res) => {
-            log.silly(`controller.on('temperature'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('temperature'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
-            if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
+            if (_.includes(['client', 'feeder'], this.history.writeSource)) {
                 this.emit('serialport:read', res.raw);
             }
         });
 
         this.controller.on('ok', (res) => {
-            log.silly(`controller.on('ok'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
+            log.silly(`controller.on('ok'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
             if (res) {
-                if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
+                if (_.includes(['client', 'feeder'], this.history.writeSource)) {
                     this.emit('serialport:read', res.raw);
-                } else if (!this.writeHistory.source) {
+                } else if (!this.history.writeSource) {
                     this.emit('serialport:read', res.raw);
-                    log.error('"writeHistory.source" should not be empty');
+                    log.error('"history.writeSource" should not be empty');
                 }
             }
 
-            this.writeHistory.source = null;
-            this.writeHistory.line = '';
+            this.history.writeSource = null;
+            this.history.writeLine = '';
 
             // Perform preemptive query to prevent starvation
             const now = new Date().getTime();
@@ -720,7 +720,7 @@ class MarlinController {
             this.queryTemperature();
 
             { // The following criteria must be met to issue a query
-                const notBusy = !(this.writeHistory.source);
+                const notBusy = !(this.history.writeSource);
                 const senderIdle = (this.sender.state.sent === this.sender.state.received);
                 const feederEmpty = (this.feeder.size() === 0);
 
@@ -1230,7 +1230,7 @@ class MarlinController {
                 this.feeder.feed(data, context);
 
                 { // The following criteria must be met to trigger the feeder
-                    const notBusy = !(this.writeHistory.source);
+                    const notBusy = !(this.history.writeSource);
                     const senderIdle = (this.sender.state.sent === this.sender.state.received);
                     const feederIdle = !(this.feeder.isPending());
 
