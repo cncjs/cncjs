@@ -72,9 +72,9 @@ script:
 after_success:
   - npm run coveralls
   - mkdir -p releases
-  - PACKAGE_NAME=`node -e "console.log(require('./package.json').name)"`
-  - PACKAGE_VERSION=`node -e "console.log(require('./package.json').version)"`
-  - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
+  - PRODUCT_NAME=CNCjs
+  - PRODUCT_VERSION=`node -e "console.log(require('./package.json').version)"`
+  - RELEASE=cncjs-${PRODUCT_VERSION}
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
     # build:mac-x64
@@ -110,7 +110,7 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-ia32;
       ls -al output output/*;
-      cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
+      cp -af "output/${PRODUCT_NAME}_${PRODUCT_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
       pushd releases;
       ln -sf ../output/linux-ia32-unpacked "${RELEASE}-linux-ia32";
       tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
@@ -138,7 +138,7 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-x64;
       ls -al output output/*;
-      cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
+      cp -af "output/${PRODUCT_NAME}_${PRODUCT_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
       pushd releases;
       ln -sf ../output/linux-unpacked "${RELEASE}-linux-x64";
       tar zcfh "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64";
@@ -166,7 +166,7 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-armv7l;
       ls -al output output/*;
-      cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_armv7l.deb" "releases/${RELEASE}-linux-armv7.deb";
+      cp -af "output/${PRODUCT_NAME}_${PRODUCT_VERSION}_armv7l.deb" "releases/${RELEASE}-linux-armv7.deb";
       pushd releases;
       ln -sf ../output/linux-armv7l-unpacked "${RELEASE}-linux-armv7";
       tar zcfh "${RELEASE}-linux-armv7.tar.gz" "${RELEASE}-linux-armv7";
