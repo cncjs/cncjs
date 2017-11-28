@@ -577,7 +577,7 @@ class MarlinController {
         this.controller.on('pos', (res) => {
             log.silly(`controller.on('pos'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
-            if (_.includes(['client', 'feeder'], this.history.writeSource)) {
+            if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSource)) {
                 this.emit('serialport:read', res.raw);
             }
         });
@@ -585,7 +585,7 @@ class MarlinController {
         this.controller.on('temperature', (res) => {
             log.silly(`controller.on('temperature'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
-            if (_.includes(['client', 'feeder'], this.history.writeSource)) {
+            if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSource)) {
                 this.emit('serialport:read', res.raw);
             }
         });
@@ -594,7 +594,7 @@ class MarlinController {
             log.silly(`controller.on('ok'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
             if (res) {
-                if (_.includes(['client', 'feeder'], this.history.writeSource)) {
+                if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSource)) {
                     this.emit('serialport:read', res.raw);
                 } else if (!this.history.writeSource) {
                     this.emit('serialport:read', res.raw);
