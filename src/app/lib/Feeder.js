@@ -1,4 +1,3 @@
-/* eslint no-continue: 0 */
 import events from 'events';
 
 class Feeder extends events.EventEmitter {

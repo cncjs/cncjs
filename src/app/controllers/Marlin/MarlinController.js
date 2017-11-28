@@ -1,5 +1,6 @@
-import _ from 'lodash';
+import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
+import _ from 'lodash';
 import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
@@ -9,7 +10,6 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
-import ensureArray from '../../lib/ensure-array';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateExpression from '../../lib/evaluateExpression';
 import logger from '../../lib/logger';

@@ -1,6 +1,5 @@
-/* eslint no-continue: 0 */
+import ensureArray from 'ensure-array';
 import { parseLine } from 'gcode-parser';
-import ensureArray from '../../lib/ensure-array';
 
 const fromPairs = (pairs) => {
     let index = -1;

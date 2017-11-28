@@ -1,6 +1,6 @@
+import ensureArray from 'ensure-array';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
-import ensureArray from '../lib/ensure-array';
 import store from '../store';
 
 const bearer = (request) => {

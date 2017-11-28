@@ -1,8 +1,7 @@
 /* eslint no-bitwise: ["error", { "allow": ["&", "<<"] }] */
-/* eslint no-continue: 0 */
 import events from 'events';
+import ensureArray from 'ensure-array';
 import _ from 'lodash';
-import ensureArray from '../../lib/ensure-array';
 import {
     GRBL_ACTIVE_STATE_IDLE,
     GRBL_ACTIVE_STATE_ALARM,

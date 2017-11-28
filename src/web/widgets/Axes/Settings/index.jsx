@@ -1,9 +1,9 @@
+import ensureArray from 'ensure-array';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Modal from '../../../components/Modal';
 import { Nav, NavItem } from '../../../components/Navs';
-import ensureArray from '../../../lib/ensure-array';
 import i18n from '../../../lib/i18n';
 import General from './General';
 import ShuttleXpress from './ShuttleXpress';

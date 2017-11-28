@@ -1,4 +1,3 @@
-/* eslint no-unused-vars: 0 */
 import dns from 'dns';
 import fs from 'fs';
 import os from 'os';
@@ -6,6 +5,7 @@ import path from 'path';
 import url from 'url';
 import bcrypt from 'bcrypt-nodejs';
 import chalk from 'chalk';
+import ensureArray from 'ensure-array';
 import expandTilde from 'expand-tilde';
 import express from 'express';
 import httpProxy from 'http-proxy';
@@ -19,7 +19,6 @@ import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
 import config from './services/configstore';
-import ensureArray from './lib/ensure-array';
 import logger from './lib/logger';
 import urljoin from './lib/urljoin';
 
