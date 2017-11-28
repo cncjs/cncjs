@@ -42,7 +42,7 @@ class MarlinLineParser {
 
             // ok T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
             //  T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
-            MarlinLineParserResultHeater
+            MarlinLineParserResultTemperature
         ];
 
         for (let parser of parsers) {
@@ -217,7 +217,7 @@ class MarlinLineParserResultError {
     }
 }
 
-class MarlinLineParserResultHeater {
+class MarlinLineParserResultTemperature {
     // ok T:293.0 /0.0 B:25.9 /0.0 @:0 B@:0
     // ok T:293.0 /0.0 B:25.9 /0.0 T0:293.0 /0.0 T1:100.0 /0.0 @:0 B@:0 @0:0 @1:0
     // ok T:293.0 /0.0 (0.0) B:25.9 /0.0 T0:293.0 /0.0 (0.0) T1:100.0 /0.0 (0.0) @:0 B@:0 @0:0 @1:0
@@ -232,40 +232,42 @@ class MarlinLineParserResultHeater {
             return null;
         }
 
-        const heater = {
+        const payload = {
+            ok: line.startsWith('ok'),
             extruder: {},
             heatedBed: {}
         };
+
         const re = /(?:(?:(T|B|T\d+):([0-9\.\-]+)\s+\/([0-9\.\-]+)(?:\s+\((?:[0-9\.\-]+)\))?)|(?:(@|B@|@\d+):([0-9\.\-]+))|(?:(W):(\?|[0-9]+)))/ig;
 
         while ((r = re.exec(line))) {
             const key = r[1] || r[4] || r[6];
 
             if (key === 'T') { // T:293.0 /0.0
-                heater.extruder.deg = r[2];
-                heater.extruder.degTarget = r[3];
+                payload.extruder.deg = r[2];
+                payload.extruder.degTarget = r[3];
                 continue;
             }
 
             if (key === 'B') { // B:60.0 /0.0
-                heater.heatedBed.deg = r[2];
-                heater.heatedBed.degTarget = r[3];
+                payload.heatedBed.deg = r[2];
+                payload.heatedBed.degTarget = r[3];
                 continue;
             }
 
             if (key === '@') { // @:127
-                heater.extruder.power = r[5];
+                payload.extruder.power = r[5];
                 continue;
             }
 
             if (key === 'B@') { // B@:127
-                heater.heatedBed.power = r[5];
+                payload.heatedBed.power = r[5];
                 continue;
             }
 
             // M109, M190: Print temp & remaining time every 1s while waiting
             if (key === 'W') { // W:?, W:9, ..., W:0
-                heater.wait = r[7];
+                payload.wait = r[7];
                 continue;
             }
 
@@ -274,11 +276,8 @@ class MarlinLineParserResultHeater {
         }
 
         return {
-            type: MarlinLineParserResultHeater,
-            payload: {
-                ok: line.startsWith('ok'),
-                heater: heater
-            }
+            type: MarlinLineParserResultTemperature,
+            payload: payload
         };
     }
 }
@@ -304,10 +303,8 @@ class Marlin extends events.EventEmitter {
         },
         ovF: 100,
         ovS: 100,
-        heater: {
-            extruder: {}, // { deg, degTarget, power }
-            heatedBed: {} // { deg, degTarget, power }
-        },
+        extruder: {}, // { deg, degTarget, power }
+        heatedBed: {}, // { deg, degTarget, power }
         rapidFeedrate: 0, // Related to G0
         feedrate: 0, // Related to G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
         spindle: 0 // Related to M3, M4, M5
@@ -382,20 +379,26 @@ class Marlin extends events.EventEmitter {
             this.emit('echo', payload);
             return;
         }
-        if (type === MarlinLineParserResultHeater) {
+        if (type === MarlinLineParserResultTemperature) {
             const nextState = {
                 ...this.state,
-                heater: {
-                    ...payload.heater
+                extruder: {
+                    ...this.state.extruder,
+                    ...payload.extruder
+                },
+                heatedBed: {
+                    ...this.state.heatedBed,
+                    ...payload.heatedBed
                 }
             };
 
-            if (!isEqual(this.state.heater, nextState.heater)) {
+            if (!isEqual(this.state.extruder, nextState.extruder) ||
+                !isEqual(this.state.heatedBed, nextState.heatedBed)) {
                 this.state = nextState; // enforce change
             }
 
-            // The 'ok' event (w/ empty response) should follow the 'heater' event
-            this.emit('heater', payload);
+            // The 'ok' event (w/ empty response) should follow the 'temperature' event
+            this.emit('temperature', payload);
 
             // > M105
             // < ok T:27.0 /0.0 B:26.8 /0.0 B@:0 @:0
@@ -435,6 +438,6 @@ export {
     MarlinLineParserResultOk,
     MarlinLineParserResultEcho,
     MarlinLineParserResultError,
-    MarlinLineParserResultHeater
+    MarlinLineParserResultTemperature
 };
 export default Marlin;

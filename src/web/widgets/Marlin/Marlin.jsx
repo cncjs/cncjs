@@ -47,8 +47,8 @@ class Marlin extends PureComponent {
         const ovS = get(controllerState, 'ovS', 0);
         const feedrate = get(controllerState, 'feedrate') || none;
         const spindle = get(controllerState, 'spindle') || none;
-        const extruder = get(controllerState, 'heater.extruder') || {};
-        const heatedBed = get(controllerState, 'heater.heatedBed') || {};
+        const extruder = get(controllerState, 'extruder') || {};
+        const heatedBed = get(controllerState, 'heatedBed') || {};
         const showExtruderTemperature = (extruder.deg !== undefined && extruder.degTarget !== undefined);
         const showExtruderPower = (extruder.power !== undefined);
         const showHeatedBedTemperature = (heatedBed.deg !== undefined && heatedBed.degTarget !== undefined);

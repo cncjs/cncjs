@@ -622,8 +622,8 @@ class MarlinController {
             }
         });
 
-        this.controller.on('heater', (res) => {
-            log.silly(`controller.on('heater'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
+        this.controller.on('temperature', (res) => {
+            log.silly(`controller.on('temperature'): source=${this.writeHistory.source}, line=${JSON.stringify(this.writeHistory.line)}, res=${JSON.stringify(res)}`);
 
             if (_.includes(['client', 'feeder'], this.writeHistory.source)) {
                 this.emit('connection:read', this.connectionOptions, res.raw);
