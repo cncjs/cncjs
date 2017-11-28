@@ -1,3 +1,4 @@
+import ensureArray from 'ensure-array';
 import noop from 'lodash/noop';
 import reverse from 'lodash/reverse';
 import sortBy from 'lodash/sortBy';
@@ -9,7 +10,6 @@ import socketioJwt from 'socketio-jwt';
 import settings from '../../config/settings';
 import { IP_WHITELIST } from '../../constants';
 import EventTrigger from '../../lib/EventTrigger';
-import ensureArray from '../../lib/ensure-array';
 import logger from '../../lib/logger';
 import { toIdent as toSerialIdent } from '../../lib/SerialConnection';
 import { toIdent as toSocketIdent } from '../../lib/SocketConnection';

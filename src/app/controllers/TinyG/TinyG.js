@@ -1,6 +1,6 @@
 import events from 'events';
+import ensureArray from 'ensure-array';
 import _ from 'lodash';
-import ensureArray from '../../lib/ensure-array';
 
 import {
     TINYG_MACHINE_STATE_READY,

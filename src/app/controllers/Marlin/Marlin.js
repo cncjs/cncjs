@@ -1,8 +1,5 @@
-/* eslint no-continue: 0 */
-import isEqual from 'lodash/isEqual';
-import get from 'lodash/get';
-import set from 'lodash/set';
 import events from 'events';
+import _ from 'lodash';
 
 // http://stackoverflow.com/questions/10454518/javascript-how-to-retrieve-the-number-of-decimals-of-a-string-number
 function decimalPlaces(num) {
@@ -48,7 +45,7 @@ class MarlinLineParser {
         for (let parser of parsers) {
             const result = parser.parse(line);
             if (result) {
-                set(result, 'payload.raw', line);
+                _.set(result, 'payload.raw', line);
                 return result;
             }
         }
@@ -345,7 +342,7 @@ class Marlin extends events.EventEmitter {
                 extruderCount,
                 uuid
             };
-            if (!isEqual(this.settings, nextSettings)) {
+            if (!_.isEqual(this.settings, nextSettings)) {
                 this.settings = nextSettings; // enforce change
             }
 
@@ -361,7 +358,7 @@ class Marlin extends events.EventEmitter {
                 }
             };
 
-            if (!isEqual(this.state.pos, nextState.pos)) {
+            if (!_.isEqual(this.state.pos, nextState.pos)) {
                 this.state = nextState; // enforce change
             }
             this.emit('pos', payload);
@@ -392,8 +389,8 @@ class Marlin extends events.EventEmitter {
                 }
             };
 
-            if (!isEqual(this.state.extruder, nextState.extruder) ||
-                !isEqual(this.state.heatedBed, nextState.heatedBed)) {
+            if (!_.isEqual(this.state.extruder, nextState.extruder) ||
+                !_.isEqual(this.state.heatedBed, nextState.heatedBed)) {
                 this.state = nextState; // enforce change
             }
 
@@ -415,10 +412,10 @@ class Marlin extends events.EventEmitter {
         }
     }
     getPosition(state = this.state) {
-        return get(state, 'pos', {});
+        return _.get(state, 'pos', {});
     }
     getModalGroup(state = this.state) {
-        return get(state, 'modal', {});
+        return _.get(state, 'modal', {});
     }
     isAlarm() {
         // Not supported

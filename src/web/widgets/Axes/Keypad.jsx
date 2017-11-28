@@ -1,12 +1,12 @@
-import includes from 'lodash/includes';
 import classNames from 'classnames';
+import ensureArray from 'ensure-array';
+import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from '../../components/Buttons';
 import Dropdown, { MenuItem } from '../../components/Dropdown';
 import Space from '../../components/Space';
 import controller from '../../lib/controller';
-import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
 import styles from './index.styl';
 

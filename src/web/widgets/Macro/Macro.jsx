@@ -1,11 +1,11 @@
 import chainedFunction from 'chained-function';
+import ensureArray from 'ensure-array';
 import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
 import Space from '../../components/Space';
-import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
 import portal from '../../lib/portal';
 import {

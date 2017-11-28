@@ -1,4 +1,5 @@
 import isElectron from 'is-electron';
+import ensureArray from 'ensure-array';
 import debounce from 'lodash/debounce';
 import difference from 'lodash/difference';
 import get from 'lodash/get';
@@ -8,7 +9,6 @@ import uniq from 'lodash/uniq';
 import semver from 'semver';
 import settings from '../config/settings';
 import ImmutableStore from '../lib/immutable-store';
-import ensureArray from '../lib/ensure-array';
 import log from '../lib/log';
 import defaultState from './defaultState';
 

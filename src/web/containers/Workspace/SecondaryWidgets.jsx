@@ -1,5 +1,6 @@
 import chainedFunction from 'chained-function';
 import classNames from 'classnames';
+import ensureArray from 'ensure-array';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import isEqual from 'lodash/isEqual';
@@ -12,7 +13,6 @@ import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../constants';
 import { Button } from '../../components/Buttons';
 import Modal from '../../components/Modal';
 import controller from '../../lib/controller';
-import ensureArray from '../../lib/ensure-array';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import portal from '../../lib/portal';
