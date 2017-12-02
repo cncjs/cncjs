@@ -3,7 +3,7 @@
 [![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://www.npmjs.com/package/cncjs)
 ![cncjs](https://raw.githubusercontent.com/cncjs/cncjs/master/media/banner.png)
 
-A web-based interface for CNC milling controller running [Grbl](https://github.com/grbl/grbl), [Smoothieware](https://github.com/Smoothieware/Smoothieware), or [TinyG](https://github.com/synthetos/TinyG). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
+A web-based interface for CNC milling controller running [Grbl](https://github.com/grbl/grbl), [Marlin](https://github.com/MarlinFirmware/Marlin), [Smoothieware](https://github.com/Smoothieware/Smoothieware), or [TinyG](https://github.com/synthetos/TinyG). It runs on an [Raspberry Pi](https://www.raspberrypi.org/) or a laptop computer that you have Node.js installed, connecting to the Arduino over a serial connection using a USB serial port, a Bluetooth serial module, or a  Serial-to-WiFi module like [XBee](https://www.arduino.cc/en/Guide/ArduinoWirelessShieldS2) or [USR-WIFI232-T](https://gist.github.com/ajfisher/1fdbcbbf96b7f2ba73cd).
 
 ![cncjs](https://cloud.githubusercontent.com/assets/447801/24392019/aa2d725e-13c4-11e7-9538-fd5f746a2130.png)
 
@@ -15,6 +15,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
 * Supported controllers
     - [Grbl](https://github.com/gnea/grbl)
     - [Grbl-Mega](https://github.com/gnea/grbl-Mega)
+    - [Marlin](https://github.com/MarlinFirmware/Marlin)
     - [Smoothieware](https://github.com/Smoothieware/Smoothieware)
     - [TinyG](https://github.com/synthetos/TinyG)
     - [g2core](https://github.com/synthetos/g2)
@@ -64,7 +65,7 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
  5       | Supported
  6       | <b>Recommended for production use</b>
  7       | Supported
- 8       | Unsupported<br>Note: Will be supported in CNCjs 2.0
+ 8       | <b>Recommended for production use</b>
 
 ## Getting Started
 
