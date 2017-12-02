@@ -29,6 +29,7 @@ const publicPath = (function(payload) {
 }(payload));
 
 module.exports = {
+    devtool: 'cheap-module-source-map',
     target: 'node',
     context: path.resolve(__dirname, 'src/app'),
     entry: {
