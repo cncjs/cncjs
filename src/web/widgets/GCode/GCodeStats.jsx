@@ -12,7 +12,7 @@ const formatISODateTime = (time) => {
 };
 
 const formatElapsedTime = (elapsedTime) => {
-    if (!elapsedTime) {
+    if (!elapsedTime || elapsedTime < 0) {
         return '–';
     }
     const d = moment.duration(elapsedTime, 'ms');
@@ -20,7 +20,7 @@ const formatElapsedTime = (elapsedTime) => {
 };
 
 const formatRemainingTime = (remainingTime) => {
-    if (!remainingTime) {
+    if (!remainingTime || remainingTime < 0) {
         return '–';
     }
     const d = moment.duration(remainingTime, 'ms');
