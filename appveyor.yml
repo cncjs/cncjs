@@ -13,7 +13,7 @@ init:
 
 environment:
   matrix:
-  - nodejs_version: "6"
+  - nodejs_version: "8"
   global:
     GH_TOKEN:
       secure: 14dS/9loZ4uMoKGOHGkagaYp5oS30HSIQcPB0FEa7aTEfpb2VJQiUms82hv8nWxY
@@ -66,7 +66,7 @@ build_script:
   - ps: echo "$env:RELEASE"
   - ps: echo "$env:COMMIT_LOG"
   - ps: |
-      if ($env:nodejs_version -eq '6' -And $env:platform -eq 'x64') {
+      if ($env:nodejs_version -eq '8' -And $env:platform -eq 'x64') {
         npm run build:win-x64
         Get-ChildItem output
         Copy-Item "output\${PRODUCT_NAME} Setup ${PRODUCT_VERSION}.exe" "releases\${env:RELEASE}-win-x64.exe"
@@ -77,7 +77,7 @@ build_script:
         }
       }
   - ps: |
-      if ($env:nodejs_version -eq '6' -And $env:platform -eq 'x64') {
+      if ($env:nodejs_version -eq '8' -And $env:platform -eq 'x64') {
         npm run build:win-ia32
         Get-ChildItem output
         Copy-Item "output\${PRODUCT_NAME} Setup ${PRODUCT_VERSION}.exe" "releases\${env:RELEASE}-win-ia32.exe"
