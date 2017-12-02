@@ -20,7 +20,7 @@ const buildConfig = require('./build.config');
 const timestamp = new Date().getTime();
 
 const webpackConfig = Object.assign({}, baseConfig, {
-    devtool: 'eval',
+    devtool: 'cheap-module-eval-source-map',
     entry: {
         polyfill: [
             // https://github.com/Yaffle/EventSource

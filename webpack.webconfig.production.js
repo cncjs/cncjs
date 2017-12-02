@@ -31,7 +31,7 @@ const publicPath = (function(payload) {
 const timestamp = new Date().getTime();
 
 const webpackConfig = Object.assign({}, baseConfig, {
-    devtool: 'source-map',
+    devtool: 'cheap-module-source-map',
     entry: {
         polyfill: [
             path.resolve(__dirname, 'src/web/polyfill/index.js')
