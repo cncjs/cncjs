@@ -1,6 +1,6 @@
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcrypt-nodejs';
-import castArray from 'lodash/castArray';
+import ensureArray from 'ensure-array';
 import isPlainObject from 'lodash/isPlainObject';
 import find from 'lodash/find';
 import some from 'lodash/some';
@@ -33,7 +33,7 @@ const generateAccessToken = (payload, secret = settings.secret) => {
 };
 
 const getSanitizedRecords = () => {
-    const records = castArray(config.get(CONFIG_KEY, []));
+    const records = ensureArray(config.get(CONFIG_KEY, []));
 
     let shouldUpdate = false;
     for (let i = 0; i < records.length; ++i) {
@@ -117,7 +117,7 @@ export const signin = (req, res) => {
 
         const iat = new Date(user.iat * 1000).toISOString();
         const exp = new Date(user.exp * 1000).toISOString();
-        log.debug(`jwt.verify: id=${user.id}, name="${user.name}", iat=${iat}, exp=${exp}`);
+        log.debug(`jwt.verify: user.id=${user.id}, user.name=${user.name}, user.iat=${iat}, user.exp=${exp}`);
 
         user = find(enabledUsers, { id: user.id, name: user.name });
         if (!user) {

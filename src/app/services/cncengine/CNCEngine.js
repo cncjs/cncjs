@@ -3,12 +3,10 @@ import noop from 'lodash/noop';
 import reverse from 'lodash/reverse';
 import sortBy from 'lodash/sortBy';
 import uniq from 'lodash/uniq';
-import rangeCheck from 'range_check';
 import SerialPort from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
 import settings from '../../config/settings';
-import { IP_WHITELIST } from '../../constants';
 import EventTrigger from '../../lib/EventTrigger';
 import logger from '../../lib/logger';
 import { toIdent as toSerialIdent } from '../../lib/SerialConnection';
@@ -26,6 +24,10 @@ import { G2CORE, TINYG } from '../../controllers/TinyG/constants';
 import controllers from '../../store/controllers';
 import config from '../configstore';
 import taskRunner from '../taskrunner';
+import {
+    authorizeIPAddress,
+    validateUser
+} from '../../access-control';
 
 const log = logger('service:cncengine');
 
@@ -135,16 +137,18 @@ class CNCEngine {
             handshake: true
         }));
 
-        this.io.use((socket, next) => {
-            const clientIp = socket.handshake.address;
-            const allowedAccess = IP_WHITELIST.some(whitelist => {
-                return rangeCheck.inRange(clientIp, whitelist);
-            }) || (settings.allowRemoteAccess);
-            const deniedAccess = !allowedAccess;
+        this.io.use(async (socket, next) => {
+            try {
+                // IP Address Access Control
+                const ipaddr = socket.handshake.address;
+                await authorizeIPAddress(ipaddr);
 
-            if (deniedAccess) {
-                log.warn(`Forbidden: Deny connection from ${clientIp}`);
-                next(new Error('You are not allowed on this server!'));
+                // User Validation
+                const user = socket.decoded_token || {};
+                await validateUser(user);
+            } catch (err) {
+                log.warn(err);
+                next(err);
                 return;
             }
 
@@ -153,8 +157,8 @@ class CNCEngine {
 
         this.io.on('connection', (socket) => {
             const address = socket.handshake.address;
-            const token = socket.decoded_token || {};
-            log.debug(`New connection from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
+            const user = socket.decoded_token || {};
+            log.debug(`New connection from ${address}: id=${socket.id}, user.id=${user.id}, user.name=${user.name}`);
 
             // Add to the socket pool
             this.sockets.push(socket);
@@ -164,7 +168,7 @@ class CNCEngine {
             });
 
             socket.on('disconnect', () => {
-                log.debug(`Disconnected from ${address}: id=${socket.id}, token.id=${token.id}, token.name=${token.name}`);
+                log.debug(`Disconnected from ${address}: id=${socket.id}, user.id=${user.id}, user.name=${user.name}`);
 
                 Object.keys(controllers).forEach(ident => {
                     const controller = controllers[ident];

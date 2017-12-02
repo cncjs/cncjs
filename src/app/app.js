@@ -1,30 +1,27 @@
 /* eslint callback-return: 0 */
 import fs from 'fs';
 import path from 'path';
-import get from 'lodash/get';
-import noop from 'lodash/noop';
-import some from 'lodash/some';
-import express from 'express';
-import expressJwt from 'express-jwt';
-import jwt from 'jsonwebtoken';
-import engines from 'consolidate';
-import 'hogan.js'; // required by consolidate
-import errorhandler from 'errorhandler';
-import favicon from 'serve-favicon';
-import cookieParser from 'cookie-parser';
 import bodyParser from 'body-parser';
+import compress from 'compression';
+import cookieParser from 'cookie-parser';
 import multiparty from 'connect-multiparty';
 import connectRestreamer from 'connect-restreamer';
-import methodOverride from 'method-override';
-import morgan from 'morgan';
-import compress from 'compression';
-import serveStatic from 'serve-static';
+import engines from 'consolidate';
+import errorhandler from 'errorhandler';
+import express from 'express';
+import expressJwt from 'express-jwt';
 import session from 'express-session';
-import sessionFileStore from 'session-file-store';
+import 'hogan.js'; // required by consolidate
 import i18next from 'i18next';
 import i18nextBackend from 'i18next-node-fs-backend';
+import jwt from 'jsonwebtoken';
+import methodOverride from 'method-override';
+import morgan from 'morgan';
+import favicon from 'serve-favicon';
+import serveStatic from 'serve-static';
+import sessionFileStore from 'session-file-store';
+import _ from 'lodash';
 import rimraf from 'rimraf';
-import rangeCheck from 'range_check';
 import {
     LanguageDetector as i18nextLanguageDetector,
     handle as i18nextHandle
@@ -39,30 +36,22 @@ import errnotfound from './lib/middleware/errnotfound';
 import errserver from './lib/middleware/errserver';
 import config from './services/configstore';
 import {
-    IP_WHITELIST,
-    ERR_UNAUTHORIZED,
+    authorizeIPAddress,
+    validateUser
+} from './access-control';
+import {
     ERR_FORBIDDEN
 } from './constants';
 
 const log = logger('app');
 
-const renderPage = (view = 'index', cb = noop) => (req, res, next) => {
+const renderPage = (view = 'index', cb = _.noop) => (req, res, next) => {
     // Override IE's Compatibility View Settings
     // http://stackoverflow.com/questions/6156639/x-ua-compatible-is-set-to-ie-edge-but-it-still-doesnt-stop-compatibility-mode
     res.set({ 'X-UA-Compatible': 'IE=edge' });
 
     const locals = { ...cb(req, res) };
     res.render(view, locals);
-};
-
-const verifyToken = (token) => {
-    // https://github.com/auth0/node-jsonwebtoken#jwtverifytoken-secretorpublickey-options-callback
-    try {
-        jwt.verify(token, settings.secret);
-    } catch (err) {
-        return false;
-    }
-    return true;
 };
 
 const appMain = () => {
@@ -112,18 +101,14 @@ const appMain = () => {
         .use(i18nextLanguageDetector)
         .init(settings.i18next);
 
-    // Check if client's IP address is in the whitelist
-    app.use((req, res, next) => {
-        const ipaddr = req.ip || req.connection.remoteAddress;
-        const allowedAccess = some(IP_WHITELIST, (whitelist) => {
-            return rangeCheck.inRange(ipaddr, whitelist);
-        }) || (settings.allowRemoteAccess);
-        const forbiddenAccess = !allowedAccess;
-
-        if (forbiddenAccess) {
-            const text = 'Access to the requested directory is only available from the local network.';
-            res.status(ERR_FORBIDDEN).end(text);
-            log.warn(`ERR_FORBIDDEN: ipaddr=${ipaddr}, message=${text}`);
+    app.use(async (req, res, next) => {
+        try {
+            // IP Address Access Control
+            const ipaddr = req.ip || req.connection.remoteAddress;
+            await authorizeIPAddress(ipaddr);
+        } catch (err) {
+            log.warn(err);
+            res.status(ERR_FORBIDDEN).end('Forbidden Access');
             return;
         }
 
@@ -215,30 +200,38 @@ const appMain = () => {
             credentialsRequired: true
         }));
 
-        app.use((err, req, res, next) => {
-            let bypass = false;
+        app.use(async (err, req, res, next) => {
+            let bypass = !(err && (err.name === 'UnauthorizedError'));
 
             // Check whether the app is running in development mode
             bypass = bypass || (process.env.NODE_ENV === 'development');
 
-            // Check if the provided credentials are correct
-            const token = get(req, 'query.token') || get(req, 'body.token');
-            bypass = bypass || (token && verifyToken(token));
-
-            // Check white list
+            // Check whether the request path is not restricted
             const whitelist = [
                 // Also see "src/app/api/index.js"
                 urljoin(settings.route, 'api/signin')
             ];
-            bypass = bypass || some(whitelist, (path) => {
+            bypass = bypass || whitelist.some(path => {
                 return req.path.indexOf(path) === 0;
             });
 
-            if (!bypass && err && (err.name === 'UnauthorizedError')) {
+            if (!bypass) {
+                // Check whether the provided credential is correct
+                const token = _.get(req, 'query.token') || _.get(req, 'body.token');
+                try {
+                    // User Validation
+                    const user = jwt.verify(token, settings.secret) || {};
+                    await validateUser(user);
+                    bypass = true;
+                } catch (err) {
+                    log.warn(err);
+                }
+            }
+
+            if (!bypass) {
                 const ipaddr = req.ip || req.connection.remoteAddress;
-                const text = 'No Unauthorized Access';
-                res.status(ERR_UNAUTHORIZED).end(text);
-                log.warn(`ERR_UNAUTHORIZED: ipaddr=${ipaddr}, code="${err.code}", message="${err.message}"`);
+                log.warn(`Forbidden: ipaddr=${ipaddr}, code="${err.code}", message="${err.message}"`);
+                res.status(ERR_FORBIDDEN).end('Forbidden Access');
                 return;
             }
 
