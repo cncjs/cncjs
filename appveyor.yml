@@ -59,7 +59,7 @@ build_script:
         npm run build
       }
   - ps: mkdir releases
-  - ps: $PRODUCT_NAME = CNCjs
+  - ps: $PRODUCT_NAME = "CNCjs"
   - ps: $PRODUCT_VERSION = node -e "console.log(require('./package.json').version)"
   - ps: $env:RELEASE = "cncjs-${PRODUCT_VERSION}"
   - ps: $env:COMMIT_LOG = git log -1 --format='%ci %H %s'
