@@ -87,22 +87,11 @@ export const download = (req, res) => {
     }
 
     const { sender } = controller;
-    const filename = (function(req) {
-        const headers = req.headers || {};
-        const ua = headers['user-agent'] || '';
-        const isIE = (function(ua) {
-            return (/MSIE \d/).test(ua);
-        }(ua));
-        const isEdge = (function(ua) {
-            return (/Trident\/\d/).test(ua) && (!(/MSIE \d/).test(ua));
-        }(ua));
 
-        const name = sender.state.name || 'noname.txt';
-        return (isIE || isEdge) ? encodeURIComponent(name) : name;
-    }(req));
+    const filename = sender.state.name || 'noname.txt';
     const content = sender.state.gcode || '';
 
-    res.setHeader('Content-Disposition', 'attachment; filename=' + JSON.stringify(filename));
+    res.setHeader('Content-Disposition', 'attachment; filename=' + encodeURIComponent(filename));
     res.setHeader('Connection', 'close');
 
     res.write(content);
