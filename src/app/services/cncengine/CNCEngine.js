@@ -31,22 +31,25 @@ import {
 
 const log = logger('service:cncengine');
 
-// Returns true if the specified strings are equal, ignoring case; otherwise, false.
-const equals = (s1, s2) => {
-    s1 = s1 ? (s1 + '').toUpperCase() : '';
-    s2 = s2 ? (s2 + '').toUpperCase() : '';
-    return s1 === s2;
+// Case-insensitive equality checker.
+// @param {string} str1 First string to check.
+// @param {string} str2 Second string to check.
+// @return {boolean} True if str1 and str2 are the same string, ignoring case.
+const caseInsensitiveEquals = (str1, str2) => {
+    str1 = str1 ? (str1 + '').toUpperCase() : '';
+    str2 = str2 ? (str2 + '').toUpperCase() : '';
+    return str1 === str2;
 };
 
 const isValidController = (controller) => (
     // Grbl
-    equals(GRBL, controller) ||
+    caseInsensitiveEquals(GRBL, controller) ||
     // Smoothie
-    equals(SMOOTHIE, controller) ||
+    caseInsensitiveEquals(SMOOTHIE, controller) ||
     // g2core
-    equals(G2CORE, controller) ||
+    caseInsensitiveEquals(G2CORE, controller) ||
     // TinyG
-    equals(TINYG, controller)
+    caseInsensitiveEquals(TINYG, controller)
 );
 
 class CNCEngine {
@@ -94,18 +97,19 @@ class CNCEngine {
         }
 
         // Grbl
-        if (!controller || equals(GRBL, controller)) {
+        if (!controller || caseInsensitiveEquals(GRBL, controller)) {
             this.controllerClass[GRBL] = GrblController;
         }
-        if (!controller || equals(MARLIN, controller)) {
+        // Marlin
+        if (!controller || caseInsensitiveEquals(MARLIN, controller)) {
             this.controllerClass[MARLIN] = MarlinController;
         }
         // Smoothie
-        if (!controller || equals(SMOOTHIE, controller)) {
+        if (!controller || caseInsensitiveEquals(SMOOTHIE, controller)) {
             this.controllerClass[SMOOTHIE] = SmoothieController;
         }
-        // g2core & TinyG
-        if (!controller || equals(G2CORE, controller) || equals(TINYG, controller)) {
+        // TinyG / G2core
+        if (!controller || caseInsensitiveEquals(G2CORE, controller) || caseInsensitiveEquals(TINYG, controller)) {
             this.controllerClass[TINYG] = TinyGController;
         }
 
