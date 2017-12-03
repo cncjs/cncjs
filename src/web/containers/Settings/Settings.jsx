@@ -3,6 +3,7 @@ import i18next from 'i18next';
 import camelCase from 'lodash/camelCase';
 import find from 'lodash/find';
 import findIndex from 'lodash/findIndex';
+import get from 'lodash/get';
 import isEqual from 'lodash/isEqual';
 import Uri from 'jsuri';
 import React, { PureComponent } from 'react';
@@ -14,6 +15,7 @@ import i18n from '../../lib/i18n';
 import General from './General';
 import Workspace from './Workspace';
 import Account from './Account';
+import Controller from './Controller';
 import Commands from './Commands';
 import Events from './Events';
 import About from './About';
@@ -44,6 +46,12 @@ class Settings extends PureComponent {
             path: 'workspace',
             title: i18n._('Workspace'),
             component: (props) => <Workspace {...props} />
+        },
+        {
+            id: 'controller',
+            path: 'controller',
+            title: i18n._('Controller'),
+            component: (props) => <Controller {...props} />
         },
         {
             id: 'account',
@@ -225,6 +233,114 @@ class Settings extends PureComponent {
                         }
                     }
                 });
+            }
+        },
+        // Controller
+        controller: {
+            load: (options) => {
+                this.setState(state => ({
+                    controller: {
+                        ...state.controller,
+                        api: {
+                            ...state.controller.api,
+                            err: false,
+                            loading: true
+                        }
+                    }
+                }));
+
+                api.getState().then((res) => {
+                    const ignoreErrors = get(res.body, 'controller.exception.ignoreErrors');
+
+                    const nextState = {
+                        ...this.state.controller,
+                        api: {
+                            ...this.state.controller.api,
+                            err: false,
+                            loading: false
+                        },
+                        // followed by data
+                        ignoreErrors: !!ignoreErrors
+                    };
+
+                    this.initialState.controller = nextState;
+
+                    this.setState({ controller: nextState });
+                })
+                .catch((res) => {
+                    this.setState(state => ({
+                        controller: {
+                            ...state.controller,
+                            api: {
+                                ...state.controller.api,
+                                err: true,
+                                loading: false
+                            }
+                        }
+                    }));
+                });
+            },
+            save: () => {
+                this.setState(state => ({
+                    controller: {
+                        ...state.controller,
+                        api: {
+                            ...state.controller.api,
+                            err: false,
+                            saving: true
+                        }
+                    }
+                }));
+
+                const data = {
+                    controller: {
+                        exception: {
+                            ignoreErrors: this.state.controller.ignoreErrors
+                        }
+                    }
+                };
+
+                api.setState(data).then((res) => {
+                    const nextState = {
+                        ...this.state.controller,
+                        api: {
+                            ...this.state.controller.api,
+                            err: false,
+                            saving: false
+                        }
+                    };
+
+                    // Update settings to initialState
+                    this.initialState.controller = nextState;
+
+                    this.setState({ controller: nextState });
+                })
+                .catch((res) => {
+                    this.setState(state => ({
+                        controller: {
+                            ...state.controller,
+                            api: {
+                                ...state.controller.api,
+                                err: true,
+                                saving: false
+                            }
+                        }
+                    }));
+                });
+            },
+            restoreSettings: () => {
+                // Restore settings from initialState
+                this.setState({
+                    controller: this.initialState.controller
+                });
+            },
+            toggleIgnoreErrors: () => {
+                this.setState(state => ({
+                    controller: {
+                        ...state.controller,
+                        ignoreErrors: !state.controller.ignoreErrors
+                    }
+                }));
             }
         },
         // My Account
@@ -792,6 +908,17 @@ class Settings extends PureComponent {
                         changePassword: false
                     }
                 }
+            },
+            // Controller
+            controller: {
+                // followed by api state
+                api: {
+                    err: false,
+                    loading: true, // defaults to true
+                    saving: false
+                },
+                // followed by data
+                ignoreErrors: false
             },
             // Commands
             commands: {

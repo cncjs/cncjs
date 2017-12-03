@@ -7,7 +7,12 @@ import logger from '../../lib/logger';
 const log = logger('service:configstore');
 
 const defaultState = { // default state
-    checkForUpdates: true
+    checkForUpdates: true,
+    controller: {
+        exception: {
+            ignoreErrors: false
+        }
+    }
 };
 
 class ConfigStore extends events.EventEmitter {

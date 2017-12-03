@@ -1,3 +1,5 @@
+import deepKeys from 'deep-keys';
+import _ from 'lodash';
 import config from '../services/configstore';
 import {
     ERR_NOT_FOUND
@@ -53,9 +55,9 @@ export const set = (req, res) => {
         return;
     }
 
-    Object.keys(data).forEach((key) => {
+    deepKeys(data).forEach((key) => {
         const oldValue = config.get(`state.${key}`);
-        const newValue = data[key];
+        const newValue = _.get(data, key);
 
         if (typeof oldValue === 'object' && typeof newValue === 'object') {
             config.set(`state.${key}`, {
