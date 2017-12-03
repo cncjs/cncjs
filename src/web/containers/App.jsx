@@ -20,6 +20,7 @@ class App extends PureComponent {
             '/settings/general',
             '/settings/workspace',
             '/settings/account',
+            '/settings/controller',
             '/settings/commands',
             '/settings/events',
             '/settings/about'

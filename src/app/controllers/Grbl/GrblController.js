@@ -492,6 +492,8 @@ class GrblController {
             const error = _.find(GRBL_ERRORS, { code: code });
 
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
+                const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
+                const pauseError = !ignoreErrors;
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
@@ -500,12 +502,16 @@ class GrblController {
                     // Grbl v1.1
                     this.emit('connection:read', this.connectionOptions, `error:${code} (${error.message})`);
 
-                    this.workflow.pause({ err: `error:${code} (${error.message})` });
+                    if (pauseError) {
+                        this.workflow.pause({ err: `error:${code} (${error.message})` });
+                    }
                 } else {
                     // Grbl v0.9
                     this.emit('connection:read', this.connectionOptions, res.raw);
 
-                    this.workflow.pause({ err: res.raw });
+                    if (pauseError) {
+                        this.workflow.pause({ err: res.raw });
+                    }
                 }
 
                 this.sender.ack();
