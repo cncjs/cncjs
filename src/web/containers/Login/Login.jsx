@@ -92,6 +92,7 @@ class Login extends PureComponent {
                 log.debug(`Navigate to "${query.continue}"`);
 
                 window.location = query.continue;
+
                 return null;
             }
 
