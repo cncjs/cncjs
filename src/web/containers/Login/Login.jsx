@@ -1,4 +1,5 @@
-import classNames from 'classnames';
+import cx from 'classnames';
+import qs from 'qs';
 import React, { PureComponent } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
 import Anchor from '../../components/Anchor';
@@ -86,9 +87,16 @@ class Login extends PureComponent {
         const forgotPasswordLink = 'https://cnc.js.org/docs/faq/#forgot-your-password';
 
         if (state.redirectToReferrer) {
-            const redirectFrom = '/login';
-            const redirectTo = from.pathname;
-            log.debug(`Redirect from "${redirectFrom}" to "${redirectTo}"`);
+            const query = qs.parse(window.location.search, { ignoreQueryPrefix: true });
+            if (query && query.continue) {
+                log.debug(`Navigate to "${query.continue}"`);
+
+                window.location = query.continue;
+                return null;
+            }
+
+            log.debug(`Redirect from "/login" to "${from.pathname}"`);
+
             return (
                 <Redirect to={from} />
             );
@@ -141,7 +149,7 @@ class Login extends PureComponent {
                                 onClick={this.actions.handleSignIn}
                             >
                                 <i
-                                    className={classNames(
+                                    className={cx(
                                         'fa',
                                         'fa-fw',
                                         { 'fa-spin': authenticating },
