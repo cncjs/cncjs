@@ -8,9 +8,13 @@ module.exports = {
         api.signin({ token, name, password })
             .then((res) => {
                 const { enabled = false, token = '', name = '' } = { ...res.body };
+
                 store.set('session.enabled', enabled);
                 store.set('session.token', token);
                 store.set('session.name', name);
+
+                // Persist data locally
+                store.persist();
 
                 authenticated = true;
                 resolve({ authenticated: true, token: token });
