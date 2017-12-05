@@ -12,9 +12,9 @@
             "cycle": "サイクル",
             "homing": "ホーミング",
             "jog": "ジョギング",
-            "interlock": "",
+            "interlock": "インターロック",
             "shutdown": "シャットダウン",
-            "panic": ""
+            "panic": "パニック"
         }
     },
     "Grbl": {
@@ -24,7 +24,7 @@
             "hold": "一時停止",
             "door": "ドア",
             "home": "ホーム",
-            "sleep": "",
+            "sleep": "スリープ",
             "alarm": "アラーム",
             "check": "確認"
         }
@@ -36,7 +36,7 @@
             "hold": "一時停止",
             "door": "ドア",
             "home": "ホーム",
-            "sleep": "",
+            "sleep": "スリープ",
             "alarm": "アラーム",
             "check": "確認"
         }
