@@ -8,7 +8,6 @@ const findImports = require('find-imports');
 const webpack = require('webpack');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
-//const WebpackMd5HashPlugin = require('webpack-md5-hash');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -81,7 +80,6 @@ const webpackConfig = Object.assign({}, baseConfig, {
             filename: `[name].[chunkhash].js?_=${timestamp}`,
             minChunks: Infinity
         }),
-        //new WebpackMd5HashPlugin(),
         // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
         new ManifestPlugin({
             fileName: 'manifest.json'
