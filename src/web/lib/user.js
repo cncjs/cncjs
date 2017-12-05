@@ -13,7 +13,7 @@ module.exports = {
                 store.set('session.token', token);
                 store.set('session.name', name);
 
-                // Persist data locally
+                // Persist data after successful login to prevent debounced update
                 store.persist();
 
                 authenticated = true;
