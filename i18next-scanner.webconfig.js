@@ -1,17 +1,12 @@
 /* eslint no-console: 0 */
+/* eslint strict: 0 */
 const fs = require('fs');
 const chalk = require('chalk');
-const vfs = require('vinyl-fs');
-const sort = require('gulp-sort');
-const scanner = require('i18next-scanner');
-const languages = require('../build.config').languages;
+const languages = require('./build.config').languages;
 
-const config = {
+module.exports = {
     src: [
-        'src/web/**/*.html',
-        'src/web/**/*.hbs',
-        'src/web/**/*.js',
-        'src/web/**/*.jsx',
+        'src/web/**/*.{html,hbs,js,jsx}',
         // Use ! to filter out files or directories
         '!src/web/{vendor,i18n}/**',
         '!test/**',
@@ -48,31 +43,26 @@ const config = {
             prefix: '{{',
             suffix: '}}'
         }
+    },
+    transform: function(file, enc, done) {
+        'use strict';
+
+        const parser = this.parser;
+        const content = fs.readFileSync(file.path, enc);
+        let count = 0;
+
+        parser.parseFuncFromString(content, { list: ['i18n._', 'i18n.__'] }, (key, options) => {
+            parser.set(key, Object.assign({}, options, {
+                nsSeparator: false,
+                keySeparator: false
+            }));
+            ++count;
+        });
+
+        if (count > 0) {
+            console.log(`[i18next-scanner] transform: count=${chalk.cyan(count)}, file=${chalk.yellow(JSON.stringify(file.relative))}`);
+        }
+
+        done();
     }
 };
-
-function customTransform(file, enc, done) {
-    "use strict";
-    const parser = this.parser;
-    const content = fs.readFileSync(file.path, enc);
-    let count = 0;
-
-    parser.parseFuncFromString(content, { list: ['i18n._', 'i18n.__'] }, (key, options) => {
-        parser.set(key, Object.assign({}, options, {
-            nsSeparator: false,
-            keySeparator: false
-        }));
-        ++count;
-    });
-
-    if (count > 0) {
-        console.log(`i18next-scanner: count=${chalk.cyan(count)}, file=${chalk.yellow(JSON.stringify(file.relative))}`);
-    }
-
-    done();
-}
-
-vfs.src(config.src)
-    .pipe(sort()) // Sort files in stream by path
-    .pipe(scanner(config.options, customTransform))
-    .pipe(vfs.dest(config.dest));
