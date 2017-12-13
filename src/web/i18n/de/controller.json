@@ -19,14 +19,14 @@
     },
     "Grbl": {
         "activeState": {
-            "idle": "",
-            "run": "",
-            "hold": "",
-            "door": "",
-            "home": "",
-            "sleep": "",
-            "alarm": "",
-            "check": ""
+            "idle": "Bereit",
+            "run": "Programmlauf",
+            "hold": "Angehalten",
+            "door": "Tür offen",
+            "home": "Referenzfahrt",
+            "sleep": "schlafen",
+            "alarm": "Alarm",
+            "check": "Überprüfen"
         }
     },
     "Smoothie": {
