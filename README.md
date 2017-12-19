@@ -16,8 +16,8 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
     - [Grbl](https://github.com/gnea/grbl)
     - [Grbl-Mega](https://github.com/gnea/grbl-Mega)
     - [Marlin](https://github.com/MarlinFirmware/Marlin)
-    - [Smoothieware](https://github.com/Smoothieware/Smoothieware)
-    - [TinyG](https://github.com/synthetos/TinyG)
+    - [Smoothieware](https://github.com/Smoothieware/Smoothieware) ([latest](https://github.com/Smoothieware/Smoothieware/tree/edge/FirmwareBin))
+    - [TinyG](https://github.com/synthetos/TinyG) (_Recommend: firmware version 0.97 build 449.xx_)
     - [g2core](https://github.com/synthetos/g2)
 * [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cncjs/cncjs/wiki/Desktop-App)
 * 3D Visualizer
