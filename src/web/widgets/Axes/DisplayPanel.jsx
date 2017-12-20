@@ -73,20 +73,6 @@ class DisplayPanel extends PureComponent {
                                         <i className="fa fa-fw fa-caret-down" />
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu>
-                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                        <MenuItem
-                                            eventKey="G92 X0 Y0 Z0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}
-                                        </MenuItem>
-                                        <MenuItem
-                                            eventKey="G92.1 X0 Y0 Z0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}
-                                        </MenuItem>
-                                        <MenuItem divider />
                                         {wcs === 'G54' &&
                                         <MenuItem header>{i18n._('Work Coordinate System (G54)')}</MenuItem>
                                         }
@@ -159,6 +145,20 @@ class DisplayPanel extends PureComponent {
                                             {i18n._('Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)')}
                                         </MenuItem>
                                         }
+                                        <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary Offsets (G92 X0 Y0 Z0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 X0 Y0 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary Offsets (G92.1 X0 Y0 Z0)')}
+                                        </MenuItem>
                                         <MenuItem divider />
                                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                         <MenuItem
@@ -336,6 +336,20 @@ class DisplayPanel extends PureComponent {
                                         </MenuItem>
                                         }
                                         <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary X Axis (G92 X0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 X0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
                                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                         <MenuItem
                                             eventKey="G53 G0 X0"
@@ -354,20 +368,6 @@ class DisplayPanel extends PureComponent {
                                             disabled={!canClick}
                                         >
                                             {i18n._('Home Machine X Axis (G28.2 X0)')}
-                                        </MenuItem>
-                                        <MenuItem divider />
-                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                        <MenuItem
-                                            eventKey="G92 X0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Zero Out Temporary X Axis (G92 X0)')}
-                                        </MenuItem>
-                                        <MenuItem
-                                            eventKey="G92.1 X0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Un-Zero Out Temporary X Axis (G92.1 X0)')}
                                         </MenuItem>
                                     </Dropdown.Menu>
                                 </Dropdown>
@@ -507,6 +507,20 @@ class DisplayPanel extends PureComponent {
                                         </MenuItem>
                                         }
                                         <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary Y Axis (G92 Y0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 Y0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
                                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                         <MenuItem
                                             eventKey="G53 G0 Y0"
@@ -525,20 +539,6 @@ class DisplayPanel extends PureComponent {
                                             disabled={!canClick}
                                         >
                                             {i18n._('Home Machine Y Axis (G28.2 Y0)')}
-                                        </MenuItem>
-                                        <MenuItem divider />
-                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                        <MenuItem
-                                            eventKey="G92 Y0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Zero Out Temporary Y Axis (G92 Y0)')}
-                                        </MenuItem>
-                                        <MenuItem
-                                            eventKey="G92.1 Y0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Un-Zero Out Temporary Y Axis (G92.1 Y0)')}
                                         </MenuItem>
                                     </Dropdown.Menu>
                                 </Dropdown>
@@ -680,6 +680,20 @@ class DisplayPanel extends PureComponent {
                                         </MenuItem>
                                         }
                                         <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary Z Axis (G92 Z0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 Z0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
                                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                         <MenuItem
                                             eventKey="G53 G0 Z0"
@@ -698,20 +712,6 @@ class DisplayPanel extends PureComponent {
                                             disabled={!canClick}
                                         >
                                             {i18n._('Home Machine Z Axis (G28.2 Z0)')}
-                                        </MenuItem>
-                                        <MenuItem divider />
-                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                        <MenuItem
-                                            eventKey="G92 Z0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Zero Out Temporary Z Axis (G92 Z0)')}
-                                        </MenuItem>
-                                        <MenuItem
-                                            eventKey="G92.1 Z0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Un-Zero Out Temporary Z Axis (G92.1 Z0)')}
                                         </MenuItem>
                                     </Dropdown.Menu>
                                 </Dropdown>
@@ -853,6 +853,20 @@ class DisplayPanel extends PureComponent {
                                         </MenuItem>
                                         }
                                         <MenuItem divider />
+                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
+                                        <MenuItem
+                                            eventKey="G92 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Zero Out Temporary A Axis (G92 A0)')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            eventKey="G92.1 A0"
+                                            disabled={!canClick}
+                                        >
+                                            {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
+                                        </MenuItem>
+                                        <MenuItem divider />
                                         <MenuItem header>{i18n._('Machine Coordinate System (G53)')}</MenuItem>
                                         <MenuItem
                                             eventKey="G53 G0 A0"
@@ -871,20 +885,6 @@ class DisplayPanel extends PureComponent {
                                             disabled={!canClick}
                                         >
                                             {i18n._('Home Machine A Axis (G28.2 A0)')}
-                                        </MenuItem>
-                                        <MenuItem divider />
-                                        <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
-                                        <MenuItem
-                                            eventKey="G92 A0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Zero Out Temporary A Axis (G92 A0)')}
-                                        </MenuItem>
-                                        <MenuItem
-                                            eventKey="G92.1 A0"
-                                            disabled={!canClick}
-                                        >
-                                            {i18n._('Un-Zero Out Temporary A Axis (G92.1 A0)')}
                                         </MenuItem>
                                     </Dropdown.Menu>
                                 </Dropdown>
