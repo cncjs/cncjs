@@ -13,11 +13,11 @@ A web-based interface for CNC milling controller running [Grbl](https://github.c
     - Serial connection over USB (for all controllers)
     - TCP socket connection over Ethernet (for Smoothieware only)
 * Supported controllers
-    - [Grbl](https://github.com/gnea/grbl)
-    - [Grbl-Mega](https://github.com/gnea/grbl-Mega)
-    - [Marlin](https://github.com/MarlinFirmware/Marlin)
-    - [Smoothieware](https://github.com/Smoothieware/Smoothieware) ([latest](https://github.com/Smoothieware/Smoothieware/tree/edge/FirmwareBin))
-    - [TinyG](https://github.com/synthetos/TinyG) (_Recommend: firmware version 0.97 build 449.xx_)
+    - [Grbl](https://github.com/gnea/grbl) ([Download](https://github.com/gnea/grbl/releases))
+    - [Grbl-Mega](https://github.com/gnea/grbl-Mega) ([Download](https://github.com/gnea/grbl-Mega/releases))
+    - [Marlin](https://github.com/MarlinFirmware/Marlin) ([Download](http://marlinfw.org/meta/download/))
+    - [Smoothieware](https://github.com/Smoothieware/Smoothieware) ([Download](https://github.com/Smoothieware/Smoothieware/tree/edge/FirmwareBin))
+    - [TinyG](https://github.com/synthetos/TinyG) (_Recommend: firmware version 0.97 build 449.xx_) ([Download](http://synthetos.github.io/))
     - [g2core](https://github.com/synthetos/g2)
 * [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cncjs/cncjs/wiki/Desktop-App)
 * 3D Visualizer
