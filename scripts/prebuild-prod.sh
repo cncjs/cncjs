@@ -1,7 +1,7 @@
 #!/bin/bash
 
-mkdir -p output
-rm -rf output/*
+mkdir -p dist
+rm -rf dist/*
 
 npm run package-sync
 

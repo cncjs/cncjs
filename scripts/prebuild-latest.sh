@@ -2,8 +2,8 @@
 
 abbrev_commit=`git log -1 --format=%h --abbrev=8`
 
-mkdir -p output
-rm -rf output/*
+mkdir -p dist
+rm -rf dist/*
 
 npm run package-sync
 
