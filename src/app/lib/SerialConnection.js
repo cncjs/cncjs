@@ -5,7 +5,13 @@ import log from './logger';
 const Readline = SerialPort.parsers.Readline;
 
 const defaultSettings = Object.freeze({
-    baudRate: 115200
+    baudRate: 115200,
+
+    // Flow control settings
+    rtscts: true, // @see https://github.com/cncjs/cncjs/issues/243
+    xon: false,
+    xoff: false,
+    xany: false
 });
 
 const toIdent = (options) => {
@@ -42,7 +48,7 @@ class SerialConnection extends EventEmitter {
     constructor(options) {
         super();
 
-        const { writeFilter } = { ...options };
+        const { writeFilter, ...rest } = { ...options };
 
         if (writeFilter) {
             if (typeof writeFilter !== 'function') {
@@ -52,7 +58,7 @@ class SerialConnection extends EventEmitter {
             this.writeFilter = writeFilter;
         }
 
-        const settings = Object.assign({}, defaultSettings, options);
+        const settings = Object.assign({}, defaultSettings, rest);
 
         if (settings.port) {
             throw new TypeError('"port" is an unknown option, did you mean "path"?');
