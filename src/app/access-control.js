@@ -31,7 +31,7 @@ export const authorizeIPAddress = (ipaddr) => new Promise((resolve, reject) => {
     if (pass) {
         resolve();
     } else {
-        reject(`Unauthorized IP address: ipaddr=${ipaddr}`);
+        reject(new Error(`Unauthorized IP address: ipaddr=${ipaddr}`));
     }
 });
 
@@ -50,6 +50,6 @@ export const validateUser = (user) => new Promise((resolve, reject) => {
     if ((enabledUsers.length === 0) || _.find(enabledUsers, { id: id, name: name })) {
         resolve();
     } else {
-        reject(`Unauthorized user: user.id=${id}, user.name=${name}`);
+        reject(new Error(`Unauthorized user: user.id=${id}, user.name=${name}`));
     }
 });

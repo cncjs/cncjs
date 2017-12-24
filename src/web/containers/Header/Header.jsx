@@ -274,11 +274,11 @@ class Header extends PureComponent {
                             title={`${settings.name} ${settings.version}`}
                         >
                             <img
-                                src="images/logo-badge-32x32.png"
-                                role="presentation"
                                 style={{
                                     margin: '4px auto 0 auto'
                                 }}
+                                src="images/logo-badge-32x32.png"
+                                alt=""
                             />
                             <div
                                 style={{

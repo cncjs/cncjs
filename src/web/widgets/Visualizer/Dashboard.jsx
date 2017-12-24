@@ -157,7 +157,7 @@ class Dashboard extends PureComponent {
                         }
                         {this.lines.length === 0 &&
                         <div className={styles.absoluteCenter}>
-                            <img src="images/logo-square-256x256.png" role="presentation" />
+                            <img src="images/logo-square-256x256.png" alt="" />
                         </div>
                         }
                     </div>

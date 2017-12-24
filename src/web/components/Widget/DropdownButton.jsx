@@ -17,6 +17,9 @@ class DropdownButton extends PureComponent {
         // toggle
         toggle: PropTypes.node.isRequired,
 
+        // Align the menu to the right side of the dropdown toggle.
+        pullRight: PropTypes.bool,
+
         // Whether to prevent a caret from being rendered next to the title.
         noCaret: PropTypes.bool
     };

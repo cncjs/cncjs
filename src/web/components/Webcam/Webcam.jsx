@@ -1,3 +1,4 @@
+/* eslint jsx-a11y/media-has-caption: 0 */
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { findDOMNode } from 'react-dom';
@@ -89,7 +90,8 @@ class Webcam extends PureComponent {
         }
 
         const getUserMedia = (constraints) => {
-            Webcam.getUserMedia.call(navigator,
+            Webcam.getUserMedia.call(
+                navigator,
                 constraints,
                 (stream) => {
                     Webcam.mountedInstances.forEach(instance => {
@@ -152,8 +154,7 @@ class Webcam extends PureComponent {
             });
 
             getUserMedia(constraints);
-        })
-        .catch(error => {
+        }).catch(error => {
             console.error(`${error.name}: ${error.message}`); // eslint-disable-line no-console
         });
 
