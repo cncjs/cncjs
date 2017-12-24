@@ -23,8 +23,6 @@ const webpackDevServer = (app) => {
     // https://github.com/webpack/webpack-dev-middleware
     // webpack-dev-middleware handle the files in memory.
     app.use(webpackDevMiddleware(compiler, {
-        noInfo: false,
-        quite: false,
         lazy: false,
         // https://webpack.github.io/docs/node.js-api.html#compiler
         watchOptions: {
