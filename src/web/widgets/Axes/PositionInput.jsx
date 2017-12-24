@@ -1,3 +1,4 @@
+import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 
@@ -11,12 +12,9 @@ class PositionInput extends PureComponent {
     };
     static defaultProps = {
         defaultValue: '',
-        onOK: (value) => {},
-        onCancel: () => {},
         min: -10000,
         max: 10000
     };
-
     state = {
         value: this.props.defaultValue
     };
@@ -25,7 +23,7 @@ class PositionInput extends PureComponent {
         this.positionInput.focus();
     }
     render() {
-        const { onOK, onCancel, min, max } = this.props;
+        const { onOK = noop, onCancel = noop, min, max } = this.props;
         const isNumber = (this.state.value !== '');
 
         return (

@@ -266,8 +266,7 @@ class Settings extends PureComponent {
                     this.initialState.controller = nextState;
 
                     this.setState({ controller: nextState });
-                })
-                .catch((res) => {
+                }).catch((res) => {
                     this.setState(state => ({
                         controller: {
                             ...state.controller,
@@ -314,8 +313,7 @@ class Settings extends PureComponent {
                     this.initialState.controller = nextState;
 
                     this.setState({ controller: nextState });
-                })
-                .catch((res) => {
+                }).catch((res) => {
                     this.setState(state => ({
                         controller: {
                             ...state.controller,

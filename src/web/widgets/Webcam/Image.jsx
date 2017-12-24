@@ -15,8 +15,8 @@ class Image extends PureComponent {
         return (
             <img
                 {...props}
-                role="presentation"
                 src={src}
+                alt=""
             />
         );
     }
