@@ -1,6 +1,6 @@
 # NodeSource Docker Images
 # https://github.com/nodesource/docker-node
-FROM nodesource/vivid:4
+FROM nodesource/vivid:6
 MAINTAINER Cheton Wu <cheton@gmail.com>
 
 # cache package.json and node_modules to speed up builds
