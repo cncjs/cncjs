@@ -167,11 +167,11 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-armv7l;
       ls -al output output/*;
-      cp -af "output/${PRODUCT_NAME}_${PRODUCT_VERSION}_armv7l.deb" "releases/${RELEASE}-linux-armv7.deb";
+      cp -af "output/${PRODUCT_NAME}_${PRODUCT_VERSION}_armv7l.deb" "releases/${RELEASE}-linux-armv7l.deb";
       pushd releases;
-      ln -sf ../output/linux-armv7l-unpacked "${RELEASE}-linux-armv7";
-      tar zcfh "${RELEASE}-linux-armv7.tar.gz" "${RELEASE}-linux-armv7";
-      rm -f "${RELEASE}-linux-armv7";
+      ln -sf ../output/linux-armv7l-unpacked "${RELEASE}-linux-armv7l";
+      tar zcfh "${RELEASE}-linux-armv7l.tar.gz" "${RELEASE}-linux-armv7l";
+      rm -f "${RELEASE}-linux-armv7l";
       popd;
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
@@ -180,14 +180,14 @@ after_success:
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
-          "*-linux-armv7.deb" "*-linux-armv7.tar.gz";
+          "*-linux-armv7l.deb" "*-linux-armv7l.tar.gz";
         npm run github-release -- upload \
           --owner=cncjs \
           --repo=cncjs \
           --tag="${TRAVIS_BRANCH}-latest" \
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
-          "releases/${RELEASE}-linux-armv7.deb" "releases/${RELEASE}-linux-armv7.tar.gz";
+          "releases/${RELEASE}-linux-armv7l.deb" "releases/${RELEASE}-linux-armv7l.tar.gz";
       fi
     fi
   - |
