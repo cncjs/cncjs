@@ -43,12 +43,10 @@ class WindowManager {
             app.quit();
         });
     }
-    openWindow({ title, url }) {
+    openWindow(url, options) {
         const window = new BrowserWindow({
-            width: 1280,
-            height: 768,
-            show: false,
-            title: title
+            ...options,
+            show: false
         });
         const webContents = window.webContents;
 
@@ -65,12 +63,15 @@ class WindowManager {
             shell.openExternal(url);
         });
 
+        webContents.once('dom-ready', () => {
+            window.show();
+        });
+
         // Call `ses.setProxy` to ignore proxy settings
         // http://electron.atom.io/docs/latest/api/session/#sessetproxyconfig-callback
         const ses = webContents.session;
         ses.setProxy({ proxyRules: 'direct://' }, () => {
             window.loadURL(url);
-            window.show();
         });
 
         this.windows.push(window);

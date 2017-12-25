@@ -24,6 +24,7 @@
     "cookie-parser": "~1.4.3",
     "debug": "~3.1.0",
     "deep-keys": "~0.5.0",
+    "electron-config": "~1.0.0",
     "ensure-array": "~1.0.0",
     "errorhandler": "~1.5.0",
     "esprima": "~4.0.0",
