@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import reverse from 'lodash/reverse';
 import sortBy from 'lodash/sortBy';
 import uniq from 'lodash/uniq';
@@ -85,7 +85,19 @@ class ConnectionWidget extends PureComponent {
                 }
             }));
         },
-        handleAutoReconnect: (event) => {
+        toggleHardwareFlowControl: (event) => {
+            const checked = event.target.checked;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    serial: {
+                        ...state.connection.serial,
+                        rtscts: checked
+                    }
+                }
+            }));
+        },
+        toggleAutoReconnect: (event) => {
             const checked = event.target.checked;
             this.setState(state => ({
                 autoReconnect: checked
@@ -187,20 +199,24 @@ class ConnectionWidget extends PureComponent {
             this.config.set('controller.type', this.state.controller.type);
         }
 
-        // Serial connection
-        if (this.state.connection.serial.path) {
-            this.config.set('connection.serial.path', this.state.connection.serial.path);
-        }
-        if (this.state.connection.serial.baudRate) {
-            this.config.set('connection.serial.baudRate', this.state.connection.serial.baudRate);
+        { // Serial connection
+            if (this.state.connection.serial.path !== prevState.connection.serial.path) {
+                this.config.set('connection.serial.path', this.state.connection.serial.path);
+            }
+            if (this.state.connection.serial.baudRate !== prevState.connection.serial.baudRate) {
+                this.config.set('connection.serial.baudRate', this.state.connection.serial.baudRate);
+            }
+            // Hardware flow control
+            this.config.set('connection.serial.rtscts', this.state.connection.serial.rtscts);
         }
 
-        // Socket connection
-        if (this.state.connection.socket.host) {
-            this.config.set('connection.socket.host', this.state.connection.socket.host);
-        }
-        if (this.state.connection.socket.port) {
-            this.config.set('connection.socket.port', this.state.connection.socket.port);
+        { // Socket connection
+            if (this.state.connection.socket.host !== prevState.connection.socket.host) {
+                this.config.set('connection.socket.host', this.state.connection.socket.host);
+            }
+            if (this.state.connection.socket.port !== prevState.connection.socket.port) {
+                this.config.set('connection.socket.port', this.state.connection.socket.port);
+            }
         }
 
         this.config.set('autoReconnect', this.state.autoReconnect);
@@ -239,7 +255,8 @@ class ConnectionWidget extends PureComponent {
                 type: this.config.get('connection.type'),
                 serial: {
                     path: this.config.get('connection.serial.path'),
-                    baudRate: this.config.get('connection.serial.baudRate')
+                    baudRate: this.config.get('connection.serial.baudRate'),
+                    rtscts: this.config.get('connection.serial.rtscts')
                 },
                 socket: {
                     host: this.config.get('connection.socket.host'),
@@ -339,7 +356,8 @@ class ConnectionWidget extends PureComponent {
         const connectionType = this.state.connection.type;
         const options = {
             path: path || this.state.connection.serial.path,
-            baudRate: baudRate || this.state.connection.serial.baudRate
+            baudRate: baudRate || this.state.connection.serial.baudRate,
+            rtscts: this.state.connection.serial.rtscts
         };
 
         this.setState(state => ({
@@ -404,7 +422,7 @@ class ConnectionWidget extends PureComponent {
                             onClick={actions.toggleMinimized}
                         >
                             <i
-                                className={classNames(
+                                className={cx(
                                     'fa',
                                     'fa-fw',
                                     { 'fa-chevron-up': !minimized },
@@ -423,7 +441,7 @@ class ConnectionWidget extends PureComponent {
                         >
                             <Widget.DropdownMenuItem eventKey="fullscreen">
                                 <i
-                                    className={classNames(
+                                    className={cx(
                                         'fa',
                                         'fa-fw',
                                         { 'fa-expand': !isFullscreen },
@@ -437,7 +455,7 @@ class ConnectionWidget extends PureComponent {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    className={classNames(
+                    className={cx(
                         styles['widget-content'],
                         { [styles.hidden]: minimized }
                     )}

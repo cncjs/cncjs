@@ -49,7 +49,9 @@ const defaultState = {
                 type: 'serial', // serial|socket
                 serial: {
                     path: '',
-                    baudRate: 115200
+                    baudRate: 115200,
+                    // Hardware flow control (RTS/CTS)
+                    rtscts: false
                 },
                 socket: {
                     host: '',
