@@ -4,11 +4,18 @@ import log from './logger';
 
 const Readline = SerialPort.parsers.Readline;
 
+// Validation
+const DATABITS = Object.freeze([5, 6, 7, 8]);
+const STOPBITS = Object.freeze([1, 2]);
+const PARITY = Object.freeze(['none', 'even', 'mark', 'odd', 'space']);
+const FLOWCONTROLS = Object.freeze(['rtscts', 'xon', 'xoff', 'xany']);
+
 const defaultSettings = Object.freeze({
     baudRate: 115200,
-
-    // Flow control settings
-    rtscts: true, // @see https://github.com/cncjs/cncjs/issues/243
+    dataBits: 8,
+    stopBits: 1,
+    parity: 'none',
+    rtscts: false,
     xon: false,
     xoff: false,
     xany: false
@@ -75,6 +82,24 @@ class SerialConnection extends EventEmitter {
         if (typeof settings.baudRate !== 'number') {
             throw new TypeError(`"baudRate" must be a number: ${settings.baudRate}`);
         }
+
+        if (DATABITS.indexOf(settings.dataBits) < 0) {
+            throw new TypeError(`"databits" is invalid: ${settings.dataBits}`);
+        }
+
+        if (STOPBITS.indexOf(settings.stopBits) < 0) {
+            throw new TypeError(`"stopbits" is invalid: ${settings.stopbits}`);
+        }
+
+        if (PARITY.indexOf(settings.parity) < 0) {
+            throw new TypeError(`"parity" is invalid: ${settings.parity}`);
+        }
+
+        FLOWCONTROLS.forEach((control) => {
+            if (typeof settings[control] !== 'boolean') {
+                throw new TypeError(`"${control}" is not boolean: ${settings[control]}`);
+            }
+        });
 
         Object.defineProperties(this, {
             settings: {
