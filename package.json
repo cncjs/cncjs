@@ -7,7 +7,8 @@
   "main": "./dist/cnc/cnc.js",
   "bin": {
     "cnc": "./bin/cnc",
-    "cncjs": "./bin/cnc"
+    "cncjs": "./bin/cnc",
+    "cncjs-server": "./bin/cnc"
   },
   "files": [
     "bin",
