@@ -1,4 +1,5 @@
 import classNames from 'classnames';
+import get from 'lodash/get';
 import reverse from 'lodash/reverse';
 import sortBy from 'lodash/sortBy';
 import uniq from 'lodash/uniq';
@@ -69,10 +70,22 @@ class ConnectionWidget extends PureComponent {
                 baudrate: option.value
             }));
         },
-        handleAutoReconnect: (event) => {
+        toggleAutoReconnect: (event) => {
             const checked = event.target.checked;
             this.setState(state => ({
                 autoReconnect: checked
+            }));
+        },
+        toggleHardwareFlowControl: (event) => {
+            const checked = event.target.checked;
+            this.setState(state => ({
+                connection: {
+                    ...state.connection,
+                    serial: {
+                        ...state.connection.serial,
+                        rtscts: checked
+                    }
+                }
             }));
         },
         handleRefreshPorts: (event) => {
@@ -195,7 +208,8 @@ class ConnectionWidget extends PureComponent {
             controllerType,
             port,
             baudrate,
-            autoReconnect
+            autoReconnect,
+            connection
         } = this.state;
 
         this.config.set('minimized', minimized);
@@ -207,6 +221,9 @@ class ConnectionWidget extends PureComponent {
         }
         if (baudrate) {
             this.config.set('baudrate', baudrate);
+        }
+        if (connection) {
+            this.config.set('connection.serial.rtscts', get(connection, 'serial.rtscts', false));
         }
         this.config.set('autoReconnect', autoReconnect);
     }
@@ -238,6 +255,11 @@ class ConnectionWidget extends PureComponent {
             controllerType: controllerType,
             port: controller.port,
             baudrate: this.config.get('baudrate'),
+            connection: {
+                serial: {
+                    rtscts: this.config.get('connection.serial.rtscts')
+                }
+            },
             autoReconnect: this.config.get('autoReconnect'),
             hasReconnected: false,
             alertMessage: ''
@@ -289,7 +311,8 @@ class ConnectionWidget extends PureComponent {
 
         controller.openPort(port, {
             controllerType: this.state.controllerType,
-            baudrate: baudrate
+            baudrate: baudrate,
+            rtscts: this.state.connection.serial.rtscts
         }, (err) => {
             if (err) {
                 this.setState(state => ({

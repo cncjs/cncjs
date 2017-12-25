@@ -1,7 +1,8 @@
 import find from 'lodash/find';
+import get from 'lodash/get';
 import includes from 'lodash/includes';
 import map from 'lodash/map';
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
@@ -103,8 +104,10 @@ class Connection extends PureComponent {
             ports, baudrates,
             port, baudrate,
             autoReconnect,
+            connection,
             alertMessage
         } = state;
+        const enableHardwareFlowControl = get(connection, 'serial.rtscts', false);
         const canSelectControllers = (controller.loadedControllers.length > 1);
         const hasGrblController = includes(controller.loadedControllers, GRBL);
         const hasMarlinController = includes(controller.loadedControllers, MARLIN);
@@ -117,6 +120,7 @@ class Connection extends PureComponent {
         const canChangeController = notLoading && notConnected;
         const canChangePort = notLoading && notConnected;
         const canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(port)));
+        const canToggleHardwareFlowControl = notConnected;
         const canOpenPort = port && baudrate && notConnecting && notConnected;
         const canClosePort = connected;
 
@@ -138,7 +142,7 @@ class Connection extends PureComponent {
                             {hasGrblController &&
                             <button
                                 type="button"
-                                className={classNames(
+                                className={cx(
                                     'btn',
                                     'btn-default',
                                     { 'btn-select': controllerType === GRBL }
@@ -154,7 +158,7 @@ class Connection extends PureComponent {
                             {hasMarlinController &&
                             <button
                                 type="button"
-                                className={classNames(
+                                className={cx(
                                     'btn',
                                     'btn-default',
                                     { 'btn-select': controllerType === MARLIN }
@@ -170,7 +174,7 @@ class Connection extends PureComponent {
                             {hasSmoothieController &&
                             <button
                                 type="button"
-                                className={classNames(
+                                className={cx(
                                     'btn',
                                     'btn-default',
                                     { 'btn-select': controllerType === SMOOTHIE }
@@ -186,7 +190,7 @@ class Connection extends PureComponent {
                             {hasTinyGController &&
                             <button
                                 type="button"
-                                className={classNames(
+                                className={cx(
                                     'btn',
                                     'btn-default',
                                     { 'btn-select': controllerType === TINYG }
@@ -236,7 +240,7 @@ class Connection extends PureComponent {
                                 disabled={!canRefresh}
                             >
                                 <i
-                                    className={classNames(
+                                    className={cx(
                                         'fa',
                                         'fa-refresh',
                                         { 'fa-spin': loading }
@@ -266,9 +270,19 @@ class Connection extends PureComponent {
                         valueRenderer={this.renderBaudrateValue}
                     />
                 </div>
+                <div
+                    className={cx('checkbox', {
+                        'disabled': !canToggleHardwareFlowControl
+                    })}
+                >
+                    <label>
+                        <input type="checkbox" defaultChecked={enableHardwareFlowControl} onChange={actions.toggleHardwareFlowControl} disabled={!canToggleHardwareFlowControl} />
+                        {i18n._('Enable hardware flow control')}
+                    </label>
+                </div>
                 <div className="checkbox">
                     <label>
-                        <input type="checkbox" defaultChecked={autoReconnect} onChange={actions.handleAutoReconnect} />
+                        <input type="checkbox" defaultChecked={autoReconnect} onChange={actions.toggleAutoReconnect} />
                         {i18n._('Connect automatically')}
                     </label>
                 </div>

@@ -113,17 +113,19 @@ class SmoothieController {
         }
         this.engine = engine;
 
-        const { port, baudrate } = { ...options };
+        const { port, baudrate, rtscts } = { ...options };
         this.options = {
             ...this.options,
             port: port,
-            baudrate: baudrate
+            baudrate: baudrate,
+            rtscts: rtscts
         };
 
         // Connection
         this.connection = new SerialConnection({
             path: port,
             baudRate: baudrate,
+            rtscts: rtscts,
             writeFilter: (data) => {
                 return data;
             }
@@ -746,6 +748,7 @@ class SmoothieController {
         return {
             port: this.options.port,
             baudrate: this.options.baudrate,
+            rtscts: this.options.rtscts,
             sockets: Object.keys(this.sockets),
             ready: this.ready,
             controller: {

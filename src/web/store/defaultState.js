@@ -43,10 +43,17 @@ const defaultState = {
         connection: {
             minimized: false,
             controller: {
-                type: 'Grbl' // Grbl|Smoothie|TinyG
+                type: 'Grbl' // Grbl|Marlin|Smoothie|TinyG
             },
-            port: '',
-            baudrate: 115200,
+            port: '', // will be deprecated in v2
+            baudrate: 115200, // will be deprecated in v2
+            connection: {
+                type: 'serial',
+                serial: {
+                    // Hardware flow control (RTS/CTS)
+                    rtscts: false
+                }
+            },
             autoReconnect: true
         },
         console: {
