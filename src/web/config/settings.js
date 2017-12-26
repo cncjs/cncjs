@@ -13,6 +13,7 @@ const settings = {
         corruptedWorkspaceSettings: false
     },
     name: pkg.name,
+    productName: pkg.productName,
     version: pkg.version,
     webroot: webroot,
     log: {
