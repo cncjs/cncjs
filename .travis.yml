@@ -1,6 +1,6 @@
 sudo: required
 dist: trusty
-group: edge
+group: travis_latest
 
 services:
   - docker
