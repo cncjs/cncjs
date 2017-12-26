@@ -129,6 +129,8 @@ class Terminal extends PureComponent {
             };
         })(),
         onPaste: (data, event) => {
+            // Convert line endings from LF to CRLF
+            data = String(data).replace(/(\r\n|\n)/g, '\r\n');
             this.term.write(data);
         }
     };
