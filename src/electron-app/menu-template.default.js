@@ -21,61 +21,32 @@ export default (options) => {
 
     const template = [
         {
+            label: 'Edit',
+            submenu: [
+                { role: 'undo' },
+                { role: 'redo' },
+                { type: 'separator' },
+                { role: 'cut' },
+                { role: 'copy' },
+                { role: 'paste' },
+                { role: 'pasteandmatchstyle' },
+                { role: 'delete' },
+                { role: 'selectall' }
+            ]
+        },
+        {
             label: 'View',
             submenu: [
-                {
-                    label: 'Reload',
-                    accelerator: 'CmdOrCtrl+R',
-                    click: (item, focusedWindow) => {
-                        if (focusedWindow) {
-                            focusedWindow.reload();
-                        }
-                    }
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Toggle Full Screen',
-                    accelerator: 'F11',
-                    click: (item, focusedWindow) => {
-                        if (focusedWindow) {
-                            focusedWindow.setFullScreen(!focusedWindow.isFullScreen());
-                        }
-                    }
-                },
-                {
-                    label: 'Zoom',
-                    submenu: [
-                        {
-                            label: 'Zoom In',
-                            role: 'zoomin'
-                        },
-                        {
-                            label: 'Zoom Out',
-                            role: 'zoomout'
-                        },
-                        {
-                            label: 'Reset',
-                            role: 'resetzoom'
-                        }
-                    ]
-                },
-                {
-                    type: 'separator'
-                },
-                {
-                    label: 'Toggle Developer Tools',
-                    accelerator: 'Ctrl+Shift+I',
-                    click: (item, focusedWindow) => {
-                        if (focusedWindow) {
-                            focusedWindow.toggleDevTools();
-                        }
-                    }
-                },
-                {
-                    type: 'separator'
-                },
+                { role: 'reload' },
+                { role: 'forcereload' },
+                { role: 'toggledevtools' },
+                { type: 'separator' },
+                { role: 'resetzoom' },
+                { role: 'zoomin' },
+                { role: 'zoomout' },
+                { type: 'separator' },
+                { role: 'togglefullscreen' },
+                { type: 'separator' },
                 {
                     label: 'Home',
                     click: () => {
@@ -87,27 +58,17 @@ export default (options) => {
             ]
         },
         {
-            label: 'Window',
             role: 'window',
             submenu: [
-                {
-                    label: 'Minimize',
-                    accelerator: 'CmdOrCtrl+M',
-                    role: 'minimize'
-                },
-                {
-                    label: 'Close',
-                    accelerator: 'CmdOrCtrl+W',
-                    role: 'close'
-                }
+                { role: 'minimize' },
+                { role: 'close' }
             ]
         },
         {
-            label: 'Help',
             role: 'help',
             submenu: [
                 {
-                    label: 'Help',
+                    label: 'Learn More',
                     click: () => {
                         shell.openExternal('https://github.com/cncjs/cncjs/wiki');
                     }
