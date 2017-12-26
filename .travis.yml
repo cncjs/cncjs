@@ -89,7 +89,7 @@ after_success:
       sudo spctl --status;
       npm run build:mac-x64;
       ls -al output output/*;
-      cp -af "output/${PRODUCT_NAME}_${PACKAGE_VERSION}.dmg" "releases/${RELEASE}-mac-x64.dmg";
+      cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/${RELEASE}-mac-x64.dmg";
       ls -al releases/*;
       if [[ -z "$TRAVIS_TAG" ]]; then
         npm run github-release -- delete \
@@ -112,7 +112,7 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-ia32;
       ls -al output output/*;
-      cp -af "output/${PRODUCT_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
+      cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
       pushd releases;
       ln -sf ../output/linux-ia32-unpacked "${RELEASE}-linux-ia32";
       tar zcfh "${RELEASE}-linux-ia32.tar.gz" "${RELEASE}-linux-ia32";
@@ -140,7 +140,7 @@ after_success:
     if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-x64;
       ls -al output output/*;
-      cp -af "output/${PRODUCT_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
+      cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
       pushd releases;
       ln -sf ../output/linux-unpacked "${RELEASE}-linux-x64";
       tar zcfh "${RELEASE}-linux-x64.tar.gz" "${RELEASE}-linux-x64";
