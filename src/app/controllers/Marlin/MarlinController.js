@@ -368,20 +368,14 @@ class MarlinController {
                     this.feeder.hold({ data: 'M190' }); // Hold reason
                 }
 
-                { // Program Mode: M0, M1, M2, M30
-                    const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
+                { // Program Mode: M0, M1
+                    const programMode = _.intersection(words, ['M0', 'M1'])[0];
                     if (programMode === 'M0') {
                         log.debug('M0 Program Pause');
                         this.feeder.hold({ data: 'M0' }); // Hold reason
                     } else if (programMode === 'M1') {
                         log.debug('M1 Program Pause');
                         this.feeder.hold({ data: 'M1' }); // Hold reason
-                    } else if (programMode === 'M2') {
-                        log.debug('M2 Program End');
-                        this.feeder.hold({ data: 'M2' }); // Hold reason
-                    } else if (programMode === 'M30') {
-                        log.debug('M30 Program End');
-                        this.feeder.hold({ data: 'M30' }); // Hold reason
                     }
                 }
 
@@ -467,20 +461,14 @@ class MarlinController {
                     this.sender.hold(reason); // Hold reason
                 }
 
-                { // Program Mode: M0, M1, M2, M30
-                    const programMode = _.intersection(words, ['M0', 'M1', 'M2', 'M30'])[0];
+                { // Program Mode: M0, M1
+                    const programMode = _.intersection(words, ['M0', 'M1'])[0];
                     if (programMode === 'M0') {
                         log.debug(`M0 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
                         this.workflow.pause({ data: 'M0' });
                     } else if (programMode === 'M1') {
                         log.debug(`M1 Program Pause: line=${sent + 1}, sent=${sent}, received=${received}`);
                         this.workflow.pause({ data: 'M1' });
-                    } else if (programMode === 'M2') {
-                        log.debug(`M2 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ data: 'M2' });
-                    } else if (programMode === 'M30') {
-                        log.debug(`M30 Program End: line=${sent + 1}, sent=${sent}, received=${received}`);
-                        this.workflow.pause({ data: 'M30' });
                     }
                 }
 
