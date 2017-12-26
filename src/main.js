@@ -3,10 +3,29 @@ import { app, Menu } from 'electron';
 import ElectronConfig from 'electron-config';
 import chalk from 'chalk';
 import mkdirp from 'mkdirp';
-import menuTemplate from './desktop/menu-template';
-import WindowManager from './desktop/WindowManager';
+import menuTemplate from './electron-app/menu-template';
+import WindowManager from './electron-app/WindowManager';
 import cnc from './cnc';
 import pkg from './package.json';
+
+// The selection menu
+const selectionMenu = Menu.buildFromTemplate([
+    { role: 'copy' },
+    { type: 'separator' },
+    { role: 'selectall' }
+]);
+
+// The input menu
+const inputMenu = Menu.buildFromTemplate([
+    { role: 'undo' },
+    { role: 'redo' },
+    { type: 'separator' },
+    { role: 'cut' },
+    { role: 'copy' },
+    { role: 'paste' },
+    { type: 'separator' },
+    { role: 'selectall' }
+]);
 
 let windowManager = null;
 
@@ -68,11 +87,24 @@ const main = () => {
                 ...bounds,
                 title: `${pkg.name} ${pkg.version}`
             };
-            const win = windowManager.openWindow(url, options);
+            const window = windowManager.openWindow(url, options);
 
             // Save window size and position
-            win.on('close', () => {
-                config.set('bounds', win.getBounds());
+            window.on('close', () => {
+                config.set('bounds', window.getBounds());
+            });
+
+            // https://github.com/electron/electron/issues/4068#issuecomment-274159726
+            window.webContents.on('context-menu', (event, props) => {
+                const { selectionText, isEditable } = props;
+
+                if (isEditable) {
+                    // Shows an input menu if editable
+                    inputMenu.popup(window);
+                } else if (selectionText && String(selectionText).trim() !== '') {
+                    // Shows a selection menu if there was selected text
+                    selectionMenu.popup(window);
+                }
             });
         } catch (err) {
             console.error('Error:', err);
