@@ -103,7 +103,7 @@ series([
             });
     })()
 ]).then(async () => {
-    log.info(`${settings.name} ${settings.version}`);
+    log.info(`${settings.productName} ${settings.version}`);
 
     // Cross-origin communication
     window.addEventListener('message', (event) => {
