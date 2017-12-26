@@ -13,7 +13,7 @@ const AboutContainer = ({ version }) => {
             <img src="images/logo-square-256x256.png" alt="" className={styles.productLogo} />
             <div className={styles.productDetails}>
                 <div className={styles.aboutProductName}>
-                    {`${settings.name} ${version.current}`}
+                    {`${settings.productName} ${version.current}`}
                 </div>
                 <div className={styles.aboutProductDescription}>
                     {i18n._('A web-based interface for CNC milling controller running Grbl, Smoothieware, or TinyG')}

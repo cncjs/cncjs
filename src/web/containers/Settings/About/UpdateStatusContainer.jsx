@@ -36,7 +36,7 @@ const UpdateStatusContainer = (props) => {
                 </div>
                 <div className={styles.updateStatusMessageContainer}>
                     <div className={styles.updateStatusMessage}>
-                        {i18n._('A new version of {{name}} is available', { name: settings.name })}
+                        {i18n._('A new version of {{name}} is available', { name: settings.productName })}
                     </div>
                     <div className={styles.releaseLatest}>
                         {i18n._('Version {{version}}', { version: latest })}
@@ -67,7 +67,7 @@ const UpdateStatusContainer = (props) => {
             </div>
             <div className={styles.updateStatusMessageContainer}>
                 <div className={styles.updateStatusMessage}>
-                    {i18n._('You already have the newest version of {{name}}', { name: settings.name })}
+                    {i18n._('You already have the newest version of {{name}}', { name: settings.productName })}
                 </div>
             </div>
         </div>

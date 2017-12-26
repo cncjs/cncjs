@@ -271,7 +271,7 @@ class Header extends PureComponent {
                             }}
                             href={releases}
                             target="_blank"
-                            title={`${settings.name} ${settings.version}`}
+                            title={`${settings.productName} ${settings.version}`}
                         >
                             <img
                                 style={{
