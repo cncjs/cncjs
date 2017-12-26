@@ -7,5 +7,5 @@ npm run package-sync
 
 pushd src
 cp -af package.json ../output/
-babel -d ../output *.js desktop/**/*.js
+babel -d ../output *.js electron-app/**/*.js
 popd
