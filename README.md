@@ -57,7 +57,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
 ## Tablet UI
 
-* [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb) - A tiny web console for small 320x240 LCD display.
+* [cncjs-pendant-tinyweb](https://github.com/cncjs/cncjs-pendant-tinyweb) - A tiny web console for small 320x240 LCD display.<br>
     ![cncjs-pendant-tinyweb](https://raw.githubusercontent.com/cncjs/cncjs/master/media/tinyweb-axes.png)
 * [cncjs-shopfloor-tablet](https://github.com/cncjs/cncjs-shopfloor-tablet) - A simplified UI for cncjs optimized for tablet computers in a production (shop floor) environment.<br>
     ![cncjs-shopfloor-tablet](https://user-images.githubusercontent.com/4861133/33970662-4a8244b2-e018-11e7-92ab-5a379e3de461.PNG)
@@ -83,7 +83,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
 ### Node.js Installation
 
-Node.js 4 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Node.js 6 is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
 ```
 git clone https://github.com/creationix/nvm.git ~/.nvm
 cd ~/.nvm
@@ -127,16 +127,16 @@ Check out [https://cnc.js.org/docs/installation/](https://cnc.js.org/docs/instal
 
 ### Upgrade
 
-Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cnc -V`.
+Run `npm install -g cncjs@latest` to install the latest version. To determine the version, use `cncjs -V`.
 
 ### Usage
 
-Run `cnc` to start the server, and visit `http://yourhostname:8000/` to view the web interface. Pass `--help` to `cnc` for more options.
+Run `cncjs` to start the server, and visit `http://yourhostname:8000/` to view the web interface. Pass `--help` to `cncjs` for more options.
 
 ```
-pi@rpi3$ cnc -h
+pi@rpi3$ cncjs -h
 
-  Usage: cnc [options]
+  Usage: cncjs [options]
 
 
   Options:
@@ -156,14 +156,14 @@ pi@rpi3$ cnc -h
 
   Examples:
 
-    $ cnc -vv
-    $ cnc --mount /pendant:/home/pi/tinyweb
-    $ cnc --mount /widget:~+/widget --mount /pendant:~/pendant
-    $ cnc --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v2/
-    $ cnc --watch-directory /home/pi/watch
-    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d
-    $ cnc --allow-remote-access
-    $ cnc --controller Grbl
+    $ cncjs -vv
+    $ cncjs --mount /pendant:/home/pi/tinyweb
+    $ cncjs --mount /widget:~+/widget --mount /pendant:~/pendant
+    $ cncjs --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v2/
+    $ cncjs --watch-directory /home/pi/watch
+    $ cncjs --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d
+    $ cncjs --allow-remote-access
+    $ cncjs --controller Grbl
 ```
 
 Instead of passing command line options for `--watch-directory`, `--access-token-lifetime`, `--allow-remote-access`, and `--controller`, you can create a `~/.cncrc` file that contains the following configuration in JSON format:
@@ -178,12 +178,12 @@ Instead of passing command line options for `--watch-directory`, `--access-token
 
 To troubleshoot issues, run:
 ```
-cnc -vvv
+cncjs -vvv
 ```
 
 ### Configuration File
 
-The configuration file <b>.cncrc</b> contains settings that are equivalent to the cnc command-line options. The configuration file is stored in user's home directory. To find out the actual location of the home directory, do the following:
+The configuration file <b>.cncrc</b> contains settings that are equivalent to the cncjs command-line options. The configuration file is stored in user's home directory. To find out the actual location of the home directory, do the following:
 
 * Linux/Mac
   ```sh
@@ -199,6 +199,8 @@ Check out an example configuration file [here](https://github.com/cncjs/cncjs/bl
 
 ### File Format
 
+See https://github.com/cncjs/cncjs/issues/242#issuecomment-352294549 for a detailed explanation.
+
 ```json
 {
   "ports": [
@@ -213,16 +215,21 @@ Check out an example configuration file [here](https://github.com/cncjs/cncjs/bl
   "allowRemoteAccess": false,
   "controller": "",
   "state": {
-    "checkForUpdates": true
+    "checkForUpdates": true,
+    "controller": {
+      "exception": {
+        "ignoreErrors": false
+      }
+    }
   },
   "commands": [
     {
       "title": "Update (root user)",
-      "commands": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cnc"
+      "commands": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cncjs"
     },
     {
       "title": "Update (non-root user)",
-      "commands": "npm install -g cncjs@latest; pkill -a -f cnc"
+      "commands": "npm install -g cncjs@latest; pkill -a -f cncjs"
     },
     {
       "title": "Reboot",
@@ -264,7 +271,7 @@ You can help translate resource files in both of [app](https://github.com/cncjs/
 Locale | Language | Status | Contributors 
 :----- | :------- | :----- | :-----------
 [cs](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/cs) | Čeština (Czech) | ✔ | [Miroslav Zuzelka](https://github.com/dronecz)
-[de](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/de) | Deutsch (German) | ✔ | [Thorsten Godau](https://github.com/dl9sec)
+[de](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/de) | Deutsch (German) | ✔ | [Thorsten Godau](https://github.com/dl9sec), [Max B.](https://github.com/mbs38)
 [es](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/es) | Español (Spanish) | ✔ | [Juan Biondi](https://github.com/yeyeto2788)
 [fr](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/fr) | Français (French) | ✔ | [Simon Maillard](https://github.com/maisim), [CorentinBrulé](https://github.com/CorentinBrule)
 [hu](https://github.com/cncjs/cncjs/tree/master/src/web/i18n/hu) | Magyar (Hungarian) | ✔ | Sipos Péter
