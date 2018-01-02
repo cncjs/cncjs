@@ -1,0 +1,44 @@
+{
+    "TinyG": {
+        "machineState": {
+            "initializing": "Initializing",
+            "ready": "Ready",
+            "alarm": "Alarm",
+            "stop": "Program Stop",
+            "end": "Program End",
+            "run": "Run",
+            "hold": "Hold",
+            "probe": "Probe",
+            "cycle": "Cycle",
+            "homing": "Homing",
+            "jog": "Jog",
+            "interlock": "Interlock",
+            "shutdown": "Shutdown",
+            "panic": "Panic"
+        }
+    },
+    "Grbl": {
+        "activeState": {
+            "idle": "Idle",
+            "run": "Çalışıyor",
+            "hold": "Kilitle",
+            "door": "Kapı",
+            "home": "Başlangıç",
+            "sleep": "Uyku",
+            "alarm": "Alarm",
+            "check": "Kontrol"
+        }
+    },
+    "Smoothie": {
+        "activeState": {
+            "idle": "Idle",
+            "run": "Run",
+            "hold": "Hold",
+            "door": "Door",
+            "home": "Home",
+            "sleep": "sleep",
+            "alarm": "Alarm",
+            "check": "Check"
+        }
+    }
+}
