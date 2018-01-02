@@ -34,7 +34,7 @@ class General extends PureComponent {
 
         const axes = [];
         axes.push('x');
-        axes.push('y');
+        this.fields.axisY.checked && axes.push('y');
         this.fields.axisZ.checked && axes.push('z');
         this.fields.axisA.checked && axes.push('a');
 
@@ -73,8 +73,7 @@ class General extends PureComponent {
                                         this.fields.axisY = node;
                                     }}
                                     type="checkbox"
-                                    checked
-                                    disabled
+                                    defaultChecked={includes(axes, 'y')}
                                 />
                                 <Space width="8" />
                                 {i18n._('Y-axis')}
