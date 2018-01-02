@@ -11,6 +11,7 @@ module.exports = {
         'nl', // Nederlands
         'pt-br', // Portuguese (Brazil)
         'ru', // Russian
+        'tr', // Turkish
         'zh-cn', // Simplified Chinese
         'zh-tw' // Traditional Chinese
     ],
