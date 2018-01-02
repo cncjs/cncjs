@@ -80,7 +80,7 @@ after_success:
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
     # build:mac-x64
-    if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       # https://github.com/electron-userland/electron-builder/issues/398
       security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign;
       # https://github.com/electron-userland/electron-osx-sign/issues/83
@@ -109,7 +109,7 @@ after_success:
     fi
   - |
     # build:linux-ia32
-    if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_BRANCH" = "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-ia32;
       ls -al output output/*;
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
@@ -137,7 +137,7 @@ after_success:
     fi
   - |
     # build:linux-x64
-    if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-x64;
       ls -al output output/*;
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
@@ -165,7 +165,7 @@ after_success:
     fi
   - |
     # docker image
-    if [[ "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       travis_wait scripts/travis-docker-build.sh;
     fi
 
