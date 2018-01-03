@@ -13,10 +13,7 @@ const Controller = (props) => {
     const height = Math.max(window.innerHeight / 2, 200);
 
     return (
-        <Modal
-            onClose={actions.closeModal}
-            size="lg"
-        >
+        <Modal size="lg" onClose={actions.closeModal}>
             <Modal.Header>
                 <Modal.Title>
                     Smoothie

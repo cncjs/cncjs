@@ -103,10 +103,7 @@ class WatchDirectory extends PureComponent {
         const canUpload = selectedNode && selectedNode.props.type === 'f';
 
         return (
-            <Modal
-                onClose={actions.closeModal}
-                size="md"
-            >
+            <Modal size="md" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>{i18n._('Watch Directory')}</Modal.Title>
                 </Modal.Header>

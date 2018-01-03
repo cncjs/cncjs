@@ -11,6 +11,7 @@ const reloadPage = (forcedReload = true) => {
 
 const ServerDisconnected = (props) => (
     <Modal
+        size="xs"
         closeOnOverlayClick={false}
         showCloseButton={false}
     >

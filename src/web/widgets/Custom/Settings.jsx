@@ -42,10 +42,7 @@ class Settings extends PureComponent {
         } = this.load();
 
         return (
-            <Modal
-                onClose={this.props.onCancel}
-                size="sm"
-            >
+            <Modal size="sm" onClose={this.props.onCancel}>
                 <Modal.Header>
                     <Modal.Title>{i18n._('Settings')}</Modal.Title>
                 </Modal.Header>

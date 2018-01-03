@@ -64,10 +64,7 @@ class CreateRecord extends PureComponent {
         }
 
         return (
-            <Modal
-                onClose={actions.closeModal}
-                size="sm"
-            >
+            <Modal size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Events')}
