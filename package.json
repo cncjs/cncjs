@@ -33,7 +33,7 @@
     "build-i18n": "concurrently --kill-others-on-fail --names \"build-i18n-app,build-i18n-web\" \"npm run build-i18n-app\" \"npm run build-i18n-web\"",
     "build-i18n-app": "i18next-scanner --config i18next-scanner.appconfig.js 'src/app/**/*.{html,js,jsx}' '!src/app/i18n/**' '!**/node_modules/**'",
     "build-i18n-web": "i18next-scanner --config i18next-scanner.webconfig.js 'src/web/**/*.{html,js,jsx}' '!src/web/i18n/**' '!**/node_modules/**'",
-    "build-latest": "npm run build-prod",
+    "build-latest": "concurrently --kill-others-on-fail --names \"build-prod-app,build-prod-web\" \"npm run build-prod-app\" \"npm run build-prod-web\"",
     "build-dev": "concurrently --kill-others-on-fail --names \"build-dev-app,build-dev-web\" \"npm run build-dev-app\" \"npm run build-dev-web\"",
     "build-dev-app": "webpack --config webpack.appconfig.development.js && npm run build-i18n-app",
     "build-dev-web": "npm run build-i18n-web",
