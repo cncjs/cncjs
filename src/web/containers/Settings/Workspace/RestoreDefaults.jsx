@@ -17,10 +17,7 @@ class RestoreDefaults extends PureComponent {
         const { actions } = this.props;
 
         return (
-            <Modal
-                onClose={actions.closeModal}
-                size="xs"
-            >
+            <Modal size="xs" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Workspace')}

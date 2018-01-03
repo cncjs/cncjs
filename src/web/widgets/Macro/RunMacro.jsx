@@ -15,10 +15,7 @@ class RunMacro extends PureComponent {
         const { id, name, content } = { ...state.modal.params };
 
         return (
-            <Modal
-                onClose={actions.closeModal}
-                size="md"
-            >
+            <Modal size="md" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Run Macro')}

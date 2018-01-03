@@ -52,7 +52,7 @@ class Workspace extends PureComponent {
             const { version, state } = { ...data };
             if (typeof version !== 'string' && typeof state !== 'object') {
                 portal(({ onClose }) => (
-                    <Modal onClose={onClose}>
+                    <Modal size="xs" onClose={onClose}>
                         <Modal.Header>
                             <Modal.Title>
                                 {i18n._('Settings')}

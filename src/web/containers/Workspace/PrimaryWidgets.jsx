@@ -33,7 +33,7 @@ class PrimaryWidgets extends Component {
     };
     forkWidget = (widgetId) => () => {
         portal(({ onClose }) => (
-            <Modal onClose={onClose}>
+            <Modal size="xs" onClose={onClose}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Fork Widget')}
@@ -80,7 +80,7 @@ class PrimaryWidgets extends Component {
     };
     removeWidget = (widgetId) => () => {
         portal(({ onClose }) => (
-            <Modal onClose={onClose}>
+            <Modal size="xs" onClose={onClose}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Remove Widget')}
