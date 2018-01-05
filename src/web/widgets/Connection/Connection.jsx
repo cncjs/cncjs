@@ -276,13 +276,22 @@ class Connection extends PureComponent {
                     })}
                 >
                     <label>
-                        <input type="checkbox" defaultChecked={enableHardwareFlowControl} onChange={actions.toggleHardwareFlowControl} disabled={!canToggleHardwareFlowControl} />
+                        <input
+                            type="checkbox"
+                            defaultChecked={enableHardwareFlowControl}
+                            onChange={actions.toggleHardwareFlowControl}
+                            disabled={!canToggleHardwareFlowControl}
+                        />
                         {i18n._('Enable hardware flow control')}
                     </label>
                 </div>
                 <div className="checkbox">
                     <label>
-                        <input type="checkbox" defaultChecked={autoReconnect} onChange={actions.toggleAutoReconnect} />
+                        <input
+                            type="checkbox"
+                            defaultChecked={autoReconnect}
+                            onChange={actions.toggleAutoReconnect}
+                        />
                         {i18n._('Connect automatically')}
                     </label>
                 </div>
