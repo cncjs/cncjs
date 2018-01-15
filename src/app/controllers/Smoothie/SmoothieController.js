@@ -18,6 +18,10 @@ import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
 import store from '../../store';
+import {
+    WRITE_SOURCE_CLIENT,
+    WRITE_SOURCE_FEEDER
+} from '../constants';
 import Smoothie from './Smoothie';
 import {
     SMOOTHIE,
@@ -204,7 +208,10 @@ class SmoothieController {
                 return;
             }
 
-            this.emit('serialport:write', line + '\n', context);
+            this.emit('serialport:write', line + '\n', {
+                ...context,
+                source: WRITE_SOURCE_FEEDER
+            });
 
             this.connection.write(line + '\n');
             log.silly(`> ${line}`);
@@ -1218,7 +1225,10 @@ class SmoothieController {
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
-        this.emit('serialport:write', data, context);
+        this.emit('serialport:write', data, {
+            ...context,
+            source: WRITE_SOURCE_CLIENT
+        });
         this.connection.write(data);
         log.silly(`> ${data}`);
     }

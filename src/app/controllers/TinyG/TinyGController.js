@@ -18,6 +18,11 @@ import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
 import store from '../../store';
+import {
+    WRITE_SOURCE_CLIENT,
+    WRITE_SOURCE_SERVER,
+    WRITE_SOURCE_FEEDER
+} from '../constants';
 import TinyG from './TinyG';
 import {
     TINYG,
@@ -203,7 +208,10 @@ class TinyGController {
                 return;
             }
 
-            this.emit('serialport:write', line + '\n', context);
+            this.emit('serialport:write', line + '\n', {
+                ...context,
+                source: WRITE_SOURCE_FEEDER
+            });
 
             this.connection.write(line + '\n');
             log.silly(`> ${line}`);
@@ -670,7 +678,10 @@ class TinyGController {
                 log.silly(`init: ${cmd} ${cmd.length}`);
 
                 const context = {};
-                this.emit('serialport:write', cmd, context);
+                this.emit('serialport:write', cmd, {
+                    ...context,
+                    source: WRITE_SOURCE_SERVER
+                });
                 this.connection.write(cmd + '\n');
             }
             setTimeout(() => {
@@ -1305,7 +1316,10 @@ class TinyGController {
             return;
         }
 
-        this.emit('serialport:write', data, context);
+        this.emit('serialport:write', data, {
+            ...context,
+            source: WRITE_SOURCE_CLIENT
+        });
         this.connection.write(data);
         log.silly(`> ${data}`);
     }

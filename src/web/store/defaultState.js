@@ -1,3 +1,8 @@
+import {
+    IMPERIAL_STEPS,
+    METRIC_STEPS
+} from '../constants';
+
 const defaultState = {
     session: {
         name: '',
@@ -28,8 +33,10 @@ const defaultState = {
             axes: ['x', 'y', 'z'],
             jog: {
                 keypad: false,
-                selectedDistance: '1',
-                customDistance: 10
+                step: {
+                    imperial: IMPERIAL_STEPS.indexOf((1 / 8)), // Defaults to 1/8 inches
+                    metric: METRIC_STEPS.indexOf(1) // Defaults to 1 mm
+                }
             },
             wzero: 'G0 X0 Y0 Z0', // Go To Work Zero
             mzero: 'G53 G0 X0 Y0 Z0', // Go To Machine Zero

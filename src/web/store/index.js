@@ -146,6 +146,12 @@ const migrateStore = () => {
         // Webcam widget
         store.unset('widgets.webcam.scale');
     }
+
+    if (semver.lt(cnc.version, '1.9.13')) {
+        // Axes widget
+        store.unset('widgets.axes.jog.customDistance');
+        store.unset('widgets.axes.jog.selectedDistance');
+    }
 };
 
 try {

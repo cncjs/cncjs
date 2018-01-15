@@ -1,7 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Keypad from './Keypad';
-import JogDistance from './JogDistance';
 import styles from './index.styl';
 
 class ControlPanel extends PureComponent {
@@ -15,7 +14,6 @@ class ControlPanel extends PureComponent {
         return (
             <div className={styles.controlPanel}>
                 <Keypad {...this.props} />
-                <JogDistance {...this.props} />
             </div>
         );
     }

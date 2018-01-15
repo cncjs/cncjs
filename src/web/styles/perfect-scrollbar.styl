@@ -1,0 +1,11 @@
+// @stylint off
+@import url("~perfect-scrollbar/css/perfect-scrollbar.css");
+// @stylint on
+
+.ps__rail-x,
+.ps__rail-y {
+    cursor: default;
+
+    // The xterm-helper class has "z-index: 10" which might cause the scrollbar to be invisible
+    z-index: 100;
+}
