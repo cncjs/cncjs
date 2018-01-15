@@ -32,6 +32,7 @@ class Console extends PureComponent {
                     }
                 }}
                 cols={state.terminal.cols}
+                rows={state.terminal.rows}
                 cursorBlink={state.terminal.cursorBlink}
                 scrollback={state.terminal.scrollback}
                 tabStopWidth={state.terminal.tabStopWidth}

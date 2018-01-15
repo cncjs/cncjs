@@ -19,6 +19,10 @@ import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
 import controllers from '../../store/controllers';
+import {
+    WRITE_SOURCE_CLIENT,
+    WRITE_SOURCE_FEEDER
+} from '../constants';
 import Smoothie from './Smoothie';
 import {
     SMOOTHIE,
@@ -241,7 +245,10 @@ class SmoothieController {
                 return;
             }
 
-            this.emit('connection:write', this.connectionOptions, line + '\n', context);
+            this.emit('connection:write', this.connectionOptions, line + '\n', {
+                ...context,
+                source: WRITE_SOURCE_FEEDER
+            });
 
             this.connection.write(line + '\n');
             log.silly(`> ${line}`);
@@ -1191,7 +1198,10 @@ class SmoothieController {
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
-        this.emit('connection:write', this.connectionOptions, data, context);
+        this.emit('connection:write', this.connectionOptions, data, {
+            ...context,
+            source: WRITE_SOURCE_CLIENT
+        });
         this.connection.write(data);
         log.silly(`> ${data}`);
     }

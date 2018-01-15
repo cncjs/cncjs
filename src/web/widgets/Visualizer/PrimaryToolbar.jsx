@@ -3,16 +3,14 @@ import classNames from 'classnames';
 import colornames from 'colornames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
 import Detector from 'three/examples/js/Detector';
 import controller from '../../lib/controller';
+import { Button } from '../../components/Buttons';
+import Dropdown, { MenuItem } from '../../components/Dropdown';
 import Interpolate from '../../components/Interpolate';
 import Space from '../../components/Space';
 import i18n from '../../lib/i18n';
 import {
-    // Units
-    IMPERIAL_UNITS,
-    METRIC_UNITS,
     // Controller
     GRBL,
     GRBL_MACHINE_STATE_IDLE,
@@ -51,7 +49,7 @@ import {
     // Workflow
     WORKFLOW_STATE_IDLE
 } from '../../constants';
-import styles from './primary-toolbar.styl';
+import styles from './index.styl';
 
 class PrimaryToolbar extends PureComponent {
     static propTypes = {
@@ -195,63 +193,32 @@ class PrimaryToolbar extends PureComponent {
     }
     render() {
         const { state, actions } = this.props;
-        const { units, wcs, disabled, gcode, projection, objects } = state;
+        const { wcs, disabled, gcode, projection, objects } = state;
         const controllerType = this.renderControllerType();
         const controllerState = this.renderControllerState();
         const canSendCommand = this.canSendCommand();
         const canToggleOptions = Detector.webgl && !disabled;
 
         return (
-            <div>
+            <div className={styles.primaryToolbar}>
                 {controllerType}
                 {controllerState}
-                <div className={styles.dropdownGroup}>
+                <div className="pull-right">
                     <Dropdown
                         style={{ marginRight: 5 }}
-                        bsSize="xs"
-                        id="units-dropdown"
                         disabled={!canSendCommand}
                         pullRight
                     >
                         <Dropdown.Toggle
-                            title={i18n._('Units')}
-                            style={{ minWidth: 50 }}
-                        >
-                            {units === IMPERIAL_UNITS && i18n._('in')}
-                            {units === METRIC_UNITS && i18n._('mm')}
-                        </Dropdown.Toggle>
-                        <Dropdown.Menu>
-                            <MenuItem header>{i18n._('Units')}</MenuItem>
-                            <MenuItem
-                                active={units === IMPERIAL_UNITS}
-                                onSelect={() => {
-                                    controller.command('gcode', 'G20');
-                                }}
-                            >
-                                {i18n._('Inches (G20)')}
-                            </MenuItem>
-                            <MenuItem
-                                active={units === METRIC_UNITS}
-                                onSelect={() => {
-                                    controller.command('gcode', 'G21');
-                                }}
-                            >
-                                {i18n._('Millimeters (G21)')}
-                            </MenuItem>
-                        </Dropdown.Menu>
-                    </Dropdown>
-                    <Dropdown
-                        style={{ marginRight: 5 }}
-                        bsSize="xs"
-                        id="wcs-dropdown"
-                        disabled={!canSendCommand}
-                        pullRight
-                    >
-                        <Dropdown.Toggle
+                            btnSize="sm"
                             title={i18n._('Work Coordinate System')}
-                            style={{ minWidth: 50 }}
                         >
-                            {wcs}
+                            {wcs === 'G54' && `${wcs} (P1)`}
+                            {wcs === 'G55' && `${wcs} (P2)`}
+                            {wcs === 'G56' && `${wcs} (P3)`}
+                            {wcs === 'G57' && `${wcs} (P4)`}
+                            {wcs === 'G58' && `${wcs} (P5)`}
+                            {wcs === 'G59' && `${wcs} (P6)`}
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
                             <MenuItem header>{i18n._('Work Coordinate System')}</MenuItem>
@@ -306,13 +273,11 @@ class PrimaryToolbar extends PureComponent {
                         </Dropdown.Menu>
                     </Dropdown>
                     <Dropdown
-                        bsSize="xs"
-                        id="visualizer-dropdown"
                         pullRight
                     >
-                        <button
-                            type="button"
-                            className="btn btn-default"
+                        <Button
+                            btnSize="sm"
+                            btnStyle="flat"
                             title={(!Detector.webgl || disabled)
                                 ? i18n._('Enable 3D View')
                                 : i18n._('Disable 3D View')
@@ -323,15 +288,9 @@ class PrimaryToolbar extends PureComponent {
                                 ? <i className="fa fa-toggle-off" />
                                 : <i className="fa fa-toggle-on" />
                             }
-                            <Space width="8" />
                             {i18n._('3D View')}
-                        </button>
-                        <Dropdown.Toggle
-                            bsStyle="default"
-                            noCaret
-                        >
-                            <i className="fa fa-caret-down" />
-                        </Dropdown.Toggle>
+                        </Button>
+                        <Dropdown.Toggle btnSize="sm" />
                         <Dropdown.Menu>
                             <MenuItem
                                 style={{ color: '#222' }}

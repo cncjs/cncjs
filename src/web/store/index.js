@@ -145,6 +145,15 @@ const migrateStore = () => {
         store.unset('widgets.webcam.scale');
     }
 
+    // 1.9.13
+    // * Removed "widgets.axes.jog.customDistance"
+    // * Removed "widgets.axes.jog.selectedDistance"
+    if (semver.lt(cnc.version, '1.9.13')) {
+        // Axes widget
+        store.unset('widgets.axes.jog.customDistance');
+        store.unset('widgets.axes.jog.selectedDistance');
+    }
+
     // 2.0.0
     // * Renamed "widgets.connection.port" to "widgets.connection.connection.serial.path"
     // * Renamed "widgets.connection.baudrate" to "widgets.connection.connection.serial.baudRate"

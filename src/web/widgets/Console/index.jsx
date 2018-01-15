@@ -1,18 +1,24 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
+import uuid from 'uuid';
 import settings from '../../config/settings';
 import Space from '../../components/Space';
 import Widget from '../../components/Widget';
+import chalk from '../../lib/chalk';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import Console from './Console';
 import styles from './index.styl';
 
-const appName = settings.name;
+const appName = settings.productName;
 const appVersion = settings.version;
+
+// The buffer starts with 254 bytes free. The terminating <LF> or <CR> counts as a byte.
+const TERMINAL_COLS = 254;
+const TERMINAL_ROWS = 15;
 
 class ConsoleWidget extends PureComponent {
     static propTypes = {
@@ -21,6 +27,8 @@ class ConsoleWidget extends PureComponent {
         onRemove: PropTypes.func.isRequired,
         sortable: PropTypes.object
     };
+
+    senderId = uuid.v4();
 
     // Public methods
     collapse = () => {
@@ -34,32 +42,30 @@ class ConsoleWidget extends PureComponent {
     state = this.getInitialState();
     actions = {
         toggleFullscreen: () => {
-            const { minimized, isFullscreen } = this.state;
             this.setState(state => ({
-                minimized: isFullscreen ? minimized : false,
-                isFullscreen: !isFullscreen
-            }));
-
-            setTimeout(() => {
+                minimized: state.isFullscreen ? state.minimized : false,
+                isFullscreen: !state.isFullscreen,
+                terminal: {
+                    ...state.terminal,
+                    rows: state.isFullscreen ? TERMINAL_ROWS : 'auto'
+                }
+            }), () => {
                 this.resizeTerminal();
-            }, 0);
+            });
         },
         toggleMinimized: () => {
-            const { minimized } = this.state;
             this.setState(state => ({
-                minimized: !minimized
-            }));
-
-            setTimeout(() => {
+                minimized: !state.minimized
+            }), () => {
                 this.resizeTerminal();
-            }, 0);
+            });
         },
         clearAll: () => {
             this.terminal && this.terminal.clear();
         },
         onTerminalData: (data) => {
             const context = {
-                __sender__: this.props.widgetId
+                __sender__: this.senderId
             };
             controller.write(data, context);
         }
@@ -78,15 +84,21 @@ class ConsoleWidget extends PureComponent {
                 return;
             }
 
-            this.terminal.writeln(`${appName} ${appVersion} [${controller.type}]`);
+            this.terminal.writeln(chalk.white.bold(`${appName} ${appVersion} [${controller.type}]`));
 
             const { type, settings } = options;
             if (type === 'serial') {
                 const { path, baudRate } = { ...settings };
-                this.terminal.writeln(i18n._('Connected to {{-path}} with a baud rate of {{baudRate}}', { path, baudRate }));
+                this.terminal.writeln(i18n._('Connected to {{-path}} with a baud rate of {{baudRate}}', {
+                    path: chalk.yellowBright(path),
+                    baudRate: chalk.blueBright(baudRate)
+                }));
             } else if (type === 'socket') {
                 const { host, port } = { ...settings };
-                this.terminal.writeln(i18n._('Connected to {{host}}:{{port}}', { host, port }));
+                this.terminal.writeln(i18n._('Connected to {{host}}:{{port}}', {
+                    host: host,
+                    port: port
+                }));
             }
         },
         'connection:close': (options) => {
@@ -95,7 +107,9 @@ class ConsoleWidget extends PureComponent {
             this.actions.clearAll();
         },
         'connection:write': (options, data, context) => {
-            if (context && (context.__sender__ === this.props.widgetId)) {
+            const { source, __sender__ } = { ...context };
+
+            if (__sender__ === this.senderId) {
                 // Do not write to the terminal console if the sender is the widget itself
                 return;
             }
@@ -104,12 +118,13 @@ class ConsoleWidget extends PureComponent {
                 return;
             }
 
-            data = String(data);
-            if (data.charAt(data.length - 1) !== '\n') {
-                data += '\n';
+            data = String(data).trim();
+
+            if (source) {
+                this.terminal.writeln(chalk.white.dim(source) + chalk.white(this.terminal.prompt + data));
+            } else {
+                this.terminal.writeln(chalk.white(this.terminal.prompt + data));
             }
-            data = data.replace(/\r?\n/g, '\r\n');
-            this.terminal.write(data);
         },
         'connection:read': (options, data) => {
             if (!this.terminal) {
@@ -147,7 +162,8 @@ class ConsoleWidget extends PureComponent {
 
             // Terminal
             terminal: {
-                cols: 128,
+                cols: TERMINAL_COLS,
+                rows: TERMINAL_ROWS,
                 cursorBlink: true,
                 scrollback: 1000,
                 tabStopWidth: 4
@@ -212,7 +228,7 @@ class ConsoleWidget extends PureComponent {
                             title={i18n._('Clear all')}
                             onClick={actions.clearAll}
                         >
-                            <i className="fa fa-eraser" />
+                            <i className="fa fa-trash" />
                         </Widget.Button>
                         <Widget.Button
                             disabled={isFullscreen}
@@ -220,10 +236,22 @@ class ConsoleWidget extends PureComponent {
                             onClick={actions.toggleMinimized}
                         >
                             <i
-                                className={classNames(
+                                className={cx(
                                     'fa',
                                     { 'fa-chevron-up': !minimized },
                                     { 'fa-chevron-down': minimized }
+                                )}
+                            />
+                        </Widget.Button>
+                        <Widget.Button
+                            title={!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                            onClick={actions.toggleFullscreen}
+                        >
+                            <i
+                                className={cx(
+                                    'fa',
+                                    { 'fa-expand': !isFullscreen },
+                                    { 'fa-compress': isFullscreen }
                                 )}
                             />
                         </Widget.Button>
@@ -231,26 +259,36 @@ class ConsoleWidget extends PureComponent {
                             title={i18n._('More')}
                             toggle={<i className="fa fa-ellipsis-v" />}
                             onSelect={(eventKey) => {
-                                if (eventKey === 'fullscreen') {
-                                    actions.toggleFullscreen();
-                                } else if (eventKey === 'fork') {
+                                if (eventKey === 'selectAll') {
+                                    this.terminal.selectAll();
+                                } else if (eventKey === 'clearSelection') {
+                                    this.terminal.clearSelection();
+                                } if (eventKey === 'fork') {
                                     this.props.onFork();
                                 } else if (eventKey === 'remove') {
                                     this.props.onRemove();
                                 }
                             }}
                         >
-                            <Widget.DropdownMenuItem eventKey="fullscreen">
+                            <Widget.DropdownMenuItem eventKey="selectAll">
                                 <i
-                                    className={classNames(
-                                        'fa',
-                                        'fa-fw',
-                                        { 'fa-expand': !isFullscreen },
-                                        { 'fa-compress': isFullscreen }
+                                    className={cx(
+                                        styles.icon,
+                                        styles.selectAll
                                     )}
                                 />
                                 <Space width="4" />
-                                {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
+                                {i18n._('Select All')}
+                            </Widget.DropdownMenuItem>
+                            <Widget.DropdownMenuItem eventKey="clearSelection">
+                                <i
+                                    className={cx(
+                                        styles.icon,
+                                        styles.deselect
+                                    )}
+                                />
+                                <Space width="4" />
+                                {i18n._('Clear Selection')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="fork">
                                 <i className="fa fa-fw fa-code-fork" />
@@ -266,7 +304,7 @@ class ConsoleWidget extends PureComponent {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    className={classNames(
+                    className={cx(
                         styles.widgetContent,
                         { [styles.hidden]: minimized },
                         { [styles.fullscreen]: isFullscreen }

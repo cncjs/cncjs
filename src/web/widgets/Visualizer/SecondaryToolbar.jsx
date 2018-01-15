@@ -1,11 +1,13 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Dropdown, MenuItem } from 'react-bootstrap';
-import RepeatButton from '../../components/RepeatButton';
+import Repeatable from 'react-repeatable';
+import Anchor from '../../components/Anchor';
+import { ButtonToolbar, ButtonGroup } from '../../components/Buttons';
+import Dropdown, { MenuItem } from '../../components/Dropdown';
 import Space from '../../components/Space';
 import i18n from '../../lib/i18n';
-import styles from './secondary-toolbar.styl';
+import styles from './index.styl';
 import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE
@@ -19,66 +21,61 @@ class SecondaryToolbar extends PureComponent {
 
     render() {
         const { state, actions } = this.props;
+        const { cameraMode } = state;
+        const { camera } = actions;
 
         return (
-            <div className="pull-right">
-                <div className="btn-toolbar">
-                    <div className="btn-group btn-group-sm">
-                        <RepeatButton
+            <div className={styles.secondaryToolbar}>
+                <ButtonToolbar className="pull-right">
+                    <ButtonGroup btnSize="sm">
+                        <Repeatable
                             className={styles.btnIcon}
-                            onClick={actions.camera.lookAtCenter}
+                            onClick={camera.lookAtCenter}
+                            onHold={camera.lookAtCenter}
                             title={i18n._('Reset Position')}
                         >
-                            <i className={classNames(styles.icon, styles.iconFocusCenter)} />
-                        </RepeatButton>
-                        <RepeatButton
+                            <i className={cx(styles.icon, styles.iconFocusCenter)} />
+                        </Repeatable>
+                        <Repeatable
                             className={styles.btnIcon}
-                            onClick={actions.camera.zoomIn}
+                            onClick={camera.zoomIn}
+                            onHold={camera.zoomIn}
                             title={i18n._('Zoom In')}
                         >
-                            <i className={classNames(styles.icon, styles.iconZoomIn)} />
-                        </RepeatButton>
-                        <RepeatButton
+                            <i className={cx(styles.icon, styles.iconZoomIn)} />
+                        </Repeatable>
+                        <Repeatable
                             className={styles.btnIcon}
-                            onClick={actions.camera.zoomOut}
+                            onClick={camera.zoomOut}
+                            onHold={camera.zoomOut}
                             title={i18n._('Zoom Out')}
                         >
-                            <i className={classNames(styles.icon, styles.iconZoomOut)} />
-                        </RepeatButton>
-                    </div>
+                            <i className={cx(styles.icon, styles.iconZoomOut)} />
+                        </Repeatable>
+                    </ButtonGroup>
                     <Dropdown
-                        id="camera-mode-dropdown"
+                        componentClass={ButtonGroup}
                         style={{ marginLeft: 0 }}
                         dropup
                         pullRight
                         onSelect={eventKey => {
                             if (eventKey === CAMERA_MODE_PAN) {
-                                actions.camera.toPanMode();
+                                camera.toPanMode();
                             } else if (eventKey === CAMERA_MODE_ROTATE) {
-                                actions.camera.toRotateMode();
+                                camera.toRotateMode();
                             }
                         }}
                     >
                         <Dropdown.Toggle
-                            noCaret
-                            useAnchor
+                            componentClass={Anchor}
                             className={styles.btnIcon}
                         >
                             <i
-                                className={classNames(
-                                    'fa',
-                                    'fa-fw',
-                                    {
-                                        'fa-rotate-right': (state.cameraMode === CAMERA_MODE_ROTATE),
-                                        'fa-arrows': (state.cameraMode === CAMERA_MODE_PAN)
-                                    }
-                                )}
+                                className={cx('fa', 'fa-fw', {
+                                    'fa-rotate-right': (cameraMode === CAMERA_MODE_ROTATE),
+                                    'fa-arrows': (cameraMode === CAMERA_MODE_PAN)
+                                })}
                                 style={{ fontSize: 16, verticalAlign: 'top' }}
-                            />
-                            <Space width="2" />
-                            <i
-                                className="fa fa-caret-up"
-                                style={{ verticalAlign: 'top' }}
                             />
                         </Dropdown.Toggle>
                         <Dropdown.Menu>
@@ -94,7 +91,7 @@ class SecondaryToolbar extends PureComponent {
                             </MenuItem>
                         </Dropdown.Menu>
                     </Dropdown>
-                </div>
+                </ButtonToolbar>
             </div>
         );
     }

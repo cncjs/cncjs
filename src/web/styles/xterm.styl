@@ -2,8 +2,12 @@
 @import url("~xterm/lib/xterm.css");
 // @stylint on
 
-.terminal {
+.xterm.terminal {
     font-family: Consolas, Menlo, Monaco, Lucida Console, Liberation Mono, DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace, serif;
     background-color: #000;
-    color: #FFF;
+    color: #fff;
+
+    > .xterm-viewport {
+        position: relative;
+    }
 }

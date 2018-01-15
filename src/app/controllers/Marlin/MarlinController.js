@@ -19,16 +19,18 @@ import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
 import controllers from '../../store/controllers';
+import {
+    WRITE_SOURCE_CLIENT,
+    WRITE_SOURCE_SERVER,
+    WRITE_SOURCE_FEEDER,
+    WRITE_SOURCE_SENDER
+} from '../constants';
 import Marlin from './Marlin';
 import interpret from './interpret';
 import {
     MARLIN,
     QUERY_TYPE_POSITION,
-    QUERY_TYPE_TEMPERATURE,
-    WRITE_SOURCE_CLIENT,
-    WRITE_SOURCE_FEEDER,
-    WRITE_SOURCE_SENDER,
-    WRITE_SOURCE_QUERY
+    QUERY_TYPE_TEMPERATURE
 } from './constants';
 
 // % commands
@@ -90,9 +92,9 @@ class MarlinController {
     history = {
         // The write source is one of the following:
         // * WRITE_SOURCE_CLIENT
+        // * WRITE_SOURCE_SERVER
         // * WRITE_SOURCE_FEEDER
         // * WRITE_SOURCE_SENDER
-        // * WRITE_SOURCE_QUERY
         writeSource: null,
 
         writeLine: ''
@@ -128,12 +130,12 @@ class MarlinController {
 
             if (this.query.type === QUERY_TYPE_POSITION) {
                 this.connection.write('M114\n', {
-                    source: WRITE_SOURCE_QUERY
+                    source: WRITE_SOURCE_SERVER
                 });
                 this.lastQueryTime = now;
             } else if (this.query.type === QUERY_TYPE_TEMPERATURE) {
                 this.connection.write('M105\n', {
-                    source: WRITE_SOURCE_QUERY
+                    source: WRITE_SOURCE_SERVER
                 });
                 this.lastQueryTime = now;
             } else {
@@ -443,7 +445,10 @@ class MarlinController {
                 return;
             }
 
-            this.emit('connection:write', this.connectionOptions, line + '\n', context);
+            this.emit('connection:write', this.connectionOptions, line + '\n', {
+                ...context,
+                source: WRITE_SOURCE_FEEDER
+            });
 
             this.connection.write(line + '\n', {
                 source: WRITE_SOURCE_FEEDER
@@ -1270,7 +1275,10 @@ class MarlinController {
             return;
         }
 
-        this.emit('connection:write', this.connectionOptions, data, context);
+        this.emit('connection:write', this.connectionOptions, data, {
+            ...context,
+            source: WRITE_SOURCE_CLIENT
+        });
         this.connection.write(data, {
             source: WRITE_SOURCE_CLIENT
         });

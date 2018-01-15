@@ -488,7 +488,7 @@ class Workspace extends PureComponent {
                                 <ButtonToolbar style={{ margin: '5px 0' }}>
                                     <ButtonGroup
                                         style={{ marginLeft: 0, marginRight: 10 }}
-                                        btnSize="xs"
+                                        btnSize="sm"
                                         btnStyle="flat"
                                     >
                                         <Button
@@ -501,7 +501,7 @@ class Workspace extends PureComponent {
                                     </ButtonGroup>
                                     <ButtonGroup
                                         style={{ marginLeft: 0, marginRight: 10 }}
-                                        btnSize="xs"
+                                        btnSize="sm"
                                         btnStyle="flat"
                                     >
                                         <Button
@@ -516,7 +516,7 @@ class Workspace extends PureComponent {
                                     </ButtonGroup>
                                     <ButtonGroup
                                         style={{ marginLeft: 0, marginRight: 0 }}
-                                        btnSize="xs"
+                                        btnSize="sm"
                                         btnStyle="flat"
                                     >
                                         <Button
@@ -559,7 +559,7 @@ class Workspace extends PureComponent {
                                 className={styles.primaryToggler}
                             >
                                 <ButtonGroup
-                                    btnSize="xs"
+                                    btnSize="sm"
                                     btnStyle="flat"
                                 >
                                     <Button
@@ -591,7 +591,7 @@ class Workspace extends PureComponent {
                                 className={styles.secondaryToggler}
                             >
                                 <ButtonGroup
-                                    btnSize="xs"
+                                    btnSize="sm"
                                     btnStyle="flat"
                                 >
                                     <Button
@@ -617,7 +617,7 @@ class Workspace extends PureComponent {
                                     <div className="pull-left">
                                         <ButtonGroup
                                             style={{ marginLeft: 0, marginRight: 10 }}
-                                            btnSize="xs"
+                                            btnSize="sm"
                                             btnStyle="flat"
                                         >
                                             <Button
@@ -643,7 +643,7 @@ class Workspace extends PureComponent {
                                         </ButtonGroup>
                                         <ButtonGroup
                                             style={{ marginLeft: 0, marginRight: 10 }}
-                                            btnSize="xs"
+                                            btnSize="sm"
                                             btnStyle="flat"
                                         >
                                             <Button
@@ -658,7 +658,7 @@ class Workspace extends PureComponent {
                                         </ButtonGroup>
                                         <ButtonGroup
                                             style={{ marginLeft: 0, marginRight: 0 }}
-                                            btnSize="xs"
+                                            btnSize="sm"
                                             btnStyle="flat"
                                         >
                                             <Button

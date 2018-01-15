@@ -1,0 +1,50 @@
+$widget-header-padding-top = 5px;
+$widget-header-padding-bottom = 5px;
+$widget-header-padding-left = 10px;
+$widget-header-padding-right = 10px;
+$widget-header-padding = \
+    $widget-header-padding-top \
+    $widget-header-padding-right \
+    $widget-header-padding-bottom \
+    $widget-header-padding-left;
+$widget-header-height = $widget-header-padding-top + 28px + $widget-header-padding-bottom;
+$widget-footer-padding-top = 5px;
+$widget-footer-padding-bottom = 5px;
+$widget-footer-padding-left = 10px;
+$widget-footer-padding-right = 10px;
+$widget-footer-padding = \
+    $widget-footer-padding-top \
+    $widget-footer-padding-right \
+    $widget-footer-padding-bottom \
+    $widget-footer-padding-left;
+$widget-footer-height = $widget-footer-padding-top + 28px + $widget-footer-padding-bottom;
+
+.widget-header,
+.widget-footer,
+.widget-content {
+    min-width: 320px;
+}
+
+.widget-header {
+    height: $widget-header-height;
+    padding: $widget-header-padding;
+}
+
+.widget-content {
+    position: absolute;
+    top: $widget-header-height;
+    right: 0;
+    bottom: 0;
+    left: 0;
+
+    &.view3D {
+        bottom: 32px;
+    }
+}
+
+.widget-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+}

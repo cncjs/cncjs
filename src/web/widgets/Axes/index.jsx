@@ -12,6 +12,7 @@ import controller from '../../lib/controller';
 import { preventDefault } from '../../lib/dom-events';
 import i18n from '../../lib/i18n';
 import { in2mm, mm2in } from '../../lib/units';
+import { limit } from '../../lib/normalize-range';
 import WidgetConfig from '../WidgetConfig';
 import Axes from './Axes';
 import KeypadOverlay from './KeypadOverlay';
@@ -20,7 +21,9 @@ import ShuttleControl from './ShuttleControl';
 import {
     // Units
     IMPERIAL_UNITS,
+    IMPERIAL_STEPS,
     METRIC_UNITS,
+    METRIC_STEPS,
     // Controller
     GRBL,
     GRBL_MACHINE_STATE_IDLE,
@@ -40,9 +43,6 @@ import {
 import {
     MODAL_NONE,
     MODAL_SETTINGS,
-    DISTANCE_MIN,
-    DISTANCE_MAX,
-    DISTANCE_STEP,
     DEFAULT_AXES
 } from './constants';
 import styles from './index.styl';
@@ -57,28 +57,6 @@ const toFixedUnits = (units, val) => {
     }
 
     return val;
-};
-
-const toUnits = (units, val) => {
-    val = Number(val) || 0;
-    if (units === IMPERIAL_UNITS) {
-        val = mm2in(val).toFixed(4) * 1;
-    }
-    if (units === METRIC_UNITS) {
-        val = val.toFixed(3) * 1;
-    }
-
-    return val;
-};
-
-const normalizeToRange = (n, min, max) => {
-    if (n < min) {
-        return min;
-    }
-    if (n > max) {
-        return max;
-    }
-    return n;
 };
 
 class AxesWidget extends PureComponent {
@@ -140,12 +118,20 @@ class AxesWidget extends PureComponent {
         },
         getJogDistance: () => {
             const { units } = this.state;
-            const selectedDistance = this.config.get('jog.selectedDistance');
-            const customDistance = this.config.get('jog.customDistance');
-            if (selectedDistance) {
-                return Number(selectedDistance) || 0;
+
+            if (units === IMPERIAL_UNITS) {
+                const step = this.config.get('jog.step.imperial');
+                const distance = Number(IMPERIAL_STEPS[step]) || 0;
+                return distance;
             }
-            return toUnits(units, customDistance);
+
+            if (units === METRIC_UNITS) {
+                const step = this.config.get('jog.step.metric');
+                const distance = Number(METRIC_STEPS[step]) || 0;
+                return distance;
+            }
+
+            return 0;
         },
         setWorkOffsets: (axis, value) => {
             const { wcs } = controller.getModalState();
@@ -174,65 +160,89 @@ class AxesWidget extends PureComponent {
             controller.command('gcode', 'G0 ' + s);
         },
         toggleKeypadJogging: () => {
-            this.setState({ keypadJogging: !this.state.keypadJogging });
+            this.setState(state => ({
+                jog: {
+                    ...state.jog,
+                    keypad: !state.jog.keypad
+                }
+            }));
         },
         selectAxis: (axis = '') => {
-            this.setState({ selectedAxis: axis });
+            this.setState(state => ({
+                jog: {
+                    ...state.jog,
+                    axis: axis
+                }
+            }));
         },
-        selectDistance: (distance = '') => {
-            this.setState({ selectedDistance: distance });
+        selectStep: (value = '') => {
+            const step = Number(value);
+            this.setState(state => ({
+                jog: {
+                    ...state.jog,
+                    step: {
+                        ...state.jog.step,
+                        imperial: (state.units === IMPERIAL_UNITS) ? step : state.jog.step.imperial,
+                        metric: (state.units === METRIC_UNITS) ? step : state.jog.step.metric
+                    }
+                }
+            }));
         },
-        changeCustomDistance: (customDistance) => {
-            customDistance = normalizeToRange(customDistance, DISTANCE_MIN, DISTANCE_MAX);
-            this.setState({ customDistance: customDistance });
+        stepForward: () => {
+            this.setState(state => ({
+                jog: {
+                    ...state.jog,
+                    step: {
+                        ...state.jog.step,
+                        imperial: (state.units === IMPERIAL_UNITS)
+                            ? limit(state.jog.step.imperial + 1, 0, IMPERIAL_STEPS.length - 1)
+                            : state.jog.step.imperial,
+                        metric: (state.units === METRIC_UNITS)
+                            ? limit(state.jog.step.metric + 1, 0, METRIC_STEPS.length - 1)
+                            : state.jog.step.metric
+                    }
+                }
+            }));
         },
-        increaseCustomDistance: () => {
-            const { units, customDistance } = this.state;
-            let distance = Math.min(Number(customDistance) + DISTANCE_STEP, DISTANCE_MAX);
-            if (units === IMPERIAL_UNITS) {
-                distance = distance.toFixed(4) * 1;
-            }
-            if (units === METRIC_UNITS) {
-                distance = distance.toFixed(3) * 1;
-            }
-            this.setState({ customDistance: distance });
-        },
-        decreaseCustomDistance: () => {
-            const { units, customDistance } = this.state;
-            let distance = Math.max(Number(customDistance) - DISTANCE_STEP, DISTANCE_MIN);
-            if (units === IMPERIAL_UNITS) {
-                distance = distance.toFixed(4) * 1;
-            }
-            if (units === METRIC_UNITS) {
-                distance = distance.toFixed(3) * 1;
-            }
-            this.setState({ customDistance: distance });
+        stepBackward: () => {
+            this.setState(state => ({
+                jog: {
+                    ...state.jog,
+                    step: {
+                        ...state.jog.step,
+                        imperial: (state.units === IMPERIAL_UNITS)
+                            ? limit(state.jog.step.imperial - 1, 0, IMPERIAL_STEPS.length - 1)
+                            : state.jog.step.imperial,
+                        metric: (state.units === METRIC_UNITS)
+                            ? limit(state.jog.step.metric - 1, 0, METRIC_STEPS.length - 1)
+                            : state.jog.step.metric
+                    }
+                }
+            }));
         }
     };
     shuttleControlEvents = {
         SELECT_AXIS: (event, { axis }) => {
-            const canClick = this.canClick();
-            const { selectedAxis } = this.state;
+            const { canClick, jog } = this.state;
 
             if (!canClick) {
                 return;
             }
 
-            if (selectedAxis === axis) {
+            if (jog.axis === axis) {
                 this.actions.selectAxis(); // deselect axis
             } else {
                 this.actions.selectAxis(axis);
             }
         },
         JOG: (event, { axis = null, direction = 1, factor = 1 }) => {
-            const canClick = this.canClick();
-            const { keypadJogging, selectedAxis } = this.state;
+            const { canClick, jog } = this.state;
 
             if (!canClick) {
                 return;
             }
 
-            if (axis !== null && !keypadJogging) {
+            if (axis !== null && !jog.keypad) {
                 // keypad jogging is disabled
                 return;
             }
@@ -242,16 +252,16 @@ class AxesWidget extends PureComponent {
             // stop the default behavior of a keyboard combination in a browser.
             preventDefault(event);
 
-            axis = axis || selectedAxis;
+            axis = axis || jog.axis;
             const distance = this.actions.getJogDistance();
-            const jog = {
+            const jogAxis = {
                 x: () => this.actions.jog({ X: direction * distance * factor }),
                 y: () => this.actions.jog({ Y: direction * distance * factor }),
                 z: () => this.actions.jog({ Z: direction * distance * factor }),
                 a: () => this.actions.jog({ A: direction * distance * factor })
             }[axis];
 
-            jog && jog();
+            jogAxis && jogAxis();
         },
         JOG_LEVER_SWITCH: (event) => {
             const { selectedDistance } = this.state;
@@ -261,8 +271,7 @@ class AxesWidget extends PureComponent {
             this.actions.selectDistance(distance);
         },
         SHUTTLE: (event, { zone = 0 }) => {
-            const canClick = this.canClick();
-            const { selectedAxis } = this.state;
+            const { canClick, jog } = this.state;
 
             if (!canClick) {
                 return;
@@ -272,13 +281,13 @@ class AxesWidget extends PureComponent {
                 // Clear accumulated result
                 this.shuttleControl.clear();
 
-                if (selectedAxis) {
+                if (jog.axis) {
                     controller.command('gcode', 'G90');
                 }
                 return;
             }
 
-            if (!selectedAxis) {
+            if (!jog.axis) {
                 return;
             }
 
@@ -289,7 +298,7 @@ class AxesWidget extends PureComponent {
             const overshoot = this.config.get('shuttle.overshoot');
 
             this.shuttleControl.accumulate(zone, {
-                axis: selectedAxis,
+                axis: jog.axis,
                 distance: distance,
                 feedrateMin: feedrateMin,
                 feedrateMax: feedrateMax,
@@ -318,9 +327,13 @@ class AxesWidget extends PureComponent {
             // Disable keypad jogging and shuttle wheel when the workflow state is 'running'.
             // This prevents accidental movement while sending G-code commands.
             this.setState(state => ({
-                keypadJogging: canJog ? state.keypadJogging : false,
-                selectedAxis: canJog ? state.selectedAxis : '',
+                jog: {
+                    ...state.jog,
+                    axis: canJog ? state.jog.axis : '',
+                    keypad: canJog ? state.jog.keypad : false
+                },
                 workflow: {
+                    ...state.workflow,
                     state: workflowState
                 }
             }));
@@ -344,14 +357,6 @@ class AxesWidget extends PureComponent {
                 }[modal.units] || this.state.units;
                 const $13 = Number(get(controller.settings, 'settings.$13', 0)) || 0;
 
-                let customDistance = this.config.get('jog.customDistance');
-                if (units === IMPERIAL_UNITS) {
-                    customDistance = mm2in(customDistance).toFixed(4) * 1;
-                }
-                if (units === METRIC_UNITS) {
-                    customDistance = Number(customDistance).toFixed(3) * 1;
-                }
-
                 this.setState(state => ({
                     units: units,
                     controller: {
@@ -372,8 +377,7 @@ class AxesWidget extends PureComponent {
                         ...wpos
                     }, val => {
                         return ($13 > 0) ? in2mm(val) : val;
-                    }),
-                    customDistance: customDistance
+                    })
                 }));
             }
 
@@ -384,14 +388,6 @@ class AxesWidget extends PureComponent {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
                 }[modal.units] || this.state.units;
-
-                let customDistance = this.config.get('jog.customDistance');
-                if (units === IMPERIAL_UNITS) {
-                    customDistance = mm2in(customDistance).toFixed(4) * 1;
-                }
-                if (units === METRIC_UNITS) {
-                    customDistance = Number(customDistance).toFixed(3) * 1;
-                }
 
                 this.setState(state => ({
                     units: units,
@@ -413,8 +409,7 @@ class AxesWidget extends PureComponent {
                         ...pos
                     }, (val) => {
                         return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                    }),
-                    customDistance: customDistance
+                    })
                 }));
             }
 
@@ -425,14 +420,6 @@ class AxesWidget extends PureComponent {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
                 }[modal.units] || this.state.units;
-
-                let customDistance = this.config.get('jog.customDistance');
-                if (units === IMPERIAL_UNITS) {
-                    customDistance = mm2in(customDistance).toFixed(4) * 1;
-                }
-                if (units === METRIC_UNITS) {
-                    customDistance = Number(customDistance).toFixed(3) * 1;
-                }
 
                 this.setState(state => ({
                     units: units,
@@ -454,8 +441,7 @@ class AxesWidget extends PureComponent {
                         ...wpos
                     }, (val) => {
                         return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                    }),
-                    customDistance: customDistance
+                    })
                 }));
             }
 
@@ -466,14 +452,6 @@ class AxesWidget extends PureComponent {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
                 }[modal.units] || this.state.units;
-
-                let customDistance = this.config.get('jog.customDistance');
-                if (units === IMPERIAL_UNITS) {
-                    customDistance = mm2in(customDistance).toFixed(4) * 1;
-                }
-                if (units === METRIC_UNITS) {
-                    customDistance = Number(customDistance).toFixed(3) * 1;
-                }
 
                 this.setState(state => ({
                     units: units,
@@ -494,8 +472,7 @@ class AxesWidget extends PureComponent {
                         ...wpos
                     }, (val) => {
                         return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                    }),
-                    customDistance: customDistance
+                    })
                 }));
             }
         }
@@ -515,22 +492,18 @@ class AxesWidget extends PureComponent {
             units,
             minimized,
             axes,
-            keypadJogging,
-            selectedDistance, // '1', '0.1', '0.01', '0.001', or ''
-            customDistance
+            jog
         } = this.state;
 
         this.config.set('minimized', minimized);
         this.config.set('axes', axes);
-        this.config.set('jog.keypad', keypadJogging);
-        this.config.set('jog.selectedDistance', selectedDistance);
-
-        // The custom distance will not persist while toggling between in and mm
-        if ((prevState.customDistance !== customDistance) && (prevState.units === units)) {
-            const distance = (units === IMPERIAL_UNITS) ? in2mm(customDistance) : customDistance;
-            // Save customDistance in mm
-            this.config.set('jog.customDistance', Number(distance));
+        if (units === IMPERIAL_UNITS) {
+            this.config.set('jog.step.imperial', Number(jog.step.imperial) || 0);
         }
+        if (units === METRIC_UNITS) {
+            this.config.set('jog.step.metric', Number(jog.step.metric) || 0);
+        }
+        this.config.set('jog.keypad', jog.keypad);
     }
     getInitialState() {
         return {
@@ -566,10 +539,14 @@ class AxesWidget extends PureComponent {
                 z: '0.000',
                 a: '0.000'
             },
-            keypadJogging: this.config.get('jog.keypad'),
-            selectedAxis: '', // Defaults to empty
-            selectedDistance: this.config.get('jog.selectedDistance'),
-            customDistance: toUnits(METRIC_UNITS, this.config.get('jog.customDistance'))
+            jog: {
+                axis: '', // Defaults to empty
+                step: {
+                    imperial: this.config.get('jog.step.imperial'),
+                    metric: this.config.get('jog.step.metric')
+                },
+                keypad: this.config.get('jog.keypad')
+            }
         };
     }
     addControllerEvents() {
@@ -688,12 +665,12 @@ class AxesWidget extends PureComponent {
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
                         <KeypadOverlay
-                            show={state.canClick && state.keypadJogging}
+                            show={state.canClick && state.jog.keypad}
                         >
                             <Widget.Button
                                 title={i18n._('Keypad jogging')}
                                 onClick={actions.toggleKeypadJogging}
-                                inverted={state.keypadJogging}
+                                inverted={state.jog.keypad}
                                 disabled={!state.canClick}
                             >
                                 <i className="fa fa-keyboard-o" />

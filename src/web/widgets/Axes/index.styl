@@ -123,9 +123,14 @@
                 color: #666;
             }
 
+            &:disabled:hover {
+                background-color: inherit;
+                > * {
+                    color: #666;
+                }
+            }
             &:hover {
                 background-color: #e6e6e6;
-
                 > * {
                     color: #333;
                 }

@@ -1,6 +1,52 @@
-// Metric and Imperial units
+// Imperial System
 export const IMPERIAL_UNITS = 'in';
+export const IMPERIAL_STEPS = [
+    1 / 2048,
+    1 / 1024,
+    1 / 512,
+    1 / 256,
+    1 / 128,
+    1 / 64,
+    1 / 32,
+    1 / 16,
+    1 / 8, // default (index = 8)
+    1 / 4,
+    3 / 8,
+    1 / 2,
+    5 / 8,
+    3 / 4,
+    7 / 8,
+    1,
+    1 + 1 / 4,
+    1 + 1 / 2,
+    1 + 3 / 4,
+    2
+];
+
+// Metric System
 export const METRIC_UNITS = 'mm';
+export const METRIC_STEPS = [
+    0.001,
+    0.002,
+    0.003,
+    0.005,
+    0.01,
+    0.02,
+    0.03,
+    0.05,
+    0.1,
+    0.2,
+    0.3,
+    0.5,
+    1, // Default
+    2,
+    3,
+    5,
+    10,
+    20,
+    30,
+    50
+];
 
 // Controller
 export const GRBL = 'Grbl';
