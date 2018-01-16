@@ -20,6 +20,9 @@ class ModalWrapper extends PureComponent {
             }
         }
     }
+    componentDidMount() {
+        this.blockScrolling();
+    }
     componentWillUnmount() {
         this.unblockScrolling();
     }
@@ -32,12 +35,11 @@ class ModalWrapper extends PureComponent {
         body.style.overflowY = 'auto';
     }
     render() {
-        const { onOpen, onClose, ...props } = this.props;
+        const { onClose, ...props } = this.props;
 
         return (
             <Modal
                 {...props}
-                onOpen={chainedFunction(this.blockScrolling, onOpen)}
                 onClose={chainedFunction(onClose, this.unblockScrolling)}
             />
         );
