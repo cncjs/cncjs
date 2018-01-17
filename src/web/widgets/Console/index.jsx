@@ -281,12 +281,7 @@ class ConsoleWidget extends PureComponent {
                                 {i18n._('Select All')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="clearSelection">
-                                <i
-                                    className={cx(
-                                        styles.icon,
-                                        styles.deselect
-                                    )}
-                                />
+                                <i className="fa fa-fw fa-window-close-o" />
                                 <Space width="4" />
                                 {i18n._('Clear Selection')}
                             </Widget.DropdownMenuItem>
