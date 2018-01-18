@@ -1,3 +1,4 @@
+import cx from 'classnames';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -5,7 +6,7 @@ import React, { PureComponent } from 'react';
 class PositionInput extends PureComponent {
     static propTypes = {
         defaultValue: PropTypes.string,
-        onOK: PropTypes.func.isRequired,
+        onSave: PropTypes.func.isRequired,
         onCancel: PropTypes.func.isRequired,
         min: PropTypes.number,
         max: PropTypes.number
@@ -15,22 +16,35 @@ class PositionInput extends PureComponent {
         min: -10000,
         max: 10000
     };
+
     state = {
         value: this.props.defaultValue
     };
 
+    node = null;
+
     componentDidMount() {
-        this.positionInput.focus();
+        this.node.focus();
     }
     render() {
-        const { onOK = noop, onCancel = noop, min, max } = this.props;
+        const {
+            onSave = noop,
+            onCancel = noop,
+            min,
+            max,
+            className,
+            style
+        } = this.props;
         const isNumber = (this.state.value !== '');
 
         return (
-            <div className="input-group input-group-xs" style={{ width: '100%' }}>
+            <div
+                className={cx(className, 'input-group', 'input-group-xs')}
+                style={{ ...style, width: '100%' }}
+            >
                 <input
                     ref={node => {
-                        this.positionInput = node;
+                        this.node = node;
                     }}
                     type="number"
                     className="form-control"
@@ -50,7 +64,7 @@ class PositionInput extends PureComponent {
                     }}
                     onKeyDown={(event) => {
                         if (event.keyCode === 13) { // ENTER
-                            onOK(this.state.value);
+                            onSave(this.state.value);
                         }
                         if (event.keyCode === 27) { // ESC
                             onCancel();
@@ -63,10 +77,10 @@ class PositionInput extends PureComponent {
                         className="btn btn-default"
                         disabled={!isNumber}
                         onClick={(event) => {
-                            onOK(this.state.value);
+                            onSave(this.state.value);
                         }}
                     >
-                        <i className="fa fa-check" />
+                        <i className="fa fa-fw fa-check" />
                     </button>
                     <button
                         type="button"
@@ -75,7 +89,7 @@ class PositionInput extends PureComponent {
                             onCancel();
                         }}
                     >
-                        <i className="fa fa-close" />
+                        <i className="fa fa-fw fa-close" />
                     </button>
                 </div>
             </div>

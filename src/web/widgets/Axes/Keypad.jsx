@@ -1,15 +1,17 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import ensureArray from 'ensure-array';
 import frac from 'frac';
 import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Repeatable from 'react-repeatable';
+import styled from 'styled-components';
 import { Button } from '../../components/Buttons';
 import Dropdown, { MenuItem } from '../../components/Dropdown';
 import Space from '../../components/Space';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
+import Fraction from './components/Fraction';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -19,54 +21,21 @@ import {
 } from '../../constants';
 import styles from './index.styl';
 
-const Fraction = (props) => {
-    const { numerator, denominator } = props;
+const KeypadText = styled.span`
+    position: relative;
+    display: inline-block;
+    vertical-align: baseline;
+`;
 
-    return (
-        <span
-            style={{
-                whiteSpace: 'nowrap',
-                display: 'inline-block',
-                verticalAlign: '-0.5em',
-                fontSize: '85%',
-                textAlign: 'center'
-            }}
-        >
-            <span
-                style={{
-                    display: 'block',
-                    lineHeight: '1em',
-                    margin: '0 0.1em'
-                }}
-            >
-                {numerator}
-            </span>
-            <span
-                style={{
-                    position: 'absolute',
-                    left: -10000,
-                    top: 'auto',
-                    width: 1,
-                    height: 1,
-                    overflow: 'hidden'
-                }}
-            >
-                /
-            </span>
-            <span
-                style={{
-                    borderTop: '1px solid',
-                    display: 'block',
-                    lineHeight: '1em',
-                    margin: '0 0.1em',
-                    minWidth: 16
-                }}
-            >
-                {denominator}
-            </span>
-        </span>
-    );
-};
+const KeypadDirectionText = styled(KeypadText)`
+    min-width: 10px;
+`;
+
+const KeypadSubscriptText = styled(KeypadText)`
+    min-width: 10px;
+    font-size: 80%;
+    line-height: 0;
+`;
 
 class Keypad extends PureComponent {
     static propTypes = {
@@ -187,7 +156,7 @@ class Keypad extends PureComponent {
                                             disabled={!canClickXY}
                                             title={i18n._('Move X- Y+')}
                                         >
-                                            <i className={classNames('fa', 'fa-arrow-circle-up', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
+                                            <i className={cx('fa', 'fa-arrow-circle-up', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
                                         </Button>
                                     </div>
                                 </div>
@@ -196,7 +165,7 @@ class Keypad extends PureComponent {
                                         <Button
                                             btnStyle="flat"
                                             compact
-                                            className={classNames(
+                                            className={cx(
                                                 styles.btnKeypad,
                                                 { [styles.highlight]: highlightY }
                                             )}
@@ -207,10 +176,8 @@ class Keypad extends PureComponent {
                                             disabled={!canClickY}
                                             title={i18n._('Move Y+')}
                                         >
-                                            <span className={styles.keypadText}>Y</span>
-                                            <span className={styles.keypadSubscript}>
-                                                <i className="fa fa-fw fa-plus" />
-                                            </span>
+                                            <KeypadText>Y</KeypadText>
+                                            <KeypadDirectionText>+</KeypadDirectionText>
                                         </Button>
                                     </div>
                                 </div>
@@ -227,7 +194,7 @@ class Keypad extends PureComponent {
                                             disabled={!canClickXY}
                                             title={i18n._('Move X+ Y+')}
                                         >
-                                            <i className={classNames('fa', 'fa-arrow-circle-up', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
+                                            <i className={cx('fa', 'fa-arrow-circle-up', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
                                         </Button>
                                     </div>
                                 </div>
@@ -236,7 +203,7 @@ class Keypad extends PureComponent {
                                         <Button
                                             btnStyle="flat"
                                             compact
-                                            className={classNames(
+                                            className={cx(
                                                 styles.btnKeypad,
                                                 { [styles.highlight]: highlightZ }
                                             )}
@@ -247,10 +214,8 @@ class Keypad extends PureComponent {
                                             disabled={!canClickZ}
                                             title={i18n._('Move Z+')}
                                         >
-                                            <span className={styles.keypadText}>Z</span>
-                                            <span className={styles.keypadSubscript}>
-                                                <i className="fa fa-fw fa-plus" />
-                                            </span>
+                                            <KeypadText>Z</KeypadText>
+                                            <KeypadDirectionText>+</KeypadDirectionText>
                                         </Button>
                                     </div>
                                 </div>
@@ -263,7 +228,7 @@ class Keypad extends PureComponent {
                                         <Button
                                             btnStyle="flat"
                                             compact
-                                            className={classNames(
+                                            className={cx(
                                                 styles.btnKeypad,
                                                 { [styles.highlight]: highlightX }
                                             )}
@@ -274,10 +239,8 @@ class Keypad extends PureComponent {
                                             disabled={!canClickX}
                                             title={i18n._('Move X-')}
                                         >
-                                            <span className={styles.keypadText}>X</span>
-                                            <span className={styles.keypadSubscript}>
-                                                <i className="fa fa-fw fa-minus" />
-                                            </span>
+                                            <KeypadText>X</KeypadText>
+                                            <KeypadDirectionText>-</KeypadDirectionText>
                                         </Button>
                                     </div>
                                 </div>
@@ -291,7 +254,10 @@ class Keypad extends PureComponent {
                                             disabled={!canClickXY}
                                             title={i18n._('Move To XY Zero (G0 X0 Y0)')}
                                         >
-                                            <span className={styles.keypadText}>X/Y</span>
+                                            <KeypadText>X</KeypadText>
+                                            <KeypadSubscriptText>0</KeypadSubscriptText>
+                                            <KeypadText>Y</KeypadText>
+                                            <KeypadSubscriptText>0</KeypadSubscriptText>
                                         </Button>
                                     </div>
                                 </div>
@@ -300,7 +266,7 @@ class Keypad extends PureComponent {
                                         <Button
                                             btnStyle="flat"
                                             compact
-                                            className={classNames(
+                                            className={cx(
                                                 styles.btnKeypad,
                                                 { [styles.highlight]: highlightX }
                                             )}
@@ -311,8 +277,8 @@ class Keypad extends PureComponent {
                                             disabled={!canClickX}
                                             title={i18n._('Move X+')}
                                         >
-                                            <span className={styles.keypadText}>X</span>
-                                            <span className={styles.keypadSubscript}>+</span>
+                                            <KeypadText>X</KeypadText>
+                                            <KeypadDirectionText>+</KeypadDirectionText>
                                         </Button>
                                     </div>
                                 </div>
@@ -326,10 +292,8 @@ class Keypad extends PureComponent {
                                             disabled={!canClickZ}
                                             title={i18n._('Move To Z Zero (G0 Z0)')}
                                         >
-                                            <span className={styles.keypadText}>Z</span>
-                                            <span className={styles.keypadSubscript}>
-                                                <i className="fa fa-fw fa-circle-o" style={{ transform: 'scaleX(.7)' }} />
-                                            </span>
+                                            <KeypadText>Z</KeypadText>
+                                            <KeypadSubscriptText>0</KeypadSubscriptText>
                                         </Button>
                                     </div>
                                 </div>
@@ -350,7 +314,7 @@ class Keypad extends PureComponent {
                                             disabled={!canClickXY}
                                             title={i18n._('Move X- Y-')}
                                         >
-                                            <i className={classNames('fa', 'fa-arrow-circle-down', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
+                                            <i className={cx('fa', 'fa-arrow-circle-down', styles['rotate-45deg'])} style={{ fontSize: 16 }} />
                                         </Button>
                                     </div>
                                 </div>
@@ -359,7 +323,7 @@ class Keypad extends PureComponent {
                                         <Button
                                             btnStyle="flat"
                                             compact
-                                            className={classNames(
+                                            className={cx(
                                                 styles.btnKeypad,
                                                 { [styles.highlight]: highlightY }
                                             )}
@@ -370,10 +334,8 @@ class Keypad extends PureComponent {
                                             disabled={!canClickY}
                                             title={i18n._('Move Y-')}
                                         >
-                                            <span className={styles.keypadText}>Y</span>
-                                            <span className={styles.keypadSubscript}>
-                                                <i className="fa fa-fw fa-minus" />
-                                            </span>
+                                            <KeypadText>Y</KeypadText>
+                                            <KeypadDirectionText>-</KeypadDirectionText>
                                         </Button>
                                     </div>
                                 </div>
@@ -390,7 +352,7 @@ class Keypad extends PureComponent {
                                             disabled={!canClickXY}
                                             title={i18n._('Move X+ Y-')}
                                         >
-                                            <i className={classNames('fa', 'fa-arrow-circle-down', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
+                                            <i className={cx('fa', 'fa-arrow-circle-down', styles['rotate--45deg'])} style={{ fontSize: 16 }} />
                                         </Button>
                                     </div>
                                 </div>
@@ -399,7 +361,7 @@ class Keypad extends PureComponent {
                                         <Button
                                             btnStyle="flat"
                                             compact
-                                            className={classNames(
+                                            className={cx(
                                                 styles.btnKeypad,
                                                 { [styles.highlight]: highlightZ }
                                             )}
@@ -410,10 +372,8 @@ class Keypad extends PureComponent {
                                             disabled={!canClickZ}
                                             title={i18n._('Move Z-')}
                                         >
-                                            <span className={styles.keypadText}>Z</span>
-                                            <span className={styles.keypadSubscript}>
-                                                <i className="fa fa-fw fa-minus" />
-                                            </span>
+                                            <KeypadText>Z</KeypadText>
+                                            <KeypadDirectionText>-</KeypadDirectionText>
                                         </Button>
                                     </div>
                                 </div>

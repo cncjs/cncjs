@@ -1,5 +1,5 @@
-import _ from 'lodash';
 import classNames from 'classnames';
+import mapValues from 'lodash/mapValues';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -7,7 +7,7 @@ import Space from '../../components/Space';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import { mm2in } from '../../lib/units';
+import { mapPositionToUnits } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
 import GCode from './GCode';
 import {
@@ -21,18 +21,6 @@ import {
     TINYG
 } from '../../constants';
 import styles from './index.styl';
-
-const toFixedUnits = (units, val) => {
-    val = Number(val) || 0;
-    if (units === IMPERIAL_UNITS) {
-        val = mm2in(val).toFixed(4);
-    }
-    if (units === METRIC_UNITS) {
-        val = val.toFixed(3);
-    }
-
-    return val;
-};
 
 class GCodeWidget extends PureComponent {
     static propTypes = {
@@ -261,9 +249,10 @@ class GCodeWidget extends PureComponent {
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
             ...this.state,
-            bbox: _.mapValues(bbox, (position) => {
-                position = _.mapValues(position, (val, axis) => toFixedUnits(units, val));
-                return position;
+            bbox: mapValues(bbox, (position) => {
+                return mapValues(position, (pos, axis) => {
+                    return mapPositionToUnits(pos, units);
+                });
             })
         };
         const actions = {

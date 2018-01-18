@@ -7,7 +7,7 @@ import Space from '../../components/Space';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
-import { in2mm, mm2in } from '../../lib/units';
+import { in2mm, mapValueToUnits } from '../../lib/units';
 import WidgetConfig from '../WidgetConfig';
 import Probe from './Probe';
 import ZProbe from './ZProbe';
@@ -33,18 +33,6 @@ import {
     MODAL_PREVIEW
 } from './constants';
 import styles from './index.styl';
-
-const toUnits = (units, val) => {
-    val = Number(val) || 0;
-    if (units === IMPERIAL_UNITS) {
-        val = mm2in(val).toFixed(4) * 1;
-    }
-    if (units === METRIC_UNITS) {
-        val = val.toFixed(3) * 1;
-    }
-
-    return val;
-};
 
 const gcode = (cmd, params) => {
     const s = map(params, (value, letter) => String(letter + value)).join(' ');
@@ -241,140 +229,60 @@ class ProbeWidget extends PureComponent {
             }));
         },
         'controller:state': (type, state) => {
+            let units = this.state.units;
+
             // Grbl
             if (type === GRBL) {
                 const { modal = {} } = { ...state };
-                const units = {
+                units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
+                }[modal.units] || units;
+            }
 
-                let {
-                    probeDepth,
-                    probeFeedrate,
-                    touchPlateHeight,
-                    retractionDistance
-                } = this.config.get();
-                if (units === IMPERIAL_UNITS) {
-                    probeDepth = mm2in(probeDepth).toFixed(4) * 1;
-                    probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                    touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
-                    retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
-                }
-                if (units === METRIC_UNITS) {
-                    probeDepth = Number(probeDepth).toFixed(3) * 1;
-                    probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                    touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
-                    retractionDistance = Number(retractionDistance).toFixed(3) * 1;
-                }
-
-                if (this.state.units !== units) {
-                    // Set `this.unitsDidChange` to true if the unit has changed
-                    this.unitsDidChange = true;
-                }
-
-                this.setState({
-                    units: units,
-                    controller: {
-                        type: type,
-                        state: state
-                    },
-                    probeDepth: probeDepth,
-                    probeFeedrate: probeFeedrate,
-                    touchPlateHeight: touchPlateHeight,
-                    retractionDistance: retractionDistance
-                });
+            // Marlin
+            if (type === MARLIN) {
+                const { modal = {} } = { ...state };
+                units = {
+                    'G20': IMPERIAL_UNITS,
+                    'G21': METRIC_UNITS
+                }[modal.units] || units;
             }
 
             // Smoothie
             if (type === SMOOTHIE) {
                 const { modal = {} } = { ...state };
-                const units = {
+                units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                let {
-                    probeDepth,
-                    probeFeedrate,
-                    touchPlateHeight,
-                    retractionDistance
-                } = this.config.get();
-                if (units === IMPERIAL_UNITS) {
-                    probeDepth = mm2in(probeDepth).toFixed(4) * 1;
-                    probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                    touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
-                    retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
-                }
-                if (units === METRIC_UNITS) {
-                    probeDepth = Number(probeDepth).toFixed(3) * 1;
-                    probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                    touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
-                    retractionDistance = Number(retractionDistance).toFixed(3) * 1;
-                }
-
-                if (this.state.units !== units) {
-                    // Set `this.unitsDidChange` to true if the unit has changed
-                    this.unitsDidChange = true;
-                }
-
-                this.setState({
-                    units: units,
-                    controller: {
-                        type: type,
-                        state: state
-                    },
-                    probeDepth: probeDepth,
-                    probeFeedrate: probeFeedrate,
-                    touchPlateHeight: touchPlateHeight,
-                    retractionDistance: retractionDistance
-                });
+                }[modal.units] || units;
             }
 
             // TinyG
             if (type === TINYG) {
                 const { modal = {} } = { ...state };
-                const units = {
+                units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
-                }[modal.units] || this.state.units;
-
-                let {
-                    probeDepth,
-                    probeFeedrate,
-                    touchPlateHeight,
-                    retractionDistance
-                } = this.config.get();
-                if (units === IMPERIAL_UNITS) {
-                    probeDepth = mm2in(probeDepth).toFixed(4) * 1;
-                    probeFeedrate = mm2in(probeFeedrate).toFixed(4) * 1;
-                    touchPlateHeight = mm2in(touchPlateHeight).toFixed(4) * 1;
-                    retractionDistance = mm2in(retractionDistance).toFixed(4) * 1;
-                }
-                if (units === METRIC_UNITS) {
-                    probeDepth = Number(probeDepth).toFixed(3) * 1;
-                    probeFeedrate = Number(probeFeedrate).toFixed(3) * 1;
-                    touchPlateHeight = Number(touchPlateHeight).toFixed(3) * 1;
-                    retractionDistance = Number(retractionDistance).toFixed(3) * 1;
-                }
-
-                if (this.state.units !== units) {
-                    // Set `this.unitsDidChange` to true if the unit has changed
-                    this.unitsDidChange = true;
-                }
-
-                this.setState({
-                    units: units,
-                    controller: {
-                        type: type,
-                        state: state
-                    },
-                    probeDepth: probeDepth,
-                    probeFeedrate: probeFeedrate,
-                    touchPlateHeight: touchPlateHeight,
-                    retractionDistance: retractionDistance
-                });
+                }[modal.units] || units;
             }
+
+            if (this.state.units !== units) {
+                // Set `this.unitsDidChange` to true if the unit has changed
+                this.unitsDidChange = true;
+            }
+
+            this.setState({
+                units: units,
+                controller: {
+                    type: type,
+                    state: state
+                },
+                probeDepth: mapValueToUnits(this.config.get('probeDepth'), units),
+                probeFeedrate: mapValueToUnits(this.config.get('probeFeedrate'), units),
+                touchPlateHeight: mapValueToUnits(this.config.get('touchPlateHeight'), units),
+                retractionDistance: mapValueToUnits(this.config.get('retractionDistance'), units)
+            });
         }
     };
     unitsDidChange = false;
@@ -443,14 +351,10 @@ class ProbeWidget extends PureComponent {
             },
             probeCommand: this.config.get('probeCommand', 'G38.2'),
             useTLO: this.config.get('useTLO'),
-            probeDepth: toUnits(METRIC_UNITS, this.config.get('probeDepth')),
-            probeFeedrate: toUnits(METRIC_UNITS, this.config.get('probeFeedrate')),
-            touchPlateHeight: toUnits(
-                METRIC_UNITS,
-                // widgets.probe.tlo is deprecated and will be removed in a future release`
-                this.config.get('touchPlateHeight', this.config.get('tlo'))
-            ),
-            retractionDistance: toUnits(METRIC_UNITS, this.config.get('retractionDistance'))
+            probeDepth: Number(this.config.get('probeDepth') || 0).toFixed(3) * 1,
+            probeFeedrate: Number(this.config.get('probeFeedrate') || 0).toFixed(3) * 1,
+            touchPlateHeight: Number(this.config.get('touchPlateHeight') || 0).toFixed(3) * 1,
+            retractionDistance: Number(this.config.get('retractionDistance') || 0).toFixed(3) * 1
         };
     }
     addControllerEvents() {
