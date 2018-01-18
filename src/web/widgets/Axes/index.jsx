@@ -11,7 +11,7 @@ import combokeys from '../../lib/combokeys';
 import controller from '../../lib/controller';
 import { preventDefault } from '../../lib/dom-events';
 import i18n from '../../lib/i18n';
-import { in2mm, mm2in } from '../../lib/units';
+import { in2mm, mapPositionToUnits } from '../../lib/units';
 import { limit } from '../../lib/normalize-range';
 import WidgetConfig from '../WidgetConfig';
 import Axes from './Axes';
@@ -49,18 +49,6 @@ import {
     DEFAULT_AXES
 } from './constants';
 import styles from './index.styl';
-
-const toFixedUnits = (units, val) => {
-    val = Number(val) || 0;
-    if (units === IMPERIAL_UNITS) {
-        val = mm2in(val).toFixed(4);
-    }
-    if (units === METRIC_UNITS) {
-        val = val.toFixed(3);
-    }
-
-    return val;
-};
 
 class AxesWidget extends PureComponent {
     static propTypes = {
@@ -675,11 +663,11 @@ class AxesWidget extends PureComponent {
             canClick: this.canClick(),
             // Output machine position with the display units
             machinePosition: mapValues(machinePosition, (pos, axis) => {
-                return String(toFixedUnits(units, pos));
+                return String(mapPositionToUnits(pos, units));
             }),
             // Output work position with the display units
             workPosition: mapValues(workPosition, (pos, axis) => {
-                return String(toFixedUnits(units, pos));
+                return String(mapPositionToUnits(pos, units));
             })
         };
         const actions = {

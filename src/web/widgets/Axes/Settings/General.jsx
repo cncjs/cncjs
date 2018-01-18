@@ -22,6 +22,8 @@ class General extends PureComponent {
         axisY: null,
         axisZ: null,
         axisA: null,
+        axisB: null,
+        axisC: null,
         wzero: null,
         mzero: null
     };
@@ -37,6 +39,8 @@ class General extends PureComponent {
         this.fields.axisY.checked && axes.push('y');
         this.fields.axisZ.checked && axes.push('z');
         this.fields.axisA.checked && axes.push('a');
+        this.fields.axisA.checked && axes.push('b');
+        this.fields.axisA.checked && axes.push('c');
 
         return {
             axes: axes,
@@ -52,7 +56,7 @@ class General extends PureComponent {
                 <div className="form-group">
                     <label><strong>{i18n._('Axes')}</strong></label>
                     <div className="row no-gutters">
-                        <div className="col-xs-3">
+                        <div className="col-xs-2">
                             <label>
                                 <input
                                     ref={node => {
@@ -66,7 +70,7 @@ class General extends PureComponent {
                                 {i18n._('X-axis')}
                             </label>
                         </div>
-                        <div className="col-xs-3">
+                        <div className="col-xs-2">
                             <label>
                                 <input
                                     ref={node => {
@@ -79,7 +83,7 @@ class General extends PureComponent {
                                 {i18n._('Y-axis')}
                             </label>
                         </div>
-                        <div className="col-xs-3">
+                        <div className="col-xs-2">
                             <label>
                                 <input
                                     ref={node => {
@@ -92,7 +96,7 @@ class General extends PureComponent {
                                 {i18n._('Z-axis')}
                             </label>
                         </div>
-                        <div className="col-xs-3">
+                        <div className="col-xs-2">
                             <label>
                                 <input
                                     ref={node => {
@@ -103,6 +107,32 @@ class General extends PureComponent {
                                 />
                                 <Space width="8" />
                                 {i18n._('A-axis')}
+                            </label>
+                        </div>
+                        <div className="col-xs-2">
+                            <label>
+                                <input
+                                    ref={node => {
+                                        this.fields.axisB = node;
+                                    }}
+                                    type="checkbox"
+                                    defaultChecked={includes(axes, 'b')}
+                                />
+                                <Space width="8" />
+                                {i18n._('B-axis')}
+                            </label>
+                        </div>
+                        <div className="col-xs-2">
+                            <label>
+                                <input
+                                    ref={node => {
+                                        this.fields.axisC = node;
+                                    }}
+                                    type="checkbox"
+                                    defaultChecked={includes(axes, 'c')}
+                                />
+                                <Space width="8" />
+                                {i18n._('C-axis')}
                             </label>
                         </div>
                     </div>

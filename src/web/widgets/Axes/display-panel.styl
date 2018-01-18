@@ -1,0 +1,50 @@
+.display-panel {
+    margin-bottom: 10px;
+
+    .coordinate {
+        position: relative;
+        padding: 5px 0;
+        text-align: center;
+        width: 1%;
+
+        .axis {
+            font-size: 24px;
+        }
+    }
+
+    .machine-position,
+    .work-position {
+        position: relative;
+        white-space: nowrap;
+        padding: 0;
+        width: 48%;
+    }
+
+    .action {
+        width: 1%;
+        padding: 0;
+        text-align: center;
+
+        button.action-dropdown {
+            min-width: auto;
+            border-radius: 0;
+
+            > * {
+                color: #666;
+            }
+
+            &:disabled:hover {
+                background-color: inherit;
+                > * {
+                    color: #666;
+                }
+            }
+            &:hover {
+                background-color: #e6e6e6;
+                > * {
+                    color: #333;
+                }
+            }
+        }
+    }
+}
