@@ -17,7 +17,7 @@
     "bcrypt-nodejs": "0.0.3",
     "body-parser": "~1.18.2",
     "chalk": "~2.3.0",
-    "commander": "~2.12.2",
+    "commander": "~2.13.0",
     "compression": "~1.7.1",
     "connect-multiparty": "~2.1.0",
     "connect-restreamer": "~1.0.3",
@@ -60,7 +60,7 @@
     "spawn-default-shell": "~2.0.0",
     "static-eval": "~2.0.0",
     "superagent": "~3.8.2",
-    "uuid": "~3.1.0",
+    "uuid": "~3.2.1",
     "watch": "~1.0.2",
     "webappengine": "~1.2.0",
     "winston": "~2.4.0"
