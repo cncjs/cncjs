@@ -1,20 +1,19 @@
 process.env.NODE_ENV = 'production';
 
 /* eslint prefer-arrow-callback: 0 */
-const without = require('lodash/without');
 const crypto = require('crypto');
 const path = require('path');
-const findImports = require('find-imports');
-const webpack = require('webpack');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
-//const WebpackMd5HashPlugin = require('webpack-md5-hash');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const findImports = require('find-imports');
 const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
+const without = require('lodash/without');
 const nib = require('nib');
 const stylusLoader = require('stylus-loader');
+const ManifestPlugin = require('webpack-manifest-plugin');
+const webpack = require('webpack');
 const baseConfig = require('./webpack.webconfig.base');
 const buildConfig = require('./build.config');
 const pkg = require('./package.json');
