@@ -1,13 +1,12 @@
-//import includes from 'lodash/includes';
-import trimEnd from 'lodash/trimEnd';
 import classNames from 'classnames';
+import color from 'cli-color';
+import trimEnd from 'lodash/trimEnd';
 import PerfectScrollbar from 'perfect-scrollbar';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
-import chalk from '../../lib/chalk';
 import log from '../../lib/log';
 import History from './History';
 import styles from './index.styl';
@@ -146,7 +145,7 @@ class TerminalWrapper extends PureComponent {
                 if (event.key === 'Escape') {
                     term.eraseLine(term.buffer.y);
                     term.buffer.x = 0;
-                    term.write(chalk.white(this.prompt));
+                    term.write(color.white(this.prompt));
                     return;
                 }
 
@@ -184,8 +183,8 @@ class TerminalWrapper extends PureComponent {
                     }
                     term.eraseLine(term.buffer.y);
                     term.buffer.x = 0;
-                    term.write(chalk.white(this.prompt));
-                    term.write(chalk.white(historyCommand));
+                    term.write(color.white(this.prompt));
+                    term.write(color.white(historyCommand));
                     return;
                 }
 
@@ -194,8 +193,8 @@ class TerminalWrapper extends PureComponent {
                     historyCommand = this.history.forward() || '';
                     term.eraseLine(term.buffer.y);
                     term.buffer.x = 0;
-                    term.write(chalk.white(this.prompt));
-                    term.write(chalk.white(historyCommand));
+                    term.write(color.white(this.prompt));
+                    term.write(color.white(historyCommand));
                     return;
                 }
 
@@ -223,7 +222,7 @@ class TerminalWrapper extends PureComponent {
                     for (; x > term.buffer.x; --x) {
                         line[x] = line[x - 1];
                     }
-                    term.write(chalk.white(key));
+                    term.write(color.white(key));
                 }
             };
         })(),
@@ -233,7 +232,7 @@ class TerminalWrapper extends PureComponent {
             for (let i = 0; i < lines.length; ++i) {
                 const line = lines[i];
                 onData(line);
-                this.term.write(chalk.white(line));
+                this.term.write(color.white(line));
                 this.term.prompt();
             }
         }
@@ -248,7 +247,7 @@ class TerminalWrapper extends PureComponent {
         });
         this.term.prompt = () => {
             this.term.write('\r\n');
-            this.term.write(chalk.white(this.prompt));
+            this.term.write(color.white(this.prompt));
         };
         this.term.on('resize', this.eventHandler.onResize);
         this.term.on('key', this.eventHandler.onKey);
