@@ -1,4 +1,5 @@
 import cx from 'classnames';
+import color from 'cli-color';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
@@ -6,7 +7,6 @@ import uuid from 'uuid';
 import settings from '../../config/settings';
 import Space from '../../components/Space';
 import Widget from '../../components/Widget';
-import chalk from '../../lib/chalk';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import WidgetConfig from '../WidgetConfig';
@@ -84,21 +84,21 @@ class ConsoleWidget extends PureComponent {
                 return;
             }
 
-            this.terminal.writeln(chalk.white.bold(`${appName} ${appVersion} [${controller.type}]`));
+            this.terminal.writeln(color.white.bold(`${appName} ${appVersion} [${controller.type}]`));
 
             const { type, settings } = options;
             if (type === 'serial') {
                 const { path, baudRate } = { ...settings };
-                this.terminal.writeln(i18n._('Connected to {{-path}} with a baud rate of {{baudRate}}', {
-                    path: chalk.yellowBright(path),
-                    baudRate: chalk.blueBright(baudRate)
-                }));
+                this.terminal.writeln(color.white(i18n._('Connected to {{-path}} with a baud rate of {{baudRate}}', {
+                    path: color.yellowBright(path),
+                    baudRate: color.blueBright(baudRate)
+                })));
             } else if (type === 'socket') {
                 const { host, port } = { ...settings };
-                this.terminal.writeln(i18n._('Connected to {{host}}:{{port}}', {
+                this.terminal.writeln(color.white(i18n._('Connected to {{host}}:{{port}}', {
                     host: host,
                     port: port
-                }));
+                })));
             }
         },
         'connection:close': (options) => {
@@ -121,9 +121,9 @@ class ConsoleWidget extends PureComponent {
             data = String(data).trim();
 
             if (source) {
-                this.terminal.writeln(chalk.white.dim(source) + chalk.white(this.terminal.prompt + data));
+                this.terminal.writeln(color.blackBright(source) + color.white(this.terminal.prompt + data));
             } else {
-                this.terminal.writeln(chalk.white(this.terminal.prompt + data));
+                this.terminal.writeln(color.white(this.terminal.prompt + data));
             }
         },
         'connection:read': (options, data) => {
