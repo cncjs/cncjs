@@ -1,44 +1,44 @@
 {
     "TinyG": {
         "machineState": {
-            "initializing": "",
-            "ready": "",
-            "alarm": "",
-            "stop": "",
+            "initializing": "初始化",
+            "ready": "准备",
+            "alarm": "报警",
+            "stop": "停止",
             "end": "",
-            "run": "",
-            "hold": "",
+            "run": "运行",
+            "hold": "保持",
             "probe": "",
-            "cycle": "",
+            "cycle": "循环",
             "homing": "",
             "jog": "",
             "interlock": "",
-            "shutdown": "",
+            "shutdown": "关闭",
             "panic": ""
         }
     },
     "Grbl": {
         "activeState": {
             "idle": "",
-            "run": "",
-            "hold": "",
+            "run": "运行",
+            "hold": "保持",
             "door": "",
             "home": "",
-            "sleep": "",
-            "alarm": "",
-            "check": ""
+            "sleep": "休眠",
+            "alarm": "报警",
+            "check": "检查"
         }
     },
     "Smoothie": {
         "activeState": {
             "idle": "",
-            "run": "",
-            "hold": "",
+            "run": "运行",
+            "hold": "保持",
             "door": "",
             "home": "",
-            "sleep": "",
-            "alarm": "",
-            "check": ""
+            "sleep": "休眠",
+            "alarm": "报警",
+            "check": "检查"
         }
     }
 }
