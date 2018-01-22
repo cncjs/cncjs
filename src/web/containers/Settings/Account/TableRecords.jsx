@@ -107,7 +107,7 @@ class TableRecords extends PureComponent {
                         }
                     },
                     {
-                        title: i18n._('Name'),
+                        title: i18n._('Username'),
                         key: 'name',
                         render: (value, row, index) => {
                             const { name } = row;
