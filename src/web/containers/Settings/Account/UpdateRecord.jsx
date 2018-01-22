@@ -88,7 +88,7 @@ class UpdateRecord extends PureComponent {
                                 </div>
                             </div>
                             <div className={styles.formGroup}>
-                                <label>{i18n._('Name')}</label>
+                                <label>{i18n._('Username')}</label>
                                 <Input
                                     ref={node => {
                                         this.fields.name = node;
