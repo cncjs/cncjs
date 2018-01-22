@@ -435,7 +435,7 @@
     "Apply tool length offset": "",
     "Run Z-Probe": "执行Z轴探测",
     "Spindle Speed": "主轴转速",
-    "RPM": "",
+    "RPM": "转/分钟",
     "Queue Flush (%)": "清除工作队列 (%)",
     "Kill Job (^d)": "终止工作 (^d)",
     "Clear Alarm ($clear)": "清除报警 ($clear)",
