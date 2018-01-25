@@ -95,16 +95,6 @@ class MacroWidget extends PureComponent {
                 }
             });
         },
-        fetchMacros: async () => {
-            try {
-                let res;
-                res = await api.macros.fetch({ paging: false });
-                const { records: macros } = res.body;
-                this.setState({ macros: macros });
-            } catch (err) {
-                // Ignore error
-            }
-        },
         addMacro: async ({ name, content }) => {
             try {
                 let res;
@@ -182,6 +172,9 @@ class MacroWidget extends PureComponent {
         }
     };
     controllerEvents = {
+        'config:change': () => {
+            this.fetchMacros();
+        },
         'connection:open': (options) => {
             const { ident } = options;
             this.setState(state => ({
@@ -195,7 +188,7 @@ class MacroWidget extends PureComponent {
             const initialState = this.getInitialState();
             this.setState(state => ({
                 ...initialState,
-                macros: state.macros
+                macros: [...state.macros]
             }));
         },
         'controller:state': (type, controllerState) => {
@@ -216,11 +209,20 @@ class MacroWidget extends PureComponent {
         }
     };
 
-    componentDidMount() {
-        this.addControllerEvents();
+    fetchMacros = async () => {
+        try {
+            let res;
+            res = await api.macros.fetch({ paging: false });
+            const { records: macros } = res.body;
+            this.setState({ macros: macros });
+        } catch (err) {
+            // Ignore error
+        }
+    };
 
-        // Fetch the list of macros
-        this.actions.fetchMacros();
+    componentDidMount() {
+        this.fetchMacros();
+        this.addControllerEvents();
     }
     componentWillUnmount() {
         this.removeControllerEvents();
