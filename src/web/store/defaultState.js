@@ -38,6 +38,9 @@ const defaultState = {
                     metric: METRIC_STEPS.indexOf(1) // Defaults to 1 mm
                 }
             },
+            mdi: {
+                disabled: false
+            },
             wzero: 'G0 X0 Y0 Z0', // Go To Work Zero
             mzero: 'G53 G0 X0 Y0 Z0', // Go To Machine Zero
             shuttle: {

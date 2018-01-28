@@ -5,6 +5,7 @@ import mapValues from 'lodash/mapValues';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import api from '../../api';
 import Space from '../../components/Space';
 import Widget from '../../components/Widget';
 import combokeys from '../../lib/combokeys';
@@ -173,6 +174,14 @@ class AxesWidget extends PureComponent {
             const s = map(params, (value, letter) => ('' + letter.toUpperCase() + value)).join(' ');
             controller.command('gcode', 'G0 ' + s);
         },
+        toggleMDIMode: () => {
+            this.setState(state => ({
+                mdi: {
+                    ...state.mdi,
+                    disabled: !state.mdi.disabled
+                }
+            }));
+        },
         toggleKeypadJogging: () => {
             this.setState(state => ({
                 jog: {
@@ -322,13 +331,22 @@ class AxesWidget extends PureComponent {
         }
     };
     controllerEvents = {
+        'config:change': () => {
+            this.fetchMDICommands();
+        },
         'serialport:open': (options) => {
             const { port } = options;
             this.setState({ port: port });
         },
         'serialport:close': (options) => {
             const initialState = this.getInitialState();
-            this.setState({ ...initialState });
+            this.setState(state => ({
+                ...initialState,
+                mdi: {
+                    ...initialState.mdi,
+                    commands: [...state.mdi.commands]
+                }
+            }));
         },
         'workflow:state': (workflowState) => {
             const canJog = (workflowState !== WORKFLOW_STATE_RUNNING);
@@ -493,7 +511,24 @@ class AxesWidget extends PureComponent {
     };
     shuttleControl = null;
 
+    fetchMDICommands = async () => {
+        try {
+            let res;
+            res = await api.mdi.fetch({ paging: false });
+            const { records: commands } = res.body;
+            this.setState(state => ({
+                mdi: {
+                    ...state.mdi,
+                    commands: commands
+                }
+            }));
+        } catch (err) {
+            // Ignore error
+        }
+    };
+
     componentDidMount() {
+        this.fetchMDICommands();
         this.addControllerEvents();
         this.addShuttleControlEvents();
     }
@@ -506,7 +541,8 @@ class AxesWidget extends PureComponent {
             units,
             minimized,
             axes,
-            jog
+            jog,
+            mdi
         } = this.state;
 
         this.config.set('minimized', minimized);
@@ -518,6 +554,7 @@ class AxesWidget extends PureComponent {
             this.config.set('jog.step.metric', Number(jog.step.metric) || 0);
         }
         this.config.set('jog.keypad', jog.keypad);
+        this.config.set('mdi.disabled', mdi.disabled);
     }
     getInitialState() {
         return {
@@ -558,6 +595,10 @@ class AxesWidget extends PureComponent {
                     metric: this.config.get('jog.step.metric')
                 },
                 keypad: this.config.get('jog.keypad')
+            },
+            mdi: {
+                disabled: this.config.get('mdi.disabled'),
+                commands: []
             }
         };
     }
@@ -700,6 +741,15 @@ class AxesWidget extends PureComponent {
                                 <i className="fa fa-keyboard-o" />
                             </Widget.Button>
                         </KeypadOverlay>
+                        <Widget.Button
+                            title={i18n._('Manual Data Input')}
+                            onClick={actions.toggleMDIMode}
+                            inverted={!state.mdi.disabled}
+                        >
+                            <Space width="4" />
+                            {i18n._('MDI')}
+                            <Space width="4" />
+                        </Widget.Button>
                         <Widget.Button
                             title={i18n._('Edit')}
                             onClick={(event) => {

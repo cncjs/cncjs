@@ -1,5 +1,4 @@
 @import "display-panel";
-@import "control-panel";
 @import "rotate";
 @import "keypad";
 
@@ -14,7 +13,10 @@
 
 .row-space {
     margin-bottom: 5px;
-    margin-right: -5px;
+
+    &:last-child {
+        margin-bottom: 0;
+    }
 }
 .col-space {
     margin-right: 5px;

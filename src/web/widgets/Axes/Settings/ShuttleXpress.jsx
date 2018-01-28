@@ -10,20 +10,17 @@ const OVERSHOOT_STEP = 0.01;
 
 class ShuttleXpress extends PureComponent {
     static propTypes = {
-        show: PropTypes.bool,
         feedrateMin: PropTypes.number,
         feedrateMax: PropTypes.number,
         hertz: PropTypes.number,
         overshoot: PropTypes.number
-    };
-    static defaultProps = {
-        show: false
     };
 
     state = this.getInitialState();
 
     onChangeFeedrateSlider = (value) => {
         const [min, max] = value;
+
         this.setState({
             feedrateMin: min,
             feedrateMax: max
@@ -62,11 +59,10 @@ class ShuttleXpress extends PureComponent {
         this.setState({ feedrateMin, feedrateMax, hertz, overshoot });
     }
     render() {
-        const { show } = this.props;
         const { feedrateMin, feedrateMax, hertz, overshoot } = this.state;
 
         return (
-            <div style={{ display: show ? 'block' : 'none' }}>
+            <div>
                 <div className="form-group form-group-sm">
                     <p>
                         {i18n._('Feed Rate Range: {{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
