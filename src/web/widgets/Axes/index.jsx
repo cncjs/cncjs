@@ -580,13 +580,17 @@ class AxesWidget extends PureComponent {
                 x: '0.000',
                 y: '0.000',
                 z: '0.000',
-                a: '0.000'
+                a: '0.000',
+                b: '0.000',
+                c: '0.000'
             },
             workPosition: { // Work position
                 x: '0.000',
                 y: '0.000',
                 z: '0.000',
-                a: '0.000'
+                a: '0.000',
+                b: '0.000',
+                c: '0.000'
             },
             jog: {
                 axis: '', // Defaults to empty
