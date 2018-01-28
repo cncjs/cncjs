@@ -41,8 +41,6 @@ const defaultState = {
             mdi: {
                 disabled: false
             },
-            wzero: 'G0 X0 Y0 Z0', // Go To Work Zero
-            mzero: 'G53 G0 X0 Y0 Z0', // Go To Machine Zero
             shuttle: {
                 feedrateMin: 500,
                 feedrateMax: 2000,
