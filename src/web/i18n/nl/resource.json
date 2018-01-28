@@ -307,8 +307,6 @@
     "B-axis": "",
     "C-axis": "",
     "Custom Commands": "Eigen Commando’s",
-    "Go To Work Zero": "Ga Naar Werk Nulpunt",
-    "Go To Machine Zero": "Ga Naar Machine Nul",
     "Axes Settings": "Instellingen Assen",
     "ShuttleXpress": "ShuttleXpress",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "Voedingssnelheid bereik:  {{min}} - {{max}} mm/min",
@@ -498,5 +496,12 @@
     "Rotate Right": "Roteer Rechts",
     "Flip Horizontally": "Kantel Horizontaal",
     "Flip Vertically": "Kantel Verticaal",
-    "Crosshair": "Crosshair"
+    "Crosshair": "Crosshair",
+    "Manual Data Input": "",
+    "MDI": "",
+    "Button Width": "",
+    "Order": "",
+    "Move Up": "",
+    "Move Down": "",
+    "Remove": ""
 }

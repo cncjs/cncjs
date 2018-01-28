@@ -106,7 +106,7 @@ class Settings extends PureComponent {
                         }}
                     >
                         <NavItem eventKey="general">{i18n._('General')}</NavItem>
-                        <NavItem eventKey="mdi">{i18n._('MDI Commands')}</NavItem>
+                        <NavItem eventKey="mdi">{i18n._('Custom Commands')}</NavItem>
                         <NavItem eventKey="shuttleXpress">{i18n._('ShuttleXpress')}</NavItem>
                     </Nav>
                     <TabContent>

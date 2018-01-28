@@ -307,8 +307,6 @@
     "B-axis": "",
     "C-axis": "",
     "Custom Commands": "",
-    "Go To Work Zero": "Vai allo Zero lavoro",
-    "Go To Machine Zero": "Vai allo Zero macchina",
     "Axes Settings": "Settaggio assi",
     "ShuttleXpress": "",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "",
@@ -498,5 +496,12 @@
     "Rotate Right": "",
     "Flip Horizontally": "",
     "Flip Vertically": "",
-    "Crosshair": ""
+    "Crosshair": "",
+    "Manual Data Input": "",
+    "MDI": "",
+    "Button Width": "",
+    "Order": "",
+    "Move Up": "",
+    "Move Down": "",
+    "Remove": ""
 }

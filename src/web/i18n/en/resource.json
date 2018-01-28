@@ -307,8 +307,6 @@
     "B-axis": "B-axis",
     "C-axis": "C-axis",
     "Custom Commands": "Custom Commands",
-    "Go To Work Zero": "Go To Work Zero",
-    "Go To Machine Zero": "Go To Machine Zero",
     "Axes Settings": "Axes Settings",
     "ShuttleXpress": "ShuttleXpress",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "Feed Rate Range: {{min}} - {{max}} mm/min",
@@ -498,5 +496,12 @@
     "Rotate Right": "Rotate Right",
     "Flip Horizontally": "Flip Horizontally",
     "Flip Vertically": "Flip Vertically",
-    "Crosshair": "Crosshair"
+    "Crosshair": "Crosshair",
+    "Manual Data Input": "Manual Data Input",
+    "MDI": "MDI",
+    "Button Width": "Button Width",
+    "Order": "Order",
+    "Move Up": "Move Up",
+    "Move Down": "Move Down",
+    "Remove": "Remove"
 }

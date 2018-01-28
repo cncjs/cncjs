@@ -307,8 +307,6 @@
     "B-axis": "",
     "C-axis": "",
     "Custom Commands": "Özel Komutlar",
-    "Go To Work Zero": "Sıfıra Git",
-    "Go To Machine Zero": "Makina sıfırına git",
     "Axes Settings": "Makina Kontrol Ayarları",
     "ShuttleXpress": "ShuttleXpress",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "Besleme Hızı Oranı: {{min}} - {{max}} mm/min",
@@ -498,5 +496,12 @@
     "Rotate Right": "Sağa Dön",
     "Flip Horizontally": "Yatay olarak çevir",
     "Flip Vertically": "Dikey olarak çevir",
-    "Crosshair": "Merkez Çizgisi"
+    "Crosshair": "Merkez Çizgisi",
+    "Manual Data Input": "",
+    "MDI": "",
+    "Button Width": "",
+    "Order": "",
+    "Move Up": "",
+    "Move Down": "",
+    "Remove": ""
 }

@@ -307,8 +307,6 @@
     "B-axis": "",
     "C-axis": "",
     "Custom Commands": "",
-    "Go To Work Zero": "Menjen a munka nullpontra",
-    "Go To Machine Zero": "Menjen a gépi nullpontra",
     "Axes Settings": "Tengelyek beállítása",
     "ShuttleXpress": "",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "Előtolási határok: {{min}} - {{max}} mm/min",
@@ -498,5 +496,12 @@
     "Rotate Right": "Forgatás jobbra",
     "Flip Horizontally": "Horzontális fordítás",
     "Flip Vertically": "Vertikális fordítás",
-    "Crosshair": "Célkereszt"
+    "Crosshair": "Célkereszt",
+    "Manual Data Input": "",
+    "MDI": "",
+    "Button Width": "",
+    "Order": "",
+    "Move Up": "",
+    "Move Down": "",
+    "Remove": ""
 }
