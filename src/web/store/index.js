@@ -151,7 +151,7 @@ const migrateStore = () => {
     // Removed "widgets.axes.mzero"
     // Removed "widgets.axes.jog.customDistance"
     // Removed "widgets.axes.jog.selectedDistance"
-    if (semver.lte(cnc.version, '1.9.13')) {
+    if (semver.lt(cnc.version, '1.9.13')) {
         // Axes widget
         store.unset('widgets.axes.wzero');
         store.unset('widgets.axes.mzero');
