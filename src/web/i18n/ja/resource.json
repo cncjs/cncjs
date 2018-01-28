@@ -308,8 +308,6 @@
     "B-axis": "",
     "C-axis": "",
     "Custom Commands": "カスタムコマンド",
-    "Go To Work Zero": "ワーク原点に移動",
-    "Go To Machine Zero": "機械原点に移動",
     "Axes Settings": "軸の設定",
     "ShuttleXpress": "シャトルエクスプレス(ShuttleXpress)",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "",
@@ -499,5 +497,12 @@
     "Rotate Right": "右に回転",
     "Flip Horizontally": "水平に反転",
     "Flip Vertically": "垂直に反転",
-    "Crosshair": "十字照準"
+    "Crosshair": "十字照準",
+    "Manual Data Input": "",
+    "MDI": "",
+    "Button Width": "",
+    "Order": "",
+    "Move Up": "",
+    "Move Down": "",
+    "Remove": ""
 }

@@ -308,8 +308,6 @@
     "B-axis": "",
     "C-axis": "",
     "Custom Commands": "",
-    "Go To Work Zero": "Vai ao Zero de Trabalho",
-    "Go To Machine Zero": "Vai ao Zero da Máquina",
     "Axes Settings": "Configurações de eixos",
     "ShuttleXpress": "",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "Faixa da Velocidade de usinagem: {{min}} - {{max}} mm/min",
@@ -499,5 +497,12 @@
     "Rotate Right": "",
     "Flip Horizontally": "",
     "Flip Vertically": "",
-    "Crosshair": ""
+    "Crosshair": "",
+    "Manual Data Input": "",
+    "MDI": "",
+    "Button Width": "",
+    "Order": "",
+    "Move Up": "",
+    "Move Down": "",
+    "Remove": ""
 }

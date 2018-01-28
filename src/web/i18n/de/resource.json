@@ -308,8 +308,6 @@
     "B-axis": "",
     "C-axis": "",
     "Custom Commands": "Benutzer spezifische Kommandos",
-    "Go To Work Zero": "Zum Werkstück-Nullp.",
-    "Go To Machine Zero": "Zum Maschinen-Nullp.",
     "Axes Settings": "Achsen-Einstellungen",
     "ShuttleXpress": "",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "Vorschubbereich: {{min}} - {{max}} mm/min",
@@ -499,5 +497,12 @@
     "Rotate Right": "Rechtsherum drehen",
     "Flip Horizontally": "Horizontal umdrehen",
     "Flip Vertically": "Vertikal umdrehen",
-    "Crosshair": "Fadenkreuz"
+    "Crosshair": "Fadenkreuz",
+    "Manual Data Input": "",
+    "MDI": "",
+    "Button Width": "",
+    "Order": "",
+    "Move Up": "",
+    "Move Down": "",
+    "Remove": ""
 }

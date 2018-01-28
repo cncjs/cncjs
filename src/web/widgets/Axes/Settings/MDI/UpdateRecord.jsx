@@ -50,7 +50,7 @@ class UpdateRecord extends PureComponent {
             >
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('MDI Commands')}
+                        {i18n._('Custom Commands')}
                         <Space width="8" />
                         &rsaquo;
                         <Space width="8" />

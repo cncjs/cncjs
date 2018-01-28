@@ -308,8 +308,6 @@
     "B-axis": "",
     "C-axis": "",
     "Custom Commands": "",
-    "Go To Work Zero": "返回工作原點",
-    "Go To Machine Zero": "返回機器原點",
     "Axes Settings": "座標軸設定",
     "ShuttleXpress": "",
     "Feed Rate Range: {{min}} - {{max}} mm/min": "進給率範圍：{{min}} - {{max}} mm/min",
@@ -499,5 +497,12 @@
     "Rotate Right": "向右旋轉",
     "Flip Horizontally": "水平翻轉",
     "Flip Vertically": "垂直翻轉",
-    "Crosshair": "十字準線"
+    "Crosshair": "十字準線",
+    "Manual Data Input": "",
+    "MDI": "",
+    "Button Width": "",
+    "Order": "",
+    "Move Up": "",
+    "Move Down": "",
+    "Remove": ""
 }
