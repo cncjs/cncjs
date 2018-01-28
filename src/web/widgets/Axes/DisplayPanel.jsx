@@ -7,10 +7,12 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Dropdown, { MenuItem } from '../../components/Dropdown';
 import SVG from '../../components/SVG';
+import { Tooltip } from '../../components/Tooltip';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import AxisLabel from './components/AxisLabel';
 import AxisSubscript from './components/AxisSubscript';
+import Panel from './components/Panel';
 import PositionLabel from './components/PositionLabel';
 import PositionInput from './components/PositionInput';
 import Taskbar from './components/Taskbar';
@@ -203,7 +205,7 @@ class DisplayPanel extends PureComponent {
     };
 
     renderActionDropdownForAxisE = () => {
-        // FIXME
+        // TODO
         return null;
     };
 
@@ -1030,21 +1032,31 @@ class DisplayPanel extends PureComponent {
                     <Taskbar>
                         <TaskbarButton
                             disabled={!canZeroOutMachine}
-                            title={i18n._('Zero Out Machine')}
                             onClick={() => {
                                 controller.command('gcode', `G28.3 ${axisLabel}0`);
                             }}
                         >
-                            <SVG src={iconPin} width="14" height="14" />
+                            <Tooltip
+                                placement="bottom"
+                                content={i18n._('Zero Out Machine')}
+                                hideOnClick
+                            >
+                                <SVG src={iconPin} width="14" height="14" />
+                            </Tooltip>
                         </TaskbarButton>
                         <TaskbarButton
                             disabled={!canHomeMachine}
-                            title={i18n._('Home Machine')}
                             onClick={() => {
                                 controller.command('gcode', `G28.2 ${axisLabel}0`);
                             }}
                         >
-                            <SVG src={iconHome} width="14" height="14" />
+                            <Tooltip
+                                placement="bottom"
+                                content={i18n._('Home Machine')}
+                                hideOnClick
+                            >
+                                <SVG src={iconHome} width="14" height="14" />
+                            </Tooltip>
                         </TaskbarButton>
                     </Taskbar>
                 </td>
@@ -1067,20 +1079,30 @@ class DisplayPanel extends PureComponent {
                     <Taskbar>
                         <TaskbarButton
                             disabled={!canZeroOutWorkOffsets}
-                            title={i18n._('Zero Out Work Offsets')}
                             onClick={() => {
                                 setWorkOffsets(axis, 0);
                             }}
                         >
-                            <SVG src={iconPin} width="14" height="14" />
+                            <Tooltip
+                                placement="bottom"
+                                content={i18n._('Zero Out Work Offsets')}
+                                hideOnClick
+                            >
+                                <SVG src={iconPin} width="14" height="14" />
+                            </Tooltip>
                         </TaskbarButton>
                         <TaskbarButton
                             active={showPositionInput}
                             disabled={!canModifyWorkPosition}
-                            title={i18n._('Set Work Offsets')}
                             onClick={this.showPositionInput(axis)}
                         >
-                            <SVG src={iconPencil} width="14" height="14" />
+                            <Tooltip
+                                placement="bottom"
+                                content={i18n._('Set Work Offsets')}
+                                hideOnClick
+                            >
+                                <SVG src={iconPencil} width="14" height="14" />
+                            </Tooltip>
                         </TaskbarButton>
                     </Taskbar>
                 </td>
@@ -1103,7 +1125,7 @@ class DisplayPanel extends PureComponent {
         const hasAxisC = includes(axes, AXIS_C);
 
         return (
-            <div className={styles.displayPanel}>
+            <Panel className={styles.displayPanel}>
                 <table className="table-bordered">
                     <thead>
                         <tr>
@@ -1125,7 +1147,7 @@ class DisplayPanel extends PureComponent {
                         {hasAxisC && this.renderAxis(AXIS_C)}
                     </tbody>
                 </table>
-            </div>
+            </Panel>
         );
     }
 }

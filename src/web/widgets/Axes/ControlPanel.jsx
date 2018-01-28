@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Panel from './components/Panel';
 import Keypad from './Keypad';
-import styles from './index.styl';
 
 class ControlPanel extends PureComponent {
     static propTypes = {
@@ -12,9 +12,9 @@ class ControlPanel extends PureComponent {
 
     render() {
         return (
-            <div className={styles.controlPanel}>
+            <Panel>
                 <Keypad {...this.props} />
-            </div>
+            </Panel>
         );
     }
 }

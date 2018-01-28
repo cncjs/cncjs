@@ -381,7 +381,7 @@ class Keypad extends PureComponent {
                         </div>
                     </div>
                     <div className="col-xs-4">
-                        <div style={{ marginLeft: 10, marginBottom: 5 }}>
+                        <div className={styles.rowSpace}>
                             <Dropdown
                                 pullRight
                                 style={{
@@ -395,7 +395,6 @@ class Keypad extends PureComponent {
                                         textAlign: 'right',
                                         width: '100%'
                                     }}
-                                    title={i18n._('Units')}
                                 >
                                     {units === IMPERIAL_UNITS && i18n._('G20 (inch)')}
                                     {units === METRIC_UNITS && i18n._('G21 (mm)')}
@@ -423,7 +422,7 @@ class Keypad extends PureComponent {
                                 </Dropdown.Menu>
                             </Dropdown>
                         </div>
-                        <div style={{ marginLeft: 10, marginBottom: 5 }}>
+                        <div className={styles.rowSpace}>
                             {units === IMPERIAL_UNITS &&
                             <Dropdown
                                 pullRight
@@ -497,7 +496,7 @@ class Keypad extends PureComponent {
                             </Dropdown>
                             }
                         </div>
-                        <div style={{ marginLeft: 10, marginBottom: 5 }}>
+                        <div className={styles.rowSpace}>
                             <div className="row no-gutters">
                                 <div className="col-xs-6">
                                     <Repeatable

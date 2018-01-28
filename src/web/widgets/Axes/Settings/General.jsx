@@ -2,19 +2,11 @@ import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Space from '../../../components/Space';
-import { Form, Textarea } from '../../../components/Validation';
 import i18n from '../../../lib/i18n';
-import * as validations from '../../../lib/validations';
 
 class General extends PureComponent {
     static propTypes = {
-        show: PropTypes.bool,
-        axes: PropTypes.array.isRequired,
-        wzero: PropTypes.string.isRequired,
-        mzero: PropTypes.string.isRequired
-    };
-    static defaultProps = {
-        show: false
+        axes: PropTypes.array.isRequired
     };
 
     fields = {
@@ -23,40 +15,31 @@ class General extends PureComponent {
         axisZ: null,
         axisA: null,
         axisB: null,
-        axisC: null,
-        wzero: null,
-        mzero: null
+        axisC: null
     };
 
     get value() {
-        const {
-            wzero,
-            mzero
-        } = this.form.getValues();
-
         const axes = [];
         axes.push('x');
         this.fields.axisY.checked && axes.push('y');
         this.fields.axisZ.checked && axes.push('z');
         this.fields.axisA.checked && axes.push('a');
-        this.fields.axisA.checked && axes.push('b');
-        this.fields.axisA.checked && axes.push('c');
+        this.fields.axisB.checked && axes.push('b');
+        this.fields.axisC.checked && axes.push('c');
 
         return {
-            axes: axes,
-            wzero: wzero,
-            mzero: mzero
+            axes: axes
         };
     }
     render() {
-        const { show, axes, wzero, mzero } = this.props;
+        const { axes } = this.props;
 
         return (
-            <div style={{ display: show ? 'block' : 'none' }}>
+            <div>
                 <div className="form-group">
                     <label><strong>{i18n._('Axes')}</strong></label>
                     <div className="row no-gutters">
-                        <div className="col-xs-2">
+                        <div className="col-xs-4">
                             <label>
                                 <input
                                     ref={node => {
@@ -70,7 +53,7 @@ class General extends PureComponent {
                                 {i18n._('X-axis')}
                             </label>
                         </div>
-                        <div className="col-xs-2">
+                        <div className="col-xs-4">
                             <label>
                                 <input
                                     ref={node => {
@@ -83,7 +66,7 @@ class General extends PureComponent {
                                 {i18n._('Y-axis')}
                             </label>
                         </div>
-                        <div className="col-xs-2">
+                        <div className="col-xs-4">
                             <label>
                                 <input
                                     ref={node => {
@@ -96,7 +79,7 @@ class General extends PureComponent {
                                 {i18n._('Z-axis')}
                             </label>
                         </div>
-                        <div className="col-xs-2">
+                        <div className="col-xs-4">
                             <label>
                                 <input
                                     ref={node => {
@@ -109,7 +92,7 @@ class General extends PureComponent {
                                 {i18n._('A-axis')}
                             </label>
                         </div>
-                        <div className="col-xs-2">
+                        <div className="col-xs-4">
                             <label>
                                 <input
                                     ref={node => {
@@ -122,7 +105,7 @@ class General extends PureComponent {
                                 {i18n._('B-axis')}
                             </label>
                         </div>
-                        <div className="col-xs-2">
+                        <div className="col-xs-4">
                             <label>
                                 <input
                                     ref={node => {
@@ -136,40 +119,6 @@ class General extends PureComponent {
                             </label>
                         </div>
                     </div>
-                </div>
-                <div className="form-group">
-                    <Form
-                        ref={node => {
-                            this.form = node;
-                        }}
-                        onSubmit={(event) => {
-                            event.preventDefault();
-                        }}
-                    >
-                        <label><strong>{i18n._('Custom Commands')}</strong></label>
-                        <div style={{ marginBottom: 10 }}>
-                            <label>{i18n._('Go To Work Zero')}</label>
-                            <Textarea
-                                name="wzero"
-                                value={wzero}
-                                rows="2"
-                                className="form-control"
-                                placeholder="G0 X0 Y0 Z0"
-                                validations={[validations.required]}
-                            />
-                        </div>
-                        <div>
-                            <label>{i18n._('Go To Machine Zero')}</label>
-                            <Textarea
-                                name="mzero"
-                                value={mzero}
-                                rows="2"
-                                className="form-control"
-                                placeholder="G53 G0 X0 Y0 Z0"
-                                validations={[validations.required]}
-                            />
-                        </div>
-                    </Form>
                 </div>
             </div>
         );

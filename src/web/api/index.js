@@ -387,7 +387,90 @@ macros.delete = (id) => new Promise((resolve, reject) => {
         });
 });
 
+//
+// MDI
+//
+const mdi = {};
+
+mdi.fetch = (options) => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/mdi')
+        .query(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+mdi.create = (options) => new Promise((resolve, reject) => {
+    authrequest
+        .post('/api/mdi')
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+mdi.read = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/mdi/' + id)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+mdi.update = (id, options) => new Promise((resolve, reject) => {
+    authrequest
+        .put('/api/mdi/' + id)
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+mdi.bulkUpdate = (options) => new Promise((resolve, reject) => {
+    authrequest
+        .put('/api/mdi/')
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+mdi.delete = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .delete('/api/mdi/' + id)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+//
 // Commands
+//
 const commands = {};
 
 commands.fetch = (options) => new Promise((resolve, reject) => {
@@ -516,6 +599,7 @@ export default {
     users, // Users
     events, // Events
     macros, // Macros
+    mdi, // MDI
     commands, // Commands
     watch // Watch Directory
 };

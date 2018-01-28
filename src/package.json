@@ -40,7 +40,7 @@
     "i18next-express-middleware": "~1.0.9",
     "i18next-node-fs-backend": "~1.0.0",
     "is-electron": "~2.1.0",
-    "jsonwebtoken": "~8.1.0",
+    "jsonwebtoken": "~8.1.1",
     "lodash": "~4.17.4",
     "method-override": "~2.3.10",
     "minimatch": "~3.0.4",
