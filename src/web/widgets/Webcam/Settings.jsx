@@ -55,7 +55,12 @@ class Settings extends PureComponent {
         const { show, mediaSource, url } = this.state;
 
         return (
-            <Modal show={show} size="sm" onClose={this.actions.handleCancel}>
+            <Modal
+                show={show}
+                size="sm"
+                disableOverlay
+                onClose={this.actions.handleCancel}
+            >
                 <Modal.Header>
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>
                 </Modal.Header>
