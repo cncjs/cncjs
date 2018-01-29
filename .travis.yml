@@ -81,14 +81,14 @@ after_success:
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
     # build:mac-x64
-    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       # https://github.com/electron-userland/electron-builder/issues/398
       security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign;
       # https://github.com/electron-userland/electron-osx-sign/issues/83
       # Temporarily Bypass Gatekeeper
       sudo spctl --master-disable;
       sudo spctl --status;
-      travis_wait npm run build:mac-x64;
+      npm run build:mac-x64;
       ls -al output output/*;
       cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/${RELEASE}-mac-x64.dmg";
       ls -al releases/*;
@@ -110,8 +110,8 @@ after_success:
     fi
   - |
     # build:linux-ia32
-    if [[ "$TRAVIS_BRANCH" = "master" && "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      travis_wait npm run build:linux-ia32;
+    if [[ "$TRAVIS_BRANCH" = "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+      travis_wait 40 npm run build:linux-ia32;
       ls -al output output/*;
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
       pushd releases;
@@ -138,8 +138,8 @@ after_success:
     fi
   - |
     # build:linux-x64
-    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      travis_wait npm run build:linux-x64;
+    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+      travis_wait 40 npm run build:linux-x64;
       ls -al output output/*;
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
       pushd releases;
@@ -166,8 +166,8 @@ after_success:
     fi
   - |
     # docker image
-    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      travis_wait scripts/travis-docker-build.sh;
+    if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+      travis_wait 40 scripts/travis-docker-build.sh;
     fi
 
 before_deploy:
@@ -184,4 +184,4 @@ deploy:
   on:
     # https://docs.travis-ci.com/user/deployment#Conditional-Releases-with-on
     tags: true  # Deploy app only when a tag is applied to the commit
-    node: '6'
+    node: '8'
