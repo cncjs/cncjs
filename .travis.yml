@@ -111,7 +111,7 @@ after_success:
   - |
     # build:linux-ia32
     if [[ "$TRAVIS_BRANCH" = "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      travis_wait 40 npm run build:linux-ia32;
+      npm run build:linux-ia32;
       ls -al output output/*;
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_i386.deb" "releases/${RELEASE}-linux-i386.deb";
       pushd releases;
@@ -139,7 +139,7 @@ after_success:
   - |
     # build:linux-x64
     if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      travis_wait 40 npm run build:linux-x64;
+      npm run build:linux-x64;
       ls -al output output/*;
       cp -af "output/${PACKAGE_NAME}_${PACKAGE_VERSION}_amd64.deb" "releases/${RELEASE}-linux-amd64.deb";
       pushd releases;
@@ -167,7 +167,7 @@ after_success:
   - |
     # docker image
     if [[ "$TRAVIS_BRANCH" == "master" && "$TRAVIS_NODE_VERSION" == "6" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      travis_wait 40 scripts/travis-docker-build.sh;
+      travis_wait scripts/travis-docker-build.sh;
     fi
 
 before_deploy:
