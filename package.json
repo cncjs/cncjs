@@ -108,13 +108,17 @@
     },
     "win": {
       "target": [
-        "nsis"
+        "nsis",
+        "msi"
       ],
       "icon": "electron-build/icon.ico"
     },
     "linux": {
+      "category": "Utility",
       "target": [
-        "deb"
+        "AppImage",
+        "deb",
+        "rpm"
       ]
     }
   },
@@ -251,7 +255,7 @@
     "sortablejs": "~1.7.0",
     "spawn-default-shell": "~2.0.0",
     "static-eval": "~2.0.0",
-    "styled-components": "~3.0.2",
+    "styled-components": "~3.1.5",
     "superagent": "~3.8.2",
     "superagent-use": "~0.1.0",
     "three": "~0.87.1",
@@ -315,7 +319,7 @@
     "stylint-loader": "~1.0.0",
     "stylus": "~0.54.5",
     "stylus-loader": "~3.0.1",
-    "tap": "~11.0.1",
+    "tap": "~11.1.0",
     "text-table": "~0.2.0",
     "transform-loader": "~0.2.4",
     "url-loader": "~0.6.2",
