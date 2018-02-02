@@ -108,8 +108,7 @@
     },
     "win": {
       "target": [
-        "nsis",
-        "msi"
+        "nsis"
       ],
       "icon": "electron-build/icon.ico"
     },
