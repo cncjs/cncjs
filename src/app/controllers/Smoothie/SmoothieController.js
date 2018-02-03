@@ -11,6 +11,7 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
+import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateExpression from '../../lib/evaluateExpression';
 import logger from '../../lib/logger';
@@ -743,36 +744,14 @@ class SmoothieController {
             this.workflow = null;
         }
     }
-    initController() {
-        const cmds = [
-            // Wait for the bootloader to complete before sending commands
-            { pauseAfter: 1000 },
+    async initController() {
+        // Wait for the bootloader to complete before sending commands
+        await delay(1000);
 
-            // Check if it is Smoothieware
-            { cmd: 'version', pauseAfter: 50 }
-        ];
+        // Check if it is Smoothieware
+        this.command('gcode', 'version');
 
-        const sendInitCommands = (i = 0) => {
-            if (this.isClose) {
-                return;
-            }
-
-            if (i >= cmds.length) {
-                // Set the ready flag to true after sending initialization commands
-                this.ready = true;
-                return;
-            }
-
-            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
-            if (cmd) {
-                this.connection.write(cmd + '\n');
-                log.silly(`> ${cmd}`);
-            }
-            setTimeout(() => {
-                sendInitCommands(i + 1);
-            }, pauseAfter);
-        };
-        sendInitCommands();
+        this.ready = true;
     }
     open(callback = noop) {
         // Assertion check
