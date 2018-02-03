@@ -10,6 +10,7 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
+import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateExpression from '../../lib/evaluateExpression';
 import logger from '../../lib/logger';
@@ -20,7 +21,6 @@ import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import {
     WRITE_SOURCE_CLIENT,
-    WRITE_SOURCE_SERVER,
     WRITE_SOURCE_FEEDER
 } from '../constants';
 import TinyG from './TinyG';
@@ -86,6 +86,39 @@ class TinyGController {
     ready = false;
     state = {};
     settings = {};
+    sr = {
+        line: true,
+        vel: true,
+        feed: true,
+        stat: true,
+        cycs: true,
+        mots: true,
+        hold: true,
+        momo: true,
+        coor: true,
+        plan: true,
+        unit: true,
+        dist: true,
+        frmo: true,
+        path: true,
+        posx: true,
+        posy: true,
+        posz: true,
+        posa: true,
+        posb: true,
+        posc: true,
+        mpox: true,
+        mpoy: true,
+        mpoz: true,
+        mpoa: true,
+        mpob: true,
+        mpoc: true,
+        spe: true, // Spindle enable (edge-082.10)
+        spd: true, // Spindle direction (edge-082.10)
+        sps: true, // Spindle speed (edge-082.10)
+        cof: true, // Flood coolant (edge-082.10)
+        com: true // Mist coolant (edge-082.10)
+    };
     timer = {
         query: null,
         energizeMotors: null
@@ -454,6 +487,14 @@ class TinyGController {
         });
 
         this.controller.on('sr', (sr) => {
+            if (sr && sr.spe === null) {
+                // Disable unsupported commands
+                this.sr.spe = false; // Spindle enable
+                this.sr.spd = false; // Spindle direction
+                this.sr.sps = false; // Spindle speed
+                this.sr.cof = false; // Flood coolant
+                this.sr.com = false; // Mist coolant
+            }
         });
 
         this.controller.on('fb', (fb) => {
@@ -577,118 +618,85 @@ class TinyGController {
         }, 250);
     }
     // https://github.com/synthetos/TinyG/wiki/TinyG-Configuration-for-Firmware-Version-0.97
-    initController() {
-        const cmds = [
-            // Wait for the bootloader to complete before sending commands
-            { pauseAfter: 1000 },
-
-            // Enable JSON mode
-            // 0=text mode, 1=JSON mode
-            { cmd: '{ej:1}', pauseAfter: 50 },
-
-            // JSON verbosity
-            // 0=silent, 1=footer, 2=messages, 3=configs, 4=linenum, 5=verbose
-            { cmd: '{jv:4}', pauseAfter: 50 },
-
-            // Queue report verbosity
-            // 0=off, 1=filtered, 2=verbose
-            { cmd: '{qv:1}', pauseAfter: 50 },
-
-            // Status report verbosity
-            // 0=off, 1=filtered, 2=verbose
-            { cmd: '{sv:1}', pauseAfter: 50 },
-
-            // Status report interval
-            // in milliseconds (50ms minimum interval)
-            { cmd: '{si:100}', pauseAfter: 50 },
-
-            // Setting Status Report Fields
-            // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports#setting-status-report-fields
-            {
-                // Minify the cmd string to ensure it won't exceed the serial buffer limit
-                cmd: JSON.stringify({
-                    sr: {
-                        line: true,
-                        vel: true,
-                        feed: true,
-                        stat: true,
-                        cycs: true,
-                        mots: true,
-                        hold: true,
-                        momo: true,
-                        coor: true,
-                        plan: true,
-                        unit: true,
-                        dist: true,
-                        frmo: true,
-                        path: true,
-                        spe: true, // Spindle enable (edge-082.10)
-                        spd: true, // Spindle direction (edge-082.10)
-                        sps: true, // Spindle speed (edge-082.10)
-                        cof: true, // Flood coolant (edge-082.10)
-                        com: true, // Mist coolant (edge-082.10)
-                        posx: true,
-                        posy: true,
-                        posz: true,
-                        posa: true,
-                        mpox: true,
-                        mpoy: true,
-                        mpoz: true,
-                        mpoa: true
-                    }
-                }).replace(/"/g, '').replace(/true/g, 't'),
-                pauseAfter: 50
-            },
-
-            // System settings
-            { cmd: '{sys:n}' },
-
-            // Request motor timeout
-            { cmd: '{mt:n}' },
-
-            // Request motor states
-            { cmd: '{pwr:n}' },
-
-            // Request queue report
-            { cmd: '{qr:n}' },
-
-            // Request status report
-            { cmd: '{sr:n}' }
-        ];
-
-        const sendInitCommands = (i = 0) => {
+    async initController() {
+        const send = (cmd = '') => {
             if (this.isClose()) {
                 // Serial port is closed
                 return;
             }
 
-            if (i >= cmds.length) {
-                // Set the ready flag to true after sending initialization commands
-                this.ready = true;
+            cmd = String(cmd);
+
+            if (cmd.length >= TINYG_SERIAL_BUFFER_LIMIT) {
+                log.error(`Exceeded serial buffer limit (${TINYG_SERIAL_BUFFER_LIMIT}): cmd=${cmd}`);
                 return;
             }
 
-            const { cmd = '', pauseAfter = 0 } = { ...cmds[i] };
-            if (cmd) {
-                if (cmd.length >= TINYG_SERIAL_BUFFER_LIMIT) {
-                    log.error(`Exceeded serial buffer limit (${TINYG_SERIAL_BUFFER_LIMIT}): cmd=${cmd}`);
-                    return;
-                }
-
-                log.silly(`init: ${cmd} ${cmd.length}`);
-
-                const context = {};
-                this.emit('serialport:write', cmd, {
-                    ...context,
-                    source: WRITE_SOURCE_SERVER
-                });
-                this.connection.write(cmd + '\n');
-            }
-            setTimeout(() => {
-                sendInitCommands(i + 1);
-            }, pauseAfter);
+            log.silly(`init: ${cmd} ${cmd.length}`);
+            this.command('gcode', cmd);
         };
-        sendInitCommands();
+        const relaxedJSON = (json) => {
+            if (typeof json === 'object') {
+                json = JSON.stringify(json);
+            }
+            return json.replace(/"/g, '').replace(/true/g, 't');
+        };
+
+        // Wait for the bootloader to complete before sending commands
+        await delay(1000);
+
+        // Enable JSON mode
+        // 0=text mode, 1=JSON mode
+        send('{ej:1}');
+
+        // JSON verbosity
+        // 0=silent, 1=footer, 2=messages, 3=configs, 4=linenum, 5=verbose
+        send('{jv:4}');
+
+        // Queue report verbosity
+        // 0=off, 1=filtered, 2=verbose
+        send('{qv:1}');
+
+        // Status report verbosity
+        // 0=off, 1=filtered, 2=verbose
+        send('{sv:1}');
+
+        // Status report interval
+        // in milliseconds (50ms minimum interval)
+        send('{si:100}');
+
+        // Check whether the spindle enable command is supported
+        send('{spe:n}');
+
+        // Wait for 500ms to examine supported status report fields
+        await delay(500);
+
+        // Settings Status Report Fields
+        // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports#setting-status-report-fields
+        // Note: The JSON string is minified to make sure the length won't exceed the serial buffer limit
+        send(relaxedJSON({
+            // Returns an object composed of the picked properties
+            sr: _.pickBy(this.sr, (value, key) => {
+                return !!value;
+            })
+        }));
+
+        // Request system settings
+        send('{sys:n}');
+
+        // Request motor timeout
+        send('{mt:n}');
+
+        // Request motor states
+        send('{pwr:n}');
+
+        // Request queue report
+        send('{qr:n}');
+
+        // Request status report
+        send('{sr:n}');
+
+        this.ready = true;
     }
     populateContext(context) {
         // Machine position

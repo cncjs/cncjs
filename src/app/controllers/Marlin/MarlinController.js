@@ -10,6 +10,7 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
+import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateExpression from '../../lib/evaluateExpression';
 import logger from '../../lib/logger';
@@ -822,17 +823,14 @@ class MarlinController {
             this.workflow = null;
         }
     }
-    initController() {
+    async initController() {
         // Wait for the bootloader to complete before sending commands
-        const delay = 1000;
+        await delay(1000);
 
-        setTimeout(() => {
-            // Set ready flag to true
-            this.ready = true;
+        // M115: Get Firmware Version and Capabilities
+        this.command('gcode', 'M115');
 
-            // M115: Get Firmware Version and Capabilities
-            this.command('gcode', 'M115');
-        }, delay);
+        this.ready = true;
     }
     get status() {
         return {
