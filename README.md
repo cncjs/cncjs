@@ -22,12 +22,14 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
     - [TinyG](https://github.com/synthetos/TinyG) (_Recommend: firmware version 0.97 build 449.xx_) ([Download](http://synthetos.github.io/))
     - [g2core](https://github.com/synthetos/g2)
 * [Desktop App for Linux, Mac OS X, and Windows](https://github.com/cncjs/cncjs/wiki/Desktop-App)
+* 6-axis digital readout (DRO)
 * Tool path 3D visualization
 * Simultaneously communicate with multiple clients
 * Responsive view for small screen display with device width less than 720px
     - <i>Safari on an iPhone 5S</i> [\[1\]](https://cloud.githubusercontent.com/assets/447801/15633749/b817cd4a-25e7-11e6-9beb-600c65ea1324.PNG) [\[2\]](https://cloud.githubusercontent.com/assets/447801/15633750/b819b5f6-25e7-11e6-8bfe-d3e6247e443b.PNG)
 * Customizable workspace
 * [Custom widget](https://github.com/cncjs/cncjs-widget-boilerplate) (since 1.9.10)
+* Custom MDI (Multiple Document Interface) command buttons (since 1.9.13)
 * My Account
 * Commands
 * Events
