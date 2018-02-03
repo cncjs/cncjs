@@ -38,6 +38,7 @@ class MDIPanel extends PureComponent {
                                 ))}
                             </div>
                         )}
+                        enterDelay={1000}
                         hideOnClick
                     >
                         <Button
