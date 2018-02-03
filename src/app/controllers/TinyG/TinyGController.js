@@ -418,6 +418,15 @@ class TinyGController {
 
         // https://github.com/synthetos/g2/wiki/g2core-Communications
         this.controller.on('r', (r) => {
+            if (r && r.spe === null) {
+                // Disable unrecognized commands
+                this.sr.spe = false; // Spindle enable
+                this.sr.spd = false; // Spindle direction
+                this.sr.sps = false; // Spindle speed
+                this.sr.cof = false; // Flood coolant
+                this.sr.com = false; // Mist coolant
+            }
+
             const { hold, sent, received } = this.sender.state;
 
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -522,14 +531,6 @@ class TinyGController {
         });
 
         this.controller.on('sr', (sr) => {
-            if (sr && sr.spe === null) {
-                // Disable unsupported commands
-                this.sr.spe = false; // Spindle enable
-                this.sr.spd = false; // Spindle direction
-                this.sr.sps = false; // Spindle speed
-                this.sr.cof = false; // Flood coolant
-                this.sr.com = false; // Mist coolant
-            }
         });
 
         this.controller.on('fb', (fb) => {
