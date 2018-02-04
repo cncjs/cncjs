@@ -121,7 +121,7 @@ after_success:
       rm -f "${RELEASE}-linux-ia32";
       popd;
       ls -al releases/*;
-      if [[ -z "$TRAVIS_TAG" ]]; then
+      if [[ "$TRAVIS_BRANCH" == "master" ]]; then
         npm run github-release -- delete \
           --owner=cncjs \
           --repo=cncjs \
@@ -154,7 +154,7 @@ after_success:
       rm -f "${RELEASE}-linux-x64";
       popd;
       ls -al releases/*;
-      if [[ -z "$TRAVIS_TAG" ]]; then
+      if [[ "$TRAVIS_BRANCH" == "master" ]]; then
         npm run github-release -- delete \
           --owner=cncjs \
           --repo=cncjs \
