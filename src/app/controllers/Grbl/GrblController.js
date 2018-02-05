@@ -221,7 +221,7 @@ class GrblController {
                     // %wait
                     if (line === WAIT) {
                         log.debug('Wait for the planner queue to empty');
-                        return `G4 P0.5 (${WAIT})`; // dwell
+                        return 'G4 P0.5'; // dwell
                     }
 
                     // Expression
@@ -303,7 +303,7 @@ class GrblController {
                     if (line === WAIT) {
                         log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
                         this.sender.hold({ data: WAIT }); // Hold reason
-                        return `G4 P0.5 (${WAIT})`; // dwell
+                        return 'G4 P0.5'; // dwell
                     }
 
                     // Expression
