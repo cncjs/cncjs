@@ -361,7 +361,7 @@ class Settings extends PureComponent {
                     }
                 });
 
-                api.users.fetch({ page, pageLength })
+                api.users.fetch({ paging: true, page, pageLength })
                     .then((res) => {
                         const { pagination, records } = res.body;
 
@@ -520,7 +520,7 @@ class Settings extends PureComponent {
                     }
                 });
 
-                api.commands.fetch({ page, pageLength })
+                api.commands.fetch({ paging: true, page, pageLength })
                     .then((res) => {
                         const { pagination, records } = res.body;
 
@@ -678,7 +678,7 @@ class Settings extends PureComponent {
                     }
                 });
 
-                api.events.fetch({ page, pageLength })
+                api.events.fetch({ paging: true, page, pageLength })
                     .then((res) => {
                         const { pagination, records } = res.body;
 

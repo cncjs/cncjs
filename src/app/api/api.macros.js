@@ -44,22 +44,33 @@ const getSanitizedRecords = () => {
 
 export const fetch = (req, res) => {
     const records = getSanitizedRecords();
-    const { paging = true, page = 1, pageLength = 10 } = req.query;
-    const totalRecords = records.length;
-    const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
-    const pagedRecords = paging ? records.slice(begin, end) : records;
+    const paging = !!req.query.paging;
 
-    res.send({
-        pagination: {
-            page: Number(page),
-            pageLength: Number(pageLength),
-            totalRecords: Number(totalRecords)
-        },
-        records: pagedRecords.map(record => {
-            const { id, mtime, name, content } = { ...record };
-            return { id, mtime, name, content };
-        })
-    });
+    if (paging) {
+        const { page = 1, pageLength = 10 } = req.query;
+        const totalRecords = records.length;
+        const [begin, end] = getPagingRange({ page, pageLength, totalRecords });
+        const pagedRecords = records.slice(begin, end);
+
+        res.send({
+            pagination: {
+                page: Number(page),
+                pageLength: Number(pageLength),
+                totalRecords: Number(totalRecords)
+            },
+            records: pagedRecords.map(record => {
+                const { id, mtime, name, content } = { ...record };
+                return { id, mtime, name, content };
+            })
+        });
+    } else {
+        res.send({
+            records: records.map(record => {
+                const { id, mtime, name, content } = { ...record };
+                return { id, mtime, name, content };
+            })
+        });
+    }
 };
 
 export const create = (req, res) => {
