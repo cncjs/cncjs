@@ -34,7 +34,7 @@ class MDI extends PureComponent {
                 }
             }));
 
-            api.mdi.fetch({ paging: false })
+            api.mdi.fetch()
                 .then((res) => {
                     const { records } = res.body;
 

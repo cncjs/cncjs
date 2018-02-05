@@ -514,7 +514,7 @@ class AxesWidget extends PureComponent {
     fetchMDICommands = async () => {
         try {
             let res;
-            res = await api.mdi.fetch({ paging: false });
+            res = await api.mdi.fetch();
             const { records: commands } = res.body;
             this.setState(state => ({
                 mdi: {
