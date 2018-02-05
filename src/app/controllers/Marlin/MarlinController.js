@@ -344,7 +344,7 @@ class MarlinController {
                         log.debug('Wait for the planner queue to empty');
                         // G4 [P<time in ms>] [S<time in sec>]
                         // If both S and P are included, S takes precedence.
-                        return `G4 P500 (${WAIT})`; // dwell
+                        return 'G4 P500'; // dwell
                     }
 
                     // Expression
@@ -438,7 +438,7 @@ class MarlinController {
 
                         // G4 [P<time in ms>] [S<time in sec>]
                         // If both S and P are included, S takes precedence.
-                        return `G4 P500 (${WAIT})`; // dwell
+                        return 'G4 P500'; // dwell
                     }
 
                     // Expression
