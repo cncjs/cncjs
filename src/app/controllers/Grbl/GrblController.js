@@ -182,7 +182,7 @@ class GrblController {
                 if (line[0] === '%') {
                     // %wait
                     if (line === WAIT) {
-                        log.debug('Wait for the planner queue to empty');
+                        log.debug('Wait for the planner to empty');
                         return 'G4 P0.5'; // dwell
                     }
 
@@ -263,7 +263,7 @@ class GrblController {
                 if (line[0] === '%') {
                     // %wait
                     if (line === WAIT) {
-                        log.debug(`Wait for the planner queue to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
+                        log.debug(`Wait for the planner to empty: line=${sent + 1}, sent=${sent}, received=${received}`);
                         this.sender.hold({ data: WAIT }); // Hold reason
                         return 'G4 P0.5'; // dwell
                     }
@@ -989,7 +989,7 @@ class GrblController {
                 // respond with an ok when the dwell is complete. At that instant, there will
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
-                const dwell = '%wait ; Wait for the planner queue to empty';
+                const dwell = '%wait ; Wait for the planner to empty';
                 const ok = this.sender.load(name, gcode + '\n' + dwell, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
