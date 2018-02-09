@@ -16,6 +16,7 @@ import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';
 import FeederPaused from './modals/FeederPaused';
+import FeederWait from './modals/FeederWait';
 import ServerDisconnected from './modals/ServerDisconnected';
 import styles from './index.styl';
 import {
@@ -24,8 +25,11 @@ import {
 import {
     MODAL_NONE,
     MODAL_FEEDER_PAUSED,
+    MODAL_FEEDER_WAIT,
     MODAL_SERVER_DISCONNECTED
 } from './constants';
+
+const WAIT = '%wait';
 
 const startWaiting = () => {
     // Adds the 'wait' class to <html>
@@ -124,7 +128,7 @@ class Workspace extends PureComponent {
             const { hold, holdReason } = { ...status };
 
             if (!hold) {
-                if (modal.name === MODAL_FEEDER_PAUSED) {
+                if (_.includes([MODAL_FEEDER_PAUSED, MODAL_FEEDER_WAIT], modal.name)) {
                     this.action.closeModal();
                 }
                 return;
@@ -139,14 +143,21 @@ class Workspace extends PureComponent {
                 return;
             }
 
+            if (data === WAIT) {
+                this.action.openModal(MODAL_FEEDER_WAIT, {
+                    title: '%wait'
+                });
+                return;
+            }
+
             const title = {
-                M0: i18n._('M0 Program Pause'),
-                M1: i18n._('M1 Program Pause'),
-                M2: i18n._('M2 Program End'),
-                M30: i18n._('M30 Program End'),
-                M6: i18n._('M6 Tool Change'),
-                M109: i18n._('M109 Set Extruder Temperature'),
-                M190: i18n._('M190 Set Heated Bed Temperature')
+                'M0': i18n._('M0 Program Pause'),
+                'M1': i18n._('M1 Program Pause'),
+                'M2': i18n._('M2 Program End'),
+                'M30': i18n._('M30 Program End'),
+                'M6': i18n._('M6 Tool Change'),
+                'M109': i18n._('M109 Set Extruder Temperature'),
+                'M190': i18n._('M190 Set Heated Bed Temperature')
             }[data] || data;
 
             this.action.openModal(MODAL_FEEDER_PAUSED, {
@@ -414,6 +425,12 @@ class Workspace extends PureComponent {
             <div style={style} className={classNames(className, styles.workspace)}>
                 {modal.name === MODAL_FEEDER_PAUSED &&
                 <FeederPaused
+                    title={modal.params.title}
+                    onClose={this.action.closeModal}
+                />
+                }
+                {modal.name === MODAL_FEEDER_WAIT &&
+                <FeederWait
                     title={modal.params.title}
                     onClose={this.action.closeModal}
                 />
