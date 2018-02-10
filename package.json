@@ -264,7 +264,7 @@
     "watch": "~1.0.2",
     "webappengine": "~1.2.0",
     "winston": "~2.4.0",
-    "xterm": "~3.1.0"
+    "xterm": "~3.0.2"
   },
   "devDependencies": {
     "babel-cli": "~6.26.0",
