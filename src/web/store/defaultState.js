@@ -203,6 +203,9 @@ const defaultState = {
             // mjpeg - M-JPEG stream over HTTP
             mediaSource: 'local',
 
+            // The device id
+            deviceId: '',
+
             // The URL field is required for the M-JPEG stream
             url: '',
 

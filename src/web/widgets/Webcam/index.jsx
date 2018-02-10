@@ -4,9 +4,10 @@ import React, { PureComponent } from 'react';
 import Space from '../../components/Space';
 import Widget from '../../components/Widget';
 import i18n from '../../lib/i18n';
+import portal from '../../lib/portal';
 import WidgetConfig from '../WidgetConfig';
 import Webcam from './Webcam';
-import * as Settings from './Settings';
+import Settings from './Settings';
 import styles from './index.styl';
 import {
     MEDIA_SOURCE_LOCAL
@@ -83,6 +84,7 @@ class WebcamWidget extends PureComponent {
             disabled,
             minimized,
             mediaSource,
+            deviceId,
             url,
             scale,
             rotation,
@@ -95,6 +97,7 @@ class WebcamWidget extends PureComponent {
         this.config.set('disabled', disabled);
         this.config.set('minimized', minimized);
         this.config.set('mediaSource', mediaSource);
+        this.config.set('deviceId', deviceId);
         this.config.set('url', url);
         this.config.set('geometry.scale', scale);
         this.config.set('geometry.rotation', rotation);
@@ -109,6 +112,7 @@ class WebcamWidget extends PureComponent {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
             mediaSource: this.config.get('mediaSource', MEDIA_SOURCE_LOCAL),
+            deviceId: this.config.get('deviceId', ''),
             url: this.config.get('url', ''),
             scale: this.config.get('geometry.scale', 1.0),
             rotation: this.config.get('geometry.rotation', 0),
@@ -165,16 +169,23 @@ class WebcamWidget extends PureComponent {
                         <Widget.Button
                             title={i18n._('Edit')}
                             onClick={(event) => {
-                                const options = {
-                                    mediaSource: this.state.mediaSource,
-                                    url: this.state.url
-                                };
+                                const { mediaSource, deviceId, url } = this.state;
 
-                                Settings.show(options)
-                                    .then(data => {
-                                        const { mediaSource, url } = data;
-                                        this.setState({ mediaSource, url });
-                                    });
+                                portal(({ onClose }) => (
+                                    <Settings
+                                        mediaSource={mediaSource}
+                                        deviceId={deviceId}
+                                        url={url}
+                                        onSave={(data) => {
+                                            const { mediaSource, deviceId, url } = data;
+                                            this.setState({ mediaSource, deviceId, url });
+                                            onClose();
+                                        }}
+                                        onCancel={() => {
+                                            onClose();
+                                        }}
+                                    />
+                                ));
                             }}
                         >
                             <i className="fa fa-cog" />
