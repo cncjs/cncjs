@@ -33,8 +33,8 @@ class MDIPanel extends PureComponent {
                         disabled={!canClick}
                         content={(
                             <div className="text-left">
-                                {c.command.split('\n').map(line => (
-                                    <div>{line}</div>
+                                {c.command.split('\n').map((line, index) => (
+                                    <div key={`${c.id}_${index + 1}`}>{line}</div>
                                 ))}
                             </div>
                         )}
