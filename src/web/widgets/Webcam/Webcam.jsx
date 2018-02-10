@@ -42,6 +42,7 @@ class Webcam extends PureComponent {
         const {
             disabled,
             mediaSource,
+            deviceId,
             url,
             scale,
             rotation,
@@ -80,6 +81,7 @@ class Webcam extends PureComponent {
                         width={(100 * scale).toFixed(0) + '%'}
                         height="auto"
                         muted={muted}
+                        video={!!deviceId ? deviceId : true}
                     />
                 </div>
                 }

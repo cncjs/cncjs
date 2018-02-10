@@ -1,9 +1,10 @@
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
+import Select from 'react-select';
 import Modal from '../../components/Modal';
 import i18n from '../../lib/i18n';
+import log from '../../lib/log';
 import {
     MEDIA_SOURCE_LOCAL,
     MEDIA_SOURCE_MJPEG
@@ -12,54 +13,89 @@ import {
 class Settings extends PureComponent {
     static propTypes = {
         mediaSource: PropTypes.string,
+        deviceId: PropTypes.string,
         url: PropTypes.string,
         onSave: PropTypes.func,
-        onClose: PropTypes.func
+        onCancel: PropTypes.func
     };
     static defaultProps = {
         mediaSource: MEDIA_SOURCE_LOCAL,
+        deviceId: '',
         url: '',
         onSave: noop,
-        onClose: noop
+        onCancel: noop
     };
 
     state = {
-        show: true,
         mediaSource: this.props.mediaSource,
-        url: this.props.url
+        deviceId: this.props.deviceId,
+        url: this.props.url,
+        videoDevices: []
     };
-    actions = {
-        handleChangeURL: (event) => {
-            const url = event.target.value;
-            this.setState({ url });
-        },
-        handleSave: () => {
-            this.setState({ show: false });
 
-            this.props.onSave({
-                mediaSource: this.state.mediaSource,
-                url: this.state.url
-            });
-        },
-        handleCancel: () => {
-            this.setState({ show: false });
+    handleChangeVideoDevice = (option) => {
+        const deviceId = option.value;
+        this.setState({ deviceId: deviceId });
+    };
+
+    handleChangeURL = (event) => {
+        const url = event.target.value;
+        this.setState({ url: url });
+    };
+
+    handleSave = () => {
+        this.props.onSave && this.props.onSave({
+            mediaSource: this.state.mediaSource,
+            deviceId: this.state.deviceId,
+            url: this.state.url
+        });
+    };
+
+    handleCancel = () => {
+        this.props.onCancel && this.props.onCancel();
+    };
+
+    enumerateDevices = async () => {
+        if (!navigator.mediaDevices || !navigator.mediaDevices.enumerateDevices) {
+            // enumerateDevices() not supported.
+            return;
+        }
+
+        try {
+            const devices = await navigator.mediaDevices.enumerateDevices();
+            const videoDevices = devices.filter(device => (device.kind === 'videoinput'));
+            this.setState({ videoDevices: videoDevices });
+        } catch (err) {
+            log.error(err.name + ': ' + err.message);
         }
     };
 
-    componentDidUpdate(prevProps, prevState) {
-        if (!(this.state.show)) {
-            this.props.onClose();
-        }
+    componentDidMount() {
+        this.enumerateDevices();
     }
+
     render() {
-        const { show, mediaSource, url } = this.state;
+        const {
+            mediaSource,
+            deviceId,
+            url,
+            videoDevices
+        } = this.state;
+
+        const videoDeviceOptions = videoDevices.map(device => ({
+            value: device.deviceId,
+            label: device.label
+        }));
+        videoDeviceOptions.unshift({
+            value: '',
+            label: 'Automatic detection'
+        });
 
         return (
             <Modal
-                show={show}
                 size="sm"
                 disableOverlay
-                onClose={this.actions.handleCancel}
+                onClose={this.handleCancel}
             >
                 <Modal.Header>
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>
@@ -80,6 +116,21 @@ class Settings extends PureComponent {
                                 />
                                 {i18n._('Use a built-in camera or a connected webcam')}
                             </label>
+                        </div>
+                        <div style={{ marginLeft: 20 }}>
+                            <Select
+                                backspaceRemoves={false}
+                                clearable={false}
+                                disabled={mediaSource !== MEDIA_SOURCE_LOCAL}
+                                name="videoDevice"
+                                noResultsText={i18n._('No video devices available')}
+                                onChange={this.handleChangeVideoDevice}
+                                optionRenderer={(device) => device.label || device.deviceId}
+                                options={videoDeviceOptions}
+                                placeholder={i18n._('Choose a video device')}
+                                searchable={false}
+                                value={deviceId}
+                            />
                         </div>
                         <div className="radio">
                             <label>
@@ -102,7 +153,7 @@ class Settings extends PureComponent {
                                 disabled={mediaSource !== MEDIA_SOURCE_MJPEG}
                                 placeholder="http://raspberrypi:8080/?action=stream"
                                 defaultValue={url}
-                                onChange={this.actions.handleChangeURL}
+                                onChange={this.handleChangeURL}
                             />
                         </div>
                     </div>
@@ -111,14 +162,14 @@ class Settings extends PureComponent {
                     <button
                         type="button"
                         className="btn btn-default"
-                        onClick={this.actions.handleCancel}
+                        onClick={this.handleCancel}
                     >
                         {i18n._('Cancel')}
                     </button>
                     <button
                         type="button"
                         className="btn btn-primary"
-                        onClick={this.actions.handleSave}
+                        onClick={this.handleSave}
                     >
                         {i18n._('Save Changes')}
                     </button>
@@ -127,28 +178,5 @@ class Settings extends PureComponent {
         );
     }
 }
-
-export const show = (options) => new Promise((resolve, reject) => {
-    const el = document.body.appendChild(document.createElement('div'));
-    const removeContainer = (el) => {
-        setTimeout(() => {
-            ReactDOM.unmountComponentAtNode(el);
-            el.remove();
-        }, 0);
-    };
-
-    const props = {
-        ...options,
-        onSave: (data) => {
-            removeContainer(el);
-            resolve(data);
-        },
-        onClose: () => {
-            removeContainer(el);
-        }
-    };
-
-    ReactDOM.render(<Settings {...props} />, el);
-});
 
 export default Settings;
