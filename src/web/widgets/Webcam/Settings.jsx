@@ -88,7 +88,7 @@ class Settings extends PureComponent {
         }));
         videoDeviceOptions.unshift({
             value: '',
-            label: 'Automatic detection'
+            label: i18n._('Automatic detection')
         });
 
         return (

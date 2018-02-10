@@ -504,5 +504,9 @@
     "Order": "排序",
     "Move Up": "向上移动",
     "Move Down": "向下移动",
-    "Remove": ""
+    "Remove": "",
+    "Waiting for the planner to empty...": "",
+    "No video devices available": "",
+    "Choose a video device": "",
+    "Automatic detection": ""
 }

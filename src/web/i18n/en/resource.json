@@ -504,5 +504,9 @@
     "Order": "Order",
     "Move Up": "Move Up",
     "Move Down": "Move Down",
-    "Remove": "Remove"
+    "Remove": "Remove",
+    "Waiting for the planner to empty...": "Waiting for the planner to empty...",
+    "No video devices available": "No video devices available",
+    "Choose a video device": "Choose a video device",
+    "Automatic detection": "Automatic detection"
 }
