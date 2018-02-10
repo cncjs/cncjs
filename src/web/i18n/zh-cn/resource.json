@@ -499,9 +499,13 @@
     "Crosshair": "",
     "Manual Data Input": "",
     "MDI": "",
-    "Button Width": "",
-    "Order": "",
-    "Move Up": "",
-    "Move Down": "",
-    "Remove": ""
+    "Button Width": "按钮宽度",
+    "Order": "排序",
+    "Move Up": "向上移动",
+    "Move Down": "向下移动",
+    "Remove": "",
+    "Waiting for the planner to empty...": "",
+    "No video devices available": "",
+    "Choose a video device": "",
+    "Automatic detection": ""
 }
