@@ -1,44 +1,44 @@
 {
     "TinyG": {
         "machineState": {
-            "initializing": "Iniciar",
-            "ready": "Pronto",
-            "alarm": "Alarme",
-            "stop": "Parar",
-            "end": "Fim",
-            "run": "Rodar",
-            "hold": "Manter",
-            "probe": "Sonda",
-            "cycle": "",
-            "homing": "",
-            "jog": "",
-            "interlock": "",
+            "initializing": "iniciando",
+            "ready": "pronto",
+            "alarm": "alarme",
+            "stop": "parar",
+            "end": "fim",
+            "run": "rodar",
+            "hold": "manter",
+            "probe": "sonda",
+            "cycle": "ciclo",
+            "homing": "ir para origem",
+            "jog": "movimento",
+            "interlock": "bloqueio",
             "shutdown": "Desligar",
-            "panic": ""
+            "panic": "pânico"
         }
     },
     "Grbl": {
         "machineState": {
-            "idle": "Inativo",
-            "run": "Rodar",
-            "hold": "Manter",
-            "door": "Porta",
-            "home": "Casa",
-            "sleep": "",
-            "alarm": "Alarme",
-            "check": "Checar"
+            "idle": "inativo",
+            "run": "rodar",
+            "hold": "manter",
+            "door": "porta",
+            "home": "origem",
+            "sleep": "dormir",
+            "alarm": "alarme",
+            "check": "checar"
         }
     },
     "Smoothie": {
         "machineState": {
-            "idle": "Inativo",
-            "run": "Rodar",
-            "hold": "Manter",
-            "door": "Porta",
-            "home": "Casa",
-            "sleep": "",
-            "alarm": "Alarme",
-            "check": "Checar"
+            "idle": "inativo",
+            "run": "rodar",
+            "hold": "manter",
+            "door": "porta",
+            "home": "origem",
+            "sleep": "dormir",
+            "alarm": "alarme",
+            "check": "checar"
         }
     }
 }
