@@ -472,7 +472,6 @@
     "{{extname}} File": "Arquivo {{extname}}",
     "File": "Arquivo",
     "3D rendering": "Renderização 3D",
-    "Reset Position": "Reinicializa a posição",
     "Zoom In": "Zoom +",
     "Zoom Out": "Zoom -",
     "Move the camera": "Move a câmera",
@@ -507,5 +506,12 @@
     "Waiting for the planner to empty...": "Esperando o planejador esvaziar ...",
     "No video devices available": "Não há dispositivos de vídeo disponíveis",
     "Choose a video device": "Escolha um dispositivo de vídeo",
-    "Automatic detection": "Detecção automática"
+    "Automatic detection": "Detecção automática",
+    "Move Backward": "",
+    "Move Forward": "",
+    "Top View": "",
+    "Isometric View": "",
+    "Front View": "",
+    "Side View": "",
+    "Zoom to Fit": ""
 }
