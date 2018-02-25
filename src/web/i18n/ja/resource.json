@@ -473,7 +473,6 @@
     "{{extname}} File": "{{extname}} ファイル",
     "File": "ファイル",
     "3D rendering": "3D レンダリング",
-    "Reset Position": "ポジションをリセット",
     "Zoom In": "拡大",
     "Zoom Out": "縮小",
     "Move the camera": "カメラを移動",
@@ -508,5 +507,12 @@
     "Waiting for the planner to empty...": "",
     "No video devices available": "",
     "Choose a video device": "",
-    "Automatic detection": ""
+    "Automatic detection": "",
+    "Front View": "",
+    "Move Backward": "",
+    "Move Forward": "",
+    "Top View": "",
+    "Isometric View": "",
+    "Side View": "",
+    "Zoom to Fit": ""
 }
