@@ -1,6 +1,3 @@
-/* eslint-disable import/no-unresolved */
-import 'imports-loader?THREE=three!three/examples/js/cameras/CombinedCamera';
-/* eslint-enable */
 import each from 'lodash/each';
 import isEqual from 'lodash/isEqual';
 import tail from 'lodash/tail';
@@ -13,8 +10,9 @@ import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import Detector from 'three/examples/js/Detector';
 import log from '../../lib/log';
-import './TrackballControls';
 import { getBoundingBox, loadTexture } from './helpers';
+import './CombinedCamera';
+import './TrackballControls';
 import Viewport from './Viewport';
 import CoordinateAxes from './CoordinateAxes';
 import ToolHead from './ToolHead';
@@ -46,9 +44,7 @@ const PERSPECTIVE_FAR = 2000;
 const ORTHOGRAPHIC_FOV = 35;
 const ORTHOGRAPHIC_NEAR = 0.001;
 const ORTHOGRAPHIC_FAR = 2000;
-const CAMERA_POSITION_X = 0;
-const CAMERA_POSITION_Y = 0;
-const CAMERA_POSITION_Z = 200; // Move the camera out a bit from the origin (0, 0, 0)
+const CAMERA_DISTANCE = 200; // Move the camera out a bit from the origin (0, 0, 0)
 const TRACKBALL_CONTROLS_MIN_DISTANCE = 1;
 const TRACKBALL_CONTROLS_MAX_DISTANCE = 2000;
 
@@ -630,9 +626,9 @@ class Visualizer extends Component {
             orthoFar
         );
 
-        camera.position.x = CAMERA_POSITION_X;
-        camera.position.y = CAMERA_POSITION_Y;
-        camera.position.z = CAMERA_POSITION_Z;
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = CAMERA_DISTANCE;
 
         return camera;
     }
@@ -643,9 +639,9 @@ class Visualizer extends Component {
         const far = PERSPECTIVE_FAR;
         const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
 
-        camera.position.x = CAMERA_POSITION_X;
-        camera.position.y = CAMERA_POSITION_Y;
-        camera.position.z = CAMERA_POSITION_Z;
+        camera.position.x = 0;
+        camera.position.y = 0;
+        camera.position.z = CAMERA_DISTANCE;
 
         return camera;
     }
@@ -848,36 +844,99 @@ class Visualizer extends Component {
             this.controls && this.controls.setMouseButtonState(MAIN_BUTTON, PAN);
         }
     }
-    zoom(factor) {
-        if (factor === 1.0 || factor <= 0) {
+    toIsometricView() {
+        if (this.controls) {
+            this.controls.reset();
+        }
+
+        this.camera.up.set(0, 0, 1);
+        this.camera.position.set(CAMERA_DISTANCE, -CAMERA_DISTANCE, CAMERA_DISTANCE);
+
+        if (this.viewport) {
+            this.viewport.update();
+        }
+        if (this.controls) {
+            this.controls.update();
+        }
+        this.updateScene();
+    }
+    toFrontView() {
+        if (this.controls) {
+            this.controls.reset();
+        }
+
+        this.camera.up.set(0, 0, 1);
+        this.camera.position.set(0, -CAMERA_DISTANCE, 0);
+
+        if (this.viewport) {
+            this.viewport.update();
+        }
+        if (this.controls) {
+            this.controls.update();
+        }
+        this.updateScene();
+    }
+    toSideView() {
+        if (this.controls) {
+            this.controls.reset();
+        }
+
+        this.camera.up.set(0, 0, 1);
+        this.camera.position.set(CAMERA_DISTANCE, 0, 0);
+
+        if (this.viewport) {
+            this.viewport.update();
+        }
+        if (this.controls) {
+            this.controls.update();
+        }
+        this.updateScene();
+    }
+    toTopView() {
+        if (this.controls) {
+            this.controls.reset();
+        }
+
+        this.camera.up.set(0, 1, 0);
+        this.camera.position.set(0, 0, CAMERA_DISTANCE);
+
+        if (this.viewport) {
+            this.viewport.update();
+        }
+        if (this.controls) {
+            this.controls.update();
+        }
+        this.updateScene();
+    }
+    zoomFit() {
+        if (this.viewport) {
+            this.viewport.update();
+        }
+        this.updateScene();
+    }
+    zoomIn(delta = 0.1) {
+        const { noZoom } = this.controls;
+        if (noZoom) {
             return;
         }
 
-        if (this.camera.inOrthographicMode) {
-            const zoom = this.camera.zoom * factor;
-            if (zoom > 0.1) {
-                this.camera.setZoom(zoom);
-            } else {
-                this.camera.setZoom(0.1);
-            }
-        } else {
-            this.camera.position.z *= (2 - factor);
-        }
-
+        this.controls.zoomIn(delta);
         this.controls.update();
 
         // Update the scene
         this.updateScene();
     }
-    zoomIn(delta = 0.1) {
-        const { noZoom, zoomSpeed } = this.controls;
-        const factor = 1.0 + delta * zoomSpeed;
-        !noZoom && this.zoom(factor);
-    }
     zoomOut(delta = 0.1) {
-        const { noZoom, zoomSpeed } = this.controls;
-        const factor = 1.0 + -1 * delta * zoomSpeed;
-        !noZoom && this.zoom(factor);
+        const { noZoom } = this.controls;
+        if (noZoom) {
+            return;
+        }
+
+        this.controls.zoomOut(delta);
+        this.controls.update();
+
+        // Update the scene
+        this.updateScene();
     }
     // deltaX and deltaY are in pixels; right and down are positive
     pan(deltaX, deltaY) {

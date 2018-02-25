@@ -21,10 +21,13 @@ $icon-height = 20px;
         border: 0;
         color: inherit;
 
+        &.highlight,
         &:hover {
+            background-image: none;
             background-color: #e6e6e6;
         }
 
+        &.highlight,
         &:hover,
         &:focus,
         &:active {
@@ -35,6 +38,7 @@ $icon-height = 20px;
 
         filter: invert(40%);
 
+        &.highlight,
         &:hover {
             filter: invert(0%);
         }
@@ -45,27 +49,5 @@ $icon-height = 20px;
 
     .btn-icon + .btn-icon {
         margin-left: 0;
-    }
-
-    .icon {
-        display: inline-block;
-        width: $icon-width;
-        height: $icon-height;
-
-        &.icon-zoom-in {
-            background: url("./images/zoom-in.svg") no-repeat 0 0;
-        }
-        &.icon-zoom-out {
-            background: url("./images/zoom-out.svg") no-repeat 0 0;
-        }
-        &.icon-move {
-            background: url("./images/move.svg") no-repeat 0 0;
-        }
-        &.icon-rotate {
-            background: url("./images/rotate-object.svg") no-repeat 0 0;
-        }
-        &.icon-focus-center {
-            background: url("./images/focus.svg") no-repeat 0 0;
-        }
     }
 }
