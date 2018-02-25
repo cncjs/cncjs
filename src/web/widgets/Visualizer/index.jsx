@@ -497,6 +497,11 @@ class VisualizerWidget extends PureComponent {
                     cameraMode: CAMERA_MODE_PAN
                 }));
             },
+            zoomFit: () => {
+                if (this.visualizer) {
+                    this.visualizer.zoomFit();
+                }
+            },
             zoomIn: () => {
                 if (this.visualizer) {
                     this.visualizer.zoomIn();
@@ -531,6 +536,26 @@ class VisualizerWidget extends PureComponent {
                 if (this.visualizer) {
                     this.visualizer.lookAtCenter();
                 }
+            },
+            toTopView: () => {
+                this.setState({ cameraView: 'top' }, () => {
+                    this.visualizer.toTopView();
+                });
+            },
+            toIsometricView: () => {
+                this.setState({ cameraView: 'isometric' }, () => {
+                    this.visualizer.toIsometricView();
+                });
+            },
+            toFrontView: () => {
+                this.setState({ cameraView: 'front' }, () => {
+                    this.visualizer.toFrontView();
+                });
+            },
+            toSideView: () => {
+                this.setState({ cameraView: 'side' }, () => {
+                    this.visualizer.toSideView();
+                });
             }
         }
     };
@@ -839,6 +864,7 @@ class VisualizerWidget extends PureComponent {
                 }
             },
             cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
+            cameraView: 'top', // 'top', 'isometric', 'front', 'side'
             isAgitated: false // Defaults to false
         };
     }
