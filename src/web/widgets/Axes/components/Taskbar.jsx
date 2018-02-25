@@ -1,24 +1,17 @@
-import React, { PureComponent } from 'react';
+import React from 'react';
 import TaskbarButton from './TaskbarButton';
 
-class Taskbar extends PureComponent {
-    render() {
-        const { children } = this.props;
-
-        return (
-            <div
-                className="clearfix"
-                style={{
-                    borderTop: '1px solid #ddd'
-                }}
-            >
-                <div className="pull-right">
-                    {children}
-                </div>
-            </div>
-        );
-    }
-}
+const Taskbar = ({ children, style, ...props }) => (
+    <div
+        {...props}
+        style={{
+            borderTop: '1px solid #ddd',
+            ...style
+        }}
+    >
+        {children}
+    </div>
+);
 
 Taskbar.Button = TaskbarButton;
 

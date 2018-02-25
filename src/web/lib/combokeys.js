@@ -7,6 +7,8 @@ const AXIS_X = 'x';
 const AXIS_Y = 'y';
 const AXIS_Z = 'z';
 const AXIS_A = 'a';
+//const AXIS_B = 'b';
+//const AXIS_C = 'c';
 const FORWARD = 1;
 const BACKWARD = -1;
 const OVERSHOOT_FACTOR = 10; // 10x
@@ -54,16 +56,26 @@ const commandKeys = [
         preventDefault: true
     },
     { // Select Jog Distance
-        keys: ['ctrl', 'alt', 'command', '='].join('+'),
+        keys: ['ctrl', 'alt', 'command', '-'].join('+'),
         cmd: 'JOG_LEVER_SWITCH',
         payload: {
+            key: '-'
         },
         preventDefault: true
     },
-    { // Select Jog Distance (Alias)
-        keys: ['ctrl', 'alt', 'command', 'd'].join('+'),
+    { // Select Jog Distance
+        keys: ['ctrl', 'alt', 'command', '+'].join('+'),
         cmd: 'JOG_LEVER_SWITCH',
         payload: {
+            key: '+'
+        },
+        preventDefault: true
+    },
+    { // Select Jog Distance
+        keys: ['ctrl', 'alt', 'command', '='].join('+'),
+        cmd: 'JOG_LEVER_SWITCH',
+        payload: {
+            key: ''
         },
         preventDefault: true
     },
@@ -496,6 +508,22 @@ const commandKeys = [
         cmd: 'SELECT_AXIS',
         payload: {
             axis: 'a'
+        },
+        preventDefault: true
+    },
+    { // Select B-axis
+        keys: ['ctrl', 'alt', 'command', 'b'].join('+'),
+        cmd: 'SELECT_AXIS',
+        payload: {
+            axis: 'b'
+        },
+        preventDefault: true
+    },
+    { // Select C-axis
+        keys: ['ctrl', 'alt', 'command', 'c'].join('+'),
+        cmd: 'SELECT_AXIS',
+        payload: {
+            axis: 'c'
         },
         preventDefault: true
     }

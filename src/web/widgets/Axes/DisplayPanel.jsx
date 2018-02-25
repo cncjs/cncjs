@@ -6,7 +6,7 @@ import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Dropdown, { MenuItem } from '../../components/Dropdown';
-import SVG from '../../components/SVG';
+import Image from '../../components/Image';
 import { Tooltip } from '../../components/Tooltip';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
@@ -28,6 +28,8 @@ import {
     METRIC_UNITS
 } from '../../constants';
 import styles from './index.styl';
+import iconMinus from './images/minus.svg';
+import iconPlus from './images/plus.svg';
 import iconHome from './images/home.svg';
 import iconPin from './images/pin.svg';
 import iconPencil from './images/pencil.svg';
@@ -990,8 +992,8 @@ class DisplayPanel extends PureComponent {
     };
 
     renderAxis = (axis) => {
-        const { canClick, units, machinePosition, workPosition } = this.props.state;
-        const { setWorkOffsets } = this.props.actions;
+        const { canClick, units, machinePosition, workPosition, jog } = this.props.state;
+        const { actions } = this.props;
         const lengthUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         const degreeUnits = i18n._('deg');
         const mpos = machinePosition[axis] || '0.000';
@@ -1017,47 +1019,58 @@ class DisplayPanel extends PureComponent {
         }[axis] || noop;
         const canZeroOutMachine = canClick;
         const canHomeMachine = canClick;
+        const canMoveBackward = canClick;
+        const canMoveForward = canClick;
         const canZeroOutWorkOffsets = canClick;
         const canModifyWorkPosition = canClick && !this.state.positionInput[axis];
         const showPositionInput = canClick && this.state.positionInput[axis];
+        const highlightAxis = canClick && (jog.keypad || jog.axis === axis);
 
         return (
             <tr>
                 <td className={styles.coordinate}>
-                    <AxisLabel>{axisLabel}</AxisLabel>
+                    <AxisLabel highlight={highlightAxis}>
+                        {axisLabel}
+                    </AxisLabel>
                     <AxisSubscript>{displayUnits}</AxisSubscript>
                 </td>
                 <td className={styles.machinePosition}>
                     <PositionLabel value={mpos} />
                     <Taskbar>
-                        <TaskbarButton
-                            disabled={!canZeroOutMachine}
-                            onClick={() => {
-                                controller.command('gcode', `G28.3 ${axisLabel}0`);
-                            }}
-                        >
-                            <Tooltip
-                                placement="bottom"
-                                content={i18n._('Zero Out Machine')}
-                                hideOnClick
-                            >
-                                <SVG src={iconPin} width="14" height="14" />
-                            </Tooltip>
-                        </TaskbarButton>
-                        <TaskbarButton
-                            disabled={!canHomeMachine}
-                            onClick={() => {
-                                controller.command('gcode', `G28.2 ${axisLabel}0`);
-                            }}
-                        >
-                            <Tooltip
-                                placement="bottom"
-                                content={i18n._('Home Machine')}
-                                hideOnClick
-                            >
-                                <SVG src={iconHome} width="14" height="14" />
-                            </Tooltip>
-                        </TaskbarButton>
+                        <div className="clearfix">
+                            <div className="pull-right">
+                                <TaskbarButton
+                                    disabled={!canZeroOutMachine}
+                                    onClick={() => {
+                                        controller.command('gcode', `G28.3 ${axisLabel}0`);
+                                    }}
+                                >
+                                    <Tooltip
+                                        placement="bottom"
+                                        content={i18n._('Zero Out Machine')}
+                                        disabled={!canZeroOutMachine}
+                                        hideOnClick
+                                    >
+                                        <Image src={iconPin} width="14" height="14" />
+                                    </Tooltip>
+                                </TaskbarButton>
+                                <TaskbarButton
+                                    disabled={!canHomeMachine}
+                                    onClick={() => {
+                                        controller.command('gcode', `G28.2 ${axisLabel}0`);
+                                    }}
+                                >
+                                    <Tooltip
+                                        placement="bottom"
+                                        content={i18n._('Home Machine')}
+                                        disabled={!canHomeMachine}
+                                        hideOnClick
+                                    >
+                                        <Image src={iconHome} width="14" height="14" />
+                                    </Tooltip>
+                                </TaskbarButton>
+                            </div>
+                        </div>
                     </Taskbar>
                 </td>
                 <td className={styles.workPosition}>
@@ -1066,7 +1079,7 @@ class DisplayPanel extends PureComponent {
                         style={{ margin: '5px 0' }}
                         onSave={chainedFunction(
                             (value) => {
-                                setWorkOffsets(axis, value);
+                                actions.setWorkOffsets(axis, value);
                             },
                             this.hidePositionInput(axis)
                         )}
@@ -1077,33 +1090,73 @@ class DisplayPanel extends PureComponent {
                     <PositionLabel value={wpos} />
                     }
                     <Taskbar>
-                        <TaskbarButton
-                            disabled={!canZeroOutWorkOffsets}
-                            onClick={() => {
-                                setWorkOffsets(axis, 0);
-                            }}
-                        >
-                            <Tooltip
-                                placement="bottom"
-                                content={i18n._('Zero Out Work Offsets')}
-                                hideOnClick
-                            >
-                                <SVG src={iconPin} width="14" height="14" />
-                            </Tooltip>
-                        </TaskbarButton>
-                        <TaskbarButton
-                            active={showPositionInput}
-                            disabled={!canModifyWorkPosition}
-                            onClick={this.showPositionInput(axis)}
-                        >
-                            <Tooltip
-                                placement="bottom"
-                                content={i18n._('Set Work Offsets')}
-                                hideOnClick
-                            >
-                                <SVG src={iconPencil} width="14" height="14" />
-                            </Tooltip>
-                        </TaskbarButton>
+                        <div className="clearfix">
+                            <div className="pull-left">
+                                <TaskbarButton
+                                    disabled={!canMoveBackward}
+                                    onClick={() => {
+                                        const distance = actions.getJogDistance();
+                                        actions.jog({ [axis]: -distance });
+                                    }}
+                                >
+                                    <Tooltip
+                                        placement="bottom"
+                                        content={i18n._('Move Backward')}
+                                        disabled={!canMoveBackward}
+                                        hideOnClick
+                                    >
+                                        <Image src={iconMinus} width="14" height="14" />
+                                    </Tooltip>
+                                </TaskbarButton>
+                                <TaskbarButton
+                                    disabled={!canMoveForward}
+                                    onClick={() => {
+                                        const distance = actions.getJogDistance();
+                                        actions.jog({ [axis]: distance });
+                                    }}
+                                >
+                                    <Tooltip
+                                        placement="bottom"
+                                        content={i18n._('Move Forward')}
+                                        disabled={!canMoveForward}
+                                        hideOnClick
+                                    >
+                                        <Image src={iconPlus} width="14" height="14" />
+                                    </Tooltip>
+                                </TaskbarButton>
+                            </div>
+                            <div className="pull-right">
+                                <TaskbarButton
+                                    disabled={!canZeroOutWorkOffsets}
+                                    onClick={() => {
+                                        actions.setWorkOffsets(axis, 0);
+                                    }}
+                                >
+                                    <Tooltip
+                                        placement="bottom"
+                                        content={i18n._('Zero Out Work Offsets')}
+                                        disabled={!canZeroOutWorkOffsets}
+                                        hideOnClick
+                                    >
+                                        <Image src={iconPin} width="14" height="14" />
+                                    </Tooltip>
+                                </TaskbarButton>
+                                <TaskbarButton
+                                    active={showPositionInput}
+                                    disabled={!canModifyWorkPosition}
+                                    onClick={this.showPositionInput(axis)}
+                                >
+                                    <Tooltip
+                                        placement="bottom"
+                                        content={i18n._('Set Work Offsets')}
+                                        disabled={!canModifyWorkPosition}
+                                        hideOnClick
+                                    >
+                                        <Image src={iconPencil} width="14" height="14" />
+                                    </Tooltip>
+                                </TaskbarButton>
+                            </div>
+                        </div>
                     </Taskbar>
                 </td>
                 <td className={styles.action}>
