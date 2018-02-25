@@ -242,6 +242,22 @@ class AxesWidget extends PureComponent {
                     }
                 }
             }));
+        },
+        stepNext: () => {
+            this.setState(state => ({
+                jog: {
+                    ...state.jog,
+                    step: {
+                        ...state.jog.step,
+                        imperial: (state.units === IMPERIAL_UNITS)
+                            ? (state.jog.step.imperial + 1) % IMPERIAL_STEPS.length
+                            : state.jog.step.imperial,
+                        metric: (state.units === METRIC_UNITS)
+                            ? (state.jog.step.metric + 1) % METRIC_STEPS.length
+                            : state.jog.step.metric
+                    }
+                }
+            }));
         }
     };
     shuttleControlEvents = {
@@ -281,17 +297,21 @@ class AxesWidget extends PureComponent {
                 x: () => this.actions.jog({ X: direction * distance * factor }),
                 y: () => this.actions.jog({ Y: direction * distance * factor }),
                 z: () => this.actions.jog({ Z: direction * distance * factor }),
-                a: () => this.actions.jog({ A: direction * distance * factor })
+                a: () => this.actions.jog({ A: direction * distance * factor }),
+                b: () => this.actions.jog({ B: direction * distance * factor }),
+                c: () => this.actions.jog({ C: direction * distance * factor })
             }[axis];
 
             jogAxis && jogAxis();
         },
-        JOG_LEVER_SWITCH: (event) => {
-            const { selectedDistance } = this.state;
-            const distances = ['1', '0.1', '0.01', '0.001', ''];
-            const currentIndex = distances.indexOf(selectedDistance);
-            const distance = distances[(currentIndex + 1) % distances.length];
-            this.actions.selectDistance(distance);
+        JOG_LEVER_SWITCH: (event, { key = '' }) => {
+            if (key === '-') {
+                this.actions.stepBackward();
+            } else if (key === '+') {
+                this.actions.stepForward();
+            } else {
+                this.actions.stepNext();
+            }
         },
         SHUTTLE: (event, { zone = 0 }) => {
             const { canClick, jog } = this.state;
