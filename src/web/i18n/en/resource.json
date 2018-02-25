@@ -472,7 +472,6 @@
     "{{extname}} File": "{{extname}} File",
     "File": "File",
     "3D rendering": "3D rendering",
-    "Reset Position": "Reset Position",
     "Zoom In": "Zoom In",
     "Zoom Out": "Zoom Out",
     "Move the camera": "Move the camera",
@@ -507,5 +506,12 @@
     "Waiting for the planner to empty...": "Waiting for the planner to empty...",
     "No video devices available": "No video devices available",
     "Choose a video device": "Choose a video device",
-    "Automatic detection": "Automatic detection"
+    "Automatic detection": "Automatic detection",
+    "Front View": "Front View",
+    "Move Backward": "Move Backward",
+    "Move Forward": "Move Forward",
+    "Top View": "Top View",
+    "Isometric View": "Isometric View",
+    "Side View": "Side View",
+    "Zoom to Fit": "Zoom to Fit"
 }

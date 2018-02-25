@@ -472,7 +472,6 @@
     "{{extname}} File": "{{extname}}-Datei",
     "File": "Datei",
     "3D rendering": "3D-Rendering",
-    "Reset Position": "Position zurücksetzen",
     "Zoom In": "Hineinzoomen",
     "Zoom Out": "Herauszoomen",
     "Move the camera": "Ansicht bewegen",
@@ -507,5 +506,12 @@
     "Waiting for the planner to empty...": "",
     "No video devices available": "",
     "Choose a video device": "",
-    "Automatic detection": ""
+    "Automatic detection": "",
+    "Front View": "",
+    "Move Backward": "",
+    "Move Forward": "",
+    "Top View": "",
+    "Isometric View": "",
+    "Side View": "",
+    "Zoom to Fit": ""
 }

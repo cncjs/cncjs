@@ -472,7 +472,6 @@
     "{{extname}} File": "файл \"{{extname}}\"",
     "File": "файл",
     "3D rendering": "3D-визуализация",
-    "Reset Position": "Сбросить позицию",
     "Zoom In": "",
     "Zoom Out": "",
     "Move the camera": "",
@@ -507,5 +506,12 @@
     "Waiting for the planner to empty...": "",
     "No video devices available": "",
     "Choose a video device": "",
-    "Automatic detection": ""
+    "Automatic detection": "",
+    "Front View": "",
+    "Move Backward": "",
+    "Move Forward": "",
+    "Top View": "",
+    "Isometric View": "",
+    "Side View": "",
+    "Zoom to Fit": ""
 }

@@ -472,7 +472,6 @@
     "{{extname}} File": "{{extname}} Dosya",
     "File": "Dosya",
     "3D rendering": "3D render",
-    "Reset Position": "Sıfırlama Konumu",
     "Zoom In": "Zoom In",
     "Zoom Out": "Zoom Out",
     "Move the camera": "Kamerayı hareket ettir",
@@ -507,5 +506,12 @@
     "Waiting for the planner to empty...": "",
     "No video devices available": "",
     "Choose a video device": "",
-    "Automatic detection": ""
+    "Automatic detection": "",
+    "Front View": "",
+    "Move Backward": "",
+    "Move Forward": "",
+    "Top View": "",
+    "Isometric View": "",
+    "Side View": "",
+    "Zoom to Fit": ""
 }

@@ -472,7 +472,6 @@
     "{{extname}} File": "{{extname}} Fájl",
     "File": "Fájl",
     "3D rendering": "3D renderelés",
-    "Reset Position": "Pozició Rezet",
     "Zoom In": "Közelítés",
     "Zoom Out": "Távolítás",
     "Move the camera": "Kamera mozgatás",
@@ -507,5 +506,12 @@
     "Waiting for the planner to empty...": "",
     "No video devices available": "",
     "Choose a video device": "",
-    "Automatic detection": ""
+    "Automatic detection": "",
+    "Front View": "",
+    "Move Backward": "",
+    "Move Forward": "",
+    "Top View": "",
+    "Isometric View": "",
+    "Side View": "",
+    "Zoom to Fit": ""
 }
