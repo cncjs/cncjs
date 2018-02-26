@@ -538,23 +538,28 @@ class VisualizerWidget extends PureComponent {
                 }
             },
             toTopView: () => {
-                this.setState({ cameraView: 'top' }, () => {
+                this.setState({ cameraPosition: 'top' }, () => {
                     this.visualizer.toTopView();
                 });
             },
-            toIsometricView: () => {
-                this.setState({ cameraView: 'isometric' }, () => {
-                    this.visualizer.toIsometricView();
+            to3DView: () => {
+                this.setState({ cameraPosition: '3d' }, () => {
+                    this.visualizer.to3DView();
                 });
             },
             toFrontView: () => {
-                this.setState({ cameraView: 'front' }, () => {
+                this.setState({ cameraPosition: 'front' }, () => {
                     this.visualizer.toFrontView();
                 });
             },
-            toSideView: () => {
-                this.setState({ cameraView: 'side' }, () => {
-                    this.visualizer.toSideView();
+            toLeftSideView: () => {
+                this.setState({ cameraPosition: 'left' }, () => {
+                    this.visualizer.toLeftSideView();
+                });
+            },
+            toRightSideView: () => {
+                this.setState({ cameraPosition: 'right' }, () => {
+                    this.visualizer.toRightSideView();
                 });
             }
         }
@@ -864,7 +869,7 @@ class VisualizerWidget extends PureComponent {
                 }
             },
             cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
-            cameraView: 'top', // 'top', 'isometric', 'front', 'side'
+            cameraPosition: 'top', // 'top', '3d', 'front', 'left', 'right'
             isAgitated: false // Defaults to false
         };
     }
