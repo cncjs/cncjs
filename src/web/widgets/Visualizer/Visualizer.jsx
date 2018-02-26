@@ -844,7 +844,23 @@ class Visualizer extends Component {
             this.controls && this.controls.setMouseButtonState(MAIN_BUTTON, PAN);
         }
     }
-    toIsometricView() {
+    toTopView() {
+        if (this.controls) {
+            this.controls.reset();
+        }
+
+        this.camera.up.set(0, 1, 0);
+        this.camera.position.set(0, 0, CAMERA_DISTANCE);
+
+        if (this.viewport) {
+            this.viewport.update();
+        }
+        if (this.controls) {
+            this.controls.update();
+        }
+        this.updateScene();
+    }
+    to3DView() {
         if (this.controls) {
             this.controls.reset();
         }
@@ -876,7 +892,7 @@ class Visualizer extends Component {
         }
         this.updateScene();
     }
-    toSideView() {
+    toLeftSideView() {
         if (this.controls) {
             this.controls.reset();
         }
@@ -890,15 +906,14 @@ class Visualizer extends Component {
         if (this.controls) {
             this.controls.update();
         }
-        this.updateScene();
     }
-    toTopView() {
+    toRightSideView() {
         if (this.controls) {
             this.controls.reset();
         }
 
-        this.camera.up.set(0, 1, 0);
-        this.camera.position.set(0, 0, CAMERA_DISTANCE);
+        this.camera.up.set(0, 0, 1);
+        this.camera.position.set(-CAMERA_DISTANCE, 0, 0);
 
         if (this.viewport) {
             this.viewport.update();

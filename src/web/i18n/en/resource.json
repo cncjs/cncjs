@@ -511,7 +511,7 @@
     "Move Backward": "Move Backward",
     "Move Forward": "Move Forward",
     "Top View": "Top View",
-    "Isometric View": "Isometric View",
-    "Side View": "Side View",
-    "Zoom to Fit": "Zoom to Fit"
+    "Zoom to Fit": "Zoom to Fit",
+    "Right Side View": "Right Side View",
+    "Left Side View": "Left Side View"
 }
