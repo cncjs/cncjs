@@ -1091,7 +1091,7 @@ class DisplayPanel extends PureComponent {
                     }
                     <Taskbar>
                         <div className="clearfix">
-                            <div className="pull-left">
+                            <div className="pull-right">
                                 <TaskbarButton
                                     disabled={!canMoveBackward}
                                     onClick={() => {
@@ -1124,8 +1124,6 @@ class DisplayPanel extends PureComponent {
                                         <Image src={iconPlus} width="14" height="14" />
                                     </Tooltip>
                                 </TaskbarButton>
-                            </div>
-                            <div className="pull-right">
                                 <TaskbarButton
                                     disabled={!canZeroOutWorkOffsets}
                                     onClick={() => {
@@ -1183,8 +1181,8 @@ class DisplayPanel extends PureComponent {
                     <thead>
                         <tr>
                             <th className="nowrap" title={i18n._('Axis')}>{i18n._('Axis')}</th>
-                            <th title={i18n._('Machine Position')}>{i18n._('Machine Position')}</th>
-                            <th title={i18n._('Work Position')}>{i18n._('Work Position')}</th>
+                            <th className="nowrap" title={i18n._('Machine Position')}>{i18n._('Machine Position')}</th>
+                            <th className="nowrap" title={i18n._('Work Position')}>{i18n._('Work Position')}</th>
                             <th className={cx('nowrap', styles.action)}>
                                 {this.renderActionDropdown()}
                             </th>
