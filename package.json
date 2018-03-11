@@ -59,7 +59,7 @@
     "start": "./bin/cnc",
     "start-electron": "electron ./dist/cnc/main",
     "watch-dev": "webpack --watch --config webpack.appconfig.development.js",
-    "start-dev": "NODE_ENV=development ./bin/cnc -vv -p 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v2/",
+    "start-dev": "cross-env NODE_ENV=development ./bin/cnc -vv -p 8000 -m /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v2/",
     "dev": "npm run build-dev && npm run start-dev",
     "prod": "npm run build-prod && NODE_ENV=production ./bin/cnc",
     "lint": "npm run eslint && npm run stylint",
