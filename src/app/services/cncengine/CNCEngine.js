@@ -3,26 +3,27 @@ import noop from 'lodash/noop';
 import SerialPort from 'serialport';
 import socketIO from 'socket.io';
 import socketioJwt from 'socketio-jwt';
-import EventTrigger from '../../lib/EventTrigger';
-import logger from '../../lib/logger';
-import settings from '../../config/settings';
-import store from '../../store';
-import config from '../configstore';
-import taskRunner from '../taskrunner';
+import {
+    authorizeIPAddress,
+    validateUser
+} from 'app/access-control';
+import settings from 'app/config/settings';
 import {
     GrblController,
     MarlinController,
     SmoothieController,
     TinyGController
-} from '../../controllers';
-import { GRBL } from '../../controllers/Grbl/constants';
-import { MARLIN } from '../../controllers/Marlin/constants';
-import { SMOOTHIE } from '../../controllers/Smoothie/constants';
-import { G2CORE, TINYG } from '../../controllers/TinyG/constants';
-import {
-    authorizeIPAddress,
-    validateUser
-} from '../../access-control';
+} from 'app/controllers';
+import { GRBL } from 'app/controllers/Grbl/constants';
+import { MARLIN } from 'app/controllers/Marlin/constants';
+import { SMOOTHIE } from 'app/controllers/Smoothie/constants';
+import { G2CORE, TINYG } from 'app/controllers/TinyG/constants';
+import EventTrigger from 'app/lib/EventTrigger';
+import logger from 'app/lib/logger';
+import activity from 'app/services/activity';
+import config from 'app/services/configstore';
+import taskRunner from 'app/services/taskrunner';
+import store from 'app/store';
 
 const log = logger('service:cncengine');
 
