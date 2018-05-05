@@ -14,6 +14,7 @@ import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateExpression from '../../lib/evaluateExpression';
 import logger from '../../lib/logger';
 import translateWithContext from '../../lib/translateWithContext';
+import activity from '../../services/activity';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
@@ -102,6 +103,9 @@ class GrblController {
         senderFinishTime: 0
     };
 
+    // Activity
+    activityTimer = null;
+
     // Event Trigger
     event = null;
 
@@ -134,6 +138,8 @@ class GrblController {
             baudRate: baudrate,
             rtscts: rtscts,
             writeFilter: (data) => {
+                activity.log('connection.write');
+
                 const line = data.trim();
 
                 if (!line) {
@@ -162,8 +168,37 @@ class GrblController {
             }
         });
 
+        // Activity
+        this.activityTimer = setInterval(() => {
+            if (this.workflow.state !== WORKFLOW_STATE_IDLE) {
+                return;
+            }
+
+            // Specifies the duration of inactivity before the system will enter sleep.
+            const standbyTimeout = Number(config.get('state.controller.standbyTimeout', 0)) * 1000; // in ms
+            if (!standbyTimeout) {
+                return;
+            }
+
+            const { idleTime = 0 } = activity.status; // in ms
+            const minimumInactivityTimeout = 60 * 1000; // in ms
+            const inactivityTimeout = Math.max(standbyTimeout, minimumInactivityTimeout);
+            if (idleTime >= inactivityTimeout) {
+                log.info(`Enter standby mode: idleTime=${idleTime}ms, inactivityTimeout=${inactivityTimeout}ms`);
+
+                if (this.event) {
+                    this.event.trigger('sleep');
+                }
+
+                // Reset activity history
+                activity.reset();
+            }
+        }, 1000 * 10); // Check for idle status every 10 seconds
+
         // Event Trigger
         this.event = new EventTrigger((event, trigger, commands) => {
+            activity.log('event.trigger');
+
             log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
             if (trigger === 'system') {
                 taskRunner.run(commands);
@@ -781,6 +816,11 @@ class GrblController {
 
         if (this.connection) {
             this.connection = null;
+        }
+
+        if (this.activityTimer) {
+            clearInterval(this.activityTimer);
+            this.activityTimer = null;
         }
 
         if (this.event) {
