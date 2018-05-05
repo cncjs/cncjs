@@ -67,10 +67,11 @@ module.exports = {
     },
     externals: externals,
     resolve: {
+        modules: [
+            path.resolve(__dirname, 'src'),
+            NODE_MODULES
+        ],
         extensions: ['.js', '.jsx']
-    },
-    resolveLoader: {
-        modules: [NODE_MODULES]
     },
     node: {
         console: true,
