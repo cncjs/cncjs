@@ -77,6 +77,8 @@ class CNCEngine {
 
     // Event Trigger
     event = new EventTrigger((event, trigger, commands) => {
+        activity.log('event.trigger');
+
         log.debug(`EventTrigger: event="${event}", trigger="${trigger}", commands="${commands}"`);
         if (trigger === 'system') {
             taskRunner.run(commands);
@@ -171,6 +173,8 @@ class CNCEngine {
             });
 
             socket.on('disconnect', () => {
+                activity.log('socket.disconnect');
+
                 log.debug(`Disconnected from ${address}: id=${socket.id}, user.id=${user.id}, user.name=${user.name}`);
 
                 const controllers = store.get('controllers', {});
@@ -188,6 +192,8 @@ class CNCEngine {
 
             // List the available serial ports
             socket.on('list', () => {
+                activity.log('socket.list');
+
                 log.debug(`socket.list(): id=${socket.id}`);
 
                 SerialPort.list()
@@ -218,6 +224,8 @@ class CNCEngine {
 
             // Open serial port
             socket.on('open', (port, options, callback = noop) => {
+                activity.log('socket.open');
+
                 if (typeof callback !== 'function') {
                     callback = noop;
                 }
@@ -282,6 +290,8 @@ class CNCEngine {
 
             // Close serial port
             socket.on('close', (port, callback = noop) => {
+                activity.log('socket.close');
+
                 if (typeof callback !== 'function') {
                     callback = noop;
                 }
@@ -314,6 +324,8 @@ class CNCEngine {
             });
 
             socket.on('command', (port, cmd, ...args) => {
+                activity.log('socket.command');
+
                 log.debug(`socket.command("${port}", "${cmd}"): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
@@ -326,6 +338,8 @@ class CNCEngine {
             });
 
             socket.on('write', (port, data, context = {}) => {
+                activity.log('socket.write');
+
                 log.debug(`socket.write("${port}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
@@ -338,6 +352,8 @@ class CNCEngine {
             });
 
             socket.on('writeln', (port, data, context = {}) => {
+                activity.log('socket.writeln');
+
                 log.debug(`socket.writeln("${port}", "${data}", ${JSON.stringify(context)}): id=${socket.id}`);
 
                 const controller = store.get(`controllers["${port}"]`);
