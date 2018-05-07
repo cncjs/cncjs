@@ -825,7 +825,7 @@ class MarlinController {
     }
     async initController() {
         // Wait for the bootloader to complete before sending commands
-        await delay(1000);
+        await delay(6000);
 
         // M115: Get Firmware Version and Capabilities
         this.command('gcode', 'M115');
