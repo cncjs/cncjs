@@ -11,72 +11,6 @@ const motionColor = {
     'G3': new THREE.Color(colornames('deepskyblue'))
 };
 
-// @param {object} modal The modal object.
-// @param {object} v1 A 3D vector of the start point.
-// @param {object} v2 A 3D vector of the end point.
-// @return {object} Returns an object including vertices and colors to insert.
-const addLine = (modal, v1, v2) => {
-    const { motion } = modal;
-    const color = motionColor[motion] || defaultColor;
-    const vertices = [
-        new THREE.Vector3(v1.x, v1.y, v1.z),
-        new THREE.Vector3(v2.x, v2.y, v2.z)
-    ];
-    const colors = [color, color];
-
-    return { vertices, colors };
-};
-
-// @param {object} modal The modal object.
-// @param {object} v1 A 3D vector of the start point.
-// @param {object} v2 A 3D vector of the end point.
-// @param {object} v0 A 3D vector of the fixed point.
-// @return {object} Returns an object including vertices and colors to insert.
-const addArcCurve = (modal, v1, v2, v0) => {
-    const { motion, plane } = modal;
-    const isClockwise = (motion === 'G2');
-    const radius = Math.sqrt(
-        ((v1.x - v0.x) ** 2) + ((v1.y - v0.y) ** 2)
-    );
-    let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
-    let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
-
-    // Draw full circle if startAngle and endAngle are both zero
-    if (startAngle === endAngle) {
-        endAngle += (2 * Math.PI);
-    }
-
-    const arcCurve = new THREE.ArcCurve(
-        v0.x, // aX
-        v0.y, // aY
-        radius, // aRadius
-        startAngle, // aStartAngle
-        endAngle, // aEndAngle
-        isClockwise // isClockwise
-    );
-    const divisions = 30;
-    const points = arcCurve.getPoints(divisions);
-    const color = motionColor[motion] || defaultColor;
-    const vertices = [];
-    const colors = [];
-
-    for (let i = 0; i < points.length; ++i) {
-        const point = points[i];
-        const z = ((v2.z - v1.z) / points.length) * i + v1.z;
-
-        if (plane === 'G17') { // XY-plane
-            vertices.push(new THREE.Vector3(point.x, point.y, z));
-        } else if (plane === 'G18') { // ZX-plane
-            vertices.push(new THREE.Vector3(point.y, z, point.x));
-        } else if (plane === 'G19') { // YZ-plane
-            vertices.push(new THREE.Vector3(z, point.x, point.y));
-        }
-        colors.push(color);
-    }
-
-    return { vertices, colors };
-};
-
 class GCodeVisualizer {
     constructor() {
         this.group = new THREE.Object3D();
@@ -96,15 +30,58 @@ class GCodeVisualizer {
     }
     render(gcode) {
         const toolpath = new Toolpath({
+            // @param {object} modal The modal object.
+            // @param {object} v1 A 3D vector of the start point.
+            // @param {object} v2 A 3D vector of the end point.
             addLine: (modal, v1, v2) => {
-                const path = addLine(modal, v1, v2);
-                Array.prototype.push.apply(this.geometry.vertices, path.vertices);
-                Array.prototype.push.apply(this.geometry.colors, path.colors);
+                const { motion } = modal;
+                const color = motionColor[motion] || defaultColor;
+                this.geometry.vertices.push(new THREE.Vector3(v2.x, v2.y, v2.z));
+                this.geometry.colors.push(color);
             },
+            // @param {object} modal The modal object.
+            // @param {object} v1 A 3D vector of the start point.
+            // @param {object} v2 A 3D vector of the end point.
+            // @param {object} v0 A 3D vector of the fixed point.
             addArcCurve: (modal, v1, v2, v0) => {
-                const path = addArcCurve(modal, v1, v2, v0);
-                Array.prototype.push.apply(this.geometry.vertices, path.vertices);
-                Array.prototype.push.apply(this.geometry.colors, path.colors);
+                const { motion, plane } = modal;
+                const isClockwise = (motion === 'G2');
+                const radius = Math.sqrt(
+                    ((v1.x - v0.x) ** 2) + ((v1.y - v0.y) ** 2)
+                );
+                let startAngle = Math.atan2(v1.y - v0.y, v1.x - v0.x);
+                let endAngle = Math.atan2(v2.y - v0.y, v2.x - v0.x);
+
+                // Draw full circle if startAngle and endAngle are both zero
+                if (startAngle === endAngle) {
+                    endAngle += (2 * Math.PI);
+                }
+
+                const arcCurve = new THREE.ArcCurve(
+                    v0.x, // aX
+                    v0.y, // aY
+                    radius, // aRadius
+                    startAngle, // aStartAngle
+                    endAngle, // aEndAngle
+                    isClockwise // isClockwise
+                );
+                const divisions = 30;
+                const points = arcCurve.getPoints(divisions);
+                const color = motionColor[motion] || defaultColor;
+
+                for (let i = 0; i < points.length; ++i) {
+                    const point = points[i];
+                    const z = ((v2.z - v1.z) / points.length) * i + v1.z;
+
+                    if (plane === 'G17') { // XY-plane
+                        this.geometry.vertices.push(new THREE.Vector3(point.x, point.y, z));
+                    } else if (plane === 'G18') { // ZX-plane
+                        this.geometry.vertices.push(new THREE.Vector3(point.y, z, point.x));
+                    } else if (plane === 'G19') { // YZ-plane
+                        this.geometry.vertices.push(new THREE.Vector3(z, point.x, point.y));
+                    }
+                    this.geometry.colors.push(color);
+                }
             }
         });
 
