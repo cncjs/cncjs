@@ -74,12 +74,11 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
  Version | Supported Level
 :------- |:---------------
- <=0.12  | Unsupported
- 4       | <b>Recommended for production use</b>
- 5       | Supported
+ 4       | Dropped support
  6       | <b>Recommended for production use</b>
- 7       | Supported
  8       | <b>Recommended for production use</b>
+ 9       | Supported
+ 10      | Supported
 
 ## Getting Started
 

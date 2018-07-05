@@ -14,9 +14,9 @@ os:
 osx_image: xcode8.3
 
 node_js:
-  - '4'
   - '6'
   - '8'
+  - '10'
 
 env:
   global:
