@@ -6,6 +6,10 @@ import logger from './logger';
 const log = logger('evaluateExpression');
 
 const evaluateExpression = (src, context) => {
+    if (!src || typeof context !== 'object') {
+        return;
+    }
+
     try {
         const ast = parse(src).body[0].expression;
 
@@ -30,7 +34,7 @@ const evaluateExpression = (src, context) => {
             }
         }
     } catch (e) {
-        log.error(`evaluateExpression: src="${src}", context=${context}`);
+        log.error(`evaluateExpression: src="${src}", context=${JSON.stringify(context)}`);
         log.error(e);
     }
 };
