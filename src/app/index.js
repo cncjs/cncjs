@@ -45,14 +45,14 @@ const createServer = (options, callback) => {
         }
     }
 
-    const cncrc = path.resolve(options.configFile || settings.cncrc);
+    const rcfile = path.resolve(options.configFile || settings.rcfile);
 
     // configstore service
-    log.info(`Loading configuration from ${chalk.yellow(JSON.stringify(cncrc))}`);
-    config.load(cncrc);
+    log.info(`Loading configuration from ${chalk.yellow(JSON.stringify(rcfile))}`);
+    config.load(rcfile);
 
-    // cncrc
-    settings.cncrc = cncrc;
+    // rcfile
+    settings.rcfile = rcfile;
 
     { // secret
         if (!config.get('secret')) {

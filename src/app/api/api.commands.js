@@ -122,7 +122,7 @@ export const create = (req, res) => {
         res.send({ id: record.id, mtime: record.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
-            msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
+            msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
         });
     }
 };
@@ -179,7 +179,7 @@ export const update = (req, res) => {
         res.send({ id: record.id, mtime: record.mtime });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
-            msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
+            msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
         });
     }
 };
@@ -205,7 +205,7 @@ export const __delete = (req, res) => {
         res.send({ id: record.id });
     } catch (err) {
         res.status(ERR_INTERNAL_SERVER_ERROR).send({
-            msg: 'Failed to save ' + JSON.stringify(settings.cncrc)
+            msg: 'Failed to save ' + JSON.stringify(settings.rcfile)
         });
     }
 };
