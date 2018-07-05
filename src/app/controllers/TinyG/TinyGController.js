@@ -117,11 +117,12 @@ class TinyGController {
         mpoa: true,
         mpob: true,
         mpoc: true,
-        spe: true, // Spindle enable (edge-082.10)
-        spd: true, // Spindle direction (edge-082.10)
-        sps: true, // Spindle speed (edge-082.10)
-        cof: true, // Flood coolant (edge-082.10)
-        com: true // Mist coolant (edge-082.10)
+        spe: true, // [edge-082.10] Spindle enable (removed in edge-101.03)
+        spd: true, // [edge-082.10] Spindle direction (removed in edge-101.03)
+        spc: true, // [edge-101.03] Spindle control
+        sps: true, // [edge-082.10] Spindle speed
+        com: true, // [edge-082.10] Mist coolant
+        cof: true // [edge-082.10] Flood coolant
     };
     timer = {
         query: null
@@ -419,13 +420,26 @@ class TinyGController {
 
         // https://github.com/synthetos/g2/wiki/g2core-Communications
         this.controller.on('r', (r) => {
+            //
+            // Ignore unrecognized commands
+            //
             if (r && r.spe === null) {
-                // Disable unrecognized commands
-                this.sr.spe = false; // Spindle enable
-                this.sr.spd = false; // Spindle direction
-                this.sr.sps = false; // Spindle speed
-                this.sr.cof = false; // Flood coolant
-                this.sr.com = false; // Mist coolant
+                this.sr.spe = false; // No spindle enable
+            }
+            if (r && r.spd === null) {
+                this.sr.spd = false; // No spindle direction
+            }
+            if (r && r.spc === null) {
+                this.sr.spc = false; // No spindle control
+            }
+            if (r && r.sps === null) {
+                this.sr.sps = false; // No spindle speed
+            }
+            if (r && r.com === null) {
+                this.sr.com = false; // No mist coolant
+            }
+            if (r && r.cof === null) {
+                this.sr.cof = false; // No flood coolant
             }
 
             const { hold, sent, received } = this.sender.state;
@@ -707,11 +721,24 @@ class TinyGController {
         // in milliseconds (50ms minimum interval)
         send('{si:100}');
 
-        // Check whether the spindle enable command is supported
-        send('{spe:n}');
+        await delay(100);
 
-        // Wait for 500ms to examine supported status report fields
-        await delay(500);
+        // Check whether the spindle and coolant commands are supported
+        send('{spe:n}');
+        await delay(100);
+        send('{spd:n}');
+        await delay(100);
+        send('{spc:n}');
+        await delay(100);
+        send('{sps:n}');
+        await delay(100);
+        send('{com:n}');
+        await delay(100);
+        send('{cof:n}');
+        await delay(100);
+
+        // Wait for a certain amount of time before setting status report fields
+        await delay(100);
 
         // Settings Status Report Fields
         // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports#setting-status-report-fields

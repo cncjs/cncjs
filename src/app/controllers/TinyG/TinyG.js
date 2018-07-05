@@ -255,9 +255,10 @@ class TinyG extends events.EventEmitter {
             spindle: '', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
             coolant: '' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
         },
-        spe: 0, // Spindle enable
-        spd: 0, // Spindle direction
-        sps: 0, // Spindle speed
+        spe: 0, // [edge-082.10] Spindle enable
+        spd: 0, // [edge-082.10] Spindle direction
+        spc: 0, // [edge-101.03] Spindle control
+        sps: 0, // [edge-082.10] Spindle speed
         mt: 0, // Motor timeout
         pwr: {}, // Power management: { "1": 0, "2": 0, "3": 0, "4": 0 }
         qr: 0 // Queue reports
@@ -411,7 +412,7 @@ class TinyG extends events.EventEmitter {
                         }[val] || '';
                         _.set(target, 'modal.path', gcode);
                     },
-                    // Spindle enable
+                    // [edge-082.10] Spindle enable (removed in edge-101.03)
                     'spe': (target, val) => {
                         _.set(target, 'spe', val);
 
@@ -423,7 +424,7 @@ class TinyG extends events.EventEmitter {
                             _.set(target, 'modal.spindle', (spd === 0) ? 'M3' : 'M4');
                         }
                     },
-                    // Spindle direction
+                    // [edge-082.10] Spindle direction (removed in edge-101.03)
                     'spd': (target, val) => {
                         _.set(target, 'spd', val);
 
@@ -435,11 +436,22 @@ class TinyG extends events.EventEmitter {
                             _.set(target, 'modal.spindle', (spd === 0) ? 'M3' : 'M4');
                         }
                     },
-                    // Spindle speed
+                    // [edge-101.03] Spindle control
+                    // 0 = OFF, 1 = CW, 2 = CCW
+                    'spc': (target, val) => {
+                        if (val === 0) { // OFF
+                            _.set(target, 'modal.spindle', 'M5');
+                        } else if (val === 1) { // CW
+                            _.set(target, 'modal.spindle', 'M3');
+                        } else if (val === 2) { // CCW
+                            _.set(target, 'modal.spindle', 'M4');
+                        }
+                    },
+                    // [edge-082.10] Spindle speed
                     'sps': (target, val) => {
                         _.set(target, 'sps', val);
                     },
-                    // Mist coolant
+                    // [edge-082.10] Mist coolant
                     'com': (target, val) => {
                         if (val === 0) { // Coolant Off
                             _.set(target, 'modal.coolant', 'M9');
@@ -456,7 +468,7 @@ class TinyG extends events.EventEmitter {
                         // Mist
                         _.set(target, 'modal.coolant', 'M7');
                     },
-                    // Flood coolant
+                    // [edge-082.10] Flood coolant
                     'cof': (target, val) => {
                         if (val === 0) { // Coolant Off
                             _.set(target, 'modal.coolant', 'M9');
