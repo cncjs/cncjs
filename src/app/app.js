@@ -124,17 +124,24 @@ const appMain = () => {
     // Middleware
     // https://github.com/senchalabs/connect
 
-    { // https://github.com/valery-barysok/session-file-store
-        const path = './sessions';
+    try {
+        // https://github.com/valery-barysok/session-file-store
+        const path = settings.middleware.session.path; // Defaults to './cncjs-sessions'
 
         rimraf.sync(path);
-        fs.mkdirSync(path); // Defaults to ./sessions
+        fs.mkdirSync(path);
 
         const FileStore = sessionFileStore(session);
         app.use(session({
-            ...settings.middleware.session,
             // https://github.com/expressjs/session#secret
             secret: settings.secret,
+
+            // https://github.com/expressjs/session#resave
+            resave: true,
+
+            // https://github.com/expressjs/session#saveuninitialized
+            saveUninitialized: true,
+
             store: new FileStore({
                 path: path,
                 logFn: (...args) => {
@@ -142,6 +149,8 @@ const appMain = () => {
                 }
             })
         }));
+    } catch (err) {
+        log.error(err);
     }
 
     app.use(favicon(path.join(settings.assets.web.path, 'favicon.ico')));

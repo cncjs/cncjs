@@ -2,8 +2,8 @@ import path from 'path';
 import pkg from '../../package.json';
 import { languages } from '../../../build.config';
 
-// RCFile
-const RCFILE = '.cncrc';
+const RC_FILE = '.cncrc';
+const SESSION_PATH = '.cncjs-sessions';
 
 // Secret
 const secret = pkg.version;
@@ -11,7 +11,7 @@ const secret = pkg.version;
 const getUserHome = () => (process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME']);
 
 export default {
-    cncrc: path.resolve(getUserHome(), RCFILE),
+    rcfile: path.resolve(getUserHome(), RC_FILE),
     verbosity: 0,
     version: pkg.version,
 
@@ -90,10 +90,7 @@ export default {
         },
         // https://github.com/expressjs/session
         'session': {
-            // https://github.com/expressjs/session#resave
-            resave: true,
-            // https://github.com/expressjs/session#saveuninitialized
-            saveUninitialized: true
+            path: path.resolve(getUserHome(), SESSION_PATH)
         }
     },
     siofu: { // SocketIOFileUploader
