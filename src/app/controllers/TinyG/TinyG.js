@@ -90,7 +90,7 @@ class TinyGParserResultMotorTimeout {
         const footer = _.get(data, 'f') || [];
         const statusCode = footer[1];
         const payload = {};
-        if (mt && statusCode === 0) {
+        if (statusCode === 0) {
             payload.mt = mt;
         }
 
@@ -112,7 +112,7 @@ class TinyGParserResultPowerManagement {
         const footer = _.get(data, 'f') || [];
         const statusCode = footer[1];
         const payload = {};
-        if (pwr && statusCode === 0) {
+        if (statusCode === 0) {
             payload.pwr = pwr;
         }
 
@@ -196,13 +196,13 @@ class TinyGParserResultOverrides {
             return null;
         }
 
-        if (mfo && statusCode === 0) {
+        if ((mfo !== undefined) && statusCode === 0) {
             payload.mfo = mfo;
         }
-        if (mto && statusCode === 0) {
+        if ((mto !== undefined) && statusCode === 0) {
             payload.mto = mto;
         }
-        if (sso && statusCode === 0) {
+        if ((sso !== undefined) && statusCode === 0) {
             payload.sso = sso;
         }
 
@@ -336,7 +336,7 @@ class TinyG extends events.EventEmitter {
 
                 this.emit('pwr', payload.pwr);
             } else if (type === TinyGParserResultQueueReports) {
-                const { qr } = payload;
+                const { qr, qi, qo } = payload;
 
                 // The planner buffer pool size will be checked every time the planner buffer changes
                 if (qr > this.plannerBufferPoolSize) {
@@ -349,7 +349,7 @@ class TinyG extends events.EventEmitter {
                         qr
                     };
                 }
-                this.emit('qr', { qr });
+                this.emit('qr', { qr, qi, qo });
             } else if (type === TinyGParserResultStatusReports) {
                 // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
                 const keymaps = {
