@@ -20,7 +20,7 @@ test('TinyGParserResultPowerManagement', (t) => {
     t.test('{"r":{"pwr":{"1":0,"2":0,"3":0,"4":0}},"f":[0,0,0]}', (t) => {
         const tinyg = new TinyG();
         tinyg.on('pwr', (pwr) => {
-            t.same(pwr, {"1":0,"2":0,"3":0,"4":0});
+            t.same(pwr, { '1': 0, '2': 0, '3': 0, '4': 0 });
             t.end();
         });
 
