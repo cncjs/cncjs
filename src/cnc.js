@@ -37,7 +37,7 @@ const parseMountPoint = (val, acc) => {
 const parseController = (val) => {
     val = val ? (val + '').toLowerCase() : '';
 
-    if (val === 'grbl' || val === 'smoothie' || val === 'tinyg' || val === 'g2core') {
+    if (['grbl', 'marlin', 'smoothie', 'tinyg', 'g2core'].includes(val)) {
         return val;
     } else {
         return '';
@@ -59,7 +59,7 @@ program
     .option('-w, --watch-directory <path>', 'Watch a directory for changes')
     .option('--access-token-lifetime <lifetime>', 'Access token lifetime in seconds or a time span string (default: 30d)')
     .option('--allow-remote-access', 'Allow remote access to the server (default: false)')
-    .option('--controller <type>', 'Specify CNC controller: Grbl|Smoothie|TinyG|g2core (default: \'\')', parseController, '');
+    .option('--controller <type>', 'Specify CNC controller: Grbl|Marlin|Smoothie|TinyG|g2core (default: \'\')', parseController, '');
 
 program.on('--help', () => {
     console.log('');

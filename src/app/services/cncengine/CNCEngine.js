@@ -44,6 +44,8 @@ const caseInsensitiveEquals = (str1, str2) => {
 const isValidController = (controller) => (
     // Grbl
     caseInsensitiveEquals(GRBL, controller) ||
+    // Marlin
+    caseInsensitiveEquals(MARLIN, controller) ||
     // Smoothie
     caseInsensitiveEquals(SMOOTHIE, controller) ||
     // g2core
