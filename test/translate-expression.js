@@ -1,6 +1,6 @@
 import { test } from 'tap';
 import logger from '../src/app/lib/logger';
-import translateWithContext from '../src/app/lib/translateWithContext';
+import translateExpression from '../src/app/lib/translate-expression';
 
 test('exceptions', (t) => {
     // Suppress the output
@@ -8,10 +8,10 @@ test('exceptions', (t) => {
     logger.logger.silent = true;
 
     // Not a string type
-    t.equal(translateWithContext(0), '');
+    t.equal(translateExpression(0), '');
 
     // Unexpected end of input
-    t.equal(translateWithContext('X[!]', {}), 'X[!]');
+    t.equal(translateExpression('X[!]', {}), 'X[!]');
 
     // Restore to previous default
     logger.logger.silent = silent;
@@ -28,7 +28,7 @@ test('expressions', (t) => {
         delay: 1000
     };
 
-    const found = translateWithContext(data, context);
+    const found = translateExpression(data, context);
     const wanted = 'G0 X10 Y20\nG4 P1000\nG0 Z30';
     t.equal(found, wanted);
 

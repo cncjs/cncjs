@@ -1,6 +1,6 @@
 import { test } from 'tap';
 import trim from 'lodash/trim';
-import Grbl from '../src/app/controllers/Grbl/Grbl';
+import GrblRunner from '../src/app/controllers/Grbl/GrblRunner';
 
 // $10 - Status report mask:binary
 // Report Type      | Value
@@ -10,8 +10,8 @@ import Grbl from '../src/app/controllers/Grbl/Grbl';
 // RX Buffer        | 8
 // Limit Pins       | 16
 test('GrblLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
-    const grbl = new Grbl();
-    grbl.on('status', ({ raw, ...status }) => {
+    const runner = new GrblRunner();
+    runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle>');
         t.same(status, {
             activeState: 'Idle',
@@ -21,12 +21,12 @@ test('GrblLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
     });
 
     const line = '<Idle>';
-    grbl.parse(line);
+    runner.parse(line);
 });
 
 test('GrblLineParserResultStatus: default ($10=3)', (t) => {
-    const grbl = new Grbl();
-    grbl.on('status', ({ raw, ...status }) => {
+    const runner = new GrblRunner();
+    runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>');
         t.same(status, {
             activeState: 'Idle',
@@ -46,12 +46,12 @@ test('GrblLineParserResultStatus: default ($10=3)', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>';
-    grbl.parse(line);
+    runner.parse(line);
 });
 
 test('GrblLineParserResultStatus: 6-axis', (t) => {
-    const grbl = new Grbl();
-    grbl.on('status', ({ raw, ...status }) => {
+    const runner = new GrblRunner();
+    runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>');
         t.same(status, {
             activeState: 'Idle',
@@ -77,12 +77,12 @@ test('GrblLineParserResultStatus: 6-axis', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>';
-    grbl.parse(line);
+    runner.parse(line);
 });
 
 test('GrblLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
-    const grbl = new Grbl();
-    grbl.on('status', ({ raw, ...status }) => {
+    const runner = new GrblRunner();
+    runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>');
         t.same(status, {
             activeState: 'Idle',
@@ -107,48 +107,48 @@ test('GrblLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>';
-    grbl.parse(line);
+    runner.parse(line);
 });
 
 test('GrblLineParserResultOk', (t) => {
-    const grbl = new Grbl();
-    grbl.on('ok', ({ raw }) => {
+    const runner = new GrblRunner();
+    runner.on('ok', ({ raw }) => {
         t.equal(raw, 'ok');
         t.end();
     });
 
     const line = 'ok';
-    grbl.parse(line);
+    runner.parse(line);
 });
 
 test('GrblLineParserResultError', (t) => {
-    const grbl = new Grbl();
-    grbl.on('error', ({ raw, message }) => {
+    const runner = new GrblRunner();
+    runner.on('error', ({ raw, message }) => {
         t.equal(raw, 'error: Expected command letter');
         t.equal(message, 'Expected command letter');
         t.end();
     });
 
     const line = 'error: Expected command letter';
-    grbl.parse(line);
+    runner.parse(line);
 });
 
 test('GrblLineParserResultAlarm', (t) => {
-    const grbl = new Grbl();
-    grbl.on('alarm', ({ raw, message }) => {
+    const runner = new GrblRunner();
+    runner.on('alarm', ({ raw, message }) => {
         t.equal(raw, 'ALARM: Probe fail');
         t.equal(message, 'Probe fail');
         t.end();
     });
 
     const line = 'ALARM: Probe fail';
-    grbl.parse(line);
+    runner.parse(line);
 });
 
 test('GrblLineParserResultParserState', (t) => {
     test('#1', (t) => {
-        const grbl = new Grbl();
-        grbl.on('parserstate', ({ raw, ...parserstate }) => {
+        const runner = new GrblRunner();
+        runner.on('parserstate', ({ raw, ...parserstate }) => {
             t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]');
             t.same(parserstate, {
                 modal: {
@@ -170,12 +170,12 @@ test('GrblLineParserResultParserState', (t) => {
         });
 
         const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]';
-        grbl.parse(line);
+        runner.parse(line);
     });
 
     test('#2', (t) => {
-        const grbl = new Grbl();
-        grbl.on('parserstate', ({ raw, ...parserstate }) => {
+        const runner = new GrblRunner();
+        runner.on('parserstate', ({ raw, ...parserstate }) => {
             t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T0 F2540. S0.]');
             t.same(parserstate, {
                 modal: {
@@ -197,7 +197,7 @@ test('GrblLineParserResultParserState', (t) => {
         });
 
         const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T0 F2540. S0.]';
-        grbl.parse(line);
+        runner.parse(line);
     });
 
     t.end();
@@ -215,9 +215,9 @@ test('GrblLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) =
         '[G30:0.000,0.000,0.000]',
         '[G92:0.000,0.000,0.000]'
     ];
-    const grbl = new Grbl();
+    const runner = new GrblRunner();
     let i = 0;
-    grbl.on('parameters', ({ name, value, raw }) => {
+    runner.on('parameters', ({ name, value, raw }) => {
         if (i < lines.length) {
             t.equal(raw, lines[i]);
         }
@@ -256,25 +256,25 @@ test('GrblLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) =
     });
 
     lines.forEach(line => {
-        grbl.parse(line);
+        runner.parse(line);
     });
 });
 
 test('GrblLineParserResultParameters:TLO', (t) => {
-    const grbl = new Grbl();
-    grbl.on('parameters', ({ name, value, raw }) => {
+    const runner = new GrblRunner();
+    runner.on('parameters', ({ name, value, raw }) => {
         t.equal(raw, '[TLO:0.000]');
         t.equal(name, 'TLO');
         t.equal(value, '0.000');
         t.end();
     });
 
-    grbl.parse('[TLO:0.000]');
+    runner.parse('[TLO:0.000]');
 });
 
 test('GrblLineParserResultParameters:PRB', (t) => {
-    const grbl = new Grbl();
-    grbl.on('parameters', ({ name, value, raw }) => {
+    const runner = new GrblRunner();
+    runner.on('parameters', ({ name, value, raw }) => {
         t.equal(raw, '[PRB:0.000,0.000,1.492:1]');
         t.equal(name, 'PRB');
         t.same(value, {
@@ -286,7 +286,7 @@ test('GrblLineParserResultParameters:PRB', (t) => {
         t.end();
     });
 
-    grbl.parse('[PRB:0.000,0.000,1.492:1]');
+    runner.parse('[PRB:0.000,0.000,1.492:1]');
 });
 
 test('GrblLineParserResultFeedback', (t) => {
@@ -303,9 +303,9 @@ test('GrblLineParserResultFeedback', (t) => {
         '[Enabled]',
         '[Disabled]'
     ];
-    const grbl = new Grbl();
+    const runner = new GrblRunner();
     let i = 0;
-    grbl.on('feedback', ({ raw, ...full }) => {
+    runner.on('feedback', ({ raw, ...full }) => {
         const message = trim(lines[i], '[]');
 
         if (i < lines.length) {
@@ -320,7 +320,7 @@ test('GrblLineParserResultFeedback', (t) => {
     });
 
     lines.forEach(line => {
-        grbl.parse(line);
+        runner.parse(line);
     });
 });
 
@@ -357,9 +357,9 @@ test('GrblLineParserResultSettings', (t) => {
         '$131=200.000 (y max travel, mm)',
         '$132=200.000 (z max travel, mm)'
     ];
-    const grbl = new Grbl();
+    const runner = new GrblRunner();
     let i = 0;
-    grbl.on('settings', ({ raw, name, value, message }) => {
+    runner.on('settings', ({ raw, name, value, message }) => {
         if (i < lines.length) {
             const r = raw.match(/^(\$[^=]+)=([^ ]*)\s*(.*)/);
             t.equal(raw, lines[i]);
@@ -375,14 +375,14 @@ test('GrblLineParserResultSettings', (t) => {
     });
 
     lines.forEach(line => {
-        grbl.parse(line);
+        runner.parse(line);
     });
 });
 
 test('GrblLineParserResultStartup', (t) => {
     test('Grbl 0.9j', (t) => {
-        const grbl = new Grbl();
-        grbl.on('startup', ({ raw, firmware, version, message }) => {
+        const runner = new GrblRunner();
+        runner.on('startup', ({ raw, firmware, version, message }) => {
             t.equal(raw, 'Grbl 0.9j [\'$\' for help]');
             t.equal(firmware, 'Grbl');
             t.equal(version, '0.9j');
@@ -391,12 +391,12 @@ test('GrblLineParserResultStartup', (t) => {
         });
 
         const line = 'Grbl 0.9j [\'$\' for help]';
-        grbl.parse(line);
+        runner.parse(line);
     });
 
     test('Grbl 1.1f', (t) => {
-        const grbl = new Grbl();
-        grbl.on('startup', ({ raw, firmware, version, message }) => {
+        const runner = new GrblRunner();
+        runner.on('startup', ({ raw, firmware, version, message }) => {
             t.equal(raw, 'Grbl 1.1f [\'$\' for help]');
             t.equal(firmware, 'Grbl');
             t.equal(version, '1.1f');
@@ -405,12 +405,12 @@ test('GrblLineParserResultStartup', (t) => {
         });
 
         const line = 'Grbl 1.1f [\'$\' for help]';
-        grbl.parse(line);
+        runner.parse(line);
     });
 
     test('vCarvin 2.0.0', (t) => {
-        const grbl = new Grbl();
-        grbl.on('startup', ({ raw, firmware, version, message }) => {
+        const runner = new GrblRunner();
+        runner.on('startup', ({ raw, firmware, version, message }) => {
             t.equal(raw, 'vCarvin 2.0.0 [\'$\' for help]');
             t.equal(firmware, 'vCarvin');
             t.equal(version, '2.0.0');
@@ -419,19 +419,19 @@ test('GrblLineParserResultStartup', (t) => {
         });
 
         const line = 'vCarvin 2.0.0 [\'$\' for help]';
-        grbl.parse(line);
+        runner.parse(line);
     });
 
     t.end();
 });
 
 test('Not supported output format', (t) => {
-    const grbl = new Grbl();
-    grbl.on('others', ({ raw }) => {
+    const runner = new GrblRunner();
+    runner.on('others', ({ raw }) => {
         t.equal(raw, 'Not supported output format');
         t.end();
     });
 
     const line = 'Not supported output format';
-    grbl.parse(line);
+    runner.parse(line);
 });

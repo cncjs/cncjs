@@ -63,11 +63,11 @@ import {
 } from './constants';
 import styles from './index.styl';
 
-const translateGCodeWithContext = (function() {
+const translateExpression = (function() {
     const { Parser } = ExpressionEvaluator;
     const reExpressionContext = new RegExp(/\[[^\]]+\]/g);
 
-    return function fnTranslateGCodeWithContext(gcode, context = controller.context) {
+    return function (gcode, context = controller.context) {
         if (typeof gcode !== 'string') {
             log.error(`Invalid parameter: gcode=${gcode}`);
             return '';
@@ -576,7 +576,7 @@ class VisualizerWidget extends PureComponent {
             this.setState((state) => ({ ...initialState }));
         },
         'gcode:load': (name, gcode, context) => {
-            gcode = translateGCodeWithContext(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
+            gcode = translateExpression(gcode, context); // e.g. xmin,xmax,ymin,ymax,zmin,zmax
             this.actions.loadGCode(name, gcode);
         },
         'gcode:unload': () => {
