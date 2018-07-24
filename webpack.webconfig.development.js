@@ -1,37 +1,37 @@
-process.env.NODE_ENV = 'development';
-
-/* eslint prefer-arrow-callback: 0 */
 const path = require('path');
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
+const dotenv = require('dotenv');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
 const without = require('lodash/without');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const nib = require('nib');
 const stylusLoader = require('stylus-loader');
+const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
-const webpack = require('webpack');
-const baseConfig = require('./webpack.webconfig.base');
 const buildConfig = require('./build.config');
+const pkg = require('./package.json');
 
+dotenv.config();
+
+const publicPath = process.env.PUBLIC_PATH || '';
+const buildVersion = pkg.version;
 const timestamp = new Date().getTime();
 
-const webpackConfig = Object.assign({}, baseConfig, {
+module.exports = {
+    mode: 'development',
+    cache: true,
+    target: 'web',
+    context: path.resolve(__dirname, 'src/web'),
     devtool: 'cheap-module-eval-source-map',
     entry: {
         polyfill: [
-            // https://github.com/Yaffle/EventSource
             'eventsource-polyfill',
-            // https://github.com/glenjamin/webpack-hot-middleware
             'webpack-hot-middleware/client?reload=true',
             path.resolve(__dirname, 'src/web/polyfill/index.js')
         ],
         app: [
-            // https://github.com/Yaffle/EventSource
             'eventsource-polyfill',
-            // https://github.com/glenjamin/webpack-hot-middleware
             'webpack-hot-middleware/client?reload=true',
             path.resolve(__dirname, 'src/web/index.jsx')
         ]
@@ -41,23 +41,89 @@ const webpackConfig = Object.assign({}, baseConfig, {
         chunkFilename: `[name].[hash].bundle.js?_=${timestamp}`,
         filename: `[name].[hash].bundle.js?_=${timestamp}`,
         pathinfo: true,
-        publicPath: ''
+        publicPath: publicPath
+    },
+    module: {
+        rules: [
+            {
+                test: /\.jsx?$/,
+                loader: 'eslint-loader',
+                enforce: 'pre',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.jsx?$/,
+                loader: 'babel-loader',
+                exclude: /(node_modules|bower_components)/
+            },
+            {
+                test: /\.styl$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader?camelCase&modules&importLoaders=1&localIdentName=[path][name]__[local]--[hash:base64:5]',
+                    'stylus-loader'
+                ],
+                exclude: [
+                    path.resolve(__dirname, 'src/web/styles')
+                ]
+            },
+            {
+                test: /\.styl$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader?camelCase',
+                    'stylus-loader'
+                ],
+                include: [
+                    path.resolve(__dirname, 'src/web/styles')
+                ]
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
+            {
+                test: /\.(png|jpg|svg)$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 8192
+                }
+            },
+            {
+                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    mimetype: 'application/font-woff'
+                }
+            },
+            {
+                test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'file-loader'
+            }
+        ]
+    },
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
     },
     plugins: [
+        new webpack.HotModuleReplacementPlugin(),
         new webpack.DefinePlugin({
             'process.env': {
-                // This has effect on the react lib size
                 NODE_ENV: JSON.stringify('development'),
+                BUILD_VERSION: JSON.stringify(buildVersion),
                 LANGUAGES: JSON.stringify(buildConfig.languages),
                 TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
             }
         }),
-        new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin(),
         new webpack.LoaderOptionsPlugin({
             debug: true
         }),
-        new webpack.NoEmitOnErrorsPlugin(),
         new stylusLoader.OptionsPlugin({
             default: {
                 // nib - CSS3 extensions for Stylus
@@ -73,20 +139,13 @@ const webpackConfig = Object.assign({}, baseConfig, {
             /moment[\/\\]locale$/,
             new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
         ),
-        new webpack.optimize.CommonsChunkPlugin({
-            // The order matters, the order should be reversed just like loader chain.
-            // https://github.com/webpack/webpack/issues/1016
-            names: ['vendor', 'polyfill', 'manifest'],
-            filename: `[name].[hash].js?_=${timestamp}`,
-            minChunks: Infinity
-        }),
         // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
         new ManifestPlugin({
             fileName: 'manifest.json'
         }),
-        new ExtractTextPlugin({
-            filename: '[name].css',
-            allChunks: true
+        new MiniCssExtractPlugin({
+            filename: `[name].css?_=${timestamp}`,
+            chunkFilename: `[id].css?_=${timestamp}`
         }),
         new CSSSplitWebpackPlugin({
             size: 4000,
@@ -98,22 +157,13 @@ const webpackConfig = Object.assign({}, baseConfig, {
             filename: 'index.hbs',
             template: path.resolve(__dirname, 'src/web/assets/index.hbs'),
             chunksSortMode: 'dependency' // Sort chunks by dependency
-        }),
-        new HtmlWebpackPluginAddons({
-            // Do not insert "[name]-[part].css" to the html. For example:
-            // <link href="/9b80ca13/[name]-1.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
-            // <link href="/9b80ca13/[name]-2.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
-            // <link href="/9b80ca13/[name].css?ff4bb41b7b5e61a63da54dff2e59581d" rel="stylesheet">
-            afterHTMLProcessing: function(htmlPluginData, next) {
-                const re = new RegExp(/<link.* href="[^"]+\w+\-\d+\.css[^>]+>/);
-                htmlPluginData.html = htmlPluginData.html.replace(re, '');
-                next(null, htmlPluginData);
-            }
-        }),
-        new InlineChunkWebpackPlugin({
-            inlineChunks: ['manifest']
         })
-    ]
-});
-
-module.exports = webpackConfig;
+    ],
+    resolve: {
+        modules: [
+            path.resolve(__dirname, 'src'),
+            'node_modules'
+        ],
+        extensions: ['.js', '.jsx']
+    }
+};

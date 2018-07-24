@@ -1,6 +1,7 @@
 node_modules
 npm-debug.log
 package-lock.json
+/.env
 /.eslintcache
 /.nyc_output
 /coverage
