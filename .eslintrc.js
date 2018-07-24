@@ -1,20 +1,28 @@
 const path = require('path');
 
 module.exports = {
-    'extends': 'trendmicro',
-    'parser': 'babel-eslint',
-    'env': {
-        'browser': true,
-        'node': true
+    extends: 'trendmicro',
+    parser: 'babel-eslint',
+    env: {
+        browser: true,
+        node: true
     },
-    'settings': {
+    settings: {
         'import/resolver': {
-            'webpack': {
-                'config': path.resolve(__dirname, 'webpack.webconfig.base.js')
+            webpack: {
+                config: {
+                    resolve: {
+                        modules: [
+                            path.resolve(__dirname, 'src'),
+                            'node_modules'
+                        ],
+                        extensions: ['.js', '.jsx']
+                    }
+                }
             }
         }
     },
-    'rules': {
+    rules: {
         'react/jsx-no-bind': [1, {
             allowArrowFunctions: true
         }],
