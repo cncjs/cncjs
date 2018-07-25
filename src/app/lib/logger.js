@@ -12,20 +12,35 @@ const getStackTrace = () => {
 
 const VERBOSITY_MAX = 3; // -vvv
 
-const logger = new winston.Logger({
+const { combine, colorize, timestamp, printf } = winston.format;
+
+// https://github.com/winstonjs/winston/blob/master/README.md#creating-your-own-logger
+const logger = winston.createLogger({
     exitOnError: false,
     level: settings.winston.level,
+    silent: false,
     transports: [
         new winston.transports.Console({
-            colorize: true,
-            timestamp: true,
-            handleExceptions: true,
-            json: false
+            format: combine(
+                colorize(),
+                timestamp(),
+                printf(log => `${log.timestamp} - ${log.level} ${log.message}`)
+            ),
+            handleExceptions: true
         })
     ]
 });
 
-const levels = ['silly', 'debug', 'verbose', 'info', 'warn', 'error'];
+// https://github.com/winstonjs/winston/blob/master/README.md#logging-levels
+// npm logging levels are prioritized from 0 to 5 (highest to lowest):
+const levels = [
+    'error', // 0
+    'warn', // 1
+    'info', // 2
+    'verbose', // 3
+    'debug', // 4
+    'silly', // 5
+];
 
 module.exports = (namespace = '') => {
     namespace = String(namespace);
@@ -36,7 +51,7 @@ module.exports = (namespace = '') => {
                 args = args.concat(getStackTrace()[2]);
             }
             return (namespace.length > 0)
-                ? logger[level](chalk.cyan(namespace), util.format(...args))
+                ? logger[level](chalk.cyan(namespace) + ' ' + util.format(...args))
                 : logger[level](util.format(...args));
         };
         return acc;

@@ -12,9 +12,9 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import evaluateExpression from '../../lib/evaluateExpression';
+import evaluateExpression from '../../lib/evaluate-expression';
 import logger from '../../lib/logger';
-import translateWithContext from '../../lib/translateWithContext';
+import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
@@ -23,7 +23,7 @@ import {
     WRITE_SOURCE_CLIENT,
     WRITE_SOURCE_FEEDER
 } from '../constants';
-import TinyG from './TinyG';
+import TinyGRunner from './TinyGRunner';
 import {
     TINYG,
     TINYG_PLANNER_BUFFER_LOW_WATER_MARK,
@@ -56,7 +56,7 @@ class TinyGController {
     connectionEventListener = {
         data: (data) => {
             log.silly(`< ${data}`);
-            this.controller.parse('' + data);
+            this.runner.parse('' + data);
         },
         close: (err) => {
             this.ready = false;
@@ -202,7 +202,7 @@ class TinyGController {
 
                 // line="G0 X[posx - 8] Y[ymax]"
                 // > "G0 X2 Y50"
-                line = translateWithContext(line, context);
+                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -232,7 +232,7 @@ class TinyGController {
                 return;
             }
 
-            if (this.controller.isAlarm()) {
+            if (this.runner.isAlarm()) {
                 this.feeder.reset();
                 log.warn('Stopped sending G-code commands in Alarm mode');
                 return;
@@ -280,7 +280,7 @@ class TinyGController {
 
                 // line="G0 X[posx - 8] Y[ymax]"
                 // > "G0 X2 Y50"
-                line = translateWithContext(line, context);
+                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -375,16 +375,16 @@ class TinyGController {
         });
 
         // TinyG
-        this.controller = new TinyG();
+        this.runner = new TinyGRunner();
 
-        this.controller.on('raw', (res) => {
+        this.runner.on('raw', (res) => {
             if (this.workflow.state === WORKFLOW_STATE_IDLE) {
                 this.emit('serialport:read', res.raw);
             }
         });
 
         // https://github.com/synthetos/g2/wiki/g2core-Communications
-        this.controller.on('r', (r) => {
+        this.runner.on('r', (r) => {
             //
             // Ignore unrecognized commands
             //
@@ -453,7 +453,7 @@ class TinyGController {
             this.feeder.next();
         });
 
-        this.controller.on('qr', ({ qr }) => {
+        this.runner.on('qr', ({ qr }) => {
             log.silly(`planner queue: qr=${qr}, lw=${TINYG_PLANNER_BUFFER_LOW_WATER_MARK}, hw=${TINYG_PLANNER_BUFFER_HIGH_WATER_MARK}`);
 
             this.state.qr = qr;
@@ -471,7 +471,7 @@ class TinyGController {
                 const { hold, sent, received } = this.sender.state;
                 log.silly(`sender: status=${this.senderStatus}, hold=${hold}, sent=${sent}, received=${received}`);
                 if (this.senderStatus === SENDER_STATUS_NEXT) {
-                    if (hold && (received >= sent) && (qr >= this.controller.plannerBufferPoolSize)) {
+                    if (hold && (received >= sent) && (qr >= this.runner.plannerBufferPoolSize)) {
                         log.debug(`Continue sending G-code: hold=${hold}, sent=${sent}, received=${received}, qr=${qr}`);
                         this.sender.unhold();
                         this.sender.next();
@@ -509,23 +509,23 @@ class TinyGController {
             // Feeder
             if (this.feeder.state.hold) {
                 const { data } = { ...this.feeder.state.holdReason };
-                if ((data === WAIT) && (qr >= this.controller.plannerBufferPoolSize)) {
+                if ((data === WAIT) && (qr >= this.runner.plannerBufferPoolSize)) {
                     this.feeder.unhold();
                 }
             }
             this.feeder.next();
         });
 
-        this.controller.on('sr', (sr) => {
+        this.runner.on('sr', (sr) => {
         });
 
-        this.controller.on('fb', (fb) => {
+        this.runner.on('fb', (fb) => {
         });
 
-        this.controller.on('hp', (hp) => {
+        this.runner.on('hp', (hp) => {
         });
 
-        this.controller.on('f', (f) => {
+        this.runner.on('f', (f) => {
             // https://github.com/synthetos/g2/wiki/Status-Codes
             const statusCode = f[1] || 0;
 
@@ -594,20 +594,20 @@ class TinyGController {
             }
 
             const zeroOffset = _.isEqual(
-                this.controller.getWorkPosition(this.state),
-                this.controller.getWorkPosition(this.controller.state)
+                this.runner.getWorkPosition(this.state),
+                this.runner.getWorkPosition(this.runner.state)
             );
 
             // TinyG settings
-            if (this.settings !== this.controller.settings) {
-                this.settings = this.controller.settings;
+            if (this.settings !== this.runner.settings) {
+                this.settings = this.runner.settings;
                 this.emit('controller:settings', TINYG, this.settings);
                 this.emit('TinyG:settings', this.settings); // Backward compatibility
             }
 
             // TinyG state
-            if (this.state !== this.controller.state) {
-                this.state = this.controller.state;
+            if (this.state !== this.runner.state) {
+                this.state = this.runner.state;
                 this.emit('controller:state', TINYG, this.state);
                 this.emit('TinyG:state', this.state); // Backward compatibility
             }
@@ -620,7 +620,7 @@ class TinyGController {
 
             // Check if the machine has stopped movement after completion
             if (this.actionTime.senderFinishTime > 0) {
-                const machineIdle = zeroOffset && this.controller.isIdle();
+                const machineIdle = zeroOffset && this.runner.isIdle();
                 const now = new Date().getTime();
                 const timespan = Math.abs(now - this.actionTime.senderFinishTime);
                 const toleranceTime = 500; // in milliseconds
@@ -742,7 +742,7 @@ class TinyGController {
             a: mposa,
             b: mposb,
             c: mposc
-        } = this.controller.getMachinePosition();
+        } = this.runner.getMachinePosition();
 
         // Work position
         const {
@@ -752,10 +752,10 @@ class TinyGController {
             a: posa,
             b: posb,
             c: posc
-        } = this.controller.getWorkPosition();
+        } = this.runner.getWorkPosition();
 
         // Modal group
-        const modal = this.controller.getModalGroup();
+        const modal = this.runner.getModalGroup();
 
         return Object.assign(context || {}, {
             // Bounding box
@@ -809,9 +809,9 @@ class TinyGController {
             this.timer.energizeMotors = null;
         }
 
-        if (this.controller) {
-            this.controller.removeAllListeners();
-            this.controller = null;
+        if (this.runner) {
+            this.runner.removeAllListeners();
+            this.runner = null;
         }
 
         this.sockets = {};
@@ -847,7 +847,7 @@ class TinyGController {
                 type: this.type,
                 settings: this.settings,
                 state: this.state,
-                footer: this.controller.footer
+                footer: this.runner.footer
             },
             feeder: this.feeder.toJSON(),
             sender: this.sender.toJSON(),
@@ -1173,7 +1173,7 @@ class TinyGController {
             // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
             'feedOverride': () => {
                 const [value] = args;
-                let mfo = this.controller.settings.mfo;
+                let mfo = this.runner.settings.mfo;
 
                 if (value === 0) {
                     mfo = 1;
@@ -1191,7 +1191,7 @@ class TinyGController {
             // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.
             'spindleOverride': () => {
                 const [value] = args;
-                let sso = this.controller.settings.sso;
+                let sso = this.runner.settings.sso;
 
                 if (value === 0) {
                     sso = 1;

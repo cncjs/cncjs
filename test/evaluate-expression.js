@@ -1,7 +1,22 @@
 import { test } from 'tap';
-import evaluateExpression from '../src/app/lib/evaluateExpression';
+import logger from '../src/app/lib/logger';
+import evaluateExpression from '../src/app/lib/evaluate-expression';
 
-test('evaluateExpression', (t) => {
+test('exceptions', (t) => {
+    // Suppress the output
+    const silent = logger.logger.silent;
+    logger.logger.silent = true;
+
+    // Unexpected identifier
+    evaluateExpression('Not a valid expression');
+
+    // Restore to previous default
+    logger.logger.silent = silent;
+
+    t.end();
+});
+
+test('expressions', (t) => {
     const context = {
         wposx: 10,
         wposy: 20,

@@ -1,6 +1,3 @@
-process.env.NODE_ENV = 'development';
-
-/* eslint prefer-arrow-callback: 0 */
 const crypto = require('crypto');
 const fs = require('fs');
 const path = require('path');
@@ -12,23 +9,25 @@ const NODE_MODULES = path.resolve(__dirname, 'node_modules');
 // http://jlongster.com/Backend-Apps-with-Webpack--Part-I
 const externals = {};
 fs.readdirSync(NODE_MODULES)
-    .filter(function(x) {
+    .filter(x => {
         return ['.bin'].indexOf(x) === -1;
     })
-    .forEach(function(mod) {
+    .forEach(mod => {
         externals[mod] = 'commonjs ' + mod;
     });
 
 // Use publicPath for production
 const payload = pkg.version;
-const publicPath = (function(payload) {
+const publicPath = ((payload) => {
     const algorithm = 'sha1';
     const buf = String(payload);
     const hash = crypto.createHash(algorithm).update(buf).digest('hex');
     return '/' + hash.substr(0, 8) + '/'; // 8 digits
-}(payload));
+})(payload);
+const buildVersion = pkg.version;
 
 module.exports = {
+    mode: 'development',
     devtool: 'cheap-module-eval-source-map',
     target: 'node',
     context: path.resolve(__dirname, 'src/app'),
@@ -45,10 +44,10 @@ module.exports = {
     },
     plugins: [
         new webpack.DefinePlugin({
-            'global.PUBLIC_PATH': JSON.stringify(publicPath)
-        }),
-        //new webpack.HotModuleReplacementPlugin(),
-        new webpack.NamedModulesPlugin()
+            'global.NODE_ENV': JSON.stringify('development'),
+            'global.PUBLIC_PATH': JSON.stringify(publicPath),
+            'global.BUILD_VERSION': JSON.stringify(buildVersion)
+        })
     ],
     module: {
         rules: [

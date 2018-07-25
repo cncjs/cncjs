@@ -1,4 +1,4 @@
-import ImmutableStore from '../lib/immutable-store';
+import ImmutableStore from '../lib/ImmutableStore';
 
 const defaultState = {
     controllers: {}
