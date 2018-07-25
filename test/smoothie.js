@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import Smoothie from '../src/app/controllers/Smoothie/Smoothie';
+import SmoothieRunner from '../src/app/controllers/Smoothie/SmoothieRunner';
 
 // $10 - Status report mask:binary
 // Report Type      | Value
@@ -8,9 +8,9 @@ import Smoothie from '../src/app/controllers/Smoothie/Smoothie';
 // Planner Buffer   | 4
 // RX Buffer        | 8
 // Limit Pins       | 16
-test('SmoothieLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('status', ({ raw, ...status }) => {
+test('SmoothieRunnerLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle>');
         t.same(status, {
             activeState: 'Idle',
@@ -20,12 +20,12 @@ test('SmoothieLineParserResultStatus: all zeroes in the mask ($10=0)', (t) => {
     });
 
     const line = '<Idle>';
-    smoothie.parse(line);
+    runner.parse(line);
 });
 
-test('SmoothieLineParserResultStatus: default ($10=3)', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('status', ({ raw, ...status }) => {
+test('SmoothieRunnerLineParserResultStatus: default ($10=3)', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>');
         t.same(status, {
             activeState: 'Idle',
@@ -45,12 +45,12 @@ test('SmoothieLineParserResultStatus: default ($10=3)', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>';
-    smoothie.parse(line);
+    runner.parse(line);
 });
 
-test('SmoothieLineParserResultStatus: 6-axis', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('status', ({ raw, ...status }) => {
+test('SmoothieRunnerLineParserResultStatus: 6-axis', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>');
         t.same(status, {
             activeState: 'Idle',
@@ -76,12 +76,12 @@ test('SmoothieLineParserResultStatus: 6-axis', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>';
-    smoothie.parse(line);
+    runner.parse(line);
 });
 
-test('SmoothieLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('status', ({ raw, ...status }) => {
+test('SmoothieRunnerLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>');
         t.same(status, {
             activeState: 'Idle',
@@ -106,48 +106,48 @@ test('SmoothieLineParserResultStatus: set all bits to 1 ($10=31)', (t) => {
     });
 
     const line = '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>';
-    smoothie.parse(line);
+    runner.parse(line);
 });
 
-test('SmoothieLineParserResultOk', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('ok', ({ raw }) => {
+test('SmoothieRunnerLineParserResultOk', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('ok', ({ raw }) => {
         t.equal(raw, 'ok');
         t.end();
     });
 
     const line = 'ok';
-    smoothie.parse(line);
+    runner.parse(line);
 });
 
-test('SmoothieLineParserResultError', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('error', ({ raw, message }) => {
+test('SmoothieRunnerLineParserResultError', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('error', ({ raw, message }) => {
         t.equal(raw, 'error: Expected command letter');
         t.equal(message, 'Expected command letter');
         t.end();
     });
 
     const line = 'error: Expected command letter';
-    smoothie.parse(line);
+    runner.parse(line);
 });
 
-test('SmoothieLineParserResultAlarm', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('alarm', ({ raw, message }) => {
+test('SmoothieRunnerLineParserResultAlarm', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('alarm', ({ raw, message }) => {
         t.equal(raw, 'ALARM: Probe fail');
         t.equal(message, 'Probe fail');
         t.end();
     });
 
     const line = 'ALARM: Probe fail';
-    smoothie.parse(line);
+    runner.parse(line);
 });
 
-test('SmoothieLineParserResultParserState', (t) => {
+test('SmoothieRunnerLineParserResultParserState', (t) => {
     test('#1', (t) => {
-        const smoothie = new Smoothie();
-        smoothie.on('parserstate', ({ raw, ...parserstate }) => {
+        const runner = new SmoothieRunner();
+        runner.on('parserstate', ({ raw, ...parserstate }) => {
             t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]');
             t.same(parserstate, {
                 modal: {
@@ -169,12 +169,12 @@ test('SmoothieLineParserResultParserState', (t) => {
         });
 
         const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M9 T0 F2540. S0.]';
-        smoothie.parse(line);
+        runner.parse(line);
     });
 
     test('#2', (t) => {
-        const smoothie = new Smoothie();
-        smoothie.on('parserstate', ({ raw, ...parserstate }) => {
+        const runner = new SmoothieRunner();
+        runner.on('parserstate', ({ raw, ...parserstate }) => {
             t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T0 F2540. S0.]');
             t.same(parserstate, {
                 modal: {
@@ -196,13 +196,13 @@ test('SmoothieLineParserResultParserState', (t) => {
         });
 
         const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T0 F2540. S0.]';
-        smoothie.parse(line);
+        runner.parse(line);
     });
 
     t.end();
 });
 
-test('SmoothieLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) => {
+test('SmoothieRunnerLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (t) => {
     const lines = [
         '[G54:0.000,0.000,0.000]',
         '[G55:0.000,0.000,0.000]',
@@ -214,9 +214,9 @@ test('SmoothieLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (
         '[G30:0.000,0.000,0.000]',
         '[G92:0.000,0.000,0.000]'
     ];
-    const smoothie = new Smoothie();
+    const runner = new SmoothieRunner();
     let i = 0;
-    smoothie.on('parameters', ({ name, value, raw }) => {
+    runner.on('parameters', ({ name, value, raw }) => {
         if (i < lines.length) {
             t.equal(raw, lines[i]);
         }
@@ -255,25 +255,25 @@ test('SmoothieLineParserResultParameters:G54,G55,G56,G57,G58,G59,G28,G30,G92', (
     });
 
     lines.forEach(line => {
-        smoothie.parse(line);
+        runner.parse(line);
     });
 });
 
-test('SmoothieLineParserResultParameters:TLO', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('parameters', ({ name, value, raw }) => {
+test('SmoothieRunnerLineParserResultParameters:TLO', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('parameters', ({ name, value, raw }) => {
         t.equal(raw, '[TLO:0.000]');
         t.equal(name, 'TLO');
         t.equal(value, '0.000');
         t.end();
     });
 
-    smoothie.parse('[TLO:0.000]');
+    runner.parse('[TLO:0.000]');
 });
 
-test('SmoothieLineParserResultParameters:PRB', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('parameters', ({ name, value, raw }) => {
+test('SmoothieRunnerLineParserResultParameters:PRB', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('parameters', ({ name, value, raw }) => {
         t.equal(raw, '[PRB:0.000,0.000,1.492:1]');
         t.equal(name, 'PRB');
         t.same(value, {
@@ -285,12 +285,12 @@ test('SmoothieLineParserResultParameters:PRB', (t) => {
         t.end();
     });
 
-    smoothie.parse('[PRB:0.000,0.000,1.492:1]');
+    runner.parse('[PRB:0.000,0.000,1.492:1]');
 });
 
-test('SmoothieLineParserResultVersion', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('version', ({ raw, ...others }) => {
+test('SmoothieRunnerLineParserResultVersion', (t) => {
+    const runner = new SmoothieRunner();
+    runner.on('version', ({ raw, ...others }) => {
         t.equal(raw, 'Build version: edge-3332442, Build date: xxx, MCU: LPC1769, System Clock: 120MHz');
         t.same(others, {
             build: {
@@ -304,16 +304,16 @@ test('SmoothieLineParserResultVersion', (t) => {
     });
 
     const line = 'Build version: edge-3332442, Build date: xxx, MCU: LPC1769, System Clock: 120MHz';
-    smoothie.parse(line);
+    runner.parse(line);
 });
 
 test('Not supported output format', (t) => {
-    const smoothie = new Smoothie();
-    smoothie.on('others', ({ raw }) => {
+    const runner = new SmoothieRunner();
+    runner.on('others', ({ raw }) => {
         t.equal(raw, 'Not supported output format');
         t.end();
     });
 
     const line = 'Not supported output format';
-    smoothie.parse(line);
+    runner.parse(line);
 });

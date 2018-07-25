@@ -285,3 +285,5 @@ THREE.CombinedCamera.prototype.toBottomView = function() {
     this.rotation.z = 0;
 
 };
+
+export default THREE.CombinedCamera;

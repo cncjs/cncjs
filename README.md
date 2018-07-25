@@ -81,7 +81,7 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
 
 ### Node.js Installation
 
-Node.js 6 is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
+Node.js 6 or higher is recommended. You can install [Node Version Manager](https://github.com/creationix/nvm) to manage multiple Node.js versions. If you have `git` installed, just clone the `nvm` repo, and check out the latest version:
 ```
 git clone https://github.com/creationix/nvm.git ~/.nvm
 cd ~/.nvm
@@ -109,7 +109,7 @@ npm install npm@latest -g
 
 ### Installation
 
-Install cncjs as a non-root user, or the [serialport](https://github.com/EmergingTechnologyAdvisors/node-serialport) module may not install correctly on some platforms like Raspberry Pi.
+Install cncjs as a non-root user, or the [serialport](https://github.com/node-serialport/node-serialport) module may not install correctly on some platforms like Raspberry Pi.
 ```
 npm install -g cncjs
 ```
@@ -119,9 +119,7 @@ If you're going to use sudo or root to install cncjs, you need to specify the `-
 sudo npm install --unsafe-perm -g cncjs
 ```
 
-It's recommended that you run [Raspbian Jessie](https://www.raspberrypi.org/downloads/raspbian/) on the RPi2 or RPi3. For Raspbian Wheezy, be sure to [install gcc/g++ 4.8](https://somewideopenspace.wordpress.com/2014/02/28/gcc-4-8-on-raspberry-pi-wheezy/) before npm install.
-
-Check out [https://cnc.js.org/docs/installation/](https://cnc.js.org/docs/installation/) for other installation methods.
+Check out [https://github.com/cncjs/cncjs/wiki/Installation](https://github.com/cncjs/cncjs/wiki/Installation) for other installation methods.
 
 ### Upgrade
 
@@ -149,7 +147,7 @@ pi@rpi3$ cncjs -h
     -w, --watch-directory <path>        Watch a directory for changes
     --access-token-lifetime <lifetime>  Access token lifetime in seconds or a time span string (default: 30d)
     --allow-remote-access               Allow remote access to the server (default: false)
-    --controller <type>                 Specify CNC controller: Grbl|Smoothie|TinyG|g2core (default: '')
+    --controller <type>                 Specify CNC controller: Grbl|Marlin|Smoothie|TinyG|g2core (default: '')
     -h, --help                          output usage information
 
   Examples:

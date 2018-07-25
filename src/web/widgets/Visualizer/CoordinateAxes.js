@@ -27,7 +27,11 @@ const buildAxis = (src, dst, color, dashed) => {
     geometry.vertices.push(dst.clone());
 
     const axisLine = new THREE.Line(geometry, material);
-    axisLine.computeLineDistances();
+
+    if (dashed) {
+        // Computes an array of distance values which are necessary for LineDashedMaterial.
+        axisLine.computeLineDistances();
+    }
 
     return axisLine;
 };

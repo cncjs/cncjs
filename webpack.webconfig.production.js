@@ -1,35 +1,34 @@
-process.env.NODE_ENV = 'production';
-
-/* eslint prefer-arrow-callback: 0 */
 const crypto = require('crypto');
 const path = require('path');
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const findImports = require('find-imports');
-const InlineChunkWebpackPlugin = require('html-webpack-inline-chunk-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
-const HtmlWebpackPluginAddons = require('html-webpack-plugin-addons');
 const without = require('lodash/without');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const nib = require('nib');
+const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const stylusLoader = require('stylus-loader');
-const ManifestPlugin = require('webpack-manifest-plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
-const baseConfig = require('./webpack.webconfig.base');
+const ManifestPlugin = require('webpack-manifest-plugin');
 const buildConfig = require('./build.config');
 const pkg = require('./package.json');
 
 // Use publicPath for production
-const payload = pkg.version;
-const publicPath = (function(payload) {
+const publicPath = ((payload) => {
     const algorithm = 'sha1';
     const buf = String(payload);
     const hash = crypto.createHash(algorithm).update(buf).digest('hex');
     return '/' + hash.substr(0, 8) + '/'; // 8 digits
-}(payload));
-
+})(pkg.version);
+const buildVersion = pkg.version;
 const timestamp = new Date().getTime();
 
-const webpackConfig = Object.assign({}, baseConfig, {
+module.exports = {
+    mode: 'production',
+    cache: true,
+    target: 'web',
+    context: path.resolve(__dirname, 'src/web'),
     devtool: 'cheap-module-source-map',
     entry: {
         polyfill: [
@@ -38,7 +37,6 @@ const webpackConfig = Object.assign({}, baseConfig, {
         vendor: findImports([
             'src/web/**/*.{js,jsx}',
             '!src/web/polyfill/**/*.js',
-            '!src/web/containers/DevTools.js', // redux-devtools
             '!src/web/**/*.development.js'
         ], { flatten: true }),
         app: [
@@ -51,16 +49,93 @@ const webpackConfig = Object.assign({}, baseConfig, {
         filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
         publicPath: publicPath
     },
+    module: {
+        rules: [
+            {
+                test: /\.jsx?$/,
+                loader: 'eslint-loader',
+                enforce: 'pre',
+                exclude: /node_modules/
+            },
+            {
+                test: /\.jsx?$/,
+                loader: 'babel-loader',
+                exclude: /(node_modules|bower_components)/
+            },
+            {
+                test: /\.styl$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader?camelCase&modules&importLoaders=1&localIdentName=[path][name]__[local]--[hash:base64:5]',
+                    'stylus-loader'
+                ],
+                exclude: [
+                    path.resolve(__dirname, 'src/web/styles')
+                ]
+            },
+            {
+                test: /\.styl$/,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader?camelCase',
+                    'stylus-loader'
+                ],
+                include: [
+                    path.resolve(__dirname, 'src/web/styles')
+                ]
+            },
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader'
+                ]
+            },
+            {
+                test: /\.(png|jpg|svg)$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 8192
+                }
+            },
+            {
+                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'url-loader',
+                options: {
+                    limit: 10000,
+                    mimetype: 'application/font-woff'
+                }
+            },
+            {
+                test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                loader: 'file-loader'
+            }
+        ]
+    },
+    node: {
+        fs: 'empty',
+        net: 'empty',
+        tls: 'empty'
+    },
+    optimization: {
+        minimizer: [
+            new UglifyJsPlugin({
+                cache: true,
+                parallel: true,
+                sourceMap: true
+            }),
+            new OptimizeCSSAssetsPlugin()
+        ]
+    },
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                // This has effect on the react lib size
                 NODE_ENV: JSON.stringify('production'),
+                BUILD_VERSION: JSON.stringify(buildVersion),
                 LANGUAGES: JSON.stringify(buildConfig.languages),
                 TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
             }
         }),
-        new webpack.NoEmitOnErrorsPlugin(),
         new stylusLoader.OptionsPlugin({
             default: {
                 // nib - CSS3 extensions for Stylus
@@ -73,20 +148,13 @@ const webpackConfig = Object.assign({}, baseConfig, {
             /moment[\/\\]locale$/,
             new RegExp('^\./(' + without(buildConfig.languages, 'en').join('|') + ')$')
         ),
-        new webpack.optimize.CommonsChunkPlugin({
-            // The order matters, the order should be reversed just like loader chain.
-            // https://github.com/webpack/webpack/issues/1016
-            names: ['vendor', 'polyfill', 'manifest'],
-            filename: `[name].[chunkhash].js?_=${timestamp}`,
-            minChunks: Infinity
-        }),
         // Generates a manifest.json file in your root output directory with a mapping of all source file names to their corresponding output file.
         new ManifestPlugin({
             fileName: 'manifest.json'
         }),
-        new ExtractTextPlugin({
-            filename: '[name].css',
-            allChunks: false
+        new MiniCssExtractPlugin({
+            filename: `[name].css?_=${timestamp}`,
+            chunkFilename: `[id].css?_=${timestamp}`
         }),
         new CSSSplitWebpackPlugin({
             size: 4000,
@@ -94,42 +162,17 @@ const webpackConfig = Object.assign({}, baseConfig, {
             filename: '[name]-[part].[ext]?[hash]',
             preserve: false
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            sourceMap: true,
-            compress: {
-                screw_ie8: true, // React doesn't support IE8
-                warnings: false
-            },
-            mangle: {
-                screw_ie8: true
-            },
-            output: {
-                comments: false,
-                screw_ie8: true
-            }
-        }),
         new HtmlWebpackPlugin({
             filename: 'index.hbs',
             template: path.resolve(__dirname, 'src/web/assets/index.hbs'),
             chunksSortMode: 'dependency' // Sort chunks by dependency
-        }),
-        new HtmlWebpackPluginAddons({
-            /**
-             * Do not insert "[name]-[part].css" to the html. For example:
-             * <link href="/9b80ca13/[name]-1.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
-             * <link href="/9b80ca13/[name]-2.css?0584938f631ef1dd3e93d8d8169648a0" rel="stylesheet">
-             * <link href="/9b80ca13/[name].css?ff4bb41b7b5e61a63da54dff2e59581d" rel="stylesheet">
-             */
-            afterHTMLProcessing: function(htmlPluginData, next) {
-                const re = new RegExp(/<link.* href="[^"]+\w+\-\d+\.css[^>]+>/);
-                htmlPluginData.html = htmlPluginData.html.replace(re, '');
-                next(null, htmlPluginData);
-            }
-        }),
-        new InlineChunkWebpackPlugin({
-            inlineChunks: ['manifest']
         })
-    ]
-});
-
-module.exports = webpackConfig;
+    ],
+    resolve: {
+        modules: [
+            path.resolve(__dirname, 'src'),
+            'node_modules'
+        ],
+        extensions: ['.js', '.jsx']
+    }
+};

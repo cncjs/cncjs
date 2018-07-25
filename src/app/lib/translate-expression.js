@@ -2,10 +2,10 @@ import { parse } from 'esprima';
 import evaluate from 'static-eval';
 import logger from './logger';
 
-const log = logger('translateWithContext');
+const log = logger('translateExpression');
 const re = new RegExp(/\[[^\]]+\]/g);
 
-const translateWithContext = (data, context = {}) => {
+const translateExpression = (data, context = {}) => {
     if (!data) {
         return '';
     }
@@ -18,11 +18,11 @@ const translateWithContext = (data, context = {}) => {
             return value !== undefined ? value : match;
         });
     } catch (e) {
-        log.error(`translateWithContext: data="${data}", context=${JSON.stringify(context)}`);
+        log.error(`translateExpression: data="${data}", context=${JSON.stringify(context)}`);
         log.error(e);
     }
 
     return data;
 };
 
-export default translateWithContext;
+export default translateExpression;

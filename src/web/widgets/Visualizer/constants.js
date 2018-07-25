@@ -24,4 +24,3 @@ export const {
 
 export const CAMERA_MODE_PAN = 'pan';
 export const CAMERA_MODE_ROTATE = 'rotate';
-

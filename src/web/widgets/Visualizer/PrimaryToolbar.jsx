@@ -30,7 +30,6 @@ import {
     SMOOTHIE_ACTIVE_STATE_HOLD,
     SMOOTHIE_ACTIVE_STATE_DOOR,
     SMOOTHIE_ACTIVE_STATE_HOME,
-    SMOOTHIE_ACTIVE_STATE_SLEEP,
     SMOOTHIE_ACTIVE_STATE_ALARM,
     SMOOTHIE_ACTIVE_STATE_CHECK,
     // TinyG
@@ -132,7 +131,6 @@ class PrimaryToolbar extends PureComponent {
                 [SMOOTHIE_ACTIVE_STATE_HOLD]: 'controller-state-warning',
                 [SMOOTHIE_ACTIVE_STATE_DOOR]: 'controller-state-warning',
                 [SMOOTHIE_ACTIVE_STATE_HOME]: 'controller-state-primary',
-                [SMOOTHIE_ACTIVE_STATE_SLEEP]: 'controller-state-success',
                 [SMOOTHIE_ACTIVE_STATE_ALARM]: 'controller-state-danger',
                 [SMOOTHIE_ACTIVE_STATE_CHECK]: 'controller-state-info'
             }[activeState];
@@ -143,7 +141,6 @@ class PrimaryToolbar extends PureComponent {
                 [SMOOTHIE_ACTIVE_STATE_HOLD]: i18n.t('controller:Smoothie.activeState.hold'),
                 [SMOOTHIE_ACTIVE_STATE_DOOR]: i18n.t('controller:Smoothie.activeState.door'),
                 [SMOOTHIE_ACTIVE_STATE_HOME]: i18n.t('controller:Smoothie.activeState.home'),
-                [SMOOTHIE_ACTIVE_STATE_SLEEP]: i18n.t('controller:Smoothie.activeState.sleep'),
                 [SMOOTHIE_ACTIVE_STATE_ALARM]: i18n.t('controller:Smoothie.activeState.alarm'),
                 [SMOOTHIE_ACTIVE_STATE_CHECK]: i18n.t('controller:Smoothie.activeState.check')
             }[activeState];

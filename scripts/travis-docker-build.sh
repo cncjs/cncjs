@@ -12,7 +12,7 @@ DOCKER_BRANCH_TAG=`if [ "$TRAVIS_BRANCH" == "master" ]; then echo -n "latest"; e
 echo "DOCKER_REPO=$DOCKER_REPO"
 echo "DOCKER_BUILD_TAG=$DOCKER_BUILD_TAG"
 echo "DOCKER_BRANCH_TAG=$DOCKER_BRANCH_TAG"
-docker login -e $DOCKER_EMAIL -u $DOCKER_USER -p $DOCKER_PASS
+echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
 docker build -f Dockerfile -t $DOCKER_REPO:$DOCKER_BRANCH_TAG .
 #docker tag $DOCKER_REPO:$DOCKER_BUILD_TAG $DOCKER_REPO:$DOCKER_BRANCH_TAG
 #if [ ! -z "$TRAVIS_TAG" ]; then

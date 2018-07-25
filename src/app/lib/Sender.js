@@ -1,3 +1,4 @@
+/* eslint max-classes-per-file: 0 */
 import events from 'events';
 
 export const SP_TYPE_SEND_RESPONSE = 0;
