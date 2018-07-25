@@ -13,9 +13,9 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import evaluateExpression from '../../lib/evaluateExpression';
+import evaluateExpression from '../../lib/evaluate-expression';
 import logger from '../../lib/logger';
-import translateWithContext from '../../lib/translateWithContext';
+import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
@@ -26,7 +26,7 @@ import {
     WRITE_SOURCE_FEEDER,
     WRITE_SOURCE_SENDER
 } from '../constants';
-import Marlin from './Marlin';
+import MarlinRunner from './MarlinRunner';
 import interpret from './interpret';
 import {
     MARLIN,
@@ -54,7 +54,7 @@ class MarlinController {
     connectionEventListener = {
         data: (data) => {
             log.silly(`< ${data}`);
-            this.controller.parse('' + data);
+            this.runner.parse('' + data);
         },
         close: (err) => {
             this.ready = false;
@@ -262,9 +262,9 @@ class MarlinController {
                 }
 
                 const nextState = {
-                    ...this.controller.state,
+                    ...this.runner.state,
                     modal: {
-                        ...this.controller.state.modal
+                        ...this.runner.state.modal
                     }
                 };
 
@@ -344,8 +344,8 @@ class MarlinController {
                     }
                 });
 
-                if (!_.isEqual(this.controller.state, nextState)) {
-                    this.controller.state = nextState; // enforce change
+                if (!_.isEqual(this.runner.state, nextState)) {
+                    this.runner.state = nextState; // enforce change
                 }
 
                 return data;
@@ -393,7 +393,7 @@ class MarlinController {
 
                 // line="G0 X[posx - 8] Y[ymax]"
                 // > "G0 X2 Y50"
-                line = translateWithContext(line, context);
+                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -435,7 +435,7 @@ class MarlinController {
                 return;
             }
 
-            if (this.controller.isAlarm()) {
+            if (this.runner.isAlarm()) {
                 this.feeder.reset();
                 log.warn('Stopped sending G-code commands in Alarm mode');
                 return;
@@ -487,7 +487,7 @@ class MarlinController {
 
                 // line="G0 X[posx - 8] Y[ymax]"
                 // > "G0 X2 Y50"
-                line = translateWithContext(line, context);
+                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -588,11 +588,11 @@ class MarlinController {
         });
 
         // Marlin
-        this.controller = new Marlin();
+        this.runner = new MarlinRunner();
 
-        this.controller.on('raw', noop);
+        this.runner.on('raw', noop);
 
-        this.controller.on('start', (res) => {
+        this.runner.on('start', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
 
             // Set ready flag to true when receiving a start message
@@ -600,15 +600,15 @@ class MarlinController {
             this.ready = true;
         });
 
-        this.controller.on('echo', (res) => {
+        this.runner.on('echo', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
-        this.controller.on('firmware', (res) => {
+        this.runner.on('firmware', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
-        this.controller.on('pos', (res) => {
+        this.runner.on('pos', (res) => {
             log.silly(`controller.on('pos'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
             if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSsource)) {
@@ -616,7 +616,7 @@ class MarlinController {
             }
         });
 
-        this.controller.on('temperature', (res) => {
+        this.runner.on('temperature', (res) => {
             log.silly(`controller.on('temperature'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
             if (_.includes([WRITE_SOURCE_CLIENT, WRITE_SOURCE_FEEDER], this.history.writeSource)) {
@@ -624,7 +624,7 @@ class MarlinController {
             }
         });
 
-        this.controller.on('ok', (res) => {
+        this.runner.on('ok', (res) => {
             log.silly(`controller.on('ok'): source=${this.history.writeSource}, line=${JSON.stringify(this.history.writeLine)}, res=${JSON.stringify(res)}`);
 
             if (res) {
@@ -679,7 +679,7 @@ class MarlinController {
             this.query.issue();
         });
 
-        this.controller.on('error', (res) => {
+        this.runner.on('error', (res) => {
             // Sender
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
@@ -706,7 +706,7 @@ class MarlinController {
             this.feeder.next();
         });
 
-        this.controller.on('others', (res) => {
+        this.runner.on('others', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
@@ -726,20 +726,20 @@ class MarlinController {
             }
 
             const zeroOffset = _.isEqual(
-                this.controller.getPosition(this.state),
-                this.controller.getPosition(this.controller.state)
+                this.runner.getPosition(this.state),
+                this.runner.getPosition(this.runner.state)
             );
 
             // Marlin settings
-            if (this.settings !== this.controller.settings) {
-                this.settings = this.controller.settings;
+            if (this.settings !== this.runner.settings) {
+                this.settings = this.runner.settings;
                 this.emit('controller:settings', MARLIN, this.settings);
                 this.emit('Marlin:settings', this.settings); // Backward compatibility
             }
 
             // Marlin state
-            if (this.state !== this.controller.state) {
-                this.state = this.controller.state;
+            if (this.state !== this.runner.state) {
+                this.state = this.runner.state;
                 this.emit('controller:state', MARLIN, this.state);
                 this.emit('Marlin:state', this.state); // Backward compatibility
             }
@@ -794,10 +794,10 @@ class MarlinController {
             y: posy,
             z: posz,
             e: pose
-        } = this.controller.getPosition();
+        } = this.runner.getPosition();
 
         // Modal group
-        const modal = this.controller.getModalGroup();
+        const modal = this.runner.getModalGroup();
 
         return Object.assign(context || {}, {
             // Bounding box
@@ -833,9 +833,9 @@ class MarlinController {
             this.queryTimer = null;
         }
 
-        if (this.controller) {
-            this.controller.removeAllListeners();
-            this.controller = null;
+        if (this.runner) {
+            this.runner.removeAllListeners();
+            this.runner = null;
         }
 
         this.sockets = {};
@@ -1109,7 +1109,7 @@ class MarlinController {
             // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
             'override:feed': () => {
                 const [value] = args;
-                let feedOverride = this.controller.state.ovF;
+                let feedOverride = this.runner.state.ovF;
 
                 if (value === 0) {
                     feedOverride = 100;
@@ -1124,8 +1124,8 @@ class MarlinController {
                 this.command('gcode', 'M220S' + feedOverride);
 
                 // enforce state change
-                this.controller.state = {
-                    ...this.controller.state,
+                this.runner.state = {
+                    ...this.runner.state,
                     ovF: feedOverride
                 };
             },
@@ -1133,7 +1133,7 @@ class MarlinController {
             // @param {number} value A percentage value between 10 and 500. A value of zero will reset to 100%.
             'override:spindle': () => {
                 const [value] = args;
-                let spindleOverride = this.controller.state.ovS;
+                let spindleOverride = this.runner.state.ovS;
 
                 if (value === 0) {
                     spindleOverride = 100;
@@ -1148,8 +1148,8 @@ class MarlinController {
                 this.command('gcode', 'M221S' + spindleOverride);
 
                 // enforce state change
-                this.controller.state = {
-                    ...this.controller.state,
+                this.runner.state = {
+                    ...this.runner.state,
                     ovS: spindleOverride
                 };
             },

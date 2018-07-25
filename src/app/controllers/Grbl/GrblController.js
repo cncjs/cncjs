@@ -12,9 +12,9 @@ import Workflow, {
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import evaluateExpression from '../../lib/evaluateExpression';
+import evaluateExpression from '../../lib/evaluate-expression';
 import logger from '../../lib/logger';
-import translateWithContext from '../../lib/translateWithContext';
+import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
@@ -23,7 +23,7 @@ import {
     WRITE_SOURCE_CLIENT,
     WRITE_SOURCE_FEEDER
 } from '../constants';
-import Grbl from './Grbl';
+import GrblRunner from './GrblRunner';
 import {
     GRBL,
     GRBL_MACHINE_STATE_RUN,
@@ -54,7 +54,7 @@ class GrblController {
     connectionEventListener = {
         data: (data) => {
             log.silly(`< ${data}`);
-            this.controller.parse('' + data);
+            this.runner.parse('' + data);
         },
         close: (err) => {
             this.ready = false;
@@ -178,13 +178,13 @@ class GrblController {
                         const value = Number(r[2]);
                         if ((name === '$13') && (value >= 0) && (value <= 65535)) {
                             const nextSettings = {
-                                ...this.controller.settings,
+                                ...this.runner.settings,
                                 settings: {
-                                    ...this.controller.settings.settings,
+                                    ...this.runner.settings.settings,
                                     [name]: value ? '1' : '0'
                                 }
                             };
-                            this.controller.settings = nextSettings; // enforce change
+                            this.runner.settings = nextSettings; // enforce change
                         }
                     }
                 }
@@ -232,7 +232,7 @@ class GrblController {
 
                 // line="G0 X[posx - 8] Y[ymax]"
                 // > "G0 X2 Y50"
-                line = translateWithContext(line, context);
+                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -265,7 +265,7 @@ class GrblController {
                 return;
             }
 
-            if (this.controller.isAlarm()) {
+            if (this.runner.isAlarm()) {
                 this.feeder.reset();
                 log.warn('Stopped sending G-code commands in Alarm mode');
                 return;
@@ -314,7 +314,7 @@ class GrblController {
 
                 // line="G0 X[posx - 8] Y[ymax]"
                 // > "G0 X2 Y50"
-                line = translateWithContext(line, context);
+                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -402,11 +402,11 @@ class GrblController {
         });
 
         // Grbl
-        this.controller = new Grbl();
+        this.runner = new GrblRunner();
 
-        this.controller.on('raw', noop);
+        this.runner.on('raw', noop);
 
-        this.controller.on('status', (res) => {
+        this.runner.on('status', (res) => {
             this.actionMask.queryStatusReport = false;
 
             if (this.actionMask.replyStatusReport) {
@@ -442,7 +442,7 @@ class GrblController {
             }
         });
 
-        this.controller.on('ok', (res) => {
+        this.runner.on('ok', (res) => {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
@@ -482,7 +482,7 @@ class GrblController {
             this.feeder.next();
         });
 
-        this.controller.on('error', (res) => {
+        this.runner.on('error', (res) => {
             const code = Number(res.message) || undefined;
             const error = _.find(GRBL_ERRORS, { code: code });
 
@@ -527,7 +527,7 @@ class GrblController {
             this.feeder.next();
         });
 
-        this.controller.on('alarm', (res) => {
+        this.runner.on('alarm', (res) => {
             const code = Number(res.message) || undefined;
             const alarm = _.find(GRBL_ALARMS, { code: code });
 
@@ -540,7 +540,7 @@ class GrblController {
             }
         });
 
-        this.controller.on('parserstate', (res) => {
+        this.runner.on('parserstate', (res) => {
             this.actionMask.queryParserState.state = false;
             this.actionMask.queryParserState.reply = true;
 
@@ -549,15 +549,15 @@ class GrblController {
             }
         });
 
-        this.controller.on('parameters', (res) => {
+        this.runner.on('parameters', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
-        this.controller.on('feedback', (res) => {
+        this.runner.on('feedback', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
-        this.controller.on('settings', (res) => {
+        this.runner.on('settings', (res) => {
             const setting = _.find(GRBL_SETTINGS, { setting: res.name });
 
             if (!res.message && setting) {
@@ -569,7 +569,7 @@ class GrblController {
             }
         });
 
-        this.controller.on('startup', (res) => {
+        this.runner.on('startup', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
 
             // Check the initialized flag
@@ -590,7 +590,7 @@ class GrblController {
             this.clearActionValues();
         });
 
-        this.controller.on('others', (res) => {
+        this.runner.on('others', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
@@ -638,7 +638,7 @@ class GrblController {
             // it will consume 3 bytes from the receive buffer in each time period.
             // @see https://github.com/cncjs/cncjs/issues/176
             // @see https://github.com/cncjs/cncjs/issues/186
-            if ((this.workflow.state === WORKFLOW_STATE_IDLE) && this.controller.isIdle()) {
+            if ((this.workflow.state === WORKFLOW_STATE_IDLE) && this.runner.isIdle()) {
                 const lastQueryTime = this.actionTime.queryParserState;
                 if (lastQueryTime > 0) {
                     const timespan = Math.abs(now - lastQueryTime);
@@ -681,20 +681,20 @@ class GrblController {
             }
 
             const zeroOffset = _.isEqual(
-                this.controller.getWorkPosition(this.state),
-                this.controller.getWorkPosition(this.controller.state)
+                this.runner.getWorkPosition(this.state),
+                this.runner.getWorkPosition(this.runner.state)
             );
 
             // Grbl settings
-            if (this.settings !== this.controller.settings) {
-                this.settings = this.controller.settings;
+            if (this.settings !== this.runner.settings) {
+                this.settings = this.runner.settings;
                 this.emit('controller:settings', this.type, this.settings);
                 this.emit('Grbl:settings', this.settings); // Backward compatibility
             }
 
             // Grbl state
-            if (this.state !== this.controller.state) {
-                this.state = this.controller.state;
+            if (this.state !== this.runner.state) {
+                this.state = this.runner.state;
                 this.emit('controller:state', this.type, this.state);
                 this.emit('Grbl:state', this.state); // Backward compatibility
             }
@@ -713,7 +713,7 @@ class GrblController {
 
             // Check if the machine has stopped movement after completion
             if (this.actionTime.senderFinishTime > 0) {
-                const machineIdle = zeroOffset && this.controller.isIdle();
+                const machineIdle = zeroOffset && this.runner.isIdle();
                 const now = new Date().getTime();
                 const timespan = Math.abs(now - this.actionTime.senderFinishTime);
                 const toleranceTime = 500; // in milliseconds
@@ -741,7 +741,7 @@ class GrblController {
             a: mposa,
             b: mposb,
             c: mposc
-        } = this.controller.getMachinePosition();
+        } = this.runner.getMachinePosition();
 
         // Work position
         const {
@@ -751,10 +751,10 @@ class GrblController {
             a: posa,
             b: posb,
             c: posc
-        } = this.controller.getWorkPosition();
+        } = this.runner.getWorkPosition();
 
-        // Modal state
-        const modal = this.controller.getModalState();
+        // Modal group
+        const modal = this.runner.getModalGroup();
 
         return Object.assign(context || {}, {
             // Bounding box
@@ -809,9 +809,9 @@ class GrblController {
             this.queryTimer = null;
         }
 
-        if (this.controller) {
-            this.controller.removeAllListeners();
-            this.controller = null;
+        if (this.runner) {
+            this.runner.removeAllListeners();
+            this.runner = null;
         }
 
         this.sockets = {};

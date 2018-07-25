@@ -1,7 +1,14 @@
 import events from 'events';
 import ensureArray from 'ensure-array';
 import _ from 'lodash';
-
+import TinyGLineParser from './TinyGLineParser';
+import TinyGLineParserResultMotorTimeout from './TinyGLineParserResultMotorTimeout';
+import TinyGLineParserResultOverrides from './TinyGLineParserResultOverrides';
+import TinyGLineParserResultPowerManagement from './TinyGLineParserResultPowerManagement';
+import TinyGLineParserResultQueueReports from './TinyGLineParserResultQueueReports';
+import TinyGLineParserResultReceiveReports from './TinyGLineParserResultReceiveReports';
+import TinyGLineParserResultStatusReports from './TinyGLineParserResultStatusReports';
+import TinyGLineParserResultSystemSettings from './TinyGLineParserResultSystemSettings';
 import {
     TINYG_MACHINE_STATE_READY,
     TINYG_MACHINE_STATE_ALARM,
@@ -46,192 +53,9 @@ import {
     TINYG_GCODE_PATH_G61,
     TINYG_GCODE_PATH_G61_1,
     TINYG_GCODE_PATH_G64
-
 } from './constants';
 
-class TinyGParser {
-    parse(data) {
-        const parsers = [
-            TinyGParserResultMotorTimeout,
-            TinyGParserResultPowerManagement,
-            TinyGParserResultQueueReports,
-            TinyGParserResultStatusReports,
-            TinyGParserResultSystemSettings,
-            TinyGParserResultOverrides,
-            TinyGParserResultReceiveReports
-        ];
-
-        for (let parser of parsers) {
-            const result = parser.parse(data);
-            if (result) {
-                _.set(result, 'payload.raw', data);
-                _.set(result, 'payload.f', data.f || []); // footer
-                return result;
-            }
-        }
-
-        return {
-            type: null,
-            payload: {
-                raw: data,
-                f: data.f || [] // footer
-            }
-        };
-    }
-}
-
-class TinyGParserResultMotorTimeout {
-    static parse(data) {
-        const mt = _.get(data, 'r.mt');
-        if (typeof mt === 'undefined') {
-            return null;
-        }
-
-        const footer = _.get(data, 'f') || [];
-        const statusCode = footer[1];
-        const payload = {};
-        if (mt && statusCode === 0) {
-            payload.mt = mt;
-        }
-
-        return {
-            type: TinyGParserResultMotorTimeout,
-            payload: payload
-        };
-    }
-}
-
-// https://github.com/synthetos/TinyG/wiki/Power-Management
-class TinyGParserResultPowerManagement {
-    static parse(data) {
-        const pwr = _.get(data, 'r.pwr');
-        if (typeof pwr === 'undefined') {
-            return null;
-        }
-
-        const footer = _.get(data, 'f') || [];
-        const statusCode = footer[1];
-        const payload = {};
-        if (pwr && statusCode === 0) {
-            payload.pwr = pwr;
-        }
-
-        return {
-            type: TinyGParserResultPowerManagement,
-            payload: payload
-        };
-    }
-}
-
-class TinyGParserResultQueueReports {
-    static parse(data) {
-        const qr = _.get(data, 'r.qr') || _.get(data, 'qr');
-        const qi = _.get(data, 'r.qi') || _.get(data, 'qi');
-        const qo = _.get(data, 'r.qo') || _.get(data, 'qo');
-
-        if (!qr) {
-            return null;
-        }
-
-        const payload = {
-            qr: Number(qr) || 0,
-            qi: Number(qi) || 0,
-            qo: Number(qo) || 0
-        };
-
-        return {
-            type: TinyGParserResultQueueReports,
-            payload: payload
-        };
-    }
-}
-
-class TinyGParserResultStatusReports {
-    static parse(data) {
-        const sr = _.get(data, 'r.sr') || _.get(data, 'sr');
-        if (!sr) {
-            return null;
-        }
-
-        const payload = {
-            sr: sr
-        };
-
-        return {
-            type: TinyGParserResultStatusReports,
-            payload: payload
-        };
-    }
-}
-
-// https://github.com/synthetos/g2/wiki/Text-Mode#displaying-settings-and-groups
-class TinyGParserResultSystemSettings {
-    static parse(data) {
-        const sys = _.get(data, 'r.sys') || _.get(data, 'sys');
-        if (!sys) {
-            return null;
-        }
-
-        const payload = {
-            sys: sys
-        };
-
-        return {
-            type: TinyGParserResultSystemSettings,
-            payload: payload
-        };
-    }
-}
-
-class TinyGParserResultOverrides {
-    static parse(data) {
-        const footer = _.get(data, 'f') || [];
-        const statusCode = footer[1];
-        const mfo = _.get(data, 'r.mfo');
-        const mto = _.get(data, 'r.mto');
-        const sso = _.get(data, 'r.sso');
-        const payload = {};
-
-        if ((typeof mfo === 'undefined') && (typeof mto === 'undefined') && (typeof sso === 'undefined')) {
-            return null;
-        }
-
-        if (mfo && statusCode === 0) {
-            payload.mfo = mfo;
-        }
-        if (mto && statusCode === 0) {
-            payload.mto = mto;
-        }
-        if (sso && statusCode === 0) {
-            payload.sso = sso;
-        }
-
-        return {
-            type: TinyGParserResultOverrides,
-            payload: payload
-        };
-    }
-}
-
-class TinyGParserResultReceiveReports {
-    static parse(data) {
-        const r = _.get(data, 'r.r') || _.get(data, 'r');
-        if (!r) {
-            return null;
-        }
-
-        const payload = {
-            r: r
-        };
-
-        return {
-            type: TinyGParserResultReceiveReports,
-            payload: payload
-        };
-    }
-}
-
-class TinyG extends events.EventEmitter {
+class TinyGRunner extends events.EventEmitter {
     state = {
         machineState: '',
         mpos: {
@@ -285,7 +109,7 @@ class TinyG extends events.EventEmitter {
     };
     plannerBufferPoolSize = 0; // Suggest 12 min. Limit is 255
 
-    parser = new TinyGParser();
+    parser = new TinyGLineParser();
 
     parse(data) {
         data = ('' + data).replace(/\s+$/, '');
@@ -305,7 +129,7 @@ class TinyG extends events.EventEmitter {
             const result = this.parser.parse(data) || {};
             const { type, payload } = result;
 
-            if (type === TinyGParserResultMotorTimeout) {
+            if (type === TinyGLineParserResultMotorTimeout) {
                 const { mt = this.state.mt } = payload;
 
                 if (this.state.mt !== mt) {
@@ -316,7 +140,7 @@ class TinyG extends events.EventEmitter {
                 }
 
                 this.emit('mt', payload.mt);
-            } else if (type === TinyGParserResultPowerManagement) {
+            } else if (type === TinyGLineParserResultPowerManagement) {
                 const { pwr = this.state.pwr } = payload;
 
                 if (!_.isEqual(this.state.pwr, pwr)) {
@@ -327,7 +151,7 @@ class TinyG extends events.EventEmitter {
                 }
 
                 this.emit('pwr', payload.pwr);
-            } else if (type === TinyGParserResultQueueReports) {
+            } else if (type === TinyGLineParserResultQueueReports) {
                 const { qr } = payload;
 
                 // The planner buffer pool size will be checked every time the planner buffer changes
@@ -342,7 +166,7 @@ class TinyG extends events.EventEmitter {
                     };
                 }
                 this.emit('qr', { qr });
-            } else if (type === TinyGParserResultStatusReports) {
+            } else if (type === TinyGLineParserResultStatusReports) {
                 // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
                 const keymaps = {
                     'line': 'line',
@@ -545,13 +369,13 @@ class TinyG extends events.EventEmitter {
                     };
                 }
                 this.emit('sr', payload.sr);
-            } else if (type === TinyGParserResultSystemSettings) {
+            } else if (type === TinyGLineParserResultSystemSettings) {
                 this.settings = { // enforce change
                     ...this.settings,
                     ...payload.sys
                 };
                 this.emit('sys', payload.sys);
-            } else if (type === TinyGParserResultOverrides) {
+            } else if (type === TinyGLineParserResultOverrides) {
                 const {
                     mfo = this.settings.mfo,
                     mto = this.settings.mto,
@@ -565,7 +389,7 @@ class TinyG extends events.EventEmitter {
                     sso
                 };
                 this.emit('ov', { mfo, mto, sso });
-            } else if (type === TinyGParserResultReceiveReports) {
+            } else if (type === TinyGLineParserResultReceiveReports) {
                 const settings = {};
                 for (let key in payload.r) {
                     if (key in this.settings) {
@@ -613,7 +437,4 @@ class TinyG extends events.EventEmitter {
     }
 }
 
-export {
-    TinyGParser
-};
-export default TinyG;
+export default TinyGRunner;

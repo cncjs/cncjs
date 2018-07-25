@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Container, Row, Col } from 'react-grid-system';
+import { Container, Row, Col } from '../../components/GridSystem';
 import { Button } from '../../components/Buttons';
 import { Tooltip } from '../../components/Tooltip';
 import controller from '../../lib/controller';
@@ -64,7 +64,7 @@ class MDIPanel extends PureComponent {
         return (
             <Panel>
                 <Container fluid style={{ padding: 0, margin: '-5px -4px 0 -4px' }}>
-                    <Row nogutter>
+                    <Row gutterWidth={0}>
                         {this.renderMDIButtons()}
                     </Row>
                 </Container>

@@ -36,4 +36,3 @@ AboutContainer.propTypes = {
 };
 
 export default AboutContainer;
-

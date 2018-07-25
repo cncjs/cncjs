@@ -13,9 +13,9 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import evaluateExpression from '../../lib/evaluateExpression';
+import evaluateExpression from '../../lib/evaluate-expression';
 import logger from '../../lib/logger';
-import translateWithContext from '../../lib/translateWithContext';
+import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
@@ -24,7 +24,7 @@ import {
     WRITE_SOURCE_CLIENT,
     WRITE_SOURCE_FEEDER
 } from '../constants';
-import Smoothie from './Smoothie';
+import SmoothieRunner from './SmoothieRunner';
 import {
     SMOOTHIE,
     SMOOTHIE_MACHINE_STATE_HOLD,
@@ -51,7 +51,7 @@ class SmoothieController {
     connectionEventListener = {
         data: (data) => {
             log.silly(`< ${data}`);
-            this.controller.parse('' + data);
+            this.runner.parse('' + data);
         },
         close: (err) => {
             this.ready = false;
@@ -205,7 +205,7 @@ class SmoothieController {
 
                 // line="G0 X[posx - 8] Y[ymax]"
                 // > "G0 X2 Y50"
-                line = translateWithContext(line, context);
+                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -235,7 +235,7 @@ class SmoothieController {
                 return;
             }
 
-            if (this.controller.isAlarm()) {
+            if (this.runner.isAlarm()) {
                 this.feeder.reset();
                 log.warn('Stopped sending G-code commands in Alarm mode');
                 return;
@@ -284,7 +284,7 @@ class SmoothieController {
 
                 // line="G0 X[posx - 8] Y[ymax]"
                 // > "G0 X2 Y50"
-                line = translateWithContext(line, context);
+                line = translateExpression(line, context);
                 const data = parser.parseLine(line, { flatten: true });
                 const words = ensureArray(data.words);
 
@@ -369,11 +369,11 @@ class SmoothieController {
         });
 
         // Smoothie
-        this.controller = new Smoothie();
+        this.runner = new SmoothieRunner();
 
-        this.controller.on('raw', noop);
+        this.runner.on('raw', noop);
 
-        this.controller.on('status', (res) => {
+        this.runner.on('status', (res) => {
             this.actionMask.queryStatusReport = false;
 
             if (this.actionMask.replyStatusReport) {
@@ -409,7 +409,7 @@ class SmoothieController {
             }
         });
 
-        this.controller.on('ok', (res) => {
+        this.runner.on('ok', (res) => {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
@@ -449,7 +449,7 @@ class SmoothieController {
             this.feeder.next();
         });
 
-        this.controller.on('error', (res) => {
+        this.runner.on('error', (res) => {
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 const ignoreErrors = config.get('state.controller.exception.ignoreErrors');
                 const pauseError = !ignoreErrors;
@@ -475,11 +475,11 @@ class SmoothieController {
             this.feeder.next();
         });
 
-        this.controller.on('alarm', (res) => {
+        this.runner.on('alarm', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
-        this.controller.on('parserstate', (res) => {
+        this.runner.on('parserstate', (res) => {
             this.actionMask.queryParserState.state = false;
             this.actionMask.queryParserState.reply = true;
 
@@ -488,15 +488,15 @@ class SmoothieController {
             }
         });
 
-        this.controller.on('parameters', (res) => {
+        this.runner.on('parameters', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
-        this.controller.on('version', (res) => {
+        this.runner.on('version', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
-        this.controller.on('others', (res) => {
+        this.runner.on('others', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
@@ -546,7 +546,7 @@ class SmoothieController {
             // it will consume 3 bytes from the receive buffer in each time period.
             // @see https://github.com/cncjs/cncjs/issues/176
             // @see https://github.com/cncjs/cncjs/issues/186
-            if ((this.workflow.state === WORKFLOW_STATE_IDLE) && this.controller.isIdle()) {
+            if ((this.workflow.state === WORKFLOW_STATE_IDLE) && this.runner.isIdle()) {
                 const lastQueryTime = this.actionTime.queryParserState;
                 if (lastQueryTime > 0) {
                     const timespan = Math.abs(now - lastQueryTime);
@@ -589,20 +589,20 @@ class SmoothieController {
             }
 
             const zeroOffset = _.isEqual(
-                this.controller.getWorkPosition(this.state),
-                this.controller.getWorkPosition(this.controller.state)
+                this.runner.getWorkPosition(this.state),
+                this.runner.getWorkPosition(this.runner.state)
             );
 
             // Smoothie settings
-            if (this.settings !== this.controller.settings) {
-                this.settings = this.controller.settings;
+            if (this.settings !== this.runner.settings) {
+                this.settings = this.runner.settings;
                 this.emit('controller:settings', this.type, this.settings);
                 this.emit('Smoothie:settings', this.settings); // Backward compatibility
             }
 
             // Smoothie state
-            if (this.state !== this.controller.state) {
-                this.state = this.controller.state;
+            if (this.state !== this.runner.state) {
+                this.state = this.runner.state;
                 this.emit('controller:state', this.type, this.state);
                 this.emit('Smoothie:state', this.state); // Backward compatibility
             }
@@ -621,7 +621,7 @@ class SmoothieController {
 
             // Check if the machine has stopped movement after completion
             if (this.actionTime.senderFinishTime > 0) {
-                const machineIdle = zeroOffset && this.controller.isIdle();
+                const machineIdle = zeroOffset && this.runner.isIdle();
                 const now = new Date().getTime();
                 const timespan = Math.abs(now - this.actionTime.senderFinishTime);
                 const toleranceTime = 500; // in milliseconds
@@ -649,7 +649,7 @@ class SmoothieController {
             a: mposa,
             b: mposb,
             c: mposc
-        } = this.controller.getMachinePosition();
+        } = this.runner.getMachinePosition();
 
         // Work position
         const {
@@ -659,10 +659,10 @@ class SmoothieController {
             a: posa,
             b: posb,
             c: posc
-        } = this.controller.getWorkPosition();
+        } = this.runner.getWorkPosition();
 
-        // Modal state
-        const modal = this.controller.getModalState();
+        // Modal group
+        const modal = this.runner.getModalGroup();
 
         return Object.assign(context || {}, {
             // Bounding box
@@ -717,9 +717,9 @@ class SmoothieController {
             this.queryTimer = null;
         }
 
-        if (this.controller) {
-            this.controller.removeAllListeners();
-            this.controller = null;
+        if (this.runner) {
+            this.runner.removeAllListeners();
+            this.runner = null;
         }
 
         this.sockets = {};
@@ -1009,7 +1009,7 @@ class SmoothieController {
             // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
             'override:feed': () => {
                 const [value] = args;
-                let feedOverride = this.controller.state.ovF;
+                let feedOverride = this.runner.state.status.ovF;
 
                 if (value === 0) {
                     feedOverride = 100;
@@ -1023,10 +1023,10 @@ class SmoothieController {
                 this.command('gcode', 'M220S' + feedOverride);
 
                 // enforce state change
-                this.controller.state = {
-                    ...this.controller.state,
+                this.runner.state = {
+                    ...this.runner.state,
                     status: {
-                        ...this.controller.state.status,
+                        ...this.runner.state.status,
                         ovF: feedOverride
                     }
                 };
@@ -1035,7 +1035,7 @@ class SmoothieController {
             // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
             'override:spindle': () => {
                 const [value] = args;
-                let spindleOverride = this.controller.state.ovS;
+                let spindleOverride = this.runner.state.status.ovS;
 
                 if (value === 0) {
                     spindleOverride = 100;
@@ -1049,10 +1049,10 @@ class SmoothieController {
                 this.command('gcode', 'M221S' + spindleOverride);
 
                 // enforce state change
-                this.controller.state = {
-                    ...this.controller.state,
+                this.runner.state = {
+                    ...this.runner.state,
                     status: {
-                        ...this.controller.state.status,
+                        ...this.runner.state.status,
                         ovS: spindleOverride
                     }
                 };

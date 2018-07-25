@@ -155,9 +155,9 @@ series([
 
         await portal(({ onClose }) => (
             <Modal
-                closeOnOverlayClick={false}
-                showCloseButton={false}
                 onClose={onClose}
+                disableOverlay={true}
+                showCloseButton={false}
             >
                 <Modal.Body>
                     <MessageTemplate type="error">

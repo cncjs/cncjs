@@ -10,7 +10,7 @@ import i18n from '../../../lib/i18n';
 const FeederPaused = (props) => (
     <Modal
         size="xs"
-        closeOnOverlayClick={false}
+        disableOverlay={true}
         showCloseButton={false}
     >
         <Modal.Body>

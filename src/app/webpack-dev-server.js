@@ -1,9 +1,8 @@
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
-import WriteFileWebpackPlugin from 'write-file-webpack-plugin';
-import log from './lib/logger';
 import config from '../../webpack.webconfig.development';
+import log from './lib/logger';
 
 const webpackDevServer = (app) => {
     if (process.env.NODE_ENV !== 'development') {
@@ -11,14 +10,7 @@ const webpackDevServer = (app) => {
         return;
     }
 
-    const compiler = webpack({
-        ...config,
-        plugins: [
-            // https://github.com/gajus/write-file-webpack-plugin
-            // Forces webpack-dev-server to write bundle files to the file system.
-            new WriteFileWebpackPlugin()
-        ].concat(config.plugins)
-    });
+    const compiler = webpack(config);
 
     // https://github.com/webpack/webpack-dev-middleware
     // webpack-dev-middleware handle the files in memory.
