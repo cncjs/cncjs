@@ -160,7 +160,7 @@ class TinyGRunner extends events.EventEmitter {
 
                 this.emit('pwr', payload.pwr);
             } else if (type === TinyGLineParserResultQueueReports) {
-                const { qr } = payload;
+                const { qr, qi, qo } = payload;
 
                 // The planner buffer pool size will be checked every time the planner buffer changes
                 if (qr > this.plannerBufferPoolSize) {
@@ -173,7 +173,7 @@ class TinyGRunner extends events.EventEmitter {
                         qr
                     };
                 }
-                this.emit('qr', { qr });
+                this.emit('qr', { qr, qi, qo });
             } else if (type === TinyGLineParserResultStatusReports) {
                 // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
                 const keymaps = {
