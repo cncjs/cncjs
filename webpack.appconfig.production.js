@@ -1,20 +1,8 @@
 const crypto = require('crypto');
-const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
+const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package.json');
-
-const NODE_MODULES = path.resolve(__dirname, 'node_modules');
-
-// http://jlongster.com/Backend-Apps-with-Webpack--Part-I
-const externals = {};
-fs.readdirSync(NODE_MODULES)
-    .filter(x => {
-        return ['.bin'].indexOf(x) === -1;
-    })
-    .forEach(mod => {
-        externals[mod] = 'commonjs ' + mod;
-    });
 
 // Use publicPath for production
 const payload = pkg.version;
@@ -29,7 +17,7 @@ const buildVersion = pkg.version;
 module.exports = {
     mode: 'production',
     devtool: 'cheap-module-source-map',
-    target: 'node',
+    target: 'node', // ignore built-in modules like path, fs, etc.
     context: path.resolve(__dirname, 'src/app'),
     entry: {
         index: [
@@ -63,12 +51,14 @@ module.exports = {
             }
         ]
     },
-    externals: externals,
+    externals: [nodeExternals()], // ignore all modules in node_modules folder
     resolve: {
         extensions: ['.js', '.jsx']
     },
     resolveLoader: {
-        modules: [NODE_MODULES]
+        modules: [
+            path.resolve(__dirname, 'node_modules')
+        ]
     },
     node: {
         console: true,
