@@ -177,7 +177,7 @@ after_success:
   - |
     # docker image
     if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
-      travis_wait scripts/travis-docker-build.sh;
+      travis_wait 40 scripts/travis-docker-build.sh;
     fi
 
 before_deploy:
