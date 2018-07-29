@@ -31,4 +31,4 @@ npm run electron-rebuild -- \
     --module-dir=dist/cnc \
     --which-module=serialport
 
-npm run electron-builder -- "$@"
+cross-env USE_HARD_LINKS=false npm run electron-builder -- "$@"

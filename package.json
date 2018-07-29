@@ -116,8 +116,7 @@
       "category": "Utility",
       "target": [
         "AppImage",
-        "deb",
-        "rpm"
+        "deb"
       ]
     }
   },
