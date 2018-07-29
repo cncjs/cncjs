@@ -92,7 +92,7 @@ after_success:
       ls -al output output/*;
       cp -af "output/${PRODUCT_NAME}-${PACKAGE_VERSION}.dmg" "releases/${RELEASE}-mac-x64.dmg";
       ls -al releases/*;
-      if [[ -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
+      if [[ "$TRAVIS_BRANCH" == "master" && -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
         npm run github-release -- delete \
           --owner=cncjs \
           --repo=cncjs \
@@ -106,6 +106,7 @@ after_success:
           --name="${TRAVIS_BRANCH}" \
           --body="${COMMIT_LOG}" \
           "releases/${RELEASE}-mac-x64.dmg";
+        rm -f "releases/${RELEASE}-mac-x64.dmg";
       fi
     fi
   - |
@@ -121,7 +122,7 @@ after_success:
       rm -f "${RELEASE}-linux-ia32";
       popd;
       ls -al releases/*;
-      if [[ -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
+      if [[ "$TRAVIS_BRANCH" == "master" && -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
         npm run github-release -- delete \
           --owner=cncjs \
           --repo=cncjs \
@@ -139,6 +140,9 @@ after_success:
           "releases/${RELEASE}-linux-i386.AppImage" \
           "releases/${RELEASE}-linux-i386.deb" \
           "releases/${RELEASE}-linux-ia32.tar.gz";
+        rm -f "releases/${RELEASE}-linux-i386.AppImage";
+        rm -f "releases/${RELEASE}-linux-i386.deb";
+        rm -f "releases/${RELEASE}-linux-ia32.tar.gz";
       fi
     fi
   - |
@@ -154,7 +158,7 @@ after_success:
       rm -f "${RELEASE}-linux-x64";
       popd;
       ls -al releases/*;
-      if [[ -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
+      if [[ "$TRAVIS_BRANCH" == "master" && -z "$TRAVIS_TAG" && ! -z "$(ls -A releases)" ]]; then
         npm run github-release -- delete \
           --owner=cncjs \
           --repo=cncjs \
@@ -172,6 +176,9 @@ after_success:
           "releases/${RELEASE}-linux-x86_64.AppImage" \
           "releases/${RELEASE}-linux-amd64.deb" \
           "releases/${RELEASE}-linux-x64.tar.gz";
+        rm -f "releases/${RELEASE}-linux-x86_64.AppImage";
+        rm -f "releases/${RELEASE}-linux-amd64.deb";
+        rm -f "releases/${RELEASE}-linux-x64.tar.gz";
       fi
     fi
   - |
