@@ -147,6 +147,7 @@ const migrateStore = () => {
         store.unset('widgets.webcam.scale');
     }
 
+    // 1.9.13
     // Removed "widgets.axes.wzero"
     // Removed "widgets.axes.mzero"
     // Removed "widgets.axes.jog.customDistance"
@@ -157,6 +158,15 @@ const migrateStore = () => {
         store.unset('widgets.axes.mzero');
         store.unset('widgets.axes.jog.customDistance');
         store.unset('widgets.axes.jog.selectedDistance');
+    }
+
+    // 1.9.16
+    // Removed "widgets.axes.wzero"
+    // Removed "widgets.axes.mzero"
+    // Removed "widgets.axes.jog.customDistance"
+    // Removed "widgets.axes.jog.selectedDistance"
+    if (semver.lt(cnc.version, '1.9.16')) {
+        store.unset('widgets.axes.jog.step');
     }
 };
 
