@@ -13,6 +13,7 @@ import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
+import { Provider as GridSystemProvider } from 'web/components/GridSystem';
 import settings from './config/settings';
 import portal from './lib/portal';
 import controller from './lib/controller';
@@ -39,12 +40,20 @@ const renderPage = () => {
     document.body.appendChild(container);
 
     ReactDOM.render(
-        <Router>
-            <div>
-                <Route path="/login" component={Login} />
-                <ProtectedRoute path="/" component={App} />
-            </div>
-        </Router>,
+        <GridSystemProvider
+            breakpoints={[576, 768, 992, 1200]}
+            containerWidths={[540, 720, 960, 1140]}
+            columns={12}
+            gutterWidth={0}
+            layout="floats"
+        >
+            <Router>
+                <div>
+                    <Route path="/login" component={Login} />
+                    <ProtectedRoute path="/" component={App} />
+                </div>
+            </Router>
+        </GridSystemProvider>,
         container
     );
 };
