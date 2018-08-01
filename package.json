@@ -26,7 +26,7 @@
   "preferGlobal": true,
   "scripts": {
     "prepare": "npm run clean && npm run lint && npm run test && npm run build",
-    "prebuild-latest": "npm run package-sync && bash -c \"cd src; npm version ${npm_package_version}-$(git rev-list --count $(git symbolic-ref --short -q HEAD))\" && bash scripts/prebuild-prod.sh",
+    "prebuild-latest": "npm run package-sync && bash -c \"cd src; npm version ${npm_package_version}-${COMMIT_COUNT:-latest}\" && bash scripts/prebuild-prod.sh",
     "prebuild-dev": "npm run package-sync && bash scripts/prebuild-dev.sh",
     "prebuild-prod": "npm run package-sync && bash scripts/prebuild-prod.sh",
     "build": "npm run build-prod",
@@ -284,6 +284,7 @@
     "babel-preset-react": "~6.24.1",
     "babel-preset-react-hmre": "~1.1.1",
     "babel-preset-stage-0": "~6.24.1",
+    "boolean": "~0.1.3",
     "bundle-loader": "~0.5.6",
     "concurrently": "~3.6.1",
     "coveralls": "~3.0.2",
