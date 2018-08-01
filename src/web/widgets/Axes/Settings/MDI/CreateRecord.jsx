@@ -2,12 +2,14 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import Slider from 'rc-slider';
 import React, { PureComponent } from 'react';
-import Modal from '../../../../components/Modal';
-import Space from '../../../../components/Space';
-import { ToastNotification } from '../../../../components/Notifications';
-import { Form, Input, Textarea } from '../../../../components/Validation';
-import i18n from '../../../../lib/i18n';
-import * as validations from '../../../../lib/validations';
+import { Button } from 'web/components/Buttons';
+import Modal from 'web/components/Modal';
+import Space from 'web/components/Space';
+import { ToastNotification } from 'web/components/Notifications';
+import { Form, Input, Textarea } from 'web/components/Validation';
+import { FormGroup } from 'web/components/Forms';
+import i18n from 'web/lib/i18n';
+import * as validations from 'web/lib/validations';
 import styles from '../form.styl';
 
 class CreateRecord extends PureComponent {
@@ -72,77 +74,73 @@ class CreateRecord extends PureComponent {
                             event.preventDefault();
                         }}
                     >
-                        <div className={styles.formFields}>
-                            <div className={styles.formGroup}>
-                                <label>{i18n._('Name')}</label>
-                                <Input
-                                    type="text"
-                                    name="name"
-                                    value=""
-                                    className={cx(
-                                        'form-control',
-                                        styles.formControl,
-                                        styles.short
-                                    )}
-                                    validations={[validations.required]}
-                                />
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label>{i18n._('Command')}</label>
-                                <Textarea
-                                    name="command"
-                                    value=""
-                                    rows="5"
-                                    className={cx(
-                                        'form-control',
-                                        styles.formControl,
-                                        styles.long
-                                    )}
-                                    validations={[validations.required]}
-                                />
-                            </div>
-                            <div className={styles.formGroup}>
-                                <label>{i18n._('Button Width')}</label>
-                                <Slider
-                                    ref={node => {
-                                        this.slider = node;
-                                    }}
-                                    dots
-                                    marks={{
-                                        1: (<span><sup>1</sup>/<sub>12</sub></span>),
-                                        2: (<span><sup>1</sup>/<sub>6</sub></span>),
-                                        3: (<span><sup>1</sup>/<sub>4</sub></span>),
-                                        4: (<span><sup>1</sup>/<sub>3</sub></span>),
-                                        5: (<span><sup>5</sup>/<sub>12</sub></span>),
-                                        6: (<span><sup>1</sup>/<sub>2</sub></span>),
-                                        7: (<span><sup>7</sup>/<sub>12</sub></span>),
-                                        8: (<span><sup>2</sup>/<sub>3</sub></span>),
-                                        9: (<span><sup>3</sup>/<sub>4</sub></span>),
-                                        10: (<span><sup>5</sup>/<sub>6</sub></span>),
-                                        11: (<span><sup>11</sup>/<sub>12</sub></span>),
-                                        12: '100%'
-                                    }}
-                                    included={false}
-                                    defaultValue={6}
-                                    min={1}
-                                    max={12}
-                                    step={1}
-                                />
-                            </div>
-                        </div>
+                        <FormGroup>
+                            <label>{i18n._('Name')}</label>
+                            <Input
+                                type="text"
+                                name="name"
+                                value=""
+                                className={cx(
+                                    'form-control',
+                                    styles.formControl,
+                                    styles.short
+                                )}
+                                validations={[validations.required]}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>{i18n._('Command')}</label>
+                            <Textarea
+                                name="command"
+                                value=""
+                                rows="5"
+                                className={cx(
+                                    'form-control',
+                                    styles.formControl,
+                                    styles.long
+                                )}
+                                validations={[validations.required]}
+                            />
+                        </FormGroup>
+                        <FormGroup>
+                            <label>{i18n._('Button Width')}</label>
+                            <Slider
+                                ref={node => {
+                                    this.slider = node;
+                                }}
+                                dots
+                                marks={{
+                                    1: (<span><sup>1</sup>/<sub>12</sub></span>),
+                                    2: (<span><sup>1</sup>/<sub>6</sub></span>),
+                                    3: (<span><sup>1</sup>/<sub>4</sub></span>),
+                                    4: (<span><sup>1</sup>/<sub>3</sub></span>),
+                                    5: (<span><sup>5</sup>/<sub>12</sub></span>),
+                                    6: (<span><sup>1</sup>/<sub>2</sub></span>),
+                                    7: (<span><sup>7</sup>/<sub>12</sub></span>),
+                                    8: (<span><sup>2</sup>/<sub>3</sub></span>),
+                                    9: (<span><sup>3</sup>/<sub>4</sub></span>),
+                                    10: (<span><sup>5</sup>/<sub>6</sub></span>),
+                                    11: (<span><sup>11</sup>/<sub>12</sub></span>),
+                                    12: '100%'
+                                }}
+                                included={false}
+                                defaultValue={6}
+                                min={1}
+                                max={12}
+                                step={1}
+                            />
+                        </FormGroup>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    <Button
+                        btnStyle="default"
                         onClick={action.closeModal}
                     >
                         {i18n._('Cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
+                    </Button>
+                    <Button
+                        btnStyle="primary"
                         onClick={() => {
                             this.form.validate(err => {
                                 if (err) {
@@ -155,7 +153,7 @@ class CreateRecord extends PureComponent {
                         }}
                     >
                         {i18n._('OK')}
-                    </button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );

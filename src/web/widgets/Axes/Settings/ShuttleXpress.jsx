@@ -1,7 +1,8 @@
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import i18n from '../../../lib/i18n';
+import i18n from 'web/lib/i18n';
+import { FormGroup } from 'web/components/Forms';
 
 const FEEDRATE_RANGE = [100, 2500];
 const FEEDRATE_STEP = 50;
@@ -48,6 +49,7 @@ class ShuttleXpress extends PureComponent {
 
         return { feedrateMin, feedrateMax, hertz, overshoot };
     }
+
     componentWillReceiveProps(nextProps) {
         const {
             feedrateMin,
@@ -58,12 +60,13 @@ class ShuttleXpress extends PureComponent {
 
         this.setState({ feedrateMin, feedrateMax, hertz, overshoot });
     }
+
     render() {
         const { feedrateMin, feedrateMax, hertz, overshoot } = this.state;
 
         return (
             <div>
-                <div className="form-group form-group-sm">
+                <FormGroup>
                     <p>
                         {i18n._('Feed Rate Range: {{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
                     </p>
@@ -75,8 +78,8 @@ class ShuttleXpress extends PureComponent {
                         step={FEEDRATE_STEP}
                         onChange={this.onChangeFeedrateSlider}
                     />
-                </div>
-                <div className="form-group form-group-sm">
+                </FormGroup>
+                <FormGroup>
                     <label>
                         {i18n._('Repeat Rate: {{hertz}}Hz', { hertz: hertz })}
                     </label>
@@ -94,8 +97,8 @@ class ShuttleXpress extends PureComponent {
                         <option value="2">{i18n._('2 Times per Second')}</option>
                         <option value="1">{i18n._('Once Every Second')}</option>
                     </select>
-                </div>
-                <div className="form-group form-group-sm" style={{ marginBottom: 0 }}>
+                </FormGroup>
+                <FormGroup>
                     <p>{i18n._('Distance Overshoot: {{overshoot}}x', { overshoot: overshoot })}</p>
                     <Slider
                         defaultValue={overshoot}
@@ -104,7 +107,7 @@ class ShuttleXpress extends PureComponent {
                         step={OVERSHOOT_STEP}
                         onChange={this.onChangeOvershootSlider}
                     />
-                </div>
+                </FormGroup>
             </div>
         );
     }
