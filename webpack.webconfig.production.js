@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const path = require('path');
+const boolean = require('boolean');
+const dotenv = require('dotenv');
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -13,6 +15,11 @@ const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const buildConfig = require('./build.config');
 const pkg = require('./package.json');
+
+dotenv.config();
+
+const ENABLE_WEBPACK_LOADER_ESLINT = boolean(process.env.ENABLE_WEBPACK_LOADER_ESLINT);
+const ENABLE_WEBPACK_OPTIMIZATION_MINIMIZER = boolean(process.env.ENABLE_WEBPACK_OPTIMIZATION_MINIMIZER);
 
 // Use publicPath for production
 const publicPath = ((payload) => {
@@ -51,7 +58,7 @@ module.exports = {
     },
     module: {
         rules: [
-            {
+            ENABLE_WEBPACK_LOADER_ESLINT && {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
                 enforce: 'pre',
@@ -110,7 +117,7 @@ module.exports = {
                 test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'file-loader'
             }
-        ]
+        ].filter(Boolean)
     },
     node: {
         fs: 'empty',
@@ -119,13 +126,17 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            new UglifyJsPlugin({
-                cache: true,
-                parallel: true,
-                sourceMap: true
-            }),
-            new OptimizeCSSAssetsPlugin()
-        ]
+            ENABLE_WEBPACK_OPTIMIZATION_MINIMIZER && (
+                new UglifyJsPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true
+                })
+            ),
+            ENABLE_WEBPACK_OPTIMIZATION_MINIMIZER && (
+                new OptimizeCSSAssetsPlugin()
+            )
+        ].filter(Boolean)
     },
     plugins: [
         new webpack.DefinePlugin({

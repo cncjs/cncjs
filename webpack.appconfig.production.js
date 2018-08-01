@@ -1,8 +1,14 @@
 const crypto = require('crypto');
 const path = require('path');
+const boolean = require('boolean');
+const dotenv = require('dotenv');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package.json');
+
+dotenv.config();
+
+const ENABLE_WEBPACK_LOADER_ESLINT = boolean(process.env.ENABLE_WEBPACK_LOADER_ESLINT);
 
 // Use publicPath for production
 const payload = pkg.version;
@@ -38,7 +44,7 @@ module.exports = {
     ],
     module: {
         rules: [
-            {
+            ENABLE_WEBPACK_LOADER_ESLINT && {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
                 enforce: 'pre',
@@ -49,7 +55,7 @@ module.exports = {
                 loader: 'babel-loader',
                 exclude: /node_modules/
             }
-        ]
+        ].filter(Boolean)
     },
     externals: [nodeExternals()], // ignore all modules in node_modules folder
     resolve: {
