@@ -1,20 +1,20 @@
+import cx from 'classnames';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import map from 'lodash/map';
 import mapValues from 'lodash/mapValues';
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import api from '../../api';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import combokeys from '../../lib/combokeys';
-import controller from '../../lib/controller';
-import { preventDefault } from '../../lib/dom-events';
-import i18n from '../../lib/i18n';
-import { in2mm, mapPositionToUnits } from '../../lib/units';
-import { limit } from '../../lib/normalize-range';
-import WidgetConfig from '../WidgetConfig';
+import api from 'web/api';
+import Space from 'web/components/Space';
+import Widget from 'web/components/Widget';
+import combokeys from 'web/lib/combokeys';
+import controller from 'web/lib/controller';
+import { preventDefault } from 'web/lib/dom-events';
+import i18n from 'web/lib/i18n';
+import { in2mm, mapPositionToUnits } from 'web/lib/units';
+import { limit } from 'web/lib/normalize-range';
+import WidgetConfig from 'web/widgets/WidgetConfig';
 import Axes from './Axes';
 import KeypadOverlay from './KeypadOverlay';
 import Settings from './Settings';
@@ -112,13 +112,13 @@ class AxesWidget extends PureComponent {
             const { units } = this.state;
 
             if (units === IMPERIAL_UNITS) {
-                const step = this.config.get('jog.step.imperial');
+                const step = this.config.get('jog.imperial.step');
                 const distance = Number(IMPERIAL_STEPS[step]) || 0;
                 return distance;
             }
 
             if (units === METRIC_UNITS) {
-                const step = this.config.get('jog.step.metric');
+                const step = this.config.get('jog.metric.step');
                 const distance = Number(METRIC_STEPS[step]) || 0;
                 return distance;
             }
@@ -203,10 +203,13 @@ class AxesWidget extends PureComponent {
             this.setState(state => ({
                 jog: {
                     ...state.jog,
-                    step: {
-                        ...state.jog.step,
-                        imperial: (state.units === IMPERIAL_UNITS) ? step : state.jog.step.imperial,
-                        metric: (state.units === METRIC_UNITS) ? step : state.jog.step.metric
+                    imperial: {
+                        ...state.jog.imperial,
+                        step: (state.units === IMPERIAL_UNITS) ? step : state.jog.imperial.step,
+                    },
+                    metric: {
+                        ...state.jog.metric,
+                        step: (state.units === METRIC_UNITS) ? step : state.jog.metric.step
                     }
                 }
             }));
@@ -215,14 +218,17 @@ class AxesWidget extends PureComponent {
             this.setState(state => ({
                 jog: {
                     ...state.jog,
-                    step: {
-                        ...state.jog.step,
-                        imperial: (state.units === IMPERIAL_UNITS)
-                            ? limit(state.jog.step.imperial + 1, 0, IMPERIAL_STEPS.length - 1)
-                            : state.jog.step.imperial,
-                        metric: (state.units === METRIC_UNITS)
-                            ? limit(state.jog.step.metric + 1, 0, METRIC_STEPS.length - 1)
-                            : state.jog.step.metric
+                    imperial: {
+                        ...state.jog.imperial,
+                        step: (state.units === IMPERIAL_UNITS)
+                            ? limit(state.jog.imperial.step + 1, 0, IMPERIAL_STEPS.length - 1)
+                            : state.jog.imperial.step
+                    },
+                    metric: {
+                        ...state.jog.metric,
+                        step: (state.units === METRIC_UNITS)
+                            ? limit(state.jog.metric.step + 1, 0, METRIC_STEPS.length - 1)
+                            : state.jog.metric.step
                     }
                 }
             }));
@@ -231,14 +237,17 @@ class AxesWidget extends PureComponent {
             this.setState(state => ({
                 jog: {
                     ...state.jog,
-                    step: {
-                        ...state.jog.step,
-                        imperial: (state.units === IMPERIAL_UNITS)
-                            ? limit(state.jog.step.imperial - 1, 0, IMPERIAL_STEPS.length - 1)
-                            : state.jog.step.imperial,
-                        metric: (state.units === METRIC_UNITS)
-                            ? limit(state.jog.step.metric - 1, 0, METRIC_STEPS.length - 1)
-                            : state.jog.step.metric
+                    imperial: {
+                        ...state.jog.imperial,
+                        step: (state.units === IMPERIAL_UNITS)
+                            ? limit(state.jog.imperial.step - 1, 0, IMPERIAL_STEPS.length - 1)
+                            : state.jog.imperial.step,
+                    },
+                    metric: {
+                        ...state.jog.metric,
+                        step: (state.units === METRIC_UNITS)
+                            ? limit(state.jog.metric.step - 1, 0, METRIC_STEPS.length - 1)
+                            : state.jog.metric.step
                     }
                 }
             }));
@@ -247,14 +256,17 @@ class AxesWidget extends PureComponent {
             this.setState(state => ({
                 jog: {
                     ...state.jog,
-                    step: {
-                        ...state.jog.step,
-                        imperial: (state.units === IMPERIAL_UNITS)
-                            ? (state.jog.step.imperial + 1) % IMPERIAL_STEPS.length
-                            : state.jog.step.imperial,
-                        metric: (state.units === METRIC_UNITS)
-                            ? (state.jog.step.metric + 1) % METRIC_STEPS.length
-                            : state.jog.step.metric
+                    imperial: {
+                        ...state.jog.imperial,
+                        step: (state.units === IMPERIAL_UNITS)
+                            ? (state.jog.imperial.step + 1) % IMPERIAL_STEPS.length
+                            : state.jog.imperial.step,
+                    },
+                    metric: {
+                        ...state.jog.metric,
+                        step: (state.units === METRIC_UNITS)
+                            ? (state.jog.metric.step + 1) % METRIC_STEPS.length
+                            : state.jog.metric.step
                     }
                 }
             }));
@@ -567,13 +579,13 @@ class AxesWidget extends PureComponent {
 
         this.config.set('minimized', minimized);
         this.config.set('axes', axes);
+        this.config.set('jog.keypad', jog.keypad);
         if (units === IMPERIAL_UNITS) {
-            this.config.set('jog.step.imperial', Number(jog.step.imperial) || 0);
+            this.config.set('jog.imperial.step', Number(jog.imperial.step) || 0);
         }
         if (units === METRIC_UNITS) {
-            this.config.set('jog.step.metric', Number(jog.step.metric) || 0);
+            this.config.set('jog.metric.step', Number(jog.metric.step) || 0);
         }
-        this.config.set('jog.keypad', jog.keypad);
         this.config.set('mdi.disabled', mdi.disabled);
     }
     getInitialState() {
@@ -614,11 +626,15 @@ class AxesWidget extends PureComponent {
             },
             jog: {
                 axis: '', // Defaults to empty
-                step: {
-                    imperial: this.config.get('jog.step.imperial'),
-                    metric: this.config.get('jog.step.metric')
+                keypad: this.config.get('jog.keypad'),
+                imperial: {
+                    step: this.config.get('jog.imperial.step'),
+                    distances: this.config.get('jog.imperial.distances')
                 },
-                keypad: this.config.get('jog.keypad')
+                metric: {
+                    step: this.config.get('jog.metric.step'),
+                    distances: this.config.get('jog.metric.distances')
+                }
             },
             mdi: {
                 disabled: this.config.get('mdi.disabled'),
@@ -788,7 +804,7 @@ class AxesWidget extends PureComponent {
                             onClick={actions.toggleMinimized}
                         >
                             <i
-                                className={classNames(
+                                className={cx(
                                     'fa',
                                     { 'fa-chevron-up': !minimized },
                                     { 'fa-chevron-down': minimized }
@@ -810,7 +826,7 @@ class AxesWidget extends PureComponent {
                         >
                             <Widget.DropdownMenuItem eventKey="fullscreen">
                                 <i
-                                    className={classNames(
+                                    className={cx(
                                         'fa',
                                         'fa-fw',
                                         { 'fa-expand': !isFullscreen },
@@ -834,7 +850,7 @@ class AxesWidget extends PureComponent {
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    className={classNames(
+                    className={cx(
                         styles['widget-content'],
                         { [styles.hidden]: minimized }
                     )}

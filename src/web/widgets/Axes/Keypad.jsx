@@ -6,11 +6,11 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Repeatable from 'react-repeatable';
 import styled from 'styled-components';
-import { Button } from '../../components/Buttons';
-import Dropdown, { MenuItem } from '../../components/Dropdown';
-import Space from '../../components/Space';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import { Button } from 'web/components/Buttons';
+import Dropdown, { MenuItem } from 'web/components/Dropdown';
+import Space from 'web/components/Space';
+import controller from 'web/lib/controller';
+import i18n from 'web/lib/i18n';
 import Fraction from './components/Fraction';
 import {
     // Units
@@ -76,9 +76,10 @@ class Keypad extends PureComponent {
             <span>{quot > 0 ? quot : ''}</span>
         );
     }
+
     renderImperialMenuItems() {
         const { state } = this.props;
-        const step = state.jog.step.imperial;
+        const step = state.jog.imperial.step;
 
         return IMPERIAL_STEPS.map((value, key) => {
             const active = (key === step);
@@ -89,16 +90,17 @@ class Keypad extends PureComponent {
                     eventKey={key}
                     active={active}
                 >
-                    {this.renderRationalNumberWithBoundedDenominator(value)}
+                    {value}
                     <Space width="4" />
                     <sub>{i18n._('in')}</sub>
                 </MenuItem>
             );
         });
     }
+
     renderMetricMenuItems() {
         const { state } = this.props;
-        const step = state.jog.step.metric;
+        const step = state.jog.metric.step;
 
         return METRIC_STEPS.map((value, key) => {
             const active = (key === step);
@@ -116,18 +118,19 @@ class Keypad extends PureComponent {
             );
         });
     }
+
     render() {
         const { state, actions } = this.props;
         const { canClick, units, axes, jog } = state;
         const canChangeUnits = canClick;
         const canChangeStep = canClick;
         const canStepForward = canChangeStep && (
-            (units === IMPERIAL_UNITS && (jog.step.imperial < IMPERIAL_STEPS.length - 1)) ||
-            (units === METRIC_UNITS && (jog.step.metric < METRIC_STEPS.length - 1))
+            (units === IMPERIAL_UNITS && (jog.imperial.step < IMPERIAL_STEPS.length - 1)) ||
+            (units === METRIC_UNITS && (jog.metric.step < METRIC_STEPS.length - 1))
         );
         const canStepBackward = canChangeStep && (
-            (units === IMPERIAL_UNITS && (jog.step.imperial > 0)) ||
-            (units === METRIC_UNITS && (jog.step.metric > 0))
+            (units === IMPERIAL_UNITS && (jog.imperial.step > 0)) ||
+            (units === METRIC_UNITS && (jog.metric.step > 0))
         );
         const canClickX = canClick && includes(axes, 'x');
         const canClickY = canClick && includes(axes, 'y');
@@ -442,7 +445,7 @@ class Keypad extends PureComponent {
                                         width: '100%'
                                     }}
                                 >
-                                    {this.renderRationalNumberWithBoundedDenominator(IMPERIAL_STEPS[jog.step.imperial])}
+                                    {IMPERIAL_STEPS[jog.imperial.step]}
                                     <Space width="4" />
                                     <sub>{i18n._('in')}</sub>
                                 </Dropdown.Toggle>
@@ -478,7 +481,7 @@ class Keypad extends PureComponent {
                                         width: '100%'
                                     }}
                                 >
-                                    {METRIC_STEPS[jog.step.metric]}
+                                    {METRIC_STEPS[jog.metric.step]}
                                     <Space width="4" />
                                     <sub>{i18n._('mm')}</sub>
                                 </Dropdown.Toggle>

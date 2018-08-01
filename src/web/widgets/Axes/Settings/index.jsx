@@ -36,17 +36,27 @@ class Settings extends PureComponent {
     };
 
     config = this.props.config;
+
     node = {
         general: null,
         mdi: null,
         shuttleXpress: null
     };
+
     state = {
         activeKey: 'general',
 
         // General
         general: {
-            axes: this.config.get('axes', DEFAULT_AXES)
+            axes: this.config.get('axes', DEFAULT_AXES),
+            jog: {
+                imperial: {
+                    distances: ensureArray(this.config.get('jog.imperial.distances', []))
+                },
+                metric: {
+                    distances: ensureArray(this.config.get('jog.metric.distances', []))
+                }
+            }
         },
 
         // ShuttleXpress
@@ -70,8 +80,15 @@ class Settings extends PureComponent {
             });
 
         // General
-        const { axes = DEFAULT_AXES } = this.node.general.value;
+        const {
+            axes = DEFAULT_AXES,
+            imperialJogDistances,
+            metricJogDistances
+        } = this.node.general.value;
+
         this.config.replace('axes', ensureArray(axes));
+        this.config.replace('jog.imperial.distances', ensureArray(imperialJogDistances));
+        this.config.replace('jog.metric.distances', ensureArray(metricJogDistances));
 
         // ShuttleXpress
         const { feedrateMin, feedrateMax, hertz, overshoot } = this.node.shuttleXpress.state;
@@ -116,6 +133,8 @@ class Settings extends PureComponent {
                                     this.node.general = node;
                                 }}
                                 axes={general.axes}
+                                imperialJogDistances={general.jog.imperial.distances}
+                                metricJogDistances={general.jog.metric.distances}
                             />
                         </TabPane>
                         <TabPane active={this.state.activeKey === 'mdi'}>
