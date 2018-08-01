@@ -63,7 +63,15 @@ before_install:
 
 install: travis_wait 40 npm install
 
-before_script:
+script:
+  - |
+    if [[ -z "$TRAVIS_TAG" ]]; then
+      npm run build-latest
+    else
+      npm run build
+    fi
+
+after_success:
   - COMMIT_COUNT=`git rev-list --count $TRAVIS_BRANCH`
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
@@ -76,16 +84,6 @@ before_script:
   - echo "$PACKAGE_VERSION"
   - echo "$PRODUCT_NAME"
   - echo "$RELEASE"
-
-script:
-  - |
-    if [[ -z "$TRAVIS_TAG" ]]; then
-      npm run build-latest
-    else
-      npm run build
-    fi
-
-after_success:
   - npm run coveralls
   - mkdir -p releases
   - |

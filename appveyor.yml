@@ -51,7 +51,14 @@ install:
   - npm config set loglevel warn
   - npm install
 
-before_build:
+build_script:
+  - ps: |
+      if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
+        npm run build-latest
+      }
+      else {
+        npm run build
+      }
   - ps: $COMMIT_COUNT = git rev-list --count $env:APPVEYOR_REPO_BRANCH
   - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
   - ps: $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
@@ -64,15 +71,6 @@ before_build:
   - ps: echo "$PACKAGE_VERSION"
   - ps: echo "$PRODUCT_NAME"
   - ps: echo "$RELEASE"
-
-build_script:
-  - ps: |
-      if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
-        npm run build-latest
-      }
-      else {
-        npm run build
-      }
   - ps: mkdir releases
   - ps: |
       if ($env:nodejs_version -eq '8' -And $env:platform -eq 'x64') {
