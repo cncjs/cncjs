@@ -10,7 +10,6 @@ init:
   - git config --global core.autocrlf false
   - git config --global user.name "AppVeyor"
   - git config --global user.email "appveyor@ci.appveyor.com"
-  - git rev-list --count $env:APPVEYOR_REPO_BRANCH
 
 environment:
   matrix:
@@ -52,7 +51,21 @@ install:
   - npm config set loglevel warn
   - npm install
 
-build_script:
+before_build:
+  - ps: $COMMIT_COUNT = git rev-list --count $env:APPVEYOR_REPO_BRANCH
+  - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
+  - ps: $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
+  - ps: $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
+  - ps: $PRODUCT_NAME = "CNCjs"
+  - ps: $RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
+  - ps: echo "$COMMIT_COUNT"
+  - ps: echo "$COMMIT_LOG"
+  - ps: echo "$PACKAGE_NAME"
+  - ps: echo "$PACKAGE_VERSION"
+  - ps: echo "$PRODUCT_NAME"
+  - ps: echo "$RELEASE"
+
+build:
   - ps: |
       if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
         npm run build-latest
@@ -61,13 +74,6 @@ build_script:
         npm run build
       }
   - ps: mkdir releases
-  - ps: $PRODUCT_NAME = "CNCjs"
-  - ps: $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
-  - ps: $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
-  - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
-  - ps: $RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
-  - ps: echo "$RELEASE"
-  - ps: echo "$COMMIT_LOG"
   - ps: |
       if ($env:nodejs_version -eq '8' -And $env:platform -eq 'x64') {
         npm run build:win-x64

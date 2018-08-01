@@ -44,7 +44,6 @@ before_install:
   - git --version
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
-  - git rev-list --count $TRAVIS_BRANCH
   #
   # https://github.com/electron-userland/electron-builder/wiki/Multi-Platform-Build#os-x
   #
@@ -64,6 +63,20 @@ before_install:
 
 install: travis_wait 40 npm install
 
+before_script:
+  - COMMIT_COUNT=`git rev-list --count $TRAVIS_BRANCH`
+  - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+  - PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
+  - PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+  - PRODUCT_NAME=CNCjs
+  - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
+  - echo "$COMMIT_COUNT"
+  - echo "$COMMIT_LOG"
+  - echo "$PACKAGE_NAME"
+  - echo "$PACKAGE_VERSION"
+  - echo "$PRODUCT_NAME"
+  - echo "$RELEASE"
+
 script:
   - |
     if [[ -z "$TRAVIS_TAG" ]]; then
@@ -75,11 +88,6 @@ script:
 after_success:
   - npm run coveralls
   - mkdir -p releases
-  - PRODUCT_NAME=CNCjs
-  - PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
-  - PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
-  - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
-  - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
   - |
     # build:mac-x64
     if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "osx" ]]; then
