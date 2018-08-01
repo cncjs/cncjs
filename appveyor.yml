@@ -10,6 +10,7 @@ init:
   - git config --global core.autocrlf false
   - git config --global user.name "AppVeyor"
   - git config --global user.email "appveyor@ci.appveyor.com"
+  - git rev-list --count $env:APPVEYOR_REPO_BRANCH
 
 environment:
   matrix:
