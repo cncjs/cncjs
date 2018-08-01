@@ -51,6 +51,12 @@ install:
   - npm config set loglevel warn
   - npm install
 
+before_build:
+  - ps: $COMMIT_COUNT = git rev-list --count $env:APPVEYOR_REPO_BRANCH
+  - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
+  - ps: echo "$COMMIT_COUNT"
+  - ps: echo "$COMMIT_LOG"
+
 build_script:
   - ps: |
       if ($env:APPVEYOR_REPO_TAG -eq 'false' -or $env:APPVEYOR_REPO_TAG -eq 'False') {
@@ -59,14 +65,10 @@ build_script:
       else {
         npm run build
       }
-  - ps: $COMMIT_COUNT = git rev-list --count $env:APPVEYOR_REPO_BRANCH
-  - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
   - ps: $PACKAGE_NAME = node -e "console.log(require('./src/package.json').name)"
   - ps: $PACKAGE_VERSION = node -e "console.log(require('./src/package.json').version)"
   - ps: $PRODUCT_NAME = "CNCjs"
   - ps: $RELEASE = "${PACKAGE_NAME}-${PACKAGE_VERSION}"
-  - ps: echo "$COMMIT_COUNT"
-  - ps: echo "$COMMIT_LOG"
   - ps: echo "$PACKAGE_NAME"
   - ps: echo "$PACKAGE_VERSION"
   - ps: echo "$PRODUCT_NAME"
