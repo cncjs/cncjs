@@ -221,7 +221,7 @@ class General extends PureComponent {
                 <Margin bottom={15}>
                     <Row>
                         <Col>
-                            <label><strong>{i18n._('Jog Distance (mm)')}</strong></label>
+                            <label><strong>{i18n._('Custom Jog Distance (mm)')}</strong></label>
                             <ForEach items={metricJogDistances}>
                                 {(value, index) => (
                                     <FormGroup key={_uniqueId()}>
@@ -262,7 +262,7 @@ class General extends PureComponent {
                             <Space width="24" />
                         </Col>
                         <Col>
-                            <label><strong>{i18n._('Jog Distance (inches)')}</strong></label>
+                            <label><strong>{i18n._('Custom Jog Distance (inches)')}</strong></label>
                             <ForEach items={imperialJogDistances}>
                                 {(value, index) => (
                                     <FormGroup key={_uniqueId()}>
