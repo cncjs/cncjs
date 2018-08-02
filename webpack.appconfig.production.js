@@ -2,13 +2,17 @@ const crypto = require('crypto');
 const path = require('path');
 const boolean = require('boolean');
 const dotenv = require('dotenv');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package.json');
 
-dotenv.config();
+dotenv.config({
+    path: path.resolve('webpack.appconfig.production.env')
+});
 
-const ENABLE_WEBPACK_LOADER_ESLINT = boolean(process.env.ENABLE_WEBPACK_LOADER_ESLINT);
+const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
+const USE_UGLIFYJS_PLUGIN = boolean(process.env.USE_UGLIFYJS_PLUGIN);
 
 // Use publicPath for production
 const payload = pkg.version;
@@ -35,6 +39,17 @@ module.exports = {
         filename: '[name].js',
         libraryTarget: 'commonjs2'
     },
+    optimization: {
+        minimizer: [
+            USE_UGLIFYJS_PLUGIN && (
+                new UglifyJsPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true
+                })
+            )
+        ].filter(Boolean)
+    },
     plugins: [
         new webpack.DefinePlugin({
             'global.NODE_ENV': JSON.stringify('production'),
@@ -44,7 +59,7 @@ module.exports = {
     ],
     module: {
         rules: [
-            ENABLE_WEBPACK_LOADER_ESLINT && {
+            USE_ESLINT_LOADER && {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
                 enforce: 'pre',

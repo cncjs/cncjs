@@ -16,10 +16,13 @@ const ManifestPlugin = require('webpack-manifest-plugin');
 const buildConfig = require('./build.config');
 const pkg = require('./package.json');
 
-dotenv.config();
+dotenv.config({
+    path: path.resolve('webpack.webconfig.production.env')
+});
 
-const ENABLE_WEBPACK_LOADER_ESLINT = boolean(process.env.ENABLE_WEBPACK_LOADER_ESLINT);
-const ENABLE_WEBPACK_OPTIMIZATION_MINIMIZER = boolean(process.env.ENABLE_WEBPACK_OPTIMIZATION_MINIMIZER);
+const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
+const USE_UGLIFYJS_PLUGIN = boolean(process.env.USE_UGLIFYJS_PLUGIN);
+const USE_OPTIMIZE_CSS_ASSETS_PLUGIN = boolean(process.env.USE_OPTIMIZE_CSS_ASSETS_PLUGIN);
 
 // Use publicPath for production
 const publicPath = ((payload) => {
@@ -58,7 +61,7 @@ module.exports = {
     },
     module: {
         rules: [
-            ENABLE_WEBPACK_LOADER_ESLINT && {
+            USE_ESLINT_LOADER && {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
                 enforce: 'pre',
@@ -126,14 +129,14 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            ENABLE_WEBPACK_OPTIMIZATION_MINIMIZER && (
+            USE_UGLIFYJS_PLUGIN && (
                 new UglifyJsPlugin({
                     cache: true,
                     parallel: true,
                     sourceMap: true
                 })
             ),
-            ENABLE_WEBPACK_OPTIMIZATION_MINIMIZER && (
+            USE_OPTIMIZE_CSS_ASSETS_PLUGIN && (
                 new OptimizeCSSAssetsPlugin()
             )
         ].filter(Boolean)
