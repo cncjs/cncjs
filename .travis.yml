@@ -41,7 +41,6 @@ addons:
       - g++-multilib
 
 before_install:
-  - rvm get stable # https://github.com/rvm/rvm/pull/3627
   - git --version
   - git config --global user.name "Travis CI"
   - git config --global user.email "travis@travis-ci.org"
