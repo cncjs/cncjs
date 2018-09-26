@@ -1,4 +1,4 @@
-# CNCjs [![Travis CI Build Status](https://travis-ci.org/cncjs/cncjs.svg)](https://travis-ci.org/cncjs/cncjs) [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/qxx53wq32w3edule?svg=true)](https://ci.appveyor.com/project/cheton/cncjs) [![Coverage Status](https://coveralls.io/repos/github/cncjs/cncjs/badge.svg?branch=master)](https://coveralls.io/github/cncjs/cncjs?branch=master)
+# CNCjs [![Backers on Open Collective](https://opencollective.com/cheton/backers/badge.svg)](#backers) [![Sponsors on Open Collective](https://opencollective.com/cheton/sponsors/badge.svg)](#sponsors) [![Travis CI Build Status](https://travis-ci.org/cncjs/cncjs.svg)](https://travis-ci.org/cncjs/cncjs) [![AppVeyor Build status](https://ci.appveyor.com/api/projects/status/qxx53wq32w3edule?svg=true)](https://ci.appveyor.com/project/cheton/cncjs) [![Coverage Status](https://coveralls.io/repos/github/cncjs/cncjs/badge.svg?branch=master)](https://coveralls.io/github/cncjs/cncjs?branch=master)
 
 [![NPM](https://nodei.co/npm/cncjs.png?downloads=true&stars=true)](https://www.npmjs.com/package/cncjs)
 ![cncjs](https://raw.githubusercontent.com/cncjs/cncjs/master/media/banner.png)
@@ -288,6 +288,36 @@ Locale | Language | Status | Contributors
 If you would like to support this project, you can make a donation using PayPal. Thank you!
 
 [![Donate](https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=38CYN33CWPBR2)
+
+## Contributors
+
+This project exists thanks to all the people who contribute. [[Contribute](CONTRIBUTING.md)].
+<a href="graphs/contributors"><img src="https://opencollective.com/cheton/contributors.svg?width=890&button=false" /></a>
+
+
+## Backers
+
+Thank you to all our backers! 🙏 [[Become a backer](https://opencollective.com/cheton#backer)]
+
+<a href="https://opencollective.com/cheton#backers" target="_blank"><img src="https://opencollective.com/cheton/backers.svg?width=890"></a>
+
+
+## Sponsors
+
+Support this project by becoming a sponsor. Your logo will show up here with a link to your website. [[Become a sponsor](https://opencollective.com/cheton#sponsor)]
+
+<a href="https://opencollective.com/cheton/sponsor/0/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/0/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/1/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/1/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/2/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/2/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/3/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/3/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/4/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/4/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/5/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/5/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/6/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/6/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/7/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/7/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/8/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/8/avatar.svg"></a>
+<a href="https://opencollective.com/cheton/sponsor/9/website" target="_blank"><img src="https://opencollective.com/cheton/sponsor/9/avatar.svg"></a>
+
+
 
 ## License
 

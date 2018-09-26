@@ -67,7 +67,8 @@
     "eslint:debug": "echo \"Checking code style...\"; DEBUG=eslint:cli-engine eslint --ext .js --ext .jsx *.js src test",
     "stylint": "stylint src/web",
     "test": "tap test/*.js --no-timeout --node-arg=--require --node-arg=babel-register --node-arg=--require --node-arg=babel-polyfill",
-    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill | coveralls"
+    "coveralls": "tap test/*.js --coverage --coverage-report=text-lcov --nyc-arg=--require --nyc-arg=babel-register --nyc-arg=--require --nyc-arg=babel-polyfill | coveralls",
+    "postinstall": "opencollective-postinstall"
   },
   "build": {
     "appId": "org.cncjs",
@@ -212,6 +213,7 @@
     "multimatch": "~2.1.0",
     "namespace-constants": "~0.5.0",
     "normalize.css": "~8.0.0",
+    "opencollective": "^1.0.3",
     "perfect-scrollbar": "~1.4.0",
     "prop-types": "~15.6.2",
     "pubsub-js": "~1.6.0",
@@ -332,5 +334,9 @@
   },
   "pre-push": [
     "eslint:debug"
-  ]
+  ],
+  "collective": {
+    "type": "opencollective",
+    "url": "https://opencollective.com/cheton"
+  }
 }
