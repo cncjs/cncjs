@@ -1,0 +1,23 @@
+.help-block {
+    display: block;
+    margin-top: 4px;
+    color: #767676;
+    position: relative;
+
+    &.help-block-invalid {
+        color: #db3d44;
+        .icon {
+            color: #db3d44; // override color of tm-font icon
+        }
+    }
+
+    .icon {
+        display: inline-block;
+        width: 16px;
+        height: 16px;
+        font-size: 16px;
+        margin-right: 4px;
+        vertical-align: top;
+        margin-top: 2px;
+    }
+}
