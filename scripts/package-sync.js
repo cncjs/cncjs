@@ -12,7 +12,7 @@ const pkgApp = require('../src/package.json');
 
 const files = [
     'src/*.js',
-    'src/app/**/*.{js,jsx}'
+    'src/server/**/*.{js,jsx}'
 ];
 const deps = [
     'babel-runtime', // 'babel-runtime' is required for electron app

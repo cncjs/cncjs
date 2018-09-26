@@ -86,10 +86,10 @@ if (normalizedArgv.length > 1) {
 }
 
 const cnc = () => new Promise((resolve, reject) => {
-    // Change working directory to 'app' before require('./app')
-    process.chdir(path.resolve(__dirname, 'app'));
+    // Change working directory to 'server' before require('./server')
+    process.chdir(path.resolve(__dirname, 'server'));
 
-    require('./app').createServer({
+    require('./server').createServer({
         port: program.port,
         host: program.host,
         backlog: program.backlog,
