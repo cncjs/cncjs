@@ -28,7 +28,7 @@ import App from './containers/App';
 import Login from './containers/Login';
 import Anchor from './components/Anchor';
 import { Button } from './components/Buttons';
-import MessageTemplate from './components/MessageTemplate';
+import ModalTemplate from './components/ModalTemplate';
 import Modal from './components/Modal';
 import ProtectedRoute from './components/ProtectedRoute';
 import Space from './components/Space';
@@ -169,7 +169,7 @@ series([
                 showCloseButton={false}
             >
                 <Modal.Body>
-                    <MessageTemplate type="error">
+                    <ModalTemplate type="error">
                         <h5>{i18n._('Corrupted workspace settings')}</h5>
                         <p>{i18n._('The workspace settings have become corrupted or invalid. Click Restore Defaults to restore default settings and continue.')}</p>
                         <div>
@@ -182,7 +182,7 @@ series([
                                 {i18n._('Download workspace settings')}
                             </Anchor>
                         </div>
-                    </MessageTemplate>
+                    </ModalTemplate>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button
