@@ -213,7 +213,7 @@ class DisplayPanel extends PureComponent {
 
     renderActionDropdownForAxisX = () => {
         const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+        const { wcs } = controller.getModalState();
 
         return (
             <Dropdown
@@ -343,7 +343,7 @@ class DisplayPanel extends PureComponent {
 
     renderActionDropdownForAxisY = () => {
         const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+        const { wcs } = controller.getModalState();
 
         return (
             <Dropdown
@@ -473,7 +473,7 @@ class DisplayPanel extends PureComponent {
 
     renderActionDropdownForAxisZ = () => {
         const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+        const { wcs } = controller.getModalState();
 
         return (
             <Dropdown
@@ -603,7 +603,7 @@ class DisplayPanel extends PureComponent {
 
     renderActionDropdownForAxisA = () => {
         const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+        const { wcs } = controller.getModalState();
 
         return (
             <Dropdown
@@ -733,7 +733,7 @@ class DisplayPanel extends PureComponent {
 
     renderActionDropdownForAxisB = () => {
         const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+        const { wcs } = controller.getModalState();
 
         return (
             <Dropdown
@@ -863,7 +863,7 @@ class DisplayPanel extends PureComponent {
 
     renderActionDropdownForAxisC = () => {
         const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+        const { wcs } = controller.getModalState();
 
         return (
             <Dropdown
