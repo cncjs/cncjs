@@ -63,6 +63,12 @@ before_install:
 
 install: travis_wait 40 npm install
 
+before_script:
+  - COMMIT_COUNT=`git rev-list --count $TRAVIS_BRANCH`
+  - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+  - echo "$COMMIT_COUNT"
+  - echo "$COMMIT_LOG"
+
 script:
   - |
     if [[ -z "$TRAVIS_TAG" ]]; then
@@ -72,13 +78,16 @@ script:
     fi
 
 after_success:
-  - npm run coveralls
-  - mkdir -p releases
-  - PRODUCT_NAME=CNCjs
   - PACKAGE_NAME=`node -e "console.log(require('./src/package.json').name)"`
   - PACKAGE_VERSION=`node -e "console.log(require('./src/package.json').version)"`
+  - PRODUCT_NAME=CNCjs
   - RELEASE=${PACKAGE_NAME}-${PACKAGE_VERSION}
-  - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
+  - echo "$PACKAGE_NAME"
+  - echo "$PACKAGE_VERSION"
+  - echo "$PRODUCT_NAME"
+  - echo "$RELEASE"
+  - npm run coveralls
+  - mkdir -p releases
   - |
     # build:mac-x64
     if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "osx" ]]; then

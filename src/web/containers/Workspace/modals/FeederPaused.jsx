@@ -2,7 +2,7 @@ import chainedFunction from 'chained-function';
 import PropTypes from 'prop-types';
 import React from 'react';
 import { Button } from '../../../components/Buttons';
-import MessageTemplate from '../../../components/MessageTemplate';
+import ModalTemplate from '../../../components/ModalTemplate';
 import Modal from '../../../components/Modal';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
@@ -14,10 +14,10 @@ const FeederPaused = (props) => (
         showCloseButton={false}
     >
         <Modal.Body>
-            <MessageTemplate type="warning">
+            <ModalTemplate type="warning">
                 <h5>{props.title}</h5>
                 <p>{i18n._('Click the Continue button to resume execution.')}</p>
-            </MessageTemplate>
+            </ModalTemplate>
         </Modal.Body>
         <Modal.Footer>
             <Button

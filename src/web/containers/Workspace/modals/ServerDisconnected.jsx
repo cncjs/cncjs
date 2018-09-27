@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from '../../../components/Buttons';
-import MessageTemplate from '../../../components/MessageTemplate';
+import ModalTemplate from '../../../components/ModalTemplate';
 import Modal from '../../../components/Modal';
 import i18n from '../../../lib/i18n';
 
@@ -16,10 +16,10 @@ const ServerDisconnected = (props) => (
         showCloseButton={false}
     >
         <Modal.Body>
-            <MessageTemplate type="error">
+            <ModalTemplate type="error">
                 <h5>{i18n._('Server has stopped working')}</h5>
                 <p>{i18n._('A problem caused the server to stop working correctly. Check out the server status and try again.')}</p>
-            </MessageTemplate>
+            </ModalTemplate>
         </Modal.Body>
         <Modal.Footer>
             <Button

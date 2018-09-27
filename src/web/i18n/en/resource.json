@@ -514,5 +514,12 @@
     "Top View": "Top View",
     "Zoom to Fit": "Zoom to Fit",
     "Right Side View": "Right Side View",
-    "Left Side View": "Left Side View"
+    "Left Side View": "Left Side View",
+    "Custom range...": "Custom range...",
+    "Today": "Today",
+    "Last {{n}} days": "Last {{n}} days",
+    "Apply": "Apply",
+    "Jog Distance (mm)": "Jog Distance (mm)",
+    "Add": "Add",
+    "Jog Distance (inches)": "Jog Distance (inches)"
 }
