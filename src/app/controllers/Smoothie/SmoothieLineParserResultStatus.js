@@ -29,7 +29,7 @@ class SmoothieLineParserResultStatus {
             //   - Door:2 Door opened. Hold (or parking retract) in-progress. Reset will throw an alarm.
             //   - Door:3 Door closed and resuming. Restoring from park, if applicable. Reset will throw an alarm.
             const states = (params.shift() || '').split(':');
-            payload.activeState = states[0] || '';
+            payload.machineState = states[0] || '';
             payload.subState = Number(states[1] || '');
         }
 

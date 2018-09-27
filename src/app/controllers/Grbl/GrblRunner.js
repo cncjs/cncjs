@@ -12,14 +12,14 @@ import GrblLineParserResultFeedback from './GrblLineParserResultFeedback';
 import GrblLineParserResultSettings from './GrblLineParserResultSettings';
 import GrblLineParserResultStartup from './GrblLineParserResultStartup';
 import {
-    GRBL_ACTIVE_STATE_IDLE,
-    GRBL_ACTIVE_STATE_ALARM
+    GRBL_MACHINE_STATE_IDLE,
+    GRBL_MACHINE_STATE_ALARM
 } from './constants';
 
 class GrblRunner extends events.EventEmitter {
     state = {
         status: {
-            activeState: '',
+            machineState: '',
             mpos: {
                 x: '0.000',
                 y: '0.000',
@@ -200,12 +200,12 @@ class GrblRunner extends events.EventEmitter {
         return _.get(state, 'parserstate.modal', {});
     }
     isAlarm() {
-        const activeState = _.get(this.state, 'status.activeState');
-        return activeState === GRBL_ACTIVE_STATE_ALARM;
+        const machineState = _.get(this.state, 'status.machineState');
+        return machineState === GRBL_MACHINE_STATE_ALARM;
     }
     isIdle() {
-        const activeState = _.get(this.state, 'status.activeState');
-        return activeState === GRBL_ACTIVE_STATE_IDLE;
+        const machineState = _.get(this.state, 'status.machineState');
+        return machineState === GRBL_MACHINE_STATE_IDLE;
     }
 }
 

@@ -13,7 +13,8 @@ test('SmoothieRunnerLineParserResultStatus: all zeroes in the mask ($10=0)', (t)
     runner.on('status', ({ raw, ...status }) => {
         t.equal(raw, '<Idle>');
         t.same(status, {
-            machineState: 'Idle'
+            machineState: 'Idle',
+            subState: 0
         });
         t.end();
     });
@@ -28,6 +29,7 @@ test('SmoothieRunnerLineParserResultStatus: default ($10=3)', (t) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>');
         t.same(status, {
             machineState: 'Idle',
+            subState: 0,
             mpos: {
                 x: '5.529',
                 y: '0.560',
@@ -52,6 +54,7 @@ test('SmoothieRunnerLineParserResultStatus: 6-axis', (t) => {
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000,0.100,0.250,0.500>');
         t.same(status, {
             machineState: 'Idle',
+            subState: 0,
             mpos: {
                 x: '5.529',
                 y: '0.560',
@@ -82,6 +85,7 @@ test('SmoothieRunnerLineParserResultStatus: set all bits to 1 ($10=31)', (t) => 
         t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000,Buf:0,RX:0,Lim:000>');
         t.same(status, {
             machineState: 'Idle',
+            subState: 0,
             mpos: {
                 x: '5.529',
                 y: '0.560',
