@@ -26,6 +26,7 @@ module.exports = {
         'react/jsx-no-bind': [1, {
             allowArrowFunctions: true
         }],
+        "linebreak-style": 0,
         'react/prefer-stateless-function': 0,
         'react/no-access-state-in-setstate': 0
     }
