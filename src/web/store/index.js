@@ -158,6 +158,12 @@ const migrateStore = () => {
         store.unset('widgets.axes.jog.selectedDistance');
     }
 
+    // 1.9.16
+    // Removed "widgets.axes.jog.step"
+    if (semver.lt(cnc.version, '1.9.16')) {
+        store.unset('widgets.axes.jog.step');
+    }
+
     // 2.0.0
     // * Renamed "widgets.connection.port" to "widgets.connection.connection.serial.path"
     // * Renamed "widgets.connection.baudrate" to "widgets.connection.connection.serial.baudRate"

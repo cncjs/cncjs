@@ -1,7 +1,7 @@
 import findIndex from 'lodash/findIndex';
 import React, { PureComponent } from 'react';
 import uuid from 'uuid';
-import api from '../../../../api';
+import api from 'web/api';
 import CreateRecord from './CreateRecord';
 import UpdateRecord from './UpdateRecord';
 import TableRecords from './TableRecords';
