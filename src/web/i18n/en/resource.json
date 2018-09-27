@@ -518,7 +518,7 @@
     "Today": "Today",
     "Last {{n}} days": "Last {{n}} days",
     "Apply": "Apply",
-    "Jog Distance (mm)": "Jog Distance (mm)",
     "Add": "Add",
-    "Jog Distance (inches)": "Jog Distance (inches)"
+    "Custom Jog Distance (mm)": "Custom Jog Distance (mm)",
+    "Custom Jog Distance (inches)": "Custom Jog Distance (inches)"
 }
