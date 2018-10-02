@@ -10,7 +10,7 @@ import React, { PureComponent } from 'react';
 import Detector from 'three/examples/js/Detector';
 import Anchor from '../../components/Anchor';
 import { Button } from '../../components/Buttons';
-import MessageTemplate from '../../components/MessageTemplate';
+import ModalTemplate from '../../components/ModalTemplate';
 import Modal from '../../components/Modal';
 import Widget from '../../components/Widget';
 import controller from '../../lib/controller';
@@ -105,7 +105,7 @@ const displayWebGLErrorMessage = () => {
                 </Modal.Title>
             </Modal.Header>
             <Modal.Body>
-                <MessageTemplate type="warning">
+                <ModalTemplate type="warning">
                     {window.WebGLRenderingContext &&
                     <div>
                         Your graphics card does not seem to support <Anchor href="http://khronos.org/webgl/wiki/Getting_a_WebGL_Implementation">WebGL</Anchor>.
@@ -120,7 +120,7 @@ const displayWebGLErrorMessage = () => {
                         Find out how to get it <Anchor href="http://get.webgl.org/">here</Anchor>.
                     </div>
                     }
-                </MessageTemplate>
+                </ModalTemplate>
             </Modal.Body>
             <Modal.Footer>
                 <Button

@@ -2,10 +2,10 @@ import get from 'lodash/get';
 import take from 'lodash/take';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { ButtonGroup, Button } from '../../../../components/Buttons';
-import Space from '../../../../components/Space';
-import Table from '../../../../components/Table';
-import i18n from '../../../../lib/i18n';
+import { Button, ButtonGroup } from 'app/components/Buttons';
+import Space from 'app/components/Space';
+import Table from 'app/components/Table';
+import i18n from 'app/lib/i18n';
 import {
     MODAL_CREATE_RECORD,
     MODAL_UPDATE_RECORD
@@ -53,19 +53,16 @@ class TableRecords extends PureComponent {
                     return i18n._('No data to display');
                 }}
                 title={() => (
-                    <div>
-                        <button
-                            type="button"
-                            className="btn btn-default"
-                            onClick={() => {
-                                action.openModal(MODAL_CREATE_RECORD);
-                            }}
-                        >
-                            <i className="fa fa-plus" />
-                            <Space width="8" />
-                            {i18n._('New')}
-                        </button>
-                    </div>
+                    <Button
+                        btnStyle="flat"
+                        onClick={() => {
+                            action.openModal(MODAL_CREATE_RECORD);
+                        }}
+                    >
+                        <i className="fa fa-plus" />
+                        <Space width="8" />
+                        {i18n._('New')}
+                    </Button>
                 )}
                 columns={[
                     {

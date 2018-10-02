@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from '../../../components/Buttons';
-import MessageTemplate from '../../../components/MessageTemplate';
+import ModalTemplate from '../../../components/ModalTemplate';
 import Modal from '../../../components/Modal';
 import Space from '../../../components/Space';
 import settings from '../../../config/settings';
@@ -63,10 +63,10 @@ class Workspace extends PureComponent {
                             </Modal.Title>
                         </Modal.Header>
                         <Modal.Body>
-                            <MessageTemplate type="error">
+                            <ModalTemplate type="error">
                                 <div><strong>{i18n._('Import Error')}</strong></div>
                                 <p>{i18n._('Invalid file format.')}</p>
-                            </MessageTemplate>
+                            </ModalTemplate>
                         </Modal.Body>
                         <Modal.Footer>
                             <Button onClick={onClose}>

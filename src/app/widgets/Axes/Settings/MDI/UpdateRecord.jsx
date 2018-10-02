@@ -2,12 +2,14 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import Slider from 'rc-slider';
 import React, { PureComponent } from 'react';
-import Modal from '../../../../components/Modal';
-import Space from '../../../../components/Space';
-import { ToastNotification } from '../../../../components/Notifications';
-import { Form, Input, Textarea } from '../../../../components/Validation';
-import i18n from '../../../../lib/i18n';
-import * as validations from '../../../../lib/validations';
+import { Button } from 'app/components/Buttons';
+import Modal from 'app/components/Modal';
+import Space from 'app/components/Space';
+import { ToastNotification } from 'app/components/Notifications';
+import { Form, Input, Textarea } from 'app/components/Validation';
+import { FormGroup } from 'app/components/Forms';
+import i18n from 'app/lib/i18n';
+import * as validations from 'app/lib/validations';
 import styles from '../form.styl';
 
 class UpdateRecord extends PureComponent {
@@ -78,7 +80,7 @@ class UpdateRecord extends PureComponent {
                         }}
                     >
                         <div className={styles.formFields}>
-                            <div className={styles.formGroup}>
+                            <FormGroup>
                                 <label>{i18n._('Name')}</label>
                                 <Input
                                     type="text"
@@ -91,8 +93,8 @@ class UpdateRecord extends PureComponent {
                                     )}
                                     validations={[validations.required]}
                                 />
-                            </div>
-                            <div className={styles.formGroup}>
+                            </FormGroup>
+                            <FormGroup>
                                 <label>{i18n._('Command')}</label>
                                 <Textarea
                                     name="command"
@@ -105,8 +107,8 @@ class UpdateRecord extends PureComponent {
                                     )}
                                     validations={[validations.required]}
                                 />
-                            </div>
-                            <div className={styles.formGroup}>
+                            </FormGroup>
+                            <FormGroup>
                                 <label>{i18n._('Button Width')}</label>
                                 <Slider
                                     ref={node => {
@@ -133,21 +135,19 @@ class UpdateRecord extends PureComponent {
                                     max={12}
                                     step={1}
                                 />
-                            </div>
+                            </FormGroup>
                         </div>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    <Button
+                        btnStyle="default"
                         onClick={action.closeModal}
                     >
                         {i18n._('Cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
+                    </Button>
+                    <Button
+                        btnStyle="primary"
                         onClick={() => {
                             this.form.validate(err => {
                                 if (err) {
@@ -162,7 +162,7 @@ class UpdateRecord extends PureComponent {
                         }}
                     >
                         {i18n._('OK')}
-                    </button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );

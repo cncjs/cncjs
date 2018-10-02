@@ -1,0 +1,8 @@
+# Set the default behavior
+* text=auto
+
+# Git will always convert line endings to LF on checkout. You should use this for files that must keep LF endings, even on Windows.
+*.css text eol=lf
+*.js  text eol=lf
+*.jsx text eol=lf
+*.sh  text eol=lf

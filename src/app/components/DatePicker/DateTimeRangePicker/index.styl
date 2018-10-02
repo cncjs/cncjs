@@ -1,0 +1,56 @@
+.date-picker-pane {
+    display: inline-block;
+
+    .date-picker-pane-header,
+    .date-picker-pane-body,
+    .date-picker-pane-footer {
+        white-space: nowrap;
+    }
+
+    .date-picker-pane-header {
+        .tilde {
+            display: inline-block;
+            line-height: 32px;
+            text-align: center;
+            width: 24px;
+            vertical-align: top;
+        }
+    }
+
+    .date-picker-pane-body {
+        margin-top: 8px;
+
+        .date-picker-pane-container {
+            display: inline-block;
+        }
+
+        .date-picker-pane-container + .date-picker-pane-container {
+            margin-left: 24px;
+        }
+        .date-picker-pane-container + .date-picker-pane-container:before {
+            content: ' ';
+            display: block;
+            height: 260px;
+            vertical-align: middle;
+            margin-left: -12px;
+            float: left;
+            margin-right: 12px;
+            margin-top: 16px;
+            border-left: 1px solid #E6E6E6;
+        }
+    }
+
+    .date-picker-pane-footer {
+        margin-top: 12px;
+    }
+}
+
+.input-icon-group {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+
+    + .input-icon-group {
+        margin-left: 8px;
+    }
+}

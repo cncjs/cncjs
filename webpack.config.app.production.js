@@ -1,5 +1,7 @@
 const crypto = require('crypto');
 const path = require('path');
+const boolean = require('boolean');
+const dotenv = require('dotenv');
 const CSSSplitWebpackPlugin = require('css-split-webpack-plugin').default;
 const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
@@ -13,6 +15,14 @@ const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const buildConfig = require('./build.config');
 const pkg = require('./package.json');
+
+dotenv.config({
+    path: path.resolve('webpack.config.app.production.env')
+});
+
+const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
+const USE_UGLIFYJS_PLUGIN = boolean(process.env.USE_UGLIFYJS_PLUGIN);
+const USE_OPTIMIZE_CSS_ASSETS_PLUGIN = boolean(process.env.USE_OPTIMIZE_CSS_ASSETS_PLUGIN);
 
 // Use publicPath for production
 const publicPath = ((payload) => {
@@ -51,7 +61,7 @@ module.exports = {
     },
     module: {
         rules: [
-            {
+            USE_ESLINT_LOADER && {
                 test: /\.jsx?$/,
                 loader: 'eslint-loader',
                 enforce: 'pre',
@@ -110,7 +120,7 @@ module.exports = {
                 test: /\.(ttf|eot)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 loader: 'file-loader'
             }
-        ]
+        ].filter(Boolean)
     },
     node: {
         fs: 'empty',
@@ -119,13 +129,17 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            new UglifyJsPlugin({
-                cache: true,
-                parallel: true,
-                sourceMap: true
-            }),
-            new OptimizeCSSAssetsPlugin()
-        ]
+            USE_UGLIFYJS_PLUGIN && (
+                new UglifyJsPlugin({
+                    cache: true,
+                    parallel: true,
+                    sourceMap: true
+                })
+            ),
+            USE_OPTIMIZE_CSS_ASSETS_PLUGIN && (
+                new OptimizeCSSAssetsPlugin()
+            )
+        ].filter(Boolean)
     },
     plugins: [
         new webpack.DefinePlugin({

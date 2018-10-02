@@ -33,9 +33,13 @@ const defaultState = {
             axes: ['x', 'y', 'z'],
             jog: {
                 keypad: false,
-                step: {
-                    imperial: IMPERIAL_STEPS.indexOf((1 / 8)), // Defaults to 1/8 inches
-                    metric: METRIC_STEPS.indexOf(1) // Defaults to 1 mm
+                imperial: {
+                    step: IMPERIAL_STEPS.indexOf(1), // Defaults to 1 inch
+                    distances: []
+                },
+                metric: {
+                    step: METRIC_STEPS.indexOf(1), // Defaults to 1 mm
+                    distances: []
                 }
             },
             mdi: {
