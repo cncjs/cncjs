@@ -1,17 +1,13 @@
 import endsWith from 'lodash/endsWith';
 import mapKeys from 'lodash/mapKeys';
 import sha1 from 'sha1';
+import log from 'app/lib/log';
+import env from 'app/config/env';
 import pkg from '../../package.json';
-import log from '../lib/log';
 
 const webroot = '/';
 
 const settings = {
-    error: {
-        // The flag is set to true if the workspace settings have become corrupted or invalid.
-        // @see store/index.js
-        corruptedWorkspaceSettings: false
-    },
     name: pkg.name,
     productName: pkg.productName,
     version: pkg.version,
@@ -20,7 +16,7 @@ const settings = {
         level: 'warn' // trace, debug, info, warn, error
     },
     analytics: {
-        trackingId: process.env.TRACKING_ID
+        trackingId: env.TRACKING_ID
     },
     i18next: {
         lowerCaseLng: true,
@@ -33,7 +29,7 @@ const settings = {
 
         // string or array of namespaces
         ns: [
-            'controller', // Grbl|Smoothie|TinyG
+            'controller', // Grbl|Marlin|Smoothie|TinyG
             'gcode', // G-code
             'resource' // default
         ],
@@ -41,7 +37,7 @@ const settings = {
         defaultNS: 'resource',
 
         // @see webpack.webconfig.xxx.js
-        whitelist: process.env.LANGUAGES,
+        whitelist: env.LANGUAGES,
 
         // array of languages to preload
         preload: [],

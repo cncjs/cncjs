@@ -1,7 +1,7 @@
 import ensureArray from 'ensure-array';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
-import store from '../store';
+import store from 'app/store';
 
 const bearer = (request) => {
     const token = store.get('session.token');

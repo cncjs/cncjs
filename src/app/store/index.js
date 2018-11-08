@@ -1,18 +1,20 @@
-import isElectron from 'is-electron';
 import ensureArray from 'ensure-array';
-import debounce from 'lodash/debounce';
-import difference from 'lodash/difference';
-import get from 'lodash/get';
-import set from 'lodash/set';
-import merge from 'lodash/merge';
-import uniq from 'lodash/uniq';
+import isElectron from 'is-electron';
+import _debounce from 'lodash/debounce';
+import _difference from 'lodash/difference';
+import _get from 'lodash/get';
+import _set from 'lodash/set';
+import _merge from 'lodash/merge';
+import _uniq from 'lodash/uniq';
 import semver from 'semver';
-import settings from '../config/settings';
-import ImmutableStore from '../lib/immutable-store';
-import log from '../lib/log';
-import defaultState from './defaultState';
+import settings from 'app/config/settings';
+import log from 'app/lib/log';
+import reduxStore from 'app/store/redux-store';
+import defaultState from 'app/store/defaultState';
+import EventEmitterStore from 'app/store/EventEmitterStore';
+import { promptUserForCorruptedWorkspaceSettings } from 'app/containers/App/actions';
 
-const store = new ImmutableStore(defaultState);
+const store = new EventEmitterStore(defaultState);
 
 let userData = null;
 
@@ -70,39 +72,40 @@ const persist = (data) => {
 
 const normalizeState = (state) => {
     // Keep default widgets unchanged
-    const defaultList = get(defaultState, 'workspace.container.default.widgets');
-    set(state, 'workspace.container.default.widgets', defaultList);
+    const defaultList = _get(defaultState, 'workspace.container.default.widgets');
+    _set(state, 'workspace.container.default.widgets', defaultList);
 
     // Update primary widgets
-    let primaryList = get(cnc.state, 'workspace.container.primary.widgets');
+    let primaryList = _get(cnc.state, 'workspace.container.primary.widgets');
     if (primaryList) {
-        set(state, 'workspace.container.primary.widgets', primaryList);
+        _set(state, 'workspace.container.primary.widgets', primaryList);
     } else {
-        primaryList = get(state, 'workspace.container.primary.widgets');
+        primaryList = _get(state, 'workspace.container.primary.widgets');
     }
 
     // Update secondary widgets
-    let secondaryList = get(cnc.state, 'workspace.container.secondary.widgets');
+    let secondaryList = _get(cnc.state, 'workspace.container.secondary.widgets');
     if (secondaryList) {
-        set(state, 'workspace.container.secondary.widgets', secondaryList);
+        _set(state, 'workspace.container.secondary.widgets', secondaryList);
     } else {
-        secondaryList = get(state, 'workspace.container.secondary.widgets');
+        secondaryList = _get(state, 'workspace.container.secondary.widgets');
     }
 
-    primaryList = uniq(ensureArray(primaryList)); // Use the same order in primaryList
-    primaryList = difference(primaryList, defaultList); // Exclude defaultList
+    primaryList = _uniq(ensureArray(primaryList)); // Use the same order in primaryList
+    primaryList = _difference(primaryList, defaultList); // Exclude defaultList
 
-    secondaryList = uniq(ensureArray(secondaryList)); // Use the same order in secondaryList
-    secondaryList = difference(secondaryList, primaryList); // Exclude primaryList
-    secondaryList = difference(secondaryList, defaultList); // Exclude defaultList
+    secondaryList = _uniq(ensureArray(secondaryList)); // Use the same order in secondaryList
+    secondaryList = _difference(secondaryList, primaryList); // Exclude primaryList
+    secondaryList = _difference(secondaryList, defaultList); // Exclude defaultList
 
-    set(state, 'workspace.container.primary.widgets', primaryList);
-    set(state, 'workspace.container.secondary.widgets', secondaryList);
+    _set(state, 'workspace.container.primary.widgets', primaryList);
+    _set(state, 'workspace.container.secondary.widgets', secondaryList);
 
     return state;
 };
 
 const cnc = {
+    error: false,
     version: settings.version,
     state: {}
 };
@@ -110,17 +113,21 @@ const cnc = {
 try {
     const text = getConfig();
     const data = JSON.parse(text);
-    cnc.version = get(data, 'version', settings.version);
-    cnc.state = get(data, 'state', {});
+    cnc.version = _get(data, 'version', settings.version);
+    cnc.state = _get(data, 'state', {});
 } catch (e) {
-    set(settings, 'error.corruptedWorkspaceSettings', true);
     log.error(e);
+
+    cnc.error = true;
+
+    // Dispatch an action to prompt user for corrupted workspace settings
+    reduxStore.dispatch(promptUserForCorruptedWorkspaceSettings());
 }
 
-store.state = normalizeState(merge({}, defaultState, cnc.state || {}));
+store.state = normalizeState(_merge({}, defaultState, cnc.state || {}));
 
 // Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
-store.on('change', debounce((state) => {
+store.on('change', _debounce((state) => {
     persist({ state: state });
 }, 100));
 
@@ -128,6 +135,11 @@ store.on('change', debounce((state) => {
 // Migration
 //
 const migrateStore = () => {
+    if (cnc.error) {
+        // Probably due to corrupted workspace settings
+        return;
+    }
+
     if (!cnc.version) {
         return;
     }
@@ -136,6 +148,7 @@ const migrateStore = () => {
     // * Renamed "widgets.probe.tlo" to "widgets.probe.touchPlateHeight"
     // * Removed "widgets.webcam.scale"
     if (semver.lt(cnc.version, '1.9.0')) {
+        log.info(`Migrate store from v${cnc.version} to v1.9.0`);
         // Probe widget
         const tlo = store.get('widgets.probe.tlo');
         if (tlo !== undefined) {
@@ -153,6 +166,7 @@ const migrateStore = () => {
     // Removed "widgets.axes.jog.customDistance"
     // Removed "widgets.axes.jog.selectedDistance"
     if (semver.lt(cnc.version, '1.9.13')) {
+        log.info(`Migrate store from v${cnc.version} to v1.9.13`);
         // Axes widget
         store.unset('widgets.axes.wzero');
         store.unset('widgets.axes.mzero');
@@ -161,11 +175,9 @@ const migrateStore = () => {
     }
 
     // 1.9.16
-    // Removed "widgets.axes.wzero"
-    // Removed "widgets.axes.mzero"
-    // Removed "widgets.axes.jog.customDistance"
-    // Removed "widgets.axes.jog.selectedDistance"
+    // Removed "widgets.axes.jog.step"
     if (semver.lt(cnc.version, '1.9.16')) {
+        log.info(`Migrate store from v${cnc.version} to v1.9.16`);
         store.unset('widgets.axes.jog.step');
     }
 };

@@ -9,7 +9,7 @@ import settings from '../../config/settings';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
-import user from '../../lib/user';
+import * as user from '../../lib/user';
 import store from '../../store';
 import styles from './index.styl';
 
