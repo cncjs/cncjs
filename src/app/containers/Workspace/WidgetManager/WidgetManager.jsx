@@ -8,7 +8,7 @@ import Modal from '../../../components/Modal';
 import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../../constants';
 import controller from '../../../lib/controller';
 import i18n from '../../../lib/i18n';
-import store from '../../../store';
+import config from '../../../store/config';
 import WidgetList from './WidgetList';
 
 class WidgetManager extends PureComponent {
@@ -168,11 +168,11 @@ class WidgetManager extends PureComponent {
         }
     }
     render() {
-        const defaultWidgets = store.get('workspace.container.default.widgets', [])
+        const defaultWidgets = config.get('workspace.container.default.widgets', [])
             .map(widgetId => widgetId.split(':')[0]);
-        const primaryWidgets = store.get('workspace.container.primary.widgets', [])
+        const primaryWidgets = config.get('workspace.container.primary.widgets', [])
             .map(widgetId => widgetId.split(':')[0]);
-        const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
+        const secondaryWidgets = config.get('workspace.container.secondary.widgets', [])
             .map(widgetId => widgetId.split(':')[0]);
         const activeWidgets = union(defaultWidgets, primaryWidgets, secondaryWidgets);
 

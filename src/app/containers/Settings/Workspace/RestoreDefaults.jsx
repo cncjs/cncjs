@@ -1,11 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Button } from '../../../components/Buttons';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import i18n from '../../../lib/i18n';
-import store from '../../../store';
-import defaultState from '../../../store/defaultState';
+import { Button } from 'app/components/Buttons';
+import Modal from 'app/components/Modal';
+import Space from 'app/components/Space';
+import i18n from 'app/lib/i18n';
+import config from 'app/store/config';
 
 class RestoreDefaults extends PureComponent {
     static propTypes = {
@@ -39,14 +38,14 @@ class RestoreDefaults extends PureComponent {
                     <Button
                         btnStyle="danger"
                         onClick={() => {
-                            // Reset to default state
-                            store.state = defaultState;
+                            // Restore default settings
+                            config.restoreDefault();
 
                             // Persist data locally
-                            store.persist();
+                            config.persist();
 
-                            // Refresh
-                            window.location.reload();
+                            // Reload the current page from the server
+                            window.location.reload(true);
                         }}
                     >
                         {i18n._('Restore Defaults')}

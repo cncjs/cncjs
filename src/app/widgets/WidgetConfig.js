@@ -1,4 +1,4 @@
-import store from '../store';
+import config from 'app/store/config';
 
 class WidgetConfig {
     widgetId = '';
@@ -20,28 +20,28 @@ class WidgetConfig {
             throw new Error('The widget id cannot be an empty string');
         }
         key = this.translateKey(key);
-        return store.get(key, defaultValue);
+        return config.get(key, defaultValue);
     }
     set(key, value) {
         if (!this.widgetId) {
             throw new Error('The widget id cannot be an empty string');
         }
         key = this.translateKey(key);
-        return store.set(key, value);
+        return config.set(key, value);
     }
     unset(key) {
         if (!this.widgetId) {
             throw new Error('The widget id cannot be an empty string');
         }
         key = this.translateKey(key);
-        return store.unset(key);
+        return config.unset(key);
     }
     replace(key, value) {
         if (!this.widgetId) {
             throw new Error('The widget id cannot be an empty string');
         }
         key = this.translateKey(key);
-        return store.replace(key, value);
+        return config.replace(key, value);
     }
 }
 

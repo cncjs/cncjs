@@ -4,7 +4,7 @@ import { Provider as ReduxProvider } from 'react-redux';
 import { HashRouter } from 'react-router-dom';
 import { Provider as GridSystemProvider } from 'app/components/GridSystem';
 import App from 'app/containers/App';
-import reduxStore from 'app/store/redux-store';
+import reduxStore from 'app/store/redux';
 import './styles/vendor.styl';
 import './styles/app.styl';
 

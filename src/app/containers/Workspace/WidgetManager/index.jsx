@@ -1,20 +1,20 @@
 import difference from 'lodash/difference';
+import get from 'lodash/get';
 import includes from 'lodash/includes';
 import union from 'lodash/union';
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../../constants';
 import controller from '../../../lib/controller';
-import store from '../../../store';
-import defaultState from '../../../store/defaultState';
+import config from '../../../store/config';
 import WidgetManager from './WidgetManager';
 
 export const getActiveWidgets = () => {
-    const defaultWidgets = store.get('workspace.container.default.widgets', [])
+    const defaultWidgets = config.get('workspace.container.default.widgets', [])
         .map(widgetId => widgetId.split(':')[0]);
-    const primaryWidgets = store.get('workspace.container.primary.widgets', [])
+    const primaryWidgets = config.get('workspace.container.primary.widgets', [])
         .map(widgetId => widgetId.split(':')[0]);
-    const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
+    const secondaryWidgets = config.get('workspace.container.secondary.widgets', [])
         .map(widgetId => widgetId.split(':')[0]);
     const activeWidgets = union(defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
@@ -37,12 +37,12 @@ export const getActiveWidgets = () => {
 };
 
 export const getInactiveWidgets = () => {
-    const allWidgets = Object.keys(defaultState.widgets);
-    const defaultWidgets = store.get('workspace.container.default.widgets', [])
+    const allWidgets = Object.keys(get(config.getDefaultState(), 'widgets'));
+    const defaultWidgets = config.get('workspace.container.default.widgets', [])
         .map(widgetId => widgetId.split(':')[0]);
-    const primaryWidgets = store.get('workspace.container.primary.widgets', [])
+    const primaryWidgets = config.get('workspace.container.primary.widgets', [])
         .map(widgetId => widgetId.split(':')[0]);
-    const secondaryWidgets = store.get('workspace.container.secondary.widgets', [])
+    const secondaryWidgets = config.get('workspace.container.secondary.widgets', [])
         .map(widgetId => widgetId.split(':')[0]);
     const inactiveWidgets = difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {

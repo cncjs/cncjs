@@ -8,7 +8,7 @@ import settings from '../../../config/settings';
 import i18n from '../../../lib/i18n';
 import log from '../../../lib/log';
 import portal from '../../../lib/portal';
-import store from '../../../store';
+import config from '../../../store/config';
 import RestoreDefaults from './RestoreDefaults';
 import ImportSettings from './ImportSettings';
 import styles from './index.styl';
@@ -97,7 +97,7 @@ class Workspace extends PureComponent {
     };
     handleExport = (event) => {
         // https://github.com/mholt/PapaParse/issues/175#issuecomment-201308792
-        const text = store.getConfig();
+        const text = config.toJSONString();
         const data = new Blob([text], {
             type: 'text/plain;charset=utf-8;'
         });
@@ -121,7 +121,7 @@ class Workspace extends PureComponent {
         const { state, actions } = this.props;
         const text = JSON.stringify({
             version: settings.version,
-            state: store.state
+            state: config.state
         }, null, 2);
 
         return (

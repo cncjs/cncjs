@@ -1,6 +1,9 @@
 import constants from 'namespace-constants';
 
-module.exports = constants('widgets/Grbl', [
+export const {
+    MODAL_NONE,
+    MODAL_CONTROLLER
+} = constants('widgets/Grbl', [
     'MODAL_NONE',
     'MODAL_CONTROLLER'
 ]);

@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import settings from '../../config/settings';
-import store from '../../store';
+import config from '../../store/config';
 import Iframe from '../../components/Iframe';
 import ResizeObserver from '../../lib/ResizeObserver';
 import controller from '../../lib/controller';
@@ -66,7 +66,7 @@ class Custom extends PureComponent {
         this.pubsubTokens = [];
     }
     postMessage(type = '', payload) {
-        const token = store.get('session.token');
+        const token = config.get('session.token');
         const target = get(this.iframe, 'contentWindow');
         const message = {
             token: token,
@@ -86,7 +86,7 @@ class Custom extends PureComponent {
     reload(forceGet = false) {
         if (this.iframe) {
             const { url } = this.props;
-            const token = store.get('session.token');
+            const token = config.get('session.token');
             this.iframe.src = new Uri(url)
                 .addQueryParam('token', token)
                 .toString();
@@ -150,7 +150,7 @@ class Custom extends PureComponent {
             );
         }
 
-        const token = store.get('session.token');
+        const token = config.get('session.token');
         const iframeSrc = new Uri(url)
             .addQueryParam('token', token)
             .toString();

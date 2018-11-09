@@ -6,11 +6,10 @@ import Modal from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
 import Space from 'app/components/Space';
 import settings from 'app/config/settings';
-import store from 'app/store';
-import defaultState from 'app/store/defaultState';
+import config from 'app/store/config';
 
 const CorruptedWorkspaceSettings = (props) => {
-    const text = store.getConfig();
+    const text = config.getConfig();
     const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
     const filename = `${settings.name}-${settings.version}.json`;
 
@@ -40,11 +39,11 @@ const CorruptedWorkspaceSettings = (props) => {
                 <Button
                     btnStyle="danger"
                     onClick={() => {
-                        // Reset to default state
-                        store.state = defaultState;
+                        // Reset default settings
+                        config.restoreDefault();
 
                         // Persist data locally
-                        store.persist();
+                        config.persist();
 
                         // Reload the current page from the server
                         window.location.reload(true);

@@ -1,4 +1,4 @@
-module.exports = [
+const variables = [
     { type: 'header', text: 'Wait until the planner queue is empty' },
     '%wait\n',
     { type: 'header', text: 'Keep a backup of current work position' },
@@ -31,3 +31,5 @@ module.exports = [
     '[zmin]',
     '[zmax]'
 ];
+
+export default variables;

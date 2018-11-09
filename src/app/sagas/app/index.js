@@ -15,7 +15,7 @@ import * as actionCreators from 'app/containers/App/actions';
 import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
-import store from 'app/store';
+import config from 'app/store/config';
 
 export function* init() {
     yield put(actionCreators.appInit());
@@ -43,7 +43,7 @@ export function* init() {
             const { token = '', action } = { ...event.data };
 
             // Token authentication
-            if (token !== store.get('session.token')) {
+            if (token !== config.get('session.token')) {
                 log.warn(`Received a message with an unauthorized token (${token}).`);
                 return;
             }
@@ -162,7 +162,7 @@ const configureMomentLocale = () => new Promise(resolve => {
 });
 
 const configureSessionToken = () => new Promise(resolve => {
-    const token = store.get('session.token');
+    const token = config.get('session.token');
     user.signin({ token: token })
         .then(({ authenticated, token }) => {
             if (authenticated) {

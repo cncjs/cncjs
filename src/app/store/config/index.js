@@ -9,12 +9,12 @@ import _uniq from 'lodash/uniq';
 import semver from 'semver';
 import settings from 'app/config/settings';
 import log from 'app/lib/log';
-import reduxStore from 'app/store/redux-store';
-import defaultState from 'app/store/defaultState';
-import EventEmitterStore from 'app/store/EventEmitterStore';
+import reduxStore from 'app/store/redux';
 import { promptUserForCorruptedWorkspaceSettings } from 'app/containers/App/actions';
+import EventEmitterStore from './EventEmitterStore';
+import defaultState from './defaultState';
 
-const store = new EventEmitterStore(defaultState);
+const config = new EventEmitterStore(defaultState);
 
 let userData = null;
 
@@ -28,7 +28,7 @@ if (isElectron()) {
     };
 }
 
-const getConfig = () => {
+config.toJSONString = () => {
     let content = '';
 
     // Check whether the code is running in Electron renderer process
@@ -44,13 +44,15 @@ const getConfig = () => {
     return content;
 };
 
-const persist = (data) => {
+config.getDefaultState = () => defaultState;
+
+config.persist = (data) => {
     const { version, state } = { ...data };
 
     data = {
         version: version || settings.version,
         state: {
-            ...store.state,
+            ...config.state,
             ...state
         }
     };
@@ -68,6 +70,10 @@ const persist = (data) => {
     } catch (e) {
         log.error(e);
     }
+};
+
+config.restoreDefault = () => {
+    config.state = { ...defaultState };
 };
 
 const normalizeState = (state) => {
@@ -111,7 +117,7 @@ const cnc = {
 };
 
 try {
-    const text = getConfig();
+    const text = config.toJSONString();
     const data = JSON.parse(text);
     cnc.version = _get(data, 'version', settings.version);
     cnc.state = _get(data, 'state', {});
@@ -124,11 +130,11 @@ try {
     reduxStore.dispatch(promptUserForCorruptedWorkspaceSettings());
 }
 
-store.state = normalizeState(_merge({}, defaultState, cnc.state || {}));
+config.state = normalizeState(_merge({}, defaultState, cnc.state || {}));
 
 // Debouncing enforces that a function not be called again until a certain amount of time (e.g. 100ms) has passed without it being called.
-store.on('change', _debounce((state) => {
-    persist({ state: state });
+config.on('change', _debounce((state) => {
+    config.persist({ state: state });
 }, 100));
 
 //
@@ -148,16 +154,16 @@ const migrateStore = () => {
     // * Renamed "widgets.probe.tlo" to "widgets.probe.touchPlateHeight"
     // * Removed "widgets.webcam.scale"
     if (semver.lt(cnc.version, '1.9.0')) {
-        log.info(`Migrate store from v${cnc.version} to v1.9.0`);
+        log.info(`Migrate config from v${cnc.version} to v1.9.0`);
         // Probe widget
-        const tlo = store.get('widgets.probe.tlo');
+        const tlo = config.get('widgets.probe.tlo');
         if (tlo !== undefined) {
-            store.set('widgets.probe.touchPlateHeight', Number(tlo));
-            store.unset('widgets.probe.tlo');
+            config.set('widgets.probe.touchPlateHeight', Number(tlo));
+            config.unset('widgets.probe.tlo');
         }
 
         // Webcam widget
-        store.unset('widgets.webcam.scale');
+        config.unset('widgets.webcam.scale');
     }
 
     // 1.9.13
@@ -166,19 +172,19 @@ const migrateStore = () => {
     // Removed "widgets.axes.jog.customDistance"
     // Removed "widgets.axes.jog.selectedDistance"
     if (semver.lt(cnc.version, '1.9.13')) {
-        log.info(`Migrate store from v${cnc.version} to v1.9.13`);
+        log.info(`Migrate config from v${cnc.version} to v1.9.13`);
         // Axes widget
-        store.unset('widgets.axes.wzero');
-        store.unset('widgets.axes.mzero');
-        store.unset('widgets.axes.jog.customDistance');
-        store.unset('widgets.axes.jog.selectedDistance');
+        config.unset('widgets.axes.wzero');
+        config.unset('widgets.axes.mzero');
+        config.unset('widgets.axes.jog.customDistance');
+        config.unset('widgets.axes.jog.selectedDistance');
     }
 
     // 1.9.16
     // Removed "widgets.axes.jog.step"
     if (semver.lt(cnc.version, '1.9.16')) {
-        log.info(`Migrate store from v${cnc.version} to v1.9.16`);
-        store.unset('widgets.axes.jog.step');
+        log.info(`Migrate config from v${cnc.version} to v1.9.16`);
+        config.unset('widgets.axes.jog.step');
     }
 };
 
@@ -188,7 +194,4 @@ try {
     log.error(err);
 }
 
-store.getConfig = getConfig;
-store.persist = persist;
-
-export default store;
+export default config;

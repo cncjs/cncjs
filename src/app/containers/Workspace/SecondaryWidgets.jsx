@@ -16,7 +16,7 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import portal from '../../lib/portal';
-import store from '../../store';
+import config from '../../store/config';
 import Widget from './Widget';
 import styles from './widgets.styl';
 
@@ -28,7 +28,7 @@ class SecondaryWidgets extends Component {
         onDragEnd: PropTypes.func.isRequired
     };
     state = {
-        widgets: store.get('workspace.container.secondary.widgets')
+        widgets: config.get('workspace.container.secondary.widgets')
     };
     forkWidget = (widgetId) => () => {
         portal(({ onClose }) => (
@@ -59,9 +59,9 @@ class SecondaryWidgets extends Component {
 
                                 // Use the same widget settings in a new widget
                                 const forkedWidgetId = `${name}:${uuid.v4()}`;
-                                const defaultSettings = store.get(`widgets["${name}"]`);
-                                const clonedSettings = store.get(`widgets["${widgetId}"]`, defaultSettings);
-                                store.set(`widgets["${forkedWidgetId}"]`, clonedSettings);
+                                const defaultSettings = config.get(`widgets["${name}"]`);
+                                const clonedSettings = config.get(`widgets["${widgetId}"]`, defaultSettings);
+                                config.set(`widgets["${forkedWidgetId}"]`, clonedSettings);
 
                                 const widgets = [...this.state.widgets, forkedWidgetId];
                                 this.setState({ widgets: widgets });
@@ -103,7 +103,7 @@ class SecondaryWidgets extends Component {
 
                                 if (widgetId.match(/\w+:[\w\-]+/)) {
                                     // Remove forked widget settings
-                                    store.unset(`widgets["${widgetId}"]`);
+                                    config.unset(`widgets["${widgetId}"]`);
                                 }
 
                                 this.props.onRemoveWidget(widgetId);
@@ -133,9 +133,9 @@ class SecondaryWidgets extends Component {
     componentDidUpdate() {
         const { widgets } = this.state;
 
-        // Calling store.set() will merge two different arrays into one.
+        // Calling config.set() will merge two different arrays into one.
         // Remove the property first to avoid duplication.
-        store.replace('workspace.container.secondary.widgets', widgets);
+        config.replace('workspace.container.secondary.widgets', widgets);
     }
     subscribe() {
         { // updateSecondaryWidgets

@@ -1,9 +1,9 @@
 import {
     IMPERIAL_STEPS,
     METRIC_STEPS
-} from '../constants';
+} from 'app/constants';
 
-const defaultState = {
+const defaultState = Object.freeze({ // Freezes the default state
     session: {
         name: '',
         token: ''
@@ -223,6 +223,6 @@ const defaultState = {
             muted: false
         }
     }
-};
+});
 
 export default defaultState;

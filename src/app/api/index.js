@@ -1,10 +1,10 @@
 import ensureArray from 'ensure-array';
 import superagent from 'superagent';
 import superagentUse from 'superagent-use';
-import store from 'app/store';
+import config from 'app/store/config';
 
 const bearer = (request) => {
-    const token = store.get('session.token');
+    const token = config.get('session.token');
     if (token) {
         request.set('Authorization', 'Bearer ' + token);
     }
@@ -173,7 +173,7 @@ const downloadGCode = (options) => {
 
     const $token = document.createElement('input');
     $token.setAttribute('name', 'token');
-    $token.setAttribute('value', store.get('session.token'));
+    $token.setAttribute('value', config.get('session.token'));
 
     $form.appendChild($port);
     $form.appendChild($token);

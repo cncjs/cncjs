@@ -2,7 +2,7 @@ import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { END } from 'redux-saga';
 import { createLogger } from 'redux-logger';
-import rootReducer from '../reducers';
+import rootReducer from 'app/reducers';
 import sagaMiddleware from './sagaMiddleware';
 
 /** Use redux-devtools-extension for Chrome or Firefox browsers in development mode
@@ -25,8 +25,8 @@ const configureStore = (preloadedState) => {
     // Hot reload reducers (requires Webpack or Browserify HMR to be enabled)
     if (module.hot) {
         // Enable Webpack hot module replacement for reducers
-        module.hot.accept('../reducers', () => {
-            const nextReducer = require('../reducers').default;
+        module.hot.accept('app/reducers', () => {
+            const nextReducer = require('app/reducers').default;
             store.replaceReducer(nextReducer);
         });
     }

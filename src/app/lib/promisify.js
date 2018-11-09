@@ -33,4 +33,4 @@ const promisify = (fn, options) => function (...args) {
     });
 };
 
-module.exports = promisify;
+export default promisify;

@@ -14,7 +14,7 @@ import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
 import * as user from '../../lib/user';
-import store from '../../store';
+import config from '../../store/config';
 import QuickAccessToolbar from './QuickAccessToolbar';
 import styles from './index.styl';
 
@@ -241,8 +241,8 @@ class Header extends PureComponent {
         const { pushPermission, commands, runningTasks, currentVersion, latestVersion } = this.state;
         const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
         const tooltip = newUpdateAvailable ? newUpdateAvailableTooltip() : <div />;
-        const sessionEnabled = store.get('session.enabled');
-        const signedInName = store.get('session.name');
+        const sessionEnabled = config.get('session.enabled');
+        const signedInName = config.get('session.name');
         const hideUserDropdown = !sessionEnabled;
         const showCommands = commands.length > 0;
 

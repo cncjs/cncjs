@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware } from 'redux';
 import thunk from 'redux-thunk';
 import { END } from 'redux-saga';
-import rootReducer from '../reducers';
+import rootReducer from 'app/reducers';
 import sagaMiddleware from './sagaMiddleware';
 
 const enhancer = applyMiddleware(thunk, sagaMiddleware);

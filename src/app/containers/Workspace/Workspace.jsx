@@ -10,7 +10,7 @@ import api from '../../api';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
-import store from '../../store';
+import config from '../../store/config';
 import * as widgetManager from './WidgetManager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
@@ -57,8 +57,8 @@ class Workspace extends PureComponent {
         isDraggingFile: false,
         isDraggingWidget: false,
         isUploading: false,
-        showPrimaryContainer: store.get('workspace.container.primary.show'),
-        showSecondaryContainer: store.get('workspace.container.secondary.show'),
+        showPrimaryContainer: config.get('workspace.container.primary.show'),
+        showSecondaryContainer: config.get('workspace.container.secondary.show'),
         inactiveCount: _.size(widgetManager.getInactiveWidgets())
     };
     action = {
@@ -305,17 +305,17 @@ class Workspace extends PureComponent {
 
     updateWidgetsForPrimaryContainer = () => {
         widgetManager.show((activeWidgets, inactiveWidgets) => {
-            const widgets = Object.keys(store.get('widgets', {}))
+            const widgets = Object.keys(config.get('widgets', {}))
                 .filter(widgetId => {
                     // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
                     const name = widgetId.split(':')[0];
                     return _.includes(activeWidgets, name);
                 });
 
-            const defaultWidgets = store.get('workspace.container.default.widgets');
+            const defaultWidgets = config.get('workspace.container.default.widgets');
             const sortableWidgets = _.difference(widgets, defaultWidgets);
-            let primaryWidgets = store.get('workspace.container.primary.widgets');
-            let secondaryWidgets = store.get('workspace.container.secondary.widgets');
+            let primaryWidgets = config.get('workspace.container.primary.widgets');
+            let secondaryWidgets = config.get('workspace.container.secondary.widgets');
 
             primaryWidgets = sortableWidgets.slice();
             _.pullAll(primaryWidgets, secondaryWidgets);
@@ -332,17 +332,17 @@ class Workspace extends PureComponent {
 
     updateWidgetsForSecondaryContainer = () => {
         widgetManager.show((activeWidgets, inactiveWidgets) => {
-            const widgets = Object.keys(store.get('widgets', {}))
+            const widgets = Object.keys(config.get('widgets', {}))
                 .filter(widgetId => {
                     // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
                     const name = widgetId.split(':')[0];
                     return _.includes(activeWidgets, name);
                 });
 
-            const defaultWidgets = store.get('workspace.container.default.widgets');
+            const defaultWidgets = config.get('workspace.container.default.widgets');
             const sortableWidgets = _.difference(widgets, defaultWidgets);
-            let primaryWidgets = store.get('workspace.container.primary.widgets');
-            let secondaryWidgets = store.get('workspace.container.secondary.widgets');
+            let primaryWidgets = config.get('workspace.container.primary.widgets');
+            let secondaryWidgets = config.get('workspace.container.secondary.widgets');
 
             secondaryWidgets = sortableWidgets.slice();
             _.pullAll(secondaryWidgets, primaryWidgets);
@@ -371,8 +371,8 @@ class Workspace extends PureComponent {
         this.removeResizeEventListener();
     }
     componentDidUpdate() {
-        store.set('workspace.container.primary.show', this.state.showPrimaryContainer);
-        store.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
+        config.set('workspace.container.primary.show', this.state.showPrimaryContainer);
+        config.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
 
         this.resizeDefaultContainer();
     }
