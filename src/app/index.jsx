@@ -19,7 +19,7 @@ ReactDOM.render(
                 containerWidths={[540, 720, 960, 1140]}
                 columns={12}
                 gutterWidth={0}
-                layout="floats"
+                layout="flexbox"
             >
                 <App />
             </GridSystemProvider>
