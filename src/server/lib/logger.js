@@ -33,7 +33,7 @@ const logger = winston.createLogger({
 
 // https://github.com/winstonjs/winston/blob/master/README.md#logging-levels
 // npm logging levels are prioritized from 0 to 5 (highest to lowest):
-const levels = [
+export const levels = [
     'error', // 0
     'warn', // 1
     'info', // 2
@@ -42,7 +42,12 @@ const levels = [
     'silly', // 5
 ];
 
-module.exports = (namespace = '') => {
+export const getLevel = () => logger.level;
+export const setLevel = (level) => {
+    logger.level = level;
+};
+
+export default (namespace = '') => {
     namespace = String(namespace);
 
     return levels.reduce((acc, level) => {
@@ -57,14 +62,3 @@ module.exports = (namespace = '') => {
         return acc;
     }, {});
 };
-
-module.exports.logger = logger;
-
-levels.forEach(level => {
-    module.exports[level] = function(...args) {
-        if ((settings.verbosity >= VERBOSITY_MAX) && (level !== 'silly')) {
-            args = args.concat(getStackTrace()[2]);
-        }
-        return logger[level](util.format(...args));
-    };
-});

@@ -1,17 +1,9 @@
 import { test } from 'tap';
-import logger from '../src/server/lib/logger';
 import evaluateExpression from '../src/server/lib/evaluate-expression';
 
 test('exceptions', (t) => {
-    // Suppress the output
-    const silent = logger.logger.silent;
-    logger.logger.silent = true;
-
     // Unexpected identifier
     evaluateExpression('Not a valid expression');
-
-    // Restore to previous default
-    logger.logger.silent = silent;
 
     t.end();
 });

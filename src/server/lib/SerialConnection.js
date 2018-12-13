@@ -1,6 +1,5 @@
 import { EventEmitter } from 'events';
 import SerialPort from 'serialport';
-import log from './logger';
 
 const Readline = SerialPort.parsers.Readline;
 
@@ -41,10 +40,6 @@ class SerialConnection extends EventEmitter {
             this.emit('open');
         },
         close: (err) => {
-            if (err) {
-                log.warn(`The serial port "${this.settings.path}" was disconnected from the host`);
-            }
-
             this.emit('close', err);
         },
         error: (err) => {
