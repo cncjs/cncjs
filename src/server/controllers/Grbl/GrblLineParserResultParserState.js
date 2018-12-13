@@ -1,5 +1,10 @@
 import ensureArray from 'ensure-array';
-import _ from 'lodash';
+import _compact from 'lodash/compact';
+import _find from 'lodash/find';
+import _get from 'lodash/get';
+import _includes from 'lodash/includes';
+import _set from 'lodash/set';
+import _trim from 'lodash/trim';
 import {
     GRBL_MODAL_GROUPS
 } from './constants';
@@ -16,31 +21,29 @@ class GrblLineParserResultParserState {
         }
 
         const payload = {};
-        const words = _(r[1].split(' '))
-            .compact()
+        const words = _compact(r[1].split(' '))
             .map((word) => {
-                return _.trim(word);
-            })
-            .value();
+                return _trim(word);
+            });
 
         for (let i = 0; i < words.length; ++i) {
             const word = words[i];
 
             // Gx, Mx
             if (word.indexOf('G') === 0 || word.indexOf('M') === 0) {
-                const r = _.find(GRBL_MODAL_GROUPS, (group) => {
-                    return _.includes(group.modes, word);
+                const r = _find(GRBL_MODAL_GROUPS, (group) => {
+                    return _includes(group.modes, word);
                 });
 
                 if (!r) {
                     continue;
                 }
 
-                const prevWord = _.get(payload, 'modal.' + r.group, '');
+                const prevWord = _get(payload, 'modal.' + r.group, '');
                 if (prevWord) {
-                    _.set(payload, 'modal.' + r.group, ensureArray(prevWord).concat(word));
+                    _set(payload, 'modal.' + r.group, ensureArray(prevWord).concat(word));
                 } else {
-                    _.set(payload, 'modal.' + r.group, word);
+                    _set(payload, 'modal.' + r.group, word);
                 }
 
                 continue;
@@ -48,19 +51,19 @@ class GrblLineParserResultParserState {
 
             // T: tool number
             if (word.indexOf('T') === 0) {
-                _.set(payload, 'tool', word.substring(1));
+                _set(payload, 'tool', word.substring(1));
                 continue;
             }
 
             // F: feed rate
             if (word.indexOf('F') === 0) {
-                _.set(payload, 'feedrate', word.substring(1));
+                _set(payload, 'feedrate', word.substring(1));
                 continue;
             }
 
             // S: spindle speed
             if (word.indexOf('S') === 0) {
-                _.set(payload, 'spindle', word.substring(1));
+                _set(payload, 'spindle', word.substring(1));
                 continue;
             }
         }
