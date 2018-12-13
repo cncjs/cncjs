@@ -21,7 +21,6 @@ module.exports = {
     context: path.resolve(__dirname, 'src/server'),
     entry: {
         index: [
-            //'webpack/hot/poll?1000',
             './index.js'
         ]
     },
@@ -48,6 +47,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
+                options: require('./babel.config'),
                 exclude: /node_modules/
             }
         ]

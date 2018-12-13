@@ -10,7 +10,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const nib = require('nib');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const stylusLoader = require('stylus-loader');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const buildConfig = require('./build.config');
@@ -21,7 +21,7 @@ dotenv.config({
 });
 
 const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
-const USE_UGLIFYJS_PLUGIN = boolean(process.env.USE_UGLIFYJS_PLUGIN);
+const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
 const USE_OPTIMIZE_CSS_ASSETS_PLUGIN = boolean(process.env.USE_OPTIMIZE_CSS_ASSETS_PLUGIN);
 
 // Use publicPath for production
@@ -70,7 +70,8 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules|bower_components)/
+                options: require('./babel.config'),
+                exclude: /node_modules/
             },
             {
                 test: /\.styl$/,
@@ -129,16 +130,12 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            USE_UGLIFYJS_PLUGIN && (
-                new UglifyJsPlugin({
-                    cache: true,
-                    parallel: true,
-                    sourceMap: true
-                })
+            USE_TERSER_PLUGIN && (
+                new TerserPlugin()
             ),
             USE_OPTIMIZE_CSS_ASSETS_PLUGIN && (
                 new OptimizeCSSAssetsPlugin()
-            )
+            ),
         ].filter(Boolean)
     },
     plugins: [

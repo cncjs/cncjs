@@ -1,8 +1,9 @@
 import webpack from 'webpack';
 import webpackDevMiddleware from 'webpack-dev-middleware';
 import webpackHotMiddleware from 'webpack-hot-middleware';
-import config from '../../webpack.config.app.development';
-import log from './lib/logger';
+import logger from './lib/logger';
+
+const log = logger('webpack-dev-server');
 
 const webpackDevServer = (app) => {
     if (process.env.NODE_ENV !== 'development') {
@@ -10,7 +11,8 @@ const webpackDevServer = (app) => {
         return;
     }
 
-    const compiler = webpack(config);
+    const webpackConfig = require('../../webpack.config.app.development');
+    const compiler = webpack(webpackConfig);
 
     // https://github.com/webpack/webpack-dev-middleware
     // webpack-dev-middleware handle the files in memory.
@@ -21,13 +23,16 @@ const webpackDevServer = (app) => {
             poll: true, // use polling instead of native watchers
             ignored: /node_modules/
         },
-        publicPath: config.output.publicPath,
+        publicPath: webpackConfig.output.publicPath,
         stats: {
             colors: true
         }
     }));
 
-    app.use(webpackHotMiddleware(compiler));
+    app.use(webpackHotMiddleware(compiler, {
+        path: '/__webpack_hmr',
+        heartbeat: 10 * 1000
+    }));
 };
 
 export default webpackDevServer;

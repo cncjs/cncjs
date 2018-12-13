@@ -26,14 +26,12 @@ module.exports = {
     devtool: 'cheap-module-eval-source-map',
     entry: {
         polyfill: [
-            'eventsource-polyfill',
-            'webpack-hot-middleware/client?reload=true',
-            path.resolve(__dirname, 'src/app/polyfill/index.js')
+            path.resolve(__dirname, 'src/app/polyfill/index.js'),
+            'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
         ],
         app: [
-            'eventsource-polyfill',
-            'webpack-hot-middleware/client?reload=true',
-            path.resolve(__dirname, 'src/app/index.jsx')
+            path.resolve(__dirname, 'src/app/index.jsx'),
+            'webpack-hot-middleware/client?path=/__webpack_hmr&reload=true',
         ]
     },
     output: {
@@ -54,7 +52,8 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
-                exclude: /(node_modules|bower_components)/
+                options: require('./babel.config'),
+                exclude: /node_modules/
             },
             {
                 test: /\.styl$/,

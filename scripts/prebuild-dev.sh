@@ -5,5 +5,5 @@ rm -rf output/*
 
 pushd src
 cp -af package.json ../output/
-babel -d ../output *.js electron-app/**/*.js
+babel --config-file ../babel.config.js -d ../output *.js electron-app/**/*.js
 popd

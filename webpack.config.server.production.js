@@ -2,7 +2,7 @@ const crypto = require('crypto');
 const path = require('path');
 const boolean = require('boolean');
 const dotenv = require('dotenv');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
 const pkg = require('./package.json');
@@ -12,7 +12,7 @@ dotenv.config({
 });
 
 const USE_ESLINT_LOADER = boolean(process.env.USE_ESLINT_LOADER);
-const USE_UGLIFYJS_PLUGIN = boolean(process.env.USE_UGLIFYJS_PLUGIN);
+const USE_TERSER_PLUGIN = boolean(process.env.USE_TERSER_PLUGIN);
 
 // Use publicPath for production
 const payload = pkg.version;
@@ -41,13 +41,9 @@ module.exports = {
     },
     optimization: {
         minimizer: [
-            USE_UGLIFYJS_PLUGIN && (
-                new UglifyJsPlugin({
-                    cache: true,
-                    parallel: true,
-                    sourceMap: true
-                })
-            )
+            USE_TERSER_PLUGIN && (
+                new TerserPlugin()
+            ),
         ].filter(Boolean)
     },
     plugins: [
@@ -68,6 +64,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
+                options: require('./babel.config'),
                 exclude: /node_modules/
             }
         ].filter(Boolean)
