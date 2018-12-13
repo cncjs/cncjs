@@ -41,4 +41,4 @@ const errnotfound = (options) => {
     };
 };
 
-module.exports = errnotfound;
+export default errnotfound;

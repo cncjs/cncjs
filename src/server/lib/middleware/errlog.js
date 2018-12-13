@@ -18,4 +18,4 @@ const errlog = () => {
     };
 };
 
-module.exports = errlog;
+export default errlog;

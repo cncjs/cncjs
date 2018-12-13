@@ -42,4 +42,4 @@ const errserver = (options) => {
     };
 };
 
-module.exports = errserver;
+export default errserver;

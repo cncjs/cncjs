@@ -31,4 +31,4 @@ const errclient = (options) => {
     };
 };
 
-module.exports = errclient;
+export default errclient;
