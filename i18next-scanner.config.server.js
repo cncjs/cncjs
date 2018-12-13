@@ -7,17 +7,27 @@ const languages = require('./build.config').languages;
 module.exports = {
     options: {
         debug: false,
+        removeUnusedKeys: false,
         sort: false,
         func: {
             list: ['i18n.t', 't'],
             extensions: ['.js', '.jsx']
         },
+        trans: {
+            component: 'I18n',
+            i18nKey: 'i18nKey',
+            defaultsKey: 'defaults',
+            extensions: ['.js', '.jsx'],
+            fallbackKey: function(ns, value) {
+                return value;
+            }
+        },
         lngs: languages,
-        defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
         ns: [
             'resource' // default
         ],
         defaultNs: 'resource',
+        defaultValue: '__L10N__', // to indicate that a default value has not been defined for the key
         resource: {
             loadPath: 'src/server/i18n/{{lng}}/{{ns}}.json',
             savePath: 'src/server/i18n/{{lng}}/{{ns}}.json', // or 'src/server/i18n/${lng}/${ns}.saveAll.json'

@@ -17,21 +17,30 @@ module.exports = {
         debug: false,
         removeUnusedKeys: true,
         sort: false,
-        lngs: languages,
         func: {
             list: [], // Use an empty array to bypass the default list: i18n.t, i18next.t
             extensions: ['.js', '.jsx']
         },
+        trans: {
+            component: 'I18n',
+            i18nKey: 'i18nKey',
+            defaultsKey: 'defaults',
+            extensions: ['.js', '.jsx'],
+            fallbackKey: function(ns, value) {
+                return value;
+            }
+        },
+        lngs: languages,
+        ns: [
+            'resource' // default
+        ],
+        defaultNs: 'resource',
         defaultValue: (lng, ns, key) => {
             if (lng === 'en') {
                 return key; // Use key as value for base language
             }
             return ''; // Return empty string for other languages
         },
-        ns: [
-            'resource' // default
-        ],
-        defaultNs: 'resource',
         resource: {
             loadPath: 'src/app/i18n/{{lng}}/{{ns}}.json',
             savePath: 'src/app/i18n/{{lng}}/{{ns}}.json', // or 'src/app/i18n/${lng}/${ns}.saveAll.json'
