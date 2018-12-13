@@ -1,80 +1,32 @@
-import omit from 'lodash/omit';
-import PropTypes from 'prop-types';
-import React, { Component } from 'react';
-import i18n from '../../lib/i18n';
+import React from 'react';
+import i18next from 'i18next';
+import { I18n, Trans } from 'react-i18next';
+import sha1 from 'sha1';
+import env from 'app/config/env';
+import log from 'app/lib/log';
+import nodesToString from './nodes-to-string';
 
-const REGEXP = /{{(.+?)}}/;
-
-class I18n extends Component {
-    static propTypes = {
-        t: PropTypes.string,
-        _: PropTypes.string,
-        options: PropTypes.object,
-        parent: PropTypes.string,
-        replacement: PropTypes.oneOfType([
-            PropTypes.array,
-            PropTypes.object
-        ])
-    };
-    static defaultProps = {
-        t: '',
-        _: '',
-        parent: 'span'
-    };
-
-    render() {
-        const { t, _, parent, replacement } = this.props;
-        const i18nOptions = {
-            ...this.props.options,
-            ...{
-                interpolation: {
-                    prefix: '#$?',
-                    suffix: '?$#'
-                }
-            }
-        };
-        let format = null;
-        if (this.props.children) {
-            format = this.props.children;
-        } else if (t) {
-            format = i18n.t(t, i18nOptions);
-        } else if (_) {
-            format = i18n._(_, i18nOptions);
-        }
-        if (!format || typeof format !== 'string') {
-            return React.createElement('noscript', null);
-        }
-
-        let props = omit(this.props, ['t', '_', 'options', 'parent', 'replacement']);
-        let matches = [];
-        let children = [];
-
-        // "AAA {{foo}} BBB {{bar}}".split(REGEXP)
-        // ["AAA ", "foo", " BBB ", "bar", ""]
-        format.split(REGEXP).reduce((memo, match, index) => {
-            let child = null;
-
-            if (index % 2 === 0) {
-                if (match.length === 0) {
-                    return memo;
-                }
-                child = match;
-            } else if (replacement) {
-                child = replacement[match];
-            } else {
-                child = this.props[match];
-                matches.push(match);
-            }
-
-            memo.push(child);
-
-            return memo;
-        }, children);
-
-        props = omit(props, matches);
-
-        return React.createElement.apply(this, [parent, props].concat(children));
+export default ({ children, ...props }) => {
+    if (typeof children === 'function') {
+        children = children(props);
     }
-}
 
-export default I18n;
+    let i18nKey = sha1(nodesToString('', children, 0));
+    if (env.NODE_ENV === 'development') {
+        log.trace(`i18nKey=${JSON.stringify(i18nKey)}`);
+    }
+
+    if (!i18next.exists(i18nKey)) {
+        i18nKey = undefined;
+    }
+
+    return (
+        <I18n>
+            {(t, { i18n }) => (
+                <Trans i18n={i18next} i18nKey={i18nKey} {...props}>
+                    {children}
+                </Trans>
+            )}
+        </I18n>
+    );
+};
