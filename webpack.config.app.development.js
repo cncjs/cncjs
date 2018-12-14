@@ -9,6 +9,7 @@ const stylusLoader = require('stylus-loader');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
+const babelConfig = require('./babel.config');
 const buildConfig = require('./build.config');
 const pkg = require('./package.json');
 
@@ -52,7 +53,14 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
-                options: require('./babel.config'),
+                options: {
+                    ...babelConfig,
+                    env: {
+                        development: {
+                            plugins: ['react-hot-loader/babel']
+                        }
+                    }
+                },
                 exclude: /node_modules/
             },
             {

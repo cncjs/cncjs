@@ -2,6 +2,7 @@ const crypto = require('crypto');
 const path = require('path');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
+const babelConfig = require('./babel.config');
 const pkg = require('./package.json');
 
 // Use publicPath for production
@@ -47,7 +48,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
-                options: require('./babel.config'),
+                options: babelConfig,
                 exclude: /node_modules/
             }
         ]

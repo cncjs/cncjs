@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const nodeExternals = require('webpack-node-externals');
+const babelConfig = require('./babel.config');
 const pkg = require('./package.json');
 
 dotenv.config({
@@ -64,7 +65,7 @@ module.exports = {
             {
                 test: /\.jsx?$/,
                 loader: 'babel-loader',
-                options: require('./babel.config'),
+                options: babelConfig,
                 exclude: /node_modules/
             }
         ].filter(Boolean)
