@@ -1,5 +1,6 @@
 import * as THREE from 'three';
-import log from '../../lib/log';
+import log from 'app/lib/log';
+import CombinedCamera from 'app/lib/three/CombinedCamera';
 
 const FOV_MIN = 15;
 const TARGET0 = new THREE.Vector3(0, 0, 0);
@@ -14,7 +15,7 @@ class Viewport {
     state = {};
 
     constructor(camera, width, height) {
-        if (!(camera instanceof THREE.CombinedCamera)) {
+        if (!(camera instanceof CombinedCamera)) {
             log.error('This camera is not supported:', camera);
             return;
         }

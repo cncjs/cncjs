@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import colornames from 'colornames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Detector from 'three/examples/js/Detector';
-import controller from '../../lib/controller';
-import { Button } from '../../components/Buttons';
-import Dropdown, { MenuItem } from '../../components/Dropdown';
-import Interpolate from '../../components/Interpolate';
-import Space from '../../components/Space';
-import i18n from '../../lib/i18n';
+import { Button } from 'app/components/Buttons';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
+import Interpolate from 'app/components/Interpolate';
+import Space from 'app/components/Space';
+import * as WebGL from 'app/lib/three/WebGL';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
 import {
     // Grbl
     GRBL,
@@ -224,7 +224,7 @@ class PrimaryToolbar extends PureComponent {
         const { state, actions } = this.props;
         const { disabled, gcode, projection, objects } = state;
         const canSendCommand = this.canSendCommand();
-        const canToggleOptions = Detector.webgl && !disabled;
+        const canToggleOptions = WebGL.isWebGLAvailable() && !disabled;
         const wcs = this.getWorkCoordinateSystem();
 
         return (
@@ -306,13 +306,13 @@ class PrimaryToolbar extends PureComponent {
                         <Button
                             btnSize="sm"
                             btnStyle="flat"
-                            title={(!Detector.webgl || disabled)
+                            title={(!WebGL.isWebGLAvailable() || disabled)
                                 ? i18n._('Enable 3D View')
                                 : i18n._('Disable 3D View')
                             }
                             onClick={actions.toggle3DView}
                         >
-                            {(!Detector.webgl || disabled)
+                            {(!WebGL.isWebGLAvailable() || disabled)
                                 ? <i className="fa fa-toggle-off" />
                                 : <i className="fa fa-toggle-on" />
                             }
@@ -327,7 +327,7 @@ class PrimaryToolbar extends PureComponent {
                                 <Interpolate
                                     format={'WebGL: {{status}}'}
                                     replacement={{
-                                        status: Detector.webgl
+                                        status: WebGL.isWebGLAvailable()
                                             ? (<span style={{ color: colornames('royalblue') }}>{i18n._('Enabled')}</span>)
                                             : (<span style={{ color: colornames('crimson') }}>{i18n._('Disabled')}</span>)
                                     }}

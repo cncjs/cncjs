@@ -8,11 +8,11 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
-import Detector from 'three/examples/js/Detector';
-import log from '../../lib/log';
+import CombinedCamera from 'app/lib/three/CombinedCamera';
+import TrackballControls from 'app/lib/three/TrackballControls';
+import log from 'app/lib/log';
+import * as WebGL from 'app/lib/three/WebGL';
 import { getBoundingBox, loadTexture } from './helpers';
-import './CombinedCamera';
-import './TrackballControls';
 import Viewport from './Viewport';
 import CoordinateAxes from './CoordinateAxes';
 import ToolHead from './ToolHead';
@@ -314,8 +314,7 @@ class Visualizer extends Component {
             log.warn(`The width (${width}) and height (${height}) cannot be a zero value`);
         }
 
-        // https://github.com/mrdoob/three.js/blob/dev/examples/js/cameras/CombinedCamera.js#L156
-        // THREE.CombinedCamera.prototype.setSize = function(width, height) {
+        // CombinedCamera.prototype.setSize = function(width, height) {
         //     this.cameraP.aspect = width / height;
         //     this.left = - width / 2;
         //     this.right = width / 2;
@@ -616,7 +615,7 @@ class Visualizer extends Component {
         const orthoNear = ORTHOGRAPHIC_NEAR;
         const orthoFar = ORTHOGRAPHIC_FAR;
 
-        const camera = new THREE.CombinedCamera(
+        const camera = new CombinedCamera(
             frustumWidth,
             frustumHeight,
             fov,
@@ -657,7 +656,7 @@ class Visualizer extends Component {
         return camera;
     }
     createTrackballControls(object, domElement) {
-        const controls = new THREE.TrackballControls(object, domElement);
+        const controls = new TrackballControls(object, domElement);
 
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 1.2;
@@ -992,7 +991,7 @@ class Visualizer extends Component {
             visibility: show ? 'visible' : 'hidden'
         };
 
-        if (!Detector.webgl) {
+        if (!WebGL.isWebGLAvailable()) {
             return null;
         }
 

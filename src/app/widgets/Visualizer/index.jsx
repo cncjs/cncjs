@@ -7,18 +7,18 @@ import mapValues from 'lodash/mapValues';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Detector from 'three/examples/js/Detector';
-import Anchor from '../../components/Anchor';
-import { Button } from '../../components/Buttons';
-import ModalTemplate from '../../components/ModalTemplate';
-import Modal from '../../components/Modal';
-import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import log from '../../lib/log';
-import portal from '../../lib/portal';
-import { in2mm } from '../../lib/units';
-import WidgetConfig from '../WidgetConfig';
+import Anchor from 'app/components/Anchor';
+import { Button } from 'app/components/Buttons';
+import ModalTemplate from 'app/components/ModalTemplate';
+import Modal from 'app/components/Modal';
+import Widget from 'app/components/Widget';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import log from 'app/lib/log';
+import portal from 'app/lib/portal';
+import * as WebGL from 'app/lib/three/WebGL';
+import { in2mm } from 'app/lib/units';
+import WidgetConfig from 'app/widgets/WidgetConfig';
 import PrimaryToolbar from './PrimaryToolbar';
 import SecondaryToolbar from './SecondaryToolbar';
 import WorkflowControl from './WorkflowControl';
@@ -426,7 +426,7 @@ class VisualizerWidget extends PureComponent {
             }));
         },
         toggle3DView: () => {
-            if (!Detector.webgl && this.state.disabled) {
+            if (!WebGL.isWebGLAvailable() && this.state.disabled) {
                 displayWebGLErrorMessage();
                 return;
             }
@@ -769,7 +769,7 @@ class VisualizerWidget extends PureComponent {
     componentDidMount() {
         this.addControllerEvents();
 
-        if (!Detector.webgl && !this.state.disabled) {
+        if (!WebGL.isWebGLAvailable() && !this.state.disabled) {
             displayWebGLErrorMessage();
 
             setTimeout(() => {
@@ -939,7 +939,7 @@ class VisualizerWidget extends PureComponent {
         };
         const showLoader = state.gcode.loading || state.gcode.rendering;
         const capable = {
-            view3D: Detector.webgl && !state.disabled
+            view3D: WebGL.isWebGLAvailable() && !state.disabled
         };
         const showDashboard = !capable.view3D && !showLoader;
         const showVisualizer = capable.view3D && !showLoader;
@@ -982,7 +982,7 @@ class VisualizerWidget extends PureComponent {
                         show={showDashboard}
                         state={state}
                     />
-                    {Detector.webgl &&
+                    {WebGL.isWebGLAvailable() &&
                     <Visualizer
                         show={showVisualizer}
                         ref={node => {
