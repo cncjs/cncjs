@@ -1,11 +1,11 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import React from 'react';
 import styles from './index.styl';
 
 const Footer = ({ className, ...props }) => (
     <div
         {...props}
-        className={classNames(className, styles.widgetFooter)}
+        className={cx(className, styles.widgetFooter)}
     />
 );
 

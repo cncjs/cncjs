@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container } from '@trendmicro/react-grid-system';
+import Container from './Container';
 
 const FlexContainer = (props) => (
     <Container {...props} layout="flexbox" />

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import styles from './index.styl';
@@ -6,7 +6,7 @@ import styles from './index.styl';
 const Header = ({ fixed, className, ...props }) => (
     <div
         {...props}
-        className={classNames(
+        className={cx(
             className,
             styles.widgetHeader,
             { [styles.widgetHeaderFixed]: fixed }

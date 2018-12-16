@@ -1,0 +1,23 @@
+.notification {
+    &.toast-notification {
+        border-radius: 3px;
+        box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.2);
+        min-width: 280px;
+        max-width: 680px;
+        padding: \
+            $toast-notification-top \
+            ($toast-notification-right + $padding) \
+            $toast-notification-bottom \
+            ($toast-notification-left + $padding);
+        .icon {
+            position: absolute;
+            top: 10px;
+            left: $toast-notification-left;
+        }
+        .btn-dismiss {
+            position: absolute;
+            top: 10px;
+            right: $toast-notification-right;
+        }
+    }
+}

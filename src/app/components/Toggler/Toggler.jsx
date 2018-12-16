@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Anchor from '../Anchor';
@@ -15,7 +15,7 @@ class Toggler extends PureComponent {
         return (
             <Anchor
                 {...props}
-                className={classNames(className, styles.toggler)}
+                className={cx(className, styles.toggler)}
                 onClick={(event) => {
                     onToggle(event);
                 }}

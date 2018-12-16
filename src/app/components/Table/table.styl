@@ -1,0 +1,88 @@
+@import "reset-context";
+@import "variables";
+
+.table-wrapper {
+    reset-context();
+
+    border: 1px solid $table-border-color;
+    position: relative;
+
+    > .table-area {
+        position: relative;
+    }
+}
+
+.table {
+    width: 100%;
+    max-width: 100%;
+    min-height: 0%;
+    table-layout: fixed;
+    background-color: $body-bg;
+    overflow: auto;
+
+    > .thead,
+    > .tbody,
+    > .tfoot {
+        > .tr {
+            > .th,
+            > .td {
+                padding: $table-cell-padding;
+                vertical-align: middle;
+                // To Firefox get element's original height, we need to set 'display: -moz-inline-stack'.
+                display: -moz-inline-stack;
+                display: inline-block;
+                overflow: hidden;
+            }
+            > .th > .th-content {
+                position: relative;
+                top: 50%;
+                transform: translateY(-50%);
+            }
+        }
+    }
+
+    > .thead {
+        > .tr > .th {
+            color: #777777;
+            font-weight: bold;
+        }
+        > .tr:first-child {
+            > .th,
+            > .td {
+                border-top: 0;
+            }
+        }
+    }
+    > .tbody {
+        min-height: 0%;
+         > .tr {
+            overflow: hidden;
+            > .td {
+                > .td-content {
+                    white-space: normal;
+                }
+            }
+            &:last-child > .tr-expand {
+                border-top: 1px solid $table-border-color;
+                border-bottom: none;
+            }
+        }
+    }
+}
+
+.table-auto-fit {
+    .table {
+        > .thead,
+        > .tbody,
+        > .tfoot {
+            > .tr {
+                white-space: nowrap;
+            }
+        }
+    }
+}
+
+.tr-expand {
+    border-bottom: 1px solid $table-border-color;
+    white-space: normal;
+}

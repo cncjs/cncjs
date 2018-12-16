@@ -1,0 +1,72 @@
+// Button
+
+.btn {
+    display: inline-block;
+    min-width: 80px;
+    padding: 5px 12px;
+    margin-bottom: 0; // For input.btn
+    font-size: 13px;
+    font-weight: normal;
+    line-height: 20px;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    background-image: none; // Reset unusual Firefox-on-Android default style; see https://github.com/necolas/normalize.css/issues/214
+    border: 1px solid transparent;
+    border-radius: 3px;
+    user-select: none;
+
+    &,
+    &:active,
+    &.active {
+        &:focus,
+        &.focus {
+            outline: none;
+        }
+    }
+
+    &:hover,
+    &.hover,
+    &:focus,
+    &.focus {
+        color: #222;
+        text-decoration: none;
+    }
+
+    &:active,
+    &.active {
+        outline: none;
+        background-image: none;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, .1) inset;
+    }
+
+    &.disabled,
+    &[disabled],
+    fieldset[disabled] & {
+        cursor: not-allowed;
+        opacity: .4;
+    }
+
+    a & {
+        &.disabled,
+        fieldset[disabled] & {
+            pointer-events: none; // Future-proof disabling of clicks on `<a>` elements
+        }
+    }
+
+    + .btn {
+        margin-left: 8px;
+    }
+
+    // Loading class within a button
+    > [class*="loader-container"] {
+        display: inline-block;
+
+        > [class*="loader"] {
+            margin-top: 2px;
+            margin-right: 8px;
+        }
+    }
+}

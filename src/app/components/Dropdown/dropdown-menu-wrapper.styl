@@ -1,0 +1,30 @@
+.dropdown-menu-wrapper {
+    display: none;
+    position: absolute;
+    left: 0;
+    top: 100%;
+    z-index: 1000;
+    background-color: #fff;
+    border: 1px solid #bbbbbb;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+
+    &.pull-right {
+        right: 0;
+        left: auto;
+    }
+}
+
+.dropdown-menu-wrapper > .dropdown-menu {
+    position: static;
+    vertical-align: top;
+}
+
+.dropdown.open > .dropdown-menu-wrapper {
+    display: block;
+}
+
+.dropdown.open > .dropdown-menu-wrapper > .dropdown-menu {
+    display: inline-block;
+    border: 0;
+    box-shadow: none;
+}

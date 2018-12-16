@@ -1,0 +1,53 @@
+@import "reset-context";
+
+.nav {
+    reset-context();
+    clearfix();
+
+    margin: 0;
+    padding-left: 0;
+    list-style: none;
+}
+.nav > li {
+    position: relative;
+    display: block;
+}
+.nav > li > a {
+    position: relative;
+    display: block;
+    padding: 10px 24px;
+    text-decoration: none;
+    line-height: 20px;
+}
+.nav > li > a:hover {
+    background-color: #f4f4f4;
+}
+.nav > li > a:focus,
+.nav > li > a:active {
+    background-color: #eee;
+}
+.nav > li.disabled > a {
+    color: #e6e6e6;
+}
+.nav > li.disabled > a:hover,
+.nav > li.disabled > a:focus {
+    color: #e6e6e6;
+    text-decoration: none;
+    background-color: transparent;
+    cursor: not-allowed;
+}
+.nav .open > a,
+.nav .open > a:hover,
+.nav .open > a:focus {
+    background-color: #eee;
+    border-color: #0096cc;
+}
+.nav .nav-divider {
+    height: 1px;
+    margin: 8px 0;
+    overflow: hidden;
+    background-color: #e5e5e5;
+}
+.nav > li > a > img {
+    max-width: none;
+}

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Anchor from '../Anchor';
@@ -20,7 +20,7 @@ class Button extends PureComponent {
         return (
             <Anchor
                 {...props}
-                className={classNames(className, styles.widgetButton, {
+                className={cx(className, styles.widgetButton, {
                     [styles.disabled]: !!props.disabled,
                     [styles.inverted]: inverted
                 })}

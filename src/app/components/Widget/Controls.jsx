@@ -1,11 +1,11 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import React from 'react';
 import styles from './index.styl';
 
 const Controls = ({ className, ...props }) => (
     <div
         {...props}
-        className={classNames(className, styles.widgetControls)}
+        className={cx(className, styles.widgetControls)}
     />
 );
 

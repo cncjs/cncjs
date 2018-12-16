@@ -1,0 +1,41 @@
+.navbar-nav.navbar-default {
+    > li {
+        border-right: 1px solid #c22327;
+
+        > a {
+            color: #fff;
+
+            &:hover,
+            &:focus {
+                color: #ffffff;
+                background-color: #e15054;
+            }
+        }
+
+        &:hover {
+            > a {
+                color: #ffffff;
+                background-color: #e15054;
+            }
+        }
+    }
+
+    > .active,
+    > .active:hover {
+        > a,
+        > a:hover,
+        > a:focus {
+            color: #ffffff;
+            background-color: #c22327;
+        }
+    }
+
+    > .disabled {
+        > a,
+        > a:hover,
+        > a:focus {
+            color: #ccc;
+            background-color: transparent;
+        }
+    }
+}

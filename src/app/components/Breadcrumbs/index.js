@@ -1,4 +1,6 @@
-import Breadcrumbs from '@trendmicro/react-breadcrumbs';
-import '@trendmicro/react-breadcrumbs/dist/react-breadcrumbs.css';
+import Breadcrumbs from './Breadcrumbs';
+import BreadcrumbsItem from './BreadcrumbsItem';
+
+Breadcrumbs.Item = BreadcrumbsItem;
 
 export default Breadcrumbs;

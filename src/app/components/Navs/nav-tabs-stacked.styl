@@ -1,0 +1,35 @@
+.nav-tabs.nav-stacked {
+    border: none;
+    > li {
+        float: none;
+        margin: 0;
+    }
+    > li > a {
+        background: inherit;
+        border: none;
+        padding: 9px 16px;
+    }
+    > li > a:hover {
+        background: inherit;
+        border-left: 2px solid #bbb;
+        padding-left: 14px;
+    }
+    > li > a:focus {
+        background: inherit;
+    }
+    > li + li {
+        margin-top: 1px;
+        margin-left: 0;
+    }
+    > li.active > a,
+    > li.active > a:hover,
+    > li.active > a:focus {
+        background-color: #f4f4f4;
+        border: none;
+        border-left: 2px solid #db3d44;
+        color: #222;
+        font-weight: bold;
+        padding: 9px 16px;
+        padding-left: 14px;
+    }
+}

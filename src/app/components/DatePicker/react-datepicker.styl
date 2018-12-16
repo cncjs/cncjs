@@ -1,0 +1,115 @@
+.react-datepicker {
+}
+
+.react-datepicker__header {
+    text-align: center;
+    background-color: #fff;
+    border: none;
+    position: relative;
+    padding: 0;
+}
+
+.react-datepicker__month {
+    margin: 0;
+    text-align: center;
+}
+
+.react-datepicker__current-month {
+    color: #222;
+    font-weight: bold;
+    font-size: 13px;
+    height: 20px;
+    margin: 8px 0;
+}
+
+.react-datepicker__navigation {
+    background: none;
+    line-height: 20px;
+    text-align: center;
+    cursor: pointer;
+    position: absolute;
+    top: 3px;
+    padding: 5px;
+    border: none;
+    z-index: 1;
+    outline: 0;
+    width: 30px;
+    height: 30px;
+    background-color: transparent;
+    background-position: center center;
+    background-repeat: no-repeat;
+
+    &:hover {
+        border-radius: 3px;
+        background-color: #eee;
+    }
+}
+
+.react-datepicker__navigation--previous {
+    left: 8px;
+    background-image: url("./angle-left.svg");
+}
+
+.react-datepicker__navigation--next {
+    right: 8px;
+    background-image: url("./angle-right.svg");
+}
+
+.react-datepicker__day,
+.react-datepicker__day-name {
+    color: #222;
+    display: inline-block;
+    text-align: center;
+    width: 30px;
+    line-height: 20px;
+    border: 0;
+    padding: 5px;
+    margin: 2px;
+}
+
+.react-datepicker__day {
+    cursor: pointer;
+    font-size: 13px;
+
+    &:hover {
+        background: #eee;
+        cursor: pointer;
+        border-radius: 50%;
+    }
+
+    &.react-datepicker__day--disabled,
+    &:hover.react-datepicker__day--disabled {
+        background: inherit;
+        cursor: default;
+        color: #bbb;
+    }
+}
+
+.react-datepicker__day-name {
+    padding-top: 9px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.react-datepicker__day-names {
+    white-space: nowrap;
+}
+
+.react-datepicker__day--outside-month {
+    color: #bbb;
+}
+
+.react-datepicker__day--today {
+    color: #db3d44;
+}
+
+.react-datepicker__day--selected {
+    color: #fff;
+    font-weight: bold;
+    background-color: #db3d44;
+    border-radius: 50%;
+
+    &:hover {
+        background-color: #db3d44;
+    }
+}

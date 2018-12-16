@@ -1,0 +1,52 @@
+.nav-tabs {
+    border-bottom: 1px solid #ccc;
+
+    > li {
+        float: left;
+        margin-bottom: -1px;
+
+        > a {
+            font-size: 13px;
+            color: #777777;
+            border: 1px solid #cccccc;
+            background-color: #fbfbfb;
+            background-image: linear-gradient(to bottom, #fbfbfb 0%, #ececec 100%);
+            background-repeat: repeat-x;
+            padding: 8px 16px;
+            min-width: 80px;
+
+            &:active {
+                color: #777;
+                background-color: #eee;
+                background-image: none;
+                border-color: #bbb;
+                box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1) inset;
+            }
+            &:hover {
+                color: #777;
+                background-color: #fff;
+                background-image: linear-gradient(to bottom, #fff 0%, #f5f5f5 100%);
+                background-repeat: repeat-x;
+                border-color: #bbb;
+            }
+        }
+
+        &.active > a,
+        &.active > a:focus,
+        &.active > a:hover {
+            color: #222;
+            font-weight: bold;
+            background-color: #fff;
+            background-image: none;
+            border: 1px solid #ccc;
+            border-bottom-color: transparent;
+            cursor: default;
+            border-top: 2px solid #db3d44;
+            padding-top: 7px;
+        }
+    }
+
+    > li + li {
+        margin-left: -1px;
+    }
+}

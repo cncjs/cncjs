@@ -1,3 +1,3 @@
-import Iframe from '@trendmicro/react-iframe';
+import Iframe from './Iframe';
 
 export default Iframe;

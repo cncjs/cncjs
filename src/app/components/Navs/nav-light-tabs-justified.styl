@@ -1,0 +1,38 @@
+.nav-light-tabs.nav-justified {
+    width: 100%;
+
+    > li {
+        float: none;
+        display: table-cell;
+        width: 1%;
+
+        > a {
+            background-color: #fff;
+            padding-bottom: 12px;
+            border-bottom: 0;
+
+            &:hover {
+                color: #777;
+                background-color: #fff;
+                border-bottom: 2px solid #bbb;
+                padding-bottom: 10px;
+            }
+        }
+
+        &.active > a,
+        &.active > a:hover,
+        &.active > a:focus {
+            color: #222;
+            font-weight: bold;
+            background-color: #fff;
+            border-bottom: 2px solid #db3d44;
+            padding-bottom: 10px;
+        }
+    }
+
+    > li + li > a,
+    > li + li > a:focus,
+    > li + li > a:hover {
+        border-left: 0;
+    }
+}

@@ -1,0 +1,35 @@
+.table > .thead > .tr > .th {
+    &[role="button"] {
+        cursor: default;
+        outline: 0;
+    }
+
+    &.sortable-highlight {
+        color: $table-sortable-highlight;
+    }
+
+    &.sortable {
+        &:hover {
+            background-color: $table-sortable-bg-hover ;
+            cursor: pointer;
+        }
+
+        .th-content {
+        }
+
+        .order-asc,
+        .order-desc {
+            vertical-align: top;
+            margin-top: 1px;
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+        }
+        .order-asc {
+            background-image: url("./icon-thSortAscending.svg");
+        }
+        .order-desc {
+            background-image: url("./icon-thSortDescending.svg");
+        }
+    }
+}

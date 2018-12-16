@@ -1,56 +1,16 @@
-import '@trendmicro/react-modal/dist/react-modal.css';
-import Modal from '@trendmicro/react-modal';
-import chainedFunction from 'chained-function';
-import React, { PureComponent } from 'react';
+import Modal from './Modal';
+import Overlay from './ModalOverlay';
+import Content from './ModalContent';
+import Header from './ModalHeader';
+import Title from './ModalTitle';
+import Body from './ModalBody';
+import Footer from './ModalFooter';
 
-class ModalWrapper extends PureComponent {
-    static propTypes = {
-        ...Modal.propTypes
-    };
-    static defaultProps = {
-        ...Modal.defaultProps
-    };
+Modal.Overlay = Overlay;
+Modal.Content = Content;
+Modal.Header = Header;
+Modal.Title = Title;
+Modal.Body = Body;
+Modal.Footer = Footer;
 
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.show !== this.props.show) {
-            if (nextProps.show) {
-                this.blockScrolling();
-            } else {
-                this.unblockScrolling();
-            }
-        }
-    }
-    componentDidMount() {
-        this.blockScrolling();
-    }
-    componentWillUnmount() {
-        this.unblockScrolling();
-    }
-    blockScrolling() {
-        const body = document.querySelector('body');
-        body.style.overflowY = 'hidden';
-    }
-    unblockScrolling() {
-        const body = document.querySelector('body');
-        body.style.overflowY = 'auto';
-    }
-    render() {
-        const { onClose, ...props } = this.props;
-
-        return (
-            <Modal
-                {...props}
-                onClose={chainedFunction(onClose, this.unblockScrolling)}
-            />
-        );
-    }
-}
-
-ModalWrapper.Overlay = Modal.Overlay;
-ModalWrapper.Content = Modal.Content;
-ModalWrapper.Header = Modal.Header;
-ModalWrapper.Title = Modal.Title;
-ModalWrapper.Body = Modal.Body;
-ModalWrapper.Footer = Modal.Footer;
-
-export default ModalWrapper;
+export default Modal;

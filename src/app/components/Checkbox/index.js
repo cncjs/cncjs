@@ -1,3 +1,4 @@
-import '@trendmicro/react-checkbox/dist/react-checkbox.css';
+export Checkbox from './Checkbox';
+export CheckboxGroup from './CheckboxGroup';
 
-export { Checkbox, CheckboxGroup } from '@trendmicro/react-checkbox';
+export { default } from './Checkbox'; // Backward compatibility

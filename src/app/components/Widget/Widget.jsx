@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import styles from './index.styl';
@@ -19,7 +19,7 @@ class Widget extends PureComponent {
         return (
             <div
                 {...props}
-                className={classNames(
+                className={cx(
                     className,
                     styles.widget,
                     { [styles.widgetBorderless]: borderless },

@@ -2,7 +2,9 @@ import i18next from 'i18next';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import uncontrollable from 'uncontrollable';
-import DatePicker, { TimeInput, DateInput } from '@trendmicro/react-datepicker';
+import DatePicker from '../DatePicker';
+import TimeInput from '../TimeInput';
+import DateInput from '../DateInput';
 import styles from './index.styl';
 
 class DateTimeRangePicker extends PureComponent {

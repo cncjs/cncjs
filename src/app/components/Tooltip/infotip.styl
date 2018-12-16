@@ -1,0 +1,13 @@
+@import "reset-context";
+@import "style-portal";
+
+/**
+ * override style portal for integrated with rc-trigger
+ */
+.tooltip {
+    opacity: 1;
+}
+:global(.tm-tooltip-hidden).tooltip {
+    display: none;
+    opacity: 0;
+}

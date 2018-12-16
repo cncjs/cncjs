@@ -1,0 +1,179 @@
+@import "variables";
+@import "reset-context";
+
+.table-pagination {
+    reset-context();
+
+    .table-pagination-block {
+        margin-left: 8px;
+        margin-right: 8px;
+
+        clearfix();
+
+        > div {
+            margin-top: 8px;
+            margin-bottom: 8px;
+            margin-left: 8px;
+            margin-right: 8px;
+            float: left;
+        }
+        .pagination {
+            vertical-align: top;
+        }
+        .pagination-records {
+            color: #666666;
+            margin-top: 14px;
+            margin-bottom: 14px;
+        }
+        .pagination-records + .dropdown {
+            border-left: 1px solid #dddddd;
+        }
+        .dropdown {
+            padding-left: 16px;
+            margin-top: 14px;
+            margin-bottom: 14px;
+
+            &.dropup {
+                .dropdown-toggle {
+                    .caret {
+                        border-top: 0;
+                        border-bottom: 4px dashed #666;
+                    }
+                    &:hover .caret {
+                        border-top-color: transparent;
+                        border-bottom-color: $link-color;
+                    }
+                }
+
+                .dropdown-menu {
+                    top: auto;
+                    bottom: 27px;
+                    left: 16px;
+                }
+            }
+
+            .dropdown-toggle {
+                background-color: transparent;
+                border: 0;
+                border-color: transparent;
+                box-shadow: none;
+                color: #666;
+                cursor: pointer;
+                padding-left: 0;
+                padding-right: 0;
+                text-align: left;
+                text-decoration: none;
+                outline: none;
+                line-height: $btn-line-height;
+
+                .caret {
+                    display: inline-block;
+                    width: 0;
+                    height: 0;
+                    vertical-align: middle;
+                    border-top: 4px dashed #666;
+                    border-right: 4px solid transparent;
+                    border-left: 4px solid transparent;
+                    margin-left: 8px;
+                }
+
+                &:hover {
+                    color: $link-color;
+                }
+                &:hover .caret {
+                    border-top-color: $link-color;
+                    border-bottom-color: transparent;
+                }
+            }
+
+            .dropdown-menu {
+                top: 27px;
+                bottom: auto;
+                left: 16px;
+            }
+        }
+
+        .pagination-input {
+            color: #666666;
+
+            input {
+                vertical-align: baseline;
+                margin: 0;
+                min-width: 24px;
+                padding: 5px 4px;
+                text-align: center;
+                border: 1px solid #ccc;
+                border-radius: 3px;
+                line-height: $input-line-height;
+
+                &:focus {
+                    border: 1px solid #0096cc;
+                    transition: all .2s linear 0s;
+                    outline: none;
+                }
+            }
+        }
+    }
+}
+
+.dropdown {
+    position: relative;
+}
+
+.dropdown-menu {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    z-index: 1000;
+    display: none;
+    float: left;
+    min-width: 0;
+    padding: 8px 0;
+    margin: 0;
+    font-size: 13px;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #bbb;
+    border-radius: 0;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .2);
+
+    .open > & {
+        display: block;
+    }
+
+    > li {
+        > a {
+            display: block;
+            padding: 4px 32px 4px 40px;
+            clear: both;
+            font-weight: normal;
+            line-height: 20px;
+            color: #222;
+            text-decoration: none;
+            white-space: nowrap;
+
+            &:hover,
+            &:focus {
+                color: #222;
+                text-decoration: none;
+                background-color: #eee;
+            }
+        }
+
+        &.selected {
+            a:before {
+                display: inline-block;
+                width: 16px;
+                height: 20px;
+                margin: 0 8px 0 -24px;
+                vertical-align: top;
+                content: "";
+                background-image: url("./icon-check.svg");
+                background-repeat: no-repeat;
+                background-position: 0 2px;
+            }
+        }
+    }
+}

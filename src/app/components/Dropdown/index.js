@@ -1,12 +1,8 @@
-import '@trendmicro/react-dropdown/dist/react-dropdown.css';
-import Dropdown from '@trendmicro/react-dropdown';
-import '../Buttons'; // CSS dependency
+import Dropdown from './Dropdown';
+
+export DropdownToggle from './DropdownToggle';
+export DropdownMenuWrapper from './DropdownMenuWrapper';
+export DropdownMenu from './DropdownMenu';
+export MenuItem from './MenuItem';
 
 export default Dropdown;
-export {
-    DropdownToggle,
-    DropdownMenu,
-    DropdownSubMenu,
-    MenuItem,
-    DropdownButton
-} from '@trendmicro/react-dropdown';

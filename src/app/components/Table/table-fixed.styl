@@ -1,0 +1,41 @@
+@import "variables";
+
+.table-fixed-header {
+    > .table-area > .table {
+        > .thead {
+            overflow: hidden;
+        }
+        > .tbody {
+            // Scrollable
+            overflow: auto;
+        }
+    }
+}
+
+.table-area > .table.table-fixed-left-container {
+    position: absolute;
+    top: 0;
+    background-color: #fff;
+    width: auto;
+    overflow: hidden;
+
+    > .thead,
+    > .tbody,
+    > .tfoot {
+        > .tr {
+            > .th,
+            > .td {
+                &:last-child {
+                    border-right-width: 1px;
+                }
+            }
+        }
+    }
+
+    // Scrollable
+    > .tbody {
+        overflow-x: hidden;
+        overflow-y: auto;
+    }
+}
+

@@ -1,7 +1,7 @@
-import '@trendmicro/react-datepicker/dist/react-datepicker.css';
-import DatePicker from '@trendmicro/react-datepicker';
+import DatePicker from './DatePicker';
 
-export { DateInput, TimeInput } from '@trendmicro/react-datepicker';
+export DateInput from './DateInput';
+export TimeInput from './TimeInput';
 export DateTimeRangePicker from './DateTimeRangePicker';
 export DateTimeRangePickerDropdown from './DateTimeRangePickerDropdown';
 

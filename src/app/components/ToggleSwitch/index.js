@@ -1,4 +1,3 @@
-import ToggleSwitch from '@trendmicro/react-toggle-switch';
-import '@trendmicro/react-toggle-switch/dist/react-toggle-switch.css';
+import ToggleSwitch from './ToggleSwitch';
 
 export default ToggleSwitch;

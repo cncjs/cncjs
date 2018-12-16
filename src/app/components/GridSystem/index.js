@@ -1,9 +1,7 @@
-import '@trendmicro/react-grid-system/dist/react-grid-system.css';
-
-export {
-    Provider,
-    Container,
-    Row,
-    Col
-} from '@trendmicro/react-grid-system';
-export { default as FlexContainer } from './FlexContainer';
+export Provider from './Provider';
+export Container from './Container';
+export FlexContainer from './FlexContainer';
+export Row from './Row';
+export Col from './Col';
+export Visible from './Visible';
+export Hidden from './Hidden';

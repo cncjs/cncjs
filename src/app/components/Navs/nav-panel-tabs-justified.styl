@@ -1,0 +1,40 @@
+.nav-panel-tabs.nav-justified {
+    width: 100%;
+
+    > li {
+        float: none;
+        display: table-cell;
+        width: 1%;
+
+        > a {
+            font-size: 13px;
+            color: #777777;
+            border-radius: 0;
+            background-color: #f4f4f4;
+            padding-top: 8px;
+            padding-bottom: 7px;
+            border-bottom: 1px solid #ddd;
+
+            &:hover {
+                color: #777777;
+                background-color: #eeeeee;
+            }
+        }
+
+        &.active > a,
+        &.active > a:focus,
+        &.active > a:hover {
+            color: #222;
+            font-weight: bold;
+            background-color: #ffffff;
+            border-bottom: 0;
+            cursor: default;
+        }
+    }
+
+    > li + li > a,
+    > li + li > a:focus,
+    > li + li > a:hover {
+        border-left: 1px solid #ddd;
+    }
+}

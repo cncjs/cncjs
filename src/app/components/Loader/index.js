@@ -1,4 +1,3 @@
-import '@trendmicro/react-loader/dist/react-loader.css';
-import Loader from '@trendmicro/react-loader';
+import Loader from './Loader';
 
 export default Loader;

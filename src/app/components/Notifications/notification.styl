@@ -1,0 +1,102 @@
+@import "reset-context";
+@import "variables";
+
+.notification {
+    reset-context();
+
+    position: relative;
+    color: #222;
+    padding: \
+        $notification-top \
+        ($notification-right + $padding) \
+        $notification-bottom \
+        ($notification-left + $padding);
+    border-radius: 0;
+
+    + .notification {
+        margin-top: 1px;
+    }
+
+    .icon {
+        position: absolute;
+        top: 10px;
+        left: $notification-left;
+
+        display: inline-block;
+        width: $icon-width;
+        height: $icon-height;
+
+        &.icon-success {
+            background-image: url('./check.svg');
+        }
+        &.icon-error {
+            background-image: url('./close-circle.svg');
+        }
+        &.icon-warning {
+            background-image: url('./exclamation-triangle.svg');
+        }
+        &.icon-info {
+            background-image: url('./info-circle.svg');
+        }
+    }
+
+    &.success,
+    &.error,
+    &.warning,
+    &.info {
+        &.dismissed {
+            border: 0;
+            margin: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+    }
+
+    &.success {
+        background-color: #dbf5e7;
+        border: 1px solid #c4ebd6;
+    }
+    &.error {
+        background-color: #f8dcdd;
+        border: 1px solid #f3c0c3;
+    }
+    &.warning {
+        background-color: #fdf0c3;
+        border: 1px solid #fcd963;
+    }
+    &.info {
+        background-color: #cceaf5;
+        border: 1px solid #99d5eb;
+    }
+
+    &.fade {
+        opacity: 0;
+        padding-top: 0;
+        padding-bottom: 0;
+        border-width: 0;
+        transition: all 0.15s linear;
+
+        &.in {
+            opacity: 1;
+            padding-top: 8px;
+            padding-bottom: 8px;
+            border-width: 1px;
+        }
+    }
+
+    .btn-dismiss {
+        position: absolute;
+        top: 10px;
+        right: $notification-right;
+        margin: 0;
+        opacity: .4;
+        display: inline-block;
+        width: $icon-width;
+        height: $icon-height;
+        background-image: url('./close.svg');
+
+        &:hover {
+            opacity: 1;
+        }
+    }
+}

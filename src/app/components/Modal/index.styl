@@ -1,0 +1,173 @@
+@import "reset-context";
+@import "variables";
+
+// Centering in the Unknown
+// https://css-tricks.com/centering-in-the-unknown/
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: rgba(51, 51, 51, .55);
+    z-index: 1050;
+
+    white-space: nowrap;
+    overflow-x: auto;
+
+    // Centering in the Unknown
+    // https://css-tricks.com/centering-in-the-unknown/
+    &.centered {
+        text-align: center;
+
+        &:before {
+            content: '';
+            display: inline-block;
+            height: 100%;
+            vertical-align: middle;
+            margin-right: -.25em; // Adjusts for spacing
+        }
+
+        .modal-content {
+            display: inline-block;
+            vertical-align: middle;
+            text-align: left;
+        }
+    }
+}
+
+.modal-content {
+    reset-context();
+
+    position: relative;
+    display: inline-block;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, .5);
+    min-width: $modal-xs-width;
+
+    white-space: normal;
+
+    &.xs {
+        width: $modal-xs-width;
+        .modal-body {
+            min-height: ($modal-xs-min-height - $modal-footer-height)px;
+        }
+        .modal-header + .modal-body {
+            min-height: ($modal-xs-min-height - $modal-header-height - $modal-footer-height)px;
+        }
+    }
+    &.sm {
+        width: $modal-sm-width;
+        .modal-body {
+            min-height: ($modal-sm-min-height - $modal-footer-height)px;
+        }
+        .modal-header + .modal-body {
+            min-height: ($modal-sm-min-height - $modal-header-height - $modal-footer-height)px;
+        }
+    }
+    &.md {
+        width: $modal-md-width;
+        .modal-body {
+            min-height: ($modal-md-min-height - $modal-footer-height)px;
+        }
+        .modal-header + .modal-body {
+            min-height: ($modal-md-min-height - $modal-header-height - $modal-footer-height)px;
+        }
+    }
+    &.lg {
+        width: $modal-lg-width;
+        .modal-body {
+            min-height: ($modal-lg-min-height - $modal-footer-height)px;
+        }
+        .modal-header + .modal-body {
+            min-height: ($modal-lg-min-height - $modal-header-height - $modal-footer-height)px;
+        }
+    }
+
+    &.close-button {
+        .modal-header {
+            &.padding {
+                padding: $padding-tb $padding-r $padding-tb $padding-lr;
+            }
+        }
+    }
+
+    .close {
+        position: absolute;
+        top: $padding-tb;
+        right: $padding-lr;
+        padding: 0;
+        margin: 0;
+        line-height: 20px;
+        cursor: pointer;
+        background: transparent url('./close.svg');
+        border: 0;
+        -webkit-appearance: none;
+        text-shadow: none;
+        opacity: 1;
+        outline: none;
+        width: 16px;
+        height: 16px;
+        opacity: .5;
+        &:hover, &:focus {
+            opacity: 1;
+        }
+    }
+
+    .modal-header {
+        min-height: $modal-header-height;
+        background-color: #fff;
+        border-bottom: 1px solid #ccc;
+        padding: 0;
+
+        &.padding {
+            padding: $padding-tb $padding-lr;
+        }
+    }
+
+    .modal-title {
+        font-weight: 200;
+        color: #222;
+        letter-spacing: -.02em;
+        font-size: 18px;
+
+        &.ellipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    }
+
+    .modal-body {
+        position: relative;
+        padding: 0;
+
+        &.padding {
+            padding: $modal-header-height $padding-lr $padding-tb $padding-lr;
+        }
+    }
+    .modal-header + .modal-body.padding {
+        padding: $padding-tb $padding-lr;
+    }
+
+    .modal-footer {
+        min-height: $modal-footer-height;
+        margin-top: 0;
+        text-align: right;
+        background-color: #eee;
+        padding: 0;
+
+        &.padding {
+            padding: 12px $padding-lr;
+        }
+
+        button {
+            min-width: 80px;
+        }
+
+        button + button {
+            margin-left: $modal-footer-button-margin;
+        }
+    }
+}

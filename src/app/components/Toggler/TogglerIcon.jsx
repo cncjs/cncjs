@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import styles from './index.styl';
@@ -17,7 +17,7 @@ class TogglerIcon extends PureComponent {
         return (
             <i
                 {...props}
-                className={classNames(
+                className={cx(
                     className,
                     styles.togglerIcon,
                     'fa',

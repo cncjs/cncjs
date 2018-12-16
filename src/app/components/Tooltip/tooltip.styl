@@ -1,0 +1,70 @@
+@import "reset-context";
+@import "style-portal";
+
+/**
+ * override style portal for integrated with rc-trigger
+ */
+.tooltip {
+    opacity: 1;
+}
+:global(.tm-tooltip-hidden).tooltip {
+    display: none;
+    opacity: 0;
+}
+
+:global(.tm-tooltip-placement-top) {
+    &.tooltip {
+        margin-top: -3px;
+        padding: 5px 0;
+    }
+    
+    .tooltip-arrow {
+        bottom: 0;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px 5px 0;
+        border-top-color: #444444;
+    }
+}
+:global(.tm-tooltip-placement-right) {
+    &.tooltip {
+        margin-left: 3px;
+        padding: 0 5px;
+    }
+    
+    .tooltip-arrow {
+        top: 50%;
+        left: 0;
+        margin-top: -5px;
+        border-width: 5px 5px 5px 0;
+        border-right-color: #444444;
+    }
+}
+:global(.tm-tooltip-placement-bottom) {
+    &.tooltip {
+        margin-top: 3px;
+        padding: 5px 0;
+    }
+    
+    .tooltip-arrow {
+        top: 0;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 0 5px 5px;
+        border-bottom-color: #444444;
+    }
+}
+:global(.tm-tooltip-placement-left) {
+    &.tooltip {
+        margin-left: -3px;
+        padding: 0 5px;
+    }
+    
+    .tooltip-arrow {
+        top: 50%;
+        right: 0;
+        margin-top: -5px;
+        border-width: 5px 0 5px 5px;
+        border-left-color: #444444;
+    }
+}

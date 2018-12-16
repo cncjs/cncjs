@@ -1,0 +1,34 @@
+.caret {
+    margin-left: 4px;
+    display: inline-block;
+    width: 0;
+    height: 0;
+    vertical-align: middle;
+    border-top: 4px dashed #fff;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+}
+
+.nav > li > a .caret {
+    margin-left: 4px;
+}
+.nav.nav-tabs > li > a .caret,
+.nav.nav-light-tabs > li > a .caret,
+.nav.nav-panel-tabs > li > a .caret {
+    border-top: 4px dashed #666;
+
+    &.dropup {
+        border-top: 0;
+        border-bottom: 4px dashed #666;
+        margin-bottom: 4px;
+    }
+}
+.nav.navbar-nav > li > a .caret {
+    border-top: 4px dashed #fff;
+
+    &.dropup {
+        border-top: 0;
+        border-bottom: 4px dashed #fff;
+        margin-bottom: 4px;
+    }
+}

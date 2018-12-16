@@ -1,0 +1,31 @@
+.dropdown-toggle {
+    min-width: 0;
+
+    .caret {
+        display: inline-block;
+        width: 0;
+        height: 0;
+        vertical-align: middle;
+        border-top: 4px dashed #666666;
+        border-right: 4px solid transparent;
+        border-left: 4px solid transparent;
+        margin-left: 8px;
+
+        .dropup & {
+            border-top: 0;
+            border-bottom: 4px dashed #666666;
+        }
+    }
+
+    &:focus {
+        outline: 0;
+    }
+
+    &.btn-link:hover .caret {
+        border-top-color: #0096cc;
+    }
+
+    &.empty .caret {
+        margin-left: 0;
+    }
+}

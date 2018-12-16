@@ -1,4 +1,3 @@
-import Table from '@trendmicro/react-table';
-import '@trendmicro/react-table/dist/react-table.css';
+import Table from './Table';
 
 export default Table;

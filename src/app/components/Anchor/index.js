@@ -1,3 +1,3 @@
-import Anchor from '@trendmicro/react-anchor';
+import Anchor from './Anchor';
 
 export default Anchor;

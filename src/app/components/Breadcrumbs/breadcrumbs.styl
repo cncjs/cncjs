@@ -1,0 +1,42 @@
+@import "reset-context";
+
+.breadcrumbs {
+    reset-context();
+
+    padding: 12px 0;
+    margin-bottom: 0;
+    list-style: none;
+    background-color: transparent;
+
+    &.line-separator {
+        margin-bottom: 16px;
+        border-bottom: 1px #e6e6e6 solid;
+    }
+
+    > li {
+        display: inline-block;
+        font-size: 16px;
+        line-height: 24px;
+        color: #888;
+
+        &.active {
+            color: #222;
+        }
+
+        > a {
+            color: #888;
+            text-decoration: none;
+
+            &:hover,
+            &:focus {
+                color: #0096cc;
+            }
+        }
+    }
+
+    > li + li:before {
+        padding: 0 5px;
+        color: #888;
+        content: "›";
+    }
+}

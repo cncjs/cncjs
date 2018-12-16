@@ -1,0 +1,42 @@
+@import "variables";
+
+// Add borders all around the table and between all the columns.
+.table-bordered {
+    > .table-area > .table {
+        > .thead,
+        > .tbody,
+        > .tfoot {
+            > .tr {
+                > .th,
+                > .td {
+                    border: 1px solid $table-border-color;
+                    border-width: 0 1px 1px 0;
+
+                    &:first-child {
+                        border-left-width: 0;
+                    }
+                    &:last-of-type {
+                        border-right-width: 0;
+                    }
+                }
+            }
+        }
+        > .thead {
+            > .tr {
+                > .th,
+                > .td {
+                    background-color: #EEEEEE;
+                    border-bottom-width: 2px;
+                    border-bottom-color: $table-header-border-bottom-color;
+                }
+            }
+        }
+        > .tbody {
+            > .tr:last-of-type {
+                > .td {
+                    border-bottom-width: 0;
+                }
+            }
+        }
+    }
+}
