@@ -49,7 +49,7 @@ export const getErrorMessage = (version) => {
     const element = document.createElement('div');
     element.id = 'webglmessage';
     element.style.fontFamily = 'monospace';
-    element.style.fontSize = '13px';
+    element.style.fontSize = '14px';
     element.style.fontWeight = 'normal';
     element.style.textAlign = 'center';
     element.style.background = '#fff';
