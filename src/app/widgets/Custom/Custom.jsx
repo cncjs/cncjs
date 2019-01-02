@@ -3,11 +3,10 @@ import Uri from 'jsuri';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
+import ResizeObserver from 'resize-observer-polyfill';
 import settings from '../../config/settings';
 import config from '../../store/config';
 import Iframe from '../../components/Iframe';
-import ResizeObserver from '../../lib/ResizeObserver';
 import controller from '../../lib/controller';
 import i18n from '../../lib/i18n';
 import log from '../../lib/log';
@@ -23,7 +22,6 @@ class Custom extends PureComponent {
 
     pubsubTokens = [];
     iframe = null;
-    observer = null;
 
     componentDidMount() {
         this.subscribe();
@@ -157,35 +155,30 @@ class Custom extends PureComponent {
 
         return (
             <Iframe
-                ref={node => {
-                    if (this.observer) {
-                        this.observer.disconnect();
-                        this.observer = null;
-                    }
-
-                    if (!node) {
-                        this.iframe = null;
-                        return;
-                    }
-
-                    this.iframe = ReactDOM.findDOMNode(node);
-
-                    // Use ResizeObserver to detect DOM changes within the iframe window
-                    this.iframe.addEventListener('load', () => {
-                        try {
-                            const target = this.iframe.contentDocument.body;
-                            this.observer = new ResizeObserver(() => {
-                                this.resize();
-                            });
-                            this.observer.observe(target);
-                        } catch (err) {
-                            // Catch DOMException when accessing the 'contentDocument' property from a cross-origin frame
-                        }
-                    });
-                }}
                 src={iframeSrc}
                 style={{
                     verticalAlign: 'top'
+                }}
+                onLoad={({ event, iframe }) => {
+                    if (!(iframe && iframe.contentDocument)) {
+                        return;
+                    }
+
+                    this.iframe = iframe;
+
+                    const target = iframe.contentDocument.body;
+                    const nextHeight = target.offsetHeight;
+                    iframe.style.height = `${nextHeight}px`;
+
+                    const observer = new ResizeObserver(entries => {
+                        const target = iframe.contentDocument.body;
+                        const nextHeight = target.offsetHeight;
+                        iframe.style.height = `${nextHeight}px`;
+                    });
+                    observer.observe(target);
+                }}
+                onBeforeUnload={({ event }) => {
+                    this.iframe = null;
                 }}
             />
         );
