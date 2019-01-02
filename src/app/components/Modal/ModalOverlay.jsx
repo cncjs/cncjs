@@ -1,8 +1,6 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import ReactDOM from 'react-dom';
-import Portal from 'app/components/Portal';
 import styles from './index.styl';
 
 const isModifiedEvent = (event) => {
@@ -15,20 +13,21 @@ const isLeftClickEvent = (event) => {
 
 class ModalOverlay extends PureComponent {
     static propTypes = {
-        disableOverlay: PropTypes.bool,
+        disableOverlayClick: PropTypes.bool,
         onClose: PropTypes.func
     };
 
-    portalNode = null;
+    ref = React.createRef();
 
     handleClick = (event) => {
-        const { disableOverlay, onClose } = this.props;
+        const { disableOverlayClick, onClose } = this.props;
 
-        if (disableOverlay) {
+        if (disableOverlayClick) {
             return;
         }
 
-        const isOverlayTarget = (event.target.parentNode === this.portalNode);
+        const node = this.ref.current;
+        const isOverlayTarget = (event.target === node);
         const canClose = !isModifiedEvent(event) && isLeftClickEvent(event) && isOverlayTarget;
 
         if (canClose && (typeof onClose === 'function')) {
@@ -38,28 +37,22 @@ class ModalOverlay extends PureComponent {
 
     render() {
         const {
-            disableOverlay, // eslint-disable-line
+            disableOverlayClick, // eslint-disable-line
             onClose, // eslint-disable-line
             className,
             ...props
         } = this.props;
 
         return (
-            <Portal
-                ref={node => {
-                    if (!node) {
-                        this.portalNode = null;
-                        return;
-                    }
-
-                    this.portalNode = ReactDOM.findDOMNode(node.node);
-                }}
+            <div
+                ref={this.ref}
                 {...props}
+                role="presentation"
                 className={cx(className, styles.modalOverlay, styles.centered)}
                 onClick={this.handleClick}
             >
                 {this.props.children}
-            </Portal>
+            </div>
         );
     }
 }

@@ -16,7 +16,7 @@ const CorruptedWorkspaceSettings = (props) => {
     return (
         <Modal
             {...props}
-            disableOverlay={true}
+            disableOverlayClick
             showCloseButton={false}
         >
             <Modal.Body>

@@ -94,7 +94,7 @@ class Settings extends PureComponent {
         return (
             <Modal
                 size="sm"
-                disableOverlay
+                disableOverlayClick
                 onClose={this.handleCancel}
             >
                 <Modal.Header>

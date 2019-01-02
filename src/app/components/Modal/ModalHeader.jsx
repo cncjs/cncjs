@@ -1,4 +1,4 @@
-import cx from 'classnames';
+import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import styles from './index.styl';
@@ -22,7 +22,7 @@ class ModalHeader extends PureComponent {
             <div
                 {...props}
                 style={style}
-                className={cx(
+                className={classNames(
                     styles.modalHeader,
                     { [styles.padding]: !!padding }
                 )}

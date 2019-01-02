@@ -1,9 +1,19 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import Portal from 'app/components/Portal';
 import ModalOverlay from './ModalOverlay';
 import ModalContent from './ModalContent';
 import styles from './index.styl';
+
+const deprecate = ({ deprecatedPropName, remappedPropName }) => {
+    if (remappedPropName) {
+        console.warn(`Warning: the "${deprecatedPropName}" prop is deprecated. Use "${remappedPropName}" instead.`);
+        return;
+    }
+
+    console.warn(`Warning: the "${deprecatedPropName}" prop is deprecated.`);
+};
 
 class Modal extends PureComponent {
     static propTypes = {
@@ -20,7 +30,7 @@ class Modal extends PureComponent {
         showOverlay: PropTypes.bool,
 
         // Don't close the modal on clicking the overlay. Defaults to `false`.
-        disableOverlay: PropTypes.bool,
+        disableOverlayClick: PropTypes.bool,
 
         // className to assign to modal overlay.
         overlayClassName: PropTypes.string,
@@ -44,8 +54,9 @@ class Modal extends PureComponent {
             'extra-small'
         ])
     };
+
     static defaultProps = {
-        disableOverlay: false,
+        disableOverlayClick: false,
         show: true,
         showCloseButton: true,
         showOverlay: true,
@@ -67,6 +78,7 @@ class Modal extends PureComponent {
             />
         );
     }
+
     renderModalContent({ showCloseButton, size, className, children, ...props }) {
         return (
             <ModalContent
@@ -81,13 +93,14 @@ class Modal extends PureComponent {
             </ModalContent>
         );
     }
+
     render() {
-        const {
+        let {
             onClose,
             show,
             showCloseButton,
             showOverlay,
-            disableOverlay,
+            disableOverlayClick,
             overlayClassName,
             overlayStyle,
             size,
@@ -109,14 +122,16 @@ class Modal extends PureComponent {
         }
 
         return (
-            <ModalOverlay
-                className={overlayClassName}
-                style={overlayStyle}
-                disableOverlay={disableOverlay}
-                onClose={onClose}
-            >
-                {modalContent}
-            </ModalOverlay>
+            <Portal>
+                <ModalOverlay
+                    className={overlayClassName}
+                    style={overlayStyle}
+                    disableOverlayClick={disableOverlayClick}
+                    onClose={onClose}
+                >
+                    {modalContent}
+                </ModalOverlay>
+            </Portal>
         );
     }
 }

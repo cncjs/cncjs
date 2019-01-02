@@ -1,5 +1,5 @@
 import React from 'react';
-import cx from 'classnames';
+import classNames from 'classnames';
 import styles from './index.styl';
 
 const ModalTitle = (props) => {
@@ -8,7 +8,7 @@ const ModalTitle = (props) => {
     return (
         <div
             {...props}
-            className={cx(
+            className={classNames(
                 styles.modalTitle,
                 { [styles.ellipsis]: doEllipsis }
             )}
