@@ -6,15 +6,6 @@ import ModalOverlay from './ModalOverlay';
 import ModalContent from './ModalContent';
 import styles from './index.styl';
 
-const deprecate = ({ deprecatedPropName, remappedPropName }) => {
-    if (remappedPropName) {
-        console.warn(`Warning: the "${deprecatedPropName}" prop is deprecated. Use "${remappedPropName}" instead.`);
-        return;
-    }
-
-    console.warn(`Warning: the "${deprecatedPropName}" prop is deprecated.`);
-};
-
 class Modal extends PureComponent {
     static propTypes = {
         // A callback fired on clicking the overlay or the close button (x).
