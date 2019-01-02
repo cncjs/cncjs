@@ -67,7 +67,15 @@ module.exports = {
                 test: /\.styl$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    'css-loader?camelCase&modules&importLoaders=1&localIdentName=[path][name]__[local]--[hash:base64:5]',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: true,
+                            localIdentName: '[path][name]__[local]--[hash:base64:5]',
+                            camelCase: true,
+                            importLoaders: 1
+                        }
+                    },
                     'stylus-loader'
                 ],
                 exclude: [
@@ -78,7 +86,13 @@ module.exports = {
                 test: /\.styl$/,
                 use: [
                     MiniCssExtractPlugin.loader,
-                    'css-loader?camelCase',
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: false,
+                            camelCase: true,
+                        }
+                    },
                     'stylus-loader'
                 ],
                 include: [
