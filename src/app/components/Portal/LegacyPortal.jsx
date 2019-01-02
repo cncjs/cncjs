@@ -20,10 +20,13 @@ class Portal extends React.Component {
         } else {
             document.body.appendChild(this.node);
         }
+
+        this.componentDidUpdate();
     }
 
     componentWillUnmount() {
         if (this.node) {
+            ReactDOM.unmountComponentAtNode(this.node);
             if (this.node.parentNode) {
                 this.node.parentNode.removeChild(this.node);
             }
@@ -31,11 +34,15 @@ class Portal extends React.Component {
         }
     }
 
-    render() {
-        return ReactDOM.createPortal(
+    componentDidUpdate() {
+        ReactDOM.render(
             this.props.children,
             this.node
         );
+    }
+
+    render() {
+        return null;
     }
 }
 
