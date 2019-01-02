@@ -1,3 +1,3 @@
-export Button from './Button';
-export ButtonGroup from './ButtonGroup';
-export ButtonToolbar from './ButtonToolbar';
+import 'react-bootstrap-buttons/dist/react-bootstrap-buttons.css';
+
+export { Button, ButtonGroup, ButtonToolbar } from 'react-bootstrap-buttons';
