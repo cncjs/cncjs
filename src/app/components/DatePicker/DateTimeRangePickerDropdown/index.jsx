@@ -335,7 +335,10 @@ class DateTimeRangePickerDropdown extends PureComponent {
                 onClose={this.handleDropdownClose}
                 onToggle={this.handleDropdownToggle}
             >
-                <Dropdown.Toggle>
+                <Dropdown.Toggle
+                    componentClass={Button}
+                    btnStyle="default"
+                >
                     {mapPeriodToString(period)}
                 </Dropdown.Toggle>
                 <Dropdown.MenuWrapper style={{ whiteSpace: 'nowrap' }}>

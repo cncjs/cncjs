@@ -12,14 +12,14 @@ import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import Fraction from './components/Fraction';
 import {
     // Units
     IMPERIAL_UNITS,
     IMPERIAL_STEPS,
     METRIC_UNITS,
     METRIC_STEPS
-} from '../../constants';
+} from 'app/constants';
+import Fraction from './components/Fraction';
 import styles from './index.styl';
 
 const KeypadText = styled.span`
@@ -166,7 +166,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={styles.btnKeypad}
                                             onClick={() => {
@@ -183,7 +183,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={cx(
                                                 styles.btnKeypad,
@@ -204,7 +204,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={styles.btnKeypad}
                                             onClick={() => {
@@ -221,7 +221,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={cx(
                                                 styles.btnKeypad,
@@ -246,7 +246,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={cx(
                                                 styles.btnKeypad,
@@ -267,7 +267,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={styles.btnKeypad}
                                             onClick={() => actions.move({ X: 0, Y: 0 })}
@@ -284,7 +284,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={cx(
                                                 styles.btnKeypad,
@@ -305,7 +305,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={styles.btnKeypad}
                                             onClick={() => actions.move({ Z: 0 })}
@@ -324,7 +324,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={styles.btnKeypad}
                                             onClick={() => {
@@ -341,7 +341,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={cx(
                                                 styles.btnKeypad,
@@ -362,7 +362,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={styles.btnKeypad}
                                             onClick={() => {
@@ -379,7 +379,7 @@ class Keypad extends PureComponent {
                                 <div className="col-xs-3">
                                     <div className={styles.colSpace}>
                                         <Button
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             compact
                                             className={cx(
                                                 styles.btnKeypad,
@@ -410,7 +410,7 @@ class Keypad extends PureComponent {
                                 disabled={!canChangeUnits}
                             >
                                 <Dropdown.Toggle
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     style={{
                                         textAlign: 'right',
                                         width: '100%'
@@ -456,7 +456,7 @@ class Keypad extends PureComponent {
                                 }}
                             >
                                 <Dropdown.Toggle
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     style={{
                                         textAlign: 'right',
                                         width: '100%'
@@ -492,7 +492,7 @@ class Keypad extends PureComponent {
                                 }}
                             >
                                 <Dropdown.Toggle
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     style={{
                                         textAlign: 'right',
                                         width: '100%'
@@ -531,7 +531,7 @@ class Keypad extends PureComponent {
                                             disabled={!canStepBackward}
                                             style={{ width: '100%' }}
                                             compact
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             className="pull-left"
                                         >
                                             <i className="fa fa-minus" />
@@ -551,7 +551,7 @@ class Keypad extends PureComponent {
                                             disabled={!canStepForward}
                                             style={{ width: '100%' }}
                                             compact
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             className="pull-right"
                                         >
                                             <i className="fa fa-plus" />

@@ -12,22 +12,6 @@ import { Button } from 'app/components/Buttons';
 import ModalTemplate from 'app/components/ModalTemplate';
 import Modal from 'app/components/Modal';
 import Widget from 'app/components/Widget';
-import controller from 'app/lib/controller';
-import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
-import portal from 'app/lib/portal';
-import * as WebGL from 'app/lib/three/WebGL';
-import { in2mm } from 'app/lib/units';
-import WidgetConfig from 'app/widgets/WidgetConfig';
-import PrimaryToolbar from './PrimaryToolbar';
-import SecondaryToolbar from './SecondaryToolbar';
-import WorkflowControl from './WorkflowControl';
-import Visualizer from './Visualizer';
-import Dashboard from './Dashboard';
-import Notifications from './Notifications';
-import Loading from './Loading';
-import Rendering from './Rendering';
-import WatchDirectory from './WatchDirectory';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -47,7 +31,23 @@ import {
     WORKFLOW_STATE_RUNNING,
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_IDLE
-} from '../../constants';
+} from 'app/constants';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import log from 'app/lib/log';
+import portal from 'app/lib/portal';
+import * as WebGL from 'app/lib/three/WebGL';
+import { in2mm } from 'app/lib/units';
+import WidgetConfig from 'app/widgets/WidgetConfig';
+import PrimaryToolbar from './PrimaryToolbar';
+import SecondaryToolbar from './SecondaryToolbar';
+import WorkflowControl from './WorkflowControl';
+import Visualizer from './Visualizer';
+import Dashboard from './Dashboard';
+import Notifications from './Notifications';
+import Loading from './Loading';
+import Rendering from './Rendering';
+import WatchDirectory from './WatchDirectory';
 import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE,

@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import i18n from '../../lib/i18n';
+import i18n from 'app/lib/i18n';
 import {
     METRIC_UNITS
-} from '../../constants';
+} from 'app/constants';
 import {
     MODAL_PREVIEW
 } from './constants';

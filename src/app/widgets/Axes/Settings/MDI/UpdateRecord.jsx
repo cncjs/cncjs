@@ -7,7 +7,8 @@ import Modal from 'app/components/Modal';
 import Space from 'app/components/Space';
 import { ToastNotification } from 'app/components/Notifications';
 import { Form, Input, Textarea } from 'app/components/Validation';
-import { FormGroup } from 'app/components/Forms';
+import FormGroup from 'app/components/FormGroup';
+import Label from 'app/components/Label';
 import i18n from 'app/lib/i18n';
 import * as validations from 'app/lib/validations';
 import styles from '../form.styl';
@@ -46,7 +47,7 @@ class UpdateRecord extends PureComponent {
 
         return (
             <Modal
-                disableOverlay
+                disableOverlayClick
                 size="sm"
                 onClose={action.closeModal}
             >
@@ -81,7 +82,7 @@ class UpdateRecord extends PureComponent {
                     >
                         <div className={styles.formFields}>
                             <FormGroup>
-                                <label>{i18n._('Name')}</label>
+                                <Label>{i18n._('Name')}</Label>
                                 <Input
                                     type="text"
                                     name="name"
@@ -95,7 +96,7 @@ class UpdateRecord extends PureComponent {
                                 />
                             </FormGroup>
                             <FormGroup>
-                                <label>{i18n._('Command')}</label>
+                                <Label>{i18n._('Command')}</Label>
                                 <Textarea
                                     name="command"
                                     value={command}
@@ -109,7 +110,7 @@ class UpdateRecord extends PureComponent {
                                 />
                             </FormGroup>
                             <FormGroup>
-                                <label>{i18n._('Button Width')}</label>
+                                <Label>{i18n._('Button Width')}</Label>
                                 <Slider
                                     ref={node => {
                                         this.slider = node;

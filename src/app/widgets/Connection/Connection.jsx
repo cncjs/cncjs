@@ -6,16 +6,20 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
-import Space from '../../components/Space';
-import { ToastNotification } from '../../components/Notifications';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import { Checkbox } from 'app/components/Checkbox';
+import FormGroup from 'app/components/FormGroup';
+import { FlexContainer, Row, Col } from 'app/components/GridSystem';
+import Label from 'app/components/Label';
+import Space from 'app/components/Space';
+import { ToastNotification } from 'app/components/Notifications';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
 import {
     GRBL,
     MARLIN,
     SMOOTHIE,
     TINYG
-} from '../../constants';
+} from 'app/constants';
 
 class Connection extends PureComponent {
     static propTypes = {
@@ -125,7 +129,7 @@ class Connection extends PureComponent {
         const canClosePort = connected;
 
         return (
-            <div>
+            <FlexContainer>
                 {alertMessage &&
                 <ToastNotification
                     style={{ margin: '-10px -10px 10px -10px' }}
@@ -136,7 +140,7 @@ class Connection extends PureComponent {
                 </ToastNotification>
                 }
                 {canSelectControllers &&
-                <div className="form-group">
+                <FormGroup>
                     <div className="input-group input-group-sm">
                         <div className="input-group-btn">
                             {hasGrblController &&
@@ -205,32 +209,40 @@ class Connection extends PureComponent {
                             }
                         </div>
                     </div>
-                </div>
+                </FormGroup>
                 }
-                <div className="form-group">
-                    <label className="control-label">{i18n._('Port')}</label>
-                    <div className="input-group input-group-sm">
-                        <Select
-                            backspaceRemoves={false}
-                            className="sm"
-                            clearable={false}
-                            disabled={!canChangePort}
-                            name="port"
-                            noResultsText={i18n._('No ports available')}
-                            onChange={actions.onChangePortOption}
-                            optionRenderer={this.renderPortOption}
-                            options={map(ports, (o) => ({
-                                value: o.port,
-                                label: o.port,
-                                manufacturer: o.manufacturer,
-                                inuse: o.inuse
-                            }))}
-                            placeholder={i18n._('Choose a port')}
-                            searchable={false}
-                            value={port}
-                            valueRenderer={this.renderPortValue}
-                        />
-                        <div className="input-group-btn">
+                <FormGroup>
+                    <Label>{i18n._('Port')}</Label>
+                    <Row>
+                        <Col>
+                            <Select
+                                backspaceRemoves={false}
+                                className="sm"
+                                clearable={false}
+                                disabled={!canChangePort}
+                                name="port"
+                                noResultsText={i18n._('No ports available')}
+                                onChange={actions.onChangePortOption}
+                                optionRenderer={this.renderPortOption}
+                                options={map(ports, (o) => ({
+                                    value: o.port,
+                                    label: o.port,
+                                    manufacturer: o.manufacturer,
+                                    inuse: o.inuse
+                                }))}
+                                placeholder={i18n._('Choose a port')}
+                                searchable={false}
+                                value={port}
+                                valueRenderer={this.renderPortValue}
+                            />
+                        </Col>
+                        <Col
+                            width="auto"
+                            style={{
+                                width: 50,
+                                textAlign: 'right'
+                            }}
+                        >
                             <button
                                 type="button"
                                 className="btn btn-default"
@@ -238,6 +250,7 @@ class Connection extends PureComponent {
                                 title={i18n._('Refresh')}
                                 onClick={actions.handleRefreshPorts}
                                 disabled={!canRefresh}
+                                style={{ minHeight: 38 }}
                             >
                                 <i
                                     className={cx(
@@ -247,54 +260,58 @@ class Connection extends PureComponent {
                                     )}
                                 />
                             </button>
-                        </div>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <label className="control-label">{i18n._('Baud rate')}</label>
-                    <Select
-                        backspaceRemoves={false}
-                        className="sm"
-                        clearable={false}
-                        disabled={!canChangeBaudrate}
-                        menuContainerStyle={{ zIndex: 5 }}
-                        name="baudrate"
-                        onChange={actions.onChangeBaudrateOption}
-                        options={map(baudrates, (value) => ({
-                            value: value,
-                            label: Number(value).toString()
-                        }))}
-                        placeholder={i18n._('Choose a baud rate')}
-                        searchable={false}
-                        value={baudrate}
-                        valueRenderer={this.renderBaudrateValue}
-                    />
-                </div>
-                <div
-                    className={cx('checkbox', {
-                        'disabled': !canToggleHardwareFlowControl
-                    })}
-                >
-                    <label>
-                        <input
-                            type="checkbox"
-                            defaultChecked={enableHardwareFlowControl}
-                            onChange={actions.toggleHardwareFlowControl}
-                            disabled={!canToggleHardwareFlowControl}
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Label>{i18n._('Baud rate')}</Label>
+                    <Row>
+                        <Col>
+                            <Select
+                                backspaceRemoves={false}
+                                className="sm"
+                                clearable={false}
+                                disabled={!canChangeBaudrate}
+                                menuContainerStyle={{ zIndex: 5 }}
+                                name="baudrate"
+                                onChange={actions.onChangeBaudrateOption}
+                                options={map(baudrates, (value) => ({
+                                    value: value,
+                                    label: Number(value).toString()
+                                }))}
+                                placeholder={i18n._('Choose a baud rate')}
+                                searchable={false}
+                                value={baudrate}
+                                valueRenderer={this.renderBaudrateValue}
+                            />
+                        </Col>
+                        <Col
+                            width="auto"
+                            style={{
+                                width: 50
+                            }}
                         />
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Checkbox
+                        defaultChecked={enableHardwareFlowControl}
+                        onChange={actions.toggleHardwareFlowControl}
+                        disabled={!canToggleHardwareFlowControl}
+                    >
+                        <Space width={8} />
                         {i18n._('Enable hardware flow control')}
-                    </label>
-                </div>
-                <div className="checkbox">
-                    <label>
-                        <input
-                            type="checkbox"
-                            defaultChecked={autoReconnect}
-                            onChange={actions.toggleAutoReconnect}
-                        />
+                    </Checkbox>
+                </FormGroup>
+                <FormGroup>
+                    <Checkbox
+                        defaultChecked={autoReconnect}
+                        onChange={actions.toggleAutoReconnect}
+                    >
+                        <Space width={8} />
                         {i18n._('Connect automatically')}
-                    </label>
-                </div>
+                    </Checkbox>
+                </FormGroup>
                 <div className="btn-group btn-group-sm">
                     {notConnected &&
                         <button
@@ -321,7 +338,7 @@ class Connection extends PureComponent {
                         </button>
                     }
                 </div>
-            </div>
+            </FlexContainer>
         );
     }
 }

@@ -1,11 +1,11 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import WidgetConfig from '../WidgetConfig';
+import Space from 'app/components/Space';
+import Widget from 'app/components/Widget';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import WidgetConfig from 'app/widgets/WidgetConfig';
 import Custom from './Custom';
 import Settings from './Settings';
 import {

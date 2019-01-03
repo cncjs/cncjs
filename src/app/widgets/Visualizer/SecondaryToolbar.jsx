@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Repeatable from 'react-repeatable';
 import styled from 'styled-components';
-import { Button, ButtonToolbar, ButtonGroup } from '../../components/Buttons';
-import Dropdown, { MenuItem } from '../../components/Dropdown';
-import Image from '../../components/Image';
-import Space from '../../components/Space';
-import { Tooltip } from '../../components/Tooltip';
-import i18n from '../../lib/i18n';
+import { Button, ButtonToolbar, ButtonGroup } from 'app/components/Buttons';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
+import Image from 'app/components/Image';
+import Space from 'app/components/Space';
+import { Tooltip } from 'app/components/Tooltip';
+import i18n from 'app/lib/i18n';
 import iconTopView from './images/camera-top-view.png';
 import icon3DView from './images/camera-3d-view.svg';
 import iconFrontView from './images/camera-front-view.png';
@@ -58,6 +58,10 @@ const IconButton = styled(Button)`
         background-image: none;
         background-color: #e6e6e6;
         filter: invert(0%);
+    }
+
+    &:focus {
+        box-shadow: none;
     }
 
     &:hover,
@@ -215,6 +219,7 @@ class SecondaryToolbar extends PureComponent {
                 >
                     <Dropdown.Toggle
                         componentClass={IconButton}
+                        btnStyle="default"
                     >
                         {(cameraMode === CAMERA_MODE_PAN) &&
                             <Image src={iconMoveCamera} width="20" height="20" />

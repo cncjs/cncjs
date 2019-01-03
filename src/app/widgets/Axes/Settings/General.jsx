@@ -7,8 +7,10 @@ import React, { PureComponent } from 'react';
 import ForEach from 'react-foreach';
 import { Button } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
-import { FormGroup, Input } from 'app/components/Forms';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import FormGroup from 'app/components/FormGroup';
 import { FlexContainer, Row, Col } from 'app/components/GridSystem';
+import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
 import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
@@ -145,7 +147,9 @@ class General extends PureComponent {
         return (
             <FlexContainer gutterWidth={0}>
                 <Margin bottom={15}>
-                    <label><strong>{i18n._('Axes')}</strong></label>
+                    <Label>
+                        {i18n._('Axes')}
+                    </Label>
                     <Row>
                         <Col xs={4}>
                             <FormGroup>
@@ -221,83 +225,97 @@ class General extends PureComponent {
                 <Margin bottom={15}>
                     <Row>
                         <Col>
-                            <label><strong>{i18n._('Custom Jog Distance (mm)')}</strong></label>
-                            <ForEach items={metricJogDistances}>
-                                {(value, index) => (
-                                    <FormGroup key={_uniqueId()}>
-                                        <Row>
-                                            <Col>
-                                                <Input
-                                                    type="number"
-                                                    onChange={this.changeMetricJogDistance(index)}
-                                                    defaultValue={value}
-                                                />
-                                            </Col>
-                                            <Col>
-                                                <Space width="8" />
-                                                <Button
-                                                    btnStyle="flat"
-                                                    compact
-                                                    onClick={this.removeMetricJogDistance(index)}
-                                                >
-                                                    <i className="fa fa-close" />
-                                                </Button>
-                                            </Col>
-                                        </Row>
-                                    </FormGroup>
-                                )}
-                            </ForEach>
-                            {metricJogDistances.length < METRIC_JOG_DISTANCES_MAX &&
-                            <Button
-                                btnStyle="flat"
-                                onClick={this.addMetricJogDistance()}
-                            >
-                                <i className="fa fa-plus" />
-                                <Space width="8" />
-                                {i18n._('Add')}
-                            </Button>
-                            }
+                            <Label>
+                                {i18n._('Custom Jog Distance (mm)')}
+                            </Label>
+                            <Row>
+                                <Col>
+                                    <ForEach items={metricJogDistances}>
+                                        {(value, index) => (
+                                            <FormGroup key={_uniqueId()}>
+                                                <Row>
+                                                    <Col>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            defaultValue={value}
+                                                            onChange={this.changeMetricJogDistance(index)}
+                                                        />
+                                                    </Col>
+                                                    <Col>
+                                                        <Space width="8" />
+                                                        <Button
+                                                            btnStyle="default"
+                                                            compact
+                                                            onClick={this.removeMetricJogDistance(index)}
+                                                        >
+                                                            <FontAwesomeIcon icon="times" />
+                                                        </Button>
+                                                    </Col>
+                                                </Row>
+                                            </FormGroup>
+                                        )}
+                                    </ForEach>
+                                    {metricJogDistances.length < METRIC_JOG_DISTANCES_MAX &&
+                                    <Button
+                                        btnStyle="default"
+                                        onClick={this.addMetricJogDistance()}
+                                    >
+                                        <FontAwesomeIcon icon="plus" />
+                                        <Space width="8" />
+                                        {i18n._('Add')}
+                                    </Button>
+                                    }
+                                </Col>
+                            </Row>
                         </Col>
                         <Col width="auto">
                             <Space width="24" />
                         </Col>
                         <Col>
-                            <label><strong>{i18n._('Custom Jog Distance (inches)')}</strong></label>
-                            <ForEach items={imperialJogDistances}>
-                                {(value, index) => (
-                                    <FormGroup key={_uniqueId()}>
-                                        <Row>
-                                            <Col>
-                                                <Input
-                                                    type="number"
-                                                    defaultValue={value}
-                                                    onChange={this.changeImperialJogDistance(index)}
-                                                />
-                                            </Col>
-                                            <Col>
-                                                <Space width="8" />
-                                                <Button
-                                                    btnStyle="flat"
-                                                    compact
-                                                    onClick={this.removeImperialJogDistance(index)}
-                                                >
-                                                    <i className="fa fa-close" />
-                                                </Button>
-                                            </Col>
-                                        </Row>
-                                    </FormGroup>
-                                )}
-                            </ForEach>
-                            {imperialJogDistances.length < IMPERIAL_JOG_DISTANCES_MAX &&
-                            <Button
-                                btnStyle="flat"
-                                onClick={this.addImperialJogDistance()}
-                            >
-                                <i className="fa fa-plus" />
-                                <Space width="8" />
-                                {i18n._('Add')}
-                            </Button>
-                            }
+                            <Label>
+                                {i18n._('Custom Jog Distance (inches)')}
+                            </Label>
+                            <Row>
+                                <Col>
+                                    <ForEach items={imperialJogDistances}>
+                                        {(value, index) => (
+                                            <FormGroup key={_uniqueId()}>
+                                                <Row>
+                                                    <Col>
+                                                        <input
+                                                            type="number"
+                                                            className="form-control"
+                                                            defaultValue={value}
+                                                            onChange={this.changeImperialJogDistance(index)}
+                                                        />
+                                                    </Col>
+                                                    <Col>
+                                                        <Space width="8" />
+                                                        <Button
+                                                            btnStyle="default"
+                                                            compact
+                                                            onClick={this.removeImperialJogDistance(index)}
+                                                        >
+                                                            <FontAwesomeIcon icon="times" />
+                                                        </Button>
+                                                    </Col>
+                                                </Row>
+                                            </FormGroup>
+                                        )}
+                                    </ForEach>
+                                    {imperialJogDistances.length < IMPERIAL_JOG_DISTANCES_MAX &&
+                                    <Button
+                                        btnStyle="default"
+                                        onClick={this.addImperialJogDistance()}
+                                    >
+                                        <FontAwesomeIcon icon="plus" />
+                                        <Space width="8" />
+                                        {i18n._('Add')}
+                                    </Button>
+                                    }
+                                </Col>
+                            </Row>
                         </Col>
                     </Row>
                 </Margin>

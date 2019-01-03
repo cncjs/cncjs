@@ -2,7 +2,8 @@ import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import i18n from 'app/lib/i18n';
-import { FormGroup } from 'app/components/Forms';
+import FormGroup from 'app/components/FormGroup';
+import Label from 'app/components/Label';
 
 const FEEDRATE_RANGE = [100, 2500];
 const FEEDRATE_STEP = 50;
@@ -67,9 +68,9 @@ class ShuttleXpress extends PureComponent {
         return (
             <div>
                 <FormGroup>
-                    <p>
+                    <Label>
                         {i18n._('Feed Rate Range: {{min}} - {{max}} mm/min', { min: feedrateMin, max: feedrateMax })}
-                    </p>
+                    </Label>
                     <Slider.Range
                         allowCross={false}
                         defaultValue={[feedrateMin, feedrateMax]}
@@ -80,9 +81,9 @@ class ShuttleXpress extends PureComponent {
                     />
                 </FormGroup>
                 <FormGroup>
-                    <label>
+                    <Label>
                         {i18n._('Repeat Rate: {{hertz}}Hz', { hertz: hertz })}
-                    </label>
+                    </Label>
                     <select
                         className="form-control"
                         defaultValue={hertz}
@@ -99,7 +100,9 @@ class ShuttleXpress extends PureComponent {
                     </select>
                 </FormGroup>
                 <FormGroup>
-                    <p>{i18n._('Distance Overshoot: {{overshoot}}x', { overshoot: overshoot })}</p>
+                    <Label>
+                        {i18n._('Distance Overshoot: {{overshoot}}x', { overshoot: overshoot })}
+                    </Label>
                     <Slider
                         defaultValue={overshoot}
                         min={OVERSHOOT_RANGE[0]}

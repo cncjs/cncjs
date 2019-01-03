@@ -4,9 +4,9 @@ import includes from 'lodash/includes';
 import union from 'lodash/union';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../../constants';
-import controller from '../../../lib/controller';
-import config from '../../../store/config';
+import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'app/constants';
+import controller from 'app/lib/controller';
+import config from 'app/store/config';
 import WidgetManager from './WidgetManager';
 
 export const getActiveWidgets = () => {

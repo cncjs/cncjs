@@ -3,16 +3,16 @@ import ensureArray from 'ensure-array';
 import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Button } from '../../components/Buttons';
-import Modal from '../../components/Modal';
-import Space from '../../components/Space';
-import i18n from '../../lib/i18n';
-import portal from '../../lib/portal';
+import { Button } from 'app/components/Buttons';
+import Modal from 'app/components/Modal';
+import Space from 'app/components/Space';
+import i18n from 'app/lib/i18n';
+import portal from 'app/lib/portal';
 import {
     // Workflow
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED
-} from '../../constants';
+} from 'app/constants';
 import styles from './index.styl';
 
 class Macro extends PureComponent {
@@ -95,7 +95,7 @@ class Macro extends PureComponent {
                                         <Button
                                             compact
                                             btnSize="xs"
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                             disabled={!canRunMacro}
                                             onClick={this.handleRunMacro(macro)}
                                             title={i18n._('Run Macro')}
@@ -110,7 +110,7 @@ class Macro extends PureComponent {
                                             <Button
                                                 compact
                                                 btnSize="xs"
-                                                btnStyle="flat"
+                                                btnStyle="default"
                                                 disabled={!canLoadMacro}
                                                 onClick={this.handleLoadMacro(macro)}
                                                 title={i18n._('Load Macro')}
@@ -120,7 +120,7 @@ class Macro extends PureComponent {
                                             <Button
                                                 compact
                                                 btnSize="xs"
-                                                btnStyle="flat"
+                                                btnStyle="default"
                                                 onClick={this.handleEditMacro(macro)}
                                             >
                                                 <i className="fa fa-edit" />

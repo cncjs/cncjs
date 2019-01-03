@@ -5,13 +5,12 @@ import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
-import controller from '../../lib/controller';
-import mapGCodeToText from '../../lib/gcode-text';
-import i18n from '../../lib/i18n';
-import { Button } from '../../components/Buttons';
-import Panel from '../../components/Panel';
-import Toggler from '../../components/Toggler';
-import Overrides from './Overrides';
+import controller from 'app/lib/controller';
+import mapGCodeToText from 'app/lib/gcode-text';
+import i18n from 'app/lib/i18n';
+import { Button } from 'app/components/Buttons';
+import Panel from 'app/components/Panel';
+import Toggler from 'app/components/Toggler';
 import {
     TINYG_MACHINE_STATE_INITIALIZING,
     TINYG_MACHINE_STATE_READY,
@@ -27,7 +26,8 @@ import {
     TINYG_MACHINE_STATE_INTERLOCK,
     TINYG_MACHINE_STATE_SHUTDOWN,
     TINYG_MACHINE_STATE_PANIC
-} from '../../constants';
+} from 'app/constants';
+import Overrides from './Overrides';
 import styles from './index.styl';
 
 class TinyG extends PureComponent {
@@ -112,7 +112,7 @@ class TinyG extends PureComponent {
                             <div className="col col-xs-6" style={{ paddingRight: 5 }}>
                                 <Button
                                     className={styles.textEllipsis}
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     onClick={this.enableMotors}
                                     title={i18n._('Enable Motors')}
                                 >
@@ -123,7 +123,7 @@ class TinyG extends PureComponent {
                             <div className="col col-xs-6" style={{ paddingLeft: 5 }}>
                                 <Button
                                     className={styles.textEllipsis}
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     onClick={this.disableMotors}
                                     title={i18n._('Disable Motors')}
                                 >

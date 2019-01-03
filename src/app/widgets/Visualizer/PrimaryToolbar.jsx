@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
-import Interpolate from 'app/components/Interpolate';
+import I18n from 'app/components/I18n';
 import Space from 'app/components/Space';
 import * as WebGL from 'app/lib/three/WebGL';
 import controller from 'app/lib/controller';
@@ -50,7 +50,7 @@ import {
     TINYG_MACHINE_STATE_PANIC,
     // Workflow
     WORKFLOW_STATE_IDLE
-} from '../../constants';
+} from 'app/constants';
 import styles from './index.styl';
 
 class PrimaryToolbar extends PureComponent {
@@ -239,6 +239,7 @@ class PrimaryToolbar extends PureComponent {
                     >
                         <Dropdown.Toggle
                             btnSize="sm"
+                            btnStyle="default"
                             title={i18n._('Work Coordinate System')}
                         >
                             {wcs === 'G54' && `${wcs} (P1)`}
@@ -305,7 +306,7 @@ class PrimaryToolbar extends PureComponent {
                     >
                         <Button
                             btnSize="sm"
-                            btnStyle="flat"
+                            btnStyle="default"
                             title={(!WebGL.isWebGLAvailable() || disabled)
                                 ? i18n._('Enable 3D View')
                                 : i18n._('Disable 3D View')
@@ -316,22 +317,34 @@ class PrimaryToolbar extends PureComponent {
                                 ? <i className="fa fa-toggle-off" />
                                 : <i className="fa fa-toggle-on" />
                             }
+                            <Space width={8} />
                             {i18n._('3D View')}
                         </Button>
-                        <Dropdown.Toggle btnSize="sm" />
+                        <Dropdown.Toggle
+                            btnSize="sm"
+                            btnStyle="default"
+                        />
                         <Dropdown.Menu>
                             <MenuItem
                                 style={{ color: '#222' }}
                                 header
                             >
-                                <Interpolate
-                                    format={'WebGL: {{status}}'}
-                                    replacement={{
-                                        status: WebGL.isWebGLAvailable()
-                                            ? (<span style={{ color: colornames('royalblue') }}>{i18n._('Enabled')}</span>)
-                                            : (<span style={{ color: colornames('crimson') }}>{i18n._('Disabled')}</span>)
-                                    }}
-                                />
+                                {WebGL.isWebGLAvailable() &&
+                                <I18n>
+                                    {'WebGL: '}
+                                    <span style={{ color: colornames('royalblue') }}>
+                                        Enabled
+                                    </span>
+                                </I18n>
+                                }
+                                {!WebGL.isWebGLAvailable() &&
+                                <I18n>
+                                    {'WebGL: '}
+                                    <span style={{ color: colornames('crimson') }}>
+                                        Disabled
+                                    </span>
+                                </I18n>
+                                }
                             </MenuItem>
                             <MenuItem divider />
                             <MenuItem header>

@@ -3,13 +3,12 @@ import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import i18n from '../../lib/i18n';
-import WidgetConfig from '../WidgetConfig';
-import Laser from './Laser';
+import Space from 'app/components/Space';
+import Widget from 'app/components/Widget';
+import controller from 'app/lib/controller';
+import ensurePositiveNumber from 'app/lib/ensure-positive-number';
+import i18n from 'app/lib/i18n';
+import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
     // Grbl
     GRBL,
@@ -19,7 +18,8 @@ import {
     SMOOTHIE,
     // TinyG
     TINYG
-} from '../../constants';
+} from 'app/constants';
+import Laser from './Laser';
 import styles from './index.styl';
 
 class LaserWidget extends PureComponent {

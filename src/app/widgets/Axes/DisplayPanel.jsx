@@ -5,18 +5,9 @@ import includes from 'lodash/includes';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Dropdown, { MenuItem } from '../../components/Dropdown';
-import Image from '../../components/Image';
-import { Tooltip } from '../../components/Tooltip';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import AxisLabel from './components/AxisLabel';
-import AxisSubscript from './components/AxisSubscript';
-import Panel from './components/Panel';
-import PositionLabel from './components/PositionLabel';
-import PositionInput from './components/PositionInput';
-import Taskbar from './components/Taskbar';
-import TaskbarButton from './components/TaskbarButton';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
+import Image from 'app/components/Image';
+import { Tooltip } from 'app/components/Tooltip';
 import {
     AXIS_E,
     AXIS_X,
@@ -26,13 +17,22 @@ import {
     AXIS_B,
     AXIS_C,
     METRIC_UNITS
-} from '../../constants';
-import styles from './index.styl';
+} from 'app/constants';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import AxisLabel from './components/AxisLabel';
+import AxisSubscript from './components/AxisSubscript';
+import Panel from './components/Panel';
+import PositionLabel from './components/PositionLabel';
+import PositionInput from './components/PositionInput';
+import Taskbar from './components/Taskbar';
+import TaskbarButton from './components/TaskbarButton';
 import iconMinus from './images/minus.svg';
 import iconPlus from './images/plus.svg';
 import iconHome from './images/home.svg';
 import iconPin from './images/pin.svg';
 import iconPencil from './images/pencil.svg';
+import styles from './index.styl';
 
 class DisplayPanel extends PureComponent {
     static propTypes = {

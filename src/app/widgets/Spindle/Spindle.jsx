@@ -1,11 +1,12 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import ensureArray from 'ensure-array';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import Space from 'app/components/Space';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
 class Spindle extends PureComponent {
@@ -17,10 +18,11 @@ class Spindle extends PureComponent {
     render() {
         const { state, actions } = this.props;
         const { canClick, spindleSpeed } = state;
-        const spindle = get(state, 'controller.modal.spindle');
+        //const spindle = get(state, 'controller.modal.spindle'); // FIXME
         const coolant = ensureArray(get(state, 'controller.modal.coolant'));
         const mistCoolant = coolant.indexOf('M7') >= 0;
         const floodCoolant = coolant.indexOf('M8') >= 0;
+        const spindle = 'M4'; // FIXME
 
         return (
             <div>
@@ -44,13 +46,7 @@ class Spindle extends PureComponent {
                                         title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i
-                                            className={classNames(
-                                                'fa',
-                                                'fa-rotate-right',
-                                                { 'fa-spin': spindle === 'M3' }
-                                            )}
-                                        />
+                                        <FontAwesomeIcon icon="sync-alt" spin={spindle === 'M3'} />
                                         <Space width="4" />
                                         M3
                                     </button>
@@ -70,13 +66,7 @@ class Spindle extends PureComponent {
                                         title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i
-                                            className={classNames(
-                                                'fa',
-                                                'fa-rotate-left',
-                                                { 'fa-spin-reverse': spindle === 'M4' }
-                                            )}
-                                        />
+                                        <FontAwesomeIcon icon="sync-alt" className={cx({ [styles.spinReverse]: spindle === 'M4' })} />
                                         <Space width="4" />
                                         M4
                                     </button>
@@ -90,7 +80,7 @@ class Spindle extends PureComponent {
                                         title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i className="fa fa-power-off" />
+                                        <FontAwesomeIcon icon="power-off" />
                                         <Space width="4" />
                                         M5
                                     </button>
@@ -112,7 +102,7 @@ class Spindle extends PureComponent {
                                         disabled={!canClick}
                                     >
                                         <i
-                                            className={classNames(
+                                            className={cx(
                                                 styles.icon,
                                                 styles.iconFan,
                                                 { 'fa-spin': mistCoolant }
@@ -134,7 +124,7 @@ class Spindle extends PureComponent {
                                         disabled={!canClick}
                                     >
                                         <i
-                                            className={classNames(
+                                            className={cx(
                                                 styles.icon,
                                                 styles.iconFan,
                                                 { 'fa-spin': floodCoolant }
@@ -155,7 +145,7 @@ class Spindle extends PureComponent {
                                         title={i18n._('Coolant Off (M9)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i className="fa fa-power-off" />
+                                        <FontAwesomeIcon icon="power-off" />
                                         <Space width="4" />
                                         M9
                                     </button>

@@ -5,13 +5,13 @@ import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
-import controller from '../../lib/controller';
-import mapGCodeToText from '../../lib/gcode-text';
-import i18n from '../../lib/i18n';
-import { Button } from '../../components/Buttons';
-import Panel from '../../components/Panel';
-import Space from '../../components/Space';
-import Toggler from '../../components/Toggler';
+import controller from 'app/lib/controller';
+import mapGCodeToText from 'app/lib/gcode-text';
+import i18n from 'app/lib/i18n';
+import { Button } from 'app/components/Buttons';
+import Panel from 'app/components/Panel';
+import Space from 'app/components/Space';
+import Toggler from 'app/components/Toggler';
 import FadeInOut from './FadeInOut';
 import Overrides from './Overrides';
 import styles from './index.styl';
@@ -144,7 +144,7 @@ class Marlin extends PureComponent {
                                     <Button
                                         compact
                                         btnSize="xs"
-                                        btnStyle="flat"
+                                        btnStyle="default"
                                         title={i18n._('Cancel')}
                                         onClick={this.setExtruderTemperature(0)}
                                     >
@@ -204,7 +204,7 @@ class Marlin extends PureComponent {
                                     <Button
                                         compact
                                         btnSize="xs"
-                                        btnStyle="flat"
+                                        btnStyle="default"
                                         onClick={this.setHeatedBedTemperature(0)}
                                         title={i18n._('Cancel')}
                                     >

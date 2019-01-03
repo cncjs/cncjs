@@ -3,17 +3,13 @@ import PropTypes from 'prop-types';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import React, { PureComponent } from 'react';
-import api from '../../api';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import log from '../../lib/log';
-import WidgetConfig from '../WidgetConfig';
-import Macro from './Macro';
-import AddMacro from './AddMacro';
-import EditMacro from './EditMacro';
-import RunMacro from './RunMacro';
+import api from 'app/api';
+import Space from 'app/components/Space';
+import Widget from 'app/components/Widget';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import log from 'app/lib/log';
+import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
     // Grbl
     GRBL,
@@ -33,7 +29,11 @@ import {
     TINYG_MACHINE_STATE_RUN,
     // Workflow
     WORKFLOW_STATE_RUNNING
-} from '../../constants';
+} from 'app/constants';
+import Macro from './Macro';
+import AddMacro from './AddMacro';
+import EditMacro from './EditMacro';
+import RunMacro from './RunMacro';
 import {
     MODAL_NONE,
     MODAL_ADD_MACRO,

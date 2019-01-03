@@ -4,9 +4,9 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React from 'react';
 import classNames from 'classnames';
-import Space from '../../components/Space';
-import i18n from '../../lib/i18n';
-import { formatBytes } from '../../lib/numeral';
+import Space from 'app/components/Space';
+import i18n from 'app/lib/i18n';
+import { formatBytes } from 'app/lib/numeral';
 import styles from './renderer.styl';
 
 const TreeNode = (props) => {

@@ -7,11 +7,11 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { ProgressBar } from 'react-bootstrap';
 import VirtualList from 'react-tiny-virtual-list';
-import api from '../../api';
-import Anchor from '../../components/Anchor';
-import Panel from '../../components/Panel';
-import i18n from '../../lib/i18n';
-import { formatBytes } from '../../lib/numeral';
+import api from 'app/api';
+import Anchor from 'app/components/Anchor';
+import Panel from 'app/components/Panel';
+import i18n from 'app/lib/i18n';
+import { formatBytes } from 'app/lib/numeral';
 import styles from './dashboard.styl';
 
 class Dashboard extends PureComponent {

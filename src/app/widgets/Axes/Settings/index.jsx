@@ -3,11 +3,11 @@ import styled from 'styled-components';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import api from '../../../api';
-import { Button } from '../../../components/Buttons';
-import Modal from '../../../components/Modal';
-import { Nav, NavItem } from '../../../components/Navs';
-import i18n from '../../../lib/i18n';
+import api from 'app/api';
+import { Button } from 'app/components/Buttons';
+import Modal from 'app/components/Modal';
+import { Nav, NavItem } from 'app/components/Navs';
+import i18n from 'app/lib/i18n';
 import General from './General';
 import MDI from './MDI';
 import ShuttleXpress from './ShuttleXpress';
@@ -103,7 +103,7 @@ class Settings extends PureComponent {
 
         return (
             <Modal
-                disableOverlay
+                disableOverlayClick
                 size="md"
                 onClose={this.props.onCancel}
             >

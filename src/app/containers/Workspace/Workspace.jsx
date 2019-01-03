@@ -5,12 +5,16 @@ import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
-import { Button, ButtonGroup, ButtonToolbar } from '../../components/Buttons';
-import api from '../../api';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import log from '../../lib/log';
-import config from '../../store/config';
+import api from 'app/api';
+import { Button, ButtonGroup, ButtonToolbar } from 'app/components/Buttons';
+import Space from 'app/components/Space';
+import {
+    WORKFLOW_STATE_IDLE
+} from 'app/constants';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import log from 'app/lib/log';
+import config from 'app/store/config';
 import * as widgetManager from './WidgetManager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
@@ -19,9 +23,6 @@ import FeederPaused from './modals/FeederPaused';
 import FeederWait from './modals/FeederWait';
 import ServerDisconnected from './modals/ServerDisconnected';
 import styles from './index.styl';
-import {
-    WORKFLOW_STATE_IDLE
-} from '../../constants';
 import {
     MODAL_NONE,
     MODAL_FEEDER_PAUSED,
@@ -495,11 +496,10 @@ class Workspace extends PureComponent {
                                     <ButtonGroup
                                         style={{ marginLeft: 0, marginRight: 10 }}
                                         btnSize="sm"
-                                        btnStyle="flat"
+                                        btnStyle="default"
                                     >
                                         <Button
                                             style={{ minWidth: 30 }}
-                                            compact
                                             onClick={this.togglePrimaryContainer}
                                         >
                                             <i className="fa fa-chevron-left" />
@@ -508,13 +508,14 @@ class Workspace extends PureComponent {
                                     <ButtonGroup
                                         style={{ marginLeft: 0, marginRight: 10 }}
                                         btnSize="sm"
-                                        btnStyle="flat"
+                                        btnStyle="default"
                                     >
                                         <Button
                                             style={{ width: 230 }}
                                             onClick={this.updateWidgetsForPrimaryContainer}
                                         >
                                             <i className="fa fa-list-alt" />
+                                            <Space width={8} />
                                             {i18n._('Manage Widgets ({{inactiveCount}})', {
                                                 inactiveCount: inactiveCount
                                             })}
@@ -523,11 +524,10 @@ class Workspace extends PureComponent {
                                     <ButtonGroup
                                         style={{ marginLeft: 0, marginRight: 0 }}
                                         btnSize="sm"
-                                        btnStyle="flat"
+                                        btnStyle="default"
                                     >
                                         <Button
                                             style={{ minWidth: 30 }}
-                                            compact
                                             title={i18n._('Collapse All')}
                                             onClick={event => {
                                                 this.primaryWidgets.collapseAll();
@@ -537,7 +537,6 @@ class Workspace extends PureComponent {
                                         </Button>
                                         <Button
                                             style={{ minWidth: 30 }}
-                                            compact
                                             title={i18n._('Expand All')}
                                             onClick={event => {
                                                 this.primaryWidgets.expandAll();
@@ -566,11 +565,10 @@ class Workspace extends PureComponent {
                             >
                                 <ButtonGroup
                                     btnSize="sm"
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                 >
                                     <Button
                                         style={{ minWidth: 30 }}
-                                        compact
                                         onClick={this.togglePrimaryContainer}
                                     >
                                         <i className="fa fa-chevron-right" />
@@ -598,11 +596,10 @@ class Workspace extends PureComponent {
                             >
                                 <ButtonGroup
                                     btnSize="sm"
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                 >
                                     <Button
                                         style={{ minWidth: 30 }}
-                                        compact
                                         onClick={this.toggleSecondaryContainer}
                                     >
                                         <i className="fa fa-chevron-left" />
@@ -624,11 +621,10 @@ class Workspace extends PureComponent {
                                         <ButtonGroup
                                             style={{ marginLeft: 0, marginRight: 10 }}
                                             btnSize="sm"
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                         >
                                             <Button
                                                 style={{ minWidth: 30 }}
-                                                compact
                                                 title={i18n._('Collapse All')}
                                                 onClick={event => {
                                                     this.secondaryWidgets.collapseAll();
@@ -638,7 +634,6 @@ class Workspace extends PureComponent {
                                             </Button>
                                             <Button
                                                 style={{ minWidth: 30 }}
-                                                compact
                                                 title={i18n._('Expand All')}
                                                 onClick={event => {
                                                     this.secondaryWidgets.expandAll();
@@ -650,13 +645,14 @@ class Workspace extends PureComponent {
                                         <ButtonGroup
                                             style={{ marginLeft: 0, marginRight: 10 }}
                                             btnSize="sm"
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                         >
                                             <Button
                                                 style={{ width: 230 }}
                                                 onClick={this.updateWidgetsForSecondaryContainer}
                                             >
                                                 <i className="fa fa-list-alt" />
+                                                <Space width={8} />
                                                 {i18n._('Manage Widgets ({{inactiveCount}})', {
                                                     inactiveCount: inactiveCount
                                                 })}
@@ -665,11 +661,10 @@ class Workspace extends PureComponent {
                                         <ButtonGroup
                                             style={{ marginLeft: 0, marginRight: 0 }}
                                             btnSize="sm"
-                                            btnStyle="flat"
+                                            btnStyle="default"
                                         >
                                             <Button
                                                 style={{ minWidth: 30 }}
-                                                compact
                                                 onClick={this.toggleSecondaryContainer}
                                             >
                                                 <i className="fa fa-chevron-right" />

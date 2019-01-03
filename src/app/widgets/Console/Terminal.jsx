@@ -7,7 +7,7 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { Terminal } from 'xterm';
 import * as fit from 'xterm/lib/addons/fit/fit';
-import log from '../../lib/log';
+import log from 'app/lib/log';
 import History from './History';
 import styles from './index.styl';
 

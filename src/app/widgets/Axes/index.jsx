@@ -16,10 +16,6 @@ import i18n from 'app/lib/i18n';
 import { in2mm, mapPositionToUnits } from 'app/lib/units';
 import { limit } from 'app/lib/normalize-range';
 import WidgetConfig from 'app/widgets/WidgetConfig';
-import Axes from './Axes';
-import KeypadOverlay from './KeypadOverlay';
-import Settings from './Settings';
-import ShuttleControl from './ShuttleControl';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -44,7 +40,11 @@ import {
     TINYG_MACHINE_STATE_RUN,
     // Workflow
     WORKFLOW_STATE_RUNNING
-} from '../../constants';
+} from 'app/constants';
+import Axes from './Axes';
+import KeypadOverlay from './KeypadOverlay';
+import Settings from './Settings';
+import ShuttleControl from './ShuttleControl';
 import {
     MODAL_NONE,
     MODAL_SETTINGS,

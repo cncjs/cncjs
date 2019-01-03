@@ -2,11 +2,11 @@ import _ from 'lodash';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Panel from '../../components/Panel';
-import Toggler from '../../components/Toggler';
-import RepeatButton from '../../components/RepeatButton';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import Panel from 'app/components/Panel';
+import Toggler from 'app/components/Toggler';
+import RepeatButton from 'app/components/RepeatButton';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
 import {
     // Grbl
     GRBL,
@@ -16,7 +16,7 @@ import {
     SMOOTHIE,
     // TinyG
     TINYG
-} from '../../constants';
+} from 'app/constants';
 import styles from './index.styl';
 
 class Laser extends PureComponent {

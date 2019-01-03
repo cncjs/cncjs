@@ -3,10 +3,10 @@ import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
-import mapGCodeToText from '../../lib/gcode-text';
-import i18n from '../../lib/i18n';
-import Panel from '../../components/Panel';
-import Toggler from '../../components/Toggler';
+import mapGCodeToText from 'app/lib/gcode-text';
+import i18n from 'app/lib/i18n';
+import Panel from 'app/components/Panel';
+import Toggler from 'app/components/Toggler';
 import Overrides from './Overrides';
 import styles from './index.styl';
 

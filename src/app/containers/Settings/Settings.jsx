@@ -8,10 +8,14 @@ import isEqual from 'lodash/isEqual';
 import Uri from 'jsuri';
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import api from '../../api';
-import settings from '../../config/settings';
-import Breadcrumbs from '../../components/Breadcrumbs';
-import i18n from '../../lib/i18n';
+import api from 'app/api';
+import {
+    ERR_CONFLICT,
+    ERR_PRECONDITION_FAILED
+} from 'app/api/constants';
+import settings from 'app/config/settings';
+import Breadcrumbs from 'app/components/Breadcrumbs';
+import i18n from 'app/lib/i18n';
 import General from './General';
 import Workspace from './Workspace';
 import Account from './Account';
@@ -20,10 +24,6 @@ import Commands from './Commands';
 import Events from './Events';
 import About from './About';
 import styles from './index.styl';
-import {
-    ERR_CONFLICT,
-    ERR_PRECONDITION_FAILED
-} from '../../api/constants';
 
 const mapSectionPathToId = (path = '') => {
     return camelCase(path.split('/')[0] || '');

@@ -18,3 +18,16 @@
         }
     }
 }
+
+@keyframes spin-reverse {
+    0% {
+        transform: rotate(359deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.spin-reverse {
+    animation: spin-reverse 2s infinite linear;
+}

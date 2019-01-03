@@ -2,17 +2,17 @@ import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import i18n from '../../lib/i18n';
-import controller from '../../lib/controller';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import WidgetConfig from '../WidgetConfig';
-import Marlin from './Marlin';
-import Controller from './Controller';
+import Space from 'app/components/Space';
+import Widget from 'app/components/Widget';
 import {
     MARLIN
-} from '../../constants';
+} from 'app/constants';
+import i18n from 'app/lib/i18n';
+import controller from 'app/lib/controller';
+import ensurePositiveNumber from 'app/lib/ensure-positive-number';
+import WidgetConfig from 'app/widgets/WidgetConfig';
+import Marlin from './Marlin';
+import Controller from './Controller';
 import {
     MODAL_NONE,
     MODAL_CONTROLLER

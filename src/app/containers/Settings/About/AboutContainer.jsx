@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Anchor from '../../../components/Anchor';
-import settings from '../../../config/settings';
-import i18n from '../../../lib/i18n';
+import Anchor from 'app/components/Anchor';
+import settings from 'app/config/settings';
+import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
 const AboutContainer = ({ version }) => {

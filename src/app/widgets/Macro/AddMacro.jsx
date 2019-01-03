@@ -2,16 +2,15 @@ import uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
-import { Dropdown, MenuItem } from 'react-bootstrap';
-import { Button } from '../../components/Buttons';
-import Modal from '../../components/Modal';
-import Space from '../../components/Space';
-import { Form, Input, Textarea } from '../../components/Validation';
-import i18n from '../../lib/i18n';
-import * as validations from '../../lib/validations';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
+import { Button } from 'app/components/Buttons';
+import Modal from 'app/components/Modal';
+import Space from 'app/components/Space';
+import { Form, Input, Textarea } from 'app/components/Validation';
+import i18n from 'app/lib/i18n';
+import * as validations from 'app/lib/validations';
 import insertAtCaret from './insertAtCaret';
 import variables from './variables';
-import styles from './index.styl';
 
 class AddMacro extends PureComponent {
     static propTypes = {
@@ -88,9 +87,7 @@ class AddMacro extends PureComponent {
                                     pullRight
                                 >
                                     <Dropdown.Toggle
-                                        className={styles.btnLink}
-                                        style={{ boxShadow: 'none' }}
-                                        useAnchor
+                                        btnStyle="link"
                                         noCaret
                                     >
                                         <i className="fa fa-plus" />
@@ -99,7 +96,12 @@ class AddMacro extends PureComponent {
                                         <Space width="4" />
                                         <i className="fa fa-caret-down" />
                                     </Dropdown.Toggle>
-                                    <Dropdown.Menu className={styles.macroVariablesDropdown}>
+                                    <Dropdown.Menu
+                                        style={{
+                                            maxHeight: 180,
+                                            overflowY: 'auto'
+                                        }}
+                                    >
                                         {variables.map(v => {
                                             if (typeof v === 'object') {
                                                 return (

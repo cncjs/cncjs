@@ -3,13 +3,13 @@ import includes from 'lodash/includes';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import { ToastNotification } from '../../../components/Notifications';
-import ToggleSwitch from '../../../components/ToggleSwitch';
-import { Form, Select, Textarea } from '../../../components/Validation';
-import i18n from '../../../lib/i18n';
-import * as validations from '../../../lib/validations';
+import Modal from 'app/components/Modal';
+import Space from 'app/components/Space';
+import { ToastNotification } from 'app/components/Notifications';
+import ToggleSwitch from 'app/components/ToggleSwitch';
+import { Form, Select, Textarea } from 'app/components/Validation';
+import i18n from 'app/lib/i18n';
+import * as validations from 'app/lib/validations';
 import styles from '../form.styl';
 
 const SYSTEM_EVENTS = [

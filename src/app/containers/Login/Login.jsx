@@ -2,15 +2,15 @@ import cx from 'classnames';
 import qs from 'qs';
 import React, { PureComponent } from 'react';
 import { withRouter, Redirect } from 'react-router-dom';
-import Anchor from '../../components/Anchor';
-import { Notification } from '../../components/Notifications';
-import Space from '../../components/Space';
-import settings from '../../config/settings';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import log from '../../lib/log';
-import * as user from '../../lib/user';
-import config from '../../store/config';
+import Anchor from 'app/components/Anchor';
+import { Notification } from 'app/components/Notifications';
+import Space from 'app/components/Space';
+import settings from 'app/config/settings';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import log from 'app/lib/log';
+import * as user from 'app/lib/user';
+import config from 'app/store/config';
 import styles from './index.styl';
 
 class Login extends PureComponent {

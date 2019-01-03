@@ -1,16 +1,16 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import i18n from '../../lib/i18n';
-import controller from '../../lib/controller';
-import WidgetConfig from '../WidgetConfig';
-import Grbl from './Grbl';
-import Controller from './Controller';
+import Space from 'app/components/Space';
+import Widget from 'app/components/Widget';
+import i18n from 'app/lib/i18n';
+import controller from 'app/lib/controller';
+import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
     GRBL
-} from '../../constants';
+} from 'app/constants';
+import Controller from './Controller';
+import Grbl from './Grbl';
 import {
     MODAL_NONE,
     MODAL_CONTROLLER

@@ -4,15 +4,15 @@ import take from 'lodash/take';
 import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Anchor from '../../../components/Anchor';
-import { Button } from '../../../components/Buttons';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import Table from '../../../components/Table';
-import ToggleSwitch from '../../../components/ToggleSwitch';
-import { TablePagination } from '../../../components/Paginations';
-import portal from '../../../lib/portal';
-import i18n from '../../../lib/i18n';
+import Anchor from 'app/components/Anchor';
+import { Button } from 'app/components/Buttons';
+import Modal from 'app/components/Modal';
+import Space from 'app/components/Space';
+import Table from 'app/components/Table';
+import ToggleSwitch from 'app/components/ToggleSwitch';
+import { TablePagination } from 'app/components/Paginations';
+import portal from 'app/lib/portal';
+import i18n from 'app/lib/i18n';
 import {
     MODAL_CREATE_RECORD,
     MODAL_UPDATE_RECORD

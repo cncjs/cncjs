@@ -8,6 +8,10 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
+import {
+    IMPERIAL_UNITS,
+    METRIC_UNITS
+} from 'app/constants';
 import CombinedCamera from 'app/lib/three/CombinedCamera';
 import TrackballControls from 'app/lib/three/TrackballControls';
 import log from 'app/lib/log';
@@ -21,10 +25,6 @@ import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
-import {
-    IMPERIAL_UNITS,
-    METRIC_UNITS
-} from '../../constants';
 import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE

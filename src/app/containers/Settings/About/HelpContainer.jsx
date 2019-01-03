@@ -1,5 +1,5 @@
 import React from 'react';
-import i18n from '../../../lib/i18n';
+import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 
 const HelpContainer = () => {

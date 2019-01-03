@@ -54,7 +54,7 @@ class TableRecords extends PureComponent {
                 }}
                 title={() => (
                     <Button
-                        btnStyle="flat"
+                        btnStyle="default"
                         onClick={() => {
                             action.openModal(MODAL_CREATE_RECORD);
                         }}
@@ -74,7 +74,7 @@ class TableRecords extends PureComponent {
                             <ButtonGroup>
                                 <Button
                                     btnSize="xs"
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     compact
                                     disabled={rowIndex === 0}
                                     title={i18n._('Move Up')}
@@ -90,7 +90,7 @@ class TableRecords extends PureComponent {
                                 </Button>
                                 <Button
                                     btnSize="xs"
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     compact
                                     disabled={rowIndex === (state.records.length - 1)}
                                     title={i18n._('Move Down')}
@@ -173,7 +173,7 @@ class TableRecords extends PureComponent {
                             <div>
                                 <Button
                                     btnSize="xs"
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     compact
                                     title={i18n._('Update')}
                                     onClick={(event) => {
@@ -184,7 +184,7 @@ class TableRecords extends PureComponent {
                                 </Button>
                                 <Button
                                     btnSize="xs"
-                                    btnStyle="flat"
+                                    btnStyle="default"
                                     compact
                                     title={i18n._('Remove')}
                                     onClick={(event) => {

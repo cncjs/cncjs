@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Space from '../../components/Space';
-import RepeatButton from '../../components/RepeatButton';
-import controller from '../../lib/controller';
+import Space from 'app/components/Space';
+import RepeatButton from 'app/components/RepeatButton';
+import controller from 'app/lib/controller';
 import DigitalReadout from './DigitalReadout';
 import styles from './index.styl';
 

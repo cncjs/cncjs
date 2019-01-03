@@ -4,14 +4,8 @@ import map from 'lodash/map';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import { in2mm, mapValueToUnits } from '../../lib/units';
-import WidgetConfig from '../WidgetConfig';
-import Probe from './Probe';
-import ZProbe from './ZProbe';
+import Space from 'app/components/Space';
+import Widget from 'app/components/Widget';
 import {
     // Units
     IMPERIAL_UNITS,
@@ -31,7 +25,13 @@ import {
     TINYG_MACHINE_STATE_END,
     // Workflow
     WORKFLOW_STATE_IDLE
-} from '../../constants';
+} from 'app/constants';
+import controller from 'app/lib/controller';
+import i18n from 'app/lib/i18n';
+import { in2mm, mapValueToUnits } from 'app/lib/units';
+import WidgetConfig from 'app/widgets/WidgetConfig';
+import Probe from './Probe';
+import ZProbe from './ZProbe';
 import {
     MODAL_NONE,
     MODAL_PREVIEW
