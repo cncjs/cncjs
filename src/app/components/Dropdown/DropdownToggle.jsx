@@ -17,7 +17,7 @@ class DropdownToggle extends PureComponent {
         // One of: 'lg', 'md', 'sm', 'xs'
         btnSize: Button.propTypes.btnSize,
 
-        // One of: 'default', 'primary', 'emphasis', 'flat', 'link'
+        // One of: 'default', 'primary', 'secondary', 'danger', 'warning', 'info', 'success', 'light', 'dark', 'link'
         btnStyle: Button.propTypes.btnStyle,
 
         // Whether to prevent a caret from being rendered next to the title.
@@ -51,7 +51,7 @@ class DropdownToggle extends PureComponent {
         } = this.props;
 
         if (Component === Button) {
-            props.btnStyle = props.btnStyle || 'flat';
+            props.btnStyle = props.btnStyle || 'default';
             props.btnSize = props.btnSize || Button.defaultProps.btnSize;
             props.dropdownToggle = true;
         }
