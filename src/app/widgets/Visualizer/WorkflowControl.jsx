@@ -191,8 +191,6 @@ class WorkflowControl extends PureComponent {
                     <ButtonGroup>
                         <Button
                             btnStyle="default"
-                            compact
-                            style={{ minWidth: 32 }}
                             title={workflow.state === WORKFLOW_STATE_PAUSED ? i18n._('Resume') : i18n._('Run')}
                             onClick={actions.handleRun}
                             disabled={!canRun}
@@ -201,8 +199,6 @@ class WorkflowControl extends PureComponent {
                         </Button>
                         <Button
                             btnStyle="default"
-                            compact
-                            style={{ minWidth: 32 }}
                             title={i18n._('Pause')}
                             onClick={actions.handlePause}
                             disabled={!canPause}
@@ -211,8 +207,6 @@ class WorkflowControl extends PureComponent {
                         </Button>
                         <Button
                             btnStyle="default"
-                            compact
-                            style={{ minWidth: 32 }}
                             title={i18n._('Stop')}
                             onClick={actions.handleStop}
                             disabled={!canStop}
@@ -221,8 +215,6 @@ class WorkflowControl extends PureComponent {
                         </Button>
                         <Button
                             btnStyle="default"
-                            compact
-                            style={{ minWidth: 32 }}
                             title={i18n._('Close')}
                             onClick={actions.handleClose}
                             disabled={!canClose}
