@@ -1,7 +1,9 @@
-import styled from 'styled-components';
+import cx from 'classnames';
+import React from 'react';
+import styles from './FormGroup.styl';
 
-const FormGroup = styled.div`
-    margin-bottom: 1rem;
-`;
+const FormGroup = (props) => (
+    <div {...props} className={cx(props.className, styles.formGroup)} />
+);
 
 export default FormGroup;
