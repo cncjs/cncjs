@@ -2,15 +2,28 @@
 // Base styles: opinionated defaults
 // ==========================================================================
 
-body {
-    margin: 0;
-    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
-    font-size: 14px;
-    color: #222222;
-    text-align: left;
-    background-color: #ffffff;
-    min-width: 960px;
+*,
+*:before,
+*:after {
+    box-sizing: border-box;
+}
 
+html {
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+    font-size: 1em;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+body {
+    background-color: #fff;
+    color: #222;
+    margin: 0;
+    text-align: left;
+}
+
+body {
+    min-width: 960px;
     @media (max-width: 767px) {
         min-width: 0;
     }
