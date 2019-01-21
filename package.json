@@ -215,7 +215,7 @@
     "rc-trigger": "~2.6.2",
     "react": "~16.7.0",
     "react-bootstrap": "~0.32.4",
-    "react-bootstrap-buttons": "^0.3.0",
+    "react-bootstrap-buttons": "~0.3.0",
     "react-datepicker": "~1.8.0",
     "react-dom": "~16.7.0",
     "react-dropzone": "~4.2.13",
