@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Toggle from 'react-toggle';
+import ToggleSwitch from 'app/components/ToggleSwitch';
 import i18n from 'app/lib/i18n';
 
 class WidgetListItem extends PureComponent {
@@ -59,9 +59,9 @@ class WidgetListItem extends PureComponent {
                             <span
                                 title={checked ? i18n._('On') : i18n._('Off')}
                             >
-                                <Toggle
+                                <ToggleSwitch
                                     disabled={this.props.disabled}
-                                    defaultChecked={checked}
+                                    checked={checked}
                                     onChange={this.handleChange}
                                 />
                             </span>
