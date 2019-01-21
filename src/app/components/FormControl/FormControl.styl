@@ -1,0 +1,90 @@
+@import "reset-context";
+@import "variables";
+
+.form-control {
+    reset-context();
+
+    display: block;
+    width: 100%;
+    height: $input-height;
+    padding: $input-padding-y $input-padding-x;
+    font-size: $input-font-size;
+    font-weight: $input-font-weight;
+    line-height: $input-line-height;
+    color: $input-color;
+    background-color: $input-background-color;
+    background-clip: padding-box;
+    border: $input-border-width solid $input-border-color;
+
+    if ($enable-rounded) {
+        border-radius: $input-border-radius;
+    } else {
+        border-radius: 0;
+    }
+
+    if ($enable-shadows) {
+        box-shadow: $input-box-shadow;
+    }
+
+    if ($enable-transitions) {
+        transition: $input-transition;
+    }
+
+    // Unstyle the caret on `<select>`s in IE10+.
+    &::-ms-expand {
+        background-color: transparent;
+        border: 0;
+    }
+
+    &:focus {
+        color: $input-focus-color;
+        background-color: $input-focus-background-color;
+        border-color: $input-focus-border-color;
+        outline: 0;
+
+        if ($enable-shadows) {
+            box-shadow: $input-box-shadow, $input-focus-box-shadow;
+        } else {
+            box-shadow: $input-focus-box-shadow;
+        }
+    }
+
+    // Placeholder
+    &::placeholder {
+        color: $input-placeholder-color;
+        // Override Firefox's unusual default opacity.
+        opacity: 1;
+    }
+
+    // Disabled and read-only inputs
+    //
+    // HTML5 says that controls under a fieldset > legend:first-child won't be
+    // disabled if the fieldset is disabled. Due to implementation difficulty, we
+    // don't honor that edge case; we style them as disabled anyway.
+    &:disabled,
+    &[readonly] {
+        background-color: $input-disabled-background-color;
+        // iOS fix for unreadable disabled content.
+        opacity: 1;
+    }
+}
+
+.form-control-lg {
+    height: $input-height-lg;
+    padding: $input-padding-y-lg $input-padding-x-lg;
+    font-size: $input-font-size-lg;
+    line-height: $input-line-height-lg;
+    if ($enable-rounded) {
+        border-radius: $input-border-radius-sm;
+    }
+}
+
+.form-control-sm {
+    height: $input-height-sm;
+    padding: $input-padding-y-sm $input-padding-x-sm;
+    font-size: $input-font-size-sm;
+    line-height: $input-line-height-sm;
+    if ($enable-rounded) {
+        border-radius: $input-border-radius-sm;
+    }
+}
