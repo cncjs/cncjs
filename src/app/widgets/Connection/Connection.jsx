@@ -8,7 +8,7 @@ import React, { PureComponent } from 'react';
 import Select from 'react-select';
 import { Checkbox } from 'app/components/Checkbox';
 import FormGroup from 'app/components/FormGroup';
-import { FlexContainer, Row, Col } from 'app/components/GridSystem';
+import { Container, Row, Col } from 'app/components/GridSystem';
 import Label from 'app/components/Label';
 import Space from 'app/components/Space';
 import { ToastNotification } from 'app/components/Notifications';
@@ -129,7 +129,7 @@ class Connection extends PureComponent {
         const canClosePort = connected;
 
         return (
-            <FlexContainer>
+            <Container>
                 {alertMessage &&
                 <ToastNotification
                     style={{ margin: '-10px -10px 10px -10px' }}
@@ -338,7 +338,7 @@ class Connection extends PureComponent {
                         </button>
                     }
                 </div>
-            </FlexContainer>
+            </Container>
         );
     }
 }

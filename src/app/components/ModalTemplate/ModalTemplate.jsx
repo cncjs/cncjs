@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import styled from 'styled-components';
-import { FlexContainer, Row, Col } from '../GridSystem';
+import { Container, Row, Col } from '../GridSystem';
 import iconError from './icon-error-48.png';
 import iconWarning from './icon-warning-48.png';
 import iconInfo from './icon-info-48.png';
@@ -32,7 +32,7 @@ const Success = styled(Icon)`
 `;
 
 const ModalTemplate = ({ type, children, templateStyle }) => (
-    <FlexContainer>
+    <Container>
         <Row>
             <Col width="auto">
                 {type === 'error' && <Error />}
@@ -44,7 +44,7 @@ const ModalTemplate = ({ type, children, templateStyle }) => (
                 {children}
             </Col>
         </Row>
-    </FlexContainer>
+    </Container>
 );
 
 ModalTemplate.propTypes = {

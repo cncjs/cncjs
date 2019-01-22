@@ -6,7 +6,7 @@ import React, { Component } from 'react';
 import { Button, ButtonGroup } from 'app/components/Buttons';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
-import { FlexContainer, Row, Col } from 'app/components/GridSystem';
+import { Container, Row, Col } from 'app/components/GridSystem';
 import Label from 'app/components/Label';
 import Space from 'app/components/Space';
 import Input from 'app/components/FormControl/Input';
@@ -30,7 +30,7 @@ class Spindle extends Component {
         const floodCoolant = coolant.indexOf('M8') >= 0;
 
         return (
-            <FlexContainer fluid>
+            <Container fluid>
                 <Row>
                     <Col width={12}>
                         <FormGroup>
@@ -167,7 +167,7 @@ class Spindle extends Component {
                         </FormGroup>
                     </Col>
                 </Row>
-            </FlexContainer>
+            </Container>
         );
     }
 }

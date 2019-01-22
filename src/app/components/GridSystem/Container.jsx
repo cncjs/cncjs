@@ -2,18 +2,17 @@ import cx from 'classnames';
 import ensureArray from 'ensure-array';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import throttle from 'lodash/throttle';
-import { getScreenClass } from './utils';
 import {
-    LAYOUT_TABLE,
     LAYOUT_FLEXBOX,
     LAYOUT_FLOATS,
     LAYOUTS,
     DEFAULT_CONTAINER_WIDTHS,
     DEFAULT_COLUMNS,
     DEFAULT_GUTTER_WIDTH,
-    DEFAULT_LAYOUT
+    DEFAULT_LAYOUT,
 } from './constants';
+import Resolver from './Resolver';
+import { ConfigurationContext } from './context';
 import styles from './index.styl';
 
 class Container extends PureComponent {
@@ -53,9 +52,6 @@ class Container extends PureComponent {
 
         // The grid system layout.
         layout: PropTypes.oneOf(LAYOUTS),
-
-        // A callback fired when the resize event occurs.
-        onResize: PropTypes.func
     };
 
     static defaultProps = {
@@ -68,53 +64,7 @@ class Container extends PureComponent {
         xxl: false
     };
 
-    static contextTypes = {
-        breakpoints: PropTypes.arrayOf(PropTypes.number),
-        containerWidths: PropTypes.arrayOf(PropTypes.number),
-        columns: PropTypes.number,
-        gutterWidth: PropTypes.number,
-        layout: PropTypes.oneOf(LAYOUTS)
-    };
-
-    static childContextTypes = {
-        columns: PropTypes.number,
-        gutterWidth: PropTypes.number,
-        layout: PropTypes.oneOf(LAYOUTS)
-    };
-
-    getChildContext = () => ({
-        columns: this.columns,
-        gutterWidth: this.gutterWidth,
-        layout: this.layout
-    });
-
-    get columns() {
-        if (this.props.columns > 0) {
-            return this.props.columns;
-        }
-        if (this.context.columns > 0) {
-            return this.context.columns;
-        }
-        return DEFAULT_COLUMNS;
-    }
-
-    get gutterWidth() {
-        if (this.props.gutterWidth >= 0) {
-            return this.props.gutterWidth;
-        }
-        if (this.context.gutterWidth >= 0) {
-            return this.context.gutterWidth;
-        }
-        return DEFAULT_GUTTER_WIDTH;
-    }
-
-    get layout() {
-        const layout = this.props.layout || this.context.layout;
-        return (LAYOUTS.indexOf(layout) >= 0) ? layout : DEFAULT_LAYOUT;
-    }
-
-    get style() {
-        const gutterWidth = this.gutterWidth;
+    getStyle = ({ containerWidths, gutterWidth, screenClass }) => {
         const style = {
             paddingLeft: gutterWidth / 2,
             paddingRight: gutterWidth / 2
@@ -125,10 +75,7 @@ class Container extends PureComponent {
             return style;
         }
 
-        const { screenClass } = this.state;
-        const containerWidths = (ensureArray(this.context.containerWidths).length > 0)
-            ? ensureArray(this.context.containerWidths)
-            : DEFAULT_CONTAINER_WIDTHS;
+        containerWidths = ensureArray(containerWidths);
 
         if (screenClass === 'sm' && (containerWidths[0] > 0) && (!sm && !xs)) {
             style.maxWidth = `${containerWidths[0]}px`;
@@ -147,42 +94,15 @@ class Container extends PureComponent {
         }
 
         return style;
-    }
-
-    setScreenClass = () => {
-        const screenClass = getScreenClass({ breakpoints: this.context.breakpoints });
-
-        this.setState({ screenClass: screenClass }, () => {
-            if (typeof this.props.onResize === 'function') {
-                this.props.onResize({ screenClass: screenClass });
-            }
-        });
     };
-
-    componentWillMount() {
-        this.setScreenClass();
-    }
-
-    componentDidMount() {
-        this.eventListener = throttle(this.setScreenClass, Math.floor(1000 / 60)); // 60Hz
-        window.addEventListener('resize', this.eventListener);
-    }
-
-    componentWillUnmount() {
-        if (this.eventListener) {
-            this.eventListener.cancel();
-            window.removeEventListener('resize', this.eventListener);
-            this.eventListener = null;
-        }
-    }
 
     render() {
         const {
             fluid, // eslint-disable-line
             xs, sm, md, lg, xl, xxl, // eslint-disable-line
-            gutterWidth, // eslint-disable-line
-            layout, // eslint-disable-line
-            onResize, // eslint-disable-line
+            columns: _columns, // eslint-disable-line
+            gutterWidth: _gutterWidth, // eslint-disable-line
+            layout: _layout, // eslint-disable-line
             className,
             style,
             children,
@@ -190,20 +110,54 @@ class Container extends PureComponent {
         } = this.props;
 
         return (
-            <div
-                {...props}
-                className={cx(className, {
-                    [styles.flexboxContainer]: this.layout === LAYOUT_FLEXBOX,
-                    [styles.floatsContainer]: this.layout === LAYOUT_FLOATS,
-                    [styles.tableContainer]: this.layout === LAYOUT_TABLE
-                })}
-                style={{
-                    ...this.style,
-                    ...style
+            <Resolver>
+                {({ config, screenClass }) => {
+                    config = { ...config };
+                    const containerWidths = (() => {
+                        const containerWidths = ensureArray(config.containerWidths);
+                        return containerWidths.length > 0 ? containerWidths : DEFAULT_CONTAINER_WIDTHS;
+                    })();
+                    const columns = (() => {
+                        const { columns = config.columns } = this.props;
+                        return Number(columns) > 0 ? Number(columns) : DEFAULT_COLUMNS;
+                    })();
+                    const gutterWidth = (() => {
+                        const { gutterWidth = config.gutterWidth } = this.props;
+                        return Number(gutterWidth) >= 0 ? (Number(gutterWidth) || 0) : DEFAULT_GUTTER_WIDTH;
+                    })();
+                    const layout = (() => {
+                        const { layout = config.layout } = this.props;
+                        return (LAYOUTS.indexOf(layout) >= 0) ? layout : DEFAULT_LAYOUT;
+                    })();
+                    const containerStyle = this.getStyle({ containerWidths, gutterWidth, screenClass });
+
+                    return (
+                        <ConfigurationContext.Provider
+                            value={{
+                                ...config,
+                                containerWidths,
+                                columns,
+                                gutterWidth,
+                                layout,
+                            }}
+                        >
+                            <div
+                                {...props}
+                                className={cx(className, {
+                                    [styles.flexboxContainer]: layout === LAYOUT_FLEXBOX,
+                                    [styles.floatsContainer]: layout === LAYOUT_FLOATS,
+                                })}
+                                style={{
+                                    ...containerStyle,
+                                    ...style,
+                                }}
+                            >
+                                {children}
+                            </div>
+                        </ConfigurationContext.Provider>
+                    );
                 }}
-            >
-                {children}
-            </div>
+            </Resolver>
         );
     }
 }

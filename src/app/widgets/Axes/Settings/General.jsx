@@ -9,9 +9,8 @@ import { Button } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
-import { FlexContainer, Row, Col } from 'app/components/GridSystem';
+import { Container, Row, Col } from 'app/components/GridSystem';
 import Label from 'app/components/Label';
-import Margin from 'app/components/Margin';
 import Space from 'app/components/Space';
 import i18n from 'app/lib/i18n';
 
@@ -145,8 +144,8 @@ class General extends PureComponent {
         const { imperialJogDistances, metricJogDistances } = this.state;
 
         return (
-            <FlexContainer gutterWidth={0}>
-                <Margin bottom={15}>
+            <Container>
+                <FormGroup>
                     <Label>
                         {i18n._('Axes')}
                     </Label>
@@ -221,8 +220,8 @@ class General extends PureComponent {
                             </FormGroup>
                         </Col>
                     </Row>
-                </Margin>
-                <Margin bottom={15}>
+                </FormGroup>
+                <FormGroup>
                     <Row>
                         <Col>
                             <Label>
@@ -318,8 +317,8 @@ class General extends PureComponent {
                             </Row>
                         </Col>
                     </Row>
-                </Margin>
-            </FlexContainer>
+                </FormGroup>
+            </Container>
         );
     }
 }
