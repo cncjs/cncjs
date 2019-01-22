@@ -76,7 +76,7 @@ const Notifications = ({ show, type, data, onDismiss, style, ...props }) => (
                 <div><strong>{i18n._('M6 Tool Change')}</strong></div>
                 <div>
                     {i18n._('Run a tool change macro to change the tool and adjust the Z-axis offset. Afterwards, click the Resume button to resume program execution.')}
-                    <Space width="4" />
+                    <Space width={8} />
                     <Anchor
                         target="_blank"
                         href="https://github.com/cncjs/cncjs/wiki/Tool-Change"

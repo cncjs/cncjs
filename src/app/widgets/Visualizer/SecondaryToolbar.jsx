@@ -231,12 +231,12 @@ class SecondaryToolbar extends PureComponent {
                     <Dropdown.Menu>
                         <MenuItem eventKey={CAMERA_MODE_PAN}>
                             <Image src={iconMoveCamera} width="20" height="20" />
-                            <Space width="4" />
+                            <Space width={8} />
                             {i18n._('Move the camera')}
                         </MenuItem>
                         <MenuItem eventKey={CAMERA_MODE_ROTATE}>
                             <Image src={iconRotateCamera} width="20" height="20" />
-                            <Space width="4" />
+                            <Space width={8} />
                             {i18n._('Rotate the camera')}
                         </MenuItem>
                     </Dropdown.Menu>

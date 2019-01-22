@@ -29,7 +29,7 @@ const CorruptedWorkspaceSettings = (props) => {
                             download={filename}
                         >
                             <i className="fa fa-download" />
-                            <Space width="4" />
+                            <Space width={8} />
                             {i18n._('Download workspace settings')}
                         </Anchor>
                     </div>

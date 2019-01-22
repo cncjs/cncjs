@@ -366,17 +366,17 @@ class GrblWidget extends PureComponent {
                                         { 'fa-compress': isFullscreen }
                                     )}
                                 />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="fork">
                                 <i className="fa fa-fw fa-code-fork" />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Fork Widget')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="remove">
                                 <i className="fa fa-fw fa-times" />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Remove Widget')}
                             </Widget.DropdownMenuItem>
                         </Widget.DropdownButton>

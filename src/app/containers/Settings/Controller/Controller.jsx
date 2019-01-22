@@ -69,7 +69,7 @@ class Controller extends PureComponent {
                                 <span className="text-warning">
                                     <i className="fa fa-exclamation-circle" />
                                 </span>
-                                <Space width="4" />
+                                <Space width={8} />
                                 <span>{i18n._('Enabling this option may cause machine damage if you don\'t have an Emergency Stop button to prevent a dangerous situation.')}</span>
                             </p>
                         </div>

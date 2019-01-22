@@ -398,7 +398,7 @@ class ConnectionWidget extends PureComponent {
                                         { 'fa-compress': isFullscreen }
                                     )}
                                 />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             </Widget.DropdownMenuItem>
                         </Widget.DropdownButton>

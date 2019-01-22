@@ -355,7 +355,7 @@ class PrimaryToolbar extends PureComponent {
                                 onSelect={actions.toPerspectiveProjection}
                             >
                                 <i className={classNames('fa', 'fa-fw', { 'fa-check': projection !== 'orthographic' })} />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Perspective Projection')}
                             </MenuItem>
                             <MenuItem
@@ -363,7 +363,7 @@ class PrimaryToolbar extends PureComponent {
                                 onSelect={actions.toOrthographicProjection}
                             >
                                 <i className={classNames('fa', 'fa-fw', { 'fa-check': projection === 'orthographic' })} />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Orthographic Projection')}
                             </MenuItem>
                             <MenuItem divider />
@@ -378,7 +378,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Display G-code Filename')}
                             </MenuItem>
                             <MenuItem
@@ -389,7 +389,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {objects.coordinateSystem.visible
                                     ? i18n._('Hide Coordinate System')
                                     : i18n._('Show Coordinate System')
@@ -403,7 +403,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {objects.gridLineNumbers.visible
                                     ? i18n._('Hide Grid Line Numbers')
                                     : i18n._('Show Grid Line Numbers')
@@ -417,7 +417,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {objects.toolhead.visible
                                     ? i18n._('Hide Toolhead')
                                     : i18n._('Show Toolhead')

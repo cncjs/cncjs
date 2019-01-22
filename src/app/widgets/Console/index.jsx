@@ -253,22 +253,22 @@ class ConsoleWidget extends PureComponent {
                                         styles.selectAll
                                     )}
                                 />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Select All')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="clearSelection">
                                 <i className="fa fa-fw fa-window-close-o" />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Clear Selection')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="fork">
                                 <i className="fa fa-fw fa-code-fork" />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Fork Widget')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="remove">
                                 <i className="fa fa-fw fa-times" />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Remove Widget')}
                             </Widget.DropdownMenuItem>
                         </Widget.DropdownButton>

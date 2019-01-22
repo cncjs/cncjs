@@ -181,7 +181,7 @@ class WorkflowControl extends PureComponent {
                                     }}
                                 >
                                     <i className="fa fa-search" />
-                                    <Space width="4" />
+                                    <Space width={8} />
                                     {i18n._('Browse...')}
                                 </MenuItem>
                             </Dropdown.Menu>

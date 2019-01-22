@@ -103,7 +103,7 @@ class Marlin extends PureComponent {
                                             size={24}
                                         />
                                     </FadeInOut>
-                                    <Space width="4" />
+                                    <Space width={8} />
                                     {i18n._('Extruder')}
                                 </div>
                                 <div className="table-form-col">
@@ -163,7 +163,7 @@ class Marlin extends PureComponent {
                                             size={24}
                                         />
                                     </FadeInOut>
-                                    <Space width="4" />
+                                    <Space width={8} />
                                     {i18n._('Heated Bed')}
                                 </div>
                                 <div className="table-form-col">
