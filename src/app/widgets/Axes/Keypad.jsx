@@ -60,7 +60,7 @@ class Keypad extends PureComponent {
             return (
                 <span>
                     {quot > 0 ? quot : ''}
-                    <Space width="2" />
+                    <Space width={2} />
                     <Fraction
                         numerator={numerator}
                         denominator={denominator}
@@ -93,7 +93,7 @@ class Keypad extends PureComponent {
                     active={active}
                 >
                     {value}
-                    <Space width="4" />
+                    <Space width={4} />
                     <sub>{i18n._('in')}</sub>
                 </MenuItem>
             );
@@ -119,7 +119,7 @@ class Keypad extends PureComponent {
                     active={active}
                 >
                     {value}
-                    <Space width="4" />
+                    <Space width={4} />
                     <sub>{i18n._('mm')}</sub>
                 </MenuItem>
             );
@@ -463,7 +463,7 @@ class Keypad extends PureComponent {
                                     }}
                                 >
                                     {imperialJogSteps[jog.imperial.step]}
-                                    <Space width="4" />
+                                    <Space width={4} />
                                     <sub>{i18n._('in')}</sub>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu
@@ -499,7 +499,7 @@ class Keypad extends PureComponent {
                                     }}
                                 >
                                     {metricJogSteps[jog.metric.step]}
-                                    <Space width="4" />
+                                    <Space width={4} />
                                     <sub>{i18n._('mm')}</sub>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu

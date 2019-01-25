@@ -3,6 +3,7 @@ import mapValues from 'lodash/mapValues';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
@@ -276,11 +277,11 @@ class GCodeWidget extends PureComponent {
                 <Widget.Header>
                     <Widget.Title>
                         <Widget.Sortable className={this.props.sortable.handleClassName}>
-                            <i className="fa fa-bars" />
-                            <Space width="8" />
+                            <FontAwesomeIcon icon="bars" fixedWidth />
+                            <Space width={4} />
                         </Widget.Sortable>
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
+                        <FontAwesomeIcon icon="code-branch" fixedWidth />
                         }
                         {i18n._('G-code')}
                     </Widget.Title>
@@ -324,12 +325,12 @@ class GCodeWidget extends PureComponent {
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="fork">
-                                <i className="fa fa-fw fa-code-fork" />
+                                <FontAwesomeIcon icon="code-branch" fixedWidth />
                                 <Space width={8} />
                                 {i18n._('Fork Widget')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="remove">
-                                <i className="fa fa-fw fa-times" />
+                                <FontAwesomeIcon icon="times" fixedWidth />
                                 <Space width={8} />
                                 {i18n._('Remove Widget')}
                             </Widget.DropdownMenuItem>

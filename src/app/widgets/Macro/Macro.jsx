@@ -102,7 +102,7 @@ class Macro extends PureComponent {
                                         >
                                             <i className="fa fa-play" />
                                         </Button>
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         {macro.name}
                                     </td>
                                     <td style={{ width: '1%' }}>

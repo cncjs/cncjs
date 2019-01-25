@@ -179,7 +179,7 @@ const renderer = (node, treeOptions) => {
                             { 'fa-file-o': !more }
                         )}
                     />
-                    <Space width="8" />
+                    <Space width={8} />
                     {node.name}
                     <TreeNodeLoader show={loading} />
                 </div>

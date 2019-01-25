@@ -94,9 +94,9 @@ class EditMacro extends PureComponent {
                                         noCaret
                                     >
                                         <i className="fa fa-plus" />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         {i18n._('Macro Variables')}
-                                        <Space width="4" />
+                                        <Space width={4} />
                                         <i className="fa fa-caret-down" />
                                     </Dropdown.Toggle>
                                     <Dropdown.Menu

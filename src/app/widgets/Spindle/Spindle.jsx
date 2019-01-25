@@ -54,7 +54,7 @@ class Spindle extends Component {
                                         title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
                                     >
                                         <FontAwesomeIcon icon="redo-alt" spin={spindle === 'M3'} />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         M3
                                     </Button>
                                     <Button
@@ -70,7 +70,7 @@ class Spindle extends Component {
                                         title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
                                     >
                                         <FontAwesomeIcon icon="undo-alt" className={cx({ [styles.spinReverse]: spindle === 'M4' })} />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         M4
                                     </Button>
                                     <Button
@@ -80,7 +80,7 @@ class Spindle extends Component {
                                         title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
                                     >
                                         <FontAwesomeIcon icon="power-off" />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         M5
                                     </Button>
                                 </ButtonGroup>
@@ -129,7 +129,7 @@ class Spindle extends Component {
                                                 { 'fa-spin': mistCoolant }
                                             )}
                                         />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         M7
                                     </Button>
                                     <Button
@@ -147,7 +147,7 @@ class Spindle extends Component {
                                                 { 'fa-spin': floodCoolant }
                                             )}
                                         />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         M8
                                     </Button>
                                     <Button
@@ -159,7 +159,7 @@ class Spindle extends Component {
                                         title={i18n._('Coolant Off (M9)', { ns: 'gcode' })}
                                     >
                                         <FontAwesomeIcon icon="power-off" />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         M9
                                     </Button>
                                 </ButtonGroup>

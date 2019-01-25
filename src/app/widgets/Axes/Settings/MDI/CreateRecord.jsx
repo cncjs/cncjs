@@ -49,9 +49,9 @@ class CreateRecord extends PureComponent {
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Custom Commands')}
-                        <Space width="8" />
+                        <Space width={8} />
                         &rsaquo;
-                        <Space width="8" />
+                        <Space width={8} />
                         {i18n._('New')}
                     </Modal.Title>
                 </Modal.Header>

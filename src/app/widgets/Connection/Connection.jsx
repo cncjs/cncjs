@@ -50,7 +50,7 @@ class Connection extends PureComponent {
                     {inuse &&
                     <span>
                         <i className="fa fa-lock" />
-                        <Space width="8" />
+                        <Space width={8} />
                     </span>
                     }
                     {label}
@@ -77,7 +77,7 @@ class Connection extends PureComponent {
                 {inuse &&
                 <span>
                     <i className="fa fa-lock" />
-                    <Space width="8" />
+                    <Space width={8} />
                 </span>
                 }
                 {label}
@@ -321,7 +321,7 @@ class Connection extends PureComponent {
                             onClick={actions.handleOpenPort}
                         >
                             <i className="fa fa-toggle-off" />
-                            <Space width="8" />
+                            <Space width={8} />
                             {i18n._('Open')}
                         </button>
                     }
@@ -333,7 +333,7 @@ class Connection extends PureComponent {
                             onClick={actions.handleClosePort}
                         >
                             <i className="fa fa-toggle-on" />
-                            <Space width="8" />
+                            <Space width={8} />
                             {i18n._('Close')}
                         </button>
                     }

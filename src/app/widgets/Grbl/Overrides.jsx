@@ -149,7 +149,7 @@ const Overrides = (props) => {
                     }}
                 >
                     <i className="fa fa-battery-full" />
-                    <Space width="8" />
+                    <Space width={8} />
                     100%
                 </button>
                 <button
@@ -160,7 +160,7 @@ const Overrides = (props) => {
                     }}
                 >
                     <i className="fa fa-battery-half" />
-                    <Space width="8" />
+                    <Space width={8} />
                     50%
                 </button>
                 <button
@@ -171,7 +171,7 @@ const Overrides = (props) => {
                     }}
                 >
                     <i className="fa fa-battery-quarter" />
-                    <Space width="8" />
+                    <Space width={8} />
                     25%
                 </button>
             </DigitalReadout>

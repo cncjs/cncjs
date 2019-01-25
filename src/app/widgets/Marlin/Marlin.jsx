@@ -120,7 +120,7 @@ class Marlin extends PureComponent {
                                     </div>
                                 </div>
                                 <div className="table-form-col">
-                                    <Space width="8" />
+                                    <Space width={8} />
                                 </div>
                                 <div className="table-form-col">
                                     <Button
@@ -138,7 +138,7 @@ class Marlin extends PureComponent {
                                     </Button>
                                 </div>
                                 <div className="table-form-col">
-                                    <Space width="8" />
+                                    <Space width={8} />
                                 </div>
                                 <div className="table-form-col">
                                     <Button
@@ -180,7 +180,7 @@ class Marlin extends PureComponent {
                                     </div>
                                 </div>
                                 <div className="table-form-col">
-                                    <Space width="8" />
+                                    <Space width={8} />
                                 </div>
                                 <div className="table-form-col">
                                     <Button
@@ -198,7 +198,7 @@ class Marlin extends PureComponent {
                                     </Button>
                                 </div>
                                 <div className="table-form-col">
-                                    <Space width="8" />
+                                    <Space width={8} />
                                 </div>
                                 <div className="table-form-col">
                                     <Button

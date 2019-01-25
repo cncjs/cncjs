@@ -7,6 +7,7 @@ import includes from 'lodash/includes';
 import map from 'lodash/map';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
@@ -357,11 +358,11 @@ class ConnectionWidget extends PureComponent {
                 <Widget.Header>
                     <Widget.Title>
                         <Widget.Sortable className={this.props.sortable.handleClassName}>
-                            <i className="fa fa-bars" />
-                            <Space width="8" />
+                            <FontAwesomeIcon icon="bars" fixedWidth />
+                            <Space width={4} />
                         </Widget.Sortable>
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
+                        <FontAwesomeIcon icon="code-branch" fixedWidth />
                         }
                         {i18n._('Connection')}
                     </Widget.Title>

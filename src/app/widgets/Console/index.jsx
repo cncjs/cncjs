@@ -5,6 +5,7 @@ import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
 import uuid from 'uuid';
 import settings from 'app/config/settings';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
@@ -191,11 +192,11 @@ class ConsoleWidget extends PureComponent {
                 <Widget.Header>
                     <Widget.Title>
                         <Widget.Sortable className={this.props.sortable.handleClassName}>
-                            <i className="fa fa-bars" />
-                            <Space width="8" />
+                            <FontAwesomeIcon icon="bars" fixedWidth />
+                            <Space width={4} />
                         </Widget.Sortable>
                         {isForkedWidget &&
-                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
+                        <FontAwesomeIcon icon="code-branch" fixedWidth />
                         }
                         {i18n._('Console')}
                     </Widget.Title>
@@ -262,12 +263,12 @@ class ConsoleWidget extends PureComponent {
                                 {i18n._('Clear Selection')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="fork">
-                                <i className="fa fa-fw fa-code-fork" />
+                                <FontAwesomeIcon icon="code-branch" fixedWidth />
                                 <Space width={8} />
                                 {i18n._('Fork Widget')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="remove">
-                                <i className="fa fa-fw fa-times" />
+                                <FontAwesomeIcon icon="times" fixedWidth />
                                 <Space width={8} />
                                 {i18n._('Remove Widget')}
                             </Widget.DropdownMenuItem>

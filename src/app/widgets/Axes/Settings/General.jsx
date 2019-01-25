@@ -157,7 +157,7 @@ class General extends PureComponent {
                                     checked
                                     disabled
                                 >
-                                    <Space width="8" />
+                                    <Space width={8} />
                                     {i18n._('X-axis')}
                                 </Checkbox>
                             </FormGroup>
@@ -168,7 +168,7 @@ class General extends PureComponent {
                                     ref={this.withFieldRef('axisY')}
                                     defaultChecked={_includes(axes, 'y')}
                                 >
-                                    <Space width="8" />
+                                    <Space width={8} />
                                     {i18n._('Y-axis')}
                                 </Checkbox>
                             </FormGroup>
@@ -179,7 +179,7 @@ class General extends PureComponent {
                                     ref={this.withFieldRef('axisZ')}
                                     defaultChecked={_includes(axes, 'z')}
                                 >
-                                    <Space width="8" />
+                                    <Space width={8} />
                                     {i18n._('Z-axis')}
                                 </Checkbox>
                             </FormGroup>
@@ -192,7 +192,7 @@ class General extends PureComponent {
                                     ref={this.withFieldRef('axisA')}
                                     defaultChecked={_includes(axes, 'a')}
                                 >
-                                    <Space width="8" />
+                                    <Space width={8} />
                                     {i18n._('A-axis')}
                                 </Checkbox>
                             </FormGroup>
@@ -203,7 +203,7 @@ class General extends PureComponent {
                                     ref={this.withFieldRef('axisB')}
                                     defaultChecked={_includes(axes, 'b')}
                                 >
-                                    <Space width="8" />
+                                    <Space width={8} />
                                     {i18n._('B-axis')}
                                 </Checkbox>
                             </FormGroup>
@@ -214,7 +214,7 @@ class General extends PureComponent {
                                     ref={this.withFieldRef('axisC')}
                                     defaultChecked={_includes(axes, 'c')}
                                 >
-                                    <Space width="8" />
+                                    <Space width={8} />
                                     {i18n._('C-axis')}
                                 </Checkbox>
                             </FormGroup>
@@ -242,7 +242,7 @@ class General extends PureComponent {
                                                         />
                                                     </Col>
                                                     <Col>
-                                                        <Space width="8" />
+                                                        <Space width={8} />
                                                         <Button
                                                             btnStyle="default"
                                                             compact
@@ -261,7 +261,7 @@ class General extends PureComponent {
                                         onClick={this.addMetricJogDistance()}
                                     >
                                         <FontAwesomeIcon icon="plus" />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         {i18n._('Add')}
                                     </Button>
                                     }
@@ -269,7 +269,7 @@ class General extends PureComponent {
                             </Row>
                         </Col>
                         <Col width="auto">
-                            <Space width="24" />
+                            <Space width={24} />
                         </Col>
                         <Col>
                             <Label>
@@ -290,7 +290,7 @@ class General extends PureComponent {
                                                         />
                                                     </Col>
                                                     <Col>
-                                                        <Space width="8" />
+                                                        <Space width={8} />
                                                         <Button
                                                             btnStyle="default"
                                                             compact
@@ -309,7 +309,7 @@ class General extends PureComponent {
                                         onClick={this.addImperialJogDistance()}
                                     >
                                         <FontAwesomeIcon icon="plus" />
-                                        <Space width="8" />
+                                        <Space width={8} />
                                         {i18n._('Add')}
                                     </Button>
                                     }
