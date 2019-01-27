@@ -63,8 +63,14 @@ class MDIPanel extends PureComponent {
     render() {
         return (
             <Panel>
-                <Container fluid style={{ padding: 0, margin: '-5px -4px 0 -4px' }}>
-                    <Row gutterWidth={0}>
+                <Container
+                    fluid
+                    style={{
+                        padding: 0,
+                        margin: '-5px -4px 0 -4px',
+                    }}
+                >
+                    <Row>
                         {this.renderMDIButtons()}
                     </Row>
                 </Container>

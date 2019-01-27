@@ -3,7 +3,6 @@ import React from 'react';
 import styles from './FormControl.styl';
 
 const FormControl = ({
-    componentType,
     tag: Component = 'div',
     size,
     className,

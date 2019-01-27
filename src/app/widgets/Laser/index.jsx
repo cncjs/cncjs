@@ -255,17 +255,18 @@ class LaserWidget extends PureComponent {
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                             onClick={actions.toggleMinimized}
                         >
-                            <i
-                                className={classNames(
-                                    'fa',
-                                    { 'fa-chevron-up': !minimized },
-                                    { 'fa-chevron-down': minimized }
-                                )}
-                            />
+                            {minimized &&
+                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                            }
+                            {!minimized &&
+                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                            }
                         </Widget.Button>
                         <Widget.DropdownButton
                             title={i18n._('More')}
-                            toggle={<i className="fa fa-ellipsis-v" />}
+                            toggle={(
+                                <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
+                            )}
                             onSelect={(eventKey) => {
                                 if (eventKey === 'fullscreen') {
                                     actions.toggleFullscreen();

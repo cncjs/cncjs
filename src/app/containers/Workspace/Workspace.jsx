@@ -6,7 +6,10 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
 import api from 'app/api';
-import { Button, ButtonGroup, ButtonToolbar } from 'app/components/Buttons';
+import { Button, ButtonGroup } from 'app/components/Buttons';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { Row, Col } from 'app/components/GridSystem';
+import Margin from 'app/components/Margin';
 import Space from 'app/components/Space';
 import {
     WORKFLOW_STATE_IDLE
@@ -492,60 +495,53 @@ class Workspace extends PureComponent {
                                     { [styles.hidden]: hidePrimaryContainer }
                                 )}
                             >
-                                <ButtonToolbar style={{ margin: '5px 0' }}>
-                                    <ButtonGroup
-                                        style={{ marginLeft: 0, marginRight: 10 }}
-                                        btnSize="sm"
-                                        btnStyle="default"
-                                    >
-                                        <Button
-                                            style={{ minWidth: 30 }}
-                                            onClick={this.togglePrimaryContainer}
-                                        >
-                                            <i className="fa fa-chevron-left" />
-                                        </Button>
-                                    </ButtonGroup>
-                                    <ButtonGroup
-                                        style={{ marginLeft: 0, marginRight: 10 }}
-                                        btnSize="sm"
-                                        btnStyle="default"
-                                    >
-                                        <Button
-                                            style={{ width: 230 }}
-                                            onClick={this.updateWidgetsForPrimaryContainer}
-                                        >
-                                            <i className="fa fa-list-alt" />
-                                            <Space width={8} />
-                                            {i18n._('Manage Widgets ({{inactiveCount}})', {
-                                                inactiveCount: inactiveCount
-                                            })}
-                                        </Button>
-                                    </ButtonGroup>
-                                    <ButtonGroup
-                                        style={{ marginLeft: 0, marginRight: 0 }}
-                                        btnSize="sm"
-                                        btnStyle="default"
-                                    >
-                                        <Button
-                                            style={{ minWidth: 30 }}
-                                            title={i18n._('Collapse All')}
-                                            onClick={event => {
-                                                this.primaryWidgets.collapseAll();
-                                            }}
-                                        >
-                                            <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
-                                        </Button>
-                                        <Button
-                                            style={{ minWidth: 30 }}
-                                            title={i18n._('Expand All')}
-                                            onClick={event => {
-                                                this.primaryWidgets.expandAll();
-                                            }}
-                                        >
-                                            <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
-                                        </Button>
-                                    </ButtonGroup>
-                                </ButtonToolbar>
+                                <Margin top={10} bottom={10}>
+                                    <Row>
+                                        <Col width="auto">
+                                            <Button
+                                                btnSize="sm"
+                                                onClick={this.togglePrimaryContainer}
+                                            >
+                                                <FontAwesomeIcon icon="chevron-left" fixedWidth />
+                                            </Button>
+                                            <Space width={10} />
+                                        </Col>
+                                        <Col>
+                                            <Button
+                                                block
+                                                btnSize="sm"
+                                                onClick={this.updateWidgetsForPrimaryContainer}
+                                            >
+                                                <FontAwesomeIcon icon="list-alt" />
+                                                <Space width={8} />
+                                                {i18n._('Manage Widgets ({{inactiveCount}})', {
+                                                    inactiveCount: inactiveCount
+                                                })}
+                                            </Button>
+                                        </Col>
+                                        <Col width="auto">
+                                            <Space width={10} />
+                                            <ButtonGroup btnSize="sm">
+                                                <Button
+                                                    title={i18n._('Collapse All')}
+                                                    onClick={event => {
+                                                        this.primaryWidgets.collapseAll();
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                                </Button>
+                                                <Button
+                                                    title={i18n._('Expand All')}
+                                                    onClick={event => {
+                                                        this.primaryWidgets.expandAll();
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                                </Button>
+                                            </ButtonGroup>
+                                        </Col>
+                                    </Row>
+                                </Margin>
                                 <PrimaryWidgets
                                     ref={node => {
                                         this.primaryWidgets = node;
@@ -563,17 +559,12 @@ class Workspace extends PureComponent {
                                 }}
                                 className={styles.primaryToggler}
                             >
-                                <ButtonGroup
+                                <Button
                                     btnSize="sm"
-                                    btnStyle="default"
+                                    onClick={this.togglePrimaryContainer}
                                 >
-                                    <Button
-                                        style={{ minWidth: 30 }}
-                                        onClick={this.togglePrimaryContainer}
-                                    >
-                                        <i className="fa fa-chevron-right" />
-                                    </Button>
-                                </ButtonGroup>
+                                    <FontAwesomeIcon icon="chevron-right" fixedWidth />
+                                </Button>
                             </div>
                             }
                             <div
@@ -594,17 +585,12 @@ class Workspace extends PureComponent {
                                 }}
                                 className={styles.secondaryToggler}
                             >
-                                <ButtonGroup
+                                <Button
                                     btnSize="sm"
-                                    btnStyle="default"
+                                    onClick={this.toggleSecondaryContainer}
                                 >
-                                    <Button
-                                        style={{ minWidth: 30 }}
-                                        onClick={this.toggleSecondaryContainer}
-                                    >
-                                        <i className="fa fa-chevron-left" />
-                                    </Button>
-                                </ButtonGroup>
+                                    <FontAwesomeIcon icon="chevron-left" fixedWidth />
+                                </Button>
                             </div>
                             }
                             <div
@@ -616,62 +602,53 @@ class Workspace extends PureComponent {
                                     { [styles.hidden]: hideSecondaryContainer }
                                 )}
                             >
-                                <ButtonToolbar style={{ margin: '5px 0' }}>
-                                    <div className="pull-left">
-                                        <ButtonGroup
-                                            style={{ marginLeft: 0, marginRight: 10 }}
-                                            btnSize="sm"
-                                            btnStyle="default"
-                                        >
+                                <Margin top={10} bottom={10}>
+                                    <Row>
+                                        <Col width="auto">
+                                            <ButtonGroup btnSize="sm">
+                                                <Button
+                                                    title={i18n._('Collapse All')}
+                                                    onClick={event => {
+                                                        this.secondaryWidgets.collapseAll();
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                                </Button>
+                                                <Button
+                                                    title={i18n._('Expand All')}
+                                                    onClick={event => {
+                                                        this.secondaryWidgets.expandAll();
+                                                    }}
+                                                >
+                                                    <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                                </Button>
+                                            </ButtonGroup>
+                                            <Space width={10} />
+                                        </Col>
+                                        <Col>
                                             <Button
-                                                style={{ minWidth: 30 }}
-                                                title={i18n._('Collapse All')}
-                                                onClick={event => {
-                                                    this.secondaryWidgets.collapseAll();
-                                                }}
-                                            >
-                                                <i className="fa fa-chevron-up" style={{ fontSize: 14 }} />
-                                            </Button>
-                                            <Button
-                                                style={{ minWidth: 30 }}
-                                                title={i18n._('Expand All')}
-                                                onClick={event => {
-                                                    this.secondaryWidgets.expandAll();
-                                                }}
-                                            >
-                                                <i className="fa fa-chevron-down" style={{ fontSize: 14 }} />
-                                            </Button>
-                                        </ButtonGroup>
-                                        <ButtonGroup
-                                            style={{ marginLeft: 0, marginRight: 10 }}
-                                            btnSize="sm"
-                                            btnStyle="default"
-                                        >
-                                            <Button
-                                                style={{ width: 230 }}
+                                                block
+                                                btnSize="sm"
                                                 onClick={this.updateWidgetsForSecondaryContainer}
                                             >
-                                                <i className="fa fa-list-alt" />
+                                                <FontAwesomeIcon icon="list-alt" />
                                                 <Space width={8} />
                                                 {i18n._('Manage Widgets ({{inactiveCount}})', {
                                                     inactiveCount: inactiveCount
                                                 })}
                                             </Button>
-                                        </ButtonGroup>
-                                        <ButtonGroup
-                                            style={{ marginLeft: 0, marginRight: 0 }}
-                                            btnSize="sm"
-                                            btnStyle="default"
-                                        >
+                                        </Col>
+                                        <Col width="auto">
+                                            <Space width={10} />
                                             <Button
-                                                style={{ minWidth: 30 }}
+                                                btnSize="sm"
                                                 onClick={this.toggleSecondaryContainer}
                                             >
-                                                <i className="fa fa-chevron-right" />
+                                                <FontAwesomeIcon icon="chevron-right" fixedWidth />
                                             </Button>
-                                        </ButtonGroup>
-                                    </div>
-                                </ButtonToolbar>
+                                        </Col>
+                                    </Row>
+                                </Margin>
                                 <SecondaryWidgets
                                     ref={node => {
                                         this.secondaryWidgets = node;

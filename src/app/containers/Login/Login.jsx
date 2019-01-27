@@ -1,8 +1,14 @@
-import cx from 'classnames';
+import _get from 'lodash/get';
 import qs from 'qs';
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
+import { Form, Field } from 'react-final-form';
 import { withRouter, Redirect } from 'react-router-dom';
 import Anchor from 'app/components/Anchor';
+import { Button } from 'app/components/Buttons';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import FormGroup from 'app/components/FormGroup';
+import { Container, Row, Col } from 'app/components/GridSystem';
+import Input from 'app/components/FormControl/Input';
 import { Notification } from 'app/components/Notifications';
 import Space from 'app/components/Space';
 import settings from 'app/config/settings';
@@ -25,51 +31,46 @@ class Login extends PureComponent {
         },
         clearAlertMessage: () => {
             this.setState({ alertMessage: '' });
-        },
-        handleSignIn: (event) => {
-            event.preventDefault();
-
-            this.setState({
-                alertMessage: '',
-                authenticating: true,
-                redirectToReferrer: false
-            });
-
-            const name = this.fields.name.value;
-            const password = this.fields.password.value;
-
-            user.signin({ name, password })
-                .then(({ authenticated }) => {
-                    if (!authenticated) {
-                        this.setState({
-                            alertMessage: i18n._('Authentication failed.'),
-                            authenticating: false,
-                            redirectToReferrer: false
-                        });
-                        return;
-                    }
-
-                    log.debug('Create and establish a WebSocket connection');
-
-                    const token = config.get('session.token');
-                    const host = '';
-                    const options = {
-                        query: 'token=' + token
-                    };
-                    controller.connect(host, options, () => {
-                        // @see "app/index.jsx"
-                        this.setState({
-                            alertMessage: '',
-                            authenticating: false,
-                            redirectToReferrer: true
-                        });
-                    });
-                });
         }
     };
-    fields = {
-        name: null,
-        password: null
+
+    handleFormSubmit = (values, form) => {
+        this.setState({
+            alertMessage: '',
+            authenticating: true,
+            redirectToReferrer: false
+        });
+
+        const name = _get(values, 'name');
+        const password = _get(values, 'password');
+
+        user.signin({ name, password })
+            .then(({ authenticated }) => {
+                if (!authenticated) {
+                    this.setState({
+                        alertMessage: i18n._('Authentication failed.'),
+                        authenticating: false,
+                        redirectToReferrer: false
+                    });
+                    return;
+                }
+
+                log.debug('Create and establish a WebSocket connection');
+
+                const token = config.get('session.token');
+                const host = '';
+                const options = {
+                    query: 'token=' + token
+                };
+                controller.connect(host, options, () => {
+                    // @see "app/index.jsx"
+                    this.setState({
+                        alertMessage: '',
+                        authenticating: false,
+                        redirectToReferrer: true
+                    });
+                });
+            });
     };
 
     getDefaultState() {
@@ -79,6 +80,7 @@ class Login extends PureComponent {
             redirectToReferrer: false
         };
     }
+
     render() {
         const { from } = this.props.location.state || { from: { pathname: '/' } };
         const state = { ...this.state };
@@ -104,7 +106,12 @@ class Login extends PureComponent {
         }
 
         return (
-            <div className={styles.container}>
+            <div
+                style={{
+                    backgroundColor: '#fff',
+                    height: '100vh',
+                }}
+            >
                 {alertMessage &&
                 <Notification
                     style={{ marginBottom: 10 }}
@@ -115,60 +122,83 @@ class Login extends PureComponent {
                     <div>{alertMessage}</div>
                 </Notification>
                 }
-                <div className={styles.login}>
+                <Container
+                    style={{
+                        width: 300,
+                        margin: '0 auto',
+                        paddingTop: 40,
+                    }}
+                >
                     <div className={styles.logo}>
                         <img src="images/logo-square-256x256.png" alt="" />
                     </div>
                     <div className={styles.title}>
                         {i18n._('Sign in to {{name}}', { name: settings.productName })}
                     </div>
-                    <form className={styles.form}>
-                        <div className="form-group">
-                            <input
-                                ref={node => {
-                                    this.fields.name = node;
-                                }}
-                                type="text"
-                                className="form-control"
-                                placeholder={i18n._('Username')}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <input
-                                ref={node => {
-                                    this.fields.password = node;
-                                }}
-                                type="password"
-                                className="form-control"
-                                placeholder={i18n._('Password')}
-                            />
-                        </div>
-                        <div className="form-group">
-                            <button
-                                type="button"
-                                className="btn btn-block btn-primary"
-                                onClick={this.actions.handleSignIn}
-                            >
-                                <i
-                                    className={cx(
-                                        'fa',
-                                        'fa-fw',
-                                        { 'fa-spin': authenticating },
-                                        { 'fa-circle-o-notch': authenticating },
-                                        { 'fa-sign-in': !authenticating }
-                                    )}
-                                />
-                                <Space width="8" />
-                                {i18n._('Sign In')}
-                            </button>
-                        </div>
-                        <p>
-                            <Anchor href={forgotPasswordLink}>
-                                {i18n._('Forgot your password?')}
-                            </Anchor>
-                        </p>
-                    </form>
-                </div>
+                    <Form
+                        onSubmit={this.handleFormSubmit}
+                        render={({ handleSubmit, values }) => (
+                            <Fragment>
+                                <FormGroup>
+                                    <Field name="name">
+                                        {({ input, meta }) => (
+                                            <Fragment>
+                                                <Input
+                                                    {...input}
+                                                    type="text"
+                                                    placeholder={i18n._('Username')}
+                                                />
+                                                {meta.touched && meta.error && <div>{meta.error}</div>}
+                                            </Fragment>
+                                        )}
+                                    </Field>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Field name="password">
+                                        {({ input, meta }) => (
+                                            <Fragment>
+                                                <Input
+                                                    {...input}
+                                                    type="password"
+                                                    placeholder={i18n._('Password')}
+                                                />
+                                                {meta.touched && meta.error && <div>{meta.error}</div>}
+                                            </Fragment>
+                                        )}
+                                    </Field>
+                                </FormGroup>
+                                <FormGroup>
+                                    <Row
+                                        style={{
+                                            justifyContent: 'space-between',
+                                        }}
+                                    >
+                                        <Col width="auto">
+                                            <Anchor href={forgotPasswordLink}>
+                                                {i18n._('Forgot your password?')}
+                                            </Anchor>
+                                        </Col>
+                                        <Col width="auto">
+                                            <Button
+                                                btnStyle="primary"
+                                                onClick={handleSubmit}
+                                            >
+                                                {authenticating &&
+                                                <FontAwesomeIcon icon="circle-notch" spin />
+                                                }
+                                                {!authenticating &&
+                                                <FontAwesomeIcon icon="sign-in-alt" />
+                                                }
+                                                <Space width={8} />
+                                                {i18n._('Sign In')}
+                                            </Button>
+                                        </Col>
+                                    </Row>
+                                </FormGroup>
+                            </Fragment>
+                        )}
+                    />
+                </Container>
             </div>
         );
     }

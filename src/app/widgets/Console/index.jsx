@@ -212,13 +212,12 @@ class ConsoleWidget extends PureComponent {
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                             onClick={actions.toggleMinimized}
                         >
-                            <i
-                                className={cx(
-                                    'fa',
-                                    { 'fa-chevron-up': !minimized },
-                                    { 'fa-chevron-down': minimized }
-                                )}
-                            />
+                            {minimized &&
+                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                            }
+                            {!minimized &&
+                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                            }
                         </Widget.Button>
                         <Widget.Button
                             title={!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
@@ -234,7 +233,9 @@ class ConsoleWidget extends PureComponent {
                         </Widget.Button>
                         <Widget.DropdownButton
                             title={i18n._('More')}
-                            toggle={<i className="fa fa-ellipsis-v" />}
+                            toggle={(
+                                <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
+                            )}
                             onSelect={(eventKey) => {
                                 if (eventKey === 'selectAll') {
                                     this.terminal.selectAll();
