@@ -3,12 +3,12 @@ import i18next from 'i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 import XHR from 'i18next-xhr-backend';
 import _get from 'lodash/get';
+import _values from 'lodash/values';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import qs from 'qs';
 import { reactI18nextModule } from 'react-i18next';
-import { delay } from 'redux-saga';
-import { all, call, fork, put, race } from 'redux-saga/effects';
+import { all, call, delay, fork, put, race } from 'redux-saga/effects';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import settings from 'app/config/settings';
 import * as actionCreators from 'app/containers/App/actions';
@@ -22,14 +22,9 @@ export function* init() {
     try {
         const { timeout } = yield race({
             init: call(initAll),
-            timeout: call(delay, 15000) // timeout threshold 15 sec
+            timeout: delay(30000),
         });
 
-        /**
-         * TODO: Redirect to signout or error page
-         * 1. 15 seconds timeout
-         * 2. invalid token
-         */
         if (timeout) {
             throw new Error('Timeout Error');
         }
@@ -89,8 +84,7 @@ export function* init() {
 }
 
 export function* process() {
-    yield all([
-    ]);
+    yield all(_values({}).map(it => fork(it)));
 }
 
 function* initAll() {
@@ -101,7 +95,7 @@ function* initAll() {
 
         // parallel
         yield all([
-            fork(configureMomentLocale), // dep: i18next
+            call(configureMomentLocale), // dep: i18next
         ]);
 
         yield call(configureSessionToken);

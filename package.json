@@ -237,7 +237,7 @@
     "redux": "~4.0.1",
     "redux-action": "~1.2.2",
     "redux-logger": "~3.0.6",
-    "redux-saga": "~0.16.2",
+    "redux-saga": "~1.0.0",
     "redux-thunk": "~2.3.0",
     "registry-auth-token": "~3.3.2",
     "registry-url": "~4.0.0",
