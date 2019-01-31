@@ -181,19 +181,19 @@ class CustomWidget extends PureComponent {
                             type="default"
                             onClick={action.toggleDisabled}
                         >
-                            <i
-                                className={cx('fa', {
-                                    'fa-toggle-on': !disabled,
-                                    'fa-toggle-off': disabled
-                                })}
-                            />
+                            {disabled &&
+                            <FontAwesomeIcon icon="toggle-off" fixedWidth />
+                            }
+                            {!disabled &&
+                            <FontAwesomeIcon icon="toggle-on" fixedWidth />
+                            }
                         </Widget.Button>
                         <Widget.Button
                             disabled={disabled}
                             title={i18n._('Refresh')}
                             onClick={action.refreshContent}
                         >
-                            <i className="fa fa-refresh" />
+                            <FontAwesomeIcon icon="redo-alt" fixedWidth />
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Edit')}

@@ -205,7 +205,7 @@ class ConsoleWidget extends PureComponent {
                             title={i18n._('Clear all')}
                             onClick={actions.clearAll}
                         >
-                            <i className="fa fa-trash" />
+                            <FontAwesomeIcon icon="trash-alt" fixedWidth />
                         </Widget.Button>
                         <Widget.Button
                             disabled={isFullscreen}
@@ -223,13 +223,12 @@ class ConsoleWidget extends PureComponent {
                             title={!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             onClick={actions.toggleFullscreen}
                         >
-                            <i
-                                className={cx(
-                                    'fa',
-                                    { 'fa-expand': !isFullscreen },
-                                    { 'fa-compress': isFullscreen }
-                                )}
-                            />
+                            {isFullscreen &&
+                            <FontAwesomeIcon icon="compress" fixedWidth />
+                            }
+                            {!isFullscreen &&
+                            <FontAwesomeIcon icon="expand" fixedWidth />
+                            }
                         </Widget.Button>
                         <Widget.DropdownButton
                             title={i18n._('More')}
@@ -259,7 +258,8 @@ class ConsoleWidget extends PureComponent {
                                 {i18n._('Select All')}
                             </Widget.DropdownMenuItem>
                             <Widget.DropdownMenuItem eventKey="clearSelection">
-                                <i className="fa fa-fw fa-window-close-o" />
+
+                                <FontAwesomeIcon icon="eraser" fixedWidth />
                                 <Space width={8} />
                                 {i18n._('Clear Selection')}
                             </Widget.DropdownMenuItem>

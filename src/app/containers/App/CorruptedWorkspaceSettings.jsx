@@ -2,6 +2,7 @@ import React from 'react';
 import i18n from 'app/lib/i18n';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Modal from 'app/components/Modal';
 import ModalTemplate from 'app/components/ModalTemplate';
 import Space from 'app/components/Space';
@@ -28,7 +29,7 @@ const CorruptedWorkspaceSettings = (props) => {
                             href={url}
                             download={filename}
                         >
-                            <i className="fa fa-download" />
+                            <FontAwesomeIcon icon="download" />
                             <Space width={8} />
                             {i18n._('Download workspace settings')}
                         </Anchor>

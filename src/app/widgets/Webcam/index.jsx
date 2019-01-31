@@ -153,19 +153,19 @@ class WebcamWidget extends PureComponent {
                             type="default"
                             onClick={(event) => this.setState({ disabled: !disabled })}
                         >
-                            <i
-                                className={cx('fa', 'fa-fw', {
-                                    'fa-toggle-on': !disabled,
-                                    'fa-toggle-off': disabled
-                                })}
-                            />
+                            {disabled &&
+                            <FontAwesomeIcon icon="toggle-off" fixedWidth />
+                            }
+                            {!disabled &&
+                            <FontAwesomeIcon icon="toggle-on" fixedWidth />
+                            }
                         </Widget.Button>
                         <Widget.Button
                             disabled={disabled}
                             title={i18n._('Refresh')}
                             onClick={(event) => this.webcam.refresh()}
                         >
-                            <i className="fa fa-refresh" />
+                            <FontAwesomeIcon icon="redo-alt" fixedWidth />
                         </Widget.Button>
                         <Widget.Button
                             title={i18n._('Edit')}
