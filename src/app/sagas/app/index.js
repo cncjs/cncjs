@@ -11,14 +11,18 @@ import { reactI18nextModule } from 'react-i18next';
 import { all, call, delay, fork, put, race } from 'redux-saga/effects';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import settings from 'app/config/settings';
-import * as actionCreators from 'app/containers/App/actions';
+import {
+    appInit,
+    appInitSuccess,
+    appInitFailure,
+} from 'app/containers/App/actions';
 import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
 import config from 'app/store/config';
 
 export function* init() {
-    yield put(actionCreators.appInit());
+    yield put(appInit());
     try {
         const { timeout } = yield race({
             init: call(initAll),
@@ -74,10 +78,10 @@ export function* init() {
             body.style.backgroundColor = '#222'; // sidebar background color
         }
 
-        yield put(actionCreators.appInitSuccess());
+        yield put(appInitSuccess());
     } catch (error) {
         const errorMessage = _get(error, 'message', error);
-        yield put(actionCreators.appInitFailure(errorMessage));
+        yield put(appInitFailure(errorMessage));
     } finally {
         // TODO
     }

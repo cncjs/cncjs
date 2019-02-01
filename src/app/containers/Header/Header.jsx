@@ -1,35 +1,44 @@
-import classNames from 'classnames';
+//import classNames from 'classnames';
 import React, { PureComponent } from 'react';
-import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
+//import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import semver from 'semver';
 import without from 'lodash/without';
 import Push from 'push.js';
 import api from 'app/api';
-import Anchor from 'app/components/Anchor';
-import Space from 'app/components/Space';
+//import Anchor from 'app/components/Anchor';
+import Badge from 'app/components/Badge';
+import { Container, Row, Col } from 'app/components/GridSystem';
+import Hoverable from 'app/components/Hoverable';
+import Image from 'app/components/Image';
+//import Margin from 'app/components/Margin';
+//import Space from 'app/components/Space';
+import { Tooltip } from 'app/components/Tooltip';
+import Text from 'app/components/Text';
 import settings from 'app/config/settings';
 import combokeys from 'app/lib/combokeys';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import log from 'app/lib/log';
-import * as user from 'app/lib/user';
-import config from 'app/store/config';
-import QuickAccessToolbar from './QuickAccessToolbar';
-import styles from './index.styl';
+//import log from 'app/lib/log';
+//import * as user from 'app/lib/user';
+//import config from 'app/store/config';
+//import QuickAccessToolbar from './QuickAccessToolbar';
+//import styles from './index.styl';
+import logo from 'app/images/logo-badge-32x32.png';
 
-const releases = 'https://github.com/cncjs/cncjs/releases';
+//const releases = 'https://github.com/cncjs/cncjs/releases';
 
+/*
 const newUpdateAvailableTooltip = () => {
     return (
         <Tooltip
-            id="navbarBrandTooltip"
             style={{ color: '#fff' }}
+            content={<div>{i18n._('New update available')}</div>}
         >
-            <div>{i18n._('New update available')}</div>
         </Tooltip>
     );
 };
+*/
 
 class Header extends PureComponent {
     static propTypes = {
@@ -96,12 +105,14 @@ class Header extends PureComponent {
             }
         }
     };
+
     actionHandlers = {
         CONTROLLER_COMMAND: (event, { command }) => {
             // feedhold, cyclestart, homing, unlock, reset
             controller.command(command);
         }
     };
+
     controllerEvents = {
         'config:change': () => {
             this.actions.fetchCommands();
@@ -175,6 +186,7 @@ class Header extends PureComponent {
             }
         }
     };
+
     _isMounted = false;
 
     getInitialState() {
@@ -194,6 +206,7 @@ class Header extends PureComponent {
             latestVersion: settings.version
         };
     }
+
     componentDidMount() {
         this._isMounted = true;
 
@@ -204,6 +217,7 @@ class Header extends PureComponent {
         this.actions.checkForUpdates();
         this.actions.fetchCommands();
     }
+
     componentWillUnmount() {
         this._isMounted = false;
 
@@ -212,30 +226,104 @@ class Header extends PureComponent {
 
         this.runningTasks = [];
     }
+
     addActionHandlers() {
         Object.keys(this.actionHandlers).forEach(eventName => {
             const callback = this.actionHandlers[eventName];
             combokeys.on(eventName, callback);
         });
     }
+
     removeActionHandlers() {
         Object.keys(this.actionHandlers).forEach(eventName => {
             const callback = this.actionHandlers[eventName];
             combokeys.removeListener(eventName, callback);
         });
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
+    render() {
+        const { currentVersion, latestVersion } = this.state;
+        const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
+
+        return (
+            <Container fluid>
+                <Row style={{ height: 50 }}>
+                    <Col
+                        width="auto"
+                        style={{
+                            textAlign: 'center',
+                            width: 60,
+                        }}
+                    >
+                        <Hoverable>
+                            {(hovered) => (
+                                <Row
+                                    style={{
+                                        flexDirection: 'column',
+                                        height: '100%',
+                                        paddingTop: 4,
+                                        cursor: hovered ? 'pointer' : 'default',
+                                    }}
+                                >
+                                    <Col width="auto">
+                                        <Image src={logo} width={32} height={32} />
+                                    </Col>
+                                    <Col>
+                                        <Text
+                                            color={hovered ? '#fff' : '#9d9d9d'}
+                                            size="50%"
+                                            style={{
+                                                lineHeight: 1,
+                                                margin: '2px 0',
+                                                verticalAlign: 'top',
+                                            }}
+                                        >
+                                            {settings.version}
+                                        </Text>
+                                    </Col>
+                                </Row>
+                            )}
+                        </Hoverable>
+                        {newUpdateAvailable && (
+                            <Tooltip content={i18n._('New update available')}>
+                                <Badge
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 0,
+                                        backgroundColor: '#007bff',
+                                        color: '#fff',
+                                        cursor: 'default',
+                                    }}
+                                >
+                                    N
+                                </Badge>
+                            </Tooltip>
+                        )}
+                    </Col>
+                    <Col>
+                        xxx
+                    </Col>
+                </Row>
+            </Container>
+        );
+    }
+
+    /*
     render() {
         const { history, location } = this.props;
         const { pushPermission, commands, runningTasks, currentVersion, latestVersion } = this.state;
@@ -253,7 +341,8 @@ class Header extends PureComponent {
                 inverse
                 style={{
                     border: 'none',
-                    margin: 0
+                    margin: 0,
+                    height: 50,
                 }}
             >
                 <Navbar.Header>
@@ -448,6 +537,7 @@ class Header extends PureComponent {
             </Navbar>
         );
     }
+    */
 }
 
 export default withRouter(Header);

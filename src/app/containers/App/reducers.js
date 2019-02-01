@@ -8,7 +8,7 @@ import {
 
 const initialState = {
     // App
-    isAppInitializing: true,
+    isInitializing: true,
     error: null,
 
     // Workspace
@@ -17,14 +17,14 @@ const initialState = {
 
 export default createReducer(initialState, {
     [APP_INIT]: () => ({
-        isAppInitializing: true
+        isInitializing: true
     }),
     [APP_INIT_SUCCESS]: () => ({
-        isAppInitializing: false,
+        isInitializing: false,
         error: null
     }),
     [APP_INIT_FAILURE]: (error) => ({
-        isAppInitializing: false,
+        isInitializing: false,
         error
     }),
     [PROMPT_USER_FOR_CORRUPTED_WORKSPACE_SETTINGS]: () => ({

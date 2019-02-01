@@ -1,24 +1,6 @@
-.navbar {
-    position: relative;
-}
-
-.icon {
-    display: inline-block;
-    vertical-align: middle;
-    width: 32px;
-    height: 32px;
-
-    &.icon-xyz {
-        background: url("./images/xyz.svg") no-repeat 0 0;
-    }
-    &.icon-gear {
-        background: url("./images/gear.svg") no-repeat 0 0;
-    }
-}
-
 .nav {
     padding-left: 0;
-    margin-bottom: 0;
+    margin: 0;
     list-style: none;
 
     > li {
@@ -35,7 +17,7 @@
             white-space: nowrap;
             padding: 10px 0;
 
-            > .icon.icon-invert {
+            > .invert {
                 filter: invert(60%);
             }
         }
@@ -44,7 +26,7 @@
             color: #fff;
             background-color: #222;
 
-            > .icon.icon-invert {
+            > .invert {
                 filter: invert(100%);
             }
         }
@@ -56,7 +38,7 @@
             color: #fff;
             background-color: #080808;
 
-            > .icon.icon-invert {
+            > .invert {
                 filter: invert(100%);
             }
         }

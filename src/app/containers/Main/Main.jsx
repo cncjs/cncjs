@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 import { Redirect, withRouter } from 'react-router-dom';
 import compose from 'recompose/compose';
 import Header from 'app/containers/Header';
@@ -41,7 +41,7 @@ const Main = ({
     trackPage(location.pathname);
 
     return (
-        <div>
+        <Fragment>
             <Header />
             <aside className={styles.sidebar} id="sidebar">
                 <Sidebar />
@@ -53,12 +53,13 @@ const Main = ({
                             display: (location.pathname !== '/workspace') ? 'none' : 'block'
                         }}
                     />
+
                     {location.pathname.indexOf('/settings') === 0 &&
                         <Settings />
                     }
                 </div>
             </div>
-        </div>
+        </Fragment>
     );
 };
 

@@ -62,6 +62,6 @@
     "uuid": "~3.3.2",
     "watch": "~1.0.2",
     "webappengine": "~1.2.0",
-    "winston": "~3.1.0"
+    "winston": "~3.2.1"
   }
 }
