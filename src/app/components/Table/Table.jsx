@@ -4,7 +4,7 @@ import { Provider, create } from 'mini-store';
 import isEqual from 'lodash/isEqual';
 import PropTypes from 'prop-types';
 import elementResizeDetectorMaker from 'element-resize-detector';
-import debounce from 'lodash.debounce';
+import debounce from 'lodash/debounce';
 import helper from './helper';
 import uniqueid from './uniqueid';
 import styles from './index.styl';
