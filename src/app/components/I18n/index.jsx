@@ -1,8 +1,8 @@
 import React from 'react';
-import i18next from 'i18next';
-import { NamespacesConsumer, Trans } from 'react-i18next';
+import { Trans } from 'react-i18next';
 import sha1 from 'sha1';
 import env from 'app/config/env';
+import i18next from 'app/i18next';
 import log from 'app/lib/log';
 import nodesToString from './nodes-to-string';
 
@@ -21,12 +21,8 @@ export default ({ children, ...props }) => {
     }
 
     return (
-        <NamespacesConsumer>
-            {(t, { i18n }) => (
-                <Trans i18n={i18next} i18nKey={i18nKey} {...props}>
-                    {children}
-                </Trans>
-            )}
-        </NamespacesConsumer>
+        <Trans i18nKey={i18nKey} {...props}>
+            {children}
+        </Trans>
     );
 };

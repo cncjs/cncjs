@@ -1,5 +1,5 @@
-import i18next from 'i18next';
 import sha1 from 'sha1';
+import i18next from 'app/i18next';
 
 const t = (...args) => {
     const key = args[0];

@@ -1,13 +1,9 @@
 /* eslint import/no-dynamic-require: 0 */
-import i18next from 'i18next';
-import LanguageDetector from 'i18next-browser-languagedetector';
-import XHR from 'i18next-xhr-backend';
 import _get from 'lodash/get';
 import _values from 'lodash/values';
 import moment from 'moment';
 import pubsub from 'pubsub-js';
 import qs from 'qs';
-import { reactI18nextModule } from 'react-i18next';
 import { all, call, delay, fork, put, race } from 'redux-saga/effects';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
 import settings from 'app/config/settings';
@@ -16,6 +12,7 @@ import {
     appInitSuccess,
     appInitFailure,
 } from 'app/containers/App/actions';
+import i18next from 'app/i18next';
 import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
@@ -95,14 +92,12 @@ function* initAll() {
     try {
         // sequential
         yield call(configureLogLevel);
-        yield call(configureI18next);
 
         // parallel
         yield all([
-            call(configureMomentLocale), // dep: i18next
+            call(configureMomentLocale),
+            call(configureSessionToken),
         ]);
-
-        yield call(configureSessionToken);
     } catch (error) {
         throw new Error(error);
     }
@@ -119,27 +114,6 @@ const configureLogLevel = () => {
     }[obj.log_level || settings.log.level];
     log.setLevel(level);
 };
-
-const configureI18next = () => new Promise((resolve, reject) => {
-    i18next
-        .use(XHR)
-        .use(LanguageDetector)
-        .use(reactI18nextModule)
-        .init(settings.i18next, (err, t) => {
-            if (err) {
-                log.error(err);
-                reject(err);
-                return;
-            }
-
-            if (i18next.language) {
-                const html = document.querySelector('html');
-                html.setAttribute('lang', i18next.language);
-            }
-
-            resolve();
-        });
-});
 
 const configureMomentLocale = () => new Promise(resolve => {
     const lng = i18next.language;

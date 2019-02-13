@@ -1,5 +1,4 @@
 import classNames from 'classnames';
-import i18next from 'i18next';
 import camelCase from 'lodash/camelCase';
 import find from 'lodash/find';
 import findIndex from 'lodash/findIndex';
@@ -15,6 +14,7 @@ import {
 } from 'app/api/constants';
 import settings from 'app/config/settings';
 import Breadcrumbs from 'app/components/Breadcrumbs';
+import i18next from 'app/i18next';
 import i18n from 'app/lib/i18n';
 import General from './General';
 import Workspace from './Workspace';
