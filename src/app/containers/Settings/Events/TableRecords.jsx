@@ -6,12 +6,12 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
-import { TablePagination } from 'app/components/Paginations';
 import Space from 'app/components/Space';
 import Table from 'app/components/Table';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import portal from 'app/lib/portal';
 import i18n from 'app/lib/i18n';
+import TablePagination from '../components/TablePagination';
 import {
     MODAL_CREATE_RECORD,
     MODAL_UPDATE_RECORD

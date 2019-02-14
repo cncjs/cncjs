@@ -1,7 +1,7 @@
-import i18next from 'i18next';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import uncontrollable from 'uncontrollable';
+import i18next from 'app/i18next';
 import DatePicker from '../DatePicker';
 import TimeInput from '../TimeInput';
 import DateInput from '../DateInput';
