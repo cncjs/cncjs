@@ -432,7 +432,7 @@
     "Z-Probe": "Zプローブ",
     "Apply tool length offset": "工具長のオフセットを適用する",
     "Run Z-Probe": "Zプローブの実行",
-    "Spindle Speed": "スピンドルの速度",
+    "Spindle speed": "スピンドルの速度",
     "RPM": "",
     "Queue Flush (%)": "キューを流す (%)",
     "Kill Job (^d)": "ジョブ削除 (^d)",
@@ -521,5 +521,9 @@
     "Apply": "",
     "Custom Jog Distance (mm)": "",
     "Add": "",
-    "Custom Jog Distance (inches)": ""
+    "Custom Jog Distance (inches)": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>有効</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>無効</1>",
+    "Spindle control": "",
+    "Coolant control": ""
 }

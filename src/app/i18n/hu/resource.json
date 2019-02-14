@@ -432,7 +432,7 @@
     "Z-Probe": "Z-Probe",
     "Apply tool length offset": "",
     "Run Z-Probe": "Futtatás Z-tapintó",
-    "Spindle Speed": "Főorsó sebessége ",
+    "Spindle speed": "Főorsó sebessége ",
     "RPM": "RPM",
     "Queue Flush (%)": "Queue Flush (%)",
     "Kill Job (^d)": "Munka Kilővés (^d)",
@@ -521,5 +521,9 @@
     "Apply": "",
     "Custom Jog Distance (mm)": "",
     "Add": "",
-    "Custom Jog Distance (inches)": ""
+    "Custom Jog Distance (inches)": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Engedélyezve</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Tiltva</1>",
+    "Spindle control": "",
+    "Coolant control": ""
 }

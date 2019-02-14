@@ -432,7 +432,7 @@
     "Z-Probe": "",
     "Apply tool length offset": "",
     "Run Z-Probe": "Avvia sonda in Z",
-    "Spindle Speed": "Velocità rotazione elettromandrino",
+    "Spindle speed": "Velocità rotazione elettromandrino",
     "RPM": "",
     "Queue Flush (%)": "",
     "Kill Job (^d)": "Blocca il lavoro (^d)",
@@ -521,5 +521,9 @@
     "Apply": "",
     "Custom Jog Distance (mm)": "",
     "Add": "",
-    "Custom Jog Distance (inches)": ""
+    "Custom Jog Distance (inches)": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Attivato</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Disattivato</1>",
+    "Spindle control": "",
+    "Coolant control": ""
 }

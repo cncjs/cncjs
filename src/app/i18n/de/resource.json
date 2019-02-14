@@ -432,7 +432,7 @@
     "Z-Probe": "Werkzeuglängensensor",
     "Apply tool length offset": "Werkzeuglängen-Offset anwenden",
     "Run Z-Probe": "Starte Z-Antastung",
-    "Spindle Speed": "Spindeldrehzahl",
+    "Spindle speed": "Spindeldrehzahl",
     "RPM": "UPM",
     "Queue Flush (%)": "",
     "Kill Job (^d)": "Job (^d) abbrechen",
@@ -521,5 +521,9 @@
     "Apply": "",
     "Custom Jog Distance (mm)": "",
     "Add": "",
-    "Custom Jog Distance (inches)": ""
+    "Custom Jog Distance (inches)": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Aktiviert</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Deaktiviert</1>",
+    "Spindle control": "",
+    "Coolant control": ""
 }

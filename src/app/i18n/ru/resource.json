@@ -432,7 +432,7 @@
     "Z-Probe": "",
     "Apply tool length offset": "",
     "Run Z-Probe": "Выполнить пробу Z",
-    "Spindle Speed": "Скорость вращения шпинделя",
+    "Spindle speed": "Скорость вращения шпинделя",
     "RPM": "",
     "Queue Flush (%)": "",
     "Kill Job (^d)": "",
@@ -521,5 +521,9 @@
     "Apply": "",
     "Custom Jog Distance (mm)": "",
     "Add": "",
-    "Custom Jog Distance (inches)": ""
+    "Custom Jog Distance (inches)": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Включено</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Отключено</1>",
+    "Spindle control": "",
+    "Coolant control": ""
 }

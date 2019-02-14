@@ -432,7 +432,7 @@
     "Z-Probe": "Z ekseni sıfırlama",
     "Apply tool length offset": "Takım uzunluğu Çıkıntısı uygula",
     "Run Z-Probe": "Z ekseni sıfırlama çalıştır",
-    "Spindle Speed": "Freze Hızı",
+    "Spindle speed": "Freze Hızı",
     "RPM": "RPM",
     "Queue Flush (%)": "Sıra Sığdır (%)",
     "Kill Job (^d)": "İşi iptal et (^d)",
@@ -521,5 +521,9 @@
     "Apply": "",
     "Custom Jog Distance (mm)": "",
     "Add": "",
-    "Custom Jog Distance (inches)": ""
+    "Custom Jog Distance (inches)": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Etkin</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Engelle</1>",
+    "Spindle control": "",
+    "Coolant control": ""
 }

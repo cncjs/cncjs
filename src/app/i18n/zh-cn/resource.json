@@ -432,7 +432,7 @@
     "Z-Probe": "Z轴探针",
     "Apply tool length offset": "",
     "Run Z-Probe": "执行Z轴探测",
-    "Spindle Speed": "主轴转速",
+    "Spindle speed": "主轴转速",
     "RPM": "转/分钟",
     "Queue Flush (%)": "清除工作队列 (%)",
     "Kill Job (^d)": "终止工作 (^d)",
@@ -521,5 +521,9 @@
     "Apply": "",
     "Custom Jog Distance (mm)": "",
     "Add": "",
-    "Custom Jog Distance (inches)": ""
+    "Custom Jog Distance (inches)": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>已启用</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>已关闭</1>",
+    "Spindle control": "",
+    "Coolant control": ""
 }
