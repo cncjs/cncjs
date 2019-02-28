@@ -18,7 +18,7 @@ document.body.appendChild(container);
 // Run saga middleware
 sagaMiddleware.run(rootSaga);
 
-ReactDOM.render(
+export const GlobalProvider = ({ children }) => (
     <ReduxProvider store={reduxStore}>
         <GridSystemProvider
             breakpoints={[576, 768, 992, 1200, 1600]}
@@ -28,11 +28,17 @@ ReactDOM.render(
             layout="flexbox"
         >
             <I18nextProvider i18n={i18next}>
-                <HashRouter>
-                    <App />
-                </HashRouter>
+                {children}
             </I18nextProvider>
         </GridSystemProvider>
-    </ReduxProvider>,
+    </ReduxProvider>
+);
+
+ReactDOM.render(
+    <GlobalProvider>
+        <HashRouter>
+            <App />
+        </HashRouter>
+    </GlobalProvider>,
     container
 );
