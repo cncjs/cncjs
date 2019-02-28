@@ -3,9 +3,9 @@ import get from 'lodash/get';
 import includes from 'lodash/includes';
 import union from 'lodash/union';
 import React from 'react';
-import ReactDOM from 'react-dom';
 import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'app/constants';
 import controller from 'app/lib/controller';
+import portal from 'app/lib/portal';
 import config from 'app/store/config';
 import WidgetManager from './WidgetManager';
 
@@ -66,13 +66,10 @@ export const getInactiveWidgets = () => {
 
 // @param {string} targetContainer The target container: primary|secondary
 export const show = (callback) => {
-    const el = document.body.appendChild(document.createElement('div'));
-    const handleClose = (e) => {
-        ReactDOM.unmountComponentAtNode(el);
-        setTimeout(() => {
-            el.remove();
-        }, 0);
-    };
-
-    ReactDOM.render(<WidgetManager onSave={callback} onClose={handleClose} />, el);
+    portal(({ onClose }) => (
+        <WidgetManager
+            onSave={callback}
+            onClose={onClose}
+        />
+    ));
 };

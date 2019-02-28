@@ -308,7 +308,7 @@ class Workspace extends PureComponent {
     };
 
     updateWidgetsForPrimaryContainer = () => {
-        widgetManager.show((activeWidgets, inactiveWidgets) => {
+        widgetManager.show(({ activeWidgets, inactiveWidgets }) => {
             const widgets = Object.keys(config.get('widgets', {}))
                 .filter(widgetId => {
                     // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
@@ -335,7 +335,7 @@ class Workspace extends PureComponent {
     };
 
     updateWidgetsForSecondaryContainer = () => {
-        widgetManager.show((activeWidgets, inactiveWidgets) => {
+        widgetManager.show(({ activeWidgets, inactiveWidgets }) => {
             const widgets = Object.keys(config.get('widgets', {}))
                 .filter(widgetId => {
                     // e.g. "webcam" or "webcam:d8e6352f-80a9-475f-a4f5-3e9197a48a23"
