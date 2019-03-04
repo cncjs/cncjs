@@ -1,37 +1,29 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { Container, Row, Col } from 'app/components/GridSystem';
 import WidgetListItem from './WidgetListItem';
 
-const WidgetList = (props) => {
-    const { list, onChange } = props;
-    const style = {
-        maxHeight: Math.max(window.innerHeight / 2, 200),
-        overflowY: 'scroll',
-        padding: 15
-    };
-
-    return (
-        <div className="container-fluid" style={style}>
-            <div className="row">
-                {list.map((o, key) => (
-                    <div className="col-xs-6 col-md-4" key={o.id}>
-                        <WidgetListItem
-                            id={o.id}
-                            caption={o.caption}
-                            details={o.details}
-                            checked={o.visible}
-                            disabled={o.disabled}
-                            onChange={onChange}
-                        />
-                    </div>
-                ))}
-            </div>
-        </div>
-    );
-};
+const WidgetList = ({ data, onChange }) => (
+    <Container fluid gutterWidth={24} style={{ padding: 0 }}>
+        <Row>
+            {data.map(widget => (
+                <Col key={widget.id} xs={12} md={6} lg={4} style={{ margin: '12px 0' }}>
+                    <WidgetListItem
+                        id={widget.id}
+                        caption={widget.caption}
+                        details={widget.details}
+                        checked={widget.visible}
+                        disabled={widget.disabled}
+                        onChange={onChange}
+                    />
+                </Col>
+            ))}
+        </Row>
+    </Container>
+);
 
 WidgetList.propTypes = {
-    list: PropTypes.array.isRequired,
+    data: PropTypes.array.isRequired,
     onChange: PropTypes.func
 };
 

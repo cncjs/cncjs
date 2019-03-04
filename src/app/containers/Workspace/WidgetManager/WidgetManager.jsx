@@ -1,9 +1,10 @@
-import difference from 'lodash/difference';
-import find from 'lodash/find';
-import includes from 'lodash/includes';
-import union from 'lodash/union';
+import _difference from 'lodash/difference';
+import _find from 'lodash/find';
+import _includes from 'lodash/includes';
+import _union from 'lodash/union';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'app/constants';
 import controller from 'app/lib/controller';
@@ -16,9 +17,11 @@ class WidgetManager extends PureComponent {
         onSave: PropTypes.func,
         onClose: PropTypes.func.isRequired
     };
+
     state = {
         show: true
     };
+
     widgetList = [
         {
             id: 'visualizer',
@@ -127,6 +130,13 @@ class WidgetManager extends PureComponent {
         }
     ];
 
+    handleChangeWidgetVisibility = ({ id, checked }) => {
+        const o = _find(this.widgetList, { id: id });
+        if (o) {
+            o.visible = checked;
+        }
+    };
+
     handleSave = () => {
         this.setState({ show: false });
 
@@ -134,9 +144,9 @@ class WidgetManager extends PureComponent {
         const activeWidgets = this.widgetList
             .filter(item => item.visible)
             .map(item => item.id);
-        const inactiveWidgets = difference(allWidgets, activeWidgets);
+        const inactiveWidgets = _difference(allWidgets, activeWidgets);
 
-        this.props.onSave(activeWidgets, inactiveWidgets);
+        this.props.onSave({ activeWidgets, inactiveWidgets });
     };
 
     handleCancel = () => {
@@ -147,26 +157,28 @@ class WidgetManager extends PureComponent {
         super(props);
 
         this.widgetList = this.widgetList.filter(widgetItem => {
-            if (widgetItem.id === 'grbl' && !includes(controller.loadedControllers, GRBL)) {
+            if (widgetItem.id === 'grbl' && !_includes(controller.loadedControllers, GRBL)) {
                 return false;
             }
-            if (widgetItem.id === 'marlin' && !includes(controller.loadedControllers, MARLIN)) {
+            if (widgetItem.id === 'marlin' && !_includes(controller.loadedControllers, MARLIN)) {
                 return false;
             }
-            if (widgetItem.id === 'smoothie' && !includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widgetItem.id === 'smoothie' && !_includes(controller.loadedControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widgetItem.id === 'tinyg' && !includes(controller.loadedControllers, TINYG)) {
+            if (widgetItem.id === 'tinyg' && !_includes(controller.loadedControllers, TINYG)) {
                 return false;
             }
             return true;
         });
     }
+
     componentDidUpdate() {
         if (!(this.state.show)) {
             this.props.onClose();
         }
     }
+
     render() {
         const defaultWidgets = config.get('workspace.container.default.widgets', [])
             .map(widgetId => widgetId.split(':')[0]);
@@ -174,51 +186,46 @@ class WidgetManager extends PureComponent {
             .map(widgetId => widgetId.split(':')[0]);
         const secondaryWidgets = config.get('workspace.container.secondary.widgets', [])
             .map(widgetId => widgetId.split(':')[0]);
-        const activeWidgets = union(defaultWidgets, primaryWidgets, secondaryWidgets);
+        const activeWidgets = _union(defaultWidgets, primaryWidgets, secondaryWidgets);
 
         this.widgetList.forEach(widget => {
-            if (includes(activeWidgets, widget.id)) {
-                widget.visible = true;
-            } else {
-                widget.visible = false;
-            }
+            widget.visible = _includes(activeWidgets, widget.id);
         });
 
         return (
             <Modal
-                size="md"
+                style={{
+                    maxWidth: '80%',
+                }}
                 onClose={this.handleCancel}
                 show={this.state.show}
             >
                 <Modal.Header>
                     <Modal.Title>{i18n._('Widgets')}</Modal.Title>
                 </Modal.Header>
-                <Modal.Body style={{ padding: 0 }}>
+                <Modal.Body
+                    style={{
+                        maxHeight: Math.max(window.innerHeight / 2, 200),
+                        overflowY: 'scroll',
+                    }}
+                >
                     <WidgetList
-                        list={this.widgetList}
-                        onChange={(id, checked) => {
-                            const o = find(this.widgetList, { id: id });
-                            if (o) {
-                                o.visible = checked;
-                            }
-                        }}
+                        data={this.widgetList}
+                        onChange={this.handleChangeWidgetVisibility}
                     />
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    <Button
                         onClick={this.handleCancel}
                     >
                         {i18n._('Cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
+                    </Button>
+                    <Button
+                        btnStyle="primary"
                         onClick={this.handleSave}
                     >
                         {i18n._('OK')}
-                    </button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );
