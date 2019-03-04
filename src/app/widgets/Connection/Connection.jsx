@@ -2,12 +2,12 @@ import find from 'lodash/find';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
 import map from 'lodash/map';
-import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Fragment, PureComponent } from 'react';
 import Select from 'react-select';
 import { Button, ButtonGroup } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Label from 'app/components/Label';
@@ -49,10 +49,10 @@ class Connection extends PureComponent {
             <div style={styles.option} title={label}>
                 <div>
                     {inuse &&
-                    <span>
-                        <i className="fa fa-lock" />
+                    <Fragment>
+                        <FontAwesomeIcon icon="lock" />
                         <Space width={8} />
-                    </span>
+                    </Fragment>
                     }
                     {label}
                 </div>
@@ -76,10 +76,10 @@ class Connection extends PureComponent {
         return (
             <div style={style} title={label}>
                 {inuse &&
-                <span>
-                    <i className="fa fa-lock" />
+                <Fragment>
+                    <FontAwesomeIcon icon="lock" />
                     <Space width={8} />
-                </span>
+                </Fragment>
                 }
                 {label}
             </div>
@@ -222,23 +222,16 @@ class Connection extends PureComponent {
                                 textAlign: 'right'
                             }}
                         >
-                            <button
-                                type="button"
-                                className="btn btn-default"
+                            <Button
+                                btnStyle="default"
                                 name="btn-refresh"
                                 title={i18n._('Refresh')}
                                 onClick={actions.handleRefreshPorts}
                                 disabled={!canRefresh}
                                 style={{ minHeight: 38 }}
                             >
-                                <i
-                                    className={cx(
-                                        'fa',
-                                        'fa-refresh',
-                                        { 'fa-spin': loading }
-                                    )}
-                                />
-                            </button>
+                                <FontAwesomeIcon icon="sync" fixedWidth spin={loading} />
+                            </Button>
                         </Col>
                     </Row>
                 </FormGroup>
@@ -291,32 +284,30 @@ class Connection extends PureComponent {
                         {i18n._('Connect automatically')}
                     </Checkbox>
                 </FormGroup>
-                <div className="btn-group btn-group-sm">
+                <ButtonGroup>
                     {notConnected &&
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            disabled={!canOpenPort}
-                            onClick={actions.handleOpenPort}
-                        >
-                            <i className="fa fa-toggle-off" />
-                            <Space width={8} />
-                            {i18n._('Open')}
-                        </button>
+                    <Button
+                        btnStyle="primary"
+                        disabled={!canOpenPort}
+                        onClick={actions.handleOpenPort}
+                    >
+                        <FontAwesomeIcon icon="toggle-off" />
+                        <Space width={8} />
+                        {i18n._('Open')}
+                    </Button>
                     }
                     {connected &&
-                        <button
-                            type="button"
-                            className="btn btn-danger"
-                            disabled={!canClosePort}
-                            onClick={actions.handleClosePort}
-                        >
-                            <i className="fa fa-toggle-on" />
-                            <Space width={8} />
-                            {i18n._('Close')}
-                        </button>
+                    <Button
+                        btnStyle="danger"
+                        disabled={!canClosePort}
+                        onClick={actions.handleClosePort}
+                    >
+                        <FontAwesomeIcon icon="toggle-on" />
+                        <Space width={8} />
+                        {i18n._('Close')}
+                    </Button>
                     }
-                </div>
+                </ButtonGroup>
             </Container>
         );
     }
