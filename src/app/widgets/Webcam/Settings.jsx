@@ -2,6 +2,7 @@ import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
+import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
@@ -18,6 +19,7 @@ class Settings extends PureComponent {
         onSave: PropTypes.func,
         onCancel: PropTypes.func
     };
+
     static defaultProps = {
         mediaSource: MEDIA_SOURCE_LOCAL,
         deviceId: '',
@@ -159,20 +161,18 @@ class Settings extends PureComponent {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    <Button
+                        btnStyle="default"
                         onClick={this.handleCancel}
                     >
                         {i18n._('Cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
+                    </Button>
+                    <Button
+                        btnStyle="primary"
                         onClick={this.handleSave}
                     >
                         {i18n._('Save Changes')}
-                    </button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );
