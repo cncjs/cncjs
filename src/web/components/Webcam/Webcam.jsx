@@ -43,11 +43,15 @@ class Webcam extends PureComponent {
 
     state = {
         hasUserMedia: false,
-        src: null
+        stream: null,
     };
-    stream = null;
     canvas = null;
     ctx = null;
+
+    constructor(props) {
+        super(props);
+        this.videoRef = React.createRef();
+    }
 
     componentDidMount() {
         if (!Webcam.getUserMedia) {
@@ -60,30 +64,44 @@ class Webcam extends PureComponent {
             this.requestUserMedia();
         }
     }
+
+    componentDidUpdate() {
+        if (this.videoRef.current.srcObject !== this.state.stream) {
+            this.videoRef.current.srcObject = this.state.stream;
+        }
+    }
+
     componentWillUnmount() {
         const index = Webcam.mountedInstances.indexOf(this);
         Webcam.mountedInstances.splice(index, 1);
 
-        if (Webcam.mountedInstances.length === 0 && this.state.hasUserMedia) {
-            if (this.stream.stop) {
-                this.stream.stop();
+        const { hasUserMedia, stream } = this.state;
+
+        if (Webcam.mountedInstances.length === 0 && hasUserMedia) {
+            if (stream.stop) {
+                stream.stop();
             } else {
-                if (this.stream.getVideoTracks) {
-                    for (let track of this.stream.getVideoTracks()) {
+                if (stream.getVideoTracks) {
+                    for (let track of stream.getVideoTracks()) {
                         track.stop();
                     }
                 }
 
-                if (this.stream.getAudioTracks) {
-                    for (let track of this.stream.getAudioTracks()) {
+                if (stream.getAudioTracks) {
+                    for (let track of stream.getAudioTracks()) {
                         track.stop();
                     }
                 }
             }
             Webcam.userMediaRequested = false;
-            window.URL.revokeObjectURL(this.state.src);
+
+            window.URL.revokeObjectURL(this.state.srcObject);
         }
+
+        this.canvas = null;
+        this.ctx = null;
     }
+
     requestUserMedia() {
         if (!Webcam.getUserMedia) {
             return;
@@ -95,20 +113,18 @@ class Webcam extends PureComponent {
                 constraints,
                 (stream) => {
                     Webcam.mountedInstances.forEach(instance => {
-                        instance.stream = stream;
                         instance.setState({
                             hasUserMedia: true,
-                            src: window.URL.createObjectURL(stream)
+                            stream: stream
                         });
                     });
                     Webcam.userMediaRequested = true;
                 },
                 (err) => {
                     Webcam.mountedInstances.forEach(instance => {
-                        instance.stream = null;
                         instance.setState({
                             hasUserMedia: false,
-                            src: null
+                            stream: null
                         });
                     });
                     Webcam.userMediaRequested = false;
@@ -163,6 +179,7 @@ class Webcam extends PureComponent {
         // This method was removed from the spec in favor of MediaDevices.enumerateDevices().
         // This was deprecated in Chrome 40.
     }
+
     getScreenshot() {
         if (!this.state.hasUserMedia) {
             return null;
@@ -171,6 +188,7 @@ class Webcam extends PureComponent {
         const canvas = this.getCanvas();
         return canvas ? canvas.toDataURL(this.props.screenshotFormat) : null;
     }
+
     getCanvas() {
         if (!this.state.hasUserMedia) {
             return null;
@@ -193,19 +211,23 @@ class Webcam extends PureComponent {
 
         return canvas;
     }
-    render() {
-        const { className, style, ...props } = this.props;
 
-        delete props.audio;
-        delete props.video;
-        delete props.screenshotFormat;
+    render() {
+        const {
+            className,
+            style,
+            audio, // eslint-disable-line
+            video, // eslint-disable-line
+            screenshotFormat, // eslint-disable-line
+            ...props
+        } = this.props;
 
         return (
             <video
                 {...props}
+                ref={this.videoRef}
                 className={className}
                 style={style}
-                src={this.state.src}
             />
         );
     }
