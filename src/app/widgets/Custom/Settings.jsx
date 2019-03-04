@@ -1,6 +1,7 @@
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Button } from 'app/components/Buttons';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 
@@ -28,12 +29,13 @@ class Settings extends PureComponent {
             url: this.config.get('url')
         };
     };
+
     save = () => {
         const title = this.fields.title.value;
         const url = this.fields.url.value;
         this.config.set('title', title);
         this.config.set('url', url);
-    }
+    };
 
     render() {
         const {
@@ -77,16 +79,14 @@ class Settings extends PureComponent {
                     </div>
                 </Modal.Body>
                 <Modal.Footer>
-                    <button
-                        type="button"
-                        className="btn btn-default"
+                    <Button
+                        btnStyle="default"
                         onClick={this.props.onCancel}
                     >
                         {i18n._('Cancel')}
-                    </button>
-                    <button
-                        type="button"
-                        className="btn btn-primary"
+                    </Button>
+                    <Button
+                        btnStyle="primary"
                         onClick={event => {
                             this.save();
 
@@ -95,7 +95,7 @@ class Settings extends PureComponent {
                         }}
                     >
                         {i18n._('Save Changes')}
-                    </button>
+                    </Button>
                 </Modal.Footer>
             </Modal>
         );
