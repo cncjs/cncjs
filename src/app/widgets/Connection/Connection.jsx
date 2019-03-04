@@ -6,6 +6,7 @@ import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
+import { Button, ButtonGroup } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
@@ -141,74 +142,52 @@ class Connection extends PureComponent {
                 }
                 {canSelectControllers &&
                 <FormGroup>
-                    <div className="input-group input-group-sm">
-                        <div className="input-group-btn">
-                            {hasGrblController &&
-                            <button
-                                type="button"
-                                className={cx(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': controllerType === GRBL }
-                                )}
-                                disabled={!canChangeController}
-                                onClick={() => {
-                                    actions.changeController(GRBL);
-                                }}
-                            >
-                                {GRBL}
-                            </button>
-                            }
-                            {hasMarlinController &&
-                            <button
-                                type="button"
-                                className={cx(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': controllerType === MARLIN }
-                                )}
-                                disabled={!canChangeController}
-                                onClick={() => {
-                                    actions.changeController(MARLIN);
-                                }}
-                            >
-                                {MARLIN}
-                            </button>
-                            }
-                            {hasSmoothieController &&
-                            <button
-                                type="button"
-                                className={cx(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': controllerType === SMOOTHIE }
-                                )}
-                                disabled={!canChangeController}
-                                onClick={() => {
-                                    actions.changeController(SMOOTHIE);
-                                }}
-                            >
-                                {SMOOTHIE}
-                            </button>
-                            }
-                            {hasTinyGController &&
-                            <button
-                                type="button"
-                                className={cx(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': controllerType === TINYG }
-                                )}
-                                disabled={!canChangeController}
-                                onClick={() => {
-                                    actions.changeController(TINYG);
-                                }}
-                            >
-                                {TINYG}
-                            </button>
-                            }
-                        </div>
-                    </div>
+                    <ButtonGroup>
+                        {hasGrblController &&
+                        <Button
+                            btnStyle={controllerType === GRBL ? 'dark' : 'default'}
+                            disabled={!canChangeController}
+                            onClick={() => {
+                                actions.changeController(GRBL);
+                            }}
+                        >
+                            {GRBL}
+                        </Button>
+                        }
+                        {hasMarlinController &&
+                        <Button
+                            btnStyle={controllerType === MARLIN ? 'dark' : 'default'}
+                            disabled={!canChangeController}
+                            onClick={() => {
+                                actions.changeController(MARLIN);
+                            }}
+                        >
+                            {MARLIN}
+                        </Button>
+                        }
+                        {hasSmoothieController &&
+                        <Button
+                            btnStyle={controllerType === SMOOTHIE ? 'dark' : 'default'}
+                            disabled={!canChangeController}
+                            onClick={() => {
+                                actions.changeController(SMOOTHIE);
+                            }}
+                        >
+                            {SMOOTHIE}
+                        </Button>
+                        }
+                        {hasTinyGController &&
+                        <Button
+                            btnStyle={controllerType === TINYG ? 'dark' : 'default'}
+                            disabled={!canChangeController}
+                            onClick={() => {
+                                actions.changeController(TINYG);
+                            }}
+                        >
+                            {TINYG}
+                        </Button>
+                        }
+                    </ButtonGroup>
                 </FormGroup>
                 }
                 <FormGroup>
