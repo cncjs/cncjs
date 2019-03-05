@@ -77,35 +77,47 @@ config.restoreDefault = () => {
 };
 
 const normalizeState = (state) => {
-    // Keep default widgets unchanged
-    const defaultList = _get(defaultState, 'workspace.container.default.widgets');
-    _set(state, 'workspace.container.default.widgets', defaultList);
+    { // Update workspace widgets
+        // Keep default widgets unchanged
+        const defaultList = _get(defaultState, 'workspace.container.default.widgets');
+        _set(state, 'workspace.container.default.widgets', defaultList);
 
-    // Update primary widgets
-    let primaryList = _get(cnc.state, 'workspace.container.primary.widgets');
-    if (primaryList) {
+        // Update primary widgets
+        let primaryList = _get(cnc.state, 'workspace.container.primary.widgets');
+        if (primaryList) {
+            _set(state, 'workspace.container.primary.widgets', primaryList);
+        } else {
+            primaryList = _get(state, 'workspace.container.primary.widgets');
+        }
+
+        // Update secondary widgets
+        let secondaryList = _get(cnc.state, 'workspace.container.secondary.widgets');
+        if (secondaryList) {
+            _set(state, 'workspace.container.secondary.widgets', secondaryList);
+        } else {
+            secondaryList = _get(state, 'workspace.container.secondary.widgets');
+        }
+
+        primaryList = _uniq(ensureArray(primaryList)); // Use the same order in primaryList
+        primaryList = _difference(primaryList, defaultList); // Exclude defaultList
+
+        secondaryList = _uniq(ensureArray(secondaryList)); // Use the same order in secondaryList
+        secondaryList = _difference(secondaryList, primaryList); // Exclude primaryList
+        secondaryList = _difference(secondaryList, defaultList); // Exclude defaultList
+
         _set(state, 'workspace.container.primary.widgets', primaryList);
-    } else {
-        primaryList = _get(state, 'workspace.container.primary.widgets');
-    }
-
-    // Update secondary widgets
-    let secondaryList = _get(cnc.state, 'workspace.container.secondary.widgets');
-    if (secondaryList) {
         _set(state, 'workspace.container.secondary.widgets', secondaryList);
-    } else {
-        secondaryList = _get(state, 'workspace.container.secondary.widgets');
     }
 
-    primaryList = _uniq(ensureArray(primaryList)); // Use the same order in primaryList
-    primaryList = _difference(primaryList, defaultList); // Exclude defaultList
-
-    secondaryList = _uniq(ensureArray(secondaryList)); // Use the same order in secondaryList
-    secondaryList = _difference(secondaryList, primaryList); // Exclude primaryList
-    secondaryList = _difference(secondaryList, defaultList); // Exclude defaultList
-
-    _set(state, 'workspace.container.primary.widgets', primaryList);
-    _set(state, 'workspace.container.secondary.widgets', secondaryList);
+    { // Remember configured axes (#416)
+        const configuredAxes = ensureArray(_get(cnc.state, 'widgets.axes.axes'));
+        const defaultAxes = ensureArray(_get(defaultState, 'widgets.axes.axes'));
+        if (configuredAxes.length > 0) {
+            _set(state, 'widgets.axes.axes', configuredAxes);
+        } else {
+            _set(state, 'widgets.axes.axes', defaultAxes);
+        }
+    }
 
     return state;
 };
