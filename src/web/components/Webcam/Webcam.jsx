@@ -1,9 +1,8 @@
 /* eslint jsx-a11y/media-has-caption: 0 */
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import { findDOMNode } from 'react-dom';
+import React, { Component } from 'react';
 
-class Webcam extends PureComponent {
+class Webcam extends Component {
     static propTypes = {
         // Video props
         autoPlay: PropTypes.bool,
@@ -45,13 +44,10 @@ class Webcam extends PureComponent {
         hasUserMedia: false,
         stream: null,
     };
+
+    video = null;
     canvas = null;
     ctx = null;
-
-    constructor(props) {
-        super(props);
-        this.videoRef = React.createRef();
-    }
 
     componentDidMount() {
         if (!Webcam.getUserMedia) {
@@ -66,8 +62,8 @@ class Webcam extends PureComponent {
     }
 
     componentDidUpdate() {
-        if (this.videoRef.current.srcObject !== this.state.stream) {
-            this.videoRef.current.srcObject = this.state.stream;
+        if (this.video.srcObject !== this.state.stream) {
+            this.video.srcObject = this.state.stream;
         }
     }
 
@@ -194,20 +190,19 @@ class Webcam extends PureComponent {
             return null;
         }
 
-        const video = findDOMNode(this);
         if (!this.ctx) {
             const canvas = document.createElement('canvas');
-            const aspectRatio = video.videoWidth / video.videoHeight;
+            const aspectRatio = this.video.videoWidth / this.video.videoHeight;
 
-            canvas.width = video.clientWidth;
-            canvas.height = video.clientWidth / aspectRatio;
+            canvas.width = this.video.clientWidth;
+            canvas.height = this.video.clientWidth / aspectRatio;
 
             this.canvas = canvas;
             this.ctx = canvas.getContext('2d');
         }
 
         const { ctx, canvas } = this;
-        ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+        ctx.drawImage(this.video, 0, 0, canvas.width, canvas.height);
 
         return canvas;
     }
@@ -225,7 +220,9 @@ class Webcam extends PureComponent {
         return (
             <video
                 {...props}
-                ref={this.videoRef}
+                ref={video => {
+                    this.video = video;
+                }}
                 className={className}
                 style={style}
             />
