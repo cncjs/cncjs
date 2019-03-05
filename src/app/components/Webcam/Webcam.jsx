@@ -95,7 +95,7 @@ class Webcam extends PureComponent {
             }
             Webcam.userMediaRequested = false;
 
-            window.URL.revokeObjectURL(this.state.srcObject);
+            window.URL.revokeObjectURL(stream);
         }
 
         this.canvas = null;
