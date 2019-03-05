@@ -22,14 +22,13 @@ class Webcam extends PureComponent {
         actions: PropTypes.object
     };
 
-    mediaSource = null;
+    imageSource = null;
 
     refresh() {
         const { state } = this.props;
-        const { mediaSource } = state;
 
-        if (mediaSource === MEDIA_SOURCE_MJPEG) {
-            const el = ReactDOM.findDOMNode(this.mediaSource);
+        if (this.imageSource) {
+            const el = ReactDOM.findDOMNode(this.imageSource);
             el.src = '';
 
             setTimeout(() => {
@@ -73,9 +72,6 @@ class Webcam extends PureComponent {
                 {mediaSource === MEDIA_SOURCE_LOCAL &&
                 <div style={{ width: '100%' }}>
                     <WebcamComponent
-                        ref={node => {
-                            this.mediaSource = node;
-                        }}
                         className={styles.center}
                         style={{ transform: transformStyle }}
                         width={(100 * scale).toFixed(0) + '%'}
@@ -88,7 +84,7 @@ class Webcam extends PureComponent {
                 {mediaSource === MEDIA_SOURCE_MJPEG &&
                 <Image
                     ref={node => {
-                        this.mediaSource = node;
+                        this.imageSource = node;
                     }}
                     src={url}
                     style={{
