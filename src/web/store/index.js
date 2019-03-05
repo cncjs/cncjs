@@ -69,6 +69,10 @@ const persist = (data) => {
 };
 
 const normalizeState = (state) => {
+    //
+    // Normalize workspace widgets
+    //
+
     // Keep default widgets unchanged
     const defaultList = get(defaultState, 'workspace.container.default.widgets');
     set(state, 'workspace.container.default.widgets', defaultList);
@@ -98,6 +102,17 @@ const normalizeState = (state) => {
 
     set(state, 'workspace.container.primary.widgets', primaryList);
     set(state, 'workspace.container.secondary.widgets', secondaryList);
+
+    //
+    // Remember configured axes (#416)
+    //
+    const configuredAxes = ensureArray(get(cnc.state, 'widgets.axes.axes'));
+    const defaultAxes = ensureArray(get(defaultState, 'widgets.axes.axes'));
+    if (configuredAxes.length > 0) {
+        set(state, 'widgets.axes.axes', configuredAxes);
+    } else {
+        set(state, 'widgets.axes.axes', defaultAxes);
+    }
 
     return state;
 };
