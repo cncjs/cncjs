@@ -64,9 +64,7 @@ before_install:
 install: travis_wait 40 npm install
 
 before_script:
-  - COMMIT_COUNT=`git rev-list --count $TRAVIS_BRANCH`
   - COMMIT_LOG=`git log -1 --format='%ci %H %s'`
-  - echo "$COMMIT_COUNT"
   - echo "$COMMIT_LOG"
 
 script:
