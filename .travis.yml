@@ -208,4 +208,4 @@ deploy:
   on:
     # https://docs.travis-ci.com/user/deployment#Conditional-Releases-with-on
     tags: true  # Deploy app only when a tag is applied to the commit
-    node: '8'
+    node: '10'

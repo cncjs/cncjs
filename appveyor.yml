@@ -13,7 +13,8 @@ init:
 
 environment:
   matrix:
-  - nodejs_version: "10"
+    - nodejs_version: "8"
+    - nodejs_version: "10"
   global:
     CI_BUILD_NUMBER: $(appveyor_build_number)
     GH_TOKEN:
@@ -73,7 +74,7 @@ build_script:
   - ps: echo "$RELEASE"
   - ps: mkdir releases
   - ps: |
-      if ($env:nodejs_version -eq '8' -And $env:platform -eq 'x64') {
+      if ($env:nodejs_version -eq '10' -And $env:platform -eq 'x64') {
         npm run build:win-x64
         Get-ChildItem output
         Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-x64.exe"
@@ -85,7 +86,7 @@ build_script:
         }
       }
   - ps: |
-      if ($env:nodejs_version -eq '8' -And $env:platform -eq 'x64') {
+      if ($env:nodejs_version -eq '10' -And $env:platform -eq 'x64') {
         npm run build:win-ia32
         Get-ChildItem output
         Copy-Item "output\${PRODUCT_NAME} Setup ${PACKAGE_VERSION}.exe" "releases\${RELEASE}-win-ia32.exe"
