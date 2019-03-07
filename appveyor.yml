@@ -52,9 +52,7 @@ install:
   - npm install
 
 before_build:
-  - ps: $COMMIT_COUNT = git rev-list --count $env:APPVEYOR_REPO_BRANCH
   - ps: $COMMIT_LOG = git log -1 --format='%ci %H %s'
-  - ps: echo "$COMMIT_COUNT"
   - ps: echo "$COMMIT_LOG"
 
 build_script:
