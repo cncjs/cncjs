@@ -88,7 +88,7 @@ after_success:
   - mkdir -p releases
   - |
     # build:mac-x64
-    if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "osx" ]]; then
+    if [[ "$TRAVIS_NODE_VERSION" == "10" && "$TRAVIS_OS_NAME" == "osx" ]]; then
       # https://github.com/electron-userland/electron-builder/issues/398
       security import "scripts/certs/Certum-Code-Signing-CA-SHA2.cer" -k ~/Library/Keychains/login.keychain -T /usr/bin/codesign;
       # https://github.com/electron-userland/electron-osx-sign/issues/83
@@ -118,7 +118,7 @@ after_success:
     fi
   - |
     # build:linux-ia32
-    if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_NODE_VERSION" == "10" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-ia32;
       ls -al output output/*;
       cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}-i386.AppImage" "releases/${RELEASE}-linux-i386.AppImage";
@@ -154,7 +154,7 @@ after_success:
     fi
   - |
     # build:linux-x64
-    if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_NODE_VERSION" == "10" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       npm run build:linux-x64;
       ls -al output output/*;
       cp -af "output/${PACKAGE_NAME}-${PACKAGE_VERSION}-x86_64.AppImage" "releases/${RELEASE}-linux-x86_64.AppImage";
@@ -190,7 +190,7 @@ after_success:
     fi
   - |
     # docker image
-    if [[ "$TRAVIS_NODE_VERSION" == "8" && "$TRAVIS_OS_NAME" == "linux" ]]; then
+    if [[ "$TRAVIS_NODE_VERSION" == "10" && "$TRAVIS_OS_NAME" == "linux" ]]; then
       travis_wait 40 scripts/travis-docker-build.sh;
     fi
 
@@ -208,4 +208,4 @@ deploy:
   on:
     # https://docs.travis-ci.com/user/deployment#Conditional-Releases-with-on
     tags: true  # Deploy app only when a tag is applied to the commit
-    node: '8'
+    node: '10'
