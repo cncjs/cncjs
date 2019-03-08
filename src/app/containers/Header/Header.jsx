@@ -1,44 +1,48 @@
 //import classNames from 'classnames';
 import React, { PureComponent } from 'react';
-//import { Nav, Navbar, NavDropdown, MenuItem, OverlayTrigger, Tooltip } from 'react-bootstrap';
 import { withRouter } from 'react-router-dom';
 import semver from 'semver';
-import without from 'lodash/without';
+import styled from 'styled-components';
+import _without from 'lodash/without';
 import Push from 'push.js';
 import api from 'app/api';
-//import Anchor from 'app/components/Anchor';
+import Anchor from 'app/components/Anchor';
 import Badge from 'app/components/Badge';
+import { Button } from 'app/components/Buttons';
 import { Container, Row, Col } from 'app/components/GridSystem';
+import Dropdown, { MenuItem } from 'app/components/Dropdown';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Hoverable from 'app/components/Hoverable';
 import Image from 'app/components/Image';
 //import Margin from 'app/components/Margin';
-//import Space from 'app/components/Space';
+import Space from 'app/components/Space';
 import { Tooltip } from 'app/components/Tooltip';
 import Text from 'app/components/Text';
 import settings from 'app/config/settings';
 import combokeys from 'app/lib/combokeys';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-//import log from 'app/lib/log';
-//import * as user from 'app/lib/user';
-//import config from 'app/store/config';
+import log from 'app/lib/log';
+import * as user from 'app/lib/user';
+import config from 'app/store/config';
 //import QuickAccessToolbar from './QuickAccessToolbar';
 //import styles from './index.styl';
 import logo from 'app/images/logo-badge-32x32.png';
 
-//const releases = 'https://github.com/cncjs/cncjs/releases';
+const releases = 'https://github.com/cncjs/cncjs/releases';
 
-/*
-const newUpdateAvailableTooltip = () => {
-    return (
-        <Tooltip
-            style={{ color: '#fff' }}
-            content={<div>{i18n._('New update available')}</div>}
-        >
-        </Tooltip>
-    );
-};
-*/
+const UserDropdownToggle = styled(Button)`
+    & {
+        background: none;
+        border: none;
+        opacity: 0.6;
+
+        :hover {
+            background: none;
+            opacity: 1;
+        }
+    }
+`;
 
 class Header extends PureComponent {
     static propTypes = {
@@ -138,7 +142,7 @@ class Header extends PureComponent {
                         err: err
                     };
                 }),
-                runningTasks: without(this.state.runningTasks, taskId)
+                runningTasks: _without(this.state.runningTasks, taskId)
             });
 
             if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
@@ -170,7 +174,7 @@ class Header extends PureComponent {
                         err: err
                     };
                 }),
-                runningTasks: without(this.state.runningTasks, taskId)
+                runningTasks: _without(this.state.runningTasks, taskId)
             });
 
             if (cmd && this.state.pushPermission === Push.Permission.GRANTED) {
@@ -256,12 +260,20 @@ class Header extends PureComponent {
     }
 
     render() {
+        const { history, location } = this.props;
         const { currentVersion, latestVersion } = this.state;
         const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
+        const sessionEnabled = config.get('session.enabled');
+        const signedInName = config.get('session.name');
 
         return (
             <Container fluid>
-                <Row style={{ height: 50 }}>
+                <Row
+                    style={{
+                        height: 50,
+                        justifyContent: 'space-between',
+                    }}
+                >
                     <Col
                         width="auto"
                         style={{
@@ -269,54 +281,108 @@ class Header extends PureComponent {
                             width: 60,
                         }}
                     >
-                        <Hoverable>
-                            {(hovered) => (
-                                <Row
-                                    style={{
-                                        flexDirection: 'column',
-                                        height: '100%',
-                                        paddingTop: 4,
-                                        cursor: hovered ? 'pointer' : 'default',
-                                    }}
-                                >
-                                    <Col width="auto">
-                                        <Image src={logo} width={32} height={32} />
-                                    </Col>
-                                    <Col>
-                                        <Text
-                                            color={hovered ? '#fff' : '#9d9d9d'}
-                                            size="50%"
-                                            style={{
-                                                lineHeight: 1,
-                                                margin: '2px 0',
-                                                verticalAlign: 'top',
-                                            }}
-                                        >
-                                            {settings.version}
-                                        </Text>
-                                    </Col>
-                                </Row>
+                        <Anchor
+                            href={releases}
+                            target="_blank"
+                            title={`${settings.productName} ${settings.version}`}
+                        >
+                            <Hoverable>
+                                {(hovered) => (
+                                    <Row
+                                        style={{
+                                            flexDirection: 'column',
+                                            height: '100%',
+                                            paddingTop: 4,
+                                            cursor: hovered ? 'pointer' : 'default',
+                                        }}
+                                    >
+                                        <Col width="auto">
+                                            <Image src={logo} width={32} height={32} />
+                                        </Col>
+                                        <Col>
+                                            <Text
+                                                color={hovered ? '#fff' : '#9d9d9d'}
+                                                size="50%"
+                                                style={{
+                                                    lineHeight: 1,
+                                                    margin: '2px 0',
+                                                    verticalAlign: 'top',
+                                                }}
+                                            >
+                                                {settings.version}
+                                            </Text>
+                                        </Col>
+                                    </Row>
+                                )}
+                            </Hoverable>
+                            {newUpdateAvailable && (
+                                <Tooltip content={i18n._('New update available')}>
+                                    <Badge
+                                        style={{
+                                            position: 'absolute',
+                                            top: 0,
+                                            right: 0,
+                                            backgroundColor: '#007bff',
+                                            color: '#fff',
+                                            cursor: 'default',
+                                        }}
+                                    >
+                                        N
+                                    </Badge>
+                                </Tooltip>
                             )}
-                        </Hoverable>
-                        {newUpdateAvailable && (
-                            <Tooltip content={i18n._('New update available')}>
-                                <Badge
-                                    style={{
-                                        position: 'absolute',
-                                        top: 0,
-                                        right: 0,
-                                        backgroundColor: '#007bff',
-                                        color: '#fff',
-                                        cursor: 'default',
+                        </Anchor>
+                    </Col>
+                    <Col
+                        width="auto"
+                        style={{
+                            display: 'flex',
+                        }}
+                    >
+                        {sessionEnabled &&
+                        <Dropdown
+                            pullRight
+                        >
+                            <Dropdown.Toggle
+                                componentClass={UserDropdownToggle}
+                                btnStyle="dark"
+                            >
+                                <FontAwesomeIcon icon="user" />
+                            </Dropdown.Toggle>
+                            <Dropdown.Menu>
+                                <MenuItem header>
+                                    {i18n._('Signed in as {{name}}', { name: signedInName })}
+                                </MenuItem>
+                                <MenuItem divider />
+                                <MenuItem
+                                    onClick={() => {
+                                        history.push('/settings/account');
                                     }}
                                 >
-                                    N
-                                </Badge>
-                            </Tooltip>
-                        )}
-                    </Col>
-                    <Col>
-                        xxx
+                                    <FontAwesomeIcon icon="user" fixedWidth />
+                                    <Space width="8" />
+                                    {i18n._('Account')}
+                                </MenuItem>
+                                <MenuItem
+                                    onClick={() => {
+                                        if (user.isAuthenticated()) {
+                                            log.debug('Destroy and cleanup the WebSocket connection');
+                                            controller.disconnect();
+
+                                            user.signout();
+
+                                            // Remember current location
+                                            history.replace(location.pathname);
+                                        }
+                                    }}
+                                >
+                                    <FontAwesomeIcon icon="sign-out-alt" fixedWidth />
+                                    <Space width="8" />
+                                    {i18n._('Sign Out')}
+                                </MenuItem>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                        }
                     </Col>
                 </Row>
             </Container>
