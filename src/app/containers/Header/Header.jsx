@@ -1,5 +1,4 @@
-//import classNames from 'classnames';
-import React, { PureComponent } from 'react';
+import React, { Fragment, Component } from 'react';
 import { withRouter } from 'react-router-dom';
 import semver from 'semver';
 import styled from 'styled-components';
@@ -14,7 +13,6 @@ import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Hoverable from 'app/components/Hoverable';
 import Image from 'app/components/Image';
-//import Margin from 'app/components/Margin';
 import Space from 'app/components/Space';
 import { Tooltip } from 'app/components/Tooltip';
 import Text from 'app/components/Text';
@@ -25,13 +23,12 @@ import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
 import config from 'app/store/config';
-//import QuickAccessToolbar from './QuickAccessToolbar';
-//import styles from './index.styl';
 import logo from 'app/images/logo-badge-32x32.png';
+import QuickAccessToolbar from './QuickAccessToolbar';
 
 const releases = 'https://github.com/cncjs/cncjs/releases';
 
-const UserDropdownToggle = styled(Button)`
+const NavDropdownToggle = styled(Button)`
     & {
         background: none;
         border: none;
@@ -44,7 +41,7 @@ const UserDropdownToggle = styled(Button)`
     }
 `;
 
-class Header extends PureComponent {
+class Header extends Component {
     static propTypes = {
         ...withRouter.propTypes
     };
@@ -259,9 +256,82 @@ class Header extends PureComponent {
         });
     }
 
+    mapCommandsToMenuItems(commands) {
+        if (commands.length === 0) {
+            return null;
+        }
+
+        return (
+            <Fragment>
+                <MenuItem header>
+                    <Row
+                        style={{
+                            justifyContent: 'space-between',
+                            flexWrap: 'nowrap',
+                        }}
+                    >
+                        <Col width="auto">
+                            {i18n._('Command')}
+                        </Col>
+                        <Col width="auto">
+                            <Space width={12} />
+                            {(this.state.pushPermission === Push.Permission.GRANTED) && (
+                                <FontAwesomeIcon icon="bell" fixedWidth />
+                            )}
+                            {(this.state.pushPermission === Push.Permission.DEFAULT) && (
+                                <Anchor
+                                    onClick={this.actions.requestPushPermission}
+                                    title={i18n._('Show notifications')}
+                                >
+                                    <FontAwesomeIcon icon="bell" fixedWidth />
+                                </Anchor>
+                            )}
+                        </Col>
+                    </Row>
+                </MenuItem>
+                {commands.map(cmd => {
+                    let icon = null;
+                    let spin = false;
+
+                    if (this.state.runningTasks.indexOf(cmd.taskId) >= 0) { // Task is runing
+                        icon = 'circle-notch';
+                        spin = true;
+                    }
+                    if (cmd.err) {
+                        icon = 'exclamation-circle';
+                        spin = false;
+                    }
+
+                    return (
+                        <MenuItem
+                            key={cmd.id}
+                            disabled={cmd.disabled}
+                            onSelect={() => {
+                                this.actions.runCommand(cmd);
+                            }}
+                        >
+                            <Row style={{ justifyContent: 'space-between' }}>
+                                <Col width="auto">
+                                    {cmd.title || cmd.command}
+                                </Col>
+                                <Col width="auto" title={cmd.err}>
+                                    <Space width={12} />
+                                    {icon && (
+                                        <FontAwesomeIcon icon={icon} spin={spin} fixedWidth />
+                                    )}
+                                </Col>
+                            </Row>
+                        </MenuItem>
+                    );
+                })}
+                <MenuItem divider />
+            </Fragment>
+        );
+    }
+
     render() {
         const { history, location } = this.props;
-        const { currentVersion, latestVersion } = this.state;
+        const { commands, currentVersion, latestVersion } = this.state;
         const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
         const sessionEnabled = config.get('session.enabled');
         const signedInName = config.get('session.name');
@@ -270,8 +340,8 @@ class Header extends PureComponent {
             <Container fluid>
                 <Row
                     style={{
-                        height: 50,
                         justifyContent: 'space-between',
+                        flexWrap: 'nowrap',
                     }}
                 >
                     <Col
@@ -281,329 +351,169 @@ class Header extends PureComponent {
                             width: 60,
                         }}
                     >
-                        <Anchor
-                            href={releases}
-                            target="_blank"
-                            title={`${settings.productName} ${settings.version}`}
-                        >
-                            <Hoverable>
-                                {(hovered) => (
-                                    <Row
-                                        style={{
-                                            flexDirection: 'column',
-                                            height: '100%',
-                                            paddingTop: 4,
-                                            cursor: hovered ? 'pointer' : 'default',
-                                        }}
+                        <Hoverable>
+                            {(hovered) => (
+                                <div
+                                    role="presentation"
+                                    style={{
+                                        cursor: hovered ? 'pointer' : 'default',
+                                        height: 60,
+                                        display: 'flex',
+                                        flexWrap: 'wrap',
+                                        alignItems: 'center',
+                                        justifyContent: 'center',
+                                    }}
+                                    title={`${settings.productName} ${settings.version}`}
+                                    onClick={() => {
+                                        window.open(releases, '_blank');
+                                    }}
+                                >
+                                    <div>
+                                        <Image src={logo} width={32} height={32} />
+                                    </div>
+                                    <Text
+                                        color={hovered ? '#fff' : '#9d9d9d'}
+                                        size="50%"
                                     >
-                                        <Col width="auto">
-                                            <Image src={logo} width={32} height={32} />
-                                        </Col>
-                                        <Col>
-                                            <Text
-                                                color={hovered ? '#fff' : '#9d9d9d'}
-                                                size="50%"
-                                                style={{
-                                                    lineHeight: 1,
-                                                    margin: '2px 0',
-                                                    verticalAlign: 'top',
-                                                }}
-                                            >
-                                                {settings.version}
-                                            </Text>
-                                        </Col>
-                                    </Row>
-                                )}
-                            </Hoverable>
-                            {newUpdateAvailable && (
-                                <Tooltip content={i18n._('New update available')}>
-                                    <Badge
-                                        style={{
-                                            position: 'absolute',
-                                            top: 0,
-                                            right: 0,
-                                            backgroundColor: '#007bff',
-                                            color: '#fff',
-                                            cursor: 'default',
-                                        }}
-                                    >
-                                        N
-                                    </Badge>
-                                </Tooltip>
+                                        {settings.version}
+                                    </Text>
+                                </div>
                             )}
-                        </Anchor>
+                        </Hoverable>
+                        {newUpdateAvailable && (
+                            <Tooltip content={i18n._('New update available')}>
+                                <Badge
+                                    style={{
+                                        position: 'absolute',
+                                        top: 0,
+                                        right: 0,
+                                        backgroundColor: '#007bff',
+                                        color: '#fff',
+                                        cursor: 'default',
+                                    }}
+                                >
+                                    N
+                                </Badge>
+                            </Tooltip>
+                        )}
                     </Col>
                     <Col
                         width="auto"
                         style={{
+                            paddingLeft: 12,
+                            paddingRight: 12,
                             display: 'flex',
+                            alignItems: 'center',
                         }}
                     >
-                        {sessionEnabled &&
-                        <Dropdown
-                            pullRight
-                        >
-                            <Dropdown.Toggle
-                                componentClass={UserDropdownToggle}
-                                btnStyle="dark"
-                            >
-                                <FontAwesomeIcon icon="user" />
-                            </Dropdown.Toggle>
-                            <Dropdown.Menu>
-                                <MenuItem header>
-                                    {i18n._('Signed in as {{name}}', { name: signedInName })}
-                                </MenuItem>
-                                <MenuItem divider />
-                                <MenuItem
-                                    onClick={() => {
-                                        history.push('/settings/account');
-                                    }}
+                        <Row>
+                            <Col width="auto">
+                                {location.pathname === '/workspace' &&
+                                <QuickAccessToolbar />
+                                }
+                            </Col>
+                            <Col width="auto">
+                                <Space width={12} />
+                            </Col>
+                            <Col width="auto">
+                                {sessionEnabled &&
+                                <Dropdown
+                                    pullRight
                                 >
-                                    <FontAwesomeIcon icon="user" fixedWidth />
-                                    <Space width="8" />
-                                    {i18n._('Account')}
-                                </MenuItem>
-                                <MenuItem
-                                    onClick={() => {
-                                        if (user.isAuthenticated()) {
-                                            log.debug('Destroy and cleanup the WebSocket connection');
-                                            controller.disconnect();
+                                    <Dropdown.Toggle
+                                        componentClass={NavDropdownToggle}
+                                        btnStyle="dark"
+                                    >
+                                        <FontAwesomeIcon icon="user" />
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        <MenuItem header>
+                                            {i18n._('Signed in as {{name}}', { name: signedInName })}
+                                        </MenuItem>
+                                        <MenuItem divider />
+                                        <MenuItem
+                                            onClick={() => {
+                                                history.push('/settings/account');
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon="user" fixedWidth />
+                                            <Space width="8" />
+                                            {i18n._('Account')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            onClick={() => {
+                                                if (user.isAuthenticated()) {
+                                                    log.debug('Destroy and cleanup the WebSocket connection');
+                                                    controller.disconnect();
 
-                                            user.signout();
+                                                    user.signout();
 
-                                            // Remember current location
-                                            history.replace(location.pathname);
+                                                    // Remember current location
+                                                    history.replace(location.pathname);
+                                                }
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon="sign-out-alt" fixedWidth />
+                                            <Space width="8" />
+                                            {i18n._('Sign Out')}
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                                }
+                                <Dropdown
+                                    pullRight
+                                >
+                                    <Dropdown.Toggle
+                                        componentClass={NavDropdownToggle}
+                                        btnStyle="dark"
+                                        noCaret
+                                        title={i18n._('Options')}
+                                    >
+                                        <FontAwesomeIcon icon="ellipsis-v" />
+                                        {(this.state.runningTasks.length > 0) && (
+                                            <Badge
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    right: 0,
+                                                    backgroundColor: '#17a2b8',
+                                                    color: '#fff',
+                                                    cursor: 'default',
+                                                }}
+                                            >
+                                                {this.state.runningTasks.length}
+                                            </Badge>
+                                        )}
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu>
+                                        {(commands.length > 0) &&
+                                        this.mapCommandsToMenuItems(commands)
                                         }
-                                    }}
-                                >
-                                    <FontAwesomeIcon icon="sign-out-alt" fixedWidth />
-                                    <Space width="8" />
-                                    {i18n._('Sign Out')}
-                                </MenuItem>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                        }
+                                        <MenuItem
+                                            onClick={() => {
+                                                const url = 'https://github.com/cncjs/cncjs/wiki';
+                                                window.open(url, '_blank');
+                                            }}
+                                        >
+                                            {i18n._('Help')}
+                                        </MenuItem>
+                                        <MenuItem
+                                            onClick={() => {
+                                                const url = 'https://github.com/cncjs/cncjs/issues';
+                                                window.open(url, '_blank');
+                                            }}
+                                        >
+                                            {i18n._('Report an issue')}
+                                        </MenuItem>
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Col>
+                        </Row>
                     </Col>
                 </Row>
             </Container>
         );
     }
-
-    /*
-    render() {
-        const { history, location } = this.props;
-        const { pushPermission, commands, runningTasks, currentVersion, latestVersion } = this.state;
-        const newUpdateAvailable = semver.lt(currentVersion, latestVersion);
-        const tooltip = newUpdateAvailable ? newUpdateAvailableTooltip() : <div />;
-        const sessionEnabled = config.get('session.enabled');
-        const signedInName = config.get('session.name');
-        const hideUserDropdown = !sessionEnabled;
-        const showCommands = commands.length > 0;
-
-        return (
-            <Navbar
-                fixedTop
-                fluid
-                inverse
-                style={{
-                    border: 'none',
-                    margin: 0,
-                    height: 50,
-                }}
-            >
-                <Navbar.Header>
-                    <OverlayTrigger
-                        overlay={tooltip}
-                        placement="right"
-                    >
-                        <Anchor
-                            className="navbar-brand"
-                            style={{
-                                padding: 0,
-                                position: 'relative',
-                                height: 50,
-                                width: 60
-                            }}
-                            href={releases}
-                            target="_blank"
-                            title={`${settings.productName} ${settings.version}`}
-                        >
-                            <img
-                                style={{
-                                    margin: '4px auto 0 auto'
-                                }}
-                                src="images/logo-badge-32x32.png"
-                                alt=""
-                            />
-                            <div
-                                style={{
-                                    fontSize: '50%',
-                                    lineHeight: '14px',
-                                    textAlign: 'center'
-                                }}
-                            >
-                                {settings.version}
-                            </div>
-                            {newUpdateAvailable &&
-                            <span
-                                className="label label-primary"
-                                style={{
-                                    fontSize: '50%',
-                                    position: 'absolute',
-                                    top: 2,
-                                    right: 2
-                                }}
-                            >
-                                N
-                            </span>
-                            }
-                        </Anchor>
-                    </OverlayTrigger>
-                    <Navbar.Toggle />
-                </Navbar.Header>
-                <Navbar.Collapse>
-                    <Nav pullRight>
-                        <NavDropdown
-                            className={classNames(
-                                { 'hidden': hideUserDropdown }
-                            )}
-                            id="nav-dropdown-user"
-                            title={
-                                <div title={i18n._('My Account')}>
-                                    <i className="fa fa-fw fa-user" />
-                                </div>
-                            }
-                            noCaret
-                        >
-                            <MenuItem header>
-                                {i18n._('Signed in as {{name}}', { name: signedInName })}
-                            </MenuItem>
-                            <MenuItem divider />
-                            <MenuItem
-                                href="#/settings/account"
-                            >
-                                <i className="fa fa-fw fa-user" />
-                                <Space width="8" />
-                                {i18n._('Account')}
-                            </MenuItem>
-                            <MenuItem
-                                onClick={() => {
-                                    if (user.isAuthenticated()) {
-                                        log.debug('Destroy and cleanup the WebSocket connection');
-                                        controller.disconnect();
-
-                                        user.signout();
-
-                                        // Remember current location
-                                        history.replace(location.pathname);
-                                    }
-                                }}
-                            >
-                                <i className="fa fa-fw fa-sign-out" />
-                                <Space width="8" />
-                                {i18n._('Sign Out')}
-                            </MenuItem>
-                        </NavDropdown>
-                        <NavDropdown
-                            id="nav-dropdown-menu"
-                            title={
-                                <div title={i18n._('Options')}>
-                                    <i className="fa fa-fw fa-ellipsis-v" />
-                                    {this.state.runningTasks.length > 0 &&
-                                    <span
-                                        className="label label-primary"
-                                        style={{
-                                            position: 'absolute',
-                                            top: 4,
-                                            right: 4
-                                        }}
-                                    >
-                                        N
-                                    </span>
-                                    }
-                                </div>
-                            }
-                            noCaret
-                        >
-                            {showCommands &&
-                            <MenuItem header>
-                                {i18n._('Command')}
-                                {pushPermission === Push.Permission.GRANTED &&
-                                <span className="pull-right">
-                                    <i className="fa fa-fw fa-bell-o" />
-                                </span>
-                                }
-                                {pushPermission === Push.Permission.DENIED &&
-                                <span className="pull-right">
-                                    <i className="fa fa-fw fa-bell-slash-o" />
-                                </span>
-                                }
-                                {pushPermission === Push.Permission.DEFAULT &&
-                                <span className="pull-right">
-                                    <Anchor
-                                        className={styles.btnIcon}
-                                        onClick={this.actions.requestPushPermission}
-                                        title={i18n._('Show notifications')}
-                                    >
-                                        <i className="fa fa-fw fa-bell" />
-                                    </Anchor>
-                                </span>
-                                }
-                            </MenuItem>
-                            }
-                            {showCommands && commands.map((cmd) => {
-                                const isTaskRunning = runningTasks.indexOf(cmd.taskId) >= 0;
-
-                                return (
-                                    <MenuItem
-                                        key={cmd.id}
-                                        disabled={cmd.disabled}
-                                        onSelect={() => {
-                                            this.actions.runCommand(cmd);
-                                        }}
-                                    >
-                                        <span title={cmd.command}>{cmd.title || cmd.command}</span>
-                                        <span className="pull-right">
-                                            <i
-                                                className={classNames(
-                                                    'fa',
-                                                    'fa-fw',
-                                                    { 'fa-circle-o-notch': isTaskRunning },
-                                                    { 'fa-spin': isTaskRunning },
-                                                    { 'fa-exclamation-circle': cmd.err },
-                                                    { 'text-error': cmd.err }
-                                                )}
-                                                title={cmd.err}
-                                            />
-                                        </span>
-                                    </MenuItem>
-                                );
-                            })}
-                            {showCommands &&
-                            <MenuItem divider />
-                            }
-                            <MenuItem
-                                href="https://github.com/cncjs/cncjs/wiki"
-                                target="_blank"
-                            >
-                                {i18n._('Help')}
-                            </MenuItem>
-                            <MenuItem
-                                href="https://github.com/cncjs/cncjs/issues"
-                                target="_blank"
-                            >
-                                {i18n._('Report an issue')}
-                            </MenuItem>
-                        </NavDropdown>
-                    </Nav>
-                    {location.pathname === '/workspace' &&
-                    <QuickAccessToolbar state={this.state} actions={this.actions} />
-                    }
-                </Navbar.Collapse>
-            </Navbar>
-        );
-    }
-    */
 }
 
 export default withRouter(Header);

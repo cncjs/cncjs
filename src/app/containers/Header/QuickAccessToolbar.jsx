@@ -1,16 +1,11 @@
-import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import { ButtonToolbar, ButtonGroup, Button } from 'app/components/Buttons';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import styles from './index.styl';
 
-class QuickAccessToolbar extends PureComponent {
-    static propTypes = {
-        state: PropTypes.object,
-        actions: PropTypes.object
-    };
-
+class QuickAccessToolbar extends Component {
     command = {
         'cyclestart': () => {
             controller.command('cyclestart');
@@ -34,74 +29,67 @@ class QuickAccessToolbar extends PureComponent {
 
     render() {
         return (
-            <div className={styles.quickAccessToolbar}>
-                <ul className="nav navbar-nav">
-                    <li className="btn-group btn-group-sm" role="group">
-                        <button
-                            type="button"
-                            className="btn btn-default"
-                            onClick={this.command.cyclestart}
-                            title={i18n._('Cycle Start')}
-                        >
-                            <i className="fa fa-repeat" />
-                            <Space width="8" />
-                            {i18n._('Cycle Start')}
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-default"
-                            onClick={this.command.feedhold}
-                            title={i18n._('Feedhold')}
-                        >
-                            <i className="fa fa-hand-paper-o" />
-                            <Space width="8" />
-                            {i18n._('Feedhold')}
-                        </button>
-                    </li>
-                    <li className="btn-group btn-group-sm" role="group">
-                        <button
-                            type="button"
-                            className="btn btn-primary"
-                            onClick={this.command.homing}
-                            title={i18n._('Homing')}
-                        >
-                            <i className="fa fa-home" />
-                            <Space width="8" />
-                            {i18n._('Homing')}
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-success"
-                            onClick={this.command.sleep}
-                            title={i18n._('Sleep')}
-                        >
-                            <i className="fa fa-bed" />
-                            <Space width="8" />
-                            {i18n._('Sleep')}
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-warning"
-                            onClick={this.command.unlock}
-                            title={i18n._('Unlock')}
-                        >
-                            <i className="fa fa-unlock-alt" />
-                            <Space width="8" />
-                            {i18n._('Unlock')}
-                        </button>
-                        <button
-                            type="button"
-                            className="btn btn-danger"
-                            onClick={this.command.reset}
-                            title={i18n._('Reset')}
-                        >
-                            <i className="fa fa-undo" />
-                            <Space width="8" />
-                            {i18n._('Reset')}
-                        </button>
-                    </li>
-                </ul>
-            </div>
+            <ButtonToolbar>
+                <ButtonGroup>
+                    <Button
+                        btnStyle="default"
+                        onClick={this.command.cyclestart}
+                        title={i18n._('Cycle Start')}
+                    >
+                        <FontAwesomeIcon icon="redo-alt" />
+                        <Space width="8" />
+                        {i18n._('Cycle Start')}
+                    </Button>
+                    <Button
+                        btnStyle="default"
+                        onClick={this.command.feedhold}
+                        title={i18n._('Feedhold')}
+                    >
+                        <FontAwesomeIcon icon="hand-paper" />
+                        <Space width="8" />
+                        {i18n._('Feedhold')}
+                    </Button>
+                </ButtonGroup>
+                <Space width={12} />
+                <ButtonGroup>
+                    <Button
+                        btnStyle="primary"
+                        onClick={this.command.homing}
+                        title={i18n._('Homing')}
+                    >
+                        <FontAwesomeIcon icon="home" />
+                        <Space width="8" />
+                        {i18n._('Homing')}
+                    </Button>
+                    <Button
+                        btnStyle="success"
+                        onClick={this.command.sleep}
+                        title={i18n._('Sleep')}
+                    >
+                        <FontAwesomeIcon icon="bed" />
+                        <Space width="8" />
+                        {i18n._('Sleep')}
+                    </Button>
+                    <Button
+                        btnStyle="warning"
+                        onClick={this.command.unlock}
+                        title={i18n._('Unlock')}
+                    >
+                        <FontAwesomeIcon icon="unlock-alt" />
+                        <Space width="8" />
+                        {i18n._('Unlock')}
+                    </Button>
+                    <Button
+                        btnStyle="danger"
+                        onClick={this.command.reset}
+                        title={i18n._('Reset')}
+                    >
+                        <FontAwesomeIcon icon="undo" />
+                        <Space width="8" />
+                        {i18n._('Reset')}
+                    </Button>
+                </ButtonGroup>
+            </ButtonToolbar>
         );
     }
 }
