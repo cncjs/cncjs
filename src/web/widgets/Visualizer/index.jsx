@@ -143,7 +143,7 @@ const GCodeName = ({ name, style, ...props }) => {
             style={{
                 display: 'inline-block',
                 position: 'absolute',
-                bottom: 4,
+                bottom: 8,
                 left: 8,
                 fontSize: '1.5rem',
                 color: '#000',
