@@ -2,7 +2,6 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Container, Row, Col } from '../../components/GridSystem';
 import { Button } from '../../components/Buttons';
-import { Tooltip } from '../../components/Tooltip';
 import controller from '../../lib/controller';
 import Panel from './components/Panel';
 
@@ -28,34 +27,20 @@ class MDIPanel extends PureComponent {
 
             return (
                 <Col {...grid} key={c.id} style={{ padding: '0 4px', marginTop: 5 }}>
-                    <Tooltip
-                        placement="bottom"
+                    <Button
+                        btnSize="sm"
+                        btnStyle="flat"
+                        style={{
+                            minWidth: 'auto',
+                            width: '100%'
+                        }}
                         disabled={!canClick}
-                        content={(
-                            <div className="text-left">
-                                {c.command.split('\n').map((line, index) => (
-                                    <div key={`${c.id}_${index + 1}`}>{line}</div>
-                                ))}
-                            </div>
-                        )}
-                        enterDelay={1000}
-                        hideOnClick
+                        onClick={() => {
+                            controller.command('gcode', c.command);
+                        }}
                     >
-                        <Button
-                            btnSize="sm"
-                            btnStyle="flat"
-                            style={{
-                                minWidth: 'auto',
-                                width: '100%'
-                            }}
-                            disabled={!canClick}
-                            onClick={() => {
-                                controller.command('gcode', c.command);
-                            }}
-                        >
-                            {c.name}
-                        </Button>
-                    </Tooltip>
+                        {c.name}
+                    </Button>
                 </Col>
             );
         });
