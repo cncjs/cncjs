@@ -354,9 +354,6 @@ class PrimaryToolbar extends PureComponent {
                                 {i18n._('Orthographic Projection')}
                             </MenuItem>
                             <MenuItem divider />
-                            <MenuItem header>
-                                {i18n._('Scene Objects')}
-                            </MenuItem>
                             <MenuItem
                                 disabled={!canToggleOptions}
                                 onSelect={actions.toggleGCodeFilename}
