@@ -147,16 +147,6 @@ class Visualizer extends Component {
             needUpdateScene = true;
         }
 
-        // Whether to show the name of the G-code file
-        if (state.gcode.displayName !== nextState.gcode.displayName) {
-            const gcodeDisplayName = this.group.getObjectByName('GCodeDisplayName');
-            if (gcodeDisplayName) {
-                gcodeDisplayName.visible = nextState.gcode.displayName;
-
-                needUpdateScene = true;
-            }
-        }
-
         // Whether to show coordinate system
         if ((nextState.units !== state.units) ||
             (nextState.objects.coordinateSystem.visible !== state.objects.coordinateSystem.visible)) {
@@ -288,8 +278,8 @@ class Visualizer extends Component {
     getVisibleHeight() {
         const clientHeight = document.documentElement.clientHeight;
         const navbarHeight = 50;
-        const widgetHeaderHeight = 32;
-        const widgetFooterHeight = 32;
+        const widgetHeaderHeight = 38;
+        const widgetFooterHeight = 38;
         const visibleHeight = (
             clientHeight - navbarHeight - widgetHeaderHeight - widgetFooterHeight - 1
         );
@@ -770,27 +760,6 @@ class Visualizer extends Component {
 
         // Update work position
         this.setWorkPosition(this.workPosition);
-
-        { // Display the name of the G-code file
-            const { units, gcode } = this.props.state;
-            const gridLength = (units === METRIC_UNITS) ? 10 : 25.4;
-            const textSize = 5;
-            const posx = center.x;
-            const posy = Math.floor(bbox.min.y / gridLength) * gridLength - (gridLength / 2);
-            const posz = Math.ceil(bbox.max.z / gridLength) * gridLength + (gridLength / 2);
-            const gcodeName = new TextSprite({
-                x: posx,
-                y: posy,
-                z: posz,
-                size: textSize,
-                text: `G-code: ${name}`,
-                color: colornames('gray 44'), // grid color
-                opacity: 0.5
-            });
-            gcodeName.name = 'GCodeDisplayName';
-            gcodeName.visible = gcode.displayName;
-            obj.add(gcodeName);
-        }
 
         if (this.viewport && dX > 0 && dY > 0) {
             // The minimum viewport is 50x50mm
