@@ -130,6 +130,30 @@ const displayWebGLErrorMessage = () => {
     ));
 };
 
+const GCodeName = ({ name, style, ...props }) => {
+    if (!name) {
+        return null;
+    }
+
+    return (
+        <div
+            style={{
+                display: 'inline-block',
+                position: 'absolute',
+                bottom: 8,
+                left: 8,
+                fontSize: '1.5rem',
+                color: '#000',
+                opacity: 0.5,
+                ...style,
+            }}
+            {...props}
+        >
+            G-code: {name}
+        </div>
+    );
+};
+
 class VisualizerWidget extends PureComponent {
     static propTypes = {
         widgetId: PropTypes.string.isRequired
@@ -990,6 +1014,11 @@ class VisualizerWidget extends PureComponent {
                             this.visualizer = node;
                         }}
                         state={state}
+                    />
+                    }
+                    {(showVisualizer && state.gcode.displayName) &&
+                    <GCodeName
+                        name={state.gcode.name}
                     />
                     }
                     {showNotifications &&
