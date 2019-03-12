@@ -152,7 +152,7 @@ const GCodeName = ({ name, style, ...props }) => {
             }}
             {...props}
         >
-            G-code: {name}
+            {name}
         </div>
     );
 };
