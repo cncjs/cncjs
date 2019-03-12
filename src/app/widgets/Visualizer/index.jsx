@@ -145,7 +145,7 @@ const GCodeName = ({ name, style, ...props }) => {
                 position: 'absolute',
                 bottom: 8,
                 left: 8,
-                fontSize: '1.5rem',
+                fontSize: '1.25rem',
                 color: '#000',
                 opacity: 0.5,
                 ...style,
