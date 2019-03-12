@@ -277,7 +277,7 @@ class Visualizer extends Component {
     }
     getVisibleHeight() {
         const clientHeight = document.documentElement.clientHeight;
-        const navbarHeight = 50;
+        const navbarHeight = 60;
         const widgetHeaderHeight = 38;
         const widgetFooterHeight = 38;
         const visibleHeight = (
