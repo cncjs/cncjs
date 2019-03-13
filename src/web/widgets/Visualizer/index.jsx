@@ -477,6 +477,17 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
         },
+        toggleAxisLimitsVisibility: () => {
+            this.setState((state) => ({
+                objects: {
+                    ...state.objects,
+                    axisLimits: {
+                        ...state.objects.axisLimits,
+                        visible: !state.objects.axisLimits.visible
+                    }
+                }
+            }));
+        },
         toggleCoordinateSystemVisibility: () => {
             this.setState((state) => ({
                 objects: {
@@ -882,6 +893,9 @@ class VisualizerWidget extends PureComponent {
             disabled: this.config.get('disabled', false),
             projection: this.config.get('projection', 'orthographic'),
             objects: {
+                axisLimits: {
+                    visible: this.config.get('objects.axisLimits.visible', true)
+                },
                 coordinateSystem: {
                     visible: this.config.get('objects.coordinateSystem.visible', true)
                 },
@@ -1029,14 +1043,14 @@ class VisualizerWidget extends PureComponent {
                     />
                     }
                 </Widget.Content>
-                {capable.view3D &&
                 <Widget.Footer className={styles.widgetFooter}>
                     <SecondaryToolbar
-                        state={state}
-                        actions={actions}
+                        is3DView={capable.view3D}
+                        cameraMode={state.cameraMode}
+                        cameraPosition={state.cameraPosition}
+                        camera={actions.camera}
                     />
                 </Widget.Footer>
-                }
             </Widget>
         );
     }

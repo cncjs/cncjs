@@ -25,6 +25,9 @@ const defaultState = {
                     'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser'
                 ]
             }
+        },
+        machineProfile: {
+            id: null
         }
     },
     widgets: {
@@ -188,6 +191,9 @@ const defaultState = {
                 displayName: true
             },
             objects: {
+                axisLimits: {
+                    visible: true
+                },
                 coordinateSystem: {
                     visible: true
                 },

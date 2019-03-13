@@ -1,23 +1,27 @@
 import classNames from 'classnames';
+import ensureArray from 'ensure-array';
 import i18next from 'i18next';
-import camelCase from 'lodash/camelCase';
-import find from 'lodash/find';
-import findIndex from 'lodash/findIndex';
-import get from 'lodash/get';
-import isEqual from 'lodash/isEqual';
 import Uri from 'jsuri';
+import _camelCase from 'lodash/camelCase';
+import _find from 'lodash/find';
+import _findIndex from 'lodash/findIndex';
+import _get from 'lodash/get';
+import _isEqual from 'lodash/isEqual';
+import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import api from '../../api';
 import settings from '../../config/settings';
 import Breadcrumbs from '../../components/Breadcrumbs';
 import i18n from '../../lib/i18n';
+import store from '../../store';
 import General from './General';
 import Workspace from './Workspace';
 import Account from './Account';
 import Controller from './Controller';
 import Commands from './Commands';
 import Events from './Events';
+import Machines from './Machines';
 import About from './About';
 import styles from './index.styl';
 import {
@@ -26,7 +30,7 @@ import {
 } from '../../api/constants';
 
 const mapSectionPathToId = (path = '') => {
-    return camelCase(path.split('/')[0] || '');
+    return _camelCase(path.split('/')[0] || '');
 };
 
 class Settings extends PureComponent {
@@ -70,6 +74,12 @@ class Settings extends PureComponent {
             path: 'events',
             title: i18n._('Events'),
             component: (props) => <Events {...props} />
+        },
+        {
+            id: 'machines',
+            path: 'machines',
+            title: i18n._('Machines'),
+            component: (props) => <Machines {...props} />
         },
         {
             id: 'about',
@@ -250,7 +260,7 @@ class Settings extends PureComponent {
                 }));
 
                 api.getState().then((res) => {
-                    const ignoreErrors = get(res.body, 'controller.exception.ignoreErrors');
+                    const ignoreErrors = _get(res.body, 'controller.exception.ignoreErrors');
 
                     const nextState = {
                         ...this.state.controller,
@@ -425,8 +435,8 @@ class Settings extends PureComponent {
                             return;
                         }
 
-                        const records = this.state.account.records;
-                        const index = findIndex(records, { id: id });
+                        const records = [...this.state.account.records];
+                        const index = _findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -584,8 +594,8 @@ class Settings extends PureComponent {
                             return;
                         }
 
-                        const records = this.state.commands.records;
-                        const index = findIndex(records, { id: id });
+                        const records = [...this.state.commands.records];
+                        const index = _findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -742,8 +752,8 @@ class Settings extends PureComponent {
                             return;
                         }
 
-                        const records = this.state.events.records;
-                        const index = findIndex(records, { id: id });
+                        const records = [...this.state.events.records];
+                        const index = _findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -816,6 +826,214 @@ class Settings extends PureComponent {
                 });
             }
         },
+        // Machines
+        machines: {
+            fetchRecords: (options) => {
+                const state = this.state.machines;
+                const {
+                    page = state.pagination.page,
+                    pageLength = state.pagination.pageLength
+                } = { ...options };
+
+                this.setState({
+                    machines: {
+                        ...this.state.machines,
+                        api: {
+                            ...this.state.machines.api,
+                            err: false,
+                            fetching: true
+                        }
+                    }
+                });
+
+                api.machines.fetch({ paging: true, page, pageLength })
+                    .then((res) => {
+                        const { pagination, records } = res.body;
+
+                        this.setState({
+                            machines: {
+                                ...this.state.machines,
+                                api: {
+                                    ...this.state.machines.api,
+                                    err: false,
+                                    fetching: false
+                                },
+                                pagination: {
+                                    page: pagination.page,
+                                    pageLength: pagination.pageLength,
+                                    totalRecords: pagination.totalRecords
+                                },
+                                records: records
+                            }
+                        });
+                    })
+                    .catch((res) => {
+                        this.setState({
+                            machines: {
+                                ...this.state.machines,
+                                api: {
+                                    ...this.state.machines.api,
+                                    err: true,
+                                    fetching: false
+                                },
+                                records: []
+                            }
+                        });
+                    });
+            },
+            createRecord: (options) => {
+                const actions = this.actions.machines;
+
+                api.machines.create(options)
+                    .then((res) => {
+                        actions.closeModal();
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            // TODO
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    });
+            },
+            updateRecord: (id, options, forceReload = false) => {
+                const actions = this.actions.machines;
+
+                api.machines.update(id, options)
+                    .then((res) => {
+                        actions.closeModal();
+
+                        if (forceReload) {
+                            actions.fetchRecords();
+                            return;
+                        }
+
+                        const records = [...this.state.machines.records];
+                        const index = _findIndex(records, { id: id });
+
+                        if (index >= 0) {
+                            records[index] = {
+                                ...records[index],
+                                ...options
+                            };
+
+                            this.setState({
+                                machines: {
+                                    ...this.state.machines,
+                                    records: records
+                                }
+                            });
+                        }
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            // TODO
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    })
+                    .then(() => {
+                        try {
+                            // Fetch machine profiles
+                            api.machines.fetch()
+                                .then(res => {
+                                    const { records: machineProfiles } = res.body;
+                                    return ensureArray(machineProfiles);
+                                })
+                                .then(machineProfiles => {
+                                    // Update matched machine profile
+                                    const currentMachineProfile = store.get('workspace.machineProfile');
+                                    const currentMachineProfileId = _get(currentMachineProfile, 'id');
+                                    const matchedMachineProfile = _find(machineProfiles, { id: currentMachineProfileId });
+                                    if (matchedMachineProfile) {
+                                        store.replace('workspace.machineProfile', matchedMachineProfile.enabled
+                                            ? matchedMachineProfile
+                                            : { id: null }
+                                        );
+                                    }
+
+                                    // FIXME: Use redux store
+                                    pubsub.publish('updateMachineProfiles', machineProfiles);
+                                });
+                        } catch (err) {
+                            // Ignore
+                        }
+                    });
+            },
+            deleteRecord: (id) => {
+                const actions = this.actions.machines;
+
+                api.machines.delete(id)
+                    .then((res) => {
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        // Ignore error
+                    })
+                    .then(() => {
+                        try {
+                            // Fetch machine profiles
+                            api.machines.fetch()
+                                .then(res => {
+                                    const { records: machineProfiles } = res.body;
+                                    return ensureArray(machineProfiles);
+                                })
+                                .then(machineProfiles => {
+                                    // Remove matched machine profile
+                                    const currentMachineProfile = store.get('workspace.machineProfile');
+                                    const currentMachineProfileId = _get(currentMachineProfile, 'id');
+                                    if (currentMachineProfileId === id) {
+                                        store.replace('workspace.machineProfile', { id: null });
+                                    }
+
+                                    // FIXME: Use redux store
+                                    pubsub.publish('updateMachineProfiles', machineProfiles);
+                                });
+                        } catch (err) {
+                            // Ignore
+                        }
+                    });
+            },
+            openModal: (name = '', params = {}) => {
+                this.setState({
+                    machines: {
+                        ...this.state.machines,
+                        modal: {
+                            name: name,
+                            params: params
+                        }
+                    }
+                });
+            },
+            closeModal: () => {
+                this.setState({
+                    machines: {
+                        ...this.state.machines,
+                        modal: {
+                            name: '',
+                            params: {}
+                        }
+                    }
+                });
+            },
+            updateModalParams: (params = {}) => {
+                this.setState({
+                    machines: {
+                        ...this.state.machines,
+                        modal: {
+                            ...this.state.machines.modal,
+                            params: {
+                                ...this.state.machines.modal.params,
+                                ...params
+                            }
+                        }
+                    }
+                });
+            }
+        },
         // About
         about: {
             checkLatestVersion: () => {
@@ -865,19 +1083,16 @@ class Settings extends PureComponent {
         return {
             // General
             general: {
-                // followed by api state
                 api: {
                     err: false,
                     loading: true, // defaults to true
                     saving: false
                 },
-                // followed by data
                 checkForUpdates: true,
                 lang: i18next.language
             },
             // Workspace
             workspace: {
-                // Modal
                 modal: {
                     name: '',
                     params: {
@@ -886,19 +1101,16 @@ class Settings extends PureComponent {
             },
             // My Account
             account: {
-                // followed by api state
                 api: {
                     err: false,
                     fetching: false
                 },
-                // followed by data
                 pagination: {
                     page: 1,
                     pageLength: 10,
                     totalRecords: 0
                 },
                 records: [],
-                // Modal
                 modal: {
                     name: '',
                     params: {
@@ -909,30 +1121,25 @@ class Settings extends PureComponent {
             },
             // Controller
             controller: {
-                // followed by api state
                 api: {
                     err: false,
                     loading: true, // defaults to true
                     saving: false
                 },
-                // followed by data
                 ignoreErrors: false
             },
             // Commands
             commands: {
-                // followed by api state
                 api: {
                     err: false,
                     fetching: false
                 },
-                // followed by data
                 pagination: {
                     page: 1,
                     pageLength: 10,
                     totalRecords: 0
                 },
                 records: [],
-                // Modal
                 modal: {
                     name: '',
                     params: {
@@ -941,19 +1148,34 @@ class Settings extends PureComponent {
             },
             // Events
             events: {
-                // followed by api state
                 api: {
                     err: false,
                     fetching: false
                 },
-                // followed by data
                 pagination: {
                     page: 1,
                     pageLength: 10,
                     totalRecords: 0
                 },
                 records: [],
-                // Modal
+                modal: {
+                    name: '',
+                    params: {
+                    }
+                }
+            },
+            // Machines
+            machines: {
+                api: {
+                    err: false,
+                    fetching: false
+                },
+                pagination: {
+                    page: 1,
+                    pageLength: 10,
+                    totalRecords: 0
+                },
+                records: [],
                 modal: {
                     name: '',
                     params: {
@@ -982,7 +1204,7 @@ class Settings extends PureComponent {
         const initialSectionPath = this.sections[0].path;
         const sectionPath = pathname.replace(/^\/settings(\/)?/, ''); // TODO
         const id = mapSectionPathToId(sectionPath || initialSectionPath);
-        const activeSection = find(this.sections, { id: id }) || this.sections[0];
+        const activeSection = _find(this.sections, { id: id }) || this.sections[0];
         const sectionItems = this.sections.map((section, index) => (
             <li
                 key={section.id}
@@ -1000,7 +1222,7 @@ class Settings extends PureComponent {
         const Section = activeSection.component;
         const sectionInitialState = this.initialState[activeSection.id];
         const sectionState = state[activeSection.id];
-        const sectionStateChanged = !isEqual(sectionInitialState, sectionState);
+        const sectionStateChanged = !_isEqual(sectionInitialState, sectionState);
         const sectionActions = actions[activeSection.id];
 
         return (

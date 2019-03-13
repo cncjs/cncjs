@@ -367,6 +367,20 @@ class PrimaryToolbar extends PureComponent {
                             </MenuItem>
                             <MenuItem
                                 disabled={!canToggleOptions}
+                                onSelect={actions.toggleAxisLimitsVisibility}
+                            >
+                                {objects.axisLimits.visible
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
+                                }
+                                <Space width="4" />
+                                {objects.axisLimits.visible
+                                    ? i18n._('Hide Axis Limits')
+                                    : i18n._('Show Axis Limits')
+                                }
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
                                 onSelect={actions.toggleCoordinateSystemVisibility}
                             >
                                 {objects.coordinateSystem.visible

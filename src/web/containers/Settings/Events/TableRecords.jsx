@@ -5,6 +5,7 @@ import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button } from '../../../components/Buttons';
+import { FormGroup } from '../../../components/Forms';
 import Modal from '../../../components/Modal';
 import { TablePagination } from '../../../components/Paginations';
 import Space from '../../../components/Space';
@@ -17,6 +18,24 @@ import {
     MODAL_UPDATE_RECORD
 } from './constants';
 import styles from './index.styl';
+
+const mapEventToTextString = (event) => ({
+    'startup': i18n._('Startup'),
+    'port:open': i18n._('Open a serial port'),
+    'port:close': i18n._('Close a serial port'),
+    'gcode:load': i18n._('G-code: Load'),
+    'gcode:unload': i18n._('G-code: Unload'),
+    'gcode:start': i18n._('G-code: Start'),
+    'gcode:stop': i18n._('G-code: Stop'),
+    'gcode:pause': i18n._('G-code: Pause'),
+    'gcode:resume': i18n._('G-code: Resume'),
+    'feedhold': i18n._('Feed Hold'),
+    'cyclestart': i18n._('Cycle Start'),
+    'homing': i18n._('Homing'),
+    'sleep': i18n._('Sleep'),
+    'macro:run': i18n._('Run Macro'),
+    'macro:load': i18n._('Load Macro')
+}[event] || '');
 
 class TableRecords extends PureComponent {
     static propTypes = {
@@ -111,25 +130,7 @@ class TableRecords extends PureComponent {
                         className: 'text-nowrap',
                         key: 'event',
                         render: (value, row, index) => {
-                            const eventText = {
-                                'startup': i18n._('Startup'),
-                                'port:open': i18n._('Open a serial port'),
-                                'port:close': i18n._('Close a serial port'),
-                                'gcode:load': i18n._('G-code: Load'),
-                                'gcode:unload': i18n._('G-code: Unload'),
-                                'gcode:start': i18n._('G-code: Start'),
-                                'gcode:stop': i18n._('G-code: Stop'),
-                                'gcode:pause': i18n._('G-code: Pause'),
-                                'gcode:resume': i18n._('G-code: Resume'),
-                                'feedhold': i18n._('Feed Hold'),
-                                'cyclestart': i18n._('Cycle Start'),
-                                'homing': i18n._('Homing'),
-                                'sleep': i18n._('Sleep'),
-                                'macro:run': i18n._('Run Macro'),
-                                'macro:load': i18n._('Load Macro')
-                            }[row.event] || '';
-
-                            return eventText;
+                            return mapEventToTextString(row.event);
                         }
                     },
                     {
@@ -197,8 +198,6 @@ class TableRecords extends PureComponent {
                         className: 'text-nowrap',
                         key: 'action',
                         render: (value, row, index) => {
-                            const { id } = row;
-
                             return (
                                 <div>
                                     <button
@@ -228,7 +227,12 @@ class TableRecords extends PureComponent {
                                                         </Modal.Title>
                                                     </Modal.Header>
                                                     <Modal.Body>
-                                                        {i18n._('Are you sure you want to delete this item?')}
+                                                        <FormGroup>
+                                                            {i18n._('Are you sure you want to delete this item?')}
+                                                        </FormGroup>
+                                                        <FormGroup>
+                                                            {mapEventToTextString(row.event)}
+                                                        </FormGroup>
                                                     </Modal.Body>
                                                     <Modal.Footer>
                                                         <Button
@@ -240,7 +244,7 @@ class TableRecords extends PureComponent {
                                                             btnStyle="primary"
                                                             onClick={chainedFunction(
                                                                 () => {
-                                                                    actions.deleteRecord(id);
+                                                                    actions.deleteRecord(row.id);
                                                                 },
                                                                 onClose
                                                             )}

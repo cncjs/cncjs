@@ -23,6 +23,7 @@ class App extends PureComponent {
             '/settings/controller',
             '/settings/commands',
             '/settings/events',
+            '/settings/machines',
             '/settings/about'
         ].indexOf(location.pathname) >= 0);
 

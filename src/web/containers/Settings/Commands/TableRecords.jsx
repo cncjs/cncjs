@@ -6,6 +6,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Anchor from '../../../components/Anchor';
 import { Button } from '../../../components/Buttons';
+import { FormGroup } from '../../../components/Forms';
 import Modal from '../../../components/Modal';
 import Space from '../../../components/Space';
 import Table from '../../../components/Table';
@@ -171,8 +172,6 @@ class TableRecords extends PureComponent {
                         className: 'text-nowrap',
                         key: 'action',
                         render: (value, row, index) => {
-                            const { id } = row;
-
                             return (
                                 <div>
                                     <button
@@ -202,7 +201,12 @@ class TableRecords extends PureComponent {
                                                         </Modal.Title>
                                                     </Modal.Header>
                                                     <Modal.Body>
-                                                        {i18n._('Are you sure you want to delete this item?')}
+                                                        <FormGroup>
+                                                            {i18n._('Are you sure you want to delete this item?')}
+                                                        </FormGroup>
+                                                        <FormGroup>
+                                                            {row.title}
+                                                        </FormGroup>
                                                     </Modal.Body>
                                                     <Modal.Footer>
                                                         <Button
@@ -214,7 +218,7 @@ class TableRecords extends PureComponent {
                                                             btnStyle="primary"
                                                             onClick={chainedFunction(
                                                                 () => {
-                                                                    actions.deleteRecord(id);
+                                                                    actions.deleteRecord(row.id);
                                                                 },
                                                                 onClose
                                                             )}

@@ -1,6 +1,5 @@
 /* eslint react/jsx-no-bind: 0 */
 import chainedFunction from 'chained-function';
-import moment from 'moment';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Anchor from '../../../components/Anchor';
@@ -18,6 +17,10 @@ import {
     MODAL_UPDATE_RECORD
 } from './constants';
 import styles from './index.styl';
+
+const Axis = ({ value, sub }) => (
+    <div>{value}<sub style={{ marginLeft: 2 }}>{sub}</sub></div>
+);
 
 class TableRecords extends PureComponent {
     static propTypes = {
@@ -108,7 +111,7 @@ class TableRecords extends PureComponent {
                         }
                     },
                     {
-                        title: i18n._('Username'),
+                        title: i18n._('Name'),
                         key: 'name',
                         render: (value, row, index) => {
                             const { name } = row;
@@ -125,17 +128,34 @@ class TableRecords extends PureComponent {
                         }
                     },
                     {
-                        title: i18n._('Date Modified'),
-                        className: 'text-nowrap',
-                        key: 'date-modified',
-                        render: (value, row, index) => {
-                            const { mtime } = row;
-                            if (mtime) {
-                                return moment(mtime).format('lll');
-                            }
-
-                            return '–';
-                        }
+                        title: (<Axis value="X" sub="min" />),
+                        key: 'xmin',
+                        render: (value, row, index) => row.xmin
+                    },
+                    {
+                        title: (<Axis value="X" sub="max" />),
+                        key: 'xmax',
+                        render: (value, row, index) => row.xmax
+                    },
+                    {
+                        title: (<Axis value="Y" sub="min" />),
+                        key: 'ymin',
+                        render: (value, row, index) => row.ymin
+                    },
+                    {
+                        title: (<Axis value="Y" sub="max" />),
+                        key: 'ymax',
+                        render: (value, row, index) => row.ymax
+                    },
+                    {
+                        title: (<Axis value="Z" sub="min" />),
+                        key: 'zmin',
+                        render: (value, row, index) => row.zmin
+                    },
+                    {
+                        title: (<Axis value="Z" sub="max" />),
+                        key: 'zmax',
+                        render: (value, row, index) => row.zmax
                     },
                     {
                         title: i18n._('Action'),
@@ -147,7 +167,7 @@ class TableRecords extends PureComponent {
                                     <button
                                         type="button"
                                         className="btn btn-xs btn-default"
-                                        title={i18n._('Edit Account')}
+                                        title={i18n._('Update')}
                                         onClick={(event) => {
                                             actions.openModal(MODAL_UPDATE_RECORD, row);
                                         }}
@@ -157,7 +177,7 @@ class TableRecords extends PureComponent {
                                     <button
                                         type="button"
                                         className="btn btn-xs btn-default"
-                                        title={i18n._('Delete Account')}
+                                        title={i18n._('Delete')}
                                         onClick={(event) => {
                                             portal(({ onClose }) => (
                                                 <Modal size="xs" onClose={onClose}>
@@ -167,12 +187,12 @@ class TableRecords extends PureComponent {
                                                             <Space width="8" />
                                                             &rsaquo;
                                                             <Space width="8" />
-                                                            {i18n._('My Account')}
+                                                            {i18n._('Machines')}
                                                         </Modal.Title>
                                                     </Modal.Header>
                                                     <Modal.Body>
                                                         <FormGroup>
-                                                            {i18n._('Are you sure you want to delete the account?')}
+                                                            {i18n._('Are you sure you want to delete this item?')}
                                                         </FormGroup>
                                                         <FormGroup>
                                                             {row.name}

@@ -10,10 +10,12 @@ import ReactDOM from 'react-dom';
 import * as THREE from 'three';
 import Detector from 'three/examples/js/Detector';
 import log from '../../lib/log';
+import store from '../../store';
 import { getBoundingBox, loadTexture } from './helpers';
 import './CombinedCamera';
 import './TrackballControls';
 import Viewport from './Viewport';
+import AxisLimits from './AxisLimits';
 import CoordinateAxes from './CoordinateAxes';
 import ToolHead from './ToolHead';
 import TargetPoint from './TargetPoint';
@@ -61,6 +63,7 @@ class Visualizer extends Component {
         y: 0,
         z: 0
     };
+    machineProfile = store.get('workspace.machineProfile');
     group = new THREE.Group();
     pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
         each(this.group.children, (o) => {
@@ -77,32 +80,66 @@ class Visualizer extends Component {
         this.resizeRenderer();
     }, 32); // 60hz
 
-    componentWillMount() {
+    updateAxisLimitsFromMachineProfile = () => {
+        const machineProfile = store.get('workspace.machineProfile');
+
+        if (!machineProfile) {
+            return;
+        }
+
+        if (isEqual(machineProfile, this.machineProfile)) {
+            return;
+        }
+
+        if (this.axisLimits) {
+            this.group.remove(this.axisLimits);
+            this.axisLimits = null;
+        }
+
+        const state = this.props.state;
+        const { xmin, xmax, ymin, ymax, zmin, zmax } = machineProfile;
+        this.machineProfile = { ...machineProfile };
+        this.axisLimits = new AxisLimits(xmin, xmax, ymin, ymax, zmin, zmax);
+        this.axisLimits.name = 'AxisLimits';
+        this.axisLimits.visible = state.objects.axisLimits.visible;
+        this.group.add(this.axisLimits);
+
+        this.updateScene();
+    };
+
+    constructor(props) {
+        super(props);
+
         // Three.js
         this.renderer = null;
         this.scene = null;
         this.camera = null;
         this.controls = null;
         this.viewport = null;
+        this.axisLimits = null;
         this.toolhead = null;
         this.targetPoint = null;
         this.visualizer = null;
     }
+
     componentDidMount() {
         this.subscribe();
         this.addResizeEventListener();
-
+        store.on('change', this.updateAxisLimitsFromMachineProfile);
         if (this.node) {
             const el = ReactDOM.findDOMNode(this.node);
             this.createScene(el);
             this.resizeRenderer();
         }
     }
+
     componentWillUnmount() {
         this.unsubscribe();
         this.removeResizeEventListener();
+        store.removeListener('change', this.updateAxisLimitsFromMachineProfile);
         this.clearScene();
     }
+
     componentWillReceiveProps(nextProps) {
         let forceUpdate = false;
         let needUpdateScene = false;
@@ -187,6 +224,13 @@ class Visualizer extends Component {
             needUpdateScene = true;
         }
 
+        // Whether to show axis limits
+        if (this.axisLimits && (this.axisLimits.visible !== nextState.objects.axisLimits.visible)) {
+            this.axisLimits.visible = nextState.objects.axisLimits.visible;
+
+            needUpdateScene = true;
+        }
+
         // Whether to show tool head
         if (this.toolhead && (this.toolhead.visible !== nextState.objects.toolhead.visible)) {
             this.toolhead.visible = nextState.objects.toolhead.visible;
@@ -215,12 +259,14 @@ class Visualizer extends Component {
             }
         }
     }
+
     shouldComponentUpdate(nextProps, nextState) {
         if (nextProps.show !== this.props.show) {
             return true;
         }
         return false;
     }
+
     subscribe() {
         const tokens = [
             pubsub.subscribe('resize', (msg) => {
@@ -229,19 +275,23 @@ class Visualizer extends Component {
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
+
     unsubscribe() {
         this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
+
     // https://tylercipriani.com/blog/2014/07/12/crossbrowser-javascript-scrollbar-detection/
     hasVerticalScrollbar() {
         return window.innerWidth > document.documentElement.clientWidth;
     }
+
     hasHorizontalScrollbar() {
         return window.innerHeight > document.documentElement.clientHeight;
     }
+
     // http://www.alexandre-gomes.com/?p=115
     getScrollbarWidth() {
         const inner = document.createElement('p');
@@ -266,6 +316,7 @@ class Visualizer extends Component {
 
         return (w1 - w2);
     }
+
     getVisibleWidth() {
         const el = ReactDOM.findDOMNode(this.node);
         const visibleWidth = Math.max(
@@ -275,6 +326,7 @@ class Visualizer extends Component {
 
         return visibleWidth;
     }
+
     getVisibleHeight() {
         const clientHeight = document.documentElement.clientHeight;
         const navbarHeight = 50;
@@ -286,12 +338,15 @@ class Visualizer extends Component {
 
         return visibleHeight;
     }
+
     addResizeEventListener() {
         window.addEventListener('resize', this.throttledResize);
     }
+
     removeResizeEventListener() {
         window.removeEventListener('resize', this.throttledResize);
     }
+
     resizeRenderer() {
         if (!(this.camera && this.renderer)) {
             return;
@@ -329,6 +384,7 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
+
     createCoordinateSystem(units) {
         const axisLength = (units === IMPERIAL_UNITS) ? IMPERIAL_AXIS_LENGTH : METRIC_AXIS_LENGTH;
         const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
@@ -392,6 +448,7 @@ class Visualizer extends Component {
 
         return group;
     }
+
     createGridLineNumbers(units) {
         const gridCount = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_COUNT : METRIC_GRID_COUNT;
         const gridSpacing = (units === IMPERIAL_UNITS) ? IMPERIAL_GRID_SPACING : METRIC_GRID_SPACING;
@@ -434,6 +491,7 @@ class Visualizer extends Component {
 
         return group;
     }
+
     //
     // Creating a scene
     // http://threejs.org/docs/#Manual/Introduction/Creating_a_scene
@@ -532,6 +590,14 @@ class Visualizer extends Component {
             this.group.add(metricGridLineNumbers);
         }
 
+        { // Axis Limits
+            const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = this.machineProfile;
+            this.axisLimits = new AxisLimits(xmin, xmax, ymin, ymax, zmin, zmax);
+            this.axisLimits.name = 'AxisLimits';
+            this.axisLimits.visible = objects.axisLimits.visible;
+            this.group.add(this.axisLimits);
+        }
+
         { // Tool Head
             const color = colornames('silver');
             const url = 'textures/brushed-steel-texture.jpg';
@@ -558,6 +624,7 @@ class Visualizer extends Component {
 
         this.scene.add(this.group);
     }
+
     // @param [options] The options object.
     // @param [options.forceUpdate] Force rendering
     updateScene(options) {
@@ -568,6 +635,7 @@ class Visualizer extends Component {
             this.renderer.render(this.scene, this.camera);
         }
     }
+
     clearScene() {
         // to iterrate over all children (except the first) in a scene
         const objsToRemove = tail(this.scene.children);
@@ -582,6 +650,7 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
+
     renderAnimationLoop() {
         if (this.isAgitated) {
             // Call the render() function up to 60 times per second (i.e. 60fps)
@@ -597,6 +666,7 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
+
     createCombinedCamera(width, height) {
         const frustumWidth = width / 2;
         const frustumHeight = (height || width) / 2; // same to width if height is 0
@@ -622,6 +692,7 @@ class Visualizer extends Component {
 
         return camera;
     }
+
     createPerspectiveCamera(width, height) {
         const fov = PERSPECTIVE_FOV;
         const aspect = (width > 0 && height > 0) ? Number(width) / Number(height) : 1;
@@ -635,6 +706,7 @@ class Visualizer extends Component {
 
         return camera;
     }
+
     createOrthographicCamera(width, height) {
         const left = -width / 2;
         const right = width / 2;
@@ -646,6 +718,7 @@ class Visualizer extends Component {
 
         return camera;
     }
+
     createTrackballControls(object, domElement) {
         const controls = new THREE.TrackballControls(object, domElement);
 
@@ -690,6 +763,7 @@ class Visualizer extends Component {
 
         return controls;
     }
+
     // Rotates the tool head around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
     // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
@@ -702,6 +776,7 @@ class Visualizer extends Component {
         const degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
+
     // Set work position
     setWorkPosition(workPosition) {
         const pivotPoint = this.pivotPoint.get();
@@ -719,6 +794,7 @@ class Visualizer extends Component {
             this.targetPoint.position.set(x, y, z);
         }
     }
+
     // Make the controls look at the specified position
     lookAt(x, y, z) {
         this.controls.target.x = x;
@@ -726,6 +802,7 @@ class Visualizer extends Component {
         this.controls.target.z = z;
         this.controls.update();
     }
+
     // Make the controls look at the center position
     lookAtCenter() {
         if (this.viewport) {
@@ -736,6 +813,7 @@ class Visualizer extends Component {
         }
         this.updateScene();
     }
+
     load(name, gcode, callback) {
         // Remove previous G-code object
         this.unload();
@@ -775,6 +853,7 @@ class Visualizer extends Component {
 
         (typeof callback === 'function') && callback({ bbox: bbox });
     }
+
     unload() {
         const visualizerObject = this.group.getObjectByName('Visualizer');
 
@@ -798,6 +877,7 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
+
     setCameraMode(mode) {
         // https://developer.mozilla.org/en-US/docs/Web/API/MouseEvent/button
         // A number representing a given button:
@@ -813,6 +893,7 @@ class Visualizer extends Component {
             this.controls && this.controls.setMouseButtonState(MAIN_BUTTON, PAN);
         }
     }
+
     toTopView() {
         if (this.controls) {
             this.controls.reset();
@@ -829,6 +910,7 @@ class Visualizer extends Component {
         }
         this.updateScene();
     }
+
     to3DView() {
         if (this.controls) {
             this.controls.reset();
@@ -845,6 +927,7 @@ class Visualizer extends Component {
         }
         this.updateScene();
     }
+
     toFrontView() {
         if (this.controls) {
             this.controls.reset();
@@ -861,6 +944,7 @@ class Visualizer extends Component {
         }
         this.updateScene();
     }
+
     toLeftSideView() {
         if (this.controls) {
             this.controls.reset();
@@ -876,6 +960,7 @@ class Visualizer extends Component {
             this.controls.update();
         }
     }
+
     toRightSideView() {
         if (this.controls) {
             this.controls.reset();
@@ -892,12 +977,14 @@ class Visualizer extends Component {
         }
         this.updateScene();
     }
+
     zoomFit() {
         if (this.viewport) {
             this.viewport.update();
         }
         this.updateScene();
     }
+
     zoomIn(delta = 0.1) {
         const { noZoom } = this.controls;
         if (noZoom) {
@@ -910,6 +997,7 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
+
     zoomOut(delta = 0.1) {
         const { noZoom } = this.controls;
         if (noZoom) {
@@ -922,6 +1010,7 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     }
+
     // deltaX and deltaY are in pixels; right and down are positive
     pan(deltaX, deltaY) {
         const eye = new THREE.Vector3();
@@ -938,23 +1027,28 @@ class Visualizer extends Component {
         this.controls.target.add(pan);
         this.controls.update();
     }
+
     // http://stackoverflow.com/questions/18581225/orbitcontrol-or-trackballcontrol
     panUp() {
         const { noPan, panSpeed } = this.controls;
         !noPan && this.pan(0, 1 * panSpeed);
     }
+
     panDown() {
         const { noPan, panSpeed } = this.controls;
         !noPan && this.pan(0, -1 * panSpeed);
     }
+
     panLeft() {
         const { noPan, panSpeed } = this.controls;
         !noPan && this.pan(1 * panSpeed, 0);
     }
+
     panRight() {
         const { noPan, panSpeed } = this.controls;
         !noPan && this.pan(-1 * panSpeed, 0);
     }
+
     render() {
         const { show } = this.props;
         const style = {
