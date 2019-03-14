@@ -573,29 +573,19 @@ class VisualizerWidget extends PureComponent {
                 }
             },
             toTopView: () => {
-                this.setState({ cameraPosition: 'top' }, () => {
-                    this.visualizer.toTopView();
-                });
+                this.setState({ cameraPosition: 'top' });
             },
             to3DView: () => {
-                this.setState({ cameraPosition: '3d' }, () => {
-                    this.visualizer.to3DView();
-                });
+                this.setState({ cameraPosition: '3d' });
             },
             toFrontView: () => {
-                this.setState({ cameraPosition: 'front' }, () => {
-                    this.visualizer.toFrontView();
-                });
+                this.setState({ cameraPosition: 'front' });
             },
             toLeftSideView: () => {
-                this.setState({ cameraPosition: 'left' }, () => {
-                    this.visualizer.toLeftSideView();
-                });
+                this.setState({ cameraPosition: 'left' });
             },
             toRightSideView: () => {
-                this.setState({ cameraPosition: 'right' }, () => {
-                    this.visualizer.toRightSideView();
-                });
+                this.setState({ cameraPosition: 'right' });
             }
         }
     };
@@ -1023,6 +1013,7 @@ class VisualizerWidget extends PureComponent {
                     {Detector.webgl &&
                     <Visualizer
                         show={showVisualizer}
+                        cameraPosition={state.cameraPosition}
                         ref={node => {
                             this.visualizer = node;
                         }}

@@ -53,6 +53,7 @@ const TRACKBALL_CONTROLS_MAX_DISTANCE = 2000;
 class Visualizer extends Component {
     static propTypes = {
         show: PropTypes.bool,
+        cameraPosition: PropTypes.oneOf(['top', '3d', 'front', 'left', 'right']),
         state: PropTypes.object
     };
 
@@ -75,6 +76,11 @@ class Visualizer extends Component {
         // Update the scene
         this.updateScene();
     });
+
+    node = null;
+    setRef = (node) => {
+        this.node = node;
+    };
 
     throttledResize = throttle(() => {
         this.resizeRenderer();
@@ -107,6 +113,22 @@ class Visualizer extends Component {
         this.updateScene();
     };
 
+    renderAnimationLoop = () => {
+        if (this.isAgitated) {
+            // Call the render() function up to 60 times per second (i.e. 60fps)
+            requestAnimationFrame(this.renderAnimationLoop);
+
+            // Set to 360 rounds per minute (rpm)
+            this.rotateToolHead(360);
+        } else {
+            // Stop rotation
+            this.rotateToolHead(0);
+        }
+
+        // Update the scene
+        this.updateScene();
+    };
+
     constructor(props) {
         super(props);
 
@@ -133,21 +155,14 @@ class Visualizer extends Component {
         }
     }
 
-    componentWillUnmount() {
-        this.unsubscribe();
-        this.removeResizeEventListener();
-        store.removeListener('change', this.updateAxisLimitsFromMachineProfile);
-        this.clearScene();
-    }
-
-    componentWillReceiveProps(nextProps) {
+    componentDidUpdate(prevProps) {
         let forceUpdate = false;
         let needUpdateScene = false;
+        const prevState = prevProps.state;
         const state = this.props.state;
-        const nextState = nextProps.state;
 
         // Enable or disable 3D view
-        if ((this.props.show !== nextProps.show) && (!!nextProps.show === true)) {
+        if ((prevProps.show !== this.props.show) && (this.props.show === true)) {
             this.viewport.update();
 
             // Set forceUpdate to true when enabling or disabling 3D view
@@ -157,13 +172,13 @@ class Visualizer extends Component {
 
         // Update visualizer's frame index
         if (this.visualizer) {
-            const frameIndex = nextState.gcode.sent;
+            const frameIndex = state.gcode.sent;
             this.visualizer.setFrameIndex(frameIndex);
         }
 
         // Projection
-        if (state.projection !== nextState.projection) {
-            if (nextState.projection === 'orthographic') {
+        if (prevState.projection !== state.projection) {
+            if (state.projection === 'orthographic') {
                 this.camera.toOrthographic();
                 this.camera.setZoom(1);
                 this.camera.setFov(ORTHOGRAPHIC_FOV);
@@ -179,68 +194,68 @@ class Visualizer extends Component {
         }
 
         // Camera Mode
-        if (state.cameraMode !== nextState.cameraMode) {
-            this.setCameraMode(nextState.cameraMode);
+        if (prevState.cameraMode !== state.cameraMode) {
+            this.setCameraMode(state.cameraMode);
             needUpdateScene = true;
         }
 
         // Whether to show coordinate system
-        if ((nextState.units !== state.units) ||
-            (nextState.objects.coordinateSystem.visible !== state.objects.coordinateSystem.visible)) {
-            const visible = nextState.objects.coordinateSystem.visible;
+        if ((prevState.units !== state.units) ||
+            (prevState.objects.coordinateSystem.visible !== state.objects.coordinateSystem.visible)) {
+            const visible = state.objects.coordinateSystem.visible;
 
             // Imperial
             const imperialCoordinateSystem = this.group.getObjectByName('ImperialCoordinateSystem');
             if (imperialCoordinateSystem) {
-                imperialCoordinateSystem.visible = visible && (nextState.units === IMPERIAL_UNITS);
+                imperialCoordinateSystem.visible = visible && (state.units === IMPERIAL_UNITS);
             }
 
             // Metric
             const metricCoordinateSystem = this.group.getObjectByName('MetricCoordinateSystem');
             if (metricCoordinateSystem) {
-                metricCoordinateSystem.visible = visible && (nextState.units === METRIC_UNITS);
+                metricCoordinateSystem.visible = visible && (state.units === METRIC_UNITS);
             }
 
             needUpdateScene = true;
         }
 
         // Whether to show grid line numbers
-        if ((nextState.units !== state.units) ||
-            (nextState.objects.gridLineNumbers.visible !== state.objects.gridLineNumbers.visible)) {
-            const visible = nextState.objects.gridLineNumbers.visible;
+        if ((prevState.units !== state.units) ||
+            (prevState.objects.gridLineNumbers.visible !== state.objects.gridLineNumbers.visible)) {
+            const visible = state.objects.gridLineNumbers.visible;
 
             // Imperial
             const imperialGridLineNumbers = this.group.getObjectByName('ImperialGridLineNumbers');
             if (imperialGridLineNumbers) {
-                imperialGridLineNumbers.visible = visible && (nextState.units === IMPERIAL_UNITS);
+                imperialGridLineNumbers.visible = visible && (state.units === IMPERIAL_UNITS);
             }
 
             // Metric
             const metricGridLineNumbers = this.group.getObjectByName('MetricGridLineNumbers');
             if (metricGridLineNumbers) {
-                metricGridLineNumbers.visible = visible && (nextState.units === METRIC_UNITS);
+                metricGridLineNumbers.visible = visible && (state.units === METRIC_UNITS);
             }
 
             needUpdateScene = true;
         }
 
         // Whether to show axis limits
-        if (this.axisLimits && (this.axisLimits.visible !== nextState.objects.axisLimits.visible)) {
-            this.axisLimits.visible = nextState.objects.axisLimits.visible;
+        if (this.axisLimits && (this.axisLimits.visible !== state.objects.axisLimits.visible)) {
+            this.axisLimits.visible = state.objects.axisLimits.visible;
 
             needUpdateScene = true;
         }
 
         // Whether to show tool head
-        if (this.toolhead && (this.toolhead.visible !== nextState.objects.toolhead.visible)) {
-            this.toolhead.visible = nextState.objects.toolhead.visible;
+        if (this.toolhead && (this.toolhead.visible !== state.objects.toolhead.visible)) {
+            this.toolhead.visible = state.objects.toolhead.visible;
 
             needUpdateScene = true;
         }
 
         // Update work position
-        if (!isEqual(this.workPosition, nextState.workPosition)) {
-            this.workPosition = nextState.workPosition;
+        if (!isEqual(this.workPosition, state.workPosition)) {
+            this.workPosition = state.workPosition;
             this.setWorkPosition(this.workPosition);
 
             needUpdateScene = true;
@@ -250,21 +265,39 @@ class Visualizer extends Component {
             this.updateScene({ forceUpdate: forceUpdate });
         }
 
-        if (this.isAgitated !== nextState.isAgitated) {
-            this.isAgitated = nextState.isAgitated;
+        if (this.isAgitated !== state.isAgitated) {
+            this.isAgitated = state.isAgitated;
 
             if (this.isAgitated) {
                 // Call renderAnimationLoop when the state changes and isAgitated is true
-                requestAnimationFrame(::this.renderAnimationLoop);
+                requestAnimationFrame(this.renderAnimationLoop);
+            }
+        }
+
+        if (prevProps.cameraPosition !== this.props.cameraPosition) {
+            if (this.props.cameraPosition === 'top') {
+                this.toTopView();
+            }
+            if (this.props.cameraPosition === '3d') {
+                this.to3DView();
+            }
+            if (this.props.cameraPosition === 'front') {
+                this.toFrontView();
+            }
+            if (this.props.cameraPosition === 'left') {
+                this.toLeftSideView();
+            }
+            if (this.props.cameraPosition === 'right') {
+                this.toRightSideView();
             }
         }
     }
 
-    shouldComponentUpdate(nextProps, nextState) {
-        if (nextProps.show !== this.props.show) {
-            return true;
-        }
-        return false;
+    componentWillUnmount() {
+        this.unsubscribe();
+        this.removeResizeEventListener();
+        store.removeListener('change', this.updateAxisLimitsFromMachineProfile);
+        this.clearScene();
     }
 
     subscribe() {
@@ -645,22 +678,6 @@ class Visualizer extends Component {
 
         if (this.controls) {
             this.controls.dispose();
-        }
-
-        // Update the scene
-        this.updateScene();
-    }
-
-    renderAnimationLoop() {
-        if (this.isAgitated) {
-            // Call the render() function up to 60 times per second (i.e. 60fps)
-            requestAnimationFrame(::this.renderAnimationLoop);
-
-            // Set to 360 rounds per minute (rpm)
-            this.rotateToolHead(360);
-        } else {
-            // Stop rotation
-            this.rotateToolHead(0);
         }
 
         // Update the scene
@@ -1050,21 +1067,16 @@ class Visualizer extends Component {
     }
 
     render() {
-        const { show } = this.props;
-        const style = {
-            visibility: show ? 'visible' : 'hidden'
-        };
-
         if (!Detector.webgl) {
             return null;
         }
 
         return (
             <div
-                style={style}
-                ref={node => {
-                    this.node = node;
+                style={{
+                    visibility: this.props.show ? 'visible' : 'hidden'
                 }}
+                ref={this.setRef}
             />
         );
     }
