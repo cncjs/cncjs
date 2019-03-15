@@ -1,5 +1,5 @@
 import ensureArray from 'ensure-array';
-import throttle from 'lodash/throttle';
+import _throttle from 'lodash/throttle';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import {
@@ -55,7 +55,7 @@ class Provider extends PureComponent {
     componentDidMount() {
         this.setScreenClass();
 
-        this.eventListener = throttle(this.setScreenClass, Math.floor(1000 / 60)); // 60Hz
+        this.eventListener = _throttle(this.setScreenClass, Math.floor(1000 / 60)); // 60Hz
         window.addEventListener('resize', this.eventListener);
     }
 
