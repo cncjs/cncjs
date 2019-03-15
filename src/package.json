@@ -55,7 +55,7 @@
     "serve-static": "~1.13.2",
     "session-file-store": "~1.2.0",
     "shortid": "~2.2.12",
-    "socket.io": "~2.1.1",
+    "socket.io": "~2.2.0",
     "socketio-jwt": "~4.5.0",
     "spawn-default-shell": "~2.0.0",
     "static-eval": "~2.0.0",
