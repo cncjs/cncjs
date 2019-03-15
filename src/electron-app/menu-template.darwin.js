@@ -70,7 +70,7 @@ export default (options) => {
                 { role: 'togglefullscreen' },
                 { type: 'separator' },
                 {
-                    label: 'Home',
+                    label: 'View In Browser',
                     click: () => {
                         const url = `http://${address}:${port}`;
                         shell.openExternal(url);
