@@ -30,8 +30,16 @@ const inputMenu = Menu.buildFromTemplate([
 let windowManager = null;
 
 const main = () => {
-    // https://github.com/electron/electron/blob/master/docs/api/app.md#appmakesingleinstancecallback
-    const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+    // https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
+    const gotSingleInstanceLock = app.requestSingleInstanceLock();
+    const shouldQuitImmediately = !gotSingleInstanceLock;
+
+    if (shouldQuitImmediately) {
+        app.quit();
+        return;
+    }
+
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
         // Someone tried to run a second instance, we should focus our window.
         if (!windowManager) {
             return;
@@ -45,11 +53,6 @@ const main = () => {
             window.focus();
         }
     });
-
-    if (shouldQuit) {
-        app.quit();
-        return;
-    }
 
     const store = new Store();
 

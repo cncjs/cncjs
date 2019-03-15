@@ -1,6 +1,6 @@
 {
   "name": "cncjs",
-  "version": "1.9.16-pre",
+  "version": "1.9.17",
   "description": "A web-based interface for CNC milling controller running Grbl, Marlin, Smoothieware, or TinyG",
   "homepage": "https://github.com/cncjs/cncjs",
   "author": "Cheton Wu <cheton@gmail.com>",
@@ -289,8 +289,8 @@
     "css-loader": "~2.1.0",
     "css-split-webpack-plugin": "~0.2.6",
     "dotenv": "~6.2.0",
-    "electron": "~4.0.4",
-    "electron-builder": "~20.38.5",
+    "electron": "~4.1.0",
+    "electron-builder": "~20.39.0",
     "electron-rebuild": "~1.8.4",
     "eslint": "~5.13.0",
     "eslint-config-trendmicro": "~1.4.1",
