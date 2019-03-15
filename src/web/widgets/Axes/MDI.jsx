@@ -3,17 +3,18 @@ import React, { PureComponent } from 'react';
 import { Container, Row, Col } from '../../components/GridSystem';
 import { Button } from '../../components/Buttons';
 import controller from '../../lib/controller';
-import Panel from './components/Panel';
 
-class MDIPanel extends PureComponent {
+class MDI extends PureComponent {
     static propTypes = {
-        config: PropTypes.object,
-        state: PropTypes.object,
-        actions: PropTypes.object
+        canClick: PropTypes.bool,
+        mdi: PropTypes.shape({
+            disabled: PropTypes.bool,
+            commands: PropTypes.array
+        })
     };
 
     renderMDIButtons() {
-        const { canClick, mdi } = this.props.state;
+        const { canClick, mdi } = this.props;
 
         return mdi.commands.map(c => {
             const grid = Object.keys(c.grid || {})
@@ -46,16 +47,20 @@ class MDIPanel extends PureComponent {
         });
     }
     render() {
+        const { mdi } = this.props;
+
+        if (mdi.disabled || mdi.commands.length === 0) {
+            return null;
+        }
+
         return (
-            <Panel>
-                <Container fluid style={{ padding: 0, margin: '-5px -4px 0 -4px' }}>
-                    <Row gutterWidth={0}>
-                        {this.renderMDIButtons()}
-                    </Row>
-                </Container>
-            </Panel>
+            <Container fluid style={{ padding: 0, margin: '-5px -4px 0 -4px' }}>
+                <Row gutterWidth={0}>
+                    {this.renderMDIButtons()}
+                </Row>
+            </Container>
         );
     }
 }
 
-export default MDIPanel;
+export default MDI;
