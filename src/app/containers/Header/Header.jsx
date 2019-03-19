@@ -368,7 +368,7 @@ class Header extends Component {
                                         window.open(releases, '_blank');
                                     }}
                                 >
-                                    <div>
+                                    <div style={{ width: '100%' }}>
                                         <Image src={logo} width={32} height={32} />
                                     </div>
                                     <Text
