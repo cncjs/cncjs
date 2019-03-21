@@ -4,26 +4,34 @@ class AxisLimits {
     group = new THREE.Object3D();
 
     constructor(xmin, xmax, ymin, ymax, zmin, zmax) {
-        const xLength = (xmax - xmin) || 0;
-        const yLength = (ymax - ymin) || 0;
-        const zLength = (zmax - zmin) || 0;
+        const dx = (xmax - xmin) || 0;
+        const dy = (ymax - ymin) || 0;
+        const dz = (zmax - zmin) || 0;
 
-        if (xLength || yLength || zLength) {
-            const box = new THREE.BoxGeometry(xLength || 0.0001, yLength || 0.0001, zLength || 0.0001);
-            const geometry = new THREE.EdgesGeometry(box);
-            const material = new THREE.LineBasicMaterial({
-                color: 0x00ff00,
-                linewidth: 2
+        if (dx || dy || dz) {
+            // Box
+            const material = new THREE.MeshBasicMaterial({
+                visible: true,
+                side: THREE.FrontSide,
+                transparent: true,
+                color: 0x000000,
+                opacity: 0.05,
             });
+            const geometry = new THREE.BoxGeometry(
+                dx, // width
+                dy, // height
+                dz, // depth
+            );
+            const edges = new THREE.EdgesGeometry(geometry);
 
-            const lineSegments = new THREE.LineSegments(geometry, material);
-            lineSegments.position.set(
+            this.group.add(new THREE.Mesh(geometry, material));
+            this.group.add(new THREE.LineSegments(edges, material));
+
+            this.group.position.set(
                 ((xmax + xmin) || 0) / 2,
                 ((ymax + ymin) || 0) / 2,
                 ((zmax + zmin) || 0) / 2
             );
-
-            this.group.add(lineSegments);
         }
 
         return this.group;
