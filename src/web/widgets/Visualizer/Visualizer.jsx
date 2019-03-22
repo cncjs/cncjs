@@ -15,8 +15,8 @@ import { getBoundingBox, loadTexture } from './helpers';
 import './CombinedCamera';
 import './TrackballControls';
 import Viewport from './Viewport';
-import AxisLimits from './AxisLimits';
 import CoordinateAxes from './CoordinateAxes';
+import Cuboid from './Cuboid';
 import ToolHead from './ToolHead';
 import TargetPoint from './TargetPoint';
 import GridLine from './GridLine';
@@ -59,6 +59,11 @@ class Visualizer extends Component {
 
     pubsubTokens = [];
     isAgitated = false;
+    machinePosition = {
+        x: 0,
+        y: 0,
+        z: 0
+    };
     workPosition = {
         x: 0,
         y: 0,
@@ -86,7 +91,7 @@ class Visualizer extends Component {
         this.resizeRenderer();
     }, 32); // 60hz
 
-    updateAxisLimitsFromMachineProfile = () => {
+    changeMachineProfile = () => {
         const machineProfile = store.get('workspace.machineProfile');
 
         if (!machineProfile) {
@@ -97,18 +102,22 @@ class Visualizer extends Component {
             return;
         }
 
-        if (this.axisLimits) {
-            this.group.remove(this.axisLimits);
-            this.axisLimits = null;
+        this.machineProfile = { ...machineProfile };
+
+        if (this.machineLimit) {
+            this.group.remove(this.machineLimit);
+            this.machineLimit = null;
         }
 
         const state = this.props.state;
-        const { xmin, xmax, ymin, ymax, zmin, zmax } = machineProfile;
-        this.machineProfile = { ...machineProfile };
-        this.axisLimits = new AxisLimits(xmin, xmax, ymin, ymax, zmin, zmax);
-        this.axisLimits.name = 'AxisLimits';
-        this.axisLimits.visible = state.objects.axisLimits.visible;
-        this.group.add(this.axisLimits);
+        const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = this.machineProfile;
+        this.machineLimit = this.createMachineLimit(xmin, xmax, ymin, ymax, zmin, zmax);
+        this.machineLimit.name = 'MachineLimit';
+        this.machineLimit.visible = state.objects.machineLimit.visible;
+
+        this.updatePositionForMachineLimit();
+
+        this.group.add(this.machineLimit);
 
         this.updateScene();
     };
@@ -119,10 +128,10 @@ class Visualizer extends Component {
             requestAnimationFrame(this.renderAnimationLoop);
 
             // Set to 360 rounds per minute (rpm)
-            this.rotateToolHead(360);
+            this.rotateToolhead(360);
         } else {
             // Stop rotation
-            this.rotateToolHead(0);
+            this.rotateToolhead(0);
         }
 
         // Update the scene
@@ -138,7 +147,7 @@ class Visualizer extends Component {
         this.camera = null;
         this.controls = null;
         this.viewport = null;
-        this.axisLimits = null;
+        this.machineLimit = null;
         this.toolhead = null;
         this.targetPoint = null;
         this.visualizer = null;
@@ -147,7 +156,7 @@ class Visualizer extends Component {
     componentDidMount() {
         this.subscribe();
         this.addResizeEventListener();
-        store.on('change', this.updateAxisLimitsFromMachineProfile);
+        store.on('change', this.changeMachineProfile);
         if (this.node) {
             const el = ReactDOM.findDOMNode(this.node);
             this.createScene(el);
@@ -239,26 +248,44 @@ class Visualizer extends Component {
             needUpdateScene = true;
         }
 
-        // Whether to show axis limits
-        if (this.axisLimits && (this.axisLimits.visible !== state.objects.axisLimits.visible)) {
-            this.axisLimits.visible = state.objects.axisLimits.visible;
-
+        // Whether to show machine limit
+        if (this.machineLimit && (this.machineLimit.visible !== state.objects.machineLimit.visible)) {
+            this.machineLimit.visible = state.objects.machineLimit.visible;
             needUpdateScene = true;
         }
 
         // Whether to show tool head
         if (this.toolhead && (this.toolhead.visible !== state.objects.toolhead.visible)) {
             this.toolhead.visible = state.objects.toolhead.visible;
-
             needUpdateScene = true;
         }
 
-        // Update work position
-        if (!isEqual(this.workPosition, state.workPosition)) {
-            this.workPosition = state.workPosition;
-            this.setWorkPosition(this.workPosition);
+        { // Update position
+            let needUpdatePosition = false;
 
-            needUpdateScene = true;
+            // Machine position
+            const { x: mpox0, y: mpoy0, z: mpoz0 } = this.machinePosition;
+            const { x: mpox1, y: mpoy1, z: mpoz1 } = state.machinePosition;
+            if (mpox0 !== mpox1 || mpoy0 !== mpoy1 || mpoz0 !== mpoz1) {
+                this.machinePosition = state.machinePosition;
+                needUpdatePosition = true;
+                needUpdateScene = true;
+            }
+
+            // Work position
+            const { x: wpox0, y: wpoy0, z: wpoz0 } = this.workPosition;
+            const { x: wpox1, y: wpoy1, z: wpoz1 } = state.workPosition;
+            if (wpox0 !== wpox1 || wpoy0 !== wpoy1 || wpoz0 !== wpoz1) {
+                this.workPosition = state.workPosition;
+                needUpdatePosition = true;
+                needUpdateScene = true;
+            }
+
+            if (needUpdatePosition) {
+                this.updatePositionForToolHead();
+                this.updatePositionForTargetPoint();
+                this.updatePositionForMachineLimit();
+            }
         }
 
         if (needUpdateScene) {
@@ -296,7 +323,7 @@ class Visualizer extends Component {
     componentWillUnmount() {
         this.unsubscribe();
         this.removeResizeEventListener();
-        store.removeListener('change', this.updateAxisLimitsFromMachineProfile);
+        store.removeListener('change', this.changeMachineProfile);
         this.clearScene();
     }
 
@@ -416,6 +443,18 @@ class Visualizer extends Component {
 
         // Update the scene
         this.updateScene();
+    }
+
+    createMachineLimit(xmin, xmax, ymin, ymax, zmin, zmax) {
+        const dx = Math.abs(xmax - xmin) || 0;
+        const dy = Math.abs(ymax - ymin) || 0;
+        const dz = Math.abs(zmax - zmin) || 0;
+        const color = colornames('maroon');
+        const opacity = 0.5;
+        const transparent = true;
+        const machineLimit = new Cuboid({ dx, dy, dz, color, opacity, transparent });
+
+        return machineLimit;
     }
 
     createCoordinateSystem(units) {
@@ -623,12 +662,15 @@ class Visualizer extends Component {
             this.group.add(metricGridLineNumbers);
         }
 
-        { // Axis Limits
+        { // Machine Limit
             const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = this.machineProfile;
-            this.axisLimits = new AxisLimits(xmin, xmax, ymin, ymax, zmin, zmax);
-            this.axisLimits.name = 'AxisLimits';
-            this.axisLimits.visible = objects.axisLimits.visible;
-            this.group.add(this.axisLimits);
+            this.machineLimit = this.createMachineLimit(xmin, xmax, ymin, ymax, zmin, zmax);
+            this.machineLimit.name = 'MachineLimit';
+            this.machineLimit.visible = objects.machineLimit.visible;
+
+            this.updatePositionForMachineLimit();
+
+            this.group.add(this.machineLimit);
         }
 
         { // Tool Head
@@ -784,7 +826,7 @@ class Visualizer extends Component {
     // Rotates the tool head around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
     // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
-    rotateToolHead(rpm = 0, fps = 60) {
+    rotateToolhead(rpm = 0, fps = 60) {
         if (!this.toolhead) {
             return;
         }
@@ -794,22 +836,51 @@ class Visualizer extends Component {
         this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
 
-    // Set work position
-    setWorkPosition(workPosition) {
+    // Update position for toolhead
+    updatePositionForToolHead() {
+        if (!this.toolhead) {
+            return;
+        }
+
         const pivotPoint = this.pivotPoint.get();
+        const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
+        const x0 = wpox - pivotPoint.x;
+        const y0 = wpoy - pivotPoint.y;
+        const z0 = wpoz - pivotPoint.z;
 
-        let { x = 0, y = 0, z = 0 } = { ...workPosition };
-        x = (Number(x) || 0) - pivotPoint.x;
-        y = (Number(y) || 0) - pivotPoint.y;
-        z = (Number(z) || 0) - pivotPoint.z;
+        this.toolhead.position.set(x0, y0, z0);
+    }
 
-        if (this.toolhead) { // Update toolhead position
-            this.toolhead.position.set(x, y, z);
+    // Update position for target point
+    updatePositionForTargetPoint() {
+        if (!this.targetPoint) {
+            return;
         }
 
-        if (this.targetPoint) { // Update target point position
-            this.targetPoint.position.set(x, y, z);
+        const pivotPoint = this.pivotPoint.get();
+        const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
+        const x0 = wpox - pivotPoint.x;
+        const y0 = wpoy - pivotPoint.y;
+        const z0 = wpoz - pivotPoint.z;
+
+        this.targetPoint.position.set(x0, y0, z0);
+    }
+
+    // Update position for machine limit
+    updatePositionForMachineLimit() {
+        if (!this.machineLimit) {
+            return;
         }
+
+        const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = this.machineProfile;
+        const pivotPoint = this.pivotPoint.get();
+        const { x: mpox, y: mpoy, z: mpoz } = this.machinePosition;
+        const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
+        const x0 = (xmin + xmax) / 2 + (mpox - wpox) - pivotPoint.x;
+        const y0 = (ymin + ymax) / 2 + (mpoy - wpoy) - pivotPoint.y;
+        const z0 = (zmin + zmax) / 2 + (mpoz - wpoz) - pivotPoint.z;
+
+        this.machineLimit.position.set(x0, y0, z0);
     }
 
     // Make the controls look at the specified position
@@ -854,8 +925,10 @@ class Visualizer extends Component {
         // Set the pivot point to the object's center position
         this.pivotPoint.set(center.x, center.y, center.z);
 
-        // Update work position
-        this.setWorkPosition(this.workPosition);
+        // Update position
+        this.updatePositionForToolHead();
+        this.updatePositionForTargetPoint();
+        this.updatePositionForMachineLimit();
 
         if (this.viewport && dX > 0 && dY > 0) {
             // The minimum viewport is 50x50mm

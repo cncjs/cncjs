@@ -367,16 +367,16 @@ class PrimaryToolbar extends PureComponent {
                             </MenuItem>
                             <MenuItem
                                 disabled={!canToggleOptions}
-                                onSelect={actions.toggleAxisLimitsVisibility}
+                                onSelect={actions.toggleMachineLimitVisibility}
                             >
-                                {objects.axisLimits.visible
+                                {objects.machineLimit.visible
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
                                 <Space width="4" />
-                                {objects.axisLimits.visible
-                                    ? i18n._('Hide Axis Limits')
-                                    : i18n._('Show Axis Limits')
+                                {objects.machineLimit.visible
+                                    ? i18n._('Hide Machine Limit')
+                                    : i18n._('Show Machine Limit')
                                 }
                             </MenuItem>
                             <MenuItem

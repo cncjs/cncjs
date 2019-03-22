@@ -477,13 +477,13 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
         },
-        toggleAxisLimitsVisibility: () => {
+        toggleMachineLimitVisibility: () => {
             this.setState((state) => ({
                 objects: {
                     ...state.objects,
-                    axisLimits: {
-                        ...state.objects.axisLimits,
-                        visible: !state.objects.axisLimits.visible
+                    machineLimit: {
+                        ...state.objects.machineLimit,
+                        visible: !state.objects.machineLimit.visible
                     }
                 }
             }));
@@ -680,7 +680,7 @@ class VisualizerWidget extends PureComponent {
             // Grbl
             if (type === GRBL) {
                 const { status, parserstate } = { ...controllerState };
-                const { wpos } = status;
+                const { mpos, wpos } = status;
                 const { modal = {} } = { ...parserstate };
                 const units = {
                     'G20': IMPERIAL_UNITS,
@@ -695,6 +695,13 @@ class VisualizerWidget extends PureComponent {
                         type: type,
                         state: controllerState
                     },
+                    // Machine position are reported in mm ($13=0) or inches ($13=1)
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
+                        ...mpos
+                    }, (val) => {
+                        return ($13 > 0) ? in2mm(val) : val;
+                    }),
                     // Work position are reported in mm ($13=0) or inches ($13=1)
                     workPosition: mapValues({
                         ...state.workPosition,
@@ -720,6 +727,13 @@ class VisualizerWidget extends PureComponent {
                         type: type,
                         state: controllerState
                     },
+                    // Machine position are reported in current units
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
+                        ...pos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
                     // Work position are reported in current units
                     workPosition: mapValues({
                         ...state.workPosition,
@@ -733,7 +747,7 @@ class VisualizerWidget extends PureComponent {
             // Smoothie
             if (type === SMOOTHIE) {
                 const { status, parserstate } = { ...controllerState };
-                const { wpos } = status;
+                const { mpos, wpos } = status;
                 const { modal = {} } = { ...parserstate };
                 const units = {
                     'G20': IMPERIAL_UNITS,
@@ -747,6 +761,13 @@ class VisualizerWidget extends PureComponent {
                         type: type,
                         state: controllerState
                     },
+                    // Machine position are reported in current units
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
+                        ...mpos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
                     // Work position are reported in current units
                     workPosition: mapValues({
                         ...state.workPosition,
@@ -760,7 +781,7 @@ class VisualizerWidget extends PureComponent {
             // TinyG
             if (type === TINYG) {
                 const { sr } = { ...controllerState };
-                const { wpos, modal = {} } = { ...sr };
+                const { mpos, wpos, modal = {} } = { ...sr };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -774,6 +795,11 @@ class VisualizerWidget extends PureComponent {
                         state: controllerState
                     },
                     // https://github.com/synthetos/g2/wiki/Status-Reports
+                    // Canonical machine position are always reported in millimeters with no offsets.
+                    machinePosition: {
+                        ...state.machinePosition,
+                        ...mpos
+                    },
                     // Work position are reported in current units, and also apply any offsets.
                     workPosition: mapValues({
                         ...state.workPosition,
@@ -850,6 +876,11 @@ class VisualizerWidget extends PureComponent {
                 name: '',
                 params: {}
             },
+            machinePosition: { // Machine position
+                x: '0.000',
+                y: '0.000',
+                z: '0.000'
+            },
             workPosition: { // Work position
                 x: '0.000',
                 y: '0.000',
@@ -883,8 +914,8 @@ class VisualizerWidget extends PureComponent {
             disabled: this.config.get('disabled', false),
             projection: this.config.get('projection', 'orthographic'),
             objects: {
-                axisLimits: {
-                    visible: this.config.get('objects.axisLimits.visible', true)
+                machineLimit: {
+                    visible: this.config.get('objects.machineLimit.visible', true)
                 },
                 coordinateSystem: {
                     visible: this.config.get('objects.coordinateSystem.visible', true)
