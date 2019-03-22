@@ -383,7 +383,7 @@ class SecondaryToolbar extends PureComponent {
                             </Dropdown.Toggle>
                             <Dropdown.Menu>
                                 <MenuItem header>
-                                    {i18n._('Machine Profile')}
+                                    {i18n._('Machine Profiles')}
                                 </MenuItem>
                                 {machineProfiles.map(({ id, name }) => (
                                     <MenuItem

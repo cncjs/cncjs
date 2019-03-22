@@ -187,7 +187,7 @@ class TableRecords extends PureComponent {
                                                             <Space width="8" />
                                                             &rsaquo;
                                                             <Space width="8" />
-                                                            {i18n._('Machines')}
+                                                            {i18n._('Machine Profiles')}
                                                         </Modal.Title>
                                                     </Modal.Header>
                                                     <Modal.Body>

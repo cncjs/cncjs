@@ -66,7 +66,7 @@ class UpdateRecord extends PureComponent {
             <Modal size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('Machines')}
+                        {i18n._('Machine Profiles')}
                         <Space width="8" />
                         &rsaquo;
                         <Space width="8" />
