@@ -78,7 +78,7 @@ class Settings extends PureComponent {
         {
             id: 'machines',
             path: 'machines',
-            title: i18n._('Machines'),
+            title: i18n._('Machine Profiles'),
             component: (props) => <Machines {...props} />
         },
         {
