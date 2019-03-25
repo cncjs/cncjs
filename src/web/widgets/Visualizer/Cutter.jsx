@@ -1,12 +1,10 @@
 import * as THREE from 'three';
 
-class TargetPoint {
-    group = new THREE.Object3D();
-
+class Cutter {
     constructor(options) {
         const {
             color = 0xffffff,
-            radius = 0.5,
+            diameter = 1,
             widthSegments = 32,
             heightSegments = 32,
             phiStart = 0,
@@ -14,6 +12,7 @@ class TargetPoint {
             thetaStart = 0,
             thetaLength = Math.PI
         } = { ...options };
+        const radius = Number(diameter / 2) || 1;
 
         const geometry = new THREE.SphereGeometry(
             radius,
@@ -29,12 +28,9 @@ class TargetPoint {
             opacity: 0.9,
             transparent: true
         });
-        const cube = new THREE.Mesh(geometry, material);
 
-        this.group.add(cube);
-
-        return this.group;
+        return new THREE.Mesh(geometry, material);
     }
 }
 
-export default TargetPoint;
+export default Cutter;

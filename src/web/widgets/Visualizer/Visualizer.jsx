@@ -18,7 +18,7 @@ import Viewport from './Viewport';
 import CoordinateAxes from './CoordinateAxes';
 import Cuboid from './Cuboid';
 import ToolHead from './ToolHead';
-import TargetPoint from './TargetPoint';
+import Cutter from './Cutter';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
@@ -115,7 +115,7 @@ class Visualizer extends Component {
         this.machineLimit.name = 'MachineLimit';
         this.machineLimit.visible = state.objects.machineLimit.visible;
 
-        this.updatePositionForMachineLimit();
+        this.updateMachineLimitPosition();
 
         this.group.add(this.machineLimit);
 
@@ -149,7 +149,7 @@ class Visualizer extends Component {
         this.viewport = null;
         this.machineLimit = null;
         this.toolhead = null;
-        this.targetPoint = null;
+        this.cutter = null;
         this.visualizer = null;
     }
 
@@ -282,9 +282,9 @@ class Visualizer extends Component {
             }
 
             if (needUpdatePosition) {
-                this.updatePositionForToolHead();
-                this.updatePositionForTargetPoint();
-                this.updatePositionForMachineLimit();
+                this.updateToolHeadPosition();
+                this.updateCutterPosition();
+                this.updateMachineLimitPosition();
             }
         }
 
@@ -668,7 +668,7 @@ class Visualizer extends Component {
             this.machineLimit.name = 'MachineLimit';
             this.machineLimit.visible = objects.machineLimit.visible;
 
-            this.updatePositionForMachineLimit();
+            this.updateMachineLimitPosition();
 
             this.group.add(this.machineLimit);
         }
@@ -687,14 +687,14 @@ class Visualizer extends Component {
             });
         }
 
-        { // Target Point
-            this.targetPoint = new TargetPoint({
+        { // Cutter
+            this.cutter = new Cutter({
                 color: colornames('indianred'),
-                radius: 0.5
+                diameter: 2
             });
-            this.targetPoint.name = 'TargetPoint';
-            this.targetPoint.visible = true;
-            this.group.add(this.targetPoint);
+            this.cutter.name = 'Cutter';
+            this.cutter.visible = true;
+            this.group.add(this.cutter);
         }
 
         this.scene.add(this.group);
@@ -836,8 +836,8 @@ class Visualizer extends Component {
         this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
 
-    // Update position for toolhead
-    updatePositionForToolHead() {
+    // Update tool head position
+    updateToolHeadPosition() {
         if (!this.toolhead) {
             return;
         }
@@ -851,9 +851,9 @@ class Visualizer extends Component {
         this.toolhead.position.set(x0, y0, z0);
     }
 
-    // Update position for target point
-    updatePositionForTargetPoint() {
-        if (!this.targetPoint) {
+    // Update cutter position
+    updateCutterPosition() {
+        if (!this.cutter) {
             return;
         }
 
@@ -863,11 +863,11 @@ class Visualizer extends Component {
         const y0 = wpoy - pivotPoint.y;
         const z0 = wpoz - pivotPoint.z;
 
-        this.targetPoint.position.set(x0, y0, z0);
+        this.cutter.position.set(x0, y0, z0);
     }
 
-    // Update position for machine limit
-    updatePositionForMachineLimit() {
+    // Update machine limit position
+    updateMachineLimitPosition() {
         if (!this.machineLimit) {
             return;
         }
@@ -926,9 +926,9 @@ class Visualizer extends Component {
         this.pivotPoint.set(center.x, center.y, center.z);
 
         // Update position
-        this.updatePositionForToolHead();
-        this.updatePositionForTargetPoint();
-        this.updatePositionForMachineLimit();
+        this.updateToolHeadPosition();
+        this.updateCutterPosition();
+        this.updateMachineLimitPosition();
 
         if (this.viewport && dX > 0 && dY > 0) {
             // The minimum viewport is 50x50mm
