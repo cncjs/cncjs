@@ -143,7 +143,7 @@ class General extends PureComponent {
         const { imperialJogDistances, metricJogDistances } = this.state;
 
         return (
-            <FlexContainer gutterWidth={0}>
+            <FlexContainer fluid gutterWidth={0}>
                 <Margin bottom={15}>
                     <label><strong>{i18n._('Axes')}</strong></label>
                     <Row>
