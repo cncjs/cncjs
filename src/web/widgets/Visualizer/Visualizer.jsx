@@ -446,9 +446,9 @@ class Visualizer extends Component {
     }
 
     createMachineLimit(xmin, xmax, ymin, ymax, zmin, zmax) {
-        const dx = Math.abs(xmax - xmin) || 0;
-        const dy = Math.abs(ymax - ymin) || 0;
-        const dz = Math.abs(zmax - zmin) || 0;
+        const dx = Math.abs(xmax - xmin) || Number.MIN_VALUE;
+        const dy = Math.abs(ymax - ymin) || Number.MIN_VALUE;
+        const dz = Math.abs(zmax - zmin) || Number.MIN_VALUE;
         const color = colornames('maroon');
         const opacity = 0.5;
         const transparent = true;
@@ -876,9 +876,9 @@ class Visualizer extends Component {
         const pivotPoint = this.pivotPoint.get();
         const { x: mpox, y: mpoy, z: mpoz } = this.machinePosition;
         const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
-        const x0 = (xmin + xmax) / 2 + (mpox - wpox) - pivotPoint.x;
-        const y0 = (ymin + ymax) / 2 + (mpoy - wpoy) - pivotPoint.y;
-        const z0 = (zmin + zmax) / 2 + (mpoz - wpoz) - pivotPoint.z;
+        const x0 = ((xmin + xmax) / 2) - (mpox - wpox) - pivotPoint.x;
+        const y0 = ((ymin + ymax) / 2) - (mpoy - wpoy) - pivotPoint.y;
+        const z0 = ((zmin + zmax) / 2) - (mpoz - wpoz) - pivotPoint.z;
 
         this.machineLimit.position.set(x0, y0, z0);
     }
