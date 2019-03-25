@@ -58,6 +58,12 @@ class Settings extends PureComponent {
             component: (props) => <Controller {...props} />
         },
         {
+            id: 'machines',
+            path: 'machines',
+            title: i18n._('Machine Profiles'),
+            component: (props) => <Machines {...props} />
+        },
+        {
             id: 'account',
             path: 'account',
             title: i18n._('My Account'),
@@ -74,12 +80,6 @@ class Settings extends PureComponent {
             path: 'events',
             title: i18n._('Events'),
             component: (props) => <Events {...props} />
-        },
-        {
-            id: 'machines',
-            path: 'machines',
-            title: i18n._('Machine Profiles'),
-            component: (props) => <Machines {...props} />
         },
         {
             id: 'about',
