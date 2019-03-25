@@ -44,7 +44,7 @@ class UpdateRecord extends PureComponent {
         const { alertMessage, changePassword = false, enabled, name } = modal.params;
 
         return (
-            <Modal size="sm" onClose={actions.closeModal}>
+            <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('My Account')}

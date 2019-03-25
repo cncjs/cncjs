@@ -160,7 +160,7 @@ class TableRecords extends PureComponent {
                                         title={i18n._('Delete Account')}
                                         onClick={(event) => {
                                             portal(({ onClose }) => (
-                                                <Modal size="xs" onClose={onClose}>
+                                                <Modal disableOverlay size="xs" onClose={onClose}>
                                                     <Modal.Header>
                                                         <Modal.Title>
                                                             {i18n._('Settings')}

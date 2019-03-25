@@ -18,7 +18,7 @@ class ImportSettings extends PureComponent {
         const { data } = modal.params;
 
         return (
-            <Modal size="md" onClose={actions.closeModal}>
+            <Modal disableOverlay size="md" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Workspace')}
