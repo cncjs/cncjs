@@ -231,6 +231,7 @@
     "react-dom": "~15.6.2",
     "react-dropzone": "~4.2.13",
     "react-facebook-loading": "~0.6.2",
+    "react-final-form": "~3.7.0",
     "react-foreach": "~0.1.1",
     "react-ga": "~2.5.3",
     "react-icon-base": "~2.1.2",
