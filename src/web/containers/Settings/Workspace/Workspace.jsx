@@ -4,7 +4,7 @@ import { Button } from 'web/components/Buttons';
 import ModalTemplate from 'web/components/ModalTemplate';
 import Modal from 'web/components/Modal';
 import Space from 'web/components/Space';
-import settings from '../../../config/settings';
+import settings from 'web/config/settings';
 import i18n from 'web/lib/i18n';
 import log from 'web/lib/log';
 import portal from 'web/lib/portal';

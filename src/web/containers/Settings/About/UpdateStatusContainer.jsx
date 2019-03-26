@@ -5,7 +5,7 @@ import React from 'react';
 import semver from 'semver';
 import Anchor from 'web/components/Anchor';
 import Space from 'web/components/Space';
-import settings from '../../../config/settings';
+import settings from 'web/config/settings';
 import i18n from 'web/lib/i18n';
 import styles from './index.styl';
 
