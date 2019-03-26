@@ -188,6 +188,7 @@
     "express": "~4.16.3",
     "express-jwt": "~5.3.1",
     "express-session": "~1.15.6",
+    "final-form": "~4.12.0",
     "font-awesome": "~4.7.0",
     "frac": "~1.1.2",
     "gcode-interpreter": "~2.1.0",

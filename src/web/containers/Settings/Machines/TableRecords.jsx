@@ -6,6 +6,7 @@ import Anchor from 'web/components/Anchor';
 import { Button } from 'web/components/Buttons';
 import FormGroup from 'web/components/FormGroup';
 import Modal from 'web/components/Modal';
+import ModalTemplate from 'web/components/ModalTemplate';
 import Space from 'web/components/Space';
 import Table from 'web/components/Table';
 import ToggleSwitch from 'web/components/ToggleSwitch';
@@ -17,10 +18,7 @@ import {
     MODAL_UPDATE_RECORD
 } from './constants';
 import styles from './index.styl';
-
-const Axis = ({ value, sub }) => (
-    <div>{value}<sub style={{ marginLeft: 2 }}>{sub}</sub></div>
-);
+import Axis from './Axis';
 
 class TableRecords extends PureComponent {
     static propTypes = {
@@ -180,23 +178,16 @@ class TableRecords extends PureComponent {
                                         title={i18n._('Delete')}
                                         onClick={(event) => {
                                             portal(({ onClose }) => (
-                                                <Modal disableOverlay size="xs" onClose={onClose}>
-                                                    <Modal.Header>
-                                                        <Modal.Title>
-                                                            {i18n._('Settings')}
-                                                            <Space width="8" />
-                                                            &rsaquo;
-                                                            <Space width="8" />
-                                                            {i18n._('Machine Profiles')}
-                                                        </Modal.Title>
-                                                    </Modal.Header>
+                                                <Modal disableOverlay onClose={onClose}>
                                                     <Modal.Body>
-                                                        <FormGroup>
-                                                            {i18n._('Are you sure you want to delete this item?')}
-                                                        </FormGroup>
-                                                        <FormGroup>
-                                                            {row.name}
-                                                        </FormGroup>
+                                                        <ModalTemplate type="warning">
+                                                            <FormGroup>
+                                                                <strong>{i18n._('Delete machine profile')}</strong>
+                                                            </FormGroup>
+                                                            <div>
+                                                                {row.name}
+                                                            </div>
+                                                        </ModalTemplate>
                                                     </Modal.Body>
                                                     <Modal.Footer>
                                                         <Button
