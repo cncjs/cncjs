@@ -2,16 +2,16 @@
 import chainedFunction from 'chained-function';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Anchor from '../../../components/Anchor';
-import { Button } from '../../../components/Buttons';
-import { FormGroup } from '../../../components/Forms';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import Table from '../../../components/Table';
-import ToggleSwitch from '../../../components/ToggleSwitch';
-import { TablePagination } from '../../../components/Paginations';
-import portal from '../../../lib/portal';
-import i18n from '../../../lib/i18n';
+import Anchor from 'web/components/Anchor';
+import { Button } from 'web/components/Buttons';
+import FormGroup from 'web/components/FormGroup';
+import Modal from 'web/components/Modal';
+import Space from 'web/components/Space';
+import Table from 'web/components/Table';
+import ToggleSwitch from 'web/components/ToggleSwitch';
+import { TablePagination } from 'web/components/Paginations';
+import portal from 'web/lib/portal';
+import i18n from 'web/lib/i18n';
 import {
     MODAL_CREATE_RECORD,
     MODAL_UPDATE_RECORD
@@ -180,7 +180,7 @@ class TableRecords extends PureComponent {
                                         title={i18n._('Delete')}
                                         onClick={(event) => {
                                             portal(({ onClose }) => (
-                                                <Modal size="xs" onClose={onClose}>
+                                                <Modal disableOverlay size="xs" onClose={onClose}>
                                                     <Modal.Header>
                                                         <Modal.Title>
                                                             {i18n._('Settings')}

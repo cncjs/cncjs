@@ -2,14 +2,18 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import { ToastNotification } from '../../../components/Notifications';
-import ToggleSwitch from '../../../components/ToggleSwitch';
-import { Form, Input } from '../../../components/Validation';
-import i18n from '../../../lib/i18n';
-import * as validations from '../../../lib/validations';
-import styles from '../form.styl';
+import FormGroup from 'web/components/FormGroup';
+import SectionGroup from 'web/components/SectionGroup';
+import SectionTitle from 'web/components/SectionTitle';
+import { FlexContainer, Row, Col } from 'web/components/GridSystem';
+import Margin from 'web/components/Margin';
+import Modal from 'web/components/Modal';
+import Space from 'web/components/Space';
+import { ToastNotification } from 'web/components/Notifications';
+import ToggleSwitch from 'web/components/ToggleSwitch';
+import { Form, Input } from 'web/components/Validation';
+import i18n from 'web/lib/i18n';
+import * as validations from 'web/lib/validations';
 
 const Axis = ({ value, sub }) => (
     <div>{value}<sub style={{ marginLeft: 2 }}>{sub}</sub></div>
@@ -51,10 +55,20 @@ class CreateRecord extends PureComponent {
     render() {
         const { state, actions } = this.props;
         const { modal } = state;
-        const { alertMessage } = modal.params;
+        const {
+            alertMessage,
+            enabled = true,
+            name = '',
+            xmin = '',
+            xmax = '',
+            ymin = '',
+            ymax = '',
+            zmin = '',
+            zmax = '',
+        } = modal.params;
 
         return (
-            <Modal size="sm" onClose={actions.closeModal}>
+            <Modal disableOverlay onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Machine Profiles')}
@@ -84,104 +98,126 @@ class CreateRecord extends PureComponent {
                             event.preventDefault();
                         }}
                     >
-                        <div className={styles.formGroup}>
-                            <label>{i18n._('Enabled')}</label>
-                            <div>
-                                <ToggleSwitch
-                                    ref={node => {
-                                        this.fields.enabled = node;
-                                    }}
-                                    size="sm"
-                                    checked={true}
+                        <SectionGroup>
+                            <FormGroup>
+                                <label>{i18n._('Enabled')}</label>
+                                <div>
+                                    <ToggleSwitch
+                                        ref={node => {
+                                            this.fields.enabled = node;
+                                        }}
+                                        size="sm"
+                                        checked={enabled}
+                                    />
+                                </div>
+                            </FormGroup>
+                            <FormGroup>
+                                <label>{i18n._('Name')}</label>
+                                <Input
+                                    type="text"
+                                    name="name"
+                                    value={name}
+                                    className={classNames(
+                                        'form-control',
+                                    )}
+                                    validations={[validations.required]}
                                 />
-                            </div>
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label>{i18n._('Name')}</label>
-                            <Input
-                                type="text"
-                                name="name"
-                                value=""
-                                className={classNames(
-                                    'form-control',
-                                    styles.formControl,
-                                    styles.short
-                                )}
-                                validations={[validations.required]}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label><Axis value="X" sub="min" /></label>
-                            <Input
-                                type="number"
-                                name="xmin"
-                                className={classNames(
-                                    'form-control',
-                                    styles.formControl,
-                                    styles.short
-                                )}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label><Axis value="X" sub="max" /></label>
-                            <Input
-                                type="number"
-                                name="xmax"
-                                className={classNames(
-                                    'form-control',
-                                    styles.formControl,
-                                    styles.short
-                                )}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label><Axis value="Y" sub="min" /></label>
-                            <Input
-                                type="number"
-                                name="ymin"
-                                className={classNames(
-                                    'form-control',
-                                    styles.formControl,
-                                    styles.short
-                                )}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label><Axis value="Y" sub="max" /></label>
-                            <Input
-                                type="number"
-                                name="ymax"
-                                className={classNames(
-                                    'form-control',
-                                    styles.formControl,
-                                    styles.short
-                                )}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label><Axis value="Z" sub="min" /></label>
-                            <Input
-                                type="number"
-                                name="zmin"
-                                className={classNames(
-                                    'form-control',
-                                    styles.formControl,
-                                    styles.short
-                                )}
-                            />
-                        </div>
-                        <div className={styles.formGroup}>
-                            <label><Axis value="Z" sub="max" /></label>
-                            <Input
-                                type="number"
-                                name="zmax"
-                                className={classNames(
-                                    'form-control',
-                                    styles.formControl,
-                                    styles.short
-                                )}
-                            />
-                        </div>
+                            </FormGroup>
+                        </SectionGroup>
+                        <SectionGroup style={{ marginBottom: 0 }}>
+                            <SectionTitle>{i18n._('Machine Position')}</SectionTitle>
+                            <Margin left={24}>
+                                <FlexContainer fluid gutterWidth={0}>
+                                    <Row>
+                                        <Col>
+                                            <FormGroup>
+                                                <label><Axis value="X" sub="min" /></label>
+                                                <input
+                                                    type="number"
+                                                    name="xmin"
+                                                    defaultValue={String(xmin)}
+                                                    className={classNames(
+                                                        'form-control',
+                                                    )}
+                                                />
+                                            </FormGroup>
+                                        </Col>
+                                        <Col width="auto" style={{ width: 16 }} />
+                                        <Col>
+                                            <FormGroup>
+                                                <label><Axis value="X" sub="max" /></label>
+                                                <input
+                                                    type="number"
+                                                    name="xmax"
+                                                    defaultValue={String(xmax)}
+                                                    className={classNames(
+                                                        'form-control',
+                                                    )}
+                                                />
+                                            </FormGroup>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <FormGroup>
+                                                <label><Axis value="Y" sub="min" /></label>
+                                                <input
+                                                    type="number"
+                                                    name="ymin"
+                                                    defaultValue={String(ymin)}
+                                                    className={classNames(
+                                                        'form-control',
+                                                    )}
+                                                />
+                                            </FormGroup>
+                                        </Col>
+                                        <Col width="auto" style={{ width: 16 }} />
+                                        <Col>
+                                            <FormGroup>
+                                                <label><Axis value="Y" sub="max" /></label>
+                                                <input
+                                                    type="number"
+                                                    name="ymax"
+                                                    defaultValue={String(ymax)}
+                                                    className={classNames(
+                                                        'form-control',
+                                                    )}
+                                                />
+                                            </FormGroup>
+                                        </Col>
+                                    </Row>
+                                    <Row>
+                                        <Col>
+                                            <FormGroup>
+                                                <label><Axis value="Z" sub="min" /></label>
+                                                <input
+                                                    type="number"
+                                                    name="zmin"
+                                                    defaultValue={String(zmin)}
+                                                    className={classNames(
+                                                        'form-control',
+                                                    )}
+                                                />
+                                            </FormGroup>
+                                        </Col>
+                                        <Col width="auto" style={{ width: 16 }} />
+                                        <Col>
+                                            <FormGroup>
+                                                <label><Axis value="Z" sub="max" /></label>
+                                                <input
+                                                    type="number"
+                                                    name="zmax"
+                                                    defaultValue={String(zmax)}
+                                                    className={classNames(
+                                                        'form-control',
+                                                    )}
+                                                />
+                                            </FormGroup>
+                                        </Col>
+                                    </Row>
+                                </FlexContainer>
+                            </Margin>
+                        </SectionGroup>
                     </Form>
                 </Modal.Body>
                 <Modal.Footer>

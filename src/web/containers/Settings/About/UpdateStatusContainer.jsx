@@ -3,10 +3,10 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React from 'react';
 import semver from 'semver';
-import Anchor from '../../../components/Anchor';
-import Space from '../../../components/Space';
+import Anchor from 'web/components/Anchor';
+import Space from 'web/components/Space';
 import settings from '../../../config/settings';
-import i18n from '../../../lib/i18n';
+import i18n from 'web/lib/i18n';
 import styles from './index.styl';
 
 const UpdateStatusContainer = (props) => {
