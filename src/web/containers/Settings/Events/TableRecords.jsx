@@ -86,7 +86,7 @@ class TableRecords extends PureComponent {
                         >
                             <i className="fa fa-plus" />
                             <Space width="8" />
-                            {i18n._('New')}
+                            {i18n._('Add')}
                         </button>
                         <TablePagination
                             style={{

@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Modal from 'web/components/Modal';
-import Space from 'web/components/Space';
 import { ToastNotification } from 'web/components/Notifications';
 import ToggleSwitch from 'web/components/ToggleSwitch';
 import { Form, Input } from 'web/components/Validation';
@@ -45,11 +44,7 @@ class CreateRecord extends PureComponent {
             <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('Account')}
-                        <Space width="8" />
-                        &rsaquo;
-                        <Space width="8" />
-                        {i18n._('New')}
+                        {i18n._('New Account')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

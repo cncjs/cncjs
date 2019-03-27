@@ -6,7 +6,6 @@ import React, { PureComponent } from 'react';
 import { Form, Select, Textarea } from 'web/components/Validation';
 import Modal from 'web/components/Modal';
 import { ToastNotification } from 'web/components/Notifications';
-import Space from 'web/components/Space';
 import ToggleSwitch from 'web/components/ToggleSwitch';
 import i18n from 'web/lib/i18n';
 import * as validations from 'web/lib/validations';
@@ -67,11 +66,7 @@ class UpdateRecord extends PureComponent {
             <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('Events')}
-                        <Space width="8" />
-                        &rsaquo;
-                        <Space width="8" />
-                        {i18n._('Update')}
+                        {i18n._('Event')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

@@ -19,11 +19,11 @@ class App extends PureComponent {
             '/settings',
             '/settings/general',
             '/settings/workspace',
-            '/settings/account',
+            '/settings/machine-profiles',
+            '/settings/user-accounts',
             '/settings/controller',
             '/settings/commands',
             '/settings/events',
-            '/settings/machines',
             '/settings/about'
         ].indexOf(location.pathname) >= 0);
 

@@ -66,9 +66,9 @@ class TableRecords extends PureComponent {
                                 actions.openModal(MODAL_CREATE_RECORD);
                             }}
                         >
-                            <i className="fa fa-plus" />
+                            <i className="fa fa-user-plus" />
                             <Space width="8" />
-                            {i18n._('New')}
+                            {i18n._('New Account')}
                         </button>
                         <TablePagination
                             style={{
