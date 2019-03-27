@@ -30,11 +30,6 @@ const getSanitizedRecords = () => {
             record.id = uuid.v4();
             shouldUpdate = true;
         }
-
-        // Defaults to true
-        if (record.enabled === undefined) {
-            record.enabled = true;
-        }
     }
 
     if (shouldUpdate) {
@@ -64,15 +59,15 @@ export const fetch = (req, res) => {
                 totalRecords: Number(totalRecords)
             },
             records: pagedRecords.map(record => {
-                const { id, enabled, name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
-                return { id, enabled, name, xmin, xmax, ymin, ymax, zmin, zmax };
+                const { id, name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
+                return { id, name, xmin, xmax, ymin, ymax, zmin, zmax };
             })
         });
     } else {
         res.send({
             records: records.map(record => {
-                const { id, enabled, name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
-                return { id, enabled, name, xmin, xmax, ymin, ymax, zmin, zmax };
+                const { id, name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
+                return { id, name, xmin, xmax, ymin, ymax, zmin, zmax };
             })
         });
     }
@@ -80,7 +75,6 @@ export const fetch = (req, res) => {
 
 export const create = (req, res) => {
     const {
-        enabled = true,
         name = '',
         xmin = 0,
         xmax = 0,
@@ -101,7 +95,6 @@ export const create = (req, res) => {
         const records = getSanitizedRecords();
         const record = {
             id: uuid.v4(),
-            enabled: !!enabled,
             name: name,
             xmin: xmin,
             xmax: xmax,
@@ -134,8 +127,8 @@ export const read = (req, res) => {
         return;
     }
 
-    const { enabled, name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
-    res.send({ id, enabled, name, xmin, xmax, ymin, ymax, zmin, zmax });
+    const { name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
+    res.send({ id, name, xmin, xmax, ymin, ymax, zmin, zmax });
 };
 
 export const update = (req, res) => {
@@ -151,7 +144,6 @@ export const update = (req, res) => {
     }
 
     const {
-        enabled = record.enabled,
         name = record.name,
         xmin = record.xmin,
         xmax = record.xmax,
@@ -162,7 +154,6 @@ export const update = (req, res) => {
     } = { ...req.body };
 
     try {
-        record.enabled = Boolean(enabled);
         record.name = String(name || '');
         record.xmin = Number(xmin) || 0;
         record.xmax = Number(xmax) || 0;

@@ -948,11 +948,9 @@ class Settings extends PureComponent {
                                     const currentMachineProfile = store.get('workspace.machineProfile');
                                     const currentMachineProfileId = _get(currentMachineProfile, 'id');
                                     const matchedMachineProfile = _find(machineProfiles, { id: currentMachineProfileId });
+
                                     if (matchedMachineProfile) {
-                                        store.replace('workspace.machineProfile', matchedMachineProfile.enabled
-                                            ? matchedMachineProfile
-                                            : { id: null }
-                                        );
+                                        store.replace('workspace.machineProfile', matchedMachineProfile);
                                     }
 
                                     // FIXME: Use redux store

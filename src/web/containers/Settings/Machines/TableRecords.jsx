@@ -10,7 +10,6 @@ import Modal from 'web/components/Modal';
 import ModalTemplate from 'web/components/ModalTemplate';
 import Space from 'web/components/Space';
 import Table from 'web/components/Table';
-import ToggleSwitch from 'web/components/ToggleSwitch';
 import { TablePagination } from 'web/components/Paginations';
 import portal from 'web/lib/portal';
 import i18n from 'web/lib/i18n';
@@ -90,25 +89,6 @@ class TableRecords extends PureComponent {
                     </div>
                 )}
                 columns={[
-                    {
-                        title: i18n._('Enabled'),
-                        key: 'enabled',
-                        render: (value, row, index) => {
-                            const { id, enabled } = row;
-                            const title = enabled ? i18n._('Enabled') : i18n._('Disabled');
-
-                            return (
-                                <ToggleSwitch
-                                    checked={enabled}
-                                    size="sm"
-                                    title={title}
-                                    onChange={(event) => {
-                                        actions.updateRecord(id, { enabled: !enabled });
-                                    }}
-                                />
-                            );
-                        }
-                    },
                     {
                         title: i18n._('Name'),
                         key: 'name',

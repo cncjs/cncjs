@@ -84,23 +84,6 @@ const IconButton = styled(Button)`
     }
 `;
 
-const fetchEnabledMachineProfiles = () => {
-    let enabledMachineProfiles = [];
-
-    try {
-        enabledMachineProfiles = api.machines.fetch()
-            .then((res) => {
-                const { records: machineProfiles } = res.body;
-                return ensureArray(machineProfiles)
-                    .filter(machineProfile => machineProfile.enabled);
-            });
-    } catch (err) {
-        // Ignore
-    }
-
-    return enabledMachineProfiles;
-};
-
 class SecondaryToolbar extends PureComponent {
     static propTypes = {
         is3DView: PropTypes.bool,
@@ -119,9 +102,22 @@ class SecondaryToolbar extends PureComponent {
 
     pubsubTokens = [];
 
+    fetchMachineProfiles = async () => {
+        try {
+            const res = await api.machines.fetch();
+            const { records: machineProfiles } = res.body;
+
+            this.setState({
+                machineProfiles: ensureArray(machineProfiles)
+            });
+        } catch (err) {
+            // Ignore
+        }
+    };
+
     updateMachineProfileFromStore = () => {
         const machineProfile = store.get('workspace.machineProfile');
-        if (_isEqual(machineProfile, this.state.machineProfile)) {
+        if (!machineProfile || _isEqual(machineProfile, this.state.machineProfile)) {
             return;
         }
 
@@ -129,12 +125,16 @@ class SecondaryToolbar extends PureComponent {
     };
 
     updateMachineProfilesFromSubscriber = (machineProfiles) => {
-        const enabledMachineProfiles = ensureArray(machineProfiles)
-            .filter(machineProfile => machineProfile.enabled);
-
         this.setState({
-            machineProfiles: enabledMachineProfiles
+            machineProfiles: ensureArray(machineProfiles)
         });
+    };
+
+    changeMachineProfileById = (id) => {
+        const machineProfile = _find(this.state.machineProfiles, { id });
+        if (machineProfile) {
+            store.replace('workspace.machineProfile', machineProfile);
+        }
     };
 
     subscribe() {
@@ -157,25 +157,12 @@ class SecondaryToolbar extends PureComponent {
         store.on('change', this.updateMachineProfileFromStore);
         this.subscribe();
 
-        fetchEnabledMachineProfiles()
-            .then(machineProfiles => {
-                this.setState({ machineProfiles });
-            });
+        this.fetchMachineProfiles();
     }
 
     componentWillUnmount() {
         store.removeListener('change', this.updateMachineProfileFromStore);
         this.unsubscribe();
-    }
-
-    changeMachineProfileById(id) {
-        fetchEnabledMachineProfiles()
-            .then(machineProfiles => {
-                const machineProfile = _find(machineProfiles, { id });
-                if (machineProfile) {
-                    store.replace('workspace.machineProfile', machineProfile);
-                }
-            });
     }
 
     render() {

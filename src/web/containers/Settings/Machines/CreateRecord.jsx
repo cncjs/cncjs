@@ -9,8 +9,6 @@ import { FlexContainer, Row, Col } from 'web/components/GridSystem';
 import Margin from 'web/components/Margin';
 import Modal from 'web/components/Modal';
 import { ToastNotification } from 'web/components/Notifications';
-import Space from 'web/components/Space';
-import ToggleSwitch from 'web/components/ToggleSwitch';
 import i18n from 'web/lib/i18n';
 import Error from '../common/Error';
 import * as validations from '../common/validations';
@@ -27,7 +25,6 @@ class CreateRecord extends Component {
     getInitialState() {
         return {
             values: {
-                enabled: true,
                 name: '',
                 xmin: 0,
                 xmax: 0,
@@ -41,10 +38,9 @@ class CreateRecord extends Component {
 
     onSubmit = (values) => {
         const { createRecord } = this.props.actions;
-        const { enabled, name, xmin, xmax, ymin, ymax, zmin, zmax } = values;
+        const { name, xmin, xmax, ymin, ymax, zmin, zmax } = values;
 
         createRecord({
-            enabled,
             name,
             xmin: Number(xmin) || 0,
             xmax: Number(xmax) || 0,
@@ -148,11 +144,7 @@ class CreateRecord extends Component {
                         <div>
                             <Modal.Header>
                                 <Modal.Title>
-                                    {i18n._('Machine Profiles')}
-                                    <Space width="8" />
-                                    &rsaquo;
-                                    <Space width="8" />
-                                    {i18n._('New')}
+                                    {i18n._('Machine Profile')}
                                 </Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
@@ -168,22 +160,6 @@ class CreateRecord extends Component {
                                 </ToastNotification>
                                 }
                                 <SectionGroup>
-                                    <Field name="enabled">
-                                        {({ input: { value, onChange }, meta }) => {
-                                            const on = !!value;
-
-                                            return (
-                                                <FormGroup>
-                                                    <ToggleSwitch
-                                                        size="sm"
-                                                        checked={on}
-                                                        onChange={() => onChange(!on)}
-                                                    />
-                                                    {on ? i18n._('ON') : i18n._('OFF')}
-                                                </FormGroup>
-                                            );
-                                        }}
-                                    </Field>
                                     <Field name="name" validate={validations.required}>
                                         {({ input, meta }) => (
                                             <FormGroup>
