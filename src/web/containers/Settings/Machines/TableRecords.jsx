@@ -5,6 +5,7 @@ import React, { PureComponent } from 'react';
 import Anchor from 'web/components/Anchor';
 import { Button } from 'web/components/Buttons';
 import FormGroup from 'web/components/FormGroup';
+import { FlexContainer, Row, Col } from 'web/components/GridSystem';
 import Modal from 'web/components/Modal';
 import ModalTemplate from 'web/components/ModalTemplate';
 import Space from 'web/components/Space';
@@ -126,9 +127,51 @@ class TableRecords extends PureComponent {
                         }
                     },
                     {
-                        title: (<Axis value="X" sub="min" />),
-                        key: 'xmin',
-                        render: (value, row, index) => row.xmin
+                        title: i18n._('Machine Travel Limits'),
+                        key: 'machine-limit',
+                        render: (value, row, index) => {
+                            return (
+                                <FlexContainer fluid gutterWidth={0}>
+                                    <Row>
+                                        <Col width="auto">
+                                            <div>
+                                                <Axis value="X" sub="min" />
+                                                {` = ${row.xmin}`}
+                                            </div>
+                                            <div>
+                                                <Axis value="Y" sub="min" />
+                                                {` = ${row.ymin}`}
+                                            </div>
+                                            <div>
+                                                <Axis value="Z" sub="min" />
+                                                {` = ${row.zmin}`}
+                                            </div>
+                                        </Col>
+                                        <Col width="auto" style={{ width: 16 }} />
+                                        <Col width="auto">
+                                            <div>
+                                                <Axis value="X" sub="max" />
+                                                {` = ${row.xmax}`}
+                                            </div>
+                                            <div>
+                                                <Axis value="Y" sub="max" />
+                                                {` = ${row.ymax}`}
+                                            </div>
+                                            <div>
+                                                <Axis value="Z" sub="max" />
+                                                {` = ${row.zmax}`}
+                                            </div>
+                                        </Col>
+                                    </Row>
+                                </FlexContainer>
+                            );
+                        }
+                    },
+                    /*
+                    {
+                            title: (<Axis value="X" sub="min" />),
+                            key: 'xmin',
+                            render: (value, row, index) => row.xmin
                     },
                     {
                         title: (<Axis value="X" sub="max" />),
@@ -155,6 +198,7 @@ class TableRecords extends PureComponent {
                         key: 'zmax',
                         render: (value, row, index) => row.zmax
                     },
+                    */
                     {
                         title: i18n._('Action'),
                         className: 'text-nowrap',

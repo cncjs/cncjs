@@ -375,8 +375,8 @@ class PrimaryToolbar extends PureComponent {
                                 }
                                 <Space width="4" />
                                 {objects.machineLimit.visible
-                                    ? i18n._('Hide Machine Limit')
-                                    : i18n._('Show Machine Limit')
+                                    ? i18n._('Hide Machine Travel Limits')
+                                    : i18n._('Show Machine Travel Limits')
                                 }
                             </MenuItem>
                             <MenuItem

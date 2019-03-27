@@ -1,6 +1,7 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Form, Field } from 'react-final-form';
+import Input from 'web/components/FormControl/Input';
 import FormGroup from 'web/components/FormGroup';
 import SectionGroup from 'web/components/SectionGroup';
 import SectionTitle from 'web/components/SectionTitle';
@@ -67,7 +68,7 @@ class UpdateRecord extends Component {
         }, forceReload);
     };
 
-    renderMachinePositionFields = () => (
+    renderMachineTravelLimits = () => (
         <FlexContainer fluid gutterWidth={0}>
             <Row>
                 <Col>
@@ -75,7 +76,7 @@ class UpdateRecord extends Component {
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="X" sub="min" /></label>
-                                <input {...input} type="number" className="form-control" />
+                                <Input {...input} type="number" />
                                 {meta.touched && meta.error && <Error>{meta.error}</Error>}
                             </FormGroup>
                         )}
@@ -87,7 +88,7 @@ class UpdateRecord extends Component {
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="X" sub="max" /></label>
-                                <input {...input} type="number" className="form-control" />
+                                <Input {...input} type="number" />
                                 {meta.touched && meta.error && <Error>{meta.error}</Error>}
                             </FormGroup>
                         )}
@@ -100,7 +101,7 @@ class UpdateRecord extends Component {
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="Y" sub="min" /></label>
-                                <input {...input} type="number" className="form-control" />
+                                <Input {...input} type="number" />
                                 {meta.touched && meta.error && <Error>{meta.error}</Error>}
                             </FormGroup>
                         )}
@@ -112,7 +113,7 @@ class UpdateRecord extends Component {
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="Y" sub="max" /></label>
-                                <input {...input} type="number" className="form-control" />
+                                <Input {...input} type="number" />
                                 {meta.touched && meta.error && <Error>{meta.error}</Error>}
                             </FormGroup>
                         )}
@@ -125,7 +126,7 @@ class UpdateRecord extends Component {
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="Z" sub="min" /></label>
-                                <input {...input} type="number" className="form-control" />
+                                <Input {...input} type="number" />
                                 {meta.touched && meta.error && <Error>{meta.error}</Error>}
                             </FormGroup>
                         )}
@@ -137,7 +138,7 @@ class UpdateRecord extends Component {
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="Z" sub="max" /></label>
-                                <input {...input} type="number" className="form-control" />
+                                <Input {...input} type="number" />
                                 {meta.touched && meta.error && <Error>{meta.error}</Error>}
                             </FormGroup>
                         )}
@@ -200,16 +201,16 @@ class UpdateRecord extends Component {
                                         {({ input, meta }) => (
                                             <FormGroup>
                                                 <label>{i18n._('Name')}</label>
-                                                <input {...input} type="text" className="form-control" />
+                                                <Input {...input} type="text" />
                                                 {meta.touched && meta.error && <Error>{meta.error}</Error>}
                                             </FormGroup>
                                         )}
                                     </Field>
                                 </SectionGroup>
                                 <SectionGroup style={{ marginBottom: 0 }}>
-                                    <SectionTitle>{i18n._('Machine Position')}</SectionTitle>
+                                    <SectionTitle>{i18n._('Machine Travel Limits')}</SectionTitle>
                                     <Margin left={24}>
-                                        {this.renderMachinePositionFields()}
+                                        {this.renderMachineTravelLimits()}
                                     </Margin>
                                 </SectionGroup>
                             </Modal.Body>
