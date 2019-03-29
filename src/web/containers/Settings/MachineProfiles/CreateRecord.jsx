@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Form, Field } from 'react-final-form';
+import { Input } from 'web/components/FormControl';
 import FormGroup from 'web/components/FormGroup';
-import SectionGroup from 'web/components/SectionGroup';
-import SectionTitle from 'web/components/SectionTitle';
-import Input from 'web/components/FormControl/Input';
 import { FlexContainer, Row, Col } from 'web/components/GridSystem';
 import Margin from 'web/components/Margin';
 import Modal from 'web/components/Modal';
 import { ToastNotification } from 'web/components/Notifications';
+import SectionGroup from 'web/components/SectionGroup';
+import SectionTitle from 'web/components/SectionTitle';
 import i18n from 'web/lib/i18n';
 import Error from '../common/Error';
 import * as validations from '../common/validations';

@@ -143,6 +143,7 @@
     "@trendmicro/react-checkbox": "~3.4.1",
     "@trendmicro/react-datepicker": "~1.0.0-alpha.6",
     "@trendmicro/react-dropdown": "~1.3.0",
+    "@trendmicro/react-form-control": "~0.1.0",
     "@trendmicro/react-grid-system": "~0.2.0",
     "@trendmicro/react-iframe": "~0.3.1",
     "@trendmicro/react-interpolate": "~0.5.5",
