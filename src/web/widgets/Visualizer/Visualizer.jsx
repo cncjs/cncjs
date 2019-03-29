@@ -1,3 +1,4 @@
+import _get from 'lodash/get';
 import each from 'lodash/each';
 import isEqual from 'lodash/isEqual';
 import tail from 'lodash/tail';
@@ -104,20 +105,21 @@ class Visualizer extends Component {
 
         this.machineProfile = { ...machineProfile };
 
-        if (this.machineLimit) {
-            this.group.remove(this.machineLimit);
-            this.machineLimit = null;
+        if (this.limits) {
+            this.group.remove(this.limits);
+            this.limits = null;
         }
 
         const state = this.props.state;
-        const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = this.machineProfile;
-        this.machineLimit = this.createMachineLimit(xmin, xmax, ymin, ymax, zmin, zmax);
-        this.machineLimit.name = 'MachineLimit';
-        this.machineLimit.visible = state.objects.machineLimit.visible;
+        const limits = _get(this.machineProfile, 'limits');
+        const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
+        this.limits = this.createLimits(xmin, xmax, ymin, ymax, zmin, zmax);
+        this.limits.name = 'Limits';
+        this.limits.visible = state.objects.limits.visible;
 
-        this.updateMachineLimitPosition();
+        this.updateLimitsPosition();
 
-        this.group.add(this.machineLimit);
+        this.group.add(this.limits);
 
         this.updateScene();
     };
@@ -147,7 +149,7 @@ class Visualizer extends Component {
         this.camera = null;
         this.controls = null;
         this.viewport = null;
-        this.machineLimit = null;
+        this.limits = null;
         this.toolhead = null;
         this.cutter = null;
         this.visualizer = null;
@@ -248,9 +250,9 @@ class Visualizer extends Component {
             needUpdateScene = true;
         }
 
-        // Whether to show machine limit
-        if (this.machineLimit && (this.machineLimit.visible !== state.objects.machineLimit.visible)) {
-            this.machineLimit.visible = state.objects.machineLimit.visible;
+        // Whether to show limits
+        if (this.limits && (this.limits.visible !== state.objects.limits.visible)) {
+            this.limits.visible = state.objects.limits.visible;
             needUpdateScene = true;
         }
 
@@ -284,7 +286,7 @@ class Visualizer extends Component {
             if (needUpdatePosition) {
                 this.updateToolHeadPosition();
                 this.updateCutterPosition();
-                this.updateMachineLimitPosition();
+                this.updateLimitsPosition();
             }
         }
 
@@ -445,16 +447,16 @@ class Visualizer extends Component {
         this.updateScene();
     }
 
-    createMachineLimit(xmin, xmax, ymin, ymax, zmin, zmax) {
+    createLimits(xmin, xmax, ymin, ymax, zmin, zmax) {
         const dx = Math.abs(xmax - xmin) || Number.MIN_VALUE;
         const dy = Math.abs(ymax - ymin) || Number.MIN_VALUE;
         const dz = Math.abs(zmax - zmin) || Number.MIN_VALUE;
         const color = colornames('maroon');
         const opacity = 0.5;
         const transparent = true;
-        const machineLimit = new Cuboid({ dx, dy, dz, color, opacity, transparent });
+        const limits = new Cuboid({ dx, dy, dz, color, opacity, transparent });
 
-        return machineLimit;
+        return limits;
     }
 
     createCoordinateSystem(units) {
@@ -662,15 +664,16 @@ class Visualizer extends Component {
             this.group.add(metricGridLineNumbers);
         }
 
-        { // Machine Limit
-            const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = this.machineProfile;
-            this.machineLimit = this.createMachineLimit(xmin, xmax, ymin, ymax, zmin, zmax);
-            this.machineLimit.name = 'MachineLimit';
-            this.machineLimit.visible = objects.machineLimit.visible;
+        { // Limits
+            const limits = _get(this.machineProfile, 'limits');
+            const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
+            this.limits = this.createLimits(xmin, xmax, ymin, ymax, zmin, zmax);
+            this.limits.name = 'Limits';
+            this.limits.visible = objects.limits.visible;
 
-            this.updateMachineLimitPosition();
+            this.updateLimitsPosition();
 
-            this.group.add(this.machineLimit);
+            this.group.add(this.limits);
         }
 
         { // Tool Head
@@ -866,13 +869,14 @@ class Visualizer extends Component {
         this.cutter.position.set(x0, y0, z0);
     }
 
-    // Update machine limit position
-    updateMachineLimitPosition() {
-        if (!this.machineLimit) {
+    // Update limits position
+    updateLimitsPosition() {
+        if (!this.limits) {
             return;
         }
 
-        const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = this.machineProfile;
+        const limits = _get(this.machineProfile, 'limits');
+        const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
         const pivotPoint = this.pivotPoint.get();
         const { x: mpox, y: mpoy, z: mpoz } = this.machinePosition;
         const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
@@ -880,7 +884,7 @@ class Visualizer extends Component {
         const y0 = ((ymin + ymax) / 2) - (mpoy - wpoy) - pivotPoint.y;
         const z0 = ((zmin + zmax) / 2) - (mpoz - wpoz) - pivotPoint.z;
 
-        this.machineLimit.position.set(x0, y0, z0);
+        this.limits.position.set(x0, y0, z0);
     }
 
     // Make the controls look at the specified position
@@ -928,7 +932,7 @@ class Visualizer extends Component {
         // Update position
         this.updateToolHeadPosition();
         this.updateCutterPosition();
-        this.updateMachineLimitPosition();
+        this.updateLimitsPosition();
 
         if (this.viewport && dX > 0 && dY > 0) {
             // The minimum viewport is 50x50mm

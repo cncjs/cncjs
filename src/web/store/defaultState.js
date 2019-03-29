@@ -191,7 +191,7 @@ const defaultState = {
                 displayName: true
             },
             objects: {
-                machineLimit: {
+                limits: {
                     visible: true
                 },
                 coordinateSystem: {

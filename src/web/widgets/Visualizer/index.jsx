@@ -477,13 +477,13 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
         },
-        toggleMachineLimitVisibility: () => {
+        toggleLimitsVisibility: () => {
             this.setState((state) => ({
                 objects: {
                     ...state.objects,
-                    machineLimit: {
-                        ...state.objects.machineLimit,
-                        visible: !state.objects.machineLimit.visible
+                    limits: {
+                        ...state.objects.limits,
+                        visible: !state.objects.limits.visible
                     }
                 }
             }));
@@ -846,6 +846,9 @@ class VisualizerWidget extends PureComponent {
         if (this.state.gcode.displayName !== prevState.gcode.displayName) {
             this.config.set('gcode.displayName', this.state.gcode.displayName);
         }
+        if (this.state.objects.limits.visible !== prevState.objects.limits.visible) {
+            this.config.set('objects.limits.visible', this.state.objects.limits.visible);
+        }
         if (this.state.objects.coordinateSystem.visible !== prevState.objects.coordinateSystem.visible) {
             this.config.set('objects.coordinateSystem.visible', this.state.objects.coordinateSystem.visible);
         }
@@ -914,8 +917,8 @@ class VisualizerWidget extends PureComponent {
             disabled: this.config.get('disabled', false),
             projection: this.config.get('projection', 'orthographic'),
             objects: {
-                machineLimit: {
-                    visible: this.config.get('objects.machineLimit.visible', true)
+                limits: {
+                    visible: this.config.get('objects.limits.visible', true)
                 },
                 coordinateSystem: {
                     visible: this.config.get('objects.coordinateSystem.visible', true)

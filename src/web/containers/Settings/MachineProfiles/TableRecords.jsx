@@ -1,4 +1,4 @@
-/* eslint react/jsx-no-bind: 0 */
+import _get from 'lodash/get';
 import chainedFunction from 'chained-function';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
@@ -107,8 +107,8 @@ class TableRecords extends PureComponent {
                         }
                     },
                     {
-                        title: i18n._('Machine Travel Limits'),
-                        key: 'machine-limit',
+                        title: i18n._('Limits'),
+                        key: 'limits',
                         render: (value, row, index) => {
                             return (
                                 <FlexContainer fluid gutterWidth={0}>
@@ -116,30 +116,30 @@ class TableRecords extends PureComponent {
                                         <Col width="auto">
                                             <div>
                                                 <Axis value="X" sub="min" />
-                                                {` = ${row.xmin}`}
+                                                {` = ${_get(row, 'limits.xmin')}`}
                                             </div>
                                             <div>
                                                 <Axis value="Y" sub="min" />
-                                                {` = ${row.ymin}`}
+                                                {` = ${_get(row, 'limits.ymin')}`}
                                             </div>
                                             <div>
                                                 <Axis value="Z" sub="min" />
-                                                {` = ${row.zmin}`}
+                                                {` = ${_get(row, 'limits.zmin')}`}
                                             </div>
                                         </Col>
                                         <Col width="auto" style={{ width: 16 }} />
                                         <Col width="auto">
                                             <div>
                                                 <Axis value="X" sub="max" />
-                                                {` = ${row.xmax}`}
+                                                {` = ${_get(row, 'limits.xmax')}`}
                                             </div>
                                             <div>
                                                 <Axis value="Y" sub="max" />
-                                                {` = ${row.ymax}`}
+                                                {` = ${_get(row, 'limits.ymax')}`}
                                             </div>
                                             <div>
                                                 <Axis value="Z" sub="max" />
-                                                {` = ${row.zmax}`}
+                                                {` = ${_get(row, 'limits.zmax')}`}
                                             </div>
                                         </Col>
                                     </Row>

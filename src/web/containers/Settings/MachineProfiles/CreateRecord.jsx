@@ -1,3 +1,4 @@
+import _get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Form, Field } from 'react-final-form';
@@ -26,36 +27,39 @@ class CreateRecord extends Component {
         return {
             values: {
                 name: '',
-                xmin: 0,
-                xmax: 0,
-                ymin: 0,
-                ymax: 0,
-                zmin: 0,
-                zmax: 0
+                limits: {
+                    xmin: 0,
+                    xmax: 0,
+                    ymin: 0,
+                    ymax: 0,
+                    zmin: 0,
+                    zmax: 0,
+                }
             }
         };
     }
 
     onSubmit = (values) => {
         const { createRecord } = this.props.actions;
-        const { name, xmin, xmax, ymin, ymax, zmin, zmax } = values;
 
         createRecord({
-            name,
-            xmin: Number(xmin) || 0,
-            xmax: Number(xmax) || 0,
-            ymin: Number(ymin) || 0,
-            ymax: Number(ymax) || 0,
-            zmin: Number(zmin) || 0,
-            zmax: Number(zmax) || 0,
+            name: _get(values, 'name', ''),
+            limits: {
+                xmin: Number(_get(values, 'limits.xmin')) || 0,
+                xmax: Number(_get(values, 'limits.xmax')) || 0,
+                ymin: Number(_get(values, 'limits.ymin')) || 0,
+                ymax: Number(_get(values, 'limits.ymax')) || 0,
+                zmin: Number(_get(values, 'limits.zmin')) || 0,
+                zmax: Number(_get(values, 'limits.zmax')) || 0,
+            }
         });
     };
 
-    renderMachineTravelLimits = () => (
+    renderLimits = () => (
         <FlexContainer fluid gutterWidth={0}>
             <Row>
                 <Col>
-                    <Field name="xmin">
+                    <Field name="limits.xmin">
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="X" sub="min" /></label>
@@ -67,7 +71,7 @@ class CreateRecord extends Component {
                 </Col>
                 <Col width="auto" style={{ width: 16 }} />
                 <Col>
-                    <Field name="xmax">
+                    <Field name="limits.xmax">
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="X" sub="max" /></label>
@@ -80,7 +84,7 @@ class CreateRecord extends Component {
             </Row>
             <Row>
                 <Col>
-                    <Field name="ymin">
+                    <Field name="limits.ymin">
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="Y" sub="min" /></label>
@@ -92,7 +96,7 @@ class CreateRecord extends Component {
                 </Col>
                 <Col width="auto" style={{ width: 16 }} />
                 <Col>
-                    <Field name="ymax">
+                    <Field name="limits.ymax">
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="Y" sub="max" /></label>
@@ -105,7 +109,7 @@ class CreateRecord extends Component {
             </Row>
             <Row>
                 <Col>
-                    <Field name="zmin">
+                    <Field name="limits.zmin">
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="Z" sub="min" /></label>
@@ -117,7 +121,7 @@ class CreateRecord extends Component {
                 </Col>
                 <Col width="auto" style={{ width: 16 }} />
                 <Col>
-                    <Field name="zmax">
+                    <Field name="limits.zmax">
                         {({ input, meta }) => (
                             <FormGroup>
                                 <label><Axis value="Z" sub="max" /></label>
@@ -171,9 +175,9 @@ class CreateRecord extends Component {
                                     </Field>
                                 </SectionGroup>
                                 <SectionGroup style={{ marginBottom: 0 }}>
-                                    <SectionTitle>{i18n._('Machine Travel Limits')}</SectionTitle>
+                                    <SectionTitle>{i18n._('Limits')}</SectionTitle>
                                     <Margin left={24}>
-                                        {this.renderMachineTravelLimits()}
+                                        {this.renderLimits()}
                                     </Margin>
                                 </SectionGroup>
                             </Modal.Body>

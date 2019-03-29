@@ -1,8 +1,11 @@
-import find from 'lodash/find';
-import castArray from 'lodash/castArray';
-import isPlainObject from 'lodash/isPlainObject';
+import _get from 'lodash/get';
+import _set from 'lodash/set';
+import _find from 'lodash/find';
+import _castArray from 'lodash/castArray';
+import _isPlainObject from 'lodash/isPlainObject';
 import uuid from 'uuid';
 import settings from '../config/settings';
+import { ensureNumber, ensureString } from '../lib/ensure-type';
 import logger from '../lib/logger';
 import config from '../services/configstore';
 import { getPagingRange } from './paging';
@@ -16,11 +19,11 @@ const log = logger('api:machines');
 const CONFIG_KEY = 'machines';
 
 const getSanitizedRecords = () => {
-    const records = castArray(config.get(CONFIG_KEY, []));
+    const records = _castArray(config.get(CONFIG_KEY, []));
 
     let shouldUpdate = false;
     for (let i = 0; i < records.length; ++i) {
-        if (!isPlainObject(records[i])) {
+        if (!_isPlainObject(records[i])) {
             records[i] = {};
         }
 
@@ -42,6 +45,24 @@ const getSanitizedRecords = () => {
     return records;
 };
 
+const ensureMachineProfile = (payload) => {
+    const { id, name, limits } = { ...payload };
+    const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
+
+    return {
+        id,
+        name: ensureString(name),
+        limits: {
+            xmin: ensureNumber(xmin) || 0,
+            xmax: ensureNumber(xmax) || 0,
+            ymin: ensureNumber(ymin) || 0,
+            ymax: ensureNumber(ymax) || 0,
+            zmin: ensureNumber(zmin) || 0,
+            zmax: ensureNumber(zmax) || 0,
+        }
+    };
+};
+
 export const fetch = (req, res) => {
     const records = getSanitizedRecords();
     const paging = !!req.query.paging;
@@ -58,33 +79,19 @@ export const fetch = (req, res) => {
                 pageLength: Number(pageLength),
                 totalRecords: Number(totalRecords)
             },
-            records: pagedRecords.map(record => {
-                const { id, name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
-                return { id, name, xmin, xmax, ymin, ymax, zmin, zmax };
-            })
+            records: pagedRecords.map(record => ensureMachineProfile(record))
         });
     } else {
         res.send({
-            records: records.map(record => {
-                const { id, name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
-                return { id, name, xmin, xmax, ymin, ymax, zmin, zmax };
-            })
+            records: records.map(record => ensureMachineProfile(record))
         });
     }
 };
 
 export const create = (req, res) => {
-    const {
-        name = '',
-        xmin = 0,
-        xmax = 0,
-        ymin = 0,
-        ymax = 0,
-        zmin = 0,
-        zmax = 0
-    } = { ...req.body };
+    const record = { ...req.body };
 
-    if (!name) {
+    if (!record.name) {
         res.status(ERR_BAD_REQUEST).send({
             msg: 'The "name" parameter must not be empty'
         });
@@ -93,18 +100,7 @@ export const create = (req, res) => {
 
     try {
         const records = getSanitizedRecords();
-        const record = {
-            id: uuid.v4(),
-            name: name,
-            xmin: xmin,
-            xmax: xmax,
-            ymin: ymin,
-            ymax: ymax,
-            zmin: zmin,
-            zmax: zmax
-        };
-
-        records.push(record);
+        records.push(ensureMachineProfile(record));
         config.set(CONFIG_KEY, records);
 
         res.send({ id: record.id });
@@ -118,7 +114,7 @@ export const create = (req, res) => {
 export const read = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -127,14 +123,13 @@ export const read = (req, res) => {
         return;
     }
 
-    const { name, xmin, xmax, ymin, ymax, zmin, zmax } = { ...record };
-    res.send({ id, name, xmin, xmax, ymin, ymax, zmin, zmax });
+    res.send(ensureMachineProfile(record));
 };
 
 export const update = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
@@ -143,24 +138,24 @@ export const update = (req, res) => {
         return;
     }
 
-    const {
-        name = record.name,
-        xmin = record.xmin,
-        xmax = record.xmax,
-        ymin = record.ymin,
-        ymax = record.ymax,
-        zmin = record.zmin,
-        zmax = record.zmax
-    } = { ...req.body };
-
     try {
-        record.name = String(name || '');
-        record.xmin = Number(xmin) || 0;
-        record.xmax = Number(xmax) || 0;
-        record.ymin = Number(ymin) || 0;
-        record.ymax = Number(ymax) || 0;
-        record.zmin = Number(zmin) || 0;
-        record.zmax = Number(zmax) || 0;
+        const nextRecord = req.body;
+
+        [ // [key, ensureType]
+            ['name', ensureString],
+            ['limits.xmin', ensureNumber],
+            ['limits.xmax', ensureNumber],
+            ['limits.ymin', ensureNumber],
+            ['limits.ymax', ensureNumber],
+            ['limits.zmin', ensureNumber],
+            ['limits.zmax', ensureNumber],
+        ].forEach(it => {
+            const [key, ensureType] = it;
+            const defaultValue = _get(record, key);
+            const value = _get(nextRecord, key, defaultValue);
+
+            _set(record, key, (typeof ensureType === 'function') ? ensureType(value) : value);
+        });
 
         config.set(CONFIG_KEY, records);
 
@@ -175,7 +170,7 @@ export const update = (req, res) => {
 export const __delete = (req, res) => {
     const id = req.params.id;
     const records = getSanitizedRecords();
-    const record = find(records, { id: id });
+    const record = _find(records, { id: id });
 
     if (!record) {
         res.status(ERR_NOT_FOUND).send({
