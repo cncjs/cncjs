@@ -9,6 +9,8 @@ class Cuboid {
             color = 0x000000,
             opacity = 1,
             transparent = true,
+            dashed = false,
+            ...others
         } = { ...options };
 
         const geometry = new THREE.BoxGeometry(
@@ -17,13 +19,33 @@ class Cuboid {
             dz, // depth
         );
         const edges = new THREE.EdgesGeometry(geometry);
-        const material = new THREE.LineBasicMaterial({
-            color,
-            opacity,
-            transparent,
-        });
 
-        return new THREE.LineSegments(edges, material);
+        let material;
+
+        if (dashed) {
+            material = new THREE.LineDashedMaterial({
+                color,
+                opacity,
+                transparent,
+                ...others
+            });
+        } else {
+            material = new THREE.LineBasicMaterial({
+                color,
+                opacity,
+                transparent,
+                ...others
+            });
+        }
+
+        const lineSegments = new THREE.LineSegments(edges, material);
+
+        if (dashed) {
+            // Computes an array of distance values which are necessary for LineDashedMaterial.
+            lineSegments.computeLineDistances();
+        }
+
+        return lineSegments;
     }
 }
 

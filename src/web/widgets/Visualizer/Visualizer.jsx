@@ -451,10 +451,13 @@ class Visualizer extends Component {
         const dx = Math.abs(xmax - xmin) || Number.MIN_VALUE;
         const dy = Math.abs(ymax - ymin) || Number.MIN_VALUE;
         const dz = Math.abs(zmax - zmin) || Number.MIN_VALUE;
-        const color = colornames('maroon');
+        const color = colornames('indianred');
         const opacity = 0.5;
         const transparent = true;
-        const limits = new Cuboid({ dx, dy, dz, color, opacity, transparent });
+        const dashed = true;
+        const dashSize = 3;
+        const gapSize = 1;
+        const limits = new Cuboid({ dx, dy, dz, color, opacity, transparent, dashed, dashSize, gapSize });
 
         return limits;
     }
