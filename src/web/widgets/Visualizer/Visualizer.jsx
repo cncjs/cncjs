@@ -1,8 +1,8 @@
 import _get from 'lodash/get';
-import each from 'lodash/each';
-import isEqual from 'lodash/isEqual';
-import tail from 'lodash/tail';
-import throttle from 'lodash/throttle';
+import _each from 'lodash/each';
+import _isEqual from 'lodash/isEqual';
+import _tail from 'lodash/tail';
+import _throttle from 'lodash/throttle';
 import colornames from 'colornames';
 import pubsub from 'pubsub-js';
 import PropTypes from 'prop-types';
@@ -73,14 +73,11 @@ class Visualizer extends Component {
     machineProfile = store.get('workspace.machineProfile');
     group = new THREE.Group();
     pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
-        each(this.group.children, (o) => {
+        _each(this.group.children, (o) => {
             o.translateX(x);
             o.translateY(y);
             o.translateZ(z);
         });
-
-        // Update the scene
-        this.updateScene();
     });
 
     node = null;
@@ -88,7 +85,7 @@ class Visualizer extends Component {
         this.node = node;
     };
 
-    throttledResize = throttle(() => {
+    throttledResize = _throttle(() => {
         this.resizeRenderer();
     }, 32); // 60hz
 
@@ -99,7 +96,7 @@ class Visualizer extends Component {
             return;
         }
 
-        if (isEqual(machineProfile, this.machineProfile)) {
+        if (_isEqual(machineProfile, this.machineProfile)) {
             return;
         }
 
@@ -116,10 +113,9 @@ class Visualizer extends Component {
         this.limits = this.createLimits(xmin, xmax, ymin, ymax, zmin, zmax);
         this.limits.name = 'Limits';
         this.limits.visible = state.objects.limits.visible;
+        this.group.add(this.limits);
 
         this.updateLimitsPosition();
-
-        this.group.add(this.limits);
 
         this.updateScene();
     };
@@ -455,9 +451,23 @@ class Visualizer extends Component {
         const opacity = 0.5;
         const transparent = true;
         const dashed = true;
-        const dashSize = 3;
-        const gapSize = 1;
-        const limits = new Cuboid({ dx, dy, dz, color, opacity, transparent, dashed, dashSize, gapSize });
+        const dashSize = 3; // The size of the dash.
+        const gapSize = 1; // The size of the gap.
+        const linewidth = 1; // Controls line thickness.
+        const scale = 1; // The scale of the dashed part of a line.
+        const limits = new Cuboid({
+            dx,
+            dy,
+            dz,
+            color,
+            opacity,
+            transparent,
+            linewidth,
+            dashed,
+            dashSize,
+            gapSize,
+            scale,
+        });
 
         return limits;
     }
@@ -477,7 +487,7 @@ class Visualizer extends Component {
                 colornames('blue'), // center line
                 colornames('gray 44') // grid
             );
-            each(gridLine.children, (o) => {
+            _each(gridLine.children, (o) => {
                 o.material.opacity = 0.15;
                 o.material.transparent = true;
                 o.material.depthWrite = false;
@@ -673,10 +683,9 @@ class Visualizer extends Component {
             this.limits = this.createLimits(xmin, xmax, ymin, ymax, zmin, zmax);
             this.limits.name = 'Limits';
             this.limits.visible = objects.limits.visible;
+            this.group.add(this.limits);
 
             this.updateLimitsPosition();
-
-            this.group.add(this.limits);
         }
 
         { // Tool Head
@@ -719,8 +728,8 @@ class Visualizer extends Component {
 
     clearScene() {
         // to iterrate over all children (except the first) in a scene
-        const objsToRemove = tail(this.scene.children);
-        each(objsToRemove, (obj) => {
+        const objsToRemove = _tail(this.scene.children);
+        _each(objsToRemove, (obj) => {
             this.scene.remove(obj);
         });
 
@@ -929,7 +938,7 @@ class Visualizer extends Component {
             bbox.min.z + (dZ / 2)
         );
 
-        // Set the pivot point to the object's center position
+        // Set the pivot point to the center of the loaded object
         this.pivotPoint.set(center.x, center.y, center.z);
 
         // Update position
@@ -953,13 +962,16 @@ class Visualizer extends Component {
 
     unload() {
         const visualizerObject = this.group.getObjectByName('Visualizer');
-
         if (visualizerObject) {
             this.group.remove(visualizerObject);
         }
 
+        if (this.visualizer) {
+            this.visualizer = null;
+        }
+
         if (this.pivotPoint) {
-            // Sets the pivot point to the origin point (0, 0, 0)
+            // Set the pivot point to the origin point (0, 0, 0) or the center of limits
             this.pivotPoint.set(0, 0, 0);
         }
 
