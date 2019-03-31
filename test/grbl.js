@@ -200,6 +200,21 @@ test('GrblLineParserResultParserState', (t) => {
         runner.parse(line);
     });
 
+    test('#3', (t) => {
+        const runner = new GrblRunner();
+        runner.on('parserstate', ({ raw, ...parserstate }) => {
+            t.equal(raw, '[T2 M6.]');
+            t.same(parserstate, {
+                tool: '2',
+            });
+	    t.equal(runner.getTool(), 2);
+            t.end();
+        });
+
+        const line = '[T2 M6.]';
+        runner.parse(line);
+    });
+
     t.end();
 });
 
@@ -435,3 +450,4 @@ test('Not supported output format', (t) => {
     const line = 'Not supported output format';
     runner.parse(line);
 });
+

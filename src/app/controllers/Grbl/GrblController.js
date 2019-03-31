@@ -214,8 +214,12 @@ class GrblController {
                     log.debug('M6 Tool Change');
                     this.feeder.hold({ data: 'M6' }); // Hold reason
 
-                    // Surround M6 with parentheses to ignore unsupported command error
-                    line = '(M6)';
+                    // Surround M6 with parentheses to ignore
+                    // unsupported command error. If we nuke the whole
+                    // line, then we'll likely lose other commands that
+                    // share the line, like a T~.  This makes tool
+                    // changes complicated.
+                    line = line.replace('M6', '(M6)');
                 }
 
                 return line;
@@ -297,7 +301,7 @@ class GrblController {
                     this.workflow.pause({ data: 'M6' });
 
                     // Surround M6 with parentheses to ignore unsupported command error
-                    line = '(M6)';
+                    line = line.replace('M6', '(M6)');
                 }
 
                 return line;
@@ -716,6 +720,8 @@ class GrblController {
             c: posc
         } = this.runner.getWorkPosition();
 
+        const tool = this.runner.getTool();
+
         // Modal group
         const modal = this.runner.getModalGroup();
 
@@ -741,6 +747,7 @@ class GrblController {
             posa: Number(posa) || 0,
             posb: Number(posb) || 0,
             posc: Number(posc) || 0,
+            tool: Number(tool) || 0,
             // Modal group
             modal: {
                 motion: modal.motion,
