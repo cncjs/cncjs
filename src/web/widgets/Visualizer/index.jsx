@@ -98,7 +98,7 @@ const translateExpression = (function() {
 
 const displayWebGLErrorMessage = () => {
     portal(({ onClose }) => (
-        <Modal size="xs" onClose={onClose}>
+        <Modal disableOverlay size="xs" onClose={onClose}>
             <Modal.Header>
                 <Modal.Title>
                     WebGL Error Message
@@ -387,7 +387,7 @@ class VisualizerWidget extends PureComponent {
                 // M6 Tool Change
                 if (notification.type === NOTIFICATION_M6_TOOL_CHANGE) {
                     portal(({ onClose }) => (
-                        <Modal size="xs" onClose={onClose}>
+                        <Modal disableOverlay size="xs" onClose={onClose}>
                             <Modal.Header>
                                 <Modal.Title>
                                     {i18n._('Tool Change')}

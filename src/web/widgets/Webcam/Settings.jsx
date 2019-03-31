@@ -92,11 +92,7 @@ class Settings extends PureComponent {
         });
 
         return (
-            <Modal
-                size="sm"
-                disableOverlay
-                onClose={this.handleCancel}
-            >
+            <Modal disableOverlay size="sm" onClose={this.handleCancel}>
                 <Modal.Header>
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>
                 </Modal.Header>
