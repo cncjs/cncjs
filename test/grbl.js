@@ -203,15 +203,12 @@ test('GrblLineParserResultParserState', (t) => {
     test('#3', (t) => {
         const runner = new GrblRunner();
         runner.on('parserstate', ({ raw, ...parserstate }) => {
-            t.equal(raw, '[T2 M6.]');
-            t.same(parserstate, {
-                tool: '2',
-            });
-	    t.equal(runner.getTool(), 2);
+            t.equal(raw, '[GC:G0 G54 G17 G21 G90 G94 M5 M9 T2 F0 S0]');
+            t.equal(runner.getTool(), 2);
             t.end();
         });
 
-        const line = '[T2 M6.]';
+        const line = '[GC:G0 G54 G17 G21 G90 G94 M5 M9 T2 F0 S0]';
         runner.parse(line);
     });
 
@@ -450,4 +447,3 @@ test('Not supported output format', (t) => {
     const line = 'Not supported output format';
     runner.parse(line);
 });
-
