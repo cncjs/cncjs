@@ -971,7 +971,7 @@ class Visualizer extends Component {
         }
 
         if (this.pivotPoint) {
-            // Set the pivot point to the origin point (0, 0, 0) or the center of limits
+            // Set the pivot point to the origin point (0, 0, 0)
             this.pivotPoint.set(0, 0, 0);
         }
 
