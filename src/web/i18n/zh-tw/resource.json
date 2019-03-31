@@ -522,7 +522,12 @@
     "Custom Jog Distance (mm)": "",
     "Custom Jog Distance (inches)": "",
     "Machine Profiles": "",
-    "Hide Machine Limit": "",
-    "Show Machine Limit": "",
-    "No machine profile selected": ""
+    "No machine profile selected": "",
+    "Delete machine profile": "",
+    "Machine Profile": "",
+    "Limits": "",
+    "User Accounts": "使用者帳號",
+    "New Account": "新增帳號",
+    "Hide Limits": "",
+    "Show Limits": ""
 }
