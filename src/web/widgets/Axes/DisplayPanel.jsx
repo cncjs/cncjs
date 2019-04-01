@@ -5,11 +5,11 @@ import includes from 'lodash/includes';
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Dropdown, { MenuItem } from '../../components/Dropdown';
-import Image from '../../components/Image';
-import { Tooltip } from '../../components/Tooltip';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import Dropdown, { MenuItem } from 'web/components/Dropdown';
+import Image from 'web/components/Image';
+import { Tooltip } from 'web/components/Tooltip';
+import controller from 'web/lib/controller';
+import i18n from 'web/lib/i18n';
 import AxisLabel from './components/AxisLabel';
 import AxisSubscript from './components/AxisSubscript';
 import Panel from './components/Panel';
@@ -25,6 +25,7 @@ import {
     AXIS_A,
     AXIS_B,
     AXIS_C,
+    IMPERIAL_UNITS,
     METRIC_UNITS
 } from '../../constants';
 import styles from './index.styl';
@@ -36,8 +37,12 @@ import iconPencil from './images/pencil.svg';
 
 class DisplayPanel extends PureComponent {
     static propTypes = {
-        config: PropTypes.object,
-        state: PropTypes.object,
+        canClick: PropTypes.bool,
+        units: PropTypes.oneOf([IMPERIAL_UNITS, METRIC_UNITS]),
+        axes: PropTypes.array,
+        machinePosition: PropTypes.object,
+        workPosition: PropTypes.object,
+        jog: PropTypes.object,
         actions: PropTypes.object
     };
 
@@ -77,7 +82,7 @@ class DisplayPanel extends PureComponent {
     };
 
     renderActionDropdown = () => {
-        const { canClick } = this.props.state;
+        const { canClick } = this.props;
         const { wcs } = controller.getModalState();
 
         return (
@@ -206,13 +211,13 @@ class DisplayPanel extends PureComponent {
         );
     };
 
-    renderActionDropdownForAxisE = () => {
+    renderActionDropdownForAxisE = ({ wcs }) => {
         // TODO
         return null;
     };
 
     renderActionDropdownForAxisX = () => {
-        const { canClick } = this.props.state;
+        const { canClick } = this.props;
         const { wcs } = controller.getModalState();
 
         return (
@@ -342,7 +347,7 @@ class DisplayPanel extends PureComponent {
     };
 
     renderActionDropdownForAxisY = () => {
-        const { canClick } = this.props.state;
+        const { canClick } = this.props;
         const { wcs } = controller.getModalState();
 
         return (
@@ -472,7 +477,7 @@ class DisplayPanel extends PureComponent {
     };
 
     renderActionDropdownForAxisZ = () => {
-        const { canClick } = this.props.state;
+        const { canClick } = this.props;
         const { wcs } = controller.getModalState();
 
         return (
@@ -602,7 +607,7 @@ class DisplayPanel extends PureComponent {
     };
 
     renderActionDropdownForAxisA = () => {
-        const { canClick } = this.props.state;
+        const { canClick } = this.props;
         const { wcs } = controller.getModalState();
 
         return (
@@ -732,7 +737,7 @@ class DisplayPanel extends PureComponent {
     };
 
     renderActionDropdownForAxisB = () => {
-        const { canClick } = this.props.state;
+        const { canClick } = this.props;
         const { wcs } = controller.getModalState();
 
         return (
@@ -862,7 +867,7 @@ class DisplayPanel extends PureComponent {
     };
 
     renderActionDropdownForAxisC = () => {
-        const { canClick } = this.props.state;
+        const { canClick } = this.props;
         const { wcs } = controller.getModalState();
 
         return (
@@ -992,8 +997,9 @@ class DisplayPanel extends PureComponent {
     };
 
     renderAxis = (axis) => {
-        const { canClick, units, machinePosition, workPosition, jog } = this.props.state;
+        const { canClick, units, machinePosition, workPosition, jog } = this.props;
         const { actions } = this.props;
+        const wcs = actions.getWorkCoordinateSystem();
         const lengthUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         const degreeUnits = i18n._('deg');
         const mpos = machinePosition[axis] || '0.000';
@@ -1165,8 +1171,7 @@ class DisplayPanel extends PureComponent {
     };
 
     render() {
-        const { state } = this.props;
-        const { axes, machinePosition, workPosition } = state;
+        const { axes, machinePosition, workPosition } = this.props;
         const hasAxisE = (machinePosition.e !== undefined && workPosition.e !== undefined);
         const hasAxisX = includes(axes, AXIS_X);
         const hasAxisY = includes(axes, AXIS_Y);

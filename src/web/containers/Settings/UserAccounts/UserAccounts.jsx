@@ -8,7 +8,7 @@ import {
     MODAL_UPDATE_RECORD
 } from './constants';
 
-class Account extends PureComponent {
+class UserAccounts extends PureComponent {
     static propTypes = {
         initialState: PropTypes.object,
         state: PropTypes.object,
@@ -37,4 +37,4 @@ class Account extends PureComponent {
     }
 }
 
-export default Account;
+export default UserAccounts;

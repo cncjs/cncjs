@@ -271,6 +271,12 @@ const appMain = () => {
         // Controllers
         app.get(urljoin(settings.route, 'api/controllers'), api.controllers.get);
 
+        // Watch Directory
+        app.get(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
+        app.post(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
+        app.get(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
+        app.post(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
+
         // Commands
         app.get(urljoin(settings.route, 'api/commands'), api.commands.fetch);
         app.post(urljoin(settings.route, 'api/commands'), api.commands.create);
@@ -285,6 +291,13 @@ const appMain = () => {
         app.get(urljoin(settings.route, 'api/events/:id'), api.events.read);
         app.put(urljoin(settings.route, 'api/events/:id'), api.events.update);
         app.delete(urljoin(settings.route, 'api/events/:id'), api.events.__delete);
+
+        // Machines
+        app.get(urljoin(settings.route, 'api/machines'), api.machines.fetch);
+        app.post(urljoin(settings.route, 'api/machines'), api.machines.create);
+        app.get(urljoin(settings.route, 'api/machines/:id'), api.machines.read);
+        app.put(urljoin(settings.route, 'api/machines/:id'), api.machines.update);
+        app.delete(urljoin(settings.route, 'api/machines/:id'), api.machines.__delete);
 
         // Macros
         app.get(urljoin(settings.route, 'api/macros'), api.macros.fetch);
@@ -307,12 +320,6 @@ const appMain = () => {
         app.get(urljoin(settings.route, 'api/users/:id'), api.users.read);
         app.put(urljoin(settings.route, 'api/users/:id'), api.users.update);
         app.delete(urljoin(settings.route, 'api/users/:id'), api.users.__delete);
-
-        // Watch
-        app.get(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
-        app.post(urljoin(settings.route, 'api/watch/files'), api.watch.getFiles);
-        app.get(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
-        app.post(urljoin(settings.route, 'api/watch/file'), api.watch.readFile);
     }
 
     // page

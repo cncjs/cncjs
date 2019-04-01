@@ -28,7 +28,7 @@ class Macro extends PureComponent {
     handleLoadMacro = (macro) => (event) => {
         const { id, name } = macro;
         portal(({ onClose }) => (
-            <Modal size="xs" onClose={onClose}>
+            <Modal disableOverlay size="xs" onClose={onClose}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Load Macro')}

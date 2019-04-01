@@ -61,23 +61,6 @@ const getLatestVersion = () => new Promise((resolve, reject) => {
 });
 
 //
-// Controllers
-//
-const controllers = {};
-
-controllers.get = () => new Promise((resolve, reject) => {
-    authrequest
-        .get('/api/controllers')
-        .end((err, res) => {
-            if (err) {
-                reject(res);
-            } else {
-                resolve(res);
-            }
-        });
-});
-
-//
 // State
 //
 const getState = (options) => new Promise((resolve, reject) => {
@@ -182,6 +165,58 @@ const downloadGCode = (options) => {
     $form.submit();
     document.body.removeChild($form);
 };
+
+//
+// Controllers
+//
+const controllers = {};
+
+controllers.get = () => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/controllers')
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+//
+// Watch Directory
+//
+const watch = {};
+
+watch.getFiles = (options) => new Promise((resolve, reject) => {
+    const { path } = { ...options };
+
+    authrequest
+        .post('/api/watch/files')
+        .send({ path })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+watch.readFile = (options) => new Promise((resolve, reject) => {
+    const { file } = { ...options };
+
+    authrequest
+        .post('/api/watch/file')
+        .send({ file })
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
 
 //
 // Users
@@ -548,15 +583,15 @@ commands.run = (id) => new Promise((resolve, reject) => {
         });
 });
 
-// Watch Directory
-const watch = {};
+//
+// Machines
+//
+const machines = {};
 
-watch.getFiles = (options) => new Promise((resolve, reject) => {
-    const { path } = { ...options };
-
+machines.fetch = (options) => new Promise((resolve, reject) => {
     authrequest
-        .post('/api/watch/files')
-        .send({ path })
+        .get('/api/machines')
+        .query(options)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -566,12 +601,59 @@ watch.getFiles = (options) => new Promise((resolve, reject) => {
         });
 });
 
-watch.readFile = (options) => new Promise((resolve, reject) => {
-    const { file } = { ...options };
-
+machines.create = (options) => new Promise((resolve, reject) => {
     authrequest
-        .post('/api/watch/file')
-        .send({ file })
+        .post('/api/machines')
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+machines.read = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .get('/api/machines/' + id)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+machines.update = (id, options) => new Promise((resolve, reject) => {
+    authrequest
+        .put('/api/machines/' + id)
+        .send(options)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+machines.delete = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .delete('/api/machines/' + id)
+        .end((err, res) => {
+            if (err) {
+                reject(res);
+            } else {
+                resolve(res);
+            }
+        });
+});
+
+machines.run = (id) => new Promise((resolve, reject) => {
+    authrequest
+        .post('/api/machines/run/' + id)
         .end((err, res) => {
             if (err) {
                 reject(res);
@@ -594,12 +676,20 @@ export default {
     fetchGCode,
     downloadGCode,
 
+    // Authentication
     signin,
-    controllers, // Controllers
-    users, // Users
-    events, // Events
-    macros, // Macros
-    mdi, // MDI
-    commands, // Commands
-    watch // Watch Directory
+
+    // Controllers
+    controllers,
+
+    // Watch Directory
+    watch,
+
+    // Settings
+    commands,
+    events,
+    machines,
+    macros,
+    mdi,
+    users,
 };

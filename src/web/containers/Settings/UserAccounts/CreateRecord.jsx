@@ -2,16 +2,15 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import { ToastNotification } from '../../../components/Notifications';
-import ToggleSwitch from '../../../components/ToggleSwitch';
-import { Form, Input } from '../../../components/Validation';
-import i18n from '../../../lib/i18n';
-import * as validations from '../../../lib/validations';
+import Modal from 'web/components/Modal';
+import { ToastNotification } from 'web/components/Notifications';
+import ToggleSwitch from 'web/components/ToggleSwitch';
+import { Form, Input } from 'web/components/Validation';
+import i18n from 'web/lib/i18n';
+import * as validations from 'web/lib/validations';
 import styles from '../form.styl';
 
-class UpdateRecord extends PureComponent {
+class CreateRecord extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -20,38 +19,32 @@ class UpdateRecord extends PureComponent {
     fields = {
         enabled: null,
         name: null,
-        oldPassword: null,
-        newPassword: null
+        password: null
     };
 
     get value() {
         const {
             name,
-            oldPassword,
-            password: newPassword
+            password
         } = this.form.getValues();
 
         return {
             enabled: !!_.get(this.fields.enabled, 'state.checked'),
             name: name,
-            oldPassword: oldPassword,
-            newPassword: newPassword
+            password: password
         };
     }
+
     render() {
         const { state, actions } = this.props;
         const { modal } = state;
-        const { alertMessage, changePassword = false, enabled, name } = modal.params;
+        const { alertMessage } = modal.params;
 
         return (
-            <Modal size="sm" onClose={actions.closeModal}>
+            <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('My Account')}
-                        <Space width="8" />
-                        &rsaquo;
-                        <Space width="8" />
-                        {i18n._('Update')}
+                        {i18n._('New Account')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
@@ -83,7 +76,7 @@ class UpdateRecord extends PureComponent {
                                             this.fields.enabled = node;
                                         }}
                                         size="sm"
-                                        checked={enabled}
+                                        checked={true}
                                     />
                                 </div>
                             </div>
@@ -95,7 +88,7 @@ class UpdateRecord extends PureComponent {
                                     }}
                                     type="text"
                                     name="name"
-                                    value={name}
+                                    value=""
                                     className={classNames(
                                         'form-control',
                                         styles.formControl,
@@ -105,45 +98,14 @@ class UpdateRecord extends PureComponent {
                                 />
                             </div>
                             <div className={styles.formGroup}>
-                                <label>{changePassword ? i18n._('Old Password') : i18n._('Password')}</label>
-                                <div className="clearfix">
-                                    <Input
-                                        ref={node => {
-                                            this.fields.oldPassword = node;
-                                        }}
-                                        type="password"
-                                        name="oldPassword"
-                                        className={classNames(
-                                            'form-control',
-                                            { 'pull-left': !changePassword },
-                                            styles.formControl,
-                                            styles.short
-                                        )}
-                                        validations={changePassword ? [validations.required] : []}
-                                        disabled={!changePassword}
-                                    />
-                                    {!changePassword &&
-                                    <button
-                                        type="button"
-                                        className="btn btn-default pull-left"
-                                        onClick={() => {
-                                            actions.updateModalParams({ changePassword: true });
-                                        }}
-                                    >
-                                        {i18n._('Change Password')}
-                                    </button>
-                                    }
-                                </div>
-                            </div>
-                            {changePassword &&
-                            <div className={styles.formGroup}>
-                                <label>{i18n._('New Password')}</label>
+                                <label>{i18n._('Password')}</label>
                                 <Input
                                     ref={node => {
-                                        this.fields.newPassword = node;
+                                        this.fields.password = node;
                                     }}
                                     type="password"
                                     name="password"
+                                    value=""
                                     className={classNames(
                                         'form-control',
                                         styles.formControl,
@@ -152,8 +114,6 @@ class UpdateRecord extends PureComponent {
                                     validations={[validations.required, validations.password]}
                                 />
                             </div>
-                            }
-                            {changePassword &&
                             <div className={styles.formGroup}>
                                 <label>{i18n._('Confirm Password')}</label>
                                 <Input
@@ -168,7 +128,6 @@ class UpdateRecord extends PureComponent {
                                     validations={[validations.required]}
                                 />
                             </div>
-                            }
                         </div>
                     </Form>
                 </Modal.Body>
@@ -189,11 +148,9 @@ class UpdateRecord extends PureComponent {
                                     return;
                                 }
 
-                                const { id } = modal.params;
-                                const { enabled, name, oldPassword, newPassword } = this.value;
-                                const forceReload = true;
+                                const { enabled, name, password } = this.value;
 
-                                actions.updateRecord(id, { enabled, name, oldPassword, newPassword }, forceReload);
+                                actions.createRecord({ enabled, name, password });
                             });
                         }}
                     >
@@ -205,4 +162,4 @@ class UpdateRecord extends PureComponent {
     }
 }
 
-export default UpdateRecord;
+export default CreateRecord;

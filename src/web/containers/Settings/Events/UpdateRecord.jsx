@@ -3,13 +3,12 @@ import includes from 'lodash/includes';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Form, Select, Textarea } from '../../../components/Validation';
-import Modal from '../../../components/Modal';
-import { ToastNotification } from '../../../components/Notifications';
-import Space from '../../../components/Space';
-import ToggleSwitch from '../../../components/ToggleSwitch';
-import i18n from '../../../lib/i18n';
-import * as validations from '../../../lib/validations';
+import { Form, Select, Textarea } from 'web/components/Validation';
+import Modal from 'web/components/Modal';
+import { ToastNotification } from 'web/components/Notifications';
+import ToggleSwitch from 'web/components/ToggleSwitch';
+import i18n from 'web/lib/i18n';
+import * as validations from 'web/lib/validations';
 import styles from '../form.styl';
 
 const SYSTEM_EVENTS = [
@@ -64,14 +63,10 @@ class UpdateRecord extends PureComponent {
         }
 
         return (
-            <Modal size="sm" onClose={actions.closeModal}>
+            <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('Events')}
-                        <Space width="8" />
-                        &rsaquo;
-                        <Space width="8" />
-                        {i18n._('Update')}
+                        {i18n._('Event')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

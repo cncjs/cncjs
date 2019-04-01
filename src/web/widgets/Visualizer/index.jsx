@@ -95,7 +95,7 @@ const translateExpression = (function() {
 
 const displayWebGLErrorMessage = () => {
     portal(({ onClose }) => (
-        <Modal size="xs" onClose={onClose}>
+        <Modal disableOverlay size="xs" onClose={onClose}>
             <Modal.Header>
                 <Modal.Title>
                     WebGL Error Message
@@ -384,7 +384,7 @@ class VisualizerWidget extends PureComponent {
                 // M6 Tool Change
                 if (notification.type === NOTIFICATION_M6_TOOL_CHANGE) {
                     portal(({ onClose }) => (
-                        <Modal size="xs" onClose={onClose}>
+                        <Modal disableOverlay size="xs" onClose={onClose}>
                             <Modal.Header>
                                 <Modal.Title>
                                     {i18n._('Tool Change')}
@@ -469,6 +469,17 @@ class VisualizerWidget extends PureComponent {
                 gcode: {
                     ...state.gcode,
                     displayName: !state.gcode.displayName
+                }
+            }));
+        },
+        toggleLimitsVisibility: () => {
+            this.setState((state) => ({
+                objects: {
+                    ...state.objects,
+                    limits: {
+                        ...state.objects.limits,
+                        visible: !state.objects.limits.visible
+                    }
                 }
             }));
         },
@@ -557,29 +568,19 @@ class VisualizerWidget extends PureComponent {
                 }
             },
             toTopView: () => {
-                this.setState({ cameraPosition: 'top' }, () => {
-                    this.visualizer.toTopView();
-                });
+                this.setState({ cameraPosition: 'top' });
             },
             to3DView: () => {
-                this.setState({ cameraPosition: '3d' }, () => {
-                    this.visualizer.to3DView();
-                });
+                this.setState({ cameraPosition: '3d' });
             },
             toFrontView: () => {
-                this.setState({ cameraPosition: 'front' }, () => {
-                    this.visualizer.toFrontView();
-                });
+                this.setState({ cameraPosition: 'front' });
             },
             toLeftSideView: () => {
-                this.setState({ cameraPosition: 'left' }, () => {
-                    this.visualizer.toLeftSideView();
-                });
+                this.setState({ cameraPosition: 'left' });
             },
             toRightSideView: () => {
-                this.setState({ cameraPosition: 'right' }, () => {
-                    this.visualizer.toRightSideView();
-                });
+                this.setState({ cameraPosition: 'right' });
             }
         }
     };
@@ -678,7 +679,7 @@ class VisualizerWidget extends PureComponent {
         'controller:state': (type, controllerState) => {
             // Grbl
             if (type === GRBL) {
-                const { wpos, modal = {} } = { ...controllerState };
+                const { mpos, wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -693,6 +694,13 @@ class VisualizerWidget extends PureComponent {
                         type: type,
                         state: controllerState
                     },
+                    // Machine position are reported in mm ($13=0) or inches ($13=1)
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
+                        ...mpos
+                    }, (val) => {
+                        return ($13 > 0) ? in2mm(val) : val;
+                    }),
                     // Work position are reported in mm ($13=0) or inches ($13=1)
                     workPosition: mapValues({
                         ...state.workPosition,
@@ -718,6 +726,13 @@ class VisualizerWidget extends PureComponent {
                         type: type,
                         state: controllerState
                     },
+                    // Machine position are reported in current units
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
+                        ...pos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
                     // Work position are reported in current units
                     workPosition: mapValues({
                         ...state.workPosition,
@@ -730,7 +745,7 @@ class VisualizerWidget extends PureComponent {
 
             // Smoothie
             if (type === SMOOTHIE) {
-                const { wpos, modal = {} } = { ...controllerState };
+                const { mpos, wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -744,6 +759,13 @@ class VisualizerWidget extends PureComponent {
                         type: type,
                         state: controllerState
                     },
+                    // Machine position are reported in current units
+                    machinePosition: mapValues({
+                        ...state.machinePosition,
+                        ...mpos
+                    }, (val) => {
+                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
+                    }),
                     // Work position are reported in current units
                     workPosition: mapValues({
                         ...state.workPosition,
@@ -756,7 +778,7 @@ class VisualizerWidget extends PureComponent {
 
             // TinyG
             if (type === TINYG) {
-                const { wpos, modal = {} } = { ...controllerState };
+                const { mpos, wpos, modal = {} } = { ...controllerState };
                 const units = {
                     'G20': IMPERIAL_UNITS,
                     'G21': METRIC_UNITS
@@ -771,6 +793,11 @@ class VisualizerWidget extends PureComponent {
                         state: controllerState
                     },
                     // https://github.com/synthetos/g2/wiki/Status-Reports
+                    // Canonical machine position are always reported in millimeters with no offsets.
+                    machinePosition: {
+                        ...state.machinePosition,
+                        ...mpos
+                    },
                     // Work position are reported in current units, and also apply any offsets.
                     workPosition: mapValues({
                         ...state.workPosition,
@@ -817,6 +844,9 @@ class VisualizerWidget extends PureComponent {
         if (this.state.gcode.displayName !== prevState.gcode.displayName) {
             this.config.set('gcode.displayName', this.state.gcode.displayName);
         }
+        if (this.state.objects.limits.visible !== prevState.objects.limits.visible) {
+            this.config.set('objects.limits.visible', this.state.objects.limits.visible);
+        }
         if (this.state.objects.coordinateSystem.visible !== prevState.objects.coordinateSystem.visible) {
             this.config.set('objects.coordinateSystem.visible', this.state.objects.coordinateSystem.visible);
         }
@@ -849,6 +879,11 @@ class VisualizerWidget extends PureComponent {
             modal: {
                 name: '',
                 params: {}
+            },
+            machinePosition: { // Machine position
+                x: '0.000',
+                y: '0.000',
+                z: '0.000'
             },
             workPosition: { // Work position
                 x: '0.000',
@@ -883,6 +918,9 @@ class VisualizerWidget extends PureComponent {
             disabled: this.config.get('disabled', false),
             projection: this.config.get('projection', 'orthographic'),
             objects: {
+                limits: {
+                    visible: this.config.get('objects.limits.visible', true)
+                },
                 coordinateSystem: {
                     visible: this.config.get('objects.coordinateSystem.visible', true)
                 },
@@ -1010,6 +1048,7 @@ class VisualizerWidget extends PureComponent {
                     {Detector.webgl &&
                     <Visualizer
                         show={showVisualizer}
+                        cameraPosition={state.cameraPosition}
                         ref={node => {
                             this.visualizer = node;
                         }}
@@ -1030,14 +1069,14 @@ class VisualizerWidget extends PureComponent {
                     />
                     }
                 </Widget.Content>
-                {capable.view3D &&
                 <Widget.Footer className={styles.widgetFooter}>
                     <SecondaryToolbar
-                        state={state}
-                        actions={actions}
+                        is3DView={capable.view3D}
+                        cameraMode={state.cameraMode}
+                        cameraPosition={state.cameraPosition}
+                        camera={actions.camera}
                     />
                 </Widget.Footer>
-                }
             </Widget>
         );
     }
