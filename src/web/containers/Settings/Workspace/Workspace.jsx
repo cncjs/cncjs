@@ -1,14 +1,14 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Button } from '../../../components/Buttons';
-import ModalTemplate from '../../../components/ModalTemplate';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import settings from '../../../config/settings';
-import i18n from '../../../lib/i18n';
-import log from '../../../lib/log';
-import portal from '../../../lib/portal';
-import store from '../../../store';
+import { Button } from 'web/components/Buttons';
+import ModalTemplate from 'web/components/ModalTemplate';
+import Modal from 'web/components/Modal';
+import Space from 'web/components/Space';
+import settings from 'web/config/settings';
+import i18n from 'web/lib/i18n';
+import log from 'web/lib/log';
+import portal from 'web/lib/portal';
+import store from 'web/store';
 import RestoreDefaults from './RestoreDefaults';
 import ImportSettings from './ImportSettings';
 import styles from './index.styl';
@@ -52,7 +52,7 @@ class Workspace extends PureComponent {
             const { version, state } = { ...data };
             if (typeof version !== 'string' && typeof state !== 'object') {
                 portal(({ onClose }) => (
-                    <Modal size="xs" onClose={onClose}>
+                    <Modal disableOverlay size="xs" onClose={onClose}>
                         <Modal.Header>
                             <Modal.Title>
                                 {i18n._('Settings')}

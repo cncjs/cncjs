@@ -13,7 +13,7 @@ const Controller = (props) => {
     const height = Math.max(window.innerHeight / 2, 200);
 
     return (
-        <Modal size="lg" onClose={actions.closeModal}>
+        <Modal disableOverlay size="lg" onClose={actions.closeModal}>
             <Modal.Header>
                 <Modal.Title>
                     Grbl

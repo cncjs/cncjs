@@ -2,13 +2,12 @@ import _ from 'lodash';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import { ToastNotification } from '../../../components/Notifications';
-import ToggleSwitch from '../../../components/ToggleSwitch';
-import { Form, Input, Textarea } from '../../../components/Validation';
-import i18n from '../../../lib/i18n';
-import * as validations from '../../../lib/validations';
+import Modal from 'web/components/Modal';
+import { ToastNotification } from 'web/components/Notifications';
+import ToggleSwitch from 'web/components/ToggleSwitch';
+import { Form, Input, Textarea } from 'web/components/Validation';
+import i18n from 'web/lib/i18n';
+import * as validations from 'web/lib/validations';
 import styles from '../form.styl';
 
 class CreateRecord extends PureComponent {
@@ -41,14 +40,10 @@ class CreateRecord extends PureComponent {
         const { alertMessage } = modal.params;
 
         return (
-            <Modal size="sm" onClose={actions.closeModal}>
+            <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('Commands')}
-                        <Space width="8" />
-                        &rsaquo;
-                        <Space width="8" />
-                        {i18n._('New')}
+                        {i18n._('Command')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>

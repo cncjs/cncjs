@@ -7,7 +7,8 @@ import React, { PureComponent } from 'react';
 import ForEach from 'react-foreach';
 import { Button } from 'web/components/Buttons';
 import { Checkbox } from 'web/components/Checkbox';
-import { FormGroup, Input } from 'web/components/Forms';
+import { Input } from 'web/components/Forms';
+import FormGroup from 'web/components/FormGroup';
 import { FlexContainer, Row, Col } from 'web/components/GridSystem';
 import Margin from 'web/components/Margin';
 import Space from 'web/components/Space';
@@ -143,7 +144,7 @@ class General extends PureComponent {
         const { imperialJogDistances, metricJogDistances } = this.state;
 
         return (
-            <FlexContainer gutterWidth={0}>
+            <FlexContainer fluid gutterWidth={0}>
                 <Margin bottom={15}>
                     <label><strong>{i18n._('Axes')}</strong></label>
                     <Row>

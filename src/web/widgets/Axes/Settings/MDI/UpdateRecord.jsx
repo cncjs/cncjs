@@ -7,7 +7,7 @@ import Modal from 'web/components/Modal';
 import Space from 'web/components/Space';
 import { ToastNotification } from 'web/components/Notifications';
 import { Form, Input, Textarea } from 'web/components/Validation';
-import { FormGroup } from 'web/components/Forms';
+import FormGroup from 'web/components/FormGroup';
 import i18n from 'web/lib/i18n';
 import * as validations from 'web/lib/validations';
 import styles from '../form.styl';

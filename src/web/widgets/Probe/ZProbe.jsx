@@ -17,7 +17,7 @@ class ZProbe extends PureComponent {
         const content = probeCommands.join('\n');
 
         return (
-            <Modal size="sm" onClose={actions.closeModal}>
+            <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>{i18n._('Z-Probe')}</Modal.Title>
                 </Modal.Header>

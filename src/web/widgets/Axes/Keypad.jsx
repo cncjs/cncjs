@@ -14,7 +14,6 @@ import controller from 'web/lib/controller';
 import i18n from 'web/lib/i18n';
 import Fraction from './components/Fraction';
 import {
-    // Units
     IMPERIAL_UNITS,
     IMPERIAL_STEPS,
     METRIC_UNITS,
@@ -40,8 +39,10 @@ const KeypadSubscriptText = styled(KeypadText)`
 
 class Keypad extends PureComponent {
     static propTypes = {
-        config: PropTypes.object,
-        state: PropTypes.object,
+        canClick: PropTypes.bool,
+        units: PropTypes.oneOf([IMPERIAL_UNITS, METRIC_UNITS]),
+        axes: PropTypes.array,
+        jog: PropTypes.object,
         actions: PropTypes.object
     };
 
@@ -75,13 +76,13 @@ class Keypad extends PureComponent {
     }
 
     renderImperialMenuItems() {
-        const { state } = this.props;
-        const imperialJogDistances = ensureArray(state.jog.imperial.distances);
+        const { jog } = this.props;
+        const imperialJogDistances = ensureArray(jog.imperial.distances);
         const imperialJogSteps = [
             ...imperialJogDistances,
             ...IMPERIAL_STEPS
         ];
-        const step = state.jog.imperial.step;
+        const step = jog.imperial.step;
 
         return imperialJogSteps.map((value, key) => {
             const active = (key === step);
@@ -101,13 +102,13 @@ class Keypad extends PureComponent {
     }
 
     renderMetricMenuItems() {
-        const { state } = this.props;
-        const metricJogDistances = ensureArray(state.jog.metric.distances);
+        const { jog } = this.props;
+        const metricJogDistances = ensureArray(jog.metric.distances);
         const metricJogSteps = [
             ...metricJogDistances,
             ...METRIC_STEPS
         ];
-        const step = state.jog.metric.step;
+        const step = jog.metric.step;
 
         return metricJogSteps.map((value, key) => {
             const active = (key === step);
@@ -127,8 +128,7 @@ class Keypad extends PureComponent {
     }
 
     render() {
-        const { state, actions } = this.props;
-        const { canClick, units, axes, jog } = state;
+        const { canClick, units, axes, jog, actions } = this.props;
         const canChangeUnits = canClick;
         const canChangeStep = canClick;
         const imperialJogDistances = ensureArray(jog.imperial.distances);

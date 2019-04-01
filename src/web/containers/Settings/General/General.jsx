@@ -3,8 +3,8 @@ import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import FacebookLoading from 'react-facebook-loading';
-import Space from '../../../components/Space';
-import i18n from '../../../lib/i18n';
+import Space from 'web/components/Space';
+import i18n from 'web/lib/i18n';
 import styles from './index.styl';
 
 class General extends PureComponent {

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Button } from '../../../components/Buttons';
-import Modal from '../../../components/Modal';
-import Space from '../../../components/Space';
-import i18n from '../../../lib/i18n';
-import store from '../../../store';
+import { Button } from 'web/components/Buttons';
+import Modal from 'web/components/Modal';
+import Space from 'web/components/Space';
+import i18n from 'web/lib/i18n';
+import store from 'web/store';
 
 class ImportSettings extends PureComponent {
     static propTypes = {
@@ -18,7 +18,7 @@ class ImportSettings extends PureComponent {
         const { data } = modal.params;
 
         return (
-            <Modal size="md" onClose={actions.closeModal}>
+            <Modal disableOverlay size="md" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Workspace')}

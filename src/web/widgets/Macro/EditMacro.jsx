@@ -44,7 +44,7 @@ class EditMacro extends PureComponent {
         const { id, name, content } = { ...state.modal.params };
 
         return (
-            <Modal size="md" onClose={actions.closeModal}>
+            <Modal disableOverlay size="md" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
                         {i18n._('Edit Macro')}
@@ -148,7 +148,7 @@ class EditMacro extends PureComponent {
                             const name = get(this.fields.name, 'value');
 
                             portal(({ onClose }) => (
-                                <Modal size="xs" onClose={onClose}>
+                                <Modal disableOverlay={false} size="xs" onClose={onClose}>
                                     <Modal.Header>
                                         <Modal.Title>
                                             {i18n._('Delete Macro')}
