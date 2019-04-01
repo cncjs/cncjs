@@ -148,7 +148,8 @@ class MarlinRunner extends events.EventEmitter {
         return _.get(state, 'modal', {});
     }
     getTool(state = this.state) {
-        return Number(_.get(state, 'parserstate.tool', 0));
+        // Not supported
+        return 0;
     }
     isAlarm() {
         // Not supported

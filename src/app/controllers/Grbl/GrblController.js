@@ -723,6 +723,7 @@ class GrblController {
         // Modal group
         const modal = this.runner.getModalGroup();
 
+        // Tool
         const tool = this.runner.getTool();
 
         return Object.assign(context || {}, {
@@ -760,8 +761,10 @@ class GrblController {
                 program: modal.program,
                 spindle: modal.spindle,
                 // M7 and M8 may be active at the same time, but a modal group violation might occur when issuing M7 and M8 together on the same line. Using the new line character (\n) to separate lines can avoid this issue.
-                coolant: ensureArray(modal.coolant).join('\n')
-            }
+                coolant: ensureArray(modal.coolant).join('\n'),
+            },
+            // Tool
+            tool: Number(tool) || 0,
         });
     }
     clearActionValues() {
