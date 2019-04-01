@@ -1,6 +1,6 @@
 import { test } from 'tap';
-import logger from '../src/app/lib/logger';
-import translateExpression from '../src/app/lib/translate-expression';
+import logger from '../src/server/lib/logger';
+import translateExpression from '../src/server/lib/translate-expression';
 
 test('exceptions', (t) => {
     // Suppress the output

@@ -65,14 +65,14 @@ program.on('--help', () => {
     console.log('');
     console.log('  Examples:');
     console.log('');
-    console.log('    $ cnc -vv');
-    console.log('    $ cnc --mount /pendant:/home/pi/tinyweb');
-    console.log('    $ cnc --mount /widget:~+/widget --mount /pendant:~/pendant');
-    console.log('    $ cnc --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/');
-    console.log('    $ cnc --watch-directory /home/pi/watch');
-    console.log('    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d');
-    console.log('    $ cnc --allow-remote-access');
-    console.log('    $ cnc --controller Grbl');
+    console.log('    $ cncjs -vv');
+    console.log('    $ cncjs --mount /pendant:/home/pi/tinyweb');
+    console.log('    $ cncjs --mount /widget:~+/widget --mount /pendant:~/pendant');
+    console.log('    $ cncjs --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/');
+    console.log('    $ cncjs --watch-directory /home/pi/watch');
+    console.log('    $ cncjs --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d');
+    console.log('    $ cncjs --allow-remote-access');
+    console.log('    $ cncjs --controller Grbl');
     console.log('');
 });
 
@@ -86,10 +86,10 @@ if (normalizedArgv.length > 1) {
 }
 
 const cnc = () => new Promise((resolve, reject) => {
-    // Change working directory to 'app' before require('./app')
-    process.chdir(path.resolve(__dirname, 'app'));
+    // Change working directory to 'server' before require('./server')
+    process.chdir(path.resolve(__dirname, 'server'));
 
-    require('./app').createServer({
+    require('./server').createServer({
         port: program.port,
         host: program.host,
         backlog: program.backlog,
