@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Modal from '../../components/Modal';
-import ToggleSwitch from '../../components/ToggleSwitch';
-import i18n from '../../lib/i18n';
+import Modal from 'web/components/Modal';
+import ToggleSwitch from 'web/components/ToggleSwitch';
+import i18n from 'web/lib/i18n';
 
 class ZProbe extends PureComponent {
     static propTypes = {

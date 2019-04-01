@@ -1,8 +1,8 @@
 import endsWith from 'lodash/endsWith';
 import mapKeys from 'lodash/mapKeys';
 import sha1 from 'sha1';
-import pkg from '../../package.json';
-import log from '../lib/log';
+import pkg from 'web/package.json';
+import log from 'web/lib/log';
 
 const webroot = '/';
 

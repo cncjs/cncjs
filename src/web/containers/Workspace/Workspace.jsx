@@ -5,12 +5,12 @@ import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import { withRouter } from 'react-router-dom';
-import { Button, ButtonGroup, ButtonToolbar } from '../../components/Buttons';
-import api from '../../api';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
-import log from '../../lib/log';
-import store from '../../store';
+import { Button, ButtonGroup, ButtonToolbar } from 'web/components/Buttons';
+import api from 'web/api';
+import controller from 'web/lib/controller';
+import i18n from 'web/lib/i18n';
+import log from 'web/lib/log';
+import store from 'web/store';
 import * as widgetManager from './WidgetManager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
@@ -21,7 +21,7 @@ import ServerDisconnected from './modals/ServerDisconnected';
 import styles from './index.styl';
 import {
     WORKFLOW_STATE_IDLE
-} from '../../constants';
+} from 'web/constants';
 import {
     MODAL_NONE,
     MODAL_FEEDER_PAUSED,

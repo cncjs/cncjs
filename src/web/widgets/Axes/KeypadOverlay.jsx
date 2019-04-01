@@ -1,7 +1,7 @@
 import React from 'react';
 import { Tooltip, OverlayTrigger } from 'react-bootstrap';
-import Space from '../../components/Space';
-import i18n from '../../lib/i18n';
+import Space from 'web/components/Space';
+import i18n from 'web/lib/i18n';
 
 const keypadTooltip = () => {
     const styles = {

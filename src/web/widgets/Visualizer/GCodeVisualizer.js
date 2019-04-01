@@ -1,7 +1,7 @@
 import colornames from 'colornames';
 import Toolpath from 'gcode-toolpath';
 import * as THREE from 'three';
-import log from '../../lib/log';
+import log from 'web/lib/log';
 
 const defaultColor = new THREE.Color(colornames('lightgrey'));
 const motionColor = {

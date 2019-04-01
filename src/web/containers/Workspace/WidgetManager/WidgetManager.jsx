@@ -4,11 +4,11 @@ import includes from 'lodash/includes';
 import union from 'lodash/union';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Modal from '../../../components/Modal';
-import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../../constants';
-import controller from '../../../lib/controller';
-import i18n from '../../../lib/i18n';
-import store from '../../../store';
+import Modal from 'web/components/Modal';
+import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'web/constants';
+import controller from 'web/lib/controller';
+import i18n from 'web/lib/i18n';
+import store from 'web/store';
 import WidgetList from './WidgetList';
 
 class WidgetManager extends PureComponent {

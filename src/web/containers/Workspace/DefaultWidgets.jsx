@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import ensureArray from 'ensure-array';
 import React, { PureComponent } from 'react';
-import store from '../../store';
+import store from 'web/store';
 import Widget from './Widget';
 import styles from './widgets.styl';
 

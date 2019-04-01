@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Container, Row, Col } from '../../components/GridSystem';
-import { Button } from '../../components/Buttons';
-import controller from '../../lib/controller';
+import { Container, Row, Col } from 'web/components/GridSystem';
+import { Button } from 'web/components/Buttons';
+import controller from 'web/lib/controller';
 
 class MDI extends PureComponent {
     static propTypes = {

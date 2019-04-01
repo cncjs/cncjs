@@ -1,5 +1,5 @@
 import * as THREE from 'three';
-import log from '../../lib/log';
+import log from 'web/lib/log';
 
 const FOV_MIN = 15;
 const TARGET0 = new THREE.Vector3(0, 0, 0);

@@ -1,10 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import { Button } from '../../components/Buttons';
-import Modal from '../../components/Modal';
-import { Nav, NavItem } from '../../components/Navs';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import { Button } from 'web/components/Buttons';
+import Modal from 'web/components/Modal';
+import { Nav, NavItem } from 'web/components/Navs';
+import controller from 'web/lib/controller';
+import i18n from 'web/lib/i18n';
 import styles from './index.styl';
 
 const Controller = (props) => {

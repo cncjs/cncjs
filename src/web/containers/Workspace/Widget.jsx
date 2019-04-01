@@ -1,20 +1,20 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import AxesWidget from '../../widgets/Axes';
-import ConnectionWidget from '../../widgets/Connection';
-import ConsoleWidget from '../../widgets/Console';
-import GCodeWidget from '../../widgets/GCode';
-import GrblWidget from '../../widgets/Grbl';
-import LaserWidget from '../../widgets/Laser';
-import MacroWidget from '../../widgets/Macro';
-import MarlinWidget from '../../widgets/Marlin';
-import ProbeWidget from '../../widgets/Probe';
-import SmoothieWidget from '../../widgets/Smoothie';
-import SpindleWidget from '../../widgets/Spindle';
-import CustomWidget from '../../widgets/Custom';
-import TinyGWidget from '../../widgets/TinyG';
-import VisualizerWidget from '../../widgets/Visualizer';
-import WebcamWidget from '../../widgets/Webcam';
+import AxesWidget from 'web/widgets/Axes';
+import ConnectionWidget from 'web/widgets/Connection';
+import ConsoleWidget from 'web/widgets/Console';
+import GCodeWidget from 'web/widgets/GCode';
+import GrblWidget from 'web/widgets/Grbl';
+import LaserWidget from 'web/widgets/Laser';
+import MacroWidget from 'web/widgets/Macro';
+import MarlinWidget from 'web/widgets/Marlin';
+import ProbeWidget from 'web/widgets/Probe';
+import SmoothieWidget from 'web/widgets/Smoothie';
+import SpindleWidget from 'web/widgets/Spindle';
+import CustomWidget from 'web/widgets/Custom';
+import TinyGWidget from 'web/widgets/TinyG';
+import VisualizerWidget from 'web/widgets/Visualizer';
+import WebcamWidget from 'web/widgets/Webcam';
 
 const getWidgetByName = (name) => {
     return {

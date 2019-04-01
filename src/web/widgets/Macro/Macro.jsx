@@ -3,11 +3,11 @@ import ensureArray from 'ensure-array';
 import includes from 'lodash/includes';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import { Button } from '../../components/Buttons';
-import Modal from '../../components/Modal';
-import Space from '../../components/Space';
-import i18n from '../../lib/i18n';
-import portal from '../../lib/portal';
+import { Button } from 'web/components/Buttons';
+import Modal from 'web/components/Modal';
+import Space from 'web/components/Space';
+import i18n from 'web/lib/i18n';
+import portal from 'web/lib/portal';
 import {
     // Workflow
     WORKFLOW_STATE_IDLE,

@@ -5,7 +5,7 @@ import pick from 'lodash/pick';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Dropdown, MenuItem } from 'react-bootstrap';
-import Space from '../../components/Space';
+import Space from 'web/components/Space';
 import {
     // Grbl
     GRBL,
@@ -26,8 +26,8 @@ import {
 import {
     MODAL_WATCH_DIRECTORY
 } from './constants';
-import i18n from '../../lib/i18n';
-import log from '../../lib/log';
+import i18n from 'web/lib/i18n';
+import log from 'web/lib/log';
 import styles from './workflow-control.styl';
 
 class WorkflowControl extends PureComponent {

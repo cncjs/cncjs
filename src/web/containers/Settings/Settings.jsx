@@ -10,11 +10,11 @@ import _isEqual from 'lodash/isEqual';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
-import api from '../../api';
-import settings from '../../config/settings';
-import Breadcrumbs from '../../components/Breadcrumbs';
-import i18n from '../../lib/i18n';
-import store from '../../store';
+import api from 'web/api';
+import settings from 'web/config/settings';
+import Breadcrumbs from 'web/components/Breadcrumbs';
+import i18n from 'web/lib/i18n';
+import store from 'web/store';
 import General from './General';
 import Workspace from './Workspace';
 import MachineProfiles from './MachineProfiles';
@@ -27,7 +27,7 @@ import styles from './index.styl';
 import {
     ERR_CONFLICT,
     ERR_PRECONDITION_FAILED
-} from '../../api/constants';
+} from 'web/api/constants';
 
 const mapSectionPathToId = (path = '') => {
     return _camelCase(path.split('/')[0] || '');

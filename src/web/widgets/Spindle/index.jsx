@@ -3,10 +3,10 @@ import includes from 'lodash/includes';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import Space from 'web/components/Space';
+import Widget from 'web/components/Widget';
+import controller from 'web/lib/controller';
+import i18n from 'web/lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import Spindle from './Spindle';
 import {

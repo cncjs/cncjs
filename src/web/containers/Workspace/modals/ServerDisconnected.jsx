@@ -1,8 +1,8 @@
 import React from 'react';
-import { Button } from '../../../components/Buttons';
-import ModalTemplate from '../../../components/ModalTemplate';
-import Modal from '../../../components/Modal';
-import i18n from '../../../lib/i18n';
+import { Button } from 'web/components/Buttons';
+import ModalTemplate from 'web/components/ModalTemplate';
+import Modal from 'web/components/Modal';
+import i18n from 'web/lib/i18n';
 
 const reloadPage = (forcedReload = true) => {
     // Reload the current page, without using the cache

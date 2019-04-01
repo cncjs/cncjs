@@ -1,10 +1,10 @@
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import i18n from '../../lib/i18n';
-import portal from '../../lib/portal';
+import Space from 'web/components/Space';
+import Widget from 'web/components/Widget';
+import i18n from 'web/lib/i18n';
+import portal from 'web/lib/portal';
 import WidgetConfig from '../WidgetConfig';
 import Webcam from './Webcam';
 import Settings from './Settings';

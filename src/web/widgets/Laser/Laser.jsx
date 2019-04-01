@@ -2,11 +2,11 @@ import _ from 'lodash';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Panel from '../../components/Panel';
-import Toggler from '../../components/Toggler';
-import RepeatButton from '../../components/RepeatButton';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import Panel from 'web/components/Panel';
+import Toggler from 'web/components/Toggler';
+import RepeatButton from 'web/components/RepeatButton';
+import controller from 'web/lib/controller';
+import i18n from 'web/lib/i18n';
 import {
     // Grbl
     GRBL,

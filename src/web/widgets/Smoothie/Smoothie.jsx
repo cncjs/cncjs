@@ -2,10 +2,10 @@ import ensureArray from 'ensure-array';
 import _ from 'lodash';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import mapGCodeToText from '../../lib/gcode-text';
-import i18n from '../../lib/i18n';
-import Panel from '../../components/Panel';
-import Toggler from '../../components/Toggler';
+import mapGCodeToText from 'web/lib/gcode-text';
+import i18n from 'web/lib/i18n';
+import Panel from 'web/components/Panel';
+import Toggler from 'web/components/Toggler';
 import Overrides from './Overrides';
 import styles from './index.styl';
 

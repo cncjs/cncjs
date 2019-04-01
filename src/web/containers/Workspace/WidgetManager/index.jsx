@@ -3,10 +3,10 @@ import includes from 'lodash/includes';
 import union from 'lodash/union';
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { GRBL, MARLIN, SMOOTHIE, TINYG } from '../../../constants';
-import controller from '../../../lib/controller';
-import store from '../../../store';
-import defaultState from '../../../store/defaultState';
+import { GRBL, MARLIN, SMOOTHIE, TINYG } from 'web/constants';
+import controller from 'web/lib/controller';
+import store from 'web/store';
+import defaultState from 'web/store/defaultState';
 import WidgetManager from './WidgetManager';
 
 export const getActiveWidgets = () => {

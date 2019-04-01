@@ -5,12 +5,12 @@ import mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
-import controller from '../../lib/controller';
-import mapGCodeToText from '../../lib/gcode-text';
-import i18n from '../../lib/i18n';
-import { Button } from '../../components/Buttons';
-import Panel from '../../components/Panel';
-import Toggler from '../../components/Toggler';
+import controller from 'web/lib/controller';
+import mapGCodeToText from 'web/lib/gcode-text';
+import i18n from 'web/lib/i18n';
+import { Button } from 'web/components/Buttons';
+import Panel from 'web/components/Panel';
+import Toggler from 'web/components/Toggler';
 import Overrides from './Overrides';
 import {
     TINYG_MACHINE_STATE_INITIALIZING,

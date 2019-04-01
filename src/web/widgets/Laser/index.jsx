@@ -3,11 +3,11 @@ import isNumber from 'lodash/isNumber';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import controller from '../../lib/controller';
-import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import i18n from '../../lib/i18n';
+import Space from 'web/components/Space';
+import Widget from 'web/components/Widget';
+import controller from 'web/lib/controller';
+import ensurePositiveNumber from 'web/lib/ensure-positive-number';
+import i18n from 'web/lib/i18n';
 import WidgetConfig from '../WidgetConfig';
 import Laser from './Laser';
 import {

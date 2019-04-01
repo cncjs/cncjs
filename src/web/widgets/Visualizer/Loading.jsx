@@ -1,5 +1,5 @@
 import React from 'react';
-import i18n from '../../lib/i18n';
+import i18n from 'web/lib/i18n';
 import styles from './loader.styl';
 
 export default () => (

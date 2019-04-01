@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import controller from '../../lib/controller';
-import i18n from '../../lib/i18n';
+import Space from 'web/components/Space';
+import controller from 'web/lib/controller';
+import i18n from 'web/lib/i18n';
 import styles from './index.styl';
 
 class QuickAccessToolbar extends PureComponent {

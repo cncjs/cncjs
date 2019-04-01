@@ -1,9 +1,9 @@
 import PropTypes from 'prop-types';
 import React from 'react';
-import Anchor from '../../components/Anchor';
-import { ToastNotification } from '../../components/Notifications';
-import Space from '../../components/Space';
-import i18n from '../../lib/i18n';
+import Anchor from 'web/components/Anchor';
+import { ToastNotification } from 'web/components/Notifications';
+import Space from 'web/components/Space';
+import i18n from 'web/lib/i18n';
 import {
     NOTIFICATION_PROGRAM_ERROR,
     NOTIFICATION_M0_PROGRAM_PAUSE,

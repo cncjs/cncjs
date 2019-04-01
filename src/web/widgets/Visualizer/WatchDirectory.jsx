@@ -4,9 +4,9 @@ import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
 import InfiniteTree from 'react-infinite-tree';
 import renderer from './renderer';
-import api from '../../api';
-import Modal from '../../components/Modal';
-import i18n from '../../lib/i18n';
+import api from 'web/api';
+import Modal from 'web/components/Modal';
+import i18n from 'web/lib/i18n';
 import styles from './renderer.styl';
 
 class WatchDirectory extends PureComponent {

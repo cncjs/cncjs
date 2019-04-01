@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Space from '../../components/Space';
-import Widget from '../../components/Widget';
-import i18n from '../../lib/i18n';
-import controller from '../../lib/controller';
+import Space from 'web/components/Space';
+import Widget from 'web/components/Widget';
+import i18n from 'web/lib/i18n';
+import controller from 'web/lib/controller';
 import WidgetConfig from '../WidgetConfig';
 import Grbl from './Grbl';
 import Controller from './Controller';
