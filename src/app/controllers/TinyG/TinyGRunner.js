@@ -448,6 +448,9 @@ class TinyGRunner extends events.EventEmitter {
     getModalState(state = this.state) {
         return _.get(state, 'modal', {});
     }
+    getTool(state = this.state) {
+        return Number(_.get(state, 'tool')) || 0;
+    }
     isAlarm() {
         const machineState = _.get(this.state, 'machineState');
         return machineState === TINYG_MACHINE_STATE_ALARM;

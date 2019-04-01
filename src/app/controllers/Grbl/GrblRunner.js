@@ -199,6 +199,9 @@ class GrblRunner extends events.EventEmitter {
     getModalGroup(state = this.state) {
         return _.get(state, 'parserstate.modal', {});
     }
+    getTool(state = this.state) {
+        return Number(_.get(state, 'parserstate.tool')) || 0;
+    }
     isAlarm() {
         const machineState = _.get(this.state, 'status.machineState');
         return machineState === GRBL_MACHINE_STATE_ALARM;
