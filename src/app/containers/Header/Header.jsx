@@ -13,7 +13,7 @@ import combokeys from 'app/lib/combokeys';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
-import user from 'app/lib/user';
+import * as user from 'app/lib/user';
 import store from 'app/store';
 import QuickAccessToolbar from './QuickAccessToolbar';
 import styles from './index.styl';
@@ -333,7 +333,7 @@ class Header extends PureComponent {
                             </MenuItem>
                             <MenuItem
                                 onClick={() => {
-                                    if (user.authenticated()) {
+                                    if (user.isAuthenticated()) {
                                         log.debug('Destroy and cleanup the WebSocket connection');
                                         controller.disconnect();
 

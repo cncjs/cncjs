@@ -1,13 +1,13 @@
 import React from 'react';
 import { Route, Redirect, withRouter } from 'react-router-dom';
-import user from 'app/lib/user';
+import * as user from 'app/lib/user';
 import log from 'app/lib/log';
 
 const ProtectedRoute = ({ component: Component, ...rest }) => (
     <Route
         {...rest}
         render={props => {
-            if (user.authenticated()) {
+            if (user.isAuthenticated()) {
                 return Component ? <Component {...rest} /> : null;
             }
 

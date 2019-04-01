@@ -1,6 +1,9 @@
 import constants from 'namespace-constants';
 
-module.exports = constants('widgets/TinyG', [
+export const {
+    MODAL_NONE,
+    MODAL_CONTROLLER
+} = constants('widgets/TinyG', [
     'MODAL_NONE',
     'MODAL_CONTROLLER'
 ]);

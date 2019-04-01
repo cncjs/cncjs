@@ -9,7 +9,7 @@ import settings from 'app/config/settings';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
-import user from 'app/lib/user';
+import * as user from 'app/lib/user';
 import store from 'app/store';
 import styles from './index.styl';
 

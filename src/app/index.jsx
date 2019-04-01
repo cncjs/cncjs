@@ -21,7 +21,7 @@ import i18n from './lib/i18n';
 import log from './lib/log';
 import series from './lib/promise-series';
 import promisify from './lib/promisify';
-import user from './lib/user';
+import * as user from './lib/user';
 import store from './store';
 import defaultState from './store/defaultState';
 import App from './containers/App';

@@ -5,4 +5,4 @@ const promiseSeries = (tasks, initialValue) => {
     return tasks.reduce((p, task) => p.then(task), Promise.resolve(initialValue));
 };
 
-module.exports = promiseSeries;
+export default promiseSeries;
