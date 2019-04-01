@@ -65,14 +65,14 @@ program.on('--help', () => {
     console.log('');
     console.log('  Examples:');
     console.log('');
-    console.log('    $ cnc -vv');
-    console.log('    $ cnc --mount /pendant:/home/pi/tinyweb');
-    console.log('    $ cnc --mount /widget:~+/widget --mount /pendant:~/pendant');
-    console.log('    $ cnc --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/');
-    console.log('    $ cnc --watch-directory /home/pi/watch');
-    console.log('    $ cnc --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d');
-    console.log('    $ cnc --allow-remote-access');
-    console.log('    $ cnc --controller Grbl');
+    console.log('    $ cncjs -vv');
+    console.log('    $ cncjs --mount /pendant:/home/pi/tinyweb');
+    console.log('    $ cncjs --mount /widget:~+/widget --mount /pendant:~/pendant');
+    console.log('    $ cncjs --mount /widget:https://cncjs.github.io/cncjs-widget-boilerplate/v1/');
+    console.log('    $ cncjs --watch-directory /home/pi/watch');
+    console.log('    $ cncjs --access-token-lifetime 60d  # e.g. 3600, 30m, 12h, 30d');
+    console.log('    $ cncjs --allow-remote-access');
+    console.log('    $ cncjs --controller Grbl');
     console.log('');
 });
 
