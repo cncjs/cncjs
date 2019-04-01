@@ -6,11 +6,7 @@
 
     display: block;
     width: 100%;
-    height: $input-height;
-    padding: $input-padding-y $input-padding-x;
-    font-size: $input-font-size;
     font-weight: $input-font-weight;
-    line-height: $input-line-height;
     color: $input-color;
     background-color: $input-background-color;
     background-clip: padding-box;
@@ -37,9 +33,10 @@
     }
 
     &:focus {
-        color: $input-focus-color;
         background-color: $input-focus-background-color;
         border-color: $input-focus-border-color;
+        border-width: $input-focus-border-width;
+        color: $input-focus-color;
         outline: 0;
 
         if ($enable-shadows) {
@@ -64,6 +61,7 @@
     &:disabled,
     &[readonly] {
         background-color: $input-disabled-background-color;
+        cursor: not-allowed;
         // iOS fix for unreadable disabled content.
         opacity: 1;
     }
@@ -74,8 +72,20 @@
     padding: $input-padding-y-lg $input-padding-x-lg;
     font-size: $input-font-size-lg;
     line-height: $input-line-height-lg;
+
     if ($enable-rounded) {
-        border-radius: $input-border-radius-sm;
+        border-radius: $input-border-radius-lg;
+    }
+}
+
+.form-control-md {
+    height: $input-height-md;
+    padding: $input-padding-y-md $input-padding-x-md;
+    font-size: $input-font-size-md;
+    line-height: $input-line-height-md;
+
+    if ($enable-rounded) {
+        border-radius: $input-border-radius-md;
     }
 }
 
@@ -84,6 +94,7 @@
     padding: $input-padding-y-sm $input-padding-x-sm;
     font-size: $input-font-size-sm;
     line-height: $input-line-height-sm;
+
     if ($enable-rounded) {
         border-radius: $input-border-radius-sm;
     }
