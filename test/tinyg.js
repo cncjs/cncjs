@@ -94,6 +94,18 @@ test('TinyGParserResultStatusReports', (t) => {
         runner.parse(line);
     });
 
+    // active tool number
+    t.test('{"sr":{"stat":4,"tool":3}}', (t) => {
+        const runner = new TinyGRunner();
+        runner.on('sr', ({ stat, tool }) => {
+            t.equal(tool, 3);
+            t.end();
+        });
+
+        const line = '{"sr":{"stat":4,"tool":3}}';
+        runner.parse(line);
+    });
+
     t.end();
 });
 

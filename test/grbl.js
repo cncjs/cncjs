@@ -166,6 +166,7 @@ test('GrblLineParserResultParserState', (t) => {
                 feedrate: '2540.',
                 spindle: '0.'
             });
+            t.equal(runner.getTool(), 0);
             t.end();
         });
 
@@ -176,7 +177,7 @@ test('GrblLineParserResultParserState', (t) => {
     test('#2', (t) => {
         const runner = new GrblRunner();
         runner.on('parserstate', ({ raw, ...parserstate }) => {
-            t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T0 F2540. S0.]');
+            t.equal(raw, '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T2 F2540. S0.]');
             t.same(parserstate, {
                 modal: {
                     motion: 'G0', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
@@ -189,14 +190,15 @@ test('GrblLineParserResultParserState', (t) => {
                     spindle: 'M5',
                     coolant: ['M7', 'M8']
                 },
-                tool: '0',
+                tool: '2',
                 feedrate: '2540.',
                 spindle: '0.'
             });
+            t.equal(runner.getTool(), 2);
             t.end();
         });
 
-        const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T0 F2540. S0.]';
+        const line = '[G0 G54 G17 G21 G90 G94 M0 M5 M7 M8 T2 F2540. S0.]';
         runner.parse(line);
     });
 
