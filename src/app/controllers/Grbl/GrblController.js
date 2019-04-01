@@ -214,8 +214,12 @@ class GrblController {
                     log.debug('M6 Tool Change');
                     this.feeder.hold({ data: 'M6' }); // Hold reason
 
-                    // Surround M6 with parentheses to ignore unsupported command error
-                    line = '(M6)';
+                    // Surround M6 with parentheses to ignore
+                    // unsupported command error. If we nuke the whole
+                    // line, then we'll likely lose other commands that
+                    // share the line, like a T~.  This makes tool
+                    // changes complicated.
+                    line = line.replace('M6', '(M6)');
                 }
 
                 return line;
@@ -297,7 +301,7 @@ class GrblController {
                     this.workflow.pause({ data: 'M6' });
 
                     // Surround M6 with parentheses to ignore unsupported command error
-                    line = '(M6)';
+                    line = line.replace('M6', '(M6)');
                 }
 
                 return line;
@@ -719,6 +723,9 @@ class GrblController {
         // Modal group
         const modal = this.runner.getModalGroup();
 
+        // Tool
+        const tool = this.runner.getTool();
+
         return Object.assign(context || {}, {
             // Bounding box
             xmin: Number(context.xmin) || 0,
@@ -752,8 +759,10 @@ class GrblController {
                 program: modal.program,
                 spindle: modal.spindle,
                 // M7 and M8 may be active at the same time, but a modal group violation might occur when issuing M7 and M8 together on the same line. Using the new line character (\n) to separate lines can avoid this issue.
-                coolant: ensureArray(modal.coolant).join('\n')
-            }
+                coolant: ensureArray(modal.coolant).join('\n'),
+            },
+            // Tool
+            tool: Number(tool) || 0,
         });
     }
     clearActionValues() {

@@ -147,6 +147,10 @@ class MarlinRunner extends events.EventEmitter {
     getModalGroup(state = this.state) {
         return _.get(state, 'modal', {});
     }
+    getTool(state = this.state) {
+        // Not supported
+        return 0;
+    }
     isAlarm() {
         // Not supported
         return false;
