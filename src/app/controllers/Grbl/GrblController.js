@@ -720,10 +720,10 @@ class GrblController {
             c: posc
         } = this.runner.getWorkPosition();
 
-        const tool = this.runner.getTool();
-
         // Modal group
         const modal = this.runner.getModalGroup();
+
+        const tool = this.runner.getTool();
 
         return Object.assign(context || {}, {
             // Bounding box
@@ -747,6 +747,7 @@ class GrblController {
             posa: Number(posa) || 0,
             posb: Number(posb) || 0,
             posc: Number(posc) || 0,
+            // Tool
             tool: Number(tool) || 0,
             // Modal group
             modal: {

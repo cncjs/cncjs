@@ -188,6 +188,9 @@ class SmoothieRunner extends events.EventEmitter {
     getModalGroup(state = this.state) {
         return _.get(state, 'parserstate.modal', {});
     }
+    getTool(state = this.state) {
+        return Number(_.get(state, 'parserstate.tool', 0));
+    }
     isAlarm() {
         const activeState = _.get(this.state, 'status.activeState');
         return activeState === SMOOTHIE_ACTIVE_STATE_ALARM;

@@ -757,6 +757,8 @@ class TinyGController {
         // Modal group
         const modal = this.runner.getModalGroup();
 
+        const tool = this.runner.getTool();
+
         return Object.assign(context || {}, {
             // Bounding box
             xmin: Number(context.xmin) || 0,
@@ -779,6 +781,8 @@ class TinyGController {
             posa: Number(posa) || 0,
             posb: Number(posb) || 0,
             posc: Number(posc) || 0,
+            // Tool
+            tool: Number(tool) || 0,
             // Modal group
             modal: {
                 motion: modal.motion,

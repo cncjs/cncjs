@@ -759,6 +759,8 @@ class MarlinController {
             e: pose
         } = this.runner.getPosition();
 
+        const tool = this.runner.getTool();
+
         // Modal group
         const modal = this.runner.getModalGroup();
 
@@ -775,6 +777,8 @@ class MarlinController {
             posy: Number(posy) || 0,
             posz: Number(posz) || 0,
             pose: Number(pose) || 0,
+            // Tool
+            tool: Number(tool) || 0,
             // Modal group
             modal: {
                 motion: modal.motion,
