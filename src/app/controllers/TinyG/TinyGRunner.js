@@ -68,6 +68,9 @@ class TinyGRunner extends events.EventEmitter {
         // Status Reports
         sr: {
             machineState: '',
+            velocity: 0,
+            line: 0,
+            feedrate: 0,
             mpos: {
                 x: '0.000',
                 y: '0.000',
@@ -78,10 +81,6 @@ class TinyGRunner extends events.EventEmitter {
                 y: '0.000',
                 z: '0.000'
             },
-            spe: 0, // [edge-082.10] Spindle enable
-            spd: 0, // [edge-082.10] Spindle direction
-            spc: 0, // [edge-101.03] Spindle control
-            sps: 0, // [edge-082.10] Spindle speed
             modal: {
                 motion: '', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
                 wcs: '', // G54, G55, G56, G57, G58, G59
@@ -92,7 +91,12 @@ class TinyGRunner extends events.EventEmitter {
                 path: '', // G61: Exact path mode, G61.1: Exact stop mode, G64: Continuous mode
                 spindle: '', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
                 coolant: '' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
-            }
+            },
+            tool: 0,
+            spe: 0, // [edge-082.10] Spindle enable
+            spd: 0, // [edge-082.10] Spindle direction
+            spc: 0, // [edge-101.03] Spindle control
+            sps: 0, // [edge-082.10] Spindle speed
         }
     };
     settings = {
@@ -175,25 +179,26 @@ class TinyGRunner extends events.EventEmitter {
                 }
                 this.emit('qr', { qr, qi, qo });
             } else if (type === TinyGLineParserResultStatusReports) {
-                // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Codes#status-report-enumerations
+                // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports
+                // https://github.com/synthetos/g2/wiki/Status-Reports
                 const keymaps = {
-                    'line': 'line',
-                    'vel': 'velocity',
-                    'feed': 'feedrate',
+                    // machine state
                     'stat': 'machineState',
-                    'cycs': 'cycleState',
-                    'mots': 'motionState',
-                    'hold': 'feedholdState',
-                    'momo': (target, val) => {
+                    // runtime line number
+                    'line': 'line',
+                    // current velocity
+                    'vel': 'velocity',
+                    // feed rate
+                    'feed': 'feedrate',
+                    // units mode
+                    'unit': (target, val) => {
                         const gcode = {
-                            [TINYG_GCODE_MOTION_G0]: 'G0', // Straight (linear) traverse
-                            [TINYG_GCODE_MOTION_G1]: 'G1', // Straight (linear) feed
-                            [TINYG_GCODE_MOTION_G2]: 'G2', // CW arc traverse
-                            [TINYG_GCODE_MOTION_G3]: 'G3', // CCW arc traverse
-                            [TINYG_GCODE_MOTION_G80]: 'G80' // Cancel motion mode
+                            [TINYG_GCODE_UNITS_G20]: 'G20', // Inches mode
+                            [TINYG_GCODE_UNITS_G21]: 'G21' // Millimeters mode
                         }[val] || '';
-                        _.set(target, 'modal.motion', gcode);
+                        _.set(target, 'modal.units', gcode);
                     },
+                    // coordinate system
                     'coor': (target, val) => {
                         const gcode = {
                             [TINYG_GCODE_COORDINATE_G53]: 'G53', // Machine coordinate system
@@ -206,6 +211,18 @@ class TinyGRunner extends events.EventEmitter {
                         }[val] || '';
                         _.set(target, 'modal.wcs', gcode);
                     },
+                    // motion mode
+                    'momo': (target, val) => {
+                        const gcode = {
+                            [TINYG_GCODE_MOTION_G0]: 'G0', // Straight (linear) traverse
+                            [TINYG_GCODE_MOTION_G1]: 'G1', // Straight (linear) feed
+                            [TINYG_GCODE_MOTION_G2]: 'G2', // CW arc traverse
+                            [TINYG_GCODE_MOTION_G3]: 'G3', // CCW arc traverse
+                            [TINYG_GCODE_MOTION_G80]: 'G80' // Cancel motion mode
+                        }[val] || '';
+                        _.set(target, 'modal.motion', gcode);
+                    },
+                    // plane select
                     'plan': (target, val) => {
                         const gcode = {
                             [TINYG_GCODE_PLANE_G17]: 'G17', // XY plane
@@ -214,13 +231,16 @@ class TinyGRunner extends events.EventEmitter {
                         }[val] || '';
                         _.set(target, 'modal.plane', gcode);
                     },
-                    'unit': (target, val) => {
+                    // path control mode
+                    'path': (target, val) => {
                         const gcode = {
-                            [TINYG_GCODE_UNITS_G20]: 'G20', // Inches mode
-                            [TINYG_GCODE_UNITS_G21]: 'G21' // Millimeters mode
+                            [TINYG_GCODE_PATH_G61]: 'G61', // Exact path mode
+                            [TINYG_GCODE_PATH_G61_1]: 'G61.1', // Exact stop mode
+                            [TINYG_GCODE_PATH_G64]: 'G64' // Continuous mode
                         }[val] || '';
-                        _.set(target, 'modal.units', gcode);
+                        _.set(target, 'modal.path', gcode);
                     },
+                    // distance mode
                     'dist': (target, val) => {
                         const gcode = {
                             [TINYG_GCODE_DISTANCE_G90]: 'G90', // Absolute distance
@@ -228,6 +248,15 @@ class TinyGRunner extends events.EventEmitter {
                         }[val] || '';
                         _.set(target, 'modal.distance', gcode);
                     },
+                    // arc distance mode
+                    'admo': (target, val) => {
+                        const gcode = {
+                            [TINYG_GCODE_DISTANCE_G90]: 'G90', // Absolute distance
+                            [TINYG_GCODE_DISTANCE_G91]: 'G91' // Incremental distance
+                        }[val] || '';
+                        _.set(target, 'modal.arcdistance', gcode);
+                    },
+                    // feed rate mode
                     'frmo': (target, val) => {
                         const gcode = {
                             [TINYG_GCODE_FEEDRATE_G93]: 'G93', // Inverse time mode
@@ -236,13 +265,9 @@ class TinyGRunner extends events.EventEmitter {
                         }[val] || '';
                         _.set(target, 'modal.feedrate', gcode);
                     },
-                    'path': (target, val) => {
-                        const gcode = {
-                            [TINYG_GCODE_PATH_G61]: 'G61', // Exact path mode
-                            [TINYG_GCODE_PATH_G61_1]: 'G61.1', // Exact stop mode
-                            [TINYG_GCODE_PATH_G64]: 'G64' // Continuous mode
-                        }[val] || '';
-                        _.set(target, 'modal.path', gcode);
+                    // active tool
+                    'tool': (target, val) => {
+                        _.set(target, 'tool', val);
                     },
                     // [edge-082.10] Spindle enable (removed in edge-101.03)
                     'spe': (target, val) => {
