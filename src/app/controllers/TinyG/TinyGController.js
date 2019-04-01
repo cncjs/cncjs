@@ -91,20 +91,19 @@ class TinyGController {
     state = {};
     settings = {};
     sr = {
-        line: true,
-        vel: true,
-        feed: true,
-        stat: true,
-        cycs: true,
-        mots: true,
-        hold: true,
-        momo: true,
-        coor: true,
-        plan: true,
-        unit: true,
-        dist: true,
-        frmo: true,
-        path: true,
+        stat: true, // machine state
+        line: true, // runtime line number
+        vel: true, // current velocity
+        feed: true, // feed rate
+        unit: true, // units mode
+        coor: true, // coordinate system
+        momo: true, // motion mode
+        plan: true, // plane select
+        path: true, // path control mode
+        dist: true, // distance mode
+        admo: true, // arc distance mode
+        frmo: true, // feed rate mode
+        tool: true, // active tool
         posx: true,
         posy: true,
         posz: true,
@@ -721,9 +720,8 @@ class TinyGController {
         // in milliseconds (50ms minimum interval)
         send('{si:100}');
 
-        await delay(100);
-
         // Check whether the spindle and coolant commands are supported
+        await delay(100);
         send('{spe:n}');
         await delay(100);
         send('{spd:n}');
@@ -735,10 +733,9 @@ class TinyGController {
         send('{com:n}');
         await delay(100);
         send('{cof:n}');
-        await delay(100);
 
         // Wait for a certain amount of time before setting status report fields
-        await delay(100);
+        await delay(200);
 
         // Settings Status Report Fields
         // https://github.com/synthetos/TinyG/wiki/TinyG-Status-Reports#setting-status-report-fields
