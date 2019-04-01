@@ -325,7 +325,7 @@ class Header extends PureComponent {
                             </MenuItem>
                             <MenuItem divider />
                             <MenuItem
-                                href="#/settings/account"
+                                href="#/settings/user-accounts"
                             >
                                 <i className="fa fa-fw fa-user" />
                                 <Space width="8" />
