@@ -2,7 +2,7 @@ import { parse } from 'esprima';
 import evaluate from 'static-eval';
 import logger from './logger';
 
-const log = logger('translateExpression');
+const log = logger('translate-expression');
 const re = new RegExp(/\[[^\]]+\]/g);
 
 const translateExpression = (data, context = {}) => {
