@@ -47,11 +47,11 @@ test('expressions', (t) => {
     }
 
     { // Evaluates expressions containing template literals
-        const bar = "0";
+        const bar = '0';
         const baz = 1;
 
         t.test(t => {
-            const vars = evaluateExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz });
+            const vars = evaluateExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
             t.equal(vars.bar, bar);
             t.equal(vars.baz, baz);
             t.equal(vars.foo[bar][baz], '01');
@@ -60,18 +60,18 @@ test('expressions', (t) => {
 
         t.test(t => {
             const vars = evaluateExpression('bar = "0", baz = 1, foo[1][`baz`] = baz', { bar, baz });
-            t.equal(vars.foo[1][`baz`], baz);
+            t.equal(vars.foo[1].baz, baz);
             t.end();
         });
 
         t.test(t => {
-            const vars = evaluateExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz });
+            const vars = evaluateExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
             t.equal(vars.foo[bar][baz], `${bar}${baz}`);
             t.end();
         });
 
         t.test(t => {
-            const vars = evaluateExpression('bar = "0", baz = 1, foo.bar.baz = `${bar}${baz}`', { bar, baz });
+            const vars = evaluateExpression('bar = "0", baz = 1, foo.bar.baz = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
             t.equal(vars.foo.bar.baz, `${bar}${baz}`);
             t.end();
         });

@@ -38,7 +38,7 @@ const lookupObjectPath = (node, context) => {
          * }
          *
          * Expression: 'x[y] = value'
-         * 
+         *
          * ComputedMemberExpression {
          *   type: 'MemberExpression',
          *   computed: true,
@@ -49,7 +49,7 @@ const lookupObjectPath = (node, context) => {
         if (node.property.type === 'Identifier') {
             return [...lookupObjectPath(node.object, context), node.property.name];
         }
-        
+
         /*
          * Expression: 'x["y"] = value'
          *
