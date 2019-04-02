@@ -769,7 +769,13 @@ class MarlinController {
         const tool = this.runner.getTool();
 
         return Object.assign(context || {}, {
-            // Global variables
+            // Primitive types and global variables
+            Boolean,
+            Number,
+            Object,
+            String,
+            JSON,
+            // User-defined global variables
             global: this.sharedContext,
             // Bounding box
             xmin: Number(context.xmin) || 0,
