@@ -187,7 +187,6 @@ class TinyGController {
                 // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
-                context.global = this.sharedContext;
 
                 if (line[0] === '%') {
                     // %wait
@@ -264,7 +263,6 @@ class TinyGController {
                 // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
-                context.global = this.sharedContext;
 
                 const { sent, received } = this.sender.state;
 
@@ -763,6 +761,8 @@ class TinyGController {
         const tool = this.runner.getTool();
 
         return Object.assign(context || {}, {
+            // Global variables
+            global: this.sharedContext,
             // Bounding box
             xmin: Number(context.xmin) || 0,
             xmax: Number(context.xmax) || 0,

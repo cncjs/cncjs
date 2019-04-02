@@ -155,7 +155,6 @@ class SmoothieController {
                 // Remove comments that start with a semicolon `;`
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
-                context.global = this.sharedContext;
 
                 if (line[0] === '%') {
                     // %wait
@@ -232,7 +231,6 @@ class SmoothieController {
                 // Remove comments that start with a semicolon `;`
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
-                context.global = this.sharedContext;
 
                 const { sent, received } = this.sender.state;
 
@@ -637,6 +635,8 @@ class SmoothieController {
         const tool = this.runner.getTool();
 
         return Object.assign(context || {}, {
+            // Global variables
+            global: this.sharedContext,
             // Bounding box
             xmin: Number(context.xmin) || 0,
             xmax: Number(context.xmax) || 0,
