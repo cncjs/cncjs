@@ -77,11 +77,19 @@ test('expressions', (t) => {
         });
 
         t.test(t => {
-            const vars = evaluateExpression('dx = 4000, dy = 3000, dz = 1000, global.volume = dx * dy * dz');
+            const vars = evaluateExpression('dx = 4000, dy = 3000, dz = 1000, object.volume = Number(dx * dy * dz) || 0', { Number });
             t.equal(vars.dx, 4000);
             t.equal(vars.dy, 3000);
             t.equal(vars.dz, 1000);
-            t.equal(vars.global.volume, 4000 * 3000 * 1000);
+            t.equal(vars.object.volume, 4000 * 3000 * 1000);
+            t.end();
+        });
+    }
+
+    { // User-defined global variables
+        t.test(t => {
+            const vars = evaluateExpression('global.state.pos = JSON.stringify({ x: 0, y: 0, z: 0 })', { JSON });
+            t.equal(vars.global.state.pos, '{"x":0,"y":0,"z":0}');
             t.end();
         });
     }
