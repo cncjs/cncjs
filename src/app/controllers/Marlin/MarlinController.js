@@ -107,6 +107,9 @@ class MarlinController {
     sender = null;
     senderFinishTime = 0;
 
+    // Shared context
+    sharedContext = {};
+
     // Workflow
     workflow = null;
 
@@ -337,6 +340,7 @@ class MarlinController {
                 // Remove comments that start with a semicolon `;`
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
+                context.global = this.sharedContext;
 
                 if (line[0] === '%') {
                     // %wait
@@ -427,6 +431,7 @@ class MarlinController {
                 // Remove comments that start with a semicolon `;`
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
+                context.global = this.sharedContext;
 
                 const { sent, received } = this.sender.state;
 

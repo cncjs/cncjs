@@ -109,6 +109,9 @@ class SmoothieController {
     // Sender
     sender = null;
 
+    // Shared context
+    sharedContext = {};
+
     // Workflow
     workflow = null;
 
@@ -152,6 +155,7 @@ class SmoothieController {
                 // Remove comments that start with a semicolon `;`
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
+                context.global = this.sharedContext;
 
                 if (line[0] === '%') {
                     // %wait
@@ -228,6 +232,7 @@ class SmoothieController {
                 // Remove comments that start with a semicolon `;`
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
+                context.global = this.sharedContext;
 
                 const { sent, received } = this.sender.state;
 

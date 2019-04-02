@@ -140,6 +140,9 @@ class TinyGController {
     // Sender
     sender = null;
 
+    // Shared context
+    sharedContext = {};
+
     // Workflow
     workflow = null;
 
@@ -184,6 +187,7 @@ class TinyGController {
                 // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
+                context.global = this.sharedContext;
 
                 if (line[0] === '%') {
                     // %wait
@@ -260,6 +264,7 @@ class TinyGController {
                 // @see https://github.com/synthetos/g2/wiki/JSON-Active-Comments
                 line = line.replace(/\s*;.*/g, '').trim();
                 context = this.populateContext(context);
+                context.global = this.sharedContext;
 
                 const { sent, received } = this.sender.state;
 
