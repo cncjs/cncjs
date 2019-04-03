@@ -8,7 +8,7 @@ const log = logger('evaluate-assignment-expression');
 const isStaticMemberExpression = (node) => typeof node === 'object' && node.type === 'MemberExpression' && !node.computed;
 const isComputedMemberExpression = (node) => typeof node === 'object' && node.type === 'MemberExpression' && !!node.computed;
 
-const lookupObjectPath = (node, context) => {
+const lookupObjectPath = (node, vars) => {
     if (!node) {
         return [];
     }
@@ -23,7 +23,7 @@ const lookupObjectPath = (node, context) => {
     }
 
     if (isComputedMemberExpression(node)) {
-        return [...lookupObjectPath(node.object, context), evaluateExpression(node.property, context)];
+        return [...lookupObjectPath(node.object, vars), evaluateExpression(node.property, vars)];
     }
 
     if (isStaticMemberExpression(node)) {
@@ -47,7 +47,7 @@ const lookupObjectPath = (node, context) => {
          * }
          */
         if (node.property.type === 'Identifier') {
-            return [...lookupObjectPath(node.object, context), node.property.name];
+            return [...lookupObjectPath(node.object, vars), node.property.name];
         }
 
         /*
@@ -61,59 +61,59 @@ const lookupObjectPath = (node, context) => {
          * }
          */
         if (node.property.type === 'Literal') {
-            return [...lookupObjectPath(node.object, context), node.property.value];
+            return [...lookupObjectPath(node.object, vars), node.property.value];
         }
 
-        return [...lookupObjectPath(node.object, context), evaluateExpression(node.property, context)];
+        return [...lookupObjectPath(node.object, vars), evaluateExpression(node.property, vars)];
     }
 
     return [node.name];
 };
 
-const walkAssignmentExpression = (node, context) => {
+const walkAssignmentExpression = (node, vars) => {
     console.assert(node && node.type === 'AssignmentExpression');
 
-    const path = lookupObjectPath(node.left, context);
+    const path = lookupObjectPath(node.left, vars);
     if (path) {
-        const value = evaluateExpression(node.right, context);
-        _set(context, path, value);
+        const value = evaluateExpression(node.right, vars);
+        _set(vars, path, value);
     }
 };
 
-const walkSequenceExpression = (node, context) => {
+const walkSequenceExpression = (node, vars) => {
     console.assert(node && node.type === 'SequenceExpression');
 
     node.expressions.forEach(expr => {
         if (expr.type === 'AssignmentExpression') {
-            walkAssignmentExpression(expr, context);
+            walkAssignmentExpression(expr, vars);
             return;
         }
 
-        evaluateExpression(expr, context);
+        evaluateExpression(expr, vars);
     });
 };
 
-const evaluateAssignmentExpression = (src, context = {}) => {
+const evaluateAssignmentExpression = (src, vars = {}) => {
     if (!src) {
-        return context;
+        return vars;
     }
 
     try {
         const ast = parse(src).body[0].expression;
 
         if (ast.type === 'AssignmentExpression') {
-            walkAssignmentExpression(ast, context);
+            walkAssignmentExpression(ast, vars);
         } else if (ast.type === 'SequenceExpression') {
-            walkSequenceExpression(ast, context);
+            walkSequenceExpression(ast, vars);
         } else {
-            evaluateExpression(ast, context);
+            evaluateExpression(ast, vars);
         }
     } catch (e) {
-        log.error(`src="${src}", context=${JSON.stringify(context)}`);
+        log.error(`src="${src}", vars=${JSON.stringify(vars)}`);
         log.error(e);
     }
 
-    return context;
+    return vars;
 };
 
 export default evaluateAssignmentExpression;
