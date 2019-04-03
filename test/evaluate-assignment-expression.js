@@ -43,7 +43,7 @@ test('expressions', (t) => {
         const baz = 1;
 
         t.test(t => {
-            const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
+            const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line no-template-curly-in-string
             t.equal(vars.bar, bar);
             t.equal(vars.baz, baz);
             t.equal(vars.foo[bar][baz], '01');
@@ -57,13 +57,13 @@ test('expressions', (t) => {
         });
 
         t.test(t => {
-            const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
+            const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line no-template-curly-in-string
             t.equal(vars.foo[bar][baz], `${bar}${baz}`);
             t.end();
         });
 
         t.test(t => {
-            const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo.bar.baz = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
+            const vars = evaluateAssignmentExpression('bar = "0", baz = 1, foo.bar.baz = `${bar}${baz}`', { bar, baz }); // eslint-disable-line no-template-curly-in-string
             t.equal(vars.foo.bar.baz, `${bar}${baz}`);
             t.end();
         });

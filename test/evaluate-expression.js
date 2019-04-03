@@ -5,10 +5,16 @@ test('resolved', (t) => {
     const src = '[1,2,3+4*10+(n||6),foo(3+5),obj[""+"x"].y]';
     const res = evaluateExpression(src, {
         n: false,
-        foo: function (x) { return x * 100 },
-        obj: { x: { y: 555 } }
+        foo: function (x) {
+            return x * 100;
+        },
+        obj: {
+            x: {
+                y: 555
+            }
+        }
     });
-    t.deepEqual(res, [ 1, 2, 49, 800, 555 ]);
+    t.deepEqual(res, [1, 2, 49, 800, 555]);
     t.end();
 });
 
@@ -16,8 +22,14 @@ test('unresolved', (t) => {
     const src = '[1,2,3+4*10*z+n,foo(3+5),obj[""+"x"].y]';
     const res = evaluateExpression(src, {
         n: 6,
-        foo: function (x) { return x * 100 },
-        obj: { x: { y: 555 } }
+        foo: function (x) {
+            return x * 100;
+        },
+        obj: {
+            x: {
+                y: 555
+            }
+        }
     });
     t.equal(res, undefined);
     t.end();
@@ -25,7 +37,7 @@ test('unresolved', (t) => {
 
 test('boolean', (t) => {
     const src = '[ 1===2+3-16/4, [2]==2, [2]!==2, [2]!==[2] ]';
-    t.deepEqual(evaluateExpression(src), [ true, true, true, true ]);
+    t.deepEqual(evaluateExpression(src), [true, true, true, true]);
     t.end();
 });
 
@@ -44,7 +56,12 @@ test('array methods with vars', (t) => {
 test('evaluate this', (t) => {
     const src = 'this.x + this.y.z';
     const res = evaluateExpression(src, {
-        'this': { x: 1, y: { z: 100 } }
+        'this': {
+            x: 1,
+            y: {
+                z: 100
+            }
+        }
     });
     t.equal(res, 101);
     t.end();
@@ -68,15 +85,23 @@ test('function property', (t) => {
     const src = '[1,2,3+4*10+n,beep.boop(3+5),obj[""+"x"].y]';
     const res = evaluateExpression(src, {
         n: 6,
-        beep: { boop: function (x) { return x * 100 } },
-        obj: { x: { y: 555 } }
+        beep: {
+            boop: function (x) {
+                return x * 100;
+            }
+        },
+        obj: {
+            x: {
+                y: 555
+            }
+        }
     });
-    t.deepEqual(res, [ 1, 2, 49, 800, 555 ]);
+    t.deepEqual(res, [1, 2, 49, 800, 555]);
     t.end();
 });
 
 test('untagged template strings', (t) => {
-    const src = '`${1},${2 + n},${`4,5`}`';
+    const src = '`${1},${2 + n},${"4,5"}`'; // eslint-disable-line no-template-curly-in-string
     const res = evaluateExpression(src, {
         n: 6
     });
@@ -85,11 +110,10 @@ test('untagged template strings', (t) => {
 });
 
 test('tagged template strings', (t) => {
-    const src = 'template`${1},${2 + n},${`4,5`}`';
+    const src = 'taggedTemplate`${1},${2 + n},${"4,5"}`'; // eslint-disable-line no-template-curly-in-string
     const res = evaluateExpression(src, {
-        template: function (strings) {
+        taggedTemplate: function (strings, ...values) {
             t.deepEqual(strings, ['', ',', ',', '']);
-            const values = [].slice.call(arguments, 1);
             t.deepEqual(values, [1, 8, '4,5']);
             return 'foo';
         },

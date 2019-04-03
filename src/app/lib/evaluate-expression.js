@@ -278,7 +278,7 @@ const evaluateExpression = (src, vars) => {
         log.error(e);
     }
 
-    return (result == UNRESOLVED) ? undefined : result;
+    return (result === UNRESOLVED) ? undefined : result;
 };
 
 export default evaluateExpression;
