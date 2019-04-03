@@ -1,8 +1,8 @@
 module.exports = [
     { type: 'header', text: 'Wait until the planner queue is empty' },
     '%wait\n',
-    { type: 'header', text: 'Use global variables' },
-    '%global.tool = tool\n',
+    { type: 'header', text: 'User-defined global variables' },
+    '%global.tool = Number(tool) || 0\n',
     { type: 'header', text: 'Display a global variable using an inline comment' },
     '(tool=[global.tool])\n',
     { type: 'header', text: 'Keep a backup of current work position' },
