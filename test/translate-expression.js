@@ -1,20 +1,12 @@
 import { test } from 'tap';
-import logger from '../src/app/lib/logger';
 import translateExpression from '../src/app/lib/translate-expression';
 
 test('exceptions', (t) => {
-    // Suppress the output
-    const silent = logger.logger.silent;
-    logger.logger.silent = true;
-
     // Not a string type
     t.equal(translateExpression(0), '');
 
     // Unexpected end of input
     t.equal(translateExpression('X[!]', {}), 'X[!]');
-
-    // Restore to previous default
-    logger.logger.silent = silent;
 
     t.end();
 });

@@ -12,7 +12,7 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import evaluateExpression from '../../lib/evaluate-expression';
+import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
@@ -198,7 +198,7 @@ class TinyGController {
 
                     // Expression
                     // %_x=posx,_y=posy,_z=posz
-                    evaluateExpression(line.slice(1), context);
+                    evaluateAssignmentExpression(line.slice(1), context);
                     return '';
                 }
 
@@ -276,7 +276,7 @@ class TinyGController {
 
                     // Expression
                     // %_x=posx,_y=posy,_z=posz
-                    evaluateExpression(line.slice(1), context);
+                    evaluateAssignmentExpression(line.slice(1), context);
                     return '';
                 }
 
