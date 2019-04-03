@@ -20,6 +20,7 @@ import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import {
+    GLOBAL_OBJECTS as globalObjects,
     WRITE_SOURCE_CLIENT,
     WRITE_SOURCE_FEEDER
 } from '../constants';
@@ -761,14 +762,9 @@ class TinyGController {
         const tool = this.runner.getTool();
 
         return Object.assign(context || {}, {
-            // Primitive types and global variables
-            Boolean,
-            Number,
-            Object,
-            String,
-            JSON,
             // User-defined global variables
             global: this.sharedContext,
+
             // Bounding box
             xmin: Number(context.xmin) || 0,
             xmax: Number(context.xmax) || 0,
@@ -776,6 +772,7 @@ class TinyGController {
             ymax: Number(context.ymax) || 0,
             zmin: Number(context.zmin) || 0,
             zmax: Number(context.zmax) || 0,
+
             // Machine position
             mposx: Number(mposx) || 0,
             mposy: Number(mposy) || 0,
@@ -783,6 +780,7 @@ class TinyGController {
             mposa: Number(mposa) || 0,
             mposb: Number(mposb) || 0,
             mposc: Number(mposc) || 0,
+
             // Work position
             posx: Number(posx) || 0,
             posy: Number(posy) || 0,
@@ -790,6 +788,7 @@ class TinyGController {
             posa: Number(posa) || 0,
             posb: Number(posb) || 0,
             posc: Number(posc) || 0,
+
             // Modal group
             modal: {
                 motion: modal.motion,
@@ -803,8 +802,12 @@ class TinyGController {
                 // M7 and M8 may be active at the same time, but a modal group violation might occur when issuing M7 and M8 together on the same line. Using the new line character (\n) to separate lines can avoid this issue.
                 coolant: ensureArray(modal.coolant).join('\n'),
             },
+
             // Tool
             tool: Number(tool) || 0,
+
+            // Global objects
+            ...globalObjects,
         });
     }
     clearActionValues() {
