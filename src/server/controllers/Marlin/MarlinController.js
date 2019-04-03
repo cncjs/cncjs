@@ -12,7 +12,7 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
-import evaluateExpression from '../../lib/evaluate-expression';
+import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
@@ -20,6 +20,7 @@ import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
 import store from '../../store';
 import {
+    GLOBAL_OBJECTS as globalObjects,
     WRITE_SOURCE_CLIENT,
     WRITE_SOURCE_SERVER,
     WRITE_SOURCE_FEEDER,
@@ -352,7 +353,7 @@ class MarlinController {
 
                     // Expression
                     // %_x=posx,_y=posy,_z=posz
-                    evaluateExpression(line.slice(1), context);
+                    evaluateAssignmentExpression(line.slice(1), context);
                     return '';
                 }
 
@@ -446,7 +447,7 @@ class MarlinController {
 
                     // Expression
                     // %_x=posx,_y=posy,_z=posz
-                    evaluateExpression(line.slice(1), context);
+                    evaluateAssignmentExpression(line.slice(1), context);
                     return '';
                 }
 
@@ -769,14 +770,9 @@ class MarlinController {
         const tool = this.runner.getTool();
 
         return Object.assign(context || {}, {
-            // Primitive types and global variables
-            Boolean,
-            Number,
-            Object,
-            String,
-            JSON,
             // User-defined global variables
             global: this.sharedContext,
+
             // Bounding box
             xmin: Number(context.xmin) || 0,
             xmax: Number(context.xmax) || 0,
@@ -784,11 +780,13 @@ class MarlinController {
             ymax: Number(context.ymax) || 0,
             zmin: Number(context.zmin) || 0,
             zmax: Number(context.zmax) || 0,
+
             // Work position
             posx: Number(posx) || 0,
             posy: Number(posy) || 0,
             posz: Number(posz) || 0,
             pose: Number(pose) || 0,
+
             // Modal group
             modal: {
                 motion: modal.motion,
@@ -802,8 +800,12 @@ class MarlinController {
                 // M7 and M8 may be active at the same time, but a modal group violation might occur when issuing M7 and M8 together on the same line. Using the new line character (\n) to separate lines can avoid this issue.
                 coolant: ensureArray(modal.coolant).join('\n'),
             },
+
             // Tool
             tool: Number(tool) || 0,
+
+            // Global objects
+            ...globalObjects,
         });
     }
     destroy() {

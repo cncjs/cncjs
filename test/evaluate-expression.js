@@ -1,98 +1,124 @@
 import { test } from 'tap';
 import evaluateExpression from '../src/server/lib/evaluate-expression';
 
-test('exceptions', (t) => {
-    // Unexpected identifier
-    evaluateExpression('Not a valid expression');
-
+test('resolved', (t) => {
+    const src = '[1,2,3+4*10+(n||6),foo(3+5),obj[""+"x"].y]';
+    const res = evaluateExpression(src, {
+        n: false,
+        foo: function (x) {
+            return x * 100;
+        },
+        obj: {
+            x: {
+                y: 555
+            }
+        }
+    });
+    t.deepEqual(res, [1, 2, 49, 800, 555]);
     t.end();
 });
 
-test('expressions', (t) => {
-    { // Evaluates expressions with variables
-        const vars = {
-            wposx: 10,
-            wposy: 20,
-            wposz: 30,
-        };
+test('unresolved', (t) => {
+    const src = '[1,2,3+4*10*z+n,foo(3+5),obj[""+"x"].y]';
+    const res = evaluateExpression(src, {
+        n: 6,
+        foo: function (x) {
+            return x * 100;
+        },
+        obj: {
+            x: {
+                y: 555
+            }
+        }
+    });
+    t.equal(res, undefined);
+    t.end();
+});
 
-        // Evaluate assignment expression
-        evaluateExpression('value = 0.1', vars);
-        t.same(vars, {
-            wposx: 10,
-            wposy: 20,
-            wposz: 30,
-            value: 0.1,
-        });
+test('boolean', (t) => {
+    const src = '[ 1===2+3-16/4, [2]==2, [2]!==2, [2]!==[2] ]';
+    t.deepEqual(evaluateExpression(src), [true, true, true, true]);
+    t.end();
+});
 
-        // Evaluate sequence expression
-        evaluateExpression('  _x=(wposx+5), _y = wposy + 5, _z = (wposz+1*5)  ', vars);
-        t.same(vars, {
-            wposx: 10,
-            wposy: 20,
-            wposz: 30,
-            value: 0.1,
-            _x: 15,
-            _y: 25,
-            _z: 35,
-        });
-    }
+test('array methods', (t) => {
+    const src = '[1, 2, 3].map(function(n) { return n * 2 })';
+    t.deepEqual(evaluateExpression(src), [2, 4, 6]);
+    t.end();
+});
 
-    { // Evaluates expressions containing template literals
-        const bar = '0';
-        const baz = 1;
+test('array methods with vars', (t) => {
+    const src = '[1, 2, 3].map(function(n) { return n * x })';
+    t.deepEqual(evaluateExpression(src, { x: 2 }), [2, 4, 6]);
+    t.end();
+});
 
-        t.test(t => {
-            const vars = evaluateExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
-            t.equal(vars.bar, bar);
-            t.equal(vars.baz, baz);
-            t.equal(vars.foo[bar][baz], '01');
-            t.end();
-        });
+test('evaluate this', (t) => {
+    const src = 'this.x + this.y.z';
+    const res = evaluateExpression(src, {
+        'this': {
+            x: 1,
+            y: {
+                z: 100
+            }
+        }
+    });
+    t.equal(res, 101);
+    t.end();
+});
 
-        t.test(t => {
-            const vars = evaluateExpression('bar = "0", baz = 1, foo[1][`baz`] = baz', { bar, baz });
-            t.equal(vars.foo[1].baz, baz);
-            t.end();
-        });
+test('unresolved function expression', (t) => {
+    const src = '(function(){console.log("Not Good")})';
+    const res = evaluateExpression(src);
+    t.equal(res, undefined);
+    t.end();
+});
 
-        t.test(t => {
-            const vars = evaluateExpression('bar = "0", baz = 1, foo[bar][baz] = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
-            t.equal(vars.foo[bar][baz], `${bar}${baz}`);
-            t.end();
-        });
+test('immediate-invoked function expression with a return value', (t) => {
+    const src = '(function(){ return !!x; }(x))';
+    const res = evaluateExpression(src, { x: 1 });
+    t.equal(res, true);
+    t.end();
+});
 
-        t.test(t => {
-            const vars = evaluateExpression('bar = "0", baz = 1, foo.bar.baz = `${bar}${baz}`', { bar, baz }); // eslint-disable-line
-            t.equal(vars.foo.bar.baz, `${bar}${baz}`);
-            t.end();
-        });
-    }
+test('function property', (t) => {
+    const src = '[1,2,3+4*10+n,beep.boop(3+5),obj[""+"x"].y]';
+    const res = evaluateExpression(src, {
+        n: 6,
+        beep: {
+            boop: function (x) {
+                return x * 100;
+            }
+        },
+        obj: {
+            x: {
+                y: 555
+            }
+        }
+    });
+    t.deepEqual(res, [1, 2, 49, 800, 555]);
+    t.end();
+});
 
-    { // Sets the value at path of object
-        t.test(t => {
-            const vars = evaluateExpression('x.y.z.a.b.c = 1');
-            t.equal(vars.x.y.z.a.b.c, 1);
-            t.end();
-        });
+test('untagged template strings', (t) => {
+    const src = '`${1},${2 + n},${"4,5"}`'; // eslint-disable-line no-template-curly-in-string
+    const res = evaluateExpression(src, {
+        n: 6
+    });
+    t.deepEqual(res, '1,8,4,5');
+    t.end();
+});
 
-        t.test(t => {
-            const vars = evaluateExpression('dx = 4000, dy = 3000, dz = 1000, object.volume = Number(dx * dy * dz) || 0', { Number });
-            t.equal(vars.dx, 4000);
-            t.equal(vars.dy, 3000);
-            t.equal(vars.dz, 1000);
-            t.equal(vars.object.volume, 4000 * 3000 * 1000);
-            t.end();
-        });
-    }
-
-    { // User-defined global variables
-        t.test(t => {
-            const vars = evaluateExpression('global.state.pos = JSON.stringify({ x: 0, y: 0, z: 0 })', { JSON });
-            t.equal(vars.global.state.pos, '{"x":0,"y":0,"z":0}');
-            t.end();
-        });
-    }
-
+test('tagged template strings', (t) => {
+    const src = 'taggedTemplate`${1},${2 + n},${"4,5"}`'; // eslint-disable-line no-template-curly-in-string
+    const res = evaluateExpression(src, {
+        taggedTemplate: function (strings, ...values) {
+            t.deepEqual(strings, ['', ',', ',', '']);
+            t.deepEqual(values, [1, 8, '4,5']);
+            return 'foo';
+        },
+        n: 6
+    });
+    t.deepEqual(res, 'foo');
     t.end();
 });
