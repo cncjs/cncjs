@@ -8,7 +8,7 @@ import * as THREE from 'three';
  * @author Luca Antiga     / http://lantiga.github.io
  */
 
-THREE.TrackballControls = function ( object, domElement ) {
+const TrackballControls = function ( object, domElement ) {
 
     var _this = this;
     var STATE = { NONE: -1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
@@ -136,16 +136,6 @@ THREE.TrackballControls = function ( object, domElement ) {
             this.screen.top = box.top + window.pageYOffset - d.clientTop;
             this.screen.width = box.width;
             this.screen.height = box.height;
-
-        }
-
-    };
-
-    this.handleEvent = function ( event ) {
-
-        if ( typeof this[ event.type ] == 'function' ) {
-
-            this[ event.type ]( event );
 
         }
 
@@ -598,6 +588,8 @@ THREE.TrackballControls = function ( object, domElement ) {
 
         if ( _this.enabled === false ) return;
 
+        event.preventDefault();
+
         switch ( event.touches.length ) {
 
             case 1:
@@ -716,5 +708,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 };
 
-THREE.TrackballControls.prototype = Object.create( THREE.EventDispatcher.prototype );
-THREE.TrackballControls.prototype.constructor = THREE.TrackballControls;
+TrackballControls.prototype = Object.create( THREE.EventDispatcher.prototype );
+TrackballControls.prototype.constructor = TrackballControls;
+
+export default TrackballControls;

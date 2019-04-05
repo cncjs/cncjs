@@ -9,12 +9,16 @@ import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 import * as THREE from 'three';
-import Detector from 'three/examples/js/Detector';
+import {
+    IMPERIAL_UNITS,
+    METRIC_UNITS
+} from 'app/constants';
+import CombinedCamera from 'app/lib/three/CombinedCamera';
+import TrackballControls from 'app/lib/three/TrackballControls';
+import * as WebGL from 'app/lib/three/WebGL';
 import log from 'app/lib/log';
 import store from 'app/store';
 import { getBoundingBox, loadTexture } from './helpers';
-import './CombinedCamera';
-import './TrackballControls';
 import Viewport from './Viewport';
 import CoordinateAxes from './CoordinateAxes';
 import Cuboid from './Cuboid';
@@ -24,10 +28,6 @@ import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
 import GCodeVisualizer from './GCodeVisualizer';
-import {
-    IMPERIAL_UNITS,
-    METRIC_UNITS
-} from '../../constants';
 import {
     CAMERA_MODE_PAN,
     CAMERA_MODE_ROTATE
@@ -750,7 +750,7 @@ class Visualizer extends Component {
         const orthoNear = ORTHOGRAPHIC_NEAR;
         const orthoFar = ORTHOGRAPHIC_FAR;
 
-        const camera = new THREE.CombinedCamera(
+        const camera = new CombinedCamera(
             frustumWidth,
             frustumHeight,
             fov,
@@ -794,7 +794,7 @@ class Visualizer extends Component {
     }
 
     createTrackballControls(object, domElement) {
-        const controls = new THREE.TrackballControls(object, domElement);
+        const controls = new TrackballControls(object, domElement);
 
         controls.rotateSpeed = 1.0;
         controls.zoomSpeed = 1.2;
@@ -1159,7 +1159,7 @@ class Visualizer extends Component {
     }
 
     render() {
-        if (!Detector.webgl) {
+        if (!WebGL.isWebGLAvailable()) {
             return null;
         }
 

@@ -3,13 +3,13 @@ import classNames from 'classnames';
 import colornames from 'colornames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Detector from 'three/examples/js/Detector';
-import controller from 'app/lib/controller';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
-import Interpolate from 'app/components/Interpolate';
+import I18n from 'app/components/I18n';
 import Space from 'app/components/Space';
+import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import * as WebGL from 'app/lib/three/WebGL';
 import {
     // Grbl
     GRBL,
@@ -50,7 +50,7 @@ import {
     TINYG_MACHINE_STATE_PANIC,
     // Workflow
     WORKFLOW_STATE_IDLE
-} from '../../constants';
+} from 'app/constants';
 import styles from './index.styl';
 
 class PrimaryToolbar extends PureComponent {
@@ -224,7 +224,7 @@ class PrimaryToolbar extends PureComponent {
         const { state, actions } = this.props;
         const { disabled, gcode, projection, objects } = state;
         const canSendCommand = this.canSendCommand();
-        const canToggleOptions = Detector.webgl && !disabled;
+        const canToggleOptions = WebGL.isWebGLAvailable() && !disabled;
         const wcs = this.getWorkCoordinateSystem();
 
         return (
@@ -306,13 +306,13 @@ class PrimaryToolbar extends PureComponent {
                         <Button
                             btnSize="sm"
                             btnStyle="flat"
-                            title={(!Detector.webgl || disabled)
+                            title={(!WebGL.isWebGLAvailable() || disabled)
                                 ? i18n._('Enable 3D View')
                                 : i18n._('Disable 3D View')
                             }
                             onClick={actions.toggle3DView}
                         >
-                            {(!Detector.webgl || disabled)
+                            {(!WebGL.isWebGLAvailable() || disabled)
                                 ? <i className="fa fa-toggle-off" />
                                 : <i className="fa fa-toggle-on" />
                             }
@@ -324,14 +324,22 @@ class PrimaryToolbar extends PureComponent {
                                 style={{ color: '#222' }}
                                 header
                             >
-                                <Interpolate
-                                    format={'WebGL: {{status}}'}
-                                    replacement={{
-                                        status: Detector.webgl
-                                            ? (<span style={{ color: colornames('royalblue') }}>{i18n._('Enabled')}</span>)
-                                            : (<span style={{ color: colornames('crimson') }}>{i18n._('Disabled')}</span>)
-                                    }}
-                                />
+                                {WebGL.isWebGLAvailable() &&
+                                <I18n>
+                                    {'WebGL: '}
+                                    <span style={{ color: colornames('royalblue') }}>
+                                        Enabled
+                                    </span>
+                                </I18n>
+                                }
+                                {!WebGL.isWebGLAvailable() &&
+                                <I18n>
+                                    {'WebGL: '}
+                                    <span style={{ color: colornames('crimson') }}>
+                                        Disabled
+                                    </span>
+                                </I18n>
+                                }
                             </MenuItem>
                             <MenuItem divider />
                             <MenuItem header>
@@ -342,7 +350,7 @@ class PrimaryToolbar extends PureComponent {
                                 onSelect={actions.toPerspectiveProjection}
                             >
                                 <i className={classNames('fa', 'fa-fw', { 'fa-check': projection !== 'orthographic' })} />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Perspective Projection')}
                             </MenuItem>
                             <MenuItem
@@ -350,7 +358,7 @@ class PrimaryToolbar extends PureComponent {
                                 onSelect={actions.toOrthographicProjection}
                             >
                                 <i className={classNames('fa', 'fa-fw', { 'fa-check': projection === 'orthographic' })} />
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Orthographic Projection')}
                             </MenuItem>
                             <MenuItem divider />
@@ -362,7 +370,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {i18n._('Display G-code Filename')}
                             </MenuItem>
                             <MenuItem
@@ -373,7 +381,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {objects.limits.visible
                                     ? i18n._('Hide Limits')
                                     : i18n._('Show Limits')
@@ -387,7 +395,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {objects.coordinateSystem.visible
                                     ? i18n._('Hide Coordinate System')
                                     : i18n._('Show Coordinate System')
@@ -401,7 +409,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {objects.gridLineNumbers.visible
                                     ? i18n._('Hide Grid Line Numbers')
                                     : i18n._('Show Grid Line Numbers')
@@ -415,7 +423,7 @@ class PrimaryToolbar extends PureComponent {
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
-                                <Space width="4" />
+                                <Space width={8} />
                                 {objects.toolhead.visible
                                     ? i18n._('Hide Toolhead')
                                     : i18n._('Show Toolhead')
