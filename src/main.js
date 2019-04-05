@@ -5,7 +5,7 @@ import chalk from 'chalk';
 import mkdirp from 'mkdirp';
 import menuTemplate from './electron-app/menu-template';
 import WindowManager from './electron-app/WindowManager';
-import cnc from './cnc';
+import launchServer from './server-cli';
 import pkg from './package.json';
 
 // The selection menu
@@ -62,9 +62,8 @@ const main = () => {
 
     app.on('ready', async () => {
         try {
-            const data = await cnc();
-
-            const { address, port, routes } = { ...data };
+            const res = await launchServer();
+            const { address, port, routes } = { ...res };
             if (!(address && port)) {
                 console.error('Unable to start the server at ' + chalk.cyan(`http://${address}:${port}`));
                 return;

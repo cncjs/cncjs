@@ -85,7 +85,7 @@ if (normalizedArgv.length > 1) {
     program.parse(normalizedArgv);
 }
 
-const cnc = () => new Promise((resolve, reject) => {
+export default () => new Promise((resolve, reject) => {
     // Change working directory to 'server' before require('./server')
     process.chdir(path.resolve(__dirname, 'server'));
 
@@ -109,5 +109,3 @@ const cnc = () => new Promise((resolve, reject) => {
         resolve(data);
     });
 });
-
-export default cnc;
