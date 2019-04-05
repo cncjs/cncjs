@@ -529,5 +529,7 @@
     "User Accounts": "Account utente",
     "New Account": "Nuovo account",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Attivato</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Disattivato</1>"
 }

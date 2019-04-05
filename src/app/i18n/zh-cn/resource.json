@@ -529,5 +529,7 @@
     "User Accounts": "用户账号",
     "New Account": "新账号",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>已启用</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>已关闭</1>"
 }

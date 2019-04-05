@@ -529,5 +529,7 @@
     "User Accounts": "Учетные записи пользователей",
     "New Account": "Создать учетную запись",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Включено</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Отключено</1>"
 }

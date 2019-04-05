@@ -529,5 +529,7 @@
     "User Accounts": "Gebruikersaccounts",
     "New Account": "Nieuw account",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Aanzetten</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Uitzetten</1>"
 }

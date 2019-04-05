@@ -529,5 +529,7 @@
     "User Accounts": "Felhasználói fiókok",
     "New Account": "Új fiók",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Engedélyezve</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Tiltva</1>"
 }
