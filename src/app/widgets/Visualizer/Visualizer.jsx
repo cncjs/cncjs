@@ -126,10 +126,10 @@ class Visualizer extends Component {
             requestAnimationFrame(this.renderAnimationLoop);
 
             // Set to 360 rounds per minute (rpm)
-            this.rotateToolhead(360);
+            this.rotateToolHead(360);
         } else {
             // Stop rotation
-            this.rotateToolhead(0);
+            this.rotateToolHead(0);
         }
 
         // Update the scene
@@ -145,9 +145,9 @@ class Visualizer extends Component {
         this.camera = null;
         this.controls = null;
         this.viewport = null;
-        this.limits = null;
-        this.toolhead = null;
         this.cutter = null;
+        this.toolhead = null;
+        this.limits = null;
         this.visualizer = null;
     }
 
@@ -280,8 +280,8 @@ class Visualizer extends Component {
             }
 
             if (needUpdatePosition) {
-                this.updateToolHeadPosition();
                 this.updateCutterPosition();
+                this.updateToolHeadPosition();
                 this.updateLimitsPosition();
             }
         }
@@ -677,15 +677,14 @@ class Visualizer extends Component {
             this.group.add(metricGridLineNumbers);
         }
 
-        { // Limits
-            const limits = _get(this.machineProfile, 'limits');
-            const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
-            this.limits = this.createLimits(xmin, xmax, ymin, ymax, zmin, zmax);
-            this.limits.name = 'Limits';
-            this.limits.visible = objects.limits.visible;
-            this.group.add(this.limits);
-
-            this.updateLimitsPosition();
+        { // Cutter
+            this.cutter = new Cutter({
+                color: colornames('indianred'),
+                diameter: 2
+            });
+            this.cutter.name = 'Cutter';
+            this.cutter.visible = true;
+            this.group.add(this.cutter);
         }
 
         { // Tool Head
@@ -702,14 +701,15 @@ class Visualizer extends Component {
             });
         }
 
-        { // Cutter
-            this.cutter = new Cutter({
-                color: colornames('indianred'),
-                diameter: 2
-            });
-            this.cutter.name = 'Cutter';
-            this.cutter.visible = true;
-            this.group.add(this.cutter);
+        { // Limits
+            const limits = _get(this.machineProfile, 'limits');
+            const { xmin = 0, xmax = 0, ymin = 0, ymax = 0, zmin = 0, zmax = 0 } = { ...limits };
+            this.limits = this.createLimits(xmin, xmax, ymin, ymax, zmin, zmax);
+            this.limits.name = 'Limits';
+            this.limits.visible = objects.limits.visible;
+            this.group.add(this.limits);
+
+            this.updateLimitsPosition();
         }
 
         this.scene.add(this.group);
@@ -841,7 +841,7 @@ class Visualizer extends Component {
     // Rotates the tool head around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
     // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
-    rotateToolhead(rpm = 0, fps = 60) {
+    rotateToolHead(rpm = 0, fps = 60) {
         if (!this.toolhead) {
             return;
         }
@@ -849,21 +849,6 @@ class Visualizer extends Component {
         const delta = 1 / fps;
         const degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
         this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
-    }
-
-    // Update tool head position
-    updateToolHeadPosition() {
-        if (!this.toolhead) {
-            return;
-        }
-
-        const pivotPoint = this.pivotPoint.get();
-        const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
-        const x0 = wpox - pivotPoint.x;
-        const y0 = wpoy - pivotPoint.y;
-        const z0 = wpoz - pivotPoint.z;
-
-        this.toolhead.position.set(x0, y0, z0);
     }
 
     // Update cutter position
@@ -879,6 +864,21 @@ class Visualizer extends Component {
         const z0 = wpoz - pivotPoint.z;
 
         this.cutter.position.set(x0, y0, z0);
+    }
+
+    // Update tool head position
+    updateToolHeadPosition() {
+        if (!this.toolhead) {
+            return;
+        }
+
+        const pivotPoint = this.pivotPoint.get();
+        const { x: wpox, y: wpoy, z: wpoz } = this.workPosition;
+        const x0 = wpox - pivotPoint.x;
+        const y0 = wpoy - pivotPoint.y;
+        const z0 = wpoz - pivotPoint.z;
+
+        this.toolhead.position.set(x0, y0, z0);
     }
 
     // Update limits position
@@ -942,8 +942,8 @@ class Visualizer extends Component {
         this.pivotPoint.set(center.x, center.y, center.z);
 
         // Update position
-        this.updateToolHeadPosition();
         this.updateCutterPosition();
+        this.updateToolHeadPosition();
         this.updateLimitsPosition();
 
         if (this.viewport && dX > 0 && dY > 0) {
