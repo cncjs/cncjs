@@ -200,7 +200,7 @@ const defaultState = {
                 gridLineNumbers: {
                     visible: true
                 },
-                toolhead: {
+                cuttingTool: {
                     visible: true
                 }
             }

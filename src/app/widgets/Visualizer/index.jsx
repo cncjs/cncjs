@@ -510,13 +510,13 @@ class VisualizerWidget extends PureComponent {
                 }
             }));
         },
-        toggleToolheadVisibility: () => {
+        toggleCuttingToolVisibility: () => {
             this.setState((state) => ({
                 objects: {
                     ...state.objects,
-                    toolhead: {
-                        ...state.objects.toolhead,
-                        visible: !state.objects.toolhead.visible
+                    cuttingTool: {
+                        ...state.objects.cuttingTool,
+                        visible: !state.objects.cuttingTool.visible
                     }
                 }
             }));
@@ -855,8 +855,8 @@ class VisualizerWidget extends PureComponent {
         if (this.state.objects.gridLineNumbers.visible !== prevState.objects.gridLineNumbers.visible) {
             this.config.set('objects.gridLineNumbers.visible', this.state.objects.gridLineNumbers.visible);
         }
-        if (this.state.objects.toolhead.visible !== prevState.objects.toolhead.visible) {
-            this.config.set('objects.toolhead.visible', this.state.objects.toolhead.visible);
+        if (this.state.objects.cuttingTool.visible !== prevState.objects.cuttingTool.visible) {
+            this.config.set('objects.cuttingTool.visible', this.state.objects.cuttingTool.visible);
         }
     }
     getInitialState() {
@@ -926,8 +926,8 @@ class VisualizerWidget extends PureComponent {
                 gridLineNumbers: {
                     visible: this.config.get('objects.gridLineNumbers.visible', true)
                 },
-                toolhead: {
-                    visible: this.config.get('objects.toolhead.visible', true)
+                cuttingTool: {
+                    visible: this.config.get('objects.cuttingTool.visible', true)
                 }
             },
             cameraMode: this.config.get('cameraMode', CAMERA_MODE_PAN),
@@ -959,8 +959,8 @@ class VisualizerWidget extends PureComponent {
         if (disabled) {
             return false;
         }
-        // Return false when toolhead is not visible
-        if (!objects.toolhead.visible) {
+        // Return false when the cutting tool is not visible
+        if (!objects.cuttingTool.visible) {
             return false;
         }
         if (!includes([GRBL, MARLIN, SMOOTHIE, TINYG], controllerType)) {

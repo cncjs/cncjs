@@ -18,12 +18,11 @@ import TrackballControls from 'app/lib/three/TrackballControls';
 import * as WebGL from 'app/lib/three/WebGL';
 import log from 'app/lib/log';
 import store from 'app/store';
-import { getBoundingBox, loadTexture } from './helpers';
+import { getBoundingBox, loadSTL, loadTexture } from './helpers';
 import Viewport from './Viewport';
 import CoordinateAxes from './CoordinateAxes';
 import Cuboid from './Cuboid';
-import ToolHead from './ToolHead';
-import Cutter from './Cutter';
+import CuttingPointer from './CuttingPointer';
 import GridLine from './GridLine';
 import PivotPoint3 from './PivotPoint3';
 import TextSprite from './TextSprite';
@@ -125,11 +124,11 @@ class Visualizer extends Component {
             // Call the render() function up to 60 times per second (i.e. 60fps)
             requestAnimationFrame(this.renderAnimationLoop);
 
-            // Set to 360 rounds per minute (rpm)
-            this.rotateToolHead(360);
+            const rpm = 600;
+            this.rotateCuttingTool(rpm);
         } else {
-            // Stop rotation
-            this.rotateToolHead(0);
+            const rpm = 0;
+            this.rotateCuttingTool(rpm);
         }
 
         // Update the scene
@@ -145,8 +144,8 @@ class Visualizer extends Component {
         this.camera = null;
         this.controls = null;
         this.viewport = null;
-        this.cutter = null;
-        this.toolhead = null;
+        this.cuttingTool = null;
+        this.cuttingPointer = null;
         this.limits = null;
         this.visualizer = null;
     }
@@ -252,9 +251,10 @@ class Visualizer extends Component {
             needUpdateScene = true;
         }
 
-        // Whether to show tool head
-        if (this.toolhead && (this.toolhead.visible !== state.objects.toolhead.visible)) {
-            this.toolhead.visible = state.objects.toolhead.visible;
+        // Whether to show cutting tool or cutting pointer
+        if (this.cuttingTool && this.cuttingPointer && (this.cuttingTool.visible !== state.objects.cuttingTool.visible)) {
+            this.cuttingTool.visible = state.objects.cuttingTool.visible;
+            this.cuttingPointer.visible = !state.objects.cuttingTool.visible;
             needUpdateScene = true;
         }
 
@@ -280,8 +280,8 @@ class Visualizer extends Component {
             }
 
             if (needUpdatePosition) {
-                this.updateCutterPosition();
-                this.updateToolHeadPosition();
+                this.updateCuttingToolPosition();
+                this.updateCuttingPointerPosition();
                 this.updateLimitsPosition();
             }
         }
@@ -627,21 +627,22 @@ class Visualizer extends Component {
             this.camera.setFov(PERSPECTIVE_FOV);
         }
 
-        { // Lights
+        { // Directional Light
+            const color = 0xffffff;
+            const intensity = 1;
             let light;
 
-            // Directional Light
-            light = new THREE.DirectionalLight(0xffffff);
-            light.position.set(1, 1, 1);
+            light = new THREE.DirectionalLight(color, intensity);
+            light.position.set(-1, -1, 1);
             this.scene.add(light);
 
-            // Directional Light
-            light = new THREE.DirectionalLight(0x002288);
-            light.position.set(-1, -1, -1);
+            light = new THREE.DirectionalLight(color, intensity);
+            light.position.set(1, -1, 1);
             this.scene.add(light);
+        }
 
-            // Ambient Light
-            light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
+        { // Ambient Light
+            const light = new THREE.AmbientLight(colornames('gray 25')); // soft white light
             this.scene.add(light);
         }
 
@@ -677,28 +678,57 @@ class Visualizer extends Component {
             this.group.add(metricGridLineNumbers);
         }
 
-        { // Cutter
-            this.cutter = new Cutter({
-                color: colornames('indianred'),
-                diameter: 2
-            });
-            this.cutter.name = 'Cutter';
-            this.cutter.visible = true;
-            this.group.add(this.cutter);
-        }
+        { // Cutting Tool
+            Promise.all([
+                loadSTL('assets/models/stl/bit.stl').then(geometry => geometry),
+                loadTexture('assets/textures/brushed-steel-texture.jpg').then(texture => texture),
+            ]).then(result => {
+                const [geometry, texture] = result;
 
-        { // Tool Head
-            const color = colornames('silver');
-            const url = 'textures/brushed-steel-texture.jpg';
-            loadTexture(url, (err, texture) => {
-                this.toolhead = new ToolHead(color, texture);
-                this.toolhead.name = 'ToolHead';
-                this.toolhead.visible = objects.toolhead.visible;
-                this.group.add(this.toolhead);
+                // Rotate the geometry 90 degrees about the X axis.
+                geometry.rotateX(-Math.PI / 2);
+
+                // Scale the geometry data.
+                geometry.scale(0.5, 0.5, 0.5);
+
+                // Compute the bounding box.
+                geometry.computeBoundingBox();
+
+                // Set the desired position from the origin rather than its center.
+                const height = geometry.boundingBox.max.z - geometry.boundingBox.min.z;
+                geometry.translate(0, 0, (height / 2));
+
+                let material;
+                if (geometry.hasColors) {
+                    material = new THREE.MeshLambertMaterial({
+                        map: texture,
+                        opacity: 0.9,
+                        transparent: false
+                    });
+                }
+
+                const object = new THREE.Object3D();
+                object.add(new THREE.Mesh(geometry, material));
+
+                this.cuttingTool = object;
+                this.cuttingTool.name = 'CuttingTool';
+                this.cuttingTool.visible = objects.cuttingTool.visible;
+
+                this.group.add(this.cuttingTool);
 
                 // Update the scene
                 this.updateScene();
             });
+        }
+
+        { // Cutting Pointer
+            this.cuttingPointer = new CuttingPointer({
+                color: colornames('indianred'),
+                diameter: 2
+            });
+            this.cuttingPointer.name = 'CuttingPointer';
+            this.cuttingPointer.visible = !objects.cuttingTool.visible;
+            this.group.add(this.cuttingPointer);
         }
 
         { // Limits
@@ -838,22 +868,22 @@ class Visualizer extends Component {
         return controls;
     }
 
-    // Rotates the tool head around the z axis with a given rpm and an optional fps
+    // Rotates the cutting tool around the z axis with a given rpm and an optional fps
     // @param {number} rpm The rounds per minutes
     // @param {number} [fps] The frame rate (Defaults to 60 frames per second)
-    rotateToolHead(rpm = 0, fps = 60) {
-        if (!this.toolhead) {
+    rotateCuttingTool(rpm = 0, fps = 60) {
+        if (!this.cuttingTool) {
             return;
         }
 
         const delta = 1 / fps;
         const degrees = 360 * (delta * Math.PI / 180); // Rotates 360 degrees per second
-        this.toolhead.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
+        this.cuttingTool.rotateZ(-(rpm / 60 * degrees)); // rotate in clockwise direction
     }
 
-    // Update cutter position
-    updateCutterPosition() {
-        if (!this.cutter) {
+    // Update cutting tool position
+    updateCuttingToolPosition() {
+        if (!this.cuttingTool) {
             return;
         }
 
@@ -863,12 +893,12 @@ class Visualizer extends Component {
         const y0 = wpoy - pivotPoint.y;
         const z0 = wpoz - pivotPoint.z;
 
-        this.cutter.position.set(x0, y0, z0);
+        this.cuttingTool.position.set(x0, y0, z0);
     }
 
-    // Update tool head position
-    updateToolHeadPosition() {
-        if (!this.toolhead) {
+    // Update cutting pointer position
+    updateCuttingPointerPosition() {
+        if (!this.cuttingPointer) {
             return;
         }
 
@@ -878,7 +908,7 @@ class Visualizer extends Component {
         const y0 = wpoy - pivotPoint.y;
         const z0 = wpoz - pivotPoint.z;
 
-        this.toolhead.position.set(x0, y0, z0);
+        this.cuttingPointer.position.set(x0, y0, z0);
     }
 
     // Update limits position
@@ -942,8 +972,8 @@ class Visualizer extends Component {
         this.pivotPoint.set(center.x, center.y, center.z);
 
         // Update position
-        this.updateCutterPosition();
-        this.updateToolHeadPosition();
+        this.updateCuttingToolPosition();
+        this.updateCuttingPointerPosition();
         this.updateLimitsPosition();
 
         if (this.viewport && dX > 0 && dY > 0) {

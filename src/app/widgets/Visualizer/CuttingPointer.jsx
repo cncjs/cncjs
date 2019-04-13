@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 
-class Cutter {
+class CuttingPointer {
     constructor(options) {
         const {
             color = 0xffffff,
@@ -24,13 +24,11 @@ class Cutter {
             thetaLength
         );
         const material = new THREE.MeshBasicMaterial({
-            color: color,
-            opacity: 0.9,
-            transparent: true
+            color: color
         });
 
         return new THREE.Mesh(geometry, material);
     }
 }
 
-export default Cutter;
+export default CuttingPointer;
