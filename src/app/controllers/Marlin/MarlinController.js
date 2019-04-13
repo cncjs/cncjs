@@ -599,6 +599,9 @@ class MarlinController {
         this.runner.on('start', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
 
+            // M115: Get Firmware Version and Capabilities
+            this.command('gcode', 'M115');
+
             // Set ready flag to true when receiving a start message
             // Note: It might have chance of receiving garbage characters on startup due to electronic noise.
             this.ready = true;
@@ -879,13 +882,6 @@ class MarlinController {
         }
     }
     async initController() {
-        // Wait for the bootloader to complete before sending commands
-        await delay(1000);
-
-        // M115: Get Firmware Version and Capabilities
-        this.command('gcode', 'M115');
-
-        this.ready = true;
     }
     open(callback = noop) {
         // Assertion check
