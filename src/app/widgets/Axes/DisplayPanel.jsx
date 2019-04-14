@@ -1,5 +1,4 @@
 import chainedFunction from 'chained-function';
-import cx from 'classnames';
 import ensureArray from 'ensure-array';
 import includes from 'lodash/includes';
 import noop from 'lodash/noop';
@@ -1180,10 +1179,10 @@ class DisplayPanel extends PureComponent {
                 <table className="table-bordered">
                     <thead>
                         <tr>
-                            <th className="nowrap" title={i18n._('Axis')}>{i18n._('Axis')}</th>
-                            <th className="nowrap" title={i18n._('Machine Position')}>{i18n._('Machine Position')}</th>
-                            <th className="nowrap" title={i18n._('Work Position')}>{i18n._('Work Position')}</th>
-                            <th className={cx('nowrap', styles.action)}>
+                            <th title={i18n._('Axis')}>{i18n._('Axis')}</th>
+                            <th title={i18n._('Machine Position')}>{i18n._('Machine Position')}</th>
+                            <th title={i18n._('Work Position')}>{i18n._('Work Position')}</th>
+                            <th className={styles.action}>
                                 {this.renderActionDropdown()}
                             </th>
                         </tr>
