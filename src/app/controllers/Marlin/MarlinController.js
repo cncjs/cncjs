@@ -1069,7 +1069,7 @@ class MarlinController {
             },
             'stop': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:stop');
+                this.command('gcode:stop', ...args);
             },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
