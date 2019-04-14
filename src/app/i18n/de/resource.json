@@ -466,8 +466,6 @@
     "Show Coordinate System": "Koordinatensystem einblenden",
     "Hide Grid Line Numbers": "Koordinatensystem-Beschriftung einblenden",
     "Show Grid Line Numbers": "Koordinatensystem-Beschriftung ausblenden",
-    "Hide Toolhead": "Werkzeugspitze vestecken",
-    "Show Toolhead": "Werkzeugspitze zeigen",
     "File folder": "Dateiordner",
     "{{extname}} File": "{{extname}}-Datei",
     "File": "Datei",
@@ -531,5 +529,7 @@
     "Hide Limits": "",
     "Show Limits": "",
     "WebGL: <1>Enabled</1>": "WebGL: <1>Aktiviert</1>",
-    "WebGL: <1>Disabled</1>": "WebGL: <1>Deaktiviert</1>"
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Deaktiviert</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": ""
 }

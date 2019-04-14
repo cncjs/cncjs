@@ -466,8 +466,6 @@
     "Show Coordinate System": "显示坐标系",
     "Hide Grid Line Numbers": "隐藏刻度数值",
     "Show Grid Line Numbers": "显示刻度数值",
-    "Hide Toolhead": "隐藏刀架",
-    "Show Toolhead": "显示刀架",
     "File folder": "文件夹",
     "{{extname}} File": "{{extname}} 文件",
     "File": "文件",
@@ -531,5 +529,7 @@
     "Hide Limits": "",
     "Show Limits": "",
     "WebGL: <1>Enabled</1>": "WebGL: <1>已启用</1>",
-    "WebGL: <1>Disabled</1>": "WebGL: <1>已关闭</1>"
+    "WebGL: <1>Disabled</1>": "WebGL: <1>已关闭</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": ""
 }

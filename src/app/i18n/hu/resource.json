@@ -466,8 +466,6 @@
     "Show Coordinate System": "Koordináta-rendszer Megjelenítés ",
     "Hide Grid Line Numbers": "",
     "Show Grid Line Numbers": "",
-    "Hide Toolhead": "Szerám eltüntetése",
-    "Show Toolhead": "Szerszám megjelenítése",
     "File folder": "Fájl Mappa",
     "{{extname}} File": "{{extname}} Fájl",
     "File": "Fájl",
@@ -531,5 +529,7 @@
     "Hide Limits": "",
     "Show Limits": "",
     "WebGL: <1>Enabled</1>": "WebGL: <1>Engedélyezve</1>",
-    "WebGL: <1>Disabled</1>": "WebGL: <1>Tiltva</1>"
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Tiltva</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": ""
 }

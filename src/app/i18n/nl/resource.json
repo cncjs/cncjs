@@ -466,8 +466,6 @@
     "Show Coordinate System": "Toon Coördinatie Systeem",
     "Hide Grid Line Numbers": "Verberg Grid Lijn Nummers",
     "Show Grid Line Numbers": "Toon Grid Lijn Nummers",
-    "Hide Toolhead": "Verberg Gereedschapskop",
-    "Show Toolhead": "Toon Gereedschapskop",
     "File folder": "Bestandsmap",
     "{{extname}} File": "{{extname}} Bestand",
     "File": "Bestand",
@@ -531,5 +529,7 @@
     "Hide Limits": "",
     "Show Limits": "",
     "WebGL: <1>Enabled</1>": "WebGL: <1>Aanzetten</1>",
-    "WebGL: <1>Disabled</1>": "WebGL: <1>Uitzetten</1>"
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Uitzetten</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": ""
 }

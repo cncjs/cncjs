@@ -466,8 +466,6 @@
     "Show Coordinate System": "Koordinat Sistemini Göster",
     "Hide Grid Line Numbers": "Izgara Satırı Sayılarını Gizle",
     "Show Grid Line Numbers": "Izgara Satır Numaralarını Göster",
-    "Hide Toolhead": "Araç kafasını gizle",
-    "Show Toolhead": "Araç kafasını göster",
     "File folder": "Dosya klasörü",
     "{{extname}} File": "{{extname}} Dosya",
     "File": "Dosya",
@@ -531,5 +529,7 @@
     "Hide Limits": "",
     "Show Limits": "",
     "WebGL: <1>Enabled</1>": "WebGL: <1>Etkin</1>",
-    "WebGL: <1>Disabled</1>": "WebGL: <1>Engelle</1>"
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Engelle</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": ""
 }

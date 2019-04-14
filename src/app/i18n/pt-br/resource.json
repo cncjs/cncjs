@@ -466,8 +466,6 @@
     "Show Coordinate System": "Mostrar sistema de coordenadas",
     "Hide Grid Line Numbers": "Ocultar números de linha de grade",
     "Show Grid Line Numbers": "Mostrar números de linha de grade",
-    "Hide Toolhead": "Ocultar a cabeça da ferramenta",
-    "Show Toolhead": "Mostrar a cabeça da ferramenta",
     "File folder": "Pasta de arquivos",
     "{{extname}} File": "Arquivo {{extname}}",
     "File": "Arquivo",
@@ -531,5 +529,7 @@
     "Hide Limits": "",
     "Show Limits": "",
     "WebGL: <1>Enabled</1>": "WebGL: <1>Ativado</1>",
-    "WebGL: <1>Disabled</1>": "WebGL: <1>Desativado</1>"
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Desativado</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": ""
 }
