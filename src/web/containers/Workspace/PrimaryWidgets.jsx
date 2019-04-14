@@ -214,9 +214,6 @@ class PrimaryWidgets extends Component {
         return (
             <Sortable
                 className={classNames(className, styles.widgets)}
-                style={{
-                    overflowX: 'hidden'
-                }}
                 options={{
                     animation: 150,
                     delay: 0, // Touch and hold delay
