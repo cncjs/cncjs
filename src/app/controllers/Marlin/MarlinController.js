@@ -10,7 +10,6 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
-import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
@@ -843,8 +842,6 @@ class MarlinController {
         if (this.workflow) {
             this.workflow = null;
         }
-    }
-    async initController() {
     }
     get status() {
         return {
