@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cx from 'classnames';
 import color from 'cli-color';
 import trimEnd from 'lodash/trimEnd';
 import PerfectScrollbar from 'perfect-scrollbar';
@@ -361,7 +361,7 @@ class TerminalWrapper extends PureComponent {
                 ref={node => {
                     this.terminalContainer = node;
                 }}
-                className={classNames(className, styles.terminalContainer)}
+                className={cx(className, styles.terminalContainer)}
                 style={style}
             />
         );
