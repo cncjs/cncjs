@@ -917,9 +917,6 @@ class MarlinController {
                 // Unload G-code
                 this.command('unload');
             }
-
-            // Initialize controller
-            this.initController();
         });
     }
     close(callback) {
