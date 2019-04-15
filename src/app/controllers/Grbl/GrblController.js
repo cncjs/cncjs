@@ -10,6 +10,7 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
+import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
@@ -1054,28 +1055,31 @@ class GrblController {
             },
             'stop': () => {
                 log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:stop');
+                this.command('gcode:stop', ...args);
             },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'gcode:stop': () => {
-                const { force = false } = { ...args[0] };
-
+            'gcode:stop': async () => {
                 this.event.trigger('gcode:stop');
 
                 this.workflow.stop();
 
+                const [options] = args;
+                const { force = false } = { ...options };
                 if (force) {
-                    const activeState = _.get(this.state, 'status.activeState', '');
+                    let activeState;
+
+                    activeState = _.get(this.state, 'status.activeState', '');
                     if (activeState === GRBL_ACTIVE_STATE_RUN) {
                         this.write('!'); // hold
                     }
-                    setTimeout(() => {
-                        const activeState = _.get(this.state, 'status.activeState', '');
-                        if (activeState === GRBL_ACTIVE_STATE_HOLD) {
-                            this.write('\x18'); // ctrl-x
-                        }
-                    }, 500); // delay 500ms
+
+                    await delay(500); // delay 500ms
+
+                    activeState = _.get(this.state, 'status.activeState', '');
+                    if (activeState === GRBL_ACTIVE_STATE_HOLD) {
+                        this.write('\x18'); // ^x
+                    }
                 }
             },
             'pause': () => {
@@ -1086,7 +1090,6 @@ class GrblController {
                 this.event.trigger('gcode:pause');
 
                 this.workflow.pause();
-
                 this.write('!');
             },
             'resume': () => {
@@ -1097,7 +1100,6 @@ class GrblController {
                 this.event.trigger('gcode:resume');
 
                 this.write('~');
-
                 this.workflow.resume();
             },
             'feeder:feed': () => {
