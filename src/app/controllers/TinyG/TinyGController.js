@@ -1107,15 +1107,11 @@ class TinyGController {
                 if (force) {
                     const firmwareBuild = ensureNumber(_.get(this.settings, 'fb'));
 
-                    // https://github.com/synthetos/g2/releases/tag/101.02
-                    // The job kill request is supported since firmware build 101 `{fb:101.xx}`
                     if (firmwareBuild >= 101) {
-                        // https://github.com/synthetos/g2/wiki/Feedhold,-Resume,-and-Other-Simple-Commands#job-kill
-                        // Send a job kill request (^d) to abandon the job immediately. The following actions occur:
-                        // * Machine is restored to the state of the primary planner, including current position of tool
-                        // * Coolant and spindle are stopped
-                        // * Runs an M30 (PROGRAM_END), which restores Gcode defaults
-                        // * An exception report and status report are sent
+                        // https://github.com/synthetos/g2/releases/tag/101.02
+                        // * Added explicit Job Kill ^d - has the effect of an M30 (program end)
+                        this.writeln('\x04'); // kill job (^d)
+                    } else if (firmwareBuild >= 100) {
                         this.writeln('\x04'); // kill job (^d)
                         this.writeln('M30'); // end of program
                     } else {
