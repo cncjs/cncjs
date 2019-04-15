@@ -13,6 +13,7 @@ import Workflow, {
 } from '../../lib/Workflow';
 import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
+import { ensureNumber } from '../../lib/ensure-type';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
 import translateExpression from '../../lib/translate-expression';
@@ -1084,29 +1085,42 @@ class TinyGController {
 
                 this.workflow.stop();
 
-                this.writeln('!%'); // feedhold and queue flush
+                const [options] = args;
+                const { force = false } = { ...options };
+                if (force) {
+                    const firmwareBuild = ensureNumber(_.get(this.settings, 'fb'));
 
-                setTimeout(() => {
-                    this.writeln('{clear:null}');
-                    this.writeln('{"qr":""}'); // queue report
-                }, 250); // delay 250ms
+                    if (firmwareBuild >= 101) {
+                        // https://github.com/synthetos/g2/releases/tag/101.02
+                        // * Added explicit Job Kill ^d - has the effect of an M30 (program end)
+                        this.writeln('\x04'); // kill job (^d)
+                    } else if (firmwareBuild >= 100) {
+                        this.writeln('\x04'); // kill job (^d)
+                        this.writeln('M30'); // end of program
+                    } else {
+                        // https://github.com/synthetos/g2/wiki/Feedhold,-Resume,-and-Other-Simple-Commands#jogging-using-feedhold-and-queue-flush
+                        // Send a ! to stop movement immediately.
+                        // Send a % to flush remaining moves from planner buffer.
+                        this.writeln('!'); // feedhold
+                        this.writeln('%'); // queue flush
+                        this.writeln('M30'); // end of program
+                    }
+                }
+
+                this.writeln('{"qr":""}'); // queue report
             },
             'sender:pause': () => {
                 this.event.trigger('sender:pause');
 
                 this.workflow.pause();
-
                 this.writeln('!'); // feedhold
-
                 this.writeln('{"qr":""}'); // queue report
             },
             'sender:resume': () => {
                 this.event.trigger('sender:resume');
 
                 this.writeln('~'); // cycle start
-
                 this.workflow.resume();
-
                 this.writeln('{"qr":""}'); // queue report
             },
             'feeder:start': () => {
@@ -1144,14 +1158,12 @@ class TinyGController {
                 // Not supported
             },
             'unlock': () => {
-                this.writeln('{clear:null}');
+                this.writeln('{clear:null}'); // alarm clear
             },
             'reset': () => {
                 this.workflow.stop();
-
                 this.feeder.reset();
-
-                this.write('\x18'); // ^x
+                this.write('\x18'); // reset board (^x)
             },
             // Feed Overrides
             // @param {number} value A percentage value between 5 and 200. A value of zero will reset to 100%.

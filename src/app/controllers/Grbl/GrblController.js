@@ -11,6 +11,7 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
+import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
@@ -1046,38 +1047,39 @@ class GrblController {
             },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'sender:stop': () => {
-                const { force = false } = { ...args[0] };
-
+            'sender:stop': async () => {
                 this.event.trigger('sender:stop');
 
                 this.workflow.stop();
 
+                const [options] = args;
+                const { force = false } = { ...options };
                 if (force) {
-                    const machineState = _.get(this.state, 'machineState', '');
+                    let machineState;
+
+                    machineState = _.get(this.state, 'machineState', '');
                     if (machineState === GRBL_MACHINE_STATE_RUN) {
                         this.write('!'); // hold
                     }
-                    setTimeout(() => {
-                        const machineState = _.get(this.state, 'machineState', '');
-                        if (machineState === GRBL_MACHINE_STATE_HOLD) {
-                            this.write('\x18'); // ctrl-x
-                        }
-                    }, 500); // delay 500ms
+
+                    await delay(500); // delay 500ms
+
+                    machineState = _.get(this.state, 'machineState', '');
+                    if (machineState === GRBL_MACHINE_STATE_HOLD) {
+                        this.write('\x18'); // ^x
+                    }
                 }
             },
             'sender:pause': () => {
                 this.event.trigger('sender:pause');
 
                 this.workflow.pause();
-
                 this.write('!');
             },
             'sender:resume': () => {
                 this.event.trigger('sender:resume');
 
                 this.write('~');
-
                 this.workflow.resume();
             },
             'feeder:start': () => {
