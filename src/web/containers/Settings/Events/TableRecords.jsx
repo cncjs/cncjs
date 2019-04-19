@@ -20,9 +20,10 @@ import {
 import styles from './index.styl';
 
 const mapEventToTextString = (event) => ({
-    'startup': i18n._('Startup'),
-    'port:open': i18n._('Open a serial port'),
-    'port:close': i18n._('Close a serial port'),
+    'startup': i18n._('Startup (System only)'),
+    'port:open': i18n._('Open a serial port (System only)'),
+    'port:close': i18n._('Close a serial port (System only)'),
+    'controller:ready': i18n._('Ready to start'),
     'gcode:load': i18n._('G-code: Load'),
     'gcode:unload': i18n._('G-code: Unload'),
     'gcode:start': i18n._('G-code: Start'),

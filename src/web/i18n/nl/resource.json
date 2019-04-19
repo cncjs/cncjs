@@ -68,8 +68,8 @@
     "Events": "Evenementen",
     "Event": "Evenement",
     "Choose an event": "Kies een evenement",
-    "Startup (System only)": "Opstarten (Alleen systeem",
-    "Open a serial port (System only)": "Open een seriële poort (Alleen systeem",
+    "Startup (System only)": "Opstarten (Alleen systeem)",
+    "Open a serial port (System only)": "Open een seriële poort (Alleen systeem)",
     "Close a serial port (System only)": "Sluit een seriële poort (Alleen systeem)",
     "G-code: Load": "G-code: Laad",
     "G-code: Unload": "G-code: Ontladen",
@@ -84,9 +84,6 @@
     "Choose an trigger": "Kies een trigger",
     "System": "Systeem",
     "G-code": "G-code",
-    "Startup": "Opstarten",
-    "Open a serial port": "Open een seriële poort",
-    "Close a serial port": "Sluit een seriële poort",
     "Automatically check for updates": "Automatisch controleren op updates",
     "Language": "Taal",
     "General": "Algemeel",
@@ -529,5 +526,6 @@
     "User Accounts": "Gebruikersaccounts",
     "New Account": "Nieuw account",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

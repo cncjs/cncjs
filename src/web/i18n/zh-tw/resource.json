@@ -84,9 +84,6 @@
     "Choose an trigger": "選擇一個觸發",
     "System": "系統",
     "G-code": "G-code",
-    "Startup": "",
-    "Open a serial port": "",
-    "Close a serial port": "",
     "Automatically check for updates": "自動檢查更新",
     "Language": "語言",
     "General": "一般",
@@ -529,5 +526,6 @@
     "User Accounts": "使用者帳號",
     "New Account": "新增帳號",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

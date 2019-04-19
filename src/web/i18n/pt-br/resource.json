@@ -84,9 +84,6 @@
     "Choose an trigger": "Escolha um gatilho",
     "System": "Sistema",
     "G-code": "G-code",
-    "Startup": "Começar",
-    "Open a serial port": "Abrir uma porta serial",
-    "Close a serial port": "Fechar uma porta serial",
     "Automatically check for updates": "Verificar automaticamente as atualizações",
     "Language": "Idioma",
     "General": "Geral",
@@ -529,5 +526,6 @@
     "User Accounts": "Contas de Usuário",
     "New Account": "Nova Conta",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

@@ -84,9 +84,6 @@
     "Choose an trigger": "Wähle Auslöser",
     "System": "System",
     "G-code": "G-Code",
-    "Startup": "Hochfahren",
-    "Open a serial port": "Öffne seriellen Port",
-    "Close a serial port": "Öffne seriellen Port",
     "Automatically check for updates": "Automatisch nach Updates suchen",
     "Language": "Sprache",
     "General": "Allgemein",
@@ -529,5 +526,6 @@
     "User Accounts": "Benutzerkonten",
     "New Account": "Neues Konto",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

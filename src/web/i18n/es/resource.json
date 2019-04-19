@@ -70,7 +70,7 @@
     "Choose an event": "Elija un evento",
     "Startup (System only)": "Iniciar (Solo sistema)",
     "Open a serial port (System only)": "Abrir puerto serie (Solo sistema)",
-    "Close a serial port (System only)": "Cerrar puerto serie(Solo sistema)",
+    "Close a serial port (System only)": "Cerrar puerto serie (Solo sistema)",
     "G-code: Load": "Cargar G-code",
     "G-code: Unload": "Subir G-code",
     "G-code: Start": "Inciar G-code",
@@ -84,9 +84,6 @@
     "Choose an trigger": "Elegir disparador",
     "System": "Systema",
     "G-code": "G-code",
-    "Startup": "Puesta en marcha",
-    "Open a serial port": "Abrir puerto serie",
-    "Close a serial port": "Cerrar puerto serie",
     "Automatically check for updates": "Comprobar actualizaciones automaticamente",
     "Language": "Idioma",
     "General": "General",
@@ -529,5 +526,6 @@
     "User Accounts": "Cuentas de usuario",
     "New Account": "Nueva cuenta",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }
