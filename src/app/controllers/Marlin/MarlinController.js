@@ -132,12 +132,12 @@ class MarlinController {
                 this.connection.write('M114\n', {
                     source: WRITE_SOURCE_SERVER
                 });
-                this.lastQueryTime = now;
+                this.query.lastQueryTime = now;
             } else if (this.query.type === QUERY_TYPE_TEMPERATURE) {
                 this.connection.write('M105\n', {
                     source: WRITE_SOURCE_SERVER
                 });
-                this.lastQueryTime = now;
+                this.query.lastQueryTime = now;
             } else {
                 log.error('Unsupported query type:', this.query.type);
             }
