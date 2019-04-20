@@ -19,6 +19,7 @@ import app from './app';
 import cncengine from './services/cncengine';
 import monitor from './services/monitor';
 import config from './services/configstore';
+import { ensureString } from './lib/ensure-type';
 import logger, { setLevel } from './lib/logger';
 import urljoin from './lib/urljoin';
 
@@ -100,15 +101,19 @@ const createServer = (options, callback) => {
     }
 
     const { port = 0, host, backlog } = options;
+    const mountPoints = [
+        ...ensureArray(options.mountPoints),
+        ...ensureArray(config.get('mountPoints'))
+    ];
     const routes = [];
 
-    ensureArray(options.mountPoints).forEach(mount => {
+    mountPoints.forEach(mount => {
         if (!mount || !mount.route || mount.route === '/') {
             log.error(`Must specify a valid route path ${JSON.stringify(mount.route)}.`);
             return;
         }
 
-        if (mount.target.match(/^(http|https):\/\//i)) {
+        if (ensureString(mount.target).match(/^(http|https):\/\//i)) {
             log.info(`Starting a proxy server to proxy all requests starting with ${chalk.yellow(mount.route)} to ${chalk.yellow(mount.target)}`);
 
             routes.push({
@@ -192,7 +197,7 @@ const createServer = (options, callback) => {
             });
         } else {
             // expandTilde('~') => '/Users/<userhome>'
-            const directory = expandTilde(mount.target || '').trim();
+            const directory = expandTilde(ensureString(mount.target)).trim();
 
             log.info(`Mounting a directory ${chalk.yellow(JSON.stringify(directory))} to serve requests starting with ${chalk.yellow(mount.route)}`);
 

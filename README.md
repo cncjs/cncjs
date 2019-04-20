@@ -165,6 +165,16 @@ pi@rpi3$ cncjs -h
 Instead of passing command line options for `--watch-directory`, `--access-token-lifetime`, `--allow-remote-access`, and `--controller`, you can create a `~/.cncrc` file that contains the following configuration in JSON format:
 ```json
 {
+    "mountPoints": [
+        {
+            "route": "/pendant",
+            "target": "/home/pi/tinyweb"
+        },
+        {
+            "route": "/widget",
+            "target": "https://cncjs.github.io/cncjs-widget-boilerplate/v1/"
+        }
+    ],
     "watchDirectory": "/path/to/dir",
     "accessTokenLifetime": "30d",
     "allowRemoteAccess": false,
@@ -206,6 +216,12 @@ See https://github.com/cncjs/cncjs/issues/242#issuecomment-352294549 for a detai
      }
   ],
   "baudrates": [115200, 250000],
+  "mountPoints": [
+    {
+      "route": "/widget",
+      "target": "https://cncjs.github.io/cncjs-widget-boilerplate/v1/"
+    }
+  ],
   "watchDirectory": "/path/to/dir",
   "accessTokenLifetime": "30d",
   "allowRemoteAccess": false,
