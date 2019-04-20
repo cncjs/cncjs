@@ -84,9 +84,6 @@
     "Choose an trigger": "Válasz egy kiváltót",
     "System": "Rendszer",
     "G-code": "G-code",
-    "Startup": "",
-    "Open a serial port": "",
-    "Close a serial port": "",
     "Automatically check for updates": "Frissítések automatikus ellenőrzése",
     "Language": "Nyelv",
     "General": "Álltalános",
@@ -529,5 +526,6 @@
     "User Accounts": "Felhasználói fiókok",
     "New Account": "Új fiók",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

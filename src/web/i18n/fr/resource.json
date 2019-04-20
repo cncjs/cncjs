@@ -84,9 +84,6 @@
     "Choose an trigger": "",
     "System": "",
     "G-code": "G-code",
-    "Startup": "",
-    "Open a serial port": "",
-    "Close a serial port": "",
     "Automatically check for updates": "",
     "Language": "Langue",
     "General": "Généralités",
@@ -529,5 +526,6 @@
     "User Accounts": "Comptes utilisateurs",
     "New Account": "Nouveau compte",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

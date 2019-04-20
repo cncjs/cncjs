@@ -84,9 +84,6 @@
     "Choose an trigger": "トリガーを選択",
     "System": "システム",
     "G-code": "Gコード",
-    "Startup": "スタートアップ",
-    "Open a serial port": "シリアルポートを開く",
-    "Close a serial port": "シリアルポートを閉じる",
     "Automatically check for updates": "アップデートを自動で確認",
     "Language": "言語",
     "General": "一般",
@@ -529,5 +526,6 @@
     "User Accounts": "ユーザアカウント",
     "New Account": "新規アカウント",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

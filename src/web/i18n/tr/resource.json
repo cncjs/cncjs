@@ -84,9 +84,6 @@
     "Choose an trigger": "Tetikleyici seçin",
     "System": "Sistem",
     "G-code": "G-kodu",
-    "Startup": "Başla",
-    "Open a serial port": "Bir seri bağlantı noktası açın",
-    "Close a serial port": "Bir seri bağlantı noktasını kapat",
     "Automatically check for updates": "Güncellemeleri otomatik olarak kontrol et",
     "Language": "Dil",
     "General": "Genel",
@@ -529,5 +526,6 @@
     "User Accounts": "Kullanıcı Hesapları",
     "New Account": "Yeni Hesap",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

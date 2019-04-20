@@ -84,9 +84,6 @@
     "Choose an trigger": "",
     "System": "",
     "G-code": "G-код",
-    "Startup": "",
-    "Open a serial port": "",
-    "Close a serial port": "",
     "Automatically check for updates": "",
     "Language": "Язык",
     "General": "Общие",
@@ -529,5 +526,6 @@
     "User Accounts": "Учетные записи пользователей",
     "New Account": "Создать учетную запись",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }

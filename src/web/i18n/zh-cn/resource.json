@@ -68,7 +68,7 @@
     "Events": "事件",
     "Event": "事件",
     "Choose an event": "选择事件",
-    "Startup (System only)": "",
+    "Startup (System only)": "启动(System only)",
     "Open a serial port (System only)": "打开串口(System only)",
     "Close a serial port (System only)": "关闭串口(System only)",
     "G-code: Load": "加载G-code",
@@ -84,9 +84,6 @@
     "Choose an trigger": "选择触发器",
     "System": "系统",
     "G-code": "G-code",
-    "Startup": "启动",
-    "Open a serial port": "打开串口",
-    "Close a serial port": "关闭串口",
     "Automatically check for updates": "自动检测更新",
     "Language": "语言",
     "General": "常规",
@@ -529,5 +526,6 @@
     "User Accounts": "用户账号",
     "New Account": "新账号",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "Ready to start": ""
 }
