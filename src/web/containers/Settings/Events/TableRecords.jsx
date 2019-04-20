@@ -23,6 +23,7 @@ const mapEventToTextString = (event) => ({
     'startup': i18n._('Startup'),
     'connection:open': i18n._('Open'),
     'connection:close': i18n._('Close'),
+    'controller:ready': i18n._('Ready to start'),
     'sender:load': i18n._('G-code: Load'),
     'sender:unload': i18n._('G-code: Unload'),
     'sender:start': i18n._('G-code: Start'),

@@ -129,6 +129,7 @@ class UpdateRecord extends PureComponent {
                                     <option value="startup">{i18n._('Startup (System only)')}</option>
                                     <option value="connection:open">{i18n._('Open (System only)')}</option>
                                     <option value="connection:close">{i18n._('Close (System only)')}</option>
+                                    <option value="controller:ready">{i18n._('Ready to start')}</option>
                                     <option value="sender:load">{i18n._('G-code: Load')}</option>
                                     <option value="sender:unload">{i18n._('G-code: Unload')}</option>
                                     <option value="sender:start">{i18n._('G-code: Start')}</option>

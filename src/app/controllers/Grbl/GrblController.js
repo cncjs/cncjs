@@ -581,22 +581,19 @@ class GrblController {
         this.runner.on('startup', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
 
-            // Check the initialized flag
-            if (!this.initialized) {
-                this.initialized = true;
-
-                // https://github.com/cncjs/cncjs/issues/206
-                // $13=0 (report in mm)
-                // $13=1 (report in inches)
-                this.writeln('$$');
-            }
-
-            // Set the ready flag to true when a startup message has arrived
-            this.ready = true;
-
             // The startup message always prints upon startup, after a reset, or at program end.
             // Setting the initial state when Grbl has completed re-initializing all systems.
             this.clearActionValues();
+
+            // Set ready flag to true when a startup message has arrived
+            this.ready = true;
+
+            if (!this.initialized) {
+                this.initialized = true;
+
+                // Initialize controller
+                this.initController();
+            }
         });
 
         this.runner.on('others', (res) => {
@@ -710,7 +707,6 @@ class GrblController {
 
             // Check the ready flag
             if (!(this.ready)) {
-                // Wait for the bootloader to complete before sending commands
                 return;
             }
 
@@ -740,6 +736,15 @@ class GrblController {
                 }
             }
         }, 250);
+    }
+    async initController() {
+        // https://github.com/cncjs/cncjs/issues/206
+        // $13=0 (report in mm)
+        // $13=1 (report in inches)
+        this.writeln('$$');
+
+        await delay(50);
+        this.event.trigger('controller:ready');
     }
     populateContext(context) {
         // Machine position

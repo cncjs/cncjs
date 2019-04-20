@@ -11,6 +11,7 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
+import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
@@ -85,6 +86,7 @@ class MarlinController {
     // Marlin
     controller = null;
     ready = false;
+    initialized = false;
     state = {};
     settings = {};
     feedOverride = 100;
@@ -598,12 +600,16 @@ class MarlinController {
         this.runner.on('start', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
 
-            // M115: Get Firmware Version and Capabilities
-            this.command('gcode', 'M115');
-
-            // Set ready flag to true when receiving a start message
-            // Note: It might have chance of receiving garbage characters on startup due to electronic noise.
+            // Set ready flag to true when a start message has arrived
+            // It might have chance of receiving garbage characters on startup due to electronic noise.
             this.ready = true;
+
+            if (!this.initialized) {
+                this.initialized = true;
+
+                // Initialize controller
+                this.initController();
+            }
         });
 
         this.runner.on('echo', (res) => {
@@ -752,7 +758,6 @@ class MarlinController {
 
             // Check the ready flag
             if (!(this.ready)) {
-                // Wait for the bootloader to complete before sending commands
                 return;
             }
 
@@ -792,6 +797,13 @@ class MarlinController {
                 }
             }
         }, 250);
+    }
+    async initController() {
+        // M115: Get firmware version and capabilities
+        this.command('gcode', 'M115');
+
+        await delay(50);
+        this.event.trigger('controller:ready');
     }
     populateContext(context) {
         // Work position

@@ -652,7 +652,6 @@ class TinyGController {
 
             // Check the ready flag
             if (!(this.ready)) {
-                // Wait for the bootloader to complete before sending commands
                 return;
             }
 
@@ -701,9 +700,6 @@ class TinyGController {
             }
             return json.replace(/"/g, '').replace(/true/g, 't');
         };
-
-        // Wait for the bootloader to complete before sending commands
-        await delay(1000);
 
         // Enable JSON mode
         // 0=text mode, 1=JSON mode
@@ -767,7 +763,8 @@ class TinyGController {
         // Request status report
         send('{sr:n}');
 
-        this.ready = true;
+        await delay(50);
+        this.event.trigger('controller:ready');
     }
     populateContext(context) {
         // Machine position
@@ -897,7 +894,7 @@ class TinyGController {
         this.connection.on('close', this.connectionEventListener.close);
         this.connection.on('error', this.connectionEventListener.error);
 
-        this.connection.open(err => {
+        this.connection.open(async (err) => {
             if (err) {
                 log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
                 log.error(err);
@@ -926,6 +923,12 @@ class TinyGController {
                 // Unload G-code
                 this.command('unload');
             }
+
+            // Wait for the bootloader to complete before sending commands
+            await delay(1000);
+
+            // Set ready flag to true
+            this.ready = true;
 
             // Initialize controller
             this.initController();

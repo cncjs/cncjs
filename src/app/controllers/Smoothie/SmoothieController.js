@@ -613,7 +613,6 @@ class SmoothieController {
 
             // Check the ready flag
             if (!(this.ready)) {
-                // Wait for the bootloader to complete before sending commands
                 return;
             }
 
@@ -764,13 +763,11 @@ class SmoothieController {
         }
     }
     async initController() {
-        // Wait for the bootloader to complete before sending commands
-        await delay(1000);
-
         // Check if it is Smoothieware
         this.command('gcode', 'version');
 
-        this.ready = true;
+        await delay(50);
+        this.event.trigger('controller:ready');
     }
     open(callback = noop) {
         // Assertion check
@@ -783,7 +780,7 @@ class SmoothieController {
         this.connection.on('close', this.connectionEventListener.close);
         this.connection.on('error', this.connectionEventListener.error);
 
-        this.connection.open(err => {
+        this.connection.open(async (err) => {
             if (err) {
                 log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
                 log.error(err);
@@ -812,6 +809,12 @@ class SmoothieController {
                 // Unload G-code
                 this.command('unload');
             }
+
+            // Wait for the bootloader to complete before sending commands
+            await delay(1000);
+
+            // Set ready flag to true
+            this.ready = true;
 
             // Initialize controller
             this.initController();
