@@ -22,11 +22,11 @@
   "commands": [
     {
       "title": "Update (root user)",
-      "commands": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cnc"
+      "commands": "sudo npm install -g cncjs@latest --unsafe-perm; pkill -a -f cncjs"
     },
     {
       "title": "Update (non-root user)",
-      "commands": "npm install -g cncjs@latest; pkill -a -f cnc"
+      "commands": "npm install -g cncjs@latest; pkill -a -f cncjs"
     },
     {
       "title": "Reboot",
