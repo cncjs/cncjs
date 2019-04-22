@@ -72,9 +72,8 @@ For a more complete introduction, see the [Introduction](https://github.com/cncj
  Version | Supported Level
 :------- |:---------------
  4       | Dropped support
- 6       | <b>Recommended for production use</b>
- 8       | <b>Recommended for production use</b>
- 9       | Supported
+ 6       | Supported
+ 8       | Supported
  10      | Supported
 
 ## Getting Started
@@ -98,8 +97,8 @@ export NVM_DIR="$HOME/.nvm"
 
 Once installed, you can select Node.js versions with:
 ```
-nvm install 6
-nvm use 6
+nvm install 10
+nvm use 10
 ```
 
 It's also recommended that you upgrade npm to the latest version. To upgrade, run:
