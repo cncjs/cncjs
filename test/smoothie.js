@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import SmoothieRunner from '../src/app/controllers/Smoothie/SmoothieRunner';
+import SmoothieRunner from '../src/server/controllers/Smoothie/SmoothieRunner';
 
 // $10 - Status report mask:binary
 // Report Type      | Value

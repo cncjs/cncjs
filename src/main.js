@@ -1,11 +1,11 @@
-import 'babel-polyfill';
+import '@babel/polyfill';
 import { app, Menu } from 'electron';
-import ElectronConfig from 'electron-config';
+import Store from 'electron-store';
 import chalk from 'chalk';
 import mkdirp from 'mkdirp';
 import menuTemplate from './electron-app/menu-template';
 import WindowManager from './electron-app/WindowManager';
-import cnc from './cnc';
+import launchServer from './server-cli';
 import pkg from './package.json';
 
 // The selection menu
@@ -30,8 +30,16 @@ const inputMenu = Menu.buildFromTemplate([
 let windowManager = null;
 
 const main = () => {
-    // https://github.com/electron/electron/blob/master/docs/api/app.md#appmakesingleinstancecallback
-    const shouldQuit = app.makeSingleInstance((commandLine, workingDirectory) => {
+    // https://github.com/electron/electron/blob/master/docs/api/app.md#apprequestsingleinstancelock
+    const gotSingleInstanceLock = app.requestSingleInstanceLock();
+    const shouldQuitImmediately = !gotSingleInstanceLock;
+
+    if (shouldQuitImmediately) {
+        app.quit();
+        return;
+    }
+
+    app.on('second-instance', (event, commandLine, workingDirectory) => {
         // Someone tried to run a second instance, we should focus our window.
         if (!windowManager) {
             return;
@@ -46,12 +54,7 @@ const main = () => {
         }
     });
 
-    if (shouldQuit) {
-        app.quit();
-        return;
-    }
-
-    const config = new ElectronConfig();
+    const store = new Store();
 
     // Create the user data directory if it does not exist
     const userData = app.getPath('userData');
@@ -59,9 +62,8 @@ const main = () => {
 
     app.on('ready', async () => {
         try {
-            const data = await cnc();
-
-            const { address, port, routes } = { ...data };
+            const res = await launchServer();
+            const { address, port, routes } = { ...res };
             if (!(address && port)) {
                 console.error('Unable to start the server at ' + chalk.cyan(`http://${address}:${port}`));
                 return;
@@ -81,7 +83,7 @@ const main = () => {
             const bounds = {
                 width: 1280, // Defaults to 1280
                 height: 768, // Defaults to 768
-                ...config.get('bounds')
+                ...store.get('bounds')
             };
             const options = {
                 ...bounds,
@@ -91,7 +93,7 @@ const main = () => {
 
             // Save window size and position
             window.on('close', () => {
-                config.set('bounds', window.getBounds());
+                store.set('bounds', window.getBounds());
             });
 
             // https://github.com/electron/electron/issues/4068#issuecomment-274159726

@@ -5,5 +5,10 @@ rm -rf output/*
 
 pushd src
 cp -af package.json ../output/
-babel -d ../output *.js electron-app/**/*.js
+cross-env NODE_ENV=development babel "*.js" \
+    --config-file ../babel.config.js \
+    --out-dir ../output
+cross-env NODE_ENV=development babel "electron-app/**/*.js" \
+    --config-file ../babel.config.js \
+    --out-dir ../output/electron-app
 popd
