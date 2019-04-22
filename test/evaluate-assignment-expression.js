@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import evaluateAssignmentExpression from '../src/app/lib/evaluate-assignment-expression';
+import evaluateAssignmentExpression from '../src/server/lib/evaluate-assignment-expression';
 
 test('exceptions', (t) => {
     // Unexpected identifier

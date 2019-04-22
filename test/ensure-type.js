@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import { ensureBoolean, ensureNumber, ensureString } from '../src/app/lib/ensure-type';
+import { ensureBoolean, ensureNumber, ensureString } from '../src/server/lib/ensure-type';
 
 test('ensureBoolean', (t) => {
     t.equal(ensureBoolean({}), true);

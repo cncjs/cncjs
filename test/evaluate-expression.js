@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import evaluateExpression from '../src/app/lib/evaluate-expression';
+import evaluateExpression from '../src/server/lib/evaluate-expression';
 
 test('resolved', (t) => {
     const src = '[1,2,3+4*10+(n||6),foo(3+5),obj[""+"x"].y]';

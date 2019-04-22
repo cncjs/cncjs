@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import MarlinRunner from '../src/app/controllers/Marlin/MarlinRunner';
+import MarlinRunner from '../src/server/controllers/Marlin/MarlinRunner';
 
 test('MarlinLineParserResultStart', (t) => {
     const runner = new MarlinRunner();
