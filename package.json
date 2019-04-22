@@ -7,8 +7,7 @@
   "main": "./dist/cncjs/server-cli.js",
   "bin": {
     "cncjs": "./bin/cncjs",
-    "cncjs-server": "./bin/legacy-cli",
-    "cnc": "./bin/legacy-cli"
+    "cnc": "./bin/cnc"
   },
   "files": [
     "bin",
