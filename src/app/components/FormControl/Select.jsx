@@ -6,12 +6,10 @@ import styles from './index.styl';
 
 const propTypes = {
     tag: sharedPropTypes.tag,
-    fcSize: sharedPropTypes.fcSize,
 };
 
 const defaultProps = {
     tag: 'select',
-    fcSize: 'md',
 };
 
 const Select = ({ className, ...props }) => (

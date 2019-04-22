@@ -25,6 +25,9 @@ const defaultState = Object.freeze({ // Freezes the default state
                     'axes', 'gcode', 'macro', 'probe', 'spindle', 'laser'
                 ]
             }
+        },
+        machineProfile: {
+            id: null
         }
     },
     widgets: {
@@ -188,13 +191,16 @@ const defaultState = Object.freeze({ // Freezes the default state
                 displayName: true
             },
             objects: {
+                limits: {
+                    visible: true
+                },
                 coordinateSystem: {
                     visible: true
                 },
                 gridLineNumbers: {
                     visible: true
                 },
-                toolhead: {
+                cuttingTool: {
                     visible: true
                 }
             }

@@ -1,33 +1,50 @@
 import cx from 'classnames';
+import PropTypes from 'prop-types';
 import React from 'react';
 import * as sharedPropTypes from './shared/prop-types';
 import styles from './index.styl';
 
 const propTypes = {
     tag: sharedPropTypes.tag,
-    fcSize: sharedPropTypes.fcSize,
+    lg: PropTypes.bool,
+    md: PropTypes.bool,
+    sm: PropTypes.bool,
 };
 
 const defaultProps = {
     tag: 'div',
-    fcSize: 'md',
 };
 
 const FormControl = ({
     className,
-    fcSize,
     tag: Tag,
+    lg,
+    md,
+    sm,
     ...props
-}) => (
-    <Tag
-        {...props}
-        className={cx(className, styles.formControl, {
-            [styles.formControlLg]: fcSize === 'lg' || fcSize === 'large',
-            [styles.formControlMd]: !fcSize || fcSize === 'md' || fcSize === 'medium',
-            [styles.formControlSm]: fcSize === 'sm' || fcSize === 'small',
-        })}
-    />
-);
+}) => {
+    if (lg) {
+        md = false;
+        sm = false;
+    }
+    if (md) {
+        sm = false;
+    }
+    if (!lg && !md && !sm) {
+        md = true;
+    }
+
+    return (
+        <Tag
+            {...props}
+            className={cx(className, styles.formControl, {
+                [styles.formControlLg]: lg,
+                [styles.formControlMd]: md,
+                [styles.formControlSm]: sm,
+            })}
+        />
+    );
+};
 
 FormControl.propTypes = propTypes;
 FormControl.defaultProps = defaultProps;

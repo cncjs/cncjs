@@ -4,12 +4,10 @@ import * as sharedPropTypes from './shared/prop-types';
 
 const propTypes = {
     tag: sharedPropTypes.tag,
-    fcSize: sharedPropTypes.fcSize,
 };
 
 const defaultProps = {
     tag: 'input',
-    fcSize: 'md',
 };
 
 const Input = (props) => (

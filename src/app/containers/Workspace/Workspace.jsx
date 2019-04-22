@@ -18,7 +18,7 @@ import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
 import config from 'app/store/config';
-import * as widgetManager from './WidgetManager';
+import * as widgetManager from './widget-manager';
 import DefaultWidgets from './DefaultWidgets';
 import PrimaryWidgets from './PrimaryWidgets';
 import SecondaryWidgets from './SecondaryWidgets';

@@ -20,8 +20,9 @@ class Dropdown extends PureComponent {
 
         // A custom element for this component.
         componentClass: PropTypes.oneOfType([
+            PropTypes.func,
             PropTypes.string,
-            PropTypes.func
+            PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
         ]),
 
         // The menu will open above the dropdown button, instead of below it.

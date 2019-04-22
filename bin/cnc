@@ -2,14 +2,14 @@
 
 require('@babel/polyfill');
 
-var cnc;
+const chalk = require('chalk');
 
-if (process.env.NODE_ENV === 'development') {
-    cnc = require('../output/cnc').default;
-} else {
-    cnc = require('../dist/cnc/cnc').default;
-}
+console.warn(chalk.yellow('Warning: The "cnc" executable is deprecated and will be removed in the next major release. Use "cncjs" instead to avoid deprecation.\n'));
 
-cnc().catch(err => {
+const launchServer = (process.env.NODE_ENV === 'development')
+    ? require('../output/server-cli').default
+    : require('../dist/cncjs/server-cli').default;
+
+launchServer().catch(err => {
     console.error('Error:', err);
 });

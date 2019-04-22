@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import STLLoader from 'app/lib/three/STLLoader';
 
 const getBoundingBox = (object) => {
     const box = new THREE.Box3().setFromObject(object);
@@ -18,24 +19,16 @@ const getBoundingBox = (object) => {
     return boundingBox;
 };
 
-const loadTexture = (url, callback) => {
-    callback = callback || ((err, texture) => {});
+const loadSTL = (url) => new Promise(resolve => {
+    new STLLoader().load(url, resolve);
+});
 
-    const onLoad = (texture) => {
-        callback(null, texture);
-    };
-    const onProgress = (xhr) => {
-        // console.log((xhr.loaded / xhr.total * 100) + '% loaded');
-    };
-    const onError = (xhr) => {
-        callback(new Error('Failed to load texture with the url ' + JSON.stringify(url)));
-    };
-
-    const loader = new THREE.TextureLoader();
-    loader.load(url, onLoad, onProgress, onError);
-};
+const loadTexture = (url) => new Promise(resolve => {
+    new THREE.TextureLoader().load(url, resolve);
+});
 
 export {
     getBoundingBox,
-    loadTexture
+    loadSTL,
+    loadTexture,
 };

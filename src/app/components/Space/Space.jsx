@@ -18,8 +18,9 @@ const Space = ({ componentClass: Component, width, ...props }) => {
 
 Space.propTypes = {
     componentClass: PropTypes.oneOfType([
-        PropTypes.node,
-        PropTypes.string
+        PropTypes.func,
+        PropTypes.string,
+        PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
     ]),
     width: PropTypes.oneOfType([
         PropTypes.number,

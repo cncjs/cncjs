@@ -15,6 +15,7 @@ import {
     AXIS_A,
     AXIS_B,
     AXIS_C,
+    IMPERIAL_UNITS,
     METRIC_UNITS
 } from 'app/constants';
 import controller from 'app/lib/controller';
@@ -35,8 +36,12 @@ import styles from './index.styl';
 
 class DisplayPanel extends PureComponent {
     static propTypes = {
-        config: PropTypes.object,
-        state: PropTypes.object,
+        canClick: PropTypes.bool,
+        units: PropTypes.oneOf([IMPERIAL_UNITS, METRIC_UNITS]),
+        axes: PropTypes.array,
+        machinePosition: PropTypes.object,
+        workPosition: PropTypes.object,
+        jog: PropTypes.object,
         actions: PropTypes.object
     };
 
@@ -75,9 +80,8 @@ class DisplayPanel extends PureComponent {
         }));
     };
 
-    renderActionDropdown = () => {
-        const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+    renderActionDropdown = ({ wcs }) => {
+        const { canClick } = this.props;
 
         return (
             <Dropdown
@@ -205,14 +209,13 @@ class DisplayPanel extends PureComponent {
         );
     };
 
-    renderActionDropdownForAxisE = () => {
+    renderActionDropdownForAxisE = ({ wcs }) => {
         // TODO
         return null;
     };
 
-    renderActionDropdownForAxisX = () => {
-        const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+    renderActionDropdownForAxisX = ({ wcs }) => {
+        const { canClick } = this.props;
 
         return (
             <Dropdown
@@ -340,9 +343,8 @@ class DisplayPanel extends PureComponent {
         );
     };
 
-    renderActionDropdownForAxisY = () => {
-        const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+    renderActionDropdownForAxisY = ({ wcs }) => {
+        const { canClick } = this.props;
 
         return (
             <Dropdown
@@ -470,9 +472,8 @@ class DisplayPanel extends PureComponent {
         );
     };
 
-    renderActionDropdownForAxisZ = () => {
-        const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+    renderActionDropdownForAxisZ = ({ wcs }) => {
+        const { canClick } = this.props;
 
         return (
             <Dropdown
@@ -600,9 +601,8 @@ class DisplayPanel extends PureComponent {
         );
     };
 
-    renderActionDropdownForAxisA = () => {
-        const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+    renderActionDropdownForAxisA = ({ wcs }) => {
+        const { canClick } = this.props;
 
         return (
             <Dropdown
@@ -730,9 +730,8 @@ class DisplayPanel extends PureComponent {
         );
     };
 
-    renderActionDropdownForAxisB = () => {
-        const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+    renderActionDropdownForAxisB = ({ wcs }) => {
+        const { canClick } = this.props;
 
         return (
             <Dropdown
@@ -860,9 +859,8 @@ class DisplayPanel extends PureComponent {
         );
     };
 
-    renderActionDropdownForAxisC = () => {
-        const { canClick } = this.props.state;
-        const wcs = this.props.actions.getWorkCoordinateSystem();
+    renderActionDropdownForAxisC = ({ wcs }) => {
+        const { canClick } = this.props;
 
         return (
             <Dropdown
@@ -991,8 +989,9 @@ class DisplayPanel extends PureComponent {
     };
 
     renderAxis = (axis) => {
-        const { canClick, units, machinePosition, workPosition, jog } = this.props.state;
+        const { canClick, units, machinePosition, workPosition, jog } = this.props;
         const { actions } = this.props;
+        const wcs = actions.getWorkCoordinateSystem();
         const lengthUnits = (units === METRIC_UNITS) ? i18n._('mm') : i18n._('in');
         const degreeUnits = i18n._('deg');
         const mpos = machinePosition[axis] || '0.000';
@@ -1157,15 +1156,15 @@ class DisplayPanel extends PureComponent {
                     </Taskbar>
                 </td>
                 <td className={styles.action}>
-                    {renderActionDropdown()}
+                    {renderActionDropdown({ wcs })}
                 </td>
             </tr>
         );
     };
 
     render() {
-        const { state } = this.props;
-        const { axes, machinePosition, workPosition } = state;
+        const { axes, machinePosition, workPosition } = this.props;
+        const wcs = this.props.actions.getWorkCoordinateSystem();
         const hasAxisE = (machinePosition.e !== undefined && workPosition.e !== undefined);
         const hasAxisX = includes(axes, AXIS_X);
         const hasAxisY = includes(axes, AXIS_Y);
@@ -1183,7 +1182,7 @@ class DisplayPanel extends PureComponent {
                             <th title={i18n._('Machine Position')}>{i18n._('Machine Position')}</th>
                             <th title={i18n._('Work Position')}>{i18n._('Work Position')}</th>
                             <th className={styles.action}>
-                                {this.renderActionDropdown()}
+                                {this.renderActionDropdown({ wcs })}
                             </th>
                         </tr>
                     </thead>

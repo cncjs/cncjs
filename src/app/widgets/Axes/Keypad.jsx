@@ -12,14 +12,13 @@ import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import Fraction from './components/Fraction';
 import {
-    // Units
     IMPERIAL_UNITS,
     IMPERIAL_STEPS,
     METRIC_UNITS,
     METRIC_STEPS
-} from 'app/constants';
-import Fraction from './components/Fraction';
+} from '../../constants';
 import styles from './index.styl';
 
 const KeypadText = styled.span`
@@ -40,8 +39,10 @@ const KeypadSubscriptText = styled(KeypadText)`
 
 class Keypad extends PureComponent {
     static propTypes = {
-        config: PropTypes.object,
-        state: PropTypes.object,
+        canClick: PropTypes.bool,
+        units: PropTypes.oneOf([IMPERIAL_UNITS, METRIC_UNITS]),
+        axes: PropTypes.array,
+        jog: PropTypes.object,
         actions: PropTypes.object
     };
 
@@ -75,13 +76,13 @@ class Keypad extends PureComponent {
     }
 
     renderImperialMenuItems() {
-        const { state } = this.props;
-        const imperialJogDistances = ensureArray(state.jog.imperial.distances);
+        const { jog } = this.props;
+        const imperialJogDistances = ensureArray(jog.imperial.distances);
         const imperialJogSteps = [
             ...imperialJogDistances,
             ...IMPERIAL_STEPS
         ];
-        const step = state.jog.imperial.step;
+        const step = jog.imperial.step;
 
         return imperialJogSteps.map((value, key) => {
             const active = (key === step);
@@ -101,13 +102,13 @@ class Keypad extends PureComponent {
     }
 
     renderMetricMenuItems() {
-        const { state } = this.props;
-        const metricJogDistances = ensureArray(state.jog.metric.distances);
+        const { jog } = this.props;
+        const metricJogDistances = ensureArray(jog.metric.distances);
         const metricJogSteps = [
             ...metricJogDistances,
             ...METRIC_STEPS
         ];
-        const step = state.jog.metric.step;
+        const step = jog.metric.step;
 
         return metricJogSteps.map((value, key) => {
             const active = (key === step);
@@ -127,8 +128,7 @@ class Keypad extends PureComponent {
     }
 
     render() {
-        const { state, actions } = this.props;
-        const { canClick, units, axes, jog } = state;
+        const { canClick, units, axes, jog, actions } = this.props;
         const canChangeUnits = canClick;
         const canChangeStep = canClick;
         const imperialJogDistances = ensureArray(jog.imperial.distances);
@@ -463,7 +463,7 @@ class Keypad extends PureComponent {
                                     }}
                                 >
                                     {imperialJogSteps[jog.imperial.step]}
-                                    <Space width={4} />
+                                    <Space width="4" />
                                     <sub>{i18n._('in')}</sub>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu
@@ -499,7 +499,7 @@ class Keypad extends PureComponent {
                                     }}
                                 >
                                     {metricJogSteps[jog.metric.step]}
-                                    <Space width={4} />
+                                    <Space width="4" />
                                     <sub>{i18n._('mm')}</sub>
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu

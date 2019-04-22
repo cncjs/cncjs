@@ -7,9 +7,9 @@ import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import I18n from 'app/components/I18n';
 import Space from 'app/components/Space';
-import * as WebGL from 'app/lib/three/WebGL';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
+import * as WebGL from 'app/lib/three/WebGL';
 import {
     // Grbl
     GRBL,
@@ -380,6 +380,20 @@ class PrimaryToolbar extends PureComponent {
                             </MenuItem>
                             <MenuItem
                                 disabled={!canToggleOptions}
+                                onSelect={actions.toggleLimitsVisibility}
+                            >
+                                {objects.limits.visible
+                                    ? <i className="fa fa-toggle-on fa-fw" />
+                                    : <i className="fa fa-toggle-off fa-fw" />
+                                }
+                                <Space width={8} />
+                                {objects.limits.visible
+                                    ? i18n._('Hide Limits')
+                                    : i18n._('Show Limits')
+                                }
+                            </MenuItem>
+                            <MenuItem
+                                disabled={!canToggleOptions}
                                 onSelect={actions.toggleCoordinateSystemVisibility}
                             >
                                 {objects.coordinateSystem.visible
@@ -408,16 +422,16 @@ class PrimaryToolbar extends PureComponent {
                             </MenuItem>
                             <MenuItem
                                 disabled={!canToggleOptions}
-                                onSelect={actions.toggleToolheadVisibility}
+                                onSelect={actions.toggleCuttingToolVisibility}
                             >
-                                {objects.toolhead.visible
+                                {objects.cuttingTool.visible
                                     ? <i className="fa fa-toggle-on fa-fw" />
                                     : <i className="fa fa-toggle-off fa-fw" />
                                 }
                                 <Space width={8} />
-                                {objects.toolhead.visible
-                                    ? i18n._('Hide Toolhead')
-                                    : i18n._('Show Toolhead')
+                                {objects.cuttingTool.visible
+                                    ? i18n._('Hide Cutting Tool')
+                                    : i18n._('Show Cutting Tool')
                                 }
                             </MenuItem>
                         </Dropdown.Menu>

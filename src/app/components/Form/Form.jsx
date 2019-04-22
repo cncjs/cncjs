@@ -5,7 +5,8 @@ class Form extends Component {
     static propTypes = {
         componentClass: PropTypes.oneOfType([
             PropTypes.func,
-            PropTypes.string
+            PropTypes.string,
+            PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
         ]),
         innerRef: PropTypes.oneOfType([
             PropTypes.func,

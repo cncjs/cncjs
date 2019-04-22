@@ -5,13 +5,14 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Anchor from 'app/components/Anchor';
 import { Button } from 'app/components/Buttons';
+import FormGroup from 'app/components/FormGroup';
 import Modal from 'app/components/Modal';
 import Space from 'app/components/Space';
 import Table from 'app/components/Table';
 import ToggleSwitch from 'app/components/ToggleSwitch';
+import { TablePagination } from 'app/components/Paginations';
 import portal from 'app/lib/portal';
 import i18n from 'app/lib/i18n';
-import TablePagination from '../components/TablePagination';
 import {
     MODAL_CREATE_RECORD,
     MODAL_UPDATE_RECORD
@@ -65,9 +66,9 @@ class TableRecords extends PureComponent {
                                 actions.openModal(MODAL_CREATE_RECORD);
                             }}
                         >
-                            <i className="fa fa-plus" />
+                            <i className="fa fa-user-plus" />
                             <Space width="8" />
-                            {i18n._('New')}
+                            {i18n._('New Account')}
                         </button>
                         <TablePagination
                             style={{
@@ -141,8 +142,6 @@ class TableRecords extends PureComponent {
                         className: 'text-nowrap',
                         key: 'action',
                         render: (value, row, index) => {
-                            const { id } = row;
-
                             return (
                                 <div>
                                     <button
@@ -161,7 +160,7 @@ class TableRecords extends PureComponent {
                                         title={i18n._('Delete Account')}
                                         onClick={(event) => {
                                             portal(({ onClose }) => (
-                                                <Modal size="xs" onClose={onClose}>
+                                                <Modal disableOverlayClick={false} size="xs" onClose={onClose}>
                                                     <Modal.Header>
                                                         <Modal.Title>
                                                             {i18n._('Settings')}
@@ -172,7 +171,12 @@ class TableRecords extends PureComponent {
                                                         </Modal.Title>
                                                     </Modal.Header>
                                                     <Modal.Body>
-                                                        {i18n._('Are you sure you want to delete the account?')}
+                                                        <FormGroup>
+                                                            {i18n._('Are you sure you want to delete the account?')}
+                                                        </FormGroup>
+                                                        <FormGroup>
+                                                            {row.name}
+                                                        </FormGroup>
                                                     </Modal.Body>
                                                     <Modal.Footer>
                                                         <Button
@@ -184,7 +188,7 @@ class TableRecords extends PureComponent {
                                                             btnStyle="primary"
                                                             onClick={chainedFunction(
                                                                 () => {
-                                                                    actions.deleteRecord(id);
+                                                                    actions.deleteRecord(row.id);
                                                                 },
                                                                 onClose
                                                             )}

@@ -55,7 +55,7 @@ module.exports = {
         ]
     },
     output: {
-        path: path.resolve(__dirname, 'dist/cnc/app'),
+        path: path.resolve(__dirname, 'dist/cncjs/app'),
         chunkFilename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
         filename: `[name].[chunkhash].bundle.js?_=${timestamp}`,
         publicPath: publicPath
@@ -190,7 +190,7 @@ module.exports = {
         }),
         new HtmlWebpackPlugin({
             filename: 'index.hbs',
-            template: path.resolve(__dirname, 'src/app/assets/index.hbs'),
+            template: path.resolve(__dirname, 'index.hbs'),
             chunksSortMode: 'dependency' // Sort chunks by dependency
         })
     ],

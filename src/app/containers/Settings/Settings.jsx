@@ -1,10 +1,13 @@
 import classNames from 'classnames';
-import camelCase from 'lodash/camelCase';
-import find from 'lodash/find';
-import findIndex from 'lodash/findIndex';
-import get from 'lodash/get';
-import isEqual from 'lodash/isEqual';
+import ensureArray from 'ensure-array';
+import i18next from 'i18next';
 import Uri from 'jsuri';
+import _camelCase from 'lodash/camelCase';
+import _find from 'lodash/find';
+import _findIndex from 'lodash/findIndex';
+import _get from 'lodash/get';
+import _isEqual from 'lodash/isEqual';
+import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import api from 'app/api';
@@ -14,11 +17,12 @@ import {
 } from 'app/api/constants';
 import settings from 'app/config/settings';
 import Breadcrumbs from 'app/components/Breadcrumbs';
-import i18next from 'app/i18next';
 import i18n from 'app/lib/i18n';
+import config from 'app/store/config';
 import General from './General';
 import Workspace from './Workspace';
-import Account from './Account';
+import MachineProfiles from './MachineProfiles';
+import UserAccounts from './UserAccounts';
 import Controller from './Controller';
 import Commands from './Commands';
 import Events from './Events';
@@ -26,7 +30,7 @@ import About from './About';
 import styles from './index.styl';
 
 const mapSectionPathToId = (path = '') => {
-    return camelCase(path.split('/')[0] || '');
+    return _camelCase(path.split('/')[0] || '');
 };
 
 class Settings extends PureComponent {
@@ -54,10 +58,16 @@ class Settings extends PureComponent {
             component: (props) => <Controller {...props} />
         },
         {
-            id: 'account',
-            path: 'account',
-            title: i18n._('My Account'),
-            component: (props) => <Account {...props} />
+            id: 'machineProfiles',
+            path: 'machine-profiles',
+            title: i18n._('Machine Profiles'),
+            component: (props) => <MachineProfiles {...props} />
+        },
+        {
+            id: 'userAccounts',
+            path: 'user-accounts',
+            title: i18n._('User Accounts'),
+            component: (props) => <UserAccounts {...props} />
         },
         {
             id: 'commands',
@@ -250,7 +260,7 @@ class Settings extends PureComponent {
                 }));
 
                 api.getState().then((res) => {
-                    const ignoreErrors = get(res.body, 'controller.exception.ignoreErrors');
+                    const ignoreErrors = _get(res.body, 'controller.exception.ignoreErrors');
 
                     const nextState = {
                         ...this.state.controller,
@@ -341,20 +351,224 @@ class Settings extends PureComponent {
                 }));
             }
         },
-        // My Account
-        account: {
+        // Machine Profiles
+        machineProfiles: {
             fetchRecords: (options) => {
-                const state = this.state.account;
+                const state = this.state.machineProfiles;
                 const {
                     page = state.pagination.page,
                     pageLength = state.pagination.pageLength
                 } = { ...options };
 
                 this.setState({
-                    account: {
-                        ...this.state.account,
+                    machineProfiles: {
+                        ...this.state.machineProfiles,
                         api: {
-                            ...this.state.account.api,
+                            ...this.state.machineProfiles.api,
+                            err: false,
+                            fetching: true
+                        }
+                    }
+                });
+
+                api.machines.fetch({ paging: true, page, pageLength })
+                    .then((res) => {
+                        const { pagination, records } = res.body;
+
+                        this.setState({
+                            machineProfiles: {
+                                ...this.state.machineProfiles,
+                                api: {
+                                    ...this.state.machineProfiles.api,
+                                    err: false,
+                                    fetching: false
+                                },
+                                pagination: {
+                                    page: pagination.page,
+                                    pageLength: pagination.pageLength,
+                                    totalRecords: pagination.totalRecords
+                                },
+                                records: records
+                            }
+                        });
+
+                        // FIXME: Use redux store
+                        const machineProfiles = ensureArray(records);
+                        pubsub.publish('updateMachineProfiles', machineProfiles);
+                    })
+                    .catch((res) => {
+                        this.setState({
+                            machineProfiles: {
+                                ...this.state.machineProfiles,
+                                api: {
+                                    ...this.state.machineProfiles.api,
+                                    err: true,
+                                    fetching: false
+                                },
+                                records: []
+                            }
+                        });
+                    });
+            },
+            createRecord: (options) => {
+                const actions = this.actions.machineProfiles;
+
+                api.machines.create(options)
+                    .then((res) => {
+                        actions.closeModal();
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            // TODO
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    });
+            },
+            updateRecord: (id, options, forceReload = false) => {
+                const actions = this.actions.machineProfiles;
+
+                api.machines.update(id, options)
+                    .then((res) => {
+                        actions.closeModal();
+
+                        if (forceReload) {
+                            actions.fetchRecords();
+                            return;
+                        }
+
+                        const records = [...this.state.machineProfiles.records];
+                        const index = _findIndex(records, { id: id });
+
+                        if (index >= 0) {
+                            records[index] = {
+                                ...records[index],
+                                ...options
+                            };
+
+                            this.setState({
+                                machineProfiles: {
+                                    ...this.state.machineProfiles,
+                                    records: records
+                                }
+                            });
+                        }
+                    })
+                    .catch((res) => {
+                        const fallbackMsg = i18n._('An unexpected error has occurred.');
+                        const msg = {
+                            // TODO
+                        }[res.status] || fallbackMsg;
+
+                        actions.updateModalParams({ alertMessage: msg });
+                    })
+                    .then(() => {
+                        try {
+                            // Fetch machine profiles
+                            api.machines.fetch()
+                                .then(res => {
+                                    const { records: machineProfiles } = res.body;
+                                    return ensureArray(machineProfiles);
+                                })
+                                .then(machineProfiles => {
+                                    // Update matched machine profile
+                                    const currentMachineProfile = config.get('workspace.machineProfile');
+                                    const currentMachineProfileId = _get(currentMachineProfile, 'id');
+                                    const matchedMachineProfile = _find(machineProfiles, { id: currentMachineProfileId });
+
+                                    if (matchedMachineProfile) {
+                                        config.replace('workspace.machineProfile', matchedMachineProfile);
+                                    }
+                                });
+                        } catch (err) {
+                            // Ignore
+                        }
+                    });
+            },
+            deleteRecord: (id) => {
+                const actions = this.actions.machineProfiles;
+
+                api.machines.delete(id)
+                    .then((res) => {
+                        actions.fetchRecords();
+                    })
+                    .catch((res) => {
+                        // Ignore error
+                    })
+                    .then(() => {
+                        try {
+                            // Fetch machine profiles
+                            api.machines.fetch()
+                                .then(res => {
+                                    const { records: machineProfiles } = res.body;
+                                    return ensureArray(machineProfiles);
+                                })
+                                .then(machineProfiles => {
+                                    // Remove matched machine profile
+                                    const currentMachineProfile = config.get('workspace.machineProfile');
+                                    const currentMachineProfileId = _get(currentMachineProfile, 'id');
+                                    if (currentMachineProfileId === id) {
+                                        config.replace('workspace.machineProfile', { id: null });
+                                    }
+                                });
+                        } catch (err) {
+                            // Ignore
+                        }
+                    });
+            },
+            openModal: (name = '', params = {}) => {
+                this.setState({
+                    machineProfiles: {
+                        ...this.state.machineProfiles,
+                        modal: {
+                            name: name,
+                            params: params
+                        }
+                    }
+                });
+            },
+            closeModal: () => {
+                this.setState({
+                    machineProfiles: {
+                        ...this.state.machineProfiles,
+                        modal: {
+                            name: '',
+                            params: {}
+                        }
+                    }
+                });
+            },
+            updateModalParams: (params = {}) => {
+                this.setState({
+                    machineProfiles: {
+                        ...this.state.machineProfiles,
+                        modal: {
+                            ...this.state.machineProfiles.modal,
+                            params: {
+                                ...this.state.machineProfiles.modal.params,
+                                ...params
+                            }
+                        }
+                    }
+                });
+            }
+        },
+        // User Accounts
+        userAccounts: {
+            fetchRecords: (options) => {
+                const state = this.state.userAccounts;
+                const {
+                    page = state.pagination.page,
+                    pageLength = state.pagination.pageLength
+                } = { ...options };
+
+                this.setState({
+                    userAccounts: {
+                        ...this.state.userAccounts,
+                        api: {
+                            ...this.state.userAccounts.api,
                             err: false,
                             fetching: true
                         }
@@ -366,10 +580,10 @@ class Settings extends PureComponent {
                         const { pagination, records } = res.body;
 
                         this.setState({
-                            account: {
-                                ...this.state.account,
+                            userAccounts: {
+                                ...this.state.userAccounts,
                                 api: {
-                                    ...this.state.account.api,
+                                    ...this.state.userAccounts.api,
                                     err: false,
                                     fetching: false
                                 },
@@ -384,10 +598,10 @@ class Settings extends PureComponent {
                     })
                     .catch((res) => {
                         this.setState({
-                            account: {
-                                ...this.state.account,
+                            userAccounts: {
+                                ...this.state.userAccounts,
                                 api: {
-                                    ...this.state.account.api,
+                                    ...this.state.userAccounts.api,
                                     err: true,
                                     fetching: false
                                 },
@@ -397,7 +611,7 @@ class Settings extends PureComponent {
                     });
             },
             createRecord: (options) => {
-                const actions = this.actions.account;
+                const actions = this.actions.userAccounts;
 
                 api.users.create(options)
                     .then((res) => {
@@ -414,7 +628,7 @@ class Settings extends PureComponent {
                     });
             },
             updateRecord: (id, options, forceReload = false) => {
-                const actions = this.actions.account;
+                const actions = this.actions.userAccounts;
 
                 api.users.update(id, options)
                     .then((res) => {
@@ -425,8 +639,8 @@ class Settings extends PureComponent {
                             return;
                         }
 
-                        const records = this.state.account.records;
-                        const index = findIndex(records, { id: id });
+                        const records = [...this.state.userAccounts.records];
+                        const index = _findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -435,8 +649,8 @@ class Settings extends PureComponent {
                             };
 
                             this.setState({
-                                account: {
-                                    ...this.state.account,
+                                userAccounts: {
+                                    ...this.state.userAccounts,
                                     records: records
                                 }
                             });
@@ -453,7 +667,7 @@ class Settings extends PureComponent {
                     });
             },
             deleteRecord: (id) => {
-                const actions = this.actions.account;
+                const actions = this.actions.userAccounts;
 
                 api.users.delete(id)
                     .then((res) => {
@@ -465,8 +679,8 @@ class Settings extends PureComponent {
             },
             openModal: (name = '', params = {}) => {
                 this.setState({
-                    account: {
-                        ...this.state.account,
+                    userAccounts: {
+                        ...this.state.userAccounts,
                         modal: {
                             name: name,
                             params: params
@@ -476,8 +690,8 @@ class Settings extends PureComponent {
             },
             closeModal: () => {
                 this.setState({
-                    account: {
-                        ...this.state.account,
+                    userAccounts: {
+                        ...this.state.userAccounts,
                         modal: {
                             name: '',
                             params: {}
@@ -487,12 +701,12 @@ class Settings extends PureComponent {
             },
             updateModalParams: (params = {}) => {
                 this.setState({
-                    account: {
-                        ...this.state.account,
+                    userAccounts: {
+                        ...this.state.userAccounts,
                         modal: {
-                            ...this.state.account.modal,
+                            ...this.state.userAccounts.modal,
                             params: {
-                                ...this.state.account.modal.params,
+                                ...this.state.userAccounts.modal.params,
                                 ...params
                             }
                         }
@@ -584,8 +798,8 @@ class Settings extends PureComponent {
                             return;
                         }
 
-                        const records = this.state.commands.records;
-                        const index = findIndex(records, { id: id });
+                        const records = [...this.state.commands.records];
+                        const index = _findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -742,8 +956,8 @@ class Settings extends PureComponent {
                             return;
                         }
 
-                        const records = this.state.events.records;
-                        const index = findIndex(records, { id: id });
+                        const records = [...this.state.events.records];
+                        const index = _findIndex(records, { id: id });
 
                         if (index >= 0) {
                             records[index] = {
@@ -865,40 +1079,52 @@ class Settings extends PureComponent {
         return {
             // General
             general: {
-                // followed by api state
                 api: {
                     err: false,
                     loading: true, // defaults to true
                     saving: false
                 },
-                // followed by data
                 checkForUpdates: true,
                 lang: i18next.language
             },
             // Workspace
             workspace: {
-                // Modal
                 modal: {
                     name: '',
                     params: {
                     }
                 }
             },
-            // My Account
-            account: {
-                // followed by api state
+            // Machine Profiles
+            machineProfiles: {
                 api: {
                     err: false,
                     fetching: false
                 },
-                // followed by data
                 pagination: {
                     page: 1,
                     pageLength: 10,
                     totalRecords: 0
                 },
                 records: [],
-                // Modal
+                modal: {
+                    name: '',
+                    params: {
+                    }
+                }
+            },
+            // User Accounts
+            userAccounts: {
+                api: {
+                    err: false,
+                    fetching: false
+                },
+                pagination: {
+                    page: 1,
+                    pageLength: 10,
+                    totalRecords: 0
+                },
+                records: [],
                 modal: {
                     name: '',
                     params: {
@@ -909,30 +1135,25 @@ class Settings extends PureComponent {
             },
             // Controller
             controller: {
-                // followed by api state
                 api: {
                     err: false,
                     loading: true, // defaults to true
                     saving: false
                 },
-                // followed by data
                 ignoreErrors: false
             },
             // Commands
             commands: {
-                // followed by api state
                 api: {
                     err: false,
                     fetching: false
                 },
-                // followed by data
                 pagination: {
                     page: 1,
                     pageLength: 10,
                     totalRecords: 0
                 },
                 records: [],
-                // Modal
                 modal: {
                     name: '',
                     params: {
@@ -941,19 +1162,16 @@ class Settings extends PureComponent {
             },
             // Events
             events: {
-                // followed by api state
                 api: {
                     err: false,
                     fetching: false
                 },
-                // followed by data
                 pagination: {
                     page: 1,
                     pageLength: 10,
                     totalRecords: 0
                 },
                 records: [],
-                // Modal
                 modal: {
                     name: '',
                     params: {
@@ -982,7 +1200,7 @@ class Settings extends PureComponent {
         const initialSectionPath = this.sections[0].path;
         const sectionPath = pathname.replace(/^\/settings(\/)?/, ''); // TODO
         const id = mapSectionPathToId(sectionPath || initialSectionPath);
-        const activeSection = find(this.sections, { id: id }) || this.sections[0];
+        const activeSection = _find(this.sections, { id: id }) || this.sections[0];
         const sectionItems = this.sections.map((section, index) => (
             <li
                 key={section.id}
@@ -1000,7 +1218,7 @@ class Settings extends PureComponent {
         const Section = activeSection.component;
         const sectionInitialState = this.initialState[activeSection.id];
         const sectionState = state[activeSection.id];
-        const sectionStateChanged = !isEqual(sectionInitialState, sectionState);
+        const sectionStateChanged = !_isEqual(sectionInitialState, sectionState);
         const sectionActions = actions[activeSection.id];
 
         return (

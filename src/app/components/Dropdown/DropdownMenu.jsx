@@ -14,8 +14,9 @@ class DropdownMenu extends PureComponent {
 
         // A custom element for this component.
         componentClass: PropTypes.oneOfType([
+            PropTypes.func,
             PropTypes.string,
-            PropTypes.func
+            PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
         ]),
 
         // Dropdown

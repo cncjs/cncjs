@@ -12,8 +12,9 @@ class MenuItem extends Component {
 
         // A custom element for this component.
         componentClass: PropTypes.oneOfType([
+            PropTypes.func,
             PropTypes.string,
-            PropTypes.func
+            PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
         ]),
 
         // Highlight the menu item as active.

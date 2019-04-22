@@ -9,7 +9,8 @@ class Anchor extends PureComponent {
     static propTypes = {
         componentClass: PropTypes.oneOfType([
             PropTypes.func,
-            PropTypes.string
+            PropTypes.string,
+            PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
         ]),
         disabled: PropTypes.bool,
         href: PropTypes.string,

@@ -1,26 +1,39 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import DisplayPanel from './DisplayPanel';
-import ControlPanel from './ControlPanel';
-import MDIPanel from './MDIPanel';
+import Keypad from './Keypad';
+import MDI from './MDI';
 
 const Axes = (props) => {
-    const { config, state, actions } = props;
-    const showMDIPanel = !state.mdi.disabled && (state.mdi.commands.length > 0);
+    const { state, actions } = props;
 
     return (
         <div>
-            <DisplayPanel config={config} state={state} actions={actions} />
-            <ControlPanel config={config} state={state} actions={actions} />
-            {showMDIPanel &&
-            <MDIPanel config={config} state={state} actions={actions} />
-            }
+            <DisplayPanel
+                canClick={state.canClick}
+                units={state.units}
+                axes={state.axes}
+                machinePosition={state.machinePosition}
+                workPosition={state.workPosition}
+                jog={state.jog}
+                actions={actions}
+            />
+            <Keypad
+                canClick={state.canClick}
+                units={state.units}
+                axes={state.axes}
+                jog={state.jog}
+                actions={actions}
+            />
+            <MDI
+                canClick={state.canClick}
+                mdi={state.mdi}
+            />
         </div>
     );
 };
 
 Axes.propTypes = {
-    config: PropTypes.object,
     state: PropTypes.object,
     actions: PropTypes.object
 };

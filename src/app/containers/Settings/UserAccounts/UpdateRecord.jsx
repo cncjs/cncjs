@@ -3,7 +3,6 @@ import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Modal from 'app/components/Modal';
-import Space from 'app/components/Space';
 import { ToastNotification } from 'app/components/Notifications';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import { Form, Input } from 'app/components/Validation';
@@ -44,14 +43,10 @@ class UpdateRecord extends PureComponent {
         const { alertMessage, changePassword = false, enabled, name } = modal.params;
 
         return (
-            <Modal size="sm" onClose={actions.closeModal}>
+            <Modal disableOverlayClick size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
                     <Modal.Title>
-                        {i18n._('My Account')}
-                        <Space width="8" />
-                        &rsaquo;
-                        <Space width="8" />
-                        {i18n._('Update')}
+                        {i18n._('Edit Account')}
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
