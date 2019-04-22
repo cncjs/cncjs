@@ -84,9 +84,6 @@
     "Choose an trigger": "Válasz egy kiváltót",
     "System": "Rendszer",
     "G-code": "G-code",
-    "Startup": "",
-    "Open a serial port": "",
-    "Close a serial port": "",
     "Automatically check for updates": "Frissítések automatikus ellenőrzése",
     "Language": "Nyelv",
     "General": "Álltalános",
@@ -531,5 +528,6 @@
     "WebGL: <1>Enabled</1>": "WebGL: <1>Engedélyezve</1>",
     "WebGL: <1>Disabled</1>": "WebGL: <1>Tiltva</1>",
     "Hide Cutting Tool": "",
-    "Show Cutting Tool": ""
+    "Show Cutting Tool": "",
+    "Ready to start": ""
 }

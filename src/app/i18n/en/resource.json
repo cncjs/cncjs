@@ -84,9 +84,6 @@
     "Choose an trigger": "Choose an trigger",
     "System": "System",
     "G-code": "G-code",
-    "Startup": "Startup",
-    "Open a serial port": "Open a serial port",
-    "Close a serial port": "Close a serial port",
     "Automatically check for updates": "Automatically check for updates",
     "Language": "Language",
     "General": "General",
@@ -531,5 +528,6 @@
     "WebGL: <1>Enabled</1>": "WebGL: <1>Enabled</1>",
     "WebGL: <1>Disabled</1>": "WebGL: <1>Disabled</1>",
     "Hide Cutting Tool": "Hide Cutting Tool",
-    "Show Cutting Tool": "Show Cutting Tool"
+    "Show Cutting Tool": "Show Cutting Tool",
+    "Ready to start": "Ready to start"
 }

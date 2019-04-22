@@ -84,9 +84,6 @@
     "Choose an trigger": "選擇一個觸發",
     "System": "系統",
     "G-code": "G-code",
-    "Startup": "",
-    "Open a serial port": "",
-    "Close a serial port": "",
     "Automatically check for updates": "自動檢查更新",
     "Language": "語言",
     "General": "一般",
@@ -531,5 +528,6 @@
     "WebGL: <1>Enabled</1>": "WebGL: <1>已啟用</1>",
     "WebGL: <1>Disabled</1>": "WebGL: <1>已停用</1>",
     "Hide Cutting Tool": "",
-    "Show Cutting Tool": ""
+    "Show Cutting Tool": "",
+    "Ready to start": ""
 }

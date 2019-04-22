@@ -84,9 +84,6 @@
     "Choose an trigger": "Elegir disparador",
     "System": "Systema",
     "G-code": "G-code",
-    "Startup": "Puesta en marcha",
-    "Open a serial port": "Abrir puerto serie",
-    "Close a serial port": "Cerrar puerto serie",
     "Automatically check for updates": "Comprobar actualizaciones automaticamente",
     "Language": "Idioma",
     "General": "General",
@@ -531,5 +528,6 @@
     "WebGL: <1>Enabled</1>": "WebGL: <1>Activada</1>",
     "WebGL: <1>Disabled</1>": "WebGL: <1>Desactivada</1>",
     "Hide Cutting Tool": "",
-    "Show Cutting Tool": ""
+    "Show Cutting Tool": "",
+    "Ready to start": ""
 }

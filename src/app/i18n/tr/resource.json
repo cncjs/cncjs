@@ -84,9 +84,6 @@
     "Choose an trigger": "Tetikleyici seçin",
     "System": "Sistem",
     "G-code": "G-kodu",
-    "Startup": "Başla",
-    "Open a serial port": "Bir seri bağlantı noktası açın",
-    "Close a serial port": "Bir seri bağlantı noktasını kapat",
     "Automatically check for updates": "Güncellemeleri otomatik olarak kontrol et",
     "Language": "Dil",
     "General": "Genel",
@@ -531,5 +528,6 @@
     "WebGL: <1>Enabled</1>": "WebGL: <1>Etkin</1>",
     "WebGL: <1>Disabled</1>": "WebGL: <1>Engelle</1>",
     "Hide Cutting Tool": "",
-    "Show Cutting Tool": ""
+    "Show Cutting Tool": "",
+    "Ready to start": ""
 }

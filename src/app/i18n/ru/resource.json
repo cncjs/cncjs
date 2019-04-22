@@ -84,9 +84,6 @@
     "Choose an trigger": "",
     "System": "",
     "G-code": "G-код",
-    "Startup": "",
-    "Open a serial port": "",
-    "Close a serial port": "",
     "Automatically check for updates": "",
     "Language": "Язык",
     "General": "Общие",
@@ -531,5 +528,6 @@
     "WebGL: <1>Enabled</1>": "WebGL: <1>Включено</1>",
     "WebGL: <1>Disabled</1>": "WebGL: <1>Отключено</1>",
     "Hide Cutting Tool": "",
-    "Show Cutting Tool": ""
+    "Show Cutting Tool": "",
+    "Ready to start": ""
 }
