@@ -5,7 +5,7 @@ import ProgressBar from 'progress';
 import Sender, {
     SP_TYPE_SEND_RESPONSE,
     SP_TYPE_CHAR_COUNTING
-} from '../src/app/lib/Sender';
+} from '../src/server/lib/Sender';
 
 test('null streaming protocol', (t) => {
     const sender = new Sender(null);

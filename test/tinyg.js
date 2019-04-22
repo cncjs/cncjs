@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import TinyGRunner from '../src/app/controllers/TinyG/TinyGRunner';
+import TinyGRunner from '../src/server/controllers/TinyG/TinyGRunner';
 
 test('TinyGParserResultMotorTimeout', (t) => {
     t.test('{"r":{"mt":2},"f":[1,0,8]}', (t) => {
