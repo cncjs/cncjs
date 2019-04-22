@@ -1,5 +1,5 @@
 import { test } from 'tap';
-import translateExpression from '../src/app/lib/translate-expression';
+import translateExpression from '../src/server/lib/translate-expression';
 
 test('exceptions', (t) => {
     // Not a string type
