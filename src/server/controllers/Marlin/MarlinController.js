@@ -11,7 +11,6 @@ import Workflow, {
     WORKFLOW_STATE_PAUSED,
     WORKFLOW_STATE_RUNNING
 } from '../../lib/Workflow';
-import delay from '../../lib/delay';
 import ensurePositiveNumber from '../../lib/ensure-positive-number';
 import evaluateAssignmentExpression from '../../lib/evaluate-assignment-expression';
 import logger from '../../lib/logger';
@@ -86,7 +85,6 @@ class MarlinController {
     // Marlin
     controller = null;
     ready = false;
-    initialized = false;
     state = {};
     settings = {};
     feedOverride = 100;
@@ -599,17 +597,16 @@ class MarlinController {
 
         this.runner.on('start', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
-
-            // Set ready flag to true when a start message has arrived
-            // It might have chance of receiving garbage characters on startup due to electronic noise.
-            this.ready = true;
-
-            if (!this.initialized) {
-                this.initialized = true;
-
-                // Initialize controller
-                this.initController();
-            }
+            // Marlin sends 'start' as the first message after
+            // power-on, but not when the serial port is closed and
+            // then re-opened.  Marlin has no software-initiated
+            // restart, so 'start' is not dependable as a readiness
+            // indicator.  Instead, we send M115 on connection open
+            // to request a firmware report, whose response signals
+            // Marlin readiness.  On initial power-up, Marlin might
+            // miss that first M115 as it boots, so we send this
+            // possibly-redundant M115 when we see 'start'.
+            this.command('gcode', 'M115');
         });
 
         this.runner.on('echo', (res) => {
@@ -618,6 +615,11 @@ class MarlinController {
 
         this.runner.on('firmware', (res) => {
             this.emit('connection:read', this.connectionOptions, res.raw);
+            if (!this.ready) {
+                this.ready = true;
+                // Initialize controller
+                this.event.trigger('controller:ready');
+            }
         });
 
         this.runner.on('pos', (res) => {
@@ -798,13 +800,6 @@ class MarlinController {
             }
         }, 250);
     }
-    async initController() {
-        // M115: Get firmware version and capabilities
-        this.command('gcode', 'M115');
-
-        await delay(50);
-        this.event.trigger('controller:ready');
-    }
     populateContext(context) {
         // Work position
         const {
@@ -922,6 +917,10 @@ class MarlinController {
             callback && callback();
 
             log.debug(`Connection established: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+
+            // M115: Get firmware version and capabilities
+            // The response to this will take us to the ready state
+            this.command('gcode', 'M115');
 
             this.workflow.stop();
 
