@@ -33,6 +33,11 @@ class Feeder extends events.EventEmitter {
         };
     }
     feed(data = [], context = {}) {
+        if (this.state.queue.length === 0) {
+            // Clear pending state when the queue is empty
+            this.state.pending = false;
+        }
+
         data = [].concat(data);
         if (data.length > 0) {
             this.state.queue = this.state.queue.concat(data.map(command => {
@@ -76,8 +81,8 @@ class Feeder extends events.EventEmitter {
     }
     next() {
         if (this.state.queue.length === 0) {
+            // Clear pending state when the queue is empty
             this.state.pending = false;
-            return false;
         }
 
         while (!this.state.hold && this.state.queue.length > 0) {
