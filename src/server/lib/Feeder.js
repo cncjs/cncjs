@@ -33,8 +33,8 @@ class Feeder extends events.EventEmitter {
         };
     }
     feed(data = [], context = {}) {
+        // Clear pending state when the feeder queue is empty
         if (this.state.queue.length === 0) {
-            // Clear pending state when the queue is empty
             this.state.pending = false;
         }
 
@@ -80,17 +80,12 @@ class Feeder extends events.EventEmitter {
         return this.state.queue.length;
     }
     next() {
-        if (this.state.queue.length === 0) {
-            // Clear pending state when the queue is empty
-            this.state.pending = false;
-        }
-
         while (!this.state.hold && this.state.queue.length > 0) {
             let { command, context } = this.state.queue.shift();
 
             if (this.dataFilter) {
                 command = this.dataFilter(command, context) || '';
-                if (!command) {
+                if (!command) { // Ignore blank lines
                     continue;
                 }
             }
@@ -99,6 +94,11 @@ class Feeder extends events.EventEmitter {
             this.emit('data', command, context);
             this.emit('change');
             break;
+        }
+
+        // Clear pending state when the feeder queue is empty
+        if (this.state.queue.length === 0) {
+            this.state.pending = false;
         }
 
         return this.state.pending;
