@@ -415,7 +415,7 @@ class TinyGController {
 
             if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
                 const n = _.get(r, 'r.n') || _.get(r, 'n');
-                if (n !== sent) {
+                if (n !== undefined && n !== sent) {
                     log.warn(`Expression: n (${n}) === sent (${sent})`);
                 }
                 log.silly(`ack: n=${n}, blocked=${this.blocked}, hold=${hold}, sent=${sent}, received=${received}`);
@@ -440,7 +440,7 @@ class TinyGController {
                     log.debug(`Stop sending G-code: hold=${hold}, sent=${sent}, received=${received + 1}`);
                 }
                 const n = _.get(r, 'r.n') || _.get(r, 'n');
-                if (n !== sent) {
+                if (n !== undefined && n !== sent) {
                     log.warn(`Expression: n (${n}) === sent (${sent})`);
                 }
                 log.silly(`ack: n=${n}, blocked=${this.blocked}, hold=${hold}, sent=${sent}, received=${received}`);
