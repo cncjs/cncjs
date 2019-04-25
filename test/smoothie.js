@@ -153,7 +153,7 @@ test('SmoothieRunnerLineParserResultStatus: running', (t) => {
                 feedrate: '100.0',
                 feedrateOverride: '10.0',
                 laserPower: '500.0',
-                laserIntensity: '1000.0', 
+                laserIntensity: '1000.0',
                 currentTemperature: '80.0',
                 targetTemperature: '100.0',
             });
@@ -184,7 +184,7 @@ test('SmoothieRunnerLineParserResultStatus: running', (t) => {
                 feedrate: '100.0',
                 feedrateOverride: '10.0',
                 laserPower: '500.0',
-                laserIntensity: '1000.0', 
+                laserIntensity: '1000.0',
                 currentTemperature: '80.0',
                 targetTemperature: '100.0',
             });
