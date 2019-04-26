@@ -1,6 +1,5 @@
 import events from 'events';
 import _ from 'lodash';
-import decimalPlaces from '../../lib/decimal-places';
 import SmoothieLineParser from './SmoothieLineParser';
 import SmoothieLineParserResultStatus from './SmoothieLineParserResultStatus';
 import SmoothieLineParserResultOk from './SmoothieLineParserResultOk';
