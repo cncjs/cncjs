@@ -71,7 +71,6 @@ class SmoothieLineParserResultStatus {
             } else {
                 // F:requested_feedrate,override
                 const [feedrate, feedrateOverride] = ensureArray(result.F);
-                payload.currentFeedrate = 0;
                 payload.feedrate = ensureNumber(feedrate) || 0;
                 payload.feedrateOverride = ensureNumber(feedrateOverride) || 0;
             }
