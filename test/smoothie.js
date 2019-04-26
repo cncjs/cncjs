@@ -22,177 +22,233 @@ test('SmoothieRunnerLineParserResultStatus: all zeroes in the mask ($10=0)', (t)
     runner.parse(line);
 });
 
-test('SmoothieRunnerLineParserResultStatus: 3-axis', (t) => {
-    t.test('old status format', (t) => {
+test('SmoothieRunnerLineParserResultStatus: old status format', (t) => {
+    t.test('6-axis', (t) => {
         const runner = new SmoothieRunner();
         runner.on('status', ({ raw, ...status }) => {
-            t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>');
+            t.equal(raw, '<Idle,MPos:200.0000,200.0000,0.0000,0.0000,0.0000,0.0000,WPos:200.0000,200.0000,0.0000>');
             t.same(status, {
                 activeState: 'Idle',
                 mpos: {
-                    x: '5.529',
-                    y: '0.560',
-                    z: '7.000'
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                    a: '0.0000',
+                    b: '0.0000',
+                    c: '0.0000',
                 },
                 wpos: {
-                    x: '1.529',
-                    y: '-5.440',
-                    z: '-0.000'
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
                 }
             });
             t.end();
         });
 
-        const line = '<Idle,MPos:5.529,0.560,7.000,WPos:1.529,-5.440,-0.000>';
-        runner.parse(line);
-    });
-
-    t.test('new status format', (t) => {
-        const runner = new SmoothieRunner();
-        runner.on('status', ({ raw, ...status }) => {
-            t.equal(raw, '<Idle|MPos:5.529,0.560,7.000|WPos:1.529,-5.440,-0.000>');
-            t.same(status, {
-                activeState: 'Idle',
-                mpos: {
-                    x: '5.529',
-                    y: '0.560',
-                    z: '7.000',
-                },
-                wpos: {
-                    x: '1.529',
-                    y: '-5.440',
-                    z: '-0.000',
-                }
-            });
-            t.end();
-        });
-
-        const line = '<Idle|MPos:5.529,0.560,7.000|WPos:1.529,-5.440,-0.000>';
+        const line = '<Idle,MPos:200.0000,200.0000,0.0000,0.0000,0.0000,0.0000,WPos:200.0000,200.0000,0.0000>';
         runner.parse(line);
     });
 
     t.end();
 });
 
-test('SmoothieRunnerLineParserResultStatus: 6-axis', (t) => {
-    t.test('old status format', (t) => {
+test('SmoothieRunnerLineParserResultStatus: new status format', (t) => {
+    t.test('6-axis', (t) => {
         const runner = new SmoothieRunner();
         runner.on('status', ({ raw, ...status }) => {
-            t.equal(raw, '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000>');
+            t.equal(raw, '<Idle|MPos:200.0000,200.0000,0.0000,0.0000,0.0000,0.0000|WPos:200.0000,200.0000,0.0000|F:4000.0,100.0>');
             t.same(status, {
                 activeState: 'Idle',
                 mpos: {
-                    x: '5.529',
-                    y: '0.560',
-                    z: '7.000',
-                    a: '0.100',
-                    b: '0.250',
-                    c: '0.500',
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                    a: '0.0000',
+                    b: '0.0000',
+                    c: '0.0000',
                 },
                 wpos: {
-                    x: '1.529',
-                    y: '-5.440',
-                    z: '-0.000',
-                }
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                },
+                feedrate: '4000.0',
+                feedrateOverride: '100.0',
             });
             t.end();
         });
 
-        const line = '<Idle,MPos:5.529,0.560,7.000,0.100,0.250,0.500,WPos:1.529,-5.440,-0.000>';
+        const line = '<Idle|MPos:200.0000,200.0000,0.0000,0.0000,0.0000,0.0000|WPos:200.0000,200.0000,0.0000|F:4000.0,100.0>';
         runner.parse(line);
     });
 
-    t.test('new status format', (t) => {
+    t.test('Laser', (t) => {
         const runner = new SmoothieRunner();
         runner.on('status', ({ raw, ...status }) => {
-            t.equal(raw, '<Idle|MPos:5.529,0.560,7.000,0.100,0.250,0.500|WPos:1.529,-5.440,-0.000>');
+            t.equal(raw, '<Idle|MPos:200.0000,200.0000,0.0000,0.0000,0.0000,0.0000|WPos:200.0000,200.0000,0.0000|F:4000.0,100.0|L:0.0000|S:0.8000>');
             t.same(status, {
                 activeState: 'Idle',
                 mpos: {
-                    x: '5.529',
-                    y: '0.560',
-                    z: '7.000',
-                    a: '0.100',
-                    b: '0.250',
-                    c: '0.500',
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                    a: '0.0000',
+                    b: '0.0000',
+                    c: '0.0000',
                 },
                 wpos: {
-                    x: '1.529',
-                    y: '-5.440',
-                    z: '-0.000',
-                }
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                },
+                feedrate: '4000.0',
+                feedrateOverride: '100.0',
+                laserPower: '0.0000',
+                laserIntensity: '0.8000',
             });
             t.end();
         });
 
-        const line = '<Idle|MPos:5.529,0.560,7.000,0.100,0.250,0.500|WPos:1.529,-5.440,-0.000>';
+        const line = '<Idle|MPos:200.0000,200.0000,0.0000,0.0000,0.0000,0.0000|WPos:200.0000,200.0000,0.0000|F:4000.0,100.0|L:0.0000|S:0.8000>';
         runner.parse(line);
     });
 
-    t.end();
-});
-
-test('SmoothieRunnerLineParserResultStatus: running', (t) => {
     t.test('Home', (t) => {
         const runner = new SmoothieRunner();
         runner.on('status', ({ raw, ...status }) => {
-            t.equal(raw, '<Home|MPos:0.000,0.000,0.000|WPos:0.000,0.000,0.000|F:100.0,100.0,10.0|L:500.0|S:1000.0|T:80.0,100.0>');
+            t.equal(raw, '<Home|MPos:15.8250,15.8250,0.0000|WPos:15.8250,15.8250,0.0000|F:4000.0,4000.0,100.0>');
             t.same(status, {
                 activeState: 'Home',
                 mpos: {
-                    x: '0.000',
-                    y: '0.000',
-                    z: '0.000',
+                    x: '15.8250',
+                    y: '15.8250',
+                    z: '0.0000',
                 },
                 wpos: {
-                    x: '0.000',
-                    y: '0.000',
-                    z: '0.000',
+                    x: '15.8250',
+                    y: '15.8250',
+                    z: '0.0000',
                 },
-                currentFeedrate: '100.0',
-                feedrate: '100.0',
-                feedrateOverride: '10.0',
-                laserPower: '500.0',
-                laserIntensity: '1000.0',
-                currentTemperature: '80.0',
-                targetTemperature: '100.0',
+                currentFeedrate: '4000.0',
+                feedrate: '4000.0',
+                feedrateOverride: '100.0',
             });
             t.end();
         });
 
-        const line = '<Home|MPos:0.000,0.000,0.000|WPos:0.000,0.000,0.000|F:100.0,100.0,10.0|L:500.0|S:1000.0|T:80.0,100.0>';
+        const line = '<Home|MPos:15.8250,15.8250,0.0000|WPos:15.8250,15.8250,0.0000|F:4000.0,4000.0,100.0>';
         runner.parse(line);
     });
 
     t.test('Run', (t) => {
         const runner = new SmoothieRunner();
         runner.on('status', ({ raw, ...status }) => {
-            t.equal(raw, '<Run|MPos:0.000,0.000,0.000|WPos:0.000,0.000,0.000|F:100.0,100.0,10.0|L:500.0|S:1000.0|T:80.0,100.0>');
+            t.equal(raw, '<Run|MPos:15.8250,15.8250,0.0000|WPos:15.8250,15.8250,0.0000|F:4000.0,4000.0,100.0>');
             t.same(status, {
                 activeState: 'Run',
                 mpos: {
-                    x: '0.000',
-                    y: '0.000',
-                    z: '0.000',
+                    x: '15.8250',
+                    y: '15.8250',
+                    z: '0.0000',
                 },
                 wpos: {
-                    x: '0.000',
-                    y: '0.000',
-                    z: '0.000',
+                    x: '15.8250',
+                    y: '15.8250',
+                    z: '0.0000',
                 },
-                currentFeedrate: '100.0',
-                feedrate: '100.0',
-                feedrateOverride: '10.0',
-                laserPower: '500.0',
-                laserIntensity: '1000.0',
-                currentTemperature: '80.0',
-                targetTemperature: '100.0',
+                currentFeedrate: '4000.0',
+                feedrate: '4000.0',
+                feedrateOverride: '100.0',
             });
             t.end();
         });
 
-        const line = '<Run|MPos:0.000,0.000,0.000|WPos:0.000,0.000,0.000|F:100.0,100.0,10.0|L:500.0|S:1000.0|T:80.0,100.0>';
+        const line = '<Run|MPos:15.8250,15.8250,0.0000|WPos:15.8250,15.8250,0.0000|F:4000.0,4000.0,100.0>';
         runner.parse(line);
+    });
+
+    t.test('Idle', (t) => {
+        const runner = new SmoothieRunner();
+        runner.on('status', ({ raw, ...status }) => {
+            t.equal(raw, '<Idle|MPos:200.0000,200.0000,0.0000|WPos:200.0000,200.0000,0.0000|F:4000.0,100.0>');
+            t.same(status, {
+                activeState: 'Idle',
+                mpos: {
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                },
+                wpos: {
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                },
+                feedrate: '4000.0',
+                feedrateOverride: '100.0',
+            });
+            t.end();
+        });
+
+        const line = '<Idle|MPos:200.0000,200.0000,0.0000|WPos:200.0000,200.0000,0.0000|F:4000.0,100.0>';
+        runner.parse(line);
+    });
+
+    t.test('state transition', (t) => {
+        let lineNumber = 0;
+        const lines = [
+            '<Run|MPos:15.8250,15.8250,0.0000|WPos:15.8250,15.8250,0.0000|F:4000.0,4000.0,100.0>',
+            '<Idle|MPos:200.0000,200.0000,0.0000|WPos:200.0000,200.0000,0.0000|F:4000.0,100.0>',
+        ];
+        const expectedResults = [
+            { // Run
+                activeState: 'Run',
+                mpos: {
+                    x: '15.8250',
+                    y: '15.8250',
+                    z: '0.0000',
+                },
+                wpos: {
+                    x: '15.8250',
+                    y: '15.8250',
+                    z: '0.0000',
+                },
+                currentFeedrate: '4000.0',
+                feedrate: '4000.0',
+                feedrateOverride: '100.0',
+            },
+            { // Idle
+                activeState: 'Idle',
+                mpos: {
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                },
+                wpos: {
+                    x: '200.0000',
+                    y: '200.0000',
+                    z: '0.0000',
+                },
+                feedrate: '4000.0',
+                feedrateOverride: '100.0',
+            }
+        ];
+
+        const runner = new SmoothieRunner();
+        runner.on('status', ({ raw, ...status }) => {
+            const index = lineNumber - 1;
+            t.equal(raw, lines[index]);
+            t.same(status, expectedResults[index]);
+
+            if (lineNumber === lines.length) {
+                t.end();
+            }
+        });
+
+        lines.forEach((line, index) => {
+            lineNumber = index + 1;
+            runner.parse(line);
+        });
     });
 
     t.end();
