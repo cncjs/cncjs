@@ -1,6 +1,5 @@
 import events from 'events';
 import _ from 'lodash';
-import decimalPlaces from '../../lib/decimal-places';
 import SmoothieLineParser from './SmoothieLineParser';
 import SmoothieLineParserResultStatus from './SmoothieLineParserResultStatus';
 import SmoothieLineParserResultOk from './SmoothieLineParserResultOk';
@@ -28,8 +27,6 @@ class SmoothieRunner extends events.EventEmitter {
                 y: '0.0000',
                 z: '0.0000'
             },
-            ovF: 100,
-            ovS: 100
         },
         parserstate: {
             modal: {
@@ -75,29 +72,9 @@ class SmoothieRunner extends events.EventEmitter {
         const { type, payload } = result;
 
         if (type === SmoothieLineParserResultStatus) {
-            // WCO:0.0000,10.0000,2.5000
-            // A current work coordinate offset is now sent to easily convert
-            // between position vectors, where WPos = MPos - WCO for each axis.
-            if (_.has(payload, 'mpos') && !_.has(payload, 'wpos')) {
-                payload.wpos = payload.wpos || {};
-                _.each(payload.mpos, (mpos, axis) => {
-                    const digits = decimalPlaces(mpos);
-                    const wco = _.get((payload.wco || this.state.status.wco), axis, 0);
-                    payload.wpos[axis] = (Number(mpos) - Number(wco)).toFixed(digits);
-                });
-            } else if (_.has(payload, 'wpos') && !_.has(payload, 'mpos')) {
-                payload.mpos = payload.mpos || {};
-                _.each(payload.wpos, (wpos, axis) => {
-                    const digits = decimalPlaces(wpos);
-                    const wco = _.get((payload.wco || this.state.status.wco), axis, 0);
-                    payload.mpos[axis] = (Number(wpos) + Number(wco)).toFixed(digits);
-                });
-            }
-
             const nextState = {
                 ...this.state,
                 status: {
-                    ...this.state.status,
                     ...payload
                 }
             };
