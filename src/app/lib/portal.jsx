@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { GlobalProvider } from 'app/index';
+import { GlobalProvider } from 'app/context';
 
 export default (Component, node = null) => new Promise((resolve, reject) => {
     let defaultNode = null;
