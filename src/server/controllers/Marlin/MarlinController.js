@@ -569,6 +569,7 @@ class MarlinController {
             // miss that first M115 as it boots, so we send this
             // possibly-redundant M115 when we see 'start'.
             this.command('gcode', 'M115');
+            this.feeder.next();
         });
 
         this.runner.on('echo', (res) => {
