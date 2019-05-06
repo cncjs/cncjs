@@ -128,7 +128,7 @@ Now you're ready to go!
 ```bash
 $ npm install  # Ensure that packages are installed
 $ npm run prepare
-$ ./bin/cnc -vv
+$ ./bin/cncjs -vv
   :  :  :
 Server is listening on 0.0.0.0:8000
 ```
@@ -172,7 +172,7 @@ $ ls -al output/linux/
 
 ## Localization
 
-If you'd like to help contribute translations, you can fork the repository, update resource files in the [src/web/i18n](https://github.com/cncjs/cncjs/tree/master/src/web/i18n) directory, and create a pull request to submit your changes.
+If you'd like to help contribute translations, you can fork the repository, update resource files in the [src/app/i18n](https://github.com/cncjs/cncjs/tree/master/src/app/i18n) directory, and create a pull request to submit your changes.
 
 ### Fork the repository
 
@@ -213,9 +213,9 @@ You can continue to make more changes and create new commits. When you’re read
 
 You can validate the translation by copying translated resource files to the installed directory. Note that your path may differ based on the Node installation path you have in place.
 ```bash
-$ cd $(dirname `which cnc`)/../lib/node_modules/cncjs/dist/web/i18n/
+$ cd $(dirname `which cncjs`)/../lib/node_modules/cncjs/dist/app/i18n/
 $ pwd
-/home/cheton/.nvm/versions/node/v4.4.3/lib/node_modules/cncjs/dist/web/i18n
+/home/cheton/.nvm/versions/node/v10.15.3/lib/node_modules/cncjs/dist/app/i18n
 ```
 
 To verify your changes during runtime, it's recommended that you open <b>Developer Tools</b> and disable browser cache. For example:
@@ -226,6 +226,6 @@ To verify your changes during runtime, it's recommended that you open <b>Develop
 ##### Step 2: Disable cache
 ![image](https://cloud.githubusercontent.com/assets/447801/16014264/1d32e872-31c3-11e6-9178-6cc06bd0f6b5.png)
 
-Now you can copy resource files to the <b>dist/cnc/web/i18n</b> directory and refresh your browser to see new updates.
+Now you can copy resource files to the <b>dist/cncjs/app/i18n</b> directory and refresh your browser to see new updates.
 
 <b>Note that you should not close DevTools to make sure your browser won't cache anything.</b>
