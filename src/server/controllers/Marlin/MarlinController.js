@@ -606,7 +606,9 @@ class MarlinController {
             // Marlin readiness.  On initial power-up, Marlin might
             // miss that first M115 as it boots, so we send this
             // possibly-redundant M115 when we see 'start'.
-            this.command('gcode', 'M115');
+            this.connection.write('M115\n', {
+                source: WRITE_SOURCE_SERVER
+            });
         });
 
         this.runner.on('echo', (res) => {
@@ -920,7 +922,9 @@ class MarlinController {
 
             // M115: Get firmware version and capabilities
             // The response to this will take us to the ready state
-            this.command('gcode', 'M115');
+            this.connection.write('M115\n', {
+                source: WRITE_SOURCE_SERVER
+            });
 
             this.workflow.stop();
 
