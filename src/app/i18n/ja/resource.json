@@ -484,7 +484,6 @@
     "Webcam Settings": "ウェブカメラの設定",
     "Media Source": "映像ソース",
     "Use a built-in camera or a connected webcam": "組み込まれたカメラモジュールか直接接続されたウェブカメラを使う",
-    "Use a M-JPEG stream over HTTP": "M-JPEG stream over HTTPを使う",
     "Webcam is off": "ウェブカメラはオフ",
     "Rotate Left": "左に回転",
     "Rotate Right": "右に回転",
@@ -529,5 +528,7 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>無効</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": ""
 }
