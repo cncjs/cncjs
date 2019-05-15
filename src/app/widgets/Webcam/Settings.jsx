@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Select from 'react-select';
 import { Button } from 'app/components/Buttons';
+import styled from 'styled-components';
+import Margin from 'app/components/Margin';
 import Modal from 'app/components/Modal';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
@@ -10,6 +12,11 @@ import {
     MEDIA_SOURCE_LOCAL,
     MEDIA_SOURCE_MJPEG
 } from './constants';
+
+const MutedText = styled.div`
+    display: inline-block;
+    color: #767676;
+`;
 
 class Settings extends PureComponent {
     static propTypes = {
@@ -145,7 +152,7 @@ class Settings extends PureComponent {
                                         this.setState({ mediaSource: MEDIA_SOURCE_MJPEG });
                                     }}
                                 />
-                                {i18n._('Use a M-JPEG stream over HTTP')}
+                                {i18n._('Connect to an IP camera')}
                             </label>
                         </div>
                         <div style={{ marginLeft: 20 }}>
@@ -153,10 +160,15 @@ class Settings extends PureComponent {
                                 type="url"
                                 className="form-control"
                                 disabled={mediaSource !== MEDIA_SOURCE_MJPEG}
-                                placeholder="http://raspberrypi:8080/?action=stream"
+                                placeholder="http://0.0.0.0:8080/?action=stream"
                                 defaultValue={url}
                                 onChange={this.handleChangeURL}
                             />
+                            <Margin top={4}>
+                                <MutedText style={{ marginTop: 4 }}>
+                                    {i18n._('The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.')}
+                                </MutedText>
+                            </Margin>
                         </div>
                     </div>
                 </Modal.Body>

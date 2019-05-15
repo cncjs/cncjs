@@ -16,6 +16,22 @@ import {
     MEDIA_SOURCE_MJPEG
 } from './constants';
 
+// | Before                | After                   |
+// |-----------------------|-------------------------|
+// | http://0.0.0.0:8000/  | http://localhost:8000/  |
+// | https://0.0.0.0:8000/ | https://localhost:8000/ |
+// | //0.0.0.0:8000/       | //localhost:8000/       |
+// |-----------------------|-------------------------|
+const mapMetaAddressToHostname = (url) => {
+    const hostname = window.location.hostname;
+
+    return String(url).trim().replace(/((?:https?:)?\/\/)?(0.0.0.0)/i, (match, p1, p2, offset, string) => {
+        // p1 = 'http://'
+        // p2 = '0.0.0.0'
+        return [p1, hostname].join('');
+    });
+};
+
 class Webcam extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
@@ -32,7 +48,7 @@ class Webcam extends PureComponent {
             el.src = '';
 
             setTimeout(() => {
-                el.src = state.url;
+                el.src = mapMetaAddressToHostname(state.url);
             }, 10); // delay 10ms
         }
     }
@@ -86,7 +102,7 @@ class Webcam extends PureComponent {
                     ref={node => {
                         this.imageSource = node;
                     }}
-                    src={url}
+                    src={mapMetaAddressToHostname(url)}
                     style={{
                         width: (100 * scale).toFixed(0) + '%',
                         transform: transformStyle

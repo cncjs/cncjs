@@ -1,23 +1,34 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-const Space = ({ componentClass: Component, width, ...props }) => {
+const Space = ({ tag: Component, width, height, ...props }) => {
     if ((typeof width === 'string') && width.match(/^\d+$/)) {
         width += 'px';
+    }
+    if ((typeof height === 'string') && height.match(/^\d+$/)) {
+        height += 'px';
     }
 
     props.style = {
         display: 'inline-block',
-        width: width,
-        ...props.style
+        ...props.style,
     };
+
+    if (width !== undefined) {
+        props.style.width = width;
+    }
+
+    if (height !== undefined) {
+        props.style.height = height;
+    }
+
     return (
         <Component {...props} />
     );
 };
 
 Space.propTypes = {
-    componentClass: PropTypes.oneOfType([
+    tag: PropTypes.oneOfType([
         PropTypes.func,
         PropTypes.string,
         PropTypes.shape({ $$typeof: PropTypes.symbol, render: PropTypes.func }),
@@ -25,12 +36,17 @@ Space.propTypes = {
     width: PropTypes.oneOfType([
         PropTypes.number,
         PropTypes.string
-    ])
+    ]),
+    height: PropTypes.oneOfType([
+        PropTypes.number,
+        PropTypes.string
+    ]),
 };
 
 Space.defaultProps = {
-    componentClass: 'span',
-    width: 0
+    tag: 'div',
+    width: 0,
+    height: 0,
 };
 
 export default Space;
