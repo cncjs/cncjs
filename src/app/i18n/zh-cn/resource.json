@@ -484,7 +484,6 @@
     "Webcam Settings": "网络摄像机设置",
     "Media Source": "媒体源",
     "Use a built-in camera or a connected webcam": "使用计算机自带摄像头或外借摄像头",
-    "Use a M-JPEG stream over HTTP": "使用基于HTTP的M-JPEG流",
     "Webcam is off": "网络摄像机未开启",
     "Rotate Left": "左转90度",
     "Rotate Right": "右转90度",
@@ -529,5 +528,7 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>已关闭</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": ""
 }
