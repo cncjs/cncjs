@@ -489,7 +489,6 @@
     "Webcam Settings": "Web Kamera Ayarları",
     "Media Source": "Medya Kaynağı",
     "Use a built-in camera or a connected webcam": "Yerleşik bir kamera veya bağlı bir web kamerası kullanın",
-    "Use a M-JPEG stream over HTTP": "HTTP üzerinden bir M-JPEG akışı kullanın",
     "Webcam is off": "Web kamerası kapalı",
     "Rotate Left": "Sola dön",
     "Rotate Right": "Sağa Dön",
@@ -529,5 +528,12 @@
     "User Accounts": "Kullanıcı Hesapları",
     "New Account": "Yeni Hesap",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Etkin</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Engelle</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": "",
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": ""
 }

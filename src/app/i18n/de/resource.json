@@ -489,7 +489,6 @@
     "Webcam Settings": "Webcam-Einstellungen",
     "Media Source": "Medien-Quelle",
     "Use a built-in camera or a connected webcam": "Benutze die eingebaut oder verbundene Webcam",
-    "Use a M-JPEG stream over HTTP": "Benutze einen M-JPEG Stream über HTTP",
     "Webcam is off": "Webcam ist aus",
     "Rotate Left": "Linksherum drehen",
     "Rotate Right": "Rechtsherum drehen",
@@ -529,5 +528,12 @@
     "User Accounts": "Benutzerkonten",
     "New Account": "Neues Konto",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Aktiviert</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Deaktiviert</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": "",
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": ""
 }

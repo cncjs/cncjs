@@ -489,7 +489,6 @@
     "Webcam Settings": "網路攝影機設定",
     "Media Source": "媒體來源",
     "Use a built-in camera or a connected webcam": "使用內置相機或連接的網路攝影機",
-    "Use a M-JPEG stream over HTTP": "使用 M-JPEG 影像串流",
     "Webcam is off": "網路攝影機未開啟",
     "Rotate Left": "向左旋轉",
     "Rotate Right": "向右旋轉",
@@ -529,5 +528,12 @@
     "User Accounts": "使用者帳號",
     "New Account": "新增帳號",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>已啟用</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>已停用</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": "",
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": ""
 }

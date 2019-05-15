@@ -489,7 +489,6 @@
     "Webcam Settings": "Настройки камеры",
     "Media Source": "",
     "Use a built-in camera or a connected webcam": "",
-    "Use a M-JPEG stream over HTTP": "",
     "Webcam is off": "Камера выключена",
     "Rotate Left": "",
     "Rotate Right": "",
@@ -529,5 +528,12 @@
     "User Accounts": "Учетные записи пользователей",
     "New Account": "Создать учетную запись",
     "Hide Limits": "",
-    "Show Limits": ""
+    "Show Limits": "",
+    "WebGL: <1>Enabled</1>": "WebGL: <1>Включено</1>",
+    "WebGL: <1>Disabled</1>": "WebGL: <1>Отключено</1>",
+    "Hide Cutting Tool": "",
+    "Show Cutting Tool": "",
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": ""
 }
