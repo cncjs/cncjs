@@ -37,9 +37,8 @@ class TinyG extends PureComponent {
     };
 
     // See src/app/controllers/TinyG/constants.js
-    plannerBufferMax = 28;
+    plannerBufferMax = 28; // default pool size
 
-    // default pool size
     plannerBufferMin = 0;
 
     enableMotors = () => {

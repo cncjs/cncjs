@@ -120,9 +120,9 @@ class SPCharCounting {
 }
 
 class Sender extends events.EventEmitter {
+    // streaming protocol
     sp = null;
 
-    // Streaming Protocol
     state = {
         hold: false,
         holdReason: null,
