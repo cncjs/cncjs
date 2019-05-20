@@ -4,7 +4,9 @@ import { app, BrowserWindow, shell } from 'electron';
 
 class WindowManager {
     windows = [];
+
     title = '';
+
     url = '';
 
     constructor() {
@@ -43,6 +45,7 @@ class WindowManager {
             app.quit();
         });
     }
+
     openWindow(url, options) {
         const window = new BrowserWindow({
             ...options,
@@ -81,6 +84,7 @@ class WindowManager {
 
         return window;
     }
+
     getWindow(index = 0) {
         if (this.windows.length === 0) {
             return null;

@@ -58,19 +58,25 @@ class Visualizer extends Component {
     };
 
     pubsubTokens = [];
+
     isAgitated = false;
+
     machinePosition = {
         x: 0,
         y: 0,
         z: 0
     };
+
     workPosition = {
         x: 0,
         y: 0,
         z: 0
     };
+
     machineProfile = store.get('workspace.machineProfile');
+
     group = new THREE.Group();
+
     pivotPoint = new PivotPoint3({ x: 0, y: 0, z: 0 }, (x, y, z) => { // relative position
         _each(this.group.children, (o) => {
             o.translateX(x);
@@ -80,6 +86,7 @@ class Visualizer extends Component {
     });
 
     node = null;
+
     setRef = (node) => {
         this.node = node;
     };

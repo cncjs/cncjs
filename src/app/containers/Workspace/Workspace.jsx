@@ -61,6 +61,7 @@ class Workspace extends PureComponent {
         showSecondaryContainer: store.get('workspace.container.secondary.show'),
         inactiveCount: _.size(widgetManager.getInactiveWidgets())
     };
+
     action = {
         openModal: (name = MODAL_NONE, params = {}) => {
             this.setState(state => ({
@@ -90,17 +91,26 @@ class Workspace extends PureComponent {
             }));
         }
     };
+
     sortableGroup = {
         primary: null,
         secondary: null
     };
+
     primaryContainer = null;
+
     secondaryContainer = null;
+
     primaryToggler = null;
+
     secondaryToggler = null;
+
     primaryWidgets = null;
+
     secondaryWidgets = null;
+
     defaultContainer = null;
+
     controllerEvents = {
         'connect': () => {
             if (controller.connected) {
@@ -172,6 +182,7 @@ class Workspace extends PureComponent {
             });
         }
     };
+
     widgetEventHandler = {
         onForkWidget: (widgetId) => {
             // TODO
@@ -366,36 +377,43 @@ class Workspace extends PureComponent {
             this.setState({ mounted: true });
         }, 0);
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
         this.removeResizeEventListener();
     }
+
     componentDidUpdate() {
         store.set('workspace.container.primary.show', this.state.showPrimaryContainer);
         store.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
 
         this.resizeDefaultContainer();
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     addResizeEventListener() {
         this.onResizeThrottled = _.throttle(this.resizeDefaultContainer, 50);
         window.addEventListener('resize', this.onResizeThrottled);
     }
+
     removeResizeEventListener() {
         window.removeEventListener('resize', this.onResizeThrottled);
         this.onResizeThrottled = null;
     }
+
     render() {
         const { style, className } = this.props;
         const {
@@ -412,18 +430,18 @@ class Workspace extends PureComponent {
 
         return (
             <div style={style} className={classNames(className, styles.workspace)}>
-                {modal.name === MODAL_FEEDER_PAUSED &&
-                <FeederPaused
-                    title={modal.params.title}
-                    onClose={this.action.closeModal}
-                />
-                }
-                {modal.name === MODAL_FEEDER_WAIT &&
-                <FeederWait
-                    title={modal.params.title}
-                    onClose={this.action.closeModal}
-                />
-                }
+                {modal.name === MODAL_FEEDER_PAUSED && (
+                    <FeederPaused
+                        title={modal.params.title}
+                        onClose={this.action.closeModal}
+                    />
+                )}
+                {modal.name === MODAL_FEEDER_WAIT && (
+                    <FeederWait
+                        title={modal.params.title}
+                        onClose={this.action.closeModal}
+                    />
+                )}
                 {modal.name === MODAL_SERVER_DISCONNECTED &&
                 <ServerDisconnected />
                 }
@@ -557,27 +575,27 @@ class Workspace extends PureComponent {
                                     onDragEnd={this.widgetEventHandler.onDragEnd}
                                 />
                             </div>
-                            {hidePrimaryContainer &&
-                            <div
-                                ref={node => {
-                                    this.primaryToggler = node;
-                                }}
-                                className={styles.primaryToggler}
-                            >
-                                <ButtonGroup
-                                    btnSize="sm"
-                                    btnStyle="flat"
+                            {hidePrimaryContainer && (
+                                <div
+                                    ref={node => {
+                                        this.primaryToggler = node;
+                                    }}
+                                    className={styles.primaryToggler}
                                 >
-                                    <Button
-                                        style={{ minWidth: 30 }}
-                                        compact
-                                        onClick={this.togglePrimaryContainer}
+                                    <ButtonGroup
+                                        btnSize="sm"
+                                        btnStyle="flat"
                                     >
-                                        <i className="fa fa-chevron-right" />
-                                    </Button>
-                                </ButtonGroup>
-                            </div>
-                            }
+                                        <Button
+                                            style={{ minWidth: 30 }}
+                                            compact
+                                            onClick={this.togglePrimaryContainer}
+                                        >
+                                            <i className="fa fa-chevron-right" />
+                                        </Button>
+                                    </ButtonGroup>
+                                </div>
+                            )}
                             <div
                                 ref={node => {
                                     this.defaultContainer = node;
@@ -589,27 +607,27 @@ class Workspace extends PureComponent {
                             >
                                 <DefaultWidgets />
                             </div>
-                            {hideSecondaryContainer &&
-                            <div
-                                ref={node => {
-                                    this.secondaryToggler = node;
-                                }}
-                                className={styles.secondaryToggler}
-                            >
-                                <ButtonGroup
-                                    btnSize="sm"
-                                    btnStyle="flat"
+                            {hideSecondaryContainer && (
+                                <div
+                                    ref={node => {
+                                        this.secondaryToggler = node;
+                                    }}
+                                    className={styles.secondaryToggler}
                                 >
-                                    <Button
-                                        style={{ minWidth: 30 }}
-                                        compact
-                                        onClick={this.toggleSecondaryContainer}
+                                    <ButtonGroup
+                                        btnSize="sm"
+                                        btnStyle="flat"
                                     >
-                                        <i className="fa fa-chevron-left" />
-                                    </Button>
-                                </ButtonGroup>
-                            </div>
-                            }
+                                        <Button
+                                            style={{ minWidth: 30 }}
+                                            compact
+                                            onClick={this.toggleSecondaryContainer}
+                                        >
+                                            <i className="fa fa-chevron-left" />
+                                        </Button>
+                                    </ButtonGroup>
+                                </div>
+                            )}
                             <div
                                 ref={node => {
                                     this.secondaryContainer = node;

@@ -8,6 +8,7 @@ class Widget extends PureComponent {
         borderless: PropTypes.bool,
         fullscreen: PropTypes.bool
     };
+
     static defaultProps = {
         borderless: false,
         fullscreen: false

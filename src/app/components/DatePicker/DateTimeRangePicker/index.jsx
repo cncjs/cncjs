@@ -19,6 +19,7 @@ class DateTimeRangePicker extends PureComponent {
         onChangeEndDate: PropTypes.func,
         onChangeEndTime: PropTypes.func
     };
+
     static defaultProps = {
         locale: i18next.language,
         minDate: null,

@@ -4,6 +4,7 @@ class GridLine {
     group = new THREE.Object3D();
 
     colorCenterLine = new THREE.Color(0x444444);
+
     colorGrid = new THREE.Color(0x888888);
 
     constructor(sizeX, stepX, sizeY, stepY, colorCenterLine, colorGrid) {

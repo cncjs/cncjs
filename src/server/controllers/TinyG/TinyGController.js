@@ -55,6 +55,7 @@ class TinyGController {
 
     // Connection
     connection = null;
+
     connectionEventListener = {
         data: (data) => {
             log.silly(`< ${data}`);
@@ -85,9 +86,13 @@ class TinyGController {
 
     // TinyG
     tinyg = null;
+
     ready = false;
+
     state = {};
+
     settings = {};
+
     sr = {
         stat: true, // machine state
         line: true, // runtime line number
@@ -121,13 +126,18 @@ class TinyGController {
         com: true, // [edge-082.10] Mist coolant
         cof: true // [edge-082.10] Flood coolant
     };
+
     timer = {
         query: null,
         energizeMotors: null
     };
+
     energizeMotorsTimer = null;
+
     blocked = false;
+
     senderStatus = SENDER_STATUS_NONE;
+
     actionTime = {
         energizeMotors: 0,
         senderFinishTime: 0
@@ -642,6 +652,7 @@ class TinyGController {
             }
         }, 250);
     }
+
     // https://github.com/synthetos/TinyG/wiki/TinyG-Configuration-for-Firmware-Version-0.97
     async initController() {
         const send = (cmd = '') => {
@@ -732,6 +743,7 @@ class TinyGController {
         await delay(50);
         this.event.trigger('controller:ready');
     }
+
     populateContext(context) {
         // Machine position
         const {
@@ -808,10 +820,12 @@ class TinyGController {
             ...globalObjects,
         });
     }
+
     clearActionValues() {
         this.actionTime.energizeMotors = 0;
         this.actionTime.senderFinishTime = 0;
     }
+
     destroy() {
         if (this.timer.query) {
             clearInterval(this.timer.query);
@@ -850,6 +864,7 @@ class TinyGController {
             this.workflow = null;
         }
     }
+
     get status() {
         return {
             port: this.options.port,
@@ -870,6 +885,7 @@ class TinyGController {
             }
         };
     }
+
     open(callback = noop) {
         const { port, baudrate } = this.options;
 
@@ -930,6 +946,7 @@ class TinyGController {
             this.initController();
         });
     }
+
     close(callback) {
         const { port } = this.options;
 
@@ -964,12 +981,15 @@ class TinyGController {
         this.connection.removeAllListeners();
         this.connection.close(callback);
     }
+
     isOpen() {
         return this.connection && this.connection.isOpen;
     }
+
     isClose() {
         return !(this.isOpen());
     }
+
     addConnection(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
@@ -1018,6 +1038,7 @@ class TinyGController {
             socket.emit('workflow:state', this.workflow.state);
         }
     }
+
     removeConnection(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
@@ -1028,12 +1049,14 @@ class TinyGController {
         this.sockets[socket.id] = undefined;
         delete this.sockets[socket.id];
     }
+
     emit(eventName, ...args) {
         Object.keys(this.sockets).forEach(id => {
             const socket = this.sockets[id];
             socket.emit(eventName, ...args);
         });
     }
+
     // https://github.com/synthetos/g2/wiki/Job-Exception-Handling
     // Character    Operation       Description
     // !            Feedhold        Start a feedhold. Ignored if already in a feedhold
@@ -1383,6 +1406,7 @@ class TinyGController {
 
         handler();
     }
+
     write(data, context) {
         // Assertion check
         if (this.isClose()) {
@@ -1397,6 +1421,7 @@ class TinyGController {
         this.connection.write(data);
         log.silly(`> ${data}`);
     }
+
     writeln(data, context) {
         this.write(data + '\n', context);
     }

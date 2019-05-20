@@ -2,7 +2,9 @@ import watch from 'watch';
 
 class FSMonitor {
     root = '';
+
     monitor = null;
+
     files = {};
 
     watch(root) {
@@ -23,6 +25,7 @@ class FSMonitor {
             });
         });
     }
+
     unwatch() {
         if (this.monitor) {
             this.monitor.stop(); // Stop watching

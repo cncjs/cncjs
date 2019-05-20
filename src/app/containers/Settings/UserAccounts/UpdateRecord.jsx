@@ -37,6 +37,7 @@ class UpdateRecord extends PureComponent {
             newPassword: newPassword
         };
     }
+
     render() {
         const { state, actions } = this.props;
         const { modal } = state;
@@ -50,17 +51,17 @@ class UpdateRecord extends PureComponent {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {alertMessage &&
-                    <ToastNotification
-                        style={{ margin: '-16px -24px 10px -24px' }}
-                        type="error"
-                        onDismiss={() => {
-                            actions.updateModalParams({ alertMessage: '' });
-                        }}
-                    >
-                        {alertMessage}
-                    </ToastNotification>
-                    }
+                    {alertMessage && (
+                        <ToastNotification
+                            style={{ margin: '-16px -24px 10px -24px' }}
+                            type="error"
+                            onDismiss={() => {
+                                actions.updateModalParams({ alertMessage: '' });
+                            }}
+                        >
+                            {alertMessage}
+                        </ToastNotification>
+                    )}
                     <Form
                         ref={node => {
                             this.form = node;
@@ -117,53 +118,53 @@ class UpdateRecord extends PureComponent {
                                         validations={changePassword ? [validations.required] : []}
                                         disabled={!changePassword}
                                     />
-                                    {!changePassword &&
-                                    <button
-                                        type="button"
-                                        className="btn btn-default pull-left"
-                                        onClick={() => {
-                                            actions.updateModalParams({ changePassword: true });
-                                        }}
-                                    >
-                                        {i18n._('Change Password')}
-                                    </button>
-                                    }
+                                    {!changePassword && (
+                                        <button
+                                            type="button"
+                                            className="btn btn-default pull-left"
+                                            onClick={() => {
+                                                actions.updateModalParams({ changePassword: true });
+                                            }}
+                                        >
+                                            {i18n._('Change Password')}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
-                            {changePassword &&
-                            <div className={styles.formGroup}>
-                                <label>{i18n._('New Password')}</label>
-                                <Input
-                                    ref={node => {
-                                        this.fields.newPassword = node;
-                                    }}
-                                    type="password"
-                                    name="password"
-                                    className={classNames(
-                                        'form-control',
-                                        styles.formControl,
-                                        styles.short
-                                    )}
-                                    validations={[validations.required, validations.password]}
-                                />
-                            </div>
-                            }
-                            {changePassword &&
-                            <div className={styles.formGroup}>
-                                <label>{i18n._('Confirm Password')}</label>
-                                <Input
-                                    type="password"
-                                    name="confirm"
-                                    value=""
-                                    className={classNames(
-                                        'form-control',
-                                        styles.formControl,
-                                        styles.short
-                                    )}
-                                    validations={[validations.required]}
-                                />
-                            </div>
-                            }
+                            {changePassword && (
+                                <div className={styles.formGroup}>
+                                    <label>{i18n._('New Password')}</label>
+                                    <Input
+                                        ref={node => {
+                                            this.fields.newPassword = node;
+                                        }}
+                                        type="password"
+                                        name="password"
+                                        className={classNames(
+                                            'form-control',
+                                            styles.formControl,
+                                            styles.short
+                                        )}
+                                        validations={[validations.required, validations.password]}
+                                    />
+                                </div>
+                            )}
+                            {changePassword && (
+                                <div className={styles.formGroup}>
+                                    <label>{i18n._('Confirm Password')}</label>
+                                    <Input
+                                        type="password"
+                                        name="confirm"
+                                        value=""
+                                        className={classNames(
+                                            'form-control',
+                                            styles.formControl,
+                                            styles.short
+                                        )}
+                                        validations={[validations.required]}
+                                    />
+                                </div>
+                            )}
                         </div>
                     </Form>
                 </Modal.Body>

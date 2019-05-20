@@ -37,6 +37,7 @@ class Header extends PureComponent {
     };
 
     state = this.getInitialState();
+
     actions = {
         requestPushPermission: () => {
             const onGranted = () => {
@@ -96,12 +97,14 @@ class Header extends PureComponent {
             }
         }
     };
+
     actionHandlers = {
         CONTROLLER_COMMAND: (event, { command }) => {
             // feedhold, cyclestart, homing, unlock, reset
             controller.command(command);
         }
     };
+
     controllerEvents = {
         'config:change': () => {
             this.actions.fetchCommands();
@@ -175,6 +178,7 @@ class Header extends PureComponent {
             }
         }
     };
+
     _isMounted = false;
 
     getInitialState() {
@@ -194,6 +198,7 @@ class Header extends PureComponent {
             latestVersion: settings.version
         };
     }
+
     componentDidMount() {
         this._isMounted = true;
 
@@ -204,6 +209,7 @@ class Header extends PureComponent {
         this.actions.checkForUpdates();
         this.actions.fetchCommands();
     }
+
     componentWillUnmount() {
         this._isMounted = false;
 
@@ -212,30 +218,35 @@ class Header extends PureComponent {
 
         this.runningTasks = [];
     }
+
     addActionHandlers() {
         Object.keys(this.actionHandlers).forEach(eventName => {
             const callback = this.actionHandlers[eventName];
             combokeys.on(eventName, callback);
         });
     }
+
     removeActionHandlers() {
         Object.keys(this.actionHandlers).forEach(eventName => {
             const callback = this.actionHandlers[eventName];
             combokeys.removeListener(eventName, callback);
         });
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     render() {
         const { history, location } = this.props;
         const { pushPermission, commands, runningTasks, currentVersion, latestVersion } = this.state;
@@ -289,19 +300,19 @@ class Header extends PureComponent {
                             >
                                 {settings.version}
                             </div>
-                            {newUpdateAvailable &&
-                            <span
-                                className="label label-primary"
-                                style={{
-                                    fontSize: '50%',
-                                    position: 'absolute',
-                                    top: 2,
-                                    right: 2
-                                }}
-                            >
+                            {newUpdateAvailable && (
+                                <span
+                                    className="label label-primary"
+                                    style={{
+                                        fontSize: '50%',
+                                        position: 'absolute',
+                                        top: 2,
+                                        right: 2
+                                    }}
+                                >
                                 N
-                            </span>
-                            }
+                                </span>
+                            )}
                         </Anchor>
                     </OverlayTrigger>
                     <Navbar.Toggle />
@@ -313,11 +324,11 @@ class Header extends PureComponent {
                                 { 'hidden': hideUserDropdown }
                             )}
                             id="nav-dropdown-user"
-                            title={
+                            title={(
                                 <div title={i18n._('My Account')}>
                                     <i className="fa fa-fw fa-user" />
                                 </div>
-                            }
+                            )}
                             noCaret
                         >
                             <MenuItem header>
@@ -351,51 +362,51 @@ class Header extends PureComponent {
                         </NavDropdown>
                         <NavDropdown
                             id="nav-dropdown-menu"
-                            title={
+                            title={(
                                 <div title={i18n._('Options')}>
                                     <i className="fa fa-fw fa-ellipsis-v" />
-                                    {this.state.runningTasks.length > 0 &&
-                                    <span
-                                        className="label label-primary"
-                                        style={{
-                                            position: 'absolute',
-                                            top: 4,
-                                            right: 4
-                                        }}
-                                    >
+                                    {this.state.runningTasks.length > 0 && (
+                                        <span
+                                            className="label label-primary"
+                                            style={{
+                                                position: 'absolute',
+                                                top: 4,
+                                                right: 4
+                                            }}
+                                        >
                                         N
-                                    </span>
-                                    }
+                                        </span>
+                                    )}
                                 </div>
-                            }
+                            )}
                             noCaret
                         >
-                            {showCommands &&
-                            <MenuItem header>
-                                {i18n._('Command')}
-                                {pushPermission === Push.Permission.GRANTED &&
-                                <span className="pull-right">
-                                    <i className="fa fa-fw fa-bell-o" />
-                                </span>
-                                }
-                                {pushPermission === Push.Permission.DENIED &&
-                                <span className="pull-right">
-                                    <i className="fa fa-fw fa-bell-slash-o" />
-                                </span>
-                                }
-                                {pushPermission === Push.Permission.DEFAULT &&
-                                <span className="pull-right">
-                                    <Anchor
-                                        className={styles.btnIcon}
-                                        onClick={this.actions.requestPushPermission}
-                                        title={i18n._('Show notifications')}
-                                    >
-                                        <i className="fa fa-fw fa-bell" />
-                                    </Anchor>
-                                </span>
-                                }
-                            </MenuItem>
-                            }
+                            {showCommands && (
+                                <MenuItem header>
+                                    {i18n._('Command')}
+                                    {pushPermission === Push.Permission.GRANTED && (
+                                        <span className="pull-right">
+                                            <i className="fa fa-fw fa-bell-o" />
+                                        </span>
+                                    )}
+                                    {pushPermission === Push.Permission.DENIED && (
+                                        <span className="pull-right">
+                                            <i className="fa fa-fw fa-bell-slash-o" />
+                                        </span>
+                                    )}
+                                    {pushPermission === Push.Permission.DEFAULT && (
+                                        <span className="pull-right">
+                                            <Anchor
+                                                className={styles.btnIcon}
+                                                onClick={this.actions.requestPushPermission}
+                                                title={i18n._('Show notifications')}
+                                            >
+                                                <i className="fa fa-fw fa-bell" />
+                                            </Anchor>
+                                        </span>
+                                    )}
+                                </MenuItem>
+                            )}
                             {showCommands && commands.map((cmd) => {
                                 const isTaskRunning = runningTasks.indexOf(cmd.taskId) >= 0;
 

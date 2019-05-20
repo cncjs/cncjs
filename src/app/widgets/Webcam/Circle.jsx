@@ -9,6 +9,7 @@ class Circle extends PureComponent {
         diameter: PropTypes.number,
         width: PropTypes.number
     };
+
     static defaultProps = {
         color: '#fff',
         opacity: 0.8,

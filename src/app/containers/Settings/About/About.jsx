@@ -16,6 +16,7 @@ class About extends PureComponent {
         const { actions } = this.props;
         actions.checkLatestVersion();
     }
+
     render() {
         const { state } = this.props;
         const { version } = state;

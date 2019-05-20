@@ -28,12 +28,15 @@ class ConnectionWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -199,9 +202,11 @@ class ConnectionWidget extends PureComponent {
         this.addControllerEvents();
         this.refreshPorts();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
@@ -227,6 +232,7 @@ class ConnectionWidget extends PureComponent {
         }
         this.config.set('autoReconnect', autoReconnect);
     }
+
     getInitialState() {
         let controllerType = this.config.get('controller.type');
         if (!includes(controller.loadedControllers, controllerType)) {
@@ -265,18 +271,21 @@ class ConnectionWidget extends PureComponent {
             alertMessage: ''
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     startLoading() {
         const delay = 5 * 1000; // wait for 5 seconds
 
@@ -289,6 +298,7 @@ class ConnectionWidget extends PureComponent {
             }));
         }, delay);
     }
+
     stopLoading() {
         if (this._loadingTimer) {
             clearTimeout(this._loadingTimer);
@@ -298,10 +308,12 @@ class ConnectionWidget extends PureComponent {
             loading: false
         }));
     }
+
     refreshPorts() {
         this.startLoading();
         controller.listPorts();
     }
+
     openPort(port, options) {
         const { baudrate } = { ...options };
 
@@ -326,6 +338,7 @@ class ConnectionWidget extends PureComponent {
             }
         });
     }
+
     closePort(port = this.state.port) {
         this.setState(state => ({
             connecting: false,
@@ -341,6 +354,7 @@ class ConnectionWidget extends PureComponent {
             controller.listPorts();
         });
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;

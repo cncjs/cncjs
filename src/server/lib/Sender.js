@@ -18,12 +18,15 @@ class SPSendResponse {
             this.callback = callback;
         }
     }
+
     process() {
         this.callback && this.callback(this);
     }
+
     clear() {
         // Do nothing
     }
+
     get type() {
         return SP_TYPE_SEND_RESPONSE;
     }
@@ -31,6 +34,7 @@ class SPSendResponse {
 
 class SPCharCounting {
     callback = null;
+
     state = {
         bufferSize: 128, // Defaults to 128
         dataLength: 0,
@@ -54,26 +58,32 @@ class SPCharCounting {
             this.callback = callback;
         }
     }
+
     process() {
         this.callback && this.callback(this);
     }
+
     reset() {
         this.state.bufferSize = 128; // Defaults to 128
         this.state.dataLength = 0;
         this.state.queue = [];
         this.state.line = '';
     }
+
     clear() {
         this.state.dataLength = 0;
         this.state.queue = [];
         this.state.line = '';
     }
+
     get type() {
         return SP_TYPE_CHAR_COUNTING;
     }
+
     get bufferSize() {
         return this.state.bufferSize;
     }
+
     set bufferSize(bufferSize = 0) {
         bufferSize = Number(bufferSize);
         if (!bufferSize) {
@@ -83,28 +93,36 @@ class SPCharCounting {
         // The buffer size cannot be reduced below the size of the data within the buffer.
         this.state.bufferSize = Math.max(bufferSize, this.state.dataLength);
     }
+
     get dataLength() {
         return this.state.dataLength;
     }
+
     set dataLength(dataLength) {
         this.state.dataLength = dataLength;
     }
+
     get queue() {
         return this.state.queue;
     }
+
     set queue(queue) {
         this.state.queue = queue;
     }
+
     get line() {
         return this.state.line;
     }
+
     set line(line) {
         this.state.line = line;
     }
 }
 
 class Sender extends events.EventEmitter {
-    sp = null; // Streaming Protocol
+    sp = null;
+
+    // Streaming Protocol
     state = {
         hold: false,
         holdReason: null,
@@ -120,7 +138,9 @@ class Sender extends events.EventEmitter {
         elapsedTime: 0,
         remainingTime: 0
     };
+
     stateChanged = false;
+
     dataFilter = null;
 
     // @param {number} [type] Streaming protocol type. 0 for send-response, 1 for character-counting.
@@ -201,6 +221,7 @@ class Sender extends events.EventEmitter {
             this.stateChanged = true;
         });
     }
+
     toJSON() {
         return {
             sp: this.sp.type,
@@ -218,6 +239,7 @@ class Sender extends events.EventEmitter {
             remainingTime: this.state.remainingTime
         };
     }
+
     hold(reason) {
         if (this.state.hold) {
             return;
@@ -227,6 +249,7 @@ class Sender extends events.EventEmitter {
         this.emit('hold');
         this.emit('change');
     }
+
     unhold() {
         if (!this.state.hold) {
             return;
@@ -236,6 +259,7 @@ class Sender extends events.EventEmitter {
         this.emit('unhold');
         this.emit('change');
     }
+
     // @return {boolean} Returns true on success, false otherwise.
     load(name, gcode = '', context = {}) {
         if (typeof gcode !== 'string' || !gcode) {
@@ -267,6 +291,7 @@ class Sender extends events.EventEmitter {
 
         return true;
     }
+
     unload() {
         if (this.sp) {
             this.sp.clear();
@@ -288,6 +313,7 @@ class Sender extends events.EventEmitter {
         this.emit('unload');
         this.emit('change');
     }
+
     // Tells the sender an acknowledgement has received.
     // @return {boolean} Returns true on success, false otherwise.
     ack() {
@@ -304,6 +330,7 @@ class Sender extends events.EventEmitter {
 
         return true;
     }
+
     // Tells the sender to send more data.
     // @return {boolean} Returns true on success, false otherwise.
     next() {
@@ -346,6 +373,7 @@ class Sender extends events.EventEmitter {
 
         return true;
     }
+
     // Rewinds the internal array pointer.
     // @return {boolean} Returns true on success, false otherwise.
     rewind() {
@@ -364,6 +392,7 @@ class Sender extends events.EventEmitter {
 
         return true;
     }
+
     // Checks if there are any state changes. It also clears the stateChanged flag.
     // @return {boolean} Returns true on state changes, false otherwise.
     peek() {

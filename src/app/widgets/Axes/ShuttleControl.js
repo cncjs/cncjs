@@ -12,8 +12,11 @@ const DEFAULT_OVERSHOOT = 1;
 
 class ShuttleControl extends events.EventEmitter {
     zone = 0;
+
     axis = '';
+
     queue = [];
+
     timer = null;
 
     accumulate(zone = 0, { axis = '', distance = 1, feedrateMin, feedrateMax, hertz, overshoot }) {
@@ -49,6 +52,7 @@ class ShuttleControl extends events.EventEmitter {
             }, FLUSH_INTERVAL);
         }
     }
+
     clear() {
         if (this.timer) {
             clearTimeout(this.timer);
@@ -56,6 +60,7 @@ class ShuttleControl extends events.EventEmitter {
         }
         this.queue = [];
     }
+
     flush(callback) {
         if (this.queue.length === 0) {
             return;

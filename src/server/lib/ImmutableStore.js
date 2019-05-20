@@ -9,14 +9,17 @@ class ImmutableStore extends events.EventEmitter {
 
         this.state = state;
     }
+
     get(key, defaultValue) {
         return _.get(this.state, key, defaultValue);
     }
+
     set(key, value) {
         this.state = _.merge({}, this.state, _.set({}, key, value));
         this.emit('change', this.state);
         return this.state;
     }
+
     unset(key) {
         let state = _.extend({}, this.state);
         _.unset(state, key);
@@ -24,10 +27,12 @@ class ImmutableStore extends events.EventEmitter {
         this.emit('change', this.state);
         return this.state;
     }
+
     replace(key, value) {
         this.unset(key);
         this.set(key, value);
     }
+
     clear() {
         this.state = {};
         this.emit('change', this.state);

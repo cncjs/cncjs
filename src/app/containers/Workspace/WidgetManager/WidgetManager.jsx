@@ -16,9 +16,11 @@ class WidgetManager extends PureComponent {
         onSave: PropTypes.func,
         onClose: PropTypes.func.isRequired
     };
+
     state = {
         show: true
     };
+
     widgetList = [
         {
             id: 'visualizer',
@@ -162,11 +164,13 @@ class WidgetManager extends PureComponent {
             return true;
         });
     }
+
     componentDidUpdate() {
         if (!(this.state.show)) {
             this.props.onClose();
         }
     }
+
     render() {
         const defaultWidgets = store.get('workspace.container.default.widgets', [])
             .map(widgetId => widgetId.split(':')[0]);

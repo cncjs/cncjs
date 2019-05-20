@@ -11,6 +11,7 @@ class PositionInput extends PureComponent {
         min: PropTypes.number,
         max: PropTypes.number
     };
+
     static defaultProps = {
         defaultValue: '',
         min: -10000,
@@ -26,6 +27,7 @@ class PositionInput extends PureComponent {
     componentDidMount() {
         this.node.focus();
     }
+
     render() {
         const {
             onSave = noop,
