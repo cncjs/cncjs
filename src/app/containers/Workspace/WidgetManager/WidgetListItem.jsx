@@ -12,6 +12,7 @@ class WidgetListItem extends PureComponent {
         disabled: PropTypes.bool,
         onChange: PropTypes.func
     };
+
     state = {
         checked: this.props.checked
     };

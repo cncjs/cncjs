@@ -32,6 +32,7 @@ class WorkflowControl extends PureComponent {
         state: PropTypes.object,
         actions: PropTypes.object
     };
+
     fileInputEl = null;
 
     handleClickUpload = (event) => {
@@ -116,6 +117,7 @@ class WorkflowControl extends PureComponent {
 
         return true;
     }
+
     render() {
         const { state, actions } = this.props;
         const { connection, gcode, workflow } = state;

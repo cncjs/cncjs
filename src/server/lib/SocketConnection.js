@@ -16,8 +16,11 @@ const toIdent = (options) => {
 
 class SocketConnection extends EventEmitter {
     type = 'socket';
-    socket = null; // Socket
-    parser = null; // Readline parser
+
+    socket = null;
+
+    parser = null;
+
     writeFilter = (data) => data;
 
     eventListener = {
@@ -74,15 +77,19 @@ class SocketConnection extends EventEmitter {
             }
         });
     }
+
     get ident() {
         return toIdent(this.settings);
     }
+
     get isOpen() {
         return this.socket && !this.socket.destroyed;
     }
+
     get isClose() {
         return !this.isOpen;
     }
+
     open(callback) {
         if (this.socket) {
             const err = new Error(`Cannot open socket connection: ${this.settings.host}:${this.settings.port}`);
@@ -117,6 +124,7 @@ class SocketConnection extends EventEmitter {
         this.parser = this.socket.pipe(new Readline({ delimiter: '\n' }));
         this.parser.on('data', this.eventListener.data);
     }
+
     // @param {function} callback The error-first callback.
     close(callback) {
         if (!this.socket) {
@@ -136,6 +144,7 @@ class SocketConnection extends EventEmitter {
         this.socket = null;
         this.parser = null;
     }
+
     write(data, context) {
         if (!this.socket) {
             return;

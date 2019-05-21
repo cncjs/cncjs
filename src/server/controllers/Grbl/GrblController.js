@@ -53,6 +53,7 @@ class GrblController {
 
     // Connection
     connection = null;
+
     connectionEventListener = {
         data: (data) => {
             log.silly(`< ${data}`);
@@ -86,11 +87,17 @@ class GrblController {
 
     // Grbl
     controller = null;
+
     ready = false;
+
     initialized = false;
+
     state = {};
+
     settings = {};
+
     queryTimer = null;
+
     actionMask = {
         queryParserState: {
             state: false, // wait for a message containing the current G-code parser modal state
@@ -102,6 +109,7 @@ class GrblController {
         replyParserState: false, // $G
         replyStatusReport: false // ?
     };
+
     actionTime = {
         queryParserState: 0,
         queryStatusReport: 0,
@@ -130,12 +138,15 @@ class GrblController {
             settings: this.connection.settings
         };
     }
+
     get isOpen() {
         return this.connection && this.connection.isOpen;
     }
+
     get isClose() {
         return !this.isOpen;
     }
+
     get status() {
         return {
             type: this.type,
@@ -737,6 +748,7 @@ class GrblController {
             }
         }, 250);
     }
+
     async initController() {
         // https://github.com/cncjs/cncjs/issues/206
         // $13=0 (report in mm)
@@ -746,6 +758,7 @@ class GrblController {
         await delay(50);
         this.event.trigger('controller:ready');
     }
+
     populateContext(context) {
         // Machine position
         const {
@@ -822,6 +835,7 @@ class GrblController {
             ...globalObjects,
         });
     }
+
     clearActionValues() {
         this.actionMask.queryParserState.state = false;
         this.actionMask.queryParserState.reply = false;
@@ -832,6 +846,7 @@ class GrblController {
         this.actionTime.queryStatusReport = 0;
         this.actionTime.senderFinishTime = 0;
     }
+
     destroy() {
         if (this.queryTimer) {
             clearInterval(this.queryTimer);
@@ -865,6 +880,7 @@ class GrblController {
             this.workflow = null;
         }
     }
+
     open(callback = noop) {
         // Assertion check
         if (this.isOpen) {
@@ -907,6 +923,7 @@ class GrblController {
             }
         });
     }
+
     close(callback) {
         // Stop status query
         this.ready = false;
@@ -924,6 +941,7 @@ class GrblController {
         this.connection.removeAllListeners();
         this.connection.close(callback);
     }
+
     addSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
@@ -981,6 +999,7 @@ class GrblController {
             socket.emit('workflow:state', this.workflow.state);
         }
     }
+
     removeSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
@@ -991,12 +1010,14 @@ class GrblController {
         this.sockets[socket.id] = undefined;
         delete this.sockets[socket.id];
     }
+
     emit(eventName, ...args) {
         Object.keys(this.sockets).forEach(id => {
             const socket = this.sockets[id];
             socket.emit(eventName, ...args);
         });
     }
+
     command(cmd, ...args) {
         const handler = {
             'sender:load': () => {
@@ -1286,6 +1307,7 @@ class GrblController {
 
         handler();
     }
+
     write(data, context) {
         // Assertion check
         if (this.isClose) {
@@ -1304,6 +1326,7 @@ class GrblController {
         this.connection.write(data);
         log.silly(`> ${data}`);
     }
+
     writeln(data, context) {
         if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
             this.write(data, context);

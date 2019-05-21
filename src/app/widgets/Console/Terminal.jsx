@@ -22,6 +22,7 @@ class TerminalWrapper extends PureComponent {
         tabStopWidth: PropTypes.number,
         onData: PropTypes.func
     };
+
     static defaultProps = {
         cols: 'auto',
         rows: 'auto',
@@ -32,9 +33,13 @@ class TerminalWrapper extends PureComponent {
     };
 
     prompt = '> ';
+
     history = new History(1000);
+
     verticalScrollbar = null;
+
     terminalContainer = null;
+
     term = null;
 
     eventHandler = {
@@ -268,6 +273,7 @@ class TerminalWrapper extends PureComponent {
 
         this.resize();
     }
+
     componentWillUnmount() {
         if (this.verticalScrollbar) {
             this.verticalScrollbar.destroy();
@@ -280,6 +286,7 @@ class TerminalWrapper extends PureComponent {
             this.term = null;
         }
     }
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.cursorBlink !== this.props.cursorBlink) {
             this.term.setOption('cursorBlink', nextProps.cursorBlink);
@@ -291,12 +298,14 @@ class TerminalWrapper extends PureComponent {
             this.term.setOption('tabStopWidth', nextProps.tabStopWidth);
         }
     }
+
     componentDidUpdate(prevProps) {
         if (this.props.cols !== prevProps.cols || this.props.rows !== prevProps.rows) {
             const { cols, rows } = this.props;
             this.resize(cols, rows);
         }
     }
+
     // http://www.alexandre-gomes.com/?p=115
     getScrollbarWidth() {
         const inner = document.createElement('p');
@@ -321,6 +330,7 @@ class TerminalWrapper extends PureComponent {
 
         return (w1 - w2);
     }
+
     resize(cols = this.props.cols, rows = this.props.rows) {
         if (!(this.term && this.term.element)) {
             return;
@@ -335,24 +345,30 @@ class TerminalWrapper extends PureComponent {
         rows = (!rows || rows === 'auto') ? geometry.rows : rows;
         this.term.resize(cols, rows);
     }
+
     clear() {
         this.term.clear();
     }
+
     selectAll() {
         this.term.selectAll();
     }
+
     clearSelection() {
         this.term.clearSelection();
     }
+
     write(data) {
         this.term.write(data);
     }
+
     writeln(data) {
         this.term.eraseRight(0, this.term.buffer.y);
         this.term.write('\r');
         this.term.write(data);
         this.term.prompt();
     }
+
     render() {
         const { className, style } = this.props;
 

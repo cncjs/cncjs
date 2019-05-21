@@ -16,6 +16,7 @@ class I18n extends Component {
             PropTypes.object
         ])
     };
+
     static defaultProps = {
         t: '',
         _: '',

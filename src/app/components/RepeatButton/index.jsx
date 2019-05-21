@@ -40,9 +40,11 @@ class RepeatButton extends PureComponent {
         this.timeout = null;
         this.interval = null;
     }
+
     componentWillUnmount() {
         this.actions.handleRelease();
     }
+
     render() {
         const props = { ...this.props };
 

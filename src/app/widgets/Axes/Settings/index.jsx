@@ -30,6 +30,7 @@ class Settings extends PureComponent {
         onSave: PropTypes.func,
         onCancel: PropTypes.func
     };
+
     static defaultProps = {
         onSave: noop,
         onCancel: noop

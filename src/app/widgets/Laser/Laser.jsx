@@ -51,6 +51,7 @@ class Laser extends PureComponent {
 
         return scale;
     }
+
     render() {
         const { state, actions } = this.props;
         const none = '–';
@@ -154,90 +155,90 @@ class Laser extends PureComponent {
                             />
                         </Toggler>
                     </Panel.Heading>
-                    {panel.laserTest.expanded &&
-                    <Panel.Body>
-                        <div className="table-form" style={{ marginBottom: 15 }}>
-                            <div className="table-form-row">
-                                <div className="table-form-col table-form-col-label middle">
-                                    {i18n._('Power (%)')}
-                                </div>
-                                <div className="table-form-col">
-                                    <div className="text-center">{test.power}%</div>
-                                    <Slider
-                                        style={{ padding: 0 }}
-                                        defaultValue={test.power}
-                                        min={0}
-                                        max={100}
-                                        step={1}
-                                        onChange={actions.changeLaserTestPower}
-                                    />
-                                </div>
-                            </div>
-                            <div className="table-form-row">
-                                <div className="table-form-col table-form-col-label middle">
-                                    {i18n._('Test duration')}
-                                </div>
-                                <div className="table-form-col">
-                                    <div className="input-group input-group-sm" style={{ width: '100%' }}>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            style={{ borderRadius: 0 }}
-                                            value={test.duration}
-                                            min={0}
-                                            step={1}
-                                            onChange={actions.changeLaserTestDuration}
-                                        />
-                                        <span className="input-group-addon">{i18n._('ms')}</span>
+                    {panel.laserTest.expanded && (
+                        <Panel.Body>
+                            <div className="table-form" style={{ marginBottom: 15 }}>
+                                <div className="table-form-row">
+                                    <div className="table-form-col table-form-col-label middle">
+                                        {i18n._('Power (%)')}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="table-form-row">
-                                <div className="table-form-col table-form-col-label middle">
-                                    {i18n._('Maximum value')}
-                                </div>
-                                <div className="table-form-col">
-                                    <div className="input-group input-group-sm" style={{ width: '100%' }}>
-                                        <span className="input-group-addon">S</span>
-                                        <input
-                                            type="number"
-                                            className="form-control"
-                                            style={{ borderRadius: 0 }}
-                                            value={test.maxS}
+                                    <div className="table-form-col">
+                                        <div className="text-center">{test.power}%</div>
+                                        <Slider
+                                            style={{ padding: 0 }}
+                                            defaultValue={test.power}
                                             min={0}
+                                            max={100}
                                             step={1}
-                                            onChange={actions.changeLaserTestMaxS}
+                                            onChange={actions.changeLaserTestPower}
                                         />
                                     </div>
                                 </div>
+                                <div className="table-form-row">
+                                    <div className="table-form-col table-form-col-label middle">
+                                        {i18n._('Test duration')}
+                                    </div>
+                                    <div className="table-form-col">
+                                        <div className="input-group input-group-sm" style={{ width: '100%' }}>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                style={{ borderRadius: 0 }}
+                                                value={test.duration}
+                                                min={0}
+                                                step={1}
+                                                onChange={actions.changeLaserTestDuration}
+                                            />
+                                            <span className="input-group-addon">{i18n._('ms')}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="table-form-row">
+                                    <div className="table-form-col table-form-col-label middle">
+                                        {i18n._('Maximum value')}
+                                    </div>
+                                    <div className="table-form-col">
+                                        <div className="input-group input-group-sm" style={{ width: '100%' }}>
+                                            <span className="input-group-addon">S</span>
+                                            <input
+                                                type="number"
+                                                className="form-control"
+                                                style={{ borderRadius: 0 }}
+                                                value={test.maxS}
+                                                min={0}
+                                                step={1}
+                                                onChange={actions.changeLaserTestMaxS}
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div className="btn-toolbar" role="toolbar">
-                            <div className="btn-group" role="group">
-                                <button
-                                    type="button"
-                                    className="btn btn-default"
-                                    style={{ minWidth: 80 }}
-                                    disabled={!canClick}
-                                    onClick={actions.laserTestOn}
-                                >
-                                    {i18n._('Laser Test')}
-                                </button>
+                            <div className="btn-toolbar" role="toolbar">
+                                <div className="btn-group" role="group">
+                                    <button
+                                        type="button"
+                                        className="btn btn-default"
+                                        style={{ minWidth: 80 }}
+                                        disabled={!canClick}
+                                        onClick={actions.laserTestOn}
+                                    >
+                                        {i18n._('Laser Test')}
+                                    </button>
+                                </div>
+                                <div className="btn-group" role="group">
+                                    <button
+                                        type="button"
+                                        className="btn btn-default"
+                                        style={{ minWidth: 80 }}
+                                        disabled={!canClick}
+                                        onClick={actions.laserTestOff}
+                                    >
+                                        {i18n._('Laser Off')}
+                                    </button>
+                                </div>
                             </div>
-                            <div className="btn-group" role="group">
-                                <button
-                                    type="button"
-                                    className="btn btn-default"
-                                    style={{ minWidth: 80 }}
-                                    disabled={!canClick}
-                                    onClick={actions.laserTestOff}
-                                >
-                                    {i18n._('Laser Off')}
-                                </button>
-                            </div>
-                        </div>
-                    </Panel.Body>
-                    }
+                        </Panel.Body>
+                    )}
                 </Panel>
             </div>
         );

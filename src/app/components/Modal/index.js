@@ -7,6 +7,7 @@ class ModalWrapper extends PureComponent {
     static propTypes = {
         ...Modal.propTypes
     };
+
     static defaultProps = {
         ...Modal.defaultProps
     };
@@ -20,20 +21,25 @@ class ModalWrapper extends PureComponent {
             }
         }
     }
+
     componentDidMount() {
         this.blockScrolling();
     }
+
     componentWillUnmount() {
         this.unblockScrolling();
     }
+
     blockScrolling() {
         const body = document.querySelector('body');
         body.style.overflowY = 'hidden';
     }
+
     unblockScrolling() {
         const body = document.querySelector('body');
         body.style.overflowY = 'auto';
     }
+
     render() {
         const { onClose, ...props } = this.props;
 

@@ -18,6 +18,7 @@ class General extends PureComponent {
     fields = {
         checkForUpdates: null
     };
+
     handlers = {
         changeCheckForUpdates: (event) => {
             const { actions } = this.props;
@@ -42,6 +43,7 @@ class General extends PureComponent {
         const { actions } = this.props;
         actions.load();
     }
+
     render() {
         const { state, stateChanged } = this.props;
         const lang = get(state, 'lang', 'en');

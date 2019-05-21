@@ -52,6 +52,7 @@ class Webcam extends PureComponent {
             }, 10); // delay 10ms
         }
     }
+
     render() {
         const { state, actions } = this.props;
         const {
@@ -85,82 +86,82 @@ class Webcam extends PureComponent {
 
         return (
             <div className={styles['webcam-on-container']}>
-                {mediaSource === MEDIA_SOURCE_LOCAL &&
-                <div style={{ width: '100%' }}>
-                    <WebcamComponent
+                {mediaSource === MEDIA_SOURCE_LOCAL && (
+                    <div style={{ width: '100%' }}>
+                        <WebcamComponent
+                            className={styles.center}
+                            style={{ transform: transformStyle }}
+                            width={(100 * scale).toFixed(0) + '%'}
+                            height="auto"
+                            muted={muted}
+                            video={!!deviceId ? deviceId : true}
+                        />
+                    </div>
+                )}
+                {mediaSource === MEDIA_SOURCE_MJPEG && (
+                    <Image
+                        ref={node => {
+                            this.imageSource = node;
+                        }}
+                        src={mapMetaAddressToHostname(url)}
+                        style={{
+                            width: (100 * scale).toFixed(0) + '%',
+                            transform: transformStyle
+                        }}
                         className={styles.center}
-                        style={{ transform: transformStyle }}
-                        width={(100 * scale).toFixed(0) + '%'}
-                        height="auto"
-                        muted={muted}
-                        video={!!deviceId ? deviceId : true}
                     />
-                </div>
-                }
-                {mediaSource === MEDIA_SOURCE_MJPEG &&
-                <Image
-                    ref={node => {
-                        this.imageSource = node;
-                    }}
-                    src={mapMetaAddressToHostname(url)}
-                    style={{
-                        width: (100 * scale).toFixed(0) + '%',
-                        transform: transformStyle
-                    }}
-                    className={styles.center}
-                />
-                }
-                {crosshair &&
-                <div>
-                    <Line
-                        className={classNames(
-                            styles.center,
-                            styles['line-shadow']
-                        )}
-                        length="100%"
-                    />
-                    <Line
-                        className={classNames(
-                            styles.center,
-                            styles['line-shadow']
-                        )}
-                        length="100%"
-                        vertical
-                    />
-                    <Circle
-                        className={classNames(
-                            styles.center,
-                            styles['line-shadow']
-                        )}
-                        diameter={20}
-                    />
-                    <Circle
-                        className={classNames(
-                            styles.center,
-                            styles['line-shadow']
-                        )}
-                        diameter={40}
-                    />
-                </div>
-                }
+                )}
+                {crosshair && (
+                    <div>
+                        <Line
+                            className={classNames(
+                                styles.center,
+                                styles['line-shadow']
+                            )}
+                            length="100%"
+                        />
+                        <Line
+                            className={classNames(
+                                styles.center,
+                                styles['line-shadow']
+                            )}
+                            length="100%"
+                            vertical
+                        />
+                        <Circle
+                            className={classNames(
+                                styles.center,
+                                styles['line-shadow']
+                            )}
+                            diameter={20}
+                        />
+                        <Circle
+                            className={classNames(
+                                styles.center,
+                                styles['line-shadow']
+                            )}
+                            diameter={40}
+                        />
+                    </div>
+                )}
                 <div className={styles.toolbar}>
                     <div className={styles.scaleText}>{scale}x</div>
                     <div className="pull-right">
-                        {mediaSource === MEDIA_SOURCE_LOCAL &&
-                        <Anchor
-                            className={styles.btnIcon}
-                            onClick={actions.toggleMute}
-                        >
-                            <i
-                                className={classNames(
-                                    styles.icon,
-                                    styles.inverted,
-                                    { [styles.iconUnmute]: !muted },
-                                    { [styles.iconMute]: muted }
-                                )}
-                            />
-                        </Anchor>
-                        }
+                        {mediaSource === MEDIA_SOURCE_LOCAL && (
+                            <Anchor
+                                className={styles.btnIcon}
+                                onClick={actions.toggleMute}
+                            >
+                                <i
+                                    className={classNames(
+                                        styles.icon,
+                                        styles.inverted,
+                                        { [styles.iconUnmute]: !muted },
+                                        { [styles.iconMute]: muted }
+                                    )}
+                                />
+                            </Anchor>
+                        )}
                         <OverlayTrigger
                             overlay={<Tooltip id="rotate-left">{i18n._('Rotate Left')}</Tooltip>}
                             placement="top"

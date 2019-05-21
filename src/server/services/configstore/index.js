@@ -17,7 +17,9 @@ const defaultState = { // default state
 
 class ConfigStore extends events.EventEmitter {
     file = '';
+
     config = {};
+
     watcher = null;
 
     // @param {string} file The path to a filename.
@@ -55,6 +57,7 @@ class ConfigStore extends events.EventEmitter {
 
         return this.config;
     }
+
     reload() {
         try {
             if (fs.existsSync(this.file)) {
@@ -79,6 +82,7 @@ class ConfigStore extends events.EventEmitter {
 
         return true;
     }
+
     sync() {
         try {
             const content = JSON.stringify(this.config, null, 4);
@@ -91,9 +95,11 @@ class ConfigStore extends events.EventEmitter {
 
         return true;
     }
+
     has(key) {
         return _.has(this.config, key);
     }
+
     get(key, defaultValue) {
         if (!this.config) {
             this.reload();
@@ -103,6 +109,7 @@ class ConfigStore extends events.EventEmitter {
             ? _.get(this.config, key, defaultValue)
             : this.config;
     }
+
     set(key, value, options) {
         const { silent = false } = { ...options };
 
@@ -114,6 +121,7 @@ class ConfigStore extends events.EventEmitter {
         _.set(this.config, key, value);
         ok && !silent && this.sync(); // it is ok to write
     }
+
     unset(key) {
         if (key === undefined) {
             return;

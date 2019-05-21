@@ -156,17 +156,17 @@ class UpdateRecord extends Component {
                                 </Modal.Title>
                             </Modal.Header>
                             <Modal.Body>
-                                {alertMessage &&
-                                <ToastNotification
-                                    style={{ margin: '-16px -24px 10px -24px' }}
-                                    type="error"
-                                    onDismiss={() => {
-                                        updateModalParams({ alertMessage: '' });
-                                    }}
-                                >
-                                    {alertMessage}
-                                </ToastNotification>
-                                }
+                                {alertMessage && (
+                                    <ToastNotification
+                                        style={{ margin: '-16px -24px 10px -24px' }}
+                                        type="error"
+                                        onDismiss={() => {
+                                            updateModalParams({ alertMessage: '' });
+                                        }}
+                                    >
+                                        {alertMessage}
+                                    </ToastNotification>
+                                )}
                                 <SectionGroup>
                                     <Field name="name" validate={validations.required}>
                                         {({ input, meta }) => (

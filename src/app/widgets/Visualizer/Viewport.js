@@ -10,8 +10,11 @@ const TARGET0 = new THREE.Vector3(0, 0, 0);
 // https://github.com/mrdoob/three.js/issues/1521
 class Viewport {
     camera = null;
+
     width = 0;
+
     height = 0;
+
     state = {};
 
     constructor(camera, width, height) {
@@ -38,13 +41,16 @@ class Viewport {
 
         this.reset();
     }
+
     reset() {
         this.set(this.width, this.height, TARGET0);
     }
+
     update() {
         const { width, height, target } = this.state;
         this.set(width, height, target);
     }
+
     set(width, height, target = TARGET0) {
         if (!this.camera) {
             return;

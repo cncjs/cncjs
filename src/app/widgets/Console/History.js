@@ -1,7 +1,12 @@
 class History {
     maxLength = Infinity;
-    history = []; // A circular history array if a maximum length is given
-    start = 0; // The start position for the history array
+
+    history = [];
+
+    // A circular history array if a maximum length is given
+    start = 0;
+
+    // The start position for the history array
     index = -1; // Current index of the history array
 
     constructor(maxLength) {
@@ -10,6 +15,7 @@ class History {
             this.maxLength = maxLength;
         }
     }
+
     current() {
         if (this.history.length === 0) {
             return undefined;
@@ -18,6 +24,7 @@ class History {
         const index = (this.start + this.index) % this.history.length;
         return this.history[index];
     }
+
     forward() {
         if ((this.history.length === 0) || (this.index + 1 >= this.history.length)) {
             return undefined;
@@ -27,6 +34,7 @@ class History {
         const index = (this.start + this.index) % this.history.length;
         return this.history[index];
     }
+
     back() {
         if ((this.history.length === 0) || (this.index - 1 < 0)) {
             return undefined;
@@ -36,6 +44,7 @@ class History {
         const index = (this.start + this.index) % this.history.length;
         return this.history[index];
     }
+
     go(n) {
         if (this.history.length === 0) {
             return undefined;
@@ -45,6 +54,7 @@ class History {
         const index = (this.start + this.index) % this.history.length;
         return this.history[index];
     }
+
     // Reset the index to the last position of the history array
     resetIndex() {
         if (this.history.length > 0) {
@@ -53,6 +63,7 @@ class History {
             this.index = -1;
         }
     }
+
     // 0 1 2 3 4 5 6 7 8 9      0 1 2 3 4 5 6 7 8 9
     // S x x x x x x x x x  >>  x S x x x x x x x x
     push(data) {

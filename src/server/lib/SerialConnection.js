@@ -28,8 +28,11 @@ const toIdent = (options) => {
 
 class SerialConnection extends EventEmitter {
     type = 'serial';
-    port = null; // SerialPort
-    parser = null; // Readline parser
+
+    port = null;
+
+    parser = null;
+
     writeFilter = (data) => data;
 
     eventListener = {
@@ -104,15 +107,19 @@ class SerialConnection extends EventEmitter {
             }
         });
     }
+
     get ident() {
         return toIdent(this.settings);
     }
+
     get isOpen() {
         return this.port && this.port.isOpen;
     }
+
     get isClose() {
         return !this.isOpen;
     }
+
     // @param {function} callback The error-first callback.
     open(callback) {
         if (this.port) {
@@ -136,6 +143,7 @@ class SerialConnection extends EventEmitter {
 
         this.port.open(callback);
     }
+
     // @param {function} callback The error-first callback.
     close(callback) {
         if (!this.port) {
@@ -154,6 +162,7 @@ class SerialConnection extends EventEmitter {
         this.port = null;
         this.parser = null;
     }
+
     write(data, context) {
         if (!this.port) {
             return;

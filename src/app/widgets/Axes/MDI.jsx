@@ -46,6 +46,7 @@ class MDI extends PureComponent {
             );
         });
     }
+
     render() {
         const { mdi } = this.props;
 

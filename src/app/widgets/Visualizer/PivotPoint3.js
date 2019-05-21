@@ -22,6 +22,7 @@ export default class PivotPoint3 {
 
         this.set(options.x, options.y, options.z);
     }
+
     // Sets a new pivot point to rotate objects
     // @param {number} x The pivot point on the x-axis
     // @param {number} y The pivot point on the y-axis
@@ -38,11 +39,13 @@ export default class PivotPoint3 {
 
         this.pivotPoint = { x: x, y: y, z: z };
     }
+
     // Gets the pivot point
     // @return {object} The { x, y, z } position of the pivot point
     get() {
         return this.pivotPoint;
     }
+
     // Sets the pivot point to the origin point (0, 0, 0)
     clear() {
         let { pivotPoint } = this;

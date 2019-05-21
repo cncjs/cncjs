@@ -25,12 +25,15 @@ class WebcamWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -77,6 +80,7 @@ class WebcamWidget extends PureComponent {
             this.setState({ muted: !muted });
         }
     };
+
     webcam = null;
 
     componentDidUpdate(prevProps, prevState) {
@@ -106,6 +110,7 @@ class WebcamWidget extends PureComponent {
         this.config.set('crosshair', crosshair);
         this.config.set('muted', muted);
     }
+
     getInitialState() {
         return {
             disabled: this.config.get('disabled', true),
@@ -122,6 +127,7 @@ class WebcamWidget extends PureComponent {
             muted: this.config.get('muted', false)
         };
     }
+
     render() {
         const { widgetId } = this.props;
         const { disabled, minimized, isFullscreen } = this.state;

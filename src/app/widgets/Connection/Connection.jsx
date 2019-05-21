@@ -26,6 +26,7 @@ class Connection extends PureComponent {
         const port = find(this.props.state.ports, { comName: path }) || {};
         return !!(port.isOpen);
     }
+
     renderPortOption = (option) => {
         const { label, isOpen, manufacturer } = option;
         const styles = {
@@ -39,12 +40,12 @@ class Connection extends PureComponent {
         return (
             <div style={styles.option} title={label}>
                 <div>
-                    {isOpen &&
-                    <span>
-                        <i className="fa fa-lock" />
-                        <Space width="8" />
-                    </span>
-                    }
+                    {isOpen && (
+                        <span>
+                            <i className="fa fa-lock" />
+                            <Space width="8" />
+                        </span>
+                    )}
                     {label}
                 </div>
                 {manufacturer &&
@@ -53,6 +54,7 @@ class Connection extends PureComponent {
             </div>
         );
     };
+
     renderPortValue = (option) => {
         const { state } = this.props;
         const { label, isOpen } = option;
@@ -65,16 +67,17 @@ class Connection extends PureComponent {
         };
         return (
             <div style={style} title={label}>
-                {isOpen &&
-                <span>
-                    <i className="fa fa-lock" />
-                    <Space width="8" />
-                </span>
-                }
+                {isOpen && (
+                    <span>
+                        <i className="fa fa-lock" />
+                        <Space width="8" />
+                    </span>
+                )}
                 {label}
             </div>
         );
     };
+
     renderBaudRateValue = (option) => {
         const { state } = this.props;
         const { connection, loading, connected } = state;
@@ -91,6 +94,7 @@ class Connection extends PureComponent {
             <div style={style} title={option.label}>{option.label}</div>
         );
     };
+
     render() {
         const { state, actions } = this.props;
         const {
@@ -120,87 +124,87 @@ class Connection extends PureComponent {
 
         return (
             <div>
-                {alertMessage &&
-                <ToastNotification
-                    style={{ margin: '-10px -10px 10px -10px' }}
-                    type="error"
-                    onDismiss={actions.clearAlert}
-                >
-                    {alertMessage}
-                </ToastNotification>
-                }
-                {canSelectControllers &&
-                <div className="form-group">
-                    <div className="input-group input-group-sm">
-                        <div className="input-group-btn">
-                            {hasGrblController &&
-                            <button
-                                type="button"
-                                className={cx(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': controllerType === GRBL }
+                {alertMessage && (
+                    <ToastNotification
+                        style={{ margin: '-10px -10px 10px -10px' }}
+                        type="error"
+                        onDismiss={actions.clearAlert}
+                    >
+                        {alertMessage}
+                    </ToastNotification>
+                )}
+                {canSelectControllers && (
+                    <div className="form-group">
+                        <div className="input-group input-group-sm">
+                            <div className="input-group-btn">
+                                {hasGrblController && (
+                                    <button
+                                        type="button"
+                                        className={cx(
+                                            'btn',
+                                            'btn-default',
+                                            { 'btn-select': controllerType === GRBL }
+                                        )}
+                                        disabled={!canChangeController}
+                                        onClick={() => {
+                                            actions.changeController(GRBL);
+                                        }}
+                                    >
+                                        {GRBL}
+                                    </button>
                                 )}
-                                disabled={!canChangeController}
-                                onClick={() => {
-                                    actions.changeController(GRBL);
-                                }}
-                            >
-                                {GRBL}
-                            </button>
-                            }
-                            {hasMarlinController &&
-                            <button
-                                type="button"
-                                className={cx(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': controllerType === MARLIN }
+                                {hasMarlinController && (
+                                    <button
+                                        type="button"
+                                        className={cx(
+                                            'btn',
+                                            'btn-default',
+                                            { 'btn-select': controllerType === MARLIN }
+                                        )}
+                                        disabled={!canChangeController}
+                                        onClick={() => {
+                                            actions.changeController(MARLIN);
+                                        }}
+                                    >
+                                        {MARLIN}
+                                    </button>
                                 )}
-                                disabled={!canChangeController}
-                                onClick={() => {
-                                    actions.changeController(MARLIN);
-                                }}
-                            >
-                                {MARLIN}
-                            </button>
-                            }
-                            {hasSmoothieController &&
-                            <button
-                                type="button"
-                                className={cx(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': controllerType === SMOOTHIE }
+                                {hasSmoothieController && (
+                                    <button
+                                        type="button"
+                                        className={cx(
+                                            'btn',
+                                            'btn-default',
+                                            { 'btn-select': controllerType === SMOOTHIE }
+                                        )}
+                                        disabled={!canChangeController}
+                                        onClick={() => {
+                                            actions.changeController(SMOOTHIE);
+                                        }}
+                                    >
+                                        {SMOOTHIE}
+                                    </button>
                                 )}
-                                disabled={!canChangeController}
-                                onClick={() => {
-                                    actions.changeController(SMOOTHIE);
-                                }}
-                            >
-                                {SMOOTHIE}
-                            </button>
-                            }
-                            {hasTinyGController &&
-                            <button
-                                type="button"
-                                className={cx(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': controllerType === TINYG }
+                                {hasTinyGController && (
+                                    <button
+                                        type="button"
+                                        className={cx(
+                                            'btn',
+                                            'btn-default',
+                                            { 'btn-select': controllerType === TINYG }
+                                        )}
+                                        disabled={!canChangeController}
+                                        onClick={() => {
+                                            actions.changeController(TINYG);
+                                        }}
+                                    >
+                                        {TINYG}
+                                    </button>
                                 )}
-                                disabled={!canChangeController}
-                                onClick={() => {
-                                    actions.changeController(TINYG);
-                                }}
-                            >
-                                {TINYG}
-                            </button>
-                            }
+                            </div>
                         </div>
                     </div>
-                </div>
-                }
+                )}
                 <div className="form-group">
                     <label className="control-label">{i18n._('Port')}</label>
                     <div className="input-group input-group-sm">
@@ -290,7 +294,7 @@ class Connection extends PureComponent {
                     </label>
                 </div>
                 <div className="btn-group btn-group-sm">
-                    {notConnected &&
+                    {notConnected && (
                         <button
                             type="button"
                             className="btn btn-primary"
@@ -301,8 +305,8 @@ class Connection extends PureComponent {
                             <Space width="8" />
                             {i18n._('Open')}
                         </button>
-                    }
-                    {connected &&
+                    )}
+                    {connected && (
                         <button
                             type="button"
                             className="btn btn-danger"
@@ -313,7 +317,7 @@ class Connection extends PureComponent {
                             <Space width="8" />
                             {i18n._('Close')}
                         </button>
-                    }
+                    )}
                 </div>
             </div>
         );

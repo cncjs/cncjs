@@ -10,6 +10,7 @@ class Line extends PureComponent {
         length: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
         width: PropTypes.number
     };
+
     static defaultProps = {
         vertical: false,
         color: '#fff',

@@ -41,12 +41,15 @@ class LaserWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -125,6 +128,7 @@ class LaserWidget extends PureComponent {
             controller.command('lasertest', 0);
         }
     };
+
     controllerEvents = {
         'connection:open': (options) => {
             const { ident } = options;
@@ -162,9 +166,11 @@ class LaserWidget extends PureComponent {
     componentDidMount() {
         this.addControllerEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
@@ -184,6 +190,7 @@ class LaserWidget extends PureComponent {
             this.config.set('test.maxS', test.maxS);
         }
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -209,18 +216,21 @@ class LaserWidget extends PureComponent {
             }
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     canClick() {
         const machineState = controller.getMachineState();
         const state = this.state;
@@ -266,6 +276,7 @@ class LaserWidget extends PureComponent {
 
         return true;
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;

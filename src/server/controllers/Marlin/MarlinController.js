@@ -51,6 +51,7 @@ class MarlinController {
 
     // Connection
     connection = null;
+
     connectionEventListener = {
         data: (data) => {
             log.silly(`< ${data}`);
@@ -84,10 +85,15 @@ class MarlinController {
 
     // Marlin
     controller = null;
+
     ready = false;
+
     state = {};
+
     settings = {};
+
     feedOverride = 100;
+
     spindleOverride = 100;
 
     history = {
@@ -109,6 +115,7 @@ class MarlinController {
 
     // Sender
     sender = null;
+
     senderFinishTime = 0;
 
     // Shared context
@@ -119,6 +126,7 @@ class MarlinController {
 
     // Query
     queryTimer = null;
+
     query = {
         // state
         type: null,
@@ -213,12 +221,15 @@ class MarlinController {
             settings: this.connection.settings
         };
     }
+
     get isOpen() {
         return this.connection && this.connection.isOpen;
     }
+
     get isClose() {
         return !this.isOpen;
     }
+
     get status() {
         return {
             type: this.type,
@@ -802,6 +813,7 @@ class MarlinController {
             }
         }, 250);
     }
+
     populateContext(context) {
         // Work position
         const {
@@ -856,6 +868,7 @@ class MarlinController {
             ...globalObjects,
         });
     }
+
     destroy() {
         if (this.queryTimer) {
             clearInterval(this.queryTimer);
@@ -889,6 +902,7 @@ class MarlinController {
             this.workflow = null;
         }
     }
+
     open(callback = noop) {
         // Assertion check
         if (this.isOpen) {
@@ -934,6 +948,7 @@ class MarlinController {
             }
         });
     }
+
     close(callback) {
         // Stop status query
         this.ready = false;
@@ -948,6 +963,7 @@ class MarlinController {
         this.connection.removeAllListeners();
         this.connection.close(callback);
     }
+
     addSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
@@ -1005,6 +1021,7 @@ class MarlinController {
             socket.emit('workflow:state', this.workflow.state);
         }
     }
+
     removeSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
@@ -1015,12 +1032,14 @@ class MarlinController {
         this.sockets[socket.id] = undefined;
         delete this.sockets[socket.id];
     }
+
     emit(eventName, ...args) {
         Object.keys(this.sockets).forEach(id => {
             const socket = this.sockets[id];
             socket.emit(eventName, ...args);
         });
     }
+
     command(cmd, ...args) {
         const handler = {
             'sender:load': () => {
@@ -1289,6 +1308,7 @@ class MarlinController {
 
         handler();
     }
+
     write(data, context) {
         // Assertion check
         if (this.isClose) {
@@ -1305,6 +1325,7 @@ class MarlinController {
         });
         log.silly(`> ${data}`);
     }
+
     writeln(data, context) {
         this.write(data + '\n', context);
     }

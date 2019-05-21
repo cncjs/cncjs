@@ -53,7 +53,8 @@ ModalTemplate.propTypes = {
         'warning',
         'info',
         'success'
-    ])
+    ]),
+    templateStyle: PropTypes.object,
 };
 
 export default ModalTemplate;

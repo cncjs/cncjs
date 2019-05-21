@@ -28,12 +28,15 @@ class ConnectionWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -188,9 +191,11 @@ class ConnectionWidget extends PureComponent {
         this.addControllerEvents();
         this.refresh({ autoConnect: true });
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         this.config.set('minimized', this.state.minimized);
 
@@ -221,6 +226,7 @@ class ConnectionWidget extends PureComponent {
 
         this.config.set('autoReconnect', this.state.autoReconnect);
     }
+
     getInitialState() {
         let controllerType = this.config.get('controller.type');
         if (!includes(controller.availableControllers, controllerType)) {
@@ -265,18 +271,21 @@ class ConnectionWidget extends PureComponent {
             }
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     async refresh(options) {
         const { autoConnect = false } = { ...options };
 
@@ -351,6 +360,7 @@ class ConnectionWidget extends PureComponent {
             loading: false
         }));
     }
+
     openPort(path, baudRate) {
         const controllerType = this.state.controller.type;
         const connectionType = this.state.connection.type;
@@ -376,6 +386,7 @@ class ConnectionWidget extends PureComponent {
             }
         });
     }
+
     closePort() {
         this.setState(state => ({
             connecting: false,
@@ -391,6 +402,7 @@ class ConnectionWidget extends PureComponent {
             this.refresh();
         });
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;

@@ -26,12 +26,15 @@ class CustomWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     action = {
         toggleDisabled: () => {
             const { disabled } = this.state;
@@ -71,6 +74,7 @@ class CustomWidget extends PureComponent {
             }
         }
     };
+
     controllerEvents = {
         'connection:open': (options) => {
             const { ident, type, settings } = options;
@@ -95,15 +99,19 @@ class CustomWidget extends PureComponent {
             }));
         }
     };
+
     content = null;
+
     component = null;
 
     componentDidMount() {
         this.addControllerEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             disabled,
@@ -117,6 +125,7 @@ class CustomWidget extends PureComponent {
         this.config.set('title', title);
         this.config.set('url', url);
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -142,18 +151,21 @@ class CustomWidget extends PureComponent {
             }
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen, disabled, title } = this.state;
@@ -270,21 +282,21 @@ class CustomWidget extends PureComponent {
                         [styles.fullscreen]: isFullscreen
                     })}
                 >
-                    {state.modal.name === MODAL_SETTINGS &&
-                    <Settings
-                        config={config}
-                        onSave={() => {
-                            const title = config.get('title');
-                            const url = config.get('url');
-                            this.setState({
-                                title: title,
-                                url: url
-                            });
-                            action.closeModal();
-                        }}
-                        onCancel={action.closeModal}
-                    />
-                    }
+                    {state.modal.name === MODAL_SETTINGS && (
+                        <Settings
+                            config={config}
+                            onSave={() => {
+                                const title = config.get('title');
+                                const url = config.get('url');
+                                this.setState({
+                                    title: title,
+                                    url: url
+                                });
+                                action.closeModal();
+                            }}
+                            onCancel={action.closeModal}
+                        />
+                    )}
                     <Custom
                         ref={node => {
                             this.content = node;
