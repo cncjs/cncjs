@@ -31,6 +31,7 @@ class DropdownToggle extends PureComponent {
         disabled: PropTypes.bool,
         open: PropTypes.bool
     };
+
     static defaultProps = {
         componentClass: Button,
         noCaret: false,

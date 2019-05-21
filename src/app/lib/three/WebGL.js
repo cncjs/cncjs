@@ -8,7 +8,7 @@ import memoize from 'memoize-one';
 // Memoize the result to mitigate the issue of WebGL context lost and restored
 export const isWebGLAvailable = memoize(() => {
     try {
-        var canvas = document.createElement('canvas');
+        let canvas = document.createElement('canvas');
         return !!(window.WebGLRenderingContext && (canvas.getContext('webgl') || canvas.getContext('experimental-webgl')));
     } catch (e) {
         return false;

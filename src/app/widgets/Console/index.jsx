@@ -32,12 +32,15 @@ class ConsoleWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             this.setState(state => ({
@@ -68,6 +71,7 @@ class ConsoleWidget extends PureComponent {
             controller.write(data, context);
         }
     };
+
     controllerEvents = {
         'serialport:open': (options) => {
             const { port, baudrate } = options;
@@ -113,17 +117,21 @@ class ConsoleWidget extends PureComponent {
             this.terminal.writeln(data);
         }
     };
+
     terminal = null;
+
     pubsubTokens = [];
 
     componentDidMount() {
         this.addControllerEvents();
         this.subscribe();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
         this.unsubscribe();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized
@@ -131,6 +139,7 @@ class ConsoleWidget extends PureComponent {
 
         this.config.set('minimized', minimized);
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -147,6 +156,7 @@ class ConsoleWidget extends PureComponent {
             }
         };
     }
+
     subscribe() {
         const tokens = [
             pubsub.subscribe('resize', (msg) => {
@@ -155,27 +165,32 @@ class ConsoleWidget extends PureComponent {
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
+
     unsubscribe() {
         this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     resizeTerminal() {
         this.terminal && this.terminal.resize();
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;

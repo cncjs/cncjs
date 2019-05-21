@@ -25,6 +25,7 @@ class Macro extends PureComponent {
         const { actions } = this.props;
         actions.openRunMacroModal(macro.id);
     };
+
     handleLoadMacro = (macro) => (event) => {
         const { id, name } = macro;
         portal(({ onClose }) => (
@@ -60,6 +61,7 @@ class Macro extends PureComponent {
             </Modal>
         ));
     };
+
     handleEditMacro = (macro) => (event) => {
         const { actions } = this.props;
         actions.openEditMacroModal(macro.id);
@@ -80,15 +82,15 @@ class Macro extends PureComponent {
                 <div className={styles.tableContainer}>
                     <table className={styles.table}>
                         <tbody>
-                            {macros.length === 0 &&
-                            <tr>
-                                <td colSpan="2">
-                                    <div className={styles.emptyResult}>
-                                        {i18n._('No macros')}
-                                    </div>
-                                </td>
-                            </tr>
-                            }
+                            {macros.length === 0 && (
+                                <tr>
+                                    <td colSpan="2">
+                                        <div className={styles.emptyResult}>
+                                            {i18n._('No macros')}
+                                        </div>
+                                    </td>
+                                </tr>
+                            )}
                             {ensureArray(macros).map((macro, index) => (
                                 <tr key={macro.id}>
                                     <td>

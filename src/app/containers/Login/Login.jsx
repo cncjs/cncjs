@@ -25,6 +25,7 @@ class Login extends PureComponent {
     };
 
     state = this.getDefaultState();
+
     actions = {
         showAlertMessage: (msg) => {
             this.setState({ alertMessage: msg });
@@ -112,16 +113,16 @@ class Login extends PureComponent {
                     height: '100vh',
                 }}
             >
-                {alertMessage &&
-                <Notification
-                    style={{ marginBottom: 10 }}
-                    type="error"
-                    onDismiss={actions.clearAlertMessage}
-                >
-                    <div><strong>{i18n._('Error')}</strong></div>
-                    <div>{alertMessage}</div>
-                </Notification>
-                }
+                {alertMessage && (
+                    <Notification
+                        style={{ marginBottom: 10 }}
+                        type="error"
+                        onDismiss={actions.clearAlertMessage}
+                    >
+                        <div><strong>{i18n._('Error')}</strong></div>
+                        <div>{alertMessage}</div>
+                    </Notification>
+                )}
                 <Container
                     style={{
                         width: 300,

@@ -63,6 +63,7 @@ class TableTemplate extends PureComponent {
             </TableHeaderHoc>
         );
     }
+
     renderBody() {
         const {
             columns,
@@ -110,6 +111,7 @@ class TableTemplate extends PureComponent {
             </TableBodyHoc>
         );
     }
+
     render() {
         const {
             className,

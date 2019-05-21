@@ -41,9 +41,11 @@ class DropdownMenuWrapper extends PureComponent {
     focusNext() {
         this.menu && this.menu.focusNext && this.menu.focusNext();
     }
+
     focusPrevious() {
         this.menu && this.menu.focusPrevious && this.menu.focusPrevious();
     }
+
     renderMenu(child, props) {
         let ref = c => {
             this.menu = c;
@@ -65,6 +67,7 @@ class DropdownMenuWrapper extends PureComponent {
             ref
         });
     }
+
     render() {
         const {
             componentType, // eslint-disable-line

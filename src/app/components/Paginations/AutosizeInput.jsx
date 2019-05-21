@@ -52,6 +52,7 @@ class AutosizeInput extends PureComponent {
         // field value
         value: PropTypes.any
     };
+
     static defaultProps = {
         minWidth: 1
     };
@@ -59,11 +60,13 @@ class AutosizeInput extends PureComponent {
     state = {
         inputWidth: this.props.minWidth
     };
+
     nodes = {
         input: null,
         sizer: null,
         placeholderSizer: null
     };
+
     _isMounted = false;
 
     componentDidMount() {
@@ -71,9 +74,11 @@ class AutosizeInput extends PureComponent {
         this.copyInputStyles();
         this.updateInputWidth();
     }
+
     componentWillUnmount() {
         this._isMounted = false;
     }
+
     componentDidUpdate(prevProps, prevState) {
         if (prevState.inputWidth !== this.state.inputWidth) {
             if (typeof this.props.onAutosize === 'function') {
@@ -82,6 +87,7 @@ class AutosizeInput extends PureComponent {
         }
         this.updateInputWidth();
     }
+
     copyInputStyles() {
         if (!this._isMounted || !window.getComputedStyle) {
             return;
@@ -108,6 +114,7 @@ class AutosizeInput extends PureComponent {
             placeholderNode.style.letterSpacing = inputStyle.letterSpacing;
         }
     }
+
     updateInputWidth() {
         if (!this._isMounted || typeof this.nodes.sizer.scrollWidth === 'undefined') {
             return;
@@ -127,18 +134,23 @@ class AutosizeInput extends PureComponent {
             });
         }
     }
+
     getInput() {
         return this.nodes.input;
     }
+
     focus() {
         this.nodes.input.focus();
     }
+
     blur() {
         this.nodes.input.blur();
     }
+
     select() {
         this.nodes.input.select();
     }
+
     render() {
         const sizerValue = [this.props.defaultValue, this.props.value, ''].reduce((previousValue, currentValue) => {
             if (previousValue !== null && previousValue !== undefined) {
@@ -182,16 +194,16 @@ class AutosizeInput extends PureComponent {
                 >
                     {sizerValue}
                 </div>
-                {this.props.placeholder &&
-                <div
-                    ref={node => {
-                        this.nodes.placeholderSizer = node;
-                    }}
-                    style={sizerStyle}
-                >
-                    {this.props.placeholder}
-                </div>
-                }
+                {this.props.placeholder && (
+                    <div
+                        ref={node => {
+                            this.nodes.placeholderSizer = node;
+                        }}
+                        style={sizerStyle}
+                    >
+                        {this.props.placeholder}
+                    </div>
+                )}
             </div>
         );
     }

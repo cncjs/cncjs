@@ -36,6 +36,7 @@ class UpdateRecord extends PureComponent {
             commands: commands
         };
     }
+
     render() {
         const { state, actions } = this.props;
         const { modal } = state;
@@ -58,17 +59,17 @@ class UpdateRecord extends PureComponent {
                     </Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    {alertMessage &&
-                    <ToastNotification
-                        style={{ margin: '-16px -24px 10px -24px' }}
-                        type="error"
-                        onDismiss={() => {
-                            actions.updateModalParams({ alertMessage: '' });
-                        }}
-                    >
-                        {alertMessage}
-                    </ToastNotification>
-                    }
+                    {alertMessage && (
+                        <ToastNotification
+                            style={{ margin: '-16px -24px 10px -24px' }}
+                            type="error"
+                            onDismiss={() => {
+                                actions.updateModalParams({ alertMessage: '' });
+                            }}
+                        >
+                            {alertMessage}
+                        </ToastNotification>
+                    )}
                     <Form
                         ref={node => {
                             this.form = node;

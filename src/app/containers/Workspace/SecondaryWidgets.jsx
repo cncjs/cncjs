@@ -27,9 +27,11 @@ class SecondaryWidgets extends Component {
         onDragStart: PropTypes.func.isRequired,
         onDragEnd: PropTypes.func.isRequired
     };
+
     state = {
         widgets: config.get('workspace.container.secondary.widgets')
     };
+
     forkWidget = (widgetId) => () => {
         portal(({ onClose }) => (
             <Modal size="xs" onClose={onClose}>
@@ -77,6 +79,7 @@ class SecondaryWidgets extends Component {
             </Modal>
         ));
     };
+
     removeWidget = (widgetId) => () => {
         portal(({ onClose }) => (
             <Modal size="xs" onClose={onClose}>
@@ -117,19 +120,24 @@ class SecondaryWidgets extends Component {
             </Modal>
         ));
     };
+
     pubsubTokens = [];
+
     widgetMap = {};
 
     componentDidMount() {
         this.subscribe();
     }
+
     componentWillUnmount() {
         this.unsubscribe();
     }
+
     shouldComponentUpdate(nextProps, nextState) {
         // Do not compare props for performance considerations
         return !isEqual(nextState, this.state);
     }
+
     componentDidUpdate() {
         const { widgets } = this.state;
 
@@ -137,6 +145,7 @@ class SecondaryWidgets extends Component {
         // Remove the property first to avoid duplication.
         config.replace('workspace.container.secondary.widgets', widgets);
     }
+
     subscribe() {
         { // updateSecondaryWidgets
             const token = pubsub.subscribe('updateSecondaryWidgets', (msg, widgets) => {
@@ -145,12 +154,14 @@ class SecondaryWidgets extends Component {
             this.pubsubTokens.push(token);
         }
     }
+
     unsubscribe() {
         this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
+
     expandAll() {
         const len = this.state.widgets.length;
         for (let i = 0; i < len; ++i) {
@@ -161,6 +172,7 @@ class SecondaryWidgets extends Component {
             }
         }
     }
+
     collapseAll() {
         const len = this.state.widgets.length;
         for (let i = 0; i < len; ++i) {
@@ -171,6 +183,7 @@ class SecondaryWidgets extends Component {
             }
         }
     }
+
     render() {
         const { className } = this.props;
         const widgets = this.state.widgets

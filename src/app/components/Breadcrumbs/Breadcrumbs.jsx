@@ -7,6 +7,7 @@ class Breadcrumbs extends PureComponent {
     static propTypes = {
         showLineSeparator: PropTypes.bool
     };
+
     static defaultProps = {
         showLineSeparator: false
     };
@@ -30,6 +31,7 @@ class Breadcrumbs extends PureComponent {
             </ol>
         );
     }
+
     renderItems(children = this.props.children) {
         return React.Children.map(children, (child, index) => {
             if (!React.isValidElement(child)) {

@@ -7,6 +7,7 @@ class TogglerIcon extends PureComponent {
     static propTypes = {
         expanded: PropTypes.bool
     };
+
     static defaultProps = {
         expanded: false
     };

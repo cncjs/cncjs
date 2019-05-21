@@ -28,6 +28,7 @@ class NavItem extends PureComponent {
         /** ARIA role for the NavItem. */
         role: PropTypes.string
     };
+
     static defaultProps = {
         active: false,
         disabled: false

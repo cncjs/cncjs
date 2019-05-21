@@ -61,6 +61,7 @@ class DropdownMenu extends PureComponent {
 
         return { items, activeIndex };
     }
+
     getFocusableMenuItems() {
         const node = ReactDOM.findDOMNode(this);
         if (!node) {
@@ -69,6 +70,7 @@ class DropdownMenu extends PureComponent {
 
         return Array.from(node.querySelectorAll('[tabIndex="-1"]:not([disabled])'));
     }
+
     focusNext() {
         const { items, activeIndex } = this.getItemsAndActiveIndex();
         if (items.length === 0) {
@@ -78,6 +80,7 @@ class DropdownMenu extends PureComponent {
         const nextIndex = (activeIndex >= items.length - 1) ? 0 : activeIndex + 1;
         items[nextIndex].focus();
     }
+
     focusPrevious() {
         const { items, activeIndex } = this.getItemsAndActiveIndex();
         if (items.length === 0) {
@@ -87,6 +90,7 @@ class DropdownMenu extends PureComponent {
         const prevIndex = (activeIndex <= 0) ? items.length - 1 : activeIndex - 1;
         items[prevIndex].focus();
     }
+
     render() {
         const {
             componentType, // eslint-disable-line

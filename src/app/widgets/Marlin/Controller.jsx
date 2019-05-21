@@ -32,34 +32,34 @@ const Controller = (props) => {
                     <NavItem eventKey="settings">{i18n._('Controller Settings')}</NavItem>
                 </Nav>
                 <div className={styles.navContent} style={{ height: height }}>
-                    {activeTab === 'state' &&
-                    <pre className={styles.pre}>
-                        <code>{JSON.stringify(state.controller.state, null, 4)}</code>
-                    </pre>
-                    }
-                    {activeTab === 'settings' &&
-                    <div>
-                        <Button
-                            btnSize="xs"
-                            btnStyle="default"
-                            style={{
-                                position: 'absolute',
-                                right: 10,
-                                top: 10
-                            }}
-                            onClick={event => {
-                                controller.writeln('$#'); // Parameters
-                                controller.writeln('$$'); // Settings
-                            }}
-                        >
-                            <i className="fa fa-refresh" />
-                            {i18n._('Refresh')}
-                        </Button>
+                    {activeTab === 'state' && (
                         <pre className={styles.pre}>
-                            <code>{JSON.stringify(state.controller.settings, null, 4)}</code>
+                            <code>{JSON.stringify(state.controller.state, null, 4)}</code>
                         </pre>
-                    </div>
-                    }
+                    )}
+                    {activeTab === 'settings' && (
+                        <div>
+                            <Button
+                                btnSize="xs"
+                                btnStyle="default"
+                                style={{
+                                    position: 'absolute',
+                                    right: 10,
+                                    top: 10
+                                }}
+                                onClick={event => {
+                                    controller.writeln('$#'); // Parameters
+                                    controller.writeln('$$'); // Settings
+                                }}
+                            >
+                                <i className="fa fa-refresh" />
+                                {i18n._('Refresh')}
+                            </Button>
+                            <pre className={styles.pre}>
+                                <code>{JSON.stringify(state.controller.settings, null, 4)}</code>
+                            </pre>
+                        </div>
+                    )}
                 </div>
             </Modal.Body>
             <Modal.Footer>

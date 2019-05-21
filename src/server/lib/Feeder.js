@@ -8,6 +8,7 @@ class Feeder extends events.EventEmitter {
         pending: false,
         changed: false
     };
+
     dataFilter = null;
 
     // @param {object} [options] The options object.
@@ -23,6 +24,7 @@ class Feeder extends events.EventEmitter {
             this.state.changed = true;
         });
     }
+
     toJSON() {
         return {
             hold: this.state.hold,
@@ -32,6 +34,7 @@ class Feeder extends events.EventEmitter {
             changed: this.state.changed
         };
     }
+
     feed(data = [], context = {}) {
         // Clear pending state when the feeder queue is empty
         if (this.state.queue.length === 0) {
@@ -46,6 +49,7 @@ class Feeder extends events.EventEmitter {
             this.emit('change');
         }
     }
+
     hold(reason) {
         if (this.state.hold) {
             return;
@@ -55,6 +59,7 @@ class Feeder extends events.EventEmitter {
         this.emit('hold');
         this.emit('change');
     }
+
     unhold() {
         if (!this.state.hold) {
             return;
@@ -64,11 +69,13 @@ class Feeder extends events.EventEmitter {
         this.emit('unhold');
         this.emit('change');
     }
+
     clear() {
         this.state.queue = [];
         this.state.pending = false;
         this.emit('change');
     }
+
     reset() {
         this.state.hold = false;
         this.state.holdReason = null;
@@ -76,9 +83,11 @@ class Feeder extends events.EventEmitter {
         this.state.pending = false;
         this.emit('change');
     }
+
     size() {
         return this.state.queue.length;
     }
+
     next() {
         while (!this.state.hold && this.state.queue.length > 0) {
             let { command, context } = this.state.queue.shift();
@@ -103,9 +112,11 @@ class Feeder extends events.EventEmitter {
 
         return this.state.pending;
     }
+
     isPending() {
         return this.state.pending;
     }
+
     // Returns true if any state have changes
     peek() {
         const changed = this.state.changed;

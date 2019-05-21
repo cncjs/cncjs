@@ -31,6 +31,7 @@ class Table extends PureComponent {
         rowClassName: PropTypes.func,
         rowKey: PropTypes.oneOfType([PropTypes.string, PropTypes.func])
     };
+
     static defaultProps = {
         bordered: true,
         justified: true,
@@ -497,17 +498,15 @@ class Table extends PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const equal = prevProps.columns.length === this.props.columns.length
-        && isEqual(
+        const equal = prevProps.columns.length === this.props.columns.length &&
+        isEqual(
             prevProps.columns.map(it => ({ key: it.key, sortOrder: it.sortOrder })),
             this.props.columns.map(it => ({ key: it.key, sortOrder: it.sortOrder }))
         );
-        if (prevProps.maxHeight !== this.props.maxHeight
-            ||
-            !isEqual(prevProps.data, this.props.data)
-            ||
-            !equal
-            || (this.props.loading !== prevProps.loading)
+        if (prevProps.maxHeight !== this.props.maxHeight ||
+            !isEqual(prevProps.data, this.props.data) ||
+            !equal ||
+            (this.props.loading !== prevProps.loading)
         ) {
             this.actions.setTableSize();
         }

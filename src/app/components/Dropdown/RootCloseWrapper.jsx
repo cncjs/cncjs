@@ -35,6 +35,7 @@ class RootCloseWrapper extends React.Component {
         // Choose which document mouse event to bind to.
         event: PropTypes.oneOf(['click', 'mousedown'])
     };
+
     static defaultProps = {
         event: 'click'
     };
@@ -46,11 +47,13 @@ class RootCloseWrapper extends React.Component {
             contains(ReactDOM.findDOMNode(this), e.target)
         );
     };
+
     handleMouse = (e) => {
         if (!this.preventMouseRootClose && this.props.onRootClose) {
             this.props.onRootClose(e);
         }
     };
+
     handleKeyUp = (e) => {
         if (e.keyCode === escapeKeyCode && this.props.onRootClose) {
             this.props.onRootClose(e);
@@ -61,11 +64,13 @@ class RootCloseWrapper extends React.Component {
         super(props, context);
         this.preventMouseRootClose = false;
     }
+
     componentDidMount() {
         if (!this.props.disabled) {
             this.addEventListeners();
         }
     }
+
     componentDidUpdate(prevProps) {
         if (!this.props.disabled && prevProps.disabled) {
             this.addEventListeners();
@@ -73,11 +78,13 @@ class RootCloseWrapper extends React.Component {
             this.removeEventListeners();
         }
     }
+
     componentWillUnmount() {
         if (!this.props.disabled) {
             this.removeEventListeners();
         }
     }
+
     addEventListeners() {
         const { event } = this.props;
         const doc = ownerDocument(ReactDOM.findDOMNode(this));
@@ -89,6 +96,7 @@ class RootCloseWrapper extends React.Component {
         addEventListener(doc, event, this.handleMouse);
         addEventListener(doc, 'keyup', this.handleKeyUp);
     }
+
     removeEventListeners() {
         const { event } = this.props;
         const doc = ownerDocument(ReactDOM.findDOMNode(this));
@@ -97,6 +105,7 @@ class RootCloseWrapper extends React.Component {
         removeEventListener(doc, event, this.handleMouse);
         removeEventListener(doc, 'keyup', this.handleKeyUp);
     }
+
     render() {
         return this.props.children;
     }

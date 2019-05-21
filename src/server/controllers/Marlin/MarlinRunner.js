@@ -36,6 +36,7 @@ class MarlinRunner extends events.EventEmitter {
         feedrate: 0, // Related to G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
         spindle: 0 // Related to M3, M4, M5
     };
+
     settings = {
     };
 
@@ -141,20 +142,25 @@ class MarlinRunner extends events.EventEmitter {
             return;
         }
     }
+
     getPosition(state = this.state) {
         return _.get(state, 'pos', {});
     }
+
     getModalGroup(state = this.state) {
         return _.get(state, 'modal', {});
     }
+
     getTool(state = this.state) {
         // Not supported
         return 0;
     }
+
     isAlarm() {
         // Not supported
         return false;
     }
+
     isIdle() {
         // Not supported
         return false;

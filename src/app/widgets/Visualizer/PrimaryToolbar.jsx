@@ -75,6 +75,7 @@ class PrimaryToolbar extends PureComponent {
 
         return true;
     }
+
     renderControllerType() {
         const { state } = this.props;
         const controllerType = state.controller.type;
@@ -85,6 +86,7 @@ class PrimaryToolbar extends PureComponent {
             </div>
         );
     }
+
     renderControllerState() {
         const { state } = this.props;
         const controllerType = state.controller.type;
@@ -196,6 +198,7 @@ class PrimaryToolbar extends PureComponent {
             </div>
         );
     }
+
     getWorkCoordinateSystem() {
         const { state } = this.props;
         const controllerType = state.controller.type;
@@ -220,6 +223,7 @@ class PrimaryToolbar extends PureComponent {
 
         return defaultWCS;
     }
+
     render() {
         const { state, actions } = this.props;
         const { disabled, gcode, projection, objects } = state;
@@ -329,22 +333,22 @@ class PrimaryToolbar extends PureComponent {
                                 style={{ color: '#222' }}
                                 header
                             >
-                                {WebGL.isWebGLAvailable() &&
-                                <I18n>
-                                    {'WebGL: '}
-                                    <span style={{ color: colornames('royalblue') }}>
+                                {WebGL.isWebGLAvailable() && (
+                                    <I18n>
+                                        {'WebGL: '}
+                                        <span style={{ color: colornames('royalblue') }}>
                                         Enabled
-                                    </span>
-                                </I18n>
-                                }
-                                {!WebGL.isWebGLAvailable() &&
-                                <I18n>
-                                    {'WebGL: '}
-                                    <span style={{ color: colornames('crimson') }}>
+                                        </span>
+                                    </I18n>
+                                )}
+                                {!WebGL.isWebGLAvailable() && (
+                                    <I18n>
+                                        {'WebGL: '}
+                                        <span style={{ color: colornames('crimson') }}>
                                         Disabled
-                                    </span>
-                                </I18n>
-                                }
+                                        </span>
+                                    </I18n>
+                                )}
                             </MenuItem>
                             <MenuItem divider />
                             <MenuItem header>

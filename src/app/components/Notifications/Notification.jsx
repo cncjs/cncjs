@@ -33,6 +33,7 @@ class Notification extends Component {
         /** A callback fired when the dismiss icon (x) is clicked. */
         onDismiss: PropTypes.func
     };
+
     static defaultProps = {
         type: '',
         dismissible: true,
@@ -75,6 +76,7 @@ class Notification extends Component {
             }
         }
     }
+
     componentDidUpdate() {
         if (this.visible()) {
             const { autoDismiss } = this.props;
@@ -83,6 +85,7 @@ class Notification extends Component {
             }
         }
     }
+
     componentWillUnmount() {
         if (this.dismissTimer) {
             clearTimeout(this.dismissTimer);

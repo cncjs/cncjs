@@ -87,14 +87,17 @@ class Workspace extends PureComponent {
             // Ignore error
         }
     };
+
     handleRestoreDefaults = (event) => {
         const { actions } = this.props;
         actions.openModal(MODAL_RESTORE_DEFAULTS);
     };
+
     handleImport = (event) => {
         this.fileInput.value = null;
         this.fileInput.click();
     };
+
     handleExport = (event) => {
         // https://github.com/mholt/PapaParse/issues/175#issuecomment-201308792
         const text = config.toJSONString();

@@ -32,11 +32,13 @@ class Nav extends PureComponent {
         /** ARIA role for the Nav. */
         role: PropTypes.string
     };
+
     static defaultProps = {
         navStyle: 'tabs',
         justified: false,
         stacked: false
     };
+
     static contextTypes = {
         $tm_navbar: PropTypes.shape({
             navbarStyle: PropTypes.string,
@@ -56,6 +58,7 @@ class Nav extends PureComponent {
         }
         return false;
     }
+
     render() {
         const {
             navStyle,

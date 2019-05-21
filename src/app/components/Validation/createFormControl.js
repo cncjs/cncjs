@@ -29,18 +29,22 @@ const createFormControl = (options) => (WrappedComponent) => class FormControl e
         const { checked } = { ...this.context.$validation.getProps(this) };
         return !!checked;
     }
+
     get value() {
         const { value } = { ...this.context.$validation.getProps(this) };
         return value || '';
     }
+
     get blurred() {
         const { blurred } = { ...this.context.$validation.getProps(this) };
         return !!blurred;
     }
+
     get changed() {
         const { changed } = { ...this.context.$validation.getProps(this) };
         return !!changed;
     }
+
     get error() {
         const { error } = { ...this.context.$validation.getProps(this) };
         return error;

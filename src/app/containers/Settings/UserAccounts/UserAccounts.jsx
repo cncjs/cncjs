@@ -20,6 +20,7 @@ class UserAccounts extends PureComponent {
         const { actions } = this.props;
         actions.fetchRecords();
     }
+
     render() {
         const { state, actions } = this.props;
 

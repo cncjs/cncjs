@@ -88,8 +88,11 @@ class Settings extends PureComponent {
             component: (props) => <About {...props} />
         }
     ];
+
     initialState = this.getInitialState();
+
     state = this.getInitialState();
+
     actions = {
         // General
         general: {
@@ -1072,9 +1075,11 @@ class Settings extends PureComponent {
     componentDidMount() {
         this.mounted = true;
     }
+
     componentWillUnmount() {
         this.mounted = false;
     }
+
     getInitialState() {
         return {
             // General
@@ -1189,6 +1194,7 @@ class Settings extends PureComponent {
             }
         };
     }
+
     render() {
         const state = {
             ...this.state

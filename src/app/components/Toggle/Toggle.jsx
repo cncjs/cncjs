@@ -90,7 +90,9 @@ class Toggle extends Component {
     };
 
     setOn = () => this.setOnState(true);
+
     setOff = () => this.setOnState(false);
+
     toggle = () => this.setOnState(!this.getOn());
 
     getTogglerStateAndHelpers = () => ({

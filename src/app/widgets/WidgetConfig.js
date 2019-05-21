@@ -2,6 +2,7 @@ import config from 'app/store/config';
 
 class WidgetConfig {
     widgetId = '';
+
     translateKey = (key) => {
         const widgetId = this.widgetId;
         if (typeof key !== 'undefined') {
@@ -15,6 +16,7 @@ class WidgetConfig {
     constructor(widgetId) {
         this.widgetId = widgetId;
     }
+
     get(key, defaultValue) {
         if (!this.widgetId) {
             throw new Error('The widget id cannot be an empty string');
@@ -22,6 +24,7 @@ class WidgetConfig {
         key = this.translateKey(key);
         return config.get(key, defaultValue);
     }
+
     set(key, value) {
         if (!this.widgetId) {
             throw new Error('The widget id cannot be an empty string');
@@ -29,6 +32,7 @@ class WidgetConfig {
         key = this.translateKey(key);
         return config.set(key, value);
     }
+
     unset(key) {
         if (!this.widgetId) {
             throw new Error('The widget id cannot be an empty string');
@@ -36,6 +40,7 @@ class WidgetConfig {
         key = this.translateKey(key);
         return config.unset(key);
     }
+
     replace(key, value) {
         if (!this.widgetId) {
             throw new Error('The widget id cannot be an empty string');

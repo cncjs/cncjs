@@ -65,12 +65,15 @@ class AxesWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -317,6 +320,7 @@ class AxesWidget extends PureComponent {
             });
         }
     };
+
     shuttleControlEvents = {
         SELECT_AXIS: (event, { axis }) => {
             const { canClick, jog } = this.state;
@@ -407,6 +411,7 @@ class AxesWidget extends PureComponent {
             });
         }
     };
+
     controllerEvents = {
         'config:change': () => {
             this.fetchMDICommands();
@@ -586,6 +591,7 @@ class AxesWidget extends PureComponent {
             }
         }
     };
+
     shuttleControl = null;
 
     fetchMDICommands = async () => {
@@ -609,10 +615,12 @@ class AxesWidget extends PureComponent {
         this.addControllerEvents();
         this.addShuttleControlEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
         this.removeShuttleControlEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             units,
@@ -633,6 +641,7 @@ class AxesWidget extends PureComponent {
         }
         this.config.set('mdi.disabled', mdi.disabled);
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -687,18 +696,21 @@ class AxesWidget extends PureComponent {
             }
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     addShuttleControlEvents() {
         Object.keys(this.shuttleControlEvents).forEach(eventName => {
             const callback = this.shuttleControlEvents[eventName];
@@ -716,6 +728,7 @@ class AxesWidget extends PureComponent {
             controller.command('gcode', 'G90'); // absolute
         });
     }
+
     removeShuttleControlEvents() {
         Object.keys(this.shuttleControlEvents).forEach(eventName => {
             const callback = this.shuttleControlEvents[eventName];
@@ -725,6 +738,7 @@ class AxesWidget extends PureComponent {
         this.shuttleControl.removeAllListeners('flush');
         this.shuttleControl = null;
     }
+
     canClick() {
         const { port, workflow } = this.state;
         const controllerType = this.state.controller.type;
@@ -777,6 +791,7 @@ class AxesWidget extends PureComponent {
 
         return true;
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
@@ -901,34 +916,34 @@ class AxesWidget extends PureComponent {
                         { [styles.hidden]: minimized }
                     )}
                 >
-                    {state.modal.name === MODAL_SETTINGS &&
-                    <Settings
-                        config={config}
-                        onSave={() => {
-                            const axes = config.get('axes', DEFAULT_AXES);
-                            const imperialJogDistances = ensureArray(config.get('jog.imperial.distances', []));
-                            const metricJogDistances = ensureArray(config.get('jog.metric.distances', []));
+                    {state.modal.name === MODAL_SETTINGS && (
+                        <Settings
+                            config={config}
+                            onSave={() => {
+                                const axes = config.get('axes', DEFAULT_AXES);
+                                const imperialJogDistances = ensureArray(config.get('jog.imperial.distances', []));
+                                const metricJogDistances = ensureArray(config.get('jog.metric.distances', []));
 
-                            this.setState(state => ({
-                                axes: axes,
-                                jog: {
-                                    ...state.jog,
-                                    imperial: {
-                                        ...state.jog.imperial,
-                                        distances: imperialJogDistances
-                                    },
-                                    metric: {
-                                        ...state.jog.metric,
-                                        distances: metricJogDistances
+                                this.setState(state => ({
+                                    axes: axes,
+                                    jog: {
+                                        ...state.jog,
+                                        imperial: {
+                                            ...state.jog.imperial,
+                                            distances: imperialJogDistances
+                                        },
+                                        metric: {
+                                            ...state.jog.metric,
+                                            distances: metricJogDistances
+                                        }
                                     }
-                                }
-                            }));
+                                }));
 
-                            actions.closeModal();
-                        }}
-                        onCancel={actions.closeModal}
-                    />
-                    }
+                                actions.closeModal();
+                            }}
+                            onCancel={actions.closeModal}
+                        />
+                    )}
                     <Axes config={config} state={state} actions={actions} />
                 </Widget.Content>
             </Widget>

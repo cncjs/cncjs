@@ -19,10 +19,8 @@ class TableHeader extends Component {
 
     shouldComponentUpdate(nextProps, nextState) {
         return (
-            nextProps.columns.some((obj, index, array) => (typeof obj.title === 'function'))
-            ||
-            nextProps.scrollLeft !== this.props.scrollLeft
-            ||
+            nextProps.columns.some((obj, index, array) => (typeof obj.title === 'function')) ||
+            nextProps.scrollLeft !== this.props.scrollLeft ||
             !isEqual(nextProps.columns, this.props.columns)
         );
     }

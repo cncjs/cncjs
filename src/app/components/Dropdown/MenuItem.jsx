@@ -159,7 +159,7 @@ class MenuItem extends Component {
                 >
                     {others}
                 </div>
-                {(menuItems.length > 0) &&
+                {(menuItems.length > 0) && (
                     <DropdownMenu
                         open={open}
                         pullRight={pullRight}
@@ -169,7 +169,7 @@ class MenuItem extends Component {
                     >
                         {menuItems}
                     </DropdownMenu>
-                }
+                )}
             </Component>
         );
     }

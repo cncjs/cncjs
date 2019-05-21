@@ -30,12 +30,15 @@ class SmoothieWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -115,6 +118,7 @@ class SmoothieWidget extends PureComponent {
             });
         }
     };
+
     controllerEvents = {
         'serialport:open': (options) => {
             const { port, controllerType } = options;
@@ -154,9 +158,11 @@ class SmoothieWidget extends PureComponent {
     componentDidMount() {
         this.addControllerEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
@@ -168,6 +174,7 @@ class SmoothieWidget extends PureComponent {
         this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
         this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -197,18 +204,21 @@ class SmoothieWidget extends PureComponent {
             }
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     canClick() {
         const { port } = this.state;
         const { type } = this.state.controller;
@@ -222,6 +232,7 @@ class SmoothieWidget extends PureComponent {
 
         return true;
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen, isReady } = this.state;
@@ -248,72 +259,72 @@ class SmoothieWidget extends PureComponent {
                         Smoothie
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
-                        {isReady &&
-                        <Widget.Button
-                            onClick={(event) => {
-                                actions.openModal(MODAL_CONTROLLER);
-                            }}
-                        >
-                            <i className="fa fa-info" />
-                        </Widget.Button>
-                        }
-                        {isReady &&
-                        <Widget.DropdownButton
-                            toggle={<i className="fa fa-th-large" />}
-                        >
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.write('?')}
-                                disabled={!state.canClick}
+                        {isReady && (
+                            <Widget.Button
+                                onClick={(event) => {
+                                    actions.openModal(MODAL_CONTROLLER);
+                                }}
                             >
-                                {i18n._('Status Report (?)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.command('homing')}
-                                disabled={!state.canClick}
+                                <i className="fa fa-info" />
+                            </Widget.Button>
+                        )}
+                        {isReady && (
+                            <Widget.DropdownButton
+                                toggle={<i className="fa fa-th-large" />}
                             >
-                                {i18n._('Homing ($H)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.command('unlock')}
-                                disabled={!state.canClick}
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.write('?')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Status Report (?)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.command('homing')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Homing ($H)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.command('unlock')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Kill Alarm Lock ($X)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem divider />
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('help')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Help')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('$#')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('View G-code Parameters ($#)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('$G')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('View G-code Parser State ($G)')}
+                                </Widget.DropdownMenuItem>
+                            </Widget.DropdownButton>
+                        )}
+                        {isReady && (
+                            <Widget.Button
+                                disabled={isFullscreen}
+                                title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                                onClick={actions.toggleMinimized}
                             >
-                                {i18n._('Kill Alarm Lock ($X)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem divider />
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('help')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('Help')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('$#')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('View G-code Parameters ($#)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('$G')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('View G-code Parser State ($G)')}
-                            </Widget.DropdownMenuItem>
-                        </Widget.DropdownButton>
-                        }
-                        {isReady &&
-                        <Widget.Button
-                            disabled={isFullscreen}
-                            title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                            onClick={actions.toggleMinimized}
-                        >
-                            {minimized &&
-                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                            }
-                            {!minimized &&
-                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                            }
-                        </Widget.Button>
-                        }
+                                {minimized &&
+                                <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                }
+                                {!minimized &&
+                                <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                }
+                            </Widget.Button>
+                        )}
                         <Widget.DropdownButton
                             title={i18n._('More')}
                             toggle={(
@@ -354,22 +365,22 @@ class SmoothieWidget extends PureComponent {
                         </Widget.DropdownButton>
                     </Widget.Controls>
                 </Widget.Header>
-                {isReady &&
-                <Widget.Content
-                    className={classNames(
-                        styles['widget-content'],
-                        { [styles.hidden]: minimized }
-                    )}
-                >
-                    {state.modal.name === MODAL_CONTROLLER &&
-                    <Controller state={state} actions={actions} />
-                    }
-                    <Smoothie
-                        state={state}
-                        actions={actions}
-                    />
-                </Widget.Content>
-                }
+                {isReady && (
+                    <Widget.Content
+                        className={classNames(
+                            styles['widget-content'],
+                            { [styles.hidden]: minimized }
+                        )}
+                    >
+                        {state.modal.name === MODAL_CONTROLLER &&
+                        <Controller state={state} actions={actions} />
+                        }
+                        <Smoothie
+                            state={state}
+                            actions={actions}
+                        />
+                    </Widget.Content>
+                )}
             </Widget>
         );
     }

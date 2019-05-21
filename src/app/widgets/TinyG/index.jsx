@@ -30,12 +30,15 @@ class TinyGWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -128,6 +131,7 @@ class TinyGWidget extends PureComponent {
             });
         }
     };
+
     controllerEvents = {
         'serialport:open': (options) => {
             const { port, controllerType } = options;
@@ -167,9 +171,11 @@ class TinyGWidget extends PureComponent {
     componentDidMount() {
         this.addControllerEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
@@ -182,6 +188,7 @@ class TinyGWidget extends PureComponent {
         this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
         this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -214,18 +221,21 @@ class TinyGWidget extends PureComponent {
             }
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     canClick() {
         const { port } = this.state;
         const { type } = this.state.controller;
@@ -239,6 +249,7 @@ class TinyGWidget extends PureComponent {
 
         return true;
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen, isReady } = this.state;
@@ -265,94 +276,94 @@ class TinyGWidget extends PureComponent {
                         TinyG
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
-                        {isReady &&
-                        <Widget.Button
-                            onClick={(event) => {
-                                actions.openModal(MODAL_CONTROLLER);
-                            }}
-                        >
-                            <i className="fa fa-info" />
-                        </Widget.Button>
-                        }
-                        {isReady &&
-                        <Widget.DropdownButton
-                            toggle={<i className="fa fa-th-large" />}
-                        >
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('?')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('Status Report (?)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => {
-                                    controller.writeln('!%'); // queue flush
-                                    controller.writeln('{"qr":""}'); // queue report
+                        {isReady && (
+                            <Widget.Button
+                                onClick={(event) => {
+                                    actions.openModal(MODAL_CONTROLLER);
                                 }}
-                                disabled={!state.canClick}
                             >
-                                {i18n._('Queue Flush (%)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.write('\x04')}
-                                disabled={!state.canClick}
+                                <i className="fa fa-info" />
+                            </Widget.Button>
+                        )}
+                        {isReady && (
+                            <Widget.DropdownButton
+                                toggle={<i className="fa fa-th-large" />}
                             >
-                                {i18n._('Kill Job (^d)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.command('unlock')}
-                                disabled={!state.canClick}
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('?')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Status Report (?)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => {
+                                        controller.writeln('!%'); // queue flush
+                                        controller.writeln('{"qr":""}'); // queue report
+                                    }}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Queue Flush (%)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.write('\x04')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Kill Job (^d)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.command('unlock')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Clear Alarm ($clear)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem divider />
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('h')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Help')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('$sys')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Show System Settings')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('$$')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Show All Settings')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('$test')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('List Self Tests')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem divider />
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('$defa=1')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Restore Defaults')}
+                                </Widget.DropdownMenuItem>
+                            </Widget.DropdownButton>
+                        )}
+                        {isReady && (
+                            <Widget.Button
+                                disabled={isFullscreen}
+                                title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                                onClick={actions.toggleMinimized}
                             >
-                                {i18n._('Clear Alarm ($clear)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem divider />
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('h')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('Help')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('$sys')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('Show System Settings')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('$$')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('Show All Settings')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('$test')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('List Self Tests')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem divider />
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('$defa=1')}
-                                disabled={!state.canClick}
-                            >
-                                {i18n._('Restore Defaults')}
-                            </Widget.DropdownMenuItem>
-                        </Widget.DropdownButton>
-                        }
-                        {isReady &&
-                        <Widget.Button
-                            disabled={isFullscreen}
-                            title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                            onClick={actions.toggleMinimized}
-                        >
-                            {minimized &&
-                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                            }
-                            {!minimized &&
-                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                            }
-                        </Widget.Button>
-                        }
+                                {minimized &&
+                                <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                }
+                                {!minimized &&
+                                <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                }
+                            </Widget.Button>
+                        )}
                         <Widget.DropdownButton
                             title={i18n._('More')}
                             toggle={(
@@ -393,22 +404,22 @@ class TinyGWidget extends PureComponent {
                         </Widget.DropdownButton>
                     </Widget.Controls>
                 </Widget.Header>
-                {isReady &&
-                <Widget.Content
-                    className={classNames(
-                        styles.widgetContent,
-                        { [styles.hidden]: minimized }
-                    )}
-                >
-                    {state.modal.name === MODAL_CONTROLLER &&
-                    <Controller state={state} actions={actions} />
-                    }
-                    <TinyG
-                        state={state}
-                        actions={actions}
-                    />
-                </Widget.Content>
-                }
+                {isReady && (
+                    <Widget.Content
+                        className={classNames(
+                            styles.widgetContent,
+                            { [styles.hidden]: minimized }
+                        )}
+                    >
+                        {state.modal.name === MODAL_CONTROLLER &&
+                        <Controller state={state} actions={actions} />
+                        }
+                        <TinyG
+                            state={state}
+                            actions={actions}
+                        />
+                    </Widget.Content>
+                )}
             </Widget>
         );
     }

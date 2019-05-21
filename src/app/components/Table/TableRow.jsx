@@ -68,14 +68,10 @@ class TableRow extends Component {
         );
         const recordEqual = isEqual(nextProps.record, this.props.record);
         return (
-            this.props.className !== nextProps.className
-            ||
-            this.props.hovered !== nextProps.hovered
-            ||
-            !columnEqual
-            ||
-            !recordEqual
-            ||
+            this.props.className !== nextProps.className ||
+            this.props.hovered !== nextProps.hovered ||
+            !columnEqual ||
+            !recordEqual ||
             this.props.isExpanded !== nextProps.isExpanded
         );
     }
@@ -84,10 +80,12 @@ class TableRow extends Component {
         this.row.addEventListener('mouseenter', this.handleRowMouseEnter);
         this.row.addEventListener('mouseleave', this.handleRowMouseLeave);
     }
+
     componentWillUnmount() {
         this.row.removeEventListener('mouseenter', this.handleRowMouseEnter);
         this.row.removeEventListener('mouseleave', this.handleRowMouseLeave);
     }
+
     render() {
         const {
             columns,
@@ -137,11 +135,11 @@ class TableRow extends Component {
                         </TableCell>
                     );
                 })}
-                {isExpanded && expandedRowRender &&
-                <div className={styles['tr-expand']}>
-                    {expandedRowRender(record, rowIndex)}
-                </div>
-                }
+                {isExpanded && expandedRowRender && (
+                    <div className={styles['tr-expand']}>
+                        {expandedRowRender(record, rowIndex)}
+                    </div>
+                )}
             </div>
         );
     }

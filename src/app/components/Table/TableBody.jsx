@@ -42,6 +42,7 @@ class TableBody extends PureComponent {
         this.body.addEventListener('mouseover', onMouseOver);
         this.body.addEventListener('touchstart', onTouchStart);
     }
+
     componentWillUnmount() {
         const { onMouseOver, onTouchStart } = this.props;
         this.body.removeEventListener('mouseover', onMouseOver);
@@ -114,11 +115,11 @@ class TableBody extends PureComponent {
                     })
                 }
                 {
-                    noData && !loading &&
-                    <div className={styles.tablePlaceholder}>
-                        { emptyText() }
-                    </div>
-                }
+                    noData && !loading && (
+                        <div className={styles.tablePlaceholder}>
+                            { emptyText() }
+                        </div>
+                    )}
                 {
                     noData && loading &&
                     <div className={styles.tableNoDataLoader} />

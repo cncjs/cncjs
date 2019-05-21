@@ -68,6 +68,7 @@ class DateTimeRangePickerDropdown extends PureComponent {
         ]),
         onSelect: PropTypes.func
     };
+
     static defaultProps = {
         periods: ['1d', '7d', '14d', '30d', '60d'],
         defaultPeriod: '7d'
@@ -353,42 +354,42 @@ class DateTimeRangePickerDropdown extends PureComponent {
                             {mapPeriodToString('custom')}
                         </MenuItem>
                     </Dropdown.Menu>
-                    {showDateTimeRangePicker &&
-                    <div
-                        style={{
-                            display: 'inline-block',
-                            borderLeft: '1px solid #ddd',
-                            padding: 12
-                        }}
-                    >
-                        <DateTimeRangePicker
-                            locale={locale}
-                            minDate={minDate}
-                            startDate={nextStartDate}
-                            startTime={nextStartTime}
-                            endDate={nextEndDate}
-                            endTime={nextEndTime}
-                            onChangeStartDate={this.changeStartDate}
-                            onChangeStartTime={this.changeStartTime}
-                            onChangeEndDate={this.changeEndDate}
-                            onChangeEndTime={this.changeEndTime}
-                        />
-                        <div className="clearfix">
-                            <div className="pull-right">
-                                <Button
-                                    btnStyle="primary"
-                                    style={{ marginRight: 8 }}
-                                    onClick={this.handleClickApplyForCustomRange}
-                                >
-                                    {i18n._('Apply')}
-                                </Button>
-                                <Button onClick={this.handleClickCancelForCustomRange}>
-                                    {i18n._('Cancel')}
-                                </Button>
+                    {showDateTimeRangePicker && (
+                        <div
+                            style={{
+                                display: 'inline-block',
+                                borderLeft: '1px solid #ddd',
+                                padding: 12
+                            }}
+                        >
+                            <DateTimeRangePicker
+                                locale={locale}
+                                minDate={minDate}
+                                startDate={nextStartDate}
+                                startTime={nextStartTime}
+                                endDate={nextEndDate}
+                                endTime={nextEndTime}
+                                onChangeStartDate={this.changeStartDate}
+                                onChangeStartTime={this.changeStartTime}
+                                onChangeEndDate={this.changeEndDate}
+                                onChangeEndTime={this.changeEndTime}
+                            />
+                            <div className="clearfix">
+                                <div className="pull-right">
+                                    <Button
+                                        btnStyle="primary"
+                                        style={{ marginRight: 8 }}
+                                        onClick={this.handleClickApplyForCustomRange}
+                                    >
+                                        {i18n._('Apply')}
+                                    </Button>
+                                    <Button onClick={this.handleClickCancelForCustomRange}>
+                                        {i18n._('Cancel')}
+                                    </Button>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                    }
+                    )}
                 </Dropdown.MenuWrapper>
             </Dropdown>
         );

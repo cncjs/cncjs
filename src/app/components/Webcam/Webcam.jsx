@@ -24,6 +24,7 @@ class Webcam extends Component {
             'image/jpeg'
         ])
     };
+
     static defaultProps = {
         autoPlay: true,
         muted: false,
@@ -33,8 +34,11 @@ class Webcam extends Component {
         video: true,
         screenshotFormat: 'image/webp'
     };
+
     static mountedInstances = [];
+
     static userMediaRequested = false;
+
     static getUserMedia = navigator.getUserMedia ||
         navigator.webkitGetUserMedia ||
         navigator.mozGetUserMedia ||
@@ -46,7 +50,9 @@ class Webcam extends Component {
     };
 
     video = null;
+
     canvas = null;
+
     ctx = null;
 
     componentDidMount() {

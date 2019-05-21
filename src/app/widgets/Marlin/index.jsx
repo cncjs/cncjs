@@ -32,12 +32,15 @@ class MarlinWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -153,6 +156,7 @@ class MarlinWidget extends PureComponent {
             }
         }
     };
+
     controllerEvents = {
         'serialport:open': (options) => {
             const { port, controllerType } = options;
@@ -192,9 +196,11 @@ class MarlinWidget extends PureComponent {
     componentDidMount() {
         this.addControllerEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
@@ -213,6 +219,7 @@ class MarlinWidget extends PureComponent {
             this.config.set('heater.heatedBed', heater.heatedBed);
         }
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -246,18 +253,21 @@ class MarlinWidget extends PureComponent {
             }
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     canClick() {
         const { port } = this.state;
         const { type } = this.state.controller;
@@ -271,6 +281,7 @@ class MarlinWidget extends PureComponent {
 
         return true;
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen, isReady } = this.state;
@@ -297,53 +308,53 @@ class MarlinWidget extends PureComponent {
                         Marlin
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
-                        {isReady &&
-                        <Widget.Button
-                            onClick={(event) => {
-                                actions.openModal(MODAL_CONTROLLER);
-                            }}
-                        >
-                            <i className="fa fa-info" />
-                        </Widget.Button>
-                        }
-                        {isReady &&
-                        <Widget.DropdownButton
-                            toggle={<i className="fa fa-th-large" />}
-                        >
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('M105')}
-                                disabled={!state.canClick}
+                        {isReady && (
+                            <Widget.Button
+                                onClick={(event) => {
+                                    actions.openModal(MODAL_CONTROLLER);
+                                }}
                             >
-                                {i18n._('Get Extruder Temperature (M105)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('M114')}
-                                disabled={!state.canClick}
+                                <i className="fa fa-info" />
+                            </Widget.Button>
+                        )}
+                        {isReady && (
+                            <Widget.DropdownButton
+                                toggle={<i className="fa fa-th-large" />}
                             >
-                                {i18n._('Get Current Position (M114)')}
-                            </Widget.DropdownMenuItem>
-                            <Widget.DropdownMenuItem
-                                onSelect={() => controller.writeln('M115')}
-                                disabled={!state.canClick}
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('M105')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Get Extruder Temperature (M105)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('M114')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Get Current Position (M114)')}
+                                </Widget.DropdownMenuItem>
+                                <Widget.DropdownMenuItem
+                                    onSelect={() => controller.writeln('M115')}
+                                    disabled={!state.canClick}
+                                >
+                                    {i18n._('Get Firmware Version and Capabilities (M115)')}
+                                </Widget.DropdownMenuItem>
+                            </Widget.DropdownButton>
+                        )}
+                        {isReady && (
+                            <Widget.Button
+                                disabled={isFullscreen}
+                                title={minimized ? i18n._('Expand') : i18n._('Collapse')}
+                                onClick={actions.toggleMinimized}
                             >
-                                {i18n._('Get Firmware Version and Capabilities (M115)')}
-                            </Widget.DropdownMenuItem>
-                        </Widget.DropdownButton>
-                        }
-                        {isReady &&
-                        <Widget.Button
-                            disabled={isFullscreen}
-                            title={minimized ? i18n._('Expand') : i18n._('Collapse')}
-                            onClick={actions.toggleMinimized}
-                        >
-                            {minimized &&
-                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                            }
-                            {!minimized &&
-                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                            }
-                        </Widget.Button>
-                        }
+                                {minimized &&
+                                <FontAwesomeIcon icon="chevron-down" fixedWidth />
+                                }
+                                {!minimized &&
+                                <FontAwesomeIcon icon="chevron-up" fixedWidth />
+                                }
+                            </Widget.Button>
+                        )}
                         <Widget.DropdownButton
                             title={i18n._('More')}
                             toggle={(<FontAwesomeIcon icon="ellipsis-v" fixedWidth />)}
@@ -382,22 +393,22 @@ class MarlinWidget extends PureComponent {
                         </Widget.DropdownButton>
                     </Widget.Controls>
                 </Widget.Header>
-                {isReady &&
-                <Widget.Content
-                    className={classNames(
-                        styles['widget-content'],
-                        { [styles.hidden]: minimized }
-                    )}
-                >
-                    {state.modal.name === MODAL_CONTROLLER &&
-                    <Controller state={state} actions={actions} />
-                    }
-                    <Marlin
-                        state={state}
-                        actions={actions}
-                    />
-                </Widget.Content>
-                }
+                {isReady && (
+                    <Widget.Content
+                        className={classNames(
+                            styles['widget-content'],
+                            { [styles.hidden]: minimized }
+                        )}
+                    >
+                        {state.modal.name === MODAL_CONTROLLER &&
+                        <Controller state={state} actions={actions} />
+                        }
+                        <Marlin
+                            state={state}
+                            actions={actions}
+                        />
+                    </Widget.Content>
+                )}
             </Widget>
         );
     }

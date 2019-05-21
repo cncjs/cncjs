@@ -20,12 +20,15 @@ class TimeInput extends PureComponent {
         value: PropTypes.string,
         onChange: PropTypes.func
     };
+
     static defaultProps = {
         value: '00:00:00:000 AM'
     };
 
     input = null;
+
     mounted = false;
+
     state = {
         focused: false,
         caretIndex: null
@@ -265,15 +268,18 @@ class TimeInput extends PureComponent {
     componentDidMount () {
         this.mounted = true;
     }
+
     componentWillUnmount () {
         this.mounted = false;
     }
+
     componentDidUpdate() {
         const index = this.state.caretIndex;
         if (index || index === 0) {
             caret.set(this.input, index);
         }
     }
+
     render() {
         const value = this.format(this.props.value);
         const icon = (

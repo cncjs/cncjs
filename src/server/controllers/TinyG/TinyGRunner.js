@@ -99,6 +99,7 @@ class TinyGRunner extends events.EventEmitter {
             sps: 0, // [edge-082.10] Spindle speed
         }
     };
+
     settings = {
         // Identification Parameters
         // https://github.com/synthetos/g2/wiki/Configuring-0.99-System-Groups#identification-parameters
@@ -114,11 +115,13 @@ class TinyGRunner extends events.EventEmitter {
         mto: 1, // manual traverse override
         sso: 1 // spindle speed override
     };
+
     footer = {
         revision: 0,
         statusCode: 0, // https://github.com/synthetos/g2/wiki/Status-Codes
         rxBufferInfo: 0
     };
+
     plannerBufferPoolSize = 0; // Suggest 12 min. Limit is 255
 
     parser = new TinyGLineParser();
@@ -447,22 +450,28 @@ class TinyGRunner extends events.EventEmitter {
             }
         }
     }
+
     getMachinePosition(state = this.state) {
         return _.get(state, 'sr.mpos', {});
     }
+
     getWorkPosition(state = this.state) {
         return _.get(state, 'sr.wpos', {});
     }
+
     getModalGroup(state = this.state) {
         return _.get(state, 'sr.modal', {});
     }
+
     getTool(state = this.state) {
         return Number(_.get(state, 'tool')) || 0;
     }
+
     isAlarm() {
         const machineState = _.get(this.state, 'sr.machineState');
         return machineState === TINYG_MACHINE_STATE_ALARM;
     }
+
     isIdle() {
         const machineState = _.get(this.state, 'sr.machineState');
         return (

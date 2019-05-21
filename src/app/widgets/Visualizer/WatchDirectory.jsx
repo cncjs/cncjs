@@ -16,6 +16,7 @@ class WatchDirectory extends PureComponent {
     };
 
     tableNode = null;
+
     treeNode = null;
 
     componentDidMount() {
@@ -47,15 +48,19 @@ class WatchDirectory extends PureComponent {
                 // Ignore error
             });
     }
+
     componentWillUnmount() {
         this.removeResizeEventListener();
     }
+
     addResizeEventListener() {
         window.addEventListener('resize', this.fitHeaderColumns);
     }
+
     removeResizeEventListener() {
         window.removeEventListener('resize', this.fitHeaderColumns);
     }
+
     addColumnGroup() {
         if (!this.treeNode) {
             return;
@@ -71,6 +76,7 @@ class WatchDirectory extends PureComponent {
             colgroup.appendChild(col);
         }
     }
+
     fitHeaderColumns() {
         const ready = this.tableNode && this.treeNode;
         if (!ready) {
@@ -97,6 +103,7 @@ class WatchDirectory extends PureComponent {
             col = col.nextSibling;
         }
     }
+
     render() {
         const { state, actions } = this.props;
         const { selectedNode = null } = state.modal.params;

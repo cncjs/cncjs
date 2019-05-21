@@ -29,6 +29,7 @@ class Infotip extends PureComponent {
             PropTypes.func
         ]).isRequired
     };
+
     static defaultProps = {
         placement: 'rightBottom',
         disabled: false,

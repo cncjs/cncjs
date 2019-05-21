@@ -122,54 +122,54 @@ class DisplayPanel extends PureComponent {
                     >
                         {i18n._('Go To Work Zero (G0 X0 Y0 Z0)')}
                     </MenuItem>
-                    {wcs === 'G54' &&
-                    <MenuItem
-                        eventKey="G10 L20 P1 X0 Y0 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Offsets (G10 L20 P1 X0 Y0 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G55' &&
-                    <MenuItem
-                        eventKey="G10 L20 P2 X0 Y0 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Offsets (G10 L20 P2 X0 Y0 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G56' &&
-                    <MenuItem
-                        eventKey="G10 L20 P3 X0 Y0 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Offsets (G10 L20 P3 X0 Y0 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G57' &&
-                    <MenuItem
-                        eventKey="G10 L20 P4 X0 Y0 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Offsets (G10 L20 P4 X0 Y0 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G58' &&
-                    <MenuItem
-                        eventKey="G10 L20 P5 X0 Y0 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G59' &&
-                    <MenuItem
-                        eventKey="G10 L20 P6 X0 Y0 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)')}
-                    </MenuItem>
-                    }
+                    {wcs === 'G54' && (
+                        <MenuItem
+                            eventKey="G10 L20 P1 X0 Y0 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P1 X0 Y0 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G55' && (
+                        <MenuItem
+                            eventKey="G10 L20 P2 X0 Y0 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P2 X0 Y0 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G56' && (
+                        <MenuItem
+                            eventKey="G10 L20 P3 X0 Y0 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P3 X0 Y0 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G57' && (
+                        <MenuItem
+                            eventKey="G10 L20 P4 X0 Y0 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P4 X0 Y0 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G58' && (
+                        <MenuItem
+                            eventKey="G10 L20 P5 X0 Y0 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P5 X0 Y0 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G59' && (
+                        <MenuItem
+                            eventKey="G10 L20 P6 X0 Y0 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Offsets (G10 L20 P6 X0 Y0 Z0)')}
+                        </MenuItem>
+                    )}
                     <MenuItem divider />
                     <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                     <MenuItem
@@ -256,54 +256,54 @@ class DisplayPanel extends PureComponent {
                     >
                         {i18n._('Go To Work Zero On X Axis (G0 X0)')}
                     </MenuItem>
-                    {wcs === 'G54' &&
-                    <MenuItem
-                        eventKey="G10 L20 P1 X0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work X Axis (G10 L20 P1 X0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G55' &&
-                    <MenuItem
-                        eventKey="G10 L20 P2 X0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work X Axis (G10 L20 P2 X0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G56' &&
-                    <MenuItem
-                        eventKey="G10 L20 P3 X0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work X Axis (G10 L20 P3 X0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G57' &&
-                    <MenuItem
-                        eventKey="G10 L20 P4 X0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work X Axis (G10 L20 P4 X0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G58' &&
-                    <MenuItem
-                        eventKey="G10 L20 P5 X0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work X Axis (G10 L20 P5 X0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G59' &&
-                    <MenuItem
-                        eventKey="G10 L20 P6 X0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work X Axis (G10 L20 P6 X0)')}
-                    </MenuItem>
-                    }
+                    {wcs === 'G54' && (
+                        <MenuItem
+                            eventKey="G10 L20 P1 X0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work X Axis (G10 L20 P1 X0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G55' && (
+                        <MenuItem
+                            eventKey="G10 L20 P2 X0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work X Axis (G10 L20 P2 X0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G56' && (
+                        <MenuItem
+                            eventKey="G10 L20 P3 X0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work X Axis (G10 L20 P3 X0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G57' && (
+                        <MenuItem
+                            eventKey="G10 L20 P4 X0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work X Axis (G10 L20 P4 X0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G58' && (
+                        <MenuItem
+                            eventKey="G10 L20 P5 X0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work X Axis (G10 L20 P5 X0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G59' && (
+                        <MenuItem
+                            eventKey="G10 L20 P6 X0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work X Axis (G10 L20 P6 X0)')}
+                        </MenuItem>
+                    )}
                     <MenuItem divider />
                     <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                     <MenuItem
@@ -385,54 +385,54 @@ class DisplayPanel extends PureComponent {
                     >
                         {i18n._('Go To Work Zero On Y Axis (G0 Y0)')}
                     </MenuItem>
-                    {wcs === 'G54' &&
-                    <MenuItem
-                        eventKey="G10 L20 P1 Y0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Y Axis (G10 L20 P1 Y0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G55' &&
-                    <MenuItem
-                        eventKey="G10 L20 P2 Y0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Y Axis (G10 L20 P2 Y0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G56' &&
-                    <MenuItem
-                        eventKey="G10 L20 P3 Y0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Y Axis (G10 L20 P3 Y0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G57' &&
-                    <MenuItem
-                        eventKey="G10 L20 P4 Y0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Y Axis (G10 L20 P4 Y0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G58' &&
-                    <MenuItem
-                        eventKey="G10 L20 P5 Y0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Y Axis (G10 L20 P5 Y0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G59' &&
-                    <MenuItem
-                        eventKey="G10 L20 P6 Y0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Y Axis (G10 L20 P6 Y0)')}
-                    </MenuItem>
-                    }
+                    {wcs === 'G54' && (
+                        <MenuItem
+                            eventKey="G10 L20 P1 Y0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Y Axis (G10 L20 P1 Y0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G55' && (
+                        <MenuItem
+                            eventKey="G10 L20 P2 Y0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Y Axis (G10 L20 P2 Y0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G56' && (
+                        <MenuItem
+                            eventKey="G10 L20 P3 Y0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Y Axis (G10 L20 P3 Y0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G57' && (
+                        <MenuItem
+                            eventKey="G10 L20 P4 Y0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Y Axis (G10 L20 P4 Y0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G58' && (
+                        <MenuItem
+                            eventKey="G10 L20 P5 Y0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Y Axis (G10 L20 P5 Y0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G59' && (
+                        <MenuItem
+                            eventKey="G10 L20 P6 Y0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Y Axis (G10 L20 P6 Y0)')}
+                        </MenuItem>
+                    )}
                     <MenuItem divider />
                     <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                     <MenuItem
@@ -514,54 +514,54 @@ class DisplayPanel extends PureComponent {
                     >
                         {i18n._('Go To Work Zero On Z Axis (G0 Z0)')}
                     </MenuItem>
-                    {wcs === 'G54' &&
-                    <MenuItem
-                        eventKey="G10 L20 P1 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Z Axis (G10 L20 P1 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G55' &&
-                    <MenuItem
-                        eventKey="G10 L20 P2 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Z Axis (G10 L20 P2 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G56' &&
-                    <MenuItem
-                        eventKey="G10 L20 P3 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Z Axis (G10 L20 P3 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G57' &&
-                    <MenuItem
-                        eventKey="G10 L20 P4 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Z Axis (G10 L20 P4 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G58' &&
-                    <MenuItem
-                        eventKey="G10 L20 P5 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Z Axis (G10 L20 P5 Z0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G59' &&
-                    <MenuItem
-                        eventKey="G10 L20 P6 Z0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work Z Axis (G10 L20 P6 Z0)')}
-                    </MenuItem>
-                    }
+                    {wcs === 'G54' && (
+                        <MenuItem
+                            eventKey="G10 L20 P1 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Z Axis (G10 L20 P1 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G55' && (
+                        <MenuItem
+                            eventKey="G10 L20 P2 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Z Axis (G10 L20 P2 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G56' && (
+                        <MenuItem
+                            eventKey="G10 L20 P3 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Z Axis (G10 L20 P3 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G57' && (
+                        <MenuItem
+                            eventKey="G10 L20 P4 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Z Axis (G10 L20 P4 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G58' && (
+                        <MenuItem
+                            eventKey="G10 L20 P5 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Z Axis (G10 L20 P5 Z0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G59' && (
+                        <MenuItem
+                            eventKey="G10 L20 P6 Z0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work Z Axis (G10 L20 P6 Z0)')}
+                        </MenuItem>
+                    )}
                     <MenuItem divider />
                     <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                     <MenuItem
@@ -643,54 +643,54 @@ class DisplayPanel extends PureComponent {
                     >
                         {i18n._('Go To Work Zero On A Axis (G0 A0)')}
                     </MenuItem>
-                    {wcs === 'G54' &&
-                    <MenuItem
-                        eventKey="G10 L20 P1 A0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work A Axis (G10 L20 P1 A0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G55' &&
-                    <MenuItem
-                        eventKey="G10 L20 P2 A0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work A Axis (G10 L20 P2 A0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G56' &&
-                    <MenuItem
-                        eventKey="G10 L20 P3 A0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work A Axis (G10 L20 P3 A0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G57' &&
-                    <MenuItem
-                        eventKey="G10 L20 P4 A0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work A Axis (G10 L20 P4 A0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G58' &&
-                    <MenuItem
-                        eventKey="G10 L20 P5 A0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work A Axis (G10 L20 P5 A0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G59' &&
-                    <MenuItem
-                        eventKey="G10 L20 P6 A0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work A Axis (G10 L20 P6 A0)')}
-                    </MenuItem>
-                    }
+                    {wcs === 'G54' && (
+                        <MenuItem
+                            eventKey="G10 L20 P1 A0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work A Axis (G10 L20 P1 A0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G55' && (
+                        <MenuItem
+                            eventKey="G10 L20 P2 A0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work A Axis (G10 L20 P2 A0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G56' && (
+                        <MenuItem
+                            eventKey="G10 L20 P3 A0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work A Axis (G10 L20 P3 A0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G57' && (
+                        <MenuItem
+                            eventKey="G10 L20 P4 A0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work A Axis (G10 L20 P4 A0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G58' && (
+                        <MenuItem
+                            eventKey="G10 L20 P5 A0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work A Axis (G10 L20 P5 A0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G59' && (
+                        <MenuItem
+                            eventKey="G10 L20 P6 A0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work A Axis (G10 L20 P6 A0)')}
+                        </MenuItem>
+                    )}
                     <MenuItem divider />
                     <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                     <MenuItem
@@ -772,54 +772,54 @@ class DisplayPanel extends PureComponent {
                     >
                         {i18n._('Go To Work Zero On B Axis (G0 B0)')}
                     </MenuItem>
-                    {wcs === 'G54' &&
-                    <MenuItem
-                        eventKey="G10 L20 P1 B0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work B Axis (G10 L20 P1 B0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G55' &&
-                    <MenuItem
-                        eventKey="G10 L20 P2 B0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work B Axis (G10 L20 P2 B0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G56' &&
-                    <MenuItem
-                        eventKey="G10 L20 P3 B0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work B Axis (G10 L20 P3 B0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G57' &&
-                    <MenuItem
-                        eventKey="G10 L20 P4 B0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work B Axis (G10 L20 P4 B0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G58' &&
-                    <MenuItem
-                        eventKey="G10 L20 P5 B0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work B Axis (G10 L20 P5 B0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G59' &&
-                    <MenuItem
-                        eventKey="G10 L20 P6 B0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work B Axis (G10 L20 P6 B0)')}
-                    </MenuItem>
-                    }
+                    {wcs === 'G54' && (
+                        <MenuItem
+                            eventKey="G10 L20 P1 B0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work B Axis (G10 L20 P1 B0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G55' && (
+                        <MenuItem
+                            eventKey="G10 L20 P2 B0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work B Axis (G10 L20 P2 B0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G56' && (
+                        <MenuItem
+                            eventKey="G10 L20 P3 B0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work B Axis (G10 L20 P3 B0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G57' && (
+                        <MenuItem
+                            eventKey="G10 L20 P4 B0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work B Axis (G10 L20 P4 B0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G58' && (
+                        <MenuItem
+                            eventKey="G10 L20 P5 B0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work B Axis (G10 L20 P5 B0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G59' && (
+                        <MenuItem
+                            eventKey="G10 L20 P6 B0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work B Axis (G10 L20 P6 B0)')}
+                        </MenuItem>
+                    )}
                     <MenuItem divider />
                     <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                     <MenuItem
@@ -901,54 +901,54 @@ class DisplayPanel extends PureComponent {
                     >
                         {i18n._('Go To Work Zero On C Axis (G0 C0)')}
                     </MenuItem>
-                    {wcs === 'G54' &&
-                    <MenuItem
-                        eventKey="G10 L20 P1 C0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work C Axis (G10 L20 P1 C0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G55' &&
-                    <MenuItem
-                        eventKey="G10 L20 P2 C0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work C Axis (G10 L20 P2 C0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G56' &&
-                    <MenuItem
-                        eventKey="G10 L20 P3 C0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work C Axis (G10 L20 P3 C0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G57' &&
-                    <MenuItem
-                        eventKey="G10 L20 P4 C0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work C Axis (G10 L20 P4 C0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G58' &&
-                    <MenuItem
-                        eventKey="G10 L20 P5 C0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work C Axis (G10 L20 P5 C0)')}
-                    </MenuItem>
-                    }
-                    {wcs === 'G59' &&
-                    <MenuItem
-                        eventKey="G10 L20 P6 C0"
-                        disabled={!canClick}
-                    >
-                        {i18n._('Zero Out Work C Axis (G10 L20 P6 C0)')}
-                    </MenuItem>
-                    }
+                    {wcs === 'G54' && (
+                        <MenuItem
+                            eventKey="G10 L20 P1 C0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work C Axis (G10 L20 P1 C0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G55' && (
+                        <MenuItem
+                            eventKey="G10 L20 P2 C0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work C Axis (G10 L20 P2 C0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G56' && (
+                        <MenuItem
+                            eventKey="G10 L20 P3 C0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work C Axis (G10 L20 P3 C0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G57' && (
+                        <MenuItem
+                            eventKey="G10 L20 P4 C0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work C Axis (G10 L20 P4 C0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G58' && (
+                        <MenuItem
+                            eventKey="G10 L20 P5 C0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work C Axis (G10 L20 P5 C0)')}
+                        </MenuItem>
+                    )}
+                    {wcs === 'G59' && (
+                        <MenuItem
+                            eventKey="G10 L20 P6 C0"
+                            disabled={!canClick}
+                        >
+                            {i18n._('Zero Out Work C Axis (G10 L20 P6 C0)')}
+                        </MenuItem>
+                    )}
                     <MenuItem divider />
                     <MenuItem header>{i18n._('Temporary Offsets (G92)')}</MenuItem>
                     <MenuItem
@@ -1072,18 +1072,18 @@ class DisplayPanel extends PureComponent {
                     </Taskbar>
                 </td>
                 <td className={styles.workPosition}>
-                    {showPositionInput &&
-                    <PositionInput
-                        style={{ margin: '5px 0' }}
-                        onSave={chainedFunction(
-                            (value) => {
-                                actions.setWorkOffsets(axis, value);
-                            },
-                            this.hidePositionInput(axis)
-                        )}
-                        onCancel={this.hidePositionInput(axis)}
-                    />
-                    }
+                    {showPositionInput && (
+                        <PositionInput
+                            style={{ margin: '5px 0' }}
+                            onSave={chainedFunction(
+                                (value) => {
+                                    actions.setWorkOffsets(axis, value);
+                                },
+                                this.hidePositionInput(axis)
+                            )}
+                            onCancel={this.hidePositionInput(axis)}
+                        />
+                    )}
                     {!showPositionInput &&
                     <PositionLabel value={wpos} />
                     }

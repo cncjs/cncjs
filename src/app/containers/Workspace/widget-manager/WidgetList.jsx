@@ -7,7 +7,10 @@ const WidgetList = ({ data, onChange }) => (
     <Container fluid gutterWidth={24} style={{ padding: 0 }}>
         <Row>
             {data.map(widget => (
-                <Col key={widget.id} xs={12} md={6} lg={4} style={{ margin: '12px 0' }}>
+                <Col
+                    key={widget.id} xs={12} md={6}
+                    lg={4} style={{ margin: '12px 0' }}
+                >
                     <WidgetListItem
                         id={widget.id}
                         caption={widget.caption}

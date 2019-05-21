@@ -48,12 +48,12 @@ class Connection extends PureComponent {
         return (
             <div style={styles.option} title={label}>
                 <div>
-                    {inuse &&
-                    <Fragment>
-                        <FontAwesomeIcon icon="lock" />
-                        <Space width={8} />
-                    </Fragment>
-                    }
+                    {inuse && (
+                        <Fragment>
+                            <FontAwesomeIcon icon="lock" />
+                            <Space width={8} />
+                        </Fragment>
+                    )}
                     {label}
                 </div>
                 {manufacturer &&
@@ -75,12 +75,12 @@ class Connection extends PureComponent {
         };
         return (
             <div style={style} title={label}>
-                {inuse &&
-                <Fragment>
-                    <FontAwesomeIcon icon="lock" />
-                    <Space width={8} />
-                </Fragment>
-                }
+                {inuse && (
+                    <Fragment>
+                        <FontAwesomeIcon icon="lock" />
+                        <Space width={8} />
+                    </Fragment>
+                )}
                 {label}
             </div>
         );
@@ -131,65 +131,65 @@ class Connection extends PureComponent {
 
         return (
             <Container>
-                {alertMessage &&
-                <ToastNotification
-                    style={{ margin: '-10px -10px 10px -10px' }}
-                    type="error"
-                    onDismiss={actions.clearAlert}
-                >
-                    {alertMessage}
-                </ToastNotification>
-                }
-                {canSelectControllers &&
-                <FormGroup>
-                    <ButtonGroup>
-                        {hasGrblController &&
-                        <Button
-                            btnStyle={controllerType === GRBL ? 'dark' : 'default'}
-                            disabled={!canChangeController}
-                            onClick={() => {
-                                actions.changeController(GRBL);
-                            }}
-                        >
-                            {GRBL}
-                        </Button>
-                        }
-                        {hasMarlinController &&
-                        <Button
-                            btnStyle={controllerType === MARLIN ? 'dark' : 'default'}
-                            disabled={!canChangeController}
-                            onClick={() => {
-                                actions.changeController(MARLIN);
-                            }}
-                        >
-                            {MARLIN}
-                        </Button>
-                        }
-                        {hasSmoothieController &&
-                        <Button
-                            btnStyle={controllerType === SMOOTHIE ? 'dark' : 'default'}
-                            disabled={!canChangeController}
-                            onClick={() => {
-                                actions.changeController(SMOOTHIE);
-                            }}
-                        >
-                            {SMOOTHIE}
-                        </Button>
-                        }
-                        {hasTinyGController &&
-                        <Button
-                            btnStyle={controllerType === TINYG ? 'dark' : 'default'}
-                            disabled={!canChangeController}
-                            onClick={() => {
-                                actions.changeController(TINYG);
-                            }}
-                        >
-                            {TINYG}
-                        </Button>
-                        }
-                    </ButtonGroup>
-                </FormGroup>
-                }
+                {alertMessage && (
+                    <ToastNotification
+                        style={{ margin: '-10px -10px 10px -10px' }}
+                        type="error"
+                        onDismiss={actions.clearAlert}
+                    >
+                        {alertMessage}
+                    </ToastNotification>
+                )}
+                {canSelectControllers && (
+                    <FormGroup>
+                        <ButtonGroup>
+                            {hasGrblController && (
+                                <Button
+                                    btnStyle={controllerType === GRBL ? 'dark' : 'default'}
+                                    disabled={!canChangeController}
+                                    onClick={() => {
+                                        actions.changeController(GRBL);
+                                    }}
+                                >
+                                    {GRBL}
+                                </Button>
+                            )}
+                            {hasMarlinController && (
+                                <Button
+                                    btnStyle={controllerType === MARLIN ? 'dark' : 'default'}
+                                    disabled={!canChangeController}
+                                    onClick={() => {
+                                        actions.changeController(MARLIN);
+                                    }}
+                                >
+                                    {MARLIN}
+                                </Button>
+                            )}
+                            {hasSmoothieController && (
+                                <Button
+                                    btnStyle={controllerType === SMOOTHIE ? 'dark' : 'default'}
+                                    disabled={!canChangeController}
+                                    onClick={() => {
+                                        actions.changeController(SMOOTHIE);
+                                    }}
+                                >
+                                    {SMOOTHIE}
+                                </Button>
+                            )}
+                            {hasTinyGController && (
+                                <Button
+                                    btnStyle={controllerType === TINYG ? 'dark' : 'default'}
+                                    disabled={!canChangeController}
+                                    onClick={() => {
+                                        actions.changeController(TINYG);
+                                    }}
+                                >
+                                    {TINYG}
+                                </Button>
+                            )}
+                        </ButtonGroup>
+                    </FormGroup>
+                )}
                 <FormGroup>
                     <Label>{i18n._('Port')}</Label>
                     <Row>
@@ -285,28 +285,28 @@ class Connection extends PureComponent {
                     </Checkbox>
                 </FormGroup>
                 <ButtonGroup>
-                    {notConnected &&
-                    <Button
-                        btnStyle="primary"
-                        disabled={!canOpenPort}
-                        onClick={actions.handleOpenPort}
-                    >
-                        <FontAwesomeIcon icon="toggle-off" />
-                        <Space width={8} />
-                        {i18n._('Open')}
-                    </Button>
-                    }
-                    {connected &&
-                    <Button
-                        btnStyle="danger"
-                        disabled={!canClosePort}
-                        onClick={actions.handleClosePort}
-                    >
-                        <FontAwesomeIcon icon="toggle-on" />
-                        <Space width={8} />
-                        {i18n._('Close')}
-                    </Button>
-                    }
+                    {notConnected && (
+                        <Button
+                            btnStyle="primary"
+                            disabled={!canOpenPort}
+                            onClick={actions.handleOpenPort}
+                        >
+                            <FontAwesomeIcon icon="toggle-off" />
+                            <Space width={8} />
+                            {i18n._('Open')}
+                        </Button>
+                    )}
+                    {connected && (
+                        <Button
+                            btnStyle="danger"
+                            disabled={!canClosePort}
+                            onClick={actions.handleClosePort}
+                        >
+                            <FontAwesomeIcon icon="toggle-on" />
+                            <Space width={8} />
+                            {i18n._('Close')}
+                        </Button>
+                    )}
                 </ButtonGroup>
             </Container>
         );

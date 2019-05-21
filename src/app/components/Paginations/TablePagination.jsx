@@ -31,6 +31,7 @@ class TablePagination extends PureComponent {
         pageRecordsRenderer: PropTypes.func,
         pageLengthRenderer: PropTypes.func
     };
+
     static defaultProps = {
         type: 'full',
         page: 1,
@@ -66,6 +67,7 @@ class TablePagination extends PureComponent {
         shouldOpenDropdownMenu: false,
         page: this.props.page
     };
+
     actions = {
         toggleDropdownMenu: () => {
             this.setState({ shouldOpenDropdownMenu: !this.state.shouldOpenDropdownMenu });
@@ -93,6 +95,7 @@ class TablePagination extends PureComponent {
             this.setState({ page: Number(nextProps.page) });
         }
     }
+
     render() {
         const {
             type,
@@ -128,46 +131,46 @@ class TablePagination extends PureComponent {
                     <div className={styles.paginationRecords}>
                         {pageRecordsRenderer({ totalRecords, from, to })}
                     </div>
-                    {(type !== 'minor') &&
-                    <div
-                        className={cx(
-                            styles.dropdown,
-                            {
-                                [styles.dropup]: dropup,
-                                [styles.open]: this.state.shouldOpenDropdownMenu
-                            }
-                        )}
-                    >
-                        <button
-                            type="button"
-                            className={styles.dropdownToggle}
-                            onClick={this.actions.toggleDropdownMenu}
-                            onBlur={this.actions.closeDropdownMenu}
+                    {(type !== 'minor') && (
+                        <div
+                            className={cx(
+                                styles.dropdown,
+                                {
+                                    [styles.dropup]: dropup,
+                                    [styles.open]: this.state.shouldOpenDropdownMenu
+                                }
+                            )}
                         >
-                            {pageLengthRenderer({ pageLength })}
-                        </button>
-                        <ul className={styles.dropdownMenu}>
-                            {pageLengthMenu.map(val => (
-                                <li
-                                    key={val}
-                                    className={cx(
-                                        { [styles.selected]: pageLength === val }
-                                    )}
-                                    onMouseDown={() => {
-                                        this.actions.changePage({
-                                            page: (val !== pageLength) ? 1 : page,
-                                            pageLength: val
-                                        });
-                                    }}
-                                    role="presentation"
-                                >
-                                    <Anchor>{val}</Anchor>
-                                </li>
-                            ))}
-                        </ul>
-                    </div>
-                    }
-                    {(type !== 'reduced' && type !== 'minor') &&
+                            <button
+                                type="button"
+                                className={styles.dropdownToggle}
+                                onClick={this.actions.toggleDropdownMenu}
+                                onBlur={this.actions.closeDropdownMenu}
+                            >
+                                {pageLengthRenderer({ pageLength })}
+                            </button>
+                            <ul className={styles.dropdownMenu}>
+                                {pageLengthMenu.map(val => (
+                                    <li
+                                        key={val}
+                                        className={cx(
+                                            { [styles.selected]: pageLength === val }
+                                        )}
+                                        onMouseDown={() => {
+                                            this.actions.changePage({
+                                                page: (val !== pageLength) ? 1 : page,
+                                                pageLength: val
+                                            });
+                                        }}
+                                        role="presentation"
+                                    >
+                                        <Anchor>{val}</Anchor>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    )}
+                    {(type !== 'reduced' && type !== 'minor') && (
                         <div className={styles.paginationInput}>
                             <AutosizeInput
                                 value={this.state.page}
@@ -198,7 +201,7 @@ class TablePagination extends PureComponent {
                             &nbsp;
                             {totalPages}
                         </div>
-                    }
+                    )}
                     <div>
                         <ul className={styles.pagination}>
                             <li

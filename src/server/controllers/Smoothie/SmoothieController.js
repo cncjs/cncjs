@@ -48,6 +48,7 @@ class SmoothieController {
 
     // Connection
     connection = null;
+
     connectionEventListener = {
         data: (data) => {
             log.silly(`< ${data}`);
@@ -78,10 +79,15 @@ class SmoothieController {
 
     // Smoothie
     controller = null;
+
     ready = false;
+
     state = {};
+
     settings = {};
+
     queryTimer = null;
+
     actionMask = {
         queryParserState: {
             state: false, // wait for a message containing the current G-code parser modal state
@@ -93,12 +99,15 @@ class SmoothieController {
         replyParserState: false, // $G
         replyStatusReport: false // ?
     };
+
     actionTime = {
         queryParserState: 0,
         queryStatusReport: 0,
         senderFinishTime: 0
     };
+
     feedOverride = 100;
+
     spindleOverride = 100;
 
     // Event Trigger
@@ -607,6 +616,7 @@ class SmoothieController {
             }
         }, 250);
     }
+
     populateContext(context) {
         // Machine position
         const {
@@ -683,6 +693,7 @@ class SmoothieController {
             ...globalObjects,
         });
     }
+
     clearActionValues() {
         this.actionMask.queryParserState.state = false;
         this.actionMask.queryParserState.reply = false;
@@ -693,6 +704,7 @@ class SmoothieController {
         this.actionTime.queryStatusReport = 0;
         this.actionTime.senderFinishTime = 0;
     }
+
     destroy() {
         if (this.queryTimer) {
             clearInterval(this.queryTimer);
@@ -726,6 +738,7 @@ class SmoothieController {
             this.workflow = null;
         }
     }
+
     async initController() {
         // Check if it is Smoothieware
         this.command('gcode', 'version');
@@ -733,6 +746,7 @@ class SmoothieController {
         await delay(50);
         this.event.trigger('controller:ready');
     }
+
     get status() {
         return {
             port: this.options.port,
@@ -752,6 +766,7 @@ class SmoothieController {
             }
         };
     }
+
     open(callback = noop) {
         const { port, baudrate } = this.options;
 
@@ -812,6 +827,7 @@ class SmoothieController {
             this.initController();
         });
     }
+
     close(callback) {
         const { port } = this.options;
 
@@ -846,12 +862,15 @@ class SmoothieController {
         this.connection.removeAllListeners();
         this.connection.close(callback);
     }
+
     isOpen() {
         return this.connection && this.connection.isOpen;
     }
+
     isClose() {
         return !(this.isOpen());
     }
+
     addConnection(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
@@ -900,6 +919,7 @@ class SmoothieController {
             socket.emit('workflow:state', this.workflow.state);
         }
     }
+
     removeConnection(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
@@ -910,12 +930,14 @@ class SmoothieController {
         this.sockets[socket.id] = undefined;
         delete this.sockets[socket.id];
     }
+
     emit(eventName, ...args) {
         Object.keys(this.sockets).forEach(id => {
             const socket = this.sockets[id];
             socket.emit(eventName, ...args);
         });
     }
+
     command(cmd, ...args) {
         const handler = {
             'gcode:load': () => {
@@ -1214,6 +1236,7 @@ class SmoothieController {
 
         handler();
     }
+
     write(data, context) {
         // Assertion check
         if (this.isClose()) {
@@ -1232,6 +1255,7 @@ class SmoothieController {
         this.connection.write(data);
         log.silly(`> ${data}`);
     }
+
     writeln(data, context) {
         if (_.includes(SMOOTHIE_REALTIME_COMMANDS, data)) {
             this.write(data, context);

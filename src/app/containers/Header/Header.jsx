@@ -47,6 +47,7 @@ class Header extends Component {
     };
 
     state = this.getInitialState();
+
     actions = {
         requestPushPermission: () => {
             const onGranted = () => {
@@ -416,50 +417,50 @@ class Header extends Component {
                                 <Space width={12} />
                             </Col>
                             <Col width="auto">
-                                {sessionEnabled &&
-                                <Dropdown
-                                    pullRight
-                                >
-                                    <Dropdown.Toggle
-                                        componentClass={NavDropdownToggle}
-                                        btnStyle="dark"
+                                {sessionEnabled && (
+                                    <Dropdown
+                                        pullRight
                                     >
-                                        <FontAwesomeIcon icon="user" />
-                                    </Dropdown.Toggle>
-                                    <Dropdown.Menu>
-                                        <MenuItem header>
-                                            {i18n._('Signed in as {{name}}', { name: signedInName })}
-                                        </MenuItem>
-                                        <MenuItem divider />
-                                        <MenuItem
-                                            onClick={() => {
-                                                history.push('/settings/account');
-                                            }}
+                                        <Dropdown.Toggle
+                                            componentClass={NavDropdownToggle}
+                                            btnStyle="dark"
                                         >
-                                            <FontAwesomeIcon icon="user" fixedWidth />
-                                            <Space width="8" />
-                                            {i18n._('Account')}
-                                        </MenuItem>
-                                        <MenuItem
-                                            onClick={() => {
-                                                if (user.isAuthenticated()) {
-                                                    log.debug('Destroy and cleanup the WebSocket connection');
-                                                    controller.disconnect();
+                                            <FontAwesomeIcon icon="user" />
+                                        </Dropdown.Toggle>
+                                        <Dropdown.Menu>
+                                            <MenuItem header>
+                                                {i18n._('Signed in as {{name}}', { name: signedInName })}
+                                            </MenuItem>
+                                            <MenuItem divider />
+                                            <MenuItem
+                                                onClick={() => {
+                                                    history.push('/settings/account');
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon="user" fixedWidth />
+                                                <Space width="8" />
+                                                {i18n._('Account')}
+                                            </MenuItem>
+                                            <MenuItem
+                                                onClick={() => {
+                                                    if (user.isAuthenticated()) {
+                                                        log.debug('Destroy and cleanup the WebSocket connection');
+                                                        controller.disconnect();
 
-                                                    user.signout();
+                                                        user.signout();
 
-                                                    // Remember current location
-                                                    history.replace(location.pathname);
-                                                }
-                                            }}
-                                        >
-                                            <FontAwesomeIcon icon="sign-out-alt" fixedWidth />
-                                            <Space width="8" />
-                                            {i18n._('Sign Out')}
-                                        </MenuItem>
-                                    </Dropdown.Menu>
-                                </Dropdown>
-                                }
+                                                        // Remember current location
+                                                        history.replace(location.pathname);
+                                                    }
+                                                }}
+                                            >
+                                                <FontAwesomeIcon icon="sign-out-alt" fixedWidth />
+                                                <Space width="8" />
+                                                {i18n._('Sign Out')}
+                                            </MenuItem>
+                                        </Dropdown.Menu>
+                                    </Dropdown>
+                                )}
                                 <Dropdown
                                     pullRight
                                 >

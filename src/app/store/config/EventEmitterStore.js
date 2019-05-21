@@ -13,17 +13,21 @@ class EventEmitterStore extends events.EventEmitter {
         super();
         this.state = state;
     }
+
     set state(state) {
         this._state = { ...state };
     }
+
     get state() {
         return { ...this._state };
     }
+
     get(key, defaultValue) {
         log.trace(`get(key=${JSON.stringify(key)}, defaultValue=${JSON.stringify(defaultValue)})`);
 
         return (key === undefined) ? this._state : _get(this._state, key, defaultValue);
     }
+
     set(key, value) {
         log.trace(`set(key=${JSON.stringify(key)}, value=${JSON.stringify(value)})`);
 
@@ -39,11 +43,13 @@ class EventEmitterStore extends events.EventEmitter {
         this.emit('change', this._state);
         return this._state;
     }
+
     unset(key) {
         _unset(this._state, key);
         this.emit('change', this._state);
         return this._state;
     }
+
     replace(key, value) {
         log.trace(`replace(key=${JSON.stringify(key)}, value=${JSON.stringify(value)})`);
 
@@ -58,6 +64,7 @@ class EventEmitterStore extends events.EventEmitter {
         this.set(key, value);
         return this._state;
     }
+
     clear() {
         log.trace('clear()');
 

@@ -16,6 +16,7 @@ class Controller extends PureComponent {
     fields = {
         ignoreErrors: null
     };
+
     handlers = {
         handleChangeIgnoreErrors: (event) => {
             const { actions } = this.props;
@@ -35,6 +36,7 @@ class Controller extends PureComponent {
         const { actions } = this.props;
         actions.load();
     }
+
     render() {
         const { state, stateChanged } = this.props;
 

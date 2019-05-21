@@ -17,6 +17,7 @@ const createForm = (options) => (WrappedComponent) => class Form extends PureCom
     };
 
     state = this.getInitialState();
+
     options = {
         ...options
     };

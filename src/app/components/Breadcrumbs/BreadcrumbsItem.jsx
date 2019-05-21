@@ -7,6 +7,7 @@ class BreadcrumbsItem extends PureComponent {
     static propTypes = {
         active: PropTypes.bool
     };
+
     static defaultProps = {
         active: false
     };

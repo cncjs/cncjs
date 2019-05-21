@@ -36,6 +36,7 @@ class DatePickerWrapper extends PureComponent {
         // Called when a date is selected.
         onSelect: PropTypes.func
     };
+
     static defaultProps = {
         date: null,
         minDate: null,

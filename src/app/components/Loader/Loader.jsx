@@ -15,6 +15,7 @@ class Loader extends PureComponent {
         ]),
         overlay: PropTypes.bool
     };
+
     static defaultProps = {
         size: 'md',
         overlay: false

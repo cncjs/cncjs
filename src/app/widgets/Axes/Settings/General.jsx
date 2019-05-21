@@ -255,16 +255,16 @@ class General extends PureComponent {
                                             </FormGroup>
                                         )}
                                     </ForEach>
-                                    {metricJogDistances.length < METRIC_JOG_DISTANCES_MAX &&
-                                    <Button
-                                        btnStyle="default"
-                                        onClick={this.addMetricJogDistance()}
-                                    >
-                                        <FontAwesomeIcon icon="plus" />
-                                        <Space width={8} />
-                                        {i18n._('Add')}
-                                    </Button>
-                                    }
+                                    {metricJogDistances.length < METRIC_JOG_DISTANCES_MAX && (
+                                        <Button
+                                            btnStyle="default"
+                                            onClick={this.addMetricJogDistance()}
+                                        >
+                                            <FontAwesomeIcon icon="plus" />
+                                            <Space width={8} />
+                                            {i18n._('Add')}
+                                        </Button>
+                                    )}
                                 </Col>
                             </Row>
                         </Col>
@@ -303,16 +303,16 @@ class General extends PureComponent {
                                             </FormGroup>
                                         )}
                                     </ForEach>
-                                    {imperialJogDistances.length < IMPERIAL_JOG_DISTANCES_MAX &&
-                                    <Button
-                                        btnStyle="default"
-                                        onClick={this.addImperialJogDistance()}
-                                    >
-                                        <FontAwesomeIcon icon="plus" />
-                                        <Space width={8} />
-                                        {i18n._('Add')}
-                                    </Button>
-                                    }
+                                    {imperialJogDistances.length < IMPERIAL_JOG_DISTANCES_MAX && (
+                                        <Button
+                                            btnStyle="default"
+                                            onClick={this.addImperialJogDistance()}
+                                        >
+                                            <FontAwesomeIcon icon="plus" />
+                                            <Space width={8} />
+                                            {i18n._('Add')}
+                                        </Button>
+                                    )}
                                 </Col>
                             </Row>
                         </Col>

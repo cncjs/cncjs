@@ -11,30 +11,36 @@ class Workflow extends events.EventEmitter {
     isRunning() {
         return this.state === WORKFLOW_STATE_RUNNING;
     }
+
     isPaused() {
         return this.state === WORKFLOW_STATE_PAUSED;
     }
+
     isIdle() {
         return this.state === WORKFLOW_STATE_IDLE;
     }
+
     start(...args) {
         if (this.state !== WORKFLOW_STATE_RUNNING) {
             this.state = WORKFLOW_STATE_RUNNING;
             this.emit('start', ...args);
         }
     }
+
     stop(...args) {
         if (this.state !== WORKFLOW_STATE_IDLE) {
             this.state = WORKFLOW_STATE_IDLE;
             this.emit('stop', ...args);
         }
     }
+
     pause(...args) {
         if (this.state === WORKFLOW_STATE_RUNNING) {
             this.state = WORKFLOW_STATE_PAUSED;
             this.emit('pause', ...args);
         }
     }
+
     resume(...args) {
         if (this.state === WORKFLOW_STATE_PAUSED) {
             this.state = WORKFLOW_STATE_RUNNING;

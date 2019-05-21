@@ -65,6 +65,7 @@ class Workspace extends PureComponent {
         showSecondaryContainer: config.get('workspace.container.secondary.show'),
         inactiveCount: _.size(widgetManager.getInactiveWidgets())
     };
+
     action = {
         openModal: (name = MODAL_NONE, params = {}) => {
             this.setState(state => ({
@@ -94,17 +95,26 @@ class Workspace extends PureComponent {
             }));
         }
     };
+
     sortableGroup = {
         primary: null,
         secondary: null
     };
+
     primaryContainer = null;
+
     secondaryContainer = null;
+
     primaryToggler = null;
+
     secondaryToggler = null;
+
     primaryWidgets = null;
+
     secondaryWidgets = null;
+
     defaultContainer = null;
+
     controllerEvents = {
         'connect': () => {
             if (controller.connected) {
@@ -176,6 +186,7 @@ class Workspace extends PureComponent {
             });
         }
     };
+
     widgetEventHandler = {
         onForkWidget: (widgetId) => {
             // TODO
@@ -370,36 +381,43 @@ class Workspace extends PureComponent {
             this.setState({ mounted: true });
         }, 0);
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
         this.removeResizeEventListener();
     }
+
     componentDidUpdate() {
         config.set('workspace.container.primary.show', this.state.showPrimaryContainer);
         config.set('workspace.container.secondary.show', this.state.showSecondaryContainer);
 
         this.resizeDefaultContainer();
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     addResizeEventListener() {
         this.onResizeThrottled = _.throttle(this.resizeDefaultContainer, 50);
         window.addEventListener('resize', this.onResizeThrottled);
     }
+
     removeResizeEventListener() {
         window.removeEventListener('resize', this.onResizeThrottled);
         this.onResizeThrottled = null;
     }
+
     render() {
         const { style, className } = this.props;
         const {
@@ -416,18 +434,18 @@ class Workspace extends PureComponent {
 
         return (
             <div style={style} className={classNames(className, styles.workspace)}>
-                {modal.name === MODAL_FEEDER_PAUSED &&
-                <FeederPaused
-                    title={modal.params.title}
-                    onClose={this.action.closeModal}
-                />
-                }
-                {modal.name === MODAL_FEEDER_WAIT &&
-                <FeederWait
-                    title={modal.params.title}
-                    onClose={this.action.closeModal}
-                />
-                }
+                {modal.name === MODAL_FEEDER_PAUSED && (
+                    <FeederPaused
+                        title={modal.params.title}
+                        onClose={this.action.closeModal}
+                    />
+                )}
+                {modal.name === MODAL_FEEDER_WAIT && (
+                    <FeederWait
+                        title={modal.params.title}
+                        onClose={this.action.closeModal}
+                    />
+                )}
                 {modal.name === MODAL_SERVER_DISCONNECTED &&
                 <ServerDisconnected />
                 }
@@ -552,21 +570,21 @@ class Workspace extends PureComponent {
                                     onDragEnd={this.widgetEventHandler.onDragEnd}
                                 />
                             </div>
-                            {hidePrimaryContainer &&
-                            <div
-                                ref={node => {
-                                    this.primaryToggler = node;
-                                }}
-                                className={styles.primaryToggler}
-                            >
-                                <Button
-                                    btnSize="sm"
-                                    onClick={this.togglePrimaryContainer}
+                            {hidePrimaryContainer && (
+                                <div
+                                    ref={node => {
+                                        this.primaryToggler = node;
+                                    }}
+                                    className={styles.primaryToggler}
                                 >
-                                    <FontAwesomeIcon icon="chevron-right" fixedWidth />
-                                </Button>
-                            </div>
-                            }
+                                    <Button
+                                        btnSize="sm"
+                                        onClick={this.togglePrimaryContainer}
+                                    >
+                                        <FontAwesomeIcon icon="chevron-right" fixedWidth />
+                                    </Button>
+                                </div>
+                            )}
                             <div
                                 ref={node => {
                                     this.defaultContainer = node;
@@ -578,21 +596,21 @@ class Workspace extends PureComponent {
                             >
                                 <DefaultWidgets />
                             </div>
-                            {hideSecondaryContainer &&
-                            <div
-                                ref={node => {
-                                    this.secondaryToggler = node;
-                                }}
-                                className={styles.secondaryToggler}
-                            >
-                                <Button
-                                    btnSize="sm"
-                                    onClick={this.toggleSecondaryContainer}
+                            {hideSecondaryContainer && (
+                                <div
+                                    ref={node => {
+                                        this.secondaryToggler = node;
+                                    }}
+                                    className={styles.secondaryToggler}
                                 >
-                                    <FontAwesomeIcon icon="chevron-left" fixedWidth />
-                                </Button>
-                            </div>
-                            }
+                                    <Button
+                                        btnSize="sm"
+                                        onClick={this.toggleSecondaryContainer}
+                                    >
+                                        <FontAwesomeIcon icon="chevron-left" fixedWidth />
+                                    </Button>
+                                </div>
+                            )}
                             <div
                                 ref={node => {
                                     this.secondaryContainer = node;

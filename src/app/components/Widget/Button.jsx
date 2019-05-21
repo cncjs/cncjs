@@ -9,6 +9,7 @@ class Button extends PureComponent {
         ...Anchor.propTypes,
         inverted: PropTypes.bool
     };
+
     static defaultProps = {
         ...Anchor.defaultProps,
         inverted: false

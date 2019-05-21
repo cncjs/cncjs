@@ -69,12 +69,15 @@ class DateInput extends PureComponent {
         // Called when the value changes.
         onChange: PropTypes.func
     };
+
     static defaultProps = {
         value: '0000-00-00'
     };
 
     input = null;
+
     mounted = false;
+
     state = {
         focused: false,
         caretIndex: null
@@ -422,9 +425,11 @@ class DateInput extends PureComponent {
         this.mounted = true;
         this.handleDateOutOfRange();
     }
+
     componentWillUnmount () {
         this.mounted = false;
     }
+
     componentDidUpdate() {
         const index = this.state.caretIndex;
         if (index || index === 0) {
@@ -433,6 +438,7 @@ class DateInput extends PureComponent {
             this.input.setSelectionRange(selectionStart, selectionEnd);
         }
     }
+
     render() {
         const icon = (
             <Calendar className={styles.dateInputIcon} style={{ color: this.state.focused ? '#0096cc' : '#666' }} />

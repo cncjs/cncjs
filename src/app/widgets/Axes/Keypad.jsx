@@ -443,78 +443,78 @@ class Keypad extends PureComponent {
                             </Dropdown>
                         </div>
                         <div className={styles.rowSpace}>
-                            {units === IMPERIAL_UNITS &&
-                            <Dropdown
-                                pullRight
-                                style={{
-                                    width: '100%'
-                                }}
-                                disabled={!canChangeStep}
-                                onSelect={(eventKey) => {
-                                    const step = eventKey;
-                                    actions.selectStep(step);
-                                }}
-                            >
-                                <Dropdown.Toggle
-                                    btnStyle="default"
+                            {units === IMPERIAL_UNITS && (
+                                <Dropdown
+                                    pullRight
                                     style={{
-                                        textAlign: 'right',
                                         width: '100%'
                                     }}
-                                >
-                                    {imperialJogSteps[jog.imperial.step]}
-                                    <Space width="4" />
-                                    <sub>{i18n._('in')}</sub>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu
-                                    style={{
-                                        maxHeight: 150,
-                                        overflowY: 'auto'
+                                    disabled={!canChangeStep}
+                                    onSelect={(eventKey) => {
+                                        const step = eventKey;
+                                        actions.selectStep(step);
                                     }}
                                 >
-                                    <MenuItem header>
-                                        {i18n._('Imperial')}
-                                    </MenuItem>
-                                    {this.renderImperialMenuItems()}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            }
-                            {units === METRIC_UNITS &&
-                            <Dropdown
-                                pullRight
-                                style={{
-                                    width: '100%'
-                                }}
-                                disabled={!canChangeStep}
-                                onSelect={(eventKey) => {
-                                    const step = eventKey;
-                                    actions.selectStep(step);
-                                }}
-                            >
-                                <Dropdown.Toggle
-                                    btnStyle="default"
+                                    <Dropdown.Toggle
+                                        btnStyle="default"
+                                        style={{
+                                            textAlign: 'right',
+                                            width: '100%'
+                                        }}
+                                    >
+                                        {imperialJogSteps[jog.imperial.step]}
+                                        <Space width="4" />
+                                        <sub>{i18n._('in')}</sub>
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu
+                                        style={{
+                                            maxHeight: 150,
+                                            overflowY: 'auto'
+                                        }}
+                                    >
+                                        <MenuItem header>
+                                            {i18n._('Imperial')}
+                                        </MenuItem>
+                                        {this.renderImperialMenuItems()}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )}
+                            {units === METRIC_UNITS && (
+                                <Dropdown
+                                    pullRight
                                     style={{
-                                        textAlign: 'right',
                                         width: '100%'
                                     }}
-                                >
-                                    {metricJogSteps[jog.metric.step]}
-                                    <Space width="4" />
-                                    <sub>{i18n._('mm')}</sub>
-                                </Dropdown.Toggle>
-                                <Dropdown.Menu
-                                    style={{
-                                        maxHeight: 150,
-                                        overflowY: 'auto'
+                                    disabled={!canChangeStep}
+                                    onSelect={(eventKey) => {
+                                        const step = eventKey;
+                                        actions.selectStep(step);
                                     }}
                                 >
-                                    <MenuItem header>
-                                        {i18n._('Metric')}
-                                    </MenuItem>
-                                    {this.renderMetricMenuItems()}
-                                </Dropdown.Menu>
-                            </Dropdown>
-                            }
+                                    <Dropdown.Toggle
+                                        btnStyle="default"
+                                        style={{
+                                            textAlign: 'right',
+                                            width: '100%'
+                                        }}
+                                    >
+                                        {metricJogSteps[jog.metric.step]}
+                                        <Space width="4" />
+                                        <sub>{i18n._('mm')}</sub>
+                                    </Dropdown.Toggle>
+                                    <Dropdown.Menu
+                                        style={{
+                                            maxHeight: 150,
+                                            overflowY: 'auto'
+                                        }}
+                                    >
+                                        <MenuItem header>
+                                            {i18n._('Metric')}
+                                        </MenuItem>
+                                        {this.renderMetricMenuItems()}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            )}
                         </div>
                         <div className={styles.rowSpace}>
                             <div className="row no-gutters">

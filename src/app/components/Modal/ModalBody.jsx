@@ -7,6 +7,7 @@ class ModalBody extends PureComponent {
     static propTypes = {
         padding: PropTypes.oneOfType([PropTypes.bool, PropTypes.string])
     };
+
     static defaultProps = {
         padding: true
     };

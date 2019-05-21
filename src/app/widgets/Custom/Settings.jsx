@@ -11,6 +11,7 @@ class Settings extends PureComponent {
         onCancel: PropTypes.func,
         onSave: PropTypes.func
     };
+
     static defaultProps = {
         config: PropTypes.object,
         onCancel: noop,
@@ -18,6 +19,7 @@ class Settings extends PureComponent {
     };
 
     config = this.props.config;
+
     fields = {
         title: null,
         url: null

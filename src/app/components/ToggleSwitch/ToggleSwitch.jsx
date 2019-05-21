@@ -16,6 +16,7 @@ class ToggleSwitch extends PureComponent {
             'small'
         ])
     };
+
     static defaultProps = {
         checked: false,
         disabled: false,
@@ -25,6 +26,7 @@ class ToggleSwitch extends PureComponent {
     state = {
         checked: this.props.checked
     };
+
     actions = {
         handleChange: (event) => {
             event.preventDefault();
@@ -47,9 +49,11 @@ class ToggleSwitch extends PureComponent {
             this.setState({ checked: nextProps.checked });
         }
     }
+
     get checked() {
         return this.state.checked;
     }
+
     render() {
         const {
             className,

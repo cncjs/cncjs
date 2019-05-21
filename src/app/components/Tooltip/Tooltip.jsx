@@ -25,6 +25,7 @@ class Tooltip extends PureComponent {
             PropTypes.func
         ]).isRequired
     };
+
     static defaultProps = {
         placement: 'right',
         disabled: false,

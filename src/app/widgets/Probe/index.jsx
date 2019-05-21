@@ -56,12 +56,15 @@ class ProbeWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -212,6 +215,7 @@ class ProbeWidget extends PureComponent {
             controller.command('gcode', commands);
         }
     };
+
     controllerEvents = {
         'serialport:open': (options) => {
             const { port } = options;
@@ -288,14 +292,17 @@ class ProbeWidget extends PureComponent {
             });
         }
     };
+
     unitsDidChange = false;
 
     componentDidMount() {
         this.addControllerEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized
@@ -332,6 +339,7 @@ class ProbeWidget extends PureComponent {
         this.config.set('touchPlateHeight', Number(touchPlateHeight));
         this.config.set('retractionDistance', Number(retractionDistance));
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -358,18 +366,21 @@ class ProbeWidget extends PureComponent {
             retractionDistance: Number(this.config.get('retractionDistance') || 0).toFixed(3) * 1
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     getWorkCoordinateSystem() {
         const controllerType = this.state.controller.type;
         const controllerState = this.state.controller.state;
@@ -393,6 +404,7 @@ class ProbeWidget extends PureComponent {
 
         return defaultWCS;
     }
+
     canClick() {
         const { port, workflow } = this.state;
         const controllerType = this.state.controller.type;
@@ -442,6 +454,7 @@ class ProbeWidget extends PureComponent {
 
         return true;
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;

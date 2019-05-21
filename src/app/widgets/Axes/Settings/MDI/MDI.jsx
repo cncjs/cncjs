@@ -140,6 +140,7 @@ class MDI extends PureComponent {
     componentDidMount() {
         this.action.fetchRecords();
     }
+
     render() {
         const { state, action } = this;
 

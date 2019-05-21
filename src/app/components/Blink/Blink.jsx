@@ -8,6 +8,7 @@ class Blink extends PureComponent {
         // Half-period in milliseconds used for blinking. The default blink rate is 530ms. By setting this to zero, blinking can be disabled.
         rate: PropTypes.number
     };
+
     static defaultProps = {
         rate: 530
     };
@@ -17,6 +18,7 @@ class Blink extends PureComponent {
     };
 
     blinkTimer = null;
+
     blink = () => {
         if (this.blinkTimer) {
             clearInterval(this.blinkTimer);
@@ -39,15 +41,18 @@ class Blink extends PureComponent {
     componentDidMount() {
         this.blink();
     }
+
     componentDidUpdate() {
         this.blink();
     }
+
     componentWillUnmount() {
         if (this.blinkTimer) {
             clearInterval(this.blinkTimer);
             this.blinkTimer = null;
         }
     }
+
     render() {
         const {
             rate, // eslint-disable-line no-unused-vars
