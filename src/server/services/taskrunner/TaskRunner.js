@@ -50,6 +50,7 @@ class TaskRunner extends events.EventEmitter {
 
         return taskId;
     }
+
     contains(taskId) {
         return this.tasks.indexOf(taskId) >= 0;
     }

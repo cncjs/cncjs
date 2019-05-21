@@ -23,6 +23,7 @@ class DropdownButton extends PureComponent {
         // Whether to prevent a caret from being rendered next to the title.
         noCaret: PropTypes.bool
     };
+
     static defaultProps = {
         pullRight: true,
         noCaret: true

@@ -51,6 +51,7 @@ const isValidController = (controller) => (
 
 class CNCEngine {
     controllerClass = {};
+
     listener = {
         taskStart: (...args) => {
             if (this.io) {
@@ -73,8 +74,11 @@ class CNCEngine {
             }
         }
     };
+
     server = null;
+
     io = null;
+
     sockets = [];
 
     // Event Trigger
@@ -352,6 +356,7 @@ class CNCEngine {
             });
         });
     }
+
     stop() {
         if (this.io) {
             this.io.close();

@@ -25,6 +25,7 @@ class Settings extends PureComponent {
         onSave: PropTypes.func,
         onCancel: PropTypes.func
     };
+
     static defaultProps = {
         mediaSource: MEDIA_SOURCE_LOCAL,
         deviceId: '',

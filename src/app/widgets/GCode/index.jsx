@@ -33,12 +33,15 @@ class GCodeWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -52,6 +55,7 @@ class GCodeWidget extends PureComponent {
             this.setState({ minimized: !minimized });
         }
     };
+
     controllerEvents = {
         'serialport:open': (options) => {
             const { port } = options;
@@ -152,16 +156,19 @@ class GCodeWidget extends PureComponent {
             }
         }
     };
+
     pubsubTokens = [];
 
     componentDidMount() {
         this.subscribe();
         this.addControllerEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
         this.unsubscribe();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized
@@ -169,6 +176,7 @@ class GCodeWidget extends PureComponent {
 
         this.config.set('minimized', minimized);
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -206,6 +214,7 @@ class GCodeWidget extends PureComponent {
             }
         };
     }
+
     subscribe() {
         const tokens = [
             pubsub.subscribe('gcode:bbox', (msg, bbox) => {
@@ -236,24 +245,28 @@ class GCodeWidget extends PureComponent {
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
+
     unsubscribe() {
         this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;

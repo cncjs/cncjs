@@ -54,12 +54,15 @@ class MacroWidget extends PureComponent {
     collapse = () => {
         this.setState({ minimized: true });
     };
+
     expand = () => {
         this.setState({ minimized: false });
     };
 
     config = new WidgetConfig(this.props.widgetId);
+
     state = this.getInitialState();
+
     actions = {
         toggleFullscreen: () => {
             const { minimized, isFullscreen } = this.state;
@@ -175,6 +178,7 @@ class MacroWidget extends PureComponent {
                 });
         }
     };
+
     controllerEvents = {
         'config:change': () => {
             this.fetchMacros();
@@ -223,9 +227,11 @@ class MacroWidget extends PureComponent {
         this.fetchMacros();
         this.addControllerEvents();
     }
+
     componentWillUnmount() {
         this.removeControllerEvents();
     }
+
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized
@@ -233,6 +239,7 @@ class MacroWidget extends PureComponent {
 
         this.config.set('minimized', minimized);
     }
+
     getInitialState() {
         return {
             minimized: this.config.get('minimized', false),
@@ -252,18 +259,21 @@ class MacroWidget extends PureComponent {
             macros: []
         };
     }
+
     addControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.addListener(eventName, callback);
         });
     }
+
     removeControllerEvents() {
         Object.keys(this.controllerEvents).forEach(eventName => {
             const callback = this.controllerEvents[eventName];
             controller.removeListener(eventName, callback);
         });
     }
+
     canClick() {
         const { port, workflow } = this.state;
         const controllerType = this.state.controller.type;
@@ -316,6 +326,7 @@ class MacroWidget extends PureComponent {
 
         return true;
     }
+
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;

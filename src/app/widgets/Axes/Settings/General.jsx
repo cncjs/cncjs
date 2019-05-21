@@ -248,16 +248,16 @@ class General extends PureComponent {
                                     </FormGroup>
                                 )}
                             </ForEach>
-                            {metricJogDistances.length < METRIC_JOG_DISTANCES_MAX &&
-                            <Button
-                                btnStyle="flat"
-                                onClick={this.addMetricJogDistance()}
-                            >
-                                <i className="fa fa-plus" />
-                                <Space width="8" />
-                                {i18n._('Add')}
-                            </Button>
-                            }
+                            {metricJogDistances.length < METRIC_JOG_DISTANCES_MAX && (
+                                <Button
+                                    btnStyle="flat"
+                                    onClick={this.addMetricJogDistance()}
+                                >
+                                    <i className="fa fa-plus" />
+                                    <Space width="8" />
+                                    {i18n._('Add')}
+                                </Button>
+                            )}
                         </Col>
                         <Col width="auto">
                             <Space width="24" />
@@ -289,16 +289,16 @@ class General extends PureComponent {
                                     </FormGroup>
                                 )}
                             </ForEach>
-                            {imperialJogDistances.length < IMPERIAL_JOG_DISTANCES_MAX &&
-                            <Button
-                                btnStyle="flat"
-                                onClick={this.addImperialJogDistance()}
-                            >
-                                <i className="fa fa-plus" />
-                                <Space width="8" />
-                                {i18n._('Add')}
-                            </Button>
-                            }
+                            {imperialJogDistances.length < IMPERIAL_JOG_DISTANCES_MAX && (
+                                <Button
+                                    btnStyle="flat"
+                                    onClick={this.addImperialJogDistance()}
+                                >
+                                    <i className="fa fa-plus" />
+                                    <Space width="8" />
+                                    {i18n._('Add')}
+                                </Button>
+                            )}
                         </Col>
                     </Row>
                 </Margin>

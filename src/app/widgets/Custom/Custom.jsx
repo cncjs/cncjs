@@ -22,15 +22,19 @@ class Custom extends PureComponent {
     };
 
     pubsubTokens = [];
+
     iframe = null;
+
     observer = null;
 
     componentDidMount() {
         this.subscribe();
     }
+
     componentWillUnmount() {
         this.unsubscribe();
     }
+
     componentWillReceiveProps(nextProps) {
         if (nextProps.url !== this.props.url) {
             this.reload();
@@ -43,6 +47,7 @@ class Custom extends PureComponent {
             });
         }
     }
+
     subscribe() {
         const tokens = [
             pubsub.subscribe('message:connect', () => {
@@ -59,12 +64,14 @@ class Custom extends PureComponent {
         ];
         this.pubsubTokens = this.pubsubTokens.concat(tokens);
     }
+
     unsubscribe() {
         this.pubsubTokens.forEach((token) => {
             pubsub.unsubscribe(token);
         });
         this.pubsubTokens = [];
     }
+
     postMessage(type = '', payload) {
         const token = store.get('session.token');
         const target = get(this.iframe, 'contentWindow');
@@ -83,6 +90,7 @@ class Custom extends PureComponent {
             target.postMessage(message, '*');
         }
     }
+
     reload(forceGet = false) {
         if (this.iframe) {
             const { url } = this.props;
@@ -100,6 +108,7 @@ class Custom extends PureComponent {
             }
         }
     }
+
     resize(options) {
         if (!this.iframe) {
             return;
@@ -131,6 +140,7 @@ class Custom extends PureComponent {
             this.iframe.style.height = `${height}px`;
         }
     }
+
     render() {
         const { disabled, url } = this.props;
 

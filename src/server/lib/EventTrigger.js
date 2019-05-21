@@ -6,6 +6,7 @@ class EventTrigger {
     constructor(callback = noop) {
         this.callback = callback || noop;
     }
+
     trigger(eventKey, callback = null) {
         if (!eventKey) {
             return;

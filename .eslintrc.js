@@ -23,6 +23,11 @@ module.exports = {
         }
     },
     rules: {
+        'max-lines-per-function': [1, {
+            max: 512,
+            skipBlankLines: true,
+            skipComments: true
+        }],
         'react/jsx-no-bind': [1, {
             allowArrowFunctions: true
         }],

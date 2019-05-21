@@ -49,6 +49,7 @@ class GrblRunner extends events.EventEmitter {
             spindle: ''
         }
     };
+
     settings = {
         version: '',
         parameters: {
@@ -190,22 +191,28 @@ class GrblRunner extends events.EventEmitter {
             return;
         }
     }
+
     getMachinePosition(state = this.state) {
         return _.get(state, 'status.mpos', {});
     }
+
     getWorkPosition(state = this.state) {
         return _.get(state, 'status.wpos', {});
     }
+
     getModalGroup(state = this.state) {
         return _.get(state, 'parserstate.modal', {});
     }
+
     getTool(state = this.state) {
         return Number(_.get(state, 'parserstate.tool')) || 0;
     }
+
     isAlarm() {
         const activeState = _.get(this.state, 'status.activeState');
         return activeState === GRBL_ACTIVE_STATE_ALARM;
     }
+
     isIdle() {
         const activeState = _.get(this.state, 'status.activeState');
         return activeState === GRBL_ACTIVE_STATE_IDLE;

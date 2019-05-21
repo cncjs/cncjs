@@ -5,6 +5,7 @@ class Image extends PureComponent {
     static propTypes = {
         src: PropTypes.string
     };
+
     static defaultProps = {
         src: ''
     };
