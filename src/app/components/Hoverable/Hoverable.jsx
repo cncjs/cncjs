@@ -1,3 +1,4 @@
+import chainedFunction from 'chained-function';
 import React, { Component } from 'react';
 
 class Hoverable extends Component {
@@ -14,14 +15,21 @@ class Hoverable extends Component {
     };
 
     render() {
+        const { onMouseEnter, onMouseLeave, children, style, ...props } = this.props;
+
         return (
             <div
-                onMouseEnter={this.handleMouseEnter}
-                onMouseLeave={this.handleMouseLeave}
+                {...props}
+                style={{
+                    display: 'inline-block',
+                    ...style
+                }}
+                onMouseEnter={chainedFunction(this.handleMouseEnter, onMouseEnter)}
+                onMouseLeave={chainedFunction(this.handleMouseLeave, onMouseLeave)}
             >
-                {typeof this.props.children === 'function'
-                    ? this.props.children(this.state.hovered)
-                    : this.porps.children
+                {typeof children === 'function'
+                    ? children({ hovered: this.state.hovered })
+                    : children
                 }
             </div>
         );

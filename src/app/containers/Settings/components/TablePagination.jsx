@@ -35,7 +35,7 @@ export default (props) => (
         }}
         pageLengthRenderer={({ pageLength }) => (
             <Hoverable>
-                {(hovered) => (
+                {({ hovered }) => (
                     <Fragment>
                         {i18n._('{{pageLength}} per page', { pageLength })}
                         <Space width={8} />

@@ -353,7 +353,7 @@ class Header extends Component {
                         }}
                     >
                         <Hoverable>
-                            {(hovered) => (
+                            {({ hovered }) => (
                                 <div
                                     role="presentation"
                                     style={{
