@@ -318,7 +318,7 @@ class Header extends Component {
                                 <Col width="auto" title={cmd.err}>
                                     <Space width={12} />
                                     {icon && (
-                                        <FontAwesomeIcon icon={icon} spin={spin} fixedWidth />
+                                        <FontAwesomeIcon icon={icon} fixedWidth spin={spin} />
                                     )}
                                 </Col>
                             </Row>

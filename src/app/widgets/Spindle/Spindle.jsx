@@ -1,14 +1,21 @@
-import classNames from 'classnames';
 import ensureArray from 'ensure-array';
 import get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
+import React, { Component } from 'react';
+import { Button, ButtonGroup } from 'app/components/Buttons';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { Input } from 'app/components/FormControl';
+import FormGroup from 'app/components/FormGroup';
+import { Container, Row, Col } from 'app/components/GridSystem';
+import ImageIcon from 'app/components/ImageIcon';
+import InputGroup from 'app/components/InputGroup';
+import Label from 'app/components/Label';
 import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import styles from './index.styl';
+import iconFan from './images/fan.svg';
 
-class Spindle extends PureComponent {
+class Spindle extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -23,17 +30,19 @@ class Spindle extends PureComponent {
         const floodCoolant = coolant.indexOf('M8') >= 0;
 
         return (
-            <div>
-                <div className="form-group">
-                    <div className="row no-gutters">
-                        <div className="col-xs-6" style={{ paddingRight: 5 }}>
-                            <label className="control-label">{i18n._('Spindle')}</label>
-                            <div className="btn-group btn-group-justified" role="group">
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ padding: '5px 0' }}
+            <Container
+                fluid
+                gutterWidth={10}
+                style={{ padding: 0 }}
+            >
+                <Row>
+                    <Col xs={12}>
+                        <FormGroup>
+                            <Label>{i18n._('Spindle')}</Label>
+                            <div>
+                                <ButtonGroup style={{ width: '100%' }}>
+                                    <Button
+                                        btnStyle="defaut"
                                         onClick={() => {
                                             if (spindleSpeed > 0) {
                                                 controller.command('gcode', 'M3 S' + spindleSpeed);
@@ -44,22 +53,12 @@ class Spindle extends PureComponent {
                                         title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i
-                                            className={classNames(
-                                                'fa',
-                                                'fa-rotate-right',
-                                                { 'fa-spin': spindle === 'M3' }
-                                            )}
-                                        />
-                                        <Space width="4" />
+                                        <FontAwesomeIcon icon="redo-alt" spin={spindle === 'M3'} />
+                                        <Space width={8} />
                                         M3
-                                    </button>
-                                </div>
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ padding: '5px 0' }}
+                                    </Button>
+                                    <Button
+                                        btnStyle="default"
                                         onClick={() => {
                                             if (spindleSpeed > 0) {
                                                 controller.command('gcode', 'M4 S' + spindleSpeed);
@@ -70,120 +69,91 @@ class Spindle extends PureComponent {
                                         title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i
-                                            className={classNames(
-                                                'fa',
-                                                'fa-rotate-left',
-                                                { 'fa-spin-reverse': spindle === 'M4' }
-                                            )}
-                                        />
-                                        <Space width="4" />
+                                        <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4' } />
+                                        <Space width={8} />
                                         M4
-                                    </button>
-                                </div>
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ padding: '5px 0' }}
+                                    </Button>
+                                    <Button
+                                        btnStyle="default"
                                         onClick={() => controller.command('gcode', 'M5')}
                                         title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i className="fa fa-power-off" />
-                                        <Space width="4" />
+                                        <FontAwesomeIcon icon="power-off" />
+                                        <Space width={8} />
                                         M5
-                                    </button>
-                                </div>
+                                    </Button>
+                                </ButtonGroup>
                             </div>
-                        </div>
-                        <div className="col-xs-6" style={{ paddingLeft: 5 }}>
-                            <label className="control-label">{i18n._('Coolant')}</label>
-                            <div className="btn-group btn-group-justified" role="group">
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ padding: '5px 0' }}
+                        </FormGroup>
+                    </Col>
+                    <Col xs={12}>
+                        <FormGroup>
+                            <Label>{i18n._('Coolant')}</Label>
+                            <div>
+                                <ButtonGroup style={{ width: '100%' }}>
+                                    <Button
+                                        btnStyle="default"
                                         onClick={() => {
                                             controller.command('gcode', 'M7');
                                         }}
                                         title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i
-                                            className={classNames(
-                                                styles.icon,
-                                                styles.iconFan,
-                                                { 'fa-spin': mistCoolant }
-                                            )}
-                                        />
-                                        <Space width="4" />
+                                        <ImageIcon src={iconFan} spin={mistCoolant} />
+                                        <Space width={8} />
                                         M7
-                                    </button>
-                                </div>
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ padding: '5px 0' }}
+                                    </Button>
+                                    <Button
+                                        btnStyle="default"
                                         onClick={() => {
                                             controller.command('gcode', 'M8');
                                         }}
                                         title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i
-                                            className={classNames(
-                                                styles.icon,
-                                                styles.iconFan,
-                                                { 'fa-spin': floodCoolant }
-                                            )}
-                                        />
-                                        <Space width="4" />
+                                        <ImageIcon src={iconFan} spin={floodCoolant} />
+                                        <Space width={8} />
                                         M8
-                                    </button>
-                                </div>
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ padding: '5px 0' }}
+                                    </Button>
+                                    <Button
+                                        btnStyle="default"
                                         onClick={() => {
                                             controller.command('gcode', 'M9');
                                         }}
                                         title={i18n._('Coolant Off (M9)', { ns: 'gcode' })}
                                         disabled={!canClick}
                                     >
-                                        <i className="fa fa-power-off" />
-                                        <Space width="4" />
+                                        <FontAwesomeIcon icon="power-off" />
+                                        <Space width={8} />
                                         M9
-                                    </button>
-                                </div>
+                                    </Button>
+                                </ButtonGroup>
                             </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="form-group">
-                    <div className="row no-gutters">
-                        <div className="col-xs-6" style={{ paddingRight: 5 }}>
-                            <label className="control-label">{i18n._('Spindle Speed')}</label>
-                            <div className="input-group input-group-sm">
-                                <input
+                        </FormGroup>
+                    </Col>
+                    <Col xs={6}>
+                        <FormGroup>
+                            <Label>{i18n._('Spindle Speed')}</Label>
+                            <InputGroup>
+                                <Input
                                     type="number"
-                                    className="form-control"
                                     value={spindleSpeed}
                                     placeholder="0"
                                     min={0}
                                     step={1}
                                     onChange={actions.handleSpindleSpeedChange}
                                 />
-                                <span className="input-group-addon">{i18n._('RPM')}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+                                <InputGroup.Append>
+                                    <InputGroup.Text>
+                                        {i18n._('RPM')}
+                                    </InputGroup.Text>
+                                </InputGroup.Append>
+                            </InputGroup>
+                        </FormGroup>
+                    </Col>
+                </Row>
+            </Container>
         );
     }
 }
