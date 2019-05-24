@@ -1,0 +1,27 @@
+@keyframes spin {
+    0% {
+        transform: rotate(0eg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+}
+
+.spin {
+    animation: spin 2s infinite linear;
+}
+
+@keyframes spin-reverse {
+    0% {
+        transform: rotate(359deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+}
+
+.spin-reverse {
+    animation: spin-reverse 2s infinite linear;
+}
+
+
