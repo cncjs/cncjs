@@ -1,7 +1,3 @@
-// FIXME
-// https://github.com/twbs/bootstrap/blob/v4.2.1/scss/_variables.scss
-//
-
 @import "reset-context";
 @import "variables";
 
@@ -21,10 +17,6 @@
     > .input-group-item {
         position: relative; // For focus state's z-index
         flex: 1 1 auto;
-        // Add width 1% and flex-basis auto to ensure that button will not wrap out
-        // the column. Applies to IE Edge+ and Firefox. Chrome does not require this.
-        width: 1%;
-        margin-bottom: 0;
 
         // Add width 1% and flex-basis auto to ensure that button will not wrap out
         // the column. Applies to IE Edge+ and Firefox. Chrome does not require this.
@@ -105,7 +97,6 @@
 // Sizing
 //
 
-.input-group-lg > .form-control,
 .input-group-lg > .input-group-prepend > .input-group-text,
 .input-group-lg > .input-group-append > .input-group-text {
     height: $input-height-lg;
@@ -117,7 +108,6 @@
     }
 }
 
-.input-group-sm > .form-control,
 .input-group-sm > .input-group-prepend > .input-group-text,
 .input-group-sm > .input-group-append > .input-group-text {
     height: $input-height-sm;
