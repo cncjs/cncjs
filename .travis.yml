@@ -14,7 +14,6 @@ os:
 osx_image: xcode8.3
 
 node_js:
-  - '6'
   - '8'
   - '10'
 
