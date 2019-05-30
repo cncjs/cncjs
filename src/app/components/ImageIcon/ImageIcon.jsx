@@ -1,31 +1,34 @@
-import cx from 'classnames';
 import PropTypes from 'prop-types';
-import React from 'react';
+import styled, { keyframes } from 'styled-components';
 import Image from 'app/components/Image';
-import styles from './ImageIcon.styl';
 
-const iconStyle = {
-    display: 'inline-block',
-    fontSize: 'inherit',
-    height: '1em',
-    overflow: 'visible',
-    verticalAlign: '-0.125em',
-};
+const spin = keyframes`
+    0% {
+        transform: rotate(0eg);
+    }
+    100% {
+        transform: rotate(359deg);
+    }
+`;
 
-const ImageIcon = ({ spin, spinReverse, className, style, ...props }) => {
-    style = { ...iconStyle, ...style };
+const spinReverse = keyframes`
+    0% {
+        transform: rotate(359deg);
+    }
+    100% {
+        transform: rotate(0deg);
+    }
+`;
 
-    return (
-        <Image
-            {...props}
-            className={cx(className, {
-                [styles.spin]: !!spin,
-                [styles.spinReverse]: !!spinReverse,
-            })}
-            style={style}
-        />
-    );
-};
+const ImageIcon = styled(Image)`
+    display: inline-block;
+    font-size: inherit;
+    height: 1em;
+    overflow: visible;
+    vertical-align: -0.125em;
+    ${props => !!props.spin && `animation: ${spin} 2s infinite linear;`}
+    ${props => !!props.spinReverse && `animation: ${spinReverse} 2s infinite linear;`}
+`;
 
 ImageIcon.propTypes = {
     ...Image.propTypes,

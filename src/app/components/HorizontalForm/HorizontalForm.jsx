@@ -1,13 +1,5 @@
 import styled from 'styled-components';
 
-const HorizontalForm = ({ children }) => {
-    if (typeof children === 'function') {
-        return children({ FormContainer, FormRow, FormCol, FormLabel });
-    }
-
-    return children;
-};
-
 const FormLabel = styled.label`
     display: inline-block;
     margin-bottom: 0;
@@ -31,6 +23,14 @@ const FormCol = styled.div`
         padding-right: 12px;
     }
 `;
+
+const HorizontalForm = ({ children }) => {
+    if (typeof children === 'function') {
+        return children({ FormContainer, FormRow, FormCol, FormLabel });
+    }
+
+    return children;
+};
 
 export { FormContainer, FormRow, FormCol, FormLabel };
 export default HorizontalForm;
