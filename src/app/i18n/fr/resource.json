@@ -426,9 +426,7 @@
     "Probe Feedrate": "Vitesse de palpage",
     "Touch Plate Thickness": "Largeur du palpeur",
     "Retraction Distance": "Distance de retrait",
-    "Z-Probe": "",
     "Apply tool length offset": "",
-    "Run Z-Probe": "Lancer le palpage en Z",
     "Spindle Speed": "Vitesse de broche",
     "RPM": "",
     "Queue Flush (%)": "",
@@ -529,5 +527,12 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>Désactivé</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "",
+    "Run Probe": "Lancer le palpage",
+    "Probe Axis": "Axes de le palpage",
+    "Probe Z Axis": "Sonde Z-Axe",
+    "Probe X Axis": "Sonde X-Axe",
+    "Probe Y Axis": "Sonde Y-Axe"
 }

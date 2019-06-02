@@ -426,9 +426,7 @@
     "Probe Feedrate": "Подача пробы",
     "Touch Plate Thickness": "Толщина пробника",
     "Retraction Distance": "Дистанция отвода",
-    "Z-Probe": "",
     "Apply tool length offset": "",
-    "Run Z-Probe": "Выполнить пробу Z",
     "Spindle Speed": "Скорость вращения шпинделя",
     "RPM": "",
     "Queue Flush (%)": "",
@@ -529,5 +527,12 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>Отключено</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "",
+    "Run Probe": "Выполнить пробу",
+    "Probe Axis": "Ось пробы",
+    "Probe Z Axis": "Ось Z пробы",
+    "Probe X Axis": "Ось X пробы",
+    "Probe Y Axis": "Ось Y пробы"
 }

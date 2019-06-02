@@ -426,9 +426,7 @@
     "Probe Feedrate": "探针馈送率",
     "Touch Plate Thickness": "对刀仪厚度",
     "Retraction Distance": "回缩距离",
-    "Z-Probe": "Z轴探针",
     "Apply tool length offset": "",
-    "Run Z-Probe": "执行Z轴探测",
     "Spindle Speed": "主轴转速",
     "RPM": "转/分钟",
     "Queue Flush (%)": "清除工作队列 (%)",
@@ -529,5 +527,12 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>已关闭</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "",
+    "Run Probe": "执行探测",
+    "Probe Axis": "轴",
+    "Probe Z Axis": "Z轴探针",
+    "Probe X Axis": "X轴探针",
+    "Probe Y Axis": "Y轴探针"
 }

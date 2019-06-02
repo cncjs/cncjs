@@ -426,9 +426,7 @@
     "Probe Feedrate": "Antaster Vorschub",
     "Touch Plate Thickness": "Stärke der Antastplatte",
     "Retraction Distance": "Rückzugsweg",
-    "Z-Probe": "Werkzeuglängensensor",
     "Apply tool length offset": "Werkzeuglängen-Offset anwenden",
-    "Run Z-Probe": "Starte Z-Antastung",
     "Spindle Speed": "Spindeldrehzahl",
     "RPM": "UPM",
     "Queue Flush (%)": "",
@@ -529,5 +527,12 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>Deaktiviert</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "",
+    "Run Probe": "Starte Antastung",
+    "Probe Axis": "Antaster Axis",
+    "Probe Z Axis": "Antaster Z-Achse",
+    "Probe X Axis": "Antaster X-Achse",
+    "Probe Y Axis": "Antaster Y-Achse"
 }

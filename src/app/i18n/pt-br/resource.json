@@ -426,9 +426,7 @@
     "Probe Feedrate": "Velocidade",
     "Touch Plate Thickness": "Espessura da placa de toque",
     "Retraction Distance": "Distância de retração",
-    "Z-Probe": "Sensor Z",
     "Apply tool length offset": "Aplicar offset de comprimento da ferramenta",
-    "Run Z-Probe": "Rodar o referenciamento de Z",
     "Spindle Speed": "Velocidade do Spindle",
     "RPM": "RPM",
     "Queue Flush (%)": "Fluxo da fila (%)",
@@ -529,5 +527,12 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>Desativado</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "",
+    "Run Probe": "Rodar o referenciamento",
+    "Probe Axis": "Sensor Eixo",
+    "Probe Z Axis": "Sensor Eixo Z",
+    "Probe X Axis": "Sensor Eixo X",
+    "Probe Y Axis": "Sensor Eixo Y"
 }

@@ -426,9 +426,7 @@
     "Probe Feedrate": "Peil Voedingssnelheid ",
     "Touch Plate Thickness": "Raak Plaat Afstand",
     "Retraction Distance": "Retractie Afstand",
-    "Z-Probe": "Z-As Peiler",
     "Apply tool length offset": "Pas gereedschap lengte offset toe",
-    "Run Z-Probe": "Start Z-As Uit peilen",
     "Spindle Speed": "Spindel Snelheid ",
     "RPM": "Toeren Per Minuut",
     "Queue Flush (%)": "Queue Flush (%)",
@@ -529,5 +527,12 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>Uitzetten</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "",
+    "Run Probe": "Start Uit peilen",
+    "Probe Axis": "Peiler As",
+    "Probe Z Axis": "Z-As Peiler",
+    "Probe X Axis": "X-As Peiler",
+    "Probe Y Axis": "Y-As Peiler"
 }

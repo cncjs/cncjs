@@ -426,9 +426,7 @@
     "Probe Feedrate": "Tapintás Előtolás",
     "Touch Plate Thickness": "Tapintási lemez vastagság",
     "Retraction Distance": "Visszahuzási távolság",
-    "Z-Probe": "Z-Probe",
     "Apply tool length offset": "",
-    "Run Z-Probe": "Futtatás Z-tapintó",
     "Spindle Speed": "Főorsó sebessége ",
     "RPM": "RPM",
     "Queue Flush (%)": "Queue Flush (%)",
@@ -529,5 +527,12 @@
     "WebGL: <1>Disabled</1>": "WebGL: <1>Tiltva</1>",
     "Hide Cutting Tool": "",
     "Show Cutting Tool": "",
-    "Ready to start": ""
+    "Ready to start": "",
+    "Connect to an IP camera": "",
+    "The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.": "",
+    "Run Probe": "Futtatás tapintó",
+    "Probe Axis": "Tapintó tengely",
+    "Probe Z Axis": "Tapintó Z-tengely",
+    "Probe X Axis": "Tapintó X-tengely",
+    "Probe Y Axis": "Tapintó Y-tengely"
 }
