@@ -4,7 +4,7 @@ import Modal from 'app/components/Modal';
 import ToggleSwitch from 'app/components/ToggleSwitch';
 import i18n from 'app/lib/i18n';
 
-class ZProbe extends PureComponent {
+class RunProbe extends PureComponent {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
@@ -19,7 +19,7 @@ class ZProbe extends PureComponent {
         return (
             <Modal disableOverlay size="sm" onClose={actions.closeModal}>
                 <Modal.Header>
-                    <Modal.Title>{i18n._('Z-Probe')}</Modal.Title>
+                    <Modal.Title>{i18n._('Probe')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
                     <div style={{ marginBottom: 10 }}>
@@ -50,7 +50,7 @@ class ZProbe extends PureComponent {
                             actions.runProbeCommands(probeCommands);
                         }}
                     >
-                        {i18n._('Run Z-Probe')}
+                        {i18n._('Run Probe')}
                     </button>
                 </Modal.Footer>
             </Modal>
@@ -58,4 +58,4 @@ class ZProbe extends PureComponent {
     }
 }
 
-export default ZProbe;
+export default RunProbe;
