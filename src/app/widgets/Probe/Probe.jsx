@@ -21,6 +21,7 @@ class Probe extends PureComponent {
         const {
             canClick,
             units,
+            probeAxis,
             probeCommand,
             probeDepth,
             probeFeedrate,
@@ -33,6 +34,60 @@ class Probe extends PureComponent {
 
         return (
             <div>
+                <div className="form-group">
+                    <label className="control-label">{i18n._('Probe Axis')}</label>
+                    <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>
+                        <div className="btn-group btn-group-sm">
+                            <button
+                                type="button"
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': probeAxis === 'Z' }
+                                )}
+                                title={i18n._('Probe Z Axis')}
+                                onClick={() => actions.changeProbeAxis('Z')}
+                            >
+                                Z
+                            </button>
+                            <button
+                                type="button"
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': probeAxis === 'X' }
+                                )}
+                                title={i18n._('Probe X Axis')}
+                                onClick={() => actions.changeProbeAxis('X')}
+                            >
+                                X
+                            </button>
+                            <button
+                                type="button"
+                                className={classNames(
+                                    'btn',
+                                    'btn-default',
+                                    { 'btn-select': probeAxis === 'Y' }
+                                )}
+                                title={i18n._('Probe Y Axis')}
+                                onClick={() => actions.changeProbeAxis('Y')}
+                            >
+                                Y
+                            </button>
+                        </div>
+                    </div>
+                    <p className={styles.probeAxisDescription}>
+                        {probeAxis === 'Z' &&
+                        <i>{i18n._('Probe Z Axis')}</i>
+                        }
+                        {probeAxis === 'X' &&
+                        <i>{i18n._('Probe X Axis')}</i>
+                        }
+                        {probeAxis === 'Y' &&
+                        <i>{i18n._('Probe Y Axis')}</i>
+                        }
+                    </p>
+                </div>
                 <div className="form-group">
                     <label className="control-label">{i18n._('Probe Command')}</label>
                     <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>
@@ -182,7 +237,7 @@ class Probe extends PureComponent {
                             }}
                             disabled={!canClick}
                         >
-                            {i18n._('Z-Probe')}
+                            {i18n._('Probe')}
                         </button>
                     </div>
                 </div>
