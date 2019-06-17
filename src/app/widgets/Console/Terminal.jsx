@@ -42,6 +42,9 @@ class TerminalWrapper extends PureComponent {
 
     term = null;
 
+    // Filters off when started
+    filterStatus = 0;
+
     eventHandler = {
         onResize: () => {
             const { rows, cols } = this.term;
@@ -363,6 +366,13 @@ class TerminalWrapper extends PureComponent {
     }
 
     writeln(data) {
+        if (this.filterStatus) {
+            // Find Status Report, Queue Report, Return Code Zero. Let everything else through.
+            const srRegEx = /^(.*?sr.*?\:|.*?qr.*?\:|.*?r.*?f.*?\[\d\,0\,.*?\])/;
+            if (srRegEx.test(data)) {
+                return;
+            }
+        }
         this.term.eraseRight(0, this.term.buffer.y);
         this.term.write('\r');
         this.term.write(data);
@@ -381,6 +391,13 @@ class TerminalWrapper extends PureComponent {
                 style={style}
             />
         );
+    }
+
+    toggleFilter() {
+        this.filterStatus = !this.filterStatus;
+        this.term.writeln('Filtering Status');
+        this.term.writeln(`   and Queue Reports = "${this.filterStatus}"`);
+        this.term.prompt();
     }
 }
 

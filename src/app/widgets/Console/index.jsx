@@ -60,6 +60,9 @@ class ConsoleWidget extends PureComponent {
                 this.resizeTerminal();
             });
         },
+        filterStatus: () => {
+            this.terminal.toggleFilter();
+        },
         clearAll: () => {
             this.terminal && this.terminal.clear();
         },
@@ -193,6 +196,7 @@ class ConsoleWidget extends PureComponent {
     render() {
         const { widgetId } = this.props;
         const { minimized, isFullscreen } = this.state;
+        const isTinyG = controller.type === 'TinyG';
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
             ...this.state
@@ -215,6 +219,16 @@ class ConsoleWidget extends PureComponent {
                         {i18n._('Console')}
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
+                        {isTinyG ?
+                            (
+                                <Widget.Button
+                                    disabled={!isTinyG}
+                                    title={i18n._('Filter Status Reports')}
+                                    onClick={actions.filterStatus}
+                                >
+                                    <i className="fa fa-filter" />
+                                </Widget.Button>
+                            ) : null }
                         <Widget.Button
                             title={i18n._('Clear all')}
                             onClick={actions.clearAll}
