@@ -219,7 +219,8 @@ class ConsoleWidget extends PureComponent {
                         {i18n._('Console')}
                     </Widget.Title>
                     <Widget.Controls className={this.props.sortable.filterClassName}>
-                        {isTinyG ?
+                        {isTinyG
+                            ?
                             (
                                 <Widget.Button
                                     disabled={!isTinyG}
