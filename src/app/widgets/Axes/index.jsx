@@ -483,20 +483,16 @@ class AxesWidget extends PureComponent {
                         type: type,
                         state: controllerState
                     },
-                    // Machine position are reported in current units
-                    machinePosition: mapValues({
+                    // Machine position is always reported in mm
+                    machinePosition: {
                         ...state.machinePosition,
                         ...pos
-                    }, (val) => {
-                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                    }),
-                    // Work position are reported in current units
-                    workPosition: mapValues({
+                    },
+                    // Work position is always reported in mm
+                    workPosition:{
                         ...state.workPosition,
                         ...pos
-                    }, (val) => {
-                        return (units === IMPERIAL_UNITS) ? in2mm(val) : val;
-                    })
+                    }
                 }));
             }
 
