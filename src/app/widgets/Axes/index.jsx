@@ -489,7 +489,7 @@ class AxesWidget extends PureComponent {
                         ...pos
                     },
                     // Work position is always reported in mm
-                    workPosition:{
+                    workPosition: {
                         ...state.workPosition,
                         ...pos
                     }
