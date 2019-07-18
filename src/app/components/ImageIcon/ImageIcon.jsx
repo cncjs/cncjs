@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
-import styled, { keyframes } from 'styled-components';
+import React from 'react';
+import styled, { css, keyframes } from 'styled-components';
 import Image from 'app/components/Image';
 
 const spin = keyframes`
@@ -20,14 +21,27 @@ const spinReverse = keyframes`
     }
 `;
 
-const ImageIcon = styled(Image)`
+const ImageIcon = styled(({
+    spin,
+    spinReverse,
+    ...rest
+}) => (
+    <Image {...rest} />
+))`
     display: inline-block;
     font-size: inherit;
     height: 1em;
     overflow: visible;
     vertical-align: -0.125em;
-    ${props => !!props.spin && `animation: ${spin} 2s infinite linear;`}
-    ${props => !!props.spinReverse && `animation: ${spinReverse} 2s infinite linear;`}
+    ${props => {
+        if (props.spin) {
+            return css`animation: ${spin} 2s infinite linear;`;
+        }
+        if (props.spinReverse) {
+            return css`animation: ${spinReverse} 2s infinite linear;`;
+        }
+        return '';
+    }}
 `;
 
 ImageIcon.propTypes = {
