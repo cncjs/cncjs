@@ -11,7 +11,11 @@ import { ButtonGroup } from 'app/components/Buttons';
 import DropdownToggle from './DropdownToggle';
 import DropdownMenuWrapper from './DropdownMenuWrapper';
 import DropdownMenu from './DropdownMenu';
-import match from './match-component';
+import {
+    isDropdownToggle,
+    isDropdownMenu,
+    isDropdownMenuWrapper,
+} from './helpers';
 import styles from './index.styl';
 
 class Dropdown extends PureComponent {
@@ -88,12 +92,6 @@ class Dropdown extends PureComponent {
     _focusInDropdown = false;
 
     lastOpenEventType = null;
-
-    isDropdownToggle = match(DropdownToggle);
-
-    isDropdownMenu = match(DropdownMenu);
-
-    isDropdownMenuWrapper = match(DropdownMenuWrapper);
 
     handleToggleClick = (event) => {
         if (this.props.disabled) {
@@ -334,13 +332,13 @@ class Dropdown extends PureComponent {
                         return child;
                     }
 
-                    if (this.isDropdownToggle(child)) {
+                    if (isDropdownToggle(child)) {
                         return this.renderToggle(child, {
                             disabled, open
                         });
                     }
 
-                    if (this.isDropdownMenu(child) || this.isDropdownMenuWrapper(child)) {
+                    if (isDropdownMenu(child) || isDropdownMenuWrapper(child)) {
                         return this.renderMenu(child, {
                             open,
                             pullRight,

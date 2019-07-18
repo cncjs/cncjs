@@ -1,11 +1,13 @@
+/* eslint import/no-cycle: 0 */
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent, cloneElement } from 'react';
 import warning from 'warning';
-import DropdownMenu from './DropdownMenu';
-import RootCloseWrapper from './RootCloseWrapper';
-import match from './match-component';
+import RootCloseWrapper from 'app/components/RootCloseWrapper';
+import {
+    isDropdownMenu,
+} from './helpers';
 import styles from './index.styl';
 
 class DropdownMenuWrapper extends PureComponent {
@@ -35,8 +37,6 @@ class DropdownMenuWrapper extends PureComponent {
     };
 
     menu = null; // <DropdownMenu ref={c => this.menu = c} />
-
-    isDropdownMenu = match(DropdownMenu);
 
     focusNext() {
         this.menu && this.menu.focusNext && this.menu.focusNext();
@@ -100,7 +100,7 @@ class DropdownMenuWrapper extends PureComponent {
                             return child;
                         }
 
-                        if (this.isDropdownMenu(child)) {
+                        if (isDropdownMenu(child)) {
                             return this.renderMenu(child, {
                                 // Do not pass onClose and rootCloseEvent to the dropdown menu
                                 open,

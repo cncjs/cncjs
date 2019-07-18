@@ -1,3 +1,4 @@
+/* eslint import/no-cycle: 0 */
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';

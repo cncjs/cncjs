@@ -1,11 +1,13 @@
+/* eslint import/no-cycle: 0 */
 import chainedFunction from 'chained-function';
 import cx from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent, cloneElement } from 'react';
 import ReactDOM from 'react-dom';
-import MenuItem from './MenuItem';
-import RootCloseWrapper from './RootCloseWrapper';
-import match from './match-component';
+import RootCloseWrapper from 'app/components/RootCloseWrapper';
+import {
+    isMenuItem,
+} from './helpers';
 import styles from './index.styl';
 
 class DropdownMenu extends PureComponent {
@@ -33,8 +35,6 @@ class DropdownMenu extends PureComponent {
     static defaultProps = {
         componentClass: 'div'
     };
-
-    isMenuItem = match(MenuItem);
 
     handleKeyDown = (event) => {
         if (event.keyCode === 40) { // Down
@@ -107,7 +107,7 @@ class DropdownMenu extends PureComponent {
         } = this.props;
 
         const activeMenuItems = React.Children.toArray(children)
-            .filter(child => React.isValidElement(child) && this.isMenuItem(child) && child.props.active);
+            .filter(child => React.isValidElement(child) && isMenuItem(child) && child.props.active);
 
         return (
             <RootCloseWrapper
@@ -126,7 +126,7 @@ class DropdownMenu extends PureComponent {
                     style={style}
                 >
                     {React.Children.map(children, child => {
-                        if (React.isValidElement(child) && this.isMenuItem(child)) {
+                        if (React.isValidElement(child) && isMenuItem(child)) {
                             return cloneElement(child, {
                                 onKeyDown: chainedFunction(
                                     child.props.onKeyDown,
