@@ -11,8 +11,9 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Label from 'app/components/Label';
-import Space from 'app/components/Space';
+import Margin from 'app/components/Margin';
 import { ToastNotification } from 'app/components/Notifications';
+import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import {
@@ -142,7 +143,12 @@ class Connection extends PureComponent {
                 )}
                 {canSelectControllers && (
                     <FormGroup>
-                        <ButtonGroup>
+                        <ButtonGroup
+                            btnSize="sm"
+                            style={{
+                                width: '100%',
+                            }}
+                        >
                             {hasGrblController && (
                                 <Button
                                     btnStyle={controllerType === GRBL ? 'dark' : 'default'}
@@ -215,14 +221,10 @@ class Connection extends PureComponent {
                                 valueRenderer={this.renderPortValue}
                             />
                         </Col>
-                        <Col
-                            width="auto"
-                            style={{
-                                width: 50,
-                                textAlign: 'right'
-                            }}
-                        >
+                        <Col width="auto">
+                            <Space width={12} />
                             <Button
+                                btnSize="sm"
                                 btnStyle="default"
                                 name="btn-refresh"
                                 title={i18n._('Refresh')}
@@ -284,7 +286,7 @@ class Connection extends PureComponent {
                         {i18n._('Connect automatically')}
                     </Checkbox>
                 </FormGroup>
-                <ButtonGroup>
+                <Margin bottom={8}>
                     {notConnected && (
                         <Button
                             btnStyle="primary"
@@ -307,7 +309,7 @@ class Connection extends PureComponent {
                             {i18n._('Close')}
                         </Button>
                     )}
-                </ButtonGroup>
+                </Margin>
             </Container>
         );
     }

@@ -218,7 +218,7 @@ class Probe extends PureComponent {
                 <Margin bottom={8}>
                     <Button
                         btnSize="md"
-                        btnStyle="default"
+                        btnStyle="secondary"
                         disabled={!canClick}
                         onClick={() => {
                             actions.openModal(MODAL_PREVIEW);
