@@ -32,7 +32,7 @@ import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import Probe from './Probe';
-import ZProbe from './ZProbe';
+import RunProbeModal from './RunProbeModal';
 import {
     MODAL_NONE,
     MODAL_PREVIEW
@@ -104,6 +104,9 @@ class ProbeWidget extends PureComponent {
                 }
             });
         },
+        changeProbeAxis: (value) => {
+            this.setState({ probeAxis: value });
+        },
         changeProbeCommand: (value) => {
             this.setState({ probeCommand: value });
         },
@@ -129,6 +132,7 @@ class ProbeWidget extends PureComponent {
         },
         populateProbeCommands: () => {
             const {
+                probeAxis,
                 probeCommand,
                 useTLO,
                 probeDepth,
@@ -146,16 +150,17 @@ class ProbeWidget extends PureComponent {
                 'G59': 6
             }[wcs] || 0);
             const towardWorkpiece = includes(['G38.2', 'G38.3'], probeCommand);
+            const posname = `pos${probeAxis.toLowerCase()}`;
             const tloProbeCommands = [
                 gcode('; Cancel tool length offset'),
                 // Cancel tool length offset
                 gcode('G49'),
 
-                // Z-Probe (use relative distance mode)
-                gcode('; Z-Probe'),
+                // Probe (use relative distance mode)
+                gcode(`; ${probeAxis}-Probe`),
                 gcode('G91'),
                 gcode(probeCommand, {
-                    Z: towardWorkpiece ? -probeDepth : probeDepth,
+                    [probeAxis]: towardWorkpiece ? -probeDepth : probeDepth,
                     F: probeFeedrate
                 }),
                 // Use absolute distance mode
@@ -168,42 +173,42 @@ class ProbeWidget extends PureComponent {
                 // Apply touch plate height with tool length offset
                 gcode('; Set tool length offset'),
                 gcode('G43.1', {
-                    Z: towardWorkpiece ? `[posz-${touchPlateHeight}]` : `[posz+${touchPlateHeight}]`
+                    [probeAxis]: towardWorkpiece ? `[${posname}-${touchPlateHeight}]` : `[${posname}+${touchPlateHeight}]`
                 }),
 
                 // Retract from the touch plate (use relative distance mode)
                 gcode('; Retract from the touch plate'),
                 gcode('G91'),
                 gcode('G0', {
-                    Z: retractionDistance
+                    [probeAxis]: retractionDistance
                 }),
                 // Use asolute distance mode
                 gcode('G90')
             ];
             const wcsProbeCommands = [
-                // Z-Probe (use relative distance mode)
-                gcode('; Z-Probe'),
+                // Probe (use relative distance mode)
+                gcode(`; ${probeAxis}-Probe`),
                 gcode('G91'),
                 gcode(probeCommand, {
-                    Z: towardWorkpiece ? -probeDepth : probeDepth,
+                    [probeAxis]: towardWorkpiece ? -probeDepth : probeDepth,
                     F: probeFeedrate
                 }),
                 // Use absolute distance mode
                 gcode('G90'),
 
-                // Set the WCS Z0
-                gcode('; Set the active WCS Z0'),
+                // Set the WCS 0 offset
+                gcode(`; Set the active WCS ${probeAxis}0`),
                 gcode('G10', {
                     L: 20,
                     P: mapWCSToP(wcs),
-                    Z: touchPlateHeight
+                    [probeAxis]: touchPlateHeight
                 }),
 
                 // Retract from the touch plate (use relative distance mode)
                 gcode('; Retract from the touch plate'),
                 gcode('G91'),
                 gcode('G0', {
-                    Z: retractionDistance
+                    [probeAxis]: retractionDistance
                 }),
                 // Use absolute distance mode
                 gcode('G90')
@@ -358,6 +363,7 @@ class ProbeWidget extends PureComponent {
                 name: MODAL_NONE,
                 params: {}
             },
+            probeAxis: this.config.get('probeAxis', 'Z'),
             probeCommand: this.config.get('probeCommand', 'G38.2'),
             useTLO: this.config.get('useTLO'),
             probeDepth: Number(this.config.get('probeDepth') || 0).toFixed(3) * 1,
@@ -540,7 +546,7 @@ class ProbeWidget extends PureComponent {
                     )}
                 >
                     {state.modal.name === MODAL_PREVIEW &&
-                    <ZProbe state={state} actions={actions} />
+                    <RunProbeModal state={state} actions={actions} />
                     }
                     <Probe
                         state={state}

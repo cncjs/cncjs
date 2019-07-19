@@ -30,13 +30,9 @@ class Spindle extends Component {
         const floodCoolant = coolant.indexOf('M8') >= 0;
 
         return (
-            <Container
-                fluid
-                gutterWidth={10}
-                style={{ padding: 0 }}
-            >
+            <Container fluid>
                 <Row>
-                    <Col xs={12}>
+                    <Col width="auto">
                         <FormGroup>
                             <Label>{i18n._('Spindle')}</Label>
                             <div>
@@ -87,7 +83,9 @@ class Spindle extends Component {
                             </div>
                         </FormGroup>
                     </Col>
-                    <Col xs={12}>
+                </Row>
+                <Row>
+                    <Col width="auto">
                         <FormGroup>
                             <Label>{i18n._('Coolant')}</Label>
                             <div>
@@ -132,7 +130,9 @@ class Spindle extends Component {
                             </div>
                         </FormGroup>
                     </Col>
-                    <Col xs={6}>
+                </Row>
+                <Row>
+                    <Col width="auto">
                         <FormGroup>
                             <Label>{i18n._('Spindle Speed')}</Label>
                             <InputGroup>

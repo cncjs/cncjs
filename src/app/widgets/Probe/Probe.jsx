@@ -1,6 +1,13 @@
-import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import { Button, ButtonGroup } from 'app/components/Buttons';
+import { Input } from 'app/components/FormControl';
+import FormGroup from 'app/components/FormGroup';
+import { Container, Row, Col } from 'app/components/GridSystem';
+import InputGroup from 'app/components/InputGroup';
+import Label from 'app/components/Label';
+import Margin from 'app/components/Margin';
+import Text from 'app/components/Text';
 import i18n from 'app/lib/i18n';
 import {
     METRIC_UNITS
@@ -8,7 +15,13 @@ import {
 import {
     MODAL_PREVIEW
 } from './constants';
-import styles from './index.styl';
+
+const mapProbeCommandToDescription = (probeCommand) => ({
+    'G38.2': i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure'),
+    'G38.3': i18n._('G38.3 probe toward workpiece, stop on contact'),
+    'G38.4': i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure'),
+    'G38.5': i18n._('G38.5 probe away from workpiece, stop on loss of contact'),
+}[probeCommand] || '');
 
 class Probe extends PureComponent {
     static propTypes = {
@@ -21,6 +34,7 @@ class Probe extends PureComponent {
         const {
             canClick,
             units,
+            probeAxis,
             probeCommand,
             probeDepth,
             probeFeedrate,
@@ -32,161 +46,180 @@ class Probe extends PureComponent {
         const step = (units === METRIC_UNITS) ? 1 : 0.1;
 
         return (
-            <div>
-                <div className="form-group">
-                    <label className="control-label">{i18n._('Probe Command')}</label>
-                    <div className="btn-toolbar" role="toolbar" style={{ marginBottom: 5 }}>
-                        <div className="btn-group btn-group-sm">
-                            <button
-                                type="button"
-                                className={classNames(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': probeCommand === 'G38.2' }
-                                )}
+            <Container fluid>
+                <FormGroup>
+                    <Margin bottom={4}>
+                        <div>
+                            <Label>{i18n._('Probe Axis: {{probeAxis}}', { probeAxis })}</Label>
+                        </div>
+                        <ButtonGroup>
+                            <Button
+                                btnStyle={probeAxis === 'Z' ? 'dark' : 'default'}
+                                title={i18n._('Probe Z axis')}
+                                onClick={() => actions.changeProbeAxis('Z')}
+                                style={{ minWidth: 60 }}
+                            >
+                                Z
+                            </Button>
+                            <Button
+                                btnStyle={probeAxis === 'X' ? 'dark' : 'default'}
+                                title={i18n._('Probe X axis')}
+                                onClick={() => actions.changeProbeAxis('X')}
+                                style={{ minWidth: 60 }}
+                            >
+                                X
+                            </Button>
+                            <Button
+                                btnStyle={probeAxis === 'Y' ? 'dark' : 'default'}
+                                title={i18n._('Probe Y axis')}
+                                onClick={() => actions.changeProbeAxis('Y')}
+                                style={{ minWidth: 60 }}
+                            >
+                                Y
+                            </Button>
+                        </ButtonGroup>
+                    </Margin>
+                </FormGroup>
+                <FormGroup>
+                    <Margin bottom={4}>
+                        <div>
+                            <Label>{i18n._('Probe Command: {{probeCommand}}', { probeCommand })}</Label>
+                        </div>
+                        <ButtonGroup>
+                            <Button
+                                btnStyle={probeCommand === 'G38.2' ? 'dark' : 'default'}
                                 title={i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}
                                 onClick={() => actions.changeProbeCommand('G38.2')}
                             >
                                 G38.2
-                            </button>
-                            <button
-                                type="button"
-                                className={classNames(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': probeCommand === 'G38.3' }
-                                )}
+                            </Button>
+                            <Button
+                                btnStyle={probeCommand === 'G38.3' ? 'dark' : 'default'}
                                 title={i18n._('G38.3 probe toward workpiece, stop on contact')}
                                 onClick={() => actions.changeProbeCommand('G38.3')}
                             >
                                 G38.3
-                            </button>
-                            <button
-                                type="button"
-                                className={classNames(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': probeCommand === 'G38.4' }
-                                )}
+                            </Button>
+                            <Button
+                                btnStyle={probeCommand === 'G38.4' ? 'dark' : 'default'}
                                 title={i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}
                                 onClick={() => actions.changeProbeCommand('G38.4')}
                             >
                                 G38.4
-                            </button>
-                            <button
-                                type="button"
-                                className={classNames(
-                                    'btn',
-                                    'btn-default',
-                                    { 'btn-select': probeCommand === 'G38.5' }
-                                )}
+                            </Button>
+                            <Button
+                                btnStyle={probeCommand === 'G38.5' ? 'dark' : 'default'}
                                 title={i18n._('G38.5 probe away from workpiece, stop on loss of contact')}
                                 onClick={() => actions.changeProbeCommand('G38.5')}
                             >
                                 G38.5
-                            </button>
-                        </div>
-                    </div>
-                    <p className={styles.probeCommandDescription}>
-                        {probeCommand === 'G38.2' &&
-                        <i>{i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}</i>
-                        }
-                        {probeCommand === 'G38.3' &&
-                        <i>{i18n._('G38.3 probe toward workpiece, stop on contact')}</i>
-                        }
-                        {probeCommand === 'G38.4' &&
-                        <i>{i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}</i>
-                        }
-                        {probeCommand === 'G38.5' &&
-                        <i>{i18n._('G38.5 probe away from workpiece, stop on loss of contact')}</i>
-                        }
-                    </p>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col-xs-6" style={{ paddingRight: 5 }}>
-                        <div className="form-group">
-                            <label className="control-label">{i18n._('Probe Depth')}</label>
-                            <div className="input-group input-group-sm">
-                                <input
+                            </Button>
+                        </ButtonGroup>
+                    </Margin>
+                    <Text style={{ fontStyle: 'italic' }}>
+                        {mapProbeCommandToDescription(probeCommand)}
+                    </Text>
+                </FormGroup>
+                <Row>
+                    <Col width="auto">
+                        <FormGroup>
+                            <Label>{i18n._('Probe Depth')}</Label>
+                            <InputGroup>
+                                <Input
                                     type="number"
-                                    className="form-control"
                                     value={probeDepth}
                                     placeholder="0.00"
                                     min={0}
                                     step={step}
                                     onChange={actions.handleProbeDepthChange}
                                 />
-                                <div className="input-group-addon">{displayUnits}</div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-6" style={{ paddingLeft: 5 }}>
-                        <div className="form-group">
-                            <label className="control-label">{i18n._('Probe Feedrate')}</label>
-                            <div className="input-group input-group-sm">
-                                <input
+                                <InputGroup.Append>
+                                    <InputGroup.Text>
+                                        {displayUnits}
+                                    </InputGroup.Text>
+                                </InputGroup.Append>
+                            </InputGroup>
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col width="auto">
+                        <FormGroup>
+                            <Label>{i18n._('Probe Feedrate')}</Label>
+                            <InputGroup>
+                                <Input
                                     type="number"
-                                    className="form-control"
                                     value={probeFeedrate}
                                     placeholder="0.00"
                                     min={0}
                                     step={step}
                                     onChange={actions.handleProbeFeedrateChange}
                                 />
-                                <span className="input-group-addon">{feedrateUnits}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-6" style={{ paddingRight: 5 }}>
-                        <div className="form-group">
-                            <label className="control-label">{i18n._('Touch Plate Thickness')}</label>
-                            <div className="input-group input-group-sm">
-                                <input
+                                <InputGroup.Append>
+                                    <InputGroup.Text>
+                                        {feedrateUnits}
+                                    </InputGroup.Text>
+                                </InputGroup.Append>
+                            </InputGroup>
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col width="auto">
+                        <FormGroup>
+                            <Label>{i18n._('Touch Plate Thickness')}</Label>
+                            <InputGroup>
+                                <Input
                                     type="number"
-                                    className="form-control"
                                     value={touchPlateHeight}
                                     placeholder="0.00"
                                     min={0}
                                     step={step}
                                     onChange={actions.handleTouchPlateHeightChange}
                                 />
-                                <span className="input-group-addon">{displayUnits}</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="col-xs-6" style={{ paddingLeft: 5 }}>
-                        <div className="form-group">
-                            <label className="control-label">{i18n._('Retraction Distance')}</label>
-                            <div className="input-group input-group-sm">
-                                <input
+                                <InputGroup.Append>
+                                    <InputGroup.Text>
+                                        {displayUnits}
+                                    </InputGroup.Text>
+                                </InputGroup.Append>
+                            </InputGroup>
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Row>
+                    <Col width="auto">
+                        <FormGroup>
+                            <Label>{i18n._('Retraction Distance')}</Label>
+                            <InputGroup>
+                                <Input
                                     type="number"
-                                    className="form-control"
                                     value={retractionDistance}
                                     placeholder="0.00"
                                     min={0}
                                     step={step}
                                     onChange={actions.handleRetractionDistanceChange}
                                 />
-                                <span className="input-group-addon">{displayUnits}</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="row no-gutters">
-                    <div className="col-xs-12">
-                        <button
-                            type="button"
-                            className="btn btn-sm btn-default"
-                            onClick={() => {
-                                actions.openModal(MODAL_PREVIEW);
-                            }}
-                            disabled={!canClick}
-                        >
-                            {i18n._('Z-Probe')}
-                        </button>
-                    </div>
-                </div>
-            </div>
+                                <InputGroup.Append>
+                                    <InputGroup.Text>
+                                        {displayUnits}
+                                    </InputGroup.Text>
+                                </InputGroup.Append>
+                            </InputGroup>
+                        </FormGroup>
+                    </Col>
+                </Row>
+                <Margin bottom={8}>
+                    <Button
+                        btnStyle="default"
+                        disabled={!canClick}
+                        onClick={() => {
+                            actions.openModal(MODAL_PREVIEW);
+                        }}
+                    >
+                        {i18n._('Probe')}
+                    </Button>
+                </Margin>
+            </Container>
         );
     }
 }
