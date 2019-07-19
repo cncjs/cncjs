@@ -2,18 +2,28 @@ import classNames from 'classnames';
 import React from 'react';
 import { Link, withRouter } from 'react-router-dom';
 import Image from 'app/components/Image';
+import {
+    SIDENAV_BACKGROUND_COLOR,
+    SIDENAV_WIDTH,
+} from 'app/config/styles';
 import i18n from 'app/lib/i18n';
 import styles from './index.styl';
 import iconXYZ from './images/xyz.svg';
 import iconGear from './images/gear.svg';
 
-const Sidebar = ({
+const SideNav = ({
     location,
 }) => {
     const { pathname = '' } = location;
 
     return (
-        <ul className={styles.nav}>
+        <ul
+            className={styles.nav}
+            style={{
+                backgroundColor: SIDENAV_BACKGROUND_COLOR,
+                width: SIDENAV_WIDTH,
+            }}
+        >
             <li
                 className={classNames(
                     'text-center',
@@ -54,4 +64,4 @@ const Sidebar = ({
     );
 };
 
-export default withRouter(Sidebar);
+export default withRouter(SideNav);

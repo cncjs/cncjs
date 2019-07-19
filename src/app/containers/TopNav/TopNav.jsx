@@ -17,6 +17,9 @@ import Space from 'app/components/Space';
 import { Tooltip } from 'app/components/Tooltip';
 import Text from 'app/components/Text';
 import settings from 'app/config/settings';
+import {
+    TOPNAV_HEIGHT,
+} from 'app/config/styles';
 import combokeys from 'app/lib/combokeys';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
@@ -41,7 +44,7 @@ const NavDropdownToggle = styled(Button)`
     }
 `;
 
-class Header extends Component {
+class TopNav extends Component {
     static propTypes = {
         ...withRouter.propTypes
     };
@@ -338,7 +341,12 @@ class Header extends Component {
         const signedInName = config.get('session.name');
 
         return (
-            <Container fluid>
+            <Container
+                fluid
+                style={{
+                    height: TOPNAV_HEIGHT,
+                }}
+            >
                 <Row
                     style={{
                         justifyContent: 'space-between',
@@ -517,4 +525,4 @@ class Header extends Component {
     }
 }
 
-export default withRouter(Header);
+export default withRouter(TopNav);

@@ -50,14 +50,18 @@ class Probe extends PureComponent {
                 <FormGroup>
                     <Margin bottom={4}>
                         <div>
-                            <Label>{i18n._('Probe Axis: {{probeAxis}}', { probeAxis })}</Label>
+                            <Label>{i18n._('Probe Axis')}</Label>
                         </div>
-                        <ButtonGroup>
+                        <ButtonGroup
+                            btnSize="sm"
+                            style={{
+                                minWidth: '50%',
+                            }}
+                        >
                             <Button
                                 btnStyle={probeAxis === 'Z' ? 'dark' : 'default'}
                                 title={i18n._('Probe Z axis')}
                                 onClick={() => actions.changeProbeAxis('Z')}
-                                style={{ minWidth: 60 }}
                             >
                                 Z
                             </Button>
@@ -65,7 +69,6 @@ class Probe extends PureComponent {
                                 btnStyle={probeAxis === 'X' ? 'dark' : 'default'}
                                 title={i18n._('Probe X axis')}
                                 onClick={() => actions.changeProbeAxis('X')}
-                                style={{ minWidth: 60 }}
                             >
                                 X
                             </Button>
@@ -73,7 +76,6 @@ class Probe extends PureComponent {
                                 btnStyle={probeAxis === 'Y' ? 'dark' : 'default'}
                                 title={i18n._('Probe Y axis')}
                                 onClick={() => actions.changeProbeAxis('Y')}
-                                style={{ minWidth: 60 }}
                             >
                                 Y
                             </Button>
@@ -85,7 +87,12 @@ class Probe extends PureComponent {
                         <div>
                             <Label>{i18n._('Probe Command: {{probeCommand}}', { probeCommand })}</Label>
                         </div>
-                        <ButtonGroup>
+                        <ButtonGroup
+                            btnSize="sm"
+                            style={{
+                                minWidth: '80%',
+                            }}
+                        >
                             <Button
                                 btnStyle={probeCommand === 'G38.2' ? 'dark' : 'default'}
                                 title={i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}
@@ -124,7 +131,7 @@ class Probe extends PureComponent {
                     <Col width="auto">
                         <FormGroup>
                             <Label>{i18n._('Probe Depth')}</Label>
-                            <InputGroup>
+                            <InputGroup sm>
                                 <Input
                                     type="number"
                                     value={probeDepth}
@@ -146,7 +153,7 @@ class Probe extends PureComponent {
                     <Col width="auto">
                         <FormGroup>
                             <Label>{i18n._('Probe Feedrate')}</Label>
-                            <InputGroup>
+                            <InputGroup sm>
                                 <Input
                                     type="number"
                                     value={probeFeedrate}
@@ -168,7 +175,7 @@ class Probe extends PureComponent {
                     <Col width="auto">
                         <FormGroup>
                             <Label>{i18n._('Touch Plate Thickness')}</Label>
-                            <InputGroup>
+                            <InputGroup sm>
                                 <Input
                                     type="number"
                                     value={touchPlateHeight}
@@ -190,7 +197,7 @@ class Probe extends PureComponent {
                     <Col width="auto">
                         <FormGroup>
                             <Label>{i18n._('Retraction Distance')}</Label>
-                            <InputGroup>
+                            <InputGroup sm>
                                 <Input
                                     type="number"
                                     value={retractionDistance}
@@ -210,13 +217,17 @@ class Probe extends PureComponent {
                 </Row>
                 <Margin bottom={8}>
                     <Button
+                        btnSize="md"
                         btnStyle="default"
                         disabled={!canClick}
                         onClick={() => {
                             actions.openModal(MODAL_PREVIEW);
                         }}
+                        style={{
+                            minWidth: 'calc(100% / 3)',
+                        }}
                     >
-                        {i18n._('Probe')}
+                        {i18n._('Probe Axis {{axis}}', { axis: probeAxis })}
                     </Button>
                 </Margin>
             </Container>

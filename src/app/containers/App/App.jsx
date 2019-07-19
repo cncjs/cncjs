@@ -2,10 +2,10 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route, Switch, withRouter } from 'react-router-dom';
 import compose from 'recompose/compose';
-import ProtectedRoute from 'app/components/ProtectedRoute';
 import Login from 'app/containers/Login';
-import Main from 'app/containers/Main';
-import CorruptedWorkspaceSettings from './CorruptedWorkspaceSettings';
+import ProtectedPage from 'app/containers/ProtectedPage';
+import CorruptedWorkspaceSettingsModal from './modals/CorruptedWorkspaceSettingsModal';
+import ProtectedRoute from './ProtectedRoute';
 
 const App = ({
     location,
@@ -18,7 +18,7 @@ const App = ({
 
     if (promptUserForCorruptedWorkspaceSettings) {
         return (
-            <CorruptedWorkspaceSettings />
+            <CorruptedWorkspaceSettingsModal />
         );
     }
 
@@ -30,7 +30,7 @@ const App = ({
                 component={Login}
             />
             <ProtectedRoute
-                component={Main}
+                component={ProtectedPage}
             />
         </Switch>
     );

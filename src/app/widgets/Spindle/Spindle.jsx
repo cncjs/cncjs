@@ -36,9 +36,12 @@ class Spindle extends Component {
                         <FormGroup>
                             <Label>{i18n._('Spindle')}</Label>
                             <div>
-                                <ButtonGroup style={{ width: '100%' }}>
+                                <ButtonGroup
+                                    btnSize="sm"
+                                    btnStyle="default"
+                                    style={{ width: '100%' }}
+                                >
                                     <Button
-                                        btnStyle="defaut"
                                         onClick={() => {
                                             if (spindleSpeed > 0) {
                                                 controller.command('gcode', 'M3 S' + spindleSpeed);
@@ -54,7 +57,6 @@ class Spindle extends Component {
                                         M3
                                     </Button>
                                     <Button
-                                        btnStyle="default"
                                         onClick={() => {
                                             if (spindleSpeed > 0) {
                                                 controller.command('gcode', 'M4 S' + spindleSpeed);
@@ -70,7 +72,6 @@ class Spindle extends Component {
                                         M4
                                     </Button>
                                     <Button
-                                        btnStyle="default"
                                         onClick={() => controller.command('gcode', 'M5')}
                                         title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
                                         disabled={!canClick}
@@ -89,9 +90,12 @@ class Spindle extends Component {
                         <FormGroup>
                             <Label>{i18n._('Coolant')}</Label>
                             <div>
-                                <ButtonGroup style={{ width: '100%' }}>
+                                <ButtonGroup
+                                    btnSize="sm"
+                                    btnStyle="default"
+                                    style={{ width: '100%' }}
+                                >
                                     <Button
-                                        btnStyle="default"
                                         onClick={() => {
                                             controller.command('gcode', 'M7');
                                         }}
@@ -103,7 +107,6 @@ class Spindle extends Component {
                                         M7
                                     </Button>
                                     <Button
-                                        btnStyle="default"
                                         onClick={() => {
                                             controller.command('gcode', 'M8');
                                         }}
@@ -115,7 +118,6 @@ class Spindle extends Component {
                                         M8
                                     </Button>
                                     <Button
-                                        btnStyle="default"
                                         onClick={() => {
                                             controller.command('gcode', 'M9');
                                         }}
@@ -135,7 +137,7 @@ class Spindle extends Component {
                     <Col width="auto">
                         <FormGroup>
                             <Label>{i18n._('Spindle Speed')}</Label>
-                            <InputGroup>
+                            <InputGroup sm>
                                 <Input
                                     type="number"
                                     value={spindleSpeed}

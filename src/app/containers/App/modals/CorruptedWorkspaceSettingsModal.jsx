@@ -9,7 +9,7 @@ import Space from 'app/components/Space';
 import settings from 'app/config/settings';
 import config from 'app/store/config';
 
-const CorruptedWorkspaceSettings = (props) => {
+const CorruptedWorkspaceSettingsModal = (props) => {
     const text = config.getConfig();
     const url = 'data:text/plain;charset=utf-8,' + encodeURIComponent(text);
     const filename = `${settings.name}-${settings.version}.json`;
@@ -57,4 +57,4 @@ const CorruptedWorkspaceSettings = (props) => {
     );
 };
 
-export default CorruptedWorkspaceSettings;
+export default CorruptedWorkspaceSettingsModal;
