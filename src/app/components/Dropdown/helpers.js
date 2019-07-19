@@ -1,3 +1,4 @@
+/* eslint import/no-cycle: 0 */
 import DropdownToggle from './DropdownToggle';
 import DropdownMenu from './DropdownMenu';
 import DropdownMenuWrapper from './DropdownMenuWrapper';
