@@ -32,7 +32,7 @@ import i18n from 'app/lib/i18n';
 import { in2mm, mapValueToUnits } from 'app/lib/units';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import Probe from './Probe';
-import RunProbeModal from './RunProbeModal';
+import RunProbeModal from './modals/RunProbeModal';
 import {
     MODAL_NONE,
     MODAL_PREVIEW
@@ -467,7 +467,7 @@ class ProbeWidget extends PureComponent {
         const isForkedWidget = widgetId.match(/\w+:[\w\-]+/);
         const state = {
             ...this.state,
-            canClick: this.canClick()
+            canClick: this.canClick(),
         };
         const actions = {
             ...this.actions

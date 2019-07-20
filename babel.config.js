@@ -2,9 +2,15 @@ module.exports = {
     extends: '@trendmicro/babel-config',
     presets: [
         '@babel/preset-env',
-        '@babel/preset-react'
+        '@babel/preset-react',
     ],
     plugins: [
-        'lodash'
+        'lodash',
+        ['prismjs', {
+            'languages': ['javascript', 'css', 'markup', 'gcode'],
+            'plugins': [],
+            'theme': 'twilight',
+            'css': true
+        }],
     ]
 };
