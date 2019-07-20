@@ -7,6 +7,7 @@ import React, { Fragment, PureComponent } from 'react';
 import Select from 'react-select';
 import { Button, ButtonGroup } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
+import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
@@ -198,8 +199,8 @@ class Connection extends PureComponent {
                 )}
                 <FormGroup>
                     <Label>{i18n._('Port')}</Label>
-                    <Row>
-                        <Col>
+                    <Row style={{ alignItems: 'center' }}>
+                        <Col width={10}>
                             <Select
                                 backspaceRemoves={false}
                                 className="sm"
@@ -221,26 +222,31 @@ class Connection extends PureComponent {
                                 valueRenderer={this.renderPortValue}
                             />
                         </Col>
-                        <Col width="auto">
+                        <Col width={2}>
                             <Space width={12} />
-                            <Button
-                                btnSize="sm"
-                                btnStyle="default"
-                                name="btn-refresh"
+                            <Clickable
                                 title={i18n._('Refresh')}
                                 onClick={actions.handleRefreshPorts}
                                 disabled={!canRefresh}
-                                style={{ minHeight: 38 }}
                             >
-                                <FontAwesomeIcon icon="sync" fixedWidth spin={loading} />
-                            </Button>
+                                {({ hovered }) => (
+                                    <FontAwesomeIcon
+                                        icon="sync"
+                                        fixedWidth
+                                        spin={loading}
+                                        style={{
+                                            color: (hovered ? '#222' : '#666'),
+                                        }}
+                                    />
+                                )}
+                            </Clickable>
                         </Col>
                     </Row>
                 </FormGroup>
                 <FormGroup>
                     <Label>{i18n._('Baud rate')}</Label>
                     <Row>
-                        <Col>
+                        <Col width={10}>
                             <Select
                                 backspaceRemoves={false}
                                 className="sm"
@@ -259,12 +265,6 @@ class Connection extends PureComponent {
                                 valueRenderer={this.renderBaudrateValue}
                             />
                         </Col>
-                        <Col
-                            width="auto"
-                            style={{
-                                width: 50
-                            }}
-                        />
                     </Row>
                 </FormGroup>
                 <FormGroup>
