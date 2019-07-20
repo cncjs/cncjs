@@ -14,7 +14,7 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Hoverable from 'app/components/Hoverable';
 import Image from 'app/components/Image';
 import Space from 'app/components/Space';
-import { Tooltip } from 'app/components/Tooltip';
+import Tooltip from 'app/components/Tooltip';
 import Text from 'app/components/Text';
 import settings from 'app/config/settings';
 import {

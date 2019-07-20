@@ -1,2 +1,3 @@
-export Tooltip from './Tooltip';
-export Infotip from './Infotip';
+import Tooltip from './Tooltip';
+
+export default Tooltip;

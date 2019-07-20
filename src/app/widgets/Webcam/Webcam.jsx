@@ -3,8 +3,8 @@ import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import ReactDOM from 'react-dom';
-import { OverlayTrigger, Tooltip } from 'react-bootstrap';
 import Anchor from 'app/components/Anchor';
+import Tooltip from 'app/components/Tooltip';
 import WebcamComponent from 'app/components/Webcam';
 import i18n from 'app/lib/i18n';
 import Image from './Image';
@@ -162,8 +162,10 @@ class Webcam extends PureComponent {
                                 />
                             </Anchor>
                         )}
-                        <OverlayTrigger
-                            overlay={<Tooltip id="rotate-left">{i18n._('Rotate Left')}</Tooltip>}
+                        <Tooltip
+                            content={i18n._('Rotate Left')}
+                            enterDelay={500}
+                            hideOnClick
                             placement="top"
                         >
                             <Anchor
@@ -178,9 +180,11 @@ class Webcam extends PureComponent {
                                     )}
                                 />
                             </Anchor>
-                        </OverlayTrigger>
-                        <OverlayTrigger
-                            overlay={<Tooltip id="rotate-right">{i18n._('Rotate Right')}</Tooltip>}
+                        </Tooltip>
+                        <Tooltip
+                            content={i18n._('Rotate Right')}
+                            enterDelay={500}
+                            hideOnClick
                             placement="top"
                         >
                             <Anchor
@@ -195,9 +199,11 @@ class Webcam extends PureComponent {
                                     )}
                                 />
                             </Anchor>
-                        </OverlayTrigger>
-                        <OverlayTrigger
-                            overlay={<Tooltip id="flip-horizontally">{i18n._('Flip Horizontally')}</Tooltip>}
+                        </Tooltip>
+                        <Tooltip
+                            content={i18n._('Flip Horizontally')}
+                            enterDelay={500}
+                            hideOnClick
                             placement="top"
                         >
                             <Anchor
@@ -212,9 +218,11 @@ class Webcam extends PureComponent {
                                     )}
                                 />
                             </Anchor>
-                        </OverlayTrigger>
-                        <OverlayTrigger
-                            overlay={<Tooltip id="flip-vertically">{i18n._('Flip Vertically')}</Tooltip>}
+                        </Tooltip>
+                        <Tooltip
+                            content={i18n._('Flip Vertically')}
+                            enterDelay={500}
+                            hideOnClick
                             placement="top"
                         >
                             <Anchor
@@ -229,9 +237,11 @@ class Webcam extends PureComponent {
                                     )}
                                 />
                             </Anchor>
-                        </OverlayTrigger>
-                        <OverlayTrigger
-                            overlay={<Tooltip id="crosshair">{i18n._('Crosshair')}</Tooltip>}
+                        </Tooltip>
+                        <Tooltip
+                            content={i18n._('Crosshair')}
+                            enterDelay={500}
+                            hideOnClick
                             placement="top"
                         >
                             <Anchor
@@ -246,7 +256,7 @@ class Webcam extends PureComponent {
                                     )}
                                 />
                             </Anchor>
-                        </OverlayTrigger>
+                        </Tooltip>
                     </div>
                 </div>
                 <div className={styles['image-scale-slider']}>

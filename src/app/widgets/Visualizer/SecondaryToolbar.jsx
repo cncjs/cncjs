@@ -13,7 +13,7 @@ import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Image from 'app/components/Image';
 import Space from 'app/components/Space';
-import { Tooltip } from 'app/components/Tooltip';
+import Tooltip from 'app/components/Tooltip';
 import api from 'app/api';
 import i18n from 'app/lib/i18n';
 import config from 'app/store/config';
@@ -193,9 +193,9 @@ class SecondaryToolbar extends PureComponent {
                                         onClick={camera.toTopView}
                                     >
                                         <Tooltip
-                                            placement="top"
                                             content={i18n._('Top View')}
                                             hideOnClick
+                                            placement="top"
                                         >
                                             <Image src={iconTopView} width="20" height="20" />
                                         </Tooltip>
@@ -207,9 +207,9 @@ class SecondaryToolbar extends PureComponent {
                                         onClick={camera.toFrontView}
                                     >
                                         <Tooltip
-                                            placement="top"
                                             content={i18n._('Front View')}
                                             hideOnClick
+                                            placement="top"
                                         >
                                             <Image src={iconFrontView} width="20" height="20" />
                                         </Tooltip>
@@ -221,9 +221,9 @@ class SecondaryToolbar extends PureComponent {
                                         onClick={camera.toRightSideView}
                                     >
                                         <Tooltip
-                                            placement="top"
                                             content={i18n._('Right Side View')}
                                             hideOnClick
+                                            placement="top"
                                         >
                                             <Image src={iconRightSideView} width="20" height="20" />
                                         </Tooltip>
@@ -235,9 +235,9 @@ class SecondaryToolbar extends PureComponent {
                                         onClick={camera.toLeftSideView}
                                     >
                                         <Tooltip
-                                            placement="top"
                                             content={i18n._('Left Side View')}
                                             hideOnClick
+                                            placement="top"
                                         >
                                             <Image src={iconLeftSideView} width="20" height="20" />
                                         </Tooltip>
@@ -249,9 +249,9 @@ class SecondaryToolbar extends PureComponent {
                                         onClick={camera.to3DView}
                                     >
                                         <Tooltip
-                                            placement="top"
                                             content={i18n._('3D View')}
                                             hideOnClick
+                                            placement="top"
                                         >
                                             <Image src={icon3DView} width="20" height="20" />
                                         </Tooltip>
@@ -262,9 +262,9 @@ class SecondaryToolbar extends PureComponent {
                                         onHold={camera.zoomFit}
                                     >
                                         <Tooltip
-                                            placement="top"
                                             content={i18n._('Zoom to Fit')}
                                             hideOnClick
+                                            placement="top"
                                         >
                                             <Image src={iconZoomFit} width="20" height="20" />
                                         </Tooltip>
@@ -275,9 +275,9 @@ class SecondaryToolbar extends PureComponent {
                                         onHold={camera.zoomIn}
                                     >
                                         <Tooltip
-                                            placement="top"
                                             content={i18n._('Zoom In')}
                                             hideOnClick
+                                            placement="top"
                                         >
                                             <Image src={iconZoomIn} width="20" height="20" />
                                         </Tooltip>
@@ -288,9 +288,9 @@ class SecondaryToolbar extends PureComponent {
                                         onHold={camera.zoomOut}
                                     >
                                         <Tooltip
-                                            placement="top"
                                             content={i18n._('Zoom Out')}
                                             hideOnClick
+                                            placement="top"
                                         >
                                             <Image src={iconZoomOut} width="20" height="20" />
                                         </Tooltip>

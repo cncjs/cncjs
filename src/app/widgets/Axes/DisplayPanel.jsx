@@ -6,7 +6,7 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import Image from 'app/components/Image';
-import { Tooltip } from 'app/components/Tooltip';
+import Tooltip from 'app/components/Tooltip';
 import {
     AXIS_E,
     AXIS_X,
@@ -1044,10 +1044,10 @@ class DisplayPanel extends PureComponent {
                                     }}
                                 >
                                     <Tooltip
-                                        placement="bottom"
                                         content={i18n._('Zero Out Machine')}
                                         disabled={!canZeroOutMachine}
                                         hideOnClick
+                                        placement="bottom"
                                     >
                                         <Image src={iconPin} width="14" height="14" />
                                     </Tooltip>
@@ -1059,10 +1059,10 @@ class DisplayPanel extends PureComponent {
                                     }}
                                 >
                                     <Tooltip
-                                        placement="bottom"
                                         content={i18n._('Home Machine')}
                                         disabled={!canHomeMachine}
                                         hideOnClick
+                                        placement="bottom"
                                     >
                                         <Image src={iconHome} width="14" height="14" />
                                     </Tooltip>
@@ -1098,10 +1098,10 @@ class DisplayPanel extends PureComponent {
                                     }}
                                 >
                                     <Tooltip
-                                        placement="bottom"
                                         content={i18n._('Move Backward')}
                                         disabled={!canMoveBackward}
                                         hideOnClick
+                                        placement="bottom"
                                     >
                                         <Image src={iconMinus} width="14" height="14" />
                                     </Tooltip>
@@ -1114,10 +1114,10 @@ class DisplayPanel extends PureComponent {
                                     }}
                                 >
                                     <Tooltip
-                                        placement="bottom"
                                         content={i18n._('Move Forward')}
                                         disabled={!canMoveForward}
                                         hideOnClick
+                                        placement="bottom"
                                     >
                                         <Image src={iconPlus} width="14" height="14" />
                                     </Tooltip>
@@ -1129,10 +1129,10 @@ class DisplayPanel extends PureComponent {
                                     }}
                                 >
                                     <Tooltip
-                                        placement="bottom"
                                         content={i18n._('Zero Out Work Offsets')}
                                         disabled={!canZeroOutWorkOffsets}
                                         hideOnClick
+                                        placement="bottom"
                                     >
                                         <Image src={iconPin} width="14" height="14" />
                                     </Tooltip>
@@ -1143,10 +1143,10 @@ class DisplayPanel extends PureComponent {
                                     onClick={this.showPositionInput(axis)}
                                 >
                                     <Tooltip
-                                        placement="bottom"
                                         content={i18n._('Set Work Offsets')}
                                         disabled={!canModifyWorkPosition}
                                         hideOnClick
+                                        placement="bottom"
                                     >
                                         <Image src={iconPencil} width="14" height="14" />
                                     </Tooltip>

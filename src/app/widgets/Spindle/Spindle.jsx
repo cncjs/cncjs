@@ -31,112 +31,108 @@ class Spindle extends Component {
 
         return (
             <Container fluid>
-                <Row>
-                    <Col width="auto">
-                        <FormGroup>
-                            <Label>{i18n._('Spindle')}</Label>
-                            <div>
-                                <ButtonGroup
-                                    btnSize="sm"
-                                    btnStyle="default"
-                                    style={{ width: '100%' }}
+                <FormGroup>
+                    <Label>{i18n._('Spindle')}</Label>
+                    <Row>
+                        <Col width={8}>
+                            <ButtonGroup
+                                btnSize="sm"
+                                btnStyle="default"
+                                style={{ width: '100%' }}
+                            >
+                                <Button
+                                    onClick={() => {
+                                        if (spindleSpeed > 0) {
+                                            controller.command('gcode', 'M3 S' + spindleSpeed);
+                                        } else {
+                                            controller.command('gcode', 'M3');
+                                        }
+                                    }}
+                                    title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
+                                    disabled={!canClick}
                                 >
-                                    <Button
-                                        onClick={() => {
-                                            if (spindleSpeed > 0) {
-                                                controller.command('gcode', 'M3 S' + spindleSpeed);
-                                            } else {
-                                                controller.command('gcode', 'M3');
-                                            }
-                                        }}
-                                        title={i18n._('Spindle On, CW (M3)', { ns: 'gcode' })}
-                                        disabled={!canClick}
-                                    >
-                                        <FontAwesomeIcon icon="redo-alt" spin={spindle === 'M3'} />
-                                        <Space width={8} />
-                                        M3
-                                    </Button>
-                                    <Button
-                                        onClick={() => {
-                                            if (spindleSpeed > 0) {
-                                                controller.command('gcode', 'M4 S' + spindleSpeed);
-                                            } else {
-                                                controller.command('gcode', 'M4');
-                                            }
-                                        }}
-                                        title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
-                                        disabled={!canClick}
-                                    >
-                                        <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4' } />
-                                        <Space width={8} />
-                                        M4
-                                    </Button>
-                                    <Button
-                                        onClick={() => controller.command('gcode', 'M5')}
-                                        title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
-                                        disabled={!canClick}
-                                    >
-                                        <FontAwesomeIcon icon="power-off" />
-                                        <Space width={8} />
-                                        M5
-                                    </Button>
-                                </ButtonGroup>
-                            </div>
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col width="auto">
-                        <FormGroup>
-                            <Label>{i18n._('Coolant')}</Label>
-                            <div>
-                                <ButtonGroup
-                                    btnSize="sm"
-                                    btnStyle="default"
-                                    style={{ width: '100%' }}
+                                    <FontAwesomeIcon icon="redo-alt" spin={spindle === 'M3'} />
+                                    <Space width={8} />
+                                    M3
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        if (spindleSpeed > 0) {
+                                            controller.command('gcode', 'M4 S' + spindleSpeed);
+                                        } else {
+                                            controller.command('gcode', 'M4');
+                                        }
+                                    }}
+                                    title={i18n._('Spindle On, CCW (M4)', { ns: 'gcode' })}
+                                    disabled={!canClick}
                                 >
-                                    <Button
-                                        onClick={() => {
-                                            controller.command('gcode', 'M7');
-                                        }}
-                                        title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
-                                        disabled={!canClick}
-                                    >
-                                        <ImageIcon src={iconFan} spin={mistCoolant} />
-                                        <Space width={8} />
-                                        M7
-                                    </Button>
-                                    <Button
-                                        onClick={() => {
-                                            controller.command('gcode', 'M8');
-                                        }}
-                                        title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
-                                        disabled={!canClick}
-                                    >
-                                        <ImageIcon src={iconFan} spin={floodCoolant} />
-                                        <Space width={8} />
-                                        M8
-                                    </Button>
-                                    <Button
-                                        onClick={() => {
-                                            controller.command('gcode', 'M9');
-                                        }}
-                                        title={i18n._('Coolant Off (M9)', { ns: 'gcode' })}
-                                        disabled={!canClick}
-                                    >
-                                        <FontAwesomeIcon icon="power-off" />
-                                        <Space width={8} />
-                                        M9
-                                    </Button>
-                                </ButtonGroup>
-                            </div>
-                        </FormGroup>
-                    </Col>
-                </Row>
-                <Row>
-                    <Col width="auto">
-                        <FormGroup>
-                            <Label>{i18n._('Spindle Speed')}</Label>
+                                    <FontAwesomeIcon icon="undo-alt" spinReverse={spindle === 'M4' } />
+                                    <Space width={8} />
+                                    M4
+                                </Button>
+                                <Button
+                                    onClick={() => controller.command('gcode', 'M5')}
+                                    title={i18n._('Spindle Off (M5)', { ns: 'gcode' })}
+                                    disabled={!canClick}
+                                >
+                                    <FontAwesomeIcon icon="power-off" />
+                                    <Space width={8} />
+                                    M5
+                                </Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Label>{i18n._('Coolant')}</Label>
+                    <Row>
+                        <Col width={8}>
+                            <ButtonGroup
+                                btnSize="sm"
+                                btnStyle="default"
+                                style={{ width: '100%' }}
+                            >
+                                <Button
+                                    onClick={() => {
+                                        controller.command('gcode', 'M7');
+                                    }}
+                                    title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
+                                    disabled={!canClick}
+                                >
+                                    <ImageIcon src={iconFan} spin={mistCoolant} />
+                                    <Space width={8} />
+                                    M7
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        controller.command('gcode', 'M8');
+                                    }}
+                                    title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
+                                    disabled={!canClick}
+                                >
+                                    <ImageIcon src={iconFan} spin={floodCoolant} />
+                                    <Space width={8} />
+                                    M8
+                                </Button>
+                                <Button
+                                    onClick={() => {
+                                        controller.command('gcode', 'M9');
+                                    }}
+                                    title={i18n._('Coolant Off (M9)', { ns: 'gcode' })}
+                                    disabled={!canClick}
+                                >
+                                    <FontAwesomeIcon icon="power-off" />
+                                    <Space width={8} />
+                                    M9
+                                </Button>
+                            </ButtonGroup>
+                        </Col>
+                    </Row>
+                </FormGroup>
+                <FormGroup>
+                    <Label>{i18n._('Spindle Speed')}</Label>
+                    <Row>
+                        <Col width={8}>
                             <InputGroup sm>
                                 <Input
                                     type="number"
@@ -152,9 +148,9 @@ class Spindle extends Component {
                                     </InputGroup.Text>
                                 </InputGroup.Append>
                             </InputGroup>
-                        </FormGroup>
-                    </Col>
-                </Row>
+                        </Col>
+                    </Row>
+                </FormGroup>
             </Container>
         );
     }

@@ -1,13 +1,15 @@
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { Button, ButtonGroup } from 'app/components/Buttons';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import { Input } from 'app/components/FormControl';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import InputGroup from 'app/components/InputGroup';
 import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
-import Text from 'app/components/Text';
+import Space from 'app/components/Space';
+import Infotip from 'app/components/Infotip';
 import i18n from 'app/lib/i18n';
 import {
     METRIC_UNITS
@@ -86,6 +88,13 @@ class Probe extends PureComponent {
                     <Margin bottom={4}>
                         <div>
                             <Label>{i18n._('Probe Command: {{probeCommand}}', { probeCommand })}</Label>
+                            <Space width={8} />
+                            <Infotip content={mapProbeCommandToDescription(probeCommand)}>
+                                <span className="fa-layers fa-fw" style={{ color: '#666' }}>
+                                    <FontAwesomeIcon icon={['far', 'circle']} />
+                                    <FontAwesomeIcon icon="info" transform="shrink-8" />
+                                </span>
+                            </Infotip>
                         </div>
                         <ButtonGroup
                             btnSize="sm"
@@ -95,37 +104,34 @@ class Probe extends PureComponent {
                         >
                             <Button
                                 btnStyle={probeCommand === 'G38.2' ? 'dark' : 'default'}
-                                title={i18n._('G38.2 probe toward workpiece, stop on contact, signal error if failure')}
+                                title={mapProbeCommandToDescription('G38.2')}
                                 onClick={() => actions.changeProbeCommand('G38.2')}
                             >
                                 G38.2
                             </Button>
                             <Button
                                 btnStyle={probeCommand === 'G38.3' ? 'dark' : 'default'}
-                                title={i18n._('G38.3 probe toward workpiece, stop on contact')}
+                                title={mapProbeCommandToDescription('G38.3')}
                                 onClick={() => actions.changeProbeCommand('G38.3')}
                             >
                                 G38.3
                             </Button>
                             <Button
                                 btnStyle={probeCommand === 'G38.4' ? 'dark' : 'default'}
-                                title={i18n._('G38.4 probe away from workpiece, stop on loss of contact, signal error if failure')}
+                                title={mapProbeCommandToDescription('G38.4')}
                                 onClick={() => actions.changeProbeCommand('G38.4')}
                             >
                                 G38.4
                             </Button>
                             <Button
                                 btnStyle={probeCommand === 'G38.5' ? 'dark' : 'default'}
-                                title={i18n._('G38.5 probe away from workpiece, stop on loss of contact')}
+                                title={mapProbeCommandToDescription('G38.5')}
                                 onClick={() => actions.changeProbeCommand('G38.5')}
                             >
                                 G38.5
                             </Button>
                         </ButtonGroup>
                     </Margin>
-                    <Text style={{ fontStyle: 'italic' }}>
-                        {mapProbeCommandToDescription(probeCommand)}
-                    </Text>
                 </FormGroup>
                 <Row>
                     <Col width="auto">
