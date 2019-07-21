@@ -28,7 +28,7 @@ class Hoverable extends Component {
                 onMouseLeave={chainedFunction(this.handleMouseLeave, onMouseLeave)}
             >
                 {typeof children === 'function'
-                    ? children({ hovered: this.state.hovered })
+                    ? children({ disabled: this.props.disabled, hovered: this.state.hovered })
                     : children
                 }
             </div>
