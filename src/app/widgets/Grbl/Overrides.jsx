@@ -1,7 +1,7 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import Space from 'app/components/Space';
-import RepeatButton from 'app/components/RepeatButton';
+import RepeatableButton from 'app/components/RepeatableButton';
 import controller from 'app/lib/controller';
 import DigitalReadout from './DigitalReadout';
 import styles from './index.styl';
@@ -17,9 +17,7 @@ const Overrides = (props) => {
         <div className={styles.overrides}>
             {!!ovF && (
                 <DigitalReadout label="F" value={ovF + '%'}>
-                    <RepeatButton
-                        className="btn btn-default"
-                        style={{ padding: 5 }}
+                    <RepeatableButton
                         onClick={() => {
                             controller.command('feedOverride', -10);
                         }}
@@ -28,10 +26,8 @@ const Overrides = (props) => {
                         <span style={{ marginLeft: 5 }}>
                         -10%
                         </span>
-                    </RepeatButton>
-                    <RepeatButton
-                        className="btn btn-default"
-                        style={{ padding: 5 }}
+                    </RepeatableButton>
+                    <RepeatableButton
                         onClick={() => {
                             controller.command('feedOverride', -1);
                         }}
@@ -40,10 +36,8 @@ const Overrides = (props) => {
                         <span style={{ marginLeft: 5 }}>
                         -1%
                         </span>
-                    </RepeatButton>
-                    <RepeatButton
-                        className="btn btn-default"
-                        style={{ padding: 5 }}
+                    </RepeatableButton>
+                    <RepeatableButton
                         onClick={() => {
                             controller.command('feedOverride', 1);
                         }}
@@ -52,10 +46,8 @@ const Overrides = (props) => {
                         <span style={{ marginLeft: 5 }}>
                         1%
                         </span>
-                    </RepeatButton>
-                    <RepeatButton
-                        className="btn btn-default"
-                        style={{ padding: 5 }}
+                    </RepeatableButton>
+                    <RepeatableButton
                         onClick={() => {
                             controller.command('feedOverride', 10);
                         }}
@@ -64,7 +56,7 @@ const Overrides = (props) => {
                         <span style={{ marginLeft: 5 }}>
                         10%
                         </span>
-                    </RepeatButton>
+                    </RepeatableButton>
                     <button
                         type="button"
                         className="btn btn-default"
@@ -79,9 +71,7 @@ const Overrides = (props) => {
             )}
             {!!ovS && (
                 <DigitalReadout label="S" value={ovS + '%'}>
-                    <RepeatButton
-                        className="btn btn-default"
-                        style={{ padding: 5 }}
+                    <RepeatableButton
                         onClick={() => {
                             controller.command('spindleOverride', -10);
                         }}
@@ -90,10 +80,8 @@ const Overrides = (props) => {
                         <span style={{ marginLeft: 5 }}>
                         -10%
                         </span>
-                    </RepeatButton>
-                    <RepeatButton
-                        className="btn btn-default"
-                        style={{ padding: 5 }}
+                    </RepeatableButton>
+                    <RepeatableButton
                         onClick={() => {
                             controller.command('spindleOverride', -1);
                         }}
@@ -102,10 +90,8 @@ const Overrides = (props) => {
                         <span style={{ marginLeft: 5 }}>
                         -1%
                         </span>
-                    </RepeatButton>
-                    <RepeatButton
-                        className="btn btn-default"
-                        style={{ padding: 5 }}
+                    </RepeatableButton>
+                    <RepeatableButton
                         onClick={() => {
                             controller.command('spindleOverride', 1);
                         }}
@@ -114,10 +100,8 @@ const Overrides = (props) => {
                         <span style={{ marginLeft: 5 }}>
                         1%
                         </span>
-                    </RepeatButton>
-                    <RepeatButton
-                        className="btn btn-default"
-                        style={{ padding: 5 }}
+                    </RepeatableButton>
+                    <RepeatableButton
                         onClick={() => {
                             controller.command('spindleOverride', 10);
                         }}
@@ -126,7 +110,7 @@ const Overrides = (props) => {
                         <span style={{ marginLeft: 5 }}>
                         10%
                         </span>
-                    </RepeatButton>
+                    </RepeatableButton>
                     <button
                         type="button"
                         className="btn btn-default"

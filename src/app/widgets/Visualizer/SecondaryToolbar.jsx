@@ -6,12 +6,12 @@ import ensureArray from 'ensure-array';
 import PropTypes from 'prop-types';
 import pubsub from 'pubsub-js';
 import React, { PureComponent } from 'react';
-import Repeatable from 'react-repeatable';
 import styled from 'styled-components';
 import { Button, ButtonToolbar, ButtonGroup } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Image from 'app/components/Image';
+import RepeatableButton from 'app/components/RepeatableButton';
 import Space from 'app/components/Space';
 import Tooltip from 'app/components/Tooltip';
 import api from 'app/api';
@@ -44,13 +44,16 @@ const IconButton = styled(Button)`
     user-select: none;
     background-image: none;
     background-color: inherit;
+    transition: none;
+    min-width: 36px; // 8px + 20px + 8px
+    height: 36px; // 8px + 20px + 8px
+    outline: none;
+    filter: invert(40%);
 
     && {
         border: 0;
         border-radius: 0;
     }
-
-    filter: invert(40%);
 
     &.highlight,
     &:hover.highlight {
@@ -75,9 +78,6 @@ const IconButton = styled(Button)`
         color: #333;
         text-decoration: none;
     }
-
-    min-width: 36px; // 8px + 20px + 8px
-    height: 36px; // 8px + 20px + 8px
 
     & + & {
         margin-left: 0;
@@ -256,10 +256,9 @@ class SecondaryToolbar extends PureComponent {
                                             <Image src={icon3DView} width="20" height="20" />
                                         </Tooltip>
                                     </IconButton>
-                                    <Repeatable
-                                        componentClass={IconButton}
+                                    <RepeatableButton
+                                        tag={IconButton}
                                         onClick={camera.zoomFit}
-                                        onHold={camera.zoomFit}
                                     >
                                         <Tooltip
                                             content={i18n._('Zoom to Fit')}
@@ -268,11 +267,10 @@ class SecondaryToolbar extends PureComponent {
                                         >
                                             <Image src={iconZoomFit} width="20" height="20" />
                                         </Tooltip>
-                                    </Repeatable>
-                                    <Repeatable
-                                        componentClass={IconButton}
+                                    </RepeatableButton>
+                                    <RepeatableButton
+                                        tag={IconButton}
                                         onClick={camera.zoomIn}
-                                        onHold={camera.zoomIn}
                                     >
                                         <Tooltip
                                             content={i18n._('Zoom In')}
@@ -281,11 +279,10 @@ class SecondaryToolbar extends PureComponent {
                                         >
                                             <Image src={iconZoomIn} width="20" height="20" />
                                         </Tooltip>
-                                    </Repeatable>
-                                    <Repeatable
-                                        componentClass={IconButton}
+                                    </RepeatableButton>
+                                    <RepeatableButton
+                                        tag={IconButton}
                                         onClick={camera.zoomOut}
-                                        onHold={camera.zoomOut}
                                     >
                                         <Tooltip
                                             content={i18n._('Zoom Out')}
@@ -294,7 +291,7 @@ class SecondaryToolbar extends PureComponent {
                                         >
                                             <Image src={iconZoomOut} width="20" height="20" />
                                         </Tooltip>
-                                    </Repeatable>
+                                    </RepeatableButton>
                                 </ButtonGroup>
                                 <Dropdown
                                     componentClass={ButtonGroup}

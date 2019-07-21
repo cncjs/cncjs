@@ -200,7 +200,7 @@ class Connection extends PureComponent {
                 <FormGroup>
                     <Label>{i18n._('Port')}</Label>
                     <Row style={{ alignItems: 'center' }}>
-                        <Col width={10}>
+                        <Col>
                             <Select
                                 backspaceRemoves={false}
                                 className="sm"
@@ -222,7 +222,7 @@ class Connection extends PureComponent {
                                 valueRenderer={this.renderPortValue}
                             />
                         </Col>
-                        <Col width={2}>
+                        <Col width="auto" style={{ width: 30 }}>
                             <Space width={12} />
                             <Clickable
                                 title={i18n._('Refresh')}
@@ -246,7 +246,7 @@ class Connection extends PureComponent {
                 <FormGroup>
                     <Label>{i18n._('Baud rate')}</Label>
                     <Row>
-                        <Col width={10}>
+                        <Col>
                             <Select
                                 backspaceRemoves={false}
                                 className="sm"
@@ -265,6 +265,7 @@ class Connection extends PureComponent {
                                 valueRenderer={this.renderBaudrateValue}
                             />
                         </Col>
+                        <Col width="auto" style={{ width: 30 }} />
                     </Row>
                 </FormGroup>
                 <FormGroup>

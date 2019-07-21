@@ -2,9 +2,18 @@ import _ from 'lodash';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import styled from 'styled-components';
+import { Button, ButtonGroup } from 'app/components/Buttons';
+import Clickable from 'app/components/Clickable';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import FormGroup from 'app/components/FormGroup';
+import { Container, Row, Col } from 'app/components/GridSystem';
+import Label from 'app/components/Label';
 import Panel from 'app/components/Panel';
+import RepeatableButton from 'app/components/RepeatableButton';
+import Space from 'app/components/Space';
+import Text from 'app/components/Text';
 import Toggler from 'app/components/Toggler';
-import RepeatButton from 'app/components/RepeatButton';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import {
@@ -59,88 +68,89 @@ class Laser extends PureComponent {
         const laserIntensityScale = this.getLaserIntensityScale();
 
         return (
-            <div>
-                <div className="form-group">
-                    <label className="control-label">
+            <Container fluid>
+                <FormGroup>
+                    <Label>
                         {i18n._('Laser Intensity Control')}
-                    </label>
-                    <div className="row no-gutters">
-                        <div className="col-xs-3">
-                            <div className={styles.droDisplay}>
+                    </Label>
+                    <Row style={{ alignItems: 'center' }}>
+                        <Col width="auto">
+                            <DRO>
                                 {laserIntensityScale ? laserIntensityScale + '%' : none}
-                            </div>
-                        </div>
-                        <div className="col-xs-9">
-                            <div className={styles.droBtnGroup}>
-                                <div className="btn-group btn-group-sm" role="group">
-                                    <RepeatButton
-                                        className="btn btn-default"
-                                        style={{ padding: 5 }}
-                                        disabled={!canClick}
-                                        onClick={() => {
-                                            controller.command('spindleOverride', -10);
+                            </DRO>
+                        </Col>
+                        <Col width="auto">
+                            <Space width={8} />
+                        </Col>
+                        <Col>
+                            <ButtonGroup btnSize="sm" style={{ width: '100%' }}>
+                                <RepeatableButton
+                                    disabled={!canClick}
+                                    onClick={() => {
+                                        controller.command('spindleOverride', -10);
+                                    }}
+                                    style={{ fontSize: '.75rem', padding: '.25rem' }}
+                                >
+                                    <FontAwesomeIcon icon="arrow-down" fixedWidth />
+                                    <Text>{i18n._('-10%')}</Text>
+                                </RepeatableButton>
+                                <RepeatableButton
+                                    disabled={!canClick}
+                                    onClick={() => {
+                                        controller.command('spindleOverride', -1);
+                                    }}
+                                    style={{ fontSize: '.66rem', padding: '.25rem' }}
+                                >
+                                    <FontAwesomeIcon icon="arrow-down" fixedWidth />
+                                    <Text>{i18n._('-1%')}</Text>
+                                </RepeatableButton>
+                                <RepeatableButton
+                                    disabled={!canClick}
+                                    onClick={() => {
+                                        controller.command('spindleOverride', 1);
+                                    }}
+                                    style={{ fontSize: '.66rem', padding: '.25rem' }}
+                                >
+                                    <FontAwesomeIcon icon="arrow-up" fixedWidth />
+                                    <Text>{i18n._('1%')}</Text>
+                                </RepeatableButton>
+                                <RepeatableButton
+                                    disabled={!canClick}
+                                    onClick={() => {
+                                        controller.command('spindleOverride', 10);
+                                    }}
+                                    style={{ fontSize: '.75rem', padding: '.25rem' }}
+                                >
+                                    <FontAwesomeIcon icon="arrow-up" fixedWidth />
+                                    <Text>{i18n._('10%')}</Text>
+                                </RepeatableButton>
+                            </ButtonGroup>
+                        </Col>
+                        <Col width="auto">
+                            <Space width={8} />
+                        </Col>
+                        <Col width="auto">
+                            <Clickable
+                                onClick={() => {
+                                    if (!canClick) {
+                                        return;
+                                    }
+                                    controller.command('spindleOverride', 0);
+                                }}
+                            >
+                                {({ hovered }) => (
+                                    <FontAwesomeIcon
+                                        icon="undo"
+                                        fixedWidth
+                                        style={{
+                                            color: hovered ? '#222' : '#666',
                                         }}
-                                    >
-                                        <i className="fa fa-arrow-down" style={{ fontSize: 14 }} />
-                                        <span style={{ marginLeft: 5 }}>
-                                            -10%
-                                        </span>
-                                    </RepeatButton>
-                                    <RepeatButton
-                                        className="btn btn-default"
-                                        style={{ padding: 5 }}
-                                        disabled={!canClick}
-                                        onClick={() => {
-                                            controller.command('spindleOverride', -1);
-                                        }}
-                                    >
-                                        <i className="fa fa-arrow-down" style={{ fontSize: 10 }} />
-                                        <span style={{ marginLeft: 5 }}>
-                                            -1%
-                                        </span>
-                                    </RepeatButton>
-                                    <RepeatButton
-                                        className="btn btn-default"
-                                        style={{ padding: 5 }}
-                                        disabled={!canClick}
-                                        onClick={() => {
-                                            controller.command('spindleOverride', 1);
-                                        }}
-                                    >
-                                        <i className="fa fa-arrow-up" style={{ fontSize: 10 }} />
-                                        <span style={{ marginLeft: 5 }}>
-                                            1%
-                                        </span>
-                                    </RepeatButton>
-                                    <RepeatButton
-                                        className="btn btn-default"
-                                        style={{ padding: 5 }}
-                                        disabled={!canClick}
-                                        onClick={() => {
-                                            controller.command('spindleOverride', 10);
-                                        }}
-                                    >
-                                        <i className="fa fa-arrow-up" style={{ fontSize: 14 }} />
-                                        <span style={{ marginLeft: 5 }}>
-                                            10%
-                                        </span>
-                                    </RepeatButton>
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ padding: 5 }}
-                                        disabled={!canClick}
-                                        onClick={() => {
-                                            controller.command('spindleOverride', 0);
-                                        }}
-                                    >
-                                        <i className="fa fa-undo fa-fw" />
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                                    />
+                                )}
+                            </Clickable>
+                        </Col>
+                    </Row>
+                </FormGroup>
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
                         <Toggler
@@ -213,36 +223,41 @@ class Laser extends PureComponent {
                                     </div>
                                 </div>
                             </div>
-                            <div className="btn-toolbar" role="toolbar">
-                                <div className="btn-group" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ minWidth: 80 }}
-                                        disabled={!canClick}
-                                        onClick={actions.laserTestOn}
-                                    >
-                                        {i18n._('Laser Test')}
-                                    </button>
-                                </div>
-                                <div className="btn-group" role="group">
-                                    <button
-                                        type="button"
-                                        className="btn btn-default"
-                                        style={{ minWidth: 80 }}
-                                        disabled={!canClick}
-                                        onClick={actions.laserTestOff}
-                                    >
-                                        {i18n._('Laser Off')}
-                                    </button>
-                                </div>
+                            <div>
+                                <Button
+                                    btnSize="sm"
+                                    btnStyle="default"
+                                    disabled={!canClick}
+                                    onClick={actions.laserTestOn}
+                                    style={{ minWidth: 80 }}
+                                >
+                                    {i18n._('Laser Test')}
+                                </Button>
+                                <Button
+                                    btnSize="sm"
+                                    btnStyle="default"
+                                    disabled={!canClick}
+                                    onClick={actions.laserTestOff}
+                                    style={{ minWidth: 80 }}
+                                >
+                                    {i18n._('Laser Off')}
+                                </Button>
                             </div>
                         </Panel.Body>
                     )}
                 </Panel>
-            </div>
+            </Container>
         );
     }
 }
 
 export default Laser;
+
+const DRO = styled.div`
+    border: 1px solid #ccc;
+    text-align: right;
+    padding: 4px 8px;
+    font-size: 1rem;
+    font-weight: bold;
+    min-width: 60px;
+`;

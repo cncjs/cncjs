@@ -5,10 +5,10 @@ import _includes from 'lodash/includes';
 import _uniqueId from 'lodash/uniqueId';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import Repeatable from 'react-repeatable';
 import styled from 'styled-components';
 import { Button } from 'app/components/Buttons';
 import Dropdown, { MenuItem } from 'app/components/Dropdown';
+import RepeatableButton from 'app/components/RepeatableButton';
 import Space from 'app/components/Space';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
@@ -519,44 +519,21 @@ class Keypad extends PureComponent {
                         <div className={styles.rowSpace}>
                             <div className="row no-gutters">
                                 <div className="col-xs-6">
-                                    <Repeatable
+                                    <RepeatableButton
                                         disabled={!canStepBackward}
                                         style={{ marginRight: 2.5 }}
-                                        repeatDelay={500}
-                                        repeatInterval={Math.floor(1000 / 15)}
-                                        onHold={actions.stepBackward}
-                                        onRelease={actions.stepBackward}
+                                        onClick={actions.stepBackward}
                                     >
-                                        <Button
-                                            disabled={!canStepBackward}
-                                            style={{ width: '100%' }}
-                                            compact
-                                            btnStyle="default"
-                                            className="pull-left"
-                                        >
-                                            <i className="fa fa-minus" />
-                                        </Button>
-                                    </Repeatable>
+                                        <i className="fa fa-minus" />
+                                    </RepeatableButton>
                                 </div>
                                 <div className="col-xs-6">
-                                    <Repeatable
+                                    <RepeatableButton
                                         disabled={!canStepForward}
-                                        style={{ marginLeft: 2.5 }}
-                                        repeatDelay={500}
-                                        repeatInterval={Math.floor(1000 / 15)}
-                                        onHold={actions.stepForward}
-                                        onRelease={actions.stepForward}
+                                        onClick={actions.stepForward}
                                     >
-                                        <Button
-                                            disabled={!canStepForward}
-                                            style={{ width: '100%' }}
-                                            compact
-                                            btnStyle="default"
-                                            className="pull-right"
-                                        >
-                                            <i className="fa fa-plus" />
-                                        </Button>
-                                    </Repeatable>
+                                        <i className="fa fa-plus" />
+                                    </RepeatableButton>
                                 </div>
                             </div>
                         </div>

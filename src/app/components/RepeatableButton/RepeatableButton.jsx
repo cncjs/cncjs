@@ -2,9 +2,9 @@ import React from 'react';
 import Repeatable from 'react-repeatable';
 import { Button } from 'app/components/Buttons';
 
-const RepeatableButton = ({ onClick, ...props }) => (
+const RepeatableButton = ({ tag = Button, onClick, ...props }) => (
     <Repeatable
-        tag={Button}
+        tag={tag}
         repeatDelay={500}
         repeatInterval={Math.floor(1000 / 15)}
         onHold={onClick}

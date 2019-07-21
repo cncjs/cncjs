@@ -7,9 +7,7 @@ const findImports = require('find-imports');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const nib = require('nib');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
-const stylusLoader = require('stylus-loader');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
@@ -161,14 +159,6 @@ module.exports = {
                 BUILD_VERSION: JSON.stringify(buildVersion),
                 LANGUAGES: JSON.stringify(buildConfig.languages),
                 TRACKING_ID: JSON.stringify(buildConfig.analytics.trackingId)
-            }
-        }),
-        new stylusLoader.OptionsPlugin({
-            default: {
-                // nib - CSS3 extensions for Stylus
-                use: [nib()],
-                // no need to have a '@import "nib"' in the stylesheet
-                import: ['~nib/lib/nib/index.styl']
             }
         }),
         new webpack.ContextReplacementPlugin(

@@ -4,8 +4,6 @@ const dotenv = require('dotenv');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const without = require('lodash/without');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
-const nib = require('nib');
-const stylusLoader = require('stylus-loader');
 const webpack = require('webpack');
 const ManifestPlugin = require('webpack-manifest-plugin');
 const WriteFileWebpackPlugin = require('write-file-webpack-plugin');
@@ -145,14 +143,6 @@ module.exports = {
         }),
         new webpack.LoaderOptionsPlugin({
             debug: true
-        }),
-        new stylusLoader.OptionsPlugin({
-            default: {
-                // nib - CSS3 extensions for Stylus
-                use: [nib()],
-                // no need to have a '@import "nib"' in the stylesheet
-                import: ['~nib/lib/nib/index.styl']
-            }
         }),
         // https://github.com/gajus/write-file-webpack-plugin
         // Forces webpack-dev-server to write bundle files to the file system.
