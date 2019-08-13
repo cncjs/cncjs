@@ -1,24 +1,23 @@
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import Select from 'react-select';
+import React, { Component } from 'react';
 import { Button } from 'app/components/Buttons';
-import styled from 'styled-components';
+import Input from 'app/components/FormControl/Input';
+import Select from 'app/components/FormControl/Select';
+import FormGroup from 'app/components/FormGroup';
+import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
 import Modal from 'app/components/Modal';
+import { RadioButton } from 'app/components/Radio';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
+import MutedText from './MutedText';
 import {
     MEDIA_SOURCE_LOCAL,
     MEDIA_SOURCE_MJPEG
 } from './constants';
 
-const MutedText = styled.div`
-    display: inline-block;
-    color: #767676;
-`;
-
-class Settings extends PureComponent {
+class Settings extends Component {
     static propTypes = {
         mediaSource: PropTypes.string,
         deviceId: PropTypes.string,
@@ -91,15 +90,6 @@ class Settings extends PureComponent {
             videoDevices
         } = this.state;
 
-        const videoDeviceOptions = videoDevices.map(device => ({
-            value: device.deviceId,
-            label: device.label
-        }));
-        videoDeviceOptions.unshift({
-            value: '',
-            label: i18n._('Automatic detection')
-        });
-
         return (
             <Modal
                 size="sm"
@@ -110,12 +100,16 @@ class Settings extends PureComponent {
                     <Modal.Title>{i18n._('Webcam Settings')}</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <div className="form-group">
-                        <label><strong>{i18n._('Media Source')}</strong></label>
-                        <div className="radio" style={{ marginTop: 0 }}>
-                            <label>
-                                <input
-                                    type="radio"
+                    <FormGroup>
+                        <div>
+                            <Label>
+                                {i18n._('Media Source')}
+                            </Label>
+                        </div>
+                        <Margin bottom={8}>
+                            <Margin bottom={4}>
+                                <RadioButton
+                                    label={i18n._('Use a built-in camera or a connected webcam')}
                                     name="mediaSource"
                                     value={MEDIA_SOURCE_LOCAL}
                                     checked={mediaSource === MEDIA_SOURCE_LOCAL}
@@ -123,28 +117,29 @@ class Settings extends PureComponent {
                                         this.setState({ mediaSource: MEDIA_SOURCE_LOCAL });
                                     }}
                                 />
-                                {i18n._('Use a built-in camera or a connected webcam')}
-                            </label>
-                        </div>
-                        <div style={{ marginLeft: 20 }}>
-                            <Select
-                                backspaceRemoves={false}
-                                clearable={false}
-                                disabled={mediaSource !== MEDIA_SOURCE_LOCAL}
-                                name="videoDevice"
-                                noResultsText={i18n._('No video devices available')}
-                                onChange={this.handleChangeVideoDevice}
-                                optionRenderer={(device) => device.label || device.deviceId}
-                                options={videoDeviceOptions}
-                                placeholder={i18n._('Choose a video device')}
-                                searchable={false}
-                                value={deviceId}
-                            />
-                        </div>
-                        <div className="radio">
-                            <label>
-                                <input
-                                    type="radio"
+                            </Margin>
+                            <Margin left={20}>
+                                <Select
+                                    disabled={mediaSource !== MEDIA_SOURCE_LOCAL}
+                                    onChange={this.handleChangeVideoDevice}
+                                    placeholder={i18n._('Choose a video device')}
+                                    value={deviceId}
+                                >
+                                    <option value="">
+                                        {i18n._('Automatic detection')}
+                                    </option>
+                                    {videoDevices.map(device => (
+                                        <option key={device.deviceId} value={device.deviceId}>
+                                            {device.label || device.deviceId}
+                                        </option>
+                                    ))}
+                                </Select>
+                            </Margin>
+                        </Margin>
+                        <Margin bottom={8}>
+                            <Margin bottom={4}>
+                                <RadioButton
+                                    label={i18n._('Connect to an IP camera')}
                                     name="mediaSource"
                                     value={MEDIA_SOURCE_MJPEG}
                                     checked={mediaSource === MEDIA_SOURCE_MJPEG}
@@ -152,25 +147,23 @@ class Settings extends PureComponent {
                                         this.setState({ mediaSource: MEDIA_SOURCE_MJPEG });
                                     }}
                                 />
-                                {i18n._('Connect to an IP camera')}
-                            </label>
-                        </div>
-                        <div style={{ marginLeft: 20 }}>
-                            <input
-                                type="url"
-                                className="form-control"
-                                disabled={mediaSource !== MEDIA_SOURCE_MJPEG}
-                                placeholder="http://0.0.0.0:8080/?action=stream"
-                                defaultValue={url}
-                                onChange={this.handleChangeURL}
-                            />
-                            <Margin top={4}>
-                                <MutedText style={{ marginTop: 4 }}>
-                                    {i18n._('The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.')}
-                                </MutedText>
                             </Margin>
-                        </div>
-                    </div>
+                            <Margin left={20}>
+                                <Input
+                                    type="url"
+                                    disabled={mediaSource !== MEDIA_SOURCE_MJPEG}
+                                    placeholder="http://0.0.0.0:8080/?action=stream"
+                                    defaultValue={url}
+                                    onChange={this.handleChangeURL}
+                                />
+                                <Margin top={4}>
+                                    <MutedText>
+                                        {i18n._('The URL must be for a Motion JPEG (mjpeg) HTTP or RTSP stream.')}
+                                    </MutedText>
+                                </Margin>
+                            </Margin>
+                        </Margin>
+                    </FormGroup>
                 </Modal.Body>
                 <Modal.Footer>
                     <Button

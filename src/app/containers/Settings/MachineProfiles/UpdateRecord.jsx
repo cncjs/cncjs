@@ -2,7 +2,7 @@ import _get from 'lodash/get';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
 import { Form, Field } from 'react-final-form';
-import { Input } from 'app/components/FormControl';
+import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import { FlexContainer, Row, Col } from 'app/components/GridSystem';
 import Margin from 'app/components/Margin';
