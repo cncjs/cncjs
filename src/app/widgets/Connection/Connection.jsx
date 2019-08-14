@@ -1,7 +1,7 @@
 import find from 'lodash/find';
 import get from 'lodash/get';
 import includes from 'lodash/includes';
-import map from 'lodash/map';
+import _map from 'lodash/map';
 import PropTypes from 'prop-types';
 import React, { Fragment, PureComponent } from 'react';
 import Select from 'react-select';
@@ -202,24 +202,20 @@ class Connection extends PureComponent {
                     <Row style={{ alignItems: 'center' }}>
                         <Col>
                             <Select
-                                backspaceRemoves={false}
-                                className="sm"
-                                clearable={false}
-                                disabled={!canChangePort}
+                                defaultValue={port}
+                                isClearable={false}
+                                isDisabled={!canChangePort}
+                                isSearchable={false}
                                 name="port"
-                                noResultsText={i18n._('No ports available')}
+                                noOptionsMessage={() => i18n._('No ports available')}
                                 onChange={actions.onChangePortOption}
-                                optionRenderer={this.renderPortOption}
-                                options={map(ports, (o) => ({
+                                options={_map(ports, (o) => ({
                                     value: o.port,
                                     label: o.port,
                                     manufacturer: o.manufacturer,
                                     inuse: o.inuse
                                 }))}
                                 placeholder={i18n._('Choose a port')}
-                                searchable={false}
-                                value={port}
-                                valueRenderer={this.renderPortValue}
                             />
                         </Col>
                         <Col width="auto" style={{ width: 30 }}>
@@ -248,21 +244,17 @@ class Connection extends PureComponent {
                     <Row>
                         <Col>
                             <Select
-                                backspaceRemoves={false}
-                                className="sm"
-                                clearable={false}
-                                disabled={!canChangeBaudrate}
-                                menuContainerStyle={{ zIndex: 5 }}
+                                defaultValue={baudrate}
+                                isClearable={false}
+                                isDisabled={!canChangeBaudrate}
+                                isSearchable={false}
                                 name="baudrate"
                                 onChange={actions.onChangeBaudrateOption}
-                                options={map(baudrates, (value) => ({
+                                options={_map(baudrates, (value) => ({
                                     value: value,
                                     label: Number(value).toString()
                                 }))}
                                 placeholder={i18n._('Choose a baud rate')}
-                                searchable={false}
-                                value={baudrate}
-                                valueRenderer={this.renderBaudrateValue}
                             />
                         </Col>
                         <Col width="auto" style={{ width: 30 }} />

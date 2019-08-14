@@ -1,9 +1,9 @@
 import noop from 'lodash/noop';
 import PropTypes from 'prop-types';
 import React, { Component } from 'react';
+import Select from 'react-select';
 import { Button } from 'app/components/Buttons';
 import Input from 'app/components/FormControl/Input';
-import Select from 'app/components/FormControl/Select';
 import FormGroup from 'app/components/FormGroup';
 import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
@@ -14,7 +14,7 @@ import log from 'app/lib/log';
 import MutedText from './MutedText';
 import {
     MEDIA_SOURCE_LOCAL,
-    MEDIA_SOURCE_MJPEG
+    MEDIA_SOURCE_MJPEG,
 } from './constants';
 
 class Settings extends Component {
@@ -89,6 +89,13 @@ class Settings extends Component {
             url,
             videoDevices
         } = this.state;
+        const videoDeviceOptions = [{
+            value: '',
+            label: i18n._('Automatic detection'),
+        }].concat(videoDevices.map(x => ({
+            value: x.deviceId,
+            label: x.label || x.deviceId,
+        })));
 
         return (
             <Modal
@@ -120,20 +127,15 @@ class Settings extends Component {
                             </Margin>
                             <Margin left={20}>
                                 <Select
-                                    disabled={mediaSource !== MEDIA_SOURCE_LOCAL}
+                                    defaultValue={deviceId}
+                                    isClearable={false}
+                                    isDisabled={mediaSource !== MEDIA_SOURCE_LOCAL}
+                                    isSearchable={false}
+                                    name="videoDevice"
                                     onChange={this.handleChangeVideoDevice}
+                                    options={videoDeviceOptions}
                                     placeholder={i18n._('Choose a video device')}
-                                    value={deviceId}
-                                >
-                                    <option value="">
-                                        {i18n._('Automatic detection')}
-                                    </option>
-                                    {videoDevices.map(device => (
-                                        <option key={device.deviceId} value={device.deviceId}>
-                                            {device.label || device.deviceId}
-                                        </option>
-                                    ))}
-                                </Select>
+                                />
                             </Margin>
                         </Margin>
                         <Margin bottom={8}>
