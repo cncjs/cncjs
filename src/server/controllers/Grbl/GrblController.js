@@ -1183,7 +1183,7 @@ class GrblController {
           this.workflow.resume();
         },
         'feeder:feed': () => {
-          const [commands, context = {}] = args;
+          const [commands, context] = args;
           this.command('gcode', commands, context);
         },
         'feeder:start': () => {
@@ -1229,6 +1229,10 @@ class GrblController {
           this.feeder.reset();
 
           this.write('\x18'); // ^x
+        },
+        'jogCancel': () => {
+          // https://github.com/gnea/grbl/blob/master/doc/markdown/jogging.md
+          this.write('\x85');
         },
         // Feed Overrides
         // @param {number} value The amount of percentage increase or decrease.
@@ -1411,7 +1415,12 @@ class GrblController {
     }
 
     writeln(data, context) {
-      if (_.includes(GRBL_REALTIME_COMMANDS, data)) {
+      // https://github.com/gnea/grbl/blob/master/doc/markdown/commands.md#grbl-v11-realtime-commands
+      const isASCIIRealtimeCommand = _.includes(GRBL_REALTIME_COMMANDS, data);
+      const isExtendedASCIIRealtimeCommand = String(data).match(/[\x80-\xff]/);
+      const isRealtimeCommand = isASCIIRealtimeCommand || isExtendedASCIIRealtimeCommand;
+
+      if (isRealtimeCommand) {
         this.write(data, context);
       } else {
         this.write(data + '\n', context);
