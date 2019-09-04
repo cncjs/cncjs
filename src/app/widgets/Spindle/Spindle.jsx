@@ -99,7 +99,7 @@ class Spindle extends Component {
                                     title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
                                     disabled={!canClick}
                                 >
-                                    <ImageIcon src={iconFan} spin={mistCoolant} />
+                                    <ImageIcon src={iconFan} spin={mistCoolant} style={{ width: '16px', height: '16px' }} />
                                     <Space width={8} />
                                     M7
                                 </Button>
@@ -110,7 +110,7 @@ class Spindle extends Component {
                                     title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
                                     disabled={!canClick}
                                 >
-                                    <ImageIcon src={iconFan} spin={floodCoolant} />
+                                    <ImageIcon src={iconFan} spin={floodCoolant} style={{ width: '16px', height: '16px' }} />
                                     <Space width={8} />
                                     M8
                                 </Button>
