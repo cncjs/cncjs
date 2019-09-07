@@ -3,6 +3,7 @@ import SmoothieLineParserResultStatus from './SmoothieLineParserResultStatus';
 import SmoothieLineParserResultOk from './SmoothieLineParserResultOk';
 import SmoothieLineParserResultError from './SmoothieLineParserResultError';
 import SmoothieLineParserResultAlarm from './SmoothieLineParserResultAlarm';
+import SmoothieLineParserResultAction from './SmoothieLineParserResultAction';
 import SmoothieLineParserResultParserState from './SmoothieLineParserResultParserState';
 import SmoothieLineParserResultParameters from './SmoothieLineParserResultParameters';
 import SmoothieLineParserResultVersion from './SmoothieLineParserResultVersion';
@@ -21,6 +22,9 @@ class SmoothieLineParser {
 
             // ALARM:
             SmoothieLineParserResultAlarm,
+
+            // action:x
+            SmoothieLineParserResultAction,
 
             // [G38.2 G54 G17 G21 G91 G94 M0 M5 M9 T0 F20. S0.]
             SmoothieLineParserResultParserState,

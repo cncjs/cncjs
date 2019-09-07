@@ -455,6 +455,20 @@ class SmoothieController {
             this.emit('serialport:read', res.raw);
         });
 
+        // handle action:xxx host commands
+        this.runner.on('action', (res) => {
+            log.error(`incoming action: action:${res.message} !`);
+            if (res.message === 'pause') {
+                this.workflow.pause({ data: 'action:pause' });
+            } else if (res.message === 'resume') {
+                this.workflow.resume({ data: 'action:resume' });
+            } else if (res.message === 'cancel') {
+                this.workflow.stop();
+            } else {
+                log.error(`Unknown action command: action:${res.message} ignored`);
+            }
+        });
+
         this.runner.on('parserstate', (res) => {
             this.actionMask.queryParserState.state = false;
             this.actionMask.queryParserState.reply = true;

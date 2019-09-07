@@ -5,6 +5,7 @@ import SmoothieLineParserResultStatus from './SmoothieLineParserResultStatus';
 import SmoothieLineParserResultOk from './SmoothieLineParserResultOk';
 import SmoothieLineParserResultError from './SmoothieLineParserResultError';
 import SmoothieLineParserResultAlarm from './SmoothieLineParserResultAlarm';
+import SmoothieLineParserResultAction from './SmoothieLineParserResultAction';
 import SmoothieLineParserResultParserState from './SmoothieLineParserResultParserState';
 import SmoothieLineParserResultParameters from './SmoothieLineParserResultParameters';
 import SmoothieLineParserResultVersion from './SmoothieLineParserResultVersion';
@@ -101,6 +102,10 @@ class SmoothieRunner extends events.EventEmitter {
         }
         if (type === SmoothieLineParserResultAlarm) {
             this.emit('alarm', payload);
+            return;
+        }
+        if (type === SmoothieLineParserResultAction) {
+            this.emit('action', payload);
             return;
         }
         if (type === SmoothieLineParserResultParserState) {
