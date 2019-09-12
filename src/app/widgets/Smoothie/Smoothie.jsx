@@ -4,8 +4,10 @@ import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
+import Clickable from 'app/components/Clickable';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { Container, Row, Col } from 'app/components/GridSystem';
 import Panel from 'app/components/Panel';
-import Toggler from 'app/components/Toggler';
 import Overrides from './Overrides';
 import styles from './index.styl';
 
@@ -30,23 +32,29 @@ class Smoothie extends PureComponent {
         const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
 
         return (
-            <div>
+            <Container fluid>
                 <Overrides ovF={ovF} ovS={ovS} />
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
-                        <Toggler
-                            className="clearfix"
-                            onToggle={() => {
-                                actions.toggleStatusReports();
-                            }}
-                            title={panel.statusReports.expanded ? i18n._('Hide') : i18n._('Show')}
+                        <Clickable
+                            onClick={actions.toggleStatusReports}
+                            style={{ width: '100%' }}
                         >
-                            <div className="pull-left">{i18n._('Status Reports')}</div>
-                            <Toggler.Icon
-                                className="pull-right"
-                                expanded={panel.statusReports.expanded}
-                            />
-                        </Toggler>
+                            {({ hovered }) => (
+                                <Row>
+                                    <Col>{i18n._('Status Reports')}</Col>
+                                    <Col width="auto">
+                                        <FontAwesomeIcon
+                                            icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down' }
+                                            fixedWidth
+                                            style={{
+                                                color: hovered ? '#222' : '#666',
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            )}
+                        </Clickable>
                     </Panel.Heading>
                     {panel.statusReports.expanded && (
                         <Panel.Body>
@@ -103,19 +111,25 @@ class Smoothie extends PureComponent {
                 </Panel>
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
-                        <Toggler
-                            className="clearfix"
-                            onToggle={() => {
-                                actions.toggleModalGroups();
-                            }}
-                            title={panel.modalGroups.expanded ? i18n._('Hide') : i18n._('Show')}
+                        <Clickable
+                            onClick={actions.toggleModalGroups}
+                            style={{ width: '100%' }}
                         >
-                            <div className="pull-left">{i18n._('Modal Groups')}</div>
-                            <Toggler.Icon
-                                className="pull-right"
-                                expanded={panel.modalGroups.expanded}
-                            />
-                        </Toggler>
+                            {({ hovered }) => (
+                                <Row>
+                                    <Col>{i18n._('Modal Groups')}</Col>
+                                    <Col width="auto">
+                                        <FontAwesomeIcon
+                                            icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down' }
+                                            fixedWidth
+                                            style={{
+                                                color: hovered ? '#222' : '#666',
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            )}
+                        </Clickable>
                     </Panel.Heading>
                     {panel.modalGroups.expanded && (
                         <Panel.Body>
@@ -232,7 +246,7 @@ class Smoothie extends PureComponent {
                         </Panel.Body>
                     )}
                 </Panel>
-            </div>
+            </Container>
         );
     }
 }

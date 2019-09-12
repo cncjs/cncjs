@@ -13,7 +13,6 @@ import Panel from 'app/components/Panel';
 import RepeatableButton from 'app/components/RepeatableButton';
 import Space from 'app/components/Space';
 import Text from 'app/components/Text';
-import Toggler from 'app/components/Toggler';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import {
@@ -83,13 +82,13 @@ class Laser extends PureComponent {
                             <Space width={8} />
                         </Col>
                         <Col>
-                            <ButtonGroup btnSize="sm" style={{ width: '100%' }}>
+                            <ButtonGroup sm style={{ width: '100%' }}>
                                 <RepeatableButton
                                     disabled={!canClick}
                                     onClick={() => {
                                         controller.command('spindleOverride', -10);
                                     }}
-                                    style={{ fontSize: '.75rem', padding: '.25rem' }}
+                                    style={{ fontSize: '.75rem' }}
                                 >
                                     <FontAwesomeIcon icon="arrow-down" fixedWidth />
                                     <Text>{i18n._('-10%')}</Text>
@@ -99,7 +98,7 @@ class Laser extends PureComponent {
                                     onClick={() => {
                                         controller.command('spindleOverride', -1);
                                     }}
-                                    style={{ fontSize: '.66rem', padding: '.25rem' }}
+                                    style={{ fontSize: '.66rem' }}
                                 >
                                     <FontAwesomeIcon icon="arrow-down" fixedWidth />
                                     <Text>{i18n._('-1%')}</Text>
@@ -109,7 +108,7 @@ class Laser extends PureComponent {
                                     onClick={() => {
                                         controller.command('spindleOverride', 1);
                                     }}
-                                    style={{ fontSize: '.66rem', padding: '.25rem' }}
+                                    style={{ fontSize: '.66rem' }}
                                 >
                                     <FontAwesomeIcon icon="arrow-up" fixedWidth />
                                     <Text>{i18n._('1%')}</Text>
@@ -119,7 +118,7 @@ class Laser extends PureComponent {
                                     onClick={() => {
                                         controller.command('spindleOverride', 10);
                                     }}
-                                    style={{ fontSize: '.75rem', padding: '.25rem' }}
+                                    style={{ fontSize: '.75rem' }}
                                 >
                                     <FontAwesomeIcon icon="arrow-up" fixedWidth />
                                     <Text>{i18n._('10%')}</Text>
@@ -153,17 +152,25 @@ class Laser extends PureComponent {
                 </FormGroup>
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
-                        <Toggler
-                            className="clearfix"
-                            onToggle={actions.toggleLaserTest}
-                            title={panel.laserTest.expanded ? i18n._('Hide') : i18n._('Show')}
+                        <Clickable
+                            onClick={actions.toggleLaserTest}
+                            style={{ width: '100%' }}
                         >
-                            <div className="pull-left">{i18n._('Laser Test')}</div>
-                            <Toggler.Icon
-                                className="pull-right"
-                                expanded={panel.laserTest.expanded}
-                            />
-                        </Toggler>
+                            {({ hovered }) => (
+                                <Row>
+                                    <Col>{i18n._('Laser Test')}</Col>
+                                    <Col width="auto">
+                                        <FontAwesomeIcon
+                                            icon={panel.laserTest.expanded ? 'chevron-up' : 'chevron-down' }
+                                            fixedWidth
+                                            style={{
+                                                color: hovered ? '#222' : '#666',
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            )}
+                        </Clickable>
                     </Panel.Heading>
                     {panel.laserTest.expanded && (
                         <Panel.Body>
@@ -225,6 +232,7 @@ class Laser extends PureComponent {
                             </div>
                             <div>
                                 <Button
+                                    sm
                                     btnSize="sm"
                                     btnStyle="default"
                                     disabled={!canClick}
@@ -256,8 +264,8 @@ export default Laser;
 const DRO = styled.div`
     border: 1px solid #ccc;
     text-align: right;
-    padding: 4px 8px;
-    font-size: 1rem;
+    padding: .25rem .5rem;
+    font-size: .75rem;
     font-weight: bold;
     min-width: 60px;
 `;

@@ -9,9 +9,11 @@ import controller from 'app/lib/controller';
 import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
 import { Button } from 'app/components/Buttons';
+import Clickable from 'app/components/Clickable';
+import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import { Container, Row, Col } from 'app/components/GridSystem';
 import Panel from 'app/components/Panel';
 import Space from 'app/components/Space';
-import Toggler from 'app/components/Toggler';
 import FadeInOut from './FadeInOut';
 import Overrides from './Overrides';
 import styles from './index.styl';
@@ -73,21 +75,29 @@ class Marlin extends PureComponent {
         this.heatedBedPowerMax = Math.max(this.heatedBedPowerMax, heatedBedPower);
 
         return (
-            <div>
+            <Container fluid>
                 <Overrides ovF={ovF} ovS={ovS} />
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
-                        <Toggler
-                            className="clearfix"
-                            onToggle={actions.toggleHeaterControl}
-                            title={panel.heaterControl.expanded ? i18n._('Hide') : i18n._('Show')}
+                        <Clickable
+                            onClick={actions.toggleHeaterControl}
+                            style={{ width: '100%' }}
                         >
-                            <div className="pull-left">{i18n._('Heater Control')}</div>
-                            <Toggler.Icon
-                                className="pull-right"
-                                expanded={panel.heaterControl.expanded}
-                            />
-                        </Toggler>
+                            {({ hovered }) => (
+                                <Row>
+                                    <Col>{i18n._('Heater Control')}</Col>
+                                    <Col width="auto">
+                                        <FontAwesomeIcon
+                                            icon={panel.heaterControl.expanded ? 'chevron-up' : 'chevron-down' }
+                                            fixedWidth
+                                            style={{
+                                                color: hovered ? '#222' : '#666',
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            )}
+                        </Clickable>
                     </Panel.Heading>
                     {panel.heaterControl.expanded && (
                         <Panel.Body>
@@ -297,19 +307,25 @@ class Marlin extends PureComponent {
                 </Panel>
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
-                        <Toggler
-                            className="clearfix"
-                            onToggle={() => {
-                                actions.toggleStatusReports();
-                            }}
-                            title={panel.statusReports.expanded ? i18n._('Hide') : i18n._('Show')}
+                        <Clickable
+                            onClick={actions.toggleStatusReports}
+                            style={{ width: '100%' }}
                         >
-                            <div className="pull-left">{i18n._('Status Reports')}</div>
-                            <Toggler.Icon
-                                className="pull-right"
-                                expanded={panel.statusReports.expanded}
-                            />
-                        </Toggler>
+                            {({ hovered }) => (
+                                <Row>
+                                    <Col>{i18n._('Status Reports')}</Col>
+                                    <Col width="auto">
+                                        <FontAwesomeIcon
+                                            icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down' }
+                                            fixedWidth
+                                            style={{
+                                                color: hovered ? '#222' : '#666',
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            )}
+                        </Clickable>
                     </Panel.Heading>
                     {panel.statusReports.expanded && (
                         <Panel.Body>
@@ -342,19 +358,25 @@ class Marlin extends PureComponent {
                 </Panel>
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
-                        <Toggler
-                            className="clearfix"
-                            onToggle={() => {
-                                actions.toggleModalGroups();
-                            }}
-                            title={panel.modalGroups.expanded ? i18n._('Hide') : i18n._('Show')}
+                        <Clickable
+                            onClick={actions.toggleModalGroups}
+                            style={{ width: '100%' }}
                         >
-                            <div className="pull-left">{i18n._('Modal Groups')}</div>
-                            <Toggler.Icon
-                                className="pull-right"
-                                expanded={panel.modalGroups.expanded}
-                            />
-                        </Toggler>
+                            {({ hovered }) => (
+                                <Row>
+                                    <Col>{i18n._('Modal Groups')}</Col>
+                                    <Col width="auto">
+                                        <FontAwesomeIcon
+                                            icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down' }
+                                            fixedWidth
+                                            style={{
+                                                color: hovered ? '#222' : '#666',
+                                            }}
+                                        />
+                                    </Col>
+                                </Row>
+                            )}
+                        </Clickable>
                     </Panel.Heading>
                     {panel.modalGroups.expanded && (
                         <Panel.Body>
@@ -471,7 +493,7 @@ class Marlin extends PureComponent {
                         </Panel.Body>
                     )}
                 </Panel>
-            </div>
+            </Container>
         );
     }
 }
