@@ -2,18 +2,17 @@ import _ from 'lodash';
 import Slider from 'rc-slider';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
-import styled from 'styled-components';
-import { Button, ButtonGroup } from 'app/components/Buttons';
+import { Button } from 'app/components/Buttons';
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
+import HorizontalForm from 'app/components/HorizontalForm';
+import InputGroup from 'app/components/InputGroup';
 import Label from 'app/components/Label';
 import Panel from 'app/components/Panel';
-import RepeatableButton from 'app/components/RepeatableButton';
-import Space from 'app/components/Space';
 import Text from 'app/components/Text';
-import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import {
     // Grbl
@@ -25,6 +24,7 @@ import {
     // TinyG
     TINYG
 } from '../../constants';
+import LaserIntensityOverride from './LaserIntensityOverride';
 import styles from './index.styl';
 
 class Laser extends PureComponent {
@@ -62,7 +62,6 @@ class Laser extends PureComponent {
 
     render() {
         const { state, actions } = this.props;
-        const none = '–';
         const { canClick, panel, test } = state;
         const laserIntensityScale = this.getLaserIntensityScale();
 
@@ -72,83 +71,9 @@ class Laser extends PureComponent {
                     <Label>
                         {i18n._('Laser Intensity Control')}
                     </Label>
-                    <Row style={{ alignItems: 'center' }}>
-                        <Col width="auto">
-                            <DRO>
-                                {laserIntensityScale ? laserIntensityScale + '%' : none}
-                            </DRO>
-                        </Col>
-                        <Col width="auto">
-                            <Space width={8} />
-                        </Col>
-                        <Col>
-                            <ButtonGroup sm style={{ width: '100%' }}>
-                                <RepeatableButton
-                                    disabled={!canClick}
-                                    onClick={() => {
-                                        controller.command('spindleOverride', -10);
-                                    }}
-                                    style={{ fontSize: '.75rem' }}
-                                >
-                                    <FontAwesomeIcon icon="arrow-down" fixedWidth />
-                                    <Text>{i18n._('-10%')}</Text>
-                                </RepeatableButton>
-                                <RepeatableButton
-                                    disabled={!canClick}
-                                    onClick={() => {
-                                        controller.command('spindleOverride', -1);
-                                    }}
-                                    style={{ fontSize: '.66rem' }}
-                                >
-                                    <FontAwesomeIcon icon="arrow-down" fixedWidth />
-                                    <Text>{i18n._('-1%')}</Text>
-                                </RepeatableButton>
-                                <RepeatableButton
-                                    disabled={!canClick}
-                                    onClick={() => {
-                                        controller.command('spindleOverride', 1);
-                                    }}
-                                    style={{ fontSize: '.66rem' }}
-                                >
-                                    <FontAwesomeIcon icon="arrow-up" fixedWidth />
-                                    <Text>{i18n._('1%')}</Text>
-                                </RepeatableButton>
-                                <RepeatableButton
-                                    disabled={!canClick}
-                                    onClick={() => {
-                                        controller.command('spindleOverride', 10);
-                                    }}
-                                    style={{ fontSize: '.75rem' }}
-                                >
-                                    <FontAwesomeIcon icon="arrow-up" fixedWidth />
-                                    <Text>{i18n._('10%')}</Text>
-                                </RepeatableButton>
-                            </ButtonGroup>
-                        </Col>
-                        <Col width="auto">
-                            <Space width={8} />
-                        </Col>
-                        <Col width="auto">
-                            <Clickable
-                                onClick={() => {
-                                    if (!canClick) {
-                                        return;
-                                    }
-                                    controller.command('spindleOverride', 0);
-                                }}
-                            >
-                                {({ hovered }) => (
-                                    <FontAwesomeIcon
-                                        icon="undo"
-                                        fixedWidth
-                                        style={{
-                                            color: hovered ? '#222' : '#666',
-                                        }}
-                                    />
-                                )}
-                            </Clickable>
-                        </Col>
-                    </Row>
+                    {(laserIntensityScale > 0) && (
+                        <LaserIntensityOverride value={laserIntensityScale} />
+                    )}
                 </FormGroup>
                 <Panel className={styles.panel}>
                     <Panel.Heading className={styles.panelHeading}>
@@ -161,7 +86,7 @@ class Laser extends PureComponent {
                                     <Col>{i18n._('Laser Test')}</Col>
                                     <Col width="auto">
                                         <FontAwesomeIcon
-                                            icon={panel.laserTest.expanded ? 'chevron-up' : 'chevron-down' }
+                                            icon={panel.laserTest.expanded ? 'chevron-up' : 'chevron-down'}
                                             fixedWidth
                                             style={{
                                                 color: hovered ? '#222' : '#666',
@@ -174,79 +99,84 @@ class Laser extends PureComponent {
                     </Panel.Heading>
                     {panel.laserTest.expanded && (
                         <Panel.Body>
-                            <div className="table-form" style={{ marginBottom: 15 }}>
-                                <div className="table-form-row">
-                                    <div className="table-form-col table-form-col-label middle">
-                                        {i18n._('Power (%)')}
-                                    </div>
-                                    <div className="table-form-col">
-                                        <div className="text-center">{test.power}%</div>
-                                        <Slider
-                                            style={{ padding: 0 }}
-                                            defaultValue={test.power}
-                                            min={0}
-                                            max={100}
-                                            step={1}
-                                            onChange={actions.changeLaserTestPower}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="table-form-row">
-                                    <div className="table-form-col table-form-col-label middle">
-                                        {i18n._('Test duration')}
-                                    </div>
-                                    <div className="table-form-col">
-                                        <div className="input-group input-group-sm" style={{ width: '100%' }}>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                style={{ borderRadius: 0 }}
-                                                value={test.duration}
-                                                min={0}
-                                                step={1}
-                                                onChange={actions.changeLaserTestDuration}
-                                            />
-                                            <span className="input-group-addon">{i18n._('ms')}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="table-form-row">
-                                    <div className="table-form-col table-form-col-label middle">
-                                        {i18n._('Maximum value')}
-                                    </div>
-                                    <div className="table-form-col">
-                                        <div className="input-group input-group-sm" style={{ width: '100%' }}>
-                                            <span className="input-group-addon">S</span>
-                                            <input
-                                                type="number"
-                                                className="form-control"
-                                                style={{ borderRadius: 0 }}
-                                                value={test.maxS}
-                                                min={0}
-                                                step={1}
-                                                onChange={actions.changeLaserTestMaxS}
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <FormGroup>
+                                <HorizontalForm spacing={['.75rem', '.75rem']}>
+                                    {({ FormContainer, FormRow, FormCol }) => (
+                                        <FormContainer>
+                                            <FormRow>
+                                                <FormCol style={{ whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                                                    {i18n._('Power (%)')}
+                                                </FormCol>
+                                                <FormCol style={{ wordBreak: 'break-all', textAlign: 'center' }}>
+                                                    <Text>{test.power}%</Text>
+                                                    <Slider
+                                                        style={{ padding: 0 }}
+                                                        defaultValue={test.power}
+                                                        min={0}
+                                                        max={100}
+                                                        step={1}
+                                                        onChange={actions.changeLaserTestPower}
+                                                    />
+                                                </FormCol>
+                                            </FormRow>
+                                            <FormRow>
+                                                <FormCol style={{ whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                                                    {i18n._('Test duration')}
+                                                </FormCol>
+                                                <FormCol style={{ wordBreak: 'break-all' }}>
+                                                    <InputGroup sm>
+                                                        <Input
+                                                            type="number"
+                                                            value={test.duration}
+                                                            min={0}
+                                                            step={1}
+                                                            onChange={actions.changeLaserTestDuration}
+                                                        />
+                                                        <InputGroup.Append>
+                                                            <InputGroup.Text>
+                                                                {i18n._('ms')}
+                                                            </InputGroup.Text>
+                                                        </InputGroup.Append>
+                                                    </InputGroup>
+                                                </FormCol>
+                                            </FormRow>
+                                            <FormRow>
+                                                <FormCol style={{ whiteSpace: 'nowrap', verticalAlign: 'middle' }}>
+                                                    {i18n._('Maximum value')}
+                                                </FormCol>
+                                                <FormCol style={{ wordBreak: 'break-all' }}>
+                                                    <InputGroup sm>
+                                                        <InputGroup.Prepend>
+                                                            <InputGroup.Text>
+                                                                {i18n._('S')}
+                                                            </InputGroup.Text>
+                                                        </InputGroup.Prepend>
+                                                        <Input
+                                                            type="number"
+                                                            value={test.maxS}
+                                                            min={0}
+                                                            step={1}
+                                                            onChange={actions.changeLaserTestMaxS}
+                                                        />
+                                                    </InputGroup>
+                                                </FormCol>
+                                            </FormRow>
+                                        </FormContainer>
+                                    )}
+                                </HorizontalForm>
+                            </FormGroup>
                             <div>
                                 <Button
                                     sm
-                                    btnSize="sm"
-                                    btnStyle="default"
                                     disabled={!canClick}
                                     onClick={actions.laserTestOn}
-                                    style={{ minWidth: 80 }}
                                 >
                                     {i18n._('Laser Test')}
                                 </Button>
                                 <Button
-                                    btnSize="sm"
-                                    btnStyle="default"
+                                    sm
                                     disabled={!canClick}
                                     onClick={actions.laserTestOff}
-                                    style={{ minWidth: 80 }}
                                 >
                                     {i18n._('Laser Off')}
                                 </Button>
@@ -260,12 +190,3 @@ class Laser extends PureComponent {
 }
 
 export default Laser;
-
-const DRO = styled.div`
-    border: 1px solid #ccc;
-    text-align: right;
-    padding: .25rem .5rem;
-    font-size: .75rem;
-    font-weight: bold;
-    min-width: 60px;
-`;

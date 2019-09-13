@@ -110,7 +110,8 @@ class TinyG extends PureComponent {
                                             icon={panel.powerManagement.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>
@@ -180,7 +181,8 @@ class TinyG extends PureComponent {
                                             icon={panel.queueReports.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>
@@ -224,7 +226,8 @@ class TinyG extends PureComponent {
                                             icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>
@@ -291,7 +294,8 @@ class TinyG extends PureComponent {
                                             icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>

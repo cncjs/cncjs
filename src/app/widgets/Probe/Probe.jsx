@@ -5,6 +5,7 @@ import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import Input from 'app/components/FormControl/Input';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
+import Hoverable from 'app/components/Hoverable';
 import InputGroup from 'app/components/InputGroup';
 import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
@@ -55,7 +56,7 @@ class Probe extends PureComponent {
                             <Label>{i18n._('Probe Axis')}</Label>
                         </div>
                         <ButtonGroup
-                            btnSize="sm"
+                            sm
                             style={{
                                 minWidth: '50%',
                             }}
@@ -90,10 +91,20 @@ class Probe extends PureComponent {
                             <Label>{i18n._('Probe Command: {{probeCommand}}', { probeCommand })}</Label>
                             <Space width={8} />
                             <Infotip content={mapProbeCommandToDescription(probeCommand)}>
-                                <span className="fa-layers fa-fw" style={{ color: '#666' }}>
-                                    <FontAwesomeIcon icon={['far', 'circle']} />
-                                    <FontAwesomeIcon icon="info" transform="shrink-8" />
-                                </span>
+                                <Hoverable>
+                                    {({ hovered }) => (
+                                        <span
+                                            className="fa-layers fa-fw"
+                                            style={{
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
+                                            }}
+                                        >
+                                            <FontAwesomeIcon icon={['far', 'circle']} />
+                                            <FontAwesomeIcon icon="info" transform="shrink-8" />
+                                        </span>
+                                    )}
+                                </Hoverable>
                             </Infotip>
                         </div>
                         <ButtonGroup
@@ -223,7 +234,7 @@ class Probe extends PureComponent {
                 </Row>
                 <Margin bottom={8}>
                     <Button
-                        btnSize="md"
+                        md
                         btnStyle="secondary"
                         disabled={!canClick}
                         onClick={() => {

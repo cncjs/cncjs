@@ -91,7 +91,8 @@ class Marlin extends PureComponent {
                                             icon={panel.heaterControl.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>
@@ -319,7 +320,8 @@ class Marlin extends PureComponent {
                                             icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>
@@ -370,7 +372,8 @@ class Marlin extends PureComponent {
                                             icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>

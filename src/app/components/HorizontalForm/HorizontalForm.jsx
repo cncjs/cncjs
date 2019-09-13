@@ -65,7 +65,6 @@ const FormCol = withContextConsumer({
     ({ spacing, ...others }) => <div {...others} />
 )`
     display: table-cell;
-    vertical-align: top;
     padding-bottom: ${props => (Array.isArray(props.spacing) ? props.spacing[1] : 0)};
 
     // No padding for the last row.

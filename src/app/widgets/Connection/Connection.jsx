@@ -231,7 +231,8 @@ class Connection extends PureComponent {
                                         fixedWidth
                                         spin={loading}
                                         style={{
-                                            color: (hovered ? '#222' : '#666'),
+                                            color: '#222',
+                                            opacity: hovered ? 1 : 0.5,
                                         }}
                                     />
                                 )}

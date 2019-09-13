@@ -36,8 +36,7 @@ class Spindle extends Component {
                     <Row>
                         <Col width={8}>
                             <ButtonGroup
-                                btnSize="sm"
-                                btnStyle="default"
+                                sm
                                 style={{ width: '100%' }}
                             >
                                 <Button
@@ -88,8 +87,7 @@ class Spindle extends Component {
                     <Row>
                         <Col width={8}>
                             <ButtonGroup
-                                btnSize="sm"
-                                btnStyle="default"
+                                sm
                                 style={{ width: '100%' }}
                             >
                                 <Button
@@ -99,7 +97,7 @@ class Spindle extends Component {
                                     title={i18n._('Mist Coolant On (M7)', { ns: 'gcode' })}
                                     disabled={!canClick}
                                 >
-                                    <ImageIcon src={iconFan} spin={mistCoolant} style={{ width: '16px', height: '16px' }} />
+                                    <ImageIcon src={iconFan} spin={mistCoolant} />
                                     <Space width={8} />
                                     M7
                                 </Button>
@@ -110,7 +108,7 @@ class Spindle extends Component {
                                     title={i18n._('Flood Coolant On (M8)', { ns: 'gcode' })}
                                     disabled={!canClick}
                                 >
-                                    <ImageIcon src={iconFan} spin={floodCoolant} style={{ width: '16px', height: '16px' }} />
+                                    <ImageIcon src={iconFan} spin={floodCoolant} />
                                     <Space width={8} />
                                     M8
                                 </Button>

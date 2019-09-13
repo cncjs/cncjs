@@ -7,9 +7,12 @@ import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import Panel from 'app/components/Panel';
-import Overrides from './Overrides';
+import FeedOverride from './FeedOverride';
+import SpindleOverride from './SpindleOverride';
+import RapidOverride from './RapidOverride';
 import styles from './index.styl';
 
 class Grbl extends PureComponent {
@@ -62,7 +65,17 @@ class Grbl extends PureComponent {
 
         return (
             <Container fluid>
-                <Overrides ovF={ovF} ovS={ovS} ovR={ovR} />
+                <FormGroup>
+                    {(ovF > 0) && (
+                        <FeedOverride value={ovF} />
+                    )}
+                    {(ovS > 0) && (
+                        <SpindleOverride value={ovS} />
+                    )}
+                    {(ovR > 0) && (
+                        <RapidOverride value={ovR} />
+                    )}
+                </FormGroup>
                 {!_.isEmpty(buf) && (
                     <Panel className={styles.panel}>
                         <Panel.Heading className={styles['panel-heading']}>
@@ -78,7 +91,8 @@ class Grbl extends PureComponent {
                                                 icon={panel.queueReports.expanded ? 'chevron-up' : 'chevron-down' }
                                                 fixedWidth
                                                 style={{
-                                                    color: hovered ? '#222' : '#666',
+                                                    color: '#222',
+                                                    opacity: hovered ? 1 : 0.5,
                                                 }}
                                             />
                                         </Col>
@@ -148,7 +162,8 @@ class Grbl extends PureComponent {
                                             icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>
@@ -223,7 +238,8 @@ class Grbl extends PureComponent {
                                             icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down' }
                                             fixedWidth
                                             style={{
-                                                color: hovered ? '#222' : '#666',
+                                                color: '#222',
+                                                opacity: hovered ? 1 : 0.5,
                                             }}
                                         />
                                     </Col>

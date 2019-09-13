@@ -95,9 +95,7 @@ class Macro extends PureComponent {
                                 <tr key={macro.id}>
                                     <td>
                                         <Button
-                                            compact
-                                            btnSize="xs"
-                                            btnStyle="default"
+                                            sm
                                             disabled={!canRunMacro}
                                             onClick={this.handleRunMacro(macro)}
                                             title={i18n._('Run Macro')}
@@ -110,9 +108,7 @@ class Macro extends PureComponent {
                                     <td style={{ width: '1%' }}>
                                         <div className="nowrap">
                                             <Button
-                                                compact
-                                                btnSize="xs"
-                                                btnStyle="default"
+                                                sm
                                                 disabled={!canLoadMacro}
                                                 onClick={this.handleLoadMacro(macro)}
                                                 title={i18n._('Load Macro')}
@@ -120,9 +116,7 @@ class Macro extends PureComponent {
                                                 <i className="fa fa-chevron-up" />
                                             </Button>
                                             <Button
-                                                compact
-                                                btnSize="xs"
-                                                btnStyle="default"
+                                                sm
                                                 onClick={this.handleEditMacro(macro)}
                                             >
                                                 <i className="fa fa-edit" />
