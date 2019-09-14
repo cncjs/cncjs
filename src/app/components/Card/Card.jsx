@@ -13,12 +13,16 @@ const Card = ({
     <Resolver>
         {value => {
             const { borderColor, borderRadius, borderWidth } = value;
-            style = {
-                borderColor,
-                borderRadius,
-                borderWidth,
-                ...style,
-            };
+
+            if (borderColor !== undefined) {
+                style = { borderColor, ...style };
+            }
+            if (borderRadius !== undefined) {
+                style = { borderRadius, ...style };
+            }
+            if (borderWidth !== undefined) {
+                style = { borderWidth, ...style };
+            }
 
             return (
                 <Component

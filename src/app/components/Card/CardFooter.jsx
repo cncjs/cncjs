@@ -12,7 +12,15 @@ const CardFooter = ({
 }) => (
     <Resolver>
         {value => {
-            const { spacerX, spacerY } = value;
+            const { borderColor, borderWidth, spacerX, spacerY } = value;
+
+            if (borderColor !== undefined) {
+                style = { borderTopColor: borderColor, ...style };
+            }
+            if (borderWidth !== undefined) {
+                style = { borderTopWidth: borderWidth, ...style };
+            }
+
             style = {
                 padding: `${spacerY} ${spacerX}`,
                 ...style,

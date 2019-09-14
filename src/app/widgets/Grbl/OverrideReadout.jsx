@@ -8,7 +8,7 @@ const OverrideReadout = styled(Card)`
     width: 45px;
     padding: .25rem;
     text-align: right;
-    background-color: rgba(0, 0, 0, 0.03);
+    background-color: rgba(0, 0, 0, 0.05);
 `;
 
 export default OverrideReadout;

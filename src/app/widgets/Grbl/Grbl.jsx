@@ -15,6 +15,7 @@ import { Container, Row, Col } from 'app/components/GridSystem';
 import FeedOverride from './FeedOverride';
 import SpindleOverride from './SpindleOverride';
 import RapidOverride from './RapidOverride';
+import Readout from './Readout';
 import styles from './index.styl';
 
 class Grbl extends PureComponent {
@@ -88,7 +89,7 @@ class Grbl extends PureComponent {
                                 {({ hovered }) => (
                                     <Card.Header
                                         style={{
-                                            backgroundColor: hovered ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0, 0, 0, 0.03)',
+                                            backgroundColor: hovered ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.05)',
                                             borderBottomWidth: panel.queueReports.expanded ? 1 : 0,
                                         }}
                                     >
@@ -165,7 +166,7 @@ class Grbl extends PureComponent {
                         {({ hovered }) => (
                             <Card.Header
                                 style={{
-                                    backgroundColor: hovered ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0, 0, 0, 0.03)',
+                                    backgroundColor: hovered ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.05)',
                                     borderBottomWidth: panel.statusReports.expanded ? 1 : 0,
                                 }}
                             >
@@ -194,9 +195,9 @@ class Grbl extends PureComponent {
                                     </div>
                                 </Col>
                                 <Col width={8}>
-                                    <div className={styles.well}>
+                                    <Readout>
                                         {activeState}
-                                    </div>
+                                    </Readout>
                                 </Col>
                             </Row>
                             <Row>
@@ -246,7 +247,7 @@ class Grbl extends PureComponent {
                         {({ hovered }) => (
                             <Card.Header
                                 style={{
-                                    backgroundColor: hovered ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0, 0, 0, 0.03)',
+                                    backgroundColor: hovered ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.05)',
                                     borderBottomWidth: panel.modalGroups.expanded ? 1 : 0,
                                 }}
                             >

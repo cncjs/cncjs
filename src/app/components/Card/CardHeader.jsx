@@ -13,9 +13,15 @@ const CardHeader = ({
     <Resolver>
         {value => {
             const { borderColor, borderWidth, spacerX, spacerY } = value;
+
+            if (borderColor !== undefined) {
+                style = { borderBottomColor: borderColor, ...style };
+            }
+            if (borderWidth !== undefined) {
+                style = { borderBottomWidth: borderWidth, ...style };
+            }
+
             style = {
-                borderBottomColor: borderColor,
-                borderBottomWidth: borderWidth,
                 padding: `${spacerY} ${spacerX}`,
                 ...style,
             };
