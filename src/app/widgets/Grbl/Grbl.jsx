@@ -1,15 +1,17 @@
 import ensureArray from 'ensure-array';
-import _ from 'lodash';
+import _get from 'lodash/get';
+import _isEmpty from 'lodash/isEmpty';
+import _mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
 import { ProgressBar } from 'react-bootstrap';
 import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
+import Card from 'app/components/Card';
 import Clickable from 'app/components/Clickable';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
-import Panel from 'app/components/Panel';
 import FeedOverride from './FeedOverride';
 import SpindleOverride from './SpindleOverride';
 import RapidOverride from './RapidOverride';
@@ -37,15 +39,15 @@ class Grbl extends PureComponent {
         const none = '–';
         const panel = state.panel;
         const controllerState = state.controller.state || {};
-        const parserState = _.get(controllerState, 'parserstate', {});
-        const activeState = _.get(controllerState, 'status.activeState') || none;
-        const feedrate = _.get(controllerState, 'status.feedrate', _.get(parserState, 'feedrate', none));
-        const spindle = _.get(controllerState, 'status.spindle', _.get(parserState, 'spindle', none));
-        const tool = _.get(parserState, 'tool', none);
-        const ov = _.get(controllerState, 'status.ov', []);
+        const parserState = _get(controllerState, 'parserstate', {});
+        const activeState = _get(controllerState, 'status.activeState') || none;
+        const feedrate = _get(controllerState, 'status.feedrate', _get(parserState, 'feedrate', none));
+        const spindle = _get(controllerState, 'status.spindle', _get(parserState, 'spindle', none));
+        const tool = _get(parserState, 'tool', none);
+        const ov = _get(controllerState, 'status.ov', []);
         const [ovF = 0, ovR = 0, ovS = 0] = ov;
-        const buf = _.get(controllerState, 'status.buf', {});
-        const modal = _.mapValues(parserState.modal || {}, mapGCodeToText);
+        const buf = _get(controllerState, 'status.buf', {});
+        const modal = _mapValues(parserState.modal || {}, mapGCodeToText);
         const receiveBufferStyle = ((rx) => {
             // danger: 0-7
             // warning: 8-15
@@ -76,85 +78,97 @@ class Grbl extends PureComponent {
                         <RapidOverride value={ovR} />
                     )}
                 </FormGroup>
-                {!_.isEmpty(buf) && (
-                    <Panel className={styles.panel}>
-                        <Panel.Heading className={styles['panel-heading']}>
+                <Card>
+                    {!_isEmpty(buf) && (
+                        <>
                             <Clickable
                                 onClick={actions.toggleQueueReports}
                                 style={{ width: '100%' }}
                             >
                                 {({ hovered }) => (
+                                    <Card.Header
+                                        style={{
+                                            backgroundColor: hovered ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0, 0, 0, 0.03)',
+                                            borderBottomWidth: panel.queueReports.expanded ? 1 : 0,
+                                        }}
+                                    >
+                                        <Row>
+                                            <Col>{i18n._('Queue Reports')}</Col>
+                                            <Col width="auto">
+                                                <FontAwesomeIcon
+                                                    icon={panel.queueReports.expanded ? 'chevron-up' : 'chevron-down' }
+                                                    fixedWidth
+                                                    style={{
+                                                        color: '#222',
+                                                        opacity: hovered ? 1 : 0.5,
+                                                    }}
+                                                />
+                                            </Col>
+                                        </Row>
+                                    </Card.Header>
+                                )}
+                            </Clickable>
+                            {panel.queueReports.expanded && (
+                                <Card.Body>
                                     <Row>
-                                        <Col>{i18n._('Queue Reports')}</Col>
-                                        <Col width="auto">
-                                            <FontAwesomeIcon
-                                                icon={panel.queueReports.expanded ? 'chevron-up' : 'chevron-down' }
-                                                fixedWidth
-                                                style={{
-                                                    color: '#222',
-                                                    opacity: hovered ? 1 : 0.5,
-                                                }}
+                                        <Col width={4}>
+                                            <div className={styles.textEllipsis} title={i18n._('Planner Buffer')}>
+                                                {i18n._('Planner Buffer')}
+                                            </div>
+                                        </Col>
+                                        <Col width={8}>
+                                            <ProgressBar
+                                                style={{ marginBottom: 0 }}
+                                                bsStyle="info"
+                                                min={this.plannerBufferMin}
+                                                max={this.plannerBufferMax}
+                                                now={buf.planner}
+                                                label={(
+                                                    <span className={styles.progressbarLabel}>
+                                                        {buf.planner}
+                                                    </span>
+                                                )}
                                             />
                                         </Col>
                                     </Row>
-                                )}
-                            </Clickable>
-                        </Panel.Heading>
-                        {panel.queueReports.expanded && (
-                            <Panel.Body>
-                                <div className="row no-gutters">
-                                    <div className="col col-xs-4">
-                                        <div className={styles.textEllipsis} title={i18n._('Planner Buffer')}>
-                                            {i18n._('Planner Buffer')}
-                                        </div>
-                                    </div>
-                                    <div className="col col-xs-8">
-                                        <ProgressBar
-                                            style={{ marginBottom: 0 }}
-                                            bsStyle="info"
-                                            min={this.plannerBufferMin}
-                                            max={this.plannerBufferMax}
-                                            now={buf.planner}
-                                            label={(
-                                                <span className={styles.progressbarLabel}>
-                                                    {buf.planner}
-                                                </span>
-                                            )}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="row no-gutters">
-                                    <div className="col col-xs-4">
-                                        <div className={styles.textEllipsis} title={i18n._('Receive Buffer')}>
-                                            {i18n._('Receive Buffer')}
-                                        </div>
-                                    </div>
-                                    <div className="col col-xs-8">
-                                        <ProgressBar
-                                            style={{ marginBottom: 0 }}
-                                            bsStyle={receiveBufferStyle}
-                                            min={this.receiveBufferMin}
-                                            max={this.receiveBufferMax}
-                                            now={buf.rx}
-                                            label={(
-                                                <span className={styles.progressbarLabel}>
-                                                    {buf.rx}
-                                                </span>
-                                            )}
-                                        />
-                                    </div>
-                                </div>
-                            </Panel.Body>
-                        )}
-                    </Panel>
-                )}
-                <Panel className={styles.panel}>
-                    <Panel.Heading className={styles['panel-heading']}>
-                        <Clickable
-                            onClick={actions.toggleStatusReports}
-                            style={{ width: '100%' }}
-                        >
-                            {({ hovered }) => (
+                                    <Row>
+                                        <Col width={4}>
+                                            <div className={styles.textEllipsis} title={i18n._('Receive Buffer')}>
+                                                {i18n._('Receive Buffer')}
+                                            </div>
+                                        </Col>
+                                        <Col width={4}>
+                                            <ProgressBar
+                                                style={{ marginBottom: 0 }}
+                                                bsStyle={receiveBufferStyle}
+                                                min={this.receiveBufferMin}
+                                                max={this.receiveBufferMax}
+                                                now={buf.rx}
+                                                label={(
+                                                    <span className={styles.progressbarLabel}>
+                                                        {buf.rx}
+                                                    </span>
+                                                )}
+                                            />
+                                        </Col>
+                                    </Row>
+                                </Card.Body>
+                            )}
+                        </>
+                    )}
+                </Card>
+                <Card style={{ borderTop: 0 }}>
+                    <Clickable
+                        onClick={actions.toggleStatusReports}
+                        style={{ width: '100%' }}
+                    >
+                        {({ hovered }) => (
+                            <Card.Header
+                                style={{
+                                    backgroundColor: hovered ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0, 0, 0, 0.03)',
+                                    borderBottomWidth: panel.statusReports.expanded ? 1 : 0,
+                                }}
+                            >
                                 <Row>
                                     <Col>{i18n._('Status Reports')}</Col>
                                     <Col width="auto">
@@ -168,69 +182,74 @@ class Grbl extends PureComponent {
                                         />
                                     </Col>
                                 </Row>
-                            )}
-                        </Clickable>
-                    </Panel.Heading>
+                            </Card.Header>
+                        )}
+                    </Clickable>
                     {panel.statusReports.expanded && (
-                        <Panel.Body>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                        <Card.Body>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('State')}>
                                         {i18n._('State')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well}>
                                         {activeState}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
                                         {i18n._('Feed Rate')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well}>
                                         {feedrate}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Spindle')}>
                                         {i18n._('Spindle')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well}>
                                         {spindle}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Tool Number')}>
                                         {i18n._('Tool Number')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well}>
                                         {tool}
                                     </div>
-                                </div>
-                            </div>
-                        </Panel.Body>
+                                </Col>
+                            </Row>
+                        </Card.Body>
                     )}
-                </Panel>
-                <Panel className={styles.panel}>
-                    <Panel.Heading className={styles['panel-heading']}>
-                        <Clickable
-                            onClick={actions.toggleModalGroups}
-                            style={{ width: '100%' }}
-                        >
-                            {({ hovered }) => (
+                </Card>
+                <Card style={{ borderTop: 0 }}>
+                    <Clickable
+                        onClick={actions.toggleModalGroups}
+                        style={{ width: '100%' }}
+                    >
+                        {({ hovered }) => (
+                            <Card.Header
+                                style={{
+                                    backgroundColor: hovered ? 'rgba(0, 0, 0, 0.06)' : 'rgba(0, 0, 0, 0.03)',
+                                    borderBottomWidth: panel.modalGroups.expanded ? 1 : 0,
+                                }}
+                            >
                                 <Row>
                                     <Col>{i18n._('Modal Groups')}</Col>
                                     <Col width="auto">
@@ -244,124 +263,124 @@ class Grbl extends PureComponent {
                                         />
                                     </Col>
                                 </Row>
-                            )}
-                        </Clickable>
-                    </Panel.Heading>
+                            </Card.Header>
+                        )}
+                    </Clickable>
                     {panel.modalGroups.expanded && (
-                        <Panel.Body>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                        <Card.Body>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Motion')}>
                                         {i18n._('Motion')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well} title={modal.motion}>
                                         {modal.motion || none}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
                                         {i18n._('Coordinate')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well} title={modal.wcs}>
                                         {modal.wcs || none}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Plane')}>
                                         {i18n._('Plane')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well} title={modal.plane}>
                                         {modal.plane || none}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Distance')}>
                                         {i18n._('Distance')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well} title={modal.distance}>
                                         {modal.distance || none}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
                                         {i18n._('Feed Rate')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well} title={modal.feedrate}>
                                         {modal.feedrate || none}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Units')}>
                                         {i18n._('Units')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well} title={modal.units}>
                                         {modal.units || none}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Program')}>
                                         {i18n._('Program')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well} title={modal.program}>
                                         {modal.program || none}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Spindle')}>
                                         {i18n._('Spindle')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well} title={modal.spindle}>
                                         {modal.spindle || none}
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row no-gutters">
-                                <div className="col col-xs-4">
+                                </Col>
+                            </Row>
+                            <Row>
+                                <Col width={4}>
                                     <div className={styles.textEllipsis} title={i18n._('Coolant')}>
                                         {i18n._('Coolant')}
                                     </div>
-                                </div>
-                                <div className="col col-xs-8">
+                                </Col>
+                                <Col width={8}>
                                     <div className={styles.well}>
                                         {ensureArray(modal.coolant).map(coolant => (
                                             <div title={coolant} key={coolant}>{coolant || none}</div>
                                         ))}
                                     </div>
-                                </div>
-                            </div>
-                        </Panel.Body>
+                                </Col>
+                            </Row>
+                        </Card.Body>
                     )}
-                </Panel>
+                </Card>
             </Container>
         );
     }
