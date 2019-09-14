@@ -1,0 +1,25 @@
+@import "variables";
+
+.card-deck {
+    display: flex;
+    flex-direction: column;
+
+    .card {
+        margin-bottom: $card-deck-margin;
+    }
+
+    @media (min-width: 576px) {
+        flex-flow: row wrap;
+        margin-right: -$card-deck-margin;
+        margin-left: -$card-deck-margin;
+
+        .card {
+            display: flex;
+            flex: 1 0 0%;
+            flex-direction: column;
+            margin-right: $card-deck-margin;
+            margin-bottom: 0;
+            margin-left: $card-deck-margin;
+        }
+    }
+}

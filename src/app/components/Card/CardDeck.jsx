@@ -4,37 +4,29 @@ import Resolver from './Resolver';
 import styles from './styles/index.styl';
 import { tagPropType } from './utils';
 
-const CardBody = ({
+const CardDeck = ({
     className,
-    style,
     tag: Component,
     ...props
 }) => (
     <Resolver>
         {value => {
-            const { spacerX } = value;
-            style = {
-                padding: `${spacerX}`,
-                ...style,
-            };
-
             return (
                 <Component
                     {...props}
-                    style={style}
-                    className={cx(className, styles.cardBody)}
+                    className={cx(className, styles.cardDeck)}
                 />
             );
         }}
     </Resolver>
 );
 
-CardBody.propTypes = {
+CardDeck.propTypes = {
     tag: tagPropType,
 };
 
-CardBody.defaultProps = {
+CardDeck.defaultProps = {
     tag: 'div',
 };
 
-export default CardBody;
+export default CardDeck;
