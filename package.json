@@ -215,6 +215,7 @@
     "rc-slider": "~8.6.11",
     "rc-trigger": "~2.6.2",
     "react": "~16.8.6",
+    "react-animate-height": "~2.0.15",
     "react-bootstrap": "~0.32.4",
     "react-bootstrap-buttons": "~1.0.0",
     "react-datepicker": "~1.8.0",
