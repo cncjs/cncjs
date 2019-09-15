@@ -78,45 +78,6 @@ class GrblWidget extends PureComponent {
                 }
             });
         },
-        toggleQueueReports: () => {
-            const expanded = this.state.panel.queueReports.expanded;
-
-            this.setState({
-                panel: {
-                    ...this.state.panel,
-                    queueReports: {
-                        ...this.state.panel.queueReports,
-                        expanded: !expanded
-                    }
-                }
-            });
-        },
-        toggleStatusReports: () => {
-            const expanded = this.state.panel.statusReports.expanded;
-
-            this.setState({
-                panel: {
-                    ...this.state.panel,
-                    statusReports: {
-                        ...this.state.panel.statusReports,
-                        expanded: !expanded
-                    }
-                }
-            });
-        },
-        toggleModalGroups: () => {
-            const expanded = this.state.panel.modalGroups.expanded;
-
-            this.setState({
-                panel: {
-                    ...this.state.panel,
-                    modalGroups: {
-                        ...this.state.panel.modalGroups,
-                        expanded: !expanded
-                    }
-                }
-            });
-        }
     };
 
     controllerEvents = {
@@ -166,13 +127,9 @@ class GrblWidget extends PureComponent {
     componentDidUpdate(prevProps, prevState) {
         const {
             minimized,
-            panel
         } = this.state;
 
         this.config.set('minimized', minimized);
-        this.config.set('panel.queueReports.expanded', panel.queueReports.expanded);
-        this.config.set('panel.statusReports.expanded', panel.statusReports.expanded);
-        this.config.set('panel.modalGroups.expanded', panel.modalGroups.expanded);
     }
 
     getInitialState() {
@@ -191,17 +148,6 @@ class GrblWidget extends PureComponent {
                 name: MODAL_NONE,
                 params: {}
             },
-            panel: {
-                queueReports: {
-                    expanded: this.config.get('panel.queueReports.expanded')
-                },
-                statusReports: {
-                    expanded: this.config.get('panel.statusReports.expanded')
-                },
-                modalGroups: {
-                    expanded: this.config.get('panel.modalGroups.expanded')
-                }
-            }
         };
     }
 
@@ -406,8 +352,8 @@ class GrblWidget extends PureComponent {
                         <Controller state={state} actions={actions} />
                         }
                         <Grbl
+                            config={this.config}
                             state={state}
-                            actions={actions}
                         />
                     </Widget.Content>
                 )}

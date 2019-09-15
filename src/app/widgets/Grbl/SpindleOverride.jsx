@@ -9,7 +9,7 @@ import Space from 'app/components/Space';
 import Text from 'app/components/Text';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import OverrideReadout from './OverrideReadout';
+import OverrideReadout from './components/OverrideReadout';
 
 const none = '–';
 

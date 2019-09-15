@@ -4,24 +4,23 @@ import _isEmpty from 'lodash/isEmpty';
 import _mapValues from 'lodash/mapValues';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import styled from 'styled-components';
 import { ProgressBar } from 'react-bootstrap';
 import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
-import Card from 'app/components/Card';
-import Clickable from 'app/components/Clickable';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import CollapsibleCard from 'app/components/CollapsibleCard';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
+import Readout from './components/Readout';
 import FeedOverride from './FeedOverride';
 import SpindleOverride from './SpindleOverride';
 import RapidOverride from './RapidOverride';
-import Readout from './Readout';
 import styles from './index.styl';
 
 class Grbl extends PureComponent {
     static propTypes = {
+        config: PropTypes.object,
         state: PropTypes.object,
-        actions: PropTypes.object
     };
 
     // https://github.com/grbl/grbl/wiki/Interfacing-with-Grbl
@@ -36,9 +35,8 @@ class Grbl extends PureComponent {
     receiveBufferMin = 0;
 
     render() {
-        const { state, actions } = this.props;
+        const { config, state } = this.props;
         const none = '–';
-        const panel = state.panel;
         const controllerState = state.controller.state || {};
         const parserState = _get(controllerState, 'parserstate', {});
         const activeState = _get(controllerState, 'status.activeState') || none;
@@ -62,6 +60,12 @@ class Grbl extends PureComponent {
             }
             return 'danger';
         })(buf.rx);
+        const isQueueReportsVisible = !_isEmpty(buf);
+        const isStatusReportsVisible = true;
+        const isModalGroupsVisible = true;
+        const isQueueReportsExpanded = config.get('panel.queueReports.expanded');
+        const isStatusReportsExpanded = config.get('panel.statusReports.expanded');
+        const isModalGroupsExpanded = config.get('panel.modalGroups.expanded');
 
         this.plannerBufferMax = Math.max(this.plannerBufferMax, buf.planner) || this.plannerBufferMax;
         this.receiveBufferMax = Math.max(this.receiveBufferMax, buf.rx) || this.receiveBufferMax;
@@ -79,312 +83,274 @@ class Grbl extends PureComponent {
                         <RapidOverride value={ovR} />
                     )}
                 </FormGroup>
-                <Card>
-                    {!_isEmpty(buf) && (
-                        <>
-                            <Clickable
-                                onClick={actions.toggleQueueReports}
-                                style={{ width: '100%' }}
-                            >
-                                {({ hovered }) => (
-                                    <Card.Header
-                                        style={{
-                                            backgroundColor: hovered ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.05)',
-                                            borderBottomWidth: panel.queueReports.expanded ? 1 : 0,
-                                        }}
-                                    >
-                                        <Row>
-                                            <Col>{i18n._('Queue Reports')}</Col>
-                                            <Col width="auto">
-                                                <FontAwesomeIcon
-                                                    icon={panel.queueReports.expanded ? 'chevron-up' : 'chevron-down' }
-                                                    fixedWidth
-                                                    style={{
-                                                        color: '#222',
-                                                        opacity: hovered ? 1 : 0.5,
-                                                    }}
-                                                />
-                                            </Col>
-                                        </Row>
-                                    </Card.Header>
-                                )}
-                            </Clickable>
-                            {panel.queueReports.expanded && (
-                                <Card.Body>
-                                    <Row>
-                                        <Col width={4}>
-                                            <div className={styles.textEllipsis} title={i18n._('Planner Buffer')}>
-                                                {i18n._('Planner Buffer')}
-                                            </div>
-                                        </Col>
-                                        <Col width={8}>
-                                            <ProgressBar
-                                                style={{ marginBottom: 0 }}
-                                                bsStyle="info"
-                                                min={this.plannerBufferMin}
-                                                max={this.plannerBufferMax}
-                                                now={buf.planner}
-                                                label={(
-                                                    <span className={styles.progressbarLabel}>
-                                                        {buf.planner}
-                                                    </span>
-                                                )}
-                                            />
-                                        </Col>
-                                    </Row>
-                                    <Row>
-                                        <Col width={4}>
-                                            <div className={styles.textEllipsis} title={i18n._('Receive Buffer')}>
-                                                {i18n._('Receive Buffer')}
-                                            </div>
-                                        </Col>
-                                        <Col width={4}>
-                                            <ProgressBar
-                                                style={{ marginBottom: 0 }}
-                                                bsStyle={receiveBufferStyle}
-                                                min={this.receiveBufferMin}
-                                                max={this.receiveBufferMax}
-                                                now={buf.rx}
-                                                label={(
-                                                    <span className={styles.progressbarLabel}>
-                                                        {buf.rx}
-                                                    </span>
-                                                )}
-                                            />
-                                        </Col>
-                                    </Row>
-                                </Card.Body>
-                            )}
-                        </>
+                <Accordion>
+                    {isQueueReportsVisible && (
+                        <CollapsibleCard
+                            collapsed={!isQueueReportsExpanded}
+                        >
+                            {({ collapsed, ToggleIcon, Header, Body }) => {
+                                const expanded = !collapsed;
+                                config.set('panel.queueReports.expanded', expanded);
+
+                                return (
+                                    <>
+                                        <Header>
+                                            {({ hovered }) => (
+                                                <Row>
+                                                    <Col>{i18n._('Queue Reports')}</Col>
+                                                    <Col width="auto">
+                                                        <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
+                                                    </Col>
+                                                </Row>
+                                            )}
+                                        </Header>
+                                        <Body>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Planner Buffer')}>
+                                                        {i18n._('Planner Buffer')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <ProgressBar
+                                                        style={{ marginBottom: 0 }}
+                                                        bsStyle="info"
+                                                        min={this.plannerBufferMin}
+                                                        max={this.plannerBufferMax}
+                                                        now={buf.planner}
+                                                        label={(
+                                                            <span className={styles.progressbarLabel}>
+                                                                {buf.planner}
+                                                            </span>
+                                                        )}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Receive Buffer')}>
+                                                        {i18n._('Receive Buffer')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={4}>
+                                                    <ProgressBar
+                                                        style={{ marginBottom: 0 }}
+                                                        bsStyle={receiveBufferStyle}
+                                                        min={this.receiveBufferMin}
+                                                        max={this.receiveBufferMax}
+                                                        now={buf.rx}
+                                                        label={(
+                                                            <span className={styles.progressbarLabel}>
+                                                                {buf.rx}
+                                                            </span>
+                                                        )}
+                                                    />
+                                                </Col>
+                                            </Row>
+                                        </Body>
+                                    </>
+                                );
+                            }}
+                        </CollapsibleCard>
                     )}
-                </Card>
-                <Card style={{ borderTop: 0 }}>
-                    <Clickable
-                        onClick={actions.toggleStatusReports}
-                        style={{ width: '100%' }}
-                    >
-                        {({ hovered }) => (
-                            <Card.Header
-                                style={{
-                                    backgroundColor: hovered ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.05)',
-                                    borderBottomWidth: panel.statusReports.expanded ? 1 : 0,
-                                }}
-                            >
-                                <Row>
-                                    <Col>{i18n._('Status Reports')}</Col>
-                                    <Col width="auto">
-                                        <FontAwesomeIcon
-                                            icon={panel.statusReports.expanded ? 'chevron-up' : 'chevron-down' }
-                                            fixedWidth
-                                            style={{
-                                                color: '#222',
-                                                opacity: hovered ? 1 : 0.5,
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                            </Card.Header>
-                        )}
-                    </Clickable>
-                    {panel.statusReports.expanded && (
-                        <Card.Body>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('State')}>
-                                        {i18n._('State')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <Readout>
-                                        {activeState}
-                                    </Readout>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
-                                        {i18n._('Feed Rate')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well}>
-                                        {feedrate}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Spindle')}>
-                                        {i18n._('Spindle')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well}>
-                                        {spindle}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Tool Number')}>
-                                        {i18n._('Tool Number')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well}>
-                                        {tool}
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Card.Body>
+                    {isStatusReportsVisible && (
+                        <CollapsibleCard
+                            collapsed={!isStatusReportsExpanded}
+                        >
+                            {({ collapsed, ToggleIcon, Header, Body }) => {
+                                const expanded = !collapsed;
+                                config.set('panel.statusReports.expanded', expanded);
+
+                                return (
+                                    <>
+                                        <Header>
+                                            {({ hovered }) => (
+                                                <Row>
+                                                    <Col>{i18n._('Status Reports')}</Col>
+                                                    <Col width="auto">
+                                                        <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
+                                                    </Col>
+                                                </Row>
+                                            )}
+                                        </Header>
+                                        <Body>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('State')}>
+                                                        {i18n._('State')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{activeState}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                                        {i18n._('Feed Rate')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{feedrate}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                                        {i18n._('Spindle')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{spindle}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Tool Number')}>
+                                                        {i18n._('Tool Number')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{tool}</Readout>
+                                                </Col>
+                                            </Row>
+                                        </Body>
+                                    </>
+                                );
+                            }}
+                        </CollapsibleCard>
                     )}
-                </Card>
-                <Card style={{ borderTop: 0 }}>
-                    <Clickable
-                        onClick={actions.toggleModalGroups}
-                        style={{ width: '100%' }}
-                    >
-                        {({ hovered }) => (
-                            <Card.Header
-                                style={{
-                                    backgroundColor: hovered ? 'rgba(0, 0, 0, 0.075)' : 'rgba(0, 0, 0, 0.05)',
-                                    borderBottomWidth: panel.modalGroups.expanded ? 1 : 0,
-                                }}
-                            >
-                                <Row>
-                                    <Col>{i18n._('Modal Groups')}</Col>
-                                    <Col width="auto">
-                                        <FontAwesomeIcon
-                                            icon={panel.modalGroups.expanded ? 'chevron-up' : 'chevron-down' }
-                                            fixedWidth
-                                            style={{
-                                                color: '#222',
-                                                opacity: hovered ? 1 : 0.5,
-                                            }}
-                                        />
-                                    </Col>
-                                </Row>
-                            </Card.Header>
-                        )}
-                    </Clickable>
-                    {panel.modalGroups.expanded && (
-                        <Card.Body>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Motion')}>
-                                        {i18n._('Motion')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well} title={modal.motion}>
-                                        {modal.motion || none}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
-                                        {i18n._('Coordinate')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well} title={modal.wcs}>
-                                        {modal.wcs || none}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Plane')}>
-                                        {i18n._('Plane')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well} title={modal.plane}>
-                                        {modal.plane || none}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Distance')}>
-                                        {i18n._('Distance')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well} title={modal.distance}>
-                                        {modal.distance || none}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
-                                        {i18n._('Feed Rate')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well} title={modal.feedrate}>
-                                        {modal.feedrate || none}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Units')}>
-                                        {i18n._('Units')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well} title={modal.units}>
-                                        {modal.units || none}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Program')}>
-                                        {i18n._('Program')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well} title={modal.program}>
-                                        {modal.program || none}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Spindle')}>
-                                        {i18n._('Spindle')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well} title={modal.spindle}>
-                                        {modal.spindle || none}
-                                    </div>
-                                </Col>
-                            </Row>
-                            <Row>
-                                <Col width={4}>
-                                    <div className={styles.textEllipsis} title={i18n._('Coolant')}>
-                                        {i18n._('Coolant')}
-                                    </div>
-                                </Col>
-                                <Col width={8}>
-                                    <div className={styles.well}>
-                                        {ensureArray(modal.coolant).map(coolant => (
-                                            <div title={coolant} key={coolant}>{coolant || none}</div>
-                                        ))}
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Card.Body>
+                    {isModalGroupsVisible && (
+                        <CollapsibleCard
+                            collapsed={!isModalGroupsExpanded}
+                        >
+                            {({ collapsed, ToggleIcon, Header, Body }) => {
+                                const expanded = !collapsed;
+                                config.set('panel.modalGroups.expanded', expanded);
+
+                                return (
+                                    <>
+                                        <Header>
+                                            {({ hovered }) => (
+                                                <Row>
+                                                    <Col>{i18n._('Modal Groups')}</Col>
+                                                    <Col width="auto">
+                                                        <ToggleIcon style={{ opacity: hovered ? 1 : 0.5 }} />
+                                                    </Col>
+                                                </Row>
+                                            )}
+                                        </Header>
+                                        <Body>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Motion')}>
+                                                        {i18n._('Motion')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{modal.motion || none}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
+                                                        {i18n._('Coordinate')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{modal.wcs || none}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Plane')}>
+                                                        {i18n._('Plane')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{modal.plane || none}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Distance')}>
+                                                        {i18n._('Distance')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{modal.distance || none}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                                        {i18n._('Feed Rate')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{modal.feedrate || none}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Units')}>
+                                                        {i18n._('Units')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{modal.units || none}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Program')}>
+                                                        {i18n._('Program')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{modal.program || none}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                                        {i18n._('Spindle')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>{modal.spindle || none}</Readout>
+                                                </Col>
+                                            </Row>
+                                            <Row>
+                                                <Col width={4}>
+                                                    <div className={styles.textEllipsis} title={i18n._('Coolant')}>
+                                                        {i18n._('Coolant')}
+                                                    </div>
+                                                </Col>
+                                                <Col width={8}>
+                                                    <Readout>
+                                                        {ensureArray(modal.coolant).map(coolant => (
+                                                            <div title={coolant} key={coolant}>{coolant || none}</div>
+                                                        ))}
+                                                    </Readout>
+                                                </Col>
+                                            </Row>
+                                        </Body>
+                                    </>
+                                );
+                            }}
+                        </CollapsibleCard>
                     )}
-                </Card>
+                </Accordion>
             </Container>
         );
     }
 }
 
 export default Grbl;
+
+const Accordion = styled.div`
+    > :not(:first-child) {
+        border-top: 0;
+    }
+`;
