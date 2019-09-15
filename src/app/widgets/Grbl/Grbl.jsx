@@ -11,6 +11,7 @@ import i18n from 'app/lib/i18n';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import FormGroup from 'app/components/FormGroup';
 import { Container, Row, Col } from 'app/components/GridSystem';
+import HorizontalForm from 'app/components/HorizontalForm';
 import Readout from './components/Readout';
 import FeedOverride from './FeedOverride';
 import SpindleOverride from './SpindleOverride';
@@ -105,48 +106,54 @@ class Grbl extends PureComponent {
                                             )}
                                         </Header>
                                         <Body>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Planner Buffer')}>
-                                                        {i18n._('Planner Buffer')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <ProgressBar
-                                                        style={{ marginBottom: 0 }}
-                                                        bsStyle="info"
-                                                        min={this.plannerBufferMin}
-                                                        max={this.plannerBufferMax}
-                                                        now={buf.planner}
-                                                        label={(
-                                                            <span className={styles.progressbarLabel}>
-                                                                {buf.planner}
-                                                            </span>
-                                                        )}
-                                                    />
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Receive Buffer')}>
-                                                        {i18n._('Receive Buffer')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={4}>
-                                                    <ProgressBar
-                                                        style={{ marginBottom: 0 }}
-                                                        bsStyle={receiveBufferStyle}
-                                                        min={this.receiveBufferMin}
-                                                        max={this.receiveBufferMax}
-                                                        now={buf.rx}
-                                                        label={(
-                                                            <span className={styles.progressbarLabel}>
-                                                                {buf.rx}
-                                                            </span>
-                                                        )}
-                                                    />
-                                                </Col>
-                                            </Row>
+                                            <HorizontalForm spacing={['.75rem', '.5rem']}>
+                                                {({ FormContainer, FormRow, FormCol }) => (
+                                                    <FormContainer style={{ width: '100%' }}>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Planner Buffer')}>
+                                                                    {i18n._('Planner Buffer')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <ProgressBar
+                                                                    style={{ marginBottom: 0 }}
+                                                                    bsStyle="info"
+                                                                    min={this.plannerBufferMin}
+                                                                    max={this.plannerBufferMax}
+                                                                    now={buf.planner}
+                                                                    label={(
+                                                                        <span className={styles.progressbarLabel}>
+                                                                            {buf.planner}
+                                                                        </span>
+                                                                    )}
+                                                                />
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Receive Buffer')}>
+                                                                    {i18n._('Receive Buffer')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <ProgressBar
+                                                                    style={{ marginBottom: 0 }}
+                                                                    bsStyle={receiveBufferStyle}
+                                                                    min={this.receiveBufferMin}
+                                                                    max={this.receiveBufferMax}
+                                                                    now={buf.rx}
+                                                                    label={(
+                                                                        <span className={styles.progressbarLabel}>
+                                                                            {buf.rx}
+                                                                        </span>
+                                                                    )}
+                                                                />
+                                                            </FormCol>
+                                                        </FormRow>
+                                                    </FormContainer>
+                                                )}
+                                            </HorizontalForm>
                                         </Body>
                                     </>
                                 );
@@ -174,46 +181,52 @@ class Grbl extends PureComponent {
                                             )}
                                         </Header>
                                         <Body>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('State')}>
-                                                        {i18n._('State')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{activeState}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
-                                                        {i18n._('Feed Rate')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{feedrate}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Spindle')}>
-                                                        {i18n._('Spindle')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{spindle}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Tool Number')}>
-                                                        {i18n._('Tool Number')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{tool}</Readout>
-                                                </Col>
-                                            </Row>
+                                            <HorizontalForm spacing={['.75rem', '.5rem']}>
+                                                {({ FormContainer, FormRow, FormCol }) => (
+                                                    <FormContainer style={{ width: '100%' }}>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('State')}>
+                                                                    {i18n._('State')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{activeState}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                                                    {i18n._('Feed Rate')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{feedrate}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                                                    {i18n._('Spindle')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{spindle}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Tool Number')}>
+                                                                    {i18n._('Tool Number')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{tool}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                    </FormContainer>
+                                                )}
+                                            </HorizontalForm>
                                         </Body>
                                     </>
                                 );
@@ -241,100 +254,106 @@ class Grbl extends PureComponent {
                                             )}
                                         </Header>
                                         <Body>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Motion')}>
-                                                        {i18n._('Motion')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{modal.motion || none}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
-                                                        {i18n._('Coordinate')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{modal.wcs || none}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Plane')}>
-                                                        {i18n._('Plane')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{modal.plane || none}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Distance')}>
-                                                        {i18n._('Distance')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{modal.distance || none}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
-                                                        {i18n._('Feed Rate')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{modal.feedrate || none}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Units')}>
-                                                        {i18n._('Units')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{modal.units || none}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Program')}>
-                                                        {i18n._('Program')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{modal.program || none}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Spindle')}>
-                                                        {i18n._('Spindle')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>{modal.spindle || none}</Readout>
-                                                </Col>
-                                            </Row>
-                                            <Row>
-                                                <Col width={4}>
-                                                    <div className={styles.textEllipsis} title={i18n._('Coolant')}>
-                                                        {i18n._('Coolant')}
-                                                    </div>
-                                                </Col>
-                                                <Col width={8}>
-                                                    <Readout>
-                                                        {ensureArray(modal.coolant).map(coolant => (
-                                                            <div title={coolant} key={coolant}>{coolant || none}</div>
-                                                        ))}
-                                                    </Readout>
-                                                </Col>
-                                            </Row>
+                                            <HorizontalForm spacing={['.75rem', '.5rem']}>
+                                                {({ FormContainer, FormRow, FormCol }) => (
+                                                    <FormContainer style={{ width: '100%' }}>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Motion')}>
+                                                                    {i18n._('Motion')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{modal.motion || none}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
+                                                                    {i18n._('Coordinate')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{modal.wcs || none}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Plane')}>
+                                                                    {i18n._('Plane')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{modal.plane || none}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Distance')}>
+                                                                    {i18n._('Distance')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{modal.distance || none}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                                                    {i18n._('Feed Rate')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{modal.feedrate || none}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Units')}>
+                                                                    {i18n._('Units')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{modal.units || none}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Program')}>
+                                                                    {i18n._('Program')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{modal.program || none}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                                                    {i18n._('Spindle')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>{modal.spindle || none}</Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                        <FormRow>
+                                                            <FormCol>
+                                                                <div className={styles.textEllipsis} title={i18n._('Coolant')}>
+                                                                    {i18n._('Coolant')}
+                                                                </div>
+                                                            </FormCol>
+                                                            <FormCol style={{ width: '50%' }}>
+                                                                <Readout>
+                                                                    {ensureArray(modal.coolant).map(coolant => (
+                                                                        <div title={coolant} key={coolant}>{coolant || none}</div>
+                                                                    ))}
+                                                                </Readout>
+                                                            </FormCol>
+                                                        </FormRow>
+                                                    </FormContainer>
+                                                )}
+                                            </HorizontalForm>
                                         </Body>
                                     </>
                                 );
