@@ -111,9 +111,9 @@ class Grbl extends PureComponent {
                                                     <FormContainer style={{ width: '100%' }}>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Planner Buffer')}>
+                                                                <OverflowEllipsis title={i18n._('Planner Buffer')}>
                                                                     {i18n._('Planner Buffer')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <ProgressBar
@@ -132,9 +132,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Receive Buffer')}>
+                                                                <OverflowEllipsis title={i18n._('Receive Buffer')}>
                                                                     {i18n._('Receive Buffer')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <ProgressBar
@@ -186,9 +186,9 @@ class Grbl extends PureComponent {
                                                     <FormContainer style={{ width: '100%' }}>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('State')}>
+                                                                <OverflowEllipsis title={i18n._('State')}>
                                                                     {i18n._('State')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{activeState}</Readout>
@@ -196,9 +196,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                                                <OverflowEllipsis title={i18n._('Feed Rate')}>
                                                                     {i18n._('Feed Rate')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{feedrate}</Readout>
@@ -206,9 +206,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                                                <OverflowEllipsis title={i18n._('Spindle')}>
                                                                     {i18n._('Spindle')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{spindle}</Readout>
@@ -216,9 +216,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Tool Number')}>
+                                                                <OverflowEllipsis title={i18n._('Tool Number')}>
                                                                     {i18n._('Tool Number')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{tool}</Readout>
@@ -259,9 +259,9 @@ class Grbl extends PureComponent {
                                                     <FormContainer style={{ width: '100%' }}>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Motion')}>
+                                                                <OverflowEllipsis title={i18n._('Motion')}>
                                                                     {i18n._('Motion')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{modal.motion || none}</Readout>
@@ -269,9 +269,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Coordinate')}>
+                                                                <OverflowEllipsis title={i18n._('Coordinate')}>
                                                                     {i18n._('Coordinate')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{modal.wcs || none}</Readout>
@@ -279,9 +279,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Plane')}>
+                                                                <OverflowEllipsis title={i18n._('Plane')}>
                                                                     {i18n._('Plane')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{modal.plane || none}</Readout>
@@ -289,9 +289,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Distance')}>
+                                                                <OverflowEllipsis title={i18n._('Distance')}>
                                                                     {i18n._('Distance')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{modal.distance || none}</Readout>
@@ -299,9 +299,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Feed Rate')}>
+                                                                <OverflowEllipsis title={i18n._('Feed Rate')}>
                                                                     {i18n._('Feed Rate')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{modal.feedrate || none}</Readout>
@@ -309,9 +309,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Units')}>
+                                                                <OverflowEllipsis title={i18n._('Units')}>
                                                                     {i18n._('Units')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{modal.units || none}</Readout>
@@ -319,9 +319,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Program')}>
+                                                                <OverflowEllipsis title={i18n._('Program')}>
                                                                     {i18n._('Program')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{modal.program || none}</Readout>
@@ -329,9 +329,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Spindle')}>
+                                                                <OverflowEllipsis title={i18n._('Spindle')}>
                                                                     {i18n._('Spindle')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>{modal.spindle || none}</Readout>
@@ -339,9 +339,9 @@ class Grbl extends PureComponent {
                                                         </FormRow>
                                                         <FormRow>
                                                             <FormCol>
-                                                                <div className={styles.textEllipsis} title={i18n._('Coolant')}>
+                                                                <OverflowEllipsis title={i18n._('Coolant')}>
                                                                     {i18n._('Coolant')}
-                                                                </div>
+                                                                </OverflowEllipsis>
                                                             </FormCol>
                                                             <FormCol style={{ width: '50%' }}>
                                                                 <Readout>
@@ -372,4 +372,10 @@ const Accordion = styled.div`
     > :not(:first-child) {
         border-top: 0;
     }
+`;
+
+const OverflowEllipsis = styled.div`
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 `;

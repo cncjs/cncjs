@@ -1,49 +1,21 @@
-import PropTypes from 'prop-types';
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React, { useRef, useLayoutEffect } from 'react';
 
-class OverflowTooltip extends React.Component {
-    static propTypes = {
-        title: PropTypes.string
-    };
+const OverflowTooltip = ({ title, ...props }) => {
+    const ref = useRef(null);
 
-    state = {
-        overflow: false
-    };
-
-    static getDerivedStateFromProps(nextProps, prevState) {
-        return {
-            overflow: false
-        };
-    }
-
-    detectOverflow = () => {
-        const el = ReactDOM.findDOMNode(this);
-        const overflow = (el.clientWidth < el.scrollWidth);
-        if (overflow !== this.state.overflow) {
-            this.setState({ overflow: overflow });
+    // Use useLayoutEffect for making DOM measurements and mutations
+    useLayoutEffect(() => {
+        const el = ref.current;
+        if (el) {
+            // overflow appears if the scrollWidth is greater than the clientWidth
+            const overflow = (el.clientWidth < el.scrollWidth);
+            el.title = overflow ? title : '';
         }
-    };
+    });
 
-    componentDidMount() {
-        this.detectOverflow();
-    }
-
-    componentDidUpdate() {
-        this.detectOverflow();
-    }
-
-    render() {
-        const { title, ...props } = this.props;
-
-        if (this.state.overflow) {
-            props.title = title;
-        }
-
-        return (
-            <div {...props} />
-        );
-    }
-}
+    return (
+        <div ref={ref} {...props} />
+    );
+};
 
 export default OverflowTooltip;
