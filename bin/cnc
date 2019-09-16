@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-require('@babel/polyfill');
+require('core-js/stable'); // to polyfill ECMAScript features
+require('regenerator-runtime/runtime'); // needed to use transpiled generator functions
 
 const chalk = require('chalk');
 

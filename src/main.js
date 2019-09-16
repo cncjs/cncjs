@@ -1,4 +1,5 @@
-import '@babel/polyfill';
+import 'core-js/stable'; // to polyfill ECMAScript features
+import 'regenerator-runtime/runtime'; // needed to use transpiled generator functions
 import { app, Menu } from 'electron';
 import Store from 'electron-store';
 import chalk from 'chalk';

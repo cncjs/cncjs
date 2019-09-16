@@ -1,7 +1,14 @@
 module.exports = {
     extends: '@trendmicro/babel-config',
     presets: [
-        '@babel/preset-env',
+        // https://github.com/zloirock/core-js/blob/master/docs/2019-03-19-core-js-3-babel-and-a-look-into-the-future.md#usebuiltins-entry-with-corejs-3
+        [
+            '@babel/preset-env',
+            {
+                useBuiltIns: 'entry',
+                corejs: 3,
+            }
+        ],
         '@babel/preset-react',
     ],
     plugins: [

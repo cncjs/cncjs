@@ -15,7 +15,8 @@ const files = [
     'src/server/**/*.{js,jsx}'
 ];
 const deps = [
-    '@babel/runtime', // 'babel-runtime' is required for electron app
+    'core-js', // to polyfill ECMAScript features
+    'regenerator-runtime', // needed to use transpiled generator functions
     'debug' // 'debug' is required for electron app
 ].concat(findImports(files, { flatten: true })).sort();
 
