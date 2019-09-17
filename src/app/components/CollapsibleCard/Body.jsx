@@ -4,11 +4,12 @@ import Card from 'app/components/Card';
 import { CollapsibleCardContext } from './context';
 
 const Body = ({ children, style, ...props }) => {
-    const { duration, collapsed, collapsing, setCollapsing, toggle } = useContext(CollapsibleCardContext);
+    const { duration, easing, collapsed, collapsing, setCollapsing, toggle } = useContext(CollapsibleCardContext);
 
     return (
         <AnimateHeight
             duration={duration}
+            easing={easing}
             height={collapsed ? 0 : 'auto'}
             onAnimationStart={() => {
                 if (!collapsing) {
