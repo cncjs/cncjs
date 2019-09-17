@@ -9,14 +9,14 @@ import Space from 'app/components/Space';
 import Text from 'app/components/Text';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import OverrideReadout from './components/OverrideReadout';
+import OverrideReadout from './OverrideReadout';
 
 const none = '–';
 
-const RapidOverride = ({ value, ...props }) => (
+const SpindleOverride = ({ value, ...props }) => (
     <Center vertical>
         <Text fixedWidth size={24}>
-            R
+            S
         </Text>
         <Space width={8} />
         <OverrideReadout>
@@ -26,33 +26,45 @@ const RapidOverride = ({ value, ...props }) => (
         <ButtonGroup sm>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('rapidOverride', 25);
+                    controller.command('spindleOverride', -10);
                 }}
                 style={{ fontSize: '.75rem' }}
             >
-                <Text>{i18n._('25%')}</Text>
+                <FontAwesomeIcon icon="arrow-down" fixedWidth />
+                <Text>{i18n._('-10%')}</Text>
             </RepeatableButton>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('rapidOverride', 50);
+                    controller.command('spindleOverride', -1);
                 }}
-                style={{ fontSize: '.75rem' }}
+                style={{ fontSize: '.66rem' }}
             >
-                <Text>{i18n._('50%')}</Text>
+                <FontAwesomeIcon icon="arrow-down" fixedWidth />
+                <Text>{i18n._('-1%')}</Text>
             </RepeatableButton>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('rapidOverride', 100);
+                    controller.command('spindleOverride', 1);
+                }}
+                style={{ fontSize: '.66rem' }}
+            >
+                <FontAwesomeIcon icon="arrow-up" fixedWidth />
+                <Text>{i18n._('1%')}</Text>
+            </RepeatableButton>
+            <RepeatableButton
+                onClick={() => {
+                    controller.command('spindleOverride', 10);
                 }}
                 style={{ fontSize: '.75rem' }}
             >
-                <Text>{i18n._('100%')}</Text>
+                <FontAwesomeIcon icon="arrow-up" fixedWidth />
+                <Text>{i18n._('10%')}</Text>
             </RepeatableButton>
         </ButtonGroup>
         <Space width={8} />
         <Clickable
             onClick={() => {
-                controller.command('rapidOverride', 0);
+                controller.command('spindleOverride', 0);
             }}
         >
             {({ hovered }) => (
@@ -69,8 +81,8 @@ const RapidOverride = ({ value, ...props }) => (
     </Center>
 );
 
-RapidOverride.propTypes = {
+SpindleOverride.propTypes = {
     value: PropTypes.number,
 };
 
-export default RapidOverride;
+export default SpindleOverride;

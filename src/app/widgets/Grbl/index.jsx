@@ -6,6 +6,7 @@ import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
+import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
     GRBL
@@ -16,7 +17,6 @@ import {
     MODAL_NONE,
     MODAL_CONTROLLER
 } from './constants';
-import { WidgetConfigContext } from './context';
 import styles from './index.styl';
 
 class GrblWidget extends PureComponent {

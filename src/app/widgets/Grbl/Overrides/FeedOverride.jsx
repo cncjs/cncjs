@@ -9,14 +9,14 @@ import Space from 'app/components/Space';
 import Text from 'app/components/Text';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
-import OverrideReadout from './components/OverrideReadout';
+import OverrideReadout from './OverrideReadout';
 
 const none = '–';
 
-const SpindleOverride = ({ value, ...props }) => (
+const FeedOverride = ({ value, ...props }) => (
     <Center vertical>
         <Text fixedWidth size={24}>
-            S
+            F
         </Text>
         <Space width={8} />
         <OverrideReadout>
@@ -26,7 +26,7 @@ const SpindleOverride = ({ value, ...props }) => (
         <ButtonGroup sm>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('spindleOverride', -10);
+                    controller.command('feedOverride', -10);
                 }}
                 style={{ fontSize: '.75rem' }}
             >
@@ -35,7 +35,7 @@ const SpindleOverride = ({ value, ...props }) => (
             </RepeatableButton>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('spindleOverride', -1);
+                    controller.command('feedOverride', -1);
                 }}
                 style={{ fontSize: '.66rem' }}
             >
@@ -44,7 +44,7 @@ const SpindleOverride = ({ value, ...props }) => (
             </RepeatableButton>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('spindleOverride', 1);
+                    controller.command('feedOverride', 1);
                 }}
                 style={{ fontSize: '.66rem' }}
             >
@@ -53,7 +53,7 @@ const SpindleOverride = ({ value, ...props }) => (
             </RepeatableButton>
             <RepeatableButton
                 onClick={() => {
-                    controller.command('spindleOverride', 10);
+                    controller.command('feedOverride', 10);
                 }}
                 style={{ fontSize: '.75rem' }}
             >
@@ -64,7 +64,7 @@ const SpindleOverride = ({ value, ...props }) => (
         <Space width={8} />
         <Clickable
             onClick={() => {
-                controller.command('spindleOverride', 0);
+                controller.command('feedOverride', 0);
             }}
         >
             {({ hovered }) => (
@@ -81,8 +81,8 @@ const SpindleOverride = ({ value, ...props }) => (
     </Center>
 );
 
-SpindleOverride.propTypes = {
+FeedOverride.propTypes = {
     value: PropTypes.number,
 };
 
-export default SpindleOverride;
+export default FeedOverride;
