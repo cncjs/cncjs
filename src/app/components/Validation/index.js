@@ -1,7 +1,16 @@
-export createForm from './createForm';
-export createFormControl from './createFormControl';
+import createForm from './createForm';
+import createFormControl from './createFormControl';
 
-export Form from './components/Form';
-export Input from './components/Input';
-export Select from './components/Select';
-export Textarea from './components/Textarea';
+import Form from './components/Form';
+import Input from './components/Input';
+import Select from './components/Select';
+import Textarea from './components/Textarea';
+
+export {
+    createForm,
+    createFormControl,
+    Form,
+    Input,
+    Select,
+    Textarea,
+};

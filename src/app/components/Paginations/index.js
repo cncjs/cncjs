@@ -1,1 +1,5 @@
-export TablePagination from './TablePagination';
+import TablePagination from './TablePagination';
+
+export {
+    TablePagination,
+};

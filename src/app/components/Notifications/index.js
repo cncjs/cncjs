@@ -1,2 +1,7 @@
-export Notification from './Notification';
-export ToastNotification from './ToastNotification';
+import Notification from './Notification';
+import ToastNotification from './ToastNotification';
+
+export {
+    Notification,
+    ToastNotification,
+};

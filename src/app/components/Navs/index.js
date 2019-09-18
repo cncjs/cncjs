@@ -1,4 +1,11 @@
-export Nav from './Nav';
-export NavItem from './NavItem';
-export TabContent from './TabContent';
-export TabPane from './TabPane';
+import Nav from './Nav';
+import NavItem from './NavItem';
+import TabContent from './TabContent';
+import TabPane from './TabPane';
+
+export {
+    Nav,
+    NavItem,
+    TabContent,
+    TabPane,
+};

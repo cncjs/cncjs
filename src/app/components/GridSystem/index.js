@@ -1,7 +1,17 @@
-export Provider from './Provider';
-export Container from './Container';
-export Row from './Row';
-export Col from './Col';
-export Hidden from './Hidden';
-export Visible from './Visible';
-export ScreenClass from './ScreenClass';
+import Provider from './Provider';
+import Container from './Container';
+import Row from './Row';
+import Col from './Col';
+import Hidden from './Hidden';
+import Visible from './Visible';
+import ScreenClass from './ScreenClass';
+
+export {
+    Provider,
+    Container,
+    Row,
+    Col,
+    Hidden,
+    Visible,
+    ScreenClass,
+};
