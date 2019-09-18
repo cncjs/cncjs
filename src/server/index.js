@@ -3,7 +3,7 @@ import fs from 'fs';
 import os from 'os';
 import path from 'path';
 import url from 'url';
-import bcrypt from 'bcrypt-nodejs';
+import bcrypt from 'bcryptjs';
 import chalk from 'chalk';
 import ensureArray from 'ensure-array';
 import expandTilde from 'expand-tilde';

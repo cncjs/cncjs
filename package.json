@@ -142,7 +142,7 @@
     "@fortawesome/free-regular-svg-icons": "~5.8.2",
     "@fortawesome/free-solid-svg-icons": "~5.8.2",
     "@fortawesome/react-fontawesome": "~0.1.4",
-    "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "~2.4.3",
     "body-parser": "~1.19.0",
     "chained-function": "~0.5.0",
     "chalk": "~2.4.2",
