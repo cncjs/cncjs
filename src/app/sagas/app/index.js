@@ -6,6 +6,10 @@ import pubsub from 'pubsub-js';
 import qs from 'qs';
 import { all, call, delay, fork, put, race } from 'redux-saga/effects';
 import { TRACE, DEBUG, INFO, WARN, ERROR } from 'universal-logger';
+import {
+    UPDATE_CONTROLLER_SETTINGS,
+    UPDATE_CONTROLLER_STATE,
+} from 'app/actions/controller';
 import settings from 'app/config/settings';
 import {
     appInit,
@@ -16,7 +20,8 @@ import i18next from 'app/i18next';
 import controller from 'app/lib/controller';
 import log from 'app/lib/log';
 import * as user from 'app/lib/user';
-import config from 'app/store/config';
+import reduxStore from 'app/store/redux';
+import configStore from 'app/store/config';
 
 export function* init() {
     yield put(appInit());
@@ -39,7 +44,7 @@ export function* init() {
             const { token = '', action } = { ...event.data };
 
             // Token authentication
-            if (token !== config.get('session.token')) {
+            if (token !== configStore.get('session.token')) {
                 log.warn(`Received a message with an unauthorized token (${token}).`);
                 return;
             }
@@ -74,6 +79,20 @@ export function* init() {
             const body = document.querySelector('body');
             body.style.backgroundColor = '#222'; // sidebar background color
         }
+
+        controller.addListener('controller:settings', (type, settings) => {
+            reduxStore.dispatch({
+                type: UPDATE_CONTROLLER_SETTINGS,
+                payload: { type, settings },
+            });
+        });
+
+        controller.addListener('controller:state', (type, state) => {
+            reduxStore.dispatch({
+                type: UPDATE_CONTROLLER_STATE,
+                payload: { type, state },
+            });
+        });
 
         yield put(appInitSuccess());
     } catch (error) {
@@ -134,7 +153,7 @@ const configureMomentLocale = () => new Promise(resolve => {
 });
 
 const configureSessionToken = () => new Promise(resolve => {
-    const token = config.get('session.token');
+    const token = configStore.get('session.token');
     user.signin({ token: token })
         .then(({ authenticated, token }) => {
             if (authenticated) {
