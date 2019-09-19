@@ -11,8 +11,6 @@ import QueueReports from './Cards/QueueReports';
 import StatusReports from './Cards/StatusReports';
 import ModalGroups from './Cards/ModalGroups';
 
-const none = '–';
-
 const Grbl = (props) => {
     const { state } = props;
     const controllerState = state.controller.state || {};
@@ -28,10 +26,10 @@ const Grbl = (props) => {
 
     // Status Reports
     const parserState = _get(controllerState, 'parserstate', {});
-    const activeState = _get(controllerState, 'status.activeState') || none;
-    const feedrate = _get(controllerState, 'status.feedrate', _get(parserState, 'feedrate', none));
-    const spindle = _get(controllerState, 'status.spindle', _get(parserState, 'spindle', none));
-    const tool = _get(parserState, 'tool', none);
+    const activeState = _get(controllerState, 'status.activeState');
+    const feedrate = _get(controllerState, 'status.feedrate', _get(parserState, 'feedrate'));
+    const spindle = _get(controllerState, 'status.spindle', _get(parserState, 'spindle'));
+    const tool = _get(parserState, 'tool');
 
     // Modal Groups
     const modal = _mapValues(parserState.modal || {}, mapGCodeToText);

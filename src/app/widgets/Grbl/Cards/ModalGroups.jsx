@@ -4,11 +4,10 @@ import i18n from 'app/lib/i18n';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
+import { nonblankValue } from 'app/lib/utils';
 import { WidgetConfigContext } from 'app/widgets/context';
 import OverflowEllipsis from './OverflowEllipsis';
 import Readout from './Readout';
-
-const none = '–';
 
 const ModalGroups = ({
     modal,
@@ -49,7 +48,7 @@ const ModalGroups = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{modal.motion || none}</Readout>
+                                                <Readout>{nonblankValue(modal.motion)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -59,7 +58,7 @@ const ModalGroups = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{modal.wcs || none}</Readout>
+                                                <Readout>{nonblankValue(modal.wcs)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -69,7 +68,7 @@ const ModalGroups = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{modal.plane || none}</Readout>
+                                                <Readout>{nonblankValue(modal.plane)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -79,7 +78,7 @@ const ModalGroups = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{modal.distance || none}</Readout>
+                                                <Readout>{nonblankValue(modal.distance)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -89,7 +88,7 @@ const ModalGroups = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{modal.feedrate || none}</Readout>
+                                                <Readout>{nonblankValue(modal.feedrate)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -99,7 +98,7 @@ const ModalGroups = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{modal.units || none}</Readout>
+                                                <Readout>{nonblankValue(modal.units)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -109,7 +108,7 @@ const ModalGroups = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{modal.program || none}</Readout>
+                                                <Readout>{nonblankValue(modal.program)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -119,7 +118,7 @@ const ModalGroups = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{modal.spindle || none}</Readout>
+                                                <Readout>{nonblankValue(modal.spindle)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -131,7 +130,7 @@ const ModalGroups = ({
                                             <FormCol style={{ width: '50%' }}>
                                                 <Readout>
                                                     {ensureArray(modal.coolant).map(coolant => (
-                                                        <div title={coolant} key={coolant}>{coolant || none}</div>
+                                                        <div title={coolant} key={coolant}>{nonblankValue(coolant)}</div>
                                                     ))}
                                                 </Readout>
                                             </FormCol>

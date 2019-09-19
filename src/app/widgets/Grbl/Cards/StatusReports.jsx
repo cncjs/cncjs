@@ -3,6 +3,7 @@ import i18n from 'app/lib/i18n';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
+import { nonblankValue } from 'app/lib/utils';
 import { WidgetConfigContext } from 'app/widgets/context';
 import OverflowEllipsis from './OverflowEllipsis';
 import Readout from './Readout';
@@ -49,7 +50,7 @@ const StatusReports = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{activeState}</Readout>
+                                                <Readout>{nonblankValue(activeState)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -59,7 +60,7 @@ const StatusReports = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{feedrate}</Readout>
+                                                <Readout>{nonblankValue(feedrate)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -69,7 +70,7 @@ const StatusReports = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{spindle}</Readout>
+                                                <Readout>{nonblankValue(spindle)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -79,7 +80,7 @@ const StatusReports = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <Readout>{tool}</Readout>
+                                                <Readout>{nonblankValue(tool)}</Readout>
                                             </FormCol>
                                         </FormRow>
                                     </FormContainer>
