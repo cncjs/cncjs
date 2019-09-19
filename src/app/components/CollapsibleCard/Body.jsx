@@ -3,7 +3,7 @@ import AnimateHeight from 'react-animate-height';
 import Card from 'app/components/Card';
 import { CollapsibleCardContext } from './context';
 
-const Body = ({ children, style, ...props }) => {
+const Body = ({ children, ...props }) => {
     const { duration, easing, collapsed, collapsing, setCollapsing, toggle } = useContext(CollapsibleCardContext);
 
     return (
@@ -22,10 +22,7 @@ const Body = ({ children, style, ...props }) => {
                 }
             }}
         >
-            <Card.Body
-                collapsed={collapsed}
-                {...props}
-            >
+            <Card.Body {...props}>
                 {typeof children === 'function'
                     ? children({ collapsed, collapsing, toggle })
                     : children

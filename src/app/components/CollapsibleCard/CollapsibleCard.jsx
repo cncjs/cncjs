@@ -8,6 +8,8 @@ import { CollapsibleCardContext } from './context';
 import { useStateFromProps } from './hooks';
 
 const CollapsibleCard = ({
+    collapsed: nextCollapsed,
+
     // https://github.com/Stanko/react-animate-height#props
     easing = 'ease',
     duration = 250,
@@ -15,8 +17,8 @@ const CollapsibleCard = ({
     children,
     ...props
 }) => {
+    const [collapsed, setCollapsed] = useStateFromProps(nextCollapsed);
     const [collapsing, setCollapsing] = useState(false);
-    const [collapsed, setCollapsed] = useStateFromProps(props.collapsed);
     const toggle = (value) => {
         if (value === undefined || value !== collapsed) {
             setCollapsing(true);
@@ -55,6 +57,8 @@ CollapsibleCard.Body = Body;
 
 CollapsibleCard.propTypes = {
     collapsed: PropTypes.bool,
+    easing: PropTypes.string,
+    duration: PropTypes.number,
 };
 
 export default CollapsibleCard;
