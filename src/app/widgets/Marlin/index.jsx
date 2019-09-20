@@ -10,7 +10,7 @@ import {
 } from 'app/constants';
 import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
-import ensurePositiveNumber from 'app/lib/ensure-positive-number';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import Marlin from './Marlin';
 import Controller from './Controller';
