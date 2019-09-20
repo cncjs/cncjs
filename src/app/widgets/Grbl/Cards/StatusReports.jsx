@@ -1,4 +1,6 @@
+import _get from 'lodash/get';
 import React, { useContext } from 'react';
+import { connect } from 'react-redux';
 import i18n from 'app/lib/i18n';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
@@ -94,4 +96,18 @@ const StatusReports = ({
     );
 };
 
-export default StatusReports;
+export default connect(store => {
+    const controllerState = _get(store, 'controller.state');
+    const parserstate = _get(controllerState, 'parserstate');
+    const activeState = _get(controllerState, 'status.activeState');
+    const feedrate = _get(controllerState, 'status.feedrate', _get(parserstate, 'feedrate'));
+    const spindle = _get(controllerState, 'status.spindle', _get(parserstate, 'spindle'));
+    const tool = _get(parserstate, 'tool');
+
+    return {
+        activeState,
+        feedrate,
+        spindle,
+        tool,
+    };
+})(StatusReports);

@@ -1,5 +1,9 @@
 import ensureArray from 'ensure-array';
+import _get from 'lodash/get';
+import _mapValues from 'lodash/mapValues';
 import React, { useContext } from 'react';
+import { connect } from 'react-redux';
+import mapGCodeToText from 'app/lib/gcode-text';
 import i18n from 'app/lib/i18n';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
@@ -146,4 +150,12 @@ const ModalGroups = ({
     );
 };
 
-export default ModalGroups;
+export default connect(store => {
+    const controllerState = _get(store, 'controller.state');
+    const parserstate = _get(controllerState, 'parserstate');
+    const modal = _get(parserstate, 'modal');
+
+    return {
+        modal: _mapValues(modal, mapGCodeToText),
+    };
+})(ModalGroups);

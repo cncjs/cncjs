@@ -1,22 +1,26 @@
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import React, { PureComponent } from 'react';
+import styled from 'styled-components';
 import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import FormGroup from 'app/components/FormGroup';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import i18n from 'app/lib/i18n';
 import controller from 'app/lib/controller';
+import portal from 'app/lib/portal';
 import { WidgetConfigContext } from 'app/widgets/context';
 import WidgetConfig from 'app/widgets/WidgetConfig';
 import {
     GRBL
 } from 'app/constants';
-import Controller from './Controller';
-import Grbl from './Grbl';
-import {
-    MODAL_NONE,
-    MODAL_CONTROLLER
-} from './constants';
+import QueueReports from './Cards/QueueReports';
+import StatusReports from './Cards/StatusReports';
+import ModalGroups from './Cards/ModalGroups';
+import ControllerModal from './modals/ControllerModal';
+import FeedOverride from './Overrides/FeedOverride';
+import SpindleOverride from './Overrides/SpindleOverride';
+import RapidOverride from './Overrides/RapidOverride';
 import styles from './index.styl';
 
 class GrblWidget extends PureComponent {
@@ -51,33 +55,6 @@ class GrblWidget extends PureComponent {
         toggleMinimized: () => {
             const { minimized } = this.state;
             this.setState({ minimized: !minimized });
-        },
-        openModal: (name = MODAL_NONE, params = {}) => {
-            this.setState({
-                modal: {
-                    name: name,
-                    params: params
-                }
-            });
-        },
-        closeModal: () => {
-            this.setState({
-                modal: {
-                    name: MODAL_NONE,
-                    params: {}
-                }
-            });
-        },
-        updateModalParams: (params = {}) => {
-            this.setState({
-                modal: {
-                    ...this.state.modal,
-                    params: {
-                        ...this.state.modal.params,
-                        ...params
-                    }
-                }
-            });
         },
     };
 
@@ -145,10 +122,6 @@ class GrblWidget extends PureComponent {
                 settings: controller.settings,
                 state: controller.state
             },
-            modal: {
-                name: MODAL_NONE,
-                params: {}
-            },
         };
     }
 
@@ -210,7 +183,7 @@ class GrblWidget extends PureComponent {
                             {isReady && (
                                 <Widget.Button
                                     onClick={(event) => {
-                                        actions.openModal(MODAL_CONTROLLER);
+                                        portal(ControllerModal);
                                     }}
                                 >
                                     <i className="fa fa-info" />
@@ -350,10 +323,16 @@ class GrblWidget extends PureComponent {
                                 { [styles.hidden]: minimized }
                             )}
                         >
-                            {state.modal.name === MODAL_CONTROLLER &&
-                            <Controller state={state} actions={actions} />
-                            }
-                            <Grbl state={state} />
+                            <FormGroup>
+                                <FeedOverride />
+                                <SpindleOverride />
+                                <RapidOverride />
+                            </FormGroup>
+                            <Accordion>
+                                <QueueReports />
+                                <StatusReports />
+                                <ModalGroups />
+                            </Accordion>
                         </Widget.Content>
                     )}
                 </Widget>
@@ -363,3 +342,9 @@ class GrblWidget extends PureComponent {
 }
 
 export default GrblWidget;
+
+const Accordion = styled.div`
+    > :not(:first-child) {
+        border-top: 0;
+    }
+`;

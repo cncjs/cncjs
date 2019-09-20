@@ -1,6 +1,9 @@
+import _get from 'lodash/get';
 import React, { useContext, useEffect, useState } from 'react';
+import { connect } from 'react-redux';
 import { ProgressBar } from 'react-bootstrap';
 import i18n from 'app/lib/i18n';
+import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
@@ -131,4 +134,13 @@ const QueueReports = ({
     );
 };
 
-export default QueueReports;
+export default connect(store => {
+    const controllerState = _get(store, 'controller.state');
+    const plannerBufferSize = ensurePositiveNumber(_get(controllerState, 'status.buf.planner'));
+    const receiveBufferSize = ensurePositiveNumber(_get(controllerState, 'status.buf.rx'));
+
+    return {
+        plannerBufferSize,
+        receiveBufferSize,
+    };
+})(QueueReports);
