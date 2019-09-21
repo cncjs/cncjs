@@ -1,8 +1,8 @@
 import cx from 'classnames';
 import React from 'react';
+import { tagPropType } from 'app/components/shared/utils';
 import Resolver from './Resolver';
 import styles from './styles/index.styl';
-import { tagPropType } from './utils';
 
 const CardDeck = ({
     className,

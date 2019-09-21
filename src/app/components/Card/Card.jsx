@@ -1,13 +1,13 @@
 import cx from 'classnames';
 import React from 'react';
+import { tagPropType } from 'app/components/shared/utils';
 import styles from './styles/index.styl';
 import Resolver from './Resolver';
-import { tagPropType } from './utils';
 
 const Card = ({
     className,
-    tag: Component,
     style,
+    tag: Component,
     ...props
 }) => (
     <Resolver>
