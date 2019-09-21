@@ -1,10 +1,12 @@
 import constants from 'namespace-constants';
 import { createAction } from 'redux-action';
 
+const NS = 'controller';
+
 export const {
     UPDATE_CONTROLLER_SETTINGS,
     UPDATE_CONTROLLER_STATE,
-} = constants([
+} = constants(NS, [
     'UPDATE_CONTROLLER_SETTINGS',
     'UPDATE_CONTROLLER_STATE',
 ]);
