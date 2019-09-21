@@ -1,27 +1,28 @@
 import _get from 'lodash/get';
 import React, { useContext, useEffect, useState } from 'react';
 import { connect } from 'react-redux';
-import { ProgressBar } from 'react-bootstrap';
 import i18n from 'app/lib/i18n';
 import { ensurePositiveNumber } from 'app/lib/ensure-type';
 import CollapsibleCard from 'app/components/CollapsibleCard';
 import { Container, Row, Col } from 'app/components/GridSystem';
 import HorizontalForm from 'app/components/HorizontalForm';
+import Progress from 'app/components/Progress';
+import Text from 'app/components/Text';
 import { WidgetConfigContext } from 'app/widgets/context';
 import OverflowEllipsis from './OverflowEllipsis';
 
-const mapReceiveBufferSizeToBSStyle = (rx) => {
+const mapReceiveBufferSizeToColor = (rx) => {
     // danger: 0-7
     // warning: 8-15
     // info: >=16
-    rx = Number(rx) || 0;
+    rx = ensurePositiveNumber(rx);
     if (rx >= 16) {
-        return 'info';
+        return '#17a2b8';
     }
     if (rx >= 8) {
-        return 'warning';
+        return '#ffc107';
     }
-    return 'danger';
+    return '#dc3545';
 };
 
 const QueueReports = ({
@@ -88,18 +89,17 @@ const QueueReports = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <ProgressBar
-                                                    style={{ marginBottom: 0 }}
-                                                    bsStyle="info"
-                                                    min={plannerBufferMin}
-                                                    max={plannerBufferMax}
-                                                    now={plannerBufferSize}
-                                                    label={(
-                                                        <div style={{ color: '#222', padding: '0 10px' }}>
+                                                <Progress style={{ height: '1.25rem' }}>
+                                                    <Progress.Bar
+                                                        min={plannerBufferMin}
+                                                        max={plannerBufferMax}
+                                                        value={plannerBufferSize}
+                                                    >
+                                                        <Text style={{ padding: '0 10px' }}>
                                                             {plannerBufferSize}
-                                                        </div>
-                                                    )}
-                                                />
+                                                        </Text>
+                                                    </Progress.Bar>
+                                                </Progress>
                                             </FormCol>
                                         </FormRow>
                                         <FormRow>
@@ -109,18 +109,20 @@ const QueueReports = ({
                                                 </OverflowEllipsis>
                                             </FormCol>
                                             <FormCol style={{ width: '50%' }}>
-                                                <ProgressBar
-                                                    style={{ marginBottom: 0 }}
-                                                    bsStyle={mapReceiveBufferSizeToBSStyle(receiveBufferSize)}
-                                                    min={receiveBufferMin}
-                                                    max={receiveBufferMax}
-                                                    now={receiveBufferSize}
-                                                    label={(
-                                                        <div style={{ color: '#222', padding: '0 10px' }}>
+                                                <Progress style={{ height: '1.25rem' }}>
+                                                    <Progress.Bar
+                                                        min={receiveBufferMin}
+                                                        max={receiveBufferMax}
+                                                        value={receiveBufferSize}
+                                                        style={{
+                                                            backgroundColor: mapReceiveBufferSizeToColor(receiveBufferSize),
+                                                        }}
+                                                    >
+                                                        <Text style={{ padding: '0 10px' }}>
                                                             {receiveBufferSize}
-                                                        </div>
-                                                    )}
-                                                />
+                                                        </Text>
+                                                    </Progress.Bar>
+                                                </Progress>
                                             </FormCol>
                                         </FormRow>
                                     </FormContainer>
