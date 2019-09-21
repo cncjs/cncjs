@@ -908,14 +908,28 @@ class MarlinController {
                 port: port,
                 baudrate: baudrate,
                 controllerType: this.type,
-                inuse: true
+                inuse: true,
+
+                // connection options
+                connection: {
+                    ident: this.connection.ident,
+                    type: this.connection.type,
+                    settings: this.connection.settings,
+                },
             });
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
                 this.engine.io.emit('serialport:change', {
                     port: port,
-                    inuse: true
+                    inuse: true,
+
+                    // connection options
+                    connection: {
+                        ident: this.connection.ident,
+                        type: this.connection.type,
+                        settings: this.connection.settings,
+                    },
                 });
             }
 
@@ -953,14 +967,28 @@ class MarlinController {
 
         this.emit('serialport:close', {
             port: port,
-            inuse: false
+            inuse: false,
+
+            // connection options
+            connection: {
+                ident: this.connection.ident,
+                type: this.connection.type,
+                settings: this.connection.settings,
+            },
         });
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
             this.engine.io.emit('serialport:change', {
                 port: port,
-                inuse: false
+                inuse: false,
+
+                // connection options
+                connection: {
+                    ident: this.connection.ident,
+                    type: this.connection.type,
+                    settings: this.connection.settings,
+                },
             });
         }
 
@@ -998,7 +1026,14 @@ class MarlinController {
                 port: this.options.port,
                 baudrate: this.options.baudrate,
                 controllerType: this.type,
-                inuse: true
+                inuse: true,
+
+                // connection options
+                connection: {
+                    ident: this.connection.ident,
+                    type: this.connection.type,
+                    settings: this.connection.settings,
+                },
             });
         }
         if (!_.isEmpty(this.settings)) {
