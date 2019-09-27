@@ -29,12 +29,10 @@ const toIdent = (options) => {
 class SerialConnection extends EventEmitter {
     type = 'serial';
 
-    parser = null;
-
-    // Readline parser
     port = null;
 
-    // SerialPort
+    parser = null;
+
     writeFilter = (data) => data;
 
     eventListener = {

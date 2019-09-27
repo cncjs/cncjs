@@ -18,16 +18,16 @@ export const getActiveWidgets = () => {
         .map(widgetId => widgetId.split(':')[0]);
     const activeWidgets = union(defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
-            if (widget === 'grbl' && !includes(controller.loadedControllers, GRBL)) {
+            if (widget === 'grbl' && !includes(controller.availableControllers, GRBL)) {
                 return false;
             }
-            if (widget === 'marlin' && !includes(controller.loadedControllers, MARLIN)) {
+            if (widget === 'marlin' && !includes(controller.availableControllers, MARLIN)) {
                 return false;
             }
-            if (widget === 'smoothie' && !includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widget === 'smoothie' && !includes(controller.availableControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widget === 'tinyg' && !includes(controller.loadedControllers, TINYG)) {
+            if (widget === 'tinyg' && !includes(controller.availableControllers, TINYG)) {
                 return false;
             }
             return true;
@@ -46,16 +46,16 @@ export const getInactiveWidgets = () => {
         .map(widgetId => widgetId.split(':')[0]);
     const inactiveWidgets = difference(allWidgets, defaultWidgets, primaryWidgets, secondaryWidgets)
         .filter(widget => {
-            if (widget === 'grbl' && !includes(controller.loadedControllers, GRBL)) {
+            if (widget === 'grbl' && !includes(controller.availableControllers, GRBL)) {
                 return false;
             }
-            if (widget === 'marlin' && !includes(controller.loadedControllers, MARLIN)) {
+            if (widget === 'marlin' && !includes(controller.availableControllers, MARLIN)) {
                 return false;
             }
-            if (widget === 'smoothie' && !includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widget === 'smoothie' && !includes(controller.availableControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widget === 'tinyg' && !includes(controller.loadedControllers, TINYG)) {
+            if (widget === 'tinyg' && !includes(controller.availableControllers, TINYG)) {
                 return false;
             }
             return true;

@@ -57,47 +57,39 @@ import {
 
 class TinyGRunner extends events.EventEmitter {
     state = {
-        // Motor Timeout
-        mt: 0,
-        // Power Management
-        pwr: {
-            // {"1":0,"2":0,"3":0,"4":0}
+        machineState: '',
+        velocity: 0,
+        line: 0,
+        feedrate: 0,
+        mpos: {
+            x: '0.000',
+            y: '0.000',
+            z: '0.000'
         },
-        // Queue Reports
-        qr: 0,
-        // Status Reports
-        sr: {
-            machineState: '',
-            velocity: 0,
-            line: 0,
-            feedrate: 0,
-            mpos: {
-                x: '0.000',
-                y: '0.000',
-                z: '0.000'
-            },
-            wpos: {
-                x: '0.000',
-                y: '0.000',
-                z: '0.000'
-            },
-            modal: {
-                motion: '', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
-                wcs: '', // G54, G55, G56, G57, G58, G59
-                plane: '', // G17: xy-plane, G18: xz-plane, G19: yz-plane
-                units: '', // G20: Inches, G21: Millimeters
-                distance: '', // G90: Absolute, G91: Relative
-                feedrate: '', // G93: Inverse time mode, G94: Units per minute
-                path: '', // G61: Exact path mode, G61.1: Exact stop mode, G64: Continuous mode
-                spindle: '', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
-                coolant: '' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
-            },
-            tool: 0,
-            spe: 0, // [edge-082.10] Spindle enable
-            spd: 0, // [edge-082.10] Spindle direction
-            spc: 0, // [edge-101.03] Spindle control
-            sps: 0, // [edge-082.10] Spindle speed
-        }
+        wpos: {
+            x: '0.000',
+            y: '0.000',
+            z: '0.000'
+        },
+        modal: {
+            motion: '', // G0, G1, G2, G3, G38.2, G38.3, G38.4, G38.5, G80
+            wcs: '', // G54, G55, G56, G57, G58, G59
+            plane: '', // G17: xy-plane, G18: xz-plane, G19: yz-plane
+            units: '', // G20: Inches, G21: Millimeters
+            distance: '', // G90: Absolute, G91: Relative
+            feedrate: '', // G93: Inverse time mode, G94: Units per minute
+            path: '', // G61: Exact path mode, G61.1: Exact stop mode, G64: Continuous mode
+            spindle: '', // M3: Spindle (cw), M4: Spindle (ccw), M5: Spindle off
+            coolant: '' // M7: Mist coolant, M8: Flood coolant, M9: Coolant off, [M7,M8]: Both on
+        },
+        tool: 0,
+        spe: 0, // [edge-082.10] Spindle enable
+        spd: 0, // [edge-082.10] Spindle direction
+        spc: 0, // [edge-101.03] Spindle control
+        sps: 0, // [edge-082.10] Spindle speed
+        mt: 0, // Motor timeout
+        pwr: {}, // Power management: { "1": 0, "2": 0, "3": 0, "4": 0 }
+        qr: 0 // Queue reports
     };
 
     settings = {
@@ -371,37 +363,37 @@ class TinyGRunner extends events.EventEmitter {
                     'mpob': 'mpos.b',
                     'mpoc': 'mpos.c'
                 };
-                const sr = {
-                    ...this.state.sr,
+                const state = {
+                    ...this.state,
                     modal: {
-                        ...this.state.sr.modal
+                        ...this.state.modal
                     },
                     wpos: {
-                        ...this.state.sr.wpos
+                        ...this.state.wpos
                     },
                     mpos: {
-                        ...this.state.sr.mpos
+                        ...this.state.mpos
                     }
                 };
                 _.each(keymaps, (target, key) => {
                     if (typeof target === 'string') {
                         const val = _.get(payload.sr, key);
                         if (val !== undefined) {
-                            _.set(sr, target, val);
+                            _.set(state, target, val);
                         }
                     }
                     if (typeof target === 'function') {
                         const val = _.get(payload.sr, key);
                         if (val !== undefined) {
-                            target(sr, val);
+                            target(state, val);
                         }
                     }
                 });
 
-                if (!_.isEqual(this.state.sr, sr)) {
+                if (!_.isEqual(this.state, state)) {
                     this.state = { // enforce change
                         ...this.state,
-                        sr: sr
+                        ...state
                     };
                 }
                 this.emit('sr', payload.sr);
@@ -452,15 +444,15 @@ class TinyGRunner extends events.EventEmitter {
     }
 
     getMachinePosition(state = this.state) {
-        return _.get(state, 'sr.mpos', {});
+        return _.get(state, 'mpos', {});
     }
 
     getWorkPosition(state = this.state) {
-        return _.get(state, 'sr.wpos', {});
+        return _.get(state, 'wpos', {});
     }
 
-    getModalGroup(state = this.state) {
-        return _.get(state, 'sr.modal', {});
+    getModalState(state = this.state) {
+        return _.get(state, 'modal', {});
     }
 
     getTool(state = this.state) {
@@ -468,12 +460,12 @@ class TinyGRunner extends events.EventEmitter {
     }
 
     isAlarm() {
-        const machineState = _.get(this.state, 'sr.machineState');
+        const machineState = _.get(this.state, 'machineState');
         return machineState === TINYG_MACHINE_STATE_ALARM;
     }
 
     isIdle() {
-        const machineState = _.get(this.state, 'sr.machineState');
+        const machineState = _.get(this.state, 'machineState');
         return (
             (machineState === TINYG_MACHINE_STATE_READY) ||
             (machineState === TINYG_MACHINE_STATE_STOP) ||

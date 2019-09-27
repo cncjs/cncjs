@@ -157,16 +157,16 @@ class WidgetManager extends PureComponent {
         super(props);
 
         this.widgetList = this.widgetList.filter(widgetItem => {
-            if (widgetItem.id === 'grbl' && !_includes(controller.loadedControllers, GRBL)) {
+            if (widgetItem.id === 'grbl' && !_includes(controller.availableControllers, GRBL)) {
                 return false;
             }
-            if (widgetItem.id === 'marlin' && !_includes(controller.loadedControllers, MARLIN)) {
+            if (widgetItem.id === 'marlin' && !_includes(controller.availableControllers, MARLIN)) {
                 return false;
             }
-            if (widgetItem.id === 'smoothie' && !_includes(controller.loadedControllers, SMOOTHIE)) {
+            if (widgetItem.id === 'smoothie' && !_includes(controller.availableControllers, SMOOTHIE)) {
                 return false;
             }
-            if (widgetItem.id === 'tinyg' && !_includes(controller.loadedControllers, TINYG)) {
+            if (widgetItem.id === 'tinyg' && !_includes(controller.availableControllers, TINYG)) {
                 return false;
             }
             return true;

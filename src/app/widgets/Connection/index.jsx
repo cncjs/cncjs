@@ -1,23 +1,22 @@
-import classNames from 'classnames';
-import get from 'lodash/get';
+import cx from 'classnames';
 import reverse from 'lodash/reverse';
 import sortBy from 'lodash/sortBy';
 import uniq from 'lodash/uniq';
 import includes from 'lodash/includes';
 import map from 'lodash/map';
 import PropTypes from 'prop-types';
-import React, { PureComponent } from 'react';
-import FontAwesomeIcon from 'app/components/FontAwesomeIcon';
+import React, { Component } from 'react';
 import Space from 'app/components/Space';
 import Widget from 'app/components/Widget';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import log from 'app/lib/log';
-import WidgetConfig from 'app/widgets/WidgetConfig';
+import promisify from 'app/lib/promisify';
+import WidgetConfig from '../WidgetConfig';
 import Connection from './Connection';
 import styles from './index.styl';
 
-class ConnectionWidget extends PureComponent {
+class ConnectionWidget extends Component {
     static propTypes = {
         widgetId: PropTypes.string.isRequired,
         onFork: PropTypes.func.isRequired,
@@ -59,25 +58,34 @@ class ConnectionWidget extends PureComponent {
         },
         changeController: (controllerType) => {
             this.setState(state => ({
-                controllerType: controllerType
+                controller: {
+                    ...state.controller,
+                    type: controllerType
+                }
             }));
         },
         onChangePortOption: (option) => {
             this.setState(state => ({
                 alertMessage: '',
-                port: option.value
+                connection: {
+                    ...state.connection,
+                    serial: {
+                        ...state.connection.serial,
+                        path: option.value
+                    }
+                }
             }));
         },
-        onChangeBaudrateOption: (option) => {
+        onChangeBaudRateOption: (option) => {
             this.setState(state => ({
                 alertMessage: '',
-                baudrate: option.value
-            }));
-        },
-        toggleAutoReconnect: (event) => {
-            const checked = event.target.checked;
-            this.setState(state => ({
-                autoReconnect: checked
+                connection: {
+                    ...state.connection,
+                    serial: {
+                        ...state.connection.serial,
+                        baudRate: option.value
+                    }
+                }
             }));
         },
         toggleHardwareFlowControl: (event) => {
@@ -92,116 +100,96 @@ class ConnectionWidget extends PureComponent {
                 }
             }));
         },
-        handleRefreshPorts: (event) => {
-            this.refreshPorts();
+        toggleAutoReconnect: (event) => {
+            const checked = event.target.checked;
+            this.setState(state => ({
+                autoReconnect: checked
+            }));
+        },
+        handleRefresh: (event) => {
+            this.refresh();
         },
         handleOpenPort: (event) => {
-            const { port, baudrate } = this.state;
-            this.openPort(port, { baudrate: baudrate });
+            this.openPort();
         },
         handleClosePort: (event) => {
-            const { port } = this.state;
-            this.closePort(port);
+            this.closePort();
         }
     };
 
     controllerEvents = {
-        'serialport:list': (ports) => {
-            log.debug('Received a list of serial ports:', ports);
+        'connection:open': (options) => {
+            const { type, settings } = options;
 
-            this.stopLoading();
+            if (type === 'serial') {
+                log.debug(`A new connection was established: type=${type}, settings=${settings}`);
 
-            const port = this.config.get('port') || '';
-
-            if (includes(map(ports, 'port'), port)) {
                 this.setState(state => ({
                     alertMessage: '',
-                    port: port,
-                    ports: ports
-                }));
-
-                const { autoReconnect, hasReconnected } = this.state;
-
-                if (autoReconnect && !hasReconnected) {
-                    const { baudrate } = this.state;
-
-                    this.setState(state => ({
-                        hasReconnected: true
-                    }));
-                    this.openPort(port, {
-                        baudrate: baudrate
-                    });
-                }
-            } else {
-                this.setState(state => ({
-                    alertMessage: '',
-                    ports: ports
+                    connecting: false,
+                    connected: true,
+                    ports: state.ports.map(port => {
+                        if (port.comName !== settings.path) {
+                            return port;
+                        }
+                        return { ...port, isOpen: true };
+                    })
                 }));
             }
         },
-        'serialport:change': (options) => {
-            const { port, inuse } = options;
-            const ports = this.state.ports.map((o) => {
-                if (o.port !== port) {
-                    return o;
-                }
-                return { ...o, inuse };
-            });
+        'connection:close': (options) => {
+            const { type, settings } = options;
 
-            this.setState(state => ({
-                ports: ports
-            }));
+            if (type === 'serial') {
+                log.debug(`The connection was closed: type=${type}, settings=${settings}`);
+
+                this.setState(state => ({
+                    alertMessage: '',
+                    connecting: false,
+                    connected: false,
+                    ports: state.ports.map(port => {
+                        if (port.comName !== settings.path) {
+                            return port;
+                        }
+                        return { ...port, isOpen: false };
+                    })
+                }));
+
+                this.refresh();
+            }
         },
-        'serialport:open': (options) => {
-            const { controllerType, port, baudrate, inuse } = options;
-            const ports = this.state.ports.map((o) => {
-                if (o.port !== port) {
-                    return o;
-                }
-                return { ...o, inuse };
-            });
+        'connection:change': (options, isOpen) => {
+            const { type, settings } = options;
 
-            this.setState(state => ({
-                alertMessage: '',
-                connecting: false,
-                connected: true,
-                controllerType: controllerType, // Grbl|Marlin|Smoothie|TinyG
-                port: port,
-                baudrate: baudrate,
-                ports: ports
-            }));
-
-            log.debug(`Established a connection to the serial port "${port}"`);
+            if (type === 'serial') {
+                this.setState(state => ({
+                    ports: state.ports.map(port => {
+                        if (port.comName !== settings.path) {
+                            return port;
+                        }
+                        return { ...port, isOpen: isOpen };
+                    })
+                }));
+            }
         },
-        'serialport:close': (options) => {
-            const { port } = options;
+        'connection:error': (options, err) => {
+            const { type, settings } = options;
 
-            log.debug(`The serial port "${port}" is disconected`);
+            if (type === 'serial') {
+                log.error(`Error opening serial port: type=${type}, settings=${settings}`);
 
-            this.setState(state => ({
-                alertMessage: '',
-                connecting: false,
-                connected: false
-            }));
-
-            this.refreshPorts();
-        },
-        'serialport:error': (options) => {
-            const { port } = options;
-
-            this.setState(state => ({
-                alertMessage: i18n._('Error opening serial port \'{{- port}}\'', { port: port }),
-                connecting: false,
-                connected: false
-            }));
-
-            log.error(`Error opening serial port "${port}"`);
+                this.setState(state => ({
+                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: settings.path }),
+                    connecting: false,
+                    connected: false
+                }));
+            }
         }
     };
 
     componentDidMount() {
         this.addControllerEvents();
-        this.refreshPorts();
+        this.refresh({ autoConnect: true });
     }
 
     componentWillUnmount() {
@@ -209,39 +197,44 @@ class ConnectionWidget extends PureComponent {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        const {
-            minimized,
-            controllerType,
-            port,
-            baudrate,
-            autoReconnect,
-            connection
-        } = this.state;
+        this.config.set('minimized', this.state.minimized);
 
-        this.config.set('minimized', minimized);
-        if (controllerType) {
-            this.config.set('controller.type', controllerType);
+        // Controller
+        if (this.state.controller.type) {
+            this.config.set('controller.type', this.state.controller.type);
         }
-        if (port) {
-            this.config.set('port', port);
+
+        { // Serial connection
+            if (this.state.connection.serial.path !== prevState.connection.serial.path) {
+                this.config.set('connection.serial.path', this.state.connection.serial.path);
+            }
+            if (this.state.connection.serial.baudRate !== prevState.connection.serial.baudRate) {
+                this.config.set('connection.serial.baudRate', this.state.connection.serial.baudRate);
+            }
+            // Hardware flow control
+            this.config.set('connection.serial.rtscts', this.state.connection.serial.rtscts);
         }
-        if (baudrate) {
-            this.config.set('baudrate', baudrate);
+
+        { // Socket connection
+            if (this.state.connection.socket.host !== prevState.connection.socket.host) {
+                this.config.set('connection.socket.host', this.state.connection.socket.host);
+            }
+            if (this.state.connection.socket.port !== prevState.connection.socket.port) {
+                this.config.set('connection.socket.port', this.state.connection.socket.port);
+            }
         }
-        if (connection) {
-            this.config.set('connection.serial.rtscts', get(connection, 'serial.rtscts', false));
-        }
-        this.config.set('autoReconnect', autoReconnect);
+
+        this.config.set('autoReconnect', this.state.autoReconnect);
     }
 
     getInitialState() {
         let controllerType = this.config.get('controller.type');
-        if (!includes(controller.loadedControllers, controllerType)) {
-            controllerType = controller.loadedControllers[0];
+        if (!includes(controller.availableControllers, controllerType)) {
+            controllerType = controller.availableControllers[0];
         }
 
-        // Common baud rates
-        const defaultBaudrates = [
+        // Default baud rates
+        const defaultBaudRates = [
             250000,
             115200,
             57600,
@@ -254,22 +247,28 @@ class ConnectionWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            loading: false,
+            ports: [],
+            baudRates: defaultBaudRates,
+            alertMessage: '',
+            autoReconnect: this.config.get('autoReconnect'),
             connecting: false,
             connected: false,
-            ports: [],
-            baudrates: reverse(sortBy(uniq(controller.baudrates.concat(defaultBaudrates)))),
-            controllerType: controllerType,
-            port: controller.port,
-            baudrate: this.config.get('baudrate'),
-            connection: {
-                serial: {
-                    rtscts: this.config.get('connection.serial.rtscts')
-                }
+            loading: false,
+            controller: {
+                type: this.config.get('controller.type')
             },
-            autoReconnect: this.config.get('autoReconnect'),
-            hasReconnected: false,
-            alertMessage: ''
+            connection: {
+                type: this.config.get('connection.type'),
+                serial: {
+                    path: this.config.get('connection.serial.path'),
+                    baudRate: this.config.get('connection.serial.baudRate'),
+                    rtscts: this.config.get('connection.serial.rtscts')
+                },
+                socket: {
+                    host: this.config.get('connection.socket.host'),
+                    port: this.config.get('connection.socket.port')
+                }
+            }
         };
     }
 
@@ -287,72 +286,120 @@ class ConnectionWidget extends PureComponent {
         });
     }
 
-    startLoading() {
-        const delay = 5 * 1000; // wait for 5 seconds
+    async refresh(options) {
+        const { autoConnect = false } = { ...options };
 
+        let loadingTimer = null;
+
+        // Start loading
         this.setState(state => ({
             loading: true
         }));
-        this._loadingTimer = setTimeout(() => {
+
+        // Create a timer to stop loading
+        const delay = 5000; // up to 5 seconds
+        loadingTimer = setTimeout(() => {
+            loadingTimer = null;
+
             this.setState(state => ({
                 loading: false
             }));
         }, delay);
-    }
 
-    stopLoading() {
-        if (this._loadingTimer) {
-            clearTimeout(this._loadingTimer);
-            this._loadingTimer = null;
+        const fetchBaudRates = promisify(controller.getBaudRates, {
+            errorFirst: true,
+            thisArg: controller
+        });
+        const fetchPorts = promisify(controller.getPorts, {
+            errorFirst: true,
+            thisArg: controller
+        });
+
+        try {
+            const baudRates = await fetchBaudRates();
+            log.debug('Received a list of supported baud rates:', baudRates);
+            this.setState(state => ({
+                baudRates: reverse(sortBy(uniq(baudRates.concat(state.baudRates))))
+            }));
+
+            const ports = await fetchPorts();
+            log.debug('Received a list of available serial ports:', ports);
+            const path = this.config.get('connection.serial.path');
+            if (includes(map(ports, 'comName'), path)) {
+                this.setState(state => ({
+                    alertMessage: '',
+                    ports: ports,
+                    connection: {
+                        ...state.connection,
+                        serial: {
+                            ...state.connection.serial,
+                            path: path
+                        }
+                    }
+                }));
+
+                if (this.state.autoReconnect && autoConnect) {
+                    this.openPort(path);
+                }
+            } else {
+                this.setState(state => ({
+                    alertMessage: '',
+                    ports: ports
+                }));
+            }
+        } catch (err) {
+            log.error(err);
+        }
+
+        // Stop loading
+        if (loadingTimer) {
+            clearTimeout(loadingTimer);
+            loadingTimer = null;
         }
         this.setState(state => ({
             loading: false
         }));
     }
 
-    refreshPorts() {
-        this.startLoading();
-        controller.listPorts();
-    }
-
-    openPort(port, options) {
-        const { baudrate } = { ...options };
+    openPort(path, baudRate) {
+        const controllerType = this.state.controller.type;
+        const connectionType = this.state.connection.type;
+        const options = {
+            path: path || this.state.connection.serial.path,
+            baudRate: baudRate || this.state.connection.serial.baudRate,
+            rtscts: this.state.connection.serial.rtscts
+        };
 
         this.setState(state => ({
             connecting: true
         }));
 
-        controller.openPort(port, {
-            controllerType: this.state.controllerType,
-            baudrate: baudrate,
-            rtscts: this.state.connection.serial.rtscts
-        }, (err) => {
+        controller.open(controllerType, connectionType, options, (err) => {
             if (err) {
+                log.error(err);
                 this.setState(state => ({
-                    alertMessage: i18n._('Error opening serial port \'{{- port}}\'', { port: port }),
+                    alertMessage: i18n._('Error opening serial port: {{-path}}', { path: options.path }),
                     connecting: false,
                     connected: false
                 }));
-
-                log.error(err);
                 return;
             }
         });
     }
 
-    closePort(port = this.state.port) {
+    closePort() {
         this.setState(state => ({
             connecting: false,
             connected: false
         }));
-        controller.closePort(port, (err) => {
+
+        controller.close(err => {
             if (err) {
                 log.error(err);
                 return;
             }
 
-            // Refresh ports
-            controller.listPorts();
+            this.refresh();
         });
     }
 
@@ -372,11 +419,11 @@ class ConnectionWidget extends PureComponent {
                 <Widget.Header>
                     <Widget.Title>
                         <Widget.Sortable className={this.props.sortable.handleClassName}>
-                            <FontAwesomeIcon icon="bars" fixedWidth />
-                            <Space width={4} />
+                            <i className="fa fa-bars" />
+                            <Space width="8" />
                         </Widget.Sortable>
                         {isForkedWidget &&
-                        <FontAwesomeIcon icon="code-branch" fixedWidth />
+                        <i className="fa fa-code-fork" style={{ marginRight: 5 }} />
                         }
                         {i18n._('Connection')}
                     </Widget.Title>
@@ -386,18 +433,18 @@ class ConnectionWidget extends PureComponent {
                             title={minimized ? i18n._('Expand') : i18n._('Collapse')}
                             onClick={actions.toggleMinimized}
                         >
-                            {minimized &&
-                            <FontAwesomeIcon icon="chevron-down" fixedWidth />
-                            }
-                            {!minimized &&
-                            <FontAwesomeIcon icon="chevron-up" fixedWidth />
-                            }
+                            <i
+                                className={cx(
+                                    'fa',
+                                    'fa-fw',
+                                    { 'fa-chevron-up': !minimized },
+                                    { 'fa-chevron-down': minimized }
+                                )}
+                            />
                         </Widget.Button>
                         <Widget.DropdownButton
                             title={i18n._('More')}
-                            toggle={(
-                                <FontAwesomeIcon icon="ellipsis-v" fixedWidth />
-                            )}
+                            toggle={<i className="fa fa-ellipsis-v" />}
                             onSelect={(eventKey) => {
                                 if (eventKey === 'fullscreen') {
                                     actions.toggleFullscreen();
@@ -406,21 +453,21 @@ class ConnectionWidget extends PureComponent {
                         >
                             <Widget.DropdownMenuItem eventKey="fullscreen">
                                 <i
-                                    className={classNames(
+                                    className={cx(
                                         'fa',
                                         'fa-fw',
                                         { 'fa-expand': !isFullscreen },
                                         { 'fa-compress': isFullscreen }
                                     )}
                                 />
-                                <Space width={8} />
+                                <Space width="4" />
                                 {!isFullscreen ? i18n._('Enter Full Screen') : i18n._('Exit Full Screen')}
                             </Widget.DropdownMenuItem>
                         </Widget.DropdownButton>
                     </Widget.Controls>
                 </Widget.Header>
                 <Widget.Content
-                    className={classNames(
+                    className={cx(
                         styles['widget-content'],
                         { [styles.hidden]: minimized }
                     )}

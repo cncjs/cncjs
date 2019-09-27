@@ -2,13 +2,13 @@
 export const SMOOTHIE = 'Smoothie';
 
 // Active State
-export const SMOOTHIE_ACTIVE_STATE_IDLE = 'Idle';
-export const SMOOTHIE_ACTIVE_STATE_RUN = 'Run';
-export const SMOOTHIE_ACTIVE_STATE_HOLD = 'Hold';
-export const SMOOTHIE_ACTIVE_STATE_DOOR = 'Door';
-export const SMOOTHIE_ACTIVE_STATE_HOME = 'Home';
-export const SMOOTHIE_ACTIVE_STATE_ALARM = 'Alarm';
-export const SMOOTHIE_ACTIVE_STATE_CHECK = 'Check';
+export const SMOOTHIE_MACHINE_STATE_IDLE = 'Idle';
+export const SMOOTHIE_MACHINE_STATE_RUN = 'Run';
+export const SMOOTHIE_MACHINE_STATE_HOLD = 'Hold';
+export const SMOOTHIE_MACHINE_STATE_DOOR = 'Door';
+export const SMOOTHIE_MACHINE_STATE_HOME = 'Home';
+export const SMOOTHIE_MACHINE_STATE_ALARM = 'Alarm';
+export const SMOOTHIE_MACHINE_STATE_CHECK = 'Check';
 
 // Real-time Commands: ~, !, ?, and Ctrl-x
 export const SMOOTHIE_REALTIME_COMMANDS = [

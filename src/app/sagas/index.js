@@ -1,8 +1,10 @@
 import { fork, all, call } from 'redux-saga/effects';
 import * as app from './app';
+import * as connection from './connection';
 
 const programs = [
-    app
+    app,
+    connection,
 ];
 
 export default function* root() {

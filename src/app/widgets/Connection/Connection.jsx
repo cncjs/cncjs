@@ -1,9 +1,10 @@
-import find from 'lodash/find';
-import get from 'lodash/get';
-import includes from 'lodash/includes';
-import _map from 'lodash/map';
+import ensureArray from 'ensure-array';
+import _find from 'lodash/find';
+import _includes from 'lodash/includes';
+import _get from 'lodash/get';
 import PropTypes from 'prop-types';
-import React, { Fragment, PureComponent } from 'react';
+import React, { Fragment, Component } from 'react';
+import { connect } from 'react-redux';
 import Select from 'react-select';
 import { Button, ButtonGroup } from 'app/components/Buttons';
 import { Checkbox } from 'app/components/Checkbox';
@@ -15,6 +16,10 @@ import Label from 'app/components/Label';
 import Margin from 'app/components/Margin';
 import { ToastNotification } from 'app/components/Notifications';
 import Space from 'app/components/Space';
+import {
+    CONNECTION_STATE_CONNECTING,
+    CONNECTION_STATE_CONNECTED,
+} from 'app/constants/connection';
 import controller from 'app/lib/controller';
 import i18n from 'app/lib/i18n';
 import {
@@ -24,21 +29,19 @@ import {
     TINYG
 } from 'app/constants';
 
-class Connection extends PureComponent {
+class Connection extends Component {
     static propTypes = {
         state: PropTypes.object,
         actions: PropTypes.object
     };
 
-    isPortInUse = (port) => {
-        const { state } = this.props;
-        port = port || state.port;
-        const o = find(state.ports, { port }) || {};
-        return !!(o.inuse);
+    isPortOpen = (path) => {
+        const port = _find(this.props.state.ports, { comName: path }) || {};
+        return !!(port.isOpen);
     };
 
     renderPortOption = (option) => {
-        const { label, inuse, manufacturer } = option;
+        const { label, isOpen, manufacturer } = option;
         const styles = {
             option: {
                 whiteSpace: 'nowrap',
@@ -50,7 +53,7 @@ class Connection extends PureComponent {
         return (
             <div style={styles.option} title={label}>
                 <div>
-                    {inuse && (
+                    {isOpen && (
                         <Fragment>
                             <FontAwesomeIcon icon="lock" />
                             <Space width={8} />
@@ -58,16 +61,16 @@ class Connection extends PureComponent {
                     )}
                     {label}
                 </div>
-                {manufacturer &&
-                <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>
-                }
+                {manufacturer && (
+                    <i>{i18n._('Manufacturer: {{manufacturer}}', { manufacturer })}</i>
+                )}
             </div>
         );
     };
 
     renderPortValue = (option) => {
         const { state } = this.props;
-        const { label, inuse } = option;
+        const { label, isOpen } = option;
         const notLoading = !(state.loading);
         const canChangePort = notLoading;
         const style = {
@@ -75,9 +78,10 @@ class Connection extends PureComponent {
             textOverflow: 'ellipsis',
             overflow: 'hidden'
         };
+
         return (
             <div style={style} title={label}>
-                {inuse && (
+                {isOpen && (
                     <Fragment>
                         <FontAwesomeIcon icon="lock" />
                         <Space width={8} />
@@ -88,52 +92,58 @@ class Connection extends PureComponent {
         );
     };
 
-    renderBaudrateValue = (option) => {
+    renderBaudRateValue = (option) => {
         const { state } = this.props;
-        const notLoading = !(state.loading);
-        const notInUse = !(this.isPortInUse(state.port));
-        const canChangeBaudrate = notLoading && notInUse;
+        const { connection, loading, connected } = state;
+        const notLoading = !loading;
+        const notConnected = !connected;
+        const canChangeBaudRate = notLoading && notConnected && !this.isPortOpen(connection.serial.path); // FIXME
         const style = {
-            color: canChangeBaudrate ? '#333' : '#ccc',
+            color: canChangeBaudRate ? '#333' : '#ccc',
             textOverflow: 'ellipsis',
-            overflow: 'hidden'
+            overflow: 'hidden',
         };
+
         return (
             <div style={style} title={option.label}>{option.label}</div>
         );
     };
 
     render() {
+        const {
+            connectionError,
+            connecting,
+            connected,
+        } = this.props;
         const { state, actions } = this.props;
         const {
-            loading, connecting, connected,
-            controllerType,
-            ports, baudrates,
-            port, baudrate,
-            autoReconnect,
             connection,
-            alertMessage
+            loading,
+            ports, baudRates,
+            autoReconnect,
+            alertMessage,
         } = state;
-        const enableHardwareFlowControl = get(connection, 'serial.rtscts', false);
-        const canSelectControllers = (controller.loadedControllers.length > 1);
-        const hasGrblController = includes(controller.loadedControllers, GRBL);
-        const hasMarlinController = includes(controller.loadedControllers, MARLIN);
-        const hasSmoothieController = includes(controller.loadedControllers, SMOOTHIE);
-        const hasTinyGController = includes(controller.loadedControllers, TINYG);
+        const enableHardwareFlowControl = _get(connection, 'serial.rtscts', false);
+        const controllerType = _get(state, 'controller.type');
+        const canSelectControllers = (controller.availableControllers.length > 1);
+        const hasGrblController = _includes(controller.availableControllers, GRBL);
+        const hasMarlinController = _includes(controller.availableControllers, MARLIN);
+        const hasSmoothieController = _includes(controller.availableControllers, SMOOTHIE);
+        const hasTinyGController = _includes(controller.availableControllers, TINYG);
         const notLoading = !loading;
         const notConnecting = !connecting;
         const notConnected = !connected;
         const canRefresh = notLoading && notConnected;
         const canChangeController = notLoading && notConnected;
         const canChangePort = notLoading && notConnected;
-        const canChangeBaudrate = notLoading && notConnected && (!(this.isPortInUse(port)));
+        const canChangeBaudRate = notLoading && notConnected && !this.isPortOpen(connection.serial.path); // FIXME
         const canToggleHardwareFlowControl = notConnected;
-        const canOpenPort = port && baudrate && notConnecting && notConnected;
+        const canOpenPort = notConnecting && notConnected && connection.serial.path && connection.serial.baudRate; // FIXME
         const canClosePort = connected;
 
         return (
             <Container>
-                {alertMessage && (
+                {connectionError && (
                     <ToastNotification
                         style={{ margin: '-10px -10px 10px -10px' }}
                         type="error"
@@ -202,14 +212,14 @@ class Connection extends PureComponent {
                     <Row style={{ alignItems: 'center' }}>
                         <Col>
                             <Select
-                                defaultValue={port}
+                                defaultValue={connection.serial.path}
                                 isClearable={false}
                                 isDisabled={!canChangePort}
                                 isSearchable={false}
                                 name="port"
                                 noOptionsMessage={() => i18n._('No ports available')}
                                 onChange={actions.onChangePortOption}
-                                options={_map(ports, (o) => ({
+                                options={ensureArray(ports).map(o => ({
                                     value: o.port,
                                     label: o.port,
                                     manufacturer: o.manufacturer,
@@ -245,13 +255,13 @@ class Connection extends PureComponent {
                     <Row>
                         <Col>
                             <Select
-                                defaultValue={baudrate}
+                                defaultValue={connection.serial.baudRate}
                                 isClearable={false}
-                                isDisabled={!canChangeBaudrate}
+                                isDisabled={!canChangeBaudRate}
                                 isSearchable={false}
                                 name="baudrate"
                                 onChange={actions.onChangeBaudrateOption}
-                                options={_map(baudrates, (value) => ({
+                                options={ensureArray(baudRates).map(value => ({
                                     value: value,
                                     label: Number(value).toString()
                                 }))}
@@ -309,4 +319,15 @@ class Connection extends PureComponent {
     }
 }
 
-export default Connection;
+export default connect(store => {
+    const connectionState = _get(store, 'connection.state');
+    const connectionError = _get(store, 'connection.error');
+    const connected = connectionState === CONNECTION_STATE_CONNECTED;
+    const connecting = connectionState === CONNECTION_STATE_CONNECTING;
+
+    return {
+        connectionError,
+        connected,
+        connecting,
+    };
+})(Connection);

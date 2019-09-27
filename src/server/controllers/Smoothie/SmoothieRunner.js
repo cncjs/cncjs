@@ -9,14 +9,14 @@ import SmoothieLineParserResultParserState from './SmoothieLineParserResultParse
 import SmoothieLineParserResultParameters from './SmoothieLineParserResultParameters';
 import SmoothieLineParserResultVersion from './SmoothieLineParserResultVersion';
 import {
-    SMOOTHIE_ACTIVE_STATE_IDLE,
-    SMOOTHIE_ACTIVE_STATE_ALARM
+    SMOOTHIE_MACHINE_STATE_IDLE,
+    SMOOTHIE_MACHINE_STATE_ALARM
 } from './constants';
 
 class SmoothieRunner extends events.EventEmitter {
     state = {
         status: {
-            activeState: '',
+            machineState: '',
             mpos: {
                 x: '0.0000',
                 y: '0.0000',
@@ -175,13 +175,13 @@ class SmoothieRunner extends events.EventEmitter {
     }
 
     isAlarm() {
-        const activeState = _.get(this.state, 'status.activeState');
-        return activeState === SMOOTHIE_ACTIVE_STATE_ALARM;
+        const machineState = _.get(this.state, 'status.machineState');
+        return machineState === SMOOTHIE_MACHINE_STATE_ALARM;
     }
 
     isIdle() {
-        const activeState = _.get(this.state, 'status.activeState');
-        return activeState === SMOOTHIE_ACTIVE_STATE_IDLE;
+        const machineState = _.get(this.state, 'status.machineState');
+        return machineState === SMOOTHIE_MACHINE_STATE_IDLE;
     }
 }
 

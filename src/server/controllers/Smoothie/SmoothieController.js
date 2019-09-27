@@ -1,10 +1,11 @@
 import ensureArray from 'ensure-array';
 import * as parser from 'gcode-parser';
 import _ from 'lodash';
-import SerialConnection from '../../lib/SerialConnection';
 import EventTrigger from '../../lib/EventTrigger';
 import Feeder from '../../lib/Feeder';
 import Sender, { SP_TYPE_CHAR_COUNTING } from '../../lib/Sender';
+import SerialConnection from '../../lib/SerialConnection';
+import SocketConnection from '../../lib/SocketConnection';
 import Workflow, {
     WORKFLOW_STATE_IDLE,
     WORKFLOW_STATE_PAUSED,
@@ -18,7 +19,7 @@ import translateExpression from '../../lib/translate-expression';
 import config from '../../services/configstore';
 import monitor from '../../services/monitor';
 import taskRunner from '../../services/taskrunner';
-import store from '../../store';
+import controllers from '../../store/controllers';
 import {
     GLOBAL_OBJECTS as globalObjects,
     WRITE_SOURCE_CLIENT,
@@ -27,7 +28,7 @@ import {
 import SmoothieRunner from './SmoothieRunner';
 import {
     SMOOTHIE,
-    SMOOTHIE_ACTIVE_STATE_HOLD,
+    SMOOTHIE_MACHINE_STATE_HOLD,
     SMOOTHIE_REALTIME_COMMANDS
 } from './constants';
 
@@ -57,13 +58,15 @@ class SmoothieController {
         close: (err) => {
             this.ready = false;
             if (err) {
-                log.warn(`Disconnected from serial port "${this.options.port}":`, err);
+                log.error(`The connection was closed unexpectedly: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
             }
 
             this.close(err => {
-                // Remove controller from store
-                const port = this.options.port;
-                store.unset(`controllers[${JSON.stringify(port)}]`);
+                // Remove controller
+                const ident = this.connection.ident;
+                delete controllers[ident];
+                controllers[ident] = undefined;
 
                 // Destroy controller
                 this.destroy();
@@ -72,7 +75,8 @@ class SmoothieController {
         error: (err) => {
             this.ready = false;
             if (err) {
-                log.error(`Unexpected error while reading/writing serial port "${this.options.port}":`, err);
+                log.error(`An unexpected error occurred: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
             }
         }
     };
@@ -125,29 +129,65 @@ class SmoothieController {
     // Workflow
     workflow = null;
 
-    constructor(engine, options) {
+    get connectionOptions() {
+        return {
+            ident: this.connection.ident,
+            type: this.connection.type,
+            settings: this.connection.settings
+        };
+    }
+
+    get isOpen() {
+        return this.connection && this.connection.isOpen;
+    }
+
+    get isClose() {
+        return !this.isOpen;
+    }
+
+    get status() {
+        return {
+            type: this.type,
+            connection: {
+                type: _.get(this.connection, 'type', ''),
+                settings: _.get(this.connection, 'settings', {})
+            },
+            sockets: Object.keys(this.sockets).length,
+            ready: this.ready,
+            settings: this.settings,
+            state: this.state,
+            feeder: this.feeder.toJSON(),
+            sender: this.sender.toJSON(),
+            workflow: {
+                state: this.workflow.state
+            }
+        };
+    }
+
+    constructor(engine, connectionType = 'serial', options) {
         if (!engine) {
-            throw new Error('engine must be specified');
+            throw new TypeError(`"engine" must be specified: ${engine}`);
         }
+
+        if (!_.includes(['serial', 'socket'], connectionType)) {
+            throw new TypeError(`"connectionType" is invalid: ${connectionType}`);
+        }
+
+        // Engine
         this.engine = engine;
 
-        const { port, baudrate, rtscts } = { ...options };
-        this.options = {
-            ...this.options,
-            port: port,
-            baudrate: baudrate,
-            rtscts: rtscts
-        };
-
         // Connection
-        this.connection = new SerialConnection({
-            path: port,
-            baudRate: baudrate,
-            rtscts: rtscts,
-            writeFilter: (data) => {
-                return data;
-            }
-        });
+        if (connectionType === 'serial') {
+            this.connection = new SerialConnection({
+                ...options,
+                writeFilter: (data) => data
+            });
+        } else if (connectionType === 'socket') {
+            this.connection = new SocketConnection({
+                ...options,
+                writeFilter: (data) => data
+            });
+        }
 
         // Event Trigger
         this.event = new EventTrigger((event, trigger, commands) => {
@@ -206,8 +246,8 @@ class SmoothieController {
             }
         });
         this.feeder.on('data', (line = '', context = {}) => {
-            if (this.isClose()) {
-                log.error(`Serial port "${this.options.port}" is not accessible`);
+            if (this.isClose) {
+                log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
                 return;
             }
 
@@ -222,7 +262,7 @@ class SmoothieController {
                 return;
             }
 
-            this.emit('serialport:write', line + '\n', {
+            this.emit('connection:write', this.connectionOptions, line + '\n', {
                 ...context,
                 source: WRITE_SOURCE_FEEDER
             });
@@ -285,8 +325,8 @@ class SmoothieController {
             }
         });
         this.sender.on('data', (line = '', context = {}) => {
-            if (this.isClose()) {
-                log.error(`Serial port "${this.options.port}" is not accessible`);
+            if (this.isClose) {
+                log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
                 return;
             }
 
@@ -354,7 +394,7 @@ class SmoothieController {
 
             if (this.actionMask.replyStatusReport) {
                 this.actionMask.replyStatusReport = false;
-                this.emit('serialport:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
 
             // Check if the receive buffer is available in the status report (#115)
@@ -389,7 +429,7 @@ class SmoothieController {
             if (this.actionMask.queryParserState.reply) {
                 if (this.actionMask.replyParserState) {
                     this.actionMask.replyParserState = false;
-                    this.emit('serialport:read', res.raw);
+                    this.emit('connection:read', this.connectionOptions, res.raw);
                 }
                 this.actionMask.queryParserState.reply = false;
                 return;
@@ -419,7 +459,7 @@ class SmoothieController {
                 return;
             }
 
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
 
             // Feeder
             this.feeder.next();
@@ -432,8 +472,8 @@ class SmoothieController {
                 const { lines, received } = this.sender.state;
                 const line = lines[received] || '';
 
-                this.emit('serialport:read', `> ${line.trim()} (line=${received + 1})`);
-                this.emit('serialport:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, `> ${line.trim()} (line=${received + 1})`);
+                this.emit('connection:read', this.connectionOptions, res.raw);
 
                 if (pauseError) {
                     this.workflow.pause({ err: res.raw });
@@ -445,14 +485,14 @@ class SmoothieController {
                 return;
             }
 
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
 
             // Feeder
             this.feeder.next();
         });
 
         this.runner.on('alarm', (res) => {
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         this.runner.on('parserstate', (res) => {
@@ -460,20 +500,20 @@ class SmoothieController {
             this.actionMask.queryParserState.reply = true;
 
             if (this.actionMask.replyParserState) {
-                this.emit('serialport:read', res.raw);
+                this.emit('connection:read', this.connectionOptions, res.raw);
             }
         });
 
         this.runner.on('parameters', (res) => {
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         this.runner.on('version', (res) => {
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         this.runner.on('others', (res) => {
-            this.emit('serialport:read', res.raw);
+            this.emit('connection:read', this.connectionOptions, res.raw);
         });
 
         const queryStatusReport = () => {
@@ -501,7 +541,7 @@ class SmoothieController {
                 return;
             }
 
-            if (this.isOpen()) {
+            if (this.isOpen) {
                 this.actionMask.queryStatusReport = true;
                 this.actionTime.queryStatusReport = now;
                 this.connection.write('?');
@@ -541,7 +581,7 @@ class SmoothieController {
                 return;
             }
 
-            if (this.isOpen()) {
+            if (this.isOpen) {
                 this.actionMask.queryParserState.state = true;
                 this.actionMask.queryParserState.reply = false;
                 this.actionTime.queryParserState = now;
@@ -550,8 +590,7 @@ class SmoothieController {
         }, 500);
 
         this.queryTimer = setInterval(() => {
-            if (this.isClose()) {
-                // Serial port is closed
+            if (this.isClose) {
                 return;
             }
 
@@ -573,14 +612,14 @@ class SmoothieController {
             // Smoothie settings
             if (this.settings !== this.runner.settings) {
                 this.settings = this.runner.settings;
-                this.emit('controller:settings', SMOOTHIE, this.settings);
+                this.emit('controller:settings', this.type, this.settings);
                 this.emit('Smoothie:settings', this.settings); // Backward compatibility
             }
 
             // Smoothie state
             if (this.state !== this.runner.state) {
                 this.state = this.runner.state;
-                this.emit('controller:state', SMOOTHIE, this.state);
+                this.emit('controller:state', this.type, this.state);
                 this.emit('Smoothie:state', this.state); // Backward compatibility
             }
 
@@ -611,7 +650,7 @@ class SmoothieController {
                     this.actionTime.senderFinishTime = 0;
 
                     // Stop workflow
-                    this.command('gcode:stop');
+                    this.command('sender:stop');
                 }
             }
         }, 250);
@@ -747,32 +786,10 @@ class SmoothieController {
         this.event.trigger('controller:ready');
     }
 
-    get status() {
-        return {
-            port: this.options.port,
-            baudrate: this.options.baudrate,
-            rtscts: this.options.rtscts,
-            sockets: Object.keys(this.sockets),
-            ready: this.ready,
-            controller: {
-                type: this.type,
-                settings: this.settings,
-                state: this.state
-            },
-            feeder: this.feeder.toJSON(),
-            sender: this.sender.toJSON(),
-            workflow: {
-                state: this.workflow.state
-            }
-        };
-    }
-
     open(callback = noop) {
-        const { port, baudrate } = this.options;
-
         // Assertion check
-        if (this.isOpen()) {
-            log.error(`Cannot open serial port "${port}"`);
+        if (this.isOpen) {
+            log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
             return;
         }
 
@@ -782,44 +799,23 @@ class SmoothieController {
 
         this.connection.open(async (err) => {
             if (err) {
-                log.error(`Error opening serial port "${port}":`, err);
-                this.emit('serialport:error', { err: err, port: port });
-                callback(err); // notify error
+                log.error(`Cannot open connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
+                log.error(err);
+                this.emit('connection:error', this.connectionOptions, err);
+                callback && callback(err);
                 return;
             }
 
-            this.emit('serialport:open', {
-                port: port,
-                baudrate: baudrate,
-                controllerType: this.type,
-                inuse: true,
-
-                // connection options
-                connection: {
-                    ident: this.connection.ident,
-                    type: this.connection.type,
-                    settings: this.connection.settings,
-                },
-            });
+            this.emit('connection:open', this.connectionOptions);
 
             // Emit a change event to all connected sockets
             if (this.engine.io) {
-                this.engine.io.emit('serialport:change', {
-                    port: port,
-                    inuse: true,
-
-                    // connection options
-                    connection: {
-                        ident: this.connection.ident,
-                        type: this.connection.type,
-                        settings: this.connection.settings,
-                    },
-                });
+                this.engine.io.emit('connection:change', this.connectionOptions, true);
             }
 
-            callback(); // register controller
+            callback && callback();
 
-            log.debug(`Connected to serial port "${port}"`);
+            log.debug(`Connection established: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
 
             this.workflow.stop();
 
@@ -843,63 +839,21 @@ class SmoothieController {
     }
 
     close(callback) {
-        const { port } = this.options;
-
-        // Assertion check
-        if (!this.connection) {
-            const err = `Serial port "${port}" is not available`;
-            callback(new Error(err));
-            return;
-        }
-
         // Stop status query
         this.ready = false;
 
-        this.emit('serialport:close', {
-            port: port,
-            inuse: false,
-
-            // connection options
-            connection: {
-                ident: this.connection.ident,
-                type: this.connection.type,
-                settings: this.connection.settings,
-            },
-        });
+        this.emit('connection:close', this.connectionOptions);
 
         // Emit a change event to all connected sockets
         if (this.engine.io) {
-            this.engine.io.emit('serialport:change', {
-                port: port,
-                inuse: false,
-
-                // connection options
-                connection: {
-                    ident: this.connection.ident,
-                    type: this.connection.type,
-                    settings: this.connection.settings,
-                },
-            });
-        }
-
-        if (this.isClose()) {
-            callback(null);
-            return;
+            this.engine.io.emit('connection:change', this.connectionOptions, false);
         }
 
         this.connection.removeAllListeners();
         this.connection.close(callback);
     }
 
-    isOpen() {
-        return this.connection && this.connection.isOpen;
-    }
-
-    isClose() {
-        return !(this.isOpen());
-    }
-
-    addConnection(socket) {
+    addSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
             return;
@@ -908,54 +862,56 @@ class SmoothieController {
         log.debug(`Add socket connection: id=${socket.id}`);
         this.sockets[socket.id] = socket;
 
-        //
-        // Send data to newly connected client
-        //
-        if (this.isOpen()) {
-            socket.emit('serialport:open', {
-                port: this.options.port,
-                baudrate: this.options.baudrate,
-                controllerType: this.type,
-                inuse: true,
+        // Controller type
+        socket.emit('controller:type', this.type);
 
-                // connection options
-                connection: {
-                    ident: this.connection.ident,
-                    type: this.connection.type,
-                    settings: this.connection.settings,
-                },
-            });
+        // Connection
+        if (this.isOpen) {
+            socket.emit('connection:open', this.connectionOptions);
         }
+
+        // Controller settings
         if (!_.isEmpty(this.settings)) {
-            // controller settings
-            socket.emit('controller:settings', SMOOTHIE, this.settings);
+            socket.emit('controller:settings', this.type, this.settings);
             socket.emit('Smoothie:settings', this.settings); // Backward compatibility
         }
+
+        // Controller state
         if (!_.isEmpty(this.state)) {
-            // controller state
-            socket.emit('controller:state', SMOOTHIE, this.state);
+            socket.emit('controller:state', this.type, this.state);
             socket.emit('Smoothie:state', this.state); // Backward compatibility
         }
+
+        // Feeder status
         if (this.feeder) {
-            // feeder status
             socket.emit('feeder:status', this.feeder.toJSON());
         }
+
+        // Sender status
         if (this.sender) {
-            // sender status
             socket.emit('sender:status', this.sender.toJSON());
 
-            const { name, gcode, context } = this.sender.state;
-            if (gcode) {
-                socket.emit('gcode:load', name, gcode, context);
+            const {
+                name,
+                gcode: content,
+                context
+            } = this.sender.state;
+
+            if (content) {
+                socket.emit('sender:load', {
+                    name: name,
+                    content: content
+                }, context);
             }
         }
+
+        // Workflow state
         if (this.workflow) {
-            // workflow state
             socket.emit('workflow:state', this.workflow.state);
         }
     }
 
-    removeConnection(socket) {
+    removeSocket(socket) {
         if (!socket) {
             log.error('The socket parameter is not specified');
             return;
@@ -975,8 +931,8 @@ class SmoothieController {
 
     command(cmd, ...args) {
         const handler = {
-            'gcode:load': () => {
-                let [name, gcode, context = {}, callback = noop] = args;
+            'sender:load': () => {
+                let [name, content, context = {}, callback = noop] = args;
                 if (typeof context === 'function') {
                     callback = context;
                     context = {};
@@ -987,14 +943,18 @@ class SmoothieController {
                 // be no queued motions, as long as no more commands were sent after the G4.
                 // This is the fastest way to do it without having to check the status reports.
                 const dwell = '%wait ; Wait for the planner to empty';
-                const ok = this.sender.load(name, gcode + '\n' + dwell, context);
+                const ok = this.sender.load(name, content + '\n' + dwell, context);
                 if (!ok) {
                     callback(new Error(`Invalid G-code: name=${name}`));
                     return;
                 }
 
-                this.emit('gcode:load', name, gcode, context);
-                this.event.trigger('gcode:load');
+                this.emit('sender:load', {
+                    name: name,
+                    content: content
+                }, context);
+
+                this.event.trigger('sender:load');
 
                 log.debug(`Load G-code: name="${this.sender.state.name}", size=${this.sender.state.gcode.length}, total=${this.sender.state.total}`);
 
@@ -1002,21 +962,17 @@ class SmoothieController {
 
                 callback(null, this.sender.toJSON());
             },
-            'gcode:unload': () => {
+            'sender:unload': () => {
                 this.workflow.stop();
 
                 // Sender
                 this.sender.unload();
 
-                this.emit('gcode:unload');
-                this.event.trigger('gcode:unload');
+                this.emit('sender:unload');
+                this.event.trigger('sender:unload');
             },
-            'start': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:start');
-            },
-            'gcode:start': () => {
-                this.event.trigger('gcode:start');
+            'sender:start': () => {
+                this.event.trigger('sender:start');
 
                 this.workflow.start();
 
@@ -1026,47 +982,31 @@ class SmoothieController {
                 // Sender
                 this.sender.next();
             },
-            'stop': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:stop', ...args);
-            },
             // @param {object} options The options object.
             // @param {boolean} [options.force] Whether to force stop a G-code program. Defaults to false.
-            'gcode:stop': () => {
-                this.event.trigger('gcode:stop');
+            'sender:stop': () => {
+                this.event.trigger('sender:stop');
 
                 this.workflow.stop();
 
-                const activeState = _.get(this.state, 'status.activeState', '');
-                if (activeState === SMOOTHIE_ACTIVE_STATE_HOLD) {
+                const machineState = _.get(this.state, 'machineState', '');
+                if (machineState === SMOOTHIE_MACHINE_STATE_HOLD) {
                     this.write('~'); // resume
                 }
             },
-            'pause': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:pause');
-            },
-            'gcode:pause': () => {
-                this.event.trigger('gcode:pause');
+            'sender:pause': () => {
+                this.event.trigger('sender:pause');
 
                 this.workflow.pause();
 
                 this.write('!');
             },
-            'resume': () => {
-                log.warn(`Warning: The "${cmd}" command is deprecated and will be removed in a future release.`);
-                this.command('gcode:resume');
-            },
-            'gcode:resume': () => {
-                this.event.trigger('gcode:resume');
+            'sender:resume': () => {
+                this.event.trigger('sender:resume');
 
                 this.write('~');
 
                 this.workflow.resume();
-            },
-            'feeder:feed': () => {
-                const [commands, context = {}] = args;
-                this.command('gcode', commands, context);
             },
             'feeder:start': () => {
                 if (this.workflow.state === WORKFLOW_STATE_RUNNING) {
@@ -1088,9 +1028,6 @@ class SmoothieController {
                 this.event.trigger('cyclestart');
 
                 this.write('~');
-            },
-            'statusreport': () => {
-                this.write('?');
             },
             'homing': () => {
                 this.event.trigger('homing');
@@ -1114,7 +1051,7 @@ class SmoothieController {
             },
             // Feed Overrides
             // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
-            'feedOverride': () => {
+            'override:feed': () => {
                 const [value] = args;
                 let feedOverride = this.runner.state.status.ovF;
 
@@ -1140,7 +1077,7 @@ class SmoothieController {
             },
             // Spindle Speed Overrides
             // @param {number} value A percentage value between 10 and 200. A value of zero will reset to 100%.
-            'spindleOverride': () => {
+            'override:spindle': () => {
                 const [value] = args;
                 let spindleOverride = this.runner.state.status.ovS;
 
@@ -1165,31 +1102,33 @@ class SmoothieController {
                 };
             },
             // Rapid Overrides
-            'rapidOverride': () => {
+            'override:rapid': () => {
                 // Not supported
             },
-            'lasertest:on': () => {
+            'lasertest': () => {
                 const [power = 0, duration = 0] = args;
 
-                this.writeln('M3');
+                if (!power) {
+                    // Turning laser off and returning to auto mode
+                    this.command('gcode', 'fire off');
+                    this.command('gcode', 'M5');
+                    return;
+                }
+
+                this.command('gcode', 'M3');
                 // Firing laser at <power>% power and entering manual mode
-                this.writeln('fire ' + ensurePositiveNumber(power));
+                this.command('gcode', 'fire ' + ensurePositiveNumber(power));
                 if (duration > 0) {
                     // http://smoothieware.org/g4
                     // Dwell S<seconds> or P<milliseconds>
                     // Note that if `grbl_mode` is set to `true`, then the `P` parameter
                     // is the duration to wait in seconds, not milliseconds, as a float value.
                     // This is to confirm to G-code standards.
-                    this.writeln('G4P' + ensurePositiveNumber(duration / 1000));
+                    this.command('gcode', 'G4P' + ensurePositiveNumber(duration / 1000));
                     // Turning laser off and returning to auto mode
-                    this.writeln('fire off');
-                    this.writeln('M5');
+                    this.command('gcode', 'fire off');
+                    this.command('gcode', 'M5');
                 }
-            },
-            'lasertest:off': () => {
-                // Turning laser off and returning to auto mode
-                this.writeln('fire off');
-                this.writeln('M5');
             },
             'gcode': () => {
                 const [commands, context] = args;
@@ -1247,7 +1186,7 @@ class SmoothieController {
 
                 this.event.trigger('macro:load');
 
-                this.command('gcode:load', macro.name, macro.content, context, callback);
+                this.command('sender:load', macro.name, macro.content, context, callback);
             },
             'watchdir:load': () => {
                 const [file, callback = noop] = args;
@@ -1259,7 +1198,7 @@ class SmoothieController {
                         return;
                     }
 
-                    this.command('gcode:load', file, data, context, callback);
+                    this.command('sender:load', file, data, context, callback);
                 });
             }
         }[cmd];
@@ -1274,8 +1213,8 @@ class SmoothieController {
 
     write(data, context) {
         // Assertion check
-        if (this.isClose()) {
-            log.error(`Serial port "${this.options.port}" is not accessible`);
+        if (this.isClose) {
+            log.error(`Unable to write data to the connection: type=${this.connection.type}, settings=${JSON.stringify(this.connection.settings)}`);
             return;
         }
 
@@ -1283,7 +1222,7 @@ class SmoothieController {
         this.actionMask.replyStatusReport = (cmd === '?') || this.actionMask.replyStatusReport;
         this.actionMask.replyParserState = (cmd === '$G') || this.actionMask.replyParserState;
 
-        this.emit('serialport:write', data, {
+        this.emit('connection:write', this.connectionOptions, data, {
             ...context,
             source: WRITE_SOURCE_CLIENT
         });

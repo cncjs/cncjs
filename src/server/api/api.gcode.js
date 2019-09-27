@@ -1,16 +1,16 @@
 import get from 'lodash/get';
-import store from '../store';
+import controllers from '../store/controllers';
 import {
     ERR_BAD_REQUEST,
     ERR_INTERNAL_SERVER_ERROR
 } from '../constants';
 
 export const upload = (req, res) => {
-    const { port, name, gcode, context = {} } = req.body;
+    const { ident, name, gcode, context = {} } = req.body;
 
-    if (!port) {
+    if (!ident) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'No port specified'
+            msg: 'No connection ident specified'
         });
         return;
     }
@@ -21,7 +21,7 @@ export const upload = (req, res) => {
         return;
     }
 
-    const controller = store.get('controllers["' + port + '"]');
+    const controller = controllers[ident];
     if (!controller) {
         res.status(ERR_BAD_REQUEST).send({
             msg: 'Controller not found'
@@ -43,16 +43,16 @@ export const upload = (req, res) => {
 };
 
 export const fetch = (req, res) => {
-    const port = req.query.port;
+    const ident = req.query.ident;
 
-    if (!port) {
+    if (!ident) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'No port specified'
+            msg: 'No connection ident specified'
         });
         return;
     }
 
-    const controller = store.get('controllers["' + port + '"]');
+    const controller = controllers[ident];
     if (!controller) {
         res.status(ERR_BAD_REQUEST).send({
             msg: 'Controller not found'
@@ -69,16 +69,16 @@ export const fetch = (req, res) => {
 };
 
 export const download = (req, res) => {
-    const port = get(req, 'query.port') || get(req, 'body.port');
+    const ident = get(req, 'query.ident') || get(req, 'body.ident');
 
-    if (!port) {
+    if (!ident) {
         res.status(ERR_BAD_REQUEST).send({
-            msg: 'No port specified'
+            msg: 'No connection ident specified'
         });
         return;
     }
 
-    const controller = store.get('controllers["' + port + '"]');
+    const controller = controllers[ident];
     if (!controller) {
         res.status(ERR_BAD_REQUEST).send({
             msg: 'Controller not found'

@@ -114,7 +114,7 @@ class GrblWidget extends PureComponent {
         return {
             minimized: this.config.get('minimized', false),
             isFullscreen: false,
-            isReady: (controller.loadedControllers.length === 1) || (controller.type === GRBL),
+            isReady: (controller.availableControllers.length === 1) || (controller.type === GRBL),
             canClick: true, // Defaults to true
             port: controller.port,
             controller: {
