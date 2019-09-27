@@ -150,7 +150,7 @@
     "cli-color": "~1.4.0",
     "cncjs-controller": "~2.0.0-alpha",
     "colornames": "~1.1.1",
-    "commander": "~2.20.0",
+    "commander": "~3.0.2",
     "compression": "~1.7.4",
     "connect-multiparty": "~2.2.0",
     "connect-restreamer": "~1.0.3",

@@ -48,7 +48,7 @@ const defaultHost = isElectron() ? '127.0.0.1' : '0.0.0.0';
 const defaultPort = isElectron() ? 0 : 8000;
 
 program
-    .version(pkg.version)
+    .version(pkg.version, '--version', 'output the current version')
     .usage('[options]')
     .option('-p, --port <port>', `Set listen port (default: ${defaultPort})`, defaultPort)
     .option('-H, --host <host>', `Set listen address or hostname (default: ${defaultHost})`, defaultHost)
