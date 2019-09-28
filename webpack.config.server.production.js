@@ -1,6 +1,6 @@
 const crypto = require('crypto');
 const path = require('path');
-const boolean = require('boolean');
+const boolean = require('boolean').default;
 const dotenv = require('dotenv');
 const TerserPlugin = require('terser-webpack-plugin');
 const webpack = require('webpack');
